@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import CymaticPattern from "@/components/CymaticPatterns";
+import { SacredSpiral } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 
 interface BreathingTechnique {
@@ -13,35 +13,42 @@ const TECHNIQUES: Record<string, BreathingTechnique> = {
   box: {
     name: "Box Breathing",
     phases: [
-      { label: "Inhale", duration: 4 },
-      { label: "Hold", duration: 4 },
-      { label: "Exhale", duration: 4 },
-      { label: "Hold", duration: 4 },
+      { label: "breathe in", duration: 4 },
+      { label: "hold", duration: 4 },
+      { label: "breathe out", duration: 4 },
+      { label: "rest", duration: 4 },
     ],
   },
   sigh: {
     name: "Physiological Sigh",
     phases: [
-      { label: "Inhale deeply", duration: 3 },
-      { label: "Second short inhale", duration: 1 },
-      { label: "Long exhale", duration: 6 },
+      { label: "breathe in deeply", duration: 3 },
+      { label: "second short inhale", duration: 1 },
+      { label: "long exhale", duration: 6 },
     ],
   },
   coherent: {
     name: "Coherent Breathing",
     phases: [
-      { label: "Inhale", duration: 6 },
-      { label: "Exhale", duration: 6 },
+      { label: "breathe in", duration: 6 },
+      { label: "breathe out", duration: 6 },
     ],
   },
   "4-7-8": {
     name: "4-7-8 Breathing",
     phases: [
-      { label: "Inhale", duration: 4 },
-      { label: "Hold", duration: 7 },
-      { label: "Exhale", duration: 8 },
+      { label: "breathe in", duration: 4 },
+      { label: "hold", duration: 7 },
+      { label: "breathe out", duration: 8 },
     ],
   },
+};
+
+const PHASE_HEX: Record<string, string> = {
+  menstrual: "#C4526E",
+  follicular: "#7D9E82",
+  ovulatory: "#E8A030",
+  luteal: "#9B89B4",
 };
 
 interface Props {
@@ -57,8 +64,8 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
   const [cycles, setCycles] = useState(0);
 
   const currentPhase = technique.phases[phaseIndex];
-  const isInhale = currentPhase.label.toLowerCase().includes("inhale");
-  const isExhale = currentPhase.label.toLowerCase().includes("exhale");
+  const isInhale = currentPhase.label.toLowerCase().includes("in");
+  const isExhale = currentPhase.label.toLowerCase().includes("out");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,7 +84,8 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
     return () => clearInterval(interval);
   }, [phaseIndex, currentPhase.duration, technique.phases.length]);
 
-  const scale = isInhale ? 1.0 : isExhale ? 0.6 : (isInhale ? 1.0 : 0.8);
+  const scale = isInhale ? 1.0 : isExhale ? 0.6 : 0.8;
+  const phaseColor = PHASE_HEX[info.phase] || "#7D9E82";
 
   return (
     <AnimatePresence>
@@ -86,31 +94,31 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
-        style={{ backgroundColor: "#080E14" }}
+        style={{ backgroundColor: "#FAF6EF" }}
       >
         <button onClick={onClose} className="absolute right-6 top-6 text-foreground/40 hover:text-foreground transition-colors z-10">
           <X className="h-8 w-8" />
         </button>
 
-        <h2 className="font-display text-3xl font-light italic text-foreground mb-1">{technique.name}</h2>
+        <h2 className="font-display text-3xl font-bold italic text-foreground mb-1">{technique.name}</h2>
         <p className="font-mono text-xs text-muted-foreground mb-12">cycle {cycles + 1}</p>
 
-        {/* Cymatic breathing pattern */}
+        {/* Sacred spiral breathing animation */}
         <motion.div
           animate={{ scale }}
           transition={{ duration: currentPhase.duration, ease: "easeInOut" }}
           className="relative flex items-center justify-center"
           style={{ width: 240, height: 240 }}
         >
-          <div className="cymatic-rotate-fast">
-            <CymaticPattern phase={info.phase} size={240} opacity={isInhale ? 0.6 : isExhale ? 0.2 : 0.4} active />
+          <div className="sketch-rotate-fast">
+            <SacredSpiral size={240} opacity={isInhale ? 0.5 : isExhale ? 0.15 : 0.3} color={phaseColor} />
           </div>
           <span className="absolute font-mono text-3xl text-foreground">
             {currentPhase.duration - timer}
           </span>
         </motion.div>
 
-        <p className="mt-10 font-display text-2xl italic text-foreground">{currentPhase.label}</p>
+        <p className="mt-10 font-hand text-3xl text-foreground" style={{ color: phaseColor }}>{currentPhase.label}</p>
         <p className="mt-2 font-mono text-xs text-muted-foreground">
           {timer + 1} of {currentPhase.duration}s
         </p>

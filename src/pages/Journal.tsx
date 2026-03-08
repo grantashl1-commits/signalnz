@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { PenLine } from "lucide-react";
 import JournalEditor from "@/components/JournalEditor";
-import CymaticPattern from "@/components/CymaticPatterns";
+import { CymatiSketch, BotanicalSprig, SacredSpiral } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 
 const JOURNALS = [
@@ -37,15 +37,19 @@ export default function JournalPage() {
   const [entries] = useState(getJournalEntries());
 
   return (
-    <div className="max-w-3xl mx-auto space-y-10 light-mode" style={{ "--background": "210 25% 96%", "--foreground": "210 40% 10%", "--card": "0 0% 100%", "--card-foreground": "210 40% 10%", "--muted": "210 15% 90%", "--muted-foreground": "210 15% 40%", "--border": "210 15% 88%" } as React.CSSProperties}>
+    <div className="max-w-3xl mx-auto space-y-10 relative">
       {/* Faint cymatic watermark */}
-      <div className="fixed inset-0 -z-10 flex items-center justify-center pointer-events-none opacity-[0.03]">
-        <CymaticPattern phase={info.phase} size={500} opacity={1} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.04]">
+        <CymatiSketch phase={info.phase} size={500} opacity={1} />
+      </div>
+
+      <div className="absolute top-0 right-0 -translate-y-6 translate-x-6 pointer-events-none">
+        <SacredSpiral size={120} opacity={0.12} />
       </div>
 
       <div>
-        <p className="font-body text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#00C9A7" }}>journal</p>
-        <h1 className="font-display text-4xl font-light italic text-foreground mt-1">Write to Process</h1>
+        <p className="font-hand text-sm font-bold text-primary">journal</p>
+        <h1 className="font-display text-4xl font-bold italic text-foreground mt-1">Write to Process</h1>
         <p className="font-body text-sm text-muted-foreground mt-1">Reflect, release, reconnect</p>
       </div>
 
@@ -53,14 +57,14 @@ export default function JournalPage() {
         <div className="grid gap-4 md:grid-cols-3">
           {JOURNALS.map((j, i) => (
             <motion.div key={j.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-              className="rounded-xl border border-border bg-card p-5 cursor-pointer hover:shadow-lg transition-all"
+              className="card-warm p-5 cursor-pointer hover:shadow-lg transition-all"
               onClick={() => setJournalType(j.id)}
             >
               <span className="text-2xl">{j.icon}</span>
               <h3 className="font-display text-lg italic text-foreground mt-2">{j.title}</h3>
-              <p className="font-body text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5" style={{ color: "#00C9A7" }}>{j.subtitle}</p>
+              <p className="font-hand text-sm font-bold text-primary mt-0.5">{j.subtitle}</p>
               <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">{j.desc}</p>
-              <button className="mt-4 w-full rounded-lg bg-foreground px-4 py-2.5 font-body text-xs font-bold uppercase tracking-widest text-background hover:opacity-90 transition-opacity">
+              <button className="mt-4 w-full rounded-xl bg-foreground px-4 py-2.5 font-body text-sm font-bold text-background hover:opacity-90 transition-opacity">
                 Begin Writing
               </button>
             </motion.div>
@@ -68,16 +72,18 @@ export default function JournalPage() {
         </div>
       </section>
 
+      <BotanicalSprig width={200} className="mx-auto" />
+
       {entries.length > 0 && (
         <section className="space-y-3">
-          <p className="font-body text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#00C9A7" }}>past signals</p>
+          <p className="font-hand text-sm font-bold text-primary">past entries</p>
           {entries.slice(0, 8).map((entry, i) => (
-            <div key={i} className="rounded-xl border border-border bg-card p-4">
+            <div key={i} className="card-warm p-4">
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#00C9A7" }}>{TYPE_LABELS[entry.type] || entry.type}</span>
+                <span className="font-hand text-sm font-bold text-primary">{TYPE_LABELS[entry.type] || entry.type}</span>
                 <span className="font-mono text-[10px] text-muted-foreground">{entry.date}</span>
               </div>
-              <p className="font-mono text-xs text-muted-foreground line-clamp-2">{entry.preview}...</p>
+              <p className="font-hand text-sm text-muted-foreground line-clamp-2">{entry.preview}...</p>
             </div>
           ))}
         </section>

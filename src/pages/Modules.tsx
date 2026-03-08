@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Lock, BookOpen } from "lucide-react";
-import CymaticPattern from "@/components/CymaticPatterns";
-import NetworkBackground from "@/components/NetworkBackground";
+import { CymatiSketch, SeedGeometry } from "@/components/BotanicalElements";
 
 const MODULES = [
   { title: "Cycle Literacy", sessions: 4, desc: "Understand your hormonal blueprint", unlocked: true, phase: "follicular" as const },
@@ -15,11 +14,13 @@ const MODULES = [
 export default function ModulesPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-10 relative">
-      <div className="fixed inset-0 -z-10"><NetworkBackground opacity={0.15} /></div>
+      <div className="absolute top-0 right-0 -translate-y-10 translate-x-10 pointer-events-none">
+        <SeedGeometry size={200} opacity={0.08} />
+      </div>
 
       <div>
-        <p className="ui-label mb-2">learning network</p>
-        <h1 className="font-display text-4xl font-light italic text-foreground">Modules</h1>
+        <p className="font-hand text-sm font-bold text-primary">learning</p>
+        <h1 className="font-display text-4xl font-bold italic text-foreground">Modules</h1>
         <p className="font-body text-sm text-muted-foreground mt-1">Deep-dive learning programmes</p>
       </div>
 
@@ -30,24 +31,24 @@ export default function ModulesPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className={`card-deep p-6 flex flex-col justify-between relative overflow-hidden ${!m.unlocked ? "opacity-50" : ""}`}
+            className={`card-warm p-6 flex flex-col justify-between relative overflow-hidden ${!m.unlocked ? "opacity-50" : ""}`}
           >
-            <div className="absolute top-0 right-0 w-20 h-20 -translate-y-4 translate-x-4 pointer-events-none">
-              <CymaticPattern phase={m.phase} size={80} opacity={0.08} />
+            <div className="absolute top-2 right-2 w-16 h-16 pointer-events-none">
+              <CymatiSketch phase={m.phase} size={64} opacity={0.06} />
             </div>
             <div>
               <div className="flex items-center justify-between mb-3">
-                <BookOpen className="h-5 w-5 text-cyan" />
+                <BookOpen className="h-5 w-5 text-phase-follicular" />
                 {!m.unlocked && <Lock className="h-4 w-4 text-muted-foreground" />}
               </div>
               <h3 className="font-display text-lg italic text-foreground">{m.title}</h3>
-              <p className="font-mono text-[10px] text-cyan mt-1">{m.sessions} sessions</p>
+              <p className="font-hand text-sm text-primary mt-1">{m.sessions} sessions</p>
               <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">{m.desc}</p>
             </div>
             <button
               disabled={!m.unlocked}
-              className={`mt-4 w-full rounded-lg px-4 py-2.5 font-body text-xs font-bold uppercase tracking-widest transition-opacity ${
-                m.unlocked ? "bg-cyan text-primary-foreground hover:opacity-90" : "bg-secondary text-muted-foreground cursor-not-allowed"
+              className={`mt-4 w-full rounded-xl px-4 py-2.5 font-body text-sm font-bold transition-opacity ${
+                m.unlocked ? "bg-primary text-primary-foreground hover:opacity-90" : "bg-secondary text-muted-foreground cursor-not-allowed"
               }`}
             >
               {m.unlocked ? "Enter Module" : "Locked"}

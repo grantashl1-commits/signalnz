@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Cormorant Garamond", "serif"],
-        body: ["Space Grotesk", "sans-serif"],
+        display: ["Playfair Display", "serif"],
+        body: ["Lato", "sans-serif"],
+        hand: ["Caveat", "cursive"],
         mono: ["Space Mono", "monospace"],
       },
       colors: {
@@ -57,16 +58,22 @@ export default {
         "phase-follicular": "hsl(var(--phase-follicular))",
         "phase-ovulatory": "hsl(var(--phase-ovulatory))",
         "phase-luteal": "hsl(var(--phase-luteal))",
-        // Network
-        network: "hsl(var(--network))",
-        cyan: "hsl(var(--cyan-electric))",
+        // Wildflower accents
+        coral: "hsl(var(--coral-flame))",
+        bloom: "hsl(var(--bloom-blush))",
+        "petal-gold": "hsl(var(--petal-gold))",
+        "sage-mist": "hsl(var(--sage-mist))",
+        "lavender-dust": "hsl(var(--lavender-dust))",
+        sketch: "hsl(var(--sketch))",
         // Legacy compat
         sage: "hsl(var(--phase-follicular))",
-        ivory: "hsl(var(--light-bg))",
+        ivory: "hsl(var(--background))",
         forest: "hsl(var(--foreground))",
         burgundy: "hsl(var(--phase-menstrual))",
         gold: "hsl(var(--phase-ovulatory))",
         plum: "hsl(var(--phase-luteal))",
+        cyan: "hsl(var(--coral-flame))",
+        network: "hsl(var(--sketch))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

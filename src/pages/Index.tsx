@@ -3,18 +3,17 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
-import CymaticPattern from "@/components/CymaticPatterns";
-import NetworkBackground from "@/components/NetworkBackground";
+import { SacredSpiral, BotanicalSprig, HandUnderline, SeedGeometry, WildStar, CymatiSketch, RootSystem } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, getWaterCount, setWaterCount, getSeedCyclingDay, getPhaseFromDay, Phase } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 
-const FREQUENCY_STATES = [
-  { label: "Radiant", phase: "ovulatory" as Phase, desc: "Peak signal" },
-  { label: "Clear", phase: "follicular" as Phase, desc: "Rising signal" },
-  { label: "Steady", phase: "follicular" as Phase, desc: "Stable signal" },
-  { label: "Muted", phase: "luteal" as Phase, desc: "Low signal" },
-  { label: "Static", phase: "menstrual" as Phase, desc: "Rest signal" },
+const CHECKIN_STATES = [
+  { label: "Radiant", phase: "ovulatory" as Phase },
+  { label: "Clear", phase: "follicular" as Phase },
+  { label: "Steady", phase: "follicular" as Phase },
+  { label: "Muted", phase: "luteal" as Phase },
+  { label: "Static", phase: "menstrual" as Phase },
 ];
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
@@ -44,11 +43,11 @@ const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: strin
   },
 };
 
-const PHASE_METAPHOR: Record<Phase, string> = {
-  menstrual: "the signal goes quiet. integration.",
-  follicular: "the signal is rising. new transmission.",
-  ovulatory: "peak signal. broadcasting clearly.",
-  luteal: "complex harmonics. descending wave.",
+const PHASE_POETRY: Record<Phase, string> = {
+  menstrual: "rest is its own kind of wisdom.",
+  follicular: "your body is rising into its power phase.",
+  ovulatory: "you are transmitting at full signal.",
+  luteal: "the harvest is rich. honour the complexity.",
 };
 
 export default function HomePage() {
@@ -77,7 +76,6 @@ export default function HomePage() {
     setWaterCount(next);
   };
 
-  // Week snapshot
   const today = new Date();
   const dayOfWeek = today.getDay();
   const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
@@ -89,40 +87,36 @@ export default function HomePage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-10 relative">
-      {/* Network background */}
-      <div className="fixed inset-0 -z-10">
-        <NetworkBackground opacity={0.25} />
+      {/* Background decorations */}
+      <div className="absolute top-0 right-0 -translate-y-8 translate-x-8 pointer-events-none">
+        <SacredSpiral size={180} opacity={0.2} />
+      </div>
+      <div className="absolute bottom-0 left-0 translate-y-20 -translate-x-10 pointer-events-none">
+        <RootSystem size={250} opacity={0.06} />
       </div>
 
       {/* Greeting */}
       <div className="pt-4">
-        <p className="ui-label mb-3">signal received,</p>
-        <h1 className="font-display text-5xl md:text-6xl font-light italic text-foreground leading-none animate-text-glow">
-          {greeting}.
+        <p className="font-hand text-lg text-primary">{greeting},</p>
+        <h1 className="font-display text-5xl md:text-6xl font-bold italic text-foreground leading-none mt-1">
+          you.
         </h1>
-        <div className="flex items-center gap-3 mt-4">
-          <span className="font-mono text-sm text-cyan">
-            day {info.cycleDay} of 28 · {PHASE_METAPHOR[info.phase]}
-          </span>
-        </div>
+        <HandUnderline width={80} className="mt-1" />
+        <p className="font-display text-lg italic text-muted-foreground mt-3">
+          {PHASE_POETRY[info.phase]}
+        </p>
 
-        {/* Thread line */}
-        <svg className="w-full h-4 mt-4 thread-glow" viewBox="0 0 600 16">
-          <path d="M 0 8 Q 100 4 200 8 T 400 8 T 600 8" fill="none" stroke="hsl(160, 100%, 75%)" strokeWidth="0.5" opacity="0.4" />
-          <circle cx="150" cy="7" r="2" fill="hsl(160, 100%, 75%)" opacity="0.6" />
-          <circle cx="350" cy="9" r="2" fill="hsl(160, 100%, 75%)" opacity="0.6" />
-          <circle cx="500" cy="8" r="1.5" fill="hsl(160, 100%, 75%)" opacity="0.4" />
-        </svg>
+        <BotanicalSprig width={280} className="mt-4 mx-auto" />
       </div>
 
-      {/* Frequency Panels — 2x2 */}
+      {/* Today Cards — 2x2 */}
       <section>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { path: "/cycle", label: "CYCLE SIGNAL", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
-            { path: "/nutrition", label: "NUTRITION FEED", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
-            { path: "/movement", label: "MOVEMENT DATA", icon: Dumbbell, title: todayWorkout?.name || "Today's workout", desc: `${todayWorkout?.duration || ""} · ${todayWorkout?.equipment || ""}` },
-            { path: "/breathwork", label: "NERVOUS SYSTEM", icon: Wind, title: "Coherent Breathing", desc: focus.nervous },
+            { path: "/cycle", label: "cycle", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
+            { path: "/nutrition", label: "nutrition", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
+            { path: "/movement", label: "movement", icon: Dumbbell, title: todayWorkout?.name || "Today's workout", desc: `${todayWorkout?.duration || ""} · ${todayWorkout?.equipment || ""}` },
+            { path: "/breathwork", label: "nervous system", icon: Wind, title: "Coherent Breathing", desc: focus.nervous },
           ].map((tile, i) => (
             <motion.div
               key={tile.path}
@@ -131,54 +125,57 @@ export default function HomePage() {
               transition={{ delay: 0.1 + i * 0.08 }}
             >
               <Link to={tile.path} className="frequency-panel block p-4 md:p-5 h-full group relative overflow-hidden" style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}>
-                <div className="absolute top-0 right-0 w-24 h-24 -translate-y-4 translate-x-4 opacity-[0.06]">
-                  <CymaticPattern phase={info.phase} size={96} opacity={1} />
+                <div className="absolute top-0 right-0 w-16 h-16 -translate-y-2 translate-x-2 pointer-events-none opacity-[0.08]">
+                  <CymatiSketch phase={info.phase} size={64} opacity={1} />
                 </div>
-                <p className="ui-label mb-2">{tile.label}</p>
-                <h3 className="font-display text-base md:text-lg italic text-foreground leading-tight">{tile.title}</h3>
+                <p className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>{tile.label}</p>
+                <h3 className="font-display text-base md:text-lg italic text-foreground leading-tight mt-1">{tile.title}</h3>
                 <p className="font-body text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{tile.desc}</p>
-                <div className="absolute bottom-3 right-3 h-2 w-2 rounded-full bg-network/40 animate-node-pulse" />
               </Link>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Frequency Check-in */}
-      <section className="card-deep p-6">
-        <p className="font-display text-xl italic text-foreground mb-5">what frequency are you transmitting today?</p>
+      {/* Daily Check-in */}
+      <section className="card-warm p-6">
+        <p className="font-hand text-lg text-primary mb-4">how are you today?</p>
         <div className="flex flex-wrap gap-3 justify-center">
-          {FREQUENCY_STATES.map((state) => {
+          {CHECKIN_STATES.map((state) => {
             const selected = checkin === state.label;
             return (
               <button
                 key={state.label}
                 onClick={() => handleCheckin(state.label)}
-                className={`flex flex-col items-center gap-1.5 rounded-xl p-3 w-16 transition-all ${
+                className={`flex flex-col items-center gap-1.5 rounded-2xl p-3 w-16 transition-all ${
                   selected
-                    ? "ring-2 ring-cyan scale-110 bg-secondary"
+                    ? "ring-2 ring-primary scale-110 bg-secondary shadow-md"
                     : "bg-secondary/50 hover:bg-secondary/80"
                 }`}
               >
-                <div className="h-12 w-12 rounded-full flex items-center justify-center overflow-hidden">
-                  <CymaticPattern phase={state.phase} size={48} opacity={selected ? 0.8 : 0.3} />
+                <div className="h-14 w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
+                  <SeedGeometry size={48} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
                 </div>
-                <span className="font-body text-[9px] font-bold uppercase tracking-widest text-foreground">{state.label}</span>
+                <span className="font-hand text-xs font-bold text-foreground">{state.label}</span>
               </button>
             );
           })}
         </div>
         {checkin && (
           <div className="flex items-center justify-center gap-3 mt-4">
-            <span className="font-mono text-xs text-cyan">logged: {checkin.toLowerCase()}</span>
-            {streak > 1 && <span className="font-mono text-[10px] text-muted-foreground">{streak}-day streak</span>}
+            <span className="font-hand text-sm text-primary">logged: {checkin.toLowerCase()}</span>
+            {streak > 1 && (
+              <span className="flex items-center gap-1 font-hand text-sm text-muted-foreground">
+                <WildStar size={14} /> {streak}-day streak
+              </span>
+            )}
           </div>
         )}
       </section>
 
       {/* Week Snapshot */}
       <section>
-        <p className="ui-label mb-3">this week</p>
+        <p className="font-hand text-sm font-bold text-primary mb-3">this week</p>
         <div className="flex gap-2 overflow-x-auto pb-2">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
@@ -191,16 +188,16 @@ export default function HomePage() {
             return (
               <div
                 key={i}
-                className={`flex-shrink-0 w-16 rounded-lg p-2.5 text-center transition-all ${
-                  isToday ? "bg-secondary ring-1 ring-cyan/30" : "bg-secondary/30"
+                className={`flex-shrink-0 w-16 rounded-2xl p-2.5 text-center transition-all ${
+                  isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/40"
                 }`}
               >
-                <p className="font-body text-[9px] uppercase tracking-widest text-muted-foreground">
+                <p className="font-body text-[10px] text-muted-foreground">
                   {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i]}
                 </p>
                 <p className="font-mono text-sm text-foreground mt-0.5">{date.getDate()}</p>
-                <div className={`mx-auto mt-1 h-1.5 w-1.5 rounded-full bg-phase-${phase}`} />
-                {checkedIn && <div className="mx-auto mt-0.5 h-1 w-1 rounded-full bg-cyan/60" />}
+                <div className={`mx-auto mt-1 h-2 w-2 rounded-full`} style={{ backgroundColor: `hsl(var(--phase-${phase}))` }} />
+                {checkedIn && <div className="mx-auto mt-0.5 h-1 w-1 rounded-full bg-primary/60" />}
                 <p className="font-mono text-[8px] text-muted-foreground mt-0.5">D{cycleDay}</p>
               </div>
             );
@@ -210,38 +207,38 @@ export default function HomePage() {
 
       {/* Quick Wins */}
       <section>
-        <p className="ui-label mb-3">quick signals</p>
+        <p className="font-hand text-sm font-bold text-primary mb-3">quick actions</p>
         <div className="grid gap-3 md:grid-cols-3">
-          <div className="card-deep p-4">
+          <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Droplets className="h-4 w-4 text-cyan" />
-              <span className="ui-label">hydration</span>
+              <Droplets className="h-4 w-4 text-phase-follicular" />
+              <span className="font-hand text-sm font-bold text-phase-follicular">hydration</span>
             </div>
             <div className="flex gap-1 mb-2">
               {Array.from({ length: 8 }, (_, i) => (
-                <div key={i} className={`h-4 w-4 rounded-full border transition-all ${i < water ? "bg-cyan/60 border-cyan/80" : "border-border"}`} />
+                <div key={i} className={`h-4 w-4 rounded-full border transition-all ${i < water ? "bg-phase-follicular/40 border-phase-follicular/60" : "border-border"}`} />
               ))}
             </div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-muted-foreground">{water}/8</span>
-              <button onClick={addWater} disabled={water >= 8} className="rounded-full bg-cyan/10 px-3 py-1 font-mono text-[10px] text-cyan hover:bg-cyan/20 transition-colors disabled:opacity-30">
+              <button onClick={addWater} disabled={water >= 8} className="rounded-full bg-phase-follicular/10 px-3 py-1 font-mono text-[10px] text-phase-follicular hover:bg-phase-follicular/20 transition-colors disabled:opacity-30">
                 +1
               </button>
             </div>
           </div>
 
-          <div className="card-deep p-4">
+          <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-cyan" />
-              <span className="ui-label">wind-down</span>
+              <Clock className="h-4 w-4 text-lavender-dust" />
+              <span className="font-hand text-sm font-bold text-lavender-dust">wind-down</span>
             </div>
             <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm</p>
           </div>
 
-          <div className="card-deep p-4">
+          <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Sprout className="h-4 w-4 text-cyan" />
-              <span className="ui-label">seed cycling</span>
+              <Sprout className="h-4 w-4 text-sage-mist" />
+              <span className="font-hand text-sm font-bold text-sage-mist">seed cycling</span>
             </div>
             <p className="font-body text-xs text-foreground">{seedInfo.seeds}</p>
             <p className="font-mono text-[9px] text-muted-foreground mt-0.5">{seedInfo.phase} · D{info.cycleDay}</p>
@@ -251,13 +248,13 @@ export default function HomePage() {
 
       {/* Today's Focus */}
       <section>
-        <p className="ui-label mb-3">today's frequency</p>
+        <p className="font-hand text-sm font-bold text-primary mb-3">today's focus</p>
         <div className="space-y-2">
           {[
-            { icon: Salad, label: "NUTRITION", text: focus.nutrition },
-            { icon: Dumbbell, label: "MOVEMENT", text: focus.movement },
-            { icon: Wind, label: "NERVOUS SYSTEM", text: focus.nervous },
-            { icon: Moon, label: "CYCLE", text: focus.cycle },
+            { icon: Salad, label: "nutrition", text: focus.nutrition },
+            { icon: Dumbbell, label: "movement", text: focus.movement },
+            { icon: Wind, label: "nervous system", text: focus.nervous },
+            { icon: Moon, label: "cycle", text: focus.cycle },
           ].map((item, i) => (
             <motion.div
               key={item.label}
@@ -267,11 +264,11 @@ export default function HomePage() {
               className="frequency-panel flex items-start gap-4 p-4"
               style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}
             >
-              <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-cyan/5">
-                <item.icon className="h-4 w-4 text-cyan/70" />
+              <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary">
+                <item.icon className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
-                <span className="ui-label">{item.label}</span>
+                <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>{item.label}</span>
                 <p className="font-body text-sm text-foreground/80 mt-1 leading-relaxed">{item.text}</p>
               </div>
             </motion.div>
