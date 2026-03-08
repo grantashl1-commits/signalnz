@@ -2,7 +2,6 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown } from "lucide-react";
 import { getCycleInfo, getLastPeriodStart, PHASE_SHORT } from "@/lib/cycle-utils";
-import { CymaticMini } from "@/components/CymaticPatterns";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
@@ -28,10 +27,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="font-body text-lg font-bold tracking-wider text-foreground uppercase">
-            MINDCAST
+          <Link to="/" className="font-display text-lg italic font-bold text-foreground">
+            mindcast wellness
           </Link>
 
           {/* Desktop nav */}
@@ -42,9 +41,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
                     active
-                      ? "bg-secondary text-cyan"
+                      ? "bg-secondary text-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                   }`}
                 >
@@ -57,11 +56,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Phase indicator pill */}
           <div className={`hidden md:flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
-            <CymaticMini phase={info.phase} size={16} />
-            <span className="font-body text-[10px] font-bold uppercase tracking-widest text-foreground">
-              {PHASE_SHORT[info.phase]}
+            <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
+              day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
             </span>
-            <span className="font-mono text-[10px] text-cyan">D{info.cycleDay}</span>
           </div>
         </div>
       </header>
@@ -77,7 +74,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </motion.main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-md md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-sm md:hidden">
         <div className="flex items-center justify-around px-1 py-1.5">
           {navItems.slice(0, 6).map((item) => {
             const active = location.pathname === item.path;
@@ -86,11 +83,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 key={item.path}
                 to={item.path}
                 className={`flex flex-col items-center gap-0.5 rounded-lg px-2 py-1 transition-all ${
-                  active ? "text-cyan" : "text-muted-foreground"
+                  active ? "text-primary" : "text-muted-foreground"
                 }`}
               >
                 <item.icon className="h-4 w-4" />
-                <span className="text-[9px] font-medium tracking-wider">{item.label}</span>
+                <span className="text-[9px] font-body font-medium">{item.label}</span>
               </Link>
             );
           })}
