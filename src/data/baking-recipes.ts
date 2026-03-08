@@ -488,4 +488,26 @@ export const BAKING_RECIPES: Recipe[] = [
     phaseBenefit: "Walnuts provide omega-3 for inflammation relief. Warming banana cake is comforting during menstruation.",
     category: "baking",
   },
+  {
+    id: "chocolate-fudge-vegan",
+    name: "Chocolate Fudge",
+    phase: "luteal",
+    serves: 8,
+    prepTime: "70 min",
+    keyNutrients: ["Protein", "Magnesium", "Healthy fats"],
+    ingredients: [
+      "2 bananas, mashed",
+      "100g peanut butter",
+      "60g cocoa powder",
+      "60g vegan protein powder",
+      "50ml soy milk",
+    ],
+    method: [
+      "Blitz all ingredients in a high speed blender until smooth.",
+      "Press into a small baking tin and freeze for at least 1 hour.",
+      "Remove and cut into 8 pieces. Store in fridge or freezer.",
+    ],
+    phaseBenefit: "Cocoa provides magnesium for PMS relief. Protein powder and peanut butter sustain energy during the luteal phase.",
+    category: "baking",
+  },
 ];
