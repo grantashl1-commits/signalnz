@@ -65,7 +65,7 @@ export function parseIngredient(raw: string): ParsedIngredient {
 }
 
 export function getWoolworthsSearchUrl(ingredient: ParsedIngredient): string {
-  return `https://www.woolworths.co.nz/shop/search?search=${encodeURIComponent(ingredient.searchTerm)}`;
+  return `https://www.woolworths.co.nz/shop/searchproducts?search=${encodeURIComponent(ingredient.searchTerm)}`;
 }
 
 export interface ShoppingItem extends ParsedIngredient {
