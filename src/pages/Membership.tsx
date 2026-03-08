@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, Crown } from "lucide-react";
-import NetworkBackground from "@/components/NetworkBackground";
-import CymaticPattern from "@/components/CymaticPatterns";
+import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 
 const TIERS = [
   {
@@ -30,13 +29,17 @@ const TIERS = [
 export default function MembershipPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-10 relative">
-      <div className="fixed inset-0 -z-10"><NetworkBackground opacity={0.15} /></div>
+      <div className="absolute top-0 right-0 -translate-y-10 translate-x-10 pointer-events-none">
+        <SeedGeometry size={180} opacity={0.08} />
+      </div>
 
       <div className="text-center">
-        <p className="ui-label mb-3">join the network</p>
-        <h1 className="font-display text-4xl md:text-5xl font-light italic text-foreground">Membership</h1>
-        <p className="font-body text-sm text-muted-foreground mt-2 max-w-md mx-auto">Choose the level of support for your signal</p>
+        <p className="font-hand text-lg text-primary mb-2">join the journey</p>
+        <h1 className="font-display text-4xl md:text-5xl font-bold italic text-foreground">Membership</h1>
+        <p className="font-body text-sm text-muted-foreground mt-2 max-w-md mx-auto">Choose the level of support that feels right</p>
       </div>
+
+      <BotanicalSprig width={200} className="mx-auto" />
 
       <div className="grid gap-6 md:grid-cols-3">
         {TIERS.map((tier, i) => (
@@ -45,19 +48,19 @@ export default function MembershipPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`card-deep p-6 flex flex-col relative overflow-hidden ${tier.popular ? "ring-1 ring-cyan" : ""}`}
+            className={`card-warm p-6 flex flex-col relative overflow-hidden ${tier.popular ? "ring-1 ring-primary" : ""}`}
           >
             {tier.popular && (
-              <span className="absolute -top-0 left-0 right-0 h-[2px] bg-cyan" />
+              <span className="absolute -top-0 left-0 right-0 h-[2px] bg-primary" />
             )}
             {tier.popular && (
-              <span className="absolute top-3 right-3 rounded-full bg-cyan px-3 py-1 font-body text-[9px] font-bold uppercase tracking-widest text-primary-foreground">
+              <span className="absolute top-3 right-3 rounded-full bg-primary px-3 py-1 font-hand text-[11px] font-bold text-primary-foreground">
                 Popular
               </span>
             )}
 
-            <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none opacity-[0.05]">
-              <CymaticPattern phase={i === 0 ? "menstrual" : i === 1 ? "follicular" : "ovulatory"} size={96} opacity={1} />
+            <div className="absolute top-0 right-0 w-20 h-20 pointer-events-none opacity-[0.05]">
+              <CymatiSketch phase={i === 0 ? "menstrual" : i === 1 ? "follicular" : "ovulatory"} size={80} opacity={1} />
             </div>
 
             <div className="mb-6">
@@ -74,20 +77,20 @@ export default function MembershipPage() {
             <ul className="space-y-3 flex-1">
               {tier.features.map((f) => (
                 <li key={f} className="flex items-start gap-2 font-body text-sm text-foreground/80">
-                  <Check className="h-4 w-4 text-cyan mt-0.5 flex-shrink-0" />
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>{f}</span>
                 </li>
               ))}
             </ul>
 
             <button
-              className={`mt-6 w-full rounded-lg px-4 py-3 font-body text-xs font-bold uppercase tracking-widest transition-opacity ${
+              className={`mt-6 w-full rounded-xl px-4 py-3 font-body text-sm font-bold transition-opacity ${
                 tier.popular
-                  ? "bg-cyan text-primary-foreground hover:opacity-90"
+                  ? "bg-primary text-primary-foreground hover:opacity-90"
                   : "bg-secondary text-foreground hover:bg-secondary/80"
               }`}
             >
-              {tier.price === "$0" ? "Enter the Network" : "Subscribe"}
+              {tier.price === "$0" ? "Get Started" : "Subscribe"}
             </button>
           </motion.div>
         ))}
