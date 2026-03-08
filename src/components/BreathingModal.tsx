@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import CymaticPattern from "@/components/CymaticPatterns";
+import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 
 interface BreathingTechnique {
   name: string;
@@ -49,6 +51,7 @@ interface Props {
 
 export default function BreathingModal({ techniqueId, onClose }: Props) {
   const technique = TECHNIQUES[techniqueId];
+  const info = getCycleInfo(getLastPeriodStart());
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [timer, setTimer] = useState(0);
   const [cycles, setCycles] = useState(0);
@@ -74,7 +77,7 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
     return () => clearInterval(interval);
   }, [phaseIndex, currentPhase.duration, technique.phases.length]);
 
-  const scale = isInhale ? 1.4 : isExhale ? 0.7 : 1;
+  const scale = isInhale ? 1.0 : isExhale ? 0.6 : (isInhale ? 1.0 : 0.8);
 
   return (
     <AnimatePresence>
@@ -82,29 +85,34 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-foreground/95"
+        className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
+        style={{ backgroundColor: "#080E14" }}
       >
-        <button onClick={onClose} className="absolute right-6 top-6 text-primary-foreground/60 hover:text-primary-foreground transition-colors">
+        <button onClick={onClose} className="absolute right-6 top-6 text-foreground/40 hover:text-foreground transition-colors z-10">
           <X className="h-8 w-8" />
         </button>
 
-        <h2 className="font-display text-3xl font-semibold text-primary-foreground mb-2">{technique.name}</h2>
-        <p className="text-primary-foreground/50 text-sm mb-12">Cycle {cycles + 1}</p>
+        <h2 className="font-display text-3xl font-light italic text-foreground mb-1">{technique.name}</h2>
+        <p className="font-mono text-xs text-muted-foreground mb-12">cycle {cycles + 1}</p>
 
+        {/* Cymatic breathing pattern */}
         <motion.div
           animate={{ scale }}
           transition={{ duration: currentPhase.duration, ease: "easeInOut" }}
-          className="flex h-48 w-48 items-center justify-center rounded-full border-2 border-accent/40"
-          style={{ background: `radial-gradient(circle, hsl(149 19% 55% / 0.3), transparent)` }}
+          className="relative flex items-center justify-center"
+          style={{ width: 240, height: 240 }}
         >
-          <span className="text-primary-foreground/80 text-lg font-medium">
+          <div className="cymatic-rotate-fast">
+            <CymaticPattern phase={info.phase} size={240} opacity={isInhale ? 0.6 : isExhale ? 0.2 : 0.4} active />
+          </div>
+          <span className="absolute font-mono text-3xl text-foreground">
             {currentPhase.duration - timer}
           </span>
         </motion.div>
 
-        <p className="mt-10 font-display text-2xl text-primary-foreground">{currentPhase.label}</p>
-        <p className="mt-2 text-primary-foreground/40 text-sm">
-          {timer + 1} of {currentPhase.duration} seconds
+        <p className="mt-10 font-display text-2xl italic text-foreground">{currentPhase.label}</p>
+        <p className="mt-2 font-mono text-xs text-muted-foreground">
+          {timer + 1} of {currentPhase.duration}s
         </p>
       </motion.div>
     </AnimatePresence>

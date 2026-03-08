@@ -10,23 +10,15 @@ interface Props {
 const PROMPTS: Record<string, { title: string; prompts: string[] }> = {
   expressive: {
     title: "Expressive Writing",
-    prompts: [
-      "Write about something emotionally difficult for 15 minutes. No editing, no stopping, no judgement. This is private.",
-    ],
+    prompts: ["Write about something emotionally difficult for 15 minutes. No editing, no stopping, no judgement. This is private."],
   },
   gratitude: {
     title: "Gratitude Journal",
-    prompts: [
-      "What went well today?",
-      "Who helped you, even in a small way?",
-      "What are you looking forward to?",
-    ],
+    prompts: ["What went well today?", "Who helped you, even in a small way?", "What are you looking forward to?"],
   },
   "future-self": {
     title: "Future Self",
-    prompts: [
-      "Write a letter from your future self, 5 years from now, to who you are today. What does she want you to know?",
-    ],
+    prompts: ["Write a letter from your future self, 5 years from now, to who you are today. What does she want you to know?"],
   },
 };
 
@@ -54,17 +46,18 @@ export default function JournalEditor({ type, onClose }: Props) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col bg-foreground"
+      className="fixed inset-0 z-[100] flex flex-col"
+      style={{ backgroundColor: "#080E14" }}
     >
       <div className="flex items-center justify-between px-6 py-4">
-        <h2 className="font-display text-xl text-primary-foreground">{config.title}</h2>
-        <button onClick={onClose} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
+        <h2 className="font-display text-xl italic text-foreground">{config.title}</h2>
+        <button onClick={onClose} className="text-foreground/40 hover:text-foreground transition-colors">
           <X className="h-6 w-6" />
         </button>
       </div>
 
       <div className="flex-1 flex flex-col px-6 pb-6">
-        <p className="text-primary-foreground/60 text-sm mb-4 italic font-display text-lg">
+        <p className="font-display text-lg italic text-foreground/50 mb-4">
           "{config.prompts[promptIdx]}"
         </p>
 
@@ -75,25 +68,22 @@ export default function JournalEditor({ type, onClose }: Props) {
             next[promptIdx] = e.target.value;
             setTexts(next);
           }}
-          className="flex-1 w-full resize-none bg-transparent text-primary-foreground/90 text-lg leading-relaxed placeholder:text-primary-foreground/20 focus:outline-none font-body"
-          placeholder="Start writing..."
+          className="flex-1 w-full resize-none bg-transparent font-mono text-base text-foreground/80 leading-relaxed placeholder:text-foreground/15 focus:outline-none"
+          placeholder="start typing..."
           autoFocus
+          style={{ caretColor: "#00F5D4" }}
         />
 
         <div className="flex items-center justify-between mt-4">
-          <span className="text-primary-foreground/30 text-sm">{wordCount} words</span>
+          <span className="font-mono text-xs text-foreground/25">{wordCount} words</span>
           <div className="flex gap-3">
             {config.prompts.length > 1 && promptIdx < config.prompts.length - 1 && (
-              <button
-                onClick={handleNext}
-                className="rounded-lg bg-accent/20 px-5 py-2 text-sm text-primary-foreground hover:bg-accent/30 transition-colors"
-              >
+              <button onClick={handleNext} className="rounded-lg bg-secondary px-5 py-2 font-body text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors">
                 Next prompt
               </button>
             )}
-            <button
-              onClick={handleSave}
-              className="rounded-lg bg-accent px-5 py-2 text-sm text-accent-foreground hover:opacity-90 transition-opacity flex items-center gap-2"
+            <button onClick={handleSave}
+              className="rounded-lg bg-cyan px-5 py-2 font-body text-xs font-bold uppercase tracking-widest text-primary-foreground hover:opacity-90 transition-opacity flex items-center gap-2"
             >
               {saved ? <Check className="h-4 w-4" /> : null}
               {saved ? "Saved" : "Done"}
