@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, CakeSlice } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, BotanicalSprig, HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getWaterCount, setWaterCount, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS, PHASE_MEAL_PLANS, RECIPES, NUTRIENT_FOCUS } from "@/data/meal-plans";
 import { PDF_RECIPES } from "@/data/pdf-recipes";
-
-const ALL_RECIPES = [...RECIPES, ...PDF_RECIPES];
+import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { haptic } from "@/hooks/use-mobile";
 import { RecipeShoppingButton, IngredientSearchLinks, ShoppingListPanel } from "@/components/ShoppingList";
+
+const ALL_RECIPES = [...RECIPES, ...PDF_RECIPES];
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -23,13 +24,16 @@ const cardVariant = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.35, ease: "easeOut" as const } }),
 };
 
+type TabId = "today" | "plans" | "recipes" | "baking";
+
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
-  const [activeTab, setActiveTab] = useState<"today" | "plans" | "recipes">("today");
+  const [activeTab, setActiveTab] = useState<TabId>("today");
   const [expandedPlan, setExpandedPlan] = useState<Phase | null>(null);
   const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
   const [water, setWaterState] = useState(getWaterCount());
   const [recipePhaseFilter, setRecipePhaseFilter] = useState<Phase | "all">("all");
+  const [bakingPhaseFilter, setBakingPhaseFilter] = useState<Phase | "all">("all");
 
   const todayMeals = TODAY_MEALS[info.phase];
   const nutrients = NUTRIENT_FOCUS[info.phase];
@@ -37,12 +41,73 @@ export default function NutritionPage() {
   const addWater = () => { haptic("light"); const n = Math.min(water + 1, 8); setWaterState(n); setWaterCount(n); };
 
   const filteredRecipes = recipePhaseFilter === "all" ? ALL_RECIPES : ALL_RECIPES.filter((r) => r.phase === recipePhaseFilter);
+  const filteredBaking = bakingPhaseFilter === "all" ? BAKING_RECIPES : BAKING_RECIPES.filter((r) => r.phase === bakingPhaseFilter);
 
-  const TABS = [
-    { id: "today" as const, label: "Today" },
-    { id: "plans" as const, label: "Plans" },
-    { id: "recipes" as const, label: "Recipes" },
+  const TABS: { id: TabId; label: string }[] = [
+    { id: "today", label: "Today" },
+    { id: "plans", label: "Plans" },
+    { id: "recipes", label: "Recipes" },
+    { id: "baking", label: "Baking" },
   ];
+
+  /* Shared recipe card renderer */
+  const renderRecipeCard = (recipe: typeof ALL_RECIPES[number], i: number) => {
+    const expanded = expandedRecipe === recipe.id;
+    return (
+      <motion.div key={recipe.id} custom={i} initial="hidden" animate="visible" variants={cardVariant}
+        className="card-warm overflow-hidden"
+      >
+        <div className="h-20 md:h-24 bg-secondary/30 relative flex items-center justify-center overflow-hidden">
+          <CymatiSketch phase={recipe.phase} size={80} opacity={0.15} />
+          <p className="absolute font-hand text-sm text-muted-foreground italic px-2 text-center">{recipe.name}</p>
+        </div>
+
+        <div className="p-4 cursor-pointer touch-card" onClick={() => { haptic("light"); setExpandedRecipe(expanded ? null : recipe.id); }}>
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className={`rounded-full px-2 py-0.5 font-hand text-[11px] font-bold phase-${recipe.phase}-light`}>{PHASE_SHORT[recipe.phase]}</span>
+            <span className="font-mono text-[9px] text-muted-foreground">{recipe.prepTime}</span>
+            {recipe.category === "baking" && (
+              <span className="rounded-full px-2 py-0.5 font-hand text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 flex items-center gap-1">
+                <CakeSlice className="h-3 w-3" /> Baking
+              </span>
+            )}
+          </div>
+          <h3 className="font-display text-base italic text-foreground">{recipe.name}</h3>
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            {recipe.keyNutrients.map((n) => <span key={n} className="font-mono text-[8px] bg-secondary rounded-full px-2 py-0.5 text-muted-foreground">{n}</span>)}
+          </div>
+        </div>
+
+        {expanded && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-4 border-t border-border pt-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="font-hand text-sm font-bold text-primary">Ingredients</p>
+              <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
+            </div>
+            <IngredientSearchLinks ingredients={recipe.ingredients} />
+            <BotanicalSprig width={100} opacity={0.15} />
+            <div>
+              <p className="font-hand text-sm font-bold text-primary mb-1">Method</p>
+              <ol className="space-y-0.5">
+                {recipe.method.map((step, j) => <li key={j} className="font-body text-xs text-muted-foreground">{j + 1}. {step}</li>)}
+              </ol>
+            </div>
+            <p className="font-display text-xs italic" style={{ color: PHASE_HEX[recipe.phase] }}>{recipe.phaseBenefit}</p>
+          </motion.div>
+        )}
+      </motion.div>
+    );
+  };
+
+  /* Phase filter buttons */
+  const renderPhaseFilter = (current: Phase | "all", setter: (v: Phase | "all") => void) => (
+    <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 sm:flex-wrap">
+      <button onClick={() => setter("all")} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${current === "all" ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}>All</button>
+      {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map((phase) => (
+        <button key={phase} onClick={() => setter(phase)} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${current === phase ? `phase-${phase}` : `phase-${phase}-light`}`}>{PHASE_SHORT[phase]}</button>
+      ))}
+    </div>
+  );
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative">
@@ -166,60 +231,25 @@ export default function NutritionPage() {
 
       {activeTab === "recipes" && (
         <div className="space-y-4 md:space-y-6">
-          {/* Shopping List */}
           <ShoppingListPanel />
-
-          {/* Horizontal scroll filter on mobile */}
-          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 sm:flex-wrap">
-            <button onClick={() => setRecipePhaseFilter("all")} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${recipePhaseFilter === "all" ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}>All</button>
-            {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map((phase) => (
-              <button key={phase} onClick={() => setRecipePhaseFilter(phase)} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${recipePhaseFilter === phase ? `phase-${phase}` : `phase-${phase}-light`}`}>{PHASE_SHORT[phase]}</button>
-            ))}
-          </div>
-
+          {renderPhaseFilter(recipePhaseFilter, setRecipePhaseFilter)}
           <div className="grid gap-3 sm:grid-cols-2">
-            {filteredRecipes.map((recipe, i) => {
-              const expanded = expandedRecipe === recipe.id;
-              return (
-                <motion.div key={recipe.id} custom={i} initial="hidden" animate="visible" variants={cardVariant}
-                  className="card-warm overflow-hidden"
-                >
-                  <div className="h-20 md:h-24 bg-secondary/30 relative flex items-center justify-center overflow-hidden">
-                    <CymatiSketch phase={recipe.phase} size={80} opacity={0.15} />
-                    <p className="absolute font-hand text-sm text-muted-foreground italic px-2 text-center">{recipe.name}</p>
-                  </div>
+            {filteredRecipes.map((recipe, i) => renderRecipeCard(recipe, i))}
+          </div>
+        </div>
+      )}
 
-                  <div className="p-4 cursor-pointer touch-card" onClick={() => { haptic("light"); setExpandedRecipe(expanded ? null : recipe.id); }}>
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className={`rounded-full px-2 py-0.5 font-hand text-[11px] font-bold phase-${recipe.phase}-light`}>{PHASE_SHORT[recipe.phase]}</span>
-                      <span className="font-mono text-[9px] text-muted-foreground">{recipe.prepTime}</span>
-                    </div>
-                    <h3 className="font-display text-base italic text-foreground">{recipe.name}</h3>
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {recipe.keyNutrients.map((n) => <span key={n} className="font-mono text-[8px] bg-secondary rounded-full px-2 py-0.5 text-muted-foreground">{n}</span>)}
-                    </div>
-                  </div>
-
-                  {expanded && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-4 border-t border-border pt-3 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <p className="font-hand text-sm font-bold text-primary">Ingredients</p>
-                        <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
-                      </div>
-                      <IngredientSearchLinks ingredients={recipe.ingredients} />
-                      <BotanicalSprig width={100} opacity={0.15} />
-                      <div>
-                        <p className="font-hand text-sm font-bold text-primary mb-1">Method</p>
-                        <ol className="space-y-0.5">
-                          {recipe.method.map((step, j) => <li key={j} className="font-body text-xs text-muted-foreground">{j + 1}. {step}</li>)}
-                        </ol>
-                      </div>
-                      <p className="font-display text-xs italic" style={{ color: PHASE_HEX[recipe.phase] }}>{recipe.phaseBenefit}</p>
-                    </motion.div>
-                  )}
-                </motion.div>
-              );
-            })}
+      {activeTab === "baking" && (
+        <div className="space-y-4 md:space-y-6">
+          <ShoppingListPanel />
+          <div className="flex items-center gap-2">
+            <CakeSlice className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <p className="font-display text-lg md:text-xl italic text-foreground">Healthy Baking</p>
+          </div>
+          <p className="font-body text-xs text-muted-foreground -mt-2">Phase-synced treats — nourishing sweets that support your cycle</p>
+          {renderPhaseFilter(bakingPhaseFilter, setBakingPhaseFilter)}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {filteredBaking.map((recipe, i) => renderRecipeCard(recipe, i))}
           </div>
         </div>
       )}
