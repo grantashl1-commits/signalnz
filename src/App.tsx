@@ -8,7 +8,8 @@ import Index from "./pages/Index";
 import Cycle from "./pages/Cycle";
 import Nutrition from "./pages/Nutrition";
 import Movement from "./pages/Movement";
-import NervousSystem from "./pages/NervousSystem";
+import Breathwork from "./pages/Breathwork";
+import Journal from "./pages/Journal";
 import Modules from "./pages/Modules";
 import Membership from "./pages/Membership";
 import NotFound from "./pages/NotFound";
@@ -27,7 +28,9 @@ const App = () => (
             <Route path="/cycle" element={<Cycle />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/movement" element={<Movement />} />
-            <Route path="/nervous-system" element={<NervousSystem />} />
+            <Route path="/breathwork" element={<Breathwork />} />
+            <Route path="/nervous-system" element={<Breathwork />} />
+            <Route path="/journal" element={<Journal />} />
             <Route path="/modules" element={<Modules />} />
             <Route path="/membership" element={<Membership />} />
             <Route path="*" element={<NotFound />} />
