@@ -51,8 +51,6 @@
     /* Hand-drawn element colour */
     --sketch: 25 25% 45%;
 
-    /* Cymatic sketch colour uses phase colour at low opacity */
-
     --sidebar-background: 36 47% 96%;
     --sidebar-foreground: 18 42% 13%;
     --sidebar-primary: 14 100% 64%;
@@ -73,12 +71,29 @@
   * {
     @apply border-border;
   }
+  html {
+    /* Prevent iOS bounce on fixed layout */
+    overscroll-behavior: none;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+  }
+
+  /* Prevent iOS input zoom */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Touch action for all interactive elements */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -102,10 +117,18 @@
 
   .card-warm-hover {
     @apply card-warm transition-all duration-300;
+    /* Shadows always visible on mobile, not hover-revealed */
+    box-shadow: 0 6px 24px rgba(139, 111, 94, 0.1);
   }
-  .card-warm-hover:hover {
-    box-shadow: 0 8px 30px rgba(139, 111, 94, 0.14);
-    transform: translateY(-1px);
+  @media (hover: hover) {
+    .card-warm-hover:hover {
+      box-shadow: 0 8px 30px rgba(139, 111, 94, 0.14);
+      transform: translateY(-1px);
+    }
+  }
+  .card-warm-hover:active {
+    transform: scale(0.98);
+    transition: transform 150ms ease;
   }
 
   /* Keep backward compat */
@@ -140,6 +163,57 @@
   .phase-bg-follicular { background-color: hsl(var(--phase-follicular) / 0.06); }
   .phase-bg-ovulatory { background-color: hsl(var(--phase-ovulatory) / 0.06); }
   .phase-bg-luteal { background-color: hsl(var(--phase-luteal) / 0.06); }
+
+  /* Touch feedback */
+  .touch-btn {
+    @apply transition-transform duration-150;
+  }
+  .touch-btn:active {
+    transform: scale(0.95);
+  }
+  .touch-card {
+    @apply transition-transform duration-150;
+  }
+  .touch-card:active {
+    transform: scale(0.98);
+  }
+  .touch-tab {
+    @apply transition-transform duration-150;
+  }
+  .touch-tab:active {
+    transform: scale(0.90);
+  }
+
+  /* Mobile bottom sheet */
+  .bottom-sheet {
+    @apply fixed bottom-0 left-0 right-0 z-[60] bg-card rounded-t-[20px] border-t border-border;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottom-sheet-handle {
+    @apply w-10 h-1 rounded-full bg-border mx-auto mt-3 mb-2;
+  }
+
+  /* Horizontal scroll snap */
+  .scroll-snap-x {
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .scroll-snap-x::-webkit-scrollbar { display: none; }
+  .scroll-snap-item {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Momentum scrolling */
+  .scroll-y {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Animations */
@@ -173,10 +247,12 @@
 
 .sketch-rotate {
   animation: gentle-rotate 120s linear infinite;
+  will-change: transform;
 }
 
 .sketch-rotate-fast {
   animation: gentle-rotate 60s linear infinite;
+  will-change: transform;
 }
 
 /* Scrollbar styling */
@@ -192,4 +268,12 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
+}
+
+/* Safe area utilities */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
 }

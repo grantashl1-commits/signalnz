@@ -4,6 +4,7 @@ import { Loader2, Wind, Hand } from "lucide-react";
 import BreathingModal from "@/components/BreathingModal";
 import { SeedGeometry, BotanicalSprig, CymatiSketch, HerbCluster } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { haptic } from "@/hooks/use-mobile";
 
 const BREATHWORK = [
   { id: "box", name: "Box Breathing", pattern: "4-4-4-4", evidence: "STRONG", useCase: "Acute stress and focus" },
@@ -31,6 +32,14 @@ const EFT_POINTS = [
   { point: "Under Arm", instruction: "4 inches below armpit" },
 ];
 
+const cardVariant = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: 0.08 * i, duration: 0.35, ease: "easeOut" as const },
+  }),
+};
+
 export default function BreathworkPage() {
   const info = getCycleInfo(getLastPeriodStart());
   const [breathingId, setBreathingId] = useState<string | null>(null);
@@ -43,6 +52,7 @@ export default function BreathworkPage() {
   const [aiLoading, setAiLoading] = useState(false);
 
   const startHumming = () => {
+    haptic("medium");
     setHummingActive(true);
     setHummingTimer(120);
     const interval = setInterval(() => {
@@ -64,33 +74,33 @@ export default function BreathworkPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-12 relative">
-      {/* Background seed geometry */}
-      <div className="absolute top-0 right-0 -translate-y-10 translate-x-10 pointer-events-none">
-        <SeedGeometry size={250} opacity={0.08} />
+    <div className="max-w-3xl mx-auto space-y-8 md:space-y-12 relative">
+      <div className="absolute top-0 right-0 -translate-y-6 md:-translate-y-10 translate-x-6 md:translate-x-10 pointer-events-none">
+        <SeedGeometry size={160} opacity={0.06} className="md:hidden" />
+        <SeedGeometry size={250} opacity={0.08} className="hidden md:block" />
       </div>
 
       <div>
         <p className="font-hand text-sm font-bold text-primary">breathwork & regulation</p>
-        <h1 className="font-display text-4xl font-bold italic text-foreground">Breathwork & Regulation</h1>
+        <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Breathwork & Regulation</h1>
       </div>
 
       {/* Breathwork */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-3">
+      <section className="space-y-3 md:space-y-4">
+        <h2 className="font-display text-xl md:text-2xl italic text-foreground flex items-center gap-3">
           <Wind className="h-5 w-5 text-phase-follicular" /> Breathwork
         </h2>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           {BREATHWORK.map((b, i) => (
-            <motion.div key={b.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
+            <motion.div key={b.id} custom={i} initial="hidden" animate="visible" variants={cardVariant}
               className="card-warm p-5 flex flex-col justify-between relative overflow-hidden"
             >
               <div className="absolute top-2 right-2 pointer-events-none">
                 <CymatiSketch phase={info.phase} size={48} opacity={0.06} />
               </div>
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-display text-lg italic text-foreground">{b.name}</h3>
+                <div className="flex items-start gap-2 mb-2 flex-wrap">
+                  <h3 className="font-display text-base md:text-lg italic text-foreground">{b.name}</h3>
                   <span className={`rounded-full px-2 py-0.5 font-hand text-[11px] font-bold ${
                     b.evidence === "STRONG" ? "bg-phase-follicular/15 text-phase-follicular" : "bg-phase-ovulatory/15 text-phase-ovulatory"
                   }`}>{b.evidence.toLowerCase()} evidence</span>
@@ -98,8 +108,8 @@ export default function BreathworkPage() {
                 <p className="font-mono text-[10px] text-muted-foreground mb-1">{b.pattern}</p>
                 <p className="font-body text-sm text-muted-foreground">{b.useCase}</p>
               </div>
-              <button onClick={() => setBreathingId(b.id)}
-                className="mt-4 w-full rounded-xl bg-primary px-4 py-2.5 font-hand text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity"
+              <button onClick={() => { haptic("medium"); setBreathingId(b.id); }}
+                className="touch-btn mt-4 w-full rounded-xl bg-primary px-4 py-3 min-h-[52px] font-hand text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity"
               >begin this practice →</button>
             </motion.div>
           ))}
@@ -107,14 +117,14 @@ export default function BreathworkPage() {
       </section>
 
       {/* Somatic */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-3">
+      <section className="space-y-3 md:space-y-4">
+        <h2 className="font-display text-xl md:text-2xl italic text-foreground flex items-center gap-3">
           <Hand className="h-5 w-5 text-lavender-dust" /> Somatic Tools
         </h2>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           {SOMATIC.map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="card-warm p-5">
-              <h3 className="font-display text-lg italic text-foreground mb-2">{s.title}</h3>
+            <motion.div key={s.title} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm p-5">
+              <h3 className="font-display text-base md:text-lg italic text-foreground mb-2">{s.title}</h3>
               <p className="font-body text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
 
               {s.title === "Humming" && (
@@ -125,7 +135,7 @@ export default function BreathworkPage() {
                       <p className="font-hand text-sm text-muted-foreground mt-1">keep humming...</p>
                     </div>
                   ) : (
-                    <button onClick={startHumming} className="rounded-xl bg-secondary px-4 py-2 font-body text-sm font-medium text-foreground hover:bg-secondary/80 transition-colors">Start 2-min Timer</button>
+                    <button onClick={startHumming} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[52px] font-body text-sm font-medium text-foreground active:bg-secondary/80 transition-colors">Start 2-min Timer</button>
                   )}
                 </div>
               )}
@@ -136,10 +146,10 @@ export default function BreathworkPage() {
                     <>
                       <p className="font-body text-sm text-foreground">{GROUNDING_STEPS[groundingStep]}</p>
                       <div className="flex gap-1">{GROUNDING_STEPS.map((_, idx) => <div key={idx} className={`h-1.5 flex-1 rounded-full ${idx <= groundingStep ? "bg-primary" : "bg-secondary"}`} />)}</div>
-                      <button onClick={() => setGroundingStep(p => p < 4 ? p + 1 : -1)} className="rounded-xl bg-secondary px-4 py-2 font-body text-sm text-foreground hover:bg-secondary/80">{groundingStep < 4 ? "Next" : "Done"}</button>
+                      <button onClick={() => { haptic("light"); setGroundingStep(p => p < 4 ? p + 1 : -1); }} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[52px] font-body text-sm text-foreground active:bg-secondary/80">{groundingStep < 4 ? "Next" : "Done"}</button>
                     </>
                   ) : (
-                    <button onClick={() => setGroundingStep(0)} className="rounded-xl bg-secondary px-4 py-2 font-body text-sm text-foreground hover:bg-secondary/80">Begin Sequence</button>
+                    <button onClick={() => { haptic("light"); setGroundingStep(0); }} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[52px] font-body text-sm text-foreground active:bg-secondary/80">Begin Sequence</button>
                   )}
                 </div>
               )}
@@ -153,10 +163,10 @@ export default function BreathworkPage() {
                         <p className="font-body text-xs text-muted-foreground mt-1">{EFT_POINTS[eftStep].instruction}</p>
                       </div>
                       <div className="flex gap-0.5">{EFT_POINTS.map((_, idx) => <div key={idx} className={`h-1.5 flex-1 rounded-full ${idx <= eftStep ? "bg-primary" : "bg-secondary"}`} />)}</div>
-                      <button onClick={() => setEftStep(p => p < 7 ? p + 1 : -1)} className="rounded-xl bg-secondary px-4 py-2 font-body text-sm text-foreground hover:bg-secondary/80">{eftStep < 7 ? "Next Point" : "Done"}</button>
+                      <button onClick={() => { haptic("light"); setEftStep(p => p < 7 ? p + 1 : -1); }} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[52px] font-body text-sm text-foreground active:bg-secondary/80">{eftStep < 7 ? "Next Point" : "Done"}</button>
                     </>
                   ) : (
-                    <button onClick={() => setEftStep(0)} className="rounded-xl bg-secondary px-4 py-2 font-body text-sm text-foreground hover:bg-secondary/80">Begin Tapping</button>
+                    <button onClick={() => { haptic("light"); setEftStep(0); }} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[52px] font-body text-sm text-foreground active:bg-secondary/80">Begin Tapping</button>
                   )}
                 </div>
               )}
@@ -165,23 +175,25 @@ export default function BreathworkPage() {
         </div>
       </section>
 
-      <BotanicalSprig width={240} className="mx-auto" />
+      <BotanicalSprig width={180} className="mx-auto md:hidden" />
+      <BotanicalSprig width={240} className="mx-auto hidden md:block" />
 
       {/* AI */}
-      <section className="card-warm p-6 space-y-4">
-        <h2 className="font-display text-xl italic text-foreground">how are you feeling right now?</h2>
+      <section className="card-warm p-5 md:p-6 space-y-4">
+        <h2 className="font-display text-lg md:text-xl italic text-foreground">how are you feeling right now?</h2>
         <textarea value={aiInput} onChange={(e) => setAiInput(e.target.value)} placeholder="describe how you're feeling..."
-          className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-24"
+          className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-24 min-h-[80px]"
+          style={{ fontSize: "16px" }}
         />
         <button onClick={handleAiCheckin} disabled={aiLoading || !aiInput.trim()}
-          className="rounded-xl bg-primary px-6 py-3 font-body text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-40"
+          className="touch-btn w-full sm:w-auto rounded-xl bg-primary px-6 py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground active:opacity-90 disabled:opacity-40"
         >Get a Recommendation</button>
 
         {aiLoading && <div className="flex items-center gap-3"><Loader2 className="h-5 w-5 animate-spin text-primary" /><span className="font-hand text-sm text-muted-foreground animate-pulse-gentle">finding what your body needs...</span></div>}
 
         {aiResult && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-primary/20 bg-primary/5 p-5">
-            <h3 className="font-display text-lg italic text-foreground">{aiResult.tool}</h3>
+            <h3 className="font-display text-base md:text-lg italic text-foreground">{aiResult.tool}</h3>
             <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">{aiResult.reason}</p>
             <p className="font-display text-sm italic text-foreground/80 mt-3">{aiResult.instruction}</p>
           </motion.div>

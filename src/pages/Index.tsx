@@ -7,6 +7,7 @@ import { SacredSpiral, BotanicalSprig, HandUnderline, SeedGeometry, WildStar, Cy
 import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, getWaterCount, setWaterCount, getSeedCyclingDay, getPhaseFromDay, Phase } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
+import { haptic } from "@/hooks/use-mobile";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
@@ -50,6 +51,16 @@ const PHASE_POETRY: Record<Phase, string> = {
   luteal: "the harvest is rich. honour the complexity.",
 };
 
+// Mobile animation variants
+const cardVariant = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.08 * i, duration: 0.35, ease: "easeOut" as const },
+  }),
+};
+
 export default function HomePage() {
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
@@ -66,11 +77,13 @@ export default function HomePage() {
   const greeting = hour < 12 ? "good morning" : hour < 17 ? "good afternoon" : "good evening";
 
   const handleCheckin = (state: string) => {
+    haptic("medium");
     setCheckin(state);
     setCheckinState(state);
   };
 
   const addWater = () => {
+    haptic("light");
     const next = Math.min(water + 1, 8);
     setWaterState(next);
     setWaterCount(next);
@@ -86,32 +99,36 @@ export default function HomePage() {
   });
 
   return (
-    <div className="max-w-3xl mx-auto space-y-10 relative">
-      {/* Background decorations */}
-      <div className="absolute top-0 right-0 -translate-y-8 translate-x-8 pointer-events-none">
-        <SacredSpiral size={180} opacity={0.2} />
+    <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
+      {/* Background decorations — scaled for mobile */}
+      <div className="absolute top-0 right-0 -translate-y-4 md:-translate-y-8 translate-x-4 md:translate-x-8 pointer-events-none">
+        <SacredSpiral size={120} opacity={0.15} className="md:hidden" />
+        <SacredSpiral size={180} opacity={0.2} className="hidden md:block" />
       </div>
-      <div className="absolute bottom-0 left-0 translate-y-20 -translate-x-10 pointer-events-none">
-        <RootSystem size={250} opacity={0.06} />
+      <div className="absolute bottom-0 left-0 translate-y-16 md:translate-y-20 -translate-x-6 md:-translate-x-10 pointer-events-none">
+        <RootSystem size={180} opacity={0.05} className="md:hidden" />
+        <RootSystem size={250} opacity={0.06} className="hidden md:block" />
       </div>
 
       {/* Greeting */}
-      <div className="pt-4">
-        <p className="font-hand text-lg text-primary">{greeting},</p>
-        <h1 className="font-display text-5xl md:text-6xl font-bold italic text-foreground leading-none mt-1">
+      <div className="pt-2 md:pt-4">
+        <p className="font-hand text-base md:text-lg text-primary">{greeting},</p>
+        <h1 className="font-display text-[2.8rem] md:text-6xl font-bold italic text-foreground leading-none mt-1">
           you.
         </h1>
-        <HandUnderline width={80} className="mt-1" />
-        <p className="font-display text-lg italic text-muted-foreground mt-3">
+        <HandUnderline width={60} className="mt-1 md:hidden" />
+        <HandUnderline width={80} className="mt-1 hidden md:block" />
+        <p className="font-display text-base md:text-lg italic text-muted-foreground mt-2 md:mt-3">
           {PHASE_POETRY[info.phase]}
         </p>
 
-        <BotanicalSprig width={280} className="mt-4 mx-auto" />
+        <BotanicalSprig width={200} className="mt-3 md:mt-4 mx-auto md:hidden" />
+        <BotanicalSprig width={280} className="mt-4 mx-auto hidden md:block" />
       </div>
 
-      {/* Today Cards — 2x2 */}
+      {/* Today Cards — single column on mobile, 2x2 on desktop */}
       <section>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { path: "/cycle", label: "cycle", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
             { path: "/nutrition", label: "nutrition", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
@@ -120,13 +137,15 @@ export default function HomePage() {
           ].map((tile, i) => (
             <motion.div
               key={tile.path}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + i * 0.08 }}
+              custom={i}
+              initial="hidden"
+              animate="visible"
+              variants={cardVariant}
+              whileTap={{ scale: 0.98 }}
             >
-              <Link to={tile.path} className="frequency-panel block p-4 md:p-5 h-full group relative overflow-hidden" style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}>
-                <div className="absolute top-0 right-0 w-16 h-16 -translate-y-2 translate-x-2 pointer-events-none opacity-[0.08]">
-                  <CymatiSketch phase={info.phase} size={64} opacity={1} />
+              <Link to={tile.path} className="frequency-panel block p-4 md:p-5 h-full group relative overflow-hidden touch-card" style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}>
+                <div className="absolute top-0 right-0 w-12 h-12 md:w-16 md:h-16 -translate-y-2 translate-x-2 pointer-events-none opacity-[0.08]">
+                  <CymatiSketch phase={info.phase} size={48} opacity={1} />
                 </div>
                 <p className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>{tile.label}</p>
                 <h3 className="font-display text-base md:text-lg italic text-foreground leading-tight mt-1">{tile.title}</h3>
@@ -138,31 +157,31 @@ export default function HomePage() {
       </section>
 
       {/* Daily Check-in */}
-      <section className="card-warm p-6">
-        <p className="font-hand text-lg text-primary mb-4">how are you today?</p>
-        <div className="flex flex-wrap gap-3 justify-center">
+      <section className="card-warm p-5 md:p-6">
+        <p className="font-hand text-base md:text-lg text-primary mb-3 md:mb-4">how are you today?</p>
+        <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
           {CHECKIN_STATES.map((state) => {
             const selected = checkin === state.label;
             return (
               <button
                 key={state.label}
                 onClick={() => handleCheckin(state.label)}
-                className={`flex flex-col items-center gap-1.5 rounded-2xl p-3 w-16 transition-all ${
+                className={`touch-btn flex flex-col items-center gap-1 rounded-2xl p-2.5 md:p-3 w-14 md:w-16 min-h-[52px] ${
                   selected
                     ? "ring-2 ring-primary scale-110 bg-secondary shadow-md"
-                    : "bg-secondary/50 hover:bg-secondary/80"
+                    : "bg-secondary/50 active:bg-secondary/80"
                 }`}
               >
-                <div className="h-14 w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
-                  <SeedGeometry size={48} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
+                <div className="h-11 w-11 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
+                  <SeedGeometry size={40} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
                 </div>
-                <span className="font-hand text-xs font-bold text-foreground">{state.label}</span>
+                <span className="font-hand text-[10px] md:text-xs font-bold text-foreground">{state.label}</span>
               </button>
             );
           })}
         </div>
         {checkin && (
-          <div className="flex items-center justify-center gap-3 mt-4">
+          <div className="flex items-center justify-center gap-3 mt-3 md:mt-4">
             <span className="font-hand text-sm text-primary">logged: {checkin.toLowerCase()}</span>
             {streak > 1 && (
               <span className="flex items-center gap-1 font-hand text-sm text-muted-foreground">
@@ -173,10 +192,10 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Week Snapshot */}
+      {/* Week Snapshot — horizontal scroll */}
       <section>
         <p className="font-hand text-sm font-bold text-primary mb-3">this week</p>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="scroll-snap-x flex gap-2 pb-2 -mx-1 px-1">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
             const isToday = dateStr === today.toISOString().split("T")[0];
@@ -188,7 +207,7 @@ export default function HomePage() {
             return (
               <div
                 key={i}
-                className={`flex-shrink-0 w-16 rounded-2xl p-2.5 text-center transition-all ${
+                className={`scroll-snap-item flex-shrink-0 w-16 rounded-2xl p-2.5 text-center transition-all ${
                   isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/40"
                 }`}
               >
@@ -205,10 +224,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Wins */}
+      {/* Quick Wins — single column on mobile */}
       <section>
         <p className="font-hand text-sm font-bold text-primary mb-3">quick actions</p>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-3">
           <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
               <Droplets className="h-4 w-4 text-phase-follicular" />
@@ -221,7 +240,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-muted-foreground">{water}/8</span>
-              <button onClick={addWater} disabled={water >= 8} className="rounded-full bg-phase-follicular/10 px-3 py-1 font-mono text-[10px] text-phase-follicular hover:bg-phase-follicular/20 transition-colors disabled:opacity-30">
+              <button onClick={addWater} disabled={water >= 8} className="touch-btn rounded-full bg-phase-follicular/10 px-3 py-1.5 min-h-[36px] font-mono text-[10px] text-phase-follicular active:bg-phase-follicular/20 transition-colors disabled:opacity-30">
                 +1
               </button>
             </div>
@@ -258,16 +277,17 @@ export default function HomePage() {
           ].map((item, i) => (
             <motion.div
               key={item.label}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + i * 0.06 }}
-              className="frequency-panel flex items-start gap-4 p-4"
+              custom={i}
+              initial="hidden"
+              animate="visible"
+              variants={cardVariant}
+              className="frequency-panel flex items-start gap-3 md:gap-4 p-4"
               style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}
             >
               <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary">
                 <item.icon className="h-4 w-4 text-muted-foreground" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>{item.label}</span>
                 <p className="font-body text-sm text-foreground/80 mt-1 leading-relaxed">{item.text}</p>
               </div>
