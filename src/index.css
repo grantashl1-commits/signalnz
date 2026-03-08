@@ -1,82 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Deep mode - primary */
-    --background: 210 35% 5%;
-    --foreground: 210 20% 88%;
+    /* Wild Intelligence — warm botanical palette */
+    --background: 36 47% 96%;
+    --foreground: 18 42% 13%;
 
-    --card: 210 30% 8%;
-    --card-foreground: 210 20% 88%;
+    --card: 40 60% 99%;
+    --card-foreground: 18 42% 13%;
 
-    --popover: 210 30% 8%;
-    --popover-foreground: 210 20% 88%;
+    --popover: 40 60% 99%;
+    --popover-foreground: 18 42% 13%;
 
-    --primary: 166 100% 48%;
-    --primary-foreground: 210 35% 5%;
+    --primary: 14 100% 64%;
+    --primary-foreground: 40 60% 99%;
 
-    --secondary: 210 25% 12%;
-    --secondary-foreground: 210 20% 88%;
+    --secondary: 30 33% 92%;
+    --secondary-foreground: 18 42% 13%;
 
-    --muted: 210 20% 12%;
-    --muted-foreground: 210 15% 55%;
+    --muted: 30 20% 92%;
+    --muted-foreground: 20 15% 42%;
 
-    --accent: 166 100% 48%;
-    --accent-foreground: 210 35% 5%;
+    --accent: 14 100% 64%;
+    --accent-foreground: 40 60% 99%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 14%;
-    --input: 210 20% 14%;
-    --ring: 166 100% 48%;
+    --border: 25 20% 82%;
+    --input: 25 20% 82%;
+    --ring: 14 100% 64%;
 
-    --radius: 0.75rem;
+    --radius: 1.125rem;
 
-    /* Phase colours */
-    --phase-menstrual: 334 70% 33%;
-    --phase-follicular: 166 100% 39%;
-    --phase-ovulatory: 41 100% 70%;
-    --phase-luteal: 254 33% 36%;
+    /* Phase colours — botanical */
+    --phase-menstrual: 340 50% 55%;
+    --phase-follicular: 130 18% 55%;
+    --phase-ovulatory: 32 80% 55%;
+    --phase-luteal: 270 20% 62%;
 
-    /* Network */
-    --network: 160 100% 75%;
-    --cyan-electric: 166 100% 48%;
+    /* Accent wildflower */
+    --coral-flame: 14 100% 64%;
+    --bloom-blush: 340 74% 80%;
+    --petal-gold: 44 90% 61%;
+    --sage-mist: 130 22% 70%;
+    --lavender-dust: 270 40% 77%;
 
-    /* Light mode for journals/nutrition */
-    --light-bg: 210 25% 96%;
-    --light-fg: 210 40% 10%;
+    /* Hand-drawn element colour */
+    --sketch: 25 25% 45%;
 
-    --sidebar-background: 210 30% 7%;
-    --sidebar-foreground: 210 20% 88%;
-    --sidebar-primary: 166 100% 48%;
-    --sidebar-primary-foreground: 210 35% 5%;
-    --sidebar-accent: 210 25% 15%;
-    --sidebar-accent-foreground: 210 20% 88%;
-    --sidebar-border: 210 20% 14%;
-    --sidebar-ring: 166 100% 48%;
+    /* Cymatic sketch colour uses phase colour at low opacity */
 
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'Space Grotesk', sans-serif;
+    --sidebar-background: 36 47% 96%;
+    --sidebar-foreground: 18 42% 13%;
+    --sidebar-primary: 14 100% 64%;
+    --sidebar-primary-foreground: 40 60% 99%;
+    --sidebar-accent: 30 33% 92%;
+    --sidebar-accent-foreground: 18 42% 13%;
+    --sidebar-border: 25 20% 82%;
+    --sidebar-ring: 14 100% 64%;
+
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Lato', sans-serif;
+    --font-hand: 'Caveat', cursive;
     --font-mono: 'Space Mono', monospace;
-
-    --cymatic-speed: 120s;
-  }
-
-  /* Light mode class for specific sections */
-  .light-mode {
-    --background: 210 25% 96%;
-    --foreground: 210 40% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 210 40% 10%;
-    --muted: 210 15% 90%;
-    --muted-foreground: 210 15% 40%;
-    --border: 210 15% 88%;
-    --input: 210 15% 88%;
   }
 }
 
@@ -96,48 +85,49 @@
 @layer components {
   /* Phase colour pills */
   .phase-menstrual { background-color: hsl(var(--phase-menstrual)); color: white; }
-  .phase-follicular { background-color: hsl(var(--phase-follicular)); color: hsl(210 35% 5%); }
-  .phase-ovulatory { background-color: hsl(var(--phase-ovulatory)); color: hsl(210 35% 5%); }
+  .phase-follicular { background-color: hsl(var(--phase-follicular)); color: white; }
+  .phase-ovulatory { background-color: hsl(var(--phase-ovulatory)); color: hsl(var(--foreground)); }
   .phase-luteal { background-color: hsl(var(--phase-luteal)); color: white; }
 
-  .phase-menstrual-light { background-color: hsl(var(--phase-menstrual) / 0.15); color: hsl(var(--phase-menstrual)); }
-  .phase-follicular-light { background-color: hsl(var(--phase-follicular) / 0.15); color: hsl(var(--phase-follicular)); }
-  .phase-ovulatory-light { background-color: hsl(var(--phase-ovulatory) / 0.15); color: hsl(var(--phase-ovulatory)); }
-  .phase-luteal-light { background-color: hsl(var(--phase-luteal) / 0.15); color: hsl(var(--phase-luteal)); }
+  .phase-menstrual-light { background-color: hsl(var(--phase-menstrual) / 0.12); color: hsl(var(--phase-menstrual)); }
+  .phase-follicular-light { background-color: hsl(var(--phase-follicular) / 0.12); color: hsl(var(--phase-follicular)); }
+  .phase-ovulatory-light { background-color: hsl(var(--phase-ovulatory) / 0.12); color: hsl(var(--phase-ovulatory)); }
+  .phase-luteal-light { background-color: hsl(var(--phase-luteal) / 0.12); color: hsl(var(--phase-luteal)); }
 
-  /* Card styles */
-  .card-deep {
-    @apply bg-card rounded-xl border border-border;
-    box-shadow: 0 4px 30px -8px hsl(var(--phase-follicular) / 0.05);
+  /* Card styles — warm */
+  .card-warm {
+    @apply bg-card rounded-[18px] border border-border;
+    box-shadow: 0 4px 20px rgba(139, 111, 94, 0.08);
   }
 
-  .card-deep-hover {
-    @apply card-deep transition-all duration-300;
+  .card-warm-hover {
+    @apply card-warm transition-all duration-300;
   }
-  .card-deep-hover:hover {
-    box-shadow: 0 8px 40px -8px hsl(var(--cyan-electric) / 0.12);
-    border-color: hsl(var(--cyan-electric) / 0.2);
+  .card-warm-hover:hover {
+    box-shadow: 0 8px 30px rgba(139, 111, 94, 0.14);
+    transform: translateY(-1px);
   }
 
   /* Keep backward compat */
-  .card-warm { @apply card-deep; }
-  .card-warm-hover { @apply card-deep-hover; }
+  .card-deep { @apply card-warm; }
+  .card-deep-hover { @apply card-warm-hover; }
 
-  /* Frequency panel */
+  /* Frequency panel — warm version */
   .frequency-panel {
-    @apply relative overflow-hidden rounded-xl border border-border bg-card;
+    @apply relative overflow-hidden rounded-[18px] border border-border bg-card;
+    box-shadow: 0 4px 20px rgba(139, 111, 94, 0.08);
   }
   .frequency-panel::before {
     content: '';
-    @apply absolute left-0 top-0 bottom-0 w-[3px];
+    @apply absolute left-0 top-0 bottom-0 w-[3px] rounded-l-[18px];
     background-color: var(--panel-color, hsl(var(--phase-follicular)));
   }
 
-  /* UI label style */
+  /* UI label — handwritten style */
   .ui-label {
-    font-family: var(--font-body);
-    @apply text-[10px] font-bold uppercase tracking-[0.2em];
-    color: hsl(var(--cyan-electric));
+    font-family: var(--font-hand);
+    @apply text-sm font-bold;
+    color: hsl(var(--coral-flame));
   }
 
   /* Data readout */
@@ -145,44 +135,17 @@
     font-family: var(--font-mono);
   }
 
-  /* Cymatic slow rotation */
-  .cymatic-rotate {
-    animation: cymatic-spin var(--cymatic-speed) linear infinite;
-  }
-  .cymatic-rotate-fast {
-    animation: cymatic-spin 60s linear infinite;
-  }
+  /* Phase section backgrounds */
+  .phase-bg-menstrual { background-color: hsl(var(--phase-menstrual) / 0.06); }
+  .phase-bg-follicular { background-color: hsl(var(--phase-follicular) / 0.06); }
+  .phase-bg-ovulatory { background-color: hsl(var(--phase-ovulatory) / 0.06); }
+  .phase-bg-luteal { background-color: hsl(var(--phase-luteal) / 0.06); }
 }
 
 /* Animations */
-@keyframes cymatic-spin {
+@keyframes gentle-rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-@keyframes ripple-expand {
-  0% { transform: scale(0); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 0; }
-}
-
-@keyframes pulse-node {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-@keyframes signal-travel {
-  0% { stroke-dashoffset: 100; opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-
-@keyframes breathe-expand {
-  0% { transform: scale(0.6); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes breathe-contract {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.6); opacity: 0.7; }
 }
 
 @keyframes pulse-gentle {
@@ -190,31 +153,30 @@
   50% { opacity: 1; }
 }
 
-@keyframes text-glow {
-  0%, 100% { text-shadow: 0 0 20px var(--glow-color, hsl(166 100% 48% / 0.3)); }
-  50% { text-shadow: 0 0 40px var(--glow-color, hsl(166 100% 48% / 0.5)); }
-}
-
 @keyframes fade-in-up {
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes grow-sprig {
+  0% { stroke-dashoffset: 200; }
+  100% { stroke-dashoffset: 0; }
 }
 
 .animate-pulse-gentle {
   animation: pulse-gentle 2s ease-in-out infinite;
 }
 
-.animate-text-glow {
-  animation: text-glow 4s ease-in-out infinite;
-}
-
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out both;
 }
 
-/* Network thread glow */
-.thread-glow {
-  filter: drop-shadow(0 0 3px hsl(var(--network) / 0.4));
+.sketch-rotate {
+  animation: gentle-rotate 120s linear infinite;
+}
+
+.sketch-rotate-fast {
+  animation: gentle-rotate 60s linear infinite;
 }
 
 /* Scrollbar styling */
