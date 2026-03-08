@@ -34,7 +34,7 @@ const TYPE_LABELS: Record<string, string> = { expressive: "Expressive", gratitud
 
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.35, ease: "easeOut" } }),
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.35, ease: "easeOut" as const } }),
 };
 
 export default function JournalPage() {
