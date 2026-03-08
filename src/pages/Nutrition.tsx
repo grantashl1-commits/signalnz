@@ -6,6 +6,7 @@ import { CymatiSketch, BotanicalSprig, HerbCluster, WildStar } from "@/component
 import { getCycleInfo, getLastPeriodStart, getWaterCount, setWaterCount, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS, PHASE_MEAL_PLANS, RECIPES, NUTRIENT_FOCUS } from "@/data/meal-plans";
 import { haptic } from "@/hooks/use-mobile";
+import { RecipeShoppingButton, IngredientSearchLinks, ShoppingListPanel } from "@/components/ShoppingList";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
