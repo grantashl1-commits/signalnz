@@ -36,7 +36,7 @@ export default function NutritionPage() {
 
   const addWater = () => { haptic("light"); const n = Math.min(water + 1, 8); setWaterState(n); setWaterCount(n); };
 
-  const filteredRecipes = recipePhaseFilter === "all" ? RECIPES : RECIPES.filter((r) => r.phase === recipePhaseFilter);
+  const filteredRecipes = recipePhaseFilter === "all" ? ALL_RECIPES : ALL_RECIPES.filter((r) => r.phase === recipePhaseFilter);
 
   const TABS = [
     { id: "today" as const, label: "Today" },
