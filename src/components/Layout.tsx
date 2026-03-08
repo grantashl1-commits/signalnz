@@ -1,13 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Brain, BookOpen, Crown } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown } from "lucide-react";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
   { path: "/nutrition", icon: Salad, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
-  { path: "/nervous-system", icon: Brain, label: "Regulate" },
+  { path: "/breathwork", icon: Wind, label: "Breathwork" },
+  { path: "/journal", icon: PenLine, label: "Journal" },
   { path: "/modules", icon: BookOpen, label: "Modules" },
   { path: "/membership", icon: Crown, label: "Membership" },
 ];
@@ -57,7 +58,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/90 backdrop-blur-md md:hidden">
         <div className="flex items-center justify-around px-2 py-2">
-          {navItems.slice(0, 5).map((item) => {
+          {navItems.slice(0, 6).map((item) => {
             const active = location.pathname === item.path;
             return (
               <Link
@@ -68,7 +69,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 }`}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span className="text-[10px]">{item.label}</span>
               </Link>
             );
           })}
