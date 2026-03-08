@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Brain, Droplets, Sprout, Clock } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
+import CymaticPattern from "@/components/CymaticPatterns";
+import NetworkBackground from "@/components/NetworkBackground";
 import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, getWaterCount, setWaterCount, getSeedCyclingDay, getPhaseFromDay, Phase } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 
-const FEELINGS = ["Energised", "Good", "Moderate", "Low", "Depleted"];
+const FREQUENCY_STATES = [
+  { label: "Radiant", phase: "ovulatory" as Phase, desc: "Peak signal" },
+  { label: "Clear", phase: "follicular" as Phase, desc: "Rising signal" },
+  { label: "Steady", phase: "follicular" as Phase, desc: "Stable signal" },
+  { label: "Muted", phase: "luteal" as Phase, desc: "Low signal" },
+  { label: "Static", phase: "menstrual" as Phase, desc: "Rest signal" },
+];
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
   follicular: {
@@ -36,6 +44,13 @@ const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: strin
   },
 };
 
+const PHASE_METAPHOR: Record<Phase, string> = {
+  menstrual: "the signal goes quiet. integration.",
+  follicular: "the signal is rising. new transmission.",
+  ovulatory: "peak signal. broadcasting clearly.",
+  luteal: "complex harmonics. descending wave.",
+};
+
 export default function HomePage() {
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
@@ -49,11 +64,11 @@ export default function HomePage() {
   const lunchMeal = todayMeals?.find((m) => m.type === "Lunch");
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+  const greeting = hour < 12 ? "good morning" : hour < 17 ? "good afternoon" : "good evening";
 
-  const handleCheckin = (feeling: string) => {
-    setCheckin(feeling);
-    setCheckinState(feeling);
+  const handleCheckin = (state: string) => {
+    setCheckin(state);
+    setCheckinState(state);
   };
 
   const addWater = () => {
@@ -71,78 +86,99 @@ export default function HomePage() {
     d.setDate(today.getDate() + mondayOffset + i);
     return d;
   });
-  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      {/* Top greeting bar */}
-      <div className="rounded-2xl bg-primary p-6 text-primary-foreground">
-        <p className="text-sm uppercase tracking-widest opacity-70 mb-1">{greeting}</p>
-        <h1 className="font-display text-3xl md:text-4xl font-semibold leading-tight">
-          Day {info.cycleDay} — {info.name.replace(" Phase", "").toUpperCase()} PHASE
-        </h1>
-        <div className="mt-3">
-          <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} size="lg" />
-        </div>
+    <div className="max-w-3xl mx-auto space-y-10 relative">
+      {/* Network background */}
+      <div className="fixed inset-0 -z-10">
+        <NetworkBackground opacity={0.25} />
       </div>
 
-      {/* Today at a glance */}
+      {/* Greeting */}
+      <div className="pt-4">
+        <p className="ui-label mb-3">signal received,</p>
+        <h1 className="font-display text-5xl md:text-6xl font-light italic text-foreground leading-none animate-text-glow">
+          {greeting}.
+        </h1>
+        <div className="flex items-center gap-3 mt-4">
+          <span className="font-mono text-sm text-cyan">
+            day {info.cycleDay} of 28 · {PHASE_METAPHOR[info.phase]}
+          </span>
+        </div>
+
+        {/* Thread line */}
+        <svg className="w-full h-4 mt-4 thread-glow" viewBox="0 0 600 16">
+          <path d="M 0 8 Q 100 4 200 8 T 400 8 T 600 8" fill="none" stroke="hsl(160, 100%, 75%)" strokeWidth="0.5" opacity="0.4" />
+          <circle cx="150" cy="7" r="2" fill="hsl(160, 100%, 75%)" opacity="0.6" />
+          <circle cx="350" cy="9" r="2" fill="hsl(160, 100%, 75%)" opacity="0.6" />
+          <circle cx="500" cy="8" r="1.5" fill="hsl(160, 100%, 75%)" opacity="0.4" />
+        </svg>
+      </div>
+
+      {/* Frequency Panels — 2x2 */}
       <section>
-        <h2 className="font-display text-2xl font-semibold text-foreground mb-4">Today at a Glance</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { path: "/cycle", icon: Moon, title: "Cycle", desc: `Day ${info.cycleDay} of 28 — ${info.name.replace(" Phase", "")}. ${focus.cycle.split("—")[0]?.trim()}.` },
-            { path: "/nutrition", icon: Salad, title: "Nutrition", desc: lunchMeal ? `Today: ${lunchMeal.name}. Click to see full day.` : "View today's meals." },
-            { path: "/movement", icon: Dumbbell, title: "Movement", desc: todayWorkout ? `Today: ${todayWorkout.name} — ${todayWorkout.duration}. ${todayWorkout.equipment}.` : "View workouts." },
-            { path: "/breathwork", icon: Brain, title: "Nervous System", desc: `Tonight: ${focus.nervous.split("—")[0]?.trim()}.` },
+            { path: "/cycle", label: "CYCLE SIGNAL", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
+            { path: "/nutrition", label: "NUTRITION FEED", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
+            { path: "/movement", label: "MOVEMENT DATA", icon: Dumbbell, title: todayWorkout?.name || "Today's workout", desc: `${todayWorkout?.duration || ""} · ${todayWorkout?.equipment || ""}` },
+            { path: "/breathwork", label: "NERVOUS SYSTEM", icon: Wind, title: "Coherent Breathing", desc: focus.nervous },
           ].map((tile, i) => (
             <motion.div
               key={tile.path}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
+              transition={{ delay: 0.1 + i * 0.08 }}
             >
-              <Link to={tile.path} className="card-warm-hover block p-4 md:p-5 h-full">
-                <tile.icon className="h-5 w-5 text-accent mb-2" />
-                <h3 className="font-display text-base font-semibold text-foreground leading-tight">{tile.title}</h3>
-                <p className="text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-3">{tile.desc}</p>
+              <Link to={tile.path} className="frequency-panel block p-4 md:p-5 h-full group relative overflow-hidden" style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}>
+                <div className="absolute top-0 right-0 w-24 h-24 -translate-y-4 translate-x-4 opacity-[0.06]">
+                  <CymaticPattern phase={info.phase} size={96} opacity={1} />
+                </div>
+                <p className="ui-label mb-2">{tile.label}</p>
+                <h3 className="font-display text-base md:text-lg italic text-foreground leading-tight">{tile.title}</h3>
+                <p className="font-body text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{tile.desc}</p>
+                <div className="absolute bottom-3 right-3 h-2 w-2 rounded-full bg-network/40 animate-node-pulse" />
               </Link>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Daily check-in */}
-      <section className="card-warm p-5">
-        <div className="flex items-center justify-between mb-3">
-          <p className="font-display text-lg text-foreground">How does your body feel today?</p>
-          {streak > 0 && (
-            <span className="text-xs text-accent font-medium">{streak}-day streak 🌿</span>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {FEELINGS.map((f) => (
-            <button
-              key={f}
-              onClick={() => handleCheckin(f)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                checkin === f
-                  ? "bg-accent text-accent-foreground shadow-md"
-                  : "bg-muted text-muted-foreground hover:bg-accent/10"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+      {/* Frequency Check-in */}
+      <section className="card-deep p-6">
+        <p className="font-display text-xl italic text-foreground mb-5">what frequency are you transmitting today?</p>
+        <div className="flex flex-wrap gap-3 justify-center">
+          {FREQUENCY_STATES.map((state) => {
+            const selected = checkin === state.label;
+            return (
+              <button
+                key={state.label}
+                onClick={() => handleCheckin(state.label)}
+                className={`flex flex-col items-center gap-1.5 rounded-xl p-3 w-16 transition-all ${
+                  selected
+                    ? "ring-2 ring-cyan scale-110 bg-secondary"
+                    : "bg-secondary/50 hover:bg-secondary/80"
+                }`}
+              >
+                <div className="h-12 w-12 rounded-full flex items-center justify-center overflow-hidden">
+                  <CymaticPattern phase={state.phase} size={48} opacity={selected ? 0.8 : 0.3} />
+                </div>
+                <span className="font-body text-[9px] font-bold uppercase tracking-widest text-foreground">{state.label}</span>
+              </button>
+            );
+          })}
         </div>
         {checkin && (
-          <p className="text-xs text-muted-foreground mt-3">Logged: {checkin} ✓</p>
+          <div className="flex items-center justify-center gap-3 mt-4">
+            <span className="font-mono text-xs text-cyan">logged: {checkin.toLowerCase()}</span>
+            {streak > 1 && <span className="font-mono text-[10px] text-muted-foreground">{streak}-day streak</span>}
+          </div>
         )}
       </section>
 
       {/* Week Snapshot */}
       <section>
-        <h2 className="font-display text-xl font-semibold text-foreground mb-3">This Week</h2>
+        <p className="ui-label mb-3">this week</p>
         <div className="flex gap-2 overflow-x-auto pb-2">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
@@ -152,20 +188,20 @@ export default function HomePage() {
             const phase = getPhaseFromDay(cycleDay);
             const checkedIn = !!localStorage.getItem(`mindcast_checkin_${dateStr}`);
 
-            const phaseColor = phase === "menstrual" ? "bg-burgundy" : phase === "follicular" ? "bg-accent" : phase === "ovulatory" ? "bg-gold" : "bg-plum";
-
             return (
               <div
                 key={i}
-                className={`flex-shrink-0 w-20 rounded-xl p-3 text-center ${
-                  isToday ? "card-warm ring-2 ring-accent/40" : "bg-muted/50 rounded-xl"
+                className={`flex-shrink-0 w-16 rounded-lg p-2.5 text-center transition-all ${
+                  isToday ? "bg-secondary ring-1 ring-cyan/30" : "bg-secondary/30"
                 }`}
               >
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{dayNames[i]}</p>
-                <p className="text-sm font-medium text-foreground mt-0.5">{date.getDate()}</p>
-                <div className={`mx-auto mt-1.5 h-2 w-2 rounded-full ${phaseColor}`} />
-                {checkedIn && <div className="mx-auto mt-1 h-1.5 w-1.5 rounded-full bg-accent/60" />}
-                <p className="text-[9px] text-muted-foreground mt-1">Day {cycleDay}</p>
+                <p className="font-body text-[9px] uppercase tracking-widest text-muted-foreground">
+                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i]}
+                </p>
+                <p className="font-mono text-sm text-foreground mt-0.5">{date.getDate()}</p>
+                <div className={`mx-auto mt-1 h-1.5 w-1.5 rounded-full bg-phase-${phase}`} />
+                {checkedIn && <div className="mx-auto mt-0.5 h-1 w-1 rounded-full bg-cyan/60" />}
+                <p className="font-mono text-[8px] text-muted-foreground mt-0.5">D{cycleDay}</p>
               </div>
             );
           })}
@@ -174,80 +210,69 @@ export default function HomePage() {
 
       {/* Quick Wins */}
       <section>
-        <h2 className="font-display text-xl font-semibold text-foreground mb-3">Quick Wins</h2>
+        <p className="ui-label mb-3">quick signals</p>
         <div className="grid gap-3 md:grid-cols-3">
-          {/* Water */}
-          <div className="card-warm p-4">
+          <div className="card-deep p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Droplets className="h-4 w-4 text-accent" />
-              <span className="text-xs font-medium text-foreground uppercase tracking-wider">Water</span>
+              <Droplets className="h-4 w-4 text-cyan" />
+              <span className="ui-label">hydration</span>
             </div>
             <div className="flex gap-1 mb-2">
               {Array.from({ length: 8 }, (_, i) => (
-                <div
-                  key={i}
-                  className={`h-5 w-5 rounded-full border transition-colors ${
-                    i < water ? "bg-accent/80 border-accent" : "border-border"
-                  }`}
-                />
+                <div key={i} className={`h-4 w-4 rounded-full border transition-all ${i < water ? "bg-cyan/60 border-cyan/80" : "border-border"}`} />
               ))}
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{water}/8 glasses</span>
-              <button
-                onClick={addWater}
-                disabled={water >= 8}
-                className="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent hover:bg-accent/20 transition-colors disabled:opacity-40"
-              >
+              <span className="font-mono text-[10px] text-muted-foreground">{water}/8</span>
+              <button onClick={addWater} disabled={water >= 8} className="rounded-full bg-cyan/10 px-3 py-1 font-mono text-[10px] text-cyan hover:bg-cyan/20 transition-colors disabled:opacity-30">
                 +1
               </button>
             </div>
           </div>
 
-          {/* Evening reminder */}
-          <div className="card-warm p-4">
+          <div className="card-deep p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-accent" />
-              <span className="text-xs font-medium text-foreground uppercase tracking-wider">Wind-Down</span>
+              <Clock className="h-4 w-4 text-cyan" />
+              <span className="ui-label">wind-down</span>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">Evening routine at 8pm — breathwork before bed</p>
+            <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm</p>
           </div>
 
-          {/* Seed cycling */}
-          <div className="card-warm p-4">
+          <div className="card-deep p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Sprout className="h-4 w-4 text-accent" />
-              <span className="text-xs font-medium text-foreground uppercase tracking-wider">Seed Cycling</span>
+              <Sprout className="h-4 w-4 text-cyan" />
+              <span className="ui-label">seed cycling</span>
             </div>
-            <p className="text-sm text-foreground font-medium">{seedInfo.seeds}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{seedInfo.phase} • Day {info.cycleDay}</p>
+            <p className="font-body text-xs text-foreground">{seedInfo.seeds}</p>
+            <p className="font-mono text-[9px] text-muted-foreground mt-0.5">{seedInfo.phase} · D{info.cycleDay}</p>
           </div>
         </div>
       </section>
 
       {/* Today's Focus */}
       <section>
-        <h2 className="font-display text-2xl font-semibold text-foreground mb-4">Today's Focus</h2>
-        <div className="space-y-3">
+        <p className="ui-label mb-3">today's frequency</p>
+        <div className="space-y-2">
           {[
-            { icon: Salad, label: "Nutrition", text: focus.nutrition },
-            { icon: Dumbbell, label: "Movement", text: focus.movement },
-            { icon: Brain, label: "Nervous System", text: focus.nervous },
-            { icon: Moon, label: "Cycle", text: focus.cycle },
+            { icon: Salad, label: "NUTRITION", text: focus.nutrition },
+            { icon: Dumbbell, label: "MOVEMENT", text: focus.movement },
+            { icon: Wind, label: "NERVOUS SYSTEM", text: focus.nervous },
+            { icon: Moon, label: "CYCLE", text: focus.cycle },
           ].map((item, i) => (
             <motion.div
               key={item.label}
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + i * 0.06 }}
-              className="card-warm flex items-start gap-4 p-4"
+              transition={{ delay: 0.3 + i * 0.06 }}
+              className="frequency-panel flex items-start gap-4 p-4"
+              style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}
             >
-              <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10">
-                <item.icon className="h-4 w-4 text-accent" />
+              <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-cyan/5">
+                <item.icon className="h-4 w-4 text-cyan/70" />
               </div>
               <div>
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{item.label}</span>
-                <p className="text-sm text-foreground mt-0.5 leading-relaxed">{item.text}</p>
+                <span className="ui-label">{item.label}</span>
+                <p className="font-body text-sm text-foreground/80 mt-1 leading-relaxed">{item.text}</p>
               </div>
             </motion.div>
           ))}
