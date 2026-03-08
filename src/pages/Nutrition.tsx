@@ -163,6 +163,9 @@ export default function NutritionPage() {
 
       {activeTab === "recipes" && (
         <div className="space-y-4 md:space-y-6">
+          {/* Shopping List */}
+          <ShoppingListPanel />
+
           {/* Horizontal scroll filter on mobile */}
           <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 sm:flex-wrap">
             <button onClick={() => setRecipePhaseFilter("all")} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${recipePhaseFilter === "all" ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}>All</button>
@@ -196,12 +199,11 @@ export default function NutritionPage() {
 
                   {expanded && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-4 border-t border-border pt-3 space-y-3">
-                      <div>
-                        <p className="font-hand text-sm font-bold text-primary mb-1">Ingredients</p>
-                        <ul className="space-y-0.5">
-                          {recipe.ingredients.map((ing, j) => <li key={j} className="font-body text-xs text-muted-foreground">• {ing}</li>)}
-                        </ul>
+                      <div className="flex items-center justify-between">
+                        <p className="font-hand text-sm font-bold text-primary">Ingredients</p>
+                        <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
                       </div>
+                      <IngredientSearchLinks ingredients={recipe.ingredients} />
                       <BotanicalSprig width={100} opacity={0.15} />
                       <div>
                         <p className="font-hand text-sm font-bold text-primary mb-1">Method</p>
