@@ -231,6 +231,8 @@ export const PHASE_MEAL_PLANS: Record<Phase, { theme: string; days: DayPlan[] }>
   },
 };
 
+export type RecipeCategory = "meal" | "baking";
+
 export interface Recipe {
   id: string;
   name: string;
@@ -241,6 +243,7 @@ export interface Recipe {
   ingredients: string[];
   method: string[];
   phaseBenefit: string;
+  category?: RecipeCategory;
 }
 
 export const RECIPES: Recipe[] = [
