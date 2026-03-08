@@ -5,6 +5,9 @@ import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, BotanicalSprig, HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getWaterCount, setWaterCount, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS, PHASE_MEAL_PLANS, RECIPES, NUTRIENT_FOCUS } from "@/data/meal-plans";
+import { PDF_RECIPES } from "@/data/pdf-recipes";
+
+const ALL_RECIPES = [...RECIPES, ...PDF_RECIPES];
 import { haptic } from "@/hooks/use-mobile";
 import { RecipeShoppingButton, IngredientSearchLinks, ShoppingListPanel } from "@/components/ShoppingList";
 
@@ -33,7 +36,7 @@ export default function NutritionPage() {
 
   const addWater = () => { haptic("light"); const n = Math.min(water + 1, 8); setWaterState(n); setWaterCount(n); };
 
-  const filteredRecipes = recipePhaseFilter === "all" ? RECIPES : RECIPES.filter((r) => r.phase === recipePhaseFilter);
+  const filteredRecipes = recipePhaseFilter === "all" ? ALL_RECIPES : ALL_RECIPES.filter((r) => r.phase === recipePhaseFilter);
 
   const TABS = [
     { id: "today" as const, label: "Today" },
