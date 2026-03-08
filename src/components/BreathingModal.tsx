@@ -93,32 +93,32 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
-        style={{ backgroundColor: "#FAF6EF" }}
+        className="fixed inset-0 z-[100] flex flex-col items-center justify-center px-6"
+        style={{ backgroundColor: "#FAF6EF", paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <button onClick={onClose} className="absolute right-6 top-6 text-foreground/40 hover:text-foreground transition-colors z-10">
-          <X className="h-8 w-8" />
+        <button onClick={onClose} className="absolute right-4 top-4 md:right-6 md:top-6 text-foreground/40 active:text-foreground transition-colors z-10 min-w-[44px] min-h-[44px] flex items-center justify-center touch-btn">
+          <X className="h-7 w-7 md:h-8 md:w-8" />
         </button>
 
-        <h2 className="font-display text-3xl font-bold italic text-foreground mb-1">{technique.name}</h2>
-        <p className="font-mono text-xs text-muted-foreground mb-12">cycle {cycles + 1}</p>
+        <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground mb-1 text-center">{technique.name}</h2>
+        <p className="font-mono text-xs text-muted-foreground mb-8 md:mb-12">cycle {cycles + 1}</p>
 
         {/* Sacred spiral breathing animation */}
         <motion.div
           animate={{ scale }}
           transition={{ duration: currentPhase.duration, ease: "easeInOut" }}
           className="relative flex items-center justify-center"
-          style={{ width: 240, height: 240 }}
+          style={{ width: 200, height: 200 }}
         >
-          <div className="sketch-rotate-fast">
-            <SacredSpiral size={240} opacity={isInhale ? 0.5 : isExhale ? 0.15 : 0.3} color={phaseColor} />
+          <div className="sketch-rotate-fast" style={{ willChange: "transform" }}>
+            <SacredSpiral size={200} opacity={isInhale ? 0.5 : isExhale ? 0.15 : 0.3} color={phaseColor} />
           </div>
           <span className="absolute font-mono text-3xl text-foreground">
             {currentPhase.duration - timer}
           </span>
         </motion.div>
 
-        <p className="mt-10 font-hand text-3xl text-foreground" style={{ color: phaseColor }}>{currentPhase.label}</p>
+        <p className="mt-8 md:mt-10 font-hand text-2xl md:text-3xl text-foreground" style={{ color: phaseColor }}>{currentPhase.label}</p>
         <p className="mt-2 font-mono text-xs text-muted-foreground">
           {timer + 1} of {currentPhase.duration}s
         </p>
