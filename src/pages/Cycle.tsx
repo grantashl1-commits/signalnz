@@ -330,61 +330,7 @@ export default function CyclePage() {
             })}
           </div>
 
-          {/* Seed cycling — enhanced with amounts */}
-          <div className="card-warm p-4 md:p-5">
-            <p className="font-hand text-sm font-bold text-primary mb-3">seed cycling</p>
-
-            {isFollicularPhaseSeeds ? (
-              <div className="space-y-3">
-                <p className="font-hand text-xs font-bold" style={{ color: PHASE_HEX[info.phase] }}>
-                  Days 1–14 · Follicular/Menstrual
-                </p>
-                <div className="space-y-2">
-                  <div>
-                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Pumpkin Seeds</p>
-                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
-                    <p className="font-body text-[10px] italic text-muted-foreground">(raw, ground or whole)</p>
-                  </div>
-                  <div>
-                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Flaxseeds</p>
-                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
-                    <p className="font-body text-[10px] italic text-muted-foreground">(freshly ground is best)</p>
-                  </div>
-                </div>
-                <BotanicalSprig width={100} opacity={0.15} />
-                <p className="font-body text-[10px] italic text-muted-foreground font-light">
-                  Grind flaxseeds fresh — pre-ground loses potency quickly.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="font-hand text-xs font-bold" style={{ color: PHASE_HEX[info.phase] }}>
-                  Days 15–28 · Luteal/Ovulatory
-                </p>
-                <div className="space-y-2">
-                  <div>
-                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Sunflower Seeds</p>
-                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
-                    <p className="font-body text-[10px] italic text-muted-foreground">(raw or lightly roasted)</p>
-                  </div>
-                  <div>
-                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Sesame Seeds</p>
-                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
-                    <p className="font-body text-[10px] italic text-muted-foreground">(tahini counts)</p>
-                  </div>
-                </div>
-                <BotanicalSprig width={100} opacity={0.15} />
-                <p className="font-body text-[10px] italic text-muted-foreground font-light">
-                  A tablespoon of tahini is a perfect sesame substitute.
-                </p>
-              </div>
-            )}
-
-            <label className="flex items-center gap-3 cursor-pointer min-h-[44px] mt-3 pt-3 border-t border-border">
-              <input type="checkbox" checked={seedsTaken} onChange={(e) => { haptic("light"); setSeedsTakenState(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }} className="rounded border-border text-primary focus:ring-primary h-5 w-5" />
-              <span className="font-body text-sm text-foreground">seeds taken today</span>
-            </label>
-          </div>
+          {/* Seed cycling moved to Nourish page */}
         </div>
       )}
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Phase, PHASE_SHORT, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "@/lib/cycle-utils";
-import { PHASE_MEAL_PLANS, DayPlan } from "@/data/meal-plans";
+import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
+import { PHASE_MEAL_PLANS } from "@/data/meal-plans";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -23,8 +23,8 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
   const phaseColor = PHASE_HEX[phase];
   const [phaseStart, phaseEnd] = PHASE_DAYS[phase];
 
-  // Which day in the plan corresponds to today?
-  const dayInPhase = cycleDay - phaseStart + 1;
+  // Phase day = cycle day relative to phase start.
+  const phaseDay = cycleDay - phaseStart + 1;
 
   return (
     <div className="space-y-4">
@@ -33,20 +33,20 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
         <span
           className={`inline-block rounded-full px-3 py-1.5 font-hand text-sm font-bold phase-${phase}-light`}
         >
-          your {PHASE_SHORT[phase].toLowerCase()} plan · days {phaseStart}–{phaseEnd}
+          Your {PHASE_SHORT[phase].toLowerCase()} plan · days {phaseStart}–{phaseEnd}
         </span>
         <p className="font-body text-xs italic text-muted-foreground mt-2" style={{ fontWeight: 300 }}>
-          plans update automatically as your cycle moves
+          Plans update automatically as your cycle moves.
         </p>
       </div>
 
       {/* Theme */}
-      <p className="font-display text-sm italic text-foreground">{plan.theme}</p>
+      <p className="font-display text-sm italic text-foreground">{plan.theme}.</p>
 
       {/* Day cards */}
       <div className="space-y-2">
         {plan.days.map((day) => {
-          const isToday = day.day === dayInPhase;
+          const isToday = day.day === phaseDay;
           const expanded = expandedDay === day.day;
 
           return (
@@ -74,14 +74,24 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                   <div className={isToday ? "pl-2" : ""}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-[11px] font-bold" style={{ color: phaseColor }}>
-                        day {day.day}
+                        Day {day.day}
                       </span>
                       {isToday && (
-                        <span className="font-hand text-[10px] font-bold text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
-                          today
-                        </span>
+                        <>
+                          <span className="font-hand text-[10px] font-bold text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                            Today
+                          </span>
+                          <span className="font-body text-[9px] text-muted-foreground" style={{ fontWeight: 300 }}>
+                            · cycle day {cycleDay}
+                          </span>
+                        </>
                       )}
                     </div>
+                    {isToday && (
+                      <p className="font-hand text-[11px] mb-1" style={{ color: phaseColor }}>
+                        Day {phaseDay} of your {PHASE_SHORT[phase].toLowerCase()} plan.
+                      </p>
+                    )}
                     <div className="space-y-0.5">
                       <p className="font-body text-xs text-foreground">
                         <span className="font-bold text-foreground/60">B:</span> {day.breakfast.split(" — ")[0]}

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CakeSlice } from "lucide-react";
+import { X, CakeSlice, Search, BookOpen } from "lucide-react";
 import { RecipeIllustration } from "@/components/MealIllustration";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { Recipe } from "@/data/meal-plans";
 import { RecipeShoppingButton, IngredientSearchLinks, ShoppingListPanel } from "@/components/ShoppingList";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { haptic } from "@/hooks/use-mobile";
+import { toast } from "@/hooks/use-toast";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -24,8 +26,27 @@ interface RecipesGridProps {
 export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = false }: RecipesGridProps) {
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(currentPhase);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [search, setSearch] = useState("");
+  const { isSupported, isActive, toggle } = useWakeLock();
 
-  const filtered = phaseFilter === "all" ? recipes : recipes.filter((r) => r.phase === phaseFilter);
+  const filtered = recipes.filter((r) => {
+    const matchesPhase = phaseFilter === "all" || r.phase === phaseFilter;
+    const matchesSearch = !search ||
+      r.name.toLowerCase().includes(search.toLowerCase()) ||
+      r.ingredients.some((ing) => ing.toLowerCase().includes(search.toLowerCase()));
+    return matchesPhase && matchesSearch;
+  });
+
+  const handleReadMode = async () => {
+    haptic("medium");
+    await toggle();
+    if (!isActive) {
+      toast({
+        description: "Screen will stay on while you cook.",
+        duration: 3000,
+      });
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -37,6 +58,19 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
           <p className="font-display text-lg italic text-foreground">Healthy Baking</p>
         </div>
       )}
+
+      {/* Search bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Search recipes or ingredients..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-border bg-card pl-10 pr-4 py-3 min-h-[44px] font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+          style={{ fontSize: "16px" }}
+        />
+      </div>
 
       {/* Filter pills */}
       <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
@@ -60,6 +94,13 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
           </button>
         ))}
       </div>
+
+      {/* Results count */}
+      {search && (
+        <p className="font-body text-[11px] text-muted-foreground" style={{ fontWeight: 300 }}>
+          {filtered.length} recipe{filtered.length !== 1 ? "s" : ""} found.
+        </p>
+      )}
 
       {/* 2-column grid */}
       <div className="grid grid-cols-2 gap-3">
@@ -96,6 +137,15 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
         ))}
       </div>
 
+      {filtered.length === 0 && (
+        <div className="text-center py-8">
+          <p className="font-hand text-sm text-muted-foreground">No recipes found.</p>
+          <p className="font-body text-xs text-muted-foreground mt-1" style={{ fontWeight: 300 }}>
+            Try a different search or filter.
+          </p>
+        </div>
+      )}
+
       {/* Recipe detail bottom sheet */}
       <AnimatePresence>
         {selectedRecipe && (
@@ -116,12 +166,46 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
               style={{ maxHeight: "90vh", overflowY: "auto" }}
             >
               <div className="bottom-sheet-handle" />
-              <button
-                onClick={() => setSelectedRecipe(null)}
-                className="touch-btn absolute top-4 right-4 p-2 rounded-full bg-secondary z-10"
-              >
-                <X className="h-4 w-4 text-muted-foreground" />
-              </button>
+
+              {/* Top right controls */}
+              <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                {/* Read Mode toggle */}
+                {isSupported && (
+                  <button
+                    onClick={handleReadMode}
+                    className="touch-btn flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-[11px] font-bold transition-all"
+                    style={isActive
+                      ? { backgroundColor: PHASE_HEX[selectedRecipe.phase], color: "white" }
+                      : { backgroundColor: "hsl(var(--secondary))", color: "hsl(var(--foreground))" }
+                    }
+                  >
+                    <BookOpen className="h-3.5 w-3.5" />
+                    {isActive ? (
+                      <>
+                        Reading
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-gentle" />
+                      </>
+                    ) : (
+                      "Read mode"
+                    )}
+                  </button>
+                )}
+                <button
+                  onClick={() => setSelectedRecipe(null)}
+                  className="touch-btn p-2 rounded-full bg-secondary"
+                >
+                  <X className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+
+              {/* Not supported fallback */}
+              {!isSupported && (
+                <div className="mx-5 mt-2 rounded-xl bg-secondary p-2">
+                  <p className="font-body text-[10px] text-muted-foreground text-center">
+                    To keep your screen on while cooking, go to Settings → Display and set screen timeout to 5 minutes.
+                  </p>
+                </div>
+              )}
 
               {/* Large header illustration */}
               <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
@@ -133,7 +217,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                       {PHASE_SHORT[selectedRecipe.phase]}
                     </span>
                     <span className="font-mono text-[10px] text-muted-foreground">{selectedRecipe.prepTime}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">serves {selectedRecipe.serves}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground">Serves {selectedRecipe.serves}</span>
                     {selectedRecipe.category === "baking" && (
                       <span className="rounded-full px-2 py-0.5 font-hand text-[11px] font-bold bg-amber-100 text-amber-700 flex items-center gap-1">
                         <CakeSlice className="h-3 w-3" /> Baking
