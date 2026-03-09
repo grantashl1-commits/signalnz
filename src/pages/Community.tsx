@@ -1,0 +1,137 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BotanicalSprig } from "@/components/BotanicalElements";
+import { MOCK_GROUPS } from "@/data/community-data";
+import LocationOptIn from "@/components/community/LocationOptIn";
+import CommunityDiscover from "@/components/community/CommunityDiscover";
+import NearbyView from "@/components/community/NearbyView";
+import ChatRoom from "@/components/community/ChatRoom";
+import ChallengesPanel from "@/components/community/ChallengesPanel";
+import CommunityProfile from "@/components/community/CommunityProfile";
+
+const TABS = [
+  { id: "discover", label: "Discover" },
+  { id: "nearby", label: "Nearby" },
+  { id: "chat", label: "Chat" },
+  { id: "challenges", label: "Challenges" },
+  { id: "profile", label: "Profile" },
+];
+
+export default function CommunityPage() {
+  const [section, setSection] = useState("discover");
+  const [joined, setJoined] = useState<string[]>([]);
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const [locationEnabled, setLocationEnabled] = useState(false);
+  const [showOptIn, setShowOptIn] = useState(false);
+
+  const join = (id: string) => {
+    setJoined((j) => (j.includes(id) ? j : [...j, id]));
+    setActiveGroup(id);
+    setSection("chat");
+  };
+
+  const group = MOCK_GROUPS.find((g) => g.id === activeGroup) || MOCK_GROUPS.find((g) => joined.includes(g.id));
+
+  const handleNearbyTab = () => {
+    if (!locationEnabled) setShowOptIn(true);
+    setSection("nearby");
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto relative">
+      {/* Location opt-in modal */}
+      <AnimatePresence>
+        {showOptIn && (
+          <LocationOptIn
+            onAccept={() => { setLocationEnabled(true); setShowOptIn(false); }}
+            onDecline={() => setShowOptIn(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-0.5">
+        <span className="text-lg">🏘️</span>
+        <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Community</h1>
+      </div>
+      <p className="font-display text-[13px] italic text-muted-foreground mb-4">
+        find your neighbours. share your gifts. build the village.
+      </p>
+
+      {/* Tab bar */}
+      <div className="flex bg-secondary/50 rounded-2xl p-1 mb-5 overflow-x-auto">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => t.id === "nearby" ? handleNearbyTab() : setSection(t.id)}
+            className={`flex-1 py-2 rounded-xl text-center font-display text-xs transition-all relative whitespace-nowrap min-w-0 ${
+              section === t.id
+                ? "bg-card text-foreground shadow-sm font-medium"
+                : "text-muted-foreground italic"
+            }`}
+          >
+            {t.label}
+            {t.id === "nearby" && locationEnabled && (
+              <span className="absolute top-1 right-1.5 w-[5px] h-[5px] rounded-full bg-phase-follicular" />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={section}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+        >
+          {section === "discover" && <CommunityDiscover onJoin={join} joined={joined} />}
+          {section === "nearby" && <NearbyView locationEnabled={locationEnabled} onRequestLocation={() => setShowOptIn(true)} />}
+          {section === "chat" && (
+            joined.length === 0 ? (
+              <div className="text-center pt-16">
+                <div className="text-[40px] mb-3">🌿</div>
+                <p className="font-display text-xl italic text-foreground mb-2">you haven't joined a community yet.</p>
+                <button onClick={() => setSection("discover")} className="font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-2.5 active:opacity-90">
+                  find my community
+                </button>
+              </div>
+            ) : (
+              <div>
+                {joined.length > 1 && (
+                  <div className="flex gap-1.5 mb-3 overflow-x-auto pb-0.5">
+                    {joined.map((id) => {
+                      const g = MOCK_GROUPS.find((g) => g.id === id);
+                      if (!g) return null;
+                      return (
+                        <button
+                          key={id}
+                          onClick={() => setActiveGroup(id)}
+                          className={`font-display text-[13px] italic rounded-full px-3.5 py-1 whitespace-nowrap border transition-all ${
+                            activeGroup === id
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-card text-foreground border-border"
+                          }`}
+                        >
+                          {g.suburb}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                {group && <ChatRoom group={group} />}
+              </div>
+            )
+          )}
+          {section === "challenges" && <ChallengesPanel joined={joined} />}
+          {section === "profile" && <CommunityProfile locationEnabled={locationEnabled} onToggleLocation={() => setLocationEnabled((l) => !l)} />}
+        </motion.div>
+      </AnimatePresence>
+
+      <BotanicalSprig width={160} className="mx-auto mt-8 md:hidden" />
+      <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
+    </div>
+  );
+}

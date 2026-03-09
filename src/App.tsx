@@ -14,6 +14,7 @@ import Modules from "./pages/Modules";
 import Membership from "./pages/Membership";
 import Practice from "./pages/Practice";
 import Recommendations from "./pages/Recommendations";
+import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/membership" element={<Membership />} />
             <Route path="/my-practice" element={<Practice />} />
             <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/community" element={<Community />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
