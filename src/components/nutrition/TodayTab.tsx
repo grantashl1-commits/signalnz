@@ -6,6 +6,7 @@ import MealIllustration from "@/components/MealIllustration";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT, getWaterCount, setWaterCount } from "@/lib/cycle-utils";
 import { Meal } from "@/data/meal-plans";
+import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -101,7 +102,8 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
           {meals.map((meal, i) => {
             const expanded = expandedMeal === meal.type;
             const isEaten = eaten[meal.type];
-            // Extract single-line benefit
+            const isDinner = meal.type.toLowerCase() === "dinner";
+            // Extract single-line benefit.
             const shortBenefit = meal.phaseBenefit.split(".")[0] + ".";
 
             return (
@@ -139,7 +141,12 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                       {shortBenefit}
                     </p>
 
-                    {/* Nutrient badges from ingredients keywords */}
+                    {/* Kids dinner alternative */}
+                    {isDinner && (
+                      <KidsDinnerAlt dinnerName={meal.name} phase={phase} />
+                    )}
+
+                    {/* Nutrient badges */}
                     {meal.calories && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {meal.calories && (
@@ -168,8 +175,9 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                         setExpandedMeal(expanded ? null : meal.type);
                       }}
                       className="touch-btn flex items-center gap-1.5 mt-3 font-body text-xs text-muted-foreground"
+                      style={{ fontWeight: 300 }}
                     >
-                      {expanded ? "show less" : "ingredients + benefits"}
+                      {expanded ? "Show less" : "Ingredients + benefits"}
                       {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                     </button>
 
@@ -190,7 +198,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                               </div>
                             )}
                             <div>
-                              <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Phase Benefit</p>
+                              <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Phase benefit</p>
                               <p className="font-display text-xs italic text-muted-foreground mt-1">{meal.phaseBenefit}</p>
                             </div>
                             {(meal.calories || meal.protein) && (
@@ -216,9 +224,9 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                       }}
                     >
                       {isEaten ? (
-                        <>eaten <WildStar size={14} color="white" /></>
+                        <>Eaten <WildStar size={14} color="white" /></>
                       ) : (
-                        "mark as eaten"
+                        "Mark as eaten"
                       )}
                     </button>
                   </div>
@@ -229,9 +237,9 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
         </div>
       </div>
 
-      {/* Water tracker — below last card */}
+      {/* Water tracker */}
       <div className="card-warm p-4 md:p-5">
-        <p className="font-hand text-sm font-bold text-muted-foreground mb-3">water today</p>
+        <p className="font-hand text-sm font-bold text-muted-foreground mb-3">Water today</p>
         <div className="flex gap-2 mb-2">
           {Array.from({ length: 8 }, (_, i) => (
             <button
