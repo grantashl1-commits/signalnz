@@ -169,7 +169,7 @@ export default function CyclePage() {
     return getMonthLogSummary(calendarMonth.getFullYear(), calendarMonth.getMonth());
   }, [calendarMonth, refreshKey]);
 
-  const isFollicularPhaseSeeds = info.cycleDay <= 14;
+  
 
   const TABS = [
     { id: "overview" as const, label: "Overview" },
