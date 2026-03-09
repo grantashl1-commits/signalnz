@@ -14,6 +14,7 @@ const navItems = [
   { path: "/my-practice", icon: Heart, label: "Practice" },
   { path: "/journal", icon: PenLine, label: "Journal" },
   { path: "/recommendations", icon: Star, label: "Picks" },
+  { path: "/community", icon: Users, label: "Community" },
   { path: "/modules", icon: BookOpen, label: "Modules" },
   { path: "/membership", icon: Crown, label: "Membership" },
 ];
