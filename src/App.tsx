@@ -14,6 +14,7 @@ import Modules from "./pages/Modules";
 import Membership from "./pages/Membership";
 import Practice from "./pages/Practice";
 import Recommendations from "./pages/Recommendations";
+import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
