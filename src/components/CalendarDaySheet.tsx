@@ -241,7 +241,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                         setSelectedMoods((prev) => prev.includes(mood) ? prev.filter((m) => m !== mood) : [...prev, mood]);
                       }}
                       className={`touch-btn flex flex-col items-center gap-1 rounded-2xl p-2 min-h-[70px] transition-all ${selected ? "ring-2 bg-secondary/80" : "bg-card border border-border"}`}
-                      style={selected ? { borderColor: phaseColor, ringColor: phaseColor } : {}}
+                      style={selected ? { borderColor: phaseColor } : {}}
                     >
                       {Icon && <Icon size={28} color={selected ? phaseColor : undefined} />}
                       <span className="font-hand text-[10px] font-bold text-foreground">{mood}</span>
