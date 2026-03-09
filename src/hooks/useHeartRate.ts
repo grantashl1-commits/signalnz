@@ -1,4 +1,4 @@
-/// <reference types="web-bluetooth" />
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, useCallback, useRef, useEffect } from "react";
 
