@@ -12,6 +12,8 @@ import Breathwork from "./pages/Breathwork";
 import Journal from "./pages/Journal";
 import Modules from "./pages/Modules";
 import Membership from "./pages/Membership";
+import Practice from "./pages/Practice";
+import Recommendations from "./pages/Recommendations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +35,8 @@ const App = () => (
             <Route path="/journal" element={<Journal />} />
             <Route path="/modules" element={<Modules />} />
             <Route path="/membership" element={<Membership />} />
+            <Route path="/my-practice" element={<Practice />} />
+            <Route path="/recommendations" element={<Recommendations />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

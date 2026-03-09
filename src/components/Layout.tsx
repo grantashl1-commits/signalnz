@@ -11,7 +11,9 @@ const navItems = [
   { path: "/nutrition", icon: Salad, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/breathwork", icon: Wind, label: "Breathe" },
+  { path: "/my-practice", icon: Heart, label: "Practice" },
   { path: "/journal", icon: PenLine, label: "Journal" },
+  { path: "/recommendations", icon: Star, label: "Picks" },
   { path: "/modules", icon: BookOpen, label: "Modules" },
   { path: "/membership", icon: Crown, label: "Membership" },
 ];
