@@ -8,7 +8,7 @@ import InsightsTab from "@/components/InsightsTab";
 import {
   getCycleInfo, getLastPeriodStart, setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
-  getSeedsTaken, setSeedsTaken, getDayIndicators, getMonthLogSummary,
+  getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 
