@@ -1,1 +1,4 @@
 project_id = "hwcgbcfqxzzhvivcdroh"
+
+[functions.cycle-ai]
+verify_jwt = false
