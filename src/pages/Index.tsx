@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock, Heart } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock, Heart, PenLine, Users } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { SacredSpiral, BotanicalSprig, HandUnderline, SeedGeometry, WildStar, CymatiSketch, RootSystem } from "@/components/BotanicalElements";
 import DailySignalCard, { PeriodDueReminder } from "@/components/DailySignal";
