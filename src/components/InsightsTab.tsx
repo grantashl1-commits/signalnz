@@ -1,13 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from "recharts";
+import { Send } from "lucide-react";
 import { BotanicalSprig, SeedGeometry, WildStar, CymatiSketch } from "@/components/BotanicalElements";
 import { MOOD_ICONS } from "@/components/TrackingIcons";
+import { supabase } from "@/integrations/supabase/client";
 import {
-  Phase, getPhaseFromDay, getLastPeriodStart, getCycleDayForDate,
-  getSymptomFrequency, getMoodsByPhase, getDayIndicators,
+  Phase, getPhaseFromDay, getLastPeriodStart, getCycleDayForDate, getCycleInfo,
+  getSymptomFrequency, getMoodsByPhase, getDayIndicators, getRecentSymptoms,
   PHASE_SHORT, PHASE_LABELS,
 } from "@/lib/cycle-utils";
+import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#7D9E82", ovulatory: "#E8A030", luteal: "#9B89B4",
@@ -18,8 +21,21 @@ const cardVariant = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.35 } }),
 };
 
+const SUGGESTED_QUESTIONS = [
+  "why do I crave sugar before my period?",
+  "is my luteal phase too long?",
+  "what does my mood pattern tell me?",
+];
+
 export default function InsightsTab() {
   const lastPeriod = getLastPeriodStart();
+  const info = getCycleInfo(lastPeriod);
+
+  // Cycle Coach state
+  const [coachOpen, setCoachOpen] = useState(false);
+  const [coachMessages, setCoachMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [coachInput, setCoachInput] = useState("");
+  const [coachLoading, setCoachLoading] = useState(false);
 
   // Cycle timeline data
   const timelineData = useMemo(() => {
@@ -48,6 +64,46 @@ export default function InsightsTab() {
   // Mood by phase
   const moodsByPhase = useMemo(() => getMoodsByPhase(), []);
 
+  // Cycle Coach
+  const sendCoachMessage = async (text: string) => {
+    if (!text.trim()) return;
+    haptic("light");
+    const userMsg = { role: "user" as const, content: text };
+    const updatedMessages = [...coachMessages, userMsg];
+    setCoachMessages(updatedMessages);
+    setCoachInput("");
+    setCoachLoading(true);
+
+    try {
+      // Add context to the first message
+      const contextPrefix = updatedMessages.length === 1
+        ? `[Context: Cycle day ${info.cycleDay}, ${PHASE_SHORT[info.phase]} phase. ${
+            getRecentSymptoms(3).flatMap(s => s.symptoms).length > 0
+              ? `Recent symptoms: ${getRecentSymptoms(3).flatMap(s => s.symptoms).join(", ")}.`
+              : ""
+          }]\n\n`
+        : "";
+
+      const messagesForAI = updatedMessages.map((m, i) => ({
+        role: m.role,
+        content: i === 0 ? contextPrefix + m.content : m.content,
+      }));
+
+      const { data, error } = await supabase.functions.invoke("cycle-ai", {
+        body: { type: "cycle-coach", messages: messagesForAI },
+      });
+
+      if (error) throw error;
+
+      setCoachMessages([...updatedMessages, { role: "assistant", content: data?.message || "I'm sorry, I couldn't generate a response. Please try again." }]);
+    } catch (err) {
+      console.error("Coach error:", err);
+      setCoachMessages([...updatedMessages, { role: "assistant", content: "Something went wrong. Please try again in a moment." }]);
+    } finally {
+      setCoachLoading(false);
+    }
+  };
+
   if (!lastPeriod) {
     return (
       <div className="card-warm p-6 text-center">
@@ -73,11 +129,9 @@ export default function InsightsTab() {
               style={{ backgroundColor: PHASE_HEX[d.phase] }}
               title={`Day ${d.day} — ${PHASE_SHORT[d.phase]}`}
             >
-              {/* Symptom dot above */}
               {d.hasSymptoms && (
                 <div className="absolute -top-2 w-1.5 h-1.5 rounded-full bg-foreground/60" />
               )}
-              {/* Mood dot below */}
               {d.hasMood && (
                 <div className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-foreground/40" />
               )}
@@ -106,23 +160,21 @@ export default function InsightsTab() {
               most logged: <span className="text-foreground font-medium">{topSymptom.name}</span> — {topSymptom.count} times
             </p>
           )}
-          <div className="h-32">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={symptomChartData} layout="vertical" margin={{ left: 60, right: 8 }}>
-                <XAxis type="number" hide />
-                <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={12}>
-                  {symptomChartData.map((_, idx) => (
-                    <Cell key={idx} fill={PHASE_HEX.menstrual} opacity={0.7} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Custom Y-axis labels */}
-          <div className="flex flex-col gap-[2px] -mt-[calc(8rem+4px)] ml-1 pointer-events-none" style={{ height: "8rem" }}>
+          <div className="space-y-1.5">
             {symptomChartData.map((d) => (
-              <div key={d.name} className="flex-1 flex items-center">
-                <span className="font-hand text-[9px] text-muted-foreground truncate w-14">{d.name}</span>
+              <div key={d.name} className="flex items-center gap-2">
+                <span className="font-hand text-[10px] text-muted-foreground w-16 text-right truncate">{d.name}</span>
+                <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${(d.count / (topSymptom?.count || 1)) * 100}%`,
+                      backgroundColor: PHASE_HEX.menstrual,
+                      opacity: 0.7,
+                    }}
+                  />
+                </div>
+                <span className="font-mono text-[9px] text-muted-foreground w-4">{d.count}</span>
               </div>
             ))}
           </div>
@@ -172,40 +224,94 @@ export default function InsightsTab() {
         </motion.div>
       )}
 
-      {/* Section E: Cycle Coach Prompt */}
+      {/* Section E: Cycle Coach */}
       <motion.div custom={3} initial="hidden" animate="visible" variants={cardVariant}
-        className="relative overflow-hidden card-warm p-5 text-center"
-        style={{ backgroundColor: `${PHASE_HEX[getPhaseFromDay(1)]}15` }}
+        className="relative overflow-hidden card-warm"
+        style={{ backgroundColor: `${PHASE_HEX[info.phase]}10` }}
       >
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <SeedGeometry size={200} opacity={0.06} />
         </div>
-        <div className="relative z-10">
+
+        <div className="relative z-10 p-5">
           <p className="font-display text-lg italic text-foreground mb-1">ask your cycle coach</p>
           <p className="font-hand text-sm text-muted-foreground mb-4">what would you like to understand?</p>
 
-          <div className="flex flex-col gap-2">
-            {[
-              "why do I crave sugar before my period?",
-              "is my luteal phase too long?",
-              "what does my mood pattern tell me?",
-            ].map((q) => (
-              <button
-                key={q}
-                className="touch-btn card-warm px-4 py-3 min-h-[44px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors"
-              >
-                {q}
-              </button>
-            ))}
-          </div>
+          {/* Suggested questions (before conversation starts) */}
+          {coachMessages.length === 0 && (
+            <div className="flex flex-col gap-2 mb-4">
+              {SUGGESTED_QUESTIONS.map((q) => (
+                <button
+                  key={q}
+                  onClick={() => sendCoachMessage(q)}
+                  className="touch-btn card-warm px-4 py-3 min-h-[44px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          )}
 
-          <p className="font-body text-[10px] text-muted-foreground mt-4 italic">
-            AI-powered insights coming soon — enable Lovable Cloud to unlock personalised cycle coaching.
-          </p>
+          {/* Conversation */}
+          {coachMessages.length > 0 && (
+            <div className="space-y-3 mb-4 max-h-[400px] overflow-y-auto">
+              {coachMessages.map((msg, i) => (
+                <div key={i} className={`${msg.role === "user" ? "ml-8" : "mr-4"}`}>
+                  <div className={`rounded-2xl px-4 py-3 ${
+                    msg.role === "user"
+                      ? "bg-primary/10 ml-auto"
+                      : "bg-card border border-border"
+                  }`}>
+                    <p className={`font-body text-sm leading-relaxed ${
+                      msg.role === "assistant" ? "font-display italic" : ""
+                    } text-foreground`}>
+                      {msg.content}
+                    </p>
+                  </div>
+                  <p className="font-mono text-[8px] text-muted-foreground mt-0.5 px-1">
+                    {msg.role === "user" ? "you" : "cycle coach"}
+                  </p>
+                </div>
+              ))}
+              {coachLoading && (
+                <div className="mr-4">
+                  <div className="rounded-2xl px-4 py-3 bg-card border border-border">
+                    <div className="flex gap-1">
+                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" />
+                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" style={{ animationDelay: "150ms" }} />
+                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Input */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={coachInput}
+              onChange={(e) => setCoachInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !coachLoading && sendCoachMessage(coachInput)}
+              placeholder="ask anything about your cycle..."
+              className="flex-1 rounded-xl border border-border bg-background px-4 py-3 min-h-[44px] font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              style={{ fontSize: "16px" }}
+              disabled={coachLoading}
+            />
+            <button
+              onClick={() => sendCoachMessage(coachInput)}
+              disabled={coachLoading || !coachInput.trim()}
+              className="touch-btn rounded-xl px-4 py-3 min-w-[44px] min-h-[44px] flex items-center justify-center active:opacity-90 disabled:opacity-30"
+              style={{ backgroundColor: PHASE_HEX[info.phase] }}
+            >
+              <Send className="h-4 w-4 text-card" />
+            </button>
+          </div>
         </div>
       </motion.div>
 
-      {/* Energy pattern chart (existing, improved) */}
+      {/* Energy pattern chart */}
       <motion.div custom={4} initial="hidden" animate="visible" variants={cardVariant} className="card-warm p-5">
         <p className="font-hand text-sm font-bold text-primary mb-3">typical energy across cycle</p>
         <div className="flex items-end gap-[2px] h-24">
