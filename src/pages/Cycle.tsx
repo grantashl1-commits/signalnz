@@ -1,12 +1,14 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Pencil } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, MoonPhaseRow, BotanicalSprig, WildStar, RootSystem, HandUnderline } from "@/components/BotanicalElements";
+import CalendarDaySheet from "@/components/CalendarDaySheet";
+import InsightsTab from "@/components/InsightsTab";
 import {
   getCycleInfo, getLastPeriodStart, setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
-  Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate, getSymptoms, logSymptom,
-  getSeedsTaken, setSeedsTaken, getLoggedWorkouts
+  Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
+  getSeedsTaken, setSeedsTaken, getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -55,9 +57,6 @@ const PHASE_HEX: Record<Phase, string> = {
   ovulatory: "#E8A030",
   luteal: "#9B89B4",
 };
-
-const SYMPTOMS = ["Cramps", "Bloating", "Headache", "Fatigue", "Tender breasts", "Spotting", "Back pain", "Mood changes"];
-const FLOW_LEVELS = ["Light", "Medium", "Heavy", "Spotting"];
 
 // Moon Wheel
 function MoonWheel({ currentPhase, cycleDay }: { currentPhase: Phase; cycleDay: number }) {
@@ -124,10 +123,9 @@ export default function CyclePage() {
   const [expandedPhase, setExpandedPhase] = useState<Phase | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
-  const [selectedEnergy, setSelectedEnergy] = useState(0);
-  const [selectedSleep, setSelectedSleep] = useState(0);
-  const [selectedFlow, setSelectedFlow] = useState("");
+  const [showDateEdit, setShowDateEdit] = useState(false);
+  const [dateEditValue, setDateEditValue] = useState(lastPeriod);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const info = getCycleInfo(lastPeriod || null);
   const daysUntil = getDaysUntilNextPhase(info.cycleDay, info.phase);
@@ -136,11 +134,25 @@ export default function CyclePage() {
   const nextPhase = PHASE_LABELS[phases[nextPhaseIdx]];
   const todayStr = new Date().toISOString().split("T")[0];
   const [seedsTaken, setSeedsTakenState] = useState(getSeedsTaken(todayStr));
+  const hasDateSet = !!lastPeriod;
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLastPeriod(e.target.value);
-    setLastPeriodStart(e.target.value);
+    const val = e.target.value;
+    setLastPeriod(val);
+    setLastPeriodStart(val);
   };
+
+  const handleDateEditSave = () => {
+    setLastPeriod(dateEditValue);
+    setLastPeriodStart(dateEditValue);
+    setShowDateEdit(false);
+    setRefreshKey((k) => k + 1);
+  };
+
+  const handleCycleUpdate = useCallback(() => {
+    setLastPeriod(getLastPeriodStart() || "");
+    setRefreshKey((k) => k + 1);
+  }, []);
 
   const calendarDays = useMemo(() => {
     const year = calendarMonth.getFullYear();
@@ -154,22 +166,11 @@ export default function CyclePage() {
     return days;
   }, [calendarMonth]);
 
-  const openDayLog = (dateStr: string) => {
-    haptic("light");
-    setSelectedDate(dateStr);
-    const symptoms = getSymptoms(dateStr);
-    setSelectedSymptoms(symptoms.symptoms || []);
-    setSelectedEnergy(symptoms.energy || 0);
-    setSelectedSleep(symptoms.sleep || 0);
-    setSelectedFlow(symptoms.flow || "");
-  };
+  const monthSummary = useMemo(() => {
+    return getMonthLogSummary(calendarMonth.getFullYear(), calendarMonth.getMonth());
+  }, [calendarMonth, refreshKey]);
 
-  const saveSymptoms = () => {
-    if (!selectedDate) return;
-    haptic("success");
-    logSymptom(selectedDate, { symptoms: selectedSymptoms, energy: selectedEnergy, sleep: selectedSleep, flow: selectedFlow });
-    setSelectedDate(null);
-  };
+  const isFollicularPhaseSeeds = info.cycleDay <= 14;
 
   const TABS = [
     { id: "overview" as const, label: "Overview" },
@@ -189,33 +190,66 @@ export default function CyclePage() {
         <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Cycle Tracker</h1>
       </div>
 
-      {/* Date picker */}
-      <div className="card-warm p-4 md:p-5">
-        <label className="block font-hand text-sm font-bold text-primary mb-2">when did your last period start?</label>
-        <input
-          type="date"
-          value={lastPeriod}
-          onChange={handleDateChange}
-          className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-          style={{ fontSize: "16px" }}
-        />
-      </div>
+      {/* Date picker — only shown if no date set yet */}
+      {!hasDateSet && (
+        <div className="card-warm p-4 md:p-5">
+          <label className="block font-hand text-sm font-bold text-primary mb-2">when did your last period start?</label>
+          <input
+            type="date"
+            value={lastPeriod}
+            onChange={handleDateChange}
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+            style={{ fontSize: "16px" }}
+          />
+        </div>
+      )}
+
+      {/* Date edit bottom sheet */}
+      {showDateEdit && (
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-4 md:p-5">
+          <label className="block font-hand text-sm font-bold text-primary mb-2">when did your last period start?</label>
+          <input
+            type="date"
+            value={dateEditValue}
+            onChange={(e) => setDateEditValue(e.target.value)}
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+            style={{ fontSize: "16px" }}
+          />
+          <div className="flex gap-2 mt-3">
+            <button onClick={handleDateEditSave} className="touch-btn flex-1 rounded-xl bg-primary px-4 py-3 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90">
+              Save
+            </button>
+            <button onClick={() => setShowDateEdit(false)} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[44px] font-body text-sm text-muted-foreground active:opacity-90">
+              Cancel
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       {/* Phase hero */}
-      <div className="text-center space-y-2">
-        <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground">
-          {PHASE_SHORT[info.phase]} — Day {info.cycleDay}
-        </h2>
-        <HandUnderline width={120} className="mx-auto md:hidden" color={PHASE_HEX[info.phase]} />
-        <HandUnderline width={160} className="mx-auto hidden md:block" color={PHASE_HEX[info.phase]} />
-        <p className="font-display text-sm italic text-muted-foreground max-w-md mx-auto mt-2">
-          {PHASE_DATA[info.phase].poetry}
-        </p>
-        <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} size="lg" />
-      </div>
+      {hasDateSet && (
+        <>
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground">
+                {PHASE_SHORT[info.phase]} — Day {info.cycleDay}
+              </h2>
+              <button onClick={() => { haptic("light"); setShowDateEdit(true); }} className="touch-btn p-1.5 rounded-full bg-secondary/60 min-w-[32px] min-h-[32px] flex items-center justify-center">
+                <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
+            </div>
+            <HandUnderline width={120} className="mx-auto md:hidden" color={PHASE_HEX[info.phase]} />
+            <HandUnderline width={160} className="mx-auto hidden md:block" color={PHASE_HEX[info.phase]} />
+            <p className="font-display text-sm italic text-muted-foreground max-w-md mx-auto mt-2">
+              {PHASE_DATA[info.phase].poetry}
+            </p>
+            <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} size="lg" />
+          </div>
 
-      <MoonPhaseRow width={200} className="mx-auto md:hidden" opacity={0.25} />
-      <MoonPhaseRow width={240} className="mx-auto hidden md:block" opacity={0.25} />
+          <MoonPhaseRow width={200} className="mx-auto md:hidden" opacity={0.25} />
+          <MoonPhaseRow width={240} className="mx-auto hidden md:block" opacity={0.25} />
+        </>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-full bg-secondary p-1">
@@ -234,12 +268,12 @@ export default function CyclePage() {
 
       {activeTab === "overview" && (
         <div className="space-y-6 md:space-y-8">
-          <MoonWheel currentPhase={info.phase} cycleDay={info.cycleDay} />
+          {hasDateSet && <MoonWheel currentPhase={info.phase} cycleDay={info.cycleDay} />}
           <p className="text-center font-hand text-sm text-muted-foreground">
             {nextPhase} begins in ~{daysUntil} days
           </p>
 
-          {/* Phase cards — single column on mobile */}
+          {/* Phase cards */}
           <div className="grid gap-3 sm:grid-cols-2">
             {phases.map((phase, i) => {
               const d = PHASE_DATA[phase];
@@ -296,13 +330,57 @@ export default function CyclePage() {
             })}
           </div>
 
-          {/* Seed cycling */}
+          {/* Seed cycling — enhanced with amounts */}
           <div className="card-warm p-4 md:p-5">
-            <p className="font-hand text-sm font-bold text-primary mb-2">seed cycling</p>
-            <p className="font-body text-sm text-muted-foreground mb-3">
-              {info.cycleDay <= 14 ? "Days 1–14: Pumpkin + Flaxseeds" : "Days 15–28: Sunflower + Sesame"}
-            </p>
-            <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
+            <p className="font-hand text-sm font-bold text-primary mb-3">seed cycling</p>
+
+            {isFollicularPhaseSeeds ? (
+              <div className="space-y-3">
+                <p className="font-hand text-xs font-bold" style={{ color: PHASE_HEX[info.phase] }}>
+                  Days 1–14 · Follicular/Menstrual
+                </p>
+                <div className="space-y-2">
+                  <div>
+                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Pumpkin Seeds</p>
+                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
+                    <p className="font-body text-[10px] italic text-muted-foreground">(raw, ground or whole)</p>
+                  </div>
+                  <div>
+                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Flaxseeds</p>
+                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
+                    <p className="font-body text-[10px] italic text-muted-foreground">(freshly ground is best)</p>
+                  </div>
+                </div>
+                <BotanicalSprig width={100} opacity={0.15} />
+                <p className="font-body text-[10px] italic text-muted-foreground font-light">
+                  Grind flaxseeds fresh — pre-ground loses potency quickly.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="font-hand text-xs font-bold" style={{ color: PHASE_HEX[info.phase] }}>
+                  Days 15–28 · Luteal/Ovulatory
+                </p>
+                <div className="space-y-2">
+                  <div>
+                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Sunflower Seeds</p>
+                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
+                    <p className="font-body text-[10px] italic text-muted-foreground">(raw or lightly roasted)</p>
+                  </div>
+                  <div>
+                    <p className="font-display text-sm italic" style={{ color: PHASE_HEX[info.phase] }}>Sesame Seeds</p>
+                    <p className="font-hand text-xs text-muted-foreground">1 tablespoon daily</p>
+                    <p className="font-body text-[10px] italic text-muted-foreground">(tahini counts)</p>
+                  </div>
+                </div>
+                <BotanicalSprig width={100} opacity={0.15} />
+                <p className="font-body text-[10px] italic text-muted-foreground font-light">
+                  A tablespoon of tahini is a perfect sesame substitute.
+                </p>
+              </div>
+            )}
+
+            <label className="flex items-center gap-3 cursor-pointer min-h-[44px] mt-3 pt-3 border-t border-border">
               <input type="checkbox" checked={seedsTaken} onChange={(e) => { haptic("light"); setSeedsTakenState(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }} className="rounded border-border text-primary focus:ring-primary h-5 w-5" />
               <span className="font-body text-sm text-foreground">seeds taken today</span>
             </label>
@@ -312,6 +390,11 @@ export default function CyclePage() {
 
       {activeTab === "calendar" && (
         <div className="space-y-4 md:space-y-6">
+          {/* Month summary header */}
+          <p className="font-body text-xs text-muted-foreground font-light text-center">
+            {calendarMonth.toLocaleDateString("en-US", { month: "long" })}: {monthSummary.periodDays} period days · {monthSummary.symptomsLogged} symptoms logged · {monthSummary.moodsLogged} moods recorded
+          </p>
+
           <div className="flex items-center justify-between">
             <button onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))} className="touch-btn p-2 active:bg-secondary rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"><ChevronLeft className="h-5 w-5 text-muted-foreground" /></button>
             <h3 className="font-display text-base md:text-lg italic text-foreground">
@@ -330,132 +413,44 @@ export default function CyclePage() {
               const isToday = dateStr === todayStr;
               const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
               const phase = cycleDay ? getPhaseFromDay(cycleDay) : null;
-              const checkedIn = !!localStorage.getItem(`mindcast_checkin_${dateStr}`);
-              const hasWorkout = getLoggedWorkouts(dateStr).length > 0;
+              const indicators = getDayIndicators(dateStr, lastPeriod);
 
               return (
                 <button
                   key={dateStr}
-                  onClick={() => openDayLog(dateStr)}
-                  className={`touch-btn relative rounded-xl p-1.5 md:p-2 text-center transition-all active:bg-secondary min-h-[44px] ${isToday ? "ring-1 ring-primary" : ""}`}
+                  onClick={() => { haptic("light"); setSelectedDate(dateStr); }}
+                  className={`touch-btn relative rounded-xl p-1 md:p-2 text-center transition-all active:bg-secondary min-h-[44px] ${isToday ? "ring-1 ring-primary" : ""}`}
                 >
                   <span className="font-mono text-xs text-foreground">{date.getDate()}</span>
-                  <div className="flex justify-center gap-0.5 mt-0.5">
+                  <div className="flex justify-center gap-[2px] mt-0.5 flex-wrap">
                     {phase && <div className="h-2 w-2 rounded-full" style={{ backgroundColor: PHASE_HEX[phase] }} />}
-                    {checkedIn && <WildStar size={8} color={PHASE_HEX[phase || "follicular"]} />}
-                    {hasWorkout && <div className="h-1.5 w-1.5 rounded-full bg-phase-ovulatory/60" />}
+                  </div>
+                  {/* Indicator dots */}
+                  <div className="flex justify-center gap-[1px] mt-[1px]">
+                    {indicators.isPeriodDay && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C4526E" }} />}
+                    {indicators.hasMood && <div className="h-1 w-1 rounded-full bg-foreground/40" />}
+                    {indicators.hasSymptoms && phase && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: PHASE_HEX[phase], opacity: 0.6 }} />}
+                    {indicators.hasWeight && <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />}
+                    {indicators.hasNotes && <div className="h-1 w-1 rounded-full bg-foreground/30" />}
+                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#E8A030" }} />}
                   </div>
                 </button>
               );
             })}
           </div>
 
-          {/* Day log — bottom sheet style on mobile */}
+          {/* Day sheet */}
           {selectedDate && (
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-4 md:p-5 space-y-4">
-              <div className="bottom-sheet-handle md:hidden" />
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-base md:text-lg italic text-foreground">
-                  {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
-                </h3>
-                <button onClick={() => setSelectedDate(null)} className="touch-btn font-body text-xs text-muted-foreground active:text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center">Close</button>
-              </div>
-
-              {lastPeriod && (() => {
-                const d = new Date(selectedDate + "T12:00:00");
-                const cd = getCycleDayForDate(lastPeriod, d);
-                return <PhaseBadge phase={getPhaseFromDay(cd)} cycleDay={cd} />;
-              })()}
-
-              <div>
-                <p className="font-hand text-sm font-bold text-primary mb-2">flow</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {FLOW_LEVELS.map((f) => (
-                    <button key={f} onClick={() => { haptic("light"); setSelectedFlow(selectedFlow === f ? "" : f); }}
-                      className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${selectedFlow === f ? "bg-phase-menstrual text-white" : "bg-secondary text-muted-foreground active:bg-secondary/80"}`}
-                    >{f}</button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="font-hand text-sm font-bold text-primary mb-2">symptoms</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {SYMPTOMS.map((s) => (
-                    <button key={s} onClick={() => { haptic("light"); setSelectedSymptoms((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]); }}
-                      className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${selectedSymptoms.includes(s) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                    >{s}</button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {[{ label: "energy", value: selectedEnergy, set: setSelectedEnergy }, { label: "sleep", value: selectedSleep, set: setSelectedSleep }].map(({ label, value, set }) => (
-                  <div key={label}>
-                    <p className="font-hand text-sm font-bold text-primary mb-2">{label}</p>
-                    <div className="flex gap-1.5">
-                      {[1, 2, 3, 4, 5].map((n) => (
-                        <button key={n} onClick={() => { haptic("light"); set(n); }} className={`touch-btn h-8 w-8 min-w-[32px] rounded-full transition-all ${n <= value ? "bg-primary" : "bg-secondary"}`} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <button onClick={saveSymptoms} className="touch-btn w-full rounded-xl bg-primary px-4 py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                <Check className="h-4 w-4" /> Save
-              </button>
-            </motion.div>
+            <CalendarDaySheet
+              dateStr={selectedDate}
+              onClose={() => { setSelectedDate(null); setRefreshKey((k) => k + 1); }}
+              onCycleUpdate={handleCycleUpdate}
+            />
           )}
         </div>
       )}
 
-      {activeTab === "insights" && (
-        <div className="space-y-6">
-          <div className="card-warm p-5 md:p-6 text-center">
-            <p className="font-hand text-sm font-bold text-primary mb-4">cycle patterns</p>
-            <p className="font-display text-sm italic text-muted-foreground mb-6">Your insights will build over time. Here's a typical pattern:</p>
-
-            <div>
-              <p className="font-hand text-sm font-bold text-primary mb-3 text-left">energy across cycle</p>
-              <div className="flex items-end gap-0.5 h-28 md:h-32">
-                {Array.from({ length: 28 }, (_, i) => {
-                  const day = i + 1;
-                  const phase = getPhaseFromDay(day);
-                  const heights: Record<Phase, number[]> = {
-                    menstrual: [30, 25, 20, 25, 30],
-                    follicular: [35, 45, 55, 65, 70, 75, 80, 85],
-                    ovulatory: [95, 100, 95],
-                    luteal: [80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 30],
-                  };
-                  const phaseDay = phase === "menstrual" ? day - 1 : phase === "follicular" ? day - 6 : phase === "ovulatory" ? day - 14 : day - 17;
-                  const h = heights[phase][phaseDay] || 40;
-                  const isCurrent = day === info.cycleDay;
-                  return (
-                    <div key={day} className={`flex-1 rounded-t transition-all ${isCurrent ? "ring-1 ring-foreground" : ""}`}
-                      style={{ height: `${h}%`, backgroundColor: PHASE_HEX[phase], opacity: isCurrent ? 1 : 0.5 }}
-                    />
-                  );
-                })}
-              </div>
-              <div className="flex justify-between font-mono text-[9px] text-muted-foreground mt-1">
-                <span>D1</span><span>D14</span><span>D28</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 md:gap-4 mt-6">
-              <div className="bg-secondary rounded-xl p-3 md:p-4 text-center">
-                <p className="font-mono text-2xl text-foreground">28</p>
-                <p className="font-body text-[10px] text-muted-foreground">Avg. Cycle</p>
-              </div>
-              <div className="bg-secondary rounded-xl p-3 md:p-4 text-center">
-                <p className="font-mono text-2xl text-foreground">5</p>
-                <p className="font-body text-[10px] text-muted-foreground">Avg. Period</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {activeTab === "insights" && <InsightsTab />}
     </div>
   );
 }

@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { SacredSpiral, BotanicalSprig, HandUnderline, SeedGeometry, WildStar, CymatiSketch, RootSystem } from "@/components/BotanicalElements";
-import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, getWaterCount, setWaterCount, getSeedCyclingDay, getPhaseFromDay, Phase } from "@/lib/cycle-utils";
+import DailySignalCard, { PeriodDueReminder } from "@/components/DailySignal";
+import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, getWaterCount, setWaterCount, getSeedCyclingDay, getPhaseFromDay, Phase, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
@@ -51,7 +52,6 @@ const PHASE_POETRY: Record<Phase, string> = {
   luteal: "the harvest is rich. honour the complexity.",
 };
 
-// Mobile animation variants
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
   visible: (i: number) => ({
@@ -68,6 +68,8 @@ export default function HomePage() {
   const focus = FOCUS[info.phase];
   const streak = getCheckinStreak();
   const seedInfo = getSeedCyclingDay(info.cycleDay);
+  const todayStr = new Date().toISOString().split("T")[0];
+  const [seedsTakenToday, setSeedsTakenToday] = useState(getSeedsTaken(todayStr));
 
   const todayWorkout = WORKOUTS.find((w) => w.id === TODAY_WORKOUT[info.phase]);
   const todayMeals = TODAY_MEALS[info.phase];
@@ -100,7 +102,7 @@ export default function HomePage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
-      {/* Background decorations — scaled for mobile */}
+      {/* Background decorations */}
       <div className="absolute top-0 right-0 -translate-y-4 md:-translate-y-8 translate-x-4 md:translate-x-8 pointer-events-none">
         <SacredSpiral size={120} opacity={0.15} className="md:hidden" />
         <SacredSpiral size={180} opacity={0.2} className="hidden md:block" />
@@ -126,7 +128,13 @@ export default function HomePage() {
         <BotanicalSprig width={280} className="mt-4 mx-auto hidden md:block" />
       </div>
 
-      {/* Today Cards — single column on mobile, 2x2 on desktop */}
+      {/* Daily Signal */}
+      <DailySignalCard />
+
+      {/* Period Due Reminder */}
+      <PeriodDueReminder />
+
+      {/* Today Cards */}
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
@@ -192,7 +200,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Week Snapshot — horizontal scroll */}
+      {/* Week Snapshot */}
       <section>
         <p className="font-hand text-sm font-bold text-primary mb-3">this week</p>
         <div className="scroll-snap-x flex gap-2 pb-2 -mx-1 px-1">
@@ -224,7 +232,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Wins — single column on mobile */}
+      {/* Quick Wins */}
       <section>
         <p className="font-hand text-sm font-bold text-primary mb-3">quick actions</p>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -248,19 +256,34 @@ export default function HomePage() {
 
           <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-lavender-dust" />
-              <span className="font-hand text-sm font-bold text-lavender-dust">wind-down</span>
-            </div>
-            <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm</p>
-          </div>
-
-          <div className="card-warm p-4">
-            <div className="flex items-center gap-2 mb-2">
               <Sprout className="h-4 w-4 text-sage-mist" />
               <span className="font-hand text-sm font-bold text-sage-mist">seed cycling</span>
             </div>
             <p className="font-body text-xs text-foreground">{seedInfo.seeds}</p>
             <p className="font-mono text-[9px] text-muted-foreground mt-0.5">{seedInfo.phase} · D{info.cycleDay}</p>
+            {/* Seeds nudge */}
+            {!seedsTakenToday && (
+              <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={seedsTakenToday}
+                  onChange={(e) => { haptic("light"); setSeedsTakenToday(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }}
+                  className="rounded border-border text-primary focus:ring-primary h-4 w-4"
+                />
+                <span className="font-hand text-xs text-muted-foreground">seeds today?</span>
+              </label>
+            )}
+            {seedsTakenToday && (
+              <p className="font-hand text-xs text-phase-follicular mt-2">✓ seeds taken</p>
+            )}
+          </div>
+
+          <div className="card-warm p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="h-4 w-4 text-lavender-dust" />
+              <span className="font-hand text-sm font-bold text-lavender-dust">wind-down</span>
+            </div>
+            <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm</p>
           </div>
         </div>
       </section>
