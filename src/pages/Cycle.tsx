@@ -134,7 +134,6 @@ export default function CyclePage() {
   const nextPhase = PHASE_LABELS[phases[nextPhaseIdx]];
   const todayStr = new Date().toISOString().split("T")[0];
   const hasDateSet = !!lastPeriod;
-  const hasDateSet = !!lastPeriod;
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
