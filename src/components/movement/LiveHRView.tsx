@@ -19,7 +19,9 @@ interface LiveHRViewProps {
 
 export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
   const hr = useHeartRate();
-  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
+  const wakeLock = useWakeLock();
+  const requestWakeLock = wakeLock.toggle;
+  const releaseWakeLock = wakeLock.release;
   const [age, setAge] = useState(getUserAge() || 30);
   const [ageSet, setAgeSet] = useState(!!getUserAge());
   const [running, setRunning] = useState(false);

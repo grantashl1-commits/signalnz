@@ -1,3 +1,5 @@
+/// <reference types="web-bluetooth" />
+
 import { useState, useCallback, useRef, useEffect } from "react";
 
 interface HeartRateState {
@@ -17,13 +19,13 @@ export function useHeartRate() {
     error: null,
   });
 
-  const deviceRef = useRef<BluetoothDevice | null>(null);
-  const characteristicRef = useRef<BluetoothRemoteGATTCharacteristic | null>(null);
+  const deviceRef = useRef<any>(null);
+  const characteristicRef = useRef<any>(null);
 
-  const isSupported = typeof navigator !== "undefined" && "bluetooth" in navigator;
+  const isSupported = typeof navigator !== "undefined" && "bluetooth" in (navigator as any);
 
   const handleHRMeasurement = useCallback((event: Event) => {
-    const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
+    const value = (event.target as any)?.value;
     if (!value) return;
 
     const flags = value.getUint8(0);
@@ -42,7 +44,8 @@ export function useHeartRate() {
     setState(prev => ({ ...prev, connecting: true, error: null }));
 
     try {
-      const device = await navigator.bluetooth.requestDevice({
+      const nav = navigator as any;
+      const device = await nav.bluetooth.requestDevice({
         filters: [{ services: ["heart_rate"] }],
       });
 
