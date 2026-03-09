@@ -38,6 +38,7 @@ const App = () => (
             <Route path="/membership" element={<Membership />} />
             <Route path="/my-practice" element={<Practice />} />
             <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/community" element={<Community />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
