@@ -1,7 +1,7 @@
 import { Phase } from "@/lib/cycle-utils";
 
 export type Suitability = "ideal" | "suitable" | "rest";
-export type WorkoutCategory = "strength" | "pilates" | "yoga" | "walk";
+export type WorkoutCategory = "strength" | "walk-restore";
 
 export interface Exercise {
   name: string;
@@ -9,6 +9,7 @@ export interface Exercise {
   reps?: string;
   duration?: string;
   formCue: string;
+  section?: string;
 }
 
 export interface Workout {
@@ -19,428 +20,393 @@ export interface Workout {
   durationMin: number;
   equipment: string;
   suitability: Record<Phase, Suitability>;
-  description?: string;
-  warmup?: string;
-  cooldown?: string;
+  description: string;
   exercises: Exercise[];
+  progressionNotes?: string[];
+  restOptions?: { id: string; name: string; duration: string; description: string }[];
 }
 
 export const WORKOUTS: Workout[] = [
-  // STRENGTH
+  // WORKOUT 1 — UPPER BODY A
   {
-    id: "full-body-power",
-    name: "Full Body Power",
+    id: "upper-body-a",
+    name: "Upper Body A",
     category: "strength",
-    duration: "45 min",
-    durationMin: 45,
-    equipment: "Light dumbbells",
+    duration: "35 min",
+    durationMin: 35,
+    equipment: "5–8kg dumbbells",
     suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "A comprehensive full-body session to build functional strength.",
-    warmup: "5 min dynamic stretching",
-    cooldown: "5 min gentle stretching",
+    description: "Chest, back, and shoulders. Three circuits repeated twice with pilates tempo control. 45 seconds on, 15 seconds rest.",
+    progressionNotes: [
+      "Week 2: Add 1 rep per circuit or increase weight 2kg if form allows.",
+      "Week 3: Slow all tempos by 1 count.",
+      "Week 4: Deload — drop reps 20%.",
+    ],
     exercises: [
-      { name: "Goblet Squats", sets: "4", reps: "10", formCue: "Keep chest lifted, weight in heels" },
-      { name: "Romanian Deadlifts", sets: "3", reps: "12", formCue: "Hinge at hips, soft knee bend" },
-      { name: "Dumbbell Lunges", sets: "3", reps: "10 each leg", formCue: "90° at both knees, upright torso" },
-      { name: "Push-ups", sets: "3", reps: "10", formCue: "Body straight line, full range" },
-      { name: "Single Arm Rows", sets: "3", reps: "12", formCue: "Pull elbow to ceiling, squeeze shoulder blade" },
-      { name: "Glute Bridges", sets: "4", reps: "15", formCue: "Drive through heels, squeeze at top" },
-      { name: "Dead Bugs", sets: "3", reps: "10", formCue: "Press lower back into floor" },
+      // Circuit 1
+      { name: "Single-Arm Dumbbell Row", sets: "2", duration: "45 sec each side", reps: "tempo", formCue: "Tempo 2-1-3. Drive elbow to hip.", section: "Circuit 1" },
+      { name: "Chest Press On Mat", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 3-1-2. Exhale on press.", section: "Circuit 1" },
+      { name: "Rear Delt Fly", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Hinge 45°, slow arc to shoulder height.", section: "Circuit 1" },
+      // Circuit 2
+      { name: "Bicep Curl", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 2-1-3. Elbows pinned, no swing.", section: "Circuit 2" },
+      { name: "Tricep Overhead Extension", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 3-1-3. Ribs down, core braced.", section: "Circuit 2" },
+      { name: "Lateral Raise", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 2-2-3. Lead with pinky finger.", section: "Circuit 2" },
+      // Circuit 3
+      { name: "Arnold Press", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Rotate palms from facing you to facing out.", section: "Circuit 3" },
+      { name: "Bent-Over Row Bilateral", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 2-1-3. Full range of motion.", section: "Circuit 3" },
+      { name: "Push-Up Full Or Modified", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 3-1-2. Straight line neck to heel.", section: "Circuit 3" },
+      // Finisher
+      { name: "Plank Shoulder Taps", sets: "1", reps: "×20 alternating", formCue: "Minimise hip rotation.", section: "Finisher" },
+      { name: "Dead Bug", sets: "1", reps: "×10 each side", formCue: "Slow and controlled.", section: "Finisher" },
+      { name: "Thoracic Rotation Half-Kneeling", sets: "1", reps: "×8 each", formCue: "Open chest, follow hand with eyes.", section: "Finisher" },
     ],
   },
+
+  // WORKOUT 2 — UPPER BODY B
   {
-    id: "lower-body-strong",
-    name: "Lower Body Strong",
+    id: "upper-body-b",
+    name: "Upper Body B",
+    category: "strength",
+    duration: "35 min",
+    durationMin: 35,
+    equipment: "5–8kg dumbbells, resistance band",
+    suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
+    description: "Different exercises, same muscle groups. Keeps adaptation happening.",
+    exercises: [
+      { name: "Renegade Row", sets: "2", duration: "45 sec alternating", reps: "tempo", formCue: "Plank position, hips perfectly square.", section: "Circuit 1" },
+      { name: "Chest Fly On Mat", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 4-1-2. Feel the full stretch.", section: "Circuit 1" },
+      { name: "Face Pull With Band", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Pull to ears, elbows high and wide. Hold 1 sec at peak.", section: "Circuit 1" },
+      { name: "Hammer Curl", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Palms facing each other. Tempo 3-1-3.", section: "Circuit 2" },
+      { name: "Tricep Kickback", sets: "2", duration: "45 sec each side", reps: "tempo", formCue: "Upper arm still, full extension, hold 2 sec at top.", section: "Circuit 2" },
+      { name: "Upright Row", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Lead with elbows to chin height. Tempo 2-1-3.", section: "Circuit 2" },
+      { name: "Single-Arm Overhead Press", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Ribs down. Do not arch lower back.", section: "Circuit 3" },
+      { name: "Underhand Row Supinated Grip", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Palms face ceiling. Targets lower lats.", section: "Circuit 3" },
+      { name: "Band Pull-Apart", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Arms straight, squeeze shoulder blades.", section: "Circuit 3" },
+      { name: "Pike Push-Up", sets: "1", reps: "×10", formCue: "Hips high, press through shoulders.", section: "Finisher" },
+      { name: "Hollow Body Hold", sets: "2", duration: "30 sec", reps: "hold", formCue: "Press lower back into floor.", section: "Finisher" },
+      { name: "Superman Hold", sets: "2", duration: "30 sec", reps: "hold", formCue: "Lift arms and legs, squeeze glutes.", section: "Finisher" },
+    ],
+  },
+
+  // WORKOUT 3 — LOWER BODY A
+  {
+    id: "lower-body-a",
+    name: "Lower Body A",
     category: "strength",
     duration: "40 min",
     durationMin: 40,
-    equipment: "Light dumbbells",
+    equipment: "8–10kg dumbbells, booty band",
     suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Build lower body strength with focused glute and leg work.",
-    warmup: "5 min leg swings and hip circles",
-    cooldown: "5 min hip flexor stretches",
+    description: "Glutes, quads, and hamstrings. Time under tension is everything here.",
     exercises: [
-      { name: "Sumo Squats", sets: "4", reps: "12", formCue: "Wide stance, toes turned out" },
-      { name: "Single Leg Deadlifts", sets: "3", reps: "10 each", formCue: "Hinge slowly, balance with core" },
-      { name: "Side-lying Clamshells", sets: "3", reps: "20", formCue: "Keep hips stacked, controlled movement" },
-      { name: "Glute Bridges with Hold", sets: "4", reps: "15", formCue: "3-second hold at top" },
-      { name: "Step-ups", sets: "3", reps: "12 each leg", formCue: "Drive through front heel" },
-      { name: "Wall Sit", sets: "3", duration: "45 seconds", reps: "hold", formCue: "90° at knees, back flat" },
-      { name: "Fire Hydrants", sets: "3", reps: "15", formCue: "Keep core engaged, control the movement" },
+      { name: "Romanian Deadlift", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 3-1-2. Hamstrings load fully.", section: "Circuit 1 — Posterior Chain" },
+      { name: "Glute Bridge With Band", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Hold 1 sec at top. Tempo 1-1-3.", section: "Circuit 1 — Posterior Chain" },
+      { name: "Single-Leg Deadlift", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Bodyweight or light. Balance and control.", section: "Circuit 1 — Posterior Chain" },
+      { name: "Goblet Squat", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Dumbbell at chest. Tempo 3-1-2.", section: "Circuit 2 — Quad Focus" },
+      { name: "Reverse Lunge Alternating", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Back knee taps mat. Tempo 3-1-2.", section: "Circuit 2 — Quad Focus" },
+      { name: "Sumo Squat", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Wide stance, toes out. Tempo 4-1-2.", section: "Circuit 2 — Quad Focus" },
+      { name: "Lateral Band Walk", sets: "2", duration: "45 sec", reps: "10 steps each", formCue: "Low squat hold throughout.", section: "Circuit 3 — Accessory" },
+      { name: "Donkey Kicks With Band", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Slow and controlled. No hip rotation.", section: "Circuit 3 — Accessory" },
+      { name: "Side-Lying Leg Raise", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Ankle weight optional. Tempo 2-1-3.", section: "Circuit 3 — Accessory" },
+      { name: "Bridge Pulse", sets: "1", reps: "×30", formCue: "Small range, glute squeeze.", section: "Finisher" },
+      { name: "Frog Bridge", sets: "1", reps: "×15", formCue: "Soles together, knees wide.", section: "Finisher" },
+      { name: "Fire Hydrant Pulse", sets: "1", reps: "×20 each side", formCue: "Small pulses at top.", section: "Finisher" },
     ],
   },
+
+  // WORKOUT 4 — LOWER BODY B
   {
-    id: "upper-body-strength",
-    name: "Upper Body Strength",
+    id: "lower-body-b",
+    name: "Lower Body B",
     category: "strength",
-    duration: "35 min",
-    durationMin: 35,
-    equipment: "Light to medium dumbbells (5–10kg)",
-    suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Targeted upper body work for balanced strength.",
-    warmup: "5 min arm circles and band pull-aparts",
-    cooldown: "5 min shoulder and chest stretches",
-    exercises: [
-      { name: "Dumbbell Shoulder Press", sets: "3", reps: "10", formCue: "Press directly overhead, core tight" },
-      { name: "Bent-over Dumbbell Rows", sets: "3", reps: "12", formCue: "Flat back, pull to ribcage" },
-      { name: "Bicep Curls", sets: "3", reps: "12", formCue: "Elbows pinned to sides" },
-      { name: "Tricep Overhead Extension", sets: "3", reps: "10", formCue: "Keep elbows close to ears" },
-      { name: "Lateral Raises", sets: "3", reps: "15", formCue: "Slight bend in elbows, controlled" },
-      { name: "Push-ups (full or modified)", sets: "3", reps: "10", formCue: "Chest to floor, full range" },
-      { name: "Plank Hold", sets: "3", duration: "30 seconds", reps: "hold", formCue: "Straight line from head to heels" },
-    ],
-  },
-  {
-    id: "core-glutes",
-    name: "Core + Glutes",
-    category: "strength",
-    duration: "30 min",
-    durationMin: 30,
-    equipment: "Mat only",
-    suitability: { menstrual: "suitable", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Core stability and glute activation for all phases.",
-    exercises: [
-      { name: "Dead Bugs", sets: "3", reps: "10", formCue: "Press lower back into floor" },
-      { name: "Bird Dogs", sets: "3", reps: "12", formCue: "Extend opposite arm and leg slowly" },
-      { name: "Side Planks", sets: "2", reps: "30 sec each", formCue: "Stack hips, lift from obliques" },
-      { name: "Glute Bridges", sets: "4", reps: "15", formCue: "Squeeze glutes at the top" },
-      { name: "Donkey Kicks", sets: "3", reps: "15", formCue: "Keep knee at 90°, press ceiling" },
-      { name: "Superman Holds", sets: "3", reps: "10", formCue: "Lift arms and legs simultaneously" },
-      { name: "Hollow Body Hold", sets: "3", duration: "20 seconds", reps: "hold", formCue: "Press lower back down, legs extended" },
-    ],
-  },
-  {
-    id: "gentle-full-body",
-    name: "Gentle Full Body",
-    category: "strength",
-    duration: "25 min",
-    durationMin: 25,
-    equipment: "No equipment",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "Low intensity bodyweight work for rest days.",
-    exercises: [
-      { name: "Bodyweight Squats", sets: "3", reps: "12", formCue: "Slow and controlled" },
-      { name: "Wall Push-ups", sets: "3", reps: "10", formCue: "Full range at the wall" },
-      { name: "Standing Hip Circles", sets: "2", reps: "10 each", formCue: "Large, slow circles" },
-      { name: "Calf Raises", sets: "3", reps: "15", formCue: "Rise onto balls of feet" },
-      { name: "Seated Forward Fold", sets: "1", duration: "60 seconds", reps: "hold", formCue: "Relax into the stretch" },
-      { name: "Cat-Cow", sets: "1", duration: "2 minutes", reps: "flow", formCue: "Sync with breath" },
-      { name: "Child's Pose", sets: "1", duration: "2 minutes", reps: "hold", formCue: "Rest and breathe deeply" },
-    ],
-  },
-  {
-    id: "express-strength",
-    name: "Express Strength Circuit",
-    category: "strength",
-    duration: "20 min",
-    durationMin: 20,
-    equipment: "Light dumbbells",
-    suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Quick, efficient circuit when time is short.",
-    exercises: [
-      { name: "Squat to Press", sets: "3", reps: "10", formCue: "Squat deep, press at the top" },
-      { name: "Renegade Rows", sets: "3", reps: "8 each", formCue: "Plank position, row to hip" },
-      { name: "Reverse Lunges", sets: "3", reps: "10 each", formCue: "Step back, 90° knees" },
-      { name: "Push-up to Shoulder Tap", sets: "3", reps: "10", formCue: "Minimise hip rotation" },
-    ],
-  },
-  // PILATES
-  {
-    id: "classical-pilates",
-    name: "Classical Pilates Flow",
-    category: "pilates",
     duration: "40 min",
     durationMin: 40,
-    equipment: "Mat only",
-    suitability: { menstrual: "suitable", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Traditional Pilates mat sequence.",
-    exercises: [
-      { name: "The Hundred", sets: "1", reps: "100 pumps", formCue: "Legs at 45°, pump arms vigorously" },
-      { name: "Roll-up", sets: "1", reps: "6", formCue: "Articulate through each vertebra" },
-      { name: "Single Leg Circles", sets: "1", reps: "5 each direction", formCue: "Stable pelvis, circle from hip" },
-      { name: "Rolling Like a Ball", sets: "1", reps: "8", formCue: "Round spine, use abs not momentum" },
-      { name: "Single Leg Stretch", sets: "1", reps: "10 each", formCue: "Keep shoulders off mat" },
-      { name: "Double Leg Stretch", sets: "1", reps: "8", formCue: "Reach long, circle arms back" },
-      { name: "Spine Stretch Forward", sets: "1", reps: "5", formCue: "Stack spine tall, then round over" },
-      { name: "Saw", sets: "1", reps: "5 each", formCue: "Twist from waist, reach past pinky toe" },
-      { name: "Swan", sets: "1", reps: "5", formCue: "Lengthen spine before lifting" },
-      { name: "Swimming", sets: "1", reps: "20 counts", formCue: "Opposite arm/leg, stay long" },
-    ],
-  },
-  {
-    id: "pelvic-floor",
-    name: "Pelvic Floor Focus",
-    category: "pilates",
-    duration: "30 min",
-    durationMin: 30,
-    equipment: "Mat only",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "suitable" },
-    description: "Gentle pelvic floor strengthening and release.",
-    exercises: [
-      { name: "Diaphragmatic Breathing", sets: "1", duration: "5 min", reps: "continuous", formCue: "Expand ribcage laterally on inhale" },
-      { name: "Progressive Kegels", sets: "3", reps: "10", formCue: "Lift and hold 5 seconds, release slowly" },
-      { name: "Reverse Kegels", sets: "2", reps: "10", formCue: "Gently release and lengthen pelvic floor" },
-      { name: "Pelvic Tilts", sets: "3", reps: "12", formCue: "Flatten lower back, then arch gently" },
-      { name: "Bridge with Pelvic Floor", sets: "3", reps: "10", formCue: "Engage pelvic floor before lifting" },
-      { name: "Happy Baby", sets: "1", duration: "2 min", reps: "hold", formCue: "Rock gently side to side" },
-      { name: "Constructive Rest", sets: "1", duration: "5 min", reps: "hold", formCue: "Knees bent, feet flat, relax completely" },
-    ],
-  },
-  {
-    id: "pilates-core",
-    name: "Pilates Core",
-    category: "pilates",
-    duration: "35 min",
-    durationMin: 35,
-    equipment: "Mat only",
+    equipment: "8–10kg dumbbells, booty band",
     suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Intermediate core-focused Pilates workout.",
+    description: "Single-leg focus. Corrects imbalances and challenges stability.",
     exercises: [
-      { name: "Plank Series", sets: "3", duration: "30 sec", reps: "hold", formCue: "Front, side, front rotation" },
-      { name: "Teaser Prep", sets: "1", reps: "6", formCue: "Roll up with control, balance" },
-      { name: "Criss-cross", sets: "1", reps: "10 each", formCue: "Twist from ribcage, not neck" },
-      { name: "Leg Pull Front", sets: "1", reps: "5 each", formCue: "Plank position, lift one leg" },
-      { name: "Side Plank Rotation", sets: "2", reps: "8 each", formCue: "Thread arm under, return to start" },
-      { name: "Single Leg Kick", sets: "1", reps: "8 each", formCue: "Prone, kick heel to glute" },
-      { name: "Double Leg Kick", sets: "1", reps: "6", formCue: "Clasp hands behind back" },
+      { name: "Split Squat", sets: "2", duration: "45 sec each side", reps: "tempo", formCue: "Tempo 3-1-2. Upright pilates posture.", section: "Circuit 1" },
+      { name: "Hip Thrust With Dumbbell", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Dumbbell on hip. Tempo 1-2-3.", section: "Circuit 1" },
+      { name: "Good Morning", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Flat back hinge. Feel hamstring stretch.", section: "Circuit 1" },
+      { name: "Walking Lunge", sets: "2", duration: "45 sec", reps: "4 steps fwd/back", formCue: "Chest tall throughout.", section: "Circuit 2" },
+      { name: "Sumo Deadlift", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Wide stance, dumbbells between legs.", section: "Circuit 2" },
+      { name: "Step-Up", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Drive through the heel on the step. Tempo 3-1-2.", section: "Circuit 2" },
+      { name: "Single-Leg Glute Bridge", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Non-working leg extended. Tempo 1-1-3.", section: "Circuit 3" },
+      { name: "Curtsy Lunge Alternating", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Rear foot crosses behind and wide. Targets glute medius.", section: "Circuit 3" },
+      { name: "Lying Hamstring Curl With Band", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Face down. Curl heel to glute. Tempo 2-1-3.", section: "Circuit 3" },
+      { name: "Glute Bridge Fast", sets: "1", reps: "×20 bodyweight", formCue: "Quick, full squeeze at top.", section: "Finisher" },
+      { name: "Single-Leg Bridge", sets: "1", reps: "×15 each", formCue: "Control the descent.", section: "Finisher" },
+      { name: "Clam With Band", sets: "1", reps: "×20 each side", formCue: "Keep feet together, open knees.", section: "Finisher" },
     ],
   },
+
+  // WORKOUT 5 — FULL BODY A
   {
-    id: "standing-pilates",
-    name: "Standing Pilates",
-    category: "pilates",
-    duration: "30 min",
-    durationMin: 30,
-    equipment: "No equipment",
-    suitability: { menstrual: "suitable", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Accessible standing Pilates work.",
-    exercises: [
-      { name: "Standing Footwork", sets: "3", reps: "12", formCue: "Rise and lower with control" },
-      { name: "Relevés", sets: "3", reps: "10", formCue: "Balance at the top, slow descent" },
-      { name: "Side Leg Series", sets: "2", reps: "12 each", formCue: "Hip height, controlled movement" },
-      { name: "Arm Circles", sets: "2", reps: "10 each direction", formCue: "Keep shoulders down" },
-      { name: "Chest Expansion", sets: "2", reps: "8", formCue: "Press arms back, open chest" },
-      { name: "Single Leg Balance", sets: "2", reps: "30 sec each", formCue: "Fix gaze, engage core" },
-      { name: "Standing Roll-down", sets: "3", reps: "5", formCue: "Articulate one vertebra at a time" },
-    ],
-  },
-  {
-    id: "reformer-mat",
-    name: "Reformer-Inspired Mat",
-    category: "pilates",
-    duration: "35 min",
-    durationMin: 35,
-    equipment: "Light resistance band",
-    suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "suitable", luteal: "suitable" },
-    description: "Reformer exercises adapted for the mat with a band.",
-    exercises: [
-      { name: "Footwork with Band", sets: "3", reps: "12", formCue: "Band around feet, press and return" },
-      { name: "Leg Series with Band", sets: "2", reps: "10 each", formCue: "Controlled extension and return" },
-      { name: "Rowing Series", sets: "2", reps: "8", formCue: "Sit tall, pull band to chest" },
-      { name: "Long Stretch Adapted", sets: "2", reps: "8", formCue: "Plank position, shift forward and back" },
-      { name: "Elephant Adapted", sets: "2", reps: "8", formCue: "Pike position, press heels" },
-    ],
-  },
-  {
-    id: "restorative-pilates",
-    name: "Restorative Pilates",
-    category: "pilates",
-    duration: "25 min",
-    durationMin: 25,
-    equipment: "Mat only",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "Gentle, restorative Pilates for recovery.",
-    exercises: [
-      { name: "Constructive Rest", sets: "1", duration: "5 min", reps: "hold", formCue: "Knees bent, feet flat, soften completely" },
-      { name: "Supine Figure 4", sets: "1", duration: "2 min each", reps: "hold", formCue: "Cross ankle over knee, gentle pull" },
-      { name: "Reclined Butterfly", sets: "1", duration: "3 min", reps: "hold", formCue: "Soles together, knees fall open" },
-      { name: "Legs Up the Wall", sets: "1", duration: "5 min", reps: "hold", formCue: "Relax everything, breathe deeply" },
-      { name: "Gentle Spinal Twist", sets: "1", duration: "2 min each", reps: "hold", formCue: "Let gravity do the work" },
-      { name: "Savasana with Body Scan", sets: "1", duration: "5 min", reps: "hold", formCue: "Scan from toes to crown" },
-    ],
-  },
-  // YOGA & SOMATIC
-  {
-    id: "moon-salutations",
-    name: "Moon Salutations",
-    category: "yoga",
-    duration: "30 min",
-    durationMin: 30,
-    equipment: "Mat only",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "suitable" },
-    description: "5 rounds of moon salutation. Slower and more fluid than sun salutations. Honours inward energy.",
-    exercises: [
-      { name: "Moon Salutation Round 1-5", sets: "5", reps: "full sequence", formCue: "Move slowly, honour the breath" },
-    ],
-  },
-  {
-    id: "yin-full-body",
-    name: "Yin Yoga Full Body",
-    category: "yoga",
-    duration: "45 min",
-    durationMin: 45,
-    equipment: "Mat only",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "Deep, long-held stretches for fascia and nervous system release.",
-    exercises: [
-      { name: "Dragon Pose", sets: "1", duration: "3 min each", reps: "hold", formCue: "Sink into the hip flexor" },
-      { name: "Butterfly", sets: "1", duration: "4 min", reps: "hold", formCue: "Fold forward gently" },
-      { name: "Sleeping Swan", sets: "1", duration: "3 min each", reps: "hold", formCue: "Melt into the stretch" },
-      { name: "Caterpillar", sets: "1", duration: "4 min", reps: "hold", formCue: "Round the spine, release the head" },
-      { name: "Twisted Roots", sets: "1", duration: "3 min each", reps: "hold", formCue: "Let gravity twist you" },
-      { name: "Savasana", sets: "1", duration: "5 min", reps: "hold", formCue: "Complete surrender" },
-    ],
-  },
-  {
-    id: "somatic-movement",
-    name: "Somatic Movement",
-    category: "yoga",
-    duration: "20 min",
-    durationMin: 20,
-    equipment: "No equipment",
-    suitability: { menstrual: "suitable", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "Intuitive movement to release stored tension and reconnect with your body.",
-    exercises: [
-      { name: "Body Shaking/Vibrating", sets: "1", duration: "3 min", reps: "continuous", formCue: "Shake from feet up, let it ripple" },
-      { name: "Hip Circles", sets: "1", duration: "2 min", reps: "continuous", formCue: "Large, slow, both directions" },
-      { name: "Spinal Wave", sets: "1", duration: "2 min", reps: "flow", formCue: "Undulate from tailbone to crown" },
-      { name: "Shoulder Rolling", sets: "1", duration: "2 min", reps: "continuous", formCue: "Forward and backward, release tension" },
-      { name: "Jaw Release", sets: "1", duration: "1 min", reps: "hold", formCue: "Open mouth wide, massage jaw" },
-      { name: "Self-massage Neck & Shoulders", sets: "1", duration: "2 min", reps: "continuous", formCue: "Gentle pressure, breathe into tightness" },
-      { name: "Free Movement to Music", sets: "1", duration: "5 min", reps: "freestyle", formCue: "Move however your body wants" },
-    ],
-  },
-  {
-    id: "vinyasa-flow",
-    name: "Vinyasa Flow",
-    category: "yoga",
+    id: "full-body-a",
+    name: "Full Body A",
+    category: "strength",
     duration: "40 min",
     durationMin: 40,
-    equipment: "Mat only",
-    suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Dynamic flow linking breath and movement.",
+    equipment: "8–10kg dumbbells",
+    suitability: { menstrual: "suitable", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
+    description: "Compound movements. Most efficient session of the week — works everything at once.",
     exercises: [
-      { name: "Sun Salutation A x 3", sets: "3", reps: "full sequence", formCue: "One breath per movement" },
-      { name: "Sun Salutation B x 3", sets: "3", reps: "full sequence", formCue: "Add warrior I to the flow" },
-      { name: "Warrior Sequence", sets: "1", reps: "both sides", formCue: "Strong legs, open chest" },
-      { name: "Triangle Pose", sets: "1", reps: "both sides", formCue: "Lengthen side body, stack shoulders" },
-      { name: "Half Moon", sets: "1", reps: "both sides", formCue: "Find balance, open the hip" },
-      { name: "Seated Forward Folds", sets: "1", duration: "3 min", reps: "hold", formCue: "Fold from hips, not waist" },
-      { name: "Twist Sequence", sets: "1", reps: "both sides", formCue: "Twist from the centre" },
-      { name: "Savasana", sets: "1", duration: "5 min", reps: "hold", formCue: "Complete rest" },
+      { name: "Dumbbell Deadlift", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Tempo 3-1-2. Hinge, not squat.", section: "Circuit 1 — Big Movements" },
+      { name: "Push-Up To Downward Dog", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Push-up then press to down dog. Hold 2 sec.", section: "Circuit 1 — Big Movements" },
+      { name: "Goblet Squat To Press", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Squat, drive up, press overhead. Exhale on press.", section: "Circuit 1 — Big Movements" },
+      { name: "Single-Arm Row To Rotation", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Row then rotate thoracic to ceiling.", section: "Circuit 2 — Control Focus" },
+      { name: "Reverse Lunge To Bicep Curl", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Lunge, drive up, curl at top.", section: "Circuit 2 — Control Focus" },
+      { name: "Lateral Lunge To Lateral Raise", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Lunge to side, drive up, arms raise.", section: "Circuit 2 — Control Focus" },
+      { name: "Dead Bug With Dumbbell Press", sets: "2", duration: "45 sec", reps: "tempo", formCue: "One arm presses, opposite leg extends. Anti-extension core work.", section: "Circuit 3 — Core Integration" },
+      { name: "Bird Dog Row", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "On all fours. Row arm, extend opposite leg.", section: "Circuit 3 — Core Integration" },
+      { name: "Plank To Push-Up", sets: "2", duration: "45 sec", reps: "tempo", formCue: "Forearm plank up to hand plank. Alternate leading arm.", section: "Circuit 3 — Core Integration" },
+      { name: "Squat Jump Or Squat Pulse", sets: "1", reps: "×10 jumps or ×20 pulse", formCue: "Land soft, drive through heels.", section: "Finisher" },
+      { name: "Mountain Climbers", sets: "1", reps: "×20 alternating", formCue: "Fast but controlled.", section: "Finisher" },
+      { name: "Inchworm", sets: "1", reps: "×5 full length", formCue: "Walk hands out, walk feet in.", section: "Finisher" },
     ],
   },
+
+  // WORKOUT 6 — FULL BODY B
   {
-    id: "gentle-morning-yoga",
-    name: "Gentle Morning Yoga",
-    category: "yoga",
-    duration: "20 min",
-    durationMin: 20,
-    equipment: "Mat only",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "A soft, accessible morning practice for any phase.",
+    id: "full-body-b",
+    name: "Full Body B",
+    category: "strength",
+    duration: "40 min",
+    durationMin: 40,
+    equipment: "5–8kg dumbbells",
+    suitability: { menstrual: "suitable", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
+    description: "Unilateral focus. Single-side training reveals and corrects imbalances.",
     exercises: [
-      { name: "Cat-Cow", sets: "1", duration: "2 min", reps: "flow", formCue: "Sync with breath" },
-      { name: "Thread the Needle", sets: "1", reps: "each side", formCue: "Reach under and twist gently" },
-      { name: "Downward Dog Pedal", sets: "1", duration: "1 min", reps: "flow", formCue: "Alternate bending knees" },
-      { name: "Low Lunge Each Side", sets: "1", reps: "1 min each", formCue: "Sink hips, open chest" },
-      { name: "Seated Twist Each Side", sets: "1", reps: "1 min each", formCue: "Lengthen spine first" },
-      { name: "Forward Fold", sets: "1", duration: "1 min", reps: "hold", formCue: "Bend knees if needed" },
-      { name: "Easy Seat Meditation", sets: "1", duration: "3 min", reps: "hold", formCue: "Sit tall, close eyes, breathe" },
+      { name: "Single-Leg Romanian Deadlift", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "One dumbbell. Reach toward floor.", section: "Circuit 1" },
+      { name: "Single-Arm Push-Up Prep", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Other arm behind back. Slow tempo.", section: "Circuit 1" },
+      { name: "Suitcase Carry Squat", sets: "2", duration: "45 sec", reps: "tempo", formCue: "One dumbbell at side. Spine neutral. Anti-lateral flexion.", section: "Circuit 1" },
+      { name: "Rear Foot Elevated Split Squat", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Back foot on chair. Tempo 4-0-2. Pilates posture.", section: "Circuit 2" },
+      { name: "Single-Arm Overhead Press", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Challenges core stability. Do not side bend.", section: "Circuit 2" },
+      { name: "Single-Arm Chest Fly On Mat", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Core works to resist rotation.", section: "Circuit 2" },
+      { name: "Single-Leg Hip Thrust", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Drive through heel, squeeze at top.", section: "Circuit 3" },
+      { name: "Single-Arm Row In Side Plank", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "Side plank. Top arm rows light dumbbell.", section: "Circuit 3" },
+      { name: "Half-Kneeling Chop", sets: "2", duration: "45 sec each", reps: "tempo", formCue: "One knee down. Dumbbell chops diagonally. Rotational control.", section: "Circuit 3" },
+      { name: "Bear Hold", sets: "2", duration: "30 sec", reps: "hold", formCue: "All fours, knees 2cm off mat. Still.", section: "Finisher" },
+      { name: "Hollow Body Hold", sets: "2", duration: "30 sec", reps: "hold", formCue: "Press lower back down, legs extended.", section: "Finisher" },
     ],
   },
-  // WALK & BREATHE
+
+  // WORKOUT 7 — REST · WALK · RESTORE
   {
-    id: "mindful-walk",
-    name: "Mindful Walk",
-    category: "walk",
-    duration: "30 min",
+    id: "rest-walk-restore",
+    name: "Rest · Walk · Restore",
+    category: "walk-restore",
+    duration: "20–40 min",
     durationMin: 30,
-    equipment: "No equipment",
+    equipment: "None",
     suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "A meditative walk in three phases of awareness.",
-    exercises: [
-      { name: "Phase 1: Visual Awareness", sets: "1", duration: "10 min", reps: "walk", formCue: "Notice 5 things you can see" },
-      { name: "Phase 2: Sound & Sensation", sets: "1", duration: "10 min", reps: "walk", formCue: "Notice sounds and sensations" },
-      { name: "Phase 3: Footstep Awareness", sets: "1", duration: "10 min", reps: "walk", formCue: "Walk with awareness of each step" },
+    description: "Choose the option that honours how your body feels today.",
+    restOptions: [
+      { id: "mindful-walk", name: "Mindful Walk", duration: "30 min", description: "Walk at a pace that lets you breathe through your nose. No music. Notice 5 things you can see, 4 you can hear, 3 you can feel." },
+      { id: "restorative-yoga", name: "Restorative Yoga", duration: "20–40 min", description: "Full body yin and restorative sequence. Hold each pose 2–4 minutes. Dragon, butterfly, caterpillar, sleeping swan, legs up the wall." },
+      { id: "mobility-flow", name: "Mobility Flow", duration: "15 min", description: "Hip flexors, thoracic spine, hamstrings, shoulders. Slow and deliberate. 45 seconds minimum per stretch." },
     ],
-  },
-  {
-    id: "power-walk",
-    name: "Power Walk Intervals",
-    category: "walk",
-    duration: "35 min",
-    durationMin: 35,
-    equipment: "No equipment",
-    suitability: { menstrual: "rest", follicular: "ideal", ovulatory: "ideal", luteal: "suitable" },
-    description: "Interval walking for cardiovascular fitness.",
-    exercises: [
-      { name: "Warm Up Easy Pace", sets: "1", duration: "5 min", reps: "walk", formCue: "Gentle pace, warm up gradually" },
-      { name: "Brisk / Easy Intervals", sets: "8", reps: "2 min brisk / 1 min easy", formCue: "Arm swing engaged, pick up pace" },
-      { name: "Cool Down", sets: "1", duration: "5 min", reps: "walk", formCue: "Gradual slow, deep breaths" },
-    ],
-  },
-  {
-    id: "evening-walk",
-    name: "Evening Wind-Down Walk",
-    category: "walk",
-    duration: "20 min",
-    durationMin: 20,
-    equipment: "No equipment",
-    suitability: { menstrual: "ideal", follicular: "suitable", ovulatory: "suitable", luteal: "ideal" },
-    description: "Slow, deliberate walk to decompress. No music.",
-    exercises: [
-      { name: "Slow Deliberate Walk", sets: "1", duration: "15 min", reps: "walk", formCue: "Preferably outdoors, no phone" },
-      { name: "Standing Breathwork", sets: "1", duration: "5 min", reps: "breathe", formCue: "Deep belly breaths before going inside" },
-    ],
+    exercises: [],
   },
 ];
 
+// Weekly schedule
+export const WEEKLY_SCHEDULE: { day: string; workoutId: string; label: string }[] = [
+  { day: "Mon", workoutId: "upper-body-a", label: "Upper A" },
+  { day: "Tue", workoutId: "lower-body-a", label: "Lower A" },
+  { day: "Wed", workoutId: "full-body-a", label: "Full Body A" },
+  { day: "Thu", workoutId: "rest-walk-restore", label: "Rest · Walk · Restore" },
+  { day: "Fri", workoutId: "upper-body-b", label: "Upper B" },
+  { day: "Sat", workoutId: "lower-body-b", label: "Lower B" },
+  { day: "Sun", workoutId: "full-body-b", label: "Full Body B" },
+];
+
+// Phase adjustment banners
 export const PHASE_MOVEMENT_REC: Record<Phase, { title: string; description: string }> = {
   menstrual: {
-    title: "Rest is Productive",
-    description: "Gentle yoga, walking, and stretching only. Your body is working hard — honour that.",
+    title: "Rest Is Productive",
+    description: "Your body is in its rest phase. All movement is optional today. Rest is productive.",
   },
   follicular: {
     title: "Your Strength Window Is Open",
-    description: "Estrogen is rising which increases strength, stamina, and pain tolerance. This is the best time to push harder and try new workouts.",
+    description: "Estrogen is rising which increases strength, stamina, and pain tolerance. Push harder.",
   },
   ovulatory: {
-    title: "Peak Energy",
-    description: "High intensity cardio, group classes, challenging workouts. You're at your physical peak.",
+    title: "Peak Strength",
+    description: "Push if it feels good. You're at your physical peak.",
   },
   luteal: {
-    title: "Intuitive Movement",
-    description: "Pilates, moderate strength, walk when in doubt. Listen to your body — it knows what it needs.",
+    title: "Honour How You Feel",
+    description: "Drop intensity 20% if needed. Listen to your body.",
   },
 };
 
 export const TODAY_WORKOUT: Record<Phase, string> = {
-  menstrual: "gentle-morning-yoga",
-  follicular: "upper-body-strength",
-  ovulatory: "full-body-power",
-  luteal: "classical-pilates",
+  menstrual: "rest-walk-restore",
+  follicular: "upper-body-a",
+  ovulatory: "full-body-a",
+  luteal: "full-body-a",
 };
 
 export const SUIT_COLORS: Record<Suitability, { bg: string; text: string; label: string }> = {
   ideal: { bg: "bg-accent/15", text: "text-accent", label: "Ideal This Phase" },
-  suitable: { bg: "bg-gold/15", text: "text-gold", label: "Suitable" },
+  suitable: { bg: "bg-petal-gold/15", text: "text-petal-gold", label: "Suitable" },
   rest: { bg: "bg-muted", text: "text-muted-foreground", label: "Rest Phase" },
 };
 
 export const CATEGORY_LABELS: Record<WorkoutCategory, string> = {
   strength: "Strength",
-  pilates: "Pilates",
-  yoga: "Yoga & Somatic",
-  walk: "Walk & Breathe",
+  "walk-restore": "Walk & Restore",
 };
 
 export const FEELINGS = ["Energised", "Good", "Moderate", "Low", "Depleted"];
 
 export const FEELING_REC: Record<string, string> = {
-  Energised: "You're primed — try the Full Body Power or Vinyasa Flow today.",
-  Good: "A solid day for Pilates Core or a moderate strength session.",
-  Moderate: "Listen in — a Somatic Movement session or Mindful Walk would serve you well.",
-  Low: "Your body is asking for gentleness. Try Yin Yoga or a gentle morning practice.",
+  Energised: "You're primed — try the scheduled strength session today.",
+  Good: "A solid day for your programmed workout.",
+  Moderate: "Listen in — consider the Rest · Walk · Restore option.",
+  Low: "Your body is asking for gentleness. Try the Mindful Walk or Restorative Yoga.",
   Depleted: "Rest is not laziness. Stretch gently, drink water, and honour what your body needs.",
 };
+
+// Progressive overload
+export const WEEK_LABELS: Record<number, string> = {
+  1: "Week 1 · Learn the pattern.",
+  2: "Week 2 · Add a rep or slow the tempo.",
+  3: "Week 3 · Go heavier or slower.",
+  4: "Week 4 · Deload. Form focus.",
+};
+
+export function getTrainingWeek(): number {
+  const val = localStorage.getItem("mindcast_training_week");
+  return val ? parseInt(val, 10) : 1;
+}
+
+export function setTrainingWeek(week: number): void {
+  localStorage.setItem("mindcast_training_week", Math.max(1, Math.min(4, week)).toString());
+}
+
+// Heart rate helpers
+export function getUserAge(): number | null {
+  const val = localStorage.getItem("mindcast_user_age");
+  return val ? parseInt(val, 10) : null;
+}
+
+export function setUserAge(age: number): void {
+  localStorage.setItem("mindcast_user_age", age.toString());
+}
+
+export function getMaxHR(age: number): number {
+  return Math.round(208 - 0.7 * age);
+}
+
+export interface HRZone {
+  zone: number;
+  label: string;
+  minPct: number;
+  maxPct: number;
+  color: string;
+}
+
+export const HR_ZONES: HRZone[] = [
+  { zone: 1, label: "Recovery", minPct: 50, maxPct: 60, color: "hsl(var(--sage-mist))" },
+  { zone: 2, label: "Fat Burn", minPct: 60, maxPct: 70, color: "hsl(var(--petal-gold))" },
+  { zone: 3, label: "Aerobic", minPct: 70, maxPct: 80, color: "hsl(var(--coral-flame))" },
+  { zone: 4, label: "Threshold", minPct: 80, maxPct: 90, color: "hsl(340 50% 55%)" },
+  { zone: 5, label: "Maximum", minPct: 90, maxPct: 100, color: "hsl(var(--lavender-dust))" },
+];
+
+export function getZoneForBPM(bpm: number, maxHR: number): HRZone {
+  const pct = (bpm / maxHR) * 100;
+  for (let i = HR_ZONES.length - 1; i >= 0; i--) {
+    if (pct >= HR_ZONES[i].minPct) return HR_ZONES[i];
+  }
+  return HR_ZONES[0];
+}
+
+export interface WorkoutSession {
+  id: string;
+  workoutName: string;
+  duration: number; // seconds
+  avgHR: number;
+  maxHR: number;
+  zoneMins: number[];
+  zone2PlusPercent: number;
+  phase: Phase;
+  cycleDay: number;
+  date: string;
+  hrData: { time: number; bpm: number }[];
+  manual?: boolean;
+}
+
+export function saveWorkoutSession(session: WorkoutSession): void {
+  const key = `workoutSession:${session.id}`;
+  localStorage.setItem(key, JSON.stringify(session));
+  // Add to index
+  const index = getSessionIndex();
+  if (!index.includes(session.id)) {
+    index.push(session.id);
+    localStorage.setItem("workoutSessions", JSON.stringify(index));
+  }
+}
+
+export function getSessionIndex(): string[] {
+  const val = localStorage.getItem("workoutSessions");
+  return val ? JSON.parse(val) : [];
+}
+
+export function getWorkoutSession(id: string): WorkoutSession | null {
+  const val = localStorage.getItem(`workoutSession:${id}`);
+  return val ? JSON.parse(val) : null;
+}
+
+export function getAllSessions(): WorkoutSession[] {
+  return getSessionIndex()
+    .map(id => getWorkoutSession(id))
+    .filter((s): s is WorkoutSession => s !== null)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+// Measurements
+export interface BodyMeasurements {
+  date: string;
+  height?: number;
+  weight?: number;
+  chest?: number;
+  waist?: number;
+  hips?: number;
+  upperArm?: number;
+  thigh?: number;
+}
+
+export function saveMeasurements(m: BodyMeasurements): void {
+  localStorage.setItem(`measurements:${m.date}`, JSON.stringify(m));
+  const index = getMeasurementDates();
+  if (!index.includes(m.date)) {
+    index.push(m.date);
+    index.sort();
+    localStorage.setItem("measurementDates", JSON.stringify(index));
+  }
+}
+
+export function getMeasurements(date: string): BodyMeasurements | null {
+  const val = localStorage.getItem(`measurements:${date}`);
+  return val ? JSON.parse(val) : null;
+}
+
+export function getMeasurementDates(): string[] {
+  const val = localStorage.getItem("measurementDates");
+  return val ? JSON.parse(val) : [];
+}
+
+export function getLatestMeasurements(): BodyMeasurements | null {
+  const dates = getMeasurementDates();
+  if (dates.length === 0) return null;
+  return getMeasurements(dates[dates.length - 1]);
+}
+
+export function getFirstMeasurements(): BodyMeasurements | null {
+  const dates = getMeasurementDates();
+  if (dates.length === 0) return null;
+  return getMeasurements(dates[0]);
+}
