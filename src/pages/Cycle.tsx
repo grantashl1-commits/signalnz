@@ -133,7 +133,7 @@ export default function CyclePage() {
   const nextPhaseIdx = (phases.indexOf(info.phase) + 1) % 4;
   const nextPhase = PHASE_LABELS[phases[nextPhaseIdx]];
   const todayStr = new Date().toISOString().split("T")[0];
-  const [seedsTaken, setSeedsTakenState] = useState(getSeedsTaken(todayStr));
+  const hasDateSet = !!lastPeriod;
   const hasDateSet = !!lastPeriod;
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
