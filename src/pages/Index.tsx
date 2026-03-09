@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, Droplets, Sprout, Clock, Heart } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { SacredSpiral, BotanicalSprig, HandUnderline, SeedGeometry, WildStar, CymatiSketch, RootSystem } from "@/components/BotanicalElements";
 import DailySignalCard, { PeriodDueReminder } from "@/components/DailySignal";
 import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, getWaterCount, setWaterCount, getSeedCyclingDay, getPhaseFromDay, Phase, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
+import { getHabits, getHabitLog, toggleHabitForDate, getWeekHabitData, HABIT_CATEGORIES, CATEGORY_DOT_CLASSES } from "@/data/self-care-rituals";
 import { haptic } from "@/hooks/use-mobile";
 
 const CHECKIN_STATES = [
@@ -20,28 +21,28 @@ const CHECKIN_STATES = [
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
   follicular: {
-    nutrition: "Embrace fermented foods and complex carbs as estrogen rises",
-    movement: "This is your strength window — lift heavy, push harder",
-    nervous: "Coherent breathing — 5 breaths per minute for 5 minutes",
-    cycle: "Estrogen is climbing — energy and clarity are your superpowers right now",
+    nutrition: "Embrace fermented foods and complex carbs as estrogen rises.",
+    movement: "This is your strength window — lift heavy, push harder.",
+    nervous: "Coherent breathing — 5 breaths per minute for 5 minutes.",
+    cycle: "Estrogen is climbing — energy and clarity are your superpowers right now.",
   },
   menstrual: {
-    nutrition: "Focus on iron-rich foods with vitamin C to support your body",
-    movement: "Rest is productive. Gentle yoga and walking only",
-    nervous: "Physiological sigh — instant calm when you need it",
-    cycle: "Honour your need for rest. This is your inner winter",
+    nutrition: "Focus on iron-rich foods with vitamin C to support your body.",
+    movement: "Rest is productive. Gentle yoga and walking only.",
+    nervous: "Physiological sigh — instant calm when you need it.",
+    cycle: "Honour your need for rest. This is your inner winter.",
   },
   ovulatory: {
-    nutrition: "Antioxidants, folate, and zinc for peak hormonal output",
-    movement: "Peak energy — go for high intensity and group workouts",
-    nervous: "You're naturally more social — lean into connection",
-    cycle: "You're at your communicative peak — use this window wisely",
+    nutrition: "Antioxidants, folate, and zinc for peak hormonal output.",
+    movement: "Peak energy — go for high intensity and group workouts.",
+    nervous: "You're naturally more social — lean into connection.",
+    cycle: "You're at your communicative peak — use this window wisely.",
   },
   luteal: {
-    nutrition: "Higher calorie needs are normal. Eat nutrient-dense complex carbs",
-    movement: "Intuitive movement. Pilates, moderate strength, walk when in doubt",
-    nervous: "4-7-8 breathing before bed for deeper sleep",
-    cycle: "Progesterone is rising — turn inward and prioritise rest",
+    nutrition: "Higher calorie needs are normal. Eat nutrient-dense complex carbs.",
+    movement: "Intuitive movement. Pilates, moderate strength, walk when in doubt.",
+    nervous: "4-7-8 breathing before bed for deeper sleep.",
+    cycle: "Progesterone is rising — turn inward and prioritise rest.",
   },
 };
 
@@ -71,6 +72,10 @@ export default function HomePage() {
   const todayStr = new Date().toISOString().split("T")[0];
   const [seedsTakenToday, setSeedsTakenToday] = useState(getSeedsTaken(todayStr));
 
+  // Habits
+  const habits = getHabits();
+  const [habitLog, setHabitLog] = useState(getHabitLog(todayStr));
+
   const todayWorkout = WORKOUTS.find((w) => w.id === TODAY_WORKOUT[info.phase]);
   const todayMeals = TODAY_MEALS[info.phase];
   const lunchMeal = todayMeals?.find((m) => m.type === "Lunch");
@@ -91,6 +96,12 @@ export default function HomePage() {
     setWaterCount(next);
   };
 
+  const handleHabitToggle = (habitId: string) => {
+    haptic("light");
+    const newVal = toggleHabitForDate(todayStr, habitId);
+    setHabitLog(prev => ({ ...prev, [habitId]: newVal }));
+  };
+
   const today = new Date();
   const dayOfWeek = today.getDay();
   const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
@@ -99,6 +110,9 @@ export default function HomePage() {
     d.setDate(today.getDate() + mondayOffset + i);
     return d;
   });
+
+  const weekHabitData = habits.length > 0 ? getWeekHabitData(weekDays) : [];
+  const habitsCompleted = Object.values(habitLog).filter(Boolean).length;
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
@@ -164,9 +178,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Daily Habits */}
+      {habits.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-hand text-sm font-bold text-primary">Daily habits</p>
+            <Link to="/my-practice" className="font-hand text-xs text-muted-foreground">
+              manage →
+            </Link>
+          </div>
+          <div className="card-warm p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Heart className="h-4 w-4 text-bloom" />
+              <span className="font-mono text-sm text-foreground">{habitsCompleted}/{habits.length}</span>
+              <span className="font-body text-xs text-muted-foreground">complete today</span>
+            </div>
+            <div className="space-y-1.5">
+              {habits.slice(0, 6).map(habit => {
+                const done = habitLog[habit.id] || false;
+                const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category);
+                const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
+                return (
+                  <button
+                    key={habit.id}
+                    onClick={() => handleHabitToggle(habit.id)}
+                    className="touch-btn w-full flex items-center gap-2.5 py-1.5 text-left"
+                  >
+                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                      done ? "border-bloom bg-bloom/20" : "border-border"
+                    }`}>
+                      {done && <WildStar size={10} />}
+                    </div>
+                    <div className={`h-2 w-2 rounded-full flex-shrink-0 ${dotClass}`} />
+                    <span className={`font-body text-xs ${done ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                      {habit.name}
+                    </span>
+                  </button>
+                );
+              })}
+              {habits.length > 6 && (
+                <Link to="/my-practice" className="block font-hand text-xs text-muted-foreground text-center mt-1">
+                  +{habits.length - 6} more →
+                </Link>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Daily Check-in */}
       <section className="card-warm p-5 md:p-6">
-        <p className="font-hand text-base md:text-lg text-primary mb-3 md:mb-4">how are you today?</p>
+        <p className="font-hand text-base md:text-lg text-primary mb-3 md:mb-4">How are you today?</p>
         <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
           {CHECKIN_STATES.map((state) => {
             const selected = checkin === state.label;
@@ -190,7 +252,7 @@ export default function HomePage() {
         </div>
         {checkin && (
           <div className="flex items-center justify-center gap-3 mt-3 md:mt-4">
-            <span className="font-hand text-sm text-primary">logged: {checkin.toLowerCase()}</span>
+            <span className="font-hand text-sm text-primary">Logged: {checkin.toLowerCase()}</span>
             {streak > 1 && (
               <span className="flex items-center gap-1 font-hand text-sm text-muted-foreground">
                 <WildStar size={14} /> {streak}-day streak
@@ -202,7 +264,7 @@ export default function HomePage() {
 
       {/* Week Snapshot */}
       <section>
-        <p className="font-hand text-sm font-bold text-primary mb-3">this week</p>
+        <p className="font-hand text-sm font-bold text-primary mb-3">This week</p>
         <div className="scroll-snap-x flex gap-2 pb-2 -mx-1 px-1">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
@@ -232,14 +294,65 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Weekly habit grid (compact) */}
+      {habits.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-hand text-sm font-bold text-primary">Habit grid</p>
+            <Link to="/my-practice" className="font-hand text-xs text-muted-foreground">
+              full view →
+            </Link>
+          </div>
+          <div className="card-warm p-3 overflow-x-auto">
+            <div className="grid gap-0.5" style={{ gridTemplateColumns: `100px repeat(7, 1fr)`, minWidth: 360 }}>
+              <div />
+              {weekDays.map((d, i) => {
+                const isToday = d.toISOString().split("T")[0] === todayStr;
+                return (
+                  <div key={i} className={`text-center py-0.5 ${isToday ? "bg-primary/10 rounded" : ""}`}>
+                    <p className="font-body text-[8px] text-muted-foreground">
+                      {["M", "T", "W", "T", "F", "S", "S"][i]}
+                    </p>
+                  </div>
+                );
+              })}
+              {habits.slice(0, 8).map(habit => {
+                const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
+                return (
+                  <div key={habit.id} className="contents">
+                    <div className="flex items-center gap-1 pr-1 py-0.5">
+                      <div className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${dotClass}`} />
+                      <span className="font-body text-[8px] text-foreground truncate">{habit.name}</span>
+                    </div>
+                    {weekHabitData.map((day, i) => {
+                      const done = day.log[habit.id] || false;
+                      const isToday = day.date === todayStr;
+                      return (
+                        <div key={i} className={`flex items-center justify-center py-0.5 ${isToday ? "bg-primary/10 rounded" : ""}`}>
+                          {done ? (
+                            <div className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
+                          ) : (
+                            <div className="h-2.5 w-2.5 rounded-full border border-border/40" />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Quick Wins */}
       <section>
-        <p className="font-hand text-sm font-bold text-primary mb-3">quick actions</p>
+        <p className="font-hand text-sm font-bold text-primary mb-3">Quick actions</p>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
               <Droplets className="h-4 w-4 text-phase-follicular" />
-              <span className="font-hand text-sm font-bold text-phase-follicular">hydration</span>
+              <span className="font-hand text-sm font-bold text-phase-follicular">Hydration</span>
             </div>
             <div className="flex gap-1 mb-2">
               {Array.from({ length: 8 }, (_, i) => (
@@ -257,11 +370,10 @@ export default function HomePage() {
           <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
               <Sprout className="h-4 w-4 text-sage-mist" />
-              <span className="font-hand text-sm font-bold text-sage-mist">seed cycling</span>
+              <span className="font-hand text-sm font-bold text-sage-mist">Seed cycling</span>
             </div>
             <p className="font-body text-xs text-foreground">{seedInfo.seeds}</p>
             <p className="font-mono text-[9px] text-muted-foreground mt-0.5">{seedInfo.phase} · D{info.cycleDay}</p>
-            {/* Seeds nudge */}
             {!seedsTakenToday && (
               <label className="flex items-center gap-2 mt-2 cursor-pointer">
                 <input
@@ -270,27 +382,27 @@ export default function HomePage() {
                   onChange={(e) => { haptic("light"); setSeedsTakenToday(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }}
                   className="rounded border-border text-primary focus:ring-primary h-4 w-4"
                 />
-                <span className="font-hand text-xs text-muted-foreground">seeds today?</span>
+                <span className="font-hand text-xs text-muted-foreground">Seeds today?</span>
               </label>
             )}
             {seedsTakenToday && (
-              <p className="font-hand text-xs text-phase-follicular mt-2">✓ seeds taken</p>
+              <p className="font-hand text-xs text-phase-follicular mt-2">✓ Seeds taken.</p>
             )}
           </div>
 
           <div className="card-warm p-4">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="h-4 w-4 text-lavender-dust" />
-              <span className="font-hand text-sm font-bold text-lavender-dust">wind-down</span>
+              <span className="font-hand text-sm font-bold text-lavender-dust">Wind-down</span>
             </div>
-            <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm</p>
+            <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm.</p>
           </div>
         </div>
       </section>
 
       {/* Today's Focus */}
       <section>
-        <p className="font-hand text-sm font-bold text-primary mb-3">today's focus</p>
+        <p className="font-hand text-sm font-bold text-primary mb-3">Today's focus</p>
         <div className="space-y-2">
           {[
             { icon: Salad, label: "nutrition", text: focus.nutrition },

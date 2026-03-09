@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Star } from "lucide-react";
 import { getCycleInfo, getLastPeriodStart, PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useState, useEffect } from "react";
@@ -11,7 +11,9 @@ const navItems = [
   { path: "/nutrition", icon: Salad, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/breathwork", icon: Wind, label: "Breathe" },
+  { path: "/my-practice", icon: Heart, label: "Practice" },
   { path: "/journal", icon: PenLine, label: "Journal" },
+  { path: "/recommendations", icon: Star, label: "Picks" },
   { path: "/modules", icon: BookOpen, label: "Modules" },
   { path: "/membership", icon: Crown, label: "Membership" },
 ];
