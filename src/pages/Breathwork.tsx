@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wind, ArrowLeft } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
@@ -93,7 +93,7 @@ function BreathworkTimer() {
         <p className="font-mono text-xs text-muted-foreground mb-8">round {rounds + 1}</p>
         <button
           onClick={stop}
-          className="touch-btn font-display text-base italic text-primary border-[1.5px] border-primary rounded-full px-8 py-2.5 active:opacity-70"
+          className="touch-btn font-display text-base italic text-primary border-[1.5px] border-primary rounded-full px-8 py-2.5 active:scale-[0.97]"
         >
           end session
         </button>
@@ -140,7 +140,7 @@ function BreathworkTimer() {
               setTick(0);
               setRounds(0);
             }}
-            className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-2"
+            className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-2"
           >
             begin this practice →
           </button>
@@ -161,14 +161,14 @@ function SomaticSection() {
       <div>
         <button
           onClick={() => setOpen(null)}
-          className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"
+          className="touch-btn flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:scale-[0.97] min-h-[44px]"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> back to practices
         </button>
         <div className="card-warm p-5">
           <div className="text-3xl mb-2">{ex.emoji}</div>
           <h3 className="font-display text-xl italic text-foreground mb-1.5">{ex.name}</h3>
-          <div className="flex gap-1.5 mb-3.5">
+          <div className="flex gap-1.5 mb-3.5 flex-wrap">
             <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">{ex.cat}</span>
             <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">{ex.dur}</span>
           </div>
@@ -199,7 +199,7 @@ function SomaticSection() {
             {step > 0 && (
               <button
                 onClick={() => { haptic("light"); setStep((s) => s - 1); }}
-                className="touch-btn font-display text-sm italic text-muted-foreground bg-secondary rounded-full px-5 py-2.5 active:opacity-70"
+                className="touch-btn font-display text-sm italic text-muted-foreground bg-secondary rounded-full px-5 py-2.5 active:scale-[0.97]"
               >
                 ← previous
               </button>
@@ -207,14 +207,14 @@ function SomaticSection() {
             {step < ex.steps.length - 1 ? (
               <button
                 onClick={() => { haptic("light"); setStep((s) => s + 1); }}
-                className="touch-btn font-display text-sm italic text-primary-foreground bg-primary rounded-full px-6 py-2.5 active:opacity-90"
+                className="touch-btn font-display text-sm italic text-primary-foreground bg-primary rounded-full px-6 py-2.5 active:scale-[0.97]"
               >
                 next →
               </button>
             ) : (
               <button
                 onClick={() => { haptic("medium"); setStep(0); setOpen(null); }}
-                className="touch-btn font-display text-sm italic text-primary-foreground bg-phase-follicular rounded-full px-6 py-2.5 active:opacity-90"
+                className="touch-btn font-display text-sm italic text-primary-foreground bg-phase-follicular rounded-full px-6 py-2.5 active:scale-[0.97]"
               >
                 complete ✓
               </button>
@@ -238,9 +238,9 @@ function SomaticSection() {
         >
           <div className="flex gap-3 items-start mb-3">
             <span className="text-[26px]">{e.emoji}</span>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h3 className="font-display text-lg italic text-foreground mb-1">{e.name}</h3>
-              <div className="flex gap-1.5 mb-1.5">
+              <div className="flex gap-1.5 mb-1.5 flex-wrap">
                 <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">{e.cat}</span>
                 <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">{e.dur}</span>
               </div>
@@ -249,7 +249,7 @@ function SomaticSection() {
           </div>
           <button
             onClick={() => { haptic("medium"); setOpen(e.id); setStep(0); }}
-            className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90"
+            className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
           >
             begin this practice →
           </button>
@@ -259,7 +259,7 @@ function SomaticSection() {
   );
 }
 
-// ── MEDITATIONS ───────────────────────────────────────────────
+// ── MEDITATIONS (lazy YouTube) ────────────────────────────────
 function MeditationsSection() {
   const [playing, setPlaying] = useState<string | null>(null);
 
@@ -277,7 +277,7 @@ function MeditationsSection() {
           <div className="flex gap-3 items-start">
             <div className="flex-shrink-0">
               {playing === m.id ? (
-                <div className="w-[110px] rounded-xl overflow-hidden">
+                <div className="w-[110px] h-[62px] rounded-xl overflow-hidden">
                   <iframe
                     width="110"
                     height="62"
@@ -285,12 +285,13 @@ function MeditationsSection() {
                     allow="autoplay"
                     className="border-none block"
                     title={m.title}
+                    loading="lazy"
                   />
                 </div>
               ) : (
                 <button
                   onClick={() => setPlaying(m.id)}
-                  className="w-[110px] h-[62px] rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-center active:opacity-80"
+                  className="w-[110px] h-[62px] rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-center active:scale-[0.97]"
                 >
                   <div className="w-0 h-0 border-t-[9px] border-t-transparent border-b-[9px] border-b-transparent border-l-[15px] border-l-primary ml-1" />
                 </button>
@@ -355,14 +356,14 @@ export default function BreathworkPage() {
         </div>
       </div>
 
-      {/* Sub-nav pill */}
-      <div className="mb-6">
+      {/* Sub-nav pill — sticky on mobile */}
+      <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1">
           {sections.map((s) => (
             <button
               key={s.id}
               onClick={() => { haptic("light"); setSection(s.id); }}
-              className={`flex-1 py-2 rounded-xl font-display text-sm transition-all ${
+              className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all ${
                 section === s.id
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground italic"
@@ -380,7 +381,7 @@ export default function BreathworkPage() {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
         >
           {section === "breathwork" && <BreathworkTimer />}
           {section === "somatic" && <SomaticSection />}

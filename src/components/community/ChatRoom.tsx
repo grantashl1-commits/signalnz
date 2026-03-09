@@ -74,8 +74,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         <span className="font-display text-xs italic text-foreground/70">{group.challenges[0]}</span>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto pr-0.5">
+      {/* Messages — momentum scrolling */}
+      <div className="flex-1 overflow-y-auto pr-0.5 scroll-y">
         {messages.map((m) => {
           const isMe = m.user === "You";
           return (
@@ -91,7 +91,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                 )}
 
                 {m.type === "poll" && (
-                  <div className="card-warm p-3.5 min-w-[210px]">
+                  <div className="card-warm p-3.5 min-w-[210px] w-full">
                     <p className="font-mono text-[10px] text-primary mb-1">📊 poll</p>
                     <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
                     {m.options?.map((opt, i) => {
@@ -107,8 +107,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                             setVoted((v) => ({ ...v, [m.id]: i }));
                             setMessages((msgs) => msgs.map((x) => x.id !== m.id ? x : { ...x, votes: (x.votes || []).map((v, vi) => vi === i ? v + 1 : v) }));
                           }}
-                          className={`flex items-center w-full mb-1 px-2.5 py-1.5 rounded-lg border relative overflow-hidden transition-all ${
-                            myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card hover:bg-secondary/50"
+                          className={`touch-btn flex items-center w-full mb-1 px-2.5 py-2 rounded-lg border relative overflow-hidden transition-all ${
+                            myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card active:bg-secondary/50"
                           }`}
                         >
                           {hasVoted && <div className="absolute left-0 top-0 bottom-0 bg-primary/10 rounded-lg" style={{ width: `${pct}%` }} />}
@@ -121,12 +121,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                 )}
 
                 {m.type === "event" && (
-                  <div className="card-warm p-3.5 min-w-[230px] border-l-[3px] border-l-primary">
+                  <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
                     <p className="font-mono text-[10px] text-primary mb-1">📅 event</p>
                     <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
                     {m.date && <p className="font-mono text-[11px] text-muted-foreground mb-0.5">🕐 {m.date}</p>}
                     {m.location && <p className="font-mono text-[11px] text-muted-foreground mb-2">📍 {m.location}</p>}
-                    <button className="font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-1.5">
+                    <button className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">
                       I'm going ({m.going})
                     </button>
                   </div>
@@ -151,19 +151,19 @@ export default function ChatRoom({ group }: ChatRoomProps) {
               <p className="font-display text-[13px] italic text-phase-follicular leading-relaxed">{blocked.suggested_rewrite}</p>
             </div>
           )}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {blocked.suggested_rewrite && (
               <button
                 onClick={() => {
                   setMessages((m) => [...m, { id: Date.now().toString(), user: "You", avatar: "ME", time: now(), type: "text", text: blocked.suggested_rewrite! }]);
                   setInput(""); setBlocked(null);
                 }}
-                className="font-display text-[13px] italic text-primary-foreground bg-phase-follicular rounded-full px-4 py-2"
+                className="touch-btn font-display text-[13px] italic text-primary-foreground bg-phase-follicular rounded-full px-4 py-2"
               >
                 send this instead
               </button>
             )}
-            <button onClick={() => { setBlocked(null); setInput(""); }} className="font-display text-[13px] italic text-muted-foreground bg-secondary rounded-full px-3.5 py-2">
+            <button onClick={() => { setBlocked(null); setInput(""); }} className="touch-btn font-display text-[13px] italic text-muted-foreground bg-secondary rounded-full px-3.5 py-2">
               discard
             </button>
           </div>
@@ -175,16 +175,18 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         <div className="card-warm p-3.5 mb-2 flex-shrink-0">
           <p className="font-mono text-[11px] text-primary mb-2">create a poll</p>
           <input value={pollQ} onChange={(e) => setPollQ(e.target.value)} placeholder="Your question…"
-            className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none" style={{ fontSize: "16px" }} />
+            className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
+            inputMode="text" autoComplete="off" />
           {pollOpts.map((o, i) => (
             <input key={i} value={o} onChange={(e) => { const n = [...pollOpts]; n[i] = e.target.value; setPollOpts(n); }}
               placeholder={`Option ${i + 1}`}
-              className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none" style={{ fontSize: "16px" }} />
+              className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
+              inputMode="text" autoComplete="off" />
           ))}
-          <div className="flex gap-2">
-            <button onClick={() => setPollOpts((o) => [...o, ""])} className="font-mono text-[11px] text-muted-foreground border border-border rounded-full px-2.5 py-1">+ option</button>
-            <button onClick={sendPoll} className="font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-1.5">send poll</button>
-            <button onClick={() => setShowPoll(false)} className="font-mono text-[11px] text-muted-foreground">cancel</button>
+          <div className="flex gap-2 flex-wrap">
+            <button onClick={() => setPollOpts((o) => [...o, ""])} className="touch-btn font-mono text-[11px] text-muted-foreground border border-border rounded-full px-2.5 py-1.5">+ option</button>
+            <button onClick={sendPoll} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">send poll</button>
+            <button onClick={() => setShowPoll(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">cancel</button>
           </div>
         </div>
       )}
@@ -194,28 +196,31 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         <div className="card-warm p-3.5 mb-2 flex-shrink-0">
           <p className="font-mono text-[11px] text-primary mb-2">create an event</p>
           <input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} placeholder="Event name…"
-            className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none" style={{ fontSize: "16px" }} />
+            className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
+            inputMode="text" autoComplete="off" />
           <input value={eventDate} onChange={(e) => setEventDate(e.target.value)} placeholder="Date and time…"
-            className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none" style={{ fontSize: "16px" }} />
+            className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
+            inputMode="text" autoComplete="off" />
           <input value={eventLoc} onChange={(e) => setEventLoc(e.target.value)} placeholder="Location…"
-            className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-2 focus:outline-none" style={{ fontSize: "16px" }} />
-          <div className="flex gap-2">
-            <button onClick={sendEvent} className="font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-1.5">post event</button>
-            <button onClick={() => setShowEvent(false)} className="font-mono text-[11px] text-muted-foreground">cancel</button>
+            className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-2 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
+            inputMode="text" autoComplete="off" />
+          <div className="flex gap-2 flex-wrap">
+            <button onClick={sendEvent} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">post event</button>
+            <button onClick={() => setShowEvent(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">cancel</button>
           </div>
         </div>
       )}
 
       {/* Input area */}
       <div className="border-t border-border pt-2.5 flex-shrink-0">
-        <div className="flex gap-1.5 mb-1.5">
+        <div className="flex gap-1.5 mb-1.5 overflow-x-auto scroll-snap-x pb-0.5">
           {[
             { icon: "📊", label: "poll", action: () => { setShowPoll((p) => !p); setShowEvent(false); } },
             { icon: "📅", label: "event", action: () => { setShowEvent((e) => !e); setShowPoll(false); } },
             { icon: "🖼️", label: "image", action: () => {} },
             { icon: "🎤", label: "voice", action: () => {} },
           ].map((b) => (
-            <button key={b.label} onClick={b.action} className="font-mono text-[11px] text-muted-foreground bg-secondary/50 border-none rounded-full px-2.5 py-1">
+            <button key={b.label} onClick={b.action} className="touch-btn font-mono text-[11px] text-muted-foreground bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item">
               {b.icon} {b.label}
             </button>
           ))}
@@ -229,11 +234,13 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             rows={1}
             className="flex-1 px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 leading-relaxed placeholder:text-muted-foreground/40"
             style={{ fontSize: "16px" }}
+            inputMode="text"
+            autoComplete="off"
           />
           <button
             onClick={send}
             disabled={checking || !input.trim()}
-            className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+            className={`touch-btn w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
               input.trim() ? "bg-primary" : "bg-secondary"
             }`}
           >

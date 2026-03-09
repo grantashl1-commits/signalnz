@@ -72,12 +72,14 @@
     @apply border-border;
   }
   html {
-    /* Prevent iOS bounce on fixed layout */
     overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -85,7 +87,7 @@
     font-family: var(--font-display);
   }
 
-  /* Prevent iOS input zoom */
+  /* Prevent iOS input zoom — 16px minimum */
   input, select, textarea {
     font-size: 16px !important;
   }
@@ -94,6 +96,17 @@
   button, a, [role="button"] {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Disable text selection on UI chrome */
+  button, label, nav, [role="tablist"], [role="tab"], .select-none-chrome {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Ensure minimum readable body text */
+  p, span, li {
+    line-height: 1.6;
   }
 }
 
@@ -117,7 +130,6 @@
 
   .card-warm-hover {
     @apply card-warm transition-all duration-300;
-    /* Shadows always visible on mobile, not hover-revealed */
     box-shadow: 0 6px 24px rgba(139, 111, 94, 0.1);
   }
   @media (hover: hover) {
@@ -164,12 +176,14 @@
   .phase-bg-ovulatory { background-color: hsl(var(--phase-ovulatory) / 0.06); }
   .phase-bg-luteal { background-color: hsl(var(--phase-luteal) / 0.06); }
 
-  /* Touch feedback */
+  /* Touch feedback — native feel */
   .touch-btn {
     @apply transition-transform duration-150;
+    min-width: 44px;
+    min-height: 44px;
   }
   .touch-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
   .touch-card {
     @apply transition-transform duration-150;
@@ -179,6 +193,8 @@
   }
   .touch-tab {
     @apply transition-transform duration-150;
+    min-width: 44px;
+    min-height: 44px;
   }
   .touch-tab:active {
     transform: scale(0.90);
@@ -213,6 +229,11 @@
   .scroll-y {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Sticky sub-nav inside tabs */
+  .sticky-sub-nav {
+    @apply sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-2 -mt-2 pt-2;
   }
 }
 
@@ -276,4 +297,12 @@
 }
 .pt-safe {
   padding-top: env(safe-area-inset-top);
+}
+
+/* Prevent horizontal overflow on mobile */
+@media (max-width: 767px) {
+  html, body, #root {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
 }

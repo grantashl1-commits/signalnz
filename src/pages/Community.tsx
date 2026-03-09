@@ -8,6 +8,7 @@ import NearbyView from "@/components/community/NearbyView";
 import ChatRoom from "@/components/community/ChatRoom";
 import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
+import { haptic } from "@/hooks/use-mobile";
 
 const TABS = [
   { id: "discover", label: "Discover" },
@@ -58,24 +59,26 @@ export default function CommunityPage() {
         find your neighbours. share your gifts. build the village.
       </p>
 
-      {/* Tab bar */}
-      <div className="flex bg-secondary/50 rounded-2xl p-1 mb-5 overflow-x-auto">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => t.id === "nearby" ? handleNearbyTab() : setSection(t.id)}
-            className={`flex-1 py-2 rounded-xl text-center font-display text-xs transition-all relative whitespace-nowrap min-w-0 ${
-              section === t.id
-                ? "bg-card text-foreground shadow-sm font-medium"
-                : "text-muted-foreground italic"
-            }`}
-          >
-            {t.label}
-            {t.id === "nearby" && locationEnabled && (
-              <span className="absolute top-1 right-1.5 w-[5px] h-[5px] rounded-full bg-phase-follicular" />
-            )}
-          </button>
-        ))}
+      {/* Tab bar — sticky on mobile */}
+      <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-5 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
+        <div className="flex bg-secondary/50 rounded-2xl p-1 overflow-x-auto">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => { haptic("light"); t.id === "nearby" ? handleNearbyTab() : setSection(t.id); }}
+              className={`touch-tab flex-1 py-2.5 rounded-xl text-center font-display text-xs transition-all relative whitespace-nowrap min-w-0 ${
+                section === t.id
+                  ? "bg-card text-foreground shadow-sm font-medium"
+                  : "text-muted-foreground italic"
+              }`}
+            >
+              {t.label}
+              {t.id === "nearby" && locationEnabled && (
+                <span className="absolute top-1 right-1.5 w-[5px] h-[5px] rounded-full bg-phase-follicular" />
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Content */}
@@ -85,7 +88,7 @@ export default function CommunityPage() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
         >
           {section === "discover" && <CommunityDiscover onJoin={join} joined={joined} />}
           {section === "nearby" && <NearbyView locationEnabled={locationEnabled} onRequestLocation={() => setShowOptIn(true)} />}
@@ -94,14 +97,14 @@ export default function CommunityPage() {
               <div className="text-center pt-16">
                 <div className="text-[40px] mb-3">🌿</div>
                 <p className="font-display text-xl italic text-foreground mb-2">you haven't joined a community yet.</p>
-                <button onClick={() => setSection("discover")} className="font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-2.5 active:opacity-90">
+                <button onClick={() => setSection("discover")} className="touch-btn font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-2.5 active:scale-[0.97]">
                   find my community
                 </button>
               </div>
             ) : (
               <div>
                 {joined.length > 1 && (
-                  <div className="flex gap-1.5 mb-3 overflow-x-auto pb-0.5">
+                  <div className="flex gap-1.5 mb-3 overflow-x-auto pb-0.5 scroll-snap-x">
                     {joined.map((id) => {
                       const g = MOCK_GROUPS.find((g) => g.id === id);
                       if (!g) return null;
@@ -109,7 +112,7 @@ export default function CommunityPage() {
                         <button
                           key={id}
                           onClick={() => setActiveGroup(id)}
-                          className={`font-display text-[13px] italic rounded-full px-3.5 py-1 whitespace-nowrap border transition-all ${
+                          className={`touch-btn font-display text-[13px] italic rounded-full px-3.5 py-1 whitespace-nowrap border transition-all scroll-snap-item ${
                             activeGroup === id
                               ? "bg-primary text-primary-foreground border-primary"
                               : "bg-card text-foreground border-border"

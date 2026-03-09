@@ -30,6 +30,8 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
         placeholder="Search by suburb or city…"
         className="w-full px-4 py-3 rounded-full border border-border bg-card font-display text-sm italic text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm"
         style={{ fontSize: "16px" }}
+        inputMode="search"
+        autoComplete="off"
       />
 
       {/* Group cards */}
@@ -37,17 +39,17 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
         const isJoined = joined.includes(g.id);
         return (
           <div key={g.id} className="card-warm p-5">
-            <div className="flex justify-between items-start mb-2">
-              <div>
+            <div className="flex justify-between items-start mb-2 gap-2">
+              <div className="min-w-0 flex-1">
                 <h3 className="font-display text-xl font-bold italic text-foreground mb-0.5">{g.suburb}</h3>
                 <p className="font-mono text-xs text-muted-foreground">{g.city} · {g.members} members</p>
               </div>
               {isJoined ? (
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">joined ✓</span>
+                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0">joined ✓</span>
               ) : (
                 <button
                   onClick={() => onJoin(g.id)}
-                  className="font-display text-sm italic text-primary-foreground bg-primary rounded-full px-5 py-2 active:opacity-90"
+                  className="touch-btn font-display text-sm italic text-primary-foreground bg-primary rounded-full px-5 py-2 active:scale-[0.97] flex-shrink-0"
                 >
                   join
                 </button>

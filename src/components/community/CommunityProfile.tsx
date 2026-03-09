@@ -44,7 +44,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
           style={{ borderColor: photo ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.3)", background: photo ? "transparent" : "hsl(var(--primary) / 0.05)" }}
         >
           {photo ? (
-            <img src={photo} alt="profile" className="w-full h-full object-cover" />
+            <img src={photo} alt="profile" className="w-full h-full object-cover" width={80} height={80} loading="lazy" />
           ) : (
             <span className="text-[28px]">📷</span>
           )}
@@ -79,8 +79,8 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
 
       {/* Nearby toggle */}
       <div className="card-warm p-4">
-        <div className="flex justify-between items-center mb-1.5">
-          <div>
+        <div className="flex justify-between items-center mb-1.5 gap-3">
+          <div className="min-w-0 flex-1">
             <p className="font-display text-[15px] italic text-foreground mb-0.5">
               {locationEnabled ? "Visible in Nearby" : "Hidden from Nearby"}
             </p>
@@ -88,11 +88,12 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
           </div>
           <button
             onClick={onToggleLocation}
-            className={`w-10 h-[22px] rounded-full relative transition-colors flex-shrink-0 ${locationEnabled ? "bg-primary" : "bg-muted-foreground/30"}`}
+            className="touch-btn w-12 h-7 rounded-full relative transition-colors flex-shrink-0"
+            style={{ backgroundColor: locationEnabled ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.3)" }}
           >
             <div
-              className="w-4 h-4 rounded-full bg-card absolute top-[3px] transition-[left] shadow-sm"
-              style={{ left: locationEnabled ? 21 : 3 }}
+              className="w-5 h-5 rounded-full bg-card absolute top-[3px] transition-[left] shadow-sm"
+              style={{ left: locationEnabled ? 23 : 3 }}
             />
           </button>
         </div>
@@ -110,7 +111,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
               <label className="font-display text-base italic text-foreground leading-snug flex-1">{f.label}</label>
               <button
                 onClick={() => setVisibility((v) => ({ ...v, [f.key]: !v[f.key] }))}
-                className={`font-mono text-[11px] rounded-full px-3 py-1 whitespace-nowrap flex-shrink-0 mt-0.5 ${
+                className={`touch-btn font-mono text-[11px] rounded-full px-3 py-1.5 whitespace-nowrap flex-shrink-0 mt-0.5 ${
                   vis ? "bg-phase-follicular/10 text-phase-follicular" : "bg-secondary text-muted-foreground"
                 }`}
               >
@@ -126,6 +127,8 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
                 vis ? "bg-secondary/30 border-border" : "bg-secondary/20 border-border/50"
               }`}
               style={{ fontSize: "16px" }}
+              inputMode="text"
+              autoComplete="off"
             />
             {f.hint && (
               <p className="font-mono text-[10px] text-muted-foreground mt-1.5 leading-snug">
@@ -138,7 +141,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
 
       <button
         onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 3000); }}
-        className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic"
+        className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic active:scale-[0.97]"
       >
         {saved ? "saved ✓" : "save profile →"}
       </button>
