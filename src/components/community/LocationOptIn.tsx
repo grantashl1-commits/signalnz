@@ -18,7 +18,8 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25 }}
-        className="w-full bg-background rounded-t-3xl px-6 pt-7 pb-10 max-w-[480px] mx-auto"
+        className="w-full bg-background rounded-t-3xl px-6 pt-7 max-w-[480px] mx-auto"
+        style={{ paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}
       >
         <div className="w-10 h-1 rounded-full bg-border mx-auto mb-6" />
 
@@ -56,13 +57,13 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
 
         <button
           onClick={onAccept}
-          className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic mb-2.5"
+          className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic mb-2.5 active:scale-[0.97]"
         >
           yes, show me nearby people
         </button>
         <button
           onClick={onDecline}
-          className="w-full py-3 text-muted-foreground font-display text-[15px] italic bg-transparent border-none"
+          className="touch-btn w-full py-3 text-muted-foreground font-display text-[15px] italic bg-transparent border-none"
         >
           not right now
         </button>

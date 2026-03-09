@@ -13,7 +13,7 @@ function ChallengeItem({ text }: { text: string }) {
         <p className={`font-display text-sm italic leading-relaxed flex-1 ${done ? "text-muted-foreground" : "text-foreground"}`}>{text}</p>
         <button
           onClick={() => setDone((d) => !d)}
-          className={`font-mono text-[11px] rounded-full px-3 py-1 flex-shrink-0 ${
+          className={`touch-btn font-mono text-[11px] rounded-full px-3 py-1.5 flex-shrink-0 ${
             done ? "text-phase-follicular bg-phase-follicular/10" : "text-primary bg-primary/10"
           }`}
         >
@@ -59,8 +59,10 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
                 <textarea
                   rows={2}
                   placeholder="Your answer…"
-                  className="w-full font-display text-[13px] italic text-foreground bg-secondary/30 border border-border rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full font-display text-[13px] italic text-foreground bg-secondary/30 border border-border rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 leading-relaxed"
                   style={{ fontSize: "16px" }}
+                  inputMode="text"
+                  autoComplete="off"
                 />
               </div>
             ))}

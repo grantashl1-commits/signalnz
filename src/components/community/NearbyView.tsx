@@ -54,7 +54,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
             <p className="font-mono text-xs text-muted-foreground text-center mb-4 leading-relaxed">
               enable nearby to see who else is using the app in your area.
             </p>
-            <button onClick={onRequestLocation} className="font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-3 active:opacity-90">
+            <button onClick={onRequestLocation} className="touch-btn font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-3 active:scale-[0.97]">
               enable nearby →
             </button>
           </div>
@@ -77,11 +77,11 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
     const sent = connectSent.includes(u.id);
     return (
       <div>
-        <button onClick={() => setSelected(null)} className="font-mono text-xs text-muted-foreground mb-3.5 active:opacity-70">← back to nearby</button>
+        <button onClick={() => setSelected(null)} className="touch-btn font-mono text-xs text-muted-foreground mb-3.5 active:scale-[0.97] min-h-[44px]">← back to nearby</button>
         <div className="card-warm p-5">
           <div className="flex gap-3.5 items-center mb-4">
             <Avatar initials={u.avatar} size={52} color={u.color} online={u.online} />
-            <div>
+            <div className="min-w-0">
               <h3 className="font-display text-[22px] font-bold italic text-foreground">{u.name}</h3>
               <p className="font-mono text-xs text-muted-foreground">{u.suburb} · {u.distance}</p>
               {u.online && <p className="font-mono text-[11px] text-phase-follicular mt-0.5">● active now</p>}
@@ -112,7 +112,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
           <button
             onClick={() => setConnectSent((c) => [...c, u.id])}
             disabled={sent}
-            className={`touch-btn w-full py-3.5 rounded-[14px] font-display text-base italic ${
+            className={`touch-btn w-full py-3.5 rounded-[14px] font-display text-base italic active:scale-[0.97] ${
               sent ? "bg-phase-follicular/10 text-phase-follicular" : "bg-primary text-primary-foreground"
             }`}
           >
@@ -126,10 +126,10 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
   return (
     <div>
       {/* Privacy reminder */}
-      <div className="flex items-center gap-2 bg-phase-follicular/10 rounded-[10px] px-3 py-2 mb-4">
+      <div className="flex items-center gap-2 bg-phase-follicular/10 rounded-[10px] px-3 py-2.5 mb-4">
         <span className="text-sm">🔒</span>
-        <span className="font-mono text-[11px] text-phase-follicular">showing suburb-level only · your address is never visible</span>
-        <button className="font-mono text-[10px] text-muted-foreground ml-auto">turn off</button>
+        <span className="font-mono text-[11px] text-phase-follicular flex-1">showing suburb-level only · your address is never visible</span>
+        <button className="touch-btn font-mono text-[10px] text-muted-foreground">turn off</button>
       </div>
 
       {/* Schematic suburb map */}
@@ -144,11 +144,11 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
             <button
               key={zone.label}
               onClick={() => setFilterSuburb(zone.label === filterSuburb ? "all" : zone.label)}
-              className="absolute -translate-x-1/2 -translate-y-1/2 bg-transparent border-none text-center"
+              className="touch-btn absolute -translate-x-1/2 -translate-y-1/2 bg-transparent border-none text-center"
               style={{ left: zone.x, top: zone.y }}
             >
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center mx-auto mb-0.5 transition-all ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-0.5 transition-all ${
                   filterSuburb === zone.label ? "bg-primary border-2 border-primary" : "bg-primary/15 border-2 border-primary/30"
                 }`}
               >
@@ -169,12 +169,12 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
       </div>
 
       {/* Suburb filter pills */}
-      <div className="flex gap-1.5 mb-3.5 overflow-x-auto pb-1">
+      <div className="flex gap-1.5 mb-3.5 overflow-x-auto pb-1 scroll-snap-x">
         {suburbs.map((s) => (
           <button
             key={s}
             onClick={() => setFilterSuburb(s)}
-            className={`font-mono text-[11px] rounded-full px-3.5 py-1 whitespace-nowrap flex-shrink-0 border transition-all ${
+            className={`touch-btn font-mono text-[11px] rounded-full px-3.5 py-1.5 whitespace-nowrap flex-shrink-0 border transition-all scroll-snap-item ${
               filterSuburb === s
                 ? "bg-primary text-primary-foreground border-primary"
                 : "bg-card text-muted-foreground border-border"
@@ -195,7 +195,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
       {/* User cards grid */}
       <div className="grid grid-cols-2 gap-2.5">
         {filtered.map((u) => (
-          <button key={u.id} onClick={() => setSelected(u.id)} className="card-warm p-3.5 text-left">
+          <button key={u.id} onClick={() => setSelected(u.id)} className="touch-card card-warm p-3.5 text-left active:scale-[0.98]">
             <div className="flex justify-between items-start mb-2">
               <Avatar initials={u.avatar} size={36} color={u.color} online={u.online} />
               <span className="font-mono text-[10px] text-muted-foreground">{u.distance}</span>

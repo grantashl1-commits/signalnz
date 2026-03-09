@@ -55,7 +55,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (!touchStart.current) return;
     const dx = e.changedTouches[0].clientX - touchStart.current.x;
     const dy = e.changedTouches[0].clientY - touchStart.current.y;
-    // Only horizontal swipes
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
       if (dx > 0 && currentMobileIdx > 0) {
         haptic("light");
@@ -83,7 +82,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
       {/* Desktop header — hidden on mobile */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm hidden md:block pt-safe">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
@@ -141,8 +140,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           initial={isMobile ? { opacity: 0, x: slideDir * 60 } : { opacity: 0, y: 8 }}
           animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
           exit={isMobile ? { opacity: 0, x: slideDir * -30 } : { opacity: 0, y: -8 }}
-          transition={{ duration: isMobile ? 0.3 : 0.4, ease: "easeOut" as const }}
-          className="flex-1 px-5 md:container md:mx-auto md:px-4 py-6 md:py-8 pb-28 md:pb-8 scroll-y"
+          transition={{ duration: isMobile ? 0.25 : 0.35, ease: "easeOut" as const }}
+          className="flex-1 px-5 md:container md:mx-auto md:px-4 py-6 md:py-8 pb-28 md:pb-8 scroll-y overflow-x-hidden"
           onTouchStart={isMobile ? handleTouchStart : undefined}
           onTouchEnd={isMobile ? handleTouchEnd : undefined}
         >
@@ -150,10 +149,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </motion.main>
       </AnimatePresence>
 
-      {/* Mobile bottom tab bar */}
+      {/* Mobile bottom tab bar — always pinned with safe area */}
       {!keyboardVisible && (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm md:hidden border-t border-border"
-          style={{ paddingBottom: "env(safe-area-inset-bottom)", height: "calc(64px + env(safe-area-inset-bottom))" }}
+        <nav
+          className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm md:hidden border-t border-border select-none-chrome"
+          style={{
+            paddingBottom: "env(safe-area-inset-bottom)",
+            height: "calc(64px + env(safe-area-inset-bottom))",
+          }}
         >
           <div className="flex items-center justify-around h-16">
             {mobileNavItems.map((item) => {
