@@ -156,6 +156,8 @@ export default function HomePage() {
             { path: "/nutrition", label: "nutrition", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
             { path: "/movement", label: "movement", icon: Dumbbell, title: todayWorkout?.name || "Today's workout", desc: `${todayWorkout?.duration || ""} · ${todayWorkout?.equipment || ""}` },
             { path: "/breathwork", label: "nervous system", icon: Wind, title: "Coherent Breathing", desc: focus.nervous },
+            { path: "/journal", label: "journal", icon: PenLine, title: "My Journal", desc: "Reflect, track your mood, and receive AI soul analysis." },
+            { path: "/community", label: "community", icon: Users, title: "Community", desc: "Find your neighbours. Share your skills. Build the village." },
           ].map((tile, i) => (
             <motion.div
               key={tile.path}
