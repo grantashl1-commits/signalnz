@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Dumbbell } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
-import { CymatiSketch, SacredSpiral } from "@/components/BotanicalElements";
+import { CymatiSketch, SacredSpiral, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import {
   WORKOUTS, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
-  FEELINGS, FEELING_REC, type WorkoutCategory
+  FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
+  getAllSessions, type WorkoutCategory,
 } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
+import LiveHRView from "@/components/movement/LiveHRView";
+import MovementCalendar from "@/components/movement/MovementCalendar";
+import ProgressTab from "@/components/movement/ProgressTab";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#7D9E82", ovulatory: "#E8A030", luteal: "#9B89B4",
@@ -21,53 +25,66 @@ const cardVariant = {
 
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
-  const [activeTab, setActiveTab] = useState<"today" | "library" | "log">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "calendar" | "progress">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
-  const [timeFilter, setTimeFilter] = useState("any");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [workoutComplete, setWorkoutComplete] = useState(false);
+  const [showHR, setShowHR] = useState(false);
+  const [trainingWeek, setTrainingWeekState] = useState(getTrainingWeek());
 
-  const todayWorkoutData = WORKOUTS.find((w) => w.id === TODAY_WORKOUT[info.phase]);
-  const rec = PHASE_MOVEMENT_REC[info.phase];
   const todayStr = new Date().toISOString().split("T")[0];
+  const dayOfWeek = new Date().getDay();
+  const scheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const todaySchedule = WEEKLY_SCHEDULE[scheduleIdx];
+  const todayWorkoutData = WORKOUTS.find(w => w.id === (info.phase === "menstrual" ? "rest-walk-restore" : todaySchedule.workoutId));
+  const rec = PHASE_MOVEMENT_REC[info.phase];
 
   const toggleExercise = (name: string) => {
     haptic("light");
     const next = new Set(completedExercises);
     next.has(name) ? next.delete(name) : next.add(name);
     setCompletedExercises(next);
-    if (todayWorkoutData && next.size === todayWorkoutData.exercises.length) {
+    if (todayWorkoutData && todayWorkoutData.exercises.length > 0 && next.size === todayWorkoutData.exercises.length) {
       haptic("success");
       setWorkoutComplete(true);
       logWorkout(todayStr, todayWorkoutData.id);
     }
   };
 
-  const filteredWorkouts = WORKOUTS.filter((w) => {
+  const filteredWorkouts = WORKOUTS.filter(w => {
     if (categoryFilter !== "all" && w.category !== categoryFilter) return false;
     if (phaseFilter !== "all" && w.suitability[phaseFilter] === "rest") return false;
-    if (timeFilter === "under20" && w.durationMin > 20) return false;
-    if (timeFilter === "20-35" && (w.durationMin < 20 || w.durationMin > 35)) return false;
-    if (timeFilter === "35-50" && (w.durationMin < 35 || w.durationMin > 50)) return false;
     return true;
   });
 
   const today = new Date();
-  const dayOfWeek = today.getDay();
-  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const mondayOffset = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
   const weekDays = Array.from({ length: 7 }, (_, i) => { const d = new Date(today); d.setDate(today.getDate() + mondayOffset + i); return d; });
-  const weekWorkouts = weekDays.map((d) => getLoggedWorkouts(d.toISOString().split("T")[0]));
-  const totalCompleted = weekWorkouts.filter((w) => w.length > 0).length;
-  const totalMinutes = weekWorkouts.flat().reduce((s, id) => s + (WORKOUTS.find((x) => x.id === id)?.durationMin || 0), 0);
+  const weekWorkouts = weekDays.map(d => getLoggedWorkouts(d.toISOString().split("T")[0]));
+  const totalCompleted = weekWorkouts.filter(w => w.length > 0).length;
+  const totalMinutes = weekWorkouts.flat().reduce((s, id) => s + (WORKOUTS.find(x => x.id === id)?.durationMin || 0), 0);
+  const sessions = getAllSessions();
+
+  const handleWeekChange = (week: number) => {
+    haptic("light");
+    setTrainingWeek(week);
+    setTrainingWeekState(week);
+  };
 
   const TABS = [
     { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
+    { id: "calendar" as const, label: "Calendar" },
+    { id: "progress" as const, label: "Progress" },
   ];
+
+  if (showHR) {
+    return <LiveHRView workoutName={todayWorkoutData?.name || "Workout"} onClose={() => setShowHR(false)} />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative">
@@ -83,125 +100,179 @@ export default function MovementPage() {
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 
-      <div className="flex gap-1 rounded-full bg-secondary p-1">
-        {TABS.map((tab) => (
+      {/* Tab bar - scrollable */}
+      <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
+        {TABS.map(tab => (
           <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
-            className={`touch-tab flex-1 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all ${
+            className={`scroll-snap-item touch-tab flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
               activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
             }`}
           >{tab.label}</button>
         ))}
       </div>
 
+      {/* TODAY TAB */}
       {activeTab === "today" && (
         <div className="space-y-4 md:space-y-6">
+          {/* Phase banner */}
           <div className="card-warm p-4 md:p-5 relative overflow-hidden">
-            <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 pointer-events-none">
+            <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
               <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
             </div>
-            <h2 className="font-display text-lg md:text-xl italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
+            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
-          <div className="card-warm p-4 md:p-5 space-y-3">
-            <p className="font-display text-base md:text-lg italic text-foreground">how does your body feel right now?</p>
+          {/* Training week badge */}
+          <div className="card-warm p-3 flex items-center justify-between">
+            <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]}</span>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4].map(w => (
+                <button key={w} onClick={() => handleWeekChange(w)}
+                  className={`touch-btn h-8 w-8 rounded-full font-mono text-xs ${trainingWeek === w ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+                >{w}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Weekly schedule strip */}
+          <div className="scroll-snap-x flex gap-1.5 pb-1 -mx-1 px-1">
+            {WEEKLY_SCHEDULE.map((s, i) => {
+              const isToday = i === scheduleIdx;
+              const isRest = info.phase === "menstrual";
+              return (
+                <div key={s.day} className={`scroll-snap-item flex-shrink-0 w-20 rounded-xl p-2 text-center ${isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/40"}`}>
+                  <p className="font-body text-[9px] text-muted-foreground">{s.day}</p>
+                  <p className="font-hand text-[10px] font-bold text-foreground mt-0.5 leading-tight">{isRest ? "Rest" : s.label}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* How do you feel */}
+          <div className="card-warm p-4 space-y-3">
+            <p className="font-display text-base italic text-foreground">How does your body feel right now?</p>
             <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 sm:flex-wrap">
-              {FEELINGS.map((f) => (
+              {FEELINGS.map(f => (
                 <button key={f} onClick={() => { haptic("light"); setFeeling(f); }}
-                  className={`touch-btn scroll-snap-item rounded-full px-4 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${feeling === f ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground active:bg-secondary/80"}`}
+                  className={`touch-btn scroll-snap-item rounded-full px-4 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${feeling === f ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
                 >{f}</button>
               ))}
             </div>
             {feeling && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="font-body text-sm text-foreground/80 bg-primary/5 rounded-xl p-3">{FEELING_REC[feeling]}</motion.p>}
           </div>
 
+          {/* Today's workout */}
           {todayWorkoutData && (
-            <div className="card-warm p-4 md:p-5 space-y-4">
+            <div className="card-warm p-4 space-y-4">
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="font-display text-lg md:text-xl italic text-foreground">{todayWorkoutData.name}</h3>
+                <div>
+                  <h3 className="font-display text-lg italic text-foreground">{todayWorkoutData.name}</h3>
                   <div className="flex gap-2 mt-1 flex-wrap">
                     <span className="font-mono text-[10px]" style={{ color: PHASE_HEX[info.phase] }}>{todayWorkoutData.duration}</span>
                     <span className="font-body text-[10px] text-muted-foreground">{todayWorkoutData.equipment}</span>
                   </div>
+                  <p className="font-body text-xs text-muted-foreground mt-1">{todayWorkoutData.description}</p>
                 </div>
                 <span className={`flex-shrink-0 rounded-full px-3 py-1 font-hand text-[11px] font-bold ${SUIT_COLORS[todayWorkoutData.suitability[info.phase]].bg} ${SUIT_COLORS[todayWorkoutData.suitability[info.phase]].text}`}>
                   {SUIT_COLORS[todayWorkoutData.suitability[info.phase]].label}
                 </span>
               </div>
 
-              <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / todayWorkoutData.exercises.length) * 100}%` }} />
-              </div>
-              <p className="font-mono text-[10px] text-muted-foreground">{completedExercises.size}/{todayWorkoutData.exercises.length}</p>
+              {/* Rest options */}
+              {todayWorkoutData.restOptions && todayWorkoutData.restOptions.length > 0 && (
+                <div className="space-y-2">
+                  {todayWorkoutData.restOptions.map(opt => (
+                    <div key={opt.id} className="bg-secondary/50 rounded-xl p-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-display text-sm italic text-foreground">{opt.name}</h4>
+                        <span className="font-mono text-[9px] text-muted-foreground">{opt.duration}</span>
+                      </div>
+                      <p className="font-body text-xs text-muted-foreground mt-1">{opt.description}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-              <div className="space-y-1.5">
-                {todayWorkoutData.exercises.map((ex, i) => {
-                  const done = completedExercises.has(ex.name);
-                  return (
-                    <motion.div key={ex.name} custom={i} initial="hidden" animate="visible" variants={cardVariant}
-                      className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
-                      onClick={() => toggleExercise(ex.name)}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>
-                        {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
-                        <p className="font-mono text-[9px] text-muted-foreground">{ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
-                      </div>
-                      <p className="font-display text-[10px] italic text-muted-foreground max-w-[80px] md:max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
+              {/* Exercise list */}
+              {todayWorkoutData.exercises.length > 0 && (
+                <>
+                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / todayWorkoutData.exercises.length) * 100}%` }} />
+                  </div>
+                  <p className="font-mono text-[10px] text-muted-foreground">{completedExercises.size}/{todayWorkoutData.exercises.length}</p>
+
+                  <div className="space-y-1.5">
+                    {todayWorkoutData.exercises.map((ex, i) => {
+                      const done = completedExercises.has(ex.name);
+                      const showSection = i === 0 || ex.section !== todayWorkoutData.exercises[i - 1]?.section;
+                      return (
+                        <div key={ex.name}>
+                          {showSection && ex.section && (
+                            <p className="font-hand text-xs font-bold text-primary mt-3 mb-1">{ex.section}</p>
+                          )}
+                          <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
+                            className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
+                            onClick={() => toggleExercise(ex.name)}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <div className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>
+                              {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
+                              <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>{ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                            </div>
+                            <p className="font-display text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{ex.formCue}</p>
+                          </motion.div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {workoutComplete && (
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6 bg-primary/5 rounded-xl">
+                      <p className="font-display text-xl italic text-foreground">Workout complete 🌿</p>
+                      <p className="font-hand text-sm text-muted-foreground mt-1">Saved to your log.</p>
                     </motion.div>
-                  );
-                })}
-              </div>
-
-              {workoutComplete && (
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6 bg-primary/5 rounded-xl">
-                  <p className="font-display text-xl md:text-2xl italic text-foreground">workout complete 🌿</p>
-                  <p className="font-hand text-sm text-muted-foreground mt-1">saved to your log</p>
-                </motion.div>
+                  )}
+                </>
               )}
             </div>
           )}
         </div>
       )}
 
+      {/* LIBRARY TAB */}
       {activeTab === "library" && (
         <div className="space-y-4">
           <div className="space-y-2">
-            {/* Horizontal scroll filters */}
             <div className="scroll-snap-x flex gap-1.5 pb-1 -mx-1 px-1 sm:flex-wrap">
               <button onClick={() => setCategoryFilter("all")} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${categoryFilter === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>All</button>
-              {(Object.keys(CATEGORY_LABELS) as WorkoutCategory[]).map((cat) => (
+              {(Object.keys(CATEGORY_LABELS) as WorkoutCategory[]).map(cat => (
                 <button key={cat} onClick={() => setCategoryFilter(cat)} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${categoryFilter === cat ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>{CATEGORY_LABELS[cat]}</button>
               ))}
             </div>
             <div className="scroll-snap-x flex gap-1.5 pb-1 -mx-1 px-1 sm:flex-wrap">
-              {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map((phase) => (
+              {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(phase => (
                 <button key={phase} onClick={() => setPhaseFilter(phaseFilter === phase ? "all" : phase)} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-medium transition-all whitespace-nowrap ${phaseFilter === phase ? `phase-${phase}` : `phase-${phase}-light`}`}>{PHASE_SHORT[phase]}</button>
               ))}
             </div>
           </div>
 
-          <p className="font-mono text-[10px] text-muted-foreground">{filteredWorkouts.length} workouts</p>
+          <p className="font-mono text-[10px] text-muted-foreground">{filteredWorkouts.length} workouts.</p>
 
           {filteredWorkouts.map((w, i) => {
             const suit = w.suitability[info.phase];
             const sc = SUIT_COLORS[suit];
             const expanded = expandedWorkout === w.id;
             return (
-              <motion.div key={w.id} custom={i} initial="hidden" animate="visible" variants={cardVariant}
-                className="card-warm overflow-hidden"
-              >
-                <div className="p-4 cursor-pointer touch-card flex items-center gap-3 md:gap-4 min-h-[64px]" onClick={() => { haptic("light"); setExpandedWorkout(expanded ? null : w.id); }}>
-                  <span className="font-mono text-base md:text-lg font-bold min-w-[50px] md:min-w-[60px]" style={{ color: PHASE_HEX[info.phase] }}>{w.duration.replace(" min", ":00")}</span>
+              <motion.div key={w.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm overflow-hidden">
+                <div className="p-4 cursor-pointer touch-card flex items-center gap-3 min-h-[64px]" onClick={() => { haptic("light"); setExpandedWorkout(expanded ? null : w.id); }}>
+                  <span className="font-mono text-base font-bold min-w-[50px]" style={{ color: PHASE_HEX[info.phase] }}>{w.duration.replace(" min", ":00")}</span>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-display text-sm md:text-base italic text-foreground truncate">{w.name}</h3>
-                    <div className="flex gap-2 mt-0.5">
-                      <span className="font-body text-[9px] text-muted-foreground">{w.equipment}</span>
-                    </div>
+                    <h3 className="font-display text-sm italic text-foreground truncate">{w.name}</h3>
+                    <span className="font-body text-[9px] text-muted-foreground">{w.equipment}</span>
                   </div>
                   <div className={`h-4 w-4 rounded-full flex-shrink-0 ${suit === "ideal" ? "animate-node-pulse" : ""}`}
                     style={{
@@ -213,13 +284,20 @@ export default function MovementPage() {
                 </div>
                 {expanded && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-4 border-t border-border pt-3 space-y-1.5">
+                    <p className="font-body text-xs text-muted-foreground mb-2">{w.description}</p>
+                    {w.restOptions && w.restOptions.map(opt => (
+                      <div key={opt.id} className="bg-secondary/50 rounded-xl p-2.5">
+                        <h4 className="font-display text-sm italic text-foreground">{opt.name} · {opt.duration}</h4>
+                        <p className="font-body text-xs text-muted-foreground mt-0.5">{opt.description}</p>
+                      </div>
+                    ))}
                     {w.exercises.map((ex, j) => (
                       <div key={j} className="flex items-center justify-between bg-secondary/50 rounded-xl p-2.5 gap-2">
                         <div className="min-w-0">
                           <p className="font-body text-sm text-foreground">{ex.name}</p>
                           <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>{ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
                         </div>
-                        <p className="font-display text-[10px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
+                        <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
                       </div>
                     ))}
                   </motion.div>
@@ -230,23 +308,25 @@ export default function MovementPage() {
         </div>
       )}
 
+      {/* MY LOG TAB */}
       {activeTab === "log" && (
         <div className="space-y-4 md:space-y-6">
-          <div className="grid grid-cols-3 gap-2 md:gap-3">
+          <div className="grid grid-cols-3 gap-2">
             {[{ val: totalCompleted, label: "Workouts" }, { val: totalMinutes, label: "Minutes" }, { val: totalCompleted > 0 ? Math.round((totalCompleted / 7) * 100) + "%" : "0%", label: "Consistency" }].map(({ val, label }) => (
-              <div key={label} className="card-warm p-3 md:p-4 text-center">
-                <p className="font-mono text-xl md:text-2xl text-foreground">{val}</p>
+              <div key={label} className="card-warm p-3 text-center">
+                <p className="font-mono text-xl text-foreground">{val}</p>
                 <p className="font-body text-[9px] text-muted-foreground">{label}</p>
               </div>
             ))}
           </div>
-          <div className="flex gap-1.5 md:gap-2">
+
+          <div className="flex gap-1.5">
             {weekDays.map((date, i) => {
               const dateStr = date.toISOString().split("T")[0];
               const isToday = dateStr === todayStr;
               const logged = getLoggedWorkouts(dateStr);
               return (
-                <div key={i} className={`flex-1 rounded-xl p-2 md:p-2.5 text-center ${isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/30"}`}>
+                <div key={i} className={`flex-1 rounded-xl p-2 text-center ${isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/30"}`}>
                   <p className="font-body text-[9px] text-muted-foreground">{["M", "T", "W", "T", "F", "S", "S"][i]}</p>
                   <p className="font-mono text-xs text-foreground mt-0.5">{date.getDate()}</p>
                   {logged.length > 0 ? <Dumbbell className="h-3 w-3 text-primary mx-auto mt-1" /> : <div className="h-3 mt-1" />}
@@ -254,7 +334,78 @@ export default function MovementPage() {
               );
             })}
           </div>
+
+          {/* Heart rate section */}
+          <div className="card-warm p-5" style={{ backgroundColor: "hsl(36 47% 94%)" }}>
+            <h3 className="font-display text-base italic text-foreground">Heart rate monitor.</h3>
+            <p className="font-body text-xs italic text-muted-foreground mt-1">
+              Connect a Bluetooth chest strap to track your zones in real time.
+            </p>
+            <p className="font-hand text-[10px] text-muted-foreground mt-1">
+              Works with Polar H10, H9, Garmin chest strap, Wahoo TICKR via Bluetooth.
+            </p>
+            <button onClick={() => setShowHR(true)} className="touch-btn w-full mt-3 rounded-[14px] py-3 min-h-[48px] font-body text-sm font-bold text-primary-foreground bg-primary flex items-center justify-center gap-2">
+              <Bluetooth className="h-4 w-4" /> Connect monitor →
+            </button>
+          </div>
+
+          {/* Training week selector */}
+          <div className="card-warm p-4">
+            <p className="font-body text-sm text-foreground mb-2">Which training week are you in?</p>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4].map(w => (
+                <button key={w} onClick={() => handleWeekChange(w)}
+                  className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[44px] font-mono text-sm ${trainingWeek === w ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+                >{w}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Manual log */}
+          <div className="card-warm p-4">
+            <p className="font-hand text-sm text-muted-foreground">Log manually →</p>
+            <p className="font-body text-xs text-muted-foreground mt-1">
+              No heart rate monitor? Log your workout effort manually.
+            </p>
+          </div>
+
+          {/* Session history */}
+          {sessions.length > 0 && (
+            <div>
+              <p className="font-hand text-sm font-bold text-primary mb-2">Past sessions</p>
+              <div className="space-y-2">
+                {sessions.slice(0, 10).map(s => (
+                  <div key={s.id} className="card-warm p-3 flex items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-body text-sm text-foreground">{s.workoutName}</p>
+                      <p className="font-mono text-[9px] text-muted-foreground">{s.date} · {Math.round(s.duration / 60)} min · Avg {s.avgHR} bpm</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono text-sm text-foreground">{s.zone2PlusPercent}%</p>
+                      <p className="font-hand text-[9px] text-petal-gold">Zone 2+</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* CALENDAR TAB */}
+      {activeTab === "calendar" && <MovementCalendar />}
+
+      {/* PROGRESS TAB */}
+      {activeTab === "progress" && <ProgressTab />}
+
+      {/* Floating HR button on today/library */}
+      {(activeTab === "today" || activeTab === "library") && (
+        <button
+          onClick={() => setShowHR(true)}
+          className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-40 touch-btn h-14 w-14 rounded-full bg-primary shadow-lg flex items-center justify-center"
+        >
+          <Activity className="h-6 w-6 text-primary-foreground" />
+        </button>
       )}
     </div>
   );
