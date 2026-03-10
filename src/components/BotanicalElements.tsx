@@ -561,4 +561,3 @@ export { CymatiSketch as CymaticMenstrual };
 export { CymatiSketch as CymaticFollicular };
 export { CymatiSketch as CymaticOvulatory };
 export { CymatiSketch as CymaticLuteal };
-export { CymatiSketch as CymaticLuteal };
