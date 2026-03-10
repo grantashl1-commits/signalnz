@@ -400,17 +400,17 @@ export default function HomePage({ userName }: { userName?: string }) {
       )}
 
       {/* ═══ QUICK ACTIONS — atmospheric section ═══ */}
-      <AtmosphericHero size="sm" dotOpacity={0.05}>
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60 mb-5 text-center">Quick Actions</p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-3">
+      <AtmosphericHero size="sm" dotOpacity={0.04}>
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/50 mb-7 text-center">Quick actions</p>
+        <div className="grid gap-5 sm:grid-cols-3">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 shadow-elevated">
+            <div className="flex items-center gap-2 mb-4">
               <Droplets className="h-4 w-4 text-phase-follicular" />
               <span className="font-body text-xs font-medium text-phase-follicular uppercase tracking-wider">Hydration</span>
             </div>
             <div className="flex gap-1 mb-3">
               {Array.from({ length: 8 }, (_, i) => (
-                <div key={i} className={`h-4 w-4 rounded-full border transition-all ${i < water ? "bg-phase-follicular/40 border-phase-follicular/60" : "border-border"}`} />
+                <div key={i} className={`h-4 w-4 rounded-full transition-all ${i < water ? "bg-phase-follicular/40" : "bg-muted/30"}`} />
               ))}
             </div>
             <div className="flex items-center justify-between">
@@ -421,8 +421,8 @@ export default function HomePage({ userName }: { userName?: string }) {
             </div>
           </div>
 
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 shadow-elevated">
+            <div className="flex items-center gap-2 mb-4">
               <Sprout className="h-4 w-4 text-sage-mist" />
               <span className="font-body text-xs font-medium text-sage-mist uppercase tracking-wider">Seeds</span>
             </div>
@@ -434,7 +434,7 @@ export default function HomePage({ userName }: { userName?: string }) {
                   type="checkbox"
                   checked={seedsTakenToday}
                   onChange={(e) => { haptic("light"); setSeedsTakenToday(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }}
-                  className="rounded border-border text-primary focus:ring-primary h-4 w-4"
+                  className="rounded border-muted text-primary focus:ring-primary h-4 w-4"
                 />
                 <span className="font-body text-xs text-muted-foreground">Seeds today?</span>
               </label>
@@ -444,8 +444,8 @@ export default function HomePage({ userName }: { userName?: string }) {
             )}
           </div>
 
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 shadow-elevated">
+            <div className="flex items-center gap-2 mb-4">
               <Clock className="h-4 w-4 text-lavender-dust" />
               <span className="font-body text-xs font-medium text-lavender-dust uppercase tracking-wider">Wind-down</span>
             </div>
@@ -456,22 +456,22 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ TODAY'S FOCUS — cream section ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">Today's Focus</p>
-        <div className="space-y-3 max-w-2xl mx-auto">
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8 text-center">Today's focus</p>
+        <div className="space-y-4 max-w-2xl mx-auto">
           {[
             { icon: Salad, label: "Nutrition", text: focus.nutrition },
             { icon: Dumbbell, label: "Movement", text: focus.movement },
-            { icon: Wind, label: "Nervous System", text: focus.nervous },
+            { icon: Wind, label: "Nervous system", text: focus.nervous },
             { icon: Moon, label: "Cycle", text: focus.cycle },
           ].map((item, i) => (
             <AnimatedCard key={item.label} index={i}>
-              <div className="rounded-[20px] bg-card border border-border p-5 md:p-6 flex items-start gap-4" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
-                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary">
+              <div className="rounded-[22px] bg-card p-6 md:p-7 flex items-start gap-5 shadow-soft">
+                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-background">
                   <item.icon className="h-4 w-4 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary font-medium">{item.label}</span>
-                  <p className="font-body text-sm text-foreground mt-1.5 leading-relaxed">{item.text}</p>
+                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-primary font-medium">{item.label}</span>
+                  <p className="font-body text-sm text-foreground mt-2 leading-relaxed">{item.text}</p>
                 </div>
               </div>
             </AnimatedCard>
@@ -480,7 +480,7 @@ export default function HomePage({ userName }: { userName?: string }) {
       </ContentSection>
 
       {/* Bottom breathing room */}
-      <div className="h-8 md:h-12" />
+      <div className="h-12 md:h-16" />
     </div>
   );
 }
