@@ -187,6 +187,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Wholemeal flour and oats provide steady energy. Dark chocolate supplies magnesium for the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/cookie-dough-bliss-balls.png",
   },
   {
     id: "homemade-ferrero-rochers",
