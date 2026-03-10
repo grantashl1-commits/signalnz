@@ -1414,6 +1414,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "vegan-egg-roll-in-a-bowl",
     name: "Vegan 'Egg Roll In A Bowl'",
+    image: "/images/recipes/meals/vegan-egg-roll-in-a-bowl.png",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
