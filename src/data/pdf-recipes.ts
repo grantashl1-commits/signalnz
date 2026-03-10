@@ -195,6 +195,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "pumpkin-kale-chilli",
     name: "Pumpkin & Kale Chilli",
+    image: "/images/recipes/meals/pumpkin-kale-chilli.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
