@@ -168,7 +168,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom tab bar — horizontally scrollable */}
       {!keyboardVisible && (
         <nav
-          className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm md:hidden border-t border-border select-none-chrome"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md md:hidden select-none-chrome"
           style={{
             paddingBottom: "env(safe-area-inset-bottom)",
             height: "calc(60px + env(safe-area-inset-bottom))",
