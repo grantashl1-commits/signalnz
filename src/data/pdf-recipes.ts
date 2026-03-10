@@ -492,6 +492,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "wild-blueberry-oat-bars",
     name: "Wild Blueberry Oat Bars",
+    image: "/images/recipes/meals/wild-blueberry-oat-bars.png",
     phase: "ovulatory",
     serves: 20,
     prepTime: "50 min",
