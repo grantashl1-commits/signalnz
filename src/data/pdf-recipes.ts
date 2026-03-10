@@ -1152,6 +1152,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "kidney-bean-melt-quesadilla",
     name: "Kidney Bean Melt Quesadilla",
+    image: "/images/recipes/meals/kidney-bean-melt-quesadilla.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
