@@ -43,7 +43,7 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           className="rounded-2xl p-5"
           style={{ backgroundColor: "hsl(24 33% 92% / 0.7)" }}
         >
-          <p className="font-hand text-xs font-bold text-primary mb-2">What this may be pointing to</p>
+          <p className="font-hand text-xs font-bold text-primary mb-2">What this might mean</p>
           <p className="font-body text-sm text-foreground leading-relaxed">
             {response.interpretation}
           </p>
