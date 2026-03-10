@@ -14,10 +14,20 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        body: ["Lato", "sans-serif"],
+        display: ["Montserrat", "Playfair Display", "serif"],
+        body: ["Montserrat", "Lato", "sans-serif"],
         hand: ["Caveat", "cursive"],
         mono: ["Space Mono", "monospace"],
+      },
+      fontSize: {
+        "display-xl": ["3.5rem", { lineHeight: "1.1", fontWeight: "800", letterSpacing: "-0.02em" }],
+        "display-lg": ["2.75rem", { lineHeight: "1.15", fontWeight: "800", letterSpacing: "-0.015em" }],
+        "heading-lg": ["2rem", { lineHeight: "1.2", fontWeight: "700" }],
+        "heading-md": ["1.5rem", { lineHeight: "1.3", fontWeight: "700" }],
+        "heading-sm": ["1.125rem", { lineHeight: "1.4", fontWeight: "600" }],
+        "body-lg": ["1rem", { lineHeight: "1.6", fontWeight: "500" }],
+        "body-md": ["0.875rem", { lineHeight: "1.6", fontWeight: "500" }],
+        "body-sm": ["0.75rem", { lineHeight: "1.5", fontWeight: "500" }],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -28,6 +38,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          soft: "hsl(var(--primary-soft))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -85,10 +97,36 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      spacing: {
+        "space-xs": "var(--space-xs)",
+        "space-sm": "var(--space-sm)",
+        "space-md": "var(--space-md)",
+        "space-lg": "var(--space-lg)",
+        "space-xl": "var(--space-xl)",
+        "space-2xl": "var(--space-2xl)",
+        "space-3xl": "var(--space-3xl)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        sm: "var(--radius-sm)",
+        xl: "var(--radius-lg)",
+        "2xl": "var(--radius-xl)",
+      },
+      boxShadow: {
+        soft: "var(--shadow-soft)",
+        medium: "var(--shadow-medium)",
+        elevated: "var(--shadow-elevated)",
+        glow: "var(--shadow-glow)",
+      },
+      transitionTimingFunction: {
+        calm: "var(--ease-calm)",
+      },
+      transitionDuration: {
+        fast: "var(--duration-fast)",
+        normal: "var(--duration-normal)",
+        slow: "var(--duration-slow)",
+        gentle: "var(--duration-gentle)",
       },
       keyframes: {
         "accordion-down": {

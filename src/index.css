@@ -4,53 +4,88 @@
 
 @layer base {
   :root {
-    /* SIGNAL — violet botanical palette */
-    --background: 30 33% 98%;       /* Pearl White #fdfcfb */
-    --foreground: 280 20% 25%;      /* Deep text on pearl */
+    /* ══════════════════════════════════════════════
+       SIGNAL DESIGN TOKENS — Single Source of Truth
+       Derived from /brand guidelines
+       ══════════════════════════════════════════════ */
 
-    --card: 24 33% 92%;             /* Petal Cream #ebe1da */
+    /* ── Color Palette ── */
+    --background: 30 33% 98%;          /* Pearl White  #FDFCFB */
+    --foreground: 280 20% 25%;         /* Deep text on pearl */
+
+    --card: 24 33% 92%;                /* Petal Cream  #EBE1DA */
     --card-foreground: 280 20% 25%;
 
     --popover: 24 33% 92%;
     --popover-foreground: 280 20% 25%;
 
-    --primary: 284 22% 44%;         /* Deep Violet #7f5b87 */
+    --primary: 284 22% 44%;            /* Deep Violet  #7F5B87 */
     --primary-foreground: 30 33% 98%;
 
-    --secondary: 24 33% 92%;        /* Petal Cream */
+    --primary-soft: 284 22% 53%;       /* Signal Purple #9974A1 */
+    --primary-glow: 284 30% 64%;       /* Lavender      #AF92B6 */
+
+    --secondary: 24 33% 92%;           /* Petal Cream */
     --secondary-foreground: 284 22% 44%;
 
-    --muted: 25 25% 85%;            /* Warm Sand #d9c6b9 */
+    --muted: 25 25% 85%;              /* Warm Sand    #D9C6B9 */
     --muted-foreground: 284 16% 50%;
 
-    --accent: 284 22% 53%;          /* Signal Purple #9974a1 */
+    --accent: 284 22% 53%;            /* Signal Purple */
     --accent-foreground: 30 33% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 25% 85%;           /* Warm Sand */
+    --border: 25 25% 85%;             /* Warm Sand */
     --input: 25 25% 85%;
     --ring: 284 22% 53%;
 
+    /* ── Radius ── */
     --radius: 1.125rem;
+    --radius-sm: 0.625rem;
+    --radius-lg: 1.5rem;
+    --radius-xl: 2rem;
 
-    /* Phase colours — botanical */
+    /* ── Shadows ── */
+    --shadow-soft: 0 4px 20px rgba(139, 111, 94, 0.08);
+    --shadow-medium: 0 6px 24px rgba(139, 111, 94, 0.12);
+    --shadow-elevated: 0 12px 40px rgba(127, 91, 135, 0.12);
+    --shadow-glow: 0 0 20px rgba(153, 116, 161, 0.25);
+
+    /* ── Spacing scale ── */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2.5rem;
+    --space-2xl: 4rem;
+    --space-3xl: 6rem;
+
+    /* ── Animation timing ── */
+    --ease-calm: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+    --duration-gentle: 800ms;
+
+    /* ── Phase colours ── */
     --phase-menstrual: 340 50% 55%;
     --phase-follicular: 258 36% 49%;
     --phase-ovulatory: 345 30% 60%;
     --phase-luteal: 284 22% 53%;
 
-    /* Signal brand accents */
-    --coral-flame: 284 22% 53%;     /* Signal Purple */
-    --bloom-blush: 284 30% 64%;     /* Lavender #af92b6 */
-    --petal-gold: 24 33% 92%;       /* Petal Cream */
+    /* ── Brand accents ── */
+    --coral-flame: 284 22% 53%;
+    --bloom-blush: 284 30% 64%;
+    --petal-gold: 24 33% 92%;
     --sage-mist: 258 36% 70%;
     --lavender-dust: 284 30% 64%;
 
-    /* Hand-drawn element colour */
+    /* ── Sketch/hand-drawn ── */
     --sketch: 25 25% 55%;
 
+    /* ── Sidebar ── */
     --sidebar-background: 30 33% 98%;
     --sidebar-foreground: 280 20% 25%;
     --sidebar-primary: 284 22% 44%;
@@ -60,6 +95,7 @@
     --sidebar-border: 25 25% 85%;
     --sidebar-ring: 284 22% 53%;
 
+    /* ── Typography ── */
     --font-display: 'Montserrat', 'Playfair Display', serif;
     --font-body: 'Montserrat', 'Lato', sans-serif;
     --font-hand: 'Caveat', cursive;
@@ -111,7 +147,7 @@
 }
 
 @layer components {
-  /* Phase colour pills */
+  /* ── Phase colour pills ── */
   .phase-menstrual { background-color: hsl(var(--phase-menstrual)); color: white; }
   .phase-follicular { background-color: hsl(var(--phase-follicular)); color: white; }
   .phase-ovulatory { background-color: hsl(var(--phase-ovulatory)); color: hsl(var(--foreground)); }
@@ -122,63 +158,65 @@
   .phase-ovulatory-light { background-color: hsl(var(--phase-ovulatory) / 0.12); color: hsl(var(--phase-ovulatory)); }
   .phase-luteal-light { background-color: hsl(var(--phase-luteal) / 0.12); color: hsl(var(--phase-luteal)); }
 
-  /* Card styles — warm */
+  /* ── Card system — uses design tokens ── */
   .card-warm {
-    @apply bg-card rounded-[18px] border border-border;
-    box-shadow: 0 4px 20px rgba(139, 111, 94, 0.08);
+    @apply bg-card rounded-[--radius-lg] border border-border;
+    box-shadow: var(--shadow-soft);
   }
 
   .card-warm-hover {
-    @apply card-warm transition-all duration-300;
-    box-shadow: 0 6px 24px rgba(139, 111, 94, 0.1);
+    @apply card-warm;
+    transition: all var(--duration-normal) var(--ease-calm);
+    box-shadow: var(--shadow-medium);
   }
   @media (hover: hover) {
     .card-warm-hover:hover {
-      box-shadow: 0 8px 30px rgba(139, 111, 94, 0.14);
+      box-shadow: var(--shadow-elevated);
       transform: translateY(-1px);
     }
   }
   .card-warm-hover:active {
     transform: scale(0.98);
-    transition: transform 150ms ease;
+    transition: transform var(--duration-fast) ease;
   }
 
   /* Keep backward compat */
   .card-deep { @apply card-warm; }
   .card-deep-hover { @apply card-warm-hover; }
 
-  /* Frequency panel — warm version */
+  /* ── Frequency panel ── */
   .frequency-panel {
-    @apply relative overflow-hidden rounded-[18px] border border-border bg-card;
-    box-shadow: 0 4px 20px rgba(139, 111, 94, 0.08);
+    @apply relative overflow-hidden rounded-[--radius-lg] border border-border bg-card;
+    box-shadow: var(--shadow-soft);
   }
   .frequency-panel::before {
     content: '';
-    @apply absolute left-0 top-0 bottom-0 w-[3px] rounded-l-[18px];
+    @apply absolute left-0 top-0 bottom-0 w-[3px];
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
     background-color: var(--panel-color, hsl(var(--phase-follicular)));
   }
 
-  /* UI label — handwritten style */
+  /* ── UI label — handwritten ── */
   .ui-label {
     font-family: var(--font-hand);
     @apply text-sm font-bold;
     color: hsl(var(--coral-flame));
   }
 
-  /* Data readout */
+  /* ── Data readout ── */
   .data-readout {
     font-family: var(--font-mono);
   }
 
-  /* Phase section backgrounds */
+  /* ── Phase section backgrounds ── */
   .phase-bg-menstrual { background-color: hsl(var(--phase-menstrual) / 0.06); }
   .phase-bg-follicular { background-color: hsl(var(--phase-follicular) / 0.06); }
   .phase-bg-ovulatory { background-color: hsl(var(--phase-ovulatory) / 0.06); }
   .phase-bg-luteal { background-color: hsl(var(--phase-luteal) / 0.06); }
 
-  /* Touch feedback — native feel */
+  /* ── Touch feedback — native feel ── */
   .touch-btn {
-    @apply transition-transform duration-150;
+    transition: transform var(--duration-fast) var(--ease-calm);
     min-width: 44px;
     min-height: 44px;
   }
@@ -186,13 +224,13 @@
     transform: scale(0.97);
   }
   .touch-card {
-    @apply transition-transform duration-150;
+    transition: transform var(--duration-fast) var(--ease-calm);
   }
   .touch-card:active {
     transform: scale(0.98);
   }
   .touch-tab {
-    @apply transition-transform duration-150;
+    transition: transform var(--duration-fast) var(--ease-calm);
     min-width: 44px;
     min-height: 44px;
   }
@@ -200,9 +238,10 @@
     transform: scale(0.90);
   }
 
-  /* Mobile bottom sheet */
+  /* ── Mobile bottom sheet ── */
   .bottom-sheet {
-    @apply fixed bottom-0 left-0 right-0 z-[60] bg-card rounded-t-[20px] border-t border-border;
+    @apply fixed bottom-0 left-0 right-0 z-[60] bg-card border-t border-border;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     max-height: 90vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -212,7 +251,7 @@
     @apply w-10 h-1 rounded-full bg-border mx-auto mt-3 mb-2;
   }
 
-  /* Horizontal scroll snap */
+  /* ── Horizontal scroll snap ── */
   .scroll-snap-x {
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
@@ -225,19 +264,19 @@
     flex-shrink: 0;
   }
 
-  /* Momentum scrolling */
+  /* ── Momentum scrolling ── */
   .scroll-y {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Sticky sub-nav inside tabs */
+  /* ── Sticky sub-nav inside tabs ── */
   .sticky-sub-nav {
     @apply sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-2 -mt-2 pt-2;
   }
 }
 
-/* Animations */
+/* ── Animations ── */
 @keyframes gentle-rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -259,7 +298,7 @@
 }
 
 .animate-pulse-gentle {
-  animation: pulse-gentle 2s ease-in-out infinite;
+  animation: pulse-gentle 2s var(--ease-calm) infinite;
 }
 
 .animate-fade-in-up {
@@ -276,7 +315,7 @@
   will-change: transform;
 }
 
-/* Scrollbar styling */
+/* ── Scrollbar styling ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -291,7 +330,7 @@
   background: hsl(var(--muted-foreground));
 }
 
-/* Safe area utilities */
+/* ── Safe area utilities ── */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -299,7 +338,7 @@
   padding-top: env(safe-area-inset-top);
 }
 
-/* Prevent horizontal overflow on mobile */
+/* ── Prevent horizontal overflow on mobile ── */
 @media (max-width: 767px) {
   html, body, #root {
     overflow-x: hidden;
