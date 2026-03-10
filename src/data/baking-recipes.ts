@@ -131,6 +131,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cacao is rich in magnesium for PMS relief. Peanut butter provides sustained energy and protein.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-peanut-butter-crumble-balls.png",
   },
   {
     id: "choc-raspberry-ripple-cake",
