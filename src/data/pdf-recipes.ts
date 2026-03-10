@@ -1060,6 +1060,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "ginger-tofu-stir-fry",
     name: "Ginger Tofu Stir Fry",
+    image: "/images/recipes/meals/ginger-tofu-stir-fry.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
