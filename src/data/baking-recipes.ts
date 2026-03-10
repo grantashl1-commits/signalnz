@@ -56,6 +56,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Oats provide warming comfort and steady energy. Chia seeds add omega-3 and fibre during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/banana-cinnamon-pancakes.png",
   },
   {
     id: "banana-breakfast-bites",
