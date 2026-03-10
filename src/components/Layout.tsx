@@ -6,6 +6,7 @@ import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useState, useEffect } from "react";
 import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
@@ -41,13 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const info = getCycleInfo(getLastPeriodStart());
   const isMobile = useIsMobile();
   const keyboardVisible = useKeyboardVisible();
-  const [signalOpen, setSignalOpen] = useState(false);
-  const [signalInitialPrompt, setSignalInitialPrompt] = useState<string | undefined>();
-
-  const openSignal = (prompt?: string) => {
-    setSignalInitialPrompt(prompt);
-    setSignalOpen(true);
-  };
+  const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
 
   // Swipe navigation between mobile tabs
   const mainRef = useRef<HTMLDivElement>(null);
@@ -166,18 +161,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           onTouchStart={isMobile ? handleTouchStart : undefined}
           onTouchEnd={isMobile ? handleTouchEnd : undefined}
         >
-          {typeof children === "object" && children !== null
-            ? (Array.isArray(children)
-                ? children
-                : [children]
-              ).map((child: any) =>
-                child?.props?.openSignal !== undefined
-                  ? child
-                  : typeof child === "object" && child !== null
-                  ? { ...child, props: { ...child.props, openSignal } }
-                  : child
-              )
-            : children}
+          {children}
         </motion.main>
       </AnimatePresence>
 
@@ -215,11 +199,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <SignalFloatingCTA onClick={() => openSignal()} />
       <SignalPanel
         open={signalOpen}
-        onClose={() => {
-          setSignalOpen(false);
-          setSignalInitialPrompt(undefined);
-        }}
-        initialPrompt={signalInitialPrompt}
+        onClose={closeSignal}
+        initialPrompt={initialPrompt}
+        pageContext={pageContext}
       />
     </div>
   );
