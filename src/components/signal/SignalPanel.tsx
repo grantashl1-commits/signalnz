@@ -77,7 +77,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
           }}
         >
           {/* Atmospheric background */}
-          <DotPattern color="hsl(30 33% 98%)" opacity={0.06} />
+          <DotPattern color="hsl(30 33% 98%)" opacity={0.05} animate />
 
           {/* Header */}
           <div className="relative z-10 px-8 pt-8 pb-4 flex-shrink-0">
