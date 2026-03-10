@@ -5,7 +5,7 @@ import { SeedGeometry, BotanicalSprig, WildStar } from "@/components/BotanicalEl
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import {
-  getHabits, removeHabit,
+  getHabits, addHabit, removeHabit,
   getHabitLog, toggleHabitForDate, getWeekHabitData,
   HABIT_CATEGORIES, CATEGORY_DOT_CLASSES, PHASE_RITUAL_SUGGESTIONS,
   SELF_CARE_RITUALS,
