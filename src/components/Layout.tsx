@@ -7,6 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
+import SignalAmbientDots from "@/components/SignalAmbientDots";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
