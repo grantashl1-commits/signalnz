@@ -428,7 +428,7 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
           )}
 
           {/* Masonry board */}
-          <div className="columns-2 gap-3">
+          <div className="columns-2 md:columns-3 xl:columns-4 gap-3">
             {elements.map((el) => (
               <ElementCard key={el.id} element={el} onDelete={() => deleteElement(el.id)} onUpdate={(updates) => updateElement(el.id, updates)} />
             ))}
