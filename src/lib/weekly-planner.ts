@@ -295,11 +295,11 @@ export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
   };
 
   const CATEGORY_META: Record<string, { name: string; emoji: string }> = {
-    grains: { name: "Grains & Legumes", emoji: "🌾" },
-    produce: { name: "Fresh Produce", emoji: "🥦" },
-    pantry: { name: "Pantry & Condiments", emoji: "🥫" },
-    dairy: { name: "Dairy Alternatives", emoji: "🥛" },
-    herbs: { name: "Herbs, Spices & Seeds", emoji: "🌿" },
+    grains: { name: "Grains & Legumes", emoji: "·" },
+    produce: { name: "Fresh Produce", emoji: "·" },
+    pantry: { name: "Pantry & Condiments", emoji: "·" },
+    dairy: { name: "Dairy Alternatives", emoji: "·" },
+    herbs: { name: "Herbs, Spices & Seeds", emoji: "·" },
   };
 
   Object.values(ingredientMap).forEach((item) => {
