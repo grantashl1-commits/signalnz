@@ -372,6 +372,10 @@ export default function PracticePage() {
                           if (cat.id === "self-care") {
                             setShowAddForm(false);
                             setShowRitualPicker(true);
+                          } else if (cat.id === "nutrition" || cat.id === "movement") {
+                            setShowAddForm(false);
+                            setLibraryPickerCategory(cat.id);
+                            setShowLibraryPicker(true);
                           }
                         }}
                         className={`touch-btn rounded-full px-3 py-1.5 font-hand text-xs font-bold transition-all ${
