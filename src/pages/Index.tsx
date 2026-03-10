@@ -10,6 +10,8 @@ import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { getHabits, getHabitLog, toggleHabitForDate, getWeekHabitData, HABIT_CATEGORIES, CATEGORY_DOT_CLASSES } from "@/data/self-care-rituals";
 import { haptic } from "@/hooks/use-mobile";
+import SignalHomeSection from "@/components/signal/SignalHomeSection";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
