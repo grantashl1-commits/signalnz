@@ -520,6 +520,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "banana-zucchini-bread",
     name: "Chocolate Chip Banana Zucchini Bread",
+    image: "/images/recipes/meals/chocolate-chip-banana-zucchini-bread.png",
     phase: "luteal",
     serves: 10,
     prepTime: "55 min",
