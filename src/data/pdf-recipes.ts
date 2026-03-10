@@ -65,6 +65,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "coconut-smoothie-cleanse",
     name: "Coconut Berry Smoothie",
+    image: "/images/recipes/meals/coconut-berry-smoothie.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
