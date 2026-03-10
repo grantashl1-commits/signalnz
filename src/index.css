@@ -4,34 +4,34 @@
 
 @layer base {
   :root {
-    /* Wild Intelligence — warm botanical palette */
-    --background: 36 47% 96%;
-    --foreground: 18 42% 13%;
+    /* SIGNAL — violet botanical palette */
+    --background: 30 33% 98%;       /* Pearl White #fdfcfb */
+    --foreground: 280 20% 25%;      /* Deep text on pearl */
 
-    --card: 40 60% 99%;
-    --card-foreground: 18 42% 13%;
+    --card: 24 33% 92%;             /* Petal Cream #ebe1da */
+    --card-foreground: 280 20% 25%;
 
-    --popover: 40 60% 99%;
-    --popover-foreground: 18 42% 13%;
+    --popover: 24 33% 92%;
+    --popover-foreground: 280 20% 25%;
 
-    --primary: 14 100% 64%;
-    --primary-foreground: 40 60% 99%;
+    --primary: 284 22% 44%;         /* Deep Violet #7f5b87 */
+    --primary-foreground: 30 33% 98%;
 
-    --secondary: 30 33% 92%;
-    --secondary-foreground: 18 42% 13%;
+    --secondary: 24 33% 92%;        /* Petal Cream */
+    --secondary-foreground: 284 22% 44%;
 
-    --muted: 30 20% 92%;
-    --muted-foreground: 20 15% 42%;
+    --muted: 25 25% 85%;            /* Warm Sand #d9c6b9 */
+    --muted-foreground: 284 16% 50%;
 
-    --accent: 14 100% 64%;
-    --accent-foreground: 40 60% 99%;
+    --accent: 284 22% 53%;          /* Signal Purple #9974a1 */
+    --accent-foreground: 30 33% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 20% 82%;
-    --input: 25 20% 82%;
-    --ring: 14 100% 64%;
+    --border: 25 25% 85%;           /* Warm Sand */
+    --input: 25 25% 85%;
+    --ring: 284 22% 53%;
 
     --radius: 1.125rem;
 
@@ -39,29 +39,29 @@
     --phase-menstrual: 340 50% 55%;
     --phase-follicular: 130 18% 55%;
     --phase-ovulatory: 32 80% 55%;
-    --phase-luteal: 270 20% 62%;
+    --phase-luteal: 284 22% 53%;
 
-    /* Accent wildflower */
-    --coral-flame: 14 100% 64%;
-    --bloom-blush: 340 74% 80%;
-    --petal-gold: 44 90% 61%;
+    /* Signal brand accents */
+    --coral-flame: 284 22% 53%;     /* Signal Purple */
+    --bloom-blush: 284 30% 64%;     /* Lavender #af92b6 */
+    --petal-gold: 24 33% 92%;       /* Petal Cream */
     --sage-mist: 130 22% 70%;
-    --lavender-dust: 270 40% 77%;
+    --lavender-dust: 284 30% 64%;
 
     /* Hand-drawn element colour */
-    --sketch: 25 25% 45%;
+    --sketch: 25 25% 55%;
 
-    --sidebar-background: 36 47% 96%;
-    --sidebar-foreground: 18 42% 13%;
-    --sidebar-primary: 14 100% 64%;
-    --sidebar-primary-foreground: 40 60% 99%;
-    --sidebar-accent: 30 33% 92%;
-    --sidebar-accent-foreground: 18 42% 13%;
-    --sidebar-border: 25 20% 82%;
-    --sidebar-ring: 14 100% 64%;
+    --sidebar-background: 30 33% 98%;
+    --sidebar-foreground: 280 20% 25%;
+    --sidebar-primary: 284 22% 44%;
+    --sidebar-primary-foreground: 30 33% 98%;
+    --sidebar-accent: 24 33% 92%;
+    --sidebar-accent-foreground: 284 22% 44%;
+    --sidebar-border: 25 25% 85%;
+    --sidebar-ring: 284 22% 53%;
 
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'Lato', sans-serif;
+    --font-display: 'Montserrat', 'Playfair Display', serif;
+    --font-body: 'Montserrat', 'Lato', sans-serif;
     --font-hand: 'Caveat', cursive;
     --font-mono: 'Space Mono', monospace;
   }

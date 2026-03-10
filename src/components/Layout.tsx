@@ -122,8 +122,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile header — minimal, just branding + phase */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm md:hidden pt-safe">
         <div className="flex items-center justify-between px-5 py-3">
-          <Link to="/" className="font-display text-base italic font-bold text-foreground">
-            mindcast
+          <Link to="/" className="flex items-center gap-1.5">
+            <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
+            <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
           <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
             <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
