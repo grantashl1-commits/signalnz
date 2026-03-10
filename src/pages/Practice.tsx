@@ -331,12 +331,50 @@ export default function PracticePage() {
         </section>
       )}
 
-      {/* Add habit bottom sheet — category selector then opens library */}
+      {/* Category chooser sheet */}
       <AnimatePresence>
-        {!showLibraryPicker && (
-          <div className="pb-4">
-            {/* This section intentionally empty — the + Add habit button opens a category chooser inline */}
-          </div>
+        {showCategoryChooser && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-[60] bg-foreground/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCategoryChooser(false)}
+            />
+            <motion.div
+              className="bottom-sheet z-[61]"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            >
+              <div className="bottom-sheet-handle" />
+              <div className="px-5 py-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-lg italic font-bold text-foreground">Add a habit.</h3>
+                  <button onClick={() => setShowCategoryChooser(false)} className="touch-btn p-2 rounded-full bg-secondary">
+                    <X className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                </div>
+                <p className="font-hand text-xs font-bold text-muted-foreground">Choose a category</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {HABIT_CATEGORIES.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setShowCategoryChooser(false);
+                        openPicker(cat.id);
+                      }}
+                      className="touch-btn rounded-[14px] p-4 text-center transition-all border border-border bg-card shadow-sm active:shadow-md active:border-primary/30"
+                    >
+                      <span className="font-hand text-sm font-bold text-foreground">{cat.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
