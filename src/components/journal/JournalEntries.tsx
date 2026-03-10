@@ -155,7 +155,7 @@ function EntryTypePicker({ onSelect, onCancel }: { onSelect: (type: string) => v
         </button>
       </div>
       <JournalLineart className="w-full h-5 mb-4" />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {ENTRY_TYPES.map((t, i) => {
           const tone = EMOTIONAL_TONES[t.tone];
           return (
