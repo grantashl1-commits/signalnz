@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
 import { MOCK_GROUPS } from "@/data/community-data";
@@ -24,11 +24,54 @@ export default function CommunityPage() {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [showOptIn, setShowOptIn] = useState(false);
+  const [pendingJoin, setPendingJoin] = useState<string | null>(null);
+
+  // Load persisted state
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("signal_community_joined");
+      if (saved) setJoined(JSON.parse(saved));
+      const loc = localStorage.getItem("signal_community_location");
+      if (loc === "true") setLocationEnabled(true);
+    } catch {}
+  }, []);
+
+  const persistJoined = (newJoined: string[]) => {
+    setJoined(newJoined);
+    localStorage.setItem("signal_community_joined", JSON.stringify(newJoined));
+  };
+
+  const toggleLocation = () => {
+    const next = !locationEnabled;
+    setLocationEnabled(next);
+    localStorage.setItem("signal_community_location", String(next));
+  };
 
   const join = (id: string) => {
-    setJoined((j) => (j.includes(id) ? j : [...j, id]));
+    // For suburb groups, validate location first
+    const group = MOCK_GROUPS.find(g => g.id === id);
+    if (group && !locationEnabled) {
+      setPendingJoin(id);
+      setShowOptIn(true);
+      return;
+    }
+    const newJoined = joined.includes(id) ? joined : [...joined, id];
+    persistJoined(newJoined);
     setActiveGroup(id);
     setSection("chat");
+  };
+
+  const handleLocationAccept = () => {
+    setLocationEnabled(true);
+    localStorage.setItem("signal_community_location", "true");
+    setShowOptIn(false);
+    if (pendingJoin) {
+      const newJoined = joined.includes(pendingJoin) ? joined : [...joined, pendingJoin];
+      persistJoined(newJoined);
+      setActiveGroup(pendingJoin);
+      setSection("chat");
+      setPendingJoin(null);
+    }
   };
 
   const group = MOCK_GROUPS.find((g) => g.id === activeGroup) || MOCK_GROUPS.find((g) => joined.includes(g.id));
@@ -44,8 +87,8 @@ export default function CommunityPage() {
       <AnimatePresence>
         {showOptIn && (
           <LocationOptIn
-            onAccept={() => { setLocationEnabled(true); setShowOptIn(false); }}
-            onDecline={() => setShowOptIn(false)}
+            onAccept={handleLocationAccept}
+            onDecline={() => { setShowOptIn(false); setPendingJoin(null); }}
           />
         )}
       </AnimatePresence>
@@ -91,7 +134,7 @@ export default function CommunityPage() {
           transition={{ duration: 0.15 }}
         >
           {section === "discover" && <CommunityDiscover onJoin={join} joined={joined} />}
-          {section === "nearby" && <NearbyView locationEnabled={locationEnabled} onRequestLocation={() => setShowOptIn(true)} />}
+          {section === "nearby" && <NearbyView locationEnabled={locationEnabled} onRequestLocation={() => setShowOptIn(true)} onToggleLocation={toggleLocation} />}
           {section === "chat" && (
             joined.length === 0 ? (
               <div className="text-center pt-16">
@@ -129,7 +172,7 @@ export default function CommunityPage() {
             )
           )}
           {section === "challenges" && <ChallengesPanel joined={joined} />}
-          {section === "profile" && <CommunityProfile locationEnabled={locationEnabled} onToggleLocation={() => setLocationEnabled((l) => !l)} />}
+          {section === "profile" && <CommunityProfile locationEnabled={locationEnabled} onToggleLocation={toggleLocation} />}
         </motion.div>
       </AnimatePresence>
 

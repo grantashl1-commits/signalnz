@@ -1,10 +1,10 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import MealIllustration from "@/components/MealIllustration";
 import { WildStar } from "@/components/BotanicalElements";
-import { Phase, PHASE_SHORT, getWaterCount, setWaterCount } from "@/lib/cycle-utils";
+import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { Meal } from "@/data/meal-plans";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { haptic } from "@/hooks/use-mobile";
@@ -28,6 +28,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [activeIndex, setActiveIndex] = useState(0);
   const [expandedMeal, setExpandedMeal] = useState<string | null>(null);
+  const [showMethod, setShowMethod] = useState<string | null>(null);
   const [eaten, setEaten] = useState<Record<string, boolean>>(() => {
     const today = new Date().toISOString().split("T")[0];
     const stored: Record<string, boolean> = {};
@@ -37,7 +38,6 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
     });
     return stored;
   });
-  const [water, setWaterState] = useState(getWaterCount());
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -61,13 +61,6 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
     const key = `eaten:${today}:${mealType.toLowerCase().replace(/\s/g, "-")}`;
     localStorage.setItem(key, "true");
     setEaten((prev) => ({ ...prev, [mealType]: true }));
-  };
-
-  const addWater = () => {
-    haptic("light");
-    const n = Math.min(water + 1, 8);
-    setWaterState(n);
-    setWaterCount(n);
   };
 
   const phaseColor = PHASE_HEX[phase];
@@ -101,9 +94,9 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
         <div className="flex">
           {meals.map((meal, i) => {
             const expanded = expandedMeal === meal.type;
+            const methodOpen = showMethod === meal.type;
             const isEaten = eaten[meal.type];
             const isDinner = meal.type.toLowerCase() === "dinner";
-            // Extract single-line benefit.
             const shortBenefit = meal.phaseBenefit.split(".")[0] + ".";
 
             return (
@@ -168,7 +161,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                       </div>
                     )}
 
-                    {/* Expand toggle */}
+                    {/* Expand toggle — ingredients + benefits */}
                     <button
                       onClick={() => {
                         haptic("light");
@@ -212,6 +205,81 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                       )}
                     </AnimatePresence>
 
+                    {/* Recipe method toggle */}
+                    {(meal as any).method && (
+                      <>
+                        <button
+                          onClick={() => {
+                            haptic("light");
+                            setShowMethod(methodOpen ? null : meal.type);
+                          }}
+                          className="touch-btn flex items-center gap-1.5 mt-2 font-body text-xs font-medium"
+                          style={{ color: phaseColor }}
+                        >
+                          {methodOpen ? "Hide method" : "How to make it"}
+                          {methodOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        </button>
+
+                        <AnimatePresence>
+                          {methodOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="pt-3 space-y-2 border-t border-border mt-2">
+                                <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Method</p>
+                                {((meal as any).method as string[]).map((step: string, idx: number) => (
+                                  <div key={idx} className="flex gap-2.5">
+                                    <span className="font-mono text-xs font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>{idx + 1}.</span>
+                                    <p className="font-body text-xs text-muted-foreground leading-relaxed">{step}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </>
+                    )}
+
+                    {/* Fallback: generate simple method from ingredients if no method field */}
+                    {!(meal as any).method && meal.ingredients && (
+                      <>
+                        <button
+                          onClick={() => {
+                            haptic("light");
+                            setShowMethod(methodOpen ? null : meal.type);
+                          }}
+                          className="touch-btn flex items-center gap-1.5 mt-2 font-body text-xs font-medium"
+                          style={{ color: phaseColor }}
+                        >
+                          {methodOpen ? "Hide recipe" : "How to make it"}
+                          {methodOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        </button>
+
+                        <AnimatePresence>
+                          {methodOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="pt-3 border-t border-border mt-2">
+                                <p className="font-hand text-sm font-bold mb-2" style={{ color: phaseColor }}>Quick method</p>
+                                <p className="font-body text-xs text-muted-foreground leading-relaxed">
+                                  Prepare and combine: {meal.ingredients}. Season to taste and enjoy{meal.prepTime ? ` (${meal.prepTime})` : ""}.
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </>
+                    )}
+
                     {/* Mark as eaten */}
                     <button
                       onClick={() => !isEaten && markEaten(meal.type)}
@@ -234,36 +302,6 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Water tracker */}
-      <div className="card-warm p-4 md:p-5">
-        <p className="font-hand text-sm font-bold text-muted-foreground mb-3">Water today</p>
-        <div className="flex gap-2 mb-2">
-          {Array.from({ length: 8 }, (_, i) => (
-            <button
-              key={i}
-              onClick={i === water ? addWater : undefined}
-              className={`touch-btn h-7 w-7 rounded-full border transition-all ${
-                i < water
-                  ? "border-[hsl(var(--phase-follicular))] bg-[hsl(var(--phase-follicular))]/30"
-                  : "border-border"
-              }`}
-              style={i < water ? { backgroundColor: `${PHASE_HEX.follicular}30`, borderColor: `${PHASE_HEX.follicular}60` } : {}}
-            />
-          ))}
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] text-muted-foreground">{water}/8</span>
-          <button
-            onClick={addWater}
-            disabled={water >= 8}
-            className="touch-btn rounded-full px-3 py-1.5 min-h-[36px] font-mono text-[10px] active:opacity-70 disabled:opacity-30"
-            style={{ backgroundColor: `${PHASE_HEX.follicular}15`, color: PHASE_HEX.follicular }}
-          >
-            +1
-          </button>
         </div>
       </div>
     </div>
