@@ -16,6 +16,7 @@ import Practice from "./pages/Practice";
 import Recommendations from "./pages/Recommendations";
 import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
+import BrandGuidelines from "./pages/BrandGuidelines";
 
 const queryClient = new QueryClient();
 
@@ -25,23 +26,28 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/cycle" element={<Cycle />} />
-            <Route path="/nutrition" element={<Nutrition />} />
-            <Route path="/movement" element={<Movement />} />
-            <Route path="/breathwork" element={<Breathwork />} />
-            <Route path="/nervous-system" element={<Breathwork />} />
-            <Route path="/journal" element={<Journal />} />
-            <Route path="/modules" element={<Modules />} />
-            <Route path="/membership" element={<Membership />} />
-            <Route path="/my-practice" element={<Practice />} />
-            <Route path="/recommendations" element={<Recommendations />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          <Route path="/brand" element={<BrandGuidelines />} />
+          <Route path="*" element={
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/cycle" element={<Cycle />} />
+                <Route path="/nutrition" element={<Nutrition />} />
+                <Route path="/movement" element={<Movement />} />
+                <Route path="/breathwork" element={<Breathwork />} />
+                <Route path="/nervous-system" element={<Breathwork />} />
+                <Route path="/journal" element={<Journal />} />
+                <Route path="/modules" element={<Modules />} />
+                <Route path="/membership" element={<Membership />} />
+                <Route path="/my-practice" element={<Practice />} />
+                <Route path="/recommendations" element={<Recommendations />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
+          } />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
