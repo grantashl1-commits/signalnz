@@ -330,6 +330,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Avocado provides healthy fats for hormone balance. Cacao delivers magnesium and orange adds vitamin C during ovulation.",
     category: "baking",
+    image: "/images/recipes/baking/orange-chocolate-avocado-mousse.png",
   },
   {
     id: "peanut-butter-mousse",
