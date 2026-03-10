@@ -8,8 +8,7 @@ import lkmImg from "@/assets/meditations/loving-kindness.png";
 import mbsrImg from "@/assets/meditations/mbsr-body-scan.png";
 import breathImg from "@/assets/meditations/mindful-breathing.png";
 import nsdrImg from "@/assets/meditations/nsdr.png";
-import compassionImg from "@/assets/meditations/self-compassion.png";
-import openImg from "@/assets/meditations/open-awareness.png";
+import innerChildImg from "@/assets/meditations/inner-child.png";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import {
