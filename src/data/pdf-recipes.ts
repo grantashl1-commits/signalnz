@@ -1089,6 +1089,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "greek-lentil-meatballs",
     name: "Greek Lentil 'Meatballs'",
+    image: "/images/recipes/meals/greek-lentil-meatballs.png",
     phase: "luteal",
     serves: 4,
     prepTime: "60 min",
