@@ -233,20 +233,20 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ DAILY HABITS — atmospheric purple ═══ */}
       {habits.length > 0 && (
-        <AtmosphericHero size="sm" dotOpacity={0.05}>
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60">Daily Habits</p>
-            <Link to="/my-practice" className="font-body text-xs text-primary-foreground/50 hover:text-primary-foreground/80 transition-colors">
+        <AtmosphericHero size="sm" dotOpacity={0.04}>
+          <div className="flex items-center justify-between mb-5">
+            <p className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/50">Daily habits</p>
+            <Link to="/my-practice" className="font-body text-xs text-primary-foreground/40 hover:text-primary-foreground/70 transition-colors">
               manage
             </Link>
           </div>
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm p-5 md:p-6 border border-border/50" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-4">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 md:p-7 shadow-elevated">
+            <div className="flex items-center gap-2 mb-5">
               <Heart className="h-4 w-4 text-bloom" />
               <span className="font-mono text-sm text-foreground">{habitsCompleted}/{habits.length}</span>
               <span className="font-body text-xs text-muted-foreground">complete today</span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {habits.slice(0, 6).map(habit => {
                 const done = habitLog[habit.id] || false;
                 const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
@@ -254,9 +254,9 @@ export default function HomePage({ userName }: { userName?: string }) {
                   <button
                     key={habit.id}
                     onClick={() => handleHabitToggle(habit.id)}
-                    className="touch-btn w-full flex items-center gap-2.5 py-2 text-left"
+                    className="touch-btn w-full flex items-center gap-3 py-2 text-left"
                   >
-                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${done ? "border-bloom bg-bloom/20" : "border-border"}`}>
+                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${done ? "border-bloom bg-bloom/20" : "border-muted/80"}`}>
                       {done && <WildStar size={10} />}
                     </div>
                     <div className={`h-2 w-2 rounded-full flex-shrink-0 ${dotClass}`} />
@@ -267,7 +267,7 @@ export default function HomePage({ userName }: { userName?: string }) {
                 );
               })}
               {habits.length > 6 && (
-                <Link to="/my-practice" className="block font-body text-xs text-muted-foreground text-center mt-2">
+                <Link to="/my-practice" className="block font-body text-xs text-muted-foreground text-center mt-3">
                   +{habits.length - 6} more
                 </Link>
               )}
