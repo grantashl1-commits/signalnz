@@ -1350,6 +1350,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "spicy-thai-edamame-quinoa-salad",
     name: "Spicy Thai Edamame & Quinoa Salad",
+    image: "/images/recipes/meals/spicy-thai-edamame-quinoa-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
