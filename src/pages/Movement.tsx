@@ -361,15 +361,26 @@ export default function MovementPage() {
                         <p className="font-body text-xs text-muted-foreground mt-0.5">{opt.description}</p>
                       </div>
                     ))}
-                    {w.exercises.map((ex, j) => (
-                      <div key={j} className="flex items-center justify-between bg-secondary/50 rounded-xl p-2.5 gap-2">
-                        <div className="min-w-0">
-                          <p className="font-body text-sm text-foreground">{ex.name}</p>
-                          <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                    {w.exercises.map((ex, j) => {
+                      const libAnim = getAnimationForExercise(ex.name);
+                      return (
+                        <div key={j}
+                          className="flex items-center justify-between bg-secondary/50 rounded-xl p-2.5 gap-2 cursor-pointer active:bg-secondary"
+                          onClick={() => { haptic("light"); setDrawerExercise(ex); }}
+                        >
+                          {libAnim && (
+                            <div className="flex-shrink-0 w-7 h-9 flex items-center justify-center">
+                              <ExerciseRig animation={libAnim} size={18} playing={true} />
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="font-body text-sm text-foreground">{ex.name}</p>
+                            <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                          </div>
+                          <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
                         </div>
-                        <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </motion.div>
                 )}
               </motion.div>
