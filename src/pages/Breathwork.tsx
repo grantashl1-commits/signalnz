@@ -303,6 +303,7 @@ function MeditationsSection() {
 
 // ── MAIN PAGE ─────────────────────────────────────────────────
 export default function BreathworkPage() {
+  const { openSignal } = useSignalPanel();
   const [section, setSection] = useState<
     "breathwork" | "somatic" | "meditations"
   >("breathwork");
