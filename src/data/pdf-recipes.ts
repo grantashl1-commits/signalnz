@@ -742,6 +742,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "curry-lentil-soup",
     name: "Curry Lentil Soup",
+    image: "/images/recipes/meals/curry-lentil-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
