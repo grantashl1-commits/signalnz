@@ -476,6 +476,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Coconut milk provides medium-chain triglycerides for quick energy. Light and refreshing during ovulation.",
     category: "baking",
+    image: "/images/recipes/baking/coconut-vanilla-ice-cream.png",
   },
   {
     id: "easy-banana-cake",
