@@ -168,6 +168,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "quinoa-tabbouleh-cleanse",
     name: "Quinoa Tabbouleh",
+    image: "/images/recipes/meals/quinoa-tabbouleh.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
