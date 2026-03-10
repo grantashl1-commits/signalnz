@@ -8,8 +8,7 @@ import lkmImg from "@/assets/meditations/loving-kindness.png";
 import mbsrImg from "@/assets/meditations/mbsr-body-scan.png";
 import breathImg from "@/assets/meditations/mindful-breathing.png";
 import nsdrImg from "@/assets/meditations/nsdr.png";
-import compassionImg from "@/assets/meditations/self-compassion.png";
-import openImg from "@/assets/meditations/open-awareness.png";
+import innerChildImg from "@/assets/meditations/inner-child.png";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import {
@@ -37,70 +36,60 @@ const MEDITATIONS = [
     title: "RAIN Meditation",
     teacher: "Tara Brach",
     dur: "20 min",
-    desc: "RAIN is a powerful mindfulness practice for working with difficult emotions.\n\nRecognize what is happening. Allow the experience to be there. Investigate with curiosity. Nurture with compassion.\n\nWidely used in trauma-sensitive mindfulness and self-compassion work.",
-    tags: ["emotions", "self-compassion", "IFS-compatible"],
-    url: "https://www.tarabrach.com/rain/",
+    desc: "Meet difficult emotions with compassion using the RAIN framework: Recognize, Allow, Investigate, and Nurture.",
+    tags: ["self-compassion", "emotions", "IFS"],
+    url: "https://www.youtube.com/watch?v=W8e_tAEM80k",
     img: rainImg,
-  },
-  {
-    id: "lkm",
-    title: "Loving Kindness Meditation",
-    teacher: "Sharon Salzberg",
-    dur: "18 min",
-    desc: "A classic compassion meditation from the Buddhist metta tradition.\n\nThis practice cultivates warmth and kindness toward yourself and others and has been shown in research to increase positive emotions and resilience.",
-    tags: ["compassion", "self-love", "healing"],
-    url: "https://www.mindful.org/loving-kindness-meditation/",
-    img: lkmImg,
-  },
-  {
-    id: "mbsr",
-    title: "MBSR Body Scan",
-    teacher: "Jon Kabat-Zinn",
-    dur: "45 min",
-    desc: "The foundational mindfulness body scan practice from Mindfulness-Based Stress Reduction (MBSR).\n\nThis meditation trains somatic awareness and the ability to observe sensations without judgment.",
-    tags: ["body awareness", "MBSR", "mindfulness"],
-    url: "https://palousemindfulness.com/meditations/bodyscan.html",
-    img: mbsrImg,
-  },
-  {
-    id: "thich",
-    title: "Mindful Breathing",
-    teacher: "Thich Nhat Hanh Tradition",
-    dur: "15 min",
-    desc: "A simple but profound meditation returning awareness to the breath.\n\nThis practice develops presence and calm by gently anchoring attention in breathing.",
-    tags: ["breath", "presence", "peace"],
-    url: "https://plumvillage.org/library/guided-meditation/breathing-meditation/",
-    img: breathImg,
   },
   {
     id: "nsdr",
     title: "Non-Sleep Deep Rest (NSDR)",
     teacher: "Huberman Lab Protocol",
     dur: "10 min",
-    desc: "A neuroscience-informed practice designed to restore energy and regulate the nervous system.\n\nNSDR protocols are used to accelerate recovery and improve focus.",
-    tags: ["nervous system", "rest", "recovery"],
-    url: "https://www.hubermanlab.com/nsdr",
+    desc: "A science-based practice designed to restore energy, calm the nervous system, and support cognitive recovery.",
+    tags: ["rest", "recovery", "nervous system"],
+    url: "https://www.youtube.com/watch?v=AKGrmY8OSHM",
     img: nsdrImg,
   },
   {
-    id: "self-compassion",
-    title: "Self-Compassion Break",
-    teacher: "Kristin Neff",
-    dur: "8 min",
-    desc: "A brief guided practice that helps you respond to difficult moments with kindness rather than self-criticism.\n\nOften used in compassion-focused therapy and emotional resilience training.",
-    tags: ["self-compassion", "healing", "emotional regulation"],
-    url: "https://self-compassion.org/exercise-2-self-compassion-break/",
-    img: compassionImg,
+    id: "lkm",
+    title: "Loving Kindness Meditation",
+    teacher: "Sharon Salzberg",
+    dur: "18 min",
+    desc: "A classic compassion practice that cultivates kindness toward yourself and others.",
+    tags: ["self-love", "compassion", "healing"],
+    url: "https://www.youtube.com/watch?v=sz7cpV7ERsM",
+    img: lkmImg,
   },
   {
-    id: "open-awareness",
-    title: "Open Awareness Meditation",
-    teacher: "Waking Up Tradition",
-    dur: "20 min",
-    desc: "Instead of focusing on one object, this meditation invites awareness to open and include all experience.\n\nSounds, sensations, and thoughts are allowed to arise without resistance.",
-    tags: ["awareness", "presence", "non-dual"],
-    url: "https://dynamic.wakingup.com/course/CO0F1D4",
-    img: openImg,
+    id: "inner-child",
+    title: "Meeting Your Inner Child",
+    teacher: "IFS Visualization",
+    dur: "22 min",
+    desc: "A gentle guided visualization to reconnect with younger parts of yourself and offer compassion and care.",
+    tags: ["IFS", "inner child", "parts work"],
+    url: "https://www.youtube.com/watch?v=Y5vPqgF8pQk",
+    img: innerChildImg,
+  },
+  {
+    id: "mbsr",
+    title: "MBSR Body Scan",
+    teacher: "Jon Kabat-Zinn",
+    dur: "45 min",
+    desc: "The foundational mindfulness body scan practice from the creator of Mindfulness-Based Stress Reduction.",
+    tags: ["body awareness", "MBSR", "mindfulness"],
+    url: "https://www.youtube.com/watch?v=u4gZgnCy5ew",
+    img: mbsrImg,
+  },
+  {
+    id: "breath",
+    title: "Breathing and the Present Moment",
+    teacher: "Thich Nhat Hanh Tradition",
+    dur: "15 min",
+    desc: "A simple breathing meditation that gently returns awareness to the present moment.",
+    tags: ["breath", "presence", "peace"],
+    url: "https://www.youtube.com/watch?v=XHvtIcaD194",
+    img: breathImg,
   },
 ];
 
@@ -248,10 +237,10 @@ function MeditationsSection() {
       {/* Header */}
       <div className="mb-2">
         <h2 className="font-display text-2xl italic text-foreground mb-1">Meditation Library</h2>
-        <p className="font-hand text-sm font-bold text-primary mb-2">Practices drawn from the world's most respected mindfulness traditions.</p>
+        <p className="font-hand text-sm font-bold text-primary mb-2">Guided practices from trusted teachers to deepen awareness, compassion, and presence.</p>
         <p className="font-body text-sm text-muted-foreground leading-relaxed">
-          These guided meditations come from teachers and traditions widely used in mindfulness research and therapeutic settings.
-          Each practice offers a different pathway into awareness, emotional balance, and nervous system regulation.
+          These meditations come from widely respected mindfulness teachers and traditions including MBSR, compassion meditation, and non-sleep deep rest protocols.
+          Each practice offers a different pathway into awareness, calm, and emotional resilience.
         </p>
       </div>
 
