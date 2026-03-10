@@ -134,7 +134,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Mobile header — minimal, just branding + phase */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm md:hidden pt-safe">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md md:hidden pt-safe">
         <div className="flex items-center justify-between px-5 py-3">
           <Link to="/" className="flex items-center gap-1.5">
             <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
