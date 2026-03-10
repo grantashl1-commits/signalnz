@@ -405,6 +405,7 @@ export default function CyclePage() {
       )}
 
       {activeTab === "insights" && <InsightsTab />}
+      </ContentSection>
     </div>
   );
 }

@@ -402,6 +402,7 @@ export default function BreathworkPage() {
           onClose={() => setActivePractice(null)}
         />
       )}
+      </ContentSection>
     </div>
   );
 }

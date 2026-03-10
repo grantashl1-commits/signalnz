@@ -187,6 +187,7 @@ export default function CommunityPage() {
 
       <BotanicalSprig width={160} className="mx-auto mt-8 md:hidden" />
       <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
+      </ContentSection>
     </div>
   );
 }
