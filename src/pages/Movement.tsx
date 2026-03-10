@@ -255,13 +255,25 @@ export default function MovementPage() {
                           )}
                           <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
                             className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
-                            onClick={() => toggleExercise(ex.name)}
                             whileTap={{ scale: 0.98 }}
                           >
-                            <div className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>
+                            <div
+                              className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}
+                              onClick={(e) => { e.stopPropagation(); toggleExercise(ex.name); }}
+                            >
                               {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                             </div>
-                            <div className="flex-1 min-w-0">
+                            {/* Mini animation preview */}
+                            {(() => {
+                              const anim = getAnimationForExercise(ex.name);
+                              return anim ? (
+                                <div className="flex-shrink-0 w-8 h-10 flex items-center justify-center"
+                                  onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}>
+                                  <ExerciseRig animation={anim} size={22} playing={!done} />
+                                </div>
+                              ) : null;
+                            })()}
+                            <div className="flex-1 min-w-0" onClick={() => { haptic("light"); setDrawerExercise(ex); }}>
                               <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
                               <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
                             </div>
