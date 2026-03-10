@@ -31,6 +31,8 @@ export default function PracticePage() {
   const [activeCategory, setActiveCategory] = useState<HabitCategory | "all">("all");
   const [showAddForm, setShowAddForm] = useState(false);
   const [showRitualPicker, setShowRitualPicker] = useState(false);
+  const [showLibraryPicker, setShowLibraryPicker] = useState(false);
+  const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("nutrition");
   const [addCategory, setAddCategory] = useState<HabitCategory>("self-care");
   const [addName, setAddName] = useState("");
   const [expandedReason, setExpandedReason] = useState<string | null>(null);
