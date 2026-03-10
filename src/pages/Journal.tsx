@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import JournalEntries from "@/components/journal/JournalEntries";
@@ -65,30 +66,29 @@ export default function JournalPage() {
   }, []);
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto relative">
-      {/* Background decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.03]">
-        <CymatiSketch phase={info.phase} size={300} opacity={1} className="md:hidden" />
-        <CymatiSketch phase={info.phase} size={500} opacity={1} className="hidden md:block" />
-      </div>
+    <div className="relative">
+      {/* ═══ HERO ═══ */}
+      <AtmosphericHero size="md">
+        <div className="text-center">
+          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Journal</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">
+            {tab === "entries" ? "My Journal" : tab === "activities" ? "Activities" : tab === "vault" ? "Memory Vault" : "Dream Studio"}
+          </h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+            {TAB_SUBTITLES[tab]}
+          </p>
+        </div>
+      </AtmosphericHero>
 
-      {/* Header */}
-      <div className="mb-1">
-        <p className="font-hand text-sm font-bold text-primary">Journal</p>
-        <h1 className="font-display text-[1.5rem] md:text-3xl font-bold italic text-foreground mt-0.5">
-          {tab === "entries" ? "My Journal" : tab === "activities" ? "Activities" : tab === "vault" ? "Memory Vault" : "Dream Studio"}
-        </h1>
-        <p className="font-body text-xs md:text-sm text-muted-foreground mt-0.5 max-w-xl">{TAB_SUBTITLES[tab]}</p>
-      </div>
-
-      {/* Signal context chips */}
-      <div className="mb-4">
-        <SignalContextChips
-          pageContext={tab === "dream" ? "dream" : "journal"}
-          onOpenSignal={(prompt) => openSignal(prompt, tab === "dream" ? "dream" : "journal")}
-          compact
-        />
-      </div>
+      <ContentSection className="px-5 md:px-4">
+        {/* Signal context chips */}
+        <div className="mb-4">
+          <SignalContextChips
+            pageContext={tab === "dream" ? "dream" : "journal"}
+            onOpenSignal={(prompt) => openSignal(prompt, tab === "dream" ? "dream" : "journal")}
+            compact
+          />
+        </div>
 
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">
@@ -125,6 +125,7 @@ export default function JournalPage() {
 
       <BotanicalSprig width={160} className="mx-auto mt-8 md:hidden" />
       <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
+      </ContentSection>
     </div>
   );
 }

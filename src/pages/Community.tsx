@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { MOCK_GROUPS } from "@/data/community-data";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
@@ -85,7 +86,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto relative">
+    <div className="relative">
       {/* Location opt-in modal */}
       <AnimatePresence>
         {showOptIn && (
@@ -96,14 +97,18 @@ export default function CommunityPage() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-0.5">
-        <HandDrawnVillage size={22} color="hsl(var(--primary))" />
-        <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Community</h1>
-      </div>
-      <p className="font-display text-[13px] italic text-muted-foreground mb-4">
-        Find your neighbours. Share your gifts. Build the village.
-      </p>
+      {/* ═══ HERO ═══ */}
+      <AtmosphericHero size="md">
+        <div className="text-center">
+          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Community</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">Community</h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+            Find your neighbours. Share your gifts. Build the village.
+          </p>
+        </div>
+      </AtmosphericHero>
+
+      <ContentSection className="px-5 md:px-4">
       <SignalContextChips pageContext="community" onOpenSignal={(p) => openSignal(p, "community")} compact />
 
       {/* Tab bar — sticky on mobile */}
@@ -182,6 +187,7 @@ export default function CommunityPage() {
 
       <BotanicalSprig width={160} className="mx-auto mt-8 md:hidden" />
       <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
+      </ContentSection>
     </div>
   );
 }

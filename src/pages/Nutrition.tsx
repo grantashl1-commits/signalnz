@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster, WildStar } from "@/components/BotanicalElements";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
 import { TODAY_MEALS, NUTRIENT_FOCUS } from "@/data/meal-plans";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
@@ -41,17 +42,19 @@ export default function NutritionPage() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative pb-24">
-      <div className="absolute top-0 right-0 -translate-y-2 md:-translate-y-4 translate-x-2 md:translate-x-4 pointer-events-none">
-        <HerbCluster size={70} opacity={0.15} className="md:hidden" />
-        <HerbCluster size={100} opacity={0.2} className="hidden md:block" />
-      </div>
+    <div className="relative">
+      {/* ═══ HERO ═══ */}
+      <AtmosphericHero size="md">
+        <div className="text-center">
+          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Nutrition</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">Nourish</h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+            Eat for your cycle, not against it.
+          </p>
+        </div>
+      </AtmosphericHero>
 
-      <div>
-        <p className="font-hand text-sm font-bold text-primary">nutrition</p>
-        <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground mt-1">Nourish</h1>
-        <p className="font-body text-sm text-muted-foreground mt-1">Eat for your cycle, not against it.</p>
-      </div>
+      <ContentSection className="px-5 md:px-4 space-y-6 md:space-y-8 pb-24">
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 
@@ -112,6 +115,7 @@ export default function NutritionPage() {
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
 
       {activeTab === "myweek" && <MyWeekTab />}
+      </ContentSection>
     </div>
   );
 }

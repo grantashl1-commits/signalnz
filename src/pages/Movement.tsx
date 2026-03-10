@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { Check, Dumbbell, Bluetooth, Activity } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
@@ -117,20 +118,19 @@ export default function MovementPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative">
-      <div className="absolute top-0 right-0 -translate-y-4 md:-translate-y-8 translate-x-4 md:translate-x-8 pointer-events-none">
-        <SacredSpiral size={100} opacity={0.08} className="md:hidden" />
-        <SacredSpiral size={140} opacity={0.1} className="hidden md:block" />
-      </div>
-
-      <div>
-        <p className="font-hand text-sm font-bold text-primary">movement</p>
-        <div className="flex items-center gap-2">
-          <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Movement</h1>
-          <PhaseIndicator phase={info.phase} size={24} />
+    <div className="relative">
+      {/* ═══ HERO ═══ */}
+      <AtmosphericHero size="md">
+        <div className="text-center">
+          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Movement</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">Move</h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+            {PHASE_MOVEMENT_LABEL[info.phase]}
+          </p>
         </div>
-        <p className="font-body text-xs text-muted-foreground mt-0.5 italic">{PHASE_MOVEMENT_LABEL[info.phase]}</p>
-      </div>
+      </AtmosphericHero>
+
+      <ContentSection className="px-5 md:px-4 space-y-6 md:space-y-8">
 
       <SignalContextChips pageContext="movement" onOpenSignal={(p) => openSignal(p, "movement")} compact />
 
@@ -501,6 +501,7 @@ export default function MovementPage() {
         onClose={() => setDrawerExercise(null)}
         phase={info.phase}
       />
+      </ContentSection>
     </div>
   );
 }

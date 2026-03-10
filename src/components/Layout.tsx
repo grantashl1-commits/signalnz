@@ -157,7 +157,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
           exit={isMobile ? { opacity: 0, x: slideDir * -30 } : { opacity: 0, y: -8 }}
           transition={{ duration: isMobile ? 0.25 : 0.35, ease: "easeOut" as const }}
-          className="flex-1 px-5 md:container md:mx-auto md:px-4 py-6 md:py-8 pb-28 md:pb-8 scroll-y overflow-x-hidden"
+          className="flex-1 pb-28 md:pb-8 scroll-y overflow-x-hidden"
           onTouchStart={isMobile ? handleTouchStart : undefined}
           onTouchEnd={isMobile ? handleTouchEnd : undefined}
         >
