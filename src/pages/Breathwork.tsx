@@ -1,7 +1,15 @@
 import { useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, Clock } from "lucide-react";
+import { Volume2, Clock, ExternalLink } from "lucide-react";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
+
+import rainImg from "@/assets/meditations/rain-meditation.png";
+import lkmImg from "@/assets/meditations/loving-kindness.png";
+import mbsrImg from "@/assets/meditations/mbsr-body-scan.png";
+import breathImg from "@/assets/meditations/mindful-breathing.png";
+import nsdrImg from "@/assets/meditations/nsdr.png";
+import compassionImg from "@/assets/meditations/self-compassion.png";
+import openImg from "@/assets/meditations/open-awareness.png";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import {
