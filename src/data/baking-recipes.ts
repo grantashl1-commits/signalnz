@@ -233,6 +233,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cacao provides magnesium for PMS relief. Cashews supply healthy fats and iron for the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/lamington-bliss-balls.png",
   },
   {
     id: "double-choc-fudge-cookies",
