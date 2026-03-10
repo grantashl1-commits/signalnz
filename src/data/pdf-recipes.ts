@@ -829,6 +829,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "miso-tofu-greens",
     name: "Miso Tofu & Greens",
+    image: "/images/recipes/meals/miso-tofu-greens.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
