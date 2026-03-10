@@ -690,6 +690,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "tomato-soup-cleanse",
     name: "Roasted Tomato Soup",
+    image: "/images/recipes/meals/roasted-tomato-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
