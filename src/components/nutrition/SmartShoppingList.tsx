@@ -52,7 +52,7 @@ export default function SmartShoppingList({ plan, phase }: Props) {
   const handleCopy = async () => {
     haptic("medium");
     const text = categories
-      .map((cat) => `${cat.emoji} ${cat.name}\n${cat.items.map((i) => `  ${i.quantity} ${i.unit} ${i.name}`).join("\n")}`)
+      .map((cat) => `${cat.name}\n${cat.items.map((i) => `  ${i.quantity} ${i.unit} ${i.name}`).join("\n")}`)
       .join("\n\n");
     await navigator.clipboard.writeText(text);
     setCopied(true);
