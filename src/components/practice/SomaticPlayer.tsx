@@ -1,0 +1,270 @@
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  SkipBack,
+  SkipForward,
+  VolumeX,
+  Volume2,
+  X,
+} from "lucide-react";
+import type { PracticeConfig, PracticeStep } from "@/data/practices";
+import { formatDuration } from "@/data/practices";
+import { useAudioGuide } from "./AudioGuide";
+import { haptic } from "@/hooks/use-mobile";
+
+interface Props {
+  practice: PracticeConfig;
+  onClose: () => void;
+}
+
+export default function SomaticPlayer({ practice, onClose }: Props) {
+  const steps = practice.steps || [];
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [activeStepIdx, setActiveStepIdx] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const { hasAudio, currentTime, seek, restart: audioRestart } = useAudioGuide({
+    audioUrl: practice.audio.audioUrl,
+    enabled: practice.audio.enabled,
+    muted,
+    playing,
+    onTimeUpdate: (t) => {
+      // Auto-highlight step based on audio time
+      for (let i = steps.length - 1; i >= 0; i--) {
+        const step = steps[i];
+        if (step.startTimeSec !== undefined && t >= step.startTimeSec) {
+          setActiveStepIdx(i);
+          break;
+        }
+      }
+    },
+    onEnded: () => {
+      setPlaying(false);
+      setActiveStepIdx(steps.length - 1);
+    },
+  });
+
+  // Elapsed timer (works even without audio)
+  useEffect(() => {
+    if (!playing) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
+    timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [playing]);
+
+  // Manual step navigation when no audio timing
+  const goToStep = useCallback(
+    (idx: number) => {
+      if (idx < 0 || idx >= steps.length) return;
+      setActiveStepIdx(idx);
+      const step = steps[idx];
+      if (step.startTimeSec !== undefined && hasAudio) {
+        seek(step.startTimeSec);
+      }
+    },
+    [steps, hasAudio, seek]
+  );
+
+  const handleRestart = () => {
+    haptic("light");
+    setElapsed(0);
+    setActiveStepIdx(0);
+    audioRestart();
+  };
+
+  const handleSkipBack = () => {
+    haptic("light");
+    if (hasAudio) {
+      seek(Math.max(0, currentTime - 10));
+    } else {
+      goToStep(Math.max(0, activeStepIdx - 1));
+    }
+  };
+
+  const handleSkipForward = () => {
+    haptic("light");
+    if (hasAudio) {
+      seek(currentTime + 10);
+    } else {
+      goToStep(Math.min(steps.length - 1, activeStepIdx + 1));
+    }
+  };
+
+  const progress = practice.durationSec > 0 ? Math.min(1, elapsed / practice.durationSec) : 0;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex flex-col"
+        style={{
+          backgroundColor: "hsl(var(--background))",
+          paddingTop: "env(safe-area-inset-top)",
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-3">
+          <div className="flex-1 min-w-0">
+            <p className="font-mono text-[11px] text-primary uppercase tracking-wider">
+              {practice.category}
+            </p>
+            <h2 className="font-display text-xl md:text-2xl font-bold italic text-foreground truncate">
+              {practice.title}
+            </h2>
+            <p className="font-body text-sm text-muted-foreground">
+              {practice.subtitle} · {formatDuration(practice.durationSec)}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="ml-3 w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+            aria-label="Close practice"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        <div className="px-5 mb-1">
+          <div className="w-full h-1 rounded-full bg-muted/60 overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-primary"
+              style={{ width: `${progress * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {formatDuration(elapsed)}
+            </span>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {formatDuration(practice.durationSec)}
+            </span>
+          </div>
+        </div>
+
+        {/* Steps list */}
+        <div className="flex-1 overflow-y-auto px-5 py-3 space-y-2">
+          {steps.map((step, i) => {
+            const isActive = i === activeStepIdx;
+            const isPast = i < activeStepIdx;
+
+            return (
+              <motion.div
+                key={step.id}
+                layout
+                onClick={() => {
+                  haptic("light");
+                  goToStep(i);
+                }}
+                className={`rounded-2xl p-4 cursor-pointer transition-all duration-300 ${
+                  isActive
+                    ? "bg-primary/10 border border-primary/25 shadow-sm"
+                    : isPast
+                    ? "bg-secondary/30 opacity-50"
+                    : "bg-secondary/20 opacity-60"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-mono text-xs transition-colors ${
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : isPast
+                        ? "bg-primary/20 text-primary"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {isPast ? "✓" : i + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4
+                      className={`font-display text-sm font-semibold mb-0.5 ${
+                        isActive ? "italic text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
+                      {step.title}
+                    </h4>
+                    <p
+                      className={`font-body text-sm leading-relaxed ${
+                        isActive ? "text-foreground/80" : "text-muted-foreground/60"
+                      }`}
+                    >
+                      {step.body}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Audio availability */}
+        {!hasAudio && practice.audio.enabled && (
+          <div className="px-5 py-2">
+            <p className="font-body text-xs text-muted-foreground/60 text-center">
+              Audio guidance is unavailable right now. You can still follow the on-screen steps.
+            </p>
+          </div>
+        )}
+
+        {/* Controls */}
+        <div className="px-5 pb-5 pt-3 flex items-center justify-center gap-3">
+          <button
+            onClick={handleRestart}
+            className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors"
+            aria-label="Restart"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
+          <button
+            onClick={handleSkipBack}
+            className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors"
+            aria-label="Skip back"
+          >
+            <SkipBack className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => {
+              haptic("medium");
+              setPlaying(!playing);
+            }}
+            className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground hover:opacity-90 transition-opacity"
+            aria-label={playing ? "Pause" : "Play"}
+          >
+            {playing ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-0.5" />}
+          </button>
+          <button
+            onClick={handleSkipForward}
+            className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors"
+            aria-label="Skip forward"
+          >
+            <SkipForward className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => {
+              haptic("light");
+              setMuted(!muted);
+            }}
+            className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors"
+            aria-label={muted ? "Unmute" : "Mute"}
+          >
+            {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </button>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
