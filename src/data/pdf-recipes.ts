@@ -943,6 +943,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "cottage-pie",
     name: "Cottage Pie",
+    image: "/images/recipes/meals/cottage-pie.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "60 min",
