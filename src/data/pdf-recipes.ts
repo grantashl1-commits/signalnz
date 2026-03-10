@@ -1178,6 +1178,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "lemongrass-vegan-meatballs-thai-curry",
     name: "Lemongrass Vegan Meatballs in Red Thai Curry",
+    image: "/images/recipes/meals/lemongrass-vegan-meatballs-thai-curry.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "60 min",
