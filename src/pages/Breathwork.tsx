@@ -179,7 +179,13 @@ function SomaticCards({
           className="card-warm p-5"
         >
           <div className="flex gap-3 items-start mb-3">
-            <span className="text-[26px]">{p.emoji}</span>
+            {p.illustrationUrl ? (
+              <img src={p.illustrationUrl} alt={p.title} className="w-[42px] h-[42px] object-contain flex-shrink-0 rounded-lg" />
+            ) : (
+              <div className="w-[42px] h-[42px] rounded-lg bg-secondary/60 flex items-center justify-center flex-shrink-0">
+                <span className="font-display text-sm italic text-muted-foreground">✦</span>
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-lg italic text-foreground mb-1">
                 {p.title}

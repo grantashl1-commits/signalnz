@@ -39,7 +39,9 @@ export interface PracticeConfig {
   phases?: BreathPhase[];
   rounds?: number;
   steps?: PracticeStep[];
+  /** @deprecated Use illustrationUrl instead */
   emoji?: string;
+  illustrationUrl?: string;
   benefit?: string;
   // future-ready fields
   locale?: string;
@@ -148,6 +150,22 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
 // This array holds the PracticeConfig entries for the player system.
 
 
+import butterflyHugImg from "@/assets/somatic/butterfly-hug.png";
+import grounding54321Img from "@/assets/somatic/grounding-54321.png";
+import somaticOrientingImg from "@/assets/somatic/somatic-orienting.png";
+import haveningTouchImg from "@/assets/somatic/havening-touch.png";
+import neurogenicTremoringImg from "@/assets/somatic/neurogenic-tremoring.png";
+import bodyScanImg from "@/assets/somatic/body-scan.png";
+
+const SOMATIC_ILLUSTRATIONS: Record<string, string> = {
+  "butterfly-hug": butterflyHugImg,
+  "grounding-54321": grounding54321Img,
+  "somatic-orienting": somaticOrientingImg,
+  "havening-touch": haveningTouchImg,
+  "neurogenic-tremoring": neurogenicTremoringImg,
+  "body-scan": bodyScanImg,
+};
+
 function buildSomaticPractices(): PracticeConfig[] {
   return somaticScripts.map((script) => ({
     id: script.id,
@@ -156,7 +174,7 @@ function buildSomaticPractices(): PracticeConfig[] {
     category: "somatic" as PracticeCategory,
     mode: "narrated-sequence" as PracticeMode,
     durationSec: script.durationSec,
-    emoji: emojiForSomatic(script.id),
+    illustrationUrl: SOMATIC_ILLUSTRATIONS[script.id],
     benefit: script.description,
     audio: {
       enabled: true,
@@ -167,18 +185,6 @@ function buildSomaticPractices(): PracticeConfig[] {
     },
     steps: script.steps,
   }));
-}
-
-function emojiForSomatic(id: string): string {
-  const map: Record<string, string> = {
-    "butterfly-hug": "🦋",
-    "grounding-54321": "🌱",
-    "somatic-orienting": "🧭",
-    "havening-touch": "🤲",
-    "neurogenic-tremoring": "〰",
-    "body-scan": "🔍",
-  };
-  return map[id] ?? "✦";
 }
 
 export const SOMATIC_PRACTICES: PracticeConfig[] = buildSomaticPractices();
