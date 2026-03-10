@@ -20,12 +20,17 @@ export function findRecipeById(id: string): Recipe | undefined {
   return RECIPE_BY_ID.get(id);
 }
 
+/** Normalize "&" / "and" and common punctuation for comparison */
+function norm(s: string): string {
+  return s.toLowerCase().replace(/&/g, "and").replace(/[''`]/g, "'").replace(/\s+/g, " ").trim();
+}
+
 /** Fuzzy lookup by meal name — tries exact match first, then substring */
 export function findRecipeByName(mealName: string): Recipe | undefined {
-  const lower = mealName.toLowerCase();
-  return ALL_MEAL_RECIPES.find((r) => r.name.toLowerCase() === lower) ||
+  const n = norm(mealName);
+  return ALL_MEAL_RECIPES.find((r) => norm(r.name) === n) ||
     ALL_MEAL_RECIPES.find((r) =>
-      lower.includes(r.name.toLowerCase()) || r.name.toLowerCase().includes(lower)
+      n.includes(norm(r.name)) || norm(r.name).includes(n)
     );
 }
 
