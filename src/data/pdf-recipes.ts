@@ -1382,6 +1382,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "tahini-mustard-tempeh-wraps",
     name: "Tahini Mustard Tempeh Wraps",
+    image: "/images/recipes/meals/tahini-mustard-tempeh-wraps.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
