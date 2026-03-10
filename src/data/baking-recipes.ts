@@ -261,6 +261,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Double dose of cacao provides maximum magnesium. Almond meal adds protein and healthy fats for the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/gluten-free-double-choc-fudge-cookies.png",
   },
   {
     id: "no-bake-choc-banana-fudge",
