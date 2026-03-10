@@ -7,12 +7,15 @@ import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase,
 import {
   WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
   FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
-  getAllSessions, type WorkoutCategory,
+  getAllSessions, type WorkoutCategory, type Exercise,
 } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
 import LiveHRView from "@/components/movement/LiveHRView";
 import MovementCalendar from "@/components/movement/MovementCalendar";
 import ProgressTab from "@/components/movement/ProgressTab";
+import ExerciseRig from "@/components/movement/ExerciseRig";
+import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
+import { getAnimationForExercise } from "@/data/exercise-animations";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
