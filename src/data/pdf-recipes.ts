@@ -12,6 +12,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "mixed-berry-chia-pudding",
     name: "Mixed Berry Chia Pudding",
+    image: "/images/recipes/meals/mixed-berry-chia-pudding.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "35 min (overnight)",
@@ -34,6 +35,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "buckwheat-bread-avocado",
     name: "Buckwheat Bread & Smashed Avocado",
+    image: "/images/recipes/meals/buckwheat-bread-smashed-avocado.png",
     phase: "follicular",
     serves: 1,
     prepTime: "90 min (incl. baking)",
@@ -63,6 +65,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "coconut-smoothie-cleanse",
     name: "Coconut Berry Smoothie",
+    image: "/images/recipes/meals/coconut-berry-smoothie.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -83,6 +86,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "slow-cooked-lentils",
     name: "Slow Cooked Spiced Lentils",
+    image: "/images/recipes/meals/slow-cooked-spiced-lentils.png",
     phase: "menstrual",
     serves: 3,
     prepTime: "6-8 hours (slow cooker)",
@@ -113,6 +117,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "mushroom-risotto-cleanse",
     name: "Creamy Mushroom Risotto",
+    image: "/images/recipes/meals/creamy-mushroom-risotto.png",
     phase: "follicular",
     serves: 3,
     prepTime: "35 min",
@@ -163,6 +168,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "quinoa-tabbouleh-cleanse",
     name: "Quinoa Tabbouleh",
+    image: "/images/recipes/meals/quinoa-tabbouleh.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -189,6 +195,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "pumpkin-kale-chilli",
     name: "Pumpkin & Kale Chilli",
+    image: "/images/recipes/meals/pumpkin-kale-chilli.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -217,6 +224,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "beetroot-patties",
     name: "Beetroot & Black Bean Patties",
+    image: "/images/recipes/meals/beetroot-black-bean-patties.png",
     phase: "luteal",
     serves: 4,
     prepTime: "50 min",
@@ -243,6 +251,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "sweet-potato-bean-chilli-cleanse",
     name: "Sweet Potato & Black Bean Chilli",
+    image: "/images/recipes/meals/sweet-potato-black-bean-chilli.png",
     phase: "luteal",
     serves: 3,
     prepTime: "40 min",
@@ -269,6 +278,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "spiced-cauliflower-bowl",
     name: "Spiced Cauliflower & Quinoa Bowl",
+    image: "/images/recipes/meals/spiced-cauliflower-quinoa-bowl.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
@@ -295,6 +305,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "raw-pad-thai-cleanse",
     name: "Raw Pad Thai with Coconut Tahini",
+    image: "/images/recipes/meals/raw-pad-thai-coconut-tahini.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -323,6 +334,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "green-pea-fritters",
     name: "Green Pea Fritters",
+    image: "/images/recipes/meals/green-pea-fritters.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -349,6 +361,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "pulled-jackfruit-tacos",
     name: "Pulled Jackfruit Tacos",
+    image: "/images/recipes/meals/pulled-jackfruit-tacos.png",
     phase: "follicular",
     serves: 3,
     prepTime: "20 min",
@@ -375,6 +388,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "tahini-banana-energy-bars",
     name: "Tahini & Banana Choc Energy Bars",
+    image: "/images/recipes/meals/tahini-banana-choc-energy-bars.png",
     phase: "luteal",
     serves: 20,
     prepTime: "35 min",
@@ -402,6 +416,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "date-cacao-bliss-balls",
     name: "Date Cacao & Coconut Bliss Balls",
+    image: "/images/recipes/meals/date-cacao-coconut-bliss-balls.png",
     phase: "luteal",
     serves: 20,
     prepTime: "10 min",
@@ -426,6 +441,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "carrot-cake-bliss-balls",
     name: "Carrot Cake Bliss Balls",
+    image: "/images/recipes/meals/carrot-cake-bliss-balls.png",
     phase: "luteal",
     serves: 20,
     prepTime: "10 min",
@@ -450,6 +466,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chunky-monkey-chickpea-cookies",
     name: "Chunky Monkey Chickpea Cookies",
+    image: "/images/recipes/meals/chunky-monkey-chickpea-cookies.png",
     phase: "menstrual",
     serves: 20,
     prepTime: "25 min",
@@ -475,6 +492,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "wild-blueberry-oat-bars",
     name: "Wild Blueberry Oat Bars",
+    image: "/images/recipes/meals/wild-blueberry-oat-bars.png",
     phase: "ovulatory",
     serves: 20,
     prepTime: "50 min",
@@ -502,6 +520,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "banana-zucchini-bread",
     name: "Chocolate Chip Banana Zucchini Bread",
+    image: "/images/recipes/meals/chocolate-chip-banana-zucchini-bread.png",
     phase: "luteal",
     serves: 10,
     prepTime: "55 min",
@@ -533,6 +552,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "bircher-breakfast-bowl",
     name: "Bircher Breakfast Bowl",
+    image: "/images/recipes/meals/bircher-breakfast-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min (+ overnight soak)",
@@ -561,6 +581,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "everyday-chia-pudding",
     name: "Everyday Chia Pudding",
+    image: "/images/recipes/meals/everyday-chia-pudding.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
@@ -582,6 +603,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "vegan-pizza-cleanse",
     name: "Gluten-Free Vegan Pizza",
+    image: "/images/recipes/meals/gluten-free-vegan-pizza.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
@@ -611,6 +633,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "rice-bean-salad-cleanse",
     name: "Rice & Bean Salad with Lime Dressing",
+    image: "/images/recipes/meals/rice-bean-salad-lime-dressing.png",
     phase: "ovulatory",
     serves: 3,
     prepTime: "20 min",
@@ -640,6 +663,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "vegan-breakfast-patties",
     name: "Vegan Quinoa Breakfast Patties",
+    image: "/images/recipes/meals/vegan-quinoa-breakfast-patties.png",
     phase: "follicular",
     serves: 3,
     prepTime: "30 min",
@@ -666,6 +690,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "tomato-soup-cleanse",
     name: "Roasted Tomato Soup",
+    image: "/images/recipes/meals/roasted-tomato-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
@@ -692,6 +717,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "shepherds-pie-cleanse",
     name: "Lentil Shepherd's Pie",
+    image: "/images/recipes/meals/lentil-shepherds-pie.png",
     phase: "luteal",
     serves: 4,
     prepTime: "60 min",
@@ -716,6 +742,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "curry-lentil-soup",
     name: "Curry Lentil Soup",
+    image: "/images/recipes/meals/curry-lentil-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
@@ -745,6 +772,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chimichurri-black-bean-tacos",
     name: "Chimichurri Black Bean Tacos",
+    image: "/images/recipes/meals/chimichurri-black-bean-tacos.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -776,6 +804,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "curried-chickpea-salad-sandwich",
     name: "Curried Chickpea Salad Sandwich",
+    image: "/images/recipes/meals/curried-chickpea-salad-sandwich.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -800,6 +829,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "miso-tofu-greens",
     name: "Miso Tofu & Greens",
+    image: "/images/recipes/meals/miso-tofu-greens.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -827,6 +857,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chickpea-pumpkin-pasta",
     name: "Chickpea & Pumpkin Pasta",
+    image: "/images/recipes/meals/chickpea-pumpkin-pasta.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -854,6 +885,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chickpea-rice-salad",
     name: "Chickpea Rice Salad",
+    image: "/images/recipes/meals/chickpea-rice-salad.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -881,6 +913,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "colourful-lentil-salad-bowl",
     name: "Colourful Lentil Salad Bowl",
+    image: "/images/recipes/meals/colourful-lentil-salad-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -910,6 +943,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "cottage-pie",
     name: "Cottage Pie",
+    image: "/images/recipes/meals/cottage-pie.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "60 min",
@@ -940,6 +974,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "cranberry-walnut-chickpea-salad",
     name: "Cranberry, Walnut & Chickpea Salad",
+    image: "/images/recipes/meals/cranberry-walnut-chickpea-salad.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -967,6 +1002,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "one-pan-tempeh-potatoes",
     name: "One Pan Tempeh & Potatoes",
+    image: "/images/recipes/meals/one-pan-tempeh-potatoes.png",
     phase: "follicular",
     serves: 1,
     prepTime: "55 min",
@@ -998,6 +1034,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "falafel-quinoa-bowl",
     name: "Falafel & Quinoa Bowl with Avocado Dressing",
+    image: "/images/recipes/meals/falafel-quinoa-bowl-avocado.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "25 min",
@@ -1023,6 +1060,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "ginger-tofu-stir-fry",
     name: "Ginger Tofu Stir Fry",
+    image: "/images/recipes/meals/ginger-tofu-stir-fry.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -1051,6 +1089,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "greek-lentil-meatballs",
     name: "Greek Lentil 'Meatballs'",
+    image: "/images/recipes/meals/greek-lentil-meatballs.png",
     phase: "luteal",
     serves: 4,
     prepTime: "60 min",
@@ -1089,6 +1128,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "healthy-nachos",
     name: "Healthy Nachos",
+    image: "/images/recipes/meals/healthy-nachos.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -1112,6 +1152,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "kidney-bean-melt-quesadilla",
     name: "Kidney Bean Melt Quesadilla",
+    image: "/images/recipes/meals/kidney-bean-melt-quesadilla.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
@@ -1137,6 +1178,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "lemongrass-vegan-meatballs-thai-curry",
     name: "Lemongrass Vegan Meatballs in Red Thai Curry",
+    image: "/images/recipes/meals/lemongrass-vegan-meatballs-thai-curry.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "60 min",
@@ -1170,6 +1212,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "loaded-potatoes",
     name: "Loaded Potatoes",
+    image: "/images/recipes/meals/loaded-potatoes.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "50 min",
@@ -1202,6 +1245,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "mexican-kidney-beans",
     name: "Mexican Kidney Beans",
+    image: "/images/recipes/meals/mexican-kidney-beans.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -1228,6 +1272,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "moroccan-tofu-pizza",
     name: "Moroccan Tofu Pizza",
+    image: "/images/recipes/meals/moroccan-tofu-pizza.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "30 min",
@@ -1254,6 +1299,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "one-pot-black-bean-fajitas-rice",
     name: "One Pot Black Bean Fajitas & Rice",
+    image: "/images/recipes/meals/one-pot-black-bean-fajitas-rice.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -1279,6 +1325,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "pb-maple-overnight-oats",
     name: "Peanut Butter & Maple Syrup Overnight Oats",
+    image: "/images/recipes/meals/peanut-butter-maple-overnight-oats.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 min",
@@ -1303,6 +1350,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "spicy-thai-edamame-quinoa-salad",
     name: "Spicy Thai Edamame & Quinoa Salad",
+    image: "/images/recipes/meals/spicy-thai-edamame-quinoa-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -1334,6 +1382,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "tahini-mustard-tempeh-wraps",
     name: "Tahini Mustard Tempeh Wraps",
+    image: "/images/recipes/meals/tahini-mustard-tempeh-wraps.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -1365,6 +1414,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "vegan-egg-roll-in-a-bowl",
     name: "Vegan 'Egg Roll In A Bowl'",
+    image: "/images/recipes/meals/vegan-egg-roll-in-a-bowl.png",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
@@ -1393,6 +1443,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "white-bean-pasta-bake",
     name: "White Bean Pasta Bake",
+    image: "/images/recipes/meals/white-bean-pasta-bake.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "45 min",
