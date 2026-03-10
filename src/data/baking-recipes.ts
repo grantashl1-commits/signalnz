@@ -431,6 +431,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hazelnuts and sunflower seeds provide zinc to support ovulation. Avocado adds healthy fats for hormone balance.",
     category: "baking",
+    image: "/images/recipes/baking/choc-hazelnut-freezer-pie.png",
   },
   {
     id: "choc-chip-chickpea-cookies",
