@@ -23,6 +23,13 @@ export interface PlannedMeal {
   isLeftover?: boolean;
 }
 
+function findRecipeByName(name: string): { id: string; name: string } | undefined {
+  const lower = name.toLowerCase();
+  const match = ALL_RECIPES.find((r) => r.name.toLowerCase() === lower) ||
+    ALL_RECIPES.find((r) => lower.includes(r.name.toLowerCase()) || r.name.toLowerCase().includes(lower));
+  return match ? { id: match.id, name: match.name } : undefined;
+}
+
 export interface PlannedDay {
   date: string;
   dayName: string;
@@ -118,43 +125,54 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     const dayName = DAY_NAMES[i];
 
     // Breakfast
-    let breakfast: PlannedMeal;
+    let bName: string;
     if (prefs.breakfast === "batch") {
-      breakfast = { name: plan.days[0].breakfast.split(" — ")[0] };
+      bName = plan.days[0].breakfast.split(" — ")[0];
     } else if (prefs.breakfast === "rotate") {
-      breakfast = { name: plan.days[i % 3].breakfast.split(" — ")[0] };
+      bName = plan.days[i % 3].breakfast.split(" — ")[0];
     } else {
-      breakfast = { name: dayPlan.breakfast.split(" — ")[0] };
+      bName = dayPlan.breakfast.split(" — ")[0];
     }
+    const bMatch = findRecipeByName(bName);
+    const breakfast: PlannedMeal = { name: bMatch?.name || bName, recipeId: bMatch?.id };
 
     // Lunch
-    let lunch: PlannedMeal;
+    let lName: string;
     if (prefs.lunch === "batch") {
-      lunch = { name: plan.days[0].lunch.split(" — ")[0] };
+      lName = plan.days[0].lunch.split(" — ")[0];
     } else if (prefs.lunch === "rotate") {
-      lunch = { name: plan.days[i % 3].lunch.split(" — ")[0] };
+      lName = plan.days[i % 3].lunch.split(" — ")[0];
     } else {
-      lunch = { name: dayPlan.lunch.split(" — ")[0] };
+      lName = dayPlan.lunch.split(" — ")[0];
     }
+    const lMatch = findRecipeByName(lName);
+    const lunch: PlannedMeal = { name: lMatch?.name || lName, recipeId: lMatch?.id };
 
     // Dinner
     let dinner: PlannedMeal;
     if (prefs.dinner === "double") {
       const dinnerIdx = Math.floor(i / 2);
-      const sourceDinner = plan.days[dinnerIdx % plan.days.length].dinner.split(" — ")[0];
+      const dName = plan.days[dinnerIdx % plan.days.length].dinner.split(" — ")[0];
+      const dMatch = findRecipeByName(dName);
       dinner = {
-        name: sourceDinner,
+        name: dMatch?.name || dName,
+        recipeId: dMatch?.id,
         isLeftover: i % 2 === 1,
       };
     } else if (prefs.dinner === "mix") {
       if (i % 3 === 2) {
-        const prevDinner = plan.days[Math.floor((i - 1) / 2) % plan.days.length].dinner.split(" — ")[0];
-        dinner = { name: prevDinner, isLeftover: true };
+        const dName = plan.days[Math.floor((i - 1) / 2) % plan.days.length].dinner.split(" — ")[0];
+        const dMatch = findRecipeByName(dName);
+        dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id, isLeftover: true };
       } else {
-        dinner = { name: dayPlan.dinner.split(" — ")[0] };
+        const dName = dayPlan.dinner.split(" — ")[0];
+        const dMatch = findRecipeByName(dName);
+        dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
       }
     } else {
-      dinner = { name: dayPlan.dinner.split(" — ")[0] };
+      const dName = dayPlan.dinner.split(" — ")[0];
+      const dMatch = findRecipeByName(dName);
+      dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
     }
 
     // Snacks - use phase-appropriate snacks
@@ -237,10 +255,23 @@ export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
     });
   });
 
+  // Collect recipeIds from plan days for direct matching
+  const mealRecipeIds: Record<string, string> = {};
+  plan.days.forEach((day) => {
+    [day.breakfast, day.lunch, day.dinner].forEach((meal) => {
+      if (meal.recipeId) {
+        mealRecipeIds[meal.name.toLowerCase()] = meal.recipeId;
+      }
+    });
+  });
+
   // For each unique meal, find its recipe and add ingredients
   Object.entries(mealCounts).forEach(([mealKey, count]) => {
-    // Try to find matching recipe
-    const recipe = ALL_RECIPES.find((r) => r.name.toLowerCase().includes(mealKey) || mealKey.includes(r.name.toLowerCase()));
+    // Try direct recipeId first, then fuzzy match
+    const directId = mealRecipeIds[mealKey];
+    const recipe = directId
+      ? ALL_RECIPES.find((r) => r.id === directId)
+      : ALL_RECIPES.find((r) => r.name.toLowerCase().includes(mealKey) || mealKey.includes(r.name.toLowerCase()));
     if (recipe) {
       recipe.ingredients.forEach((ingStr) => {
         const parsed = parseIngredient(ingStr);

@@ -10,7 +10,6 @@ import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
-import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
 
 const ALL_RECIPES = [...RECIPES, ...PDF_RECIPES];
 
@@ -110,11 +109,6 @@ export default function NutritionPage() {
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
 
       {activeTab === "myweek" && <MyWeekTab />}
-
-      {/* Seed cycling — static within page flow, not fixed */}
-      <div className="pt-2">
-        <SeedCyclingCard cycleDay={info.cycleDay} phase={info.phase} />
-      </div>
     </div>
   );
 }
