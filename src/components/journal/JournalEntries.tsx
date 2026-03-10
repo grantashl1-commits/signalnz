@@ -471,6 +471,13 @@ export default function JournalEntries({
       setEntries(updated);
       saveEntries(updated);
       setActiveEntry({ ...entry, ai: data, tags: data.tags || [] });
+
+      // Fire journal-insights in background to build user profile
+      const userId = localStorage.getItem("signal_user_id") || crypto.randomUUID();
+      if (!localStorage.getItem("signal_user_id")) localStorage.setItem("signal_user_id", userId);
+      supabase.functions.invoke("journal-insights", {
+        body: { entry, analysis: data, userIdentifier: userId },
+      }).catch(() => {});
     } catch {
       setActiveEntry({ ...entry, ai: { summary: "Unable to analyse right now. Please try again.", themes: [], recommendations: [], next_steps: [], tags: [] } });
     }
