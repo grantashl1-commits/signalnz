@@ -2,16 +2,14 @@ import { useState } from "react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
-import { TODAY_MEALS, RECIPES, NUTRIENT_FOCUS } from "@/data/meal-plans";
-import { PDF_RECIPES } from "@/data/pdf-recipes";
+import { TODAY_MEALS, NUTRIENT_FOCUS } from "@/data/meal-plans";
+import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { haptic } from "@/hooks/use-mobile";
 import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
-
-const ALL_RECIPES = [...RECIPES, ...PDF_RECIPES];
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -104,7 +102,7 @@ export default function NutritionPage() {
 
       {activeTab === "plans" && <PlansTab phase={info.phase} cycleDay={info.cycleDay} />}
 
-      {activeTab === "recipes" && <RecipesGrid recipes={ALL_RECIPES} currentPhase={info.phase} />}
+      {activeTab === "recipes" && <RecipesGrid recipes={ALL_MEAL_RECIPES} currentPhase={info.phase} />}
 
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
 

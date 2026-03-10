@@ -1,6 +1,6 @@
 import { Phase, getPhaseFromDay, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "./cycle-utils";
-import { PHASE_MEAL_PLANS, RECIPES, Recipe } from "@/data/meal-plans";
-import { PDF_RECIPES } from "@/data/pdf-recipes";
+import { PHASE_MEAL_PLANS, Recipe } from "@/data/meal-plans";
+import { findRecipeByName, findRecipeById, ALL_MEAL_RECIPES } from "./recipe-index";
 import { parseIngredient } from "./ingredient-parser";
 
 // ─── Types ─────────────────────────────────────────────────
@@ -21,13 +21,6 @@ export interface PlannedMeal {
   name: string;
   recipeId?: string;
   isLeftover?: boolean;
-}
-
-function findRecipeByName(name: string): { id: string; name: string } | undefined {
-  const lower = name.toLowerCase();
-  const match = ALL_RECIPES.find((r) => r.name.toLowerCase() === lower) ||
-    ALL_RECIPES.find((r) => lower.includes(r.name.toLowerCase()) || r.name.toLowerCase().includes(lower));
-  return match ? { id: match.id, name: match.name } : undefined;
 }
 
 export interface PlannedDay {
@@ -67,8 +60,6 @@ export interface ShoppingIngredient {
 
 // ─── Constants ─────────────────────────────────────────────
 const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-const ALL_RECIPES = [...RECIPES, ...PDF_RECIPES];
 
 // ─── Default Preferences ───────────────────────────────────
 export const DEFAULT_PREFS: PrepPreferences = {
@@ -112,6 +103,12 @@ export function formatDateShort(d: Date): string {
   return `${d.getDate()}/${d.getMonth() + 1}`;
 }
 
+// ─── Recipe lookup helper ──────────────────────────────────
+function matchRecipe(name: string): { id: string; name: string } | undefined {
+  const recipe = findRecipeByName(name);
+  return recipe ? { id: recipe.id, name: recipe.name } : undefined;
+}
+
 // ─── Plan Generation ───────────────────────────────────────
 export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
   const { dates, start, end } = getWeekDates();
@@ -133,7 +130,7 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     } else {
       bName = dayPlan.breakfast.split(" — ")[0];
     }
-    const bMatch = findRecipeByName(bName);
+    const bMatch = matchRecipe(bName);
     const breakfast: PlannedMeal = { name: bMatch?.name || bName, recipeId: bMatch?.id };
 
     // Lunch
@@ -145,7 +142,7 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     } else {
       lName = dayPlan.lunch.split(" — ")[0];
     }
-    const lMatch = findRecipeByName(lName);
+    const lMatch = matchRecipe(lName);
     const lunch: PlannedMeal = { name: lMatch?.name || lName, recipeId: lMatch?.id };
 
     // Dinner
@@ -153,7 +150,7 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     if (prefs.dinner === "double") {
       const dinnerIdx = Math.floor(i / 2);
       const dName = plan.days[dinnerIdx % plan.days.length].dinner.split(" — ")[0];
-      const dMatch = findRecipeByName(dName);
+      const dMatch = matchRecipe(dName);
       dinner = {
         name: dMatch?.name || dName,
         recipeId: dMatch?.id,
@@ -162,20 +159,20 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     } else if (prefs.dinner === "mix") {
       if (i % 3 === 2) {
         const dName = plan.days[Math.floor((i - 1) / 2) % plan.days.length].dinner.split(" — ")[0];
-        const dMatch = findRecipeByName(dName);
+        const dMatch = matchRecipe(dName);
         dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id, isLeftover: true };
       } else {
         const dName = dayPlan.dinner.split(" — ")[0];
-        const dMatch = findRecipeByName(dName);
+        const dMatch = matchRecipe(dName);
         dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
       }
     } else {
       const dName = dayPlan.dinner.split(" — ")[0];
-      const dMatch = findRecipeByName(dName);
+      const dMatch = matchRecipe(dName);
       dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
     }
 
-    // Snacks - use phase-appropriate snacks
+    // Snacks
     const morningSnack: PlannedMeal = { name: "Fruit + seeds" };
     const afternoonSnack: PlannedMeal = { name: "Trail mix" };
 
@@ -209,12 +206,10 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
 function parseQuantity(qty: string): number {
   if (!qty) return 1;
   qty = qty.trim();
-  // Handle fractions
   if (qty.includes("/")) {
     const parts = qty.split("/");
     if (parts.length === 2) return parseInt(parts[0]) / parseInt(parts[1]);
   }
-  // Handle ranges
   if (qty.includes("-")) {
     const parts = qty.split("-");
     return (parseFloat(parts[0]) + parseFloat(parts[1])) / 2;
@@ -240,43 +235,44 @@ function categoriseIngredient(name: string): string {
   return "pantry";
 }
 
+/**
+ * Generate a shopping list from a weekly plan.
+ * Uses canonical recipe index for ingredient lookups via recipeId.
+ */
 export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
   const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
   const ingredientMap: Record<string, { name: string; totalQty: number; unit: string; category: string }> = {};
 
-  // Count unique meals and their repetitions
-  const mealCounts: Record<string, number> = {};
+  // Count unique meals (by recipeId or name) and their repetitions
+  const mealCounts: Record<string, { count: number; recipeId?: string }> = {};
   plan.days.forEach((day) => {
     [day.breakfast, day.lunch, day.dinner].forEach((meal) => {
       if (!meal.isLeftover) {
-        const key = meal.name.toLowerCase();
-        mealCounts[key] = (mealCounts[key] || 0) + 1;
-      }
-    });
-  });
-
-  // Collect recipeIds from plan days for direct matching
-  const mealRecipeIds: Record<string, string> = {};
-  plan.days.forEach((day) => {
-    [day.breakfast, day.lunch, day.dinner].forEach((meal) => {
-      if (meal.recipeId) {
-        mealRecipeIds[meal.name.toLowerCase()] = meal.recipeId;
+        const key = meal.recipeId || meal.name.toLowerCase();
+        if (!mealCounts[key]) {
+          mealCounts[key] = { count: 0, recipeId: meal.recipeId };
+        }
+        mealCounts[key].count++;
       }
     });
   });
 
   // For each unique meal, find its recipe and add ingredients
-  Object.entries(mealCounts).forEach(([mealKey, count]) => {
-    // Try direct recipeId first, then fuzzy match
-    const directId = mealRecipeIds[mealKey];
-    const recipe = directId
-      ? ALL_RECIPES.find((r) => r.id === directId)
-      : ALL_RECIPES.find((r) => r.name.toLowerCase().includes(mealKey) || mealKey.includes(r.name.toLowerCase()));
+  Object.entries(mealCounts).forEach(([mealKey, { count, recipeId }]) => {
+    // Use recipeId for canonical lookup first, then fall back to name matching
+    let recipe: Recipe | undefined;
+    if (recipeId) {
+      recipe = findRecipeById(recipeId);
+    }
+    if (!recipe) {
+      recipe = findRecipeByName(mealKey);
+    }
+
     if (recipe) {
       recipe.ingredients.forEach((ingStr) => {
         const parsed = parseIngredient(ingStr);
         const baseQty = parseQuantity(parsed.quantity);
-        const totalQty = baseQty * servingMultiplier * count / (recipe.serves || 1);
+        const totalQty = baseQty * servingMultiplier * count / (recipe!.serves || 1);
         const mapKey = parsed.searchTerm.toLowerCase();
         const cat = categoriseIngredient(parsed.name);
 
@@ -337,29 +333,6 @@ export function saveWeeklyPlan(plan: WeeklyPlan): void {
 export function getWeeklyPlan(weekKey?: string): WeeklyPlan | null {
   const key = weekKey || `weeklyPlan:${getISOWeek(new Date())}`;
   const val = localStorage.getItem(key);
-  return val ? JSON.parse(val) : null;
-}
-
-export function getSavedPlans(): { key: string; plan: WeeklyPlan }[] {
-  const plans: { key: string; plan: WeeklyPlan }[] = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key?.startsWith("weeklyPlan:")) {
-      try {
-        const plan = JSON.parse(localStorage.getItem(key)!);
-        plans.push({ key, plan });
-      } catch {}
-    }
-  }
-  return plans.sort((a, b) => b.plan.createdAt - a.plan.createdAt);
-}
-
-export function saveShoppingListWeek(weekKey: string, categories: ShoppingCategory[]): void {
-  localStorage.setItem(`shoppingList:${weekKey}`, JSON.stringify(categories));
-}
-
-export function getShoppingListWeek(weekKey: string): ShoppingCategory[] | null {
-  const val = localStorage.getItem(`shoppingList:${weekKey}`);
   return val ? JSON.parse(val) : null;
 }
 
