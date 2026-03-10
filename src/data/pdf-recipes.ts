@@ -913,6 +913,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "colourful-lentil-salad-bowl",
     name: "Colourful Lentil Salad Bowl",
+    image: "/images/recipes/meals/colourful-lentil-salad-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
