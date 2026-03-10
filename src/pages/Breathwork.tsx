@@ -243,71 +243,69 @@ function SomaticCards({
 
 // ── Meditations Section ──────────────────────────────────────
 function MeditationsSection() {
-  const [playing, setPlaying] = useState<string | null>(null);
-
   return (
-    <div className="space-y-3">
-      {MEDITATIONS.map((m, i) => (
-        <motion.div
-          key={m.id}
-          custom={i}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariant}
-          className="card-warm p-4"
-        >
-          <div className="flex gap-3 items-start">
-            <div className="flex-shrink-0">
-              {playing === m.id ? (
-                <div className="w-[110px] h-[62px] rounded-xl overflow-hidden">
-                  <iframe
-                    width="110"
-                    height="62"
-                    src={`https://www.youtube.com/embed/${m.yt}?autoplay=1`}
-                    allow="autoplay"
-                    className="border-none block"
-                    title={m.title}
-                    loading="lazy"
-                  />
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="mb-2">
+        <h2 className="font-display text-2xl italic text-foreground mb-1">Meditation Library</h2>
+        <p className="font-hand text-sm font-bold text-primary mb-2">Practices drawn from the world's most respected mindfulness traditions.</p>
+        <p className="font-body text-sm text-muted-foreground leading-relaxed">
+          These guided meditations come from teachers and traditions widely used in mindfulness research and therapeutic settings.
+          Each practice offers a different pathway into awareness, emotional balance, and nervous system regulation.
+        </p>
+      </div>
+
+      {/* Cards */}
+      <div className="space-y-4">
+        {MEDITATIONS.map((m, i) => (
+          <motion.div
+            key={m.id}
+            custom={i}
+            initial="hidden"
+            animate="visible"
+            variants={cardVariant}
+            className="card-warm overflow-hidden"
+          >
+            <div className="flex gap-4 p-5">
+              <img
+                src={m.img}
+                alt={m.title}
+                className="w-[72px] h-[72px] rounded-xl object-cover flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start gap-2">
+                  <h3 className="font-display text-lg italic text-foreground leading-snug">{m.title}</h3>
+                  <span className="font-mono text-[11px] text-muted-foreground whitespace-nowrap flex-shrink-0 mt-0.5">{m.dur}</span>
                 </div>
-              ) : (
-                <button
-                  onClick={() => setPlaying(m.id)}
-                  className="w-[110px] h-[62px] rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-center active:scale-[0.97]"
-                >
-                  <div className="w-0 h-0 border-t-[9px] border-t-transparent border-b-[9px] border-b-transparent border-l-[15px] border-l-primary ml-1" />
-                </button>
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-start gap-1.5">
-                <h3 className="font-display text-[17px] italic text-foreground leading-snug">
-                  {m.title}
-                </h3>
-                <span className="font-mono text-[11px] text-muted-foreground whitespace-nowrap flex-shrink-0">
-                  {m.dur}
-                </span>
-              </div>
-              <p className="font-mono text-xs text-primary mt-0.5 mb-1">
-                {m.teacher}
-              </p>
-              <p className="font-display text-xs italic text-muted-foreground leading-snug mb-2">
-                {m.desc}
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {m.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular"
-                  >
-                    {t}
-                  </span>
-                ))}
+                <p className="font-mono text-xs text-primary mt-0.5 mb-2">{m.teacher}</p>
+                <p className="font-body text-[13px] text-muted-foreground leading-relaxed whitespace-pre-line">{m.desc}</p>
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {m.tags.map((t) => (
+                    <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">{t}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
-      ))}
+            <div className="px-5 pb-5">
+              <a
+                href={m.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-btn flex items-center justify-center gap-2 w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground hover:opacity-90 active:scale-[0.97] transition-all"
+              >
+                watch meditation
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Footer note */}
+      <p className="font-body text-xs text-muted-foreground/60 text-center leading-relaxed mt-6 max-w-md mx-auto">
+        These meditations are shared from publicly available teachings by respected mindfulness teachers.
+        Links open on their original platforms to ensure proper attribution and licensing.
+      </p>
     </div>
   );
 }
