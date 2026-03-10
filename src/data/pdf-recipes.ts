@@ -1245,6 +1245,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "mexican-kidney-beans",
     name: "Mexican Kidney Beans",
+    image: "/images/recipes/meals/mexican-kidney-beans.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
