@@ -1,7 +1,15 @@
 import { useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, Clock } from "lucide-react";
+import { Volume2, Clock, ExternalLink } from "lucide-react";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
+
+import rainImg from "@/assets/meditations/rain-meditation.png";
+import lkmImg from "@/assets/meditations/loving-kindness.png";
+import mbsrImg from "@/assets/meditations/mbsr-body-scan.png";
+import breathImg from "@/assets/meditations/mindful-breathing.png";
+import nsdrImg from "@/assets/meditations/nsdr.png";
+import compassionImg from "@/assets/meditations/self-compassion.png";
+import openImg from "@/assets/meditations/open-awareness.png";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import {
@@ -22,67 +30,77 @@ const cardVariant = {
   }),
 };
 
-// ── MEDITATIONS (unchanged) ──────────────────────────────────
+// ── MEDITATIONS ──────────────────────────────────────────────
 const MEDITATIONS = [
   {
     id: "rain",
     title: "RAIN Meditation",
     teacher: "Tara Brach",
     dur: "20 min",
-    type: "IFS & Self-Compassion",
-    desc: "Meet difficult emotions with compassion using RAIN: Recognize, Allow, Investigate, Nurture.",
-    yt: "2-V8RDcuYuA",
-    tags: ["IFS", "emotions", "self-compassion"],
-  },
-  {
-    id: "nsdr",
-    title: "NSDR / Yoga Nidra",
-    teacher: "Huberman Lab Protocol",
-    dur: "10 min",
-    type: "Deep Rest",
-    desc: "Non-Sleep Deep Rest — science-backed restoration that recovers energy and resets the nervous system.",
-    yt: "AKGrmY8ORSE",
-    tags: ["rest", "recovery", "nervous system"],
+    desc: "RAIN is a powerful mindfulness practice for working with difficult emotions.\n\nRecognize what is happening. Allow the experience to be there. Investigate with curiosity. Nurture with compassion.\n\nWidely used in trauma-sensitive mindfulness and self-compassion work.",
+    tags: ["emotions", "self-compassion", "IFS-compatible"],
+    url: "https://www.tarabrach.com/rain/",
+    img: rainImg,
   },
   {
     id: "lkm",
-    title: "Loving Kindness",
+    title: "Loving Kindness Meditation",
     teacher: "Sharon Salzberg",
     dur: "18 min",
-    type: "Self-Love",
-    desc: "Cultivate unconditional love beginning with yourself.",
-    yt: "sz7cpV7ERsM",
-    tags: ["self-love", "compassion", "healing"],
-  },
-  {
-    id: "innerchild",
-    title: "Meeting Your Inner Child",
-    teacher: "IFS Visualization",
-    dur: "22 min",
-    type: "Inner Work",
-    desc: "A tender guided journey to meet and offer comfort to the younger parts of yourself.",
-    yt: "ZToicYcHIOU",
-    tags: ["IFS", "inner child", "parts work"],
+    desc: "A classic compassion meditation from the Buddhist metta tradition.\n\nThis practice cultivates warmth and kindness toward yourself and others and has been shown in research to increase positive emotions and resilience.",
+    tags: ["compassion", "self-love", "healing"],
+    url: "https://www.mindful.org/loving-kindness-meditation/",
+    img: lkmImg,
   },
   {
     id: "mbsr",
     title: "MBSR Body Scan",
     teacher: "Jon Kabat-Zinn",
     dur: "45 min",
-    type: "Body Awareness",
-    desc: "The foundational mindfulness body scan from the pioneer of MBSR.",
-    yt: "u4gZgnCy5ew",
-    tags: ["body", "MBSR", "awareness"],
+    desc: "The foundational mindfulness body scan practice from Mindfulness-Based Stress Reduction (MBSR).\n\nThis meditation trains somatic awareness and the ability to observe sensations without judgment.",
+    tags: ["body awareness", "MBSR", "mindfulness"],
+    url: "https://palousemindfulness.com/meditations/bodyscan.html",
+    img: mbsrImg,
   },
   {
     id: "thich",
-    title: "Breath & Present Moment",
-    teacher: "Thich Nhat Hanh",
+    title: "Mindful Breathing",
+    teacher: "Thich Nhat Hanh Tradition",
     dur: "15 min",
-    type: "Mindfulness",
-    desc: "A gentle return to the present moment from one of humanity's most beloved teachers.",
-    yt: "2-V8RDcuYuA",
+    desc: "A simple but profound meditation returning awareness to the breath.\n\nThis practice develops presence and calm by gently anchoring attention in breathing.",
     tags: ["breath", "presence", "peace"],
+    url: "https://plumvillage.org/library/guided-meditation/breathing-meditation/",
+    img: breathImg,
+  },
+  {
+    id: "nsdr",
+    title: "Non-Sleep Deep Rest (NSDR)",
+    teacher: "Huberman Lab Protocol",
+    dur: "10 min",
+    desc: "A neuroscience-informed practice designed to restore energy and regulate the nervous system.\n\nNSDR protocols are used to accelerate recovery and improve focus.",
+    tags: ["nervous system", "rest", "recovery"],
+    url: "https://www.hubermanlab.com/nsdr",
+    img: nsdrImg,
+  },
+  {
+    id: "self-compassion",
+    title: "Self-Compassion Break",
+    teacher: "Kristin Neff",
+    dur: "8 min",
+    desc: "A brief guided practice that helps you respond to difficult moments with kindness rather than self-criticism.\n\nOften used in compassion-focused therapy and emotional resilience training.",
+    tags: ["self-compassion", "healing", "emotional regulation"],
+    url: "https://self-compassion.org/exercise-2-self-compassion-break/",
+    img: compassionImg,
+  },
+  {
+    id: "open-awareness",
+    title: "Open Awareness Meditation",
+    teacher: "Waking Up Tradition",
+    dur: "20 min",
+    desc: "Instead of focusing on one object, this meditation invites awareness to open and include all experience.\n\nSounds, sensations, and thoughts are allowed to arise without resistance.",
+    tags: ["awareness", "presence", "non-dual"],
+    url: "https://dynamic.wakingup.com/course/CO0F1D4",
+    img: openImg,
   },
 ];
 
@@ -225,71 +243,69 @@ function SomaticCards({
 
 // ── Meditations Section ──────────────────────────────────────
 function MeditationsSection() {
-  const [playing, setPlaying] = useState<string | null>(null);
-
   return (
-    <div className="space-y-3">
-      {MEDITATIONS.map((m, i) => (
-        <motion.div
-          key={m.id}
-          custom={i}
-          initial="hidden"
-          animate="visible"
-          variants={cardVariant}
-          className="card-warm p-4"
-        >
-          <div className="flex gap-3 items-start">
-            <div className="flex-shrink-0">
-              {playing === m.id ? (
-                <div className="w-[110px] h-[62px] rounded-xl overflow-hidden">
-                  <iframe
-                    width="110"
-                    height="62"
-                    src={`https://www.youtube.com/embed/${m.yt}?autoplay=1`}
-                    allow="autoplay"
-                    className="border-none block"
-                    title={m.title}
-                    loading="lazy"
-                  />
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="mb-2">
+        <h2 className="font-display text-2xl italic text-foreground mb-1">Meditation Library</h2>
+        <p className="font-hand text-sm font-bold text-primary mb-2">Practices drawn from the world's most respected mindfulness traditions.</p>
+        <p className="font-body text-sm text-muted-foreground leading-relaxed">
+          These guided meditations come from teachers and traditions widely used in mindfulness research and therapeutic settings.
+          Each practice offers a different pathway into awareness, emotional balance, and nervous system regulation.
+        </p>
+      </div>
+
+      {/* Cards */}
+      <div className="space-y-4">
+        {MEDITATIONS.map((m, i) => (
+          <motion.div
+            key={m.id}
+            custom={i}
+            initial="hidden"
+            animate="visible"
+            variants={cardVariant}
+            className="card-warm overflow-hidden"
+          >
+            <div className="flex gap-4 p-5">
+              <img
+                src={m.img}
+                alt={m.title}
+                className="w-[72px] h-[72px] rounded-xl object-cover flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start gap-2">
+                  <h3 className="font-display text-lg italic text-foreground leading-snug">{m.title}</h3>
+                  <span className="font-mono text-[11px] text-muted-foreground whitespace-nowrap flex-shrink-0 mt-0.5">{m.dur}</span>
                 </div>
-              ) : (
-                <button
-                  onClick={() => setPlaying(m.id)}
-                  className="w-[110px] h-[62px] rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-center active:scale-[0.97]"
-                >
-                  <div className="w-0 h-0 border-t-[9px] border-t-transparent border-b-[9px] border-b-transparent border-l-[15px] border-l-primary ml-1" />
-                </button>
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-start gap-1.5">
-                <h3 className="font-display text-[17px] italic text-foreground leading-snug">
-                  {m.title}
-                </h3>
-                <span className="font-mono text-[11px] text-muted-foreground whitespace-nowrap flex-shrink-0">
-                  {m.dur}
-                </span>
-              </div>
-              <p className="font-mono text-xs text-primary mt-0.5 mb-1">
-                {m.teacher}
-              </p>
-              <p className="font-display text-xs italic text-muted-foreground leading-snug mb-2">
-                {m.desc}
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {m.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular"
-                  >
-                    {t}
-                  </span>
-                ))}
+                <p className="font-mono text-xs text-primary mt-0.5 mb-2">{m.teacher}</p>
+                <p className="font-body text-[13px] text-muted-foreground leading-relaxed whitespace-pre-line">{m.desc}</p>
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {m.tags.map((t) => (
+                    <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">{t}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
-      ))}
+            <div className="px-5 pb-5">
+              <a
+                href={m.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-btn flex items-center justify-center gap-2 w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground hover:opacity-90 active:scale-[0.97] transition-all"
+              >
+                watch meditation
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Footer note */}
+      <p className="font-body text-xs text-muted-foreground/60 text-center leading-relaxed mt-6 max-w-md mx-auto">
+        These meditations are shared from publicly available teachings by respected mindfulness teachers.
+        Links open on their original platforms to ensure proper attribution and licensing.
+      </p>
     </div>
   );
 }
@@ -312,7 +328,7 @@ export default function BreathworkPage() {
   const titles = {
     breathwork: "Breathwork & Regulation",
     somatic: "Somatic Practices",
-    meditations: "Meditations",
+    meditations: "Meditation Library",
   };
 
   const icons = {
