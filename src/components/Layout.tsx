@@ -41,6 +41,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const info = getCycleInfo(getLastPeriodStart());
   const isMobile = useIsMobile();
   const keyboardVisible = useKeyboardVisible();
+  const [signalOpen, setSignalOpen] = useState(false);
+  const [signalInitialPrompt, setSignalInitialPrompt] = useState<string | undefined>();
+
+  const openSignal = (prompt?: string) => {
+    setSignalInitialPrompt(prompt);
+    setSignalOpen(true);
+  };
 
   // Swipe navigation between mobile tabs
   const mainRef = useRef<HTMLDivElement>(null);
