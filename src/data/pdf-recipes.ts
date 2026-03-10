@@ -117,6 +117,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "mushroom-risotto-cleanse",
     name: "Creamy Mushroom Risotto",
+    image: "/images/recipes/meals/creamy-mushroom-risotto.png",
     phase: "follicular",
     serves: 3,
     prepTime: "35 min",
