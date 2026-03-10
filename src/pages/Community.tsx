@@ -9,6 +9,8 @@ import ChatRoom from "@/components/community/ChatRoom";
 import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
 import { haptic } from "@/hooks/use-mobile";
+import SignalContextChips from "@/components/signal/SignalContextChips";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const TABS = [
   { id: "discover", label: "Discover" },
