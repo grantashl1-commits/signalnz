@@ -117,8 +117,9 @@ export default function MemoryVault() {
       )}
 
       {/* Categories */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
       {VAULT_CATEGORIES.map((cat) => (
-        <div key={cat.key}>
+        <div key={cat.key} className="min-w-0">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <VaultDrawer label={cat.label} />
@@ -188,6 +189,7 @@ export default function MemoryVault() {
           )}
         </div>
       ))}
+      </div>
     </div>
   );
 }

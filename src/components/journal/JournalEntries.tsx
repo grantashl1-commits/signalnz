@@ -142,7 +142,7 @@ function JournalLineart({ className = "" }: { className?: string }) {
 // ── Entry Type Picker ─────────────────────────────────────────
 function EntryTypePicker({ onSelect, onCancel }: { onSelect: (type: string) => void; onCancel: () => void }) {
   return (
-    <div className="pb-10 relative">
+    <div className="pb-10 relative max-w-4xl mx-auto">
       <InkParticles />
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -155,7 +155,7 @@ function EntryTypePicker({ onSelect, onCancel }: { onSelect: (type: string) => v
         </button>
       </div>
       <JournalLineart className="w-full h-5 mb-4" />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {ENTRY_TYPES.map((t, i) => {
           const tone = EMOTIONAL_TONES[t.tone];
           return (
@@ -218,7 +218,7 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
   };
 
   return (
-    <div className="space-y-3 pb-10 relative">
+    <div className="space-y-3 pb-10 relative max-w-2xl mx-auto">
       <InkParticles />
       <div className="flex items-center justify-between mb-2">
         <div>
@@ -303,7 +303,7 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
   );
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 max-w-3xl mx-auto">
       <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back to entries</button>
       <h2 className="font-display text-2xl font-bold italic text-foreground mb-0.5">{isMilestone ? ai.milestone_title || "Growth Reflection" : "Soul Analysis"}</h2>
       <p className="font-mono text-xs text-muted-foreground mb-5">{entry.date}</p>
@@ -565,7 +565,7 @@ export default function JournalEntries({
             </div>
             <div className="flex-1 h-px bg-border/40" />
           </div>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {group.entries.map((e) => (
               <EntryCard
                 key={e.id}

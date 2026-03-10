@@ -61,7 +61,7 @@ export default function JournalPage() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto relative">
+    <div className="w-full max-w-[1400px] mx-auto relative">
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.03]">
         <CymatiSketch phase={info.phase} size={300} opacity={1} className="md:hidden" />
@@ -74,17 +74,17 @@ export default function JournalPage() {
         <h1 className="font-display text-[1.5rem] md:text-3xl font-bold italic text-foreground mt-0.5">
           {tab === "entries" ? "My Journal" : tab === "activities" ? "Activities" : tab === "vault" ? "Memory Vault" : "Dream Studio"}
         </h1>
-        <p className="font-body text-xs text-muted-foreground mt-0.5">{TAB_SUBTITLES[tab]}</p>
+        <p className="font-body text-xs md:text-sm text-muted-foreground mt-0.5 max-w-xl">{TAB_SUBTITLES[tab]}</p>
       </div>
 
       {/* Sub-nav pill */}
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-        <div className="flex bg-muted/60 rounded-2xl p-1">
+        <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => { haptic("light"); setTab(t.id); }}
-              className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[12px] md:text-[13px] transition-all ${
+              className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[12px] md:text-[13px] transition-all whitespace-nowrap min-w-0 ${
                 tab === t.id
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground italic"

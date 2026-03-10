@@ -352,9 +352,9 @@ export default function JournalActivities() {
       </div>
 
       {/* Activity cards */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {filtered.map((a, i) => (
-          <motion.div key={a.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm p-5 group hover:shadow-md transition-shadow">
+          <motion.div key={a.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm p-5 group hover:shadow-md transition-shadow flex flex-col">
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">
@@ -374,7 +374,7 @@ export default function JournalActivities() {
             </div>
             <button
               onClick={() => { setActive(a); haptic("medium"); }}
-              className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-2"
+              className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-auto pt-2"
             >
               Begin activity
             </button>
