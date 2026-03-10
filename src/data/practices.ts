@@ -147,7 +147,6 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
 // Steps and narrations are sourced from somatic-scripts.ts.
 // This array holds the PracticeConfig entries for the player system.
 
-import { somaticScripts } from "./somatic-scripts";
 
 function buildSomaticPractices(): PracticeConfig[] {
   return somaticScripts.map((script) => ({
