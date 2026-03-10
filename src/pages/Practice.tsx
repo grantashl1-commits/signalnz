@@ -422,6 +422,14 @@ export default function PracticePage() {
         onClose={() => setShowRitualPicker(false)}
         onAdded={refreshHabits}
       />
+
+      {/* Library picker for nutrition / movement */}
+      <HabitLibraryPicker
+        open={showLibraryPicker}
+        category={libraryPickerCategory}
+        onClose={() => setShowLibraryPicker(false)}
+        onAdded={refreshHabits}
+      />
     </div>
   );
 }
