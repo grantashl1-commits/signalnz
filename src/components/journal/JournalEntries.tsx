@@ -303,7 +303,7 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
   );
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 max-w-3xl mx-auto">
       <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back to entries</button>
       <h2 className="font-display text-2xl font-bold italic text-foreground mb-0.5">{isMilestone ? ai.milestone_title || "Growth Reflection" : "Soul Analysis"}</h2>
       <p className="font-mono text-xs text-muted-foreground mb-5">{entry.date}</p>
