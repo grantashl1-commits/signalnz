@@ -213,7 +213,7 @@ export default function PracticePage() {
           <button
             onClick={() => {
               haptic("light");
-              openPicker("self-care");
+              setShowCategoryChooser(true);
             }}
             className="touch-btn flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 font-hand text-xs font-bold text-muted-foreground"
           >
