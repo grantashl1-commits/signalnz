@@ -114,7 +114,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
             {!hasEverGenerated ? (
               <>
-                <h2 className="font-display text-3xl md:text-4xl font-extrabold text-primary-foreground leading-tight">
+                <h2 className="font-display text-[2.5rem] md:text-[3rem] font-extrabold text-primary-foreground leading-tight">
                   Give me a signal
                 </h2>
                 <p className="font-body text-sm text-primary-foreground/60 mt-3 leading-relaxed max-w-md">
