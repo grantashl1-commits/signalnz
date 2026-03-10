@@ -147,7 +147,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
           {/* Content area — cream card inside purple */}
           <div className="relative z-10 flex-1 overflow-y-auto px-6 pb-4">
-            <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/30 p-6" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.1)" }}>
+            <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-7" style={{ boxShadow: "var(--shadow-elevated)" }}>
               {/* Loading state */}
               {loading && (
                 <motion.div
