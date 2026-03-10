@@ -857,6 +857,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chickpea-pumpkin-pasta",
     name: "Chickpea & Pumpkin Pasta",
+    image: "/images/recipes/meals/chickpea-pumpkin-pasta.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
