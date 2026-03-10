@@ -72,7 +72,9 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           onClick={(e) => e.stopPropagation()}
           className="relative w-full max-w-2xl max-h-[85vh] mx-4 rounded-[28px] overflow-hidden flex flex-col"
-          style={{ backgroundColor: "hsl(var(--primary))" }}
+          style={{
+            background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 38%) 100%)",
+          }}
         >
           {/* Atmospheric background */}
           <DotPattern color="hsl(30 33% 98%)" opacity={0.06} />
