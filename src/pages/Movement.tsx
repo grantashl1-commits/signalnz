@@ -501,6 +501,7 @@ export default function MovementPage() {
         onClose={() => setDrawerExercise(null)}
         phase={info.phase}
       />
+      </ContentSection>
     </div>
   );
 }
