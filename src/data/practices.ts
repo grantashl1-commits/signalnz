@@ -1,5 +1,7 @@
 // ── Practice Data Model ─────────────────────────────────────
 
+import { somaticScripts } from "./somatic-scripts";
+
 export type PracticeMode = "timed-breath" | "narrated-sequence";
 export type PracticeCategory = "breathwork" | "somatic" | "meditation";
 export type AudioProvider = "elevenlabs" | "manual-upload";
