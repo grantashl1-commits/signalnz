@@ -404,6 +404,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Almond butter provides magnesium and protein. Chia seeds add omega-3 for hormone support in the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/secret-centre-chocolate-cookies.png",
   },
   {
     id: "choc-hazelnut-freezer-pie",
