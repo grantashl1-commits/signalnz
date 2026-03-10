@@ -224,6 +224,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "beetroot-patties",
     name: "Beetroot & Black Bean Patties",
+    image: "/images/recipes/meals/beetroot-black-bean-patties.png",
     phase: "luteal",
     serves: 4,
     prepTime: "50 min",
