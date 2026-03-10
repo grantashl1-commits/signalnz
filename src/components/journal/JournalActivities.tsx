@@ -374,7 +374,7 @@ export default function JournalActivities() {
             </div>
             <button
               onClick={() => { setActive(a); haptic("medium"); }}
-              className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-2"
+              className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-auto pt-2"
             >
               Begin activity
             </button>
