@@ -108,6 +108,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Dates and cashews provide iron and magnesium — the key luteal minerals for reducing PMS symptoms.",
     category: "baking",
+    image: "/images/recipes/baking/healthy-caramel-slice.png",
   },
   {
     id: "choc-peanut-butter-balls",
