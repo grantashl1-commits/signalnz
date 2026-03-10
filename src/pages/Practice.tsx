@@ -56,7 +56,6 @@ export default function PracticePage() {
     const ritual = SELF_CARE_RITUALS.find(r => r.id === ritualId);
     if (!ritual) return;
     if (habits.some(h => h.name === ritual.name)) return;
-    const { addHabit: addH } = require("@/data/self-care-rituals");
     const habit: Habit = {
       id: `selfcare-${ritual.id}-${Date.now()}`,
       name: ritual.name,
@@ -66,7 +65,7 @@ export default function PracticePage() {
       notes: ritual.notesPlaceholder,
       createdAt: new Date().toISOString(),
     };
-    addH(habit);
+    addHabit(habit);
     refreshHabits();
   };
 
