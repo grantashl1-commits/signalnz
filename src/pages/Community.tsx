@@ -22,6 +22,7 @@ const TABS = [
 
 export default function CommunityPage() {
   const [section, setSection] = useState("discover");
+  const { openSignal } = useSignalPanel();
   const [joined, setJoined] = useState<string[]>([]);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [locationEnabled, setLocationEnabled] = useState(false);

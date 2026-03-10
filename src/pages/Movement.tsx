@@ -30,6 +30,7 @@ const cardVariant = {
 
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
+  const { openSignal } = useSignalPanel();
   const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "calendar" | "progress">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");

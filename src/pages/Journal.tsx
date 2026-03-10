@@ -81,7 +81,15 @@ export default function JournalPage() {
         <p className="font-body text-xs md:text-sm text-muted-foreground mt-0.5 max-w-xl">{TAB_SUBTITLES[tab]}</p>
       </div>
 
-      {/* Sub-nav pill */}
+      {/* Signal context chips */}
+      <div className="mb-4">
+        <SignalContextChips
+          pageContext={tab === "dream" ? "dream" : "journal"}
+          onOpenSignal={(prompt) => openSignal(prompt, tab === "dream" ? "dream" : "journal")}
+          compact
+        />
+      </div>
+
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">
           {TABS.map((t) => (
