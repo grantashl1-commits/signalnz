@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.tts-generate]
 verify_jwt = false
+
+[functions.dream-image-generate]
+verify_jwt = false
