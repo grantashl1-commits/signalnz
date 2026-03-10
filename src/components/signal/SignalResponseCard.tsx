@@ -136,7 +136,7 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           transition={sectionDelay(6)}
         >
           <p className="font-hand text-xs font-bold text-muted-foreground mb-2.5">
-            Continue exploring
+            Go deeper
           </p>
           <div className="flex flex-wrap gap-2">
             {response.followUps.map((fu, i) => (
