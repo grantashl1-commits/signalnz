@@ -12,6 +12,7 @@ import { getHabits, getHabitLog, toggleHabitForDate, getWeekHabitData, HABIT_CAT
 import { haptic } from "@/hooks/use-mobile";
 import SignalHomeSection from "@/components/signal/SignalHomeSection";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
+import { AtmosphericHero, ContentSection, SectionDivider, AnimatedCard } from "@/components/AtmosphericSection";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
@@ -49,10 +50,10 @@ const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: strin
 };
 
 const PHASE_POETRY: Record<Phase, string> = {
-  menstrual: "rest is its own kind of wisdom.",
-  follicular: "your body is rising into its power phase.",
-  ovulatory: "you are transmitting at full signal.",
-  luteal: "the harvest is rich. honour the complexity.",
+  menstrual: "Rest is its own kind of wisdom.",
+  follicular: "Your body is rising into its power phase.",
+  ovulatory: "You are transmitting at full signal.",
+  luteal: "The harvest is rich. Honour the complexity.",
 };
 
 const cardVariant = {
@@ -75,7 +76,6 @@ export default function HomePage({ userName }: { userName?: string }) {
   const todayStr = new Date().toISOString().split("T")[0];
   const [seedsTakenToday, setSeedsTakenToday] = useState(getSeedsTaken(todayStr));
 
-  // Habits
   const habits = getHabits();
   const [habitLog, setHabitLog] = useState(getHabitLog(todayStr));
 
@@ -84,7 +84,7 @@ export default function HomePage({ userName }: { userName?: string }) {
   const lunchMeal = todayMeals?.find((m) => m.type === "Lunch");
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "good morning" : hour < 17 ? "good afternoon" : "good evening";
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   const handleCheckin = (state: string) => {
     haptic("medium");
@@ -118,52 +118,95 @@ export default function HomePage({ userName }: { userName?: string }) {
   const habitsCompleted = Object.values(habitLog).filter(Boolean).length;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
-      {/* Background decorations */}
-      <div className="absolute top-0 right-0 -translate-y-4 md:-translate-y-8 translate-x-4 md:translate-x-8 pointer-events-none">
-        <SacredSpiral size={120} opacity={0.15} className="md:hidden" />
-        <SacredSpiral size={180} opacity={0.2} className="hidden md:block" />
-      </div>
-      <div className="absolute bottom-0 left-0 translate-y-16 md:translate-y-20 -translate-x-6 md:-translate-x-10 pointer-events-none">
-        <RootSystem size={180} opacity={0.05} className="md:hidden" />
-        <RootSystem size={250} opacity={0.06} className="hidden md:block" />
-      </div>
+    <div className="relative">
+      {/* ═══ HERO — atmospheric purple section ═══ */}
+      <AtmosphericHero size="lg">
+        <div className="text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/60 mb-4"
+          >
+            {greeting}
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="font-display text-[3rem] md:text-[4.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-4"
+          >
+            {userName || "you"}.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            className="font-display text-lg md:text-xl italic text-primary-foreground/80 max-w-md mx-auto mb-8"
+          >
+            {PHASE_POETRY[info.phase]}
+          </motion.p>
 
-      {/* Greeting */}
-      <div className="pt-2 md:pt-4">
-        <p className="font-hand text-base md:text-lg text-primary">{greeting},</p>
-        <h1 className="font-display text-[2.8rem] md:text-6xl font-bold italic text-foreground leading-none mt-1">
-          {userName || "you"}.
-        </h1>
-        <HandUnderline width={60} className="mt-1 md:hidden" />
-        <HandUnderline width={80} className="mt-1 hidden md:block" />
-        <p className="font-display text-base md:text-lg italic text-muted-foreground mt-2 md:mt-3">
-          {PHASE_POETRY[info.phase]}
+          {/* Primary CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+            className="flex flex-wrap items-center justify-center gap-3"
+          >
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => { haptic("medium"); openSignal("Give me a signal for today", "home"); }}
+              className="flex items-center gap-2.5 px-8 py-4 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-lg hover:shadow-xl transition-shadow"
+            >
+              <WildStar size={16} color="hsl(var(--primary))" />
+              Give me a signal
+            </motion.button>
+          </motion.div>
+
+          {/* Phase indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.65, duration: 0.4 }}
+            className="flex items-center justify-center gap-2 mt-8"
+          >
+            <span className="font-body text-xs text-primary-foreground/50 uppercase tracking-wider">
+              Day {info.cycleDay} · {info.name}
+            </span>
+          </motion.div>
+        </div>
+      </AtmosphericHero>
+
+      {/* ═══ DAILY SIGNAL — cream content section ═══ */}
+      <ContentSection className="px-5 md:px-4">
+        <AnimatedCard index={0}>
+          <DailySignalCard />
+        </AnimatedCard>
+        <PeriodDueReminder />
+      </ContentSection>
+
+      {/* ═══ GIVE ME A SIGNAL — editorial section ═══ */}
+      <ContentSection className="px-5 md:px-4">
+        <SignalHomeSection onOpenSignal={(prompt) => openSignal(prompt, "home")} />
+      </ContentSection>
+
+      <SectionDivider />
+
+      {/* ═══ TODAY'S WORLD — cream cards ═══ */}
+      <ContentSection className="px-5 md:px-4">
+        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">
+          Your day at a glance
         </p>
-
-        <BotanicalSprig width={200} className="mt-3 md:mt-4 mx-auto md:hidden" />
-        <BotanicalSprig width={280} className="mt-4 mx-auto hidden md:block" />
-      </div>
-
-      {/* Daily Signal */}
-      <DailySignalCard />
-
-      {/* Period Due Reminder */}
-      <PeriodDueReminder />
-
-      {/* Give me a signal */}
-      <SignalHomeSection onOpenSignal={(prompt) => openSignal(prompt, "home")} />
-
-      {/* Today Cards */}
-      <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { path: "/cycle", label: "cycle", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
-            { path: "/nutrition", label: "nutrition", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
-            { path: "/movement", label: "movement", icon: Dumbbell, title: todayWorkout?.name || "Today's workout", desc: `${todayWorkout?.duration || ""} · ${todayWorkout?.equipment || ""}` },
-            { path: "/breathwork", label: "nervous system", icon: Wind, title: "Coherent Breathing", desc: focus.nervous },
-            { path: "/journal", label: "journal", icon: PenLine, title: "My Journal", desc: "Reflect, track your mood, and receive AI soul analysis." },
-            { path: "/community", label: "community", icon: Users, title: "Community", desc: "Find your neighbours. Share your skills. Build the village." },
+            { path: "/cycle", label: "Cycle", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
+            { path: "/nutrition", label: "Nourish", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
+            { path: "/movement", label: "Move", icon: Dumbbell, title: todayWorkout?.name || "Today's workout", desc: `${todayWorkout?.duration || ""} · ${todayWorkout?.equipment || ""}` },
+            { path: "/breathwork", label: "Mindful", icon: Wind, title: "Coherent Breathing", desc: focus.nervous },
+            { path: "/journal", label: "Journal", icon: PenLine, title: "My Journal", desc: "Reflect, track your mood, and receive AI soul analysis." },
+            { path: "/community", label: "Community", icon: Users, title: "Community", desc: "Find your neighbours. Share your skills. Build the village." },
           ].map((tile, i) => (
             <motion.div
               key={tile.path}
@@ -173,107 +216,110 @@ export default function HomePage({ userName }: { userName?: string }) {
               variants={cardVariant}
               whileTap={{ scale: 0.98 }}
             >
-              <Link to={tile.path} className="frequency-panel block p-4 md:p-5 h-full group relative overflow-hidden touch-card" style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}>
-                <div className="absolute top-0 right-0 w-12 h-12 md:w-16 md:h-16 -translate-y-2 translate-x-2 pointer-events-none opacity-[0.08]">
-                  <CymatiSketch phase={info.phase} size={48} opacity={1} />
+              <Link to={tile.path} className="block rounded-[20px] bg-card border border-border p-6 md:p-7 h-full group relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 touch-card" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+                    <tile.icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{tile.label}</span>
                 </div>
-                <p className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>{tile.label}</p>
-                <h3 className="font-display text-base md:text-lg italic text-foreground leading-tight mt-1">{tile.title}</h3>
-                <p className="font-body text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{tile.desc}</p>
+                <h3 className="font-display text-lg md:text-xl font-bold text-foreground leading-tight mt-2">{tile.title}</h3>
+                <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-2">{tile.desc}</p>
               </Link>
             </motion.div>
           ))}
         </div>
-      </section>
+      </ContentSection>
 
-      {/* Daily Habits */}
+      {/* ═══ DAILY HABITS — atmospheric purple ═══ */}
       {habits.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <p className="font-hand text-sm font-bold text-primary">Daily habits</p>
-            <Link to="/my-practice" className="font-hand text-xs text-muted-foreground">
-              manage →
+        <AtmosphericHero size="sm" dotOpacity={0.05}>
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60">Daily Habits</p>
+            <Link to="/my-practice" className="font-body text-xs text-primary-foreground/50 hover:text-primary-foreground/80 transition-colors">
+              manage
             </Link>
           </div>
-          <div className="card-warm p-4">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm p-5 md:p-6 border border-border/50" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
+            <div className="flex items-center gap-2 mb-4">
               <Heart className="h-4 w-4 text-bloom" />
               <span className="font-mono text-sm text-foreground">{habitsCompleted}/{habits.length}</span>
               <span className="font-body text-xs text-muted-foreground">complete today</span>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {habits.slice(0, 6).map(habit => {
                 const done = habitLog[habit.id] || false;
-                const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category);
                 const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
                 return (
                   <button
                     key={habit.id}
                     onClick={() => handleHabitToggle(habit.id)}
-                    className="touch-btn w-full flex items-center gap-2.5 py-1.5 text-left"
+                    className="touch-btn w-full flex items-center gap-2.5 py-2 text-left"
                   >
-                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                      done ? "border-bloom bg-bloom/20" : "border-border"
-                    }`}>
+                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${done ? "border-bloom bg-bloom/20" : "border-border"}`}>
                       {done && <WildStar size={10} />}
                     </div>
                     <div className={`h-2 w-2 rounded-full flex-shrink-0 ${dotClass}`} />
-                    <span className={`font-body text-xs ${done ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                    <span className={`font-body text-sm ${done ? "line-through text-muted-foreground" : "text-foreground"}`}>
                       {habit.name}
                     </span>
                   </button>
                 );
               })}
               {habits.length > 6 && (
-                <Link to="/my-practice" className="block font-hand text-xs text-muted-foreground text-center mt-1">
-                  +{habits.length - 6} more →
+                <Link to="/my-practice" className="block font-body text-xs text-muted-foreground text-center mt-2">
+                  +{habits.length - 6} more
                 </Link>
               )}
             </div>
           </div>
-        </section>
+        </AtmosphericHero>
       )}
 
-      {/* Daily Check-in */}
-      <section className="card-warm p-5 md:p-6">
-        <p className="font-hand text-base md:text-lg text-primary mb-3 md:mb-4">How are you today?</p>
-        <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
-          {CHECKIN_STATES.map((state) => {
-            const selected = checkin === state.label;
-            return (
-              <button
-                key={state.label}
-                onClick={() => handleCheckin(state.label)}
-                className={`touch-btn flex flex-col items-center gap-1 rounded-2xl p-2.5 md:p-3 w-14 md:w-16 min-h-[52px] ${
-                  selected
-                    ? "ring-2 ring-primary scale-110 bg-secondary shadow-md"
-                    : "bg-secondary/50 active:bg-secondary/80"
-                }`}
-              >
-                <div className="h-11 w-11 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
-                  <SeedGeometry size={40} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
-                </div>
-                <span className="font-hand text-[10px] md:text-xs font-bold text-foreground">{state.label}</span>
-              </button>
-            );
-          })}
-        </div>
-        {checkin && (
-          <div className="flex items-center justify-center gap-3 mt-3 md:mt-4">
-            <span className="font-hand text-sm text-primary">Logged: {checkin.toLowerCase()}</span>
-            {streak > 1 && (
-              <span className="flex items-center gap-1 font-hand text-sm text-muted-foreground">
-                <WildStar size={14} /> {streak}-day streak
-              </span>
-            )}
+      {/* ═══ CHECK-IN — cream section ═══ */}
+      <ContentSection className="px-5 md:px-4">
+        <div className="rounded-[20px] bg-card border border-border p-6 md:p-8" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
+          <p className="font-display text-xl md:text-2xl font-bold text-foreground mb-5 text-center">How are you today?</p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {CHECKIN_STATES.map((state) => {
+              const selected = checkin === state.label;
+              return (
+                <button
+                  key={state.label}
+                  onClick={() => handleCheckin(state.label)}
+                  className={`touch-btn flex flex-col items-center gap-1.5 rounded-2xl p-3 w-16 md:w-20 min-h-[60px] transition-all ${
+                    selected
+                      ? "ring-2 ring-primary scale-110 bg-secondary shadow-md"
+                      : "bg-secondary/50 active:bg-secondary/80"
+                  }`}
+                >
+                  <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
+                    <SeedGeometry size={40} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
+                  </div>
+                  <span className="font-body text-xs font-medium text-foreground">{state.label}</span>
+                </button>
+              );
+            })}
           </div>
-        )}
-      </section>
+          {checkin && (
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <span className="font-body text-sm text-primary">Logged: {checkin.toLowerCase()}</span>
+              {streak > 1 && (
+                <span className="flex items-center gap-1 font-body text-sm text-muted-foreground">
+                  <WildStar size={14} /> {streak}-day streak
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </ContentSection>
 
-      {/* Week Snapshot */}
-      <section>
-        <p className="font-hand text-sm font-bold text-primary mb-3">This week</p>
-        <div className="scroll-snap-x flex gap-2 pb-2 -mx-1 px-1">
+      <SectionDivider />
+
+      {/* ═══ WEEK SNAPSHOT ═══ */}
+      <ContentSection className="px-5 md:px-4">
+        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-4 text-center">This Week</p>
+        <div className="scroll-snap-x flex gap-2 pb-2 justify-center">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
             const isToday = dateStr === today.toISOString().split("T")[0];
@@ -285,33 +331,33 @@ export default function HomePage({ userName }: { userName?: string }) {
             return (
               <div
                 key={i}
-                className={`scroll-snap-item flex-shrink-0 w-16 rounded-2xl p-2.5 text-center transition-all ${
-                  isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/40"
+                className={`scroll-snap-item flex-shrink-0 w-16 rounded-2xl p-3 text-center transition-all ${
+                  isToday ? "bg-card ring-1 ring-primary/30 shadow-sm border border-border" : "bg-secondary/40"
                 }`}
               >
                 <p className="font-body text-[10px] text-muted-foreground">
                   {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i]}
                 </p>
                 <p className="font-mono text-sm text-foreground mt-0.5">{date.getDate()}</p>
-                <div className={`mx-auto mt-1 h-2 w-2 rounded-full`} style={{ backgroundColor: `hsl(var(--phase-${phase}))` }} />
+                <div className="mx-auto mt-1.5 h-2 w-2 rounded-full" style={{ backgroundColor: `hsl(var(--phase-${phase}))` }} />
                 {checkedIn && <div className="mx-auto mt-0.5 h-1 w-1 rounded-full bg-primary/60" />}
                 <p className="font-mono text-[8px] text-muted-foreground mt-0.5">D{cycleDay}</p>
               </div>
             );
           })}
         </div>
-      </section>
+      </ContentSection>
 
-      {/* Weekly habit grid (compact) */}
+      {/* ═══ HABIT GRID ═══ */}
       {habits.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <p className="font-hand text-sm font-bold text-primary">Habit grid</p>
-            <Link to="/my-practice" className="font-hand text-xs text-muted-foreground">
-              full view →
+        <ContentSection className="px-5 md:px-4">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Habit Grid</p>
+            <Link to="/my-practice" className="font-body text-xs text-muted-foreground">
+              full view
             </Link>
           </div>
-          <div className="card-warm p-3 overflow-x-auto">
+          <div className="rounded-[20px] bg-card border border-border p-4 overflow-x-auto" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
             <div className="grid gap-0.5" style={{ gridTemplateColumns: `100px repeat(7, 1fr)`, minWidth: 360 }}>
               <div />
               {weekDays.map((d, i) => {
@@ -334,9 +380,9 @@ export default function HomePage({ userName }: { userName?: string }) {
                     </div>
                     {weekHabitData.map((day, i) => {
                       const done = day.log[habit.id] || false;
-                      const isToday = day.date === todayStr;
+                      const isDayToday = day.date === todayStr;
                       return (
-                        <div key={i} className={`flex items-center justify-center py-0.5 ${isToday ? "bg-primary/10 rounded" : ""}`}>
+                        <div key={i} className={`flex items-center justify-center py-0.5 ${isDayToday ? "bg-primary/10 rounded" : ""}`}>
                           {done ? (
                             <div className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
                           ) : (
@@ -350,19 +396,19 @@ export default function HomePage({ userName }: { userName?: string }) {
               })}
             </div>
           </div>
-        </section>
+        </ContentSection>
       )}
 
-      {/* Quick Wins */}
-      <section>
-        <p className="font-hand text-sm font-bold text-primary mb-3">Quick actions</p>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="card-warm p-4">
-            <div className="flex items-center gap-2 mb-2">
+      {/* ═══ QUICK ACTIONS — atmospheric section ═══ */}
+      <AtmosphericHero size="sm" dotOpacity={0.05}>
+        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60 mb-5 text-center">Quick Actions</p>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
               <Droplets className="h-4 w-4 text-phase-follicular" />
-              <span className="font-hand text-sm font-bold text-phase-follicular">Hydration</span>
+              <span className="font-body text-xs font-medium text-phase-follicular uppercase tracking-wider">Hydration</span>
             </div>
-            <div className="flex gap-1 mb-2">
+            <div className="flex gap-1 mb-3">
               {Array.from({ length: 8 }, (_, i) => (
                 <div key={i} className={`h-4 w-4 rounded-full border transition-all ${i < water ? "bg-phase-follicular/40 border-phase-follicular/60" : "border-border"}`} />
               ))}
@@ -375,69 +421,66 @@ export default function HomePage({ userName }: { userName?: string }) {
             </div>
           </div>
 
-          <div className="card-warm p-4">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
               <Sprout className="h-4 w-4 text-sage-mist" />
-              <span className="font-hand text-sm font-bold text-sage-mist">Seed cycling</span>
+              <span className="font-body text-xs font-medium text-sage-mist uppercase tracking-wider">Seeds</span>
             </div>
-            <p className="font-body text-xs text-foreground">{seedInfo.seeds}</p>
-            <p className="font-mono text-[9px] text-muted-foreground mt-0.5">{seedInfo.phase} · D{info.cycleDay}</p>
+            <p className="font-body text-sm text-foreground">{seedInfo.seeds}</p>
+            <p className="font-mono text-[9px] text-muted-foreground mt-1">{seedInfo.phase} · D{info.cycleDay}</p>
             {!seedsTakenToday && (
-              <label className="flex items-center gap-2 mt-2 cursor-pointer">
+              <label className="flex items-center gap-2 mt-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={seedsTakenToday}
                   onChange={(e) => { haptic("light"); setSeedsTakenToday(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }}
                   className="rounded border-border text-primary focus:ring-primary h-4 w-4"
                 />
-                <span className="font-hand text-xs text-muted-foreground">Seeds today?</span>
+                <span className="font-body text-xs text-muted-foreground">Seeds today?</span>
               </label>
             )}
             {seedsTakenToday && (
-              <p className="font-hand text-xs text-phase-follicular mt-2">✓ Seeds taken.</p>
+              <p className="font-body text-xs text-phase-follicular mt-2">Seeds taken</p>
             )}
           </div>
 
-          <div className="card-warm p-4">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
               <Clock className="h-4 w-4 text-lavender-dust" />
-              <span className="font-hand text-sm font-bold text-lavender-dust">Wind-down</span>
+              <span className="font-body text-xs font-medium text-lavender-dust uppercase tracking-wider">Wind-down</span>
             </div>
-            <p className="font-body text-xs text-muted-foreground">Evening breathwork at 8pm.</p>
+            <p className="font-body text-sm text-muted-foreground">Evening breathwork at 8pm.</p>
           </div>
         </div>
-      </section>
+      </AtmosphericHero>
 
-      {/* Today's Focus */}
-      <section>
-        <p className="font-hand text-sm font-bold text-primary mb-3">Today's focus</p>
-        <div className="space-y-2">
+      {/* ═══ TODAY'S FOCUS — cream section ═══ */}
+      <ContentSection className="px-5 md:px-4">
+        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">Today's Focus</p>
+        <div className="space-y-3 max-w-2xl mx-auto">
           {[
-            { icon: Salad, label: "nutrition", text: focus.nutrition },
-            { icon: Dumbbell, label: "movement", text: focus.movement },
-            { icon: Wind, label: "nervous system", text: focus.nervous },
-            { icon: Moon, label: "cycle", text: focus.cycle },
+            { icon: Salad, label: "Nutrition", text: focus.nutrition },
+            { icon: Dumbbell, label: "Movement", text: focus.movement },
+            { icon: Wind, label: "Nervous System", text: focus.nervous },
+            { icon: Moon, label: "Cycle", text: focus.cycle },
           ].map((item, i) => (
-            <motion.div
-              key={item.label}
-              custom={i}
-              initial="hidden"
-              animate="visible"
-              variants={cardVariant}
-              className="frequency-panel flex items-start gap-3 md:gap-4 p-4"
-              style={{ "--panel-color": `hsl(var(--phase-${info.phase}))` } as React.CSSProperties}
-            >
-              <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary">
-                <item.icon className="h-4 w-4 text-muted-foreground" />
+            <AnimatedCard key={item.label} index={i}>
+              <div className="rounded-[20px] bg-card border border-border p-5 md:p-6 flex items-start gap-4" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
+                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary">
+                  <item.icon className="h-4 w-4 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary font-medium">{item.label}</span>
+                  <p className="font-body text-sm text-foreground mt-1.5 leading-relaxed">{item.text}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>{item.label}</span>
-                <p className="font-body text-sm text-foreground/80 mt-1 leading-relaxed">{item.text}</p>
-              </div>
-            </motion.div>
+            </AnimatedCard>
           ))}
         </div>
-      </section>
+      </ContentSection>
+
+      {/* Bottom breathing room */}
+      <div className="h-8 md:h-12" />
     </div>
   );
 }
