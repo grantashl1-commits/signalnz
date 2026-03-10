@@ -1272,6 +1272,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "moroccan-tofu-pizza",
     name: "Moroccan Tofu Pizza",
+    image: "/images/recipes/meals/moroccan-tofu-pizza.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "30 min",
