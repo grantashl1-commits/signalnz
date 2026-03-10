@@ -9,11 +9,14 @@ import {
   VolumeX,
   Volume2,
   X,
+  Loader2,
 } from "lucide-react";
 import type { PracticeConfig, PracticeStep } from "@/data/practices";
 import { formatDuration } from "@/data/practices";
 import { useAudioGuide } from "./AudioGuide";
 import { useSpeechGuide } from "@/hooks/useSpeechGuide";
+import { useElevenLabsTTS } from "@/hooks/useElevenLabsTTS";
+import { getSomaticScriptById } from "@/data/somatic-scripts";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
@@ -29,13 +32,34 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Get the TTS script for this somatic practice
+  const somaticScript = getSomaticScriptById(practice.id);
+  const ttsScript = somaticScript?.ttsScript || somaticScript?.narration || "";
+
+  // ElevenLabs TTS generation hook
+  const {
+    audioUrl: generatedAudioUrl,
+    loading: ttsLoading,
+    error: ttsError,
+    generate: generateTTS,
+    hasGeneratedAudio,
+  } = useElevenLabsTTS({
+    practiceId: practice.id,
+    ttsScript,
+    enabled: practice.category === "somatic" && !!ttsScript,
+  });
+
+  // Use generated audio URL if available, otherwise fall back to practice config
+  const effectiveAudioUrl = hasGeneratedAudio
+    ? generatedAudioUrl
+    : practice.audio.audioUrl;
+
   const { hasAudio, currentTime, seek, restart: audioRestart } = useAudioGuide({
-    audioUrl: practice.audio.audioUrl,
+    audioUrl: effectiveAudioUrl,
     enabled: practice.audio.enabled,
     muted,
     playing,
     onTimeUpdate: (t) => {
-      // Auto-highlight step based on audio time
       for (let i = steps.length - 1; i >= 0; i--) {
         const step = steps[i];
         if (step.startTimeSec !== undefined && t >= step.startTimeSec) {
