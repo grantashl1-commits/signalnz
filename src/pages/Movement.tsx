@@ -37,6 +37,7 @@ export default function MovementPage() {
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [showHR, setShowHR] = useState(false);
   const [trainingWeek, setTrainingWeekState] = useState(getTrainingWeek());
+  const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
 
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
