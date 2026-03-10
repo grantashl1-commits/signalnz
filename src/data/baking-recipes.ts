@@ -308,6 +308,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cacao provides magnesium for cramp relief. Warming custard is comforting during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/no-egg-chocolate-custard.png",
   },
   {
     id: "orange-choc-avocado-mousse",
