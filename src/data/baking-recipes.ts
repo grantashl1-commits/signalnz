@@ -356,6 +356,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Tofu provides plant protein and calcium. Peanut butter fuels rising energy during the follicular phase.",
     category: "baking",
+    image: "/images/recipes/baking/peanut-butter-mousse.png",
   },
   {
     id: "peanut-butter-rice-cups",
