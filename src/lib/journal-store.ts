@@ -89,21 +89,27 @@ export interface VaultEntry {
 
 export interface DreamElement {
   id: string;
-  type: "image" | "text" | "quote" | "goal" | "affirmation";
+  type: "image" | "text" | "quote" | "goal" | "affirmation" | "label" | "prompt";
   content: string;
   x: number;
   y: number;
   width: number;
   height: number;
-  zIndex?: number;
+  zIndex: number;
   linkedEntryId?: string;
   imageUrl?: string;
+  styleVariant?: string;
+  targetDate?: string;
+  status?: string;
 }
 
 export interface DreamBoard {
   id: string;
   title: string;
   elements: DreamElement[];
+  zoom: number;
+  panX: number;
+  panY: number;
   createdAt: number;
 }
 
