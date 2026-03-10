@@ -20,8 +20,8 @@ import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
-  follicular: "#7D9E82",
-  ovulatory: "#E8A030",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
   luteal: "#9B89B4",
 };
 

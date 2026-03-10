@@ -6,7 +6,7 @@ import { getAllSessions, type WorkoutSession } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<string, string> = {
-  menstrual: "#C4526E", follicular: "#7D9E82", ovulatory: "#E8A030", luteal: "#9B89B4",
+  menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
 };
 
 export default function MovementCalendar() {

@@ -165,8 +165,8 @@ export function HerbCluster({ size = 100, opacity = 0.3, color = SKETCH_COLOR, c
 // ─── CymatiSketch — hand-drawn cymatic patterns ─────
 const PHASE_SKETCH_COLORS: Record<Phase, string> = {
   menstrual: "#C4526E",
-  follicular: "#7D9E82",
-  ovulatory: "#E8A030",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
   luteal: "#9B89B4",
 };
 

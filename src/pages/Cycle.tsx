@@ -377,7 +377,7 @@ export default function CyclePage() {
                     {indicators.hasSymptoms && phase && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: PHASE_HEX[phase], opacity: 0.6 }} />}
                     {indicators.hasWeight && <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />}
                     {indicators.hasNotes && <div className="h-1 w-1 rounded-full bg-foreground/30" />}
-                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#E8A030" }} />}
+                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C47A8A" }} />}
                   </div>
                 </button>
               );

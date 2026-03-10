@@ -85,7 +85,7 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
   }, [phaseIndex, currentPhase.duration, technique.phases.length]);
 
   const scale = isInhale ? 1.0 : isExhale ? 0.6 : 0.8;
-  const phaseColor = PHASE_HEX[info.phase] || "#7D9E82";
+  const phaseColor = PHASE_HEX[info.phase] || "#5C4A9E";
 
   return (
     <AnimatePresence>
