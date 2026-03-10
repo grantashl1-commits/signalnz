@@ -23,6 +23,13 @@ export interface PlannedMeal {
   isLeftover?: boolean;
 }
 
+function findRecipeByName(name: string): { id: string; name: string } | undefined {
+  const lower = name.toLowerCase();
+  const match = ALL_RECIPES.find((r) => r.name.toLowerCase() === lower) ||
+    ALL_RECIPES.find((r) => lower.includes(r.name.toLowerCase()) || r.name.toLowerCase().includes(lower));
+  return match ? { id: match.id, name: match.name } : undefined;
+}
+
 export interface PlannedDay {
   date: string;
   dayName: string;
