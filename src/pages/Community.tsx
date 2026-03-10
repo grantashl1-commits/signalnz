@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { MOCK_GROUPS } from "@/data/community-data";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
