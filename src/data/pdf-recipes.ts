@@ -35,6 +35,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "buckwheat-bread-avocado",
     name: "Buckwheat Bread & Smashed Avocado",
+    image: "/images/recipes/meals/buckwheat-bread-smashed-avocado.png",
     phase: "follicular",
     serves: 1,
     prepTime: "90 min (incl. baking)",
