@@ -281,6 +281,7 @@ export const RECIPES: Recipe[] = [
   {
     id: "miso-tofu-soba",
     name: "Miso Tofu Soba Bowl",
+    image: "/images/recipes/meals/miso-tofu-soba-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
