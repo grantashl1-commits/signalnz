@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MOCK_NEARBY, type NearbyUser } from "@/data/community-data";
+import { HandDrawnLeaf, HandDrawnLock } from "@/components/BotanicalElements";
 
 function Avatar({ initials, size = 34, color = "hsl(var(--primary))", online }: { initials: string; size?: number; color?: string; online?: boolean }) {
   return (
@@ -23,9 +24,10 @@ function Avatar({ initials, size = 34, color = "hsl(var(--primary))", online }: 
 interface NearbyViewProps {
   locationEnabled: boolean;
   onRequestLocation: () => void;
+  onToggleLocation?: () => void;
 }
 
-export default function NearbyView({ locationEnabled, onRequestLocation }: NearbyViewProps) {
+export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation }: NearbyViewProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [connectSent, setConnectSent] = useState<string[]>([]);
   const [filterSuburb, setFilterSuburb] = useState("all");
@@ -49,19 +51,19 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
             </div>
           </div>
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
-            <div className="text-4xl mb-2.5">🌿</div>
-            <h3 className="font-display text-xl font-bold italic text-foreground mb-1.5 text-center">your neighbours are here.</h3>
+            <HandDrawnLeaf size={40} color="hsl(var(--primary))" className="mb-2.5" />
+            <h3 className="font-display text-xl font-bold italic text-foreground mb-1.5 text-center">Your neighbours are here.</h3>
             <p className="font-mono text-xs text-muted-foreground text-center mb-4 leading-relaxed">
-              enable nearby to see who else is using the app in your area.
+              Enable nearby to see who else is using the app in your area.
             </p>
             <button onClick={onRequestLocation} className="touch-btn font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-3 active:scale-[0.97]">
-              enable nearby →
+              Enable nearby
             </button>
           </div>
         </div>
 
         <div className="card-warm p-4">
-          <p className="font-mono text-[11px] text-primary mb-1.5">your privacy</p>
+          <p className="font-mono text-[11px] text-primary mb-1.5">Your privacy</p>
           <p className="font-display text-[13px] italic text-foreground leading-relaxed">
             Nearby uses suburb-level location only. We never pinpoint your home, track your movements, or share your exact address.
             Think of it like saying "I'm in Ponsonby" — not "I'm at 42 Brown Street."
@@ -77,24 +79,24 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
     const sent = connectSent.includes(u.id);
     return (
       <div>
-        <button onClick={() => setSelected(null)} className="touch-btn font-mono text-xs text-muted-foreground mb-3.5 active:scale-[0.97] min-h-[44px]">← back to nearby</button>
+        <button onClick={() => setSelected(null)} className="touch-btn font-mono text-xs text-muted-foreground mb-3.5 active:scale-[0.97] min-h-[44px]">Back to nearby</button>
         <div className="card-warm p-5">
           <div className="flex gap-3.5 items-center mb-4">
             <Avatar initials={u.avatar} size={52} color={u.color} online={u.online} />
             <div className="min-w-0">
               <h3 className="font-display text-[22px] font-bold italic text-foreground">{u.name}</h3>
               <p className="font-mono text-xs text-muted-foreground">{u.suburb} · {u.distance}</p>
-              {u.online && <p className="font-mono text-[11px] text-phase-follicular mt-0.5">● active now</p>}
+              {u.online && <p className="font-mono text-[11px] text-phase-follicular mt-0.5">Active now</p>}
             </div>
           </div>
 
           <div className="bg-secondary/50 rounded-xl p-3.5 mb-3.5">
-            <p className="font-mono text-[10px] text-primary mb-1.5">what they offer</p>
+            <p className="font-mono text-[10px] text-primary mb-1.5">What they offer</p>
             <p className="font-display text-[15px] italic text-foreground leading-relaxed">{u.offering}</p>
           </div>
 
           <div className="mb-4">
-            <p className="font-mono text-[10px] text-muted-foreground mb-2">skills</p>
+            <p className="font-mono text-[10px] text-muted-foreground mb-2">Skills</p>
             <div className="flex flex-wrap gap-1.5">
               {u.skills.map((s) => (
                 <span key={s} className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">{s}</span>
@@ -103,7 +105,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
           </div>
 
           <div className="card-warm p-3.5 mb-4 bg-amber-50 border-amber-200/30">
-            <p className="font-mono text-[10px] text-primary mb-1">privacy note</p>
+            <p className="font-mono text-[10px] text-primary mb-1">Privacy note</p>
             <p className="font-mono text-[11px] text-foreground/60 leading-relaxed">
               You can see {u.name.split(" ")[0]} is in {u.suburb}. That's all the location information shared. Meeting up is entirely your choice.
             </p>
@@ -116,7 +118,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
               sent ? "bg-phase-follicular/10 text-phase-follicular" : "bg-primary text-primary-foreground"
             }`}
           >
-            {sent ? "connection request sent ✓" : `connect with ${u.name.split(" ")[0]} →`}
+            {sent ? "Connection request sent" : `Connect with ${u.name.split(" ")[0]}`}
           </button>
         </div>
       </div>
@@ -127,14 +129,14 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
     <div>
       {/* Privacy reminder */}
       <div className="flex items-center gap-2 bg-phase-follicular/10 rounded-[10px] px-3 py-2.5 mb-4">
-        <span className="text-sm">🔒</span>
-        <span className="font-mono text-[11px] text-phase-follicular flex-1">showing suburb-level only · your address is never visible</span>
-        <button className="touch-btn font-mono text-[10px] text-muted-foreground">turn off</button>
+        <HandDrawnLock size={16} color="hsl(var(--phase-follicular))" />
+        <span className="font-mono text-[11px] text-phase-follicular flex-1">Showing suburb-level only · your address is never visible</span>
+        <button onClick={onToggleLocation} className="touch-btn font-mono text-[10px] text-muted-foreground">Turn off</button>
       </div>
 
       {/* Schematic suburb map */}
       <div className="card-warm p-4 mb-4 bg-secondary/50">
-        <p className="font-mono text-[11px] text-primary mb-2.5">people near you · Auckland</p>
+        <p className="font-mono text-[11px] text-primary mb-2.5">People near you · Auckland</p>
         <div className="relative h-[140px]">
           {[
             { label: "Ponsonby", x: "30%", y: "35%", count: MOCK_NEARBY.filter((u) => u.suburb === "Ponsonby").length },
@@ -165,7 +167,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
             <div className="w-[60px] h-[60px] rounded-full bg-primary/10" />
           </div>
         </div>
-        <p className="font-mono text-[10px] text-muted-foreground text-center mt-1.5">tap a suburb to filter · zones are approximate</p>
+        <p className="font-mono text-[10px] text-muted-foreground text-center mt-1.5">Tap a suburb to filter · zones are approximate</p>
       </div>
 
       {/* Suburb filter pills */}
@@ -180,7 +182,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation }: Nearb
                 : "bg-card text-muted-foreground border-border"
             }`}
           >
-            {s === "all" ? "everyone" : s}
+            {s === "all" ? "Everyone" : s}
           </button>
         ))}
       </div>

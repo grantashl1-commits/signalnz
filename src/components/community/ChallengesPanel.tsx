@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MOCK_GROUPS } from "@/data/community-data";
+import { HandDrawnVillage } from "@/components/BotanicalElements";
 
 interface ChallengesPanelProps {
   joined: string[];
@@ -17,7 +18,7 @@ function ChallengeItem({ text }: { text: string }) {
             done ? "text-phase-follicular bg-phase-follicular/10" : "text-primary bg-primary/10"
           }`}
         >
-          {done ? "done ✓" : "mark done"}
+          {done ? "Done" : "Mark done"}
         </button>
       </div>
     </div>
@@ -30,9 +31,9 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
   if (!myGroups.length) {
     return (
       <div className="text-center pt-16">
-        <div className="text-[40px] mb-3">🏘️</div>
-        <p className="font-display text-xl italic text-foreground mb-1.5">join a community first.</p>
-        <p className="font-mono text-xs text-muted-foreground">then your challenges will appear here.</p>
+        <HandDrawnVillage size={40} color="hsl(var(--primary))" className="mx-auto mb-3" />
+        <p className="font-display text-xl italic text-foreground mb-1.5">Join a community first.</p>
+        <p className="font-mono text-xs text-muted-foreground">Then your challenges will appear here.</p>
       </div>
     );
   }
@@ -52,7 +53,7 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
           {g.challenges.map((c, i) => <ChallengeItem key={i} text={c} />)}
 
           <div className="mt-3">
-            <p className="font-mono text-[11px] text-muted-foreground mb-2">community questions</p>
+            <p className="font-mono text-[11px] text-muted-foreground mb-2">Community questions</p>
             {g.questions.map((q, i) => (
               <div key={i} className="card-warm p-3.5 mb-2">
                 <p className="font-display text-[15px] italic text-foreground mb-2">{q}</p>

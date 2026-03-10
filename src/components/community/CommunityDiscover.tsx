@@ -16,7 +16,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
     <div className="space-y-3">
       {/* Vision card */}
       <div className="card-warm p-5">
-        <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-1.5">the vision</p>
+        <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-1.5">The vision</p>
         <p className="font-display text-sm italic text-foreground leading-relaxed">
           As technology reshapes work, the most valuable thing we'll have is each other. Find your neighbours.
           Share your skills. Trade what you know. Build the village that's been there all along.
@@ -45,13 +45,13 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
                 <p className="font-mono text-xs text-muted-foreground">{g.city} · {g.members} members</p>
               </div>
               {isJoined ? (
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0">joined ✓</span>
+                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0">Joined</span>
               ) : (
                 <button
                   onClick={() => onJoin(g.id)}
                   className="touch-btn font-display text-sm italic text-primary-foreground bg-primary rounded-full px-5 py-2 active:scale-[0.97] flex-shrink-0"
                 >
-                  join
+                  Join
                 </button>
               )}
             </div>
@@ -59,7 +59,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
             <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3.5">{g.description}</p>
 
             <div className="bg-secondary/50 rounded-xl p-3.5 mb-2.5">
-              <p className="font-mono text-[11px] text-primary mb-1.5">active challenges</p>
+              <p className="font-mono text-[11px] text-primary mb-1.5">Active challenges</p>
               {g.challenges.slice(0, 2).map((c, i) => (
                 <p key={i} className="font-display text-[13px] italic text-foreground/70 leading-relaxed mb-1">{c}</p>
               ))}
@@ -67,7 +67,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
             {g.questions.slice(0, 2).map((q, i) => (
               <div key={i} className="flex gap-1.5 items-start mb-1">
-                <span className="text-primary text-xs flex-shrink-0 mt-0.5">?</span>
+                <span className="text-primary text-xs flex-shrink-0 mt-0.5">·</span>
                 <span className="font-mono text-[11px] text-muted-foreground leading-relaxed">{q}</span>
               </div>
             ))}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BotanicalSprig } from "@/components/BotanicalElements";
+import { BotanicalSprig, HandDrawnVillage } from "@/components/BotanicalElements";
 import { MOCK_GROUPS } from "@/data/community-data";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
@@ -52,11 +52,11 @@ export default function CommunityPage() {
 
       {/* Header */}
       <div className="flex items-center gap-2 mb-0.5">
-        <span className="text-lg">🏘️</span>
+        <HandDrawnVillage size={22} color="hsl(var(--primary))" />
         <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Community</h1>
       </div>
       <p className="font-display text-[13px] italic text-muted-foreground mb-4">
-        find your neighbours. share your gifts. build the village.
+        Find your neighbours. Share your gifts. Build the village.
       </p>
 
       {/* Tab bar — sticky on mobile */}
@@ -95,10 +95,10 @@ export default function CommunityPage() {
           {section === "chat" && (
             joined.length === 0 ? (
               <div className="text-center pt-16">
-                <div className="text-[40px] mb-3">🌿</div>
-                <p className="font-display text-xl italic text-foreground mb-2">you haven't joined a community yet.</p>
+                <HandDrawnLeaf size={40} color="hsl(var(--primary))" className="mx-auto mb-3" />
+                <p className="font-display text-xl italic text-foreground mb-2">You haven't joined a community yet.</p>
                 <button onClick={() => setSection("discover")} className="touch-btn font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-2.5 active:scale-[0.97]">
-                  find my community
+                  Find my community
                 </button>
               </div>
             ) : (
@@ -138,3 +138,6 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+// Re-export HandDrawnLeaf for inline use
+import { HandDrawnLeaf } from "@/components/BotanicalElements";
