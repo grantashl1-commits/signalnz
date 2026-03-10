@@ -7,12 +7,15 @@ import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase,
 import {
   WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
   FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
-  getAllSessions, type WorkoutCategory,
+  getAllSessions, type WorkoutCategory, type Exercise,
 } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
 import LiveHRView from "@/components/movement/LiveHRView";
 import MovementCalendar from "@/components/movement/MovementCalendar";
 import ProgressTab from "@/components/movement/ProgressTab";
+import ExerciseRig from "@/components/movement/ExerciseRig";
+import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
+import { getAnimationForExercise } from "@/data/exercise-animations";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -34,6 +37,7 @@ export default function MovementPage() {
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [showHR, setShowHR] = useState(false);
   const [trainingWeek, setTrainingWeekState] = useState(getTrainingWeek());
+  const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
 
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
@@ -251,13 +255,25 @@ export default function MovementPage() {
                           )}
                           <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
                             className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
-                            onClick={() => toggleExercise(ex.name)}
                             whileTap={{ scale: 0.98 }}
                           >
-                            <div className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>
+                            <div
+                              className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}
+                              onClick={(e) => { e.stopPropagation(); toggleExercise(ex.name); }}
+                            >
                               {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                             </div>
-                            <div className="flex-1 min-w-0">
+                            {/* Mini animation preview */}
+                            {(() => {
+                              const anim = getAnimationForExercise(ex.name);
+                              return anim ? (
+                                <div className="flex-shrink-0 w-8 h-10 flex items-center justify-center"
+                                  onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}>
+                                  <ExerciseRig animation={anim} size={22} playing={!done} />
+                                </div>
+                              ) : null;
+                            })()}
+                            <div className="flex-1 min-w-0" onClick={() => { haptic("light"); setDrawerExercise(ex); }}>
                               <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
                               <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
                             </div>
@@ -345,15 +361,26 @@ export default function MovementPage() {
                         <p className="font-body text-xs text-muted-foreground mt-0.5">{opt.description}</p>
                       </div>
                     ))}
-                    {w.exercises.map((ex, j) => (
-                      <div key={j} className="flex items-center justify-between bg-secondary/50 rounded-xl p-2.5 gap-2">
-                        <div className="min-w-0">
-                          <p className="font-body text-sm text-foreground">{ex.name}</p>
-                          <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                    {w.exercises.map((ex, j) => {
+                      const libAnim = getAnimationForExercise(ex.name);
+                      return (
+                        <div key={j}
+                          className="flex items-center justify-between bg-secondary/50 rounded-xl p-2.5 gap-2 cursor-pointer active:bg-secondary"
+                          onClick={() => { haptic("light"); setDrawerExercise(ex); }}
+                        >
+                          {libAnim && (
+                            <div className="flex-shrink-0 w-7 h-9 flex items-center justify-center">
+                              <ExerciseRig animation={libAnim} size={18} playing={true} />
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="font-body text-sm text-foreground">{ex.name}</p>
+                            <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                          </div>
+                          <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
                         </div>
-                        <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </motion.div>
                 )}
               </motion.div>
@@ -461,6 +488,14 @@ export default function MovementPage() {
           <Activity className="h-6 w-6 text-primary-foreground" />
         </button>
       )}
+
+      {/* Exercise Detail Drawer */}
+      <ExerciseDetailDrawer
+        exercise={drawerExercise}
+        open={!!drawerExercise}
+        onClose={() => setDrawerExercise(null)}
+        phase={info.phase}
+      />
     </div>
   );
 }
