@@ -398,11 +398,12 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
               <h3 className="font-display text-[17px] italic text-foreground mb-1">{r.title}</h3>
               <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-2">{r.desc}</p>
               <p className="font-mono text-[11px] text-muted-foreground/60 mb-3">{r.prompts.length} steps</p>
-              <button onClick={() => setActiveRitual(r)} className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97]">
+              <button onClick={() => setActiveRitual(r)} className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] mt-auto">
                 Begin ritual
               </button>
             </motion.div>
           ))}
+          </div>
 
           {/* Living board placeholder */}
           <div className="rounded-2xl border border-dashed border-primary/20 p-5 text-center">

@@ -189,6 +189,7 @@ export default function MemoryVault() {
           )}
         </div>
       ))}
+      </div>
     </div>
   );
 }
