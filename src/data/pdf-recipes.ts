@@ -441,6 +441,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "carrot-cake-bliss-balls",
     name: "Carrot Cake Bliss Balls",
+    image: "/images/recipes/meals/carrot-cake-bliss-balls.png",
     phase: "luteal",
     serves: 20,
     prepTime: "10 min",
