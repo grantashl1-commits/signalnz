@@ -28,6 +28,32 @@ export const MILESTONES = [
   { count: 365, label: "Yearly Reflection", type: "yearly" },
 ];
 
+// ── Entry Types ───────────────────────────────────────────────
+export const ENTRY_TYPES = [
+  { key: "free-write", label: "Free Write", desc: "Write whatever is on your mind", tone: "reflection" },
+  { key: "guided-prompt", label: "Guided Prompt", desc: "Use reflective prompts", tone: "reflection" },
+  { key: "tiny-win", label: "Tiny Win", desc: "Celebrate a small victory", tone: "celebrate" },
+  { key: "funny-moment", label: "Funny Moment", desc: "Capture something that made you laugh", tone: "joy" },
+  { key: "gratitude-note", label: "Gratitude Note", desc: "Acknowledge what you are grateful for", tone: "gratitude" },
+  { key: "letter-future-self", label: "Letter to Future Self", desc: "Write to who you are becoming", tone: "dream" },
+  { key: "dream-entry", label: "Dream Entry", desc: "Record a dream or aspiration", tone: "dream" },
+  { key: "goal-reflection", label: "Goal Reflection", desc: "Reflect on your goals and progress", tone: "growth" },
+  { key: "release", label: "Release", desc: "Let go of something weighing on you", tone: "release" },
+  { key: "lesson-learned", label: "Lesson Learned", desc: "Reflect on something you discovered", tone: "lesson" },
+];
+
+export const EMOTIONAL_TONES: Record<string, { label: string; color: string }> = {
+  reflection: { label: "Reflection", color: "bg-primary/10 text-primary" },
+  celebrate: { label: "Celebrate", color: "bg-phase-follicular/10 text-phase-follicular" },
+  joy: { label: "Joy", color: "bg-accent/10 text-accent" },
+  gratitude: { label: "Gratitude", color: "bg-phase-ovulatory/10 text-phase-ovulatory" },
+  dream: { label: "Dream", color: "bg-primary/10 text-primary" },
+  growth: { label: "Growth", color: "bg-phase-follicular/10 text-phase-follicular" },
+  release: { label: "Release", color: "bg-phase-menstrual/10 text-phase-menstrual" },
+  lesson: { label: "Lesson", color: "bg-accent/10 text-accent" },
+};
+
+// ── Core Types ────────────────────────────────────────────────
 export interface JournalEntry {
   id: string;
   date: string;
@@ -38,6 +64,9 @@ export interface JournalEntry {
   ai: any | null;
   entryType?: string;
   title?: string;
+  emotionalTone?: string;
+  savedToVault?: boolean;
+  pinnedToDreamStudio?: boolean;
   vaultCategory?: string;
 }
 
@@ -66,8 +95,19 @@ export interface DreamElement {
   y: number;
   width: number;
   height: number;
+  zIndex?: number;
+  linkedEntryId?: string;
+  imageUrl?: string;
 }
 
+export interface DreamBoard {
+  id: string;
+  title: string;
+  elements: DreamElement[];
+  createdAt: number;
+}
+
+// ── Storage Helpers ───────────────────────────────────────────
 export function loadEntries(): JournalEntry[] {
   try {
     const raw = localStorage.getItem("mindcast_journal_v2");
@@ -115,4 +155,37 @@ export function loadDreamBoard(): DreamElement[] {
 
 export function saveDreamBoard(elements: DreamElement[]) {
   localStorage.setItem("signal_dream_board", JSON.stringify(elements));
+}
+
+// ── Resurfacing helpers ───────────────────────────────────────
+export function getResurfacingMemories(vault: VaultEntry[]): { label: string; entry: VaultEntry }[] {
+  if (vault.length === 0) return [];
+  const now = Date.now();
+  const results: { label: string; entry: VaultEntry }[] = [];
+
+  // On this day (within 2 days of same month/day from previous years)
+  const today = new Date();
+  for (const v of vault) {
+    const d = new Date(v.timestamp);
+    if (d.getMonth() === today.getMonth() && d.getDate() === today.getDate() && d.getFullYear() < today.getFullYear()) {
+      results.push({ label: "On this day", entry: v });
+      break;
+    }
+  }
+
+  // A memory from ~3 months ago
+  const threeMonthsAgo = now - 90 * 24 * 60 * 60 * 1000;
+  const nearThreeMonths = vault.find((v) => Math.abs(v.timestamp - threeMonthsAgo) < 14 * 24 * 60 * 60 * 1000);
+  if (nearThreeMonths) results.push({ label: "A memory from 3 months ago", entry: nearThreeMonths });
+
+  // Random past note
+  if (vault.length > 3 && results.length < 2) {
+    const older = vault.filter((v) => now - v.timestamp > 30 * 24 * 60 * 60 * 1000);
+    if (older.length > 0) {
+      const random = older[Math.floor(Math.random() * older.length)];
+      results.push({ label: "A note your past self left you", entry: random });
+    }
+  }
+
+  return results;
 }
