@@ -277,6 +277,108 @@ export function CymaticMini({ phase, size = 20 }: { phase: Phase; size?: number 
   return <CymatiSketch phase={phase} size={size} opacity={0.6} className="" />;
 }
 
+// ─── Phase Indicator (hand-drawn motifs) ────────────
+const PHASE_INDICATOR_COLORS: Record<Phase, string> = {
+  menstrual: "#C4526E",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
+  luteal: "#9B89B4",
+};
+
+export function PhaseIndicator({ phase, size = 18, className = "" }: { phase: Phase; size?: number; className?: string }) {
+  const color = PHASE_INDICATOR_COLORS[phase];
+  const s = size;
+  const cx = s / 2;
+  const cy = s / 2;
+  const sw = s * 0.055; // stroke weight scales with size
+
+  switch (phase) {
+    // Menstrual — crescent moon
+    case "menstrual":
+      return (
+        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className={className}>
+          <path
+            d={`M ${cx + s * 0.08} ${cy - s * 0.35} A ${s * 0.35} ${s * 0.35} 0 1 0 ${cx + s * 0.08} ${cy + s * 0.35} A ${s * 0.24} ${s * 0.24} 0 1 1 ${cx + s * 0.08} ${cy - s * 0.35}`}
+            fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round"
+          />
+          {/* tiny imperfection dot */}
+          <circle cx={cx - s * 0.12} cy={cy - s * 0.06} r={s * 0.025} fill={color} opacity={0.4} />
+        </svg>
+      );
+
+    // Follicular — sprouting leaf / rising stem
+    case "follicular":
+      return (
+        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className={className}>
+          {/* stem */}
+          <path
+            d={`M ${cx} ${s * 0.88} Q ${cx - s * 0.02} ${s * 0.6} ${cx} ${s * 0.35}`}
+            fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round"
+          />
+          {/* left leaf */}
+          <path
+            d={`M ${cx} ${s * 0.48} Q ${cx - s * 0.2} ${s * 0.32} ${cx - s * 0.15} ${s * 0.18} Q ${cx - s * 0.06} ${s * 0.28} ${cx} ${s * 0.42}`}
+            fill="none" stroke={color} strokeWidth={sw * 0.9} strokeLinecap="round"
+          />
+          {/* right leaf */}
+          <path
+            d={`M ${cx} ${s * 0.56} Q ${cx + s * 0.18} ${s * 0.42} ${cx + s * 0.14} ${s * 0.28} Q ${cx + s * 0.05} ${s * 0.38} ${cx} ${s * 0.5}`}
+            fill="none" stroke={color} strokeWidth={sw * 0.9} strokeLinecap="round"
+          />
+          {/* tiny bud at top */}
+          <circle cx={cx} cy={s * 0.32} r={s * 0.035} fill="none" stroke={color} strokeWidth={sw * 0.7} />
+        </svg>
+      );
+
+    // Ovulatory — radiant sunburst / bloom
+    case "ovulatory":
+      return (
+        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className={className}>
+          {/* centre circle */}
+          <circle cx={cx} cy={cy} r={s * 0.12} fill="none" stroke={color} strokeWidth={sw} />
+          {/* organic rays */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+            const inner = s * 0.17;
+            const outer = i % 2 === 0 ? s * 0.4 : s * 0.3;
+            const wobble = Math.sin(i * 2.3) * s * 0.02;
+            return (
+              <line
+                key={i}
+                x1={cx + inner * Math.cos(angle)}
+                y1={cy + inner * Math.sin(angle)}
+                x2={cx + (outer + wobble) * Math.cos(angle)}
+                y2={cy + (outer + wobble) * Math.sin(angle)}
+                stroke={color}
+                strokeWidth={i % 3 === 0 ? sw : sw * 0.7}
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </svg>
+      );
+
+    // Luteal — soft wave / closing petal
+    case "luteal":
+      return (
+        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} className={className}>
+          {/* upper wave */}
+          <path
+            d={`M ${s * 0.1} ${cy - s * 0.06} Q ${s * 0.3} ${cy - s * 0.22} ${cx} ${cy - s * 0.06} Q ${s * 0.7} ${cy + s * 0.1} ${s * 0.9} ${cy - s * 0.06}`}
+            fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round"
+          />
+          {/* lower wave */}
+          <path
+            d={`M ${s * 0.1} ${cy + s * 0.14} Q ${s * 0.3} ${cy} ${cx} ${cy + s * 0.14} Q ${s * 0.7} ${cy + s * 0.28} ${s * 0.9} ${cy + s * 0.14}`}
+            fill="none" stroke={color} strokeWidth={sw * 0.8} strokeLinecap="round"
+          />
+          {/* tiny seed dot */}
+          <circle cx={cx} cy={cy + s * 0.04} r={s * 0.03} fill={color} opacity={0.35} />
+        </svg>
+      );
+  }
+}
+
 // ─── Default export for backward compat ─────────────
 export default function CymaticPattern({ phase, size = 400, opacity, className = "", active = false }: { phase: Phase; size?: number; opacity?: number; className?: string; active?: boolean }) {
   const defaultOpacity = active ? 0.15 : 0.1;
