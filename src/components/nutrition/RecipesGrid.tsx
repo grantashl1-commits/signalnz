@@ -214,7 +214,13 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
               )}
 
               {/* Large header illustration */}
-              <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
+              {selectedRecipe.image ? (
+                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/30 rounded-t-[20px]">
+                  <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
+                </div>
+              ) : (
+                <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
+              )}
 
               <div className="p-5 space-y-4">
                 <div>
