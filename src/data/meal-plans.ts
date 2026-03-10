@@ -244,6 +244,7 @@ export interface Recipe {
   method: string[];
   phaseBenefit: string;
   category?: RecipeCategory;
+  image?: string;
 }
 
 export const RECIPES: Recipe[] = [
