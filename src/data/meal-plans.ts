@@ -251,6 +251,7 @@ export const RECIPES: Recipe[] = [
   {
     id: "turmeric-lentil-soup",
     name: "Turmeric Lentil Soup",
+    image: "/images/recipes/meals/turmeric-lentil-soup.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "25 min",
