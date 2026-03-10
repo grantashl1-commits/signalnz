@@ -126,7 +126,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/60 mb-4"
+            className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/50 mb-5"
           >
             {greeting}
           </motion.p>
@@ -134,7 +134,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="font-display text-[3rem] md:text-[4.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-4"
+            className="font-display text-[3.5rem] md:text-[5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5"
           >
             {userName || "you"}.
           </motion.h1>
@@ -142,7 +142,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.5 }}
-            className="font-display text-lg md:text-xl italic text-primary-foreground/80 max-w-md mx-auto mb-8"
+            className="font-display text-lg md:text-xl italic text-primary-foreground/70 max-w-md mx-auto mb-10"
           >
             {PHASE_POETRY[info.phase]}
           </motion.p>
@@ -158,7 +158,7 @@ export default function HomePage({ userName }: { userName?: string }) {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => { haptic("medium"); openSignal("Give me a signal for today", "home"); }}
-              className="flex items-center gap-2.5 px-8 py-4 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-lg hover:shadow-xl transition-shadow"
+              className="flex items-center gap-2.5 px-8 py-4 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
             >
               <WildStar size={16} color="hsl(var(--primary))" />
               Give me a signal
@@ -170,9 +170,9 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.65, duration: 0.4 }}
-            className="flex items-center justify-center gap-2 mt-8"
+            className="flex items-center justify-center gap-2 mt-10"
           >
-            <span className="font-body text-xs text-primary-foreground/50 uppercase tracking-wider">
+            <span className="font-body text-xs text-primary-foreground/40 uppercase tracking-widest">
               Day {info.cycleDay} · {info.name}
             </span>
           </motion.div>
@@ -196,10 +196,10 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ TODAY'S WORLD — cream cards ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8 text-center">
           Your day at a glance
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {[
             { path: "/cycle", label: "Cycle", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
             { path: "/nutrition", label: "Nourish", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
@@ -216,15 +216,15 @@ export default function HomePage({ userName }: { userName?: string }) {
               variants={cardVariant}
               whileTap={{ scale: 0.98 }}
             >
-              <Link to={tile.path} className="block rounded-[20px] bg-card border border-border p-6 md:p-7 h-full group relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 touch-card" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+              <Link to={tile.path} className="block rounded-[22px] bg-card p-7 md:p-8 h-full group relative overflow-hidden transition-all hover:shadow-medium hover:-translate-y-0.5 touch-card shadow-soft">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="h-9 w-9 rounded-full bg-background flex items-center justify-center">
                     <tile.icon className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{tile.label}</span>
+                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">{tile.label}</span>
                 </div>
-                <h3 className="font-display text-lg md:text-xl font-bold text-foreground leading-tight mt-2">{tile.title}</h3>
-                <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-2">{tile.desc}</p>
+                <h3 className="font-display text-xl md:text-2xl font-bold text-foreground leading-tight mt-3">{tile.title}</h3>
+                <p className="font-body text-sm text-muted-foreground mt-2.5 leading-relaxed line-clamp-2">{tile.desc}</p>
               </Link>
             </motion.div>
           ))}
