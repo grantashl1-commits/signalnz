@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,7 +16,11 @@ serve(async (req) => {
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
 
-    const { prompt, mode, context } = await req.json();
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { prompt, mode, context, userIdentifier, insightProfile, recentSignals } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -24,7 +29,48 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = `You are the inner voice of Signal — a calm, emotionally intelligent, cycle-aware wellness companion for women. You generate what we call "signals": gentle, observant, poetic-but-useful guidance.
+    // Credit check
+    if (userIdentifier) {
+      const { data: credits } = await supabase
+        .from("ai_credits")
+        .select("*")
+        .eq("user_identifier", userIdentifier)
+        .maybeSingle();
+
+      if (credits) {
+        if (credits.tier !== "unlimited" && credits.credits_remaining <= 0) {
+          return new Response(
+            JSON.stringify({ error: "You've used all your AI credits. Top up or upgrade your plan to continue." }),
+            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        // Decrement credits
+        if (credits.tier !== "unlimited") {
+          await supabase
+            .from("ai_credits")
+            .update({ credits_remaining: credits.credits_remaining - 1, updated_at: new Date().toISOString() })
+            .eq("user_identifier", userIdentifier);
+        }
+      }
+      // If no credits row exists, allow (free tier default of 20)
+      // We'll create the row after first use
+      if (!credits) {
+        await supabase.from("ai_credits").insert({
+          user_identifier: userIdentifier,
+          credits_remaining: 19, // 20 - 1 for this call
+          tier: "free",
+        });
+      }
+
+      // Log usage
+      await supabase.from("ai_usage").insert({
+        user_identifier: userIdentifier,
+        function_name: "signal-ai",
+        tokens_used: 0,
+      });
+    }
+
+    let systemPrompt = `You are the inner voice of Signal — a calm, emotionally intelligent, cycle-aware wellness companion for women. You generate what we call "signals": gentle, observant, poetic-but-useful guidance.
 
 Your role is to help her feel oriented, reassured, and supported. You interpret her context — her cycle phase, mood, habits, time of day, energy level — and distil it into clarity.
 
@@ -69,7 +115,36 @@ PHASE AWARENESS:
 - Menstrual: rest, restoration, inner winter, honour the slowdown
 - Follicular: rising energy, clarity, outward motion, momentum, creative spark
 - Ovulatory: peak signal, confidence, communication, visibility
-- Luteal: turning inward, progesterone rising, detail-oriented, nesting, self-compassion
+- Luteal: turning inward, progesterone rising, detail-oriented, nesting, self-compassion`;
+
+    // Add insight profile context
+    if (insightProfile) {
+      systemPrompt += `
+
+USER INSIGHT PROFILE (built from their journal entries over time):
+You may gently reference these patterns in a supportive, observational way. Never be invasive or overly analytical. The tone should feel like a wise friend noticing patterns, not a therapist diagnosing.
+- Emotional patterns: ${JSON.stringify(insightProfile.emotional_patterns || [])}
+- Recurring topics: ${JSON.stringify(insightProfile.recurring_topics || [])}
+- Common stressors: ${JSON.stringify(insightProfile.common_stressors || [])}
+- Growth interests: ${JSON.stringify(insightProfile.growth_interests || [])}
+- Preferred tone: ${insightProfile.preferred_guidance_tone || "warm"}
+- Journal entries so far: ${insightProfile.entry_count || 0}
+
+Examples of how to reference patterns:
+- "You've been exploring the theme of boundaries lately — this signal honours that."
+- "I notice a pattern of feeling overwhelmed mid-week. This is worth noticing gently."
+Do NOT reference every pattern. Pick at most 1-2 that are relevant to the current prompt.`;
+    }
+
+    if (recentSignals && recentSignals.length > 0) {
+      systemPrompt += `
+
+RECENT SIGNALS (for continuity — you may occasionally reference these):
+${recentSignals.map((s: any) => `- "${s.headline}" (${s.created_at})`).join("\n")}
+Only reference past signals if it adds meaningful continuity. Don't force it.`;
+    }
+
+    systemPrompt += `
 
 Always return ONLY valid JSON. No markdown wrapping, no code fences.`;
 

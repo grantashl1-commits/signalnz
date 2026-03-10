@@ -43,7 +43,7 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           className="rounded-2xl p-5"
           style={{ backgroundColor: "hsl(24 33% 92% / 0.7)" }}
         >
-          <p className="font-hand text-xs font-bold text-primary mb-2">What this may be pointing to</p>
+          <p className="font-hand text-xs font-bold text-primary mb-2">What this might mean</p>
           <p className="font-body text-sm text-foreground leading-relaxed">
             {response.interpretation}
           </p>
@@ -82,7 +82,7 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           className="rounded-2xl p-5 border border-primary/15"
           style={{ backgroundColor: "hsl(284 22% 44% / 0.05)" }}
         >
-          <p className="font-hand text-xs font-bold text-primary mb-2">A small next step</p>
+          <p className="font-hand text-xs font-bold text-primary mb-2">A gentle next step</p>
           <p className="font-body text-sm text-foreground leading-relaxed">{response.action}</p>
         </motion.div>
       )}
@@ -136,7 +136,7 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           transition={sectionDelay(6)}
         >
           <p className="font-hand text-xs font-bold text-muted-foreground mb-2.5">
-            Continue exploring
+            Go deeper
           </p>
           <div className="flex flex-wrap gap-2">
             {response.followUps.map((fu, i) => (

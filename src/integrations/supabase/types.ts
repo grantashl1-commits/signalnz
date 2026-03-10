@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_credits: {
+        Row: {
+          credits_remaining: number | null
+          id: string
+          last_topup_at: string | null
+          tier: string | null
+          updated_at: string | null
+          user_identifier: string
+        }
+        Insert: {
+          credits_remaining?: number | null
+          id?: string
+          last_topup_at?: string | null
+          tier?: string | null
+          updated_at?: string | null
+          user_identifier: string
+        }
+        Update: {
+          credits_remaining?: number | null
+          id?: string
+          last_topup_at?: string | null
+          tier?: string | null
+          updated_at?: string | null
+          user_identifier?: string
+        }
+        Relationships: []
+      }
+      ai_usage: {
+        Row: {
+          created_at: string | null
+          function_name: string
+          id: string
+          tokens_used: number | null
+          user_identifier: string
+        }
+        Insert: {
+          created_at?: string | null
+          function_name: string
+          id?: string
+          tokens_used?: number | null
+          user_identifier: string
+        }
+        Update: {
+          created_at?: string | null
+          function_name?: string
+          id?: string
+          tokens_used?: number | null
+          user_identifier?: string
+        }
+        Relationships: []
+      }
+      signal_memory: {
+        Row: {
+          created_at: string | null
+          emotional_context: string | null
+          headline: string | null
+          id: string
+          mode: string | null
+          prompt: string | null
+          signal_text: string
+          theme: string | null
+          user_identifier: string
+        }
+        Insert: {
+          created_at?: string | null
+          emotional_context?: string | null
+          headline?: string | null
+          id?: string
+          mode?: string | null
+          prompt?: string | null
+          signal_text: string
+          theme?: string | null
+          user_identifier: string
+        }
+        Update: {
+          created_at?: string | null
+          emotional_context?: string | null
+          headline?: string | null
+          id?: string
+          mode?: string | null
+          prompt?: string | null
+          signal_text?: string
+          theme?: string | null
+          user_identifier?: string
+        }
+        Relationships: []
+      }
+      user_insight_profiles: {
+        Row: {
+          common_stressors: Json | null
+          emotional_patterns: Json | null
+          entry_count: number | null
+          growth_interests: Json | null
+          id: string
+          preferred_guidance_tone: string | null
+          recommended_resources: Json | null
+          recurring_topics: Json | null
+          updated_at: string | null
+          user_identifier: string
+        }
+        Insert: {
+          common_stressors?: Json | null
+          emotional_patterns?: Json | null
+          entry_count?: number | null
+          growth_interests?: Json | null
+          id?: string
+          preferred_guidance_tone?: string | null
+          recommended_resources?: Json | null
+          recurring_topics?: Json | null
+          updated_at?: string | null
+          user_identifier: string
+        }
+        Update: {
+          common_stressors?: Json | null
+          emotional_patterns?: Json | null
+          entry_count?: number | null
+          growth_interests?: Json | null
+          id?: string
+          preferred_guidance_tone?: string | null
+          recommended_resources?: Json | null
+          recurring_topics?: Json | null
+          updated_at?: string | null
+          user_identifier?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
