@@ -285,6 +285,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Peanut butter and banana provide magnesium and potassium to ease PMS cravings during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/no-bake-choc-banana-fudge.png",
   },
   {
     id: "no-egg-chocolate-custard",
