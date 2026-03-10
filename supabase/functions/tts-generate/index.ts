@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     const DEFAULT_VOICE_ID =
-      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "EXAVITQu4vr4xnSDxMaL"; // Sarah
+      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "pFZP5JQG7iQjIQuC4Bku"; // Lily — soft, calm, gentle
 
     if (!ELEVENLABS_API_KEY) {
       return new Response(
