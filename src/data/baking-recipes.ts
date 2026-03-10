@@ -82,6 +82,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Peanut butter provides healthy fats for rising energy. Oats fuel the follicular phase with complex carbs.",
     category: "baking",
+    image: "/images/recipes/baking/banana-breakfast-bites.png",
   },
   {
     id: "caramel-slice",
