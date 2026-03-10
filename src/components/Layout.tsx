@@ -86,8 +86,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Desktop header — hidden on mobile */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm hidden md:block pt-safe">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="font-display text-lg italic font-bold text-foreground">
-            mindcast wellness
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/logos/Icon.png" alt="Signal" className="h-8 w-8 object-contain" />
+            <span className="font-display text-lg font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
 
           <nav className="flex items-center gap-1">
