@@ -1443,6 +1443,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "white-bean-pasta-bake",
     name: "White Bean Pasta Bake",
+    image: "/images/recipes/meals/white-bean-pasta-bake.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "45 min",
