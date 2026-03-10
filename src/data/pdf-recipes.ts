@@ -86,6 +86,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "slow-cooked-lentils",
     name: "Slow Cooked Spiced Lentils",
+    image: "/images/recipes/meals/slow-cooked-spiced-lentils.png",
     phase: "menstrual",
     serves: 3,
     prepTime: "6-8 hours (slow cooker)",
