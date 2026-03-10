@@ -90,14 +90,14 @@ Always return ONLY valid JSON. No markdown wrapping, no code fences.`;
 Context: ${contextParts.length > 0 ? contextParts.join(". ") + "." : "No specific context available — provide a general signal."}
 User's question/prompt: "${prompt}"`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${GEMINI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gemini-2.0-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
