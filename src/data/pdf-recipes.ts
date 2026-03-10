@@ -1002,6 +1002,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "one-pan-tempeh-potatoes",
     name: "One Pan Tempeh & Potatoes",
+    image: "/images/recipes/meals/one-pan-tempeh-potatoes.png",
     phase: "follicular",
     serves: 1,
     prepTime: "55 min",
