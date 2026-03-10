@@ -17,6 +17,7 @@ import Recommendations from "./pages/Recommendations";
 import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 import BrandGuidelines from "./pages/BrandGuidelines";
+import AnimationPOC from "./pages/AnimationPOC";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/brand" element={<BrandGuidelines />} />
+          <Route path="/animation-poc" element={<AnimationPOC />} />
           <Route path="*" element={
             <Layout>
               <Routes>
