@@ -182,6 +182,46 @@ export default function NervousSystemPage() {
         </div>
       </section>
 
+      {/* Meditations */}
+      <section className="space-y-4">
+        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-2">
+          <Headphones className="h-5 w-5 text-primary" /> Meditations
+        </h2>
+        <p className="font-body text-sm text-muted-foreground">Curated guided sessions from world-class teachers. These link to external platforms where you can listen for free.</p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {MEDITATIONS.map((m, i) => (
+            <motion.a
+              key={m.title}
+              href={m.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="card-warm p-5 flex flex-col justify-between hover:shadow-lg transition-shadow group"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-display text-lg italic text-foreground">{m.title}</h3>
+                  <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mt-1 group-hover:text-primary transition-colors" />
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="font-hand text-sm font-bold text-primary">{m.teacher}</span>
+                  <span className="text-muted-foreground/40">·</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">{m.duration}</span>
+                </div>
+                <p className="font-body text-sm text-muted-foreground leading-relaxed">{m.desc}</p>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <span className="rounded-full bg-secondary px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">{m.platform}</span>
+              </div>
+            </motion.a>
+          ))}
+        </div>
+      </section>
+
+      <BotanicalSprig width={180} className="mx-auto" />
+
       {/* AI Check-in */}
       <section className="card-warm p-6 space-y-4">
         <h2 className="font-display text-xl italic text-foreground">How are you feeling right now?</h2>
