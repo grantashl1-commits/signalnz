@@ -125,43 +125,54 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     const dayName = DAY_NAMES[i];
 
     // Breakfast
-    let breakfast: PlannedMeal;
+    let bName: string;
     if (prefs.breakfast === "batch") {
-      breakfast = { name: plan.days[0].breakfast.split(" — ")[0] };
+      bName = plan.days[0].breakfast.split(" — ")[0];
     } else if (prefs.breakfast === "rotate") {
-      breakfast = { name: plan.days[i % 3].breakfast.split(" — ")[0] };
+      bName = plan.days[i % 3].breakfast.split(" — ")[0];
     } else {
-      breakfast = { name: dayPlan.breakfast.split(" — ")[0] };
+      bName = dayPlan.breakfast.split(" — ")[0];
     }
+    const bMatch = findRecipeByName(bName);
+    const breakfast: PlannedMeal = { name: bMatch?.name || bName, recipeId: bMatch?.id };
 
     // Lunch
-    let lunch: PlannedMeal;
+    let lName: string;
     if (prefs.lunch === "batch") {
-      lunch = { name: plan.days[0].lunch.split(" — ")[0] };
+      lName = plan.days[0].lunch.split(" — ")[0];
     } else if (prefs.lunch === "rotate") {
-      lunch = { name: plan.days[i % 3].lunch.split(" — ")[0] };
+      lName = plan.days[i % 3].lunch.split(" — ")[0];
     } else {
-      lunch = { name: dayPlan.lunch.split(" — ")[0] };
+      lName = dayPlan.lunch.split(" — ")[0];
     }
+    const lMatch = findRecipeByName(lName);
+    const lunch: PlannedMeal = { name: lMatch?.name || lName, recipeId: lMatch?.id };
 
     // Dinner
     let dinner: PlannedMeal;
     if (prefs.dinner === "double") {
       const dinnerIdx = Math.floor(i / 2);
-      const sourceDinner = plan.days[dinnerIdx % plan.days.length].dinner.split(" — ")[0];
+      const dName = plan.days[dinnerIdx % plan.days.length].dinner.split(" — ")[0];
+      const dMatch = findRecipeByName(dName);
       dinner = {
-        name: sourceDinner,
+        name: dMatch?.name || dName,
+        recipeId: dMatch?.id,
         isLeftover: i % 2 === 1,
       };
     } else if (prefs.dinner === "mix") {
       if (i % 3 === 2) {
-        const prevDinner = plan.days[Math.floor((i - 1) / 2) % plan.days.length].dinner.split(" — ")[0];
-        dinner = { name: prevDinner, isLeftover: true };
+        const dName = plan.days[Math.floor((i - 1) / 2) % plan.days.length].dinner.split(" — ")[0];
+        const dMatch = findRecipeByName(dName);
+        dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id, isLeftover: true };
       } else {
-        dinner = { name: dayPlan.dinner.split(" — ")[0] };
+        const dName = dayPlan.dinner.split(" — ")[0];
+        const dMatch = findRecipeByName(dName);
+        dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
       }
     } else {
-      dinner = { name: dayPlan.dinner.split(" — ")[0] };
+      const dName = dayPlan.dinner.split(" — ")[0];
+      const dMatch = findRecipeByName(dName);
+      dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
     }
 
     // Snacks - use phase-appropriate snacks
