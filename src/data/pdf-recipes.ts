@@ -361,6 +361,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "pulled-jackfruit-tacos",
     name: "Pulled Jackfruit Tacos",
+    image: "/images/recipes/meals/pulled-jackfruit-tacos.png",
     phase: "follicular",
     serves: 3,
     prepTime: "20 min",
