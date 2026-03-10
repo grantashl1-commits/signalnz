@@ -210,6 +210,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hazelnuts provide healthy fats and zinc to support ovulation. Light and naturally sweet.",
     category: "baking",
+    image: "/images/recipes/baking/homemade-ferrero-rochers.png",
   },
   {
     id: "lamington-bliss-balls",
