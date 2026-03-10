@@ -772,6 +772,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chimichurri-black-bean-tacos",
     name: "Chimichurri Black Bean Tacos",
+    image: "/images/recipes/meals/chimichurri-black-bean-tacos.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
