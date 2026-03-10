@@ -72,10 +72,12 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           onClick={(e) => e.stopPropagation()}
           className="relative w-full max-w-2xl max-h-[85vh] mx-4 rounded-[28px] overflow-hidden flex flex-col"
-          style={{ backgroundColor: "hsl(var(--primary))" }}
+          style={{
+            background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 38%) 100%)",
+          }}
         >
           {/* Atmospheric background */}
-          <DotPattern color="hsl(30 33% 98%)" opacity={0.06} />
+          <DotPattern color="hsl(30 33% 98%)" opacity={0.05} animate />
 
           {/* Header */}
           <div className="relative z-10 px-8 pt-8 pb-4 flex-shrink-0">
@@ -112,7 +114,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
             {!hasEverGenerated ? (
               <>
-                <h2 className="font-display text-3xl md:text-4xl font-extrabold text-primary-foreground leading-tight">
+                <h2 className="font-display text-[2.5rem] md:text-[3rem] font-extrabold text-primary-foreground leading-tight">
                   Give me a signal
                 </h2>
                 <p className="font-body text-sm text-primary-foreground/60 mt-3 leading-relaxed max-w-md">
@@ -145,7 +147,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
           {/* Content area — cream card inside purple */}
           <div className="relative z-10 flex-1 overflow-y-auto px-6 pb-4">
-            <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/30 p-6" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.1)" }}>
+            <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-7" style={{ boxShadow: "var(--shadow-elevated)" }}>
               {/* Loading state */}
               {loading && (
                 <motion.div

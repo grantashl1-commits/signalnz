@@ -70,11 +70,11 @@ export default function JournalPage() {
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <div className="text-center">
-          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Journal</p>
-          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
+          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
             {tab === "entries" ? "My Journal" : tab === "activities" ? "Activities" : tab === "vault" ? "Memory Vault" : "Dream Studio"}
           </h1>
-          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
             {TAB_SUBTITLES[tab]}
           </p>
         </div>

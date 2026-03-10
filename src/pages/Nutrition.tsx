@@ -46,15 +46,15 @@ export default function NutritionPage() {
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <div className="text-center">
-          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Nutrition</p>
-          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">Nourish</h1>
-          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Nutrition</p>
+          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Nourish</h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
             Eat for your cycle, not against it.
           </p>
         </div>
       </AtmosphericHero>
 
-      <ContentSection className="px-5 md:px-4 space-y-6 md:space-y-8 pb-24">
+      <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10 pb-24">
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 

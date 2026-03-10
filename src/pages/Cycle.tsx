@@ -186,15 +186,15 @@ export default function CyclePage() {
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <div className="text-center">
-          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Cycle Tracker</p>
-          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">Your Cycle</h1>
-          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Cycle tracker</p>
+          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Your Cycle</h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
             {PHASE_DATA[info.phase].poetry}
           </p>
         </div>
       </AtmosphericHero>
 
-      <ContentSection className="px-5 md:px-4 space-y-6 md:space-y-8">
+      <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
       <SignalContextChips pageContext="cycle" onOpenSignal={(p) => openSignal(p, "cycle")} compact />
 
@@ -275,14 +275,14 @@ export default function CyclePage() {
       </div>
 
       {activeTab === "overview" && (
-        <div className="space-y-6 md:space-y-8">
+        <div className="space-y-8 md:space-y-10">
           {hasDateSet && <MoonWheel currentPhase={info.phase} cycleDay={info.cycleDay} />}
           <p className="text-center font-hand text-sm text-muted-foreground">
             {nextPhase} begins in ~{daysUntil} days
           </p>
 
           {/* Phase cards */}
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {phases.map((phase, i) => {
               const d = PHASE_DATA[phase];
               const active = phase === info.phase;

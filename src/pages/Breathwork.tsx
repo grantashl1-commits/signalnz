@@ -335,8 +335,8 @@ export default function BreathworkPage() {
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <div className="text-center">
-          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Mindfulness</p>
-          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
+          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
             {titles[section]}
           </h1>
         </div>

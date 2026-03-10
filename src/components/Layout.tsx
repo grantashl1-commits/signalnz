@@ -87,7 +87,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
       {/* Desktop header — hidden on mobile */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm hidden md:block pt-safe">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md hidden md:block pt-safe">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0 mr-6">
             <img src="/logos/Icon.png" alt="Signal" className="h-8 w-8 object-contain" />
@@ -134,7 +134,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Mobile header — minimal, just branding + phase */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm md:hidden pt-safe">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md md:hidden pt-safe">
         <div className="flex items-center justify-between px-5 py-3">
           <Link to="/" className="flex items-center gap-1.5">
             <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
@@ -168,7 +168,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom tab bar — horizontally scrollable */}
       {!keyboardVisible && (
         <nav
-          className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm md:hidden border-t border-border select-none-chrome"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md md:hidden select-none-chrome"
           style={{
             paddingBottom: "env(safe-area-inset-bottom)",
             height: "calc(60px + env(safe-area-inset-bottom))",

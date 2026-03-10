@@ -59,9 +59,9 @@ export default function SignalFloatingCTA({ onClick }: Props) {
           setShowTooltip(false);
           onClick();
         }}
-        className="group relative flex items-center gap-2.5 pl-5 pr-6 py-3.5 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold italic shadow-lg transition-all"
+        className="group relative flex items-center gap-2.5 pl-5 pr-6 py-3.5 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold italic transition-all"
         style={{
-          boxShadow: "0 4px 24px hsl(284 22% 44% / 0.25), 0 0 40px hsl(284 22% 44% / 0.08)",
+          boxShadow: "var(--shadow-glow), var(--shadow-elevated)",
         }}
       >
         {/* Glow ring */}

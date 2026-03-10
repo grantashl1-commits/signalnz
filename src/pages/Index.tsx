@@ -126,7 +126,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/60 mb-4"
+            className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/50 mb-5"
           >
             {greeting}
           </motion.p>
@@ -134,7 +134,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="font-display text-[3rem] md:text-[4.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-4"
+            className="font-display text-[3.5rem] md:text-[5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5"
           >
             {userName || "you"}.
           </motion.h1>
@@ -142,7 +142,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.5 }}
-            className="font-display text-lg md:text-xl italic text-primary-foreground/80 max-w-md mx-auto mb-8"
+            className="font-display text-lg md:text-xl italic text-primary-foreground/70 max-w-md mx-auto mb-10"
           >
             {PHASE_POETRY[info.phase]}
           </motion.p>
@@ -158,7 +158,7 @@ export default function HomePage({ userName }: { userName?: string }) {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => { haptic("medium"); openSignal("Give me a signal for today", "home"); }}
-              className="flex items-center gap-2.5 px-8 py-4 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-lg hover:shadow-xl transition-shadow"
+              className="flex items-center gap-2.5 px-8 py-4 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
             >
               <WildStar size={16} color="hsl(var(--primary))" />
               Give me a signal
@@ -170,9 +170,9 @@ export default function HomePage({ userName }: { userName?: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.65, duration: 0.4 }}
-            className="flex items-center justify-center gap-2 mt-8"
+            className="flex items-center justify-center gap-2 mt-10"
           >
-            <span className="font-body text-xs text-primary-foreground/50 uppercase tracking-wider">
+            <span className="font-body text-xs text-primary-foreground/40 uppercase tracking-widest">
               Day {info.cycleDay} · {info.name}
             </span>
           </motion.div>
@@ -196,10 +196,10 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ TODAY'S WORLD — cream cards ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8 text-center">
           Your day at a glance
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {[
             { path: "/cycle", label: "Cycle", icon: Moon, title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`, desc: focus.cycle },
             { path: "/nutrition", label: "Nourish", icon: Salad, title: lunchMeal?.name || "Today's meals", desc: focus.nutrition },
@@ -216,15 +216,15 @@ export default function HomePage({ userName }: { userName?: string }) {
               variants={cardVariant}
               whileTap={{ scale: 0.98 }}
             >
-              <Link to={tile.path} className="block rounded-[20px] bg-card border border-border p-6 md:p-7 h-full group relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 touch-card" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+              <Link to={tile.path} className="block rounded-[22px] bg-card p-7 md:p-8 h-full group relative overflow-hidden transition-all hover:shadow-medium hover:-translate-y-0.5 touch-card shadow-soft">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="h-9 w-9 rounded-full bg-background flex items-center justify-center">
                     <tile.icon className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{tile.label}</span>
+                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">{tile.label}</span>
                 </div>
-                <h3 className="font-display text-lg md:text-xl font-bold text-foreground leading-tight mt-2">{tile.title}</h3>
-                <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-2">{tile.desc}</p>
+                <h3 className="font-display text-xl md:text-2xl font-bold text-foreground leading-tight mt-3">{tile.title}</h3>
+                <p className="font-body text-sm text-muted-foreground mt-2.5 leading-relaxed line-clamp-2">{tile.desc}</p>
               </Link>
             </motion.div>
           ))}
@@ -233,20 +233,20 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ DAILY HABITS — atmospheric purple ═══ */}
       {habits.length > 0 && (
-        <AtmosphericHero size="sm" dotOpacity={0.05}>
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60">Daily Habits</p>
-            <Link to="/my-practice" className="font-body text-xs text-primary-foreground/50 hover:text-primary-foreground/80 transition-colors">
+        <AtmosphericHero size="sm" dotOpacity={0.04}>
+          <div className="flex items-center justify-between mb-5">
+            <p className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/50">Daily habits</p>
+            <Link to="/my-practice" className="font-body text-xs text-primary-foreground/40 hover:text-primary-foreground/70 transition-colors">
               manage
             </Link>
           </div>
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm p-5 md:p-6 border border-border/50" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-4">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 md:p-7 shadow-elevated">
+            <div className="flex items-center gap-2 mb-5">
               <Heart className="h-4 w-4 text-bloom" />
               <span className="font-mono text-sm text-foreground">{habitsCompleted}/{habits.length}</span>
               <span className="font-body text-xs text-muted-foreground">complete today</span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {habits.slice(0, 6).map(habit => {
                 const done = habitLog[habit.id] || false;
                 const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
@@ -254,9 +254,9 @@ export default function HomePage({ userName }: { userName?: string }) {
                   <button
                     key={habit.id}
                     onClick={() => handleHabitToggle(habit.id)}
-                    className="touch-btn w-full flex items-center gap-2.5 py-2 text-left"
+                    className="touch-btn w-full flex items-center gap-3 py-2 text-left"
                   >
-                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${done ? "border-bloom bg-bloom/20" : "border-border"}`}>
+                    <div className={`flex-shrink-0 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${done ? "border-bloom bg-bloom/20" : "border-muted/80"}`}>
                       {done && <WildStar size={10} />}
                     </div>
                     <div className={`h-2 w-2 rounded-full flex-shrink-0 ${dotClass}`} />
@@ -267,7 +267,7 @@ export default function HomePage({ userName }: { userName?: string }) {
                 );
               })}
               {habits.length > 6 && (
-                <Link to="/my-practice" className="block font-body text-xs text-muted-foreground text-center mt-2">
+                <Link to="/my-practice" className="block font-body text-xs text-muted-foreground text-center mt-3">
                   +{habits.length - 6} more
                 </Link>
               )}
@@ -278,8 +278,8 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ CHECK-IN — cream section ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <div className="rounded-[20px] bg-card border border-border p-6 md:p-8" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
-          <p className="font-display text-xl md:text-2xl font-bold text-foreground mb-5 text-center">How are you today?</p>
+        <div className="rounded-[22px] bg-card p-7 md:p-10 shadow-soft">
+          <p className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">How are you today?</p>
           <div className="flex flex-wrap gap-3 justify-center">
             {CHECKIN_STATES.map((state) => {
               const selected = checkin === state.label;
@@ -287,13 +287,13 @@ export default function HomePage({ userName }: { userName?: string }) {
                 <button
                   key={state.label}
                   onClick={() => handleCheckin(state.label)}
-                  className={`touch-btn flex flex-col items-center gap-1.5 rounded-2xl p-3 w-16 md:w-20 min-h-[60px] transition-all ${
+                  className={`touch-btn flex flex-col items-center gap-2 rounded-2xl p-3.5 w-16 md:w-20 min-h-[60px] transition-all ${
                     selected
-                      ? "ring-2 ring-primary scale-110 bg-secondary shadow-md"
-                      : "bg-secondary/50 active:bg-secondary/80"
+                      ? "ring-2 ring-primary scale-110 bg-background shadow-medium"
+                      : "bg-background/60 active:bg-background"
                   }`}
                 >
-                  <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
+                  <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden">
                     <SeedGeometry size={40} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
                   </div>
                   <span className="font-body text-xs font-medium text-foreground">{state.label}</span>
@@ -302,7 +302,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             })}
           </div>
           {checkin && (
-            <div className="flex items-center justify-center gap-3 mt-4">
+            <div className="flex items-center justify-center gap-3 mt-5">
               <span className="font-body text-sm text-primary">Logged: {checkin.toLowerCase()}</span>
               {streak > 1 && (
                 <span className="flex items-center gap-1 font-body text-sm text-muted-foreground">
@@ -318,8 +318,8 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ WEEK SNAPSHOT ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-4 text-center">This Week</p>
-        <div className="scroll-snap-x flex gap-2 pb-2 justify-center">
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-6 text-center">This week</p>
+        <div className="scroll-snap-x flex gap-2.5 pb-2 justify-center">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
             const isToday = dateStr === today.toISOString().split("T")[0];
@@ -332,7 +332,7 @@ export default function HomePage({ userName }: { userName?: string }) {
               <div
                 key={i}
                 className={`scroll-snap-item flex-shrink-0 w-16 rounded-2xl p-3 text-center transition-all ${
-                  isToday ? "bg-card ring-1 ring-primary/30 shadow-sm border border-border" : "bg-secondary/40"
+                  isToday ? "bg-card ring-1 ring-primary/20 shadow-soft" : "bg-card/50"
                 }`}
               >
                 <p className="font-body text-[10px] text-muted-foreground">
@@ -351,19 +351,19 @@ export default function HomePage({ userName }: { userName?: string }) {
       {/* ═══ HABIT GRID ═══ */}
       {habits.length > 0 && (
         <ContentSection className="px-5 md:px-4">
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Habit Grid</p>
+          <div className="flex items-center justify-between mb-5">
+            <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground">Habit grid</p>
             <Link to="/my-practice" className="font-body text-xs text-muted-foreground">
               full view
             </Link>
           </div>
-          <div className="rounded-[20px] bg-card border border-border p-4 overflow-x-auto" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
+          <div className="rounded-[22px] bg-card p-5 overflow-x-auto shadow-soft">
             <div className="grid gap-0.5" style={{ gridTemplateColumns: `100px repeat(7, 1fr)`, minWidth: 360 }}>
               <div />
               {weekDays.map((d, i) => {
                 const isToday = d.toISOString().split("T")[0] === todayStr;
                 return (
-                  <div key={i} className={`text-center py-0.5 ${isToday ? "bg-primary/10 rounded" : ""}`}>
+                  <div key={i} className={`text-center py-0.5 ${isToday ? "bg-primary/8 rounded" : ""}`}>
                     <p className="font-body text-[8px] text-muted-foreground">
                       {["M", "T", "W", "T", "F", "S", "S"][i]}
                     </p>
@@ -382,11 +382,11 @@ export default function HomePage({ userName }: { userName?: string }) {
                       const done = day.log[habit.id] || false;
                       const isDayToday = day.date === todayStr;
                       return (
-                        <div key={i} className={`flex items-center justify-center py-0.5 ${isDayToday ? "bg-primary/10 rounded" : ""}`}>
+                        <div key={i} className={`flex items-center justify-center py-0.5 ${isDayToday ? "bg-primary/8 rounded" : ""}`}>
                           {done ? (
                             <div className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
                           ) : (
-                            <div className="h-2.5 w-2.5 rounded-full border border-border/40" />
+                            <div className="h-2.5 w-2.5 rounded-full border border-muted/40" />
                           )}
                         </div>
                       );
@@ -400,17 +400,17 @@ export default function HomePage({ userName }: { userName?: string }) {
       )}
 
       {/* ═══ QUICK ACTIONS — atmospheric section ═══ */}
-      <AtmosphericHero size="sm" dotOpacity={0.05}>
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60 mb-5 text-center">Quick Actions</p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-3">
+      <AtmosphericHero size="sm" dotOpacity={0.04}>
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/50 mb-7 text-center">Quick actions</p>
+        <div className="grid gap-5 sm:grid-cols-3">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 shadow-elevated">
+            <div className="flex items-center gap-2 mb-4">
               <Droplets className="h-4 w-4 text-phase-follicular" />
               <span className="font-body text-xs font-medium text-phase-follicular uppercase tracking-wider">Hydration</span>
             </div>
             <div className="flex gap-1 mb-3">
               {Array.from({ length: 8 }, (_, i) => (
-                <div key={i} className={`h-4 w-4 rounded-full border transition-all ${i < water ? "bg-phase-follicular/40 border-phase-follicular/60" : "border-border"}`} />
+                <div key={i} className={`h-4 w-4 rounded-full transition-all ${i < water ? "bg-phase-follicular/40" : "bg-muted/30"}`} />
               ))}
             </div>
             <div className="flex items-center justify-between">
@@ -421,8 +421,8 @@ export default function HomePage({ userName }: { userName?: string }) {
             </div>
           </div>
 
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 shadow-elevated">
+            <div className="flex items-center gap-2 mb-4">
               <Sprout className="h-4 w-4 text-sage-mist" />
               <span className="font-body text-xs font-medium text-sage-mist uppercase tracking-wider">Seeds</span>
             </div>
@@ -434,7 +434,7 @@ export default function HomePage({ userName }: { userName?: string }) {
                   type="checkbox"
                   checked={seedsTakenToday}
                   onChange={(e) => { haptic("light"); setSeedsTakenToday(e.target.checked); setSeedsTaken(todayStr, e.target.checked); }}
-                  className="rounded border-border text-primary focus:ring-primary h-4 w-4"
+                  className="rounded border-muted text-primary focus:ring-primary h-4 w-4"
                 />
                 <span className="font-body text-xs text-muted-foreground">Seeds today?</span>
               </label>
@@ -444,8 +444,8 @@ export default function HomePage({ userName }: { userName?: string }) {
             )}
           </div>
 
-          <div className="rounded-[20px] bg-card/95 backdrop-blur-sm border border-border/50 p-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-6 shadow-elevated">
+            <div className="flex items-center gap-2 mb-4">
               <Clock className="h-4 w-4 text-lavender-dust" />
               <span className="font-body text-xs font-medium text-lavender-dust uppercase tracking-wider">Wind-down</span>
             </div>
@@ -456,22 +456,22 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ TODAY'S FOCUS — cream section ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">Today's Focus</p>
-        <div className="space-y-3 max-w-2xl mx-auto">
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8 text-center">Today's focus</p>
+        <div className="space-y-4 max-w-2xl mx-auto">
           {[
             { icon: Salad, label: "Nutrition", text: focus.nutrition },
             { icon: Dumbbell, label: "Movement", text: focus.movement },
-            { icon: Wind, label: "Nervous System", text: focus.nervous },
+            { icon: Wind, label: "Nervous system", text: focus.nervous },
             { icon: Moon, label: "Cycle", text: focus.cycle },
           ].map((item, i) => (
             <AnimatedCard key={item.label} index={i}>
-              <div className="rounded-[20px] bg-card border border-border p-5 md:p-6 flex items-start gap-4" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
-                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary">
+              <div className="rounded-[22px] bg-card p-6 md:p-7 flex items-start gap-5 shadow-soft">
+                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-background">
                   <item.icon className="h-4 w-4 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary font-medium">{item.label}</span>
-                  <p className="font-body text-sm text-foreground mt-1.5 leading-relaxed">{item.text}</p>
+                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-primary font-medium">{item.label}</span>
+                  <p className="font-body text-sm text-foreground mt-2 leading-relaxed">{item.text}</p>
                 </div>
               </div>
             </AnimatedCard>
@@ -480,7 +480,7 @@ export default function HomePage({ userName }: { userName?: string }) {
       </ContentSection>
 
       {/* Bottom breathing room */}
-      <div className="h-8 md:h-12" />
+      <div className="h-12 md:h-16" />
     </div>
   );
 }
