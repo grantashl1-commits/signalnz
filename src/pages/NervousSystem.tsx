@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Wind, PenLine, Hand } from "lucide-react";
+import { Loader2, Wind, PenLine, Hand, ExternalLink, Headphones } from "lucide-react";
 import BreathingModal from "@/components/BreathingModal";
 import JournalEditor from "@/components/JournalEditor";
 import { BotanicalSprig } from "@/components/BotanicalElements";
