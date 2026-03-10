@@ -1212,6 +1212,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "loaded-potatoes",
     name: "Loaded Potatoes",
+    image: "/images/recipes/meals/loaded-potatoes.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "50 min",
