@@ -278,6 +278,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "spiced-cauliflower-bowl",
     name: "Spiced Cauliflower & Quinoa Bowl",
+    image: "/images/recipes/meals/spiced-cauliflower-quinoa-bowl.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
