@@ -237,10 +237,10 @@ function MeditationsSection() {
       {/* Header */}
       <div className="mb-2">
         <h2 className="font-display text-2xl italic text-foreground mb-1">Meditation Library</h2>
-        <p className="font-hand text-sm font-bold text-primary mb-2">Practices drawn from the world's most respected mindfulness traditions.</p>
+        <p className="font-hand text-sm font-bold text-primary mb-2">Guided practices from trusted teachers to deepen awareness, compassion, and presence.</p>
         <p className="font-body text-sm text-muted-foreground leading-relaxed">
-          These guided meditations come from teachers and traditions widely used in mindfulness research and therapeutic settings.
-          Each practice offers a different pathway into awareness, emotional balance, and nervous system regulation.
+          These meditations come from widely respected mindfulness teachers and traditions including MBSR, compassion meditation, and non-sleep deep rest protocols.
+          Each practice offers a different pathway into awareness, calm, and emotional resilience.
         </p>
       </div>
 
