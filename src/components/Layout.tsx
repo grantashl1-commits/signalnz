@@ -166,7 +166,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           onTouchStart={isMobile ? handleTouchStart : undefined}
           onTouchEnd={isMobile ? handleTouchEnd : undefined}
         >
-          {children}
+          {typeof children === "object" && children !== null
+            ? (Array.isArray(children)
+                ? children
+                : [children]
+              ).map((child: any) =>
+                child?.props?.openSignal !== undefined
+                  ? child
+                  : typeof child === "object" && child !== null
+                  ? { ...child, props: { ...child.props, openSignal } }
+                  : child
+              )
+            : children}
         </motion.main>
       </AnimatePresence>
 
