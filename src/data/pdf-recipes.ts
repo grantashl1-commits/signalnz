@@ -663,6 +663,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "vegan-breakfast-patties",
     name: "Vegan Quinoa Breakfast Patties",
+    image: "/images/recipes/meals/vegan-quinoa-breakfast-patties.png",
     phase: "follicular",
     serves: 3,
     prepTime: "30 min",
