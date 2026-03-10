@@ -37,8 +37,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 25% 85%;             /* Warm Sand */
-    --input: 25 25% 85%;
+    --border: 25 20% 88%;             /* Softer border — reduced visibility */
+    --input: 25 20% 88%;
     --ring: 284 22% 53%;
 
     /* ── Radius ── */
@@ -47,11 +47,11 @@
     --radius-lg: 1.5rem;
     --radius-xl: 2rem;
 
-    /* ── Shadows ── */
-    --shadow-soft: 0 4px 20px rgba(139, 111, 94, 0.08);
-    --shadow-medium: 0 6px 24px rgba(139, 111, 94, 0.12);
-    --shadow-elevated: 0 12px 40px rgba(127, 91, 135, 0.12);
-    --shadow-glow: 0 0 20px rgba(153, 116, 161, 0.25);
+    /* ── Shadows — softer, more atmospheric ── */
+    --shadow-soft: 0 2px 16px rgba(139, 111, 94, 0.06);
+    --shadow-medium: 0 4px 24px rgba(139, 111, 94, 0.09);
+    --shadow-elevated: 0 8px 40px rgba(127, 91, 135, 0.1);
+    --shadow-glow: 0 0 24px rgba(153, 116, 161, 0.2);
 
     /* ── Spacing scale ── */
     --space-xs: 0.25rem;
@@ -92,7 +92,7 @@
     --sidebar-primary-foreground: 30 33% 98%;
     --sidebar-accent: 24 33% 92%;
     --sidebar-accent-foreground: 284 22% 44%;
-    --sidebar-border: 25 25% 85%;
+    --sidebar-border: 25 20% 88%;
     --sidebar-ring: 284 22% 53%;
 
     /* ── Typography ── */
@@ -158,21 +158,20 @@
   .phase-ovulatory-light { background-color: hsl(var(--phase-ovulatory) / 0.12); color: hsl(var(--phase-ovulatory)); }
   .phase-luteal-light { background-color: hsl(var(--phase-luteal) / 0.12); color: hsl(var(--phase-luteal)); }
 
-  /* ── Card system — uses design tokens ── */
+  /* ── Card system — borderless premium feel ── */
   .card-warm {
-    @apply bg-card rounded-[--radius-lg] border border-border;
+    @apply bg-card rounded-[--radius-lg];
     box-shadow: var(--shadow-soft);
   }
 
   .card-warm-hover {
     @apply card-warm;
     transition: all var(--duration-normal) var(--ease-calm);
-    box-shadow: var(--shadow-medium);
   }
   @media (hover: hover) {
     .card-warm-hover:hover {
-      box-shadow: var(--shadow-elevated);
-      transform: translateY(-1px);
+      box-shadow: var(--shadow-medium);
+      transform: translateY(-2px);
     }
   }
   .card-warm-hover:active {
@@ -186,7 +185,7 @@
 
   /* ── Frequency panel ── */
   .frequency-panel {
-    @apply relative overflow-hidden rounded-[--radius-lg] border border-border bg-card;
+    @apply relative overflow-hidden rounded-[--radius-lg] bg-card;
     box-shadow: var(--shadow-soft);
   }
   .frequency-panel::before {
@@ -240,8 +239,9 @@
 
   /* ── Mobile bottom sheet ── */
   .bottom-sheet {
-    @apply fixed bottom-0 left-0 right-0 z-[60] bg-card border-t border-border;
+    @apply fixed bottom-0 left-0 right-0 z-[60] bg-card;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    box-shadow: 0 -4px 40px rgba(127, 91, 135, 0.08);
     max-height: 90vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -317,14 +317,14 @@
 
 /* ── Scrollbar styling ── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--border));
-  border-radius: 3px;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
