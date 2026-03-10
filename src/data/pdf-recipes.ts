@@ -633,6 +633,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "rice-bean-salad-cleanse",
     name: "Rice & Bean Salad with Lime Dressing",
+    image: "/images/recipes/meals/rice-bean-salad-lime-dressing.png",
     phase: "ovulatory",
     serves: 3,
     prepTime: "20 min",
