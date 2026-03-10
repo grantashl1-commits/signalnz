@@ -84,32 +84,30 @@ export const PHASE_RITUAL_SUGGESTIONS: Record<Phase, { ritualId: string; reason:
   ],
 };
 
-export type HabitCategory = "supplements" | "nutrition" | "movement" | "wellness" | "mindset" | "self-care" | "custom";
+export type HabitCategory = "supplements" | "nutrition" | "movement" | "self-care";
 
 export const HABIT_CATEGORIES: { id: HabitCategory; label: string; color: string }[] = [
   { id: "supplements", label: "Supplements", color: "hsl(var(--sage-mist))" },
   { id: "nutrition", label: "Nutrition", color: "hsl(var(--petal-gold))" },
   { id: "movement", label: "Movement", color: "hsl(var(--coral-flame))" },
-  { id: "wellness", label: "Wellness", color: "hsl(var(--lavender-dust))" },
-  { id: "mindset", label: "Mindset", color: "hsl(130 30% 50%)" },
   { id: "self-care", label: "Self Care", color: "hsl(var(--bloom-blush))" },
-  { id: "custom", label: "Custom", color: "hsl(var(--sketch))" },
 ];
 
-export const CATEGORY_DOT_CLASSES: Record<HabitCategory, string> = {
+export const CATEGORY_DOT_CLASSES: Record<string, string> = {
   supplements: "bg-sage-mist",
   nutrition: "bg-petal-gold",
   movement: "bg-coral",
-  wellness: "bg-lavender-dust",
-  mindset: "bg-phase-follicular",
   "self-care": "bg-bloom",
+  // legacy categories mapped to self-care
+  wellness: "bg-bloom",
+  mindset: "bg-bloom",
   custom: "bg-sketch",
 };
 
 export interface Habit {
   id: string;
   name: string;
-  category: HabitCategory;
+  category: HabitCategory | string; // string for legacy categories
   duration?: string;
   timing?: string;
   notes?: string;
