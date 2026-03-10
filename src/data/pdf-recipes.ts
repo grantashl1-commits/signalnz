@@ -334,6 +334,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "green-pea-fritters",
     name: "Green Pea Fritters",
+    image: "/images/recipes/meals/green-pea-fritters.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
