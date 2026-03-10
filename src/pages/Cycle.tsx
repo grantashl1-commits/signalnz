@@ -192,6 +192,8 @@ export default function CyclePage() {
         <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Cycle Tracker</h1>
       </div>
 
+      <SignalContextChips pageContext="cycle" onOpenSignal={(p) => openSignal(p, "cycle")} compact />
+
       {/* Date picker — only shown if no date set yet */}
       {!hasDateSet && (
         <div className="card-warm p-4 md:p-5">
