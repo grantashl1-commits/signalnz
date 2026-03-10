@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Wind, PenLine, Hand } from "lucide-react";
+import { Loader2, Wind, PenLine, Hand, ExternalLink, Headphones } from "lucide-react";
 import BreathingModal from "@/components/BreathingModal";
 import JournalEditor from "@/components/JournalEditor";
 import { BotanicalSprig } from "@/components/BotanicalElements";
@@ -23,6 +23,15 @@ const SOMATIC = [
   { title: "Cold Water", desc: "Splash cold water on your face 3 times, or hold wrists under cold water for 30 seconds. Activates the dive reflex — instant calm.", hasTimer: false },
   { title: "5-4-3-2-1 Grounding", desc: "A sensory grounding sequence to bring you into the present moment.", hasSequence: true },
   { title: "EFT Tapping", desc: "Tap through the 8-point sequence: karate chop, eyebrow, side of eye, under eye, under nose, chin, collarbone, under arm.", hasTimer: false },
+];
+
+const MEDITATIONS = [
+  { title: "RAIN Meditation", teacher: "Tara Brach", platform: "Insight Timer", duration: "20 min", desc: "A guided practice using the RAIN framework — Recognise, Allow, Investigate, Nurture — for working with difficult emotions.", url: "https://insighttimer.com/tarabrach/guided-meditations/rain-meditation-25" },
+  { title: "Loving-kindness (Metta)", teacher: "Sharon Salzberg", platform: "Insight Timer", duration: "15 min", desc: "A classic metta meditation cultivating compassion for yourself and others through repeated phrases of goodwill.", url: "https://insighttimer.com/sharonsalzberg/guided-meditations/lovingkindness-meditation" },
+  { title: "Mindful Breathing", teacher: "Thích Nhất Hạnh", platform: "YouTube", duration: "20 min", desc: "A calming guided meditation from the Plum Village tradition, anchoring awareness in the breath.", url: "https://www.youtube.com/watch?v=XHvtIcaD194" },
+  { title: "3-Minute Breathing Space", teacher: "Mark Williams", platform: "Insight Timer", duration: "3 min", desc: "A brief MBCT practice perfect for micro-pauses throughout your day. Awareness, gathering, expanding.", url: "https://insighttimer.com/markwilliams/guided-meditations/the-3-minute-breathing-space" },
+  { title: "Yoga Nidra", teacher: "Richard Miller", platform: "Insight Timer", duration: "37 min", desc: "A full iRest Yoga Nidra session for deep rest and nervous system reset. Best done lying down.", url: "https://insighttimer.com/richardmiller/guided-meditations/full-irest-yoga-nidra-practice" },
+  { title: "IFS Parts Meditation", teacher: "Richard Schwartz", platform: "Insight Timer", duration: "12 min", desc: "An Internal Family Systems meditation to connect with and understand your inner parts with compassion.", url: "https://insighttimer.com/drrichardschwartz/guided-meditations/ifs-meditation" },
 ];
 
 const GROUNDING_STEPS = [
@@ -172,6 +181,46 @@ export default function NervousSystemPage() {
           ))}
         </div>
       </section>
+
+      {/* Meditations */}
+      <section className="space-y-4">
+        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-2">
+          <Headphones className="h-5 w-5 text-primary" /> Meditations
+        </h2>
+        <p className="font-body text-sm text-muted-foreground">Curated guided sessions from world-class teachers. These link to external platforms where you can listen for free.</p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {MEDITATIONS.map((m, i) => (
+            <motion.a
+              key={m.title}
+              href={m.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="card-warm p-5 flex flex-col justify-between hover:shadow-lg transition-shadow group"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-display text-lg italic text-foreground">{m.title}</h3>
+                  <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mt-1 group-hover:text-primary transition-colors" />
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="font-hand text-sm font-bold text-primary">{m.teacher}</span>
+                  <span className="text-muted-foreground/40">·</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">{m.duration}</span>
+                </div>
+                <p className="font-body text-sm text-muted-foreground leading-relaxed">{m.desc}</p>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <span className="rounded-full bg-secondary px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">{m.platform}</span>
+              </div>
+            </motion.a>
+          ))}
+        </div>
+      </section>
+
+      <BotanicalSprig width={180} className="mx-auto" />
 
       {/* AI Check-in */}
       <section className="card-warm p-6 space-y-4">
