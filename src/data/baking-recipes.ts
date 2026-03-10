@@ -529,5 +529,6 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cocoa provides magnesium for PMS relief. Protein powder and peanut butter sustain energy during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-fudge.png",
   },
 ];
