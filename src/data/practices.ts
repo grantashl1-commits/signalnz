@@ -39,7 +39,9 @@ export interface PracticeConfig {
   phases?: BreathPhase[];
   rounds?: number;
   steps?: PracticeStep[];
+  /** @deprecated Use illustrationUrl instead */
   emoji?: string;
+  illustrationUrl?: string;
   benefit?: string;
   // future-ready fields
   locale?: string;
