@@ -1,12 +1,11 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, X, Trash2, ChevronDown } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, WildStar } from "@/components/BotanicalElements";
-import { SelfCareHandIcon, RITUAL_ICONS } from "@/components/SelfCareIcons";
-import RitualPicker from "@/components/RitualPicker";
+import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import {
-  getHabits, saveHabits, addHabit, removeHabit,
+  getHabits, removeHabit,
   getHabitLog, toggleHabitForDate, getWeekHabitData,
   HABIT_CATEGORIES, CATEGORY_DOT_CLASSES, PHASE_RITUAL_SUGGESTIONS,
   SELF_CARE_RITUALS,
@@ -14,6 +13,8 @@ import {
 } from "@/data/self-care-rituals";
 import { getCycleInfo, getLastPeriodStart, type Phase } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
+
+const DEEP_VIOLET = "hsl(284, 22%, 44%)";
 
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
@@ -29,12 +30,8 @@ export default function PracticePage() {
   const [habits, setHabits] = useState(getHabits());
   const [todayLog, setTodayLog] = useState(getHabitLog(todayStr));
   const [activeCategory, setActiveCategory] = useState<HabitCategory | "all">("all");
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [showRitualPicker, setShowRitualPicker] = useState(false);
   const [showLibraryPicker, setShowLibraryPicker] = useState(false);
-  const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("nutrition");
-  const [addCategory, setAddCategory] = useState<HabitCategory>("self-care");
-  const [addName, setAddName] = useState("");
+  const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("self-care");
   const [expandedReason, setExpandedReason] = useState<string | null>(null);
 
   const refreshHabits = useCallback(() => {
@@ -54,27 +51,12 @@ export default function PracticePage() {
     refreshHabits();
   };
 
-  const handleAddCustom = () => {
-    if (!addName.trim()) return;
-    haptic("medium");
-    const habit: Habit = {
-      id: `${addCategory}-${Date.now()}`,
-      name: addName.trim(),
-      category: addCategory,
-      createdAt: new Date().toISOString(),
-    };
-    addHabit(habit);
-    setAddName("");
-    setShowAddForm(false);
-    refreshHabits();
-  };
-
   const handleAddSuggestion = (ritualId: string) => {
     haptic("medium");
     const ritual = SELF_CARE_RITUALS.find(r => r.id === ritualId);
     if (!ritual) return;
-    // Check if already exists
     if (habits.some(h => h.name === ritual.name)) return;
+    const { addHabit: addH } = require("@/data/self-care-rituals");
     const habit: Habit = {
       id: `selfcare-${ritual.id}-${Date.now()}`,
       name: ritual.name,
@@ -84,11 +66,25 @@ export default function PracticePage() {
       notes: ritual.notesPlaceholder,
       createdAt: new Date().toISOString(),
     };
-    addHabit(habit);
+    addH(habit);
     refreshHabits();
   };
 
-  const filtered = activeCategory === "all" ? habits : habits.filter(h => h.category === activeCategory);
+  const openPicker = (category: HabitCategory) => {
+    setLibraryPickerCategory(category);
+    setShowLibraryPicker(true);
+  };
+
+  // Map legacy categories to the 4 main ones for filtering
+  const mapCategory = (cat: string): string => {
+    if (cat === "wellness" || cat === "mindset" || cat === "custom") return "self-care";
+    return cat;
+  };
+
+  const filtered = activeCategory === "all"
+    ? habits
+    : habits.filter(h => mapCategory(h.category) === activeCategory);
+
   const completedToday = Object.values(todayLog).filter(Boolean).length;
   const totalHabits = habits.length;
 
@@ -138,22 +134,23 @@ export default function PracticePage() {
         )}
       </div>
 
-      {/* Category chips */}
+      {/* Category chips — deep violet when selected */}
       <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
         <button
           onClick={() => setActiveCategory("all")}
           className={`scroll-snap-item touch-btn rounded-full px-3 py-1.5 font-hand text-xs font-bold whitespace-nowrap transition-all ${
-            activeCategory === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+            activeCategory === "all" ? "text-primary-foreground" : "bg-secondary text-muted-foreground"
           }`}
+          style={activeCategory === "all" ? { backgroundColor: DEEP_VIOLET, color: "hsl(30, 33%, 98%)" } : undefined}
         >All</button>
         {HABIT_CATEGORIES.map(cat => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
             className={`scroll-snap-item touch-btn rounded-full px-3 py-1.5 font-hand text-xs font-bold whitespace-nowrap transition-all ${
-              activeCategory === cat.id ? "text-card" : "bg-secondary text-muted-foreground"
+              activeCategory === cat.id ? "text-primary-foreground" : "bg-secondary text-muted-foreground"
             }`}
-            style={activeCategory === cat.id ? { backgroundColor: cat.color } : undefined}
+            style={activeCategory === cat.id ? { backgroundColor: DEEP_VIOLET, color: "hsl(30, 33%, 98%)" } : undefined}
           >
             {cat.label}
           </button>
@@ -216,7 +213,7 @@ export default function PracticePage() {
           <button
             onClick={() => {
               haptic("light");
-              setShowAddForm(true);
+              openPicker("self-care");
             }}
             className="touch-btn flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 font-hand text-xs font-bold text-muted-foreground"
           >
@@ -236,7 +233,8 @@ export default function PracticePage() {
         <div className="space-y-2">
           {filtered.map((habit, i) => {
             const done = todayLog[habit.id] || false;
-            const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category);
+            const mappedCat = mapCategory(habit.category);
+            const catInfo = HABIT_CATEGORIES.find(c => c.id === mappedCat);
             return (
               <motion.div
                 key={habit.id}
@@ -301,8 +299,8 @@ export default function PracticePage() {
 
               {/* Habit rows */}
               {habits.map(habit => {
-                const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category);
-                const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
+                const mappedCat = mapCategory(habit.category);
+                const dotClass = CATEGORY_DOT_CLASSES[mappedCat] || CATEGORY_DOT_CLASSES[habit.category] || "bg-bloom";
                 return (
                   <div key={habit.id} className="contents">
                     <div className="flex items-center gap-1.5 pr-2 py-1.5">
@@ -333,97 +331,16 @@ export default function PracticePage() {
         </section>
       )}
 
-      {/* Add habit form */}
+      {/* Add habit bottom sheet — category selector then opens library */}
       <AnimatePresence>
-        {showAddForm && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-[60] bg-foreground/40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowAddForm(false)}
-            />
-            <motion.div
-              className="bottom-sheet z-[61]"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            >
-              <div className="bottom-sheet-handle" />
-              <div className="px-5 py-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-lg italic font-bold text-foreground">Add a habit.</h3>
-                  <button onClick={() => setShowAddForm(false)} className="touch-btn p-2 rounded-full bg-secondary">
-                    <X className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                </div>
-
-                {/* Category select */}
-                <div>
-                  <p className="font-hand text-xs font-bold text-muted-foreground mb-2">Category</p>
-                  <div className="flex flex-wrap gap-2">
-                    {HABIT_CATEGORIES.map(cat => (
-                      <button
-                        key={cat.id}
-                        onClick={() => {
-                          setAddCategory(cat.id);
-                          if (cat.id === "self-care") {
-                            setShowAddForm(false);
-                            setShowRitualPicker(true);
-                          } else if (cat.id === "nutrition" || cat.id === "movement") {
-                            setShowAddForm(false);
-                            setLibraryPickerCategory(cat.id);
-                            setShowLibraryPicker(true);
-                          }
-                        }}
-                        className={`touch-btn rounded-full px-3 py-1.5 font-hand text-xs font-bold transition-all ${
-                          addCategory === cat.id ? "text-card" : "bg-secondary text-muted-foreground"
-                        }`}
-                        style={addCategory === cat.id ? { backgroundColor: cat.color } : undefined}
-                      >
-                        {cat.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {addCategory !== "self-care" && (
-                  <>
-                    <div>
-                      <p className="font-hand text-xs font-bold text-muted-foreground mb-1">Habit name</p>
-                      <input
-                        type="text"
-                        value={addName}
-                        onChange={e => setAddName(e.target.value)}
-                        placeholder="e.g. Take magnesium..."
-                        className="w-full rounded-xl bg-secondary px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-                      />
-                    </div>
-                    <button
-                      onClick={handleAddCustom}
-                      disabled={!addName.trim()}
-                      className="touch-btn w-full rounded-[14px] py-3 min-h-[48px] font-body text-sm font-bold text-primary-foreground bg-primary active:opacity-90 transition-opacity disabled:opacity-30"
-                    >
-                      Add habit →
-                    </button>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </>
+        {!showLibraryPicker && (
+          <div className="pb-4">
+            {/* This section intentionally empty — the + Add habit button opens a category chooser inline */}
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Ritual picker for self-care */}
-      <RitualPicker
-        open={showRitualPicker}
-        onClose={() => setShowRitualPicker(false)}
-        onAdded={refreshHabits}
-      />
-
-      {/* Library picker for nutrition / movement */}
+      {/* Library picker for all categories */}
       <HabitLibraryPicker
         open={showLibraryPicker}
         category={libraryPickerCategory}
