@@ -885,6 +885,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chickpea-rice-salad",
     name: "Chickpea Rice Salad",
+    image: "/images/recipes/meals/chickpea-rice-salad.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
