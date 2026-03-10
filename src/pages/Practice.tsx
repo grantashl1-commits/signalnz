@@ -31,6 +31,7 @@ export default function PracticePage() {
   const [todayLog, setTodayLog] = useState(getHabitLog(todayStr));
   const [activeCategory, setActiveCategory] = useState<HabitCategory | "all">("all");
   const [showLibraryPicker, setShowLibraryPicker] = useState(false);
+  const [showCategoryChooser, setShowCategoryChooser] = useState(false);
   const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("self-care");
   const [expandedReason, setExpandedReason] = useState<string | null>(null);
 
