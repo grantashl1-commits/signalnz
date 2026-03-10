@@ -380,6 +380,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Dark chocolate is rich in magnesium for PMS relief. Peanut butter provides sustained energy during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/peanut-butter-rice-cups.png",
   },
   {
     id: "secret-centre-choc-cookies",
