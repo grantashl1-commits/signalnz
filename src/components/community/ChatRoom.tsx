@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MOCK_MESSAGES, type CommunityGroup, type ChatMessage } from "@/data/community-data";
+import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
 
 function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
   return (
@@ -70,7 +71,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
       {/* Challenge banner */}
       <div className="bg-amber-50 rounded-[10px] px-3 py-2 mb-3 flex-shrink-0">
-        <span className="font-mono text-[10px] text-primary mr-1.5">challenge</span>
+        <span className="font-mono text-[10px] text-primary mr-1.5">Challenge</span>
         <span className="font-display text-xs italic text-foreground/70">{group.challenges[0]}</span>
       </div>
 
@@ -92,7 +93,9 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "poll" && (
                   <div className="card-warm p-3.5 min-w-[210px] w-full">
-                    <p className="font-mono text-[10px] text-primary mb-1">📊 poll</p>
+                    <p className="font-mono text-[10px] text-primary mb-1 flex items-center gap-1">
+                      <HandDrawnChart size={12} color="hsl(var(--primary))" /> poll
+                    </p>
                     <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
                     {m.options?.map((opt, i) => {
                       const total = (m.votes || []).reduce((a, b) => a + b, 0);
@@ -122,10 +125,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "event" && (
                   <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
-                    <p className="font-mono text-[10px] text-primary mb-1">📅 event</p>
+                    <p className="font-mono text-[10px] text-primary mb-1 flex items-center gap-1">
+                      <HandDrawnCalendar size={12} color="hsl(var(--primary))" /> event
+                    </p>
                     <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
-                    {m.date && <p className="font-mono text-[11px] text-muted-foreground mb-0.5">🕐 {m.date}</p>}
-                    {m.location && <p className="font-mono text-[11px] text-muted-foreground mb-2">📍 {m.location}</p>}
+                    {m.date && <p className="font-mono text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
+                    {m.location && <p className="font-mono text-[11px] text-muted-foreground mb-2">{m.location}</p>}
                     <button className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">
                       I'm going ({m.going})
                     </button>
@@ -143,11 +148,13 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Moderation block */}
       {blocked && (
         <div className="bg-amber-50 border border-primary/20 rounded-[14px] p-4 mb-2.5 flex-shrink-0">
-          <p className="font-mono text-[11px] text-primary mb-1.5">✋ pause for a moment</p>
+          <p className="font-mono text-[11px] text-primary mb-1.5 flex items-center gap-1">
+            <HandDrawnHand size={14} color="hsl(var(--primary))" /> Pause for a moment
+          </p>
           <p className="font-display text-sm italic text-foreground leading-relaxed mb-2.5">{blocked.reflection}</p>
           {blocked.suggested_rewrite && (
             <div className="bg-phase-follicular/10 rounded-[10px] p-2.5 mb-2.5">
-              <p className="font-mono text-[10px] text-phase-follicular mb-0.5">suggested response</p>
+              <p className="font-mono text-[10px] text-phase-follicular mb-0.5">Suggested response</p>
               <p className="font-display text-[13px] italic text-phase-follicular leading-relaxed">{blocked.suggested_rewrite}</p>
             </div>
           )}
@@ -160,11 +167,11 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                 }}
                 className="touch-btn font-display text-[13px] italic text-primary-foreground bg-phase-follicular rounded-full px-4 py-2"
               >
-                send this instead
+                Send this instead
               </button>
             )}
             <button onClick={() => { setBlocked(null); setInput(""); }} className="touch-btn font-display text-[13px] italic text-muted-foreground bg-secondary rounded-full px-3.5 py-2">
-              discard
+              Discard
             </button>
           </div>
         </div>
@@ -173,7 +180,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Poll builder */}
       {showPoll && (
         <div className="card-warm p-3.5 mb-2 flex-shrink-0">
-          <p className="font-mono text-[11px] text-primary mb-2">create a poll</p>
+          <p className="font-mono text-[11px] text-primary mb-2">Create a poll</p>
           <input value={pollQ} onChange={(e) => setPollQ(e.target.value)} placeholder="Your question…"
             className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
             inputMode="text" autoComplete="off" />
@@ -185,8 +192,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           ))}
           <div className="flex gap-2 flex-wrap">
             <button onClick={() => setPollOpts((o) => [...o, ""])} className="touch-btn font-mono text-[11px] text-muted-foreground border border-border rounded-full px-2.5 py-1.5">+ option</button>
-            <button onClick={sendPoll} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">send poll</button>
-            <button onClick={() => setShowPoll(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">cancel</button>
+            <button onClick={sendPoll} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">Send poll</button>
+            <button onClick={() => setShowPoll(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">Cancel</button>
           </div>
         </div>
       )}
@@ -194,7 +201,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Event builder */}
       {showEvent && (
         <div className="card-warm p-3.5 mb-2 flex-shrink-0">
-          <p className="font-mono text-[11px] text-primary mb-2">create an event</p>
+          <p className="font-mono text-[11px] text-primary mb-2">Create an event</p>
           <input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} placeholder="Event name…"
             className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
             inputMode="text" autoComplete="off" />
@@ -205,8 +212,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             className="w-full px-3 py-2 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-2 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
             inputMode="text" autoComplete="off" />
           <div className="flex gap-2 flex-wrap">
-            <button onClick={sendEvent} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">post event</button>
-            <button onClick={() => setShowEvent(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">cancel</button>
+            <button onClick={sendEvent} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">Post event</button>
+            <button onClick={() => setShowEvent(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">Cancel</button>
           </div>
         </div>
       )}
@@ -215,12 +222,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       <div className="border-t border-border pt-2.5 flex-shrink-0">
         <div className="flex gap-1.5 mb-1.5 overflow-x-auto scroll-snap-x pb-0.5">
           {[
-            { icon: "📊", label: "poll", action: () => { setShowPoll((p) => !p); setShowEvent(false); } },
-            { icon: "📅", label: "event", action: () => { setShowEvent((e) => !e); setShowPoll(false); } },
-            { icon: "🖼️", label: "image", action: () => {} },
-            { icon: "🎤", label: "voice", action: () => {} },
+            { icon: <HandDrawnChart size={13} color="hsl(var(--muted-foreground))" />, label: "poll", action: () => { setShowPoll((p) => !p); setShowEvent(false); } },
+            { icon: <HandDrawnCalendar size={13} color="hsl(var(--muted-foreground))" />, label: "event", action: () => { setShowEvent((e) => !e); setShowPoll(false); } },
+            { icon: <HandDrawnImage size={13} color="hsl(var(--muted-foreground))" />, label: "image", action: () => {} },
+            { icon: <HandDrawnMic size={13} color="hsl(var(--muted-foreground))" />, label: "voice", action: () => {} },
           ].map((b) => (
-            <button key={b.label} onClick={b.action} className="touch-btn font-mono text-[11px] text-muted-foreground bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item">
+            <button key={b.label} onClick={b.action} className="touch-btn font-mono text-[11px] text-muted-foreground bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1">
               {b.icon} {b.label}
             </button>
           ))}
@@ -230,7 +237,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-            placeholder="say something kind…"
+            placeholder="Say something kind…"
             rows={1}
             className="flex-1 px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 leading-relaxed placeholder:text-muted-foreground/40"
             style={{ fontSize: "16px" }}
@@ -247,11 +254,11 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             {checking ? (
               <span className="font-mono text-[10px] text-muted-foreground">…</span>
             ) : (
-              <span className="text-primary-foreground text-[15px] ml-0.5">➤</span>
+              <HandDrawnSend size={16} color={input.trim() ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))"} />
             )}
           </button>
         </div>
-        <p className="font-mono text-[10px] text-muted-foreground mt-1 text-center">moderated for kindness, not censored for truth.</p>
+        <p className="font-mono text-[10px] text-muted-foreground mt-1 text-center">Moderated for kindness, not censored for truth.</p>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
+import { BotanicalSprig, CymatiSketch, HandDrawnBook, HandDrawnSparkle, HandDrawnLeaf, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,10 +21,8 @@ const PROMPTS = [
 ];
 
 const TRACKING = [
-  { key: "mood", label: "Mood", emoji: "🌿", max: 10 },
-  { key: "energy", label: "Energy", emoji: "⚡", max: 10 },
-  { key: "sleep", label: "Sleep (hrs)", emoji: "🌙", max: 12 },
-  { key: "water", label: "Water (glasses)", emoji: "💧", max: 12 },
+  { key: "mood", label: "Mood", max: 10 },
+  { key: "energy", label: "Energy", max: 10 },
 ];
 
 // ── STORAGE ───────────────────────────────────────────────────
@@ -61,10 +59,35 @@ function Pill({ label, variant = "sage" }: { label: string; variant?: "sage" | "
   );
 }
 
+// ── TRACKING ICONS ────────────────────────────────────────────
+function MoodIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={{ opacity: 0.7 }}>
+      <circle cx={8} cy={8} r={6.5} fill="none" stroke="hsl(var(--phase-follicular))" strokeWidth={0.9} />
+      <circle cx={6} cy={6.5} r={0.7} fill="hsl(var(--phase-follicular))" opacity={0.6} />
+      <circle cx={10} cy={6.5} r={0.7} fill="hsl(var(--phase-follicular))" opacity={0.6} />
+      <path d="M 5.5 9.5 Q 8 12 10.5 9.5" fill="none" stroke="hsl(var(--phase-follicular))" strokeWidth={0.7} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function EnergyIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={{ opacity: 0.7 }}>
+      <path d="M 9 2 L 6 8 L 9 8 L 7 14" fill="none" stroke="hsl(var(--primary))" strokeWidth={1} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const TRACKING_ICONS: Record<string, React.FC<{ size?: number }>> = {
+  mood: MoodIcon,
+  energy: EnergyIcon,
+};
+
 // ── NEW ENTRY FORM ────────────────────────────────────────────
 function NewEntryForm({ onSaved }: { onSaved: (entries: JournalEntry[]) => void }) {
   const [prompts, setPrompts] = useState<Record<string, string>>({});
-  const [tracking, setTracking] = useState({ mood: 5, energy: 5, sleep: 7, water: 6 });
+  const [tracking, setTracking] = useState({ mood: 5, energy: 5 });
   const [saving, setSaving] = useState(false);
 
   const today = new Date().toLocaleDateString("en-NZ", {
@@ -97,22 +120,27 @@ function NewEntryForm({ onSaved }: { onSaved: (entries: JournalEntry[]) => void 
       {/* Tracking sliders */}
       <div className="card-warm p-5">
         <h3 className="font-display text-lg italic text-foreground mb-4">How does your body feel right now?</h3>
-        {TRACKING.map((f) => (
-          <div key={f.key} className="mb-3.5">
-            <div className="flex justify-between mb-1">
-              <span className="font-mono text-[13px] text-foreground/70">{f.emoji} {f.label}</span>
-              <span className="font-display text-lg italic text-primary">{tracking[f.key as keyof typeof tracking]}</span>
+        {TRACKING.map((f) => {
+          const Icon = TRACKING_ICONS[f.key];
+          return (
+            <div key={f.key} className="mb-3.5">
+              <div className="flex justify-between mb-1">
+                <span className="font-mono text-[13px] text-foreground/70 flex items-center gap-1.5">
+                  {Icon && <Icon size={14} />} {f.label}
+                </span>
+                <span className="font-display text-lg italic text-primary">{tracking[f.key as keyof typeof tracking]}</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={f.max}
+                value={tracking[f.key as keyof typeof tracking]}
+                onChange={(e) => setTracking((t) => ({ ...t, [f.key]: +e.target.value }))}
+                className="w-full accent-primary cursor-pointer"
+              />
             </div>
-            <input
-              type="range"
-              min={0}
-              max={f.max}
-              value={tracking[f.key as keyof typeof tracking]}
-              onChange={(e) => setTracking((t) => ({ ...t, [f.key]: +e.target.value }))}
-              className="w-full accent-primary cursor-pointer"
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Journal prompts */}
@@ -135,7 +163,7 @@ function NewEntryForm({ onSaved }: { onSaved: (entries: JournalEntry[]) => void 
         disabled={saving}
         className="touch-btn w-full rounded-[14px] bg-primary py-4 font-display text-[17px] italic text-primary-foreground active:opacity-90 disabled:opacity-50 transition-opacity"
       >
-        {saving ? "saving…" : "save entry →"}
+        {saving ? "Saving…" : "Save entry"}
       </button>
     </div>
   );
@@ -154,9 +182,9 @@ function EntriesList({
   if (!entries.length) {
     return (
       <div className="text-center pt-16">
-        <div className="text-5xl mb-4">📖</div>
-        <p className="font-display text-xl italic text-foreground mb-2">your story begins today.</p>
-        <p className="font-display text-sm italic text-muted-foreground">your first entry is waiting to be written.</p>
+        <HandDrawnBook size={48} color="hsl(var(--primary))" className="mx-auto mb-4" />
+        <p className="font-display text-xl italic text-foreground mb-2">Your story begins today.</p>
+        <p className="font-display text-sm italic text-muted-foreground">Your first entry is waiting to be written.</p>
       </div>
     );
   }
@@ -174,10 +202,9 @@ function EntriesList({
             <div>
               <p className="font-display text-base italic text-foreground mb-1">{e.date}</p>
               {e.tracking && (
-                <div className="flex gap-2.5 font-mono text-xs text-muted-foreground">
-                  <span>🌿 {e.tracking.mood}/10</span>
-                  <span>⚡ {e.tracking.energy}/10</span>
-                  <span>🌙 {e.tracking.sleep}h</span>
+                <div className="flex gap-2.5 font-mono text-xs text-muted-foreground items-center">
+                  <span className="flex items-center gap-1"><MoodIcon size={12} /> {e.tracking.mood}/10</span>
+                  <span className="flex items-center gap-1"><EnergyIcon size={12} /> {e.tracking.energy}/10</span>
                 </div>
               )}
             </div>
@@ -186,14 +213,14 @@ function EntriesList({
                 onClick={() => onViewAnalysis(e)}
                 className="font-mono text-[11px] text-muted-foreground bg-secondary rounded-full px-3.5 py-1.5 active:opacity-70"
               >
-                view analysis
+                View analysis
               </button>
             ) : (
               <button
                 onClick={() => onAnalyse(e)}
-                className="font-mono text-[11px] text-primary border border-primary/30 rounded-full px-3.5 py-1.5 active:opacity-70"
+                className="font-mono text-[11px] text-primary border border-primary/30 rounded-full px-3.5 py-1.5 active:opacity-70 flex items-center gap-1"
               >
-                ✨ analyse
+                <HandDrawnSparkle size={12} color="hsl(var(--primary))" /> Analyse
               </button>
             )}
           </div>
@@ -222,9 +249,9 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
   if (!ai || !ai.summary || ai.summary.startsWith("Unable")) {
     return (
       <div className="text-center pt-16">
-        <div className="text-4xl mb-4">🌿</div>
-        <p className="font-display text-xl italic text-foreground mb-2">reading your entry with care…</p>
-        <p className="font-mono text-xs text-muted-foreground">your AI therapist is listening.</p>
+        <HandDrawnLeaf size={40} color="hsl(var(--primary))" className="mx-auto mb-4" />
+        <p className="font-display text-xl italic text-foreground mb-2">Reading your entry with care…</p>
+        <p className="font-mono text-xs text-muted-foreground">Your AI therapist is listening.</p>
         <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mt-6" />
       </div>
     );
@@ -240,7 +267,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
   return (
     <div className="pb-10">
       <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70">
-        <ArrowLeft className="h-3.5 w-3.5" /> back to entries
+        <ArrowLeft className="h-3.5 w-3.5" /> Back to entries
       </button>
       <h2 className="font-display text-2xl font-bold italic text-foreground mb-0.5">Soul Analysis</h2>
       <p className="font-mono text-xs text-muted-foreground mb-5">{entry.date}</p>
@@ -248,7 +275,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
       {/* Summary */}
       {ai.summary && (
         <div className="rounded-2xl bg-primary/5 border border-primary/15 p-4.5 mb-3">
-          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">today's signal</p>
+          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">Today's signal</p>
           <p className="font-display text-sm italic text-foreground/80 leading-relaxed">{ai.summary}</p>
         </div>
       )}
@@ -265,7 +292,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
 
       {/* IFS Insight */}
       {ai.ifs_insight && (
-        <Section title="🔮 Parts Work Insight (IFS)" accent="hsl(var(--petal-gold))">
+        <Section title="Parts Work Insight (IFS)" accent="hsl(var(--petal-gold))">
           <p className="font-display text-sm italic text-foreground/70 leading-relaxed">{ai.ifs_insight}</p>
         </Section>
       )}
@@ -275,7 +302,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
         <Section title="Patterns I Notice">
           {ai.patterns.map((p: string, i: number) => (
             <div key={i} className="flex gap-2.5 mb-2.5">
-              <span className="text-sm text-[hsl(var(--petal-gold))] flex-shrink-0 mt-0.5">◈</span>
+              <span className="text-sm text-[hsl(var(--petal-gold))] flex-shrink-0 mt-0.5">·</span>
               <p className="font-display text-sm italic text-foreground/70 leading-relaxed">{p}</p>
             </div>
           ))}
@@ -285,7 +312,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
       {/* Unspoken desires */}
       {ai.unspoken_desires && (
         <div className="rounded-2xl bg-phase-follicular/5 border border-phase-follicular/15 p-4.5 mb-3">
-          <h3 className="font-display text-[17px] italic text-foreground mb-2">💚 What I sense you're reaching for…</h3>
+          <h3 className="font-display text-[17px] italic text-foreground mb-2">What I sense you're reaching for…</h3>
           <p className="font-display text-sm italic text-phase-follicular leading-relaxed">{ai.unspoken_desires}</p>
         </div>
       )}
@@ -304,7 +331,9 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
         <Section title="Recommendations For You">
           {ai.recommendations.map((r: any, i: number) => (
             <div key={i} className="flex gap-3 bg-secondary/30 rounded-xl p-3.5 mb-2">
-              <span className="text-xl">{r.type === "book" ? "📚" : r.type === "podcast" ? "🎧" : "🌿"}</span>
+              <div className="mt-0.5">
+                {r.type === "book" ? <HandDrawnBook size={20} color="hsl(var(--primary))" /> : r.type === "podcast" ? <EnergyIcon size={20} /> : <HandDrawnLeaf size={20} color="hsl(var(--phase-follicular))" />}
+              </div>
               <div>
                 <p className="font-display text-sm italic text-foreground mb-0.5">{r.title}</p>
                 <p className="font-mono text-xs text-muted-foreground leading-snug mb-1.5">{r.reason}</p>
@@ -330,7 +359,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
       {/* Affirmation */}
       {ai.affirmation && (
         <div className="rounded-2xl bg-gradient-to-br from-primary/5 to-secondary p-6 text-center mb-3 border border-primary/10">
-          <div className="text-3xl mb-3">✨</div>
+          <WildStar size={28} className="mx-auto mb-3" />
           <p className="font-display text-lg italic text-foreground leading-relaxed">"{ai.affirmation}"</p>
         </div>
       )}
@@ -399,7 +428,7 @@ export default function JournalPage() {
       {view !== "analysis" && (
         <div className="flex justify-between items-start mb-6">
           <div>
-            <p className="font-hand text-sm font-bold text-primary">journal</p>
+            <p className="font-hand text-sm font-bold text-primary">Journal</p>
             <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground mt-0.5">
               {view === "new" ? "New Entry" : "My Journal"}
             </h1>
@@ -415,7 +444,7 @@ export default function JournalPage() {
                 onClick={() => { haptic("medium"); setView("new"); }}
                 className="touch-btn font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-5 py-2.5 active:opacity-90"
               >
-                + new entry
+                + New entry
               </button>
             )}
             {view === "new" && (
@@ -423,7 +452,7 @@ export default function JournalPage() {
                 onClick={() => setView("list")}
                 className="font-mono text-xs text-muted-foreground active:opacity-70"
               >
-                cancel
+                Cancel
               </button>
             )}
           </div>

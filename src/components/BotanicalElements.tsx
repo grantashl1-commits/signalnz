@@ -379,6 +379,178 @@ export function PhaseIndicator({ phase, size = 18, className = "" }: { phase: Ph
   }
 }
 
+// ─── Hand-Drawn Icon Library ────────────────────────
+
+export function HandDrawnBook({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 4 3 Q 3.8 10 4 17" fill="none" stroke={color} strokeWidth={1} strokeLinecap="round" />
+      <path d="M 4 3 Q 10 2.5 16 3" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+      <path d="M 4 17 Q 10 16.5 16 17" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+      <path d="M 16 3 Q 16.2 10 16 17" fill="none" stroke={color} strokeWidth={1} strokeLinecap="round" />
+      <path d="M 6 6 Q 9 5.8 14 6" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+      <path d="M 6 8.5 Q 9 8.3 13 8.5" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+      <path d="M 6 11 Q 9 10.8 12 11" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnVillage({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 3 16 L 3 9 L 6 6 L 9 9 L 9 16" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 9 16 L 9 8 L 13 5 L 17 8 L 17 16" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 5 12 L 5 14 L 7 14 L 7 12" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+      <path d="M 12 11 L 12 13 L 14 13 L 14 11" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+      <path d="M 2 16 L 18 16" fill="none" stroke={color} strokeWidth={0.7} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnLeaf({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 10 17 Q 9 12 6 8 Q 4 5 5 3 Q 8 2 11 4 Q 15 7 14 12 Q 13 15 10 17" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <path d="M 10 17 Q 9.5 13 7.5 9" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnLock({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 7 9 Q 7 5 10 4 Q 13 5 13 9" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <rect x={5.5} y={9} width={9} height={7} rx={1.5} fill="none" stroke={color} strokeWidth={0.9} />
+      <circle cx={10} cy={12.5} r={1} fill={color} opacity={0.5} />
+    </svg>
+  );
+}
+
+export function HandDrawnCamera({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 3 7 Q 3 6 4 6 L 7 6 L 8 4 L 12 4 L 13 6 L 16 6 Q 17 6 17 7 L 17 15 Q 17 16 16 16 L 4 16 Q 3 16 3 15 Z" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={10} cy={11} r={3} fill="none" stroke={color} strokeWidth={0.8} />
+      <circle cx={10} cy={11} r={1} fill="none" stroke={color} strokeWidth={0.5} />
+    </svg>
+  );
+}
+
+export function HandDrawnChart({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 4 16 L 4 4" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+      <path d="M 4 16 L 17 16" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+      <path d="M 7 16 L 7 10" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" />
+      <path d="M 10 16 L 10 7" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" />
+      <path d="M 13 16 L 13 11" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" />
+      <path d="M 16 16 L 16 5" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnCalendar({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <rect x={3} y={5} width={14} height={12} rx={1.5} fill="none" stroke={color} strokeWidth={0.9} />
+      <path d="M 3 9 L 17 9" fill="none" stroke={color} strokeWidth={0.7} strokeLinecap="round" />
+      <path d="M 7 3 L 7 6" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <path d="M 13 3 L 13 6" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <circle cx={7} cy={12} r={0.8} fill={color} opacity={0.5} />
+      <circle cx={10} cy={12} r={0.8} fill={color} opacity={0.5} />
+      <circle cx={13} cy={12} r={0.8} fill={color} opacity={0.5} />
+    </svg>
+  );
+}
+
+export function HandDrawnPin({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 10 18 Q 10 14 6 10 Q 3 7 4 4.5 Q 5 2 10 2 Q 15 2 16 4.5 Q 17 7 14 10 Q 10 14 10 18" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <circle cx={10} cy={7} r={2} fill="none" stroke={color} strokeWidth={0.7} />
+    </svg>
+  );
+}
+
+export function HandDrawnSend({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 3 10 L 17 3 L 12 17 L 10 11 Z" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 10 11 L 17 3" fill="none" stroke={color} strokeWidth={0.5} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnSparkle({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 10 2 Q 10.5 7 10 10 Q 10.5 7 15 7 Q 10.5 7.5 10 10 Q 10 7.5 5 7 Q 10 7 10 2" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 10 10 Q 10.5 13 10 18 Q 10 13 15 13 Q 10.5 13 10 10 Q 10 13 5 13 Q 10 13 10 10" fill="none" stroke={color} strokeWidth={0.6} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={15} cy={4} r={0.7} fill={color} opacity={0.4} />
+      <circle cx={5} cy={15} r={0.5} fill={color} opacity={0.3} />
+    </svg>
+  );
+}
+
+export function HandDrawnEye({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 2 10 Q 5 5 10 5 Q 15 5 18 10 Q 15 15 10 15 Q 5 15 2 10" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <circle cx={10} cy={10} r={2.5} fill="none" stroke={color} strokeWidth={0.8} />
+      <circle cx={10} cy={10} r={1} fill={color} opacity={0.4} />
+    </svg>
+  );
+}
+
+export function HandDrawnImage({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <rect x={3} y={4} width={14} height={12} rx={1.5} fill="none" stroke={color} strokeWidth={0.9} />
+      <circle cx={7} cy={8} r={1.5} fill="none" stroke={color} strokeWidth={0.6} />
+      <path d="M 3 14 L 7 10 L 11 13 L 14 10 L 17 13" fill="none" stroke={color} strokeWidth={0.7} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnMic({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <rect x={8} y={3} width={4} height={8} rx={2} fill="none" stroke={color} strokeWidth={0.9} />
+      <path d="M 5 10 Q 5 15 10 15 Q 15 15 15 10" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+      <path d="M 10 15 L 10 18" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+      <path d="M 7 18 L 13 18" fill="none" stroke={color} strokeWidth={0.7} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnCheck({ size = 14, color = "#4A9E5C", opacity = 0.8, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" className={className} style={{ opacity }}>
+      <path d="M 3 7 L 6 10 L 11 4" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnCross({ size = 14, color = "#C4526E", opacity = 0.8, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" className={className} style={{ opacity }}>
+      <path d="M 4 4 L 10 10" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" />
+      <path d="M 10 4 L 4 10" fill="none" stroke={color} strokeWidth={1.2} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function HandDrawnHand({ size = 20, color = SKETCH_COLOR, opacity = 0.7, className = "" }: { size?: number; color?: string; opacity?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" className={className} style={{ opacity }}>
+      <path d="M 10 3 L 10 11" fill="none" stroke={color} strokeWidth={1} strokeLinecap="round" />
+      <path d="M 7 5 L 7 10" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <path d="M 13 5 L 13 10" fill="none" stroke={color} strokeWidth={0.9} strokeLinecap="round" />
+      <path d="M 5 8 L 5 12 Q 5 16 10 17 Q 15 16 15 12 L 15 8" fill="none" stroke={color} strokeWidth={0.8} strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // ─── Default export for backward compat ─────────────
 export default function CymaticPattern({ phase, size = 400, opacity, className = "", active = false }: { phase: Phase; size?: number; opacity?: number; className?: string; active?: boolean }) {
   const defaultOpacity = active ? 0.15 : 0.1;
