@@ -48,7 +48,8 @@ export default function JournalPage() {
       id: `pin-${Date.now()}`,
       type: "text",
       content: content.slice(0, 200),
-      x: 0, y: 0, width: 200, height: 100,
+      x: Math.random() * 400 + 100, y: Math.random() * 300 + 100, width: 240, height: 140,
+      zIndex: 0,
       linkedEntryId: entry.id,
     };
     const board = loadDreamBoard();
