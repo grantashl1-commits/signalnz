@@ -974,6 +974,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "cranberry-walnut-chickpea-salad",
     name: "Cranberry, Walnut & Chickpea Salad",
+    image: "/images/recipes/meals/cranberry-walnut-chickpea-salad.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
