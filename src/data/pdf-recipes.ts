@@ -305,6 +305,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "raw-pad-thai-cleanse",
     name: "Raw Pad Thai with Coconut Tahini",
+    image: "/images/recipes/meals/raw-pad-thai-coconut-tahini.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
