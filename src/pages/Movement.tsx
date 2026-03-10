@@ -132,6 +132,8 @@ export default function MovementPage() {
         <p className="font-body text-xs text-muted-foreground mt-0.5 italic">{PHASE_MOVEMENT_LABEL[info.phase]}</p>
       </div>
 
+      <SignalContextChips pageContext="movement" onOpenSignal={(p) => openSignal(p, "movement")} compact />
+
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 
       {/* Tab bar - scrollable */}
