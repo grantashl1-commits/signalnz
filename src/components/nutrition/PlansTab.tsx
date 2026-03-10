@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
-import { PHASE_MEAL_PLANS, RECIPES, Recipe } from "@/data/meal-plans";
-import { PDF_RECIPES } from "@/data/pdf-recipes";
+import { PHASE_MEAL_PLANS, Recipe } from "@/data/meal-plans";
+import { findRecipeByName } from "@/lib/recipe-index";
 import { RecipeIllustration } from "@/components/MealIllustration";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
@@ -16,65 +16,66 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-const ALL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES];
-
-function findRecipe(mealName: string): Recipe | undefined {
-  const lower = mealName.toLowerCase();
-  return ALL_RECIPES.find((r) => r.name.toLowerCase() === lower) ||
-    ALL_RECIPES.find((r) => lower.includes(r.name.toLowerCase()) || r.name.toLowerCase().includes(lower));
-}
-
 interface PlansTabProps {
   phase: Phase;
   cycleDay: number;
 }
 
-interface MealTile {
-  name: string;
-  recipe?: Recipe;
+interface DayMeals {
   day: number;
+  breakfast: { name: string; recipe?: Recipe };
+  lunch: { name: string; recipe?: Recipe };
+  dinner: { name: string; recipe?: Recipe };
 }
 
 export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const plan = PHASE_MEAL_PLANS[phase];
   const phaseColor = PHASE_HEX[phase];
   const [phaseStart, phaseEnd] = PHASE_DAYS[phase];
 
-  // Collect unique meals per type
-  const breakfasts: MealTile[] = [];
-  const lunches: MealTile[] = [];
-  const dinners: MealTile[] = [];
-  const seenB = new Set<string>();
-  const seenL = new Set<string>();
-  const seenD = new Set<string>();
-
-  plan.days.forEach((day) => {
+  // Build per-day B/L/D structure with canonical recipe lookups
+  const dayMeals: DayMeals[] = plan.days.map((day) => {
     const bName = day.breakfast.split(" — ")[0];
-    if (!seenB.has(bName.toLowerCase())) {
-      seenB.add(bName.toLowerCase());
-      breakfasts.push({ name: bName, recipe: findRecipe(bName), day: day.day });
-    }
     const lName = day.lunch.split(" — ")[0];
-    if (!seenL.has(lName.toLowerCase())) {
-      seenL.add(lName.toLowerCase());
-      lunches.push({ name: lName, recipe: findRecipe(lName), day: day.day });
-    }
     const dName = day.dinner.split(" — ")[0];
-    if (!seenD.has(dName.toLowerCase())) {
-      seenD.add(dName.toLowerCase());
-      dinners.push({ name: dName, recipe: findRecipe(dName), day: day.day });
-    }
+    return {
+      day: day.day,
+      breakfast: { name: bName, recipe: findRecipeByName(bName) },
+      lunch: { name: lName, recipe: findRecipeByName(lName) },
+      dinner: { name: dName, recipe: findRecipeByName(dName) },
+    };
   });
 
-  const sections = [
-    { label: "B", title: "Breakfast", tiles: breakfasts },
-    { label: "L", title: "Lunch", tiles: lunches },
-    { label: "D", title: "Dinner", tiles: dinners },
-  ];
+  const MealTileCard = ({ name, recipe, slot }: { name: string; recipe?: Recipe; slot: string }) => (
+    <button
+      onClick={() => {
+        haptic("light");
+        if (recipe) setSelectedRecipe(recipe);
+      }}
+      className="touch-card w-full text-left card-warm overflow-hidden"
+    >
+      {recipe?.image ? (
+        <div className="w-full h-[70px] flex items-center justify-center bg-secondary/30">
+          <img src={recipe.image} alt={name} className="h-[60px] w-auto object-contain" loading="lazy" />
+        </div>
+      ) : (
+        <RecipeIllustration recipeName={name} height={70} />
+      )}
+      <div className="p-2">
+        <span className="font-mono text-[8px] font-bold uppercase tracking-wider" style={{ color: phaseColor }}>
+          {slot}
+        </span>
+        <h3 className="font-display text-[10px] italic text-foreground leading-tight line-clamp-2 mt-0.5">
+          {name}
+        </h3>
+      </div>
+    </button>
+  );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Phase header */}
       <div>
         <span className={`inline-block rounded-full px-3 py-1.5 font-hand text-sm font-bold phase-${phase}-light`}>
@@ -88,54 +89,72 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
       {/* Theme */}
       <p className="font-display text-sm italic text-foreground">{plan.theme}.</p>
 
-      {/* B / L / D sections */}
-      {sections.map((section) => (
-        <div key={section.label} className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span
-              className="w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-bold text-white"
-              style={{ backgroundColor: phaseColor }}
-            >
-              {section.label}
-            </span>
-            <span className="font-hand text-sm font-bold" style={{ color: phaseColor }}>
-              {section.title}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2">
-            {section.tiles.map((tile, i) => (
-              <motion.div
-                key={tile.name}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.04 * i, duration: 0.25 }}
+      {/* Day 1–7 with B/L/D per day */}
+      <div className="space-y-3">
+        {dayMeals.map((dm) => {
+          const isExpanded = expandedDay === dm.day;
+          return (
+            <div key={dm.day} className="space-y-2">
+              <button
+                onClick={() => {
+                  haptic("light");
+                  setExpandedDay(isExpanded ? null : dm.day);
+                }}
+                className="touch-btn flex items-center gap-2 w-full"
               >
-                <button
-                  onClick={() => {
-                    haptic("light");
-                    if (tile.recipe) setSelectedRecipe(tile.recipe);
-                  }}
-                  className="touch-card w-full text-left card-warm overflow-hidden"
+                <span
+                  className="w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-bold text-white flex-shrink-0"
+                  style={{ backgroundColor: phaseColor }}
                 >
-                  {tile.recipe?.image ? (
-                    <div className="w-full h-[80px] flex items-center justify-center bg-secondary/30">
-                      <img src={tile.recipe.image} alt={tile.name} className="h-[70px] w-auto object-contain" loading="lazy" />
+                  {dm.day}
+                </span>
+                <span className="font-hand text-sm font-bold flex-1 text-left" style={{ color: phaseColor }}>
+                  Day {dm.day}
+                </span>
+                {isExpanded ? (
+                  <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                )}
+              </button>
+
+              {/* Compact summary when collapsed */}
+              {!isExpanded && (
+                <div className="pl-9 space-y-0.5">
+                  <p className="font-body text-[11px] text-foreground">
+                    <span className="font-bold text-foreground/60">B:</span> {dm.breakfast.name}
+                  </p>
+                  <p className="font-body text-[11px] text-foreground">
+                    <span className="font-bold text-foreground/60">L:</span> {dm.lunch.name}
+                  </p>
+                  <p className="font-body text-[11px] text-foreground">
+                    <span className="font-bold text-foreground/60">D:</span> {dm.dinner.name}
+                  </p>
+                </div>
+              )}
+
+              {/* Expanded: 3 tiles across — B / L / D */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid grid-cols-3 gap-2 pl-9">
+                      <MealTileCard name={dm.breakfast.name} recipe={dm.breakfast.recipe} slot="Breakfast" />
+                      <MealTileCard name={dm.lunch.name} recipe={dm.lunch.recipe} slot="Lunch" />
+                      <MealTileCard name={dm.dinner.name} recipe={dm.dinner.recipe} slot="Dinner" />
                     </div>
-                  ) : (
-                    <RecipeIllustration recipeName={tile.name} height={80} />
-                  )}
-                  <div className="p-2">
-                    <h3 className="font-display text-[11px] italic text-foreground leading-tight line-clamp-2">
-                      {tile.name}
-                    </h3>
-                  </div>
-                </button>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Recipe detail bottom sheet */}
       <AnimatePresence>

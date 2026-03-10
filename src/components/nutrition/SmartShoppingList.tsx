@@ -1,15 +1,12 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronDown, ChevronUp, Copy, ExternalLink, Search } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Copy, Search } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { BotanicalSprig, WildStar } from "@/components/BotanicalElements";
 import {
   WeeklyPlan,
-  ShoppingCategory,
   generateShoppingList,
   formatDateShort,
-  getISOWeek,
-  saveShoppingListWeek,
 } from "@/lib/weekly-planner";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -62,12 +59,6 @@ export default function SmartShoppingList({ plan, phase }: Props) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSave = () => {
-    haptic("medium");
-    const weekKey = getISOWeek(new Date(plan.dateRange.start));
-    saveShoppingListWeek(weekKey, categories);
-  };
-
   const totalItems = categories.reduce((sum, cat) => sum + cat.items.length, 0);
   const checkedCount = Object.values(checkedItems).filter(Boolean).length;
 
@@ -107,7 +98,7 @@ export default function SmartShoppingList({ plan, phase }: Props) {
 
       {/* Categories */}
       {filteredCategories.map((cat) => {
-        const isExpanded = expandedCats[cat.name] !== false; // default expanded
+        const isExpanded = expandedCats[cat.name] !== false;
         const catChecked = cat.items.filter((i) => checkedItems[`${cat.name}:${i.name}`]).length;
         const unchecked = cat.items.filter((i) => !checkedItems[`${cat.name}:${i.name}`]);
         const checked = cat.items.filter((i) => checkedItems[`${cat.name}:${i.name}`]);
@@ -191,7 +182,7 @@ export default function SmartShoppingList({ plan, phase }: Props) {
         </p>
       </div>
 
-      {/* Actions */}
+      {/* Copy action only — no save */}
       <div className="flex gap-2">
         <button
           onClick={handleCopy}
@@ -199,13 +190,6 @@ export default function SmartShoppingList({ plan, phase }: Props) {
         >
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {copied ? "Copied!" : "Copy list"}
-        </button>
-        <button
-          onClick={handleSave}
-          className="touch-btn flex-1 rounded-[14px] py-3 min-h-[44px] font-body text-xs font-medium border transition-all active:opacity-90"
-          style={{ borderColor: phaseColor, color: phaseColor }}
-        >
-          Save this list
         </button>
       </div>
     </div>

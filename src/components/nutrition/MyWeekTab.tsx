@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { ChevronRight, RotateCcw } from "lucide-react";
 import { Phase, PHASE_SHORT, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "@/lib/cycle-utils";
 import PrepPreferences from "./PrepPreferences";
@@ -11,10 +10,8 @@ import {
   generateWeeklyPlan,
   saveWeeklyPlan,
   getWeeklyPlan,
-  getSavedPlans,
   getSavedPreferences,
   DEFAULT_PREFS,
-  formatDateShort,
 } from "@/lib/weekly-planner";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -38,7 +35,6 @@ export default function MyWeekTab() {
   const [step, setStep] = useState<Step>("prep");
   const [plan, setPlan] = useState<WeeklyPlan | null>(null);
   const [prefs, setPrefs] = useState<PrepPrefsType>(getSavedPreferences() || DEFAULT_PREFS);
-  const savedPlans = getSavedPlans();
 
   // Check for existing plan
   useEffect(() => {
@@ -62,15 +58,6 @@ export default function MyWeekTab() {
   const handleProceedToShop = () => {
     haptic("medium");
     setStep("shop");
-  };
-
-  const handleRecreatePlan = (savedPlan: WeeklyPlan) => {
-    haptic("medium");
-    setPrefs(savedPlan.prepPreferences);
-    const newPlan = generateWeeklyPlan(savedPlan.prepPreferences);
-    setPlan(newPlan);
-    saveWeeklyPlan(newPlan);
-    setStep("plan");
   };
 
   const handleStartFresh = () => {
@@ -117,37 +104,7 @@ export default function MyWeekTab() {
         ))}
       </div>
 
-      {/* Past plans */}
-      {step === "prep" && savedPlans.length > 0 && (
-        <div className="space-y-2">
-          <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>
-            Your saved weeks
-          </p>
-          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-            {savedPlans.slice(0, 5).map(({ key, plan: savedPlan }) => (
-              <button
-                key={key}
-                onClick={() => handleRecreatePlan(savedPlan)}
-                className="touch-card scroll-snap-item flex-shrink-0 w-20 h-24 rounded-xl p-2 text-left"
-                style={{
-                  backgroundColor: "#F5EDE0",
-                  borderTop: `3px solid ${PHASE_HEX[savedPlan.phase]}`,
-                }}
-              >
-                <p className="font-body text-[10px] font-bold text-foreground truncate">
-                  {PHASE_SHORT[savedPlan.phase]}
-                </p>
-                <p className="font-body text-[9px] text-muted-foreground mt-0.5" style={{ fontWeight: 300 }}>
-                  {formatDateShort(new Date(savedPlan.dateRange.start))} – {formatDateShort(new Date(savedPlan.dateRange.end))}
-                </p>
-                <RotateCcw className="h-3 w-3 text-muted-foreground mt-2" />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Steps */}
+      {/* Steps — no saved weeks */}
       {step === "prep" && (
         <PrepPreferences
           initialPrefs={prefs}
