@@ -210,6 +210,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
       )}
+
+      {/* Give me a signal — floating CTA + panel */}
+      <SignalFloatingCTA onClick={() => openSignal()} />
+      <SignalPanel
+        open={signalOpen}
+        onClose={() => {
+          setSignalOpen(false);
+          setSignalInitialPrompt(undefined);
+        }}
+        initialPrompt={signalInitialPrompt}
+      />
     </div>
   );
 }
