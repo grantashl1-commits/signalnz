@@ -162,6 +162,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Raspberries provide vitamin C for iron absorption. Cacao delivers magnesium for cramp relief during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-raspberry-ripple-cake.png",
   },
   {
     id: "cookie-dough-bliss-balls",
