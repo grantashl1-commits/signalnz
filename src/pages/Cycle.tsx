@@ -11,6 +11,8 @@ import {
   getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
+import SignalContextChips from "@/components/signal/SignalContextChips";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const PHASE_DATA: Record<Phase, { hormones: string; energy: number; mood: string; body: string; focus: string; nutrition: string; movement: string; poetry: string }> = {
   menstrual: {
@@ -119,6 +121,7 @@ const cardVariant = {
 
 export default function CyclePage() {
   const [lastPeriod, setLastPeriod] = useState(getLastPeriodStart() || "");
+  const { openSignal } = useSignalPanel();
   const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights">("overview");
   const [expandedPhase, setExpandedPhase] = useState<Phase | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
@@ -188,6 +191,8 @@ export default function CyclePage() {
         <p className="font-hand text-sm font-bold text-primary">cycle tracker</p>
         <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Cycle Tracker</h1>
       </div>
+
+      <SignalContextChips pageContext="cycle" onOpenSignal={(p) => openSignal(p, "cycle")} compact />
 
       {/* Date picker — only shown if no date set yet */}
       {!hasDateSet && (

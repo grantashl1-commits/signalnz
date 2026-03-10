@@ -16,6 +16,8 @@ import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseRig from "@/components/movement/ExerciseRig";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import { getAnimationForExercise } from "@/data/exercise-animations";
+import SignalContextChips from "@/components/signal/SignalContextChips";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -28,6 +30,7 @@ const cardVariant = {
 
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
+  const { openSignal } = useSignalPanel();
   const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "calendar" | "progress">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
@@ -128,6 +131,8 @@ export default function MovementPage() {
         </div>
         <p className="font-body text-xs text-muted-foreground mt-0.5 italic">{PHASE_MOVEMENT_LABEL[info.phase]}</p>
       </div>
+
+      <SignalContextChips pageContext="movement" onOpenSignal={(p) => openSignal(p, "movement")} compact />
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 

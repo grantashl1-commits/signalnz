@@ -9,6 +9,8 @@ import ChatRoom from "@/components/community/ChatRoom";
 import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
 import { haptic } from "@/hooks/use-mobile";
+import SignalContextChips from "@/components/signal/SignalContextChips";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const TABS = [
   { id: "discover", label: "Discover" },
@@ -20,6 +22,7 @@ const TABS = [
 
 export default function CommunityPage() {
   const [section, setSection] = useState("discover");
+  const { openSignal } = useSignalPanel();
   const [joined, setJoined] = useState<string[]>([]);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [locationEnabled, setLocationEnabled] = useState(false);
@@ -101,6 +104,7 @@ export default function CommunityPage() {
       <p className="font-display text-[13px] italic text-muted-foreground mb-4">
         Find your neighbours. Share your gifts. Build the village.
       </p>
+      <SignalContextChips pageContext="community" onOpenSignal={(p) => openSignal(p, "community")} compact />
 
       {/* Tab bar — sticky on mobile */}
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-5 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">

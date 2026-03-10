@@ -10,6 +10,8 @@ import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
+import SignalContextChips from "@/components/signal/SignalContextChips";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -22,6 +24,7 @@ type TabId = "today" | "plans" | "myweek" | "recipes" | "baking";
 
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
+  const { openSignal } = useSignalPanel();
   const [activeTab, setActiveTab] = useState<TabId>("today");
 
   const todayMeals = TODAY_MEALS[info.phase];
@@ -51,6 +54,8 @@ export default function NutritionPage() {
       </div>
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
+
+      <SignalContextChips pageContext="nutrition" onOpenSignal={(p) => openSignal(p, "nutrition")} compact />
 
       {/* Tabs — horizontal scroll */}
       <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">

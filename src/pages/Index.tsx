@@ -10,6 +10,8 @@ import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { getHabits, getHabitLog, toggleHabitForDate, getWeekHabitData, HABIT_CATEGORIES, CATEGORY_DOT_CLASSES } from "@/data/self-care-rituals";
 import { haptic } from "@/hooks/use-mobile";
+import SignalHomeSection from "@/components/signal/SignalHomeSection";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
@@ -63,6 +65,7 @@ const cardVariant = {
 };
 
 export default function HomePage({ userName }: { userName?: string }) {
+  const { openSignal } = useSignalPanel();
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [water, setWaterState] = useState(getWaterCount());
@@ -147,6 +150,9 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* Period Due Reminder */}
       <PeriodDueReminder />
+
+      {/* Give me a signal */}
+      <SignalHomeSection onOpenSignal={(prompt) => openSignal(prompt, "home")} />
 
       {/* Today Cards */}
       <section>

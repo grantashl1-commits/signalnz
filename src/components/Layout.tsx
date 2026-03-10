@@ -4,6 +4,9 @@ import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Use
 import { getCycleInfo, getLastPeriodStart, PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useState, useEffect } from "react";
+import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
+import SignalPanel from "@/components/signal/SignalPanel";
+import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
@@ -39,6 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const info = getCycleInfo(getLastPeriodStart());
   const isMobile = useIsMobile();
   const keyboardVisible = useKeyboardVisible();
+  const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
 
   // Swipe navigation between mobile tabs
   const mainRef = useRef<HTMLDivElement>(null);
@@ -190,6 +194,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
       )}
+
+      {/* Give me a signal — floating CTA + panel */}
+      <SignalFloatingCTA onClick={() => openSignal()} />
+      <SignalPanel
+        open={signalOpen}
+        onClose={closeSignal}
+        initialPrompt={initialPrompt}
+        pageContext={pageContext}
+      />
     </div>
   );
 }
