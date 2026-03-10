@@ -37,15 +37,15 @@
 
     /* Phase colours — botanical */
     --phase-menstrual: 340 50% 55%;
-    --phase-follicular: 130 18% 55%;
-    --phase-ovulatory: 32 80% 55%;
+    --phase-follicular: 258 36% 49%;
+    --phase-ovulatory: 345 30% 60%;
     --phase-luteal: 284 22% 53%;
 
     /* Signal brand accents */
     --coral-flame: 284 22% 53%;     /* Signal Purple */
     --bloom-blush: 284 30% 64%;     /* Lavender #af92b6 */
     --petal-gold: 24 33% 92%;       /* Petal Cream */
-    --sage-mist: 130 22% 70%;
+    --sage-mist: 258 36% 70%;
     --lavender-dust: 284 30% 64%;
 
     /* Hand-drawn element colour */

@@ -53,8 +53,8 @@ const PHASE_DATA: Record<Phase, { hormones: string; energy: number; mood: string
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
-  follicular: "#7D9E82",
-  ovulatory: "#E8A030",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
   luteal: "#9B89B4",
 };
 
@@ -377,7 +377,7 @@ export default function CyclePage() {
                     {indicators.hasSymptoms && phase && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: PHASE_HEX[phase], opacity: 0.6 }} />}
                     {indicators.hasWeight && <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />}
                     {indicators.hasNotes && <div className="h-1 w-1 rounded-full bg-foreground/30" />}
-                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#E8A030" }} />}
+                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C47A8A" }} />}
                   </div>
                 </button>
               );

@@ -46,8 +46,8 @@ const TECHNIQUES: Record<string, BreathingTechnique> = {
 
 const PHASE_HEX: Record<string, string> = {
   menstrual: "#C4526E",
-  follicular: "#7D9E82",
-  ovulatory: "#E8A030",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
   luteal: "#9B89B4",
 };
 
@@ -85,7 +85,7 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
   }, [phaseIndex, currentPhase.duration, technique.phases.length]);
 
   const scale = isInhale ? 1.0 : isExhale ? 0.6 : 0.8;
-  const phaseColor = PHASE_HEX[info.phase] || "#7D9E82";
+  const phaseColor = PHASE_HEX[info.phase] || "#5C4A9E";
 
   return (
     <AnimatePresence>
