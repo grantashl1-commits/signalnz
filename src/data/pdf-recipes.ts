@@ -1034,6 +1034,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "falafel-quinoa-bowl",
     name: "Falafel & Quinoa Bowl with Avocado Dressing",
+    image: "/images/recipes/meals/falafel-quinoa-bowl-avocado.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "25 min",
