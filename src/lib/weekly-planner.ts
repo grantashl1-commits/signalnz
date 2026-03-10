@@ -255,10 +255,23 @@ export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
     });
   });
 
+  // Collect recipeIds from plan days for direct matching
+  const mealRecipeIds: Record<string, string> = {};
+  plan.days.forEach((day) => {
+    [day.breakfast, day.lunch, day.dinner].forEach((meal) => {
+      if (meal.recipeId) {
+        mealRecipeIds[meal.name.toLowerCase()] = meal.recipeId;
+      }
+    });
+  });
+
   // For each unique meal, find its recipe and add ingredients
   Object.entries(mealCounts).forEach(([mealKey, count]) => {
-    // Try to find matching recipe
-    const recipe = ALL_RECIPES.find((r) => r.name.toLowerCase().includes(mealKey) || mealKey.includes(r.name.toLowerCase()));
+    // Try direct recipeId first, then fuzzy match
+    const directId = mealRecipeIds[mealKey];
+    const recipe = directId
+      ? ALL_RECIPES.find((r) => r.id === directId)
+      : ALL_RECIPES.find((r) => r.name.toLowerCase().includes(mealKey) || mealKey.includes(r.name.toLowerCase()));
     if (recipe) {
       recipe.ingredients.forEach((ingStr) => {
         const parsed = parseIngredient(ingStr);

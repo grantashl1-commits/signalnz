@@ -1,12 +1,14 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import MealIllustration from "@/components/MealIllustration";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { Meal } from "@/data/meal-plans";
+import { Meal, RECIPES, Recipe } from "@/data/meal-plans";
+import { PDF_RECIPES } from "@/data/pdf-recipes";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
+import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -17,6 +19,14 @@ const PHASE_HEX: Record<Phase, string> = {
 };
 
 const MEAL_SHORT = ["B", "S", "L", "S", "D"];
+
+const ALL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES];
+
+function findMatchingRecipe(mealName: string): Recipe | undefined {
+  const lower = mealName.toLowerCase();
+  return ALL_RECIPES.find((r) => r.name.toLowerCase() === lower) ||
+    ALL_RECIPES.find((r) => lower.includes(r.name.toLowerCase()) || r.name.toLowerCase().includes(lower));
+}
 
 interface TodayTabProps {
   meals: Meal[];
@@ -38,6 +48,11 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
     });
     return stored;
   });
+
+  // Pre-compute recipe matches for each meal
+  const mealRecipes = useMemo(() => {
+    return meals.map((m) => findMatchingRecipe(m.name));
+  }, [meals]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -98,6 +113,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
             const isEaten = eaten[meal.type];
             const isDinner = meal.type.toLowerCase() === "dinner";
             const shortBenefit = meal.phaseBenefit.split(".")[0] + ".";
+            const matchedRecipe = mealRecipes[i];
 
             return (
               <div key={meal.type} className="flex-[0_0_100%] min-w-0 px-1">
@@ -109,16 +125,22 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                 >
                   {/* Image area */}
                   <div className="relative">
-                    <MealIllustration
-                      mealName={meal.name}
-                      mealType={meal.type}
-                      phase={phase}
-                      height={200}
-                    />
-                    {meal.prepTime && (
+                    {matchedRecipe?.image ? (
+                      <div className="w-full h-[200px] flex items-center justify-center bg-secondary/30">
+                        <img src={matchedRecipe.image} alt={meal.name} className="h-[180px] w-auto object-contain" loading="lazy" />
+                      </div>
+                    ) : (
+                      <MealIllustration
+                        mealName={meal.name}
+                        mealType={meal.type}
+                        phase={phase}
+                        height={200}
+                      />
+                    )}
+                    {(matchedRecipe?.prepTime || meal.prepTime) && (
                       <div className="absolute bottom-3 right-4">
                         <span className="font-hand text-xs bg-card/80 backdrop-blur-sm rounded-full px-3 py-1 text-muted-foreground">
-                          {meal.prepTime}
+                          {matchedRecipe?.prepTime || meal.prepTime}
                         </span>
                       </div>
                     )}
@@ -130,6 +152,13 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                       {meal.name}
                     </h3>
 
+                    {/* Phase tag */}
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className={`rounded-full px-2.5 py-0.5 font-hand text-[10px] font-bold phase-${phase}-light`}>
+                        {PHASE_SHORT[phase]}
+                      </span>
+                    </div>
+
                     <p className="font-display text-[15px] italic mt-2 leading-relaxed" style={{ color: phaseColor }}>
                       {shortBenefit}
                     </p>
@@ -140,7 +169,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                     )}
 
                     {/* Nutrient badges */}
-                    {meal.calories && (
+                    {(meal.calories || matchedRecipe?.keyNutrients) && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {meal.calories && (
                           <span
@@ -184,10 +213,12 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                           className="overflow-hidden"
                         >
                           <div className="pt-3 space-y-3 border-t border-border mt-3">
-                            {meal.ingredients && (
+                            {(matchedRecipe?.ingredients || meal.ingredients) && (
                               <div>
                                 <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Ingredients</p>
-                                <p className="font-body text-xs text-muted-foreground mt-1">{meal.ingredients}</p>
+                                <p className="font-body text-xs text-muted-foreground mt-1">
+                                  {matchedRecipe ? matchedRecipe.ingredients.join(", ") : meal.ingredients}
+                                </p>
                               </div>
                             )}
                             <div>
@@ -206,7 +237,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                     </AnimatePresence>
 
                     {/* Recipe method toggle */}
-                    {(meal as any).method && (
+                    {(matchedRecipe?.method || (meal as any).method) && (
                       <>
                         <button
                           onClick={() => {
@@ -231,7 +262,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                             >
                               <div className="pt-3 space-y-2 border-t border-border mt-2">
                                 <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Method</p>
-                                {((meal as any).method as string[]).map((step: string, idx: number) => (
+                                {(matchedRecipe?.method || (meal as any).method as string[]).map((step: string, idx: number) => (
                                   <div key={idx} className="flex gap-2.5">
                                     <span className="font-mono text-xs font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>{idx + 1}.</span>
                                     <p className="font-body text-xs text-muted-foreground leading-relaxed">{step}</p>
@@ -245,7 +276,7 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                     )}
 
                     {/* Fallback: generate simple method from ingredients if no method field */}
-                    {!(meal as any).method && meal.ingredients && (
+                    {!matchedRecipe?.method && !(meal as any).method && meal.ingredients && (
                       <>
                         <button
                           onClick={() => {
@@ -304,6 +335,9 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
           })}
         </div>
       </div>
+
+      {/* Seed cycling - only on Today */}
+      <SeedCyclingCard cycleDay={cycleDay} phase={phase} />
     </div>
   );
 }

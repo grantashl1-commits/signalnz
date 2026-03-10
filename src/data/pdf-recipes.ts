@@ -143,6 +143,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "scrambled-tofu-cleanse",
     name: "Scrambled Tofu & Vegetables",
+    image: "/images/recipes/meals/scrambled-tofu-vegetables.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",

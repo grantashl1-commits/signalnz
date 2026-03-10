@@ -50,8 +50,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
 
   return (
     <div className="space-y-4">
-      <ShoppingListPanel />
-
       {showBakingHeader && (
         <div className="flex items-center gap-2 mb-1">
           <CakeSlice className="h-5 w-5 text-amber-600 dark:text-amber-400" />
@@ -152,6 +150,9 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
         </div>
       )}
 
+      {/* Shopping list - below the grid */}
+      <ShoppingListPanel />
+
       {/* Recipe detail bottom sheet */}
       <AnimatePresence>
         {selectedRecipe && (
@@ -175,7 +176,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
 
               {/* Top right controls */}
               <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-                {/* Read Mode toggle */}
                 {isSupported && (
                   <button
                     onClick={handleReadMode}
@@ -204,7 +204,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                 </button>
               </div>
 
-              {/* Not supported fallback */}
               {!isSupported && (
                 <div className="mx-5 mt-2 rounded-xl bg-secondary p-2">
                   <p className="font-body text-[10px] text-muted-foreground text-center">
@@ -213,7 +212,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                 </div>
               )}
 
-              {/* Large header illustration */}
               {selectedRecipe.image ? (
                 <div className="w-full h-[180px] flex items-center justify-center bg-secondary/30 rounded-t-[20px]">
                   <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
@@ -239,7 +237,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                   <h2 className="font-display text-xl font-bold italic text-foreground">{selectedRecipe.name}</h2>
                 </div>
 
-                {/* Key nutrients */}
                 <div className="flex flex-wrap gap-1.5">
                   {selectedRecipe.keyNutrients.map((n) => (
                     <span
@@ -255,7 +252,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                   ))}
                 </div>
 
-                {/* Ingredients */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-hand text-sm font-bold" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>
@@ -272,7 +268,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
 
                 <BotanicalSprig width={100} opacity={0.15} />
 
-                {/* Method */}
                 <div>
                   <p className="font-hand text-sm font-bold mb-2" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>
                     Method
@@ -286,7 +281,6 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                   </ol>
                 </div>
 
-                {/* Phase benefit */}
                 <p className="font-display text-sm italic" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>
                   {selectedRecipe.phaseBenefit}
                 </p>
