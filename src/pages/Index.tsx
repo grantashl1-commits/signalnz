@@ -318,8 +318,8 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ WEEK SNAPSHOT ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-4 text-center">This Week</p>
-        <div className="scroll-snap-x flex gap-2 pb-2 justify-center">
+        <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-6 text-center">This week</p>
+        <div className="scroll-snap-x flex gap-2.5 pb-2 justify-center">
           {weekDays.map((date, i) => {
             const dateStr = date.toISOString().split("T")[0];
             const isToday = dateStr === today.toISOString().split("T")[0];
@@ -332,7 +332,7 @@ export default function HomePage({ userName }: { userName?: string }) {
               <div
                 key={i}
                 className={`scroll-snap-item flex-shrink-0 w-16 rounded-2xl p-3 text-center transition-all ${
-                  isToday ? "bg-card ring-1 ring-primary/30 shadow-sm border border-border" : "bg-secondary/40"
+                  isToday ? "bg-card ring-1 ring-primary/20 shadow-soft" : "bg-card/50"
                 }`}
               >
                 <p className="font-body text-[10px] text-muted-foreground">
