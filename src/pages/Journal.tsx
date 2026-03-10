@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Search } from "lucide-react";
 import { BotanicalSprig, CymatiSketch, HandDrawnBook, HandDrawnSparkle, HandDrawnLeaf, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -25,6 +25,16 @@ const TRACKING = [
   { key: "energy", label: "Energy", max: 10 },
 ];
 
+const MILESTONES = [
+  { count: 7, label: "1-Week Reflection", type: "weekly" },
+  { count: 14, label: "2-Week Reflection", type: "weekly" },
+  { count: 21, label: "3-Week Reflection", type: "weekly" },
+  { count: 30, label: "Monthly Reflection", type: "monthly" },
+  { count: 90, label: "3-Month Reflection", type: "quarterly" },
+  { count: 180, label: "6-Month Reflection", type: "biannual" },
+  { count: 365, label: "Yearly Reflection", type: "yearly" },
+];
+
 // ── STORAGE ───────────────────────────────────────────────────
 interface JournalEntry {
   id: string;
@@ -36,6 +46,13 @@ interface JournalEntry {
   ai: any | null;
 }
 
+interface MilestoneAnalysis {
+  milestoneType: string;
+  count: number;
+  date: string;
+  analysis: any;
+}
+
 function loadEntries(): JournalEntry[] {
   try {
     const raw = localStorage.getItem("mindcast_journal_v2");
@@ -45,6 +62,22 @@ function loadEntries(): JournalEntry[] {
 
 function saveEntries(entries: JournalEntry[]) {
   localStorage.setItem("mindcast_journal_v2", JSON.stringify(entries));
+}
+
+function loadMilestones(): MilestoneAnalysis[] {
+  try {
+    const raw = localStorage.getItem("mindcast_milestones");
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveMilestones(milestones: MilestoneAnalysis[]) {
+  localStorage.setItem("mindcast_milestones", JSON.stringify(milestones));
+}
+
+function getNextMilestone(entryCount: number, completedMilestones: MilestoneAnalysis[]): typeof MILESTONES[0] | null {
+  const completedCounts = new Set(completedMilestones.map(m => m.count));
+  return MILESTONES.find(m => entryCount >= m.count && !completedCounts.has(m.count)) || null;
 }
 
 // ── PILL ──────────────────────────────────────────────────────
@@ -83,6 +116,17 @@ const TRACKING_ICONS: Record<string, React.FC<{ size?: number }>> = {
   mood: MoodIcon,
   energy: EnergyIcon,
 };
+
+// ── PODCAST ICON ──────────────────────────────────────────────
+function HandDrawnHeadphones({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" style={{ opacity: 0.7 }}>
+      <path d="M 4 12 Q 4 6 10 5 Q 16 6 16 12" fill="none" stroke="hsl(var(--primary))" strokeWidth={0.9} strokeLinecap="round" />
+      <path d="M 4 11 L 4 15 Q 4 16 5 16 L 6 16 Q 7 16 7 15 L 7 12 Q 7 11 6 11 L 5 11 Q 4 11 4 12" fill="none" stroke="hsl(var(--primary))" strokeWidth={0.7} />
+      <path d="M 16 11 L 16 15 Q 16 16 15 16 L 14 16 Q 13 16 13 15 L 13 12 Q 13 11 14 11 L 15 11 Q 16 11 16 12" fill="none" stroke="hsl(var(--primary))" strokeWidth={0.7} />
+    </svg>
+  );
+}
 
 // ── NEW ENTRY FORM ────────────────────────────────────────────
 function NewEntryForm({ onSaved }: { onSaved: (entries: JournalEntry[]) => void }) {
@@ -174,11 +218,29 @@ function EntriesList({
   entries,
   onAnalyse,
   onViewAnalysis,
+  onMilestoneAnalyse,
+  milestone,
+  milestoneLoading,
 }: {
   entries: JournalEntry[];
   onAnalyse: (entry: JournalEntry) => void;
   onViewAnalysis: (entry: JournalEntry) => void;
+  onMilestoneAnalyse: () => void;
+  milestone: typeof MILESTONES[0] | null;
+  milestoneLoading: boolean;
 }) {
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return entries;
+    const q = search.toLowerCase();
+    return entries.filter((e) => {
+      if (e.date.toLowerCase().includes(q)) return true;
+      if (e.tags?.some(t => t.toLowerCase().includes(q))) return true;
+      return Object.values(e.prompts || {}).some(v => v.toLowerCase().includes(q));
+    });
+  }, [entries, search]);
+
   if (!entries.length) {
     return (
       <div className="text-center pt-16">
@@ -191,7 +253,52 @@ function EntriesList({
 
   return (
     <div className="space-y-3 pb-10">
-      {entries.map((e) => (
+      {/* Milestone banner */}
+      {milestone && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl bg-gradient-to-br from-primary/8 to-phase-follicular/8 border border-primary/15 p-5"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <WildStar size={22} />
+            <h3 className="font-display text-lg italic text-foreground">{milestone.label}</h3>
+          </div>
+          <p className="font-display text-sm italic text-muted-foreground mb-3">
+            You've reached {milestone.count} entries. Ready for a deep reflection on your growth and patterns?
+          </p>
+          <button
+            onClick={onMilestoneAnalyse}
+            disabled={milestoneLoading}
+            className="rounded-xl bg-primary px-5 py-2.5 font-display text-sm italic text-primary-foreground active:opacity-90 disabled:opacity-50 flex items-center gap-2"
+          >
+            {milestoneLoading ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Reflecting…</>
+            ) : (
+              <><HandDrawnSparkle size={14} color="hsl(var(--primary-foreground))" /> Begin {milestone.label}</>
+            )}
+          </button>
+        </motion.div>
+      )}
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search entries…"
+          className="w-full rounded-xl border border-border bg-secondary/30 pl-9 pr-3 py-2.5 font-display text-sm italic text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          style={{ fontSize: "16px" }}
+        />
+      </div>
+
+      {filtered.length === 0 && search && (
+        <p className="font-display text-sm italic text-muted-foreground text-center py-8">No entries match "{search}"</p>
+      )}
+
+      {filtered.map((e) => (
         <motion.div
           key={e.id}
           initial={{ opacity: 0, y: 8 }}
@@ -243,14 +350,16 @@ function EntriesList({
 }
 
 // ── AI ANALYSIS VIEW ──────────────────────────────────────────
-function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => void }) {
+function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onBack: () => void; isMilestone?: boolean }) {
   const ai = entry?.ai;
 
   if (!ai || !ai.summary || ai.summary.startsWith("Unable")) {
     return (
       <div className="text-center pt-16">
         <HandDrawnLeaf size={40} color="hsl(var(--primary))" className="mx-auto mb-4" />
-        <p className="font-display text-xl italic text-foreground mb-2">Reading your entry with care…</p>
+        <p className="font-display text-xl italic text-foreground mb-2">
+          {isMilestone ? "Reflecting on your journey…" : "Reading your entry with care…"}
+        </p>
         <p className="font-mono text-xs text-muted-foreground">Your AI therapist is listening.</p>
         <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mt-6" />
       </div>
@@ -269,15 +378,38 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
       <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70">
         <ArrowLeft className="h-3.5 w-3.5" /> Back to entries
       </button>
-      <h2 className="font-display text-2xl font-bold italic text-foreground mb-0.5">Soul Analysis</h2>
+      <h2 className="font-display text-2xl font-bold italic text-foreground mb-0.5">
+        {isMilestone ? ai.milestone_title || "Growth Reflection" : "Soul Analysis"}
+      </h2>
       <p className="font-mono text-xs text-muted-foreground mb-5">{entry.date}</p>
 
       {/* Summary */}
       {ai.summary && (
         <div className="rounded-2xl bg-primary/5 border border-primary/15 p-4.5 mb-3">
-          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">Today's signal</p>
+          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">
+            {isMilestone ? "Your journey so far" : "Today's signal"}
+          </p>
           <p className="font-display text-sm italic text-foreground/80 leading-relaxed">{ai.summary}</p>
         </div>
+      )}
+
+      {/* Growth arc (milestone only) */}
+      {ai.growth_arc && (
+        <Section title="Your Growth Arc" accent="hsl(var(--phase-follicular))">
+          <p className="font-display text-sm italic text-foreground/70 leading-relaxed">{ai.growth_arc}</p>
+        </Section>
+      )}
+
+      {/* Evolved patterns (milestone only) */}
+      {ai.evolved_patterns?.length > 0 && (
+        <Section title="How You've Evolved">
+          {ai.evolved_patterns.map((p: string, i: number) => (
+            <div key={i} className="flex gap-2.5 mb-2.5">
+              <span className="text-sm text-phase-follicular flex-shrink-0 mt-0.5">·</span>
+              <p className="font-display text-sm italic text-foreground/70 leading-relaxed">{p}</p>
+            </div>
+          ))}
+        </Section>
       )}
 
       {/* Themes & Emotions */}
@@ -332,7 +464,7 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
           {ai.recommendations.map((r: any, i: number) => (
             <div key={i} className="flex gap-3 bg-secondary/30 rounded-xl p-3.5 mb-2">
               <div className="mt-0.5">
-                {r.type === "book" ? <HandDrawnBook size={20} color="hsl(var(--primary))" /> : r.type === "podcast" ? <EnergyIcon size={20} /> : <HandDrawnLeaf size={20} color="hsl(var(--phase-follicular))" />}
+                {r.type === "book" ? <HandDrawnBook size={20} color="hsl(var(--primary))" /> : r.type === "podcast" ? <HandDrawnHeadphones size={20} /> : <HandDrawnLeaf size={20} color="hsl(var(--phase-follicular))" />}
               </div>
               <div>
                 <p className="font-display text-sm italic text-foreground mb-0.5">{r.title}</p>
@@ -367,17 +499,37 @@ function AnalysisView({ entry, onBack }: { entry: JournalEntry; onBack: () => vo
   );
 }
 
+// ── MILESTONE ANALYSIS VIEW ───────────────────────────────────
+function MilestoneView({ milestone, onBack }: { milestone: MilestoneAnalysis; onBack: () => void }) {
+  const fakeEntry: JournalEntry = {
+    id: `milestone-${milestone.count}`,
+    date: milestone.date,
+    timestamp: Date.now(),
+    prompts: {},
+    tracking: { mood: 0, energy: 0 },
+    tags: [],
+    ai: milestone.analysis,
+  };
+  return <AnalysisView entry={fakeEntry} onBack={onBack} isMilestone />;
+}
+
 // ── MAIN PAGE ─────────────────────────────────────────────────
 export default function JournalPage() {
   const info = getCycleInfo(getLastPeriodStart());
-  const [view, setView] = useState<"list" | "new" | "analysis">("list");
+  const [view, setView] = useState<"list" | "new" | "analysis" | "milestone">("list");
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [activeEntry, setActiveEntry] = useState<JournalEntry | null>(null);
   const [analysing, setAnalysing] = useState(false);
+  const [milestones, setMilestones] = useState<MilestoneAnalysis[]>([]);
+  const [milestoneLoading, setMilestoneLoading] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<MilestoneAnalysis | null>(null);
 
   useEffect(() => {
     setEntries(loadEntries());
+    setMilestones(loadMilestones());
   }, []);
+
+  const nextMilestone = useMemo(() => getNextMilestone(entries.length, milestones), [entries.length, milestones]);
 
   const handleAnalyse = async (entry: JournalEntry) => {
     setAnalysing(true);
@@ -416,6 +568,41 @@ export default function JournalPage() {
     setAnalysing(false);
   };
 
+  const handleMilestoneAnalyse = async () => {
+    if (!nextMilestone) return;
+    setMilestoneLoading(true);
+    haptic("medium");
+
+    try {
+      const { data, error } = await supabase.functions.invoke("journal-ai", {
+        body: {
+          milestoneType: nextMilestone.type,
+          milestoneCount: nextMilestone.count,
+          milestoneLabel: nextMilestone.label,
+          allEntries: entries.slice(0, nextMilestone.count),
+        },
+      });
+
+      if (error) throw error;
+
+      const newMilestone: MilestoneAnalysis = {
+        milestoneType: nextMilestone.type,
+        count: nextMilestone.count,
+        date: new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
+        analysis: data,
+      };
+
+      const updatedMilestones = [...milestones, newMilestone];
+      setMilestones(updatedMilestones);
+      saveMilestones(updatedMilestones);
+      setActiveMilestone(newMilestone);
+      setView("milestone");
+    } catch {
+      // Silently fail
+    }
+    setMilestoneLoading(false);
+  };
+
   return (
     <div className="max-w-3xl mx-auto relative">
       {/* Background decoration */}
@@ -425,7 +612,7 @@ export default function JournalPage() {
       </div>
 
       {/* Header */}
-      {view !== "analysis" && (
+      {view !== "analysis" && view !== "milestone" && (
         <div className="flex justify-between items-start mb-6">
           <div>
             <p className="font-hand text-sm font-bold text-primary">Journal</p>
@@ -472,6 +659,9 @@ export default function JournalPage() {
               entries={entries}
               onAnalyse={handleAnalyse}
               onViewAnalysis={(e) => { setActiveEntry(e); setView("analysis"); }}
+              onMilestoneAnalyse={handleMilestoneAnalyse}
+              milestone={nextMilestone}
+              milestoneLoading={milestoneLoading}
             />
           )}
           {view === "new" && (
@@ -479,6 +669,9 @@ export default function JournalPage() {
           )}
           {view === "analysis" && activeEntry && (
             <AnalysisView entry={activeEntry} onBack={() => setView("list")} />
+          )}
+          {view === "milestone" && activeMilestone && (
+            <MilestoneView milestone={activeMilestone} onBack={() => setView("list")} />
           )}
         </motion.div>
       </AnimatePresence>

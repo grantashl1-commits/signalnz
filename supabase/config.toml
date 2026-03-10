@@ -2,3 +2,6 @@ project_id = "hwcgbcfqxzzhvivcdroh"
 
 [functions.cycle-ai]
 verify_jwt = false
+
+[functions.journal-ai]
+verify_jwt = false
