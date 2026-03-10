@@ -9,11 +9,14 @@ import {
   VolumeX,
   Volume2,
   X,
+  Loader2,
 } from "lucide-react";
 import type { PracticeConfig, PracticeStep } from "@/data/practices";
 import { formatDuration } from "@/data/practices";
 import { useAudioGuide } from "./AudioGuide";
 import { useSpeechGuide } from "@/hooks/useSpeechGuide";
+import { useElevenLabsTTS } from "@/hooks/useElevenLabsTTS";
+import { getSomaticScriptById } from "@/data/somatic-scripts";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
@@ -29,13 +32,34 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Get the TTS script for this somatic practice
+  const somaticScript = getSomaticScriptById(practice.id);
+  const ttsScript = somaticScript?.ttsScript || somaticScript?.narration || "";
+
+  // ElevenLabs TTS generation hook
+  const {
+    audioUrl: generatedAudioUrl,
+    loading: ttsLoading,
+    error: ttsError,
+    generate: generateTTS,
+    hasGeneratedAudio,
+  } = useElevenLabsTTS({
+    practiceId: practice.id,
+    ttsScript,
+    enabled: practice.category === "somatic" && !!ttsScript,
+  });
+
+  // Use generated audio URL if available, otherwise fall back to practice config
+  const effectiveAudioUrl = hasGeneratedAudio
+    ? generatedAudioUrl
+    : practice.audio.audioUrl;
+
   const { hasAudio, currentTime, seek, restart: audioRestart } = useAudioGuide({
-    audioUrl: practice.audio.audioUrl,
+    audioUrl: effectiveAudioUrl,
     enabled: practice.audio.enabled,
     muted,
     playing,
     onTimeUpdate: (t) => {
-      // Auto-highlight step based on audio time
       for (let i = steps.length - 1; i >= 0; i--) {
         const step = steps[i];
         if (step.startTimeSec !== undefined && t >= step.startTimeSec) {
@@ -246,14 +270,46 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
         </div>
 
         {/* Audio status */}
-        {usingSpeech && (
+        {!hasAudio && !hasGeneratedAudio && ttsScript && !ttsLoading && !ttsError && (
+          <div className="px-5 py-2 flex flex-col items-center gap-2">
+            <button
+              onClick={() => {
+                haptic("medium");
+                generateTTS();
+              }}
+              className="px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
+            >
+              Generate Voice Narration
+            </button>
+            <p className="font-body text-xs text-muted-foreground/60 text-center">
+              Uses AI voice · First time only, then cached
+            </p>
+          </div>
+        )}
+        {ttsLoading && (
+          <div className="px-5 py-3 flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            <p className="font-body text-sm text-primary">Generating voice narration…</p>
+          </div>
+        )}
+        {ttsError && !hasAudio && (
+          <div className="px-5 py-2 flex flex-col items-center gap-1">
+            <p className="font-body text-xs text-destructive text-center">{ttsError}</p>
+            {usingSpeech && (
+              <p className="font-body text-xs text-muted-foreground/60 text-center">
+                Using browser voice as fallback
+              </p>
+            )}
+          </div>
+        )}
+        {usingSpeech && !ttsLoading && !ttsError && !ttsScript && (
           <div className="px-5 py-2">
             <p className="font-body text-xs text-primary/60 text-center">
               Using voice guidance · Press play to begin
             </p>
           </div>
         )}
-        {!hasAudio && !speechSupported && practice.audio.enabled && (
+        {!hasAudio && !speechSupported && !hasGeneratedAudio && practice.audio.enabled && (
           <div className="px-5 py-2">
             <p className="font-body text-xs text-muted-foreground/60 text-center">
               Audio guidance is unavailable in this browser. You can still follow the on-screen steps.
