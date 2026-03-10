@@ -581,6 +581,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "everyday-chia-pudding",
     name: "Everyday Chia Pudding",
+    image: "/images/recipes/meals/everyday-chia-pudding.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
