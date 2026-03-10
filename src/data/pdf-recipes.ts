@@ -466,6 +466,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "chunky-monkey-chickpea-cookies",
     name: "Chunky Monkey Chickpea Cookies",
+    image: "/images/recipes/meals/chunky-monkey-chickpea-cookies.png",
     phase: "menstrual",
     serves: 20,
     prepTime: "25 min",
