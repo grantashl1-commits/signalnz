@@ -62,7 +62,7 @@ const cardVariant = {
   }),
 };
 
-export default function HomePage() {
+export default function HomePage({ userName }: { userName?: string }) {
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [water, setWaterState] = useState(getWaterCount());
