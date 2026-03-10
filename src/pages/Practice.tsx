@@ -4,6 +4,7 @@ import { Plus, X, Trash2, ChevronDown } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, WildStar } from "@/components/BotanicalElements";
 import { SelfCareHandIcon, RITUAL_ICONS } from "@/components/SelfCareIcons";
 import RitualPicker from "@/components/RitualPicker";
+import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import {
   getHabits, saveHabits, addHabit, removeHabit,
   getHabitLog, toggleHabitForDate, getWeekHabitData,
