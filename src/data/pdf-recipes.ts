@@ -552,6 +552,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "bircher-breakfast-bowl",
     name: "Bircher Breakfast Bowl",
+    image: "/images/recipes/meals/bircher-breakfast-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min (+ overnight soak)",
