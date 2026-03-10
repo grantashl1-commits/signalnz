@@ -603,6 +603,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "vegan-pizza-cleanse",
     name: "Gluten-Free Vegan Pizza",
+    image: "/images/recipes/meals/gluten-free-vegan-pizza.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
