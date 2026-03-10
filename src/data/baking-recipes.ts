@@ -455,6 +455,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Chickpeas provide plant protein and iron to fuel the follicular phase. Peanut butter adds sustained energy.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-chip-chickpea-cookies.png",
   },
   {
     id: "coconut-vanilla-ice-cream",
