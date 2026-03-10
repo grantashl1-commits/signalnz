@@ -278,8 +278,8 @@ export default function HomePage({ userName }: { userName?: string }) {
 
       {/* ═══ CHECK-IN — cream section ═══ */}
       <ContentSection className="px-5 md:px-4">
-        <div className="rounded-[20px] bg-card border border-border p-6 md:p-8" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
-          <p className="font-display text-xl md:text-2xl font-bold text-foreground mb-5 text-center">How are you today?</p>
+        <div className="rounded-[22px] bg-card p-7 md:p-10 shadow-soft">
+          <p className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">How are you today?</p>
           <div className="flex flex-wrap gap-3 justify-center">
             {CHECKIN_STATES.map((state) => {
               const selected = checkin === state.label;
@@ -287,13 +287,13 @@ export default function HomePage({ userName }: { userName?: string }) {
                 <button
                   key={state.label}
                   onClick={() => handleCheckin(state.label)}
-                  className={`touch-btn flex flex-col items-center gap-1.5 rounded-2xl p-3 w-16 md:w-20 min-h-[60px] transition-all ${
+                  className={`touch-btn flex flex-col items-center gap-2 rounded-2xl p-3.5 w-16 md:w-20 min-h-[60px] transition-all ${
                     selected
-                      ? "ring-2 ring-primary scale-110 bg-secondary shadow-md"
-                      : "bg-secondary/50 active:bg-secondary/80"
+                      ? "ring-2 ring-primary scale-110 bg-background shadow-medium"
+                      : "bg-background/60 active:bg-background"
                   }`}
                 >
-                  <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
+                  <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-background flex items-center justify-center overflow-hidden">
                     <SeedGeometry size={40} opacity={selected ? 0.5 : 0.2} color={selected ? `hsl(var(--phase-${state.phase}))` : undefined} />
                   </div>
                   <span className="font-body text-xs font-medium text-foreground">{state.label}</span>
@@ -302,7 +302,7 @@ export default function HomePage({ userName }: { userName?: string }) {
             })}
           </div>
           {checkin && (
-            <div className="flex items-center justify-center gap-3 mt-4">
+            <div className="flex items-center justify-center gap-3 mt-5">
               <span className="font-body text-sm text-primary">Logged: {checkin.toLowerCase()}</span>
               {streak > 1 && (
                 <span className="flex items-center gap-1 font-body text-sm text-muted-foreground">
