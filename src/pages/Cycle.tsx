@@ -275,7 +275,7 @@ export default function CyclePage() {
       </div>
 
       {activeTab === "overview" && (
-        <div className="space-y-6 md:space-y-8">
+        <div className="space-y-8 md:space-y-10">
           {hasDateSet && <MoonWheel currentPhase={info.phase} cycleDay={info.cycleDay} />}
           <p className="text-center font-hand text-sm text-muted-foreground">
             {nextPhase} begins in ~{daysUntil} days
