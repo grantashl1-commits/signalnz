@@ -251,6 +251,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "sweet-potato-bean-chilli-cleanse",
     name: "Sweet Potato & Black Bean Chilli",
+    image: "/images/recipes/meals/sweet-potato-black-bean-chilli.png",
     phase: "luteal",
     serves: 3,
     prepTime: "40 min",
