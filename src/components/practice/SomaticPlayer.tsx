@@ -13,6 +13,7 @@ import {
 import type { PracticeConfig, PracticeStep } from "@/data/practices";
 import { formatDuration } from "@/data/practices";
 import { useAudioGuide } from "./AudioGuide";
+import { useSpeechGuide } from "@/hooks/useSpeechGuide";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
@@ -49,6 +50,23 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     },
   });
 
+  // Speech synthesis fallback when no audio file available
+  const { supported: speechSupported, isSpeaking } = useSpeechGuide({
+    steps,
+    playing: playing && !hasAudio,
+    muted,
+    activeStepIdx,
+    onStepComplete: (nextIdx) => setActiveStepIdx(nextIdx),
+    onAllComplete: () => {
+      setPlaying(false);
+      setActiveStepIdx(steps.length - 1);
+    },
+    rate: 0.88,
+    pitch: 1.0,
+  });
+
+  const usingSpeech = !hasAudio && speechSupported;
+
   // Elapsed timer (works even without audio)
   useEffect(() => {
     if (!playing) {
@@ -78,7 +96,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     haptic("light");
     setElapsed(0);
     setActiveStepIdx(0);
-    audioRestart();
+    if (hasAudio) audioRestart();
   };
 
   const handleSkipBack = () => {
@@ -204,6 +222,22 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
                     >
                       {step.body}
                     </p>
+                    {/* Speaking indicator */}
+                    {isActive && usingSpeech && isSpeaking && playing && (
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <div className="flex gap-0.5">
+                          {[0, 1, 2].map((j) => (
+                            <motion.div
+                              key={j}
+                              className="w-1 rounded-full bg-primary"
+                              animate={{ height: [4, 10, 4] }}
+                              transition={{ duration: 0.6, repeat: Infinity, delay: j * 0.15 }}
+                            />
+                          ))}
+                        </div>
+                        <span className="font-mono text-[10px] text-primary">Speaking</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -211,11 +245,18 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
           })}
         </div>
 
-        {/* Audio availability */}
-        {!hasAudio && practice.audio.enabled && (
+        {/* Audio status */}
+        {usingSpeech && (
+          <div className="px-5 py-2">
+            <p className="font-body text-xs text-primary/60 text-center">
+              Using voice guidance · Press play to begin
+            </p>
+          </div>
+        )}
+        {!hasAudio && !speechSupported && practice.audio.enabled && (
           <div className="px-5 py-2">
             <p className="font-body text-xs text-muted-foreground/60 text-center">
-              Audio guidance is unavailable right now. You can still follow the on-screen steps.
+              Audio guidance is unavailable in this browser. You can still follow the on-screen steps.
             </p>
           </div>
         )}
