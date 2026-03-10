@@ -218,7 +218,7 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
   };
 
   return (
-    <div className="space-y-3 pb-10 relative">
+    <div className="space-y-3 pb-10 relative max-w-2xl mx-auto">
       <InkParticles />
       <div className="flex items-center justify-between mb-2">
         <div>
