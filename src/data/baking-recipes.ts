@@ -31,6 +31,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cashews and peanuts provide magnesium and omega-3 for PMS relief. Dates give natural energy during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/snickers-slice.png",
   },
   {
     id: "banana-cinnamon-pancakes",
@@ -55,6 +56,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Oats provide warming comfort and steady energy. Chia seeds add omega-3 and fibre during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/banana-cinnamon-pancakes.png",
   },
   {
     id: "banana-breakfast-bites",
@@ -80,6 +82,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Peanut butter provides healthy fats for rising energy. Oats fuel the follicular phase with complex carbs.",
     category: "baking",
+    image: "/images/recipes/baking/banana-breakfast-bites.png",
   },
   {
     id: "caramel-slice",
@@ -105,6 +108,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Dates and cashews provide iron and magnesium — the key luteal minerals for reducing PMS symptoms.",
     category: "baking",
+    image: "/images/recipes/baking/healthy-caramel-slice.png",
   },
   {
     id: "choc-peanut-butter-balls",
@@ -127,6 +131,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cacao is rich in magnesium for PMS relief. Peanut butter provides sustained energy and protein.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-peanut-butter-crumble-balls.png",
   },
   {
     id: "choc-raspberry-ripple-cake",
@@ -157,6 +162,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Raspberries provide vitamin C for iron absorption. Cacao delivers magnesium for cramp relief during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-raspberry-ripple-cake.png",
   },
   {
     id: "cookie-dough-bliss-balls",
@@ -181,6 +187,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Wholemeal flour and oats provide steady energy. Dark chocolate supplies magnesium for the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/cookie-dough-bliss-balls.png",
   },
   {
     id: "homemade-ferrero-rochers",
@@ -203,6 +210,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hazelnuts provide healthy fats and zinc to support ovulation. Light and naturally sweet.",
     category: "baking",
+    image: "/images/recipes/baking/homemade-ferrero-rochers.png",
   },
   {
     id: "lamington-bliss-balls",
@@ -225,6 +233,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cacao provides magnesium for PMS relief. Cashews supply healthy fats and iron for the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/lamington-bliss-balls.png",
   },
   {
     id: "double-choc-fudge-cookies",
@@ -252,6 +261,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Double dose of cacao provides maximum magnesium. Almond meal adds protein and healthy fats for the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/gluten-free-double-choc-fudge-cookies.png",
   },
   {
     id: "no-bake-choc-banana-fudge",
@@ -275,6 +285,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Peanut butter and banana provide magnesium and potassium to ease PMS cravings during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/no-bake-choc-banana-fudge.png",
   },
   {
     id: "no-egg-chocolate-custard",
@@ -297,6 +308,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cacao provides magnesium for cramp relief. Warming custard is comforting during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/no-egg-chocolate-custard.png",
   },
   {
     id: "orange-choc-avocado-mousse",
@@ -318,6 +330,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Avocado provides healthy fats for hormone balance. Cacao delivers magnesium and orange adds vitamin C during ovulation.",
     category: "baking",
+    image: "/images/recipes/baking/orange-chocolate-avocado-mousse.png",
   },
   {
     id: "peanut-butter-mousse",
@@ -343,6 +356,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Tofu provides plant protein and calcium. Peanut butter fuels rising energy during the follicular phase.",
     category: "baking",
+    image: "/images/recipes/baking/peanut-butter-mousse.png",
   },
   {
     id: "peanut-butter-rice-cups",
@@ -366,6 +380,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Dark chocolate is rich in magnesium for PMS relief. Peanut butter provides sustained energy during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/peanut-butter-rice-cups.png",
   },
   {
     id: "secret-centre-choc-cookies",
@@ -389,6 +404,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Almond butter provides magnesium and protein. Chia seeds add omega-3 for hormone support in the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/secret-centre-chocolate-cookies.png",
   },
   {
     id: "choc-hazelnut-freezer-pie",
@@ -415,6 +431,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hazelnuts and sunflower seeds provide zinc to support ovulation. Avocado adds healthy fats for hormone balance.",
     category: "baking",
+    image: "/images/recipes/baking/choc-hazelnut-freezer-pie.png",
   },
   {
     id: "choc-chip-chickpea-cookies",
@@ -438,6 +455,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Chickpeas provide plant protein and iron to fuel the follicular phase. Peanut butter adds sustained energy.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-chip-chickpea-cookies.png",
   },
   {
     id: "coconut-vanilla-ice-cream",
@@ -458,6 +476,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Coconut milk provides medium-chain triglycerides for quick energy. Light and refreshing during ovulation.",
     category: "baking",
+    image: "/images/recipes/baking/coconut-vanilla-ice-cream.png",
   },
   {
     id: "easy-banana-cake",
@@ -487,6 +506,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Walnuts provide omega-3 for inflammation relief. Warming banana cake is comforting during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/easy-banana-cake.png",
   },
   {
     id: "chocolate-fudge-vegan",
@@ -509,5 +529,6 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cocoa provides magnesium for PMS relief. Protein powder and peanut butter sustain energy during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/chocolate-fudge.png",
   },
 ];
