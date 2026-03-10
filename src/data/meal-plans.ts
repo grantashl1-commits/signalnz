@@ -333,6 +333,7 @@ export const RECIPES: Recipe[] = [
   {
     id: "chocolate-nice-cream",
     name: "Chocolate Banana Nice Cream",
+    image: "/images/recipes/meals/chocolate-banana-nice-cream.png",
     phase: "luteal",
     serves: 2,
     prepTime: "5 min + freeze",
