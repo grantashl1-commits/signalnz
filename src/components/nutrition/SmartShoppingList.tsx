@@ -111,7 +111,7 @@ export default function SmartShoppingList({ plan, phase }: Props) {
               className="touch-card w-full flex items-center justify-between p-3 min-h-[48px]"
             >
               <div className="flex items-center gap-2">
-                <span className="text-base">{cat.emoji}</span>
+                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: phaseColor }} />
                 <span className="font-body text-xs font-bold text-foreground">{cat.name}</span>
                 <span className="font-mono text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
                   {catChecked}/{cat.items.length}
