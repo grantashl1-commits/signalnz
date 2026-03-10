@@ -488,6 +488,14 @@ export default function MovementPage() {
           <Activity className="h-6 w-6 text-primary-foreground" />
         </button>
       )}
+
+      {/* Exercise Detail Drawer */}
+      <ExerciseDetailDrawer
+        exercise={drawerExercise}
+        open={!!drawerExercise}
+        onClose={() => setDrawerExercise(null)}
+        phase={info.phase}
+      />
     </div>
   );
 }
