@@ -351,19 +351,19 @@ export default function HomePage({ userName }: { userName?: string }) {
       {/* ═══ HABIT GRID ═══ */}
       {habits.length > 0 && (
         <ContentSection className="px-5 md:px-4">
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Habit Grid</p>
+          <div className="flex items-center justify-between mb-5">
+            <p className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground">Habit grid</p>
             <Link to="/my-practice" className="font-body text-xs text-muted-foreground">
               full view
             </Link>
           </div>
-          <div className="rounded-[20px] bg-card border border-border p-4 overflow-x-auto" style={{ boxShadow: "0 4px 20px rgba(139, 111, 94, 0.08)" }}>
+          <div className="rounded-[22px] bg-card p-5 overflow-x-auto shadow-soft">
             <div className="grid gap-0.5" style={{ gridTemplateColumns: `100px repeat(7, 1fr)`, minWidth: 360 }}>
               <div />
               {weekDays.map((d, i) => {
                 const isToday = d.toISOString().split("T")[0] === todayStr;
                 return (
-                  <div key={i} className={`text-center py-0.5 ${isToday ? "bg-primary/10 rounded" : ""}`}>
+                  <div key={i} className={`text-center py-0.5 ${isToday ? "bg-primary/8 rounded" : ""}`}>
                     <p className="font-body text-[8px] text-muted-foreground">
                       {["M", "T", "W", "T", "F", "S", "S"][i]}
                     </p>
@@ -382,11 +382,11 @@ export default function HomePage({ userName }: { userName?: string }) {
                       const done = day.log[habit.id] || false;
                       const isDayToday = day.date === todayStr;
                       return (
-                        <div key={i} className={`flex items-center justify-center py-0.5 ${isDayToday ? "bg-primary/10 rounded" : ""}`}>
+                        <div key={i} className={`flex items-center justify-center py-0.5 ${isDayToday ? "bg-primary/8 rounded" : ""}`}>
                           {done ? (
                             <div className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
                           ) : (
-                            <div className="h-2.5 w-2.5 rounded-full border border-border/40" />
+                            <div className="h-2.5 w-2.5 rounded-full border border-muted/40" />
                           )}
                         </div>
                       );
