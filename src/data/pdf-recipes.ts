@@ -416,6 +416,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "date-cacao-bliss-balls",
     name: "Date Cacao & Coconut Bliss Balls",
+    image: "/images/recipes/meals/date-cacao-coconut-bliss-balls.png",
     phase: "luteal",
     serves: 20,
     prepTime: "10 min",
