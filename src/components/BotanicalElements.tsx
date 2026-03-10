@@ -561,11 +561,4 @@ export { CymatiSketch as CymaticMenstrual };
 export { CymatiSketch as CymaticFollicular };
 export { CymatiSketch as CymaticOvulatory };
 export { CymatiSketch as CymaticLuteal };
-  const defaultOpacity = active ? 0.15 : 0.1;
-  return <CymatiSketch phase={phase} size={size} opacity={opacity ?? defaultOpacity} className={className} />;
-}
-
-export { CymatiSketch as CymaticMenstrual };
-export { CymatiSketch as CymaticFollicular };
-export { CymatiSketch as CymaticOvulatory };
 export { CymatiSketch as CymaticLuteal };

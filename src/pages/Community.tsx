@@ -138,6 +138,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-// Re-export HandDrawnLeaf for inline use
-import { HandDrawnLeaf } from "@/components/BotanicalElements";
