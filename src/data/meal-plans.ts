@@ -309,6 +309,7 @@ export const RECIPES: Recipe[] = [
   {
     id: "rainbow-sushi-bowl",
     name: "Rainbow Sushi Bowl",
+    image: "/images/recipes/meals/rainbow-sushi-bowl.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
