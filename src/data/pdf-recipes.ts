@@ -1325,6 +1325,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "pb-maple-overnight-oats",
     name: "Peanut Butter & Maple Syrup Overnight Oats",
+    image: "/images/recipes/meals/peanut-butter-maple-overnight-oats.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 min",
