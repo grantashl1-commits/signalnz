@@ -1299,6 +1299,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "one-pot-black-bean-fajitas-rice",
     name: "One Pot Black Bean Fajitas & Rice",
+    image: "/images/recipes/meals/one-pot-black-bean-fajitas-rice.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
