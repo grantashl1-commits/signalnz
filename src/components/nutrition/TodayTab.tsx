@@ -2,10 +2,10 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import MealIllustration from "@/components/MealIllustration";
+import { RecipeIllustration } from "@/components/MealIllustration";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { Meal, Recipe } from "@/data/meal-plans";
+import { Meal } from "@/data/meal-plans";
 import { findRecipeByName } from "@/lib/recipe-index";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
@@ -107,8 +107,8 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
             const shortBenefit = meal.phaseBenefit.split(".")[0] + ".";
             const recipe = mealRecipes[i];
 
-            // Use canonical recipe data where available
-            const displayImage = recipe?.image;
+            // Use canonical recipe image — this is the single source of truth
+            const recipeImage = recipe?.image;
             const displayIngredients = recipe ? recipe.ingredients.join(", ") : meal.ingredients;
             const displayMethod = recipe?.method;
             const displayPrepTime = recipe?.prepTime || meal.prepTime;
@@ -121,19 +121,25 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                   transition={{ delay: 0.05 * i, duration: 0.3 }}
                   className="card-warm overflow-hidden"
                 >
-                  {/* Image area — canonical recipe image or graceful fallback */}
+                  {/* Image area — canonical recipe image from Recipes tab */}
                   <div className="relative">
-                    {displayImage ? (
-                      <div className="w-full h-[200px] flex items-center justify-center bg-secondary/30">
-                        <img src={displayImage} alt={meal.name} className="h-[180px] w-auto object-contain" loading="lazy" />
+                    {recipeImage ? (
+                      <div className="w-full h-[200px] flex items-center justify-center bg-secondary/30 rounded-t-[18px]">
+                        <img
+                          src={recipeImage}
+                          alt={meal.name}
+                          className="h-[180px] w-auto object-contain"
+                          loading="lazy"
+                        />
                       </div>
                     ) : (
-                      <MealIllustration
-                        mealName={meal.name}
-                        mealType={meal.type}
-                        phase={phase}
-                        height={200}
-                      />
+                      /* Neutral fallback — no old SVG illustrations */
+                      <div className="w-full h-[200px] flex items-center justify-center bg-secondary/20 rounded-t-[18px]">
+                        <div className="text-center">
+                          <RecipeIllustration recipeName={meal.name} height={140} />
+                          {/* TODO: Generate illustration for this recipe */}
+                        </div>
+                      </div>
                     )}
                     {displayPrepTime && (
                       <div className="absolute bottom-3 right-4">
@@ -155,6 +161,11 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
                       <span className={`rounded-full px-2.5 py-0.5 font-hand text-[10px] font-bold phase-${phase}-light`}>
                         {PHASE_SHORT[phase]}
                       </span>
+                      {recipe && (
+                        <span className="font-mono text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                          from recipes
+                        </span>
+                      )}
                     </div>
 
                     <p className="font-display text-[15px] italic mt-2 leading-relaxed" style={{ color: phaseColor }}>

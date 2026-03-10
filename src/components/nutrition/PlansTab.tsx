@@ -48,7 +48,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
     };
   });
 
-  const MealTileCard = ({ name, recipe, slot }: { name: string; recipe?: Recipe; slot: string }) => (
+  const MealTile = ({ name, recipe, slot }: { name: string; recipe?: Recipe; slot: string }) => (
     <button
       onClick={() => {
         haptic("light");
@@ -57,11 +57,11 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
       className="touch-card w-full text-left card-warm overflow-hidden"
     >
       {recipe?.image ? (
-        <div className="w-full h-[70px] flex items-center justify-center bg-secondary/30">
-          <img src={recipe.image} alt={name} className="h-[60px] w-auto object-contain" loading="lazy" />
+        <div className="w-full h-[80px] flex items-center justify-center bg-secondary/30 rounded-t-[14px]">
+          <img src={recipe.image} alt={name} className="h-[70px] w-auto object-contain" loading="lazy" />
         </div>
       ) : (
-        <RecipeIllustration recipeName={name} height={70} />
+        <RecipeIllustration recipeName={name} height={80} />
       )}
       <div className="p-2">
         <span className="font-mono text-[8px] font-bold uppercase tracking-wider" style={{ color: phaseColor }}>
@@ -89,8 +89,8 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
       {/* Theme */}
       <p className="font-display text-sm italic text-foreground">{plan.theme}.</p>
 
-      {/* Day 1–7 with B/L/D per day */}
-      <div className="space-y-3">
+      {/* Day 1–7 — always show 3 tiles per day */}
+      <div className="space-y-4">
         {dayMeals.map((dm) => {
           const isExpanded = expandedDay === dm.day;
           return (
@@ -118,22 +118,14 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                 )}
               </button>
 
-              {/* Compact summary when collapsed */}
-              {!isExpanded && (
-                <div className="pl-9 space-y-0.5">
-                  <p className="font-body text-[11px] text-foreground">
-                    <span className="font-bold text-foreground/60">B:</span> {dm.breakfast.name}
-                  </p>
-                  <p className="font-body text-[11px] text-foreground">
-                    <span className="font-bold text-foreground/60">L:</span> {dm.lunch.name}
-                  </p>
-                  <p className="font-body text-[11px] text-foreground">
-                    <span className="font-bold text-foreground/60">D:</span> {dm.dinner.name}
-                  </p>
-                </div>
-              )}
+              {/* Always show 3 tiles: Breakfast / Lunch / Dinner */}
+              <div className="grid grid-cols-3 gap-2 pl-9">
+                <MealTile name={dm.breakfast.name} recipe={dm.breakfast.recipe} slot="Breakfast" />
+                <MealTile name={dm.lunch.name} recipe={dm.lunch.recipe} slot="Lunch" />
+                <MealTile name={dm.dinner.name} recipe={dm.dinner.recipe} slot="Dinner" />
+              </div>
 
-              {/* Expanded: 3 tiles across — B / L / D */}
+              {/* Expanded: full detail below tiles */}
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
@@ -143,10 +135,28 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-3 gap-2 pl-9">
-                      <MealTileCard name={dm.breakfast.name} recipe={dm.breakfast.recipe} slot="Breakfast" />
-                      <MealTileCard name={dm.lunch.name} recipe={dm.lunch.recipe} slot="Lunch" />
-                      <MealTileCard name={dm.dinner.name} recipe={dm.dinner.recipe} slot="Dinner" />
+                    <div className="pl-9 space-y-2 pt-1">
+                      {[
+                        { slot: "Breakfast", meal: dm.breakfast },
+                        { slot: "Lunch", meal: dm.lunch },
+                        { slot: "Dinner", meal: dm.dinner },
+                      ].map(({ slot, meal }) => (
+                        <div key={slot} className="card-warm p-3">
+                          <p className="font-hand text-xs font-bold" style={{ color: phaseColor }}>{slot}</p>
+                          <p className="font-display text-xs italic text-foreground mt-0.5">{meal.name}</p>
+                          {meal.recipe && (
+                            <div className="mt-1.5">
+                              <p className="font-body text-[10px] text-muted-foreground">
+                                {meal.recipe.ingredients.slice(0, 5).join(", ")}
+                                {meal.recipe.ingredients.length > 5 && "..."}
+                              </p>
+                              <p className="font-mono text-[9px] text-muted-foreground mt-1">
+                                {meal.recipe.prepTime} · Serves {meal.recipe.serves}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </motion.div>
                 )}
