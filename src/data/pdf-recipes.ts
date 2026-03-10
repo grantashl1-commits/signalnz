@@ -1128,6 +1128,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "healthy-nachos",
     name: "Healthy Nachos",
+    image: "/images/recipes/meals/healthy-nachos.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
