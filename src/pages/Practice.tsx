@@ -4,6 +4,7 @@ import { Plus, X, Trash2, ChevronDown } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, WildStar } from "@/components/BotanicalElements";
 import { SelfCareHandIcon, RITUAL_ICONS } from "@/components/SelfCareIcons";
 import RitualPicker from "@/components/RitualPicker";
+import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import {
   getHabits, saveHabits, addHabit, removeHabit,
   getHabitLog, toggleHabitForDate, getWeekHabitData,
@@ -30,6 +31,8 @@ export default function PracticePage() {
   const [activeCategory, setActiveCategory] = useState<HabitCategory | "all">("all");
   const [showAddForm, setShowAddForm] = useState(false);
   const [showRitualPicker, setShowRitualPicker] = useState(false);
+  const [showLibraryPicker, setShowLibraryPicker] = useState(false);
+  const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("nutrition");
   const [addCategory, setAddCategory] = useState<HabitCategory>("self-care");
   const [addName, setAddName] = useState("");
   const [expandedReason, setExpandedReason] = useState<string | null>(null);
@@ -369,6 +372,10 @@ export default function PracticePage() {
                           if (cat.id === "self-care") {
                             setShowAddForm(false);
                             setShowRitualPicker(true);
+                          } else if (cat.id === "nutrition" || cat.id === "movement") {
+                            setShowAddForm(false);
+                            setLibraryPickerCategory(cat.id);
+                            setShowLibraryPicker(true);
                           }
                         }}
                         className={`touch-btn rounded-full px-3 py-1.5 font-hand text-xs font-bold transition-all ${
@@ -413,6 +420,14 @@ export default function PracticePage() {
       <RitualPicker
         open={showRitualPicker}
         onClose={() => setShowRitualPicker(false)}
+        onAdded={refreshHabits}
+      />
+
+      {/* Library picker for nutrition / movement */}
+      <HabitLibraryPicker
+        open={showLibraryPicker}
+        category={libraryPickerCategory}
+        onClose={() => setShowLibraryPicker(false)}
         onAdded={refreshHabits}
       />
     </div>
