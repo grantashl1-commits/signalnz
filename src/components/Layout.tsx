@@ -4,6 +4,8 @@ import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Use
 import { getCycleInfo, getLastPeriodStart, PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useState, useEffect } from "react";
+import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
+import SignalPanel from "@/components/signal/SignalPanel";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
