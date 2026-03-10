@@ -142,7 +142,7 @@ function JournalLineart({ className = "" }: { className?: string }) {
 // ── Entry Type Picker ─────────────────────────────────────────
 function EntryTypePicker({ onSelect, onCancel }: { onSelect: (type: string) => void; onCancel: () => void }) {
   return (
-    <div className="pb-10 relative">
+    <div className="pb-10 relative max-w-4xl mx-auto">
       <InkParticles />
       <div className="flex items-center justify-between mb-6">
         <div>
