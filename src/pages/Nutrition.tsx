@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster, WildStar } from "@/components/BotanicalElements";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
 import { TODAY_MEALS, NUTRIENT_FOCUS } from "@/data/meal-plans";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
