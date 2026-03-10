@@ -2,6 +2,7 @@ import { useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, Clock, ExternalLink } from "lucide-react";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 
 import rainImg from "@/assets/meditations/rain-meditation.png";
 import lkmImg from "@/assets/meditations/loving-kindness.png";
