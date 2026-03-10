@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { HandDrawnCamera, HandDrawnEye, HandDrawnLock } from "@/components/BotanicalElements";
+import { haptic } from "@/hooks/use-mobile";
 
 interface CommunityProfileProps {
   locationEnabled: boolean;
@@ -16,22 +17,62 @@ const FIELDS = [
   { key: "barter", label: "What would you love to receive or learn in exchange?", ph: "What have you always wanted to learn? What help would you genuinely love?", rows: 2, hint: "Helps others know how they can contribute to you.", sensitiveDefault: true },
 ];
 
+const STORAGE_KEY = "signal_community_profile";
+
+interface ProfileData {
+  photo: string | null;
+  form: Record<string, string>;
+  visibility: Record<string, boolean>;
+}
+
+function loadProfile(): ProfileData {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {
+    photo: null,
+    form: {},
+    visibility: {
+      career: true, employer: false, skills: true, offer: true,
+      looking_for: false, community_vision: true, barter: false,
+    },
+  };
+}
+
+function saveProfile(data: ProfileData) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
 export default function CommunityProfile({ locationEnabled, onToggleLocation }: CommunityProfileProps) {
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [form, setForm] = useState<Record<string, string>>({});
-  const [visibility, setVisibility] = useState<Record<string, boolean>>({
-    career: true, employer: false, skills: true, offer: true,
-    looking_for: false, community_vision: true, barter: false,
-  });
+  const [profileData, setProfileData] = useState<ProfileData>(loadProfile);
+  const { photo, form, visibility } = profileData;
   const [saved, setSaved] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const updateField = (key: string, value: string) => {
+    setProfileData(prev => ({ ...prev, form: { ...prev.form, [key]: value } }));
+  };
+
+  const toggleVisibility = (key: string) => {
+    setProfileData(prev => ({ ...prev, visibility: { ...prev.visibility, [key]: !prev.visibility[key] } }));
+  };
 
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => setPhoto(ev.target?.result as string);
+    reader.onload = (ev) => {
+      setProfileData(prev => ({ ...prev, photo: ev.target?.result as string }));
+    };
     reader.readAsDataURL(file);
+  };
+
+  const handleSave = () => {
+    haptic("medium");
+    saveProfile(profileData);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
 
   return (
@@ -111,7 +152,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
             <div className="flex justify-between items-start gap-2.5 mb-2.5">
               <label className="font-display text-base italic text-foreground leading-snug flex-1">{f.label}</label>
               <button
-                onClick={() => setVisibility((v) => ({ ...v, [f.key]: !v[f.key] }))}
+                onClick={() => toggleVisibility(f.key)}
                 className={`touch-btn font-mono text-[11px] rounded-full px-3 py-1.5 whitespace-nowrap flex-shrink-0 mt-0.5 ${
                   vis ? "bg-phase-follicular/10 text-phase-follicular" : "bg-secondary text-muted-foreground"
                 }`}
@@ -122,7 +163,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
             <textarea
               rows={f.rows}
               value={form[f.key] || ""}
-              onChange={(e) => setForm((p) => ({ ...p, [f.key]: e.target.value }))}
+              onChange={(e) => updateField(f.key, e.target.value)}
               placeholder={f.ph}
               className={`w-full font-display text-sm italic text-foreground border rounded-[10px] px-3 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 leading-relaxed placeholder:text-muted-foreground/40 ${
                 vis ? "bg-secondary/30 border-border" : "bg-secondary/20 border-border/50"
@@ -142,7 +183,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
       })}
 
       <button
-        onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 3000); }}
+        onClick={handleSave}
         className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic active:scale-[0.97]"
       >
         {saved ? "Saved" : "Save profile"}

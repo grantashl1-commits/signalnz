@@ -171,7 +171,7 @@ export default function SmartShoppingList({ plan, phase }: Props) {
 
       {/* Woolworths */}
       <a
-        href="https://www.woolworths.co.nz/shop/searchproducts?search="
+        href="https://www.woolworths.co.nz"
         target="_blank"
         rel="noopener noreferrer"
         className="block card-warm p-4 text-center transition-all active:opacity-90"

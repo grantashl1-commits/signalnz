@@ -130,7 +130,7 @@ export default function HomePage() {
       <div className="pt-2 md:pt-4">
         <p className="font-hand text-base md:text-lg text-primary">{greeting},</p>
         <h1 className="font-display text-[2.8rem] md:text-6xl font-bold italic text-foreground leading-none mt-1">
-          you.
+          {userName || "you"}.
         </h1>
         <HandUnderline width={60} className="mt-1 md:hidden" />
         <HandUnderline width={80} className="mt-1 hidden md:block" />

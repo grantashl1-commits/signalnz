@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { CakeSlice } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
-import { TODAY_MEALS, RECIPES, NUTRIENT_FOCUS, PHASE_MEAL_PLANS } from "@/data/meal-plans";
+import { TODAY_MEALS, RECIPES, NUTRIENT_FOCUS } from "@/data/meal-plans";
 import { PDF_RECIPES } from "@/data/pdf-recipes";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { haptic } from "@/hooks/use-mobile";
@@ -22,7 +21,7 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-type TabId = "today" | "plans" | "recipes" | "baking" | "myweek";
+type TabId = "today" | "plans" | "myweek" | "recipes" | "baking";
 
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
@@ -36,13 +35,13 @@ export default function NutritionPage() {
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
     { id: "plans", label: "Plans" },
+    { id: "myweek", label: "My Week" },
     { id: "recipes", label: "Recipes" },
     { id: "baking", label: "Baking" },
-    { id: "myweek", label: "My Week" },
   ];
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative pb-20">
+    <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative pb-24">
       <div className="absolute top-0 right-0 -translate-y-2 md:-translate-y-4 translate-x-2 md:translate-x-4 pointer-events-none">
         <HerbCluster size={70} opacity={0.15} className="md:hidden" />
         <HerbCluster size={100} opacity={0.2} className="hidden md:block" />
@@ -112,8 +111,8 @@ export default function NutritionPage() {
 
       {activeTab === "myweek" && <MyWeekTab />}
 
-      {/* Seed cycling sticky footer */}
-      <div className="fixed bottom-16 left-0 right-0 z-40 px-4 pb-2 max-w-3xl mx-auto">
+      {/* Seed cycling — static within page flow, not fixed */}
+      <div className="pt-2">
         <SeedCyclingCard cycleDay={info.cycleDay} phase={info.phase} />
       </div>
     </div>
