@@ -717,6 +717,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "shepherds-pie-cleanse",
     name: "Lentil Shepherd's Pie",
+    image: "/images/recipes/meals/lentil-shepherds-pie.png",
     phase: "luteal",
     serves: 4,
     prepTime: "60 min",
