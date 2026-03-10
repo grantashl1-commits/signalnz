@@ -25,6 +25,15 @@ const SOMATIC = [
   { title: "EFT Tapping", desc: "Tap through the 8-point sequence: karate chop, eyebrow, side of eye, under eye, under nose, chin, collarbone, under arm.", hasTimer: false },
 ];
 
+const MEDITATIONS = [
+  { title: "RAIN Meditation", teacher: "Tara Brach", platform: "Insight Timer", duration: "20 min", desc: "A guided practice using the RAIN framework — Recognise, Allow, Investigate, Nurture — for working with difficult emotions.", url: "https://insighttimer.com/tarabrach/guided-meditations/rain-meditation-25" },
+  { title: "Loving-kindness (Metta)", teacher: "Sharon Salzberg", platform: "Insight Timer", duration: "15 min", desc: "A classic metta meditation cultivating compassion for yourself and others through repeated phrases of goodwill.", url: "https://insighttimer.com/sharonsalzberg/guided-meditations/lovingkindness-meditation" },
+  { title: "Mindful Breathing", teacher: "Thích Nhất Hạnh", platform: "YouTube", duration: "20 min", desc: "A calming guided meditation from the Plum Village tradition, anchoring awareness in the breath.", url: "https://www.youtube.com/watch?v=XHvtIcaD194" },
+  { title: "3-Minute Breathing Space", teacher: "Mark Williams", platform: "Insight Timer", duration: "3 min", desc: "A brief MBCT practice perfect for micro-pauses throughout your day. Awareness, gathering, expanding.", url: "https://insighttimer.com/markwilliams/guided-meditations/the-3-minute-breathing-space" },
+  { title: "Yoga Nidra", teacher: "Richard Miller", platform: "Insight Timer", duration: "37 min", desc: "A full iRest Yoga Nidra session for deep rest and nervous system reset. Best done lying down.", url: "https://insighttimer.com/richardmiller/guided-meditations/full-irest-yoga-nidra-practice" },
+  { title: "IFS Parts Meditation", teacher: "Richard Schwartz", platform: "Insight Timer", duration: "12 min", desc: "An Internal Family Systems meditation to connect with and understand your inner parts with compassion.", url: "https://insighttimer.com/drrichardschwartz/guided-meditations/ifs-meditation" },
+];
+
 const GROUNDING_STEPS = [
   "Name 5 things you can see",
   "Name 4 things you can touch",
