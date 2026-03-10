@@ -151,6 +151,9 @@ export default function HomePage({ userName }: { userName?: string }) {
       {/* Period Due Reminder */}
       <PeriodDueReminder />
 
+      {/* Give me a signal */}
+      <SignalHomeSection onOpenSignal={(prompt) => openSignal(prompt, "home")} />
+
       {/* Today Cards */}
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
