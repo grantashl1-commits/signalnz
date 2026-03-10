@@ -388,6 +388,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "tahini-banana-energy-bars",
     name: "Tahini & Banana Choc Energy Bars",
+    image: "/images/recipes/meals/tahini-banana-choc-energy-bars.png",
     phase: "luteal",
     serves: 20,
     prepTime: "35 min",
