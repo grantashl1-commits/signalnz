@@ -506,6 +506,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Walnuts provide omega-3 for inflammation relief. Warming banana cake is comforting during menstruation.",
     category: "baking",
+    image: "/images/recipes/baking/easy-banana-cake.png",
   },
   {
     id: "chocolate-fudge-vegan",
