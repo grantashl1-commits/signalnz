@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Dumbbell, Star } from "lucide-react";
 import { getCycleInfo, getLastPeriodStart, getPhaseFromDay, getCycleDayForDate, getLoggedWorkouts } from "@/lib/cycle-utils";
 import { getAllSessions, type WorkoutSession } from "@/data/workouts";
+import { PhaseIndicator, WildStar } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<string, string> = {
@@ -80,11 +81,13 @@ export default function MovementCalendar() {
 
       {/* Summary */}
       <p className="font-body text-xs text-muted-foreground text-center">
-        {workoutDays} workouts · {starDays} ✨ Zone 2+ days · {restDays} rest days.
+        {workoutDays} workouts · {starDays} Zone 2+ days · {restDays} rest days
       </p>
 
       {streak > 0 && (
-        <p className="font-hand text-sm text-primary text-center">🌿 {streak} days moving.</p>
+        <p className="font-hand text-sm text-primary text-center flex items-center justify-center gap-1.5">
+          <WildStar size={14} /> {streak} days moving
+        </p>
       )}
 
       {/* Calendar grid */}
@@ -122,9 +125,9 @@ export default function MovementCalendar() {
                 <span className={`font-mono text-[10px] ${cell.hasWorkout ? "text-foreground font-bold" : "text-muted-foreground"}`}>
                   {cell.date.getDate()}
                 </span>
-                {cell.hasStar && <span className="text-[8px]">✨</span>}
+                {cell.hasStar && <WildStar size={10} color={PHASE_HEX[cell.phase]} />}
                 {cell.hasWorkout && !cell.hasStar && (
-                  <Dumbbell className="h-2.5 w-2.5 text-primary" />
+                  <PhaseIndicator phase={cell.phase as any} size={10} />
                 )}
               </div>
             );
