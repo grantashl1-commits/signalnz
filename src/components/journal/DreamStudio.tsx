@@ -392,8 +392,9 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
           </motion.button>
 
           {/* Ritual cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {DREAM_RITUALS.map((r, i) => (
-            <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="card-warm p-5">
+            <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="card-warm p-5 flex flex-col">
               <h3 className="font-display text-[17px] italic text-foreground mb-1">{r.title}</h3>
               <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-2">{r.desc}</p>
               <p className="font-mono text-[11px] text-muted-foreground/60 mb-3">{r.prompts.length} steps</p>
