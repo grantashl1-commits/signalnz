@@ -29,6 +29,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/brand" element={<BrandGuidelines />} />
+          <Route path="/animation-poc" element={<AnimationPOC />} />
           <Route path="*" element={
             <Layout>
               <Routes>
