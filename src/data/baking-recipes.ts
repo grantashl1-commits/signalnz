@@ -31,6 +31,7 @@ export const BAKING_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cashews and peanuts provide magnesium and omega-3 for PMS relief. Dates give natural energy during the luteal phase.",
     category: "baking",
+    image: "/images/recipes/baking/snickers-slice.png",
   },
   {
     id: "banana-cinnamon-pancakes",
