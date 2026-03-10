@@ -331,28 +331,24 @@ export default function BreathworkPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto relative">
-      {/* Background */}
-      <div className="absolute top-0 right-0 -translate-y-6 translate-x-6 pointer-events-none">
-        <SeedGeometry size={160} opacity={0.06} className="md:hidden" />
-        <SeedGeometry size={250} opacity={0.08} className="hidden md:block" />
-      </div>
-
-      {/* Header */}
-      <div className="mb-1">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-xl text-primary">{icons[section]}</span>
-          <h1 className="font-display text-[1.5rem] md:text-3xl font-bold italic text-foreground">
+    <div className="relative">
+      {/* ═══ HERO ═══ */}
+      <AtmosphericHero size="md">
+        <div className="text-center">
+          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Mindfulness</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">
             {titles[section]}
           </h1>
         </div>
-      </div>
+      </AtmosphericHero>
+
+      <ContentSection className="px-5 md:px-4">
 
       <SignalContextChips pageContext="breathwork" onOpenSignal={(p) => openSignal(p, "breathwork")} compact />
 
       {/* Sub-nav pill */}
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-        <div className="flex bg-muted/60 rounded-2xl p-1">
+        <div className="flex bg-muted/60 rounded-2xl p-1 max-w-md mx-auto">
           {sections.map((s) => (
             <button
               key={s.id}

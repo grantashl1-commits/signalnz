@@ -182,16 +182,19 @@ export default function CyclePage() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 md:space-y-8 relative">
-      <div className="absolute -top-6 md:-top-10 -right-6 md:-right-10 pointer-events-none">
-        <RootSystem size={150} opacity={0.04} className="md:hidden" />
-        <RootSystem size={200} opacity={0.05} className="hidden md:block" />
-      </div>
+    <div className="relative">
+      {/* ═══ HERO ═══ */}
+      <AtmosphericHero size="md">
+        <div className="text-center">
+          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 mb-3">Cycle Tracker</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.05] mb-3">Your Cycle</h1>
+          <p className="font-display text-base md:text-lg italic text-primary-foreground/70 max-w-md mx-auto">
+            {PHASE_DATA[info.phase].poetry}
+          </p>
+        </div>
+      </AtmosphericHero>
 
-      <div>
-        <p className="font-hand text-sm font-bold text-primary">cycle tracker</p>
-        <h1 className="font-display text-[1.75rem] md:text-4xl font-bold italic text-foreground">Cycle Tracker</h1>
-      </div>
+      <ContentSection className="px-5 md:px-4 space-y-6 md:space-y-8">
 
       <SignalContextChips pageContext="cycle" onOpenSignal={(p) => openSignal(p, "cycle")} compact />
 
