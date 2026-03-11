@@ -6,20 +6,20 @@ import { motion } from "framer-motion";
  */
 export default function SignalAmbientRipple() {
   return (
-    <div className="fixed bottom-32 right-8 z-10 pointer-events-none opacity-80 md:bottom-20 md:right-20 md:opacity-70">
-      <div className="relative w-24 h-24 flex items-center justify-center">
+    <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center opacity-60 md:opacity-50">
+      <div className="relative w-40 h-40 flex items-center justify-center">
         {/* Expanding ripple rings */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2, 3, 4].map((i) => (
           <motion.div
             key={i}
-            className="absolute inset-0 rounded-full border-2 border-primary/30"
-            initial={{ scale: 0.5, opacity: 0 }}
+            className="absolute inset-0 rounded-full border border-primary/20"
+            initial={{ scale: 0.3, opacity: 0 }}
             animate={{
-              scale: [0.5, 2, 3],
-              opacity: [0.5, 0.2, 0],
+              scale: [0.3, 2.5, 5],
+              opacity: [0.4, 0.15, 0],
             }}
             transition={{
-              duration: 4.5,
+              duration: 6,
               repeat: Infinity,
               delay: i * 1.2,
               ease: "easeOut",
