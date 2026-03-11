@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -30,22 +29,27 @@ Only flag: personal attacks, contempt, shaming, belittling. Allow: frustration, 
     const apiKey = Deno.env.get("GEMINI_API_KEY");
     if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gemini-2.0-flash",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 400,
-        temperature: 0.3,
-      }),
-    });
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 400, temperature: 0.3 },
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Gemini API error:", res.status);
+      return new Response(JSON.stringify({ safe: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const data = await res.json();
-    const raw = data.choices?.[0]?.message?.content || "{}";
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
     const cleaned = raw.replace(/```json|```/g, "").trim();
     const result = JSON.parse(cleaned);
 

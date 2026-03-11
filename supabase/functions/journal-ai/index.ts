@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -14,12 +13,10 @@ serve(async (req) => {
   try {
     const body = await req.json();
 
-    // Milestone analysis mode
     if (body.milestoneType) {
       return handleMilestoneAnalysis(body);
     }
 
-    // Standard single-entry analysis
     return handleEntryAnalysis(body);
   } catch (error) {
     console.error("Journal AI error:", error);
@@ -37,23 +34,21 @@ serve(async (req) => {
   }
 });
 
-async function callAI(prompt: string, maxTokens = 1200) {
+async function callGemini(prompt: string, maxTokens = 1200) {
   const apiKey = Deno.env.get("GEMINI_API_KEY");
   if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
 
-  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: "gemini-2.0-flash",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: maxTokens,
-      temperature: 0.7,
-    }),
-  });
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 },
+      }),
+    }
+  );
 
   if (!res.ok) {
     const status = res.status;
@@ -69,11 +64,11 @@ async function callAI(prompt: string, maxTokens = 1200) {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    throw new Error(`AI gateway error: ${status}`);
+    throw new Error(`Gemini API error: ${status}`);
   }
 
   const data = await res.json();
-  const raw = data.choices?.[0]?.message?.content || "{}";
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
   const cleaned = raw.replace(/```json|```/g, "").trim();
   return JSON.parse(cleaned);
 }
@@ -134,7 +129,7 @@ Return exactly this JSON:
   "tags": ["tag1","tag2","tag3","tag4"]
 }`;
 
-  const analysis = await callAI(prompt);
+  const analysis = await callGemini(prompt);
   if (analysis instanceof Response) return analysis;
 
   return new Response(JSON.stringify(analysis), {
@@ -181,7 +176,7 @@ Return exactly this JSON:
   "tags": ["tag1","tag2","tag3","tag4","tag5"]
 }`;
 
-  const analysis = await callAI(prompt, 2000);
+  const analysis = await callGemini(prompt, 2000);
   if (analysis instanceof Response) return analysis;
 
   return new Response(JSON.stringify(analysis), {
