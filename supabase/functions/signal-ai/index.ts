@@ -44,7 +44,6 @@ serve(async (req) => {
             { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
           );
         }
-        // Decrement credits
         if (credits.tier !== "unlimited") {
           await supabase
             .from("ai_credits")
@@ -52,17 +51,14 @@ serve(async (req) => {
             .eq("user_identifier", userIdentifier);
         }
       }
-      // If no credits row exists, allow (free tier default of 20)
-      // We'll create the row after first use
       if (!credits) {
         await supabase.from("ai_credits").insert({
           user_identifier: userIdentifier,
-          credits_remaining: 19, // 20 - 1 for this call
+          credits_remaining: 19,
           tier: "free",
         });
       }
 
-      // Log usage
       await supabase.from("ai_usage").insert({
         user_identifier: userIdentifier,
         function_name: "signal-ai",
@@ -117,12 +113,11 @@ PHASE AWARENESS:
 - Ovulatory: peak signal, confidence, communication, visibility
 - Luteal: turning inward, progesterone rising, detail-oriented, nesting, self-compassion`;
 
-    // Add insight profile context
     if (insightProfile) {
       systemPrompt += `
 
 USER INSIGHT PROFILE (built from their journal entries over time):
-You may gently reference these patterns in a supportive, observational way. Never be invasive or overly analytical. The tone should feel like a wise friend noticing patterns, not a therapist diagnosing.
+You may gently reference these patterns in a supportive, observational way. Never be invasive or overly analytical.
 - Emotional patterns: ${JSON.stringify(insightProfile.emotional_patterns || [])}
 - Recurring topics: ${JSON.stringify(insightProfile.recurring_topics || [])}
 - Common stressors: ${JSON.stringify(insightProfile.common_stressors || [])}
@@ -130,18 +125,15 @@ You may gently reference these patterns in a supportive, observational way. Neve
 - Preferred tone: ${insightProfile.preferred_guidance_tone || "warm"}
 - Journal entries so far: ${insightProfile.entry_count || 0}
 
-Examples of how to reference patterns:
-- "You've been exploring the theme of boundaries lately — this signal honours that."
-- "I notice a pattern of feeling overwhelmed mid-week. This is worth noticing gently."
 Do NOT reference every pattern. Pick at most 1-2 that are relevant to the current prompt.`;
     }
 
     if (recentSignals && recentSignals.length > 0) {
       systemPrompt += `
 
-RECENT SIGNALS (for continuity — you may occasionally reference these):
+RECENT SIGNALS (for continuity):
 ${recentSignals.map((s: any) => `- "${s.headline}" (${s.created_at})`).join("\n")}
-Only reference past signals if it adds meaningful continuity. Don't force it.`;
+Only reference past signals if it adds meaningful continuity.`;
     }
 
     systemPrompt += `
@@ -165,21 +157,18 @@ Always return ONLY valid JSON. No markdown wrapping, no code fences.`;
 Context: ${contextParts.length > 0 ? contextParts.join(". ") + "." : "No specific context available — provide a general signal."}
 User's question/prompt: "${prompt}"`;
 
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemini-2.0-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
-        stream: true,
-      }),
-    });
+    // Use native Gemini streaming endpoint
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ role: "user", parts: [{ text: userMessage }] }],
+        }),
+      }
+    );
 
     if (!response.ok) {
       const status = response.status;
@@ -194,11 +183,52 @@ User's question/prompt: "${prompt}"`;
         });
       }
       const t = await response.text();
-      console.error("AI gateway error:", status, t);
-      throw new Error(`AI gateway error: ${status}`);
+      console.error("Gemini API error:", status, t);
+      throw new Error(`Gemini API error: ${status}`);
     }
 
-    return new Response(response.body, {
+    // Transform native Gemini SSE into OpenAI-compatible SSE so the client parser still works
+    const reader = response.body!.getReader();
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        let buffer = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+            controller.close();
+            break;
+          }
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const jsonStr = line.slice(6).trim();
+            if (!jsonStr) continue;
+            try {
+              const chunk = JSON.parse(jsonStr);
+              const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text || "";
+              if (text) {
+                // Re-emit as OpenAI-compatible SSE format for existing client parser
+                const openaiChunk = {
+                  choices: [{ delta: { content: text } }],
+                };
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify(openaiChunk)}\n\n`));
+              }
+            } catch {
+              // skip malformed chunks
+            }
+          }
+        }
+      },
+    });
+
+    return new Response(stream, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (e) {

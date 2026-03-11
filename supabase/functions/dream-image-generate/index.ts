@@ -28,23 +28,23 @@ serve(async (req) => {
       );
     }
 
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemini-2.0-flash-exp-image-generation",
-        messages: [
-          {
+    // Image generation uses the experimental model with native endpoint
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
             role: "user",
-            content: `Generate a beautiful, high-quality image: ${prompt}. The image should be warm, aspirational, and visually stunning. No text overlays.`,
+            parts: [{ text: `Generate a beautiful, high-quality image: ${prompt}. The image should be warm, aspirational, and visually stunning. No text overlays.` }],
+          }],
+          generationConfig: {
+            responseModalities: ["IMAGE", "TEXT"],
           },
-        ],
-        modalities: ["image", "text"],
-      }),
-    });
+        }),
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 429) {
@@ -60,7 +60,7 @@ serve(async (req) => {
         );
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
+      console.error("Gemini API error:", response.status, t);
       return new Response(
         JSON.stringify({ error: "Image generation failed" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
