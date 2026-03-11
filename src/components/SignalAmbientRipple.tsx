@@ -15,8 +15,8 @@ export default function SignalAmbientRipple() {
             className="absolute inset-0 rounded-full border-2 border-primary/30"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{
-              scale: [0.5, 1.6, 2.2],
-              opacity: [0.3, 0.1, 0],
+              scale: [0.5, 2, 3],
+              opacity: [0.5, 0.2, 0],
             }}
             transition={{
               duration: 4.5,
