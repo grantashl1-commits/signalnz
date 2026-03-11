@@ -8,6 +8,7 @@ import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
+import SignalAmbientRipple from "@/components/SignalAmbientRipple";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
