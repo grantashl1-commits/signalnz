@@ -32,7 +32,7 @@ export default function SignalAmbientRipple() {
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 rounded-full bg-primary/40"
+              className="w-2 h-2 rounded-full bg-primary/60"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.3, 0.8, 0.3],
