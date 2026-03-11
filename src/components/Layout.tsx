@@ -89,6 +89,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col overflow-x-hidden relative">
       <SignalAmbientDots />
+      <SignalAmbientRipple />
       {/* Desktop header — hidden on mobile */}
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md hidden md:block pt-safe">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
