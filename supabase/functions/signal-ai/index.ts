@@ -13,8 +13,8 @@ serve(async (req) => {
   }
 
   try {
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -157,18 +157,22 @@ Always return ONLY valid JSON. No markdown wrapping, no code fences.`;
 Context: ${contextParts.length > 0 ? contextParts.join(". ") + "." : "No specific context available — provide a general signal."}
 User's question/prompt: "${prompt}"`;
 
-    // Use native Gemini streaming endpoint
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          contents: [{ role: "user", parts: [{ text: userMessage }] }],
-        }),
-      }
-    );
+    // Use Lovable AI Gateway with streaming
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        stream: true,
+      }),
+    });
 
     if (!response.ok) {
       const status = response.status;
@@ -178,57 +182,17 @@ User's question/prompt: "${prompt}"`;
         });
       }
       if (status === 402) {
-        return new Response(JSON.stringify({ error: "AI usage limit reached." }), {
+        return new Response(JSON.stringify({ error: "AI usage limit reached. Please add credits in your workspace settings." }), {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const t = await response.text();
-      console.error("Gemini API error:", status, t);
-      throw new Error(`Gemini API error: ${status}`);
+      console.error("AI gateway error:", status, t);
+      throw new Error(`AI gateway error: ${status}`);
     }
 
-    // Transform native Gemini SSE into OpenAI-compatible SSE so the client parser still works
-    const reader = response.body!.getReader();
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-
-    const stream = new ReadableStream({
-      async start(controller) {
-        let buffer = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-            controller.close();
-            break;
-          }
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const jsonStr = line.slice(6).trim();
-            if (!jsonStr) continue;
-            try {
-              const chunk = JSON.parse(jsonStr);
-              const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text || "";
-              if (text) {
-                // Re-emit as OpenAI-compatible SSE format for existing client parser
-                const openaiChunk = {
-                  choices: [{ delta: { content: text } }],
-                };
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify(openaiChunk)}\n\n`));
-              }
-            } catch {
-              // skip malformed chunks
-            }
-          }
-        }
-      },
-    });
-
-    return new Response(stream, {
+    // Pass through the SSE stream directly (already OpenAI-compatible format)
+    return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (e) {
