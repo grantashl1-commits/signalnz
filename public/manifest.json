@@ -1,0 +1,22 @@
+{
+  "name": "Signal — Tune Into Your Inner Self",
+  "short_name": "Signal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfcfb",
+  "theme_color": "#fdfcfb",
+  "icons": [
+    {
+      "src": "/logos/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logos/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
