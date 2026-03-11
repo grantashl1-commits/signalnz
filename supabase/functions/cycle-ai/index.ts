@@ -5,64 +5,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-async function callGemini(apiKey: string, systemPrompt: string, userMessage: string) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: userMessage }] }],
-      }),
-    }
-  );
-  return res;
-}
-
-async function callGeminiMultiTurn(apiKey: string, systemPrompt: string, messages: any[]) {
-  const contents = messages.map((m: any) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents,
-      }),
-    }
-  );
-  return res;
-}
-
-function handleApiError(status: number, body: string) {
-  if (status === 429) {
-    return new Response(JSON.stringify({ error: "Rate limit reached. Please try again in a moment." }), {
-      status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-  if (status === 402) {
-    return new Response(JSON.stringify({ error: "AI usage limit reached. Please add credits in your workspace settings." }), {
-      status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-  console.error("Gemini API error:", status, body);
-  throw new Error(`Gemini API error: ${status}`);
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { type, messages, cycleDay, phase, phaseDescription, recentSymptoms, recentMoods, periodDueIn } = await req.json();
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     let systemPrompt: string;
     let userMessage: string;
@@ -94,15 +44,43 @@ Return ONLY the message text. No JSON. No preamble.`;
     } else if (type === "cycle-coach") {
       systemPrompt = `You are a warm, knowledgeable women's health guide acting as a personal cycle coach. You answer questions about menstrual cycles, hormones, symptoms, and wellness with warmth, evidence-based knowledge, and practical advice. You speak directly to her as 'you'. You never diagnose. Keep answers concise (3-5 sentences) unless the question requires more detail. Be encouraging and validating.`;
 
-      const response = await callGeminiMultiTurn(GEMINI_API_KEY, systemPrompt, messages || []);
+      const allMessages = [
+        { role: "system", content: systemPrompt },
+        ...(messages || []),
+      ];
+
+      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: allMessages,
+          stream: false,
+        }),
+      });
 
       if (!response.ok) {
+        const status = response.status;
+        if (status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limit reached. Please try again in a moment." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (status === 402) {
+          return new Response(JSON.stringify({ error: "AI usage limit reached. Please add credits in your workspace settings." }), {
+            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
         const t = await response.text();
-        return handleApiError(response.status, t);
+        console.error("AI gateway error:", status, t);
+        throw new Error(`AI gateway error: ${status}`);
       }
 
       const data = await response.json();
-      const content = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const content = data.choices?.[0]?.message?.content || "";
 
       return new Response(JSON.stringify({ message: content }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -112,15 +90,41 @@ Return ONLY the message text. No JSON. No preamble.`;
     }
 
     // Non-streaming call for daily-signal and monthly-reflection
-    const response = await callGemini(GEMINI_API_KEY, systemPrompt, userMessage);
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        stream: false,
+      }),
+    });
 
     if (!response.ok) {
+      const status = response.status;
+      if (status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limit reached. Please try again in a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (status === 402) {
+        return new Response(JSON.stringify({ error: "AI usage limit reached. Please add credits in your workspace settings." }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       const t = await response.text();
-      return handleApiError(response.status, t);
+      console.error("AI gateway error:", status, t);
+      throw new Error(`AI gateway error: ${status}`);
     }
 
     const data = await response.json();
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const content = data.choices?.[0]?.message?.content || "";
 
     return new Response(JSON.stringify({ message: content }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

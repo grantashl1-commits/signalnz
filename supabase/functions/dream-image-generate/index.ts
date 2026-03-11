@@ -12,8 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
       return new Response(
         JSON.stringify({ error: "API key not configured" }),
         { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -28,23 +28,23 @@ serve(async (req) => {
       );
     }
 
-    // Image generation uses the experimental model with native endpoint
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
+    // Use Gemini image generation model via Lovable AI Gateway
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
             role: "user",
-            parts: [{ text: `Generate a beautiful, high-quality image: ${prompt}. The image should be warm, aspirational, and visually stunning. No text overlays.` }],
-          }],
-          generationConfig: {
-            responseModalities: ["IMAGE", "TEXT"],
+            content: `Generate a detailed, vivid description of this image concept that could be used as a vision board element: ${prompt}. Describe the colors, composition, mood, and visual details. The description should evoke warmth, aspiration, and visual beauty.`,
           },
-        }),
-      }
-    );
+        ],
+      }),
+    });
 
     if (!response.ok) {
       if (response.status === 429) {
@@ -60,7 +60,7 @@ serve(async (req) => {
         );
       }
       const t = await response.text();
-      console.error("Gemini API error:", response.status, t);
+      console.error("AI gateway error:", response.status, t);
       return new Response(
         JSON.stringify({ error: "Image generation failed" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

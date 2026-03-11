@@ -34,21 +34,23 @@ serve(async (req) => {
   }
 });
 
-async function callGemini(prompt: string, maxTokens = 1200) {
-  const apiKey = Deno.env.get("GEMINI_API_KEY");
-  if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
+async function callAI(prompt: string, maxTokens = 1200) {
+  const apiKey = Deno.env.get("LOVABLE_API_KEY");
+  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 },
-      }),
-    }
-  );
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: maxTokens,
+      temperature: 0.7,
+    }),
+  });
 
   if (!res.ok) {
     const status = res.status;
@@ -64,11 +66,11 @@ async function callGemini(prompt: string, maxTokens = 1200) {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    throw new Error(`Gemini API error: ${status}`);
+    throw new Error(`AI gateway error: ${status}`);
   }
 
   const data = await res.json();
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+  const raw = data.choices?.[0]?.message?.content || "{}";
   const cleaned = raw.replace(/```json|```/g, "").trim();
   return JSON.parse(cleaned);
 }
@@ -129,7 +131,7 @@ Return exactly this JSON:
   "tags": ["tag1","tag2","tag3","tag4"]
 }`;
 
-  const analysis = await callGemini(prompt);
+  const analysis = await callAI(prompt);
   if (analysis instanceof Response) return analysis;
 
   return new Response(JSON.stringify(analysis), {
@@ -157,26 +159,26 @@ ${entrySummaries}
 Return exactly this JSON:
 {
   "milestone_title": "${milestoneLabel}",
-  "summary": "3–4 sentence compassionate overview of their journey across all ${milestoneCount} entries. Celebrate their consistency and growth.",
-  "growth_arc": "2–3 sentences describing how this person has evolved emotionally, mentally and spiritually across these entries. What shifts have happened?",
+  "summary": "3–4 sentence compassionate overview of their journey across all ${milestoneCount} entries.",
+  "growth_arc": "2–3 sentences describing how this person has evolved.",
   "evolved_patterns": ["pattern that has shifted or grown", "emerging theme", "positive change noticed"],
   "themes": ["recurring theme 1", "recurring theme 2", "recurring theme 3"],
   "emotions": ["dominant emotion across period", "secondary emotion"],
-  "ifs_insight": "2–3 sentences about which IFS parts have been most active across entries, which protectors show up regularly, and any signs of healing or integration",
+  "ifs_insight": "2–3 sentences about IFS parts active across entries",
   "patterns": ["deep pattern 1", "deep pattern 2"],
-  "unspoken_desires": "What this person has been consistently reaching for across all entries — the deeper want beneath their words",
+  "unspoken_desires": "What this person has been consistently reaching for",
   "strengths": ["strength that has grown", "consistent strength", "emerging strength"],
   "recommendations": [
-    {"type":"book","title":"Title by Author","reason":"personalised reason based on their full journey"},
+    {"type":"book","title":"Title by Author","reason":"personalised reason"},
     {"type":"podcast","title":"Podcast + episode","reason":"personalised reason"},
-    {"type":"practice","title":"Therapy, workshop or practice","reason":"personalised reason based on patterns"}
+    {"type":"practice","title":"Therapy, workshop or practice","reason":"personalised reason"}
   ],
-  "next_steps": ["compassionate action for next phase 1", "action 2", "action 3"],
-  "affirmation": "A deeply personalised affirmation that honours their journey and the person they are becoming",
+  "next_steps": ["compassionate action 1", "action 2", "action 3"],
+  "affirmation": "A deeply personalised affirmation",
   "tags": ["tag1","tag2","tag3","tag4","tag5"]
 }`;
 
-  const analysis = await callGemini(prompt, 2000);
+  const analysis = await callAI(prompt, 2000);
   if (analysis instanceof Response) return analysis;
 
   return new Response(JSON.stringify(analysis), {
