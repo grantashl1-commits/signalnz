@@ -12,7 +12,7 @@ export default function SignalAmbientRipple() {
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            className="absolute inset-0 rounded-full border border-primary/15"
+            className="absolute inset-0 rounded-full border-2 border-primary/30"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{
               scale: [0.5, 1.6, 2.2],
