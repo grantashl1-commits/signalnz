@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
  */
 export default function SignalAmbientRipple() {
   return (
-    <div className="fixed bottom-32 right-8 z-10 pointer-events-none opacity-80 md:bottom-20 md:right-20 md:opacity-70">
-      <div className="relative w-24 h-24 flex items-center justify-center">
+    <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center opacity-60 md:opacity-50">
+      <div className="relative w-40 h-40 flex items-center justify-center">
         {/* Expanding ripple rings */}
         {[0, 1, 2].map((i) => (
           <motion.div
