@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { Check, Dumbbell, Bluetooth, Activity } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
