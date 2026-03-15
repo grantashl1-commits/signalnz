@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
