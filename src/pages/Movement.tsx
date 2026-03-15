@@ -119,6 +119,7 @@ export default function MovementPage() {
   };
 
   return (
+    <GatedPage requiredTier="nourished">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
