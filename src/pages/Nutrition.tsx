@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GatedPage } from "@/components/FeatureGate";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
