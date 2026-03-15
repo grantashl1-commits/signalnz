@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Lock, BookOpen } from "lucide-react";
 import { CymatiSketch, SeedGeometry } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { haptic } from "@/hooks/use-mobile";
 
 const MODULES = [
