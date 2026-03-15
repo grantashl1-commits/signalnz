@@ -119,5 +119,6 @@ export default function NutritionPage() {
       {activeTab === "myweek" && <MyWeekTab />}
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }

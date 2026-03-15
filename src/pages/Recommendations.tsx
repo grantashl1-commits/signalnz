@@ -125,5 +125,6 @@ export default function RecommendationsPage() {
         </div>
       </section>
     </div>
+    </GatedPage>
   );
 }

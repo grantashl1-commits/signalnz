@@ -191,5 +191,6 @@ export default function CommunityPage() {
       <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }

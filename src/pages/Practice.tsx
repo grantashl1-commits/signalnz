@@ -388,5 +388,6 @@ export default function PracticePage() {
         onAdded={refreshHabits}
       />
     </div>
+    </GatedPage>
   );
 }

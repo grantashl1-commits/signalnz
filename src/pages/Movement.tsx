@@ -505,5 +505,6 @@ export default function MovementPage() {
       />
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }
