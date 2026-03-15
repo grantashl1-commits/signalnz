@@ -52,6 +52,8 @@ serve(async (req) => {
 
     if (mode === "subscription") {
       sessionParams.allow_promotion_codes = !couponId;
+      // Skip credit card when 100% discount applied
+      sessionParams.payment_method_collection = "if_required";
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
