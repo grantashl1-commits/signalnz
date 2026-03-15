@@ -87,6 +87,7 @@ export default function CommunityPage() {
   };
 
   return (
+    <GatedPage requiredTier="thriving">
     <div className="relative">
       {/* Location opt-in modal */}
       <AnimatePresence>
