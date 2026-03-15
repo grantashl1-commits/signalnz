@@ -20,6 +20,7 @@ const cardVariant = {
 
 export default function ModulesPage() {
   return (
+    <GatedPage requiredTier="thriving">
     <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
       <div className="absolute top-0 right-0 -translate-y-6 md:-translate-y-10 translate-x-6 md:translate-x-10 pointer-events-none">
         <SeedGeometry size={130} opacity={0.06} className="md:hidden" />
