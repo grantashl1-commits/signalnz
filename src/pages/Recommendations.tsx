@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 
 const cardVariant = {
