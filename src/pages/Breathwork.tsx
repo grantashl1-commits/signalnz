@@ -332,6 +332,7 @@ export default function BreathworkPage() {
   };
 
   return (
+    <GatedPage requiredTier="nourished">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
