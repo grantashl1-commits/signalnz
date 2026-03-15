@@ -14,3 +14,18 @@ verify_jwt = false
 
 [functions.signal-ai]
 verify_jwt = false
+
+[functions.journal-insights]
+verify_jwt = false
+
+[functions.community-moderate]
+verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.check-subscription]
+verify_jwt = false
+
+[functions.customer-portal]
+verify_jwt = false
