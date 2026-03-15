@@ -29,6 +29,7 @@ const SELF_CARE_SPONSORS = [
 
 export default function RecommendationsPage() {
   return (
+    <GatedPage requiredTier="thriving">
     <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
       <div className="absolute top-0 right-0 -translate-y-6 translate-x-6 pointer-events-none">
         <SeedGeometry size={130} opacity={0.06} className="md:hidden" />
