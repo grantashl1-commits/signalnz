@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -66,6 +67,7 @@ export default function JournalPage() {
   }, []);
 
   return (
+    <GatedPage requiredTier="nourished">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
@@ -127,5 +129,6 @@ export default function JournalPage() {
       <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }

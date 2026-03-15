@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Lock, BookOpen } from "lucide-react";
 import { CymatiSketch, SeedGeometry } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { haptic } from "@/hooks/use-mobile";
 
 const MODULES = [
@@ -19,6 +20,7 @@ const cardVariant = {
 
 export default function ModulesPage() {
   return (
+    <GatedPage requiredTier="thriving">
     <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
       <div className="absolute top-0 right-0 -translate-y-6 md:-translate-y-10 translate-x-6 md:translate-x-10 pointer-events-none">
         <SeedGeometry size={130} opacity={0.06} className="md:hidden" />
@@ -68,5 +70,6 @@ export default function ModulesPage() {
         ))}
       </div>
     </div>
+    </GatedPage>
   );
 }

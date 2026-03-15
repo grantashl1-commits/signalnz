@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -86,6 +87,7 @@ export default function CommunityPage() {
   };
 
   return (
+    <GatedPage requiredTier="thriving">
     <div className="relative">
       {/* Location opt-in modal */}
       <AnimatePresence>
@@ -189,5 +191,6 @@ export default function CommunityPage() {
       <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, X } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, WildStar } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import {
@@ -102,6 +103,7 @@ export default function PracticePage() {
   const phaseSuggestions = PHASE_RITUAL_SUGGESTIONS[info.phase];
 
   return (
+    <GatedPage requiredTier="thriving">
     <div className="max-w-3xl mx-auto space-y-8 md:space-y-10 relative">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 -translate-y-6 translate-x-6 pointer-events-none">
@@ -386,5 +388,6 @@ export default function PracticePage() {
         onAdded={refreshHabits}
       />
     </div>
+    </GatedPage>
   );
 }

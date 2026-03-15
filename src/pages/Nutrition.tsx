@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GatedPage } from "@/components/FeatureGate";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -42,6 +43,7 @@ export default function NutritionPage() {
   ];
 
   return (
+    <GatedPage requiredTier="nourished">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
@@ -117,5 +119,6 @@ export default function NutritionPage() {
       {activeTab === "myweek" && <MyWeekTab />}
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }

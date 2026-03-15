@@ -2,6 +2,7 @@ import { useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, Clock, ExternalLink } from "lucide-react";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
+import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 
 import rainImg from "@/assets/meditations/rain-meditation.png";
@@ -331,6 +332,7 @@ export default function BreathworkPage() {
   };
 
   return (
+    <GatedPage requiredTier="nourished">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
@@ -404,5 +406,6 @@ export default function BreathworkPage() {
       )}
       </ContentSection>
     </div>
+    </GatedPage>
   );
 }
