@@ -43,6 +43,7 @@ export default function NutritionPage() {
   ];
 
   return (
+    <GatedPage requiredTier="nourished">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
