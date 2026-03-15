@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
