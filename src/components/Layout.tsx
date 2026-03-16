@@ -129,10 +129,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 flex-shrink-0 ml-6 ${PHASE_BORDER[info.phase]}`}>
-            <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-              day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
-            </span>
+          <div className="flex items-center gap-3 flex-shrink-0 ml-6">
+            <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
+              <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
+                day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+              </span>
+            </div>
+            <Link
+              to="/account"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary/70 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <UserCircle className="h-5 w-5" />
+            </Link>
           </div>
         </div>
       </header>
