@@ -4,6 +4,7 @@ import { Volume2, Clock, ExternalLink } from "lucide-react";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 
 import rainImg from "@/assets/meditations/rain-meditation.png";
 import lkmImg from "@/assets/meditations/loving-kindness.png";
