@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { Meal } from "@/data/meal-plans";
-import { findRecipeByName, Recipe } from "@/lib/recipe-index";
+import { findRecipeByName } from "@/lib/recipe-index";
 import { RecipeIllustration } from "@/components/MealIllustration";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
