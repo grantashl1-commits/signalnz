@@ -81,33 +81,7 @@ export default function NutritionPage() {
       </div>
 
       {activeTab === "today" && (
-        <div className="space-y-4">
-          <div>
-            <p className="font-display text-lg md:text-xl italic text-foreground">
-              {PHASE_SHORT[info.phase]} Day {phaseDay}
-            </p>
-            <p className="font-body text-[11px] text-muted-foreground" style={{ fontWeight: 300 }}>
-              Cycle day {info.cycleDay}
-            </p>
-          </div>
-          <TodayTab meals={todayMeals} phase={info.phase} cycleDay={info.cycleDay} />
-
-          {/* Nutrients */}
-          <div className="card-warm p-4 md:p-5">
-            <p className="font-hand text-sm font-bold text-primary mb-3">Key nutrients today</p>
-            <div className="flex flex-wrap gap-2">
-              {nutrients.map((n) => (
-                <span
-                  key={n}
-                  className="font-mono text-[10px] rounded-full px-3 py-1.5 flex items-center gap-1"
-                  style={{ backgroundColor: `${PHASE_HEX[info.phase]}15`, color: PHASE_HEX[info.phase] }}
-                >
-                  <WildStar size={10} color={PHASE_HEX[info.phase]} /> {n}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        <TodayTab meals={todayMeals} phase={info.phase} cycleDay={info.cycleDay} />
       )}
 
       {activeTab === "plans" && <PlansTab phase={info.phase} cycleDay={info.cycleDay} />}
