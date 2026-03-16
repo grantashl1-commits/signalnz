@@ -216,6 +216,18 @@ export default function AccountPage() {
           </button>
 
           <button
+            onClick={() => navigate("/feedback")}
+            className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-secondary/80 transition-colors"
+          >
+            <MessageSquareText className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="flex-1">
+              <p className="font-display text-sm italic text-foreground">Feedback dashboard</p>
+              <p className="font-body text-[11px] text-muted-foreground">View all submitted feedback</p>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+
+          <button
             onClick={handleSignOut}
             className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors"
           >

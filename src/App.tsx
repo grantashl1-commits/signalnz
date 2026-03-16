@@ -54,6 +54,7 @@ const App = () => (
                     <Route path="/recommendations" element={<Recommendations />} />
                     <Route path="/community" element={<Community />} />
                     <Route path="/account" element={<Account />} />
+                    <Route path="/feedback" element={<Feedback />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
