@@ -54,7 +54,14 @@ serve(async (req) => {
 
     if (hasActiveSub) {
       const sub = subscriptions.data[0];
-      subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
+      try {
+        const endMs = typeof sub.current_period_end === "number"
+          ? sub.current_period_end * 1000
+          : Date.parse(String(sub.current_period_end));
+        if (!isNaN(endMs)) {
+          subscriptionEnd = new Date(endMs).toISOString();
+        }
+      } catch { /* leave null */ }
       productId = sub.items.data[0].price.product;
     }
 
