@@ -20,6 +20,7 @@ import Community from "./pages/Community";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
+import Feedback from "./pages/Feedback";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import AnimationPOC from "./pages/AnimationPOC";
 
@@ -53,6 +54,7 @@ const App = () => (
                     <Route path="/recommendations" element={<Recommendations />} />
                     <Route path="/community" element={<Community />} />
                     <Route path="/account" element={<Account />} />
+                    <Route path="/feedback" element={<Feedback />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>

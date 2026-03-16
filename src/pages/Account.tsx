@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText } from "lucide-react";
+import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -215,6 +216,18 @@ export default function AccountPage() {
           </button>
 
           <button
+            onClick={() => navigate("/feedback")}
+            className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-secondary/80 transition-colors"
+          >
+            <MessageSquareText className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="flex-1">
+              <p className="font-display text-sm italic text-foreground">Feedback dashboard</p>
+              <p className="font-body text-[11px] text-muted-foreground">View all submitted feedback</p>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+
+          <button
             onClick={handleSignOut}
             className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors"
           >
@@ -224,6 +237,15 @@ export default function AccountPage() {
               <p className="font-body text-[11px] text-muted-foreground">Log out of your account</p>
             </div>
           </button>
+        </motion.div>
+
+        {/* Feedback Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <FeedbackForm />
         </motion.div>
 
         <BotanicalSprig width={140} className="mx-auto mt-6" />
