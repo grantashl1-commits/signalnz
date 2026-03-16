@@ -67,8 +67,8 @@ function overlapScore(query: string, candidate: string): number {
  * This catches names that differ significantly from the recipe DB name.
  */
 const MEAL_ALIASES: Record<string, string> = {
-  "overnight oats with blueberries and flaxseed": "pb-maple-overnight-oats",
-  "overnight oats with goji berries and flaxseed": "pb-maple-overnight-oats",
+  "overnight oats with blueberries and flaxseed": "overnight-oats-blueberry",
+  "overnight oats with goji berries and flaxseed": "overnight-oats-blueberry",
   "miso glazed tofu with soba noodles and bok choy": "miso-tofu-soba",
   "miso tofu with soba noodles": "miso-tofu-soba",
   "lentil and roasted capsicum bowl with tahini dressing": "lentil-capsicum-bowl",
