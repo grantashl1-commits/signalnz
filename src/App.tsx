@@ -52,6 +52,7 @@ const App = () => (
                     <Route path="/my-practice" element={<Practice />} />
                     <Route path="/recommendations" element={<Recommendations />} />
                     <Route path="/community" element={<Community />} />
+                    <Route path="/account" element={<Account />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
