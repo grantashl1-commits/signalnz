@@ -152,10 +152,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
             <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
-          <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
-            <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-              D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
-            </span>
+          <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
+              <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
+                D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+              </span>
+            </div>
+            <Link
+              to="/account"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary/70 text-muted-foreground"
+            >
+              <UserCircle className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </header>
