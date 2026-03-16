@@ -30,9 +30,6 @@ export default function NutritionPage() {
   const [activeTab, setActiveTab] = useState<TabId>("today");
 
   const todayMeals = TODAY_MEALS[info.phase];
-  const nutrients = NUTRIENT_FOCUS[info.phase];
-  const [phaseStart] = PHASE_DAYS[info.phase];
-  const phaseDay = info.cycleDay - phaseStart + 1;
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },

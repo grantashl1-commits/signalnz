@@ -35,7 +35,6 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
   const phaseColor = PHASE_HEX[phase];
   const [phaseStart, phaseEnd] = PHASE_DAYS[phase];
 
-  // Build per-day B/L/D structure with canonical recipe lookups
   const dayMeals: DayMeals[] = plan.days.map((day) => {
     const bName = day.breakfast.split(" — ")[0];
     const lName = day.lunch.split(" — ")[0];
@@ -54,22 +53,27 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
         haptic("light");
         if (recipe) setSelectedRecipe(recipe);
       }}
-      className="touch-card w-full text-left card-warm overflow-hidden"
+      className="touch-card w-full text-left rounded-[16px] bg-card shadow-soft overflow-hidden"
     >
       {recipe?.image ? (
-        <div className="w-full h-[80px] flex items-center justify-center bg-secondary/30 rounded-t-[14px]">
-          <img src={recipe.image} alt={name} className="h-[70px] w-auto object-contain" loading="lazy" />
+        <div className="w-full h-[100px] flex items-center justify-center bg-secondary/20 rounded-t-[16px]">
+          <img src={recipe.image} alt={name} className="h-[85px] w-auto object-contain" loading="lazy" />
         </div>
       ) : (
-        <RecipeIllustration recipeName={name} height={80} />
+        <div className="w-full h-[100px] flex items-center justify-center bg-secondary/10 rounded-t-[16px]">
+          <RecipeIllustration recipeName={name} height={80} />
+        </div>
       )}
-      <div className="p-2">
-        <span className="font-mono text-[8px] font-bold uppercase tracking-wider" style={{ color: phaseColor }}>
+      <div className="p-3">
+        <span className="font-body text-[10px] uppercase tracking-[0.15em] font-semibold" style={{ color: phaseColor }}>
           {slot}
         </span>
-        <h3 className="font-display text-[10px] italic text-foreground leading-tight line-clamp-2 mt-0.5">
+        <h3 className="font-display text-xs md:text-sm font-semibold text-foreground leading-tight line-clamp-2 mt-0.5">
           {name}
         </h3>
+        {recipe && (
+          <span className="font-body text-[10px] text-muted-foreground mt-1 block">{recipe.prepTime}</span>
+        )}
       </div>
     </button>
   );
@@ -78,54 +82,53 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
     <div className="space-y-5">
       {/* Phase header */}
       <div>
-        <span className={`inline-block rounded-full px-3 py-1.5 font-hand text-sm font-bold phase-${phase}-light`}>
+        <span className={`inline-block rounded-full px-3 py-1.5 font-body text-sm font-bold phase-${phase}-light`}>
           Your {PHASE_SHORT[phase].toLowerCase()} plan · days {phaseStart}–{phaseEnd}
         </span>
-        <p className="font-body text-xs italic text-muted-foreground mt-2" style={{ fontWeight: 300 }}>
+        <p className="font-body text-sm italic text-muted-foreground mt-2">
           Plans update automatically as your cycle moves.
         </p>
       </div>
 
-      {/* Theme */}
-      <p className="font-display text-sm italic text-foreground">{plan.theme}.</p>
+      <p className="font-display text-base italic text-foreground">{plan.theme}.</p>
 
-      {/* Day 1–7 — always show 3 tiles per day */}
-      <div className="space-y-4">
+      {/* Day list */}
+      <div className="space-y-5">
         {dayMeals.map((dm) => {
           const isExpanded = expandedDay === dm.day;
           return (
-            <div key={dm.day} className="space-y-2">
+            <div key={dm.day} className="space-y-3">
               <button
                 onClick={() => {
                   haptic("light");
                   setExpandedDay(isExpanded ? null : dm.day);
                 }}
-                className="touch-btn flex items-center gap-2 w-full"
+                className="touch-btn flex items-center gap-3 w-full"
               >
                 <span
-                  className="w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-bold text-white flex-shrink-0"
+                  className="w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-bold text-white flex-shrink-0"
                   style={{ backgroundColor: phaseColor }}
                 >
                   {dm.day}
                 </span>
-                <span className="font-hand text-sm font-bold flex-1 text-left" style={{ color: phaseColor }}>
+                <span className="font-body text-base font-bold flex-1 text-left" style={{ color: phaseColor }}>
                   Day {dm.day}
                 </span>
                 {isExpanded ? (
-                  <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
                 ) : (
-                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 )}
               </button>
 
-              {/* Always show 3 tiles: Breakfast / Lunch / Dinner */}
-              <div className="grid grid-cols-3 gap-2 pl-9">
+              {/* 3 tiles */}
+              <div className="grid grid-cols-3 gap-3 pl-11">
                 <MealTile name={dm.breakfast.name} recipe={dm.breakfast.recipe} slot="Breakfast" />
                 <MealTile name={dm.lunch.name} recipe={dm.lunch.recipe} slot="Lunch" />
                 <MealTile name={dm.dinner.name} recipe={dm.dinner.recipe} slot="Dinner" />
               </div>
 
-              {/* Expanded: full detail below tiles */}
+              {/* Expanded detail */}
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
@@ -135,22 +138,22 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="pl-9 space-y-2 pt-1">
+                    <div className="pl-11 space-y-3 pt-1">
                       {[
                         { slot: "Breakfast", meal: dm.breakfast },
                         { slot: "Lunch", meal: dm.lunch },
                         { slot: "Dinner", meal: dm.dinner },
                       ].map(({ slot, meal }) => (
-                        <div key={slot} className="card-warm p-3">
-                          <p className="font-hand text-xs font-bold" style={{ color: phaseColor }}>{slot}</p>
-                          <p className="font-display text-xs italic text-foreground mt-0.5">{meal.name}</p>
+                        <div key={slot} className="rounded-[14px] bg-card shadow-soft p-4">
+                          <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: phaseColor }}>{slot}</p>
+                          <p className="font-display text-sm font-semibold text-foreground mt-1">{meal.name}</p>
                           {meal.recipe && (
-                            <div className="mt-1.5">
-                              <p className="font-body text-[10px] text-muted-foreground">
+                            <div className="mt-2">
+                              <p className="font-body text-xs text-muted-foreground">
                                 {meal.recipe.ingredients.slice(0, 5).join(", ")}
                                 {meal.recipe.ingredients.length > 5 && "..."}
                               </p>
-                              <p className="font-mono text-[9px] text-muted-foreground mt-1">
+                              <p className="font-body text-xs text-muted-foreground mt-1">
                                 {meal.recipe.prepTime} · Serves {meal.recipe.serves}
                               </p>
                             </div>
@@ -193,30 +196,30 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
               </div>
 
               {selectedRecipe.image ? (
-                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/30 rounded-t-[20px]">
+                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/20 rounded-t-[20px]">
                   <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
                 </div>
               ) : (
                 <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
               )}
 
-              <div className="p-5 space-y-4">
+              <div className="p-6 space-y-5">
                 <div>
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className={`rounded-full px-2.5 py-1 font-hand text-[11px] font-bold phase-${selectedRecipe.phase}-light`}>
+                    <span className={`rounded-full px-2.5 py-1 font-body text-xs font-bold phase-${selectedRecipe.phase}-light`}>
                       {PHASE_SHORT[selectedRecipe.phase]}
                     </span>
-                    <span className="font-mono text-[10px] text-muted-foreground">{selectedRecipe.prepTime}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">Serves {selectedRecipe.serves}</span>
+                    <span className="font-body text-xs text-muted-foreground">{selectedRecipe.prepTime}</span>
+                    <span className="font-body text-xs text-muted-foreground">Serves {selectedRecipe.serves}</span>
                   </div>
-                  <h2 className="font-display text-xl font-bold italic text-foreground">{selectedRecipe.name}</h2>
+                  <h2 className="font-display text-2xl font-bold text-foreground">{selectedRecipe.name}</h2>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
                   {selectedRecipe.keyNutrients.map((n) => (
                     <span
                       key={n}
-                      className="rounded-full px-2.5 py-0.5 font-body text-[10px] font-bold uppercase"
+                      className="rounded-full px-2.5 py-0.5 font-body text-xs font-bold uppercase"
                       style={{ backgroundColor: `${phaseColor}15`, color: phaseColor }}
                     >
                       {n}
@@ -225,8 +228,8 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Ingredients</p>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="font-body text-sm font-semibold" style={{ color: phaseColor }}>Ingredients</p>
                     <RecipeShoppingButton
                       recipeId={selectedRecipe.id}
                       recipeName={selectedRecipe.name}
@@ -239,10 +242,10 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                 <BotanicalSprig width={100} opacity={0.15} />
 
                 <div>
-                  <p className="font-hand text-sm font-bold mb-2" style={{ color: phaseColor }}>Method</p>
-                  <ol className="space-y-1">
+                  <p className="font-body text-sm font-semibold mb-3" style={{ color: phaseColor }}>Method</p>
+                  <ol className="space-y-2">
                     {selectedRecipe.method.map((step, j) => (
-                      <li key={j} className="font-body text-xs text-muted-foreground">
+                      <li key={j} className="font-body text-sm text-muted-foreground leading-relaxed">
                         {j + 1}. {step}
                       </li>
                     ))}
