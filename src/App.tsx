@@ -18,6 +18,7 @@ import Practice from "./pages/Practice";
 import Recommendations from "./pages/Recommendations";
 import Community from "./pages/Community";
 import Auth from "./pages/Auth";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import AnimationPOC from "./pages/AnimationPOC";
