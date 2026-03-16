@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle } from "lucide-react";
 import { getCycleInfo, getLastPeriodStart, PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useState, useEffect } from "react";
@@ -129,10 +129,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 flex-shrink-0 ml-6 ${PHASE_BORDER[info.phase]}`}>
-            <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-              day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
-            </span>
+          <div className="flex items-center gap-3 flex-shrink-0 ml-6">
+            <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
+              <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
+                day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+              </span>
+            </div>
+            <Link
+              to="/account"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary/70 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <UserCircle className="h-5 w-5" />
+            </Link>
           </div>
         </div>
       </header>
@@ -144,10 +152,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
             <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
-          <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
-            <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-              D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
-            </span>
+          <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
+              <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
+                D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+              </span>
+            </div>
+            <Link
+              to="/account"
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary/70 text-muted-foreground"
+            >
+              <UserCircle className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </header>
