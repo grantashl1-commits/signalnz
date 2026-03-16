@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { GatedPage } from "@/components/FeatureGate";
 import PhaseBadge from "@/components/PhaseBadge";
-import { HerbCluster, WildStar } from "@/components/BotanicalElements";
+import { HerbCluster } from "@/components/BotanicalElements";
+import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";

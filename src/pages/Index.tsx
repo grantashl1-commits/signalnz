@@ -10,6 +10,7 @@ import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
