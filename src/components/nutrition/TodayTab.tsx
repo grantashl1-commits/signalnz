@@ -1,12 +1,11 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
-import { RecipeIllustration } from "@/components/MealIllustration";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { Meal } from "@/data/meal-plans";
 import { findRecipeByName } from "@/lib/recipe-index";
+import { RecipeIllustration } from "@/components/MealIllustration";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
 import { haptic } from "@/hooks/use-mobile";
@@ -18,7 +17,13 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-const MEAL_SHORT = ["B", "S", "L", "S", "D"];
+const SLOT_LABELS: Record<string, string> = {
+  breakfast: "Breakfast",
+  "morning snack": "Snack",
+  lunch: "Lunch",
+  "afternoon snack": "Snack",
+  dinner: "Dinner",
+};
 
 interface TodayTabProps {
   meals: Meal[];
@@ -27,10 +32,7 @@ interface TodayTabProps {
 }
 
 export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
-  const [activeIndex, setActiveIndex] = useState(0);
   const [expandedMeal, setExpandedMeal] = useState<string | null>(null);
-  const [showMethod, setShowMethod] = useState<string | null>(null);
   const [eaten, setEaten] = useState<Record<string, boolean>>(() => {
     const today = new Date().toISOString().split("T")[0];
     const stored: Record<string, boolean> = {};
@@ -41,26 +43,9 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
     return stored;
   });
 
-  // Canonical recipe lookup for each meal
   const mealRecipes = useMemo(() => {
     return meals.map((m) => findRecipeByName(m.name));
   }, [meals]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setActiveIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.on("select", onSelect);
-    return () => { emblaApi.off("select", onSelect); };
-  }, [emblaApi, onSelect]);
-
-  const scrollTo = (idx: number) => {
-    haptic("light");
-    emblaApi?.scrollTo(idx);
-  };
 
   const markEaten = (mealType: string) => {
     haptic("medium");
@@ -72,281 +57,290 @@ export default function TodayTab({ meals, phase, cycleDay }: TodayTabProps) {
 
   const phaseColor = PHASE_HEX[phase];
 
+  // Filter to main meals only (Breakfast, Lunch, Dinner) + snacks
+  const mainMeals = meals.filter((m) => {
+    const t = m.type.toLowerCase();
+    return t === "breakfast" || t === "lunch" || t === "dinner";
+  });
+  const snackMeals = meals.filter((m) => {
+    const t = m.type.toLowerCase();
+    return t.includes("snack");
+  });
+
   return (
-    <div className="space-y-4">
-      {/* Dot navigation */}
-      <div className="flex items-center justify-center gap-3">
-        {meals.map((m, i) => (
-          <button
-            key={i}
-            onClick={() => scrollTo(i)}
-            className="touch-btn flex flex-col items-center gap-1"
-          >
-            <div
-              className="w-3 h-3 rounded-full transition-all duration-200"
-              style={{
-                backgroundColor: i === activeIndex ? phaseColor : "hsl(var(--border))",
-                transform: i === activeIndex ? "scale(1.3)" : "scale(1)",
-              }}
-            />
-            <span className="font-mono text-[9px] text-muted-foreground">
-              {MEAL_SHORT[i] || m.type[0]}
-            </span>
-          </button>
-        ))}
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground">
+          Today's Nourishment
+        </h2>
+        <p className="font-body text-sm text-muted-foreground mt-1">
+          {PHASE_SHORT[phase]} phase · Day {cycleDay}
+        </p>
       </div>
 
-      {/* Swipeable cards */}
-      <div ref={emblaRef} className="overflow-hidden">
-        <div className="flex">
-          {meals.map((meal, i) => {
-            const expanded = expandedMeal === meal.type;
-            const methodOpen = showMethod === meal.type;
+      {/* Main meal cards */}
+      <div className="space-y-4">
+        {mainMeals.map((meal, i) => {
+          const recipe = mealRecipes[meals.indexOf(meal)];
+          const isExpanded = expandedMeal === meal.type;
+          const isEaten = eaten[meal.type];
+          const isDinner = meal.type.toLowerCase() === "dinner";
+          const slotLabel = SLOT_LABELS[meal.type.toLowerCase()] || meal.type;
+
+          return (
+            <MealCard
+              key={meal.type}
+              meal={meal}
+              recipe={recipe}
+              slotLabel={slotLabel}
+              isExpanded={isExpanded}
+              isEaten={isEaten}
+              isDinner={isDinner}
+              phase={phase}
+              phaseColor={phaseColor}
+              index={i}
+              onToggleExpand={() => {
+                haptic("light");
+                setExpandedMeal(isExpanded ? null : meal.type);
+              }}
+              onMarkEaten={() => markEaten(meal.type)}
+            />
+          );
+        })}
+      </div>
+
+      {/* Snacks section */}
+      {snackMeals.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-display text-lg font-bold text-foreground">Snacks</h3>
+          {snackMeals.map((meal) => {
+            const recipe = mealRecipes[meals.indexOf(meal)];
             const isEaten = eaten[meal.type];
-            const isDinner = meal.type.toLowerCase() === "dinner";
-            const shortBenefit = meal.phaseBenefit.split(".")[0] + ".";
-            const recipe = mealRecipes[i];
-
-            // Use canonical recipe image — this is the single source of truth
-            const recipeImage = recipe?.image;
-            const displayIngredients = recipe ? recipe.ingredients.join(", ") : meal.ingredients;
-            const displayMethod = recipe?.method;
-            const displayPrepTime = recipe?.prepTime || meal.prepTime;
-
             return (
-              <div key={meal.type} className="flex-[0_0_100%] min-w-0 px-1">
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 * i, duration: 0.3 }}
-                  className="card-warm overflow-hidden"
+              <div
+                key={meal.type}
+                className="rounded-[18px] bg-card p-5 shadow-soft flex items-center justify-between gap-4"
+              >
+                <div className="min-w-0">
+                  <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium mb-1">
+                    {meal.type}
+                  </p>
+                  <p className="font-display text-base font-semibold text-foreground leading-tight">
+                    {meal.name}
+                  </p>
+                  <p className="font-body text-xs text-muted-foreground mt-1 leading-relaxed">
+                    {meal.phaseBenefit.split(".")[0]}.
+                  </p>
+                </div>
+                <button
+                  onClick={() => !isEaten && markEaten(meal.type)}
+                  disabled={isEaten}
+                  className="touch-btn h-10 w-10 rounded-full flex-shrink-0 flex items-center justify-center transition-all"
+                  style={{
+                    backgroundColor: isEaten ? phaseColor : "transparent",
+                    border: `2px solid ${isEaten ? phaseColor : "hsl(var(--border))"}`,
+                  }}
                 >
-                  {/* Image area — canonical recipe image from Recipes tab */}
-                  <div className="relative">
-                    {recipeImage ? (
-                      <div className="w-full h-[200px] flex items-center justify-center bg-secondary/30 rounded-t-[18px]">
-                        <img
-                          src={recipeImage}
-                          alt={meal.name}
-                          className="h-[180px] w-auto object-contain"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      /* Neutral fallback — no old SVG illustrations */
-                      <div className="w-full h-[200px] flex items-center justify-center bg-secondary/20 rounded-t-[18px]">
-                        <div className="text-center">
-                          <RecipeIllustration recipeName={meal.name} height={140} />
-                          {/* TODO: Generate illustration for this recipe */}
-                        </div>
-                      </div>
-                    )}
-                    {displayPrepTime && (
-                      <div className="absolute bottom-3 right-4">
-                        <span className="font-hand text-xs bg-card/80 backdrop-blur-sm rounded-full px-3 py-1 text-muted-foreground">
-                          {displayPrepTime}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Card body */}
-                  <div className="p-5">
-                    <h3 className="font-display text-lg font-bold italic text-foreground leading-tight">
-                      {meal.name}
-                    </h3>
-
-                    {/* Phase tag */}
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className={`rounded-full px-2.5 py-0.5 font-hand text-[10px] font-bold phase-${phase}-light`}>
-                        {PHASE_SHORT[phase]}
-                      </span>
-                      {recipe && (
-                        <span className="font-mono text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
-                          from recipes
-                        </span>
-                      )}
-                    </div>
-
-                    <p className="font-display text-[15px] italic mt-2 leading-relaxed" style={{ color: phaseColor }}>
-                      {shortBenefit}
-                    </p>
-
-                    {/* Kids dinner alternative */}
-                    {isDinner && (
-                      <KidsDinnerAlt dinnerName={meal.name} phase={phase} />
-                    )}
-
-                    {/* Nutrient badges */}
-                    {(meal.calories || recipe?.keyNutrients) && (
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {meal.calories && (
-                          <span
-                            className="rounded-full px-2.5 py-0.5 font-body text-[11px] font-bold uppercase"
-                            style={{ backgroundColor: `${phaseColor}15`, color: phaseColor }}
-                          >
-                            {meal.calories}
-                          </span>
-                        )}
-                        {meal.protein && (
-                          <span
-                            className="rounded-full px-2.5 py-0.5 font-body text-[11px] font-bold uppercase"
-                            style={{ backgroundColor: `${phaseColor}15`, color: phaseColor }}
-                          >
-                            {meal.protein}
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Expand toggle — ingredients + benefits */}
-                    <button
-                      onClick={() => {
-                        haptic("light");
-                        setExpandedMeal(expanded ? null : meal.type);
-                      }}
-                      className="touch-btn flex items-center gap-1.5 mt-3 font-body text-xs text-muted-foreground"
-                      style={{ fontWeight: 300 }}
-                    >
-                      {expanded ? "Show less" : "Ingredients + benefits"}
-                      {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                    </button>
-
-                    <AnimatePresence>
-                      {expanded && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="pt-3 space-y-3 border-t border-border mt-3">
-                            {displayIngredients && (
-                              <div>
-                                <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Ingredients</p>
-                                <p className="font-body text-xs text-muted-foreground mt-1">
-                                  {displayIngredients}
-                                </p>
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Phase benefit</p>
-                              <p className="font-display text-xs italic text-muted-foreground mt-1">{recipe?.phaseBenefit || meal.phaseBenefit}</p>
-                            </div>
-                            {(meal.calories || meal.protein) && (
-                              <div className="flex gap-2">
-                                {meal.calories && <span className="font-mono text-[10px]" style={{ color: phaseColor }}>{meal.calories}</span>}
-                                {meal.protein && <span className="font-mono text-[10px]" style={{ color: phaseColor }}>{meal.protein}</span>}
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Recipe method toggle */}
-                    {displayMethod && (
-                      <>
-                        <button
-                          onClick={() => {
-                            haptic("light");
-                            setShowMethod(methodOpen ? null : meal.type);
-                          }}
-                          className="touch-btn flex items-center gap-1.5 mt-2 font-body text-xs font-medium"
-                          style={{ color: phaseColor }}
-                        >
-                          {methodOpen ? "Hide method" : "How to make it"}
-                          {methodOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                        </button>
-
-                        <AnimatePresence>
-                          {methodOpen && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="pt-3 space-y-2 border-t border-border mt-2">
-                                <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Method</p>
-                                {displayMethod.map((step: string, idx: number) => (
-                                  <div key={idx} className="flex gap-2.5">
-                                    <span className="font-mono text-xs font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>{idx + 1}.</span>
-                                    <p className="font-body text-xs text-muted-foreground leading-relaxed">{step}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    )}
-
-                    {/* Fallback: generate simple method from ingredients if no method field */}
-                    {!displayMethod && meal.ingredients && (
-                      <>
-                        <button
-                          onClick={() => {
-                            haptic("light");
-                            setShowMethod(methodOpen ? null : meal.type);
-                          }}
-                          className="touch-btn flex items-center gap-1.5 mt-2 font-body text-xs font-medium"
-                          style={{ color: phaseColor }}
-                        >
-                          {methodOpen ? "Hide recipe" : "How to make it"}
-                          {methodOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                        </button>
-
-                        <AnimatePresence>
-                          {methodOpen && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="pt-3 border-t border-border mt-2">
-                                <p className="font-hand text-sm font-bold mb-2" style={{ color: phaseColor }}>Quick method</p>
-                                <p className="font-body text-xs text-muted-foreground leading-relaxed">
-                                  Prepare and combine: {meal.ingredients}. Season to taste and enjoy{meal.prepTime ? ` (${meal.prepTime})` : ""}.
-                                </p>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    )}
-
-                    {/* Mark as eaten */}
-                    <button
-                      onClick={() => !isEaten && markEaten(meal.type)}
-                      disabled={isEaten}
-                      className="touch-btn w-full mt-4 rounded-full py-3 min-h-[48px] font-body text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2"
-                      style={{
-                        backgroundColor: isEaten ? phaseColor : "transparent",
-                        color: isEaten ? "white" : phaseColor,
-                        border: `2px solid ${phaseColor}`,
-                      }}
-                    >
-                      {isEaten ? (
-                        <>Eaten <WildStar size={14} color="white" /></>
-                      ) : (
-                        "Mark as eaten"
-                      )}
-                    </button>
-                  </div>
-                </motion.div>
+                  {isEaten && <WildStar size={14} color="white" />}
+                </button>
               </div>
             );
           })}
         </div>
-      </div>
+      )}
 
-      {/* Seed cycling - only on Today */}
+      {/* Seed cycling */}
       <SeedCyclingCard cycleDay={cycleDay} phase={phase} />
     </div>
+  );
+}
+
+/* ── Individual Meal Card ── */
+interface MealCardProps {
+  meal: Meal;
+  recipe?: import("@/data/meal-plans").Recipe;
+  slotLabel: string;
+  isExpanded: boolean;
+  isEaten: boolean;
+  isDinner: boolean;
+  phase: Phase;
+  phaseColor: string;
+  index: number;
+  onToggleExpand: () => void;
+  onMarkEaten: () => void;
+}
+
+function MealCard({
+  meal,
+  recipe,
+  slotLabel,
+  isExpanded,
+  isEaten,
+  isDinner,
+  phase,
+  phaseColor,
+  index,
+  onToggleExpand,
+  onMarkEaten,
+}: MealCardProps) {
+  const [showMethod, setShowMethod] = useState(false);
+  const recipeImage = recipe?.image;
+  const displayIngredients = recipe ? recipe.ingredients.join(", ") : meal.ingredients;
+  const displayMethod = recipe?.method;
+  const displayPrepTime = recipe?.prepTime || meal.prepTime;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.06 * index, duration: 0.4 }}
+      className="rounded-[22px] bg-card shadow-soft overflow-hidden"
+    >
+      {/* Image */}
+      <div className="relative">
+        {recipeImage ? (
+          <div className="w-full h-[180px] md:h-[220px] flex items-center justify-center bg-secondary/20">
+            <img
+              src={recipeImage}
+              alt={meal.name}
+              className="h-[160px] md:h-[200px] w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
+        ) : (
+          <div className="w-full h-[140px] flex items-center justify-center bg-secondary/10">
+            <RecipeIllustration recipeName={meal.name} height={110} />
+          </div>
+        )}
+        {displayPrepTime && (
+          <div className="absolute bottom-3 right-4">
+            <span className="font-body text-xs bg-card/90 backdrop-blur-sm rounded-full px-3 py-1.5 text-muted-foreground font-medium">
+              {displayPrepTime}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="p-6 md:p-7">
+        {/* Slot label */}
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] font-medium mb-2" style={{ color: phaseColor }}>
+          {slotLabel}
+        </p>
+
+        <h3 className="font-display text-xl md:text-2xl font-bold text-foreground leading-tight">
+          {meal.name}
+        </h3>
+
+        <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">
+          {meal.phaseBenefit.split(".")[0]}.
+        </p>
+
+        {isDinner && <KidsDinnerAlt dinnerName={meal.name} phase={phase} />}
+
+        {/* View recipe toggle */}
+        <button
+          onClick={onToggleExpand}
+          className="touch-btn flex items-center gap-1.5 mt-4 font-body text-sm font-medium"
+          style={{ color: phaseColor }}
+        >
+          {isExpanded ? "Hide details" : "View recipe"}
+          {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </button>
+
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-4 space-y-4 border-t border-border mt-4">
+                {/* Ingredients */}
+                {displayIngredients && (
+                  <div>
+                    <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold mb-2" style={{ color: phaseColor }}>
+                      Ingredients
+                    </p>
+                    {recipe ? (
+                      <ul className="space-y-1">
+                        {recipe.ingredients.map((ing, idx) => (
+                          <li key={idx} className="font-body text-sm text-muted-foreground">{ing}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="font-body text-sm text-muted-foreground">{displayIngredients}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Method */}
+                {displayMethod && (
+                  <>
+                    <button
+                      onClick={() => { haptic("light"); setShowMethod(!showMethod); }}
+                      className="touch-btn flex items-center gap-1.5 font-body text-sm font-medium"
+                      style={{ color: phaseColor }}
+                    >
+                      {showMethod ? "Hide method" : "How to make it"}
+                      {showMethod ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </button>
+
+                    <AnimatePresence>
+                      {showMethod && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="overflow-hidden"
+                        >
+                          <ol className="space-y-2 pt-2">
+                            {displayMethod.map((step, idx) => (
+                              <li key={idx} className="flex gap-3">
+                                <span className="font-mono text-sm font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>
+                                  {idx + 1}.
+                                </span>
+                                <p className="font-body text-sm text-muted-foreground leading-relaxed">{step}</p>
+                              </li>
+                            ))}
+                          </ol>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
+                )}
+
+                {/* Phase benefit */}
+                <p className="font-display text-sm italic leading-relaxed" style={{ color: phaseColor }}>
+                  {recipe?.phaseBenefit || meal.phaseBenefit}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mark as eaten */}
+        <button
+          onClick={() => !isEaten && onMarkEaten()}
+          disabled={isEaten}
+          className="touch-btn w-full mt-5 rounded-full py-3.5 min-h-[48px] font-body text-sm font-bold transition-all flex items-center justify-center gap-2"
+          style={{
+            backgroundColor: isEaten ? phaseColor : "transparent",
+            color: isEaten ? "white" : phaseColor,
+            border: `2px solid ${phaseColor}`,
+          }}
+        >
+          {isEaten ? (
+            <>Eaten <WildStar size={14} color="white" /></>
+          ) : (
+            "Mark as eaten"
+          )}
+        </button>
+      </div>
+    </motion.div>
   );
 }

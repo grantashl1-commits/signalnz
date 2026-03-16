@@ -10,6 +10,7 @@ import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
@@ -83,7 +84,8 @@ export default function HomePage({ userName }: { userName?: string }) {
     <div className="relative">
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
-        <div className="text-center max-w-xl mx-auto">
+        <SignalPulse />
+        <div className="text-center max-w-xl mx-auto relative z-10">
           <motion.p
             {...fadeUp(0.1)}
             className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/45 mb-6"
