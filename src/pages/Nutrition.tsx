@@ -45,7 +45,9 @@ export default function NutritionPage() {
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
-        <SignalPulse />
+        <div className="absolute inset-0 z-0">
+          <SignalPulse />
+        </div>
         <div className="text-center relative z-10">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Nutrition</p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Nourish</h1>
