@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check } from "lucide-react";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,7 @@ import { haptic } from "@/hooks/use-mobile";
 import { useEffect, useState } from "react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { BotanicalSprig } from "@/components/BotanicalElements";
+import { useProfile } from "@/hooks/useProfile";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
@@ -24,9 +25,13 @@ const TIER_LABELS: Record<string, string> = {
 
 export default function AccountPage() {
   const { user, session, subscription, refreshSubscription, loading } = useAuth();
+  const { displayName, updateDisplayName } = useProfile();
   const navigate = useNavigate();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [nameSaving, setNameSaving] = useState(false);
+  const [nameEditing, setNameEditing] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -179,6 +184,48 @@ export default function AccountPage() {
             <Mail className="h-4.5 w-4.5 text-primary" /> Profile
           </h2>
           <div className="space-y-3">
+            <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Display name</p>
+              {nameEditing ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                    placeholder="Your name"
+                    className="flex-1 rounded-lg border border-border bg-card px-3 py-1.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    autoFocus
+                  />
+                  <button
+                    disabled={nameSaving}
+                    onClick={async () => {
+                      setNameSaving(true);
+                      const err = await updateDisplayName(nameInput);
+                      setNameSaving(false);
+                      if (err) {
+                        toast.error("Failed to save name");
+                      } else {
+                        toast.success("Name saved");
+                        setNameEditing(false);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 font-body text-xs font-semibold text-primary-foreground disabled:opacity-50"
+                  >
+                    <Check className="h-3 w-3" /> Save
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setNameInput(displayName || "");
+                    setNameEditing(true);
+                  }}
+                  className="font-body text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                >
+                  {displayName || "Set your name"} <PenLine className="h-3 w-3 text-muted-foreground" />
+                </button>
+              )}
+            </div>
             <div>
               <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Email</p>
               <p className="font-body text-sm text-foreground">{user.email}</p>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, Phase } from "@/lib/cycle-utils";
@@ -11,6 +11,7 @@ import { haptic } from "@/hooks/use-mobile";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
+import { useProfile } from "@/hooks/useProfile";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
@@ -60,8 +61,9 @@ const fadeUp = (delay: number) => ({
   transition: { delay, duration: 0.5, ease: "easeOut" as const },
 });
 
-export default function HomePage({ userName }: { userName?: string }) {
+export default function HomePage() {
   const { openSignal } = useSignalPanel();
+  const { displayName } = useProfile();
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const focus = FOCUS[info.phase];
@@ -73,6 +75,7 @@ export default function HomePage({ userName }: { userName?: string }) {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const hasSetCycle = !!getLastPeriodStart();
 
   const handleCheckin = (state: string) => {
     haptic("medium");
@@ -90,14 +93,14 @@ export default function HomePage({ userName }: { userName?: string }) {
             {...fadeUp(0.1)}
             className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/45 mb-6"
           >
-            {greeting}
+            {greeting}{displayName ? `, ${displayName}` : ""}.
           </motion.p>
 
           <motion.h1
             {...fadeUp(0.2)}
-            className="font-display text-[4rem] md:text-[5.5rem] font-extrabold text-primary-foreground leading-[1] mb-6"
+            className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.1] mb-4"
           >
-            {userName || "you"}.
+            Your cycle-synced<br />wellness companion
           </motion.h1>
 
           <motion.p
@@ -109,12 +112,23 @@ export default function HomePage({ userName }: { userName?: string }) {
 
           <motion.p
             {...fadeUp(0.45)}
-            className="font-body text-xs text-primary-foreground/35 uppercase tracking-[0.25em] mb-12"
+            className="font-body text-xs text-primary-foreground/35 uppercase tracking-[0.25em] mb-8"
           >
             Day {info.cycleDay} · {info.name}
           </motion.p>
 
-          <motion.div {...fadeUp(0.55)}>
+          {!hasSetCycle && (
+            <motion.div {...fadeUp(0.5)} className="mb-8">
+              <Link
+                to="/cycle"
+                className="inline-flex items-center gap-2 font-body text-sm font-semibold text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+              >
+                Set up your cycle <ArrowRight className="h-4 w-4" />
+              </Link>
+            </motion.div>
+          )}
+
+          <motion.div {...fadeUp(0.6)}>
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
