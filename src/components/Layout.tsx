@@ -103,11 +103,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               to="/"
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
                 location.pathname === "/"
-                  ? "bg-secondary text-foreground"
+                  ? "bg-primary/15 text-primary font-semibold"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
             >
-              <Home className="h-3.5 w-3.5" />
+              <Home className={`h-3.5 w-3.5 ${location.pathname === "/" ? "fill-primary" : ""}`} />
               Home
             </Link>
             {navItems.map((item) => {
@@ -118,11 +118,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   to={item.path}
                   className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
                     active
-                      ? "bg-secondary text-foreground"
+                      ? "bg-primary/15 text-primary font-semibold"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                   }`}
                 >
-                  <item.icon className="h-3.5 w-3.5" />
+                  <item.icon className={`h-3.5 w-3.5 ${active ? "fill-primary" : ""}`} />
                   {item.label}
                 </Link>
               );
