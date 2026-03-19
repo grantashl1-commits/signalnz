@@ -112,7 +112,7 @@ export default function HomePage() {
 
           <motion.p
             {...fadeUp(0.45)}
-            className="font-body text-xs text-primary-foreground/35 uppercase tracking-[0.25em] mb-8"
+            className="font-body text-xs text-primary-foreground/60 uppercase tracking-[0.25em] mb-8"
           >
             Day {info.cycleDay} · {info.name}
           </motion.p>
