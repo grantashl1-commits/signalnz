@@ -61,8 +61,9 @@ const fadeUp = (delay: number) => ({
   transition: { delay, duration: 0.5, ease: "easeOut" as const },
 });
 
-export default function HomePage({ userName }: { userName?: string }) {
+export default function HomePage() {
   const { openSignal } = useSignalPanel();
+  const { displayName } = useProfile();
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const focus = FOCUS[info.phase];
@@ -74,6 +75,7 @@ export default function HomePage({ userName }: { userName?: string }) {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const hasSetCycle = !!getLastPeriodStart();
 
   const handleCheckin = (state: string) => {
     haptic("medium");
