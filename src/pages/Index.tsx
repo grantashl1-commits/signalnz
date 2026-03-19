@@ -93,14 +93,14 @@ export default function HomePage() {
             {...fadeUp(0.1)}
             className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/45 mb-6"
           >
-            {greeting}
+            {greeting}{displayName ? `, ${displayName}` : ""}.
           </motion.p>
 
           <motion.h1
             {...fadeUp(0.2)}
-            className="font-display text-[4rem] md:text-[5.5rem] font-extrabold text-primary-foreground leading-[1] mb-6"
+            className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.1] mb-4"
           >
-            {userName || "you"}.
+            Your cycle-synced<br />wellness companion
           </motion.h1>
 
           <motion.p
@@ -112,10 +112,21 @@ export default function HomePage() {
 
           <motion.p
             {...fadeUp(0.45)}
-            className="font-body text-xs text-primary-foreground/35 uppercase tracking-[0.25em] mb-12"
+            className="font-body text-xs text-primary-foreground/35 uppercase tracking-[0.25em] mb-8"
           >
             Day {info.cycleDay} · {info.name}
           </motion.p>
+
+          {!hasSetCycle && (
+            <motion.div {...fadeUp(0.5)} className="mb-8">
+              <Link
+                to="/cycle"
+                className="inline-flex items-center gap-2 font-body text-sm font-semibold text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+              >
+                Set up your cycle <ArrowRight className="h-4 w-4" />
+              </Link>
+            </motion.div>
+          )}
 
           <motion.div {...fadeUp(0.55)}>
             <motion.button
