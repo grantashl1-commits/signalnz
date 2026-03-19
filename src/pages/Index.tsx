@@ -105,7 +105,7 @@ export default function HomePage() {
 
           <motion.p
             {...fadeUp(0.35)}
-            className="font-body text-base md:text-lg text-primary-foreground/60 leading-relaxed max-w-md mx-auto mb-4"
+            className="font-body text-base md:text-lg text-primary-foreground/80 leading-relaxed max-w-md mx-auto mb-4"
           >
             {PHASE_SUBTEXT[info.phase]}
           </motion.p>
