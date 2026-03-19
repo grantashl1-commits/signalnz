@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, Phase } from "@/lib/cycle-utils";
@@ -11,6 +11,7 @@ import { haptic } from "@/hooks/use-mobile";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
+import { useProfile } from "@/hooks/useProfile";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
