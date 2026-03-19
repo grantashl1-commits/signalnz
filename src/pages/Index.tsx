@@ -128,7 +128,7 @@ export default function HomePage() {
             </motion.div>
           )}
 
-          <motion.div {...fadeUp(0.55)}>
+          <motion.div {...fadeUp(0.6)}>
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}

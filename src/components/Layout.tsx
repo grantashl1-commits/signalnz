@@ -202,12 +202,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   key={item.path}
                   to={item.path}
                   onClick={() => haptic("light")}
-                  className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-2.5 py-1.5 min-w-[48px] min-h-[44px] justify-center flex-shrink-0 scroll-snap-item ${
-                    active ? "text-primary" : "text-muted-foreground opacity-50"
+                  className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-2.5 py-1.5 min-w-[48px] min-h-[44px] justify-center flex-shrink-0 scroll-snap-item transition-all ${
+                    active ? "text-primary" : "text-muted-foreground opacity-60"
                   }`}
                 >
-                  <item.icon className={`${active ? "h-4.5 w-4.5" : "h-4 w-4"} transition-all`} />
-                  <span className="text-[8px] font-body font-medium leading-none">{item.label}</span>
+                  <item.icon className={`${active ? "h-5 w-5 fill-primary" : "h-4 w-4"} transition-all`} />
+                  <span className={`text-[9px] font-body leading-none ${active ? "font-bold" : "font-medium"}`}>{item.label}</span>
+                  {active && <div className="w-1 h-1 rounded-full bg-primary mt-0.5" />}
                 </Link>
               );
             })}
