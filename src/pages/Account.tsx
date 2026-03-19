@@ -25,9 +25,13 @@ const TIER_LABELS: Record<string, string> = {
 
 export default function AccountPage() {
   const { user, session, subscription, refreshSubscription, loading } = useAuth();
+  const { displayName, updateDisplayName } = useProfile();
   const navigate = useNavigate();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [nameSaving, setNameSaving] = useState(false);
+  const [nameEditing, setNameEditing] = useState(false);
 
   useEffect(() => {
     if (!user) return;
