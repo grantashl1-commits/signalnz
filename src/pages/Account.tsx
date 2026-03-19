@@ -185,6 +185,48 @@ export default function AccountPage() {
           </h2>
           <div className="space-y-3">
             <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Display name</p>
+              {nameEditing ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                    placeholder="Your name"
+                    className="flex-1 rounded-lg border border-border bg-card px-3 py-1.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    autoFocus
+                  />
+                  <button
+                    disabled={nameSaving}
+                    onClick={async () => {
+                      setNameSaving(true);
+                      const err = await updateDisplayName(nameInput);
+                      setNameSaving(false);
+                      if (err) {
+                        toast.error("Failed to save name");
+                      } else {
+                        toast.success("Name saved");
+                        setNameEditing(false);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 font-body text-xs font-semibold text-primary-foreground disabled:opacity-50"
+                  >
+                    <Check className="h-3 w-3" /> Save
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setNameInput(displayName || "");
+                    setNameEditing(true);
+                  }}
+                  className="font-body text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                >
+                  {displayName || "Set your name"} <PenLine className="h-3 w-3 text-muted-foreground" />
+                </button>
+              )}
+            </div>
+            <div>
               <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Email</p>
               <p className="font-body text-sm text-foreground">{user.email}</p>
             </div>
