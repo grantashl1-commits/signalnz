@@ -91,7 +91,7 @@ export default function HomePage() {
         <div className="text-center max-w-xl mx-auto relative z-10">
           <motion.p
             {...fadeUp(0.1)}
-            className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/45 mb-6"
+            className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/80 mb-6"
           >
             {greeting}{displayName ? `, ${displayName}` : ""}.
           </motion.p>
@@ -105,14 +105,14 @@ export default function HomePage() {
 
           <motion.p
             {...fadeUp(0.35)}
-            className="font-body text-base md:text-lg text-primary-foreground/60 leading-relaxed max-w-md mx-auto mb-4"
+            className="font-body text-base md:text-lg text-primary-foreground/80 leading-relaxed max-w-md mx-auto mb-4"
           >
             {PHASE_SUBTEXT[info.phase]}
           </motion.p>
 
           <motion.p
             {...fadeUp(0.45)}
-            className="font-body text-xs text-primary-foreground/35 uppercase tracking-[0.25em] mb-8"
+            className="font-body text-xs text-primary-foreground/60 uppercase tracking-[0.25em] mb-8"
           >
             Day {info.cycleDay} · {info.name}
           </motion.p>
@@ -121,7 +121,7 @@ export default function HomePage() {
             <motion.div {...fadeUp(0.5)} className="mb-8">
               <Link
                 to="/cycle"
-                className="inline-flex items-center gap-2 font-body text-sm font-semibold text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors"
               >
                 Set up your cycle <ArrowRight className="h-4 w-4" />
               </Link>
