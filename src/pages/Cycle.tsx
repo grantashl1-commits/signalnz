@@ -281,62 +281,52 @@ export default function CyclePage() {
             {nextPhase} begins in ~{daysUntil} days
           </p>
 
-          {/* Phase cards */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            {phases.map((phase, i) => {
-              const d = PHASE_DATA[phase];
-              const active = phase === info.phase;
-              const expanded = expandedPhase === phase;
-              return (
-                <motion.div
-                  key={phase}
-                  custom={i}
-                  initial="hidden"
-                  animate="visible"
-                  variants={cardVariant}
-                  className={`relative overflow-hidden card-warm p-4 md:p-5 cursor-pointer touch-card ${
-                    active ? "ring-1 opacity-100" : "opacity-60"
-                  }`}
-                  style={active ? { borderColor: PHASE_HEX[phase] } : {}}
-                  onClick={() => { haptic("light"); setExpandedPhase(expanded ? null : phase); }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 pointer-events-none">
-                    <CymatiSketch phase={phase} size={48} opacity={0.1} />
+          {/* Current phase card — always expanded */}
+          {(() => {
+            const phase = info.phase;
+            const d = PHASE_DATA[phase];
+            return (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={cardVariant}
+                custom={0}
+                className="relative overflow-hidden card-warm p-4 md:p-5 ring-1"
+                style={{ borderColor: PHASE_HEX[phase] }}
+              >
+                <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 pointer-events-none">
+                  <CymatiSketch phase={phase} size={48} opacity={0.1} />
+                </div>
+                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-[18px]" style={{ backgroundColor: PHASE_HEX[phase] }} />
+
+                <h3 className="font-display text-base md:text-lg italic pl-3" style={{ color: PHASE_HEX[phase] }}>
+                  {PHASE_LABELS[phase]}
+                </h3>
+                <p className="font-hand text-xs pl-3 mt-0.5" style={{ color: PHASE_HEX[phase] }}>{d.poetry}</p>
+
+                <div className="pl-3 mt-3 flex items-center gap-2">
+                  <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Energy</span>
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <span key={n} className={`h-2 w-2 rounded-full ${n <= d.energy ? "" : "bg-border"}`} style={n <= d.energy ? { backgroundColor: PHASE_HEX[phase] } : {}} />
+                    ))}
                   </div>
-                  <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-[18px]" style={{ backgroundColor: PHASE_HEX[phase] }} />
+                </div>
 
-                  <h3 className="font-display text-base md:text-lg italic pl-3" style={{ color: PHASE_HEX[phase] }}>
-                    {PHASE_LABELS[phase]}
-                  </h3>
-                  <p className="font-hand text-xs pl-3 mt-0.5" style={{ color: PHASE_HEX[phase] }}>{d.poetry}</p>
+                <div className="pl-3 mt-2 space-y-1">
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Hormones:</span> {d.hormones}</p>
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Mood:</span> {d.mood}</p>
+                </div>
 
-                  <div className="pl-3 mt-3 flex items-center gap-2">
-                    <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Energy</span>
-                    <div className="flex gap-0.5">
-                      {[1, 2, 3, 4, 5].map((n) => (
-                        <span key={n} className={`h-2 w-2 rounded-full ${n <= d.energy ? "" : "bg-border"}`} style={n <= d.energy ? { backgroundColor: PHASE_HEX[phase] } : {}} />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pl-3 mt-2 space-y-1">
-                    <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Hormones:</span> {d.hormones}</p>
-                    <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Mood:</span> {d.mood}</p>
-                  </div>
-
-                  {expanded && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pl-3 mt-3 pt-3 border-t border-border space-y-1">
-                      <BotanicalSprig width={100} opacity={0.2} />
-                      <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Body:</span> {d.body}</p>
-                      <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Nutrition:</span> {d.nutrition}</p>
-                      <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Movement:</span> {d.movement}</p>
-                    </motion.div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
+                <div className="pl-3 mt-3 pt-3 border-t border-border space-y-1">
+                  <BotanicalSprig width={100} opacity={0.2} />
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Body:</span> {d.body}</p>
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Nutrition:</span> {d.nutrition}</p>
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Movement:</span> {d.movement}</p>
+                </div>
+              </motion.div>
+            );
+          })()}
 
           {/* Seed cycling moved to Nourish page */}
         </div>
