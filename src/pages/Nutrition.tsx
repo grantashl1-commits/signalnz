@@ -22,7 +22,7 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-type TabId = "today" | "plans" | "myweek" | "recipes" | "baking";
+type TabId = "today" | "plans" | "myweek" | "recipes" | "baking" | "shopping";
 
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
