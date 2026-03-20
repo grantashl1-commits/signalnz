@@ -716,7 +716,7 @@ function BodyGoalsSection() {
       // Save plan to localStorage
       localStorage.setItem("signal_ai_workout_plan", JSON.stringify(data));
       setPlanSummary(data.summary || "Plan generated!");
-      haptic("heavy");
+      haptic("success");
     } catch (e: any) {
       console.error("Plan generation failed:", e);
       setPlanSummary(null);
