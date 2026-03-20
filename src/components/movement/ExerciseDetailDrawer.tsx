@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { X } from "lucide-react";
 import ExerciseRig3D from "@/components/movement/ExerciseRig3D";
+import ExerciseSilhouette from "@/components/movement/ExerciseSilhouette";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import type { Exercise } from "@/data/workouts";
 import type { Phase } from "@/lib/cycle-utils";
@@ -72,8 +73,20 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
               )}
             </div>
           ) : (
-            <div className="bg-secondary/30 rounded-2xl p-8 flex items-center justify-center">
-              <p className="font-mono text-[10px] text-muted-foreground">animation coming soon</p>
+            <div className="flex flex-col items-center">
+              <div className="bg-secondary/30 rounded-2xl w-full flex items-center justify-center py-4">
+                <ExerciseSilhouette
+                  exerciseName={exercise.name}
+                  size={160}
+                  playing={playing}
+                />
+              </div>
+              <button
+                onClick={() => setPlaying(!playing)}
+                className="mt-2 px-4 py-1.5 rounded-full bg-secondary text-muted-foreground font-mono text-[10px]"
+              >
+                {playing ? "pause" : "play"}
+              </button>
             </div>
           )}
 
