@@ -21,7 +21,7 @@ interface Props {
   onPlanSaved?: () => void;
 }
 
-export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFresh }: Props) {
+export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFresh, onPlanSaved }: Props) {
   const phaseColor = PHASE_HEX[phase];
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const todayStr = new Date().toISOString().split("T")[0];
