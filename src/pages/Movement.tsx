@@ -33,6 +33,7 @@ const cardVariant = {
 
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
+  const fitnessProfile = getFitnessProfile();
   
   const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");
   const [feeling, setFeeling] = useState("");
