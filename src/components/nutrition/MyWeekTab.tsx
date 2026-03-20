@@ -121,6 +121,7 @@ export default function MyWeekTab({ onPlanSaved, onSaveToToday }: { onPlanSaved?
           onProceedToShop={handleProceedToShop}
           onStartFresh={handleStartFresh}
           onPlanSaved={onPlanSaved}
+          onSaveToToday={onSaveToToday}
         />
       )}
 

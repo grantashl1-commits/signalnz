@@ -144,11 +144,15 @@ export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFr
       {/* Actions */}
       <div className="space-y-2">
         <button
-          onClick={() => { onPlanSaved?.(); haptic("medium"); }}
+          onClick={() => { 
+            haptic("medium");
+            onPlanSaved?.();
+            onSaveToToday?.();
+          }}
           className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-white transition-all active:opacity-90 flex items-center justify-center gap-2"
           style={{ backgroundColor: phaseColor }}
         >
-          ✅ Save plan to Today
+          Save plan to Today
         </button>
         <button
           onClick={onProceedToShop}
