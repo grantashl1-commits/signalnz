@@ -838,7 +838,7 @@ function BodyGoalsSection() {
 function BodyVisualizerEmbed() {
   return (
     <div className="space-y-4">
-      <MeasurementForm />
+      <MeasurementsForm />
       <div className="card-warm p-4 rounded-2xl">
         <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
           <p className="font-body text-xs text-foreground font-medium mb-1">📸 Save your dream body image</p>
