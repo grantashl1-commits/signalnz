@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, X, ArrowRight } from "lucide-react";
+import { ArrowLeft, Sparkles, X, ArrowRight, LayoutGrid } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDreamBoard } from "@/hooks/useDreamBoard";
 import BoardCanvas from "./dream/BoardCanvas";
 import BoardToolbar from "./dream/BoardToolbar";
 import BoardEmptyState from "./dream/BoardEmptyState";
+import BoardSwitcher from "./dream/BoardSwitcher";
+import BoardStackedView from "./dream/BoardStackedView";
 import AddImageModal from "./dream/AddImageModal";
 import type { DreamElement } from "@/lib/journal-store";
 import { WildStar, HandDrawnSparkle } from "@/components/BotanicalElements";
@@ -23,13 +25,8 @@ const DREAM_RITUALS = [
 ];
 
 const FUTURE_SELF_PROMPTS = [
-  "Who are you becoming?",
-  "What does she protect?",
-  "What does she no longer tolerate?",
-  "What does her life feel like?",
-  "What does she choose?",
-  "How does she spend her mornings?",
-  "What brings her peace?",
+  "Who are you becoming?", "What does she protect?", "What does she no longer tolerate?",
+  "What does her life feel like?", "What does she choose?", "How does she spend her mornings?", "What brings her peace?",
 ];
 
 // ── Guided Ritual Flow ───────────────────────────────────────
@@ -42,14 +39,7 @@ function DreamRitualFlow({ ritual, onComplete, onBack }: { ritual: typeof DREAM_
     const els: Omit<DreamElement, "id" | "zIndex">[] = [];
     els.push({ type: "label", content: ritual.title, x: 100, y: 80, width: 300, height: 50 });
     answers.filter(Boolean).forEach((a, i) => {
-      els.push({
-        type: "text",
-        content: `${ritual.prompts[i]}\n${a}`,
-        x: 100 + (i % 3) * 260,
-        y: 150 + Math.floor(i / 3) * 170,
-        width: 240,
-        height: 140,
-      });
+      els.push({ type: "text", content: `${ritual.prompts[i]}\n${a}`, x: 100 + (i % 3) * 260, y: 150 + Math.floor(i / 3) * 170, width: 240, height: 140 });
     });
     onComplete(els);
   };
@@ -57,9 +47,7 @@ function DreamRitualFlow({ ritual, onComplete, onBack }: { ritual: typeof DREAM_
   return (
     <div className="fixed inset-0 z-[150] bg-background flex items-center justify-center p-4" style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="w-full max-w-lg">
-        <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70">
-          <X className="h-3.5 w-3.5" /> Exit ritual
-        </button>
+        <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><X className="h-3.5 w-3.5" /> Exit ritual</button>
         <div className="text-center mb-6">
           <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">Dream Ritual</p>
           <h2 className="font-display text-2xl italic text-foreground mb-1">{ritual.title}</h2>
@@ -90,19 +78,11 @@ function DreamRitualFlow({ ritual, onComplete, onBack }: { ritual: typeof DREAM_
 // ── Future Self Mode ─────────────────────────────────────────
 function FutureSelfMode({ onComplete, onBack }: { onComplete: (elements: Omit<DreamElement, "id" | "zIndex">[]) => void; onBack: () => void }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
-
   const complete = () => {
     const els: Omit<DreamElement, "id" | "zIndex">[] = [];
     els.push({ type: "label", content: "Future Self", x: 100, y: 80, width: 260, height: 50 });
     Object.entries(answers).filter(([, v]) => v.trim()).forEach(([k, v], i) => {
-      els.push({
-        type: "affirmation",
-        content: `${FUTURE_SELF_PROMPTS[parseInt(k)]}\n${v}`,
-        x: 100 + (i % 3) * 260,
-        y: 150 + Math.floor(i / 3) * 170,
-        width: 240,
-        height: 140,
-      });
+      els.push({ type: "affirmation", content: `${FUTURE_SELF_PROMPTS[parseInt(k)]}\n${v}`, x: 100 + (i % 3) * 260, y: 150 + Math.floor(i / 3) * 170, width: 240, height: 140 });
     });
     onComplete(els);
   };
@@ -131,17 +111,15 @@ function FutureSelfMode({ onComplete, onBack }: { onComplete: (elements: Omit<Dr
   );
 }
 
-// ── Rituals Panel (desktop side, mobile overlay) ─────────────
+// ── Rituals Panel ────────────────────────────────────────────
 function RitualsPanel({ onStartRitual, onStartFutureSelf, onClose }: { onStartRitual: (r: typeof DREAM_RITUALS[0]) => void; onStartFutureSelf: () => void; onClose: () => void }) {
   return (
-    <div className="absolute top-0 right-0 w-80 h-full z-40 bg-card border-l border-border shadow-xl overflow-y-auto">
+    <div className="absolute top-0 right-0 w-80 h-full z-40 bg-card/95 backdrop-blur-xl border-l border-border shadow-2xl overflow-y-auto">
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="font-display text-lg italic text-foreground">Rituals</p>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="h-4 w-4" /></button>
         </div>
-
-        {/* Future Self */}
         <button onClick={onStartFutureSelf} className="w-full rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/15 p-4 text-left mb-4 hover:shadow-sm transition-shadow">
           <div className="flex items-center gap-2 mb-1.5">
             <HandDrawnSparkle size={16} color="hsl(var(--primary))" />
@@ -150,7 +128,6 @@ function RitualsPanel({ onStartRitual, onStartFutureSelf, onClose }: { onStartRi
           <h3 className="font-display text-[15px] italic text-foreground mb-0.5">Future Self Mode</h3>
           <p className="font-body text-[12px] text-muted-foreground leading-relaxed">Build your vision from identity.</p>
         </button>
-
         <div className="space-y-2">
           {DREAM_RITUALS.map((r) => (
             <button key={r.id} onClick={() => onStartRitual(r)} className="w-full card-warm p-4 text-left hover:shadow-sm transition-shadow">
@@ -170,8 +147,16 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
   const isMobile = useIsMobile();
   const [showImageModal, setShowImageModal] = useState(false);
   const [showRituals, setShowRituals] = useState(false);
+  const [showBoards, setShowBoards] = useState(false);
   const [activeRitual, setActiveRitual] = useState<typeof DREAM_RITUALS[0] | null>(null);
   const [showFutureSelf, setShowFutureSelf] = useState(false);
+
+  // Auto-create a default board if none exist
+  useEffect(() => {
+    if (board.boards.length === 0) {
+      board.createBoard("My Dream Board", "hsl(284 22% 44%)");
+    }
+  }, [board.boards.length]);
 
   // Handle pinned entry from journal
   useEffect(() => {
@@ -181,97 +166,194 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
         content: pinnedEntry.content.slice(0, 200),
         x: Math.random() * 400 + 100,
         y: Math.random() * 300 + 100,
-        width: 240,
-        height: 140,
+        width: 240, height: 140,
         linkedEntryId: pinnedEntry.id,
       });
     }
   }, [pinnedEntry?.id]);
+
+  // Escape key cancels connecting mode
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && board.connectingFrom) {
+        board.setConnectingFrom(null);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [board.connectingFrom]);
 
   const handleAddElement = useCallback((type: string) => {
     haptic("medium");
     const centerX = (-board.panX + 400) / board.zoom;
     const centerY = (-board.panY + 300) / board.zoom;
     const defaults: Record<string, { w: number; h: number }> = {
-      text: { w: 240, h: 160 },
-      quote: { w: 280, h: 140 },
-      goal: { w: 240, h: 160 },
-      affirmation: { w: 260, h: 120 },
-      label: { w: 300, h: 50 },
-      prompt: { w: 280, h: 100 },
+      text: { w: 240, h: 160 }, quote: { w: 280, h: 140 }, goal: { w: 240, h: 160 },
+      affirmation: { w: 260, h: 120 }, label: { w: 300, h: 50 }, prompt: { w: 280, h: 100 },
     };
     const d = defaults[type] || { w: 240, h: 160 };
-    board.addElement({
-      type: type as DreamElement["type"],
-      content: "",
-      x: centerX + Math.random() * 60 - 30,
-      y: centerY + Math.random() * 60 - 30,
-      width: d.w,
-      height: d.h,
-    });
+    board.addElement({ type: type as DreamElement["type"], content: "", x: centerX + Math.random() * 60 - 30, y: centerY + Math.random() * 60 - 30, width: d.w, height: d.h });
   }, [board]);
 
   const handleImageReady = useCallback((url: string, prompt?: string) => {
     haptic("medium");
     const centerX = (-board.panX + 400) / board.zoom;
     const centerY = (-board.panY + 300) / board.zoom;
-    board.addElement({
-      type: "image",
-      content: prompt || "",
-      imageUrl: url,
-      x: centerX + Math.random() * 60 - 30,
-      y: centerY + Math.random() * 60 - 30,
-      width: 280,
-      height: 280,
-    });
+    board.addElement({ type: "image", content: prompt || "", imageUrl: url, x: centerX + Math.random() * 60 - 30, y: centerY + Math.random() * 60 - 30, width: 280, height: 280 });
   }, [board]);
 
   const handleStarterRitual = useCallback((elements: Array<{ type: string; content: string; x: number; y: number; width: number; height: number; imageUrl?: string }>) => {
     haptic("medium");
-    board.addBulk(elements.map((e) => ({
-      ...e,
-      type: e.type as DreamElement["type"],
-      imageUrl: e.imageUrl || undefined,
-    })));
+    board.addBulk(elements.map((e) => ({ ...e, type: e.type as DreamElement["type"], imageUrl: e.imageUrl || undefined })));
   }, [board]);
 
-  const handleRitualComplete = useCallback((els: Omit<DreamElement, "id" | "zIndex">[]) => {
-    board.addBulk(els);
-    setActiveRitual(null);
-  }, [board]);
-
-  const handleFutureSelfComplete = useCallback((els: Omit<DreamElement, "id" | "zIndex">[]) => {
-    board.addBulk(els);
-    setShowFutureSelf(false);
-  }, [board]);
+  const handleRitualComplete = useCallback((els: Omit<DreamElement, "id" | "zIndex">[]) => { board.addBulk(els); setActiveRitual(null); }, [board]);
+  const handleFutureSelfComplete = useCallback((els: Omit<DreamElement, "id" | "zIndex">[]) => { board.addBulk(els); setShowFutureSelf(false); }, [board]);
 
   const handleZoomIn = () => board.setZoom(Math.min(3, board.zoom + 0.15));
   const handleZoomOut = () => board.setZoom(Math.max(0.25, board.zoom - 0.15));
   const handleFit = () => { board.setZoom(1); board.setPanX(0); board.setPanY(0); };
 
-  // Ritual flows render as overlays
+  const handleStartConnect = (id: string) => {
+    haptic("light");
+    board.setConnectingFrom(id);
+  };
+
+  const handleCompleteConnect = (toId: string) => {
+    if (board.connectingFrom) {
+      board.addConnection(board.connectingFrom, toId);
+      board.setConnectingFrom(null);
+      haptic("medium");
+    }
+  };
+
+  // Ritual flows
   if (activeRitual) return <DreamRitualFlow ritual={activeRitual} onComplete={handleRitualComplete} onBack={() => setActiveRitual(null)} />;
   if (showFutureSelf) return <FutureSelfMode onComplete={handleFutureSelfComplete} onBack={() => setShowFutureSelf(false)} />;
 
+  // Mobile: stacked card view
+  if (isMobile) {
+    return (
+      <div className="relative w-full min-h-[60vh] pb-8">
+        {/* Board header */}
+        <div className="flex items-center justify-between px-1 mb-4">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowBoards(!showBoards)}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border font-display text-[13px] italic text-foreground"
+            >
+              <LayoutGrid className="h-3.5 w-3.5 text-primary/60" />
+              {board.activeBoard?.title || "My Board"}
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => setShowRituals(true)} className="px-3 py-2 rounded-xl bg-primary/10 border border-primary/15 font-display text-[12px] italic text-primary flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5" /> Rituals
+            </button>
+          </div>
+        </div>
+
+        {/* Board switcher dropdown (mobile) */}
+        {showBoards && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 rounded-2xl border border-border bg-card p-3 space-y-2"
+          >
+            {board.boards.map((b) => (
+              <button
+                key={b.id}
+                onClick={() => { board.switchBoard(b.id); setShowBoards(false); }}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all ${
+                  b.id === board.activeBoardId ? "bg-primary/8 border border-primary/20" : "hover:bg-secondary/50"
+                }`}
+              >
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: b.coverColor || "hsl(284 22% 44%)" }} />
+                <div>
+                  <p className="font-display text-[13px] italic text-foreground">{b.title}</p>
+                  <p className="font-mono text-[9px] text-muted-foreground">{b.elements.length} elements</p>
+                </div>
+              </button>
+            ))}
+            <button
+              onClick={() => { board.createBoard("New Board"); setShowBoards(false); }}
+              className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-border text-muted-foreground/50 font-display text-[12px] italic"
+            >
+              + New board
+            </button>
+          </motion.div>
+        )}
+
+        {/* Elements or empty state */}
+        {board.elements.length === 0 ? (
+          <div className="text-center py-16">
+            <WildStar size={36} className="mx-auto mb-4 opacity-50" />
+            <h3 className="font-display text-xl italic text-foreground/70 mb-2">Start dreaming</h3>
+            <p className="font-body text-sm text-muted-foreground/50 mb-6 max-w-xs mx-auto">Add notes, images, and intentions to build a visual map of your future.</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <button onClick={() => handleAddElement("text")} className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-display text-[12px] italic">Add note</button>
+              <button onClick={() => setShowImageModal(true)} className="px-4 py-2.5 rounded-xl bg-secondary border border-border text-foreground/70 font-display text-[12px] italic">Add image</button>
+            </div>
+          </div>
+        ) : (
+          <BoardStackedView
+            elements={board.elements}
+            connections={board.connections}
+            onUpdate={board.updateElement}
+            onDelete={board.deleteElement}
+            onDuplicate={board.duplicateElement}
+            onSelect={board.setSelectedId}
+            selectedId={board.selectedId}
+          />
+        )}
+
+        {/* Mobile FAB toolbar */}
+        {board.elements.length > 0 && (
+          <div className="fixed bottom-24 right-4 z-50 flex flex-col gap-2">
+            <button onClick={() => handleAddElement("text")} className="w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center text-lg">+</button>
+          </div>
+        )}
+
+        {/* Rituals overlay */}
+        {showRituals && (
+          <div className="fixed inset-0 z-[100] bg-background/95 overflow-y-auto p-5" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+            <RitualsPanel
+              onStartRitual={(r) => { setActiveRitual(r); setShowRituals(false); }}
+              onStartFutureSelf={() => { setShowFutureSelf(true); setShowRituals(false); }}
+              onClose={() => setShowRituals(false)}
+            />
+          </div>
+        )}
+
+        <AddImageModal open={showImageModal} onClose={() => setShowImageModal(false)} onImageReady={handleImageReady} />
+      </div>
+    );
+  }
+
+  // Desktop: full canvas
   return (
-    <div className="relative w-full" style={{ height: isMobile ? "calc(100vh - 200px)" : "calc(100vh - 160px)" }}>
+    <div className="relative w-full" style={{ height: "calc(100vh - 160px)" }}>
       <BoardCanvas
         elements={board.elements}
+        connections={board.connections}
         zoom={board.zoom}
         panX={board.panX}
         panY={board.panY}
         selectedId={board.selectedId}
+        connectingFrom={board.connectingFrom}
         onSelect={board.setSelectedId}
         onUpdate={board.updateElement}
         onDelete={board.deleteElement}
         onDuplicate={board.duplicateElement}
         onBringForward={board.bringForward}
         onSendBackward={board.sendBackward}
+        onStartConnect={handleStartConnect}
+        onCompleteConnect={handleCompleteConnect}
+        onRemoveConnection={board.removeConnection}
         setPanX={board.setPanX}
         setPanY={board.setPanY}
         setZoom={board.setZoom}
       >
-        {/* Empty state */}
         {board.elements.length === 0 && (
           <BoardEmptyState
             onAddNote={() => handleAddElement("text")}
@@ -280,7 +362,6 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
           />
         )}
 
-        {/* Toolbar */}
         <BoardToolbar
           zoom={board.zoom}
           onZoomIn={handleZoomIn}
@@ -290,7 +371,16 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
           onAddImage={() => setShowImageModal(true)}
         />
 
-        {/* Rituals button - top right */}
+        {/* Board switcher button */}
+        <button
+          onClick={() => setShowBoards(!showBoards)}
+          className="absolute top-4 right-[140px] z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border shadow-lg font-display text-sm italic text-foreground hover:bg-secondary transition-colors"
+        >
+          <LayoutGrid className="h-4 w-4 text-primary/60" />
+          {board.activeBoard?.title || "Boards"}
+        </button>
+
+        {/* Rituals button */}
         <button
           onClick={() => setShowRituals(!showRituals)}
           className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border shadow-lg font-display text-sm italic text-foreground hover:bg-secondary transition-colors"
@@ -298,14 +388,12 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
           <Sparkles className="h-4 w-4 text-primary" /> Rituals
         </button>
 
-        {/* Board info - bottom right */}
         {board.elements.length > 0 && (
           <div className="absolute bottom-4 right-4 z-50 font-mono text-[11px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-3 py-1.5 backdrop-blur-sm">
-            {board.elements.length} elements
+            {board.elements.length} elements · {board.connections.length} connections
           </div>
         )}
 
-        {/* Rituals panel */}
         {showRituals && (
           <RitualsPanel
             onStartRitual={(r) => { setActiveRitual(r); setShowRituals(false); }}
@@ -313,14 +401,21 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
             onClose={() => setShowRituals(false)}
           />
         )}
+
+        {showBoards && (
+          <BoardSwitcher
+            boards={board.boards}
+            activeBoardId={board.activeBoardId}
+            onSwitch={(id) => { board.switchBoard(id); setShowBoards(false); }}
+            onCreate={(title, color) => board.createBoard(title, color)}
+            onRename={board.renameBoard}
+            onDelete={board.deleteBoard}
+            onClose={() => setShowBoards(false)}
+          />
+        )}
       </BoardCanvas>
 
-      {/* Image modal */}
-      <AddImageModal
-        open={showImageModal}
-        onClose={() => setShowImageModal(false)}
-        onImageReady={handleImageReady}
-      />
+      <AddImageModal open={showImageModal} onClose={() => setShowImageModal(false)} onImageReady={handleImageReady} />
     </div>
   );
 }
