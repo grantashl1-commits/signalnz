@@ -136,7 +136,15 @@ export default function BoardElement({
       const dy = (ev.clientY - dragStart.current.my) / zoom;
       onUpdate({ x: dragStart.current.ex + dx, y: dragStart.current.ey + dy });
     };
-    const onUp = () => { setDragging(false); window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+    const onUp = (ev: MouseEvent) => {
+      setDragging(false);
+      // Snap to grid on release
+      const dx = (ev.clientX - dragStart.current.mx) / zoom;
+      const dy = (ev.clientY - dragStart.current.my) / zoom;
+      onUpdate({ x: snap(dragStart.current.ex + dx), y: snap(dragStart.current.ey + dy) });
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
   }, [editing, element.x, element.y, zoom, onUpdate, onSelect]);
