@@ -718,8 +718,17 @@ function BodyGoalsSection() {
       setPlanSummary(data.summary || "Plan generated!");
       haptic("success");
     } catch (e: any) {
-      console.error("Plan generation failed:", e);
-      setPlanSummary(null);
+      console.error("Plan generation failed, using fallback:", e);
+      // Use static fallback plan
+      const { getFallbackPlan } = await import("@/data/workout-plans");
+      const goalLabels = goalsToUse.map(g => {
+        const preset = BODY_GOALS.find(bg => bg.id === g);
+        return preset ? preset.label : g;
+      });
+      const fallback = getFallbackPlan(goalLabels);
+      localStorage.setItem("signal_ai_workout_plan", JSON.stringify(fallback));
+      setPlanSummary(fallback.summary);
+      haptic("success");
     } finally {
       setGenerating(false);
     }
