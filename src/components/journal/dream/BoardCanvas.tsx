@@ -1,7 +1,8 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useMemo } from "react";
 import type { DreamElement, DreamConnection } from "@/lib/journal-store";
 import BoardElement from "./BoardElement";
 import BoardConnections from "./BoardConnections";
+import BoardMiniMap from "./BoardMiniMap";
 
 interface Props {
   elements: DreamElement[];
@@ -230,6 +231,17 @@ export default function BoardCanvas({
           Click another element to connect · ESC to cancel
         </div>
       )}
+
+      {/* Mini-map */}
+      <BoardMiniMap
+        elements={elements}
+        zoom={zoom}
+        panX={panX}
+        panY={panY}
+        canvasRef={canvasRef}
+        setPanX={setPanX}
+        setPanY={setPanY}
+      />
 
       {children}
     </div>
