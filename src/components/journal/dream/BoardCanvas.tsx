@@ -36,17 +36,28 @@ export default function BoardCanvas({
   const canvasRef = useRef<HTMLDivElement>(null);
   const isPanning = useRef(false);
   const panStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
+  const lastTouchDist = useRef<number | null>(null);
+  const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
 
+  // Check if event target is the background surface (not an element)
+  const isSurface = (target: EventTarget | null) => {
+    if (!target || !(target instanceof HTMLElement)) return false;
+    return target.classList.contains("board-surface") || target === canvasRef.current;
+  };
+
+  // Mouse pan: left-click on surface OR middle-click anywhere
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (e.button === 1 || (e.target === canvasRef.current?.querySelector(".board-surface"))) {
-      if (e.target === canvasRef.current?.querySelector(".board-surface") && e.button === 0) {
-        onSelect(null);
-      }
-      if (e.button === 1) {
-        e.preventDefault();
-        isPanning.current = true;
-        panStart.current = { x: e.clientX, y: e.clientY, panX, panY };
-      }
+    const onSurface = isSurface(e.target);
+    if (onSurface && e.button === 0) {
+      onSelect(null);
+      e.preventDefault();
+      isPanning.current = true;
+      panStart.current = { x: e.clientX, y: e.clientY, panX, panY };
+    }
+    if (e.button === 1) {
+      e.preventDefault();
+      isPanning.current = true;
+      panStart.current = { x: e.clientX, y: e.clientY, panX, panY };
     }
   }, [panX, panY, onSelect]);
 
@@ -68,33 +79,95 @@ export default function BoardCanvas({
     };
   }, [handleMouseMove, handleMouseUp]);
 
+  // Touch: one-finger pan, two-finger pinch-to-zoom
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1 && isSurface(e.target)) {
+      onSelect(null);
+      isPanning.current = true;
+      const t = e.touches[0];
+      panStart.current = { x: t.clientX, y: t.clientY, panX, panY };
+    }
+    if (e.touches.length === 2) {
+      isPanning.current = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouchDist.current = Math.hypot(dx, dy);
+      lastTouchCenter.current = {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      };
+    }
+  }, [panX, panY, onSelect]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1 && isPanning.current) {
+      const t = e.touches[0];
+      setPanX(panStart.current.panX + (t.clientX - panStart.current.x));
+      setPanY(panStart.current.panY + (t.clientY - panStart.current.y));
+    }
+    if (e.touches.length === 2 && lastTouchDist.current !== null) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const scale = dist / lastTouchDist.current;
+      const newZoom = Math.max(0.25, Math.min(3, zoom * scale));
+      setZoom(newZoom);
+      lastTouchDist.current = dist;
+
+      // Pan while pinching
+      const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      if (lastTouchCenter.current) {
+        setPanX(panX + (cx - lastTouchCenter.current.x));
+        setPanY(panY + (cy - lastTouchCenter.current.y));
+      }
+      lastTouchCenter.current = { x: cx, y: cy };
+    }
+  }, [zoom, panX, panY, setZoom, setPanX, setPanY]);
+
+  const handleTouchEnd = useCallback(() => {
+    isPanning.current = false;
+    lastTouchDist.current = null;
+    lastTouchCenter.current = null;
+  }, []);
+
+  // Wheel: scroll to pan, ctrl/cmd+scroll to zoom
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.05 : 0.05;
-      setZoom(Math.max(0.25, Math.min(3, zoom + delta)));
+      const rect = canvasRef.current?.getBoundingClientRect();
+      const mx = e.clientX - (rect?.left ?? 0);
+      const my = e.clientY - (rect?.top ?? 0);
+      const delta = e.deltaY > 0 ? -0.08 : 0.08;
+      const newZoom = Math.max(0.25, Math.min(3, zoom + delta));
+      // Zoom toward cursor
+      const ratio = newZoom / zoom;
+      setPanX(mx - ratio * (mx - panX));
+      setPanY(my - ratio * (my - panY));
+      setZoom(newZoom);
     } else {
       setPanX(panX - e.deltaX);
       setPanY(panY - e.deltaY);
     }
   }, [zoom, panX, panY, setZoom, setPanX, setPanY]);
 
-  const handleCanvasClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains("board-surface")) {
-      onSelect(null);
-    }
-  };
-
   const dotSpacing = 32 * zoom;
 
   return (
     <div
       ref={canvasRef}
-      className="relative w-full h-full overflow-hidden rounded-2xl"
+      className="relative w-full h-full overflow-hidden rounded-2xl select-none"
       onMouseDown={handleMouseDown}
       onWheel={handleWheel}
-      onClick={handleCanvasClick}
-      style={{ cursor: isPanning.current ? "grabbing" : connectingFrom ? "crosshair" : "default", backgroundColor: "hsl(30 33% 96%)" }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        cursor: isPanning.current ? "grabbing" : connectingFrom ? "crosshair" : "grab",
+        backgroundColor: "hsl(30 33% 96%)",
+        touchAction: "none",
+      }}
     >
       {/* Dot grid */}
       <div
@@ -126,7 +199,6 @@ export default function BoardCanvas({
       <div
         className="absolute origin-top-left board-surface"
         style={{ transform: `translate(${panX}px, ${panY}px) scale(${zoom})`, width: "8000px", height: "8000px" }}
-        onClick={handleCanvasClick}
       >
         {elements.map((el) => (
           <BoardElement
