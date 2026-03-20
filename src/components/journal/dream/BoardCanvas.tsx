@@ -182,7 +182,7 @@ export default function BoardCanvas({
       {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none board-surface"
-        style={{ background: `radial-gradient(ellipse at center, transparent 50%, hsl(25 20% 78% / 0.12) 100%)` }}
+        style={{ background: `radial-gradient(ellipse at center, transparent 60%, hsl(25 18% 80% / 0.08) 100%)` }}
       />
 
       {/* Connection lines */}
