@@ -15,6 +15,10 @@ export interface PrepPreferences {
   prepDays: string[];
   adults: number;
   kids: number;
+  dietType?: string;
+  allergies?: string;
+  dislikes?: string;
+  calorieTarget?: string;
 }
 
 export interface PlannedMeal {

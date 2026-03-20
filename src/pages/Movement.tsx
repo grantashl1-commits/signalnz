@@ -171,7 +171,7 @@ export default function MovementPage() {
               <PhaseIndicator phase={info.phase} size={18} />
               <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">{PHASE_MOVEMENT_LABEL[info.phase]}</span>
             </div>
-            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} \u2014 {rec.title}</h2>
+            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
