@@ -146,7 +146,26 @@ export default function HomePage() {
             </motion.div>
           )}
 
-          <motion.div {...fadeUp(0.6)}>
+          <motion.div {...fadeUp(0.6)} className="relative">
+            {/* Expanding pulse rings */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/30 pointer-events-none"
+                style={{ width: 200, height: 56 }}
+                animate={{
+                  scaleX: [1, 2.2, 3],
+                  scaleY: [1, 1.8, 2.4],
+                  opacity: [0.35, 0.12, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: i * 1.3,
+                  ease: "easeOut",
+                }}
+              />
+            ))}
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -154,7 +173,7 @@ export default function HomePage() {
                 haptic("medium");
                 openSignal("Give me a signal for today", "home");
               }}
-              className="inline-flex items-center gap-2.5 px-10 py-4.5 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
+              className="relative z-10 inline-flex items-center gap-2.5 px-10 py-4.5 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
             >
               <WildStar size={16} color="hsl(var(--primary))" />
               Give me a signal
