@@ -108,7 +108,7 @@ export default function HomePage() {
             {...fadeUp(0.1)}
             className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/80 mb-6"
           >
-            {greeting}{displayName ? `, ${displayName}` : ""}.
+            {greeting}, {displayName || "you"}.
           </motion.p>
 
 
