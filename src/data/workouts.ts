@@ -683,6 +683,8 @@ export interface WorkoutSession {
   date: string;
   hrData: { time: number; bpm: number }[];
   manual?: boolean;
+  notes?: string;
+  caloriesBurnt?: number;
 }
 
 export function saveWorkoutSession(session: WorkoutSession): void {
