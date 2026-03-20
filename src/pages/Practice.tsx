@@ -191,20 +191,20 @@ export default function PracticePage() {
 
                     <div className="flex-1 min-w-0">
                       <p
-                        className={`font-display text-base md:text-lg font-semibold leading-snug ${
+                        className={`font-display text-lg md:text-xl font-semibold leading-snug ${
                           done ? "line-through text-muted-foreground" : "text-foreground"
                         }`}
                       >
                         {habit.name}
                       </p>
-                      <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex items-center gap-2 mt-2">
                         <span
-                          className="font-body text-xs font-medium uppercase tracking-wide"
+                          className="font-body text-sm font-medium uppercase tracking-wide"
                           style={{ color: catInfo?.color }}
                         >
                           {catInfo?.label || "Habit"}
                         </span>
-                        <span className="font-body text-xs text-muted-foreground">
+                        <span className="font-body text-sm text-muted-foreground">
                           · Daily
                         </span>
                       </div>
