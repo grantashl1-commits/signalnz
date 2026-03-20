@@ -31,14 +31,18 @@ export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
   
   const [activeTab, setActiveTab] = useState<TabId>("today");
-  const [planVersion, setPlanVersion] = useState(0); // bump to re-read plan
+  const [planVersion, setPlanVersion] = useState(0);
 
-  // Re-read weekly plan whenever tab changes or plan is updated
   const weeklyPlan = useMemo(() => getWeeklyPlan(), [activeTab, planVersion]);
   const todayDateStr = new Date().toISOString().split("T")[0];
 
   const handlePlanSaved = () => {
     setPlanVersion(v => v + 1);
+  };
+
+  const handleSaveToToday = () => {
+    setPlanVersion(v => v + 1);
+    setActiveTab("today");
   };
 
   const todayMeals: Meal[] = useMemo(() => {
