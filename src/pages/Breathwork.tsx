@@ -22,8 +22,6 @@ import {
 } from "@/data/practices";
 import BreathworkPlayer from "@/components/practice/BreathworkPlayer";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
