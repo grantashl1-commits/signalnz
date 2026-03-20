@@ -30,7 +30,10 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
   const [summary, setSummary] = useState<WorkoutSession | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const sampleIntervalRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
+  const elapsedRef = useRef<number>(0);
+  const bpmRef = useRef<number>(0);
 
   const maxHR = getMaxHR(age);
   const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
@@ -45,26 +48,57 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const zone2Reached = zone2PlusMins >= zone2Goal;
 
   useEffect(() => {
+    elapsedRef.current = elapsed;
+  }, [elapsed]);
+
+  useEffect(() => {
+    bpmRef.current = hr.bpm;
+  }, [hr.bpm]);
+
+  useEffect(() => {
     if (running) {
       requestWakeLock();
-      startTimeRef.current = Date.now() - elapsed * 1000;
+      startTimeRef.current = Date.now() - elapsedRef.current * 1000;
       intervalRef.current = window.setInterval(() => {
         setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
       }, 1000);
     }
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [running, requestWakeLock]);
+
+  // Record HR data every 2 seconds while running
+  useEffect(() => {
+    if (!running) {
+      if (sampleIntervalRef.current) {
+        clearInterval(sampleIntervalRef.current);
+        sampleIntervalRef.current = null;
+      }
+      return;
+    }
+
+    const addSample = () => {
+      const bpm = bpmRef.current;
+      if (bpm <= 0) return;
+      setHrData(prev => [...prev, { time: elapsedRef.current, bpm }]);
+    };
+
+    // capture immediately, then continue on interval
+    addSample();
+    sampleIntervalRef.current = window.setInterval(addSample, 2000);
+
+    return () => {
+      if (sampleIntervalRef.current) {
+        clearInterval(sampleIntervalRef.current);
+        sampleIntervalRef.current = null;
+      }
     };
   }, [running]);
-
-  // Record HR data every 2 seconds
-  useEffect(() => {
-    if (!running || hr.bpm === 0) return;
-    const timer = setInterval(() => {
-      setHrData(prev => [...prev, { time: elapsed, bpm: hr.bpm }]);
-    }, 2000);
-    return () => clearInterval(timer);
-  }, [running, hr.bpm, elapsed]);
 
   const handleSetAge = () => {
     setUserAge(age);
@@ -74,25 +108,35 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
   const handleStart = () => {
     haptic("medium");
-    setRunning(true);
     setElapsed(0);
+    elapsedRef.current = 0;
     setHrData([]);
+    setRunning(true);
   };
 
   const handleStop = () => {
     haptic("success");
     setRunning(false);
     releaseWakeLock();
-    if (intervalRef.current) clearInterval(intervalRef.current);
 
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (sampleIntervalRef.current) {
+      clearInterval(sampleIntervalRef.current);
+      sampleIntervalRef.current = null;
+    }
+
+    const finalHrData = hrData.length > 0 ? hrData : (hr.bpm > 0 ? [{ time: elapsed, bpm: hr.bpm }] : []);
     const info = getCycleInfo(getLastPeriodStart());
     const zoneMins = [0, 0, 0, 0, 0];
-    hrData.forEach(d => {
+    finalHrData.forEach(d => {
       const z = getZoneForBPM(d.bpm, maxHR);
       zoneMins[z.zone - 1] += 2 / 60;
     });
-    const avgHR = hrData.length > 0 ? Math.round(hrData.reduce((s, d) => s + d.bpm, 0) / hrData.length) : 0;
-    const peakHR = hrData.length > 0 ? Math.max(...hrData.map(d => d.bpm)) : 0;
+    const avgHR = finalHrData.length > 0 ? Math.round(finalHrData.reduce((s, d) => s + d.bpm, 0) / finalHrData.length) : 0;
+    const peakHR = finalHrData.length > 0 ? Math.max(...finalHrData.map(d => d.bpm)) : 0;
     const totalMins = zoneMins.reduce((s, m) => s + m, 0);
     const z2Plus = totalMins > 0 ? Math.round(((zoneMins[1] + zoneMins[2] + zoneMins[3] + zoneMins[4]) / totalMins) * 100) : 0;
     const cals = estimateCalories(avgHR, elapsed / 60, weight, age);
@@ -108,7 +152,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
       phase: info.phase,
       cycleDay: info.cycleDay,
       date: new Date().toISOString().split("T")[0],
-      hrData,
+      hrData: finalHrData,
       caloriesBurnt: cals,
     };
 
