@@ -98,7 +98,7 @@ export default function NutritionPage() {
         </div>
       </AtmosphericHero>
 
-      <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10 pb-24">
+      <ContentSection className="px-5 md:px-4 space-y-10 md:space-y-12 pb-24">
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 
