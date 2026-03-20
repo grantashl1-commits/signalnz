@@ -520,18 +520,117 @@ export default function MovementPage() {
             <div>
               <p className="font-hand text-sm font-bold text-primary mb-2">Past sessions</p>
               <div className="space-y-2">
-                {sessions.slice(0, 10).map(s => (
-                  <div key={s.id} className="card-warm p-3 flex items-center gap-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-body text-sm text-foreground">{s.workoutName}</p>
-                      <p className="font-mono text-[9px] text-muted-foreground">{s.date} \u00b7 {Math.round(s.duration / 60)} min \u00b7 Avg {s.avgHR} bpm</p>
+                {sessions.slice(0, 10).map(s => {
+                  const isExpanded = expandedSession === s.id;
+                  const durationMin = Math.round(s.duration / 60);
+                  const userAge = getUserAge() || 30;
+                  const mhr = getMaxHR(userAge);
+                  const zoneChart = HR_ZONES.map((z, i) => ({
+                    name: `Z${z.zone}`,
+                    minutes: s.zoneMins[i] || 0,
+                    color: z.color,
+                    label: z.label,
+                  }));
+                  const noteKey = s.id;
+                  const currentNote = sessionNotes[noteKey] ?? s.notes ?? "";
+
+                  return (
+                    <div key={s.id} className="card-warm overflow-hidden">
+                      <div
+                        className="p-3 flex items-center gap-3 cursor-pointer active:bg-secondary/50 transition-colors"
+                        onClick={() => { haptic("light"); setExpandedSession(isExpanded ? null : s.id); }}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-body text-sm font-medium text-foreground">{s.workoutName}</p>
+                          <p className="font-mono text-[9px] text-muted-foreground">
+                            {s.date} &middot; {durationMin} min &middot; Avg {s.avgHR} bpm
+                          </p>
+                        </div>
+                        <div className="text-right flex items-center gap-2">
+                          <div>
+                            <p className="font-mono text-sm text-foreground">{s.zone2PlusPercent}%</p>
+                            {s.caloriesBurnt ? (
+                              <div className="flex items-center gap-0.5 justify-end">
+                                <Flame className="h-2.5 w-2.5 text-coral-flame" />
+                                <p className="font-mono text-[9px] text-coral-flame">{s.caloriesBurnt}</p>
+                              </div>
+                            ) : (
+                              <p className="font-hand text-[9px] text-petal-gold">Zone 2+</p>
+                            )}
+                          </div>
+                          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        </div>
+                      </div>
+
+                      {isExpanded && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-3 pb-4 border-t border-border pt-3 space-y-3">
+                          {/* Stats row */}
+                          <div className="grid grid-cols-4 gap-2">
+                            {[
+                              { val: formatTime(s.duration), label: "Duration" },
+                              { val: s.avgHR, label: "Avg HR" },
+                              { val: s.maxHR, label: "Max HR" },
+                              { val: s.caloriesBurnt || "—", label: "Calories" },
+                            ].map(({ val, label }) => (
+                              <div key={label} className="text-center">
+                                <p className="font-mono text-sm text-foreground">{val}</p>
+                                <p className="font-body text-[9px] text-muted-foreground">{label}</p>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Zone bar chart */}
+                          <div className="h-32 rounded-xl bg-card p-2">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <BarChart data={zoneChart} margin={{ top: 2, right: 2, bottom: 2, left: 0 }}>
+                                <XAxis dataKey="name" tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" />
+                                <YAxis tick={{ fontSize: 8, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={25} unit="m" />
+                                <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
+                                  {zoneChart.map((entry, idx) => (
+                                    <Cell key={idx} fill={entry.color} />
+                                  ))}
+                                </Bar>
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
+
+                          {/* Zone legend */}
+                          <div className="flex flex-wrap gap-1.5">
+                            {zoneChart.map(z => z.minutes > 0 && (
+                              <div key={z.name} className="flex items-center gap-1 rounded-full px-2 py-0.5" style={{ backgroundColor: z.color + "18" }}>
+                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: z.color }} />
+                                <span className="font-mono text-[9px] text-foreground">{z.name} {z.minutes}m</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Notes */}
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-1.5">
+                              <PenLine className="h-3.5 w-3.5 text-muted-foreground" />
+                              <p className="font-body text-xs font-medium text-foreground">Add notes</p>
+                            </div>
+                            <textarea
+                              value={currentNote}
+                              onChange={(e) => setSessionNotes(prev => ({ ...prev, [noteKey]: e.target.value }))}
+                              onBlur={() => {
+                                // Save note to session
+                                const full = getWorkoutSession(s.id);
+                                if (full) {
+                                  full.notes = currentNote;
+                                  saveWorkoutSession(full);
+                                }
+                              }}
+                              placeholder="How did this session feel? Any observations..."
+                              rows={2}
+                              className="w-full rounded-xl border border-border bg-card px-3 py-2 font-body text-xs text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                            />
+                          </div>
+                        </motion.div>
+                      )}
                     </div>
-                    <div className="text-right">
-                      <p className="font-mono text-sm text-foreground">{s.zone2PlusPercent}%</p>
-                      <p className="font-hand text-[9px] text-petal-gold">Zone 2+</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
