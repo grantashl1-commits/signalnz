@@ -369,14 +369,14 @@ export default function CyclePage() {
                   <div className="flex justify-center gap-[2px] mt-0.5 flex-wrap">
                     {phase && <div className="h-2 w-2 rounded-full" style={{ backgroundColor: PHASE_HEX[phase] }} />}
                   </div>
-                  {/* Indicator dots */}
-                  <div className="flex justify-center gap-[1px] mt-[1px]">
-                    {indicators.isPeriodDay && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C4526E" }} />}
-                    {indicators.hasMood && <div className="h-1 w-1 rounded-full bg-foreground/40" />}
-                    {indicators.hasSymptoms && phase && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: PHASE_HEX[phase], opacity: 0.6 }} />}
-                    {indicators.hasWeight && <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />}
-                    {indicators.hasNotes && <div className="h-1 w-1 rounded-full bg-foreground/30" />}
-                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C47A8A" }} />}
+                  {/* Indicator symbols */}
+                  <div className="flex justify-center gap-[2px] mt-[1px]">
+                    {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#C4526E" }}>●</span>}
+                    {indicators.hasMood && <span className="text-[8px] leading-none text-foreground/50">♡</span>}
+                    {indicators.hasSymptoms && <span className="text-[8px] leading-none" style={{ color: phase ? PHASE_HEX[phase] : undefined, opacity: 0.7 }}>◆</span>}
+                    {indicators.hasWeight && <span className="text-[8px] leading-none text-muted-foreground">⚖</span>}
+                    {indicators.hasNotes && <span className="text-[8px] leading-none text-foreground/40">✎</span>}
+                    {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#C47A8A" }}>✿</span>}
                   </div>
                 </button>
               );
