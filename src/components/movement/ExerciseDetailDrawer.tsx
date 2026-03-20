@@ -104,7 +104,13 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
           {/* 3D Sketchfab View */}
           {show3D && sketchfabModel ? (
             <div className="flex flex-col items-center gap-2">
-              <div className="bg-secondary/30 rounded-2xl w-full overflow-hidden relative" style={{ aspectRatio: "4/3" }}>
+            <div
+                className="rounded-2xl w-full overflow-hidden relative"
+                style={{
+                  aspectRatio: "3/2",
+                  background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+                }}
+              >
                 <iframe
                   title={sketchfabModel.label}
                   src={sketchfabModel.url}
