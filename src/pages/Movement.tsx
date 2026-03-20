@@ -485,8 +485,6 @@ export default function MovementPage() {
         </div>
       )}
 
-      {/* CALENDAR TAB */}
-      {activeTab === "calendar" && <MovementCalendar />}
 
       {/* BODY TAB */}
       {activeTab === "body" && <BodyVisualiser />}
