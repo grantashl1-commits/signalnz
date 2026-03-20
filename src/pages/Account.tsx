@@ -16,6 +16,7 @@ import {
   getFitnessProfile, saveFitnessProfile,
   getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
 } from "@/lib/fitness-profile";
+import { getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR } from "@/data/workouts";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
