@@ -1,7 +1,8 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useMemo } from "react";
 import type { DreamElement, DreamConnection } from "@/lib/journal-store";
 import BoardElement from "./BoardElement";
 import BoardConnections from "./BoardConnections";
+import BoardMiniMap from "./BoardMiniMap";
 
 interface Props {
   elements: DreamElement[];
