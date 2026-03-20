@@ -839,18 +839,6 @@ function BodyVisualizerEmbed() {
   return (
     <div className="space-y-4">
       <MeasurementsForm />
-      <div className="card-warm p-4 rounded-2xl">
-        <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
-          <p className="font-body text-xs text-foreground font-medium mb-1">📸 Save your dream body image</p>
-          <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
-            Take a screenshot of your silhouette above and upload it to your <span className="text-primary font-medium">Dream Board</span> in Journal → Dream Studio. If you can see it, you can be it ✨
-          </p>
-          <p className="font-body text-[10px] text-muted-foreground mt-2">
-            <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Cmd+Shift+4</kbd> (Mac)
-            or <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Win+Shift+S</kbd> (Windows)
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
