@@ -678,23 +678,67 @@ function BodyGoalsSection() {
   const [goals, setGoals] = useState<string[]>(loadBodyGoals());
   const [customGoal, setCustomGoal] = useState("");
   const [saved, setSaved] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [planSummary, setPlanSummary] = useState<string | null>(null);
+  const info = getCycleInfo(getLastPeriodStart());
+
+  // Check if a plan already exists
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("signal_ai_workout_plan");
+      if (raw) {
+        const plan = JSON.parse(raw);
+        setPlanSummary(plan.summary || null);
+      }
+    } catch {}
+  }, []);
 
   const toggleGoal = (id: string) => {
     haptic("light");
     setGoals(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]);
   };
 
-  const handleSave = () => {
+  const generatePlan = async (goalsToUse: string[]) => {
+    setGenerating(true);
+    try {
+      const goalLabels = goalsToUse.map(g => {
+        const preset = BODY_GOALS.find(bg => bg.id === g);
+        return preset ? preset.label : g;
+      });
+
+      const { data, error } = await supabase.functions.invoke("workout-plan", {
+        body: { goals: goalLabels, phase: info.phase, cycleDay: info.cycleDay },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      // Save plan to localStorage
+      localStorage.setItem("signal_ai_workout_plan", JSON.stringify(data));
+      setPlanSummary(data.summary || "Plan generated!");
+      haptic("heavy");
+    } catch (e: any) {
+      console.error("Plan generation failed:", e);
+      setPlanSummary(null);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleSave = async () => {
     haptic("medium");
     saveBodyGoals(goals);
     setSaved(true);
     setTimeout(() => setSaved(false), 1500);
+    // Auto-generate plan when goals are saved
+    if (goals.length > 0) {
+      await generatePlan(goals);
+    }
   };
 
   const addCustom = () => {
     if (!customGoal.trim()) return;
     haptic("medium");
-    const id = `custom-${Date.now()}`;
     setGoals(prev => [...prev, customGoal.trim()]);
     setCustomGoal("");
   };
@@ -703,7 +747,7 @@ function BodyGoalsSection() {
     <div className="card-warm p-5 rounded-2xl space-y-4">
       <div>
         <h3 className="font-display text-base font-semibold italic text-foreground">What do you want from your body?</h3>
-        <p className="font-body text-xs text-muted-foreground mt-1">Select your goals — these shape your workout and nutrition plans.</p>
+        <p className="font-body text-xs text-muted-foreground mt-1">Select your goals — AI will build a personalised 4-week plan for your Today tab.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-2">
@@ -751,9 +795,41 @@ function BodyGoalsSection() {
         </div>
       )}
 
-      <button onClick={handleSave} className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all">
-        {saved ? "✓ Saved" : "Save goals"}
+      <button 
+        onClick={handleSave} 
+        disabled={generating || goals.length === 0}
+        className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        {generating ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Generating your plan...
+          </>
+        ) : saved ? (
+          "✓ Saved & plan generated!"
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4" />
+            Save goals & generate plan
+          </>
+        )}
       </button>
+
+      {/* Plan summary */}
+      {planSummary && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-xl bg-primary/5 border border-primary/10"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <p className="font-display text-sm font-semibold italic text-foreground">Your AI Plan</p>
+          </div>
+          <p className="font-body text-xs text-muted-foreground leading-relaxed">{planSummary}</p>
+          <p className="font-body text-[10px] text-primary mt-2">→ Check your Today tab for this week's workouts</p>
+        </motion.div>
+      )}
     </div>
   );
 }
