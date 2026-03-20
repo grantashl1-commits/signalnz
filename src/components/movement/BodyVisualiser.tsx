@@ -1,7 +1,125 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Ruler } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { haptic } from "@/hooks/use-mobile";
 import { getCycleInfo, getLastPeriodStart, Phase } from "@/lib/cycle-utils";
 import { PHASE_WORKOUTS, TODAY_WORKOUT, type Workout } from "@/data/workouts";
+
+// ── Measurements ──
+interface Measurements {
+  height: string;
+  weight: string;
+  bust: string;
+  waist: string;
+  hips: string;
+  inseam: string;
+}
+
+const MEASUREMENT_FIELDS: { key: keyof Measurements; label: string; unit: string; placeholder: string }[] = [
+  { key: "height", label: "Height", unit: "cm", placeholder: "165" },
+  { key: "weight", label: "Weight", unit: "kg", placeholder: "62" },
+  { key: "bust", label: "Bust", unit: "cm", placeholder: "88" },
+  { key: "waist", label: "Waist", unit: "cm", placeholder: "72" },
+  { key: "hips", label: "Hips", unit: "cm", placeholder: "96" },
+  { key: "inseam", label: "Inseam", unit: "cm", placeholder: "78" },
+];
+
+const STORAGE_KEY = "signal_body_measurements";
+
+function loadMeasurements(): Measurements {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return { height: "", weight: "", bust: "", waist: "", hips: "", inseam: "" };
+}
+
+function saveMeasurements(m: Measurements) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(m));
+}
+
+function MeasurementsForm() {
+  const [measurements, setMeasurements] = useState<Measurements>(loadMeasurements);
+  const [saved, setSaved] = useState(false);
+
+  const hasValues = Object.values(measurements).some(v => v.trim() !== "");
+
+  const handleChange = (key: keyof Measurements, value: string) => {
+    const numeric = value.replace(/[^0-9.]/g, "").slice(0, 6);
+    setMeasurements(prev => ({ ...prev, [key]: numeric }));
+    setSaved(false);
+  };
+
+  const handleSave = () => {
+    haptic("medium");
+    saveMeasurements(measurements);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  // Derived stats
+  const w = parseFloat(measurements.waist);
+  const h = parseFloat(measurements.hips);
+  const ht = parseFloat(measurements.height);
+  const wt = parseFloat(measurements.weight);
+  const whr = w && h ? (w / h).toFixed(2) : null;
+  const bmi = wt && ht ? (wt / ((ht / 100) ** 2)).toFixed(1) : null;
+
+  return (
+    <div className="card-warm p-4 rounded-2xl space-y-4">
+      <div className="flex items-center gap-2">
+        <Ruler className="h-4 w-4 text-primary" />
+        <h3 className="font-display text-base font-semibold text-foreground">My Measurements</h3>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        {MEASUREMENT_FIELDS.map(field => (
+          <div key={field.key} className="space-y-1">
+            <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
+              {field.label} ({field.unit})
+            </label>
+            <Input
+              type="text"
+              inputMode="decimal"
+              value={measurements[field.key]}
+              onChange={e => handleChange(field.key, e.target.value)}
+              placeholder={field.placeholder}
+              className="h-10 text-base rounded-xl bg-background border-border"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Derived stats */}
+      {(whr || bmi) && (
+        <div className="flex gap-3">
+          {bmi && (
+            <div className="flex-1 rounded-xl bg-background p-3 text-center">
+              <p className="font-mono text-lg text-foreground">{bmi}</p>
+              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">BMI</p>
+            </div>
+          )}
+          {whr && (
+            <div className="flex-1 rounded-xl bg-background p-3 text-center">
+              <p className="font-mono text-lg text-foreground">{whr}</p>
+              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">Waist-Hip</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      <Button
+        onClick={handleSave}
+        disabled={!hasValues}
+        className="w-full h-10 rounded-full font-body text-sm font-semibold"
+      >
+        {saved ? "Saved ✓" : "Save measurements"}
+      </Button>
+    </div>
+  );
+}
 
 // ── Muscle groups and their SVG region IDs ──
 export type MuscleGroup =
@@ -228,7 +346,10 @@ export default function BodyVisualiser() {
   const secondaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "secondary");
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      {/* Measurements form */}
+      <MeasurementsForm />
+
       {/* Workout selector */}
       <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
         {phaseWorkouts.filter(w => w.exercises.length > 0).map(w => (
