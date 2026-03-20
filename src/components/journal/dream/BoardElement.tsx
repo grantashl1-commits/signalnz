@@ -434,6 +434,16 @@ export default function BoardElement({
     >
       {renderContent()}
 
+      {/* ── Hover × delete button ──────────────────────────── */}
+      {!isLabel && !editing && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-foreground/5 hover:bg-destructive/15 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-40"
+          title="Delete"
+        >
+          <X className="h-3 w-3 text-muted-foreground/50 hover:text-destructive" />
+        </button>
+      )}
       {/* ── Context toolbar (floating above card) ──────────── */}
       {selected && !editing && (
         <div
