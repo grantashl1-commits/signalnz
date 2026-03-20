@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { X, Bluetooth, Activity } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, ReferenceLine, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, ReferenceLine, ReferenceArea, ResponsiveContainer } from "recharts";
 import { WildStar } from "@/components/BotanicalElements";
 import { useHeartRate } from "@/hooks/useHeartRate";
 import { useWakeLock } from "@/hooks/useWakeLock";
