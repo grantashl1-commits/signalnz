@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { X, Bluetooth, Activity } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, ReferenceLine, ReferenceArea, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 import { WildStar } from "@/components/BotanicalElements";
 import { useHeartRate } from "@/hooks/useHeartRate";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
-  getUserAge, setUserAge, getMaxHR, getZoneForBPM, HR_ZONES,
-  saveWorkoutSession, type WorkoutSession,
+  getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR, getZoneForBPM, HR_ZONES,
+  saveWorkoutSession, estimateCalories, type WorkoutSession,
 } from "@/data/workouts";
 import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -23,6 +23,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const requestWakeLock = wakeLock.toggle;
   const releaseWakeLock = wakeLock.release;
   const [age, setAge] = useState(getUserAge() || 30);
+  const [weight, setWeight] = useState(getUserWeight() || 65);
   const [ageSet, setAgeSet] = useState(!!getUserAge());
   const [running, setRunning] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -34,14 +35,11 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const maxHR = getMaxHR(age);
   const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
 
-  // Zone boundaries
-  const zoneBoundaries = HR_ZONES.map(z => Math.round((z.minPct / 100) * maxHR));
-
   // Zone 2+ minutes
   const zone2PlusMins = hrData.filter(d => {
     const z = getZoneForBPM(d.bpm, maxHR);
     return z.zone >= 2;
-  }).length * 2 / 60; // Each point = ~2 sec
+  }).length * 2 / 60;
 
   const zone2Goal = 21;
   const zone2Reached = zone2PlusMins >= zone2Goal;
@@ -70,6 +68,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
   const handleSetAge = () => {
     setUserAge(age);
+    setUserWeight(weight);
     setAgeSet(true);
   };
 
@@ -86,7 +85,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     releaseWakeLock();
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    // Calculate summary
     const info = getCycleInfo(getLastPeriodStart());
     const zoneMins = [0, 0, 0, 0, 0];
     hrData.forEach(d => {
@@ -97,6 +95,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     const peakHR = hrData.length > 0 ? Math.max(...hrData.map(d => d.bpm)) : 0;
     const totalMins = zoneMins.reduce((s, m) => s + m, 0);
     const z2Plus = totalMins > 0 ? Math.round(((zoneMins[1] + zoneMins[2] + zoneMins[3] + zoneMins[4]) / totalMins) * 100) : 0;
+    const cals = estimateCalories(avgHR, elapsed / 60, weight, age);
 
     const session: WorkoutSession = {
       id: `session-${Date.now()}`,
@@ -110,6 +109,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
       cycleDay: info.cycleDay,
       date: new Date().toISOString().split("T")[0],
       hrData,
+      caloriesBurnt: cals,
     };
 
     saveWorkoutSession(session);
@@ -128,9 +128,24 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     return `${h > 0 ? h.toString().padStart(2, "0") + ":" : ""}${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
+  // Build zone time-distribution data for bar chart
+  const buildZoneChartData = (data: { time: number; bpm: number }[]) => {
+    const zoneTotals = [0, 0, 0, 0, 0];
+    data.forEach(d => {
+      const z = getZoneForBPM(d.bpm, maxHR);
+      zoneTotals[z.zone - 1] += 2 / 60; // each point = 2 sec
+    });
+    return HR_ZONES.map((z, i) => ({
+      name: `Z${z.zone}`,
+      minutes: Math.round(zoneTotals[i] * 10) / 10,
+      color: z.color,
+      label: z.label,
+    }));
+  };
+
   // Summary view
   if (summary) {
-    const totalMins = summary.zoneMins.reduce((s, m) => s + m, 0);
+    const zoneChart = buildZoneChartData(summary.hrData);
     return (
       <div className="fixed inset-0 z-[80] bg-background overflow-y-auto">
         <div className="max-w-lg mx-auto px-5 py-8 space-y-6">
@@ -144,6 +159,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           {/* Zone bar */}
           <div className="rounded-xl overflow-hidden h-10 flex">
             {summary.zoneMins.map((mins, i) => {
+              const totalMins = summary.zoneMins.reduce((s, m) => s + m, 0);
               const pct = totalMins > 0 ? (mins / totalMins) * 100 : 0;
               if (pct < 1) return null;
               return (
@@ -165,10 +181,37 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
             <p className="font-hand text-sm text-petal-gold mt-1">Above Zone 2 is where fitness is built.</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          {/* Zone breakdown chart */}
+          <div className="h-40 rounded-2xl bg-card p-3">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={zoneChart} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" />
+                <YAxis tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={30} unit="m" />
+                <Bar dataKey="minutes" radius={[6, 6, 0, 0]}>
+                  {zoneChart.map((entry, idx) => (
+                    <Cell key={idx} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Zone legend */}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {zoneChart.map(z => (
+              <div key={z.name} className="flex items-center gap-1">
+                <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: z.color }} />
+                <span className="font-body text-[10px] text-muted-foreground">{z.name} {z.label}</span>
+                <span className="font-mono text-[10px] text-foreground">{z.minutes}m</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
             {[
               { val: summary.avgHR, label: "Avg HR" },
               { val: summary.maxHR, label: "Max HR" },
+              { val: summary.caloriesBurnt || 0, label: "Calories" },
               { val: formatTime(summary.duration), label: "Total Time" },
             ].map(({ val, label }) => (
               <div key={label} className="card-warm p-3 text-center">
@@ -181,7 +224,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           {zone2Reached && (
             <div className="flex items-center justify-center gap-2">
               <WildStar size={20} />
-              <p className="font-hand text-sm text-petal-gold">Zone 2 goal reached ✨</p>
+              <p className="font-hand text-sm text-petal-gold">Zone 2 goal reached</p>
             </div>
           )}
 
@@ -232,30 +275,41 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
           {!hr.isSupported && (
             <p className="font-body text-xs italic text-muted-foreground">
-              To keep your screen on while cooking, go to Settings → Display and set screen timeout to 5 minutes.
+              Web Bluetooth is not supported in this browser. Try Chrome on Android or desktop.
             </p>
           )}
 
           {hr.error && <p className="font-body text-xs text-destructive">{hr.error}</p>}
 
           {hr.connected && !ageSet && (
-            <div className="card-warm p-5 space-y-3">
-              <p className="font-body text-sm text-foreground">Your age helps us calculate your zones.</p>
-              <div className="flex items-center gap-4 justify-center">
-                <button onClick={() => setAge(a => Math.max(16, a - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
-                <span className="font-mono text-3xl text-foreground w-12 text-center">{age}</span>
-                <button onClick={() => setAge(a => Math.min(80, a + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+            <div className="card-warm p-5 space-y-4">
+              <p className="font-body text-sm text-foreground">Your details help us calculate zones & calories.</p>
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">Age</p>
+                <div className="flex items-center gap-4 justify-center">
+                  <button onClick={() => setAge(a => Math.max(16, a - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
+                  <span className="font-mono text-3xl text-foreground w-12 text-center">{age}</span>
+                  <button onClick={() => setAge(a => Math.min(80, a + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+                </div>
+                <p className="font-mono text-[10px] text-muted-foreground text-center mt-1">Max HR: {maxHR} bpm</p>
               </div>
-              <p className="font-mono text-[10px] text-muted-foreground text-center">Max HR: {maxHR} bpm</p>
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">Weight (kg)</p>
+                <div className="flex items-center gap-4 justify-center">
+                  <button onClick={() => setWeight(w => Math.max(30, w - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
+                  <span className="font-mono text-3xl text-foreground w-12 text-center">{weight}</span>
+                  <button onClick={() => setWeight(w => Math.min(200, w + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+                </div>
+                <p className="font-mono text-[10px] text-muted-foreground text-center mt-1">Used for calorie calculation</p>
+              </div>
               <button onClick={handleSetAge} className="touch-btn w-full rounded-[14px] py-3 min-h-[48px] font-body text-sm font-bold text-primary-foreground bg-primary">
-                Set age →
+                Save & continue →
               </button>
             </div>
           )}
 
           {hr.connected && ageSet && (
             <>
-              {/* Zone definitions */}
               <div className="space-y-1.5">
                 {HR_ZONES.map(z => (
                   <div key={z.zone} className="flex items-center gap-2 rounded-full px-3 py-1.5" style={{ backgroundColor: z.color + "22" }}>
@@ -284,6 +338,9 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const z2Progress = Math.min(zone2PlusMins / zone2Goal, 1);
   const strokeDash = circumference * z2Progress;
 
+  // Live zone distribution for bar chart
+  const liveZoneChart = buildZoneChartData(hrData);
+
   // Live workout view
   return (
     <div className="fixed inset-0 z-[80] overflow-y-auto" style={{ backgroundColor: currentZone.color + "08" }}>
@@ -297,7 +354,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           )}
         </div>
 
-        {/* BPM + zone label — dynamic background */}
+        {/* BPM + zone label */}
         <div
           className="rounded-3xl p-6 text-center transition-colors duration-700"
           style={{ backgroundColor: currentZone.color + "18" }}
@@ -319,29 +376,13 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           </div>
         </div>
 
-        {/* Zone 2+ progress ring + timer side by side */}
+        {/* Zone 2+ progress ring + timer */}
         <div className="flex items-center justify-center gap-8">
-          {/* Progress ring */}
           <div className="relative flex-shrink-0" style={{ width: ringSize, height: ringSize }}>
             <svg width={ringSize} height={ringSize} className="-rotate-90">
-              <circle
-                cx={ringSize / 2}
-                cy={ringSize / 2}
-                r={radius}
-                fill="none"
-                stroke="hsl(var(--border))"
-                strokeWidth={strokeW}
-              />
-              <circle
-                cx={ringSize / 2}
-                cy={ringSize / 2}
-                r={radius}
-                fill="none"
-                stroke={currentZone.color}
-                strokeWidth={strokeW}
-                strokeDasharray={circumference}
-                strokeDashoffset={circumference - strokeDash}
-                strokeLinecap="round"
+              <circle cx={ringSize / 2} cy={ringSize / 2} r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={strokeW} />
+              <circle cx={ringSize / 2} cy={ringSize / 2} r={radius} fill="none" stroke={currentZone.color} strokeWidth={strokeW}
+                strokeDasharray={circumference} strokeDashoffset={circumference - strokeDash} strokeLinecap="round"
                 className="transition-all duration-1000"
               />
             </svg>
@@ -353,7 +394,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
             </div>
           </div>
 
-          {/* Timer */}
           <div className="text-center">
             <p className="font-mono text-3xl text-foreground">{formatTime(elapsed)}</p>
             <p className="font-body text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">elapsed</p>
@@ -367,43 +407,19 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           </div>
         )}
 
-        {/* Live graph */}
-        {hrData.length > 1 && (
-          <div className="h-44 rounded-2xl bg-card p-3">
+        {/* Live zone bar chart */}
+        {hrData.length > 2 && (
+          <div className="h-36 rounded-2xl bg-card p-3">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={hrData.slice(-150)} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-                <ReferenceArea y1={0} y2={Math.round(0.6 * maxHR)} fill="#9ca3af" fillOpacity={0.08} />
-                <ReferenceArea y1={Math.round(0.6 * maxHR)} y2={Math.round(0.7 * maxHR)} fill="#60a5fa" fillOpacity={0.1} />
-                <ReferenceArea y1={Math.round(0.7 * maxHR)} y2={Math.round(0.8 * maxHR)} fill="#34d399" fillOpacity={0.1} />
-                <ReferenceArea y1={Math.round(0.8 * maxHR)} y2={Math.round(0.9 * maxHR)} fill="#fb923c" fillOpacity={0.1} />
-                <ReferenceArea y1={Math.round(0.9 * maxHR)} y2={maxHR + 10} fill="#ef4444" fillOpacity={0.1} />
-                <XAxis
-                  dataKey="time"
-                  tickFormatter={v => formatTime(v)}
-                  tick={{ fontSize: 9, fontFamily: "Space Mono" }}
-                  stroke="hsl(var(--border))"
-                />
-                <YAxis
-                  domain={[Math.max(40, zoneBoundaries[0] - 10), maxHR + 10]}
-                  tick={{ fontSize: 9, fontFamily: "Space Mono" }}
-                  stroke="hsl(var(--border))"
-                  width={35}
-                  ticks={zoneBoundaries}
-                />
-                {zoneBoundaries.map((bpm, i) => (
-                  <ReferenceLine key={i} y={bpm} stroke={HR_ZONES[i]?.color || "hsl(var(--border))"} strokeDasharray="3 3" strokeOpacity={0.4} />
-                ))}
-                <Area
-                  type="monotone"
-                  dataKey="bpm"
-                  stroke={currentZone.color}
-                  fill={currentZone.color}
-                  fillOpacity={0.2}
-                  strokeWidth={2.5}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
+              <BarChart data={liveZoneChart} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" />
+                <YAxis tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={30} unit="m" />
+                <Bar dataKey="minutes" radius={[6, 6, 0, 0]}>
+                  {liveZoneChart.map((entry, idx) => (
+                    <Cell key={idx} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
         )}

@@ -623,6 +623,15 @@ export function setUserAge(age: number): void {
   localStorage.setItem("mindcast_user_age", age.toString());
 }
 
+export function getUserWeight(): number | null {
+  const val = localStorage.getItem("signal_user_weight_kg");
+  return val ? parseFloat(val) : null;
+}
+
+export function setUserWeight(weight: number): void {
+  localStorage.setItem("signal_user_weight_kg", weight.toString());
+}
+
 export function getMaxHR(age: number): number {
   return Math.round(208 - 0.7 * age);
 }
@@ -651,6 +660,16 @@ export function getZoneForBPM(bpm: number, maxHR: number): HRZone {
   return HR_ZONES[0];
 }
 
+// Estimate calories burnt using HR-based formula
+export function estimateCalories(avgHR: number, durationMin: number, weightKg: number, age: number, gender: "female" | "male" = "female"): number {
+  if (avgHR === 0 || durationMin === 0 || weightKg === 0) return 0;
+  // Keytel et al. (2005) formula
+  if (gender === "female") {
+    return Math.round(durationMin * (0.4472 * avgHR - 0.1263 * weightKg + 0.074 * age - 20.4022) / 4.184);
+  }
+  return Math.round(durationMin * (0.6309 * avgHR + 0.1988 * weightKg + 0.2017 * age - 55.0969) / 4.184);
+}
+
 export interface WorkoutSession {
   id: string;
   workoutName: string;
@@ -664,6 +683,8 @@ export interface WorkoutSession {
   date: string;
   hrData: { time: number; bpm: number }[];
   manual?: boolean;
+  notes?: string;
+  caloriesBurnt?: number;
 }
 
 export function saveWorkoutSession(session: WorkoutSession): void {
