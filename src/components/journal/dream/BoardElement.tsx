@@ -443,6 +443,30 @@ export default function BoardElement({
           <button onClick={(e) => { e.stopPropagation(); onStartConnect(); }} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary/50 hover:text-primary transition-colors" title="Connect">
             <Link2 className="h-3.5 w-3.5" />
           </button>
+          <div className="relative">
+            <button onClick={(e) => { e.stopPropagation(); setShowColors(!showColors); }} className={`p-1.5 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors ${showColors ? "bg-secondary" : ""}`} title="Colour">
+              <Palette className="h-3.5 w-3.5" />
+            </button>
+            {showColors && (
+              <div
+                className="absolute top-full mt-1.5 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card/95 backdrop-blur-md border border-border rounded-xl shadow-lg px-2 py-1.5 z-50"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {PASTEL_COLORS.map((c) => (
+                  <button
+                    key={c.name}
+                    onClick={(e) => { e.stopPropagation(); onUpdate({ color: c.value || undefined }); setShowColors(false); }}
+                    className="w-5 h-5 rounded-full border-2 transition-transform hover:scale-110 flex-shrink-0"
+                    style={{
+                      background: c.value || theme.bg,
+                      borderColor: (element.color || "") === c.value ? "hsl(var(--primary))" : "hsl(var(--border))",
+                    }}
+                    title={c.name}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
           <button onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Duplicate">
             <Copy className="h-3.5 w-3.5" />
           </button>
