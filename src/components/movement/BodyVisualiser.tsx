@@ -1,6 +1,7 @@
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Ruler, Camera, Image, Trash2, Plus } from "lucide-react";
+import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { haptic } from "@/hooks/use-mobile";
