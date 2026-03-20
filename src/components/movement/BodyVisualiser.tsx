@@ -757,11 +757,11 @@ function BodyGoalsSection() {
             <button
               key={g.id}
               onClick={() => toggleGoal(g.id)}
-              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border ${
+              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border flex items-center gap-2 ${
                 active ? "border-primary bg-primary/5" : "border-border bg-card"
               }`}
             >
-              <span className="text-base mr-1.5">{g.emoji}</span>
+              <g.icon className={`h-4 w-4 flex-shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
               <span className="font-body text-xs font-medium text-foreground">{g.label}</span>
             </button>
           );
