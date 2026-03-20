@@ -35,7 +35,7 @@ const cardVariant = {
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
   const { openSignal } = useSignalPanel();
-  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "calendar" | "progress" | "body">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -105,7 +105,6 @@ export default function MovementPage() {
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "body" as const, label: "Body" },
-    { id: "calendar" as const, label: "Calendar" },
     { id: "progress" as const, label: "Progress" },
   ];
 
@@ -403,6 +402,8 @@ export default function MovementPage() {
       {/* MY LOG TAB */}
       {activeTab === "log" && (
         <div className="space-y-4 md:space-y-6">
+          {/* Monthly calendar at the top */}
+          <MovementCalendar />
           <div className="grid grid-cols-3 gap-2">
             {[{ val: totalCompleted, label: "Workouts" }, { val: totalMinutes, label: "Minutes" }, { val: totalCompleted > 0 ? Math.round((totalCompleted / 7) * 100) + "%" : "0%", label: "Consistency" }].map(({ val, label }) => (
               <div key={label} className="card-warm p-3 text-center">
@@ -484,8 +485,6 @@ export default function MovementPage() {
         </div>
       )}
 
-      {/* CALENDAR TAB */}
-      {activeTab === "calendar" && <MovementCalendar />}
 
       {/* BODY TAB */}
       {activeTab === "body" && <BodyVisualiser />}
