@@ -136,12 +136,17 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
               {/* Standard animation area */}
               {animation ? (
                 <div className="flex flex-col items-center">
-                  <div className="bg-secondary/30 rounded-2xl w-full overflow-hidden">
+                  <div
+                    className="rounded-2xl w-full overflow-hidden"
+                    style={{
+                      background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+                    }}
+                  >
                     <ExerciseRig3D
                       animation={animation}
                       playing={playing}
                       mirrored={false}
-                      height={280}
+                      height={360}
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-2">
