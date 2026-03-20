@@ -276,10 +276,18 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     );
   }
 
+  // Zone 2+ ring SVG
+  const ringSize = 120;
+  const strokeW = 10;
+  const radius = (ringSize - strokeW) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const z2Progress = Math.min(zone2PlusMins / zone2Goal, 1);
+  const strokeDash = circumference * z2Progress;
+
   // Live workout view
   return (
-    <div className="fixed inset-0 z-[80] bg-background overflow-y-auto">
-      <div className="max-w-lg mx-auto px-5 py-6 space-y-4">
+    <div className="fixed inset-0 z-[80] overflow-y-auto" style={{ backgroundColor: currentZone.color + "08" }}>
+      <div className="max-w-lg mx-auto px-5 py-6 space-y-5">
         <div className="flex items-center justify-between">
           <p className="font-hand text-sm text-muted-foreground">{workoutName}</p>
           {!running && (
@@ -289,32 +297,86 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           )}
         </div>
 
-        {/* BPM */}
-        <div className="text-center">
+        {/* BPM + zone label — dynamic background */}
+        <div
+          className="rounded-3xl p-6 text-center transition-colors duration-700"
+          style={{ backgroundColor: currentZone.color + "18" }}
+        >
           <motion.p
-            className="font-mono text-[5rem] leading-none"
+            className="font-mono text-[5rem] leading-none font-bold"
             style={{ color: currentZone.color }}
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
           >
             {hr.bpm || "—"}
           </motion.p>
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mt-2" style={{ backgroundColor: currentZone.color }}>
-            <span className="font-hand text-sm font-bold text-card">Zone {currentZone.zone} · {currentZone.label}</span>
+          <p className="font-body text-xs uppercase tracking-widest mt-1" style={{ color: currentZone.color }}>bpm</p>
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2 mt-3 transition-colors duration-700"
+            style={{ backgroundColor: currentZone.color }}
+          >
+            <span className="font-body text-sm font-bold text-white">Zone {currentZone.zone} · {currentZone.label}</span>
           </div>
         </div>
 
+        {/* Zone 2+ progress ring + timer side by side */}
+        <div className="flex items-center justify-center gap-8">
+          {/* Progress ring */}
+          <div className="relative flex-shrink-0" style={{ width: ringSize, height: ringSize }}>
+            <svg width={ringSize} height={ringSize} className="-rotate-90">
+              <circle
+                cx={ringSize / 2}
+                cy={ringSize / 2}
+                r={radius}
+                fill="none"
+                stroke="hsl(var(--border))"
+                strokeWidth={strokeW}
+              />
+              <circle
+                cx={ringSize / 2}
+                cy={ringSize / 2}
+                r={radius}
+                fill="none"
+                stroke={currentZone.color}
+                strokeWidth={strokeW}
+                strokeDasharray={circumference}
+                strokeDashoffset={circumference - strokeDash}
+                strokeLinecap="round"
+                className="transition-all duration-1000"
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-mono text-sm font-bold text-foreground">
+                {Math.round(zone2PlusMins)}<span className="text-muted-foreground">/{zone2Goal}</span>
+              </span>
+              <span className="font-body text-[9px] text-muted-foreground">min Z2+</span>
+            </div>
+          </div>
+
+          {/* Timer */}
+          <div className="text-center">
+            <p className="font-mono text-3xl text-foreground">{formatTime(elapsed)}</p>
+            <p className="font-body text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">elapsed</p>
+          </div>
+        </div>
+
+        {zone2Reached && (
+          <div className="flex items-center justify-center gap-2">
+            <WildStar size={16} />
+            <p className="font-body text-sm font-semibold" style={{ color: currentZone.color }}>Zone 2+ goal reached</p>
+          </div>
+        )}
+
         {/* Live graph */}
         {hrData.length > 1 && (
-          <div className="h-48">
+          <div className="h-44 rounded-2xl bg-card p-3">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={hrData.slice(-150)} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-                {/* Zone background bands */}
-                <ReferenceArea y1={0} y2={Math.round(0.6 * maxHR)} fill="#9ca3af" fillOpacity={0.1} />
-                <ReferenceArea y1={Math.round(0.6 * maxHR)} y2={Math.round(0.7 * maxHR)} fill="#60a5fa" fillOpacity={0.12} />
-                <ReferenceArea y1={Math.round(0.7 * maxHR)} y2={Math.round(0.8 * maxHR)} fill="#34d399" fillOpacity={0.12} />
-                <ReferenceArea y1={Math.round(0.8 * maxHR)} y2={Math.round(0.9 * maxHR)} fill="#fb923c" fillOpacity={0.12} />
-                <ReferenceArea y1={Math.round(0.9 * maxHR)} y2={maxHR + 10} fill="#ef4444" fillOpacity={0.12} />
+                <ReferenceArea y1={0} y2={Math.round(0.6 * maxHR)} fill="#9ca3af" fillOpacity={0.08} />
+                <ReferenceArea y1={Math.round(0.6 * maxHR)} y2={Math.round(0.7 * maxHR)} fill="#60a5fa" fillOpacity={0.1} />
+                <ReferenceArea y1={Math.round(0.7 * maxHR)} y2={Math.round(0.8 * maxHR)} fill="#34d399" fillOpacity={0.1} />
+                <ReferenceArea y1={Math.round(0.8 * maxHR)} y2={Math.round(0.9 * maxHR)} fill="#fb923c" fillOpacity={0.1} />
+                <ReferenceArea y1={Math.round(0.9 * maxHR)} y2={maxHR + 10} fill="#ef4444" fillOpacity={0.1} />
                 <XAxis
                   dataKey="time"
                   tickFormatter={v => formatTime(v)}
@@ -329,7 +391,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
                   ticks={zoneBoundaries}
                 />
                 {zoneBoundaries.map((bpm, i) => (
-                  <ReferenceLine key={i} y={bpm} stroke={HR_ZONES[i]?.color || "hsl(var(--border))"} strokeDasharray="3 3" strokeOpacity={0.5} />
+                  <ReferenceLine key={i} y={bpm} stroke={HR_ZONES[i]?.color || "hsl(var(--border))"} strokeDasharray="3 3" strokeOpacity={0.4} />
                 ))}
                 <Area
                   type="monotone"
@@ -345,22 +407,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
             </ResponsiveContainer>
           </div>
         )}
-
-        {/* Timer */}
-        <p className="font-mono text-2xl text-foreground text-center">{formatTime(elapsed)}</p>
-
-        {/* Zone 2 progress */}
-        <div className="text-center">
-          {zone2Reached ? (
-            <p className="font-hand text-sm text-petal-gold flex items-center justify-center gap-1">
-              <WildStar size={14} /> Zone 2 goal reached ✨
-            </p>
-          ) : (
-            <p className="font-hand text-sm text-petal-gold">
-              {Math.round(zone2PlusMins)} min in Zone 2+ · {Math.max(0, Math.round(zone2Goal - zone2PlusMins))} min to ✨
-            </p>
-          )}
-        </div>
 
         {/* Controls */}
         {!running ? (
