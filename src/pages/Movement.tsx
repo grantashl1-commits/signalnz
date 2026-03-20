@@ -141,6 +141,13 @@ export default function MovementPage() {
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 
+      {fitnessProfile && (
+        <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 w-fit">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span className="font-body text-xs font-medium text-primary">Personalised for you</span>
+        </div>
+      )}
+
       {/* Tab bar - scrollable */}
       <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
         {TABS.map(tab => (

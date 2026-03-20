@@ -172,7 +172,7 @@ export default function PracticePage() {
                   <motion.div
                     key={habit.id}
                     {...fadeUp(0.05 + i * 0.04)}
-                    className={`rounded-[18px] p-5 md:p-6 flex items-center gap-5 transition-all shadow-soft ${
+                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all shadow-soft ${
                       done
                         ? "bg-primary/5 border border-primary/10"
                         : "bg-card border border-transparent"
