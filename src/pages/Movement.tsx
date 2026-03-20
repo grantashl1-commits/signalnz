@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity, Sparkles } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, ChevronUp, Clock, Flame, Snowflake, MessageCircle } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
