@@ -143,15 +143,21 @@ export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFr
       {/* Actions */}
       <div className="space-y-2">
         <button
-          onClick={onProceedToShop}
-          className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-white transition-all active:opacity-90"
+          onClick={() => { onPlanSaved?.(); haptic("medium"); }}
+          className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-white transition-all active:opacity-90 flex items-center justify-center gap-2"
           style={{ backgroundColor: phaseColor }}
+        >
+          ✅ Save plan to Today
+        </button>
+        <button
+          onClick={onProceedToShop}
+          className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold transition-all active:opacity-90 bg-secondary text-foreground"
         >
           Generate shopping list
         </button>
         <button
           onClick={onStartFresh}
-          className="touch-btn w-full flex items-center justify-center gap-2 rounded-[14px] py-3 min-h-[44px] font-body text-sm text-muted-foreground bg-secondary transition-all active:opacity-90"
+          className="touch-btn w-full flex items-center justify-center gap-2 rounded-[14px] py-3 min-h-[44px] font-body text-sm text-muted-foreground bg-secondary/50 transition-all active:opacity-90"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Start fresh
