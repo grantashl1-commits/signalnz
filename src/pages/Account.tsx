@@ -50,6 +50,11 @@ export default function AccountPage() {
   // Supermarket
   const [supermarket, setSupermarket] = useState<SupermarketPreference>(getSupermarket());
 
+  // Age & weight for HR zones
+  const [userAge, setUserAgeState] = useState(getUserAge() || 30);
+  const [userWeight, setUserWeightState] = useState(getUserWeight() || 65);
+  const [biometricsEditing, setBiometricsEditing] = useState(!getUserAge());
+
   useEffect(() => {
     const fp = getFitnessProfile();
     if (fp) {
