@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { GatedPage } from "@/components/FeatureGate";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster } from "@/components/BotanicalElements";
 import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { TODAY_MEALS } from "@/data/meal-plans";
+import { TODAY_MEALS, type Meal } from "@/data/meal-plans";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { haptic } from "@/hooks/use-mobile";
@@ -15,6 +15,8 @@ import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import AIRecipesTab from "@/components/nutrition/AIRecipesTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
+import { getWeeklyPlan } from "@/lib/weekly-planner";
+import { findRecipeByName } from "@/lib/recipe-index";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -30,7 +32,35 @@ export default function NutritionPage() {
   
   const [activeTab, setActiveTab] = useState<TabId>("today");
 
-  const todayMeals = TODAY_MEALS[info.phase];
+  // Check for saved weekly plan and convert to today's meals
+  const weeklyPlan = useMemo(() => getWeeklyPlan(), []);
+  const todayDateStr = new Date().toISOString().split("T")[0];
+
+  const todayMeals: Meal[] = useMemo(() => {
+    if (weeklyPlan) {
+      const todayPlan = weeklyPlan.days.find(d => d.date === todayDateStr);
+      if (todayPlan) {
+        const meals: Meal[] = [];
+        const makeMeal = (type: string, planned: { name: string; isLeftover?: boolean }): Meal => {
+          const recipe = findRecipeByName(planned.name);
+          return {
+            type,
+            name: planned.name + (planned.isLeftover ? " (leftover)" : ""),
+            ingredients: recipe?.ingredients?.join(", "),
+            phaseBenefit: recipe?.phaseBenefit || `Optimised for your ${PHASE_SHORT[info.phase]} phase.`,
+            prepTime: recipe?.prepTime,
+          };
+        };
+        meals.push(makeMeal("Breakfast", todayPlan.breakfast));
+        meals.push(makeMeal("Morning Snack", todayPlan.morningSnack));
+        meals.push(makeMeal("Lunch", todayPlan.lunch));
+        meals.push(makeMeal("Afternoon Snack", todayPlan.afternoonSnack));
+        meals.push(makeMeal("Dinner", todayPlan.dinner));
+        return meals;
+      }
+    }
+    return TODAY_MEALS[info.phase];
+  }, [weeklyPlan, todayDateStr, info.phase]);
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
@@ -84,7 +114,20 @@ export default function NutritionPage() {
       </div>
 
       {activeTab === "today" && (
-        <TodayTab meals={todayMeals} phase={info.phase} cycleDay={info.cycleDay} />
+        <>
+          {weeklyPlan && (
+            <div className="rounded-xl bg-primary/10 p-3 flex items-center gap-2">
+              <span className="font-body text-xs text-primary font-medium">✨ Showing your custom weekly plan</span>
+              <button
+                onClick={() => { haptic("light"); setActiveTab("myweek"); }}
+                className="ml-auto font-body text-xs text-primary font-bold underline"
+              >
+                Edit plan
+              </button>
+            </div>
+          )}
+          <TodayTab meals={todayMeals} phase={info.phase} cycleDay={info.cycleDay} />
+        </>
       )}
 
       {activeTab === "plans" && <PlansTab phase={info.phase} cycleDay={info.cycleDay} />}
