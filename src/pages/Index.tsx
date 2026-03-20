@@ -64,12 +64,24 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function HomePage() {
+  const { user } = useAuth();
   const { openSignal } = useSignalPanel();
-  const { displayName } = useProfile();
+  const { displayName, refetch } = useProfile();
   const info = getCycleInfo(getLastPeriodStart());
   const [checkin, setCheckinState] = useState(getCheckin() || "");
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const focus = FOCUS[info.phase];
   const streak = getCheckinStreak();
+
+  useEffect(() => {
+    const done = localStorage.getItem("signal_onboarding_complete");
+    if (user && !done) setShowOnboarding(true);
+  }, [user]);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    refetch();
+  };
 
   const todayWorkout = WORKOUTS.find((w) => w.id === TODAY_WORKOUT[info.phase]);
   const todayMeals = TODAY_MEALS[info.phase];
@@ -78,6 +90,8 @@ export default function HomePage() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const hasSetCycle = !!getLastPeriodStart();
+
+  if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 
   const handleCheckin = (state: string) => {
     haptic("medium");
