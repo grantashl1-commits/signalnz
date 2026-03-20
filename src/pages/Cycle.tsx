@@ -121,7 +121,7 @@ const cardVariant = {
 
 export default function CyclePage() {
   const [lastPeriod, setLastPeriod] = useState(getLastPeriodStart() || "");
-  const { openSignal } = useSignalPanel();
+  
   const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights">("overview");
   const [expandedPhase, setExpandedPhase] = useState<Phase | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
