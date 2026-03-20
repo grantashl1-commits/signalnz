@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Plus, Check, Leaf } from "lucide-react";
+import { Sparkles, Leaf, Search } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { RecipeShoppingButton } from "@/components/ShoppingList";
@@ -20,18 +20,32 @@ interface AIRecipesTabProps {
 
 export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
   const [filter, setFilter] = useState<Phase | "all">(phase);
+  const [ingredientSearch, setIngredientSearch] = useState("");
 
   const recipes = useMemo(() => {
-    const pool = ALL_MEAL_RECIPES.filter((r) =>
+    let pool = ALL_MEAL_RECIPES.filter((r) =>
       filter === "all" ? true : r.phase === filter
     );
+
+    // Filter by ingredient search
+    if (ingredientSearch.trim()) {
+      const terms = ingredientSearch.toLowerCase().split(",").map(t => t.trim()).filter(Boolean);
+      pool = pool.filter(r =>
+        terms.some(term =>
+          r.ingredients.some(ing => ing.toLowerCase().includes(term)) ||
+          r.name.toLowerCase().includes(term) ||
+          r.keyNutrients.some(n => n.toLowerCase().includes(term))
+        )
+      );
+    }
+
     // Shuffle deterministically by cycle day for variety
     return [...pool].sort((a, b) => {
       const ha = (a.id.charCodeAt(0) + cycleDay) % 100;
       const hb = (b.id.charCodeAt(0) + cycleDay) % 100;
       return ha - hb;
     });
-  }, [filter, cycleDay]);
+  }, [filter, cycleDay, ingredientSearch]);
 
   return (
     <div className="space-y-5">
@@ -47,6 +61,18 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
       <p className="font-body text-sm text-muted-foreground leading-relaxed">
         Recipes curated for your <span className="font-semibold text-foreground">{PHASE_SHORT[phase]}</span> phase — optimised nutrients for day {cycleDay}.
       </p>
+
+      {/* Ingredient search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <input
+          type="text"
+          value={ingredientSearch}
+          onChange={e => setIngredientSearch(e.target.value)}
+          placeholder="What's in your fridge? e.g. chicken, spinach, rice..."
+          className="w-full rounded-xl bg-card pl-10 pr-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+      </div>
 
       {/* Phase filter pills */}
       <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
@@ -141,7 +167,11 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
 
       {recipes.length === 0 && (
         <div className="text-center py-8">
-          <p className="font-hand text-sm text-muted-foreground">No recipes for this filter.</p>
+          <p className="font-body text-sm text-muted-foreground">
+            {ingredientSearch.trim()
+              ? `No recipes found matching "${ingredientSearch}". Try different ingredients.`
+              : "No recipes for this filter."}
+          </p>
         </div>
       )}
     </div>
