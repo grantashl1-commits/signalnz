@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { X, Bluetooth, Activity } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, ReferenceLine, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, ReferenceLine, ReferenceArea, ResponsiveContainer } from "recharts";
 import { WildStar } from "@/components/BotanicalElements";
 import { useHeartRate } from "@/hooks/useHeartRate";
 import { useWakeLock } from "@/hooks/useWakeLock";
@@ -306,9 +306,15 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
         {/* Live graph */}
         {hrData.length > 1 && (
-          <div className="h-40">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={hrData.slice(-90)}>
+              <AreaChart data={hrData.slice(-150)} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
+                {/* Zone background bands */}
+                <ReferenceArea y1={0} y2={Math.round(0.6 * maxHR)} fill="#9ca3af" fillOpacity={0.1} />
+                <ReferenceArea y1={Math.round(0.6 * maxHR)} y2={Math.round(0.7 * maxHR)} fill="#60a5fa" fillOpacity={0.12} />
+                <ReferenceArea y1={Math.round(0.7 * maxHR)} y2={Math.round(0.8 * maxHR)} fill="#34d399" fillOpacity={0.12} />
+                <ReferenceArea y1={Math.round(0.8 * maxHR)} y2={Math.round(0.9 * maxHR)} fill="#fb923c" fillOpacity={0.12} />
+                <ReferenceArea y1={Math.round(0.9 * maxHR)} y2={maxHR + 10} fill="#ef4444" fillOpacity={0.12} />
                 <XAxis
                   dataKey="time"
                   tickFormatter={v => formatTime(v)}
@@ -316,21 +322,24 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
                   stroke="hsl(var(--border))"
                 />
                 <YAxis
-                  domain={[zoneBoundaries[0] - 10, maxHR + 10]}
+                  domain={[Math.max(40, zoneBoundaries[0] - 10), maxHR + 10]}
                   tick={{ fontSize: 9, fontFamily: "Space Mono" }}
                   stroke="hsl(var(--border))"
                   width={35}
+                  ticks={zoneBoundaries}
                 />
                 {zoneBoundaries.map((bpm, i) => (
-                  <ReferenceLine key={i} y={bpm} stroke="hsl(var(--border))" strokeDasharray="3 3" />
+                  <ReferenceLine key={i} y={bpm} stroke={HR_ZONES[i]?.color || "hsl(var(--border))"} strokeDasharray="3 3" strokeOpacity={0.5} />
                 ))}
                 <Area
                   type="monotone"
                   dataKey="bpm"
                   stroke={currentZone.color}
                   fill={currentZone.color}
-                  fillOpacity={0.15}
-                  strokeWidth={2}
+                  fillOpacity={0.2}
+                  strokeWidth={2.5}
+                  dot={false}
+                  isAnimationActive={false}
                 />
               </AreaChart>
             </ResponsiveContainer>

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -51,6 +51,7 @@ const App = () => (
                     <Route path="/modules" element={<Modules />} />
                     <Route path="/membership" element={<Membership />} />
                     <Route path="/my-practice" element={<Practice />} />
+                    <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
                     <Route path="/recommendations" element={<Recommendations />} />
                     <Route path="/community" element={<Community />} />
                     <Route path="/account" element={<Account />} />
