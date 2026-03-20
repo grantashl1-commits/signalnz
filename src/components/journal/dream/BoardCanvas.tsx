@@ -165,7 +165,7 @@ export default function BoardCanvas({
       onTouchEnd={handleTouchEnd}
       style={{
         cursor: isPanning.current ? "grabbing" : connectingFrom ? "crosshair" : "grab",
-        backgroundColor: "hsl(30 33% 96%)",
+        backgroundColor: "#faf8f5",
         touchAction: "none",
       }}
     >
