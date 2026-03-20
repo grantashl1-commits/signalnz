@@ -23,6 +23,8 @@ interface Props {
 
 const MIN_W = 140;
 const MIN_H = 70;
+const GRID = 16; // snap grid (half the 32px dot spacing for finer control)
+const snap = (v: number) => Math.round(v / GRID) * GRID;
 
 /* ── Type-specific visual themes ─────────────────────────── */
 const TYPE_THEMES: Record<string, {
@@ -134,12 +136,20 @@ export default function BoardElement({
       const dy = (ev.clientY - dragStart.current.my) / zoom;
       onUpdate({ x: dragStart.current.ex + dx, y: dragStart.current.ey + dy });
     };
-    const onUp = () => { setDragging(false); window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+    const onUp = (ev: MouseEvent) => {
+      setDragging(false);
+      // Snap to grid on release
+      const dx = (ev.clientX - dragStart.current.mx) / zoom;
+      const dy = (ev.clientY - dragStart.current.my) / zoom;
+      onUpdate({ x: snap(dragStart.current.ex + dx), y: snap(dragStart.current.ey + dy) });
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
   }, [editing, element.x, element.y, zoom, onUpdate, onSelect]);
 
-  /* ── Resize ─────────────────────────────────────────────── */
+  /* ── Resize (snaps on release) ────────────────────────────── */
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation(); e.preventDefault();
     resizeStart.current = { mx: e.clientX, my: e.clientY, w: element.width, h: element.height };
@@ -148,7 +158,13 @@ export default function BoardElement({
       const dh = (ev.clientY - resizeStart.current.my) / zoom;
       onUpdate({ width: Math.max(MIN_W, resizeStart.current.w + dw), height: Math.max(MIN_H, resizeStart.current.h + dh) });
     };
-    const onUp = () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+    const onUp = (ev: MouseEvent) => {
+      const dw = (ev.clientX - resizeStart.current.mx) / zoom;
+      const dh = (ev.clientY - resizeStart.current.my) / zoom;
+      onUpdate({ width: snap(Math.max(MIN_W, resizeStart.current.w + dw)), height: snap(Math.max(MIN_H, resizeStart.current.h + dh)) });
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
   }, [element.width, element.height, zoom, onUpdate]);
@@ -167,7 +183,11 @@ export default function BoardElement({
       const dy = (t.clientY - dragStart.current.my) / zoom;
       onUpdate({ x: dragStart.current.ex + dx, y: dragStart.current.ey + dy });
     };
-    const onEnd = () => { window.removeEventListener("touchmove", onMove); window.removeEventListener("touchend", onEnd); };
+    const onEnd = () => {
+      onUpdate({ x: snap(element.x), y: snap(element.y) });
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
     window.addEventListener("touchmove", onMove, { passive: false });
     window.addEventListener("touchend", onEnd);
   }, [editing, element.x, element.y, zoom, onUpdate, onSelect]);

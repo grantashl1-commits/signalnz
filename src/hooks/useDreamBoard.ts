@@ -5,6 +5,8 @@ import {
 } from "@/lib/journal-store";
 
 const uid = () => `dream-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+const GRID = 16;
+const snap = (v: number) => Math.round(v / GRID) * GRID;
 
 export function useDreamBoard() {
   const [boards, setBoards] = useState<DreamBoard[]>(() => loadDreamBoards());
@@ -78,7 +80,7 @@ export function useDreamBoard() {
   // Element ops
   const addElement = useCallback((partial: Omit<DreamElement, "id" | "zIndex">) => {
     const maxZ = elements.reduce((max, e) => Math.max(max, e.zIndex), 0);
-    const el: DreamElement = { ...partial, id: uid(), zIndex: maxZ + 1 };
+    const el: DreamElement = { ...partial, id: uid(), zIndex: maxZ + 1, x: snap(partial.x), y: snap(partial.y), width: snap(partial.width), height: snap(partial.height) };
     updateBoard({ elements: [...elements, el] });
     setSelectedId(el.id);
     return el;
