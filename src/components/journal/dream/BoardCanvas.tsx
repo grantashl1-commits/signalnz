@@ -165,7 +165,7 @@ export default function BoardCanvas({
       onTouchEnd={handleTouchEnd}
       style={{
         cursor: isPanning.current ? "grabbing" : connectingFrom ? "crosshair" : "grab",
-        backgroundColor: "hsl(30 33% 96%)",
+        backgroundColor: "#faf8f5",
         touchAction: "none",
       }}
     >
@@ -173,7 +173,7 @@ export default function BoardCanvas({
       <div
         className="absolute inset-0 board-surface"
         style={{
-          backgroundImage: `radial-gradient(circle, hsl(25 20% 78% / 0.35) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, hsl(25 18% 80% / 0.28) 1px, transparent 1px)`,
           backgroundSize: `${dotSpacing}px ${dotSpacing}px`,
           backgroundPosition: `${panX % dotSpacing}px ${panY % dotSpacing}px`,
         }}
@@ -182,7 +182,7 @@ export default function BoardCanvas({
       {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none board-surface"
-        style={{ background: `radial-gradient(ellipse at center, transparent 50%, hsl(25 20% 78% / 0.12) 100%)` }}
+        style={{ background: `radial-gradient(ellipse at center, transparent 60%, hsl(25 18% 80% / 0.08) 100%)` }}
       />
 
       {/* Connection lines */}
