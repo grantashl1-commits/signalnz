@@ -13,8 +13,6 @@ import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
