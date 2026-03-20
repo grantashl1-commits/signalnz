@@ -90,7 +90,9 @@ export default function AccountPage() {
           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
             <User className="h-7 w-7 text-primary-foreground/70" />
           </div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold italic text-primary-foreground">My Account</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold italic text-primary-foreground">
+            {displayName || "My Account"}
+          </h1>
           <p className="font-body text-sm text-primary-foreground/60 mt-1">{user.email}</p>
         </div>
       </AtmosphericHero>
