@@ -487,6 +487,9 @@ export default function MovementPage() {
       {/* CALENDAR TAB */}
       {activeTab === "calendar" && <MovementCalendar />}
 
+      {/* BODY TAB */}
+      {activeTab === "body" && <BodyVisualiser />}
+
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
 
