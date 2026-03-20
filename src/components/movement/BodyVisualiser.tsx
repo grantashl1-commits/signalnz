@@ -131,6 +131,14 @@ function MeasurementsForm() {
         {saved ? "Saved ✓" : "Save measurements"}
       </Button>
 
+      {lastUpdated && (
+        <p className="font-body text-[10px] text-muted-foreground text-center">
+          Last updated {new Date(lastUpdated).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
+          {" · "}
+          {new Date(lastUpdated).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+        </p>
+      )}
+
       {/* Proportional silhouette */}
       <ProportionalSilhouette
         bust={parseFloat(measurements.bust) || 0}
