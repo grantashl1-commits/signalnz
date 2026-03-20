@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles } from "lucide-react";
+import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles, Flame, Dumbbell, Star, PersonStanding, Activity, Leaf, Bone, Zap, type LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -650,15 +650,15 @@ function BodySVG({
 }
 
 // ── Body Goals Section ──
-const BODY_GOALS = [
-  { id: "lose-weight", label: "Lose weight", emoji: "🔥" },
-  { id: "gain-muscle", label: "Build muscle", emoji: "💪" },
-  { id: "tone-up", label: "Tone & define", emoji: "✨" },
-  { id: "flexibility", label: "Improve flexibility", emoji: "🧘" },
-  { id: "endurance", label: "Build endurance", emoji: "🏃" },
-  { id: "stress-relief", label: "Stress relief", emoji: "🌿" },
-  { id: "posture", label: "Fix posture", emoji: "🦴" },
-  { id: "energy", label: "More energy", emoji: "⚡" },
+const BODY_GOALS: { id: string; label: string; icon: LucideIcon }[] = [
+  { id: "lose-weight", label: "Lose weight", icon: Flame },
+  { id: "gain-muscle", label: "Build muscle", icon: Dumbbell },
+  { id: "tone-up", label: "Tone & define", icon: Star },
+  { id: "flexibility", label: "Improve flexibility", icon: PersonStanding },
+  { id: "endurance", label: "Build endurance", icon: Activity },
+  { id: "stress-relief", label: "Stress relief", icon: Leaf },
+  { id: "posture", label: "Fix posture", icon: Bone },
+  { id: "energy", label: "More energy", icon: Zap },
 ];
 
 const GOALS_KEY = "signal_body_goals";
@@ -757,11 +757,11 @@ function BodyGoalsSection() {
             <button
               key={g.id}
               onClick={() => toggleGoal(g.id)}
-              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border ${
+              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border flex items-center gap-2 ${
                 active ? "border-primary bg-primary/5" : "border-border bg-card"
               }`}
             >
-              <span className="text-base mr-1.5">{g.emoji}</span>
+              <g.icon className={`h-4 w-4 flex-shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
               <span className="font-body text-xs font-medium text-foreground">{g.label}</span>
             </button>
           );
