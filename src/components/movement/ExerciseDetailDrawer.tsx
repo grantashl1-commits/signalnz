@@ -5,9 +5,10 @@
  * Includes optional "3D View" toggle for Sketchfab embeds.
  */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { X, Box, Eye } from "lucide-react";
+import { X, Box, Eye, Camera } from "lucide-react";
+import MixamoViewer, { hasMixamoAnimation, getMixamoPath } from "@/components/movement/MixamoViewer";
 import ExerciseRig3D from "@/components/movement/ExerciseRig3D";
 import ExerciseSilhouette from "@/components/movement/ExerciseSilhouette";
 import { getAnimationForExercise } from "@/data/exercise-animations";
