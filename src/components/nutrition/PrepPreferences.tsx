@@ -54,6 +54,10 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild }: Props)
   const [prepDays, setPrepDays] = useState<string[]>(initialPrefs.prepDays);
   const [adults, setAdults] = useState(initialPrefs.adults);
   const [kids, setKids] = useState(initialPrefs.kids);
+  const [dietType, setDietType] = useState(initialPrefs.dietType || "");
+  const [allergies, setAllergies] = useState(initialPrefs.allergies || "");
+  const [dislikes, setDislikes] = useState(initialPrefs.dislikes || "");
+  const [calorieTarget, setCalorieTarget] = useState(initialPrefs.calorieTarget || "");
   const phaseColor = PHASE_HEX[phase];
 
   const togglePrepDay = (day: string) => {
@@ -62,7 +66,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild }: Props)
   };
 
   const handleBuild = () => {
-    const prefs: PrepPrefsType = { breakfast, lunch, dinner, prepDays, adults, kids };
+    const prefs: PrepPrefsType = { breakfast, lunch, dinner, prepDays, adults, kids, dietType, allergies, dislikes, calorieTarget };
     savePreferences(prefs);
     onBuild(prefs);
   };
