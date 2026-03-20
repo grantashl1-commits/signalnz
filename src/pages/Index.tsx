@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import OnboardingFlow from "@/components/OnboardingFlow";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
