@@ -135,6 +135,9 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 <span className="font-mono text-[9px] text-muted-foreground">{sketchfabModel.label}</span>
               </div>
             </div>
+          ) : hasMixamo && mixamoPath ? (
+            /* Mixamo FBX animation */
+            <MixamoViewer exerciseName={exercise.name} fbxPath={mixamoPath} height={360} />
           ) : (
             <>
               {/* Standard animation area */}
@@ -151,6 +154,7 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                       playing={playing}
                       mirrored={false}
                       height={360}
+                      onScreenshotReady={(fn) => { screenshotFnRef.current = fn; }}
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-2">
@@ -159,6 +163,13 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                       className="px-4 py-1.5 rounded-full bg-secondary text-muted-foreground font-mono text-[10px]"
                     >
                       {playing ? "pause" : "play"}
+                    </button>
+                    <button
+                      onClick={() => screenshotFnRef.current?.()}
+                      className="px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] flex items-center gap-1.5 transition-colors hover:bg-primary/15"
+                    >
+                      <Camera className="h-3 w-3" />
+                      save image
                     </button>
                     {sketchfabModel && (
                       <button

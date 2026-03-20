@@ -775,9 +775,14 @@ function BodyVisualizerEmbed() {
             loading="lazy"
           />
         </div>
-        <p className="font-body text-[10px] text-muted-foreground mt-2 italic text-center">
-          Tip: Take a screenshot of your dream body and upload it to your Dream Board in Journal → Dream Studio
-        </p>
+        <div className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
+          <p className="font-body text-xs text-foreground font-medium mb-1">📸 Save your dream body image</p>
+          <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
+            Press <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Cmd+Shift+4</kbd> (Mac)
+            or <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Win+Shift+S</kbd> (Windows)
+            to screenshot your dream body, then upload it to your <span className="text-primary font-medium">Dream Board</span> in Journal → Dream Studio. If you can see it, you can be it ✨
+          </p>
+        </div>
       </div>
     </div>
   );
