@@ -75,10 +75,10 @@ export default function NutritionPage() {
     { id: "today", label: "Today" },
     { id: "plans", label: "Plans" },
     { id: "myweek", label: "My Week" },
-    { id: "ai", label: "✨ AI Recipes" },
+    { id: "ai", label: "AI Recipes" },
     { id: "recipes", label: "Recipes" },
     { id: "baking", label: "Baking" },
-    { id: "shopping", label: "🛒 List" },
+    { id: "shopping", label: "Shopping List" },
   ];
 
   return (
