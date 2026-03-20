@@ -232,6 +232,17 @@ export default function BoardCanvas({
         </div>
       )}
 
+      {/* Mini-map */}
+      <BoardMiniMap
+        elements={elements}
+        zoom={zoom}
+        panX={panX}
+        panY={panY}
+        canvasRef={canvasRef}
+        setPanX={setPanX}
+        setPanY={setPanY}
+      />
+
       {children}
     </div>
   );
