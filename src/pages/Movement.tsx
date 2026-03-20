@@ -48,6 +48,8 @@ export default function MovementPage() {
   const [showHR, setShowHR] = useState(false);
   const [trainingWeek, setTrainingWeekState] = useState(getTrainingWeek());
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
+  const [expandedSession, setExpandedSession] = useState<string | null>(null);
+  const [sessionNotes, setSessionNotes] = useState<Record<string, string>>({});
 
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
