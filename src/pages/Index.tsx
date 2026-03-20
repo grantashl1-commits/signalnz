@@ -111,12 +111,6 @@ export default function HomePage() {
             {greeting}{displayName ? `, ${displayName}` : ""}.
           </motion.p>
 
-          <motion.h1
-            {...fadeUp(0.2)}
-            className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.1] mb-4"
-          >
-            Your cycle-synced<br />wellness companion
-          </motion.h1>
 
           <motion.p
             {...fadeUp(0.35)}
