@@ -13,8 +13,6 @@ import {
   getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const PHASE_DATA: Record<Phase, { hormones: string; energy: number; mood: string; body: string; focus: string; nutrition: string; movement: string; poetry: string }> = {
   menstrual: {
