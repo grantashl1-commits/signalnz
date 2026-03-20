@@ -131,6 +131,7 @@ export default function BoardElement({
 }: Props) {
   const [editing, setEditing] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [showColors, setShowColors] = useState(false);
   const dragStart = useRef({ mx: 0, my: 0, ex: 0, ey: 0 });
   const resizeStart = useRef({ mx: 0, my: 0, w: 0, h: 0 });
   const theme = TYPE_THEMES[element.type] || TYPE_THEMES.text;
