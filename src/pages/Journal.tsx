@@ -10,8 +10,6 @@ import JournalActivities from "@/components/journal/JournalActivities";
 import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
 import DreamStudio from "@/components/journal/DreamStudio";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement, loadEntries, saveEntries } from "@/lib/journal-store";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 type Tab = "entries" | "activities" | "vault" | "dream";
 
@@ -31,7 +29,7 @@ const TAB_SUBTITLES: Record<Tab, string> = {
 
 export default function JournalPage() {
   const info = getCycleInfo(getLastPeriodStart());
-  const { openSignal } = useSignalPanel();
+  
   const [tab, setTab] = useState<Tab>("entries");
   const [vaultRefresh, setVaultRefresh] = useState(0);
   const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
@@ -83,14 +81,6 @@ export default function JournalPage() {
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4">
-        {/* Signal context chips */}
-        <div className="mb-4">
-          <SignalContextChips
-            pageContext={tab === "dream" ? "dream" : "journal"}
-            onOpenSignal={(prompt) => openSignal(prompt, tab === "dream" ? "dream" : "journal")}
-            compact
-          />
-        </div>
 
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">

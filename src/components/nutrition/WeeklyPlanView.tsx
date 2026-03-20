@@ -65,7 +65,7 @@ export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFr
                     <div className="flex items-center gap-2 mb-2">
                       <span className="font-body text-sm font-bold text-foreground">{day.dayName}</span>
                       <span className="font-body text-xs text-muted-foreground">
-                        {new Date(day.date).getDate()}/{new Date(day.date).getMonth() + 1}
+                        {new Date(day.date).toLocaleDateString("en-NZ", { day: "numeric", month: "long" })}
                       </span>
                       {isToday && (
                         <span className="font-body text-[11px] font-bold rounded-full px-2.5 py-0.5" style={{ backgroundColor: `${phaseColor}15`, color: phaseColor }}>

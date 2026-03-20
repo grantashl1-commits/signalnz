@@ -61,9 +61,11 @@ export function useSpeechGuide({
     utterance.pitch = pitch;
     utterance.lang = "en-NZ";
 
-    // Try to pick a good voice
+    // Try to pick a soft, soothing voice — prefer female voices
     const voices = window.speechSynthesis.getVoices();
     const preferred = voices.find(
+      (v) => v.lang.startsWith("en") && (v.name.toLowerCase().includes("samantha") || v.name.toLowerCase().includes("karen") || v.name.toLowerCase().includes("moira"))
+    ) || voices.find(
       (v) => v.lang.startsWith("en") && v.name.toLowerCase().includes("female")
     ) || voices.find(
       (v) => v.lang.startsWith("en-") && !v.name.toLowerCase().includes("google")

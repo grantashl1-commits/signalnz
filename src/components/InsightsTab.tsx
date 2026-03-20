@@ -313,29 +313,53 @@ export default function InsightsTab() {
 
       {/* Energy pattern chart */}
       <motion.div custom={4} initial="hidden" animate="visible" variants={cardVariant} className="card-warm p-5">
-        <p className="font-hand text-sm font-bold text-primary mb-3">typical energy across cycle</p>
-        <div className="flex items-end gap-[2px] h-24">
-          {Array.from({ length: 28 }, (_, i) => {
-            const day = i + 1;
-            const phase = getPhaseFromDay(day);
-            const heights: Record<Phase, number[]> = {
-              menstrual: [30, 25, 20, 25, 30],
-              follicular: [35, 45, 55, 65, 70, 75, 80, 85],
-              ovulatory: [95, 100, 95],
-              luteal: [80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 30],
-            };
-            const phaseDay = phase === "menstrual" ? day - 1 : phase === "follicular" ? day - 6 : phase === "ovulatory" ? day - 14 : day - 17;
-            const h = heights[phase][phaseDay] || 40;
+        <p className="font-hand text-sm font-bold text-primary mb-1">typical energy across cycle</p>
+        <p className="font-body text-[11px] text-muted-foreground mb-4 leading-relaxed">
+          This graph shows your estimated energy levels across a 28-day cycle based on hormonal patterns. Energy tends to dip during menstruation, rise through the follicular phase, peak at ovulation, then gradually decline through the luteal phase.
+        </p>
 
-            return (
-              <div key={day} className="flex-1 rounded-t"
-                style={{ height: `${h}%`, backgroundColor: PHASE_HEX[phase], opacity: 0.6 }}
-              />
-            );
-          })}
+        {/* Y-axis label */}
+        <div className="flex gap-2">
+          <div className="flex flex-col justify-between py-1 shrink-0">
+            <span className="font-mono text-[8px] text-muted-foreground">High</span>
+            <span className="font-mono text-[8px] text-muted-foreground">Low</span>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-end gap-[2px] h-24">
+              {Array.from({ length: 28 }, (_, i) => {
+                const day = i + 1;
+                const phase = getPhaseFromDay(day);
+                const heights: Record<Phase, number[]> = {
+                  menstrual: [30, 25, 20, 25, 30],
+                  follicular: [35, 45, 55, 65, 70, 75, 80, 85],
+                  ovulatory: [95, 100, 95],
+                  luteal: [80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 30],
+                };
+                const phaseDay = phase === "menstrual" ? day - 1 : phase === "follicular" ? day - 6 : phase === "ovulatory" ? day - 14 : day - 17;
+                const h = heights[phase][phaseDay] || 40;
+
+                return (
+                  <div key={day} className="flex-1 rounded-t"
+                    style={{ height: `${h}%`, backgroundColor: PHASE_HEX[phase], opacity: 0.6 }}
+                  />
+                );
+              })}
+            </div>
+            <div className="flex justify-between font-mono text-[9px] text-muted-foreground mt-1">
+              <span>Day 1</span><span>Day 14</span><span>Day 28</span>
+            </div>
+            <p className="font-mono text-[8px] text-muted-foreground text-center mt-0.5">Day of cycle</p>
+          </div>
         </div>
-        <div className="flex justify-between font-mono text-[9px] text-muted-foreground mt-1">
-          <span>D1</span><span>D14</span><span>D28</span>
+
+        {/* Legend */}
+        <div className="flex flex-wrap gap-3 mt-3 justify-center">
+          {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(p => (
+            <div key={p} className="flex items-center gap-1.5">
+              <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: PHASE_HEX[p], opacity: 0.6 }} />
+              <span className="font-body text-[10px] text-muted-foreground capitalize">{p}</span>
+            </div>
+          ))}
         </div>
       </motion.div>
     </div>

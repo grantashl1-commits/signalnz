@@ -22,8 +22,6 @@ import {
 } from "@/data/practices";
 import BreathworkPlayer from "@/components/practice/BreathworkPlayer";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
@@ -306,7 +304,7 @@ function MeditationsSection() {
 
 // ── MAIN PAGE ─────────────────────────────────────────────────
 export default function BreathworkPage() {
-  const { openSignal } = useSignalPanel();
+  
   const [section, setSection] = useState<
     "breathwork" | "somatic" | "meditations"
   >("breathwork");
@@ -348,7 +346,7 @@ export default function BreathworkPage() {
 
       <ContentSection className="px-5 md:px-4">
 
-      <SignalContextChips pageContext="breathwork" onOpenSignal={(p) => openSignal(p, "breathwork")} compact />
+      
 
       {/* Sub-nav pill */}
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">

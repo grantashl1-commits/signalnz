@@ -13,8 +13,6 @@ import {
   getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 const PHASE_DATA: Record<Phase, { hormones: string; energy: number; mood: string; body: string; focus: string; nutrition: string; movement: string; poetry: string }> = {
   menstrual: {
@@ -123,9 +121,9 @@ const cardVariant = {
 
 export default function CyclePage() {
   const [lastPeriod, setLastPeriod] = useState(getLastPeriodStart() || "");
-  const { openSignal } = useSignalPanel();
+  
   const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights">("overview");
-  const [expandedPhase, setExpandedPhase] = useState<Phase | null>(null);
+  
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showDateEdit, setShowDateEdit] = useState(false);
@@ -198,7 +196,7 @@ export default function CyclePage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-      <SignalContextChips pageContext="cycle" onOpenSignal={(p) => openSignal(p, "cycle")} compact />
+      
 
       {/* Date picker — only shown if no date set yet */}
       {!hasDateSet && (
@@ -283,62 +281,52 @@ export default function CyclePage() {
             {nextPhase} begins in ~{daysUntil} days
           </p>
 
-          {/* Phase cards */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            {phases.map((phase, i) => {
-              const d = PHASE_DATA[phase];
-              const active = phase === info.phase;
-              const expanded = expandedPhase === phase;
-              return (
-                <motion.div
-                  key={phase}
-                  custom={i}
-                  initial="hidden"
-                  animate="visible"
-                  variants={cardVariant}
-                  className={`relative overflow-hidden card-warm p-4 md:p-5 cursor-pointer touch-card ${
-                    active ? "ring-1 opacity-100" : "opacity-60"
-                  }`}
-                  style={active ? { borderColor: PHASE_HEX[phase] } : {}}
-                  onClick={() => { haptic("light"); setExpandedPhase(expanded ? null : phase); }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 pointer-events-none">
-                    <CymatiSketch phase={phase} size={48} opacity={0.1} />
+          {/* Current phase card — always expanded */}
+          {(() => {
+            const phase = info.phase;
+            const d = PHASE_DATA[phase];
+            return (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={cardVariant}
+                custom={0}
+                className="relative overflow-hidden card-warm p-4 md:p-5 ring-1"
+                style={{ borderColor: PHASE_HEX[phase] }}
+              >
+                <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 pointer-events-none">
+                  <CymatiSketch phase={phase} size={48} opacity={0.1} />
+                </div>
+                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-[18px]" style={{ backgroundColor: PHASE_HEX[phase] }} />
+
+                <h3 className="font-display text-base md:text-lg italic pl-3" style={{ color: PHASE_HEX[phase] }}>
+                  {PHASE_LABELS[phase]}
+                </h3>
+                <p className="font-hand text-xs pl-3 mt-0.5" style={{ color: PHASE_HEX[phase] }}>{d.poetry}</p>
+
+                <div className="pl-3 mt-3 flex items-center gap-2">
+                  <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Energy</span>
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <span key={n} className={`h-2 w-2 rounded-full ${n <= d.energy ? "" : "bg-border"}`} style={n <= d.energy ? { backgroundColor: PHASE_HEX[phase] } : {}} />
+                    ))}
                   </div>
-                  <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-[18px]" style={{ backgroundColor: PHASE_HEX[phase] }} />
+                </div>
 
-                  <h3 className="font-display text-base md:text-lg italic pl-3" style={{ color: PHASE_HEX[phase] }}>
-                    {PHASE_LABELS[phase]}
-                  </h3>
-                  <p className="font-hand text-xs pl-3 mt-0.5" style={{ color: PHASE_HEX[phase] }}>{d.poetry}</p>
+                <div className="pl-3 mt-2 space-y-1">
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Hormones:</span> {d.hormones}</p>
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Mood:</span> {d.mood}</p>
+                </div>
 
-                  <div className="pl-3 mt-3 flex items-center gap-2">
-                    <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Energy</span>
-                    <div className="flex gap-0.5">
-                      {[1, 2, 3, 4, 5].map((n) => (
-                        <span key={n} className={`h-2 w-2 rounded-full ${n <= d.energy ? "" : "bg-border"}`} style={n <= d.energy ? { backgroundColor: PHASE_HEX[phase] } : {}} />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pl-3 mt-2 space-y-1">
-                    <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Hormones:</span> {d.hormones}</p>
-                    <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Mood:</span> {d.mood}</p>
-                  </div>
-
-                  {expanded && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pl-3 mt-3 pt-3 border-t border-border space-y-1">
-                      <BotanicalSprig width={100} opacity={0.2} />
-                      <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Body:</span> {d.body}</p>
-                      <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Nutrition:</span> {d.nutrition}</p>
-                      <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Movement:</span> {d.movement}</p>
-                    </motion.div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
+                <div className="pl-3 mt-3 pt-3 border-t border-border space-y-1">
+                  <BotanicalSprig width={100} opacity={0.2} />
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Body:</span> {d.body}</p>
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Nutrition:</span> {d.nutrition}</p>
+                  <p className="font-body text-xs text-muted-foreground"><span className="text-foreground/70">Movement:</span> {d.movement}</p>
+                </div>
+              </motion.div>
+            );
+          })()}
 
           {/* Seed cycling moved to Nourish page */}
         </div>
@@ -381,14 +369,14 @@ export default function CyclePage() {
                   <div className="flex justify-center gap-[2px] mt-0.5 flex-wrap">
                     {phase && <div className="h-2 w-2 rounded-full" style={{ backgroundColor: PHASE_HEX[phase] }} />}
                   </div>
-                  {/* Indicator dots */}
-                  <div className="flex justify-center gap-[1px] mt-[1px]">
-                    {indicators.isPeriodDay && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C4526E" }} />}
-                    {indicators.hasMood && <div className="h-1 w-1 rounded-full bg-foreground/40" />}
-                    {indicators.hasSymptoms && phase && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: PHASE_HEX[phase], opacity: 0.6 }} />}
-                    {indicators.hasWeight && <div className="h-1 w-1 rounded-full bg-muted-foreground/40" />}
-                    {indicators.hasNotes && <div className="h-1 w-1 rounded-full bg-foreground/30" />}
-                    {indicators.hasSeeds && <div className="h-1 w-1 rounded-full" style={{ backgroundColor: "#C47A8A" }} />}
+                  {/* Indicator symbols */}
+                  <div className="flex justify-center gap-[2px] mt-[1px]">
+                    {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#C4526E" }}>●</span>}
+                    {indicators.hasMood && <span className="text-[8px] leading-none text-foreground/50">♡</span>}
+                    {indicators.hasSymptoms && <span className="text-[8px] leading-none" style={{ color: phase ? PHASE_HEX[phase] : undefined, opacity: 0.7 }}>◆</span>}
+                    {indicators.hasWeight && <span className="text-[8px] leading-none text-muted-foreground">⚖</span>}
+                    {indicators.hasNotes && <span className="text-[8px] leading-none text-foreground/40">✎</span>}
+                    {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#C47A8A" }}>✿</span>}
                   </div>
                 </button>
               );

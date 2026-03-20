@@ -86,8 +86,8 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
       setPlaying(false);
       setActiveStepIdx(steps.length - 1);
     },
-    rate: 0.78,
-    pitch: 0.95,
+    rate: 0.72,
+    pitch: 0.88,
   });
 
   const usingSpeech = !hasAudio && !hasTTSPath && speechSupported;
