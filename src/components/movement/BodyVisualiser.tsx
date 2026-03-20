@@ -1,6 +1,7 @@
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Ruler, Camera, Image, Trash2, Plus } from "lucide-react";
+import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { haptic } from "@/hooks/use-mobile";
@@ -677,23 +678,67 @@ function BodyGoalsSection() {
   const [goals, setGoals] = useState<string[]>(loadBodyGoals());
   const [customGoal, setCustomGoal] = useState("");
   const [saved, setSaved] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [planSummary, setPlanSummary] = useState<string | null>(null);
+  const info = getCycleInfo(getLastPeriodStart());
+
+  // Check if a plan already exists
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("signal_ai_workout_plan");
+      if (raw) {
+        const plan = JSON.parse(raw);
+        setPlanSummary(plan.summary || null);
+      }
+    } catch {}
+  }, []);
 
   const toggleGoal = (id: string) => {
     haptic("light");
     setGoals(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]);
   };
 
-  const handleSave = () => {
+  const generatePlan = async (goalsToUse: string[]) => {
+    setGenerating(true);
+    try {
+      const goalLabels = goalsToUse.map(g => {
+        const preset = BODY_GOALS.find(bg => bg.id === g);
+        return preset ? preset.label : g;
+      });
+
+      const { data, error } = await supabase.functions.invoke("workout-plan", {
+        body: { goals: goalLabels, phase: info.phase, cycleDay: info.cycleDay },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      // Save plan to localStorage
+      localStorage.setItem("signal_ai_workout_plan", JSON.stringify(data));
+      setPlanSummary(data.summary || "Plan generated!");
+      haptic("success");
+    } catch (e: any) {
+      console.error("Plan generation failed:", e);
+      setPlanSummary(null);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleSave = async () => {
     haptic("medium");
     saveBodyGoals(goals);
     setSaved(true);
     setTimeout(() => setSaved(false), 1500);
+    // Auto-generate plan when goals are saved
+    if (goals.length > 0) {
+      await generatePlan(goals);
+    }
   };
 
   const addCustom = () => {
     if (!customGoal.trim()) return;
     haptic("medium");
-    const id = `custom-${Date.now()}`;
     setGoals(prev => [...prev, customGoal.trim()]);
     setCustomGoal("");
   };
@@ -702,7 +747,7 @@ function BodyGoalsSection() {
     <div className="card-warm p-5 rounded-2xl space-y-4">
       <div>
         <h3 className="font-display text-base font-semibold italic text-foreground">What do you want from your body?</h3>
-        <p className="font-body text-xs text-muted-foreground mt-1">Select your goals — these shape your workout and nutrition plans.</p>
+        <p className="font-body text-xs text-muted-foreground mt-1">Select your goals — AI will build a personalised 4-week plan for your Today tab.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-2">
@@ -750,37 +795,59 @@ function BodyGoalsSection() {
         </div>
       )}
 
-      <button onClick={handleSave} className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all">
-        {saved ? "✓ Saved" : "Save goals"}
+      <button 
+        onClick={handleSave} 
+        disabled={generating || goals.length === 0}
+        className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        {generating ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Generating your plan...
+          </>
+        ) : saved ? (
+          "✓ Saved & plan generated!"
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4" />
+            Save goals & generate plan
+          </>
+        )}
       </button>
+
+      {/* Plan summary */}
+      {planSummary && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-xl bg-primary/5 border border-primary/10"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <p className="font-display text-sm font-semibold italic text-foreground">Your AI Plan</p>
+          </div>
+          <p className="font-body text-xs text-muted-foreground leading-relaxed">{planSummary}</p>
+          <p className="font-body text-[10px] text-primary mt-2">→ Check your Today tab for this week's workouts</p>
+        </motion.div>
+      )}
     </div>
   );
 }
 
-// ── BodyVisualizer Embed ──
+// ── 3D Body Tab — uses native measurements + silhouette ──
 function BodyVisualizerEmbed() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      <MeasurementsForm />
       <div className="card-warm p-4 rounded-2xl">
-        <h3 className="font-display text-base font-semibold italic text-foreground mb-2">3D Body Visualizer</h3>
-        <p className="font-body text-xs text-muted-foreground mb-3">
-          Adjust measurements to see your body shape in 3D. Save a screenshot of your dream body and add it to your Dream Board!
-        </p>
-        <div className="rounded-xl overflow-hidden border border-border" style={{ height: "500px" }}>
-          <iframe
-            src="https://bodyvisualizer.com/female.html"
-            title="Body Visualizer"
-            className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-            loading="lazy"
-          />
-        </div>
-        <div className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
+        <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
           <p className="font-body text-xs text-foreground font-medium mb-1">📸 Save your dream body image</p>
           <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
-            Press <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Cmd+Shift+4</kbd> (Mac)
+            Take a screenshot of your silhouette above and upload it to your <span className="text-primary font-medium">Dream Board</span> in Journal → Dream Studio. If you can see it, you can be it ✨
+          </p>
+          <p className="font-body text-[10px] text-muted-foreground mt-2">
+            <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Cmd+Shift+4</kbd> (Mac)
             or <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Win+Shift+S</kbd> (Windows)
-            to screenshot your dream body, then upload it to your <span className="text-primary font-medium">Dream Board</span> in Journal → Dream Studio. If you can see it, you can be it ✨
           </p>
         </div>
       </div>
@@ -789,23 +856,10 @@ function BodyVisualizerEmbed() {
 }
 
 export default function BodyVisualiser() {
-  const info = getCycleInfo(getLastPeriodStart());
-  const [view, setView] = useState<"front" | "back">("front");
-  const [subTab, setSubTab] = useState<"goals" | "muscle-map" | "3d-body">("goals");
-  const phaseWorkouts = PHASE_WORKOUTS[info.phase];
-  const todayId = TODAY_WORKOUT[info.phase];
-  const todayWorkout = phaseWorkouts.find(w => w.id === todayId) || phaseWorkouts[0];
-  const [selectedWorkout, setSelectedWorkout] = useState(todayWorkout);
-  const color = PHASE_COLOR[info.phase];
-
-  const muscleMap = useMemo(() => getMusclesFromWorkout(selectedWorkout), [selectedWorkout]);
-
-  const primaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "primary");
-  const secondaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "secondary");
+  const [subTab, setSubTab] = useState<"goals" | "3d-body">("goals");
 
   const SUB_TABS = [
     { id: "goals" as const, label: "My Goals" },
-    { id: "muscle-map" as const, label: "Muscle Map" },
     { id: "3d-body" as const, label: "3D Body" },
   ];
 
@@ -827,112 +881,7 @@ export default function BodyVisualiser() {
       </div>
 
       {subTab === "goals" && <BodyGoalsSection />}
-
       {subTab === "3d-body" && <BodyVisualizerEmbed />}
-
-      {subTab === "muscle-map" && (
-        <>
-          {/* Workout selector */}
-          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-            {phaseWorkouts.filter(w => w.exercises.length > 0).map(w => (
-              <button
-                key={w.id}
-                onClick={() => setSelectedWorkout(w)}
-                className={`scroll-snap-item flex-shrink-0 rounded-xl px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                  selectedWorkout.id === w.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-muted-foreground"
-                }`}
-              >
-                {w.name}
-              </button>
-            ))}
-          </div>
-
-          {/* Body map */}
-          <div className="card-warm p-4 rounded-2xl">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-display text-base font-semibold text-foreground">{selectedWorkout.name}</h3>
-              <div className="flex rounded-full bg-secondary p-0.5">
-                {(["front", "back"] as const).map(v => (
-                  <button
-                    key={v}
-                    onClick={() => setView(v)}
-                    className={`rounded-full px-3 py-1 font-body text-xs font-medium transition-all ${
-                      view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
-                    }`}
-                  >
-                    {v.charAt(0).toUpperCase() + v.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-1/2 flex-shrink-0">
-                <BodySVG
-                  regions={view === "front" ? FRONT_REGIONS : BACK_REGIONS}
-                  muscleMap={muscleMap}
-                  color={color}
-                />
-              </div>
-
-              <div className="flex-1 space-y-4 pt-4">
-                {primaryMuscles.length > 0 && (
-                  <div>
-                    <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Primary</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {primaryMuscles.map(([muscle, info]) => (
-                        <span
-                          key={muscle}
-                          className="rounded-full px-2.5 py-1 font-body text-xs font-medium text-white"
-                          style={{ backgroundColor: color }}
-                        >
-                          {info.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {secondaryMuscles.length > 0 && (
-                  <div>
-                    <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Secondary</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {secondaryMuscles.map(([muscle, info]) => (
-                        <span
-                          key={muscle}
-                          className="rounded-full px-2.5 py-1 font-body text-xs font-medium border"
-                          style={{ borderColor: color, color }}
-                        >
-                          {info.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="space-y-1 pt-2">
-                  <p className="font-mono text-xs text-foreground">{selectedWorkout.duration}</p>
-                  <p className="font-body text-xs text-muted-foreground">{selectedWorkout.equipment}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Legend */}
-          <div className="flex items-center gap-4 justify-center">
-            {[
-              { label: "Primary", opacity: 0.85 },
-              { label: "Secondary", opacity: 0.5 },
-              { label: "Light", opacity: 0.25 },
-            ].map(l => (
-              <div key={l.label} className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: color, opacity: l.opacity }} />
-                <span className="font-body text-[10px] text-muted-foreground">{l.label}</span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }
