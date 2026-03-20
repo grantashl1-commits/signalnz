@@ -118,7 +118,10 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
   const { dates, start, end } = getWeekDates();
   const info = getCycleInfo(getLastPeriodStart());
   const phase = info.phase;
-  const plan = PHASE_MEAL_PLANS[phase];
+  // Use meat-inclusive plans when no dietary preference or explicitly "No preference"
+  const useMeat = !prefs.dietType || prefs.dietType === "" || prefs.dietType === "No preference";
+  const mealSource = useMeat ? MEAT_MEAL_PLANS : PHASE_MEAL_PLANS;
+  const plan = mealSource[phase];
   const [phaseStart] = PHASE_DAYS[phase];
 
   const days: PlannedDay[] = dates.map((date, i) => {
