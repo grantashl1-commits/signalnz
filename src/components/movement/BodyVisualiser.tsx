@@ -650,15 +650,15 @@ function BodySVG({
 }
 
 // ── Body Goals Section ──
-const BODY_GOALS = [
-  { id: "lose-weight", label: "Lose weight", emoji: "🔥" },
-  { id: "gain-muscle", label: "Build muscle", emoji: "💪" },
-  { id: "tone-up", label: "Tone & define", emoji: "✨" },
-  { id: "flexibility", label: "Improve flexibility", emoji: "🧘" },
-  { id: "endurance", label: "Build endurance", emoji: "🏃" },
-  { id: "stress-relief", label: "Stress relief", emoji: "🌿" },
-  { id: "posture", label: "Fix posture", emoji: "🦴" },
-  { id: "energy", label: "More energy", emoji: "⚡" },
+const BODY_GOALS: { id: string; label: string; icon: LucideIcon }[] = [
+  { id: "lose-weight", label: "Lose weight", icon: Flame },
+  { id: "gain-muscle", label: "Build muscle", icon: Dumbbell },
+  { id: "tone-up", label: "Tone & define", icon: Star },
+  { id: "flexibility", label: "Improve flexibility", icon: PersonStanding },
+  { id: "endurance", label: "Build endurance", icon: Activity },
+  { id: "stress-relief", label: "Stress relief", icon: Leaf },
+  { id: "posture", label: "Fix posture", icon: Bone },
+  { id: "energy", label: "More energy", icon: Zap },
 ];
 
 const GOALS_KEY = "signal_body_goals";
