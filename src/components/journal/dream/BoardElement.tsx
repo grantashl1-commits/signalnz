@@ -285,12 +285,12 @@ export default function BoardElement({
               value={element.content}
               onChange={(e) => onUpdate({ content: e.target.value })}
               onBlur={() => setEditing(false)}
-              className="w-full flex-1 bg-transparent font-display text-[16px] italic text-foreground/75 resize-none focus:outline-none leading-[1.75]"
-              style={{ fontSize: "16px" }}
+              className="w-full flex-1 bg-transparent text-[16px] italic text-foreground/75 resize-none focus:outline-none leading-[1.75]"
+              style={{ fontSize: "16px", fontFamily: "'Playfair Display', 'Georgia', serif" }}
               autoFocus
             />
           ) : (
-            <p onDoubleClick={startEditing} className="font-display text-[16px] italic text-foreground/75 leading-[1.75] cursor-text select-none flex-1">
+            <p onDoubleClick={startEditing} className="text-[16px] italic text-foreground/75 leading-[1.75] cursor-text select-none flex-1" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>
               {element.content || "Add an inspiring quote..."}
             </p>
           )}
