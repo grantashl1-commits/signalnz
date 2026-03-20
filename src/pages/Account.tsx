@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart } from "lucide-react";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,12 @@ import { useEffect, useState } from "react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useProfile } from "@/hooks/useProfile";
+import {
+  FitnessGoal, FitnessLevel, Equipment, FitnessProfile,
+  GOAL_LABELS, LEVEL_LABELS, EQUIPMENT_LABELS,
+  getFitnessProfile, saveFitnessProfile,
+  getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
+} from "@/lib/fitness-profile";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
