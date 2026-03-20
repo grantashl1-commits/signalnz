@@ -18,7 +18,6 @@ import { useProfile } from "@/hooks/useProfile";
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase },
   { label: "Clear", phase: "follicular" as Phase },
-  { label: "Steady", phase: "follicular" as Phase },
   { label: "Muted", phase: "luteal" as Phase },
   { label: "Static", phase: "menstrual" as Phase },
 ];
