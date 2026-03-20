@@ -13,6 +13,7 @@ import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
+import AIRecipesTab from "@/components/nutrition/AIRecipesTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -22,7 +23,7 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-type TabId = "today" | "plans" | "myweek" | "recipes" | "baking" | "shopping";
+type TabId = "today" | "plans" | "myweek" | "ai" | "recipes" | "baking" | "shopping";
 
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
@@ -35,6 +36,7 @@ export default function NutritionPage() {
     { id: "today", label: "Today" },
     { id: "plans", label: "Plans" },
     { id: "myweek", label: "My Week" },
+    { id: "ai", label: "✨ AI Recipes" },
     { id: "recipes", label: "Recipes" },
     { id: "baking", label: "Baking" },
     { id: "shopping", label: "🛒 List" },
@@ -86,6 +88,8 @@ export default function NutritionPage() {
       )}
 
       {activeTab === "plans" && <PlansTab phase={info.phase} cycleDay={info.cycleDay} />}
+
+      {activeTab === "ai" && <AIRecipesTab phase={info.phase} cycleDay={info.cycleDay} />}
 
       {activeTab === "recipes" && <RecipesGrid recipes={ALL_MEAL_RECIPES} currentPhase={info.phase} />}
 
