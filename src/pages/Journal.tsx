@@ -81,14 +81,6 @@ export default function JournalPage() {
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4">
-        {/* Signal context chips */}
-        <div className="mb-4">
-          <SignalContextChips
-            pageContext={tab === "dream" ? "dream" : "journal"}
-            onOpenSignal={(prompt) => openSignal(prompt, tab === "dream" ? "dream" : "journal")}
-            compact
-          />
-        </div>
 
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">

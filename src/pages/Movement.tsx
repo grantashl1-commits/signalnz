@@ -135,7 +135,7 @@ export default function MovementPage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-      <SignalContextChips pageContext="movement" onOpenSignal={(p) => openSignal(p, "movement")} compact />
+      
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 

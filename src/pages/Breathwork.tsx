@@ -346,7 +346,7 @@ export default function BreathworkPage() {
 
       <ContentSection className="px-5 md:px-4">
 
-      <SignalContextChips pageContext="breathwork" onOpenSignal={(p) => openSignal(p, "breathwork")} compact />
+      
 
       {/* Sub-nav pill */}
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">

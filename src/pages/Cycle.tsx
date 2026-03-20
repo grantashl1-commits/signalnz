@@ -196,7 +196,7 @@ export default function CyclePage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-      <SignalContextChips pageContext="cycle" onOpenSignal={(p) => openSignal(p, "cycle")} compact />
+      
 
       {/* Date picker — only shown if no date set yet */}
       {!hasDateSet && (

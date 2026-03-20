@@ -59,7 +59,7 @@ export default function NutritionPage() {
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
 
-      <SignalContextChips pageContext="nutrition" onOpenSignal={(p) => openSignal(p, "nutrition")} compact />
+      
 
       {/* Tabs — horizontal scroll */}
       <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">

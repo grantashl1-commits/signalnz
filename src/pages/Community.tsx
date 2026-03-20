@@ -109,7 +109,7 @@ export default function CommunityPage() {
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4">
-      <SignalContextChips pageContext="community" onOpenSignal={(p) => openSignal(p, "community")} compact />
+      
 
       {/* Tab bar — sticky on mobile */}
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-5 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
