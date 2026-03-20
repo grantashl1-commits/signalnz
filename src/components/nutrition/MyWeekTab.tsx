@@ -120,6 +120,7 @@ export default function MyWeekTab({ onPlanSaved }: { onPlanSaved?: () => void })
           phase={info.phase}
           onProceedToShop={handleProceedToShop}
           onStartFresh={handleStartFresh}
+          onPlanSaved={onPlanSaved}
         />
       )}
 
