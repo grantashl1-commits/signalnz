@@ -5,9 +5,10 @@
  * Includes optional "3D View" toggle for Sketchfab embeds.
  */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { X, Box, Eye } from "lucide-react";
+import { X, Box, Eye, Camera } from "lucide-react";
+import MixamoViewer, { hasMixamoAnimation, getMixamoPath } from "@/components/movement/MixamoViewer";
 import ExerciseRig3D from "@/components/movement/ExerciseRig3D";
 import ExerciseSilhouette from "@/components/movement/ExerciseSilhouette";
 import { getAnimationForExercise } from "@/data/exercise-animations";
@@ -77,6 +78,7 @@ interface ExerciseDetailDrawerProps {
 export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }: ExerciseDetailDrawerProps) {
   const [playing, setPlaying] = useState(true);
   const [show3D, setShow3D] = useState(false);
+  const screenshotFnRef = useRef<(() => void) | null>(null);
 
   if (!exercise) return null;
 
@@ -84,6 +86,8 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
   const phaseColor = PHASE_HEX[phase];
   const sketchfabCategory = classifyForSketchfab(exercise.name);
   const sketchfabModel = sketchfabCategory ? SKETCHFAB_MODELS[sketchfabCategory] : null;
+  const mixamoPath = getMixamoPath(exercise.name);
+  const hasMixamo = hasMixamoAnimation(exercise.name);
 
   return (
     <Drawer open={open} onOpenChange={(o) => { if (!o) { onClose(); setShow3D(false); } }}>
@@ -131,6 +135,9 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 <span className="font-mono text-[9px] text-muted-foreground">{sketchfabModel.label}</span>
               </div>
             </div>
+          ) : hasMixamo && mixamoPath ? (
+            /* Mixamo FBX animation */
+            <MixamoViewer exerciseName={exercise.name} fbxPath={mixamoPath} height={360} />
           ) : (
             <>
               {/* Standard animation area */}
@@ -147,6 +154,7 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                       playing={playing}
                       mirrored={false}
                       height={360}
+                      onScreenshotReady={(fn) => { screenshotFnRef.current = fn; }}
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-2">
@@ -155,6 +163,13 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                       className="px-4 py-1.5 rounded-full bg-secondary text-muted-foreground font-mono text-[10px]"
                     >
                       {playing ? "pause" : "play"}
+                    </button>
+                    <button
+                      onClick={() => screenshotFnRef.current?.()}
+                      className="px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] flex items-center gap-1.5 transition-colors hover:bg-primary/15"
+                    >
+                      <Camera className="h-3 w-3" />
+                      save image
                     </button>
                     {sketchfabModel && (
                       <button
