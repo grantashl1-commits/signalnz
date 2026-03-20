@@ -13,6 +13,7 @@ import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
+import { ShoppingListPanel } from "@/components/ShoppingList";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
