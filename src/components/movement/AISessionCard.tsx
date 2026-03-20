@@ -222,8 +222,8 @@ export default function AISessionCard({
 
       {/* Old format cool-down string */}
       {!hasNewFormat && session.coolDown && (
-        <div className="flex items-start gap-2 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 p-3">
-          <Snowflake className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
+        <div className="flex items-start gap-2 rounded-xl bg-secondary/40 p-3">
+          <Snowflake className="h-3.5 w-3.5 text-primary mt-0.5 flex-shrink-0" />
           <p className="font-body text-xs text-muted-foreground">{session.coolDown}</p>
         </div>
       )}
