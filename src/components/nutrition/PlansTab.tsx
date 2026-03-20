@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, Recipe } from "@/data/meal-plans";
-import { findRecipeByName } from "@/lib/recipe-index";
+import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
 import { RecipeIllustration } from "@/components/MealIllustration";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
+import { getWeeklyPlan, type WeeklyPlan } from "@/lib/weekly-planner";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -31,21 +32,37 @@ interface DayMeals {
 export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
-  const plan = PHASE_MEAL_PLANS[phase];
   const phaseColor = PHASE_HEX[phase];
   const [phaseStart, phaseEnd] = PHASE_DAYS[phase];
 
-  const dayMeals: DayMeals[] = plan.days.map((day) => {
-    const bName = day.breakfast.split(" — ")[0];
-    const lName = day.lunch.split(" — ")[0];
-    const dName = day.dinner.split(" — ")[0];
-    return {
-      day: day.day,
-      breakfast: { name: bName, recipe: findRecipeByName(bName) },
-      lunch: { name: lName, recipe: findRecipeByName(lName) },
-      dinner: { name: dName, recipe: findRecipeByName(dName) },
-    };
-  });
+  // Check for custom weekly plan first
+  const customPlan = useMemo(() => getWeeklyPlan(), []);
+  const plan = PHASE_MEAL_PLANS[phase];
+
+  // Build day meals from custom plan or default
+  const dayMeals: DayMeals[] = customPlan
+    ? customPlan.days.map((day, i) => {
+        const bRecipe = day.breakfast.recipeId ? findRecipeById(day.breakfast.recipeId) : findRecipeByName(day.breakfast.name);
+        const lRecipe = day.lunch.recipeId ? findRecipeById(day.lunch.recipeId) : findRecipeByName(day.lunch.name);
+        const dRecipe = day.dinner.recipeId ? findRecipeById(day.dinner.recipeId) : findRecipeByName(day.dinner.name);
+        return {
+          day: i + 1,
+          breakfast: { name: day.breakfast.name, recipe: bRecipe },
+          lunch: { name: day.lunch.name, recipe: lRecipe },
+          dinner: { name: day.dinner.name, recipe: dRecipe },
+        };
+      })
+    : plan.days.map((day) => {
+        const bName = day.breakfast.split(" — ")[0];
+        const lName = day.lunch.split(" — ")[0];
+        const dName = day.dinner.split(" — ")[0];
+        return {
+          day: day.day,
+          breakfast: { name: bName, recipe: findRecipeByName(bName) },
+          lunch: { name: lName, recipe: findRecipeByName(lName) },
+          dinner: { name: dName, recipe: findRecipeByName(dName) },
+        };
+      });
 
   const MealTile = ({ name, recipe, slot }: { name: string; recipe?: Recipe; slot: string }) => (
     <button
