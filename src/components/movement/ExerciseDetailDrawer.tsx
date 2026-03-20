@@ -172,10 +172,15 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
-                  <div className="bg-secondary/30 rounded-2xl w-full flex items-center justify-center py-4">
+                  <div
+                    className="rounded-2xl w-full flex items-center justify-center py-8"
+                    style={{
+                      background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+                    }}
+                  >
                     <ExerciseSilhouette
                       exerciseName={exercise.name}
-                      size={160}
+                      size={200}
                       playing={playing}
                     />
                   </div>
