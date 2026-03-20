@@ -421,7 +421,7 @@ export default function BoardElement({
         zIndex: element.zIndex,
         cursor: dragging ? "grabbing" : editing ? "text" : "grab",
         borderRadius: isLabel ? 0 : 14,
-        background: theme.bg,
+        background: element.color || theme.bg,
         border: isLabel ? "none" : `1px solid ${selected ? theme.borderSelected : theme.border}`,
         boxShadow: selected ? theme.shadowSelected : theme.shadow,
         overflow: isLabel ? "visible" : "hidden",
