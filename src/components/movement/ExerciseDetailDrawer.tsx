@@ -78,6 +78,7 @@ interface ExerciseDetailDrawerProps {
 export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }: ExerciseDetailDrawerProps) {
   const [playing, setPlaying] = useState(true);
   const [show3D, setShow3D] = useState(false);
+  const screenshotFnRef = useRef<(() => void) | null>(null);
 
   if (!exercise) return null;
 
@@ -85,6 +86,8 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
   const phaseColor = PHASE_HEX[phase];
   const sketchfabCategory = classifyForSketchfab(exercise.name);
   const sketchfabModel = sketchfabCategory ? SKETCHFAB_MODELS[sketchfabCategory] : null;
+  const mixamoPath = getMixamoPath(exercise.name);
+  const hasMixamo = hasMixamoAnimation(exercise.name);
 
   return (
     <Drawer open={open} onOpenChange={(o) => { if (!o) { onClose(); setShow3D(false); } }}>

@@ -5,7 +5,7 @@
  */
 
 import { useRef, useEffect, useCallback, useState, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import type { JointPose, ExerciseAnimationDef } from "@/data/exercise-animations";
