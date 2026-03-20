@@ -123,6 +123,12 @@ export default function MovementPage() {
     setTrainingWeekState(week);
   };
 
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
   const TABS = [
     { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
