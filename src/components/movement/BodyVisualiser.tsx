@@ -117,6 +117,180 @@ function MeasurementsForm() {
       >
         {saved ? "Saved ✓" : "Save measurements"}
       </Button>
+
+      {/* Proportional silhouette */}
+      <ProportionalSilhouette
+        bust={parseFloat(measurements.bust) || 0}
+        waist={parseFloat(measurements.waist) || 0}
+        hips={parseFloat(measurements.hips) || 0}
+        height={parseFloat(measurements.height) || 0}
+        inseam={parseFloat(measurements.inseam) || 0}
+      />
+    </div>
+  );
+}
+
+// ── Proportional feminine silhouette ──
+function ProportionalSilhouette({
+  bust, waist, hips, height, inseam,
+}: {
+  bust: number; waist: number; hips: number; height: number; inseam: number;
+}) {
+  // Need at least bust/waist/hips to render
+  if (!bust && !waist && !hips) return null;
+
+  // Normalise proportions relative to hips (widest point baseline)
+  const baseHips = hips || 96;
+  const bustR = (bust || baseHips * 0.92) / baseHips;
+  const waistR = (waist || baseHips * 0.75) / baseHips;
+  const hipsR = 1;
+
+  // Height-to-width aspect: taller = more elongated silhouette
+  const heightFactor = height ? Math.max(0.85, Math.min(1.2, height / 165)) : 1;
+  // Inseam affects leg length proportion
+  const legRatio = inseam && height ? Math.max(0.4, Math.min(0.55, inseam / height)) : 0.46;
+
+  // SVG coordinate system: 200 wide, height scales
+  const svgW = 200;
+  const totalH = 340 * heightFactor;
+  const cx = svgW / 2;
+
+  // Vertical landmarks
+  const headTop = 10;
+  const headR = 14;
+  const neckY = headTop + headR * 2 + 4;
+  const shoulderY = neckY + 12;
+  const bustY = shoulderY + 28;
+  const waistY = bustY + 32;
+  const hipY = waistY + 28;
+  const crotchY = hipY + 18;
+  const kneeY = crotchY + (totalH - crotchY) * (1 - legRatio) * 0.6 + (totalH - crotchY) * legRatio * 0.45;
+  const ankleY = totalH - 16;
+  const footY = totalH - 6;
+
+  // Widths (half-widths from centre)
+  const maxW = 48;
+  const shoulderW = maxW * bustR * 0.88;
+  const bustW = maxW * bustR;
+  const waistW = maxW * waistR;
+  const hipW = maxW * hipsR;
+  const thighW = hipW * 0.52;
+  const kneeW = thighW * 0.72;
+  const ankleW = kneeW * 0.6;
+
+  // Arm dimensions
+  const armGap = 4;
+  const elbowY = waistY + 8;
+  const wristY = hipY + 14;
+  const upperArmW = 7;
+  const forearmW = 5.5;
+
+  // Build left side path (mirrored for right)
+  const buildSide = (sign: 1 | -1) => {
+    const s = sign;
+    const armOuterX = cx + s * (shoulderW + armGap + upperArmW);
+    const armInnerX = cx + s * (shoulderW + armGap);
+    const elbowOuterX = cx + s * (waistW + armGap + 6 + upperArmW);
+    const elbowInnerX = cx + s * (waistW + armGap + 6);
+    const wristOuterX = cx + s * (waistW + armGap + 4 + forearmW);
+    const wristInnerX = cx + s * (waistW + armGap + 4);
+
+    return `
+      M ${cx + s * 4} ${neckY}
+      Q ${cx + s * shoulderW * 0.5} ${neckY - 2} ${cx + s * shoulderW} ${shoulderY}
+      L ${cx + s * (shoulderW + armGap)} ${shoulderY}
+      Q ${armInnerX + s * 2} ${(shoulderY + elbowY) / 2} ${elbowInnerX} ${elbowY}
+      Q ${elbowInnerX - s * 1} ${(elbowY + wristY) / 2} ${wristInnerX} ${wristY}
+      L ${wristOuterX} ${wristY}
+      Q ${elbowOuterX + s * 1} ${(elbowY + wristY) / 2} ${elbowOuterX} ${elbowY}
+      Q ${armOuterX - s * 2} ${(shoulderY + elbowY) / 2} ${armOuterX} ${shoulderY}
+      L ${cx + s * shoulderW} ${shoulderY}
+      Q ${cx + s * (bustW + 2)} ${bustY - 6} ${cx + s * bustW} ${bustY}
+      Q ${cx + s * (waistW - 2)} ${(bustY + waistY) / 2} ${cx + s * waistW} ${waistY}
+      Q ${cx + s * (hipW + 2)} ${(waistY + hipY) / 2} ${cx + s * hipW} ${hipY}
+      Q ${cx + s * (hipW - 1)} ${(hipY + crotchY) / 2} ${cx + s * thighW + s * 6} ${crotchY}
+      L ${cx + s * thighW} ${crotchY + 4}
+      Q ${cx + s * (thighW + 1)} ${(crotchY + kneeY) / 2} ${cx + s * kneeW} ${kneeY}
+      Q ${cx + s * (ankleW + 1)} ${(kneeY + ankleY) / 2} ${cx + s * ankleW} ${ankleY}
+      L ${cx + s * (ankleW + 4)} ${footY}
+      L ${cx + s * 3} ${footY}
+      L ${cx + s * 3} ${ankleY}
+      Q ${cx + s * 2} ${(kneeY + ankleY) / 2} ${cx + s * kneeW * 0.3} ${kneeY}
+      Q ${cx + s * 3} ${(crotchY + kneeY) / 2} ${cx + s * 4} ${crotchY + 4}
+    `;
+  };
+
+  // Full body outline: left side down, cross crotch, right side up
+  const outline = `
+    M ${cx} ${headTop + headR * 2 + 2}
+    ${buildSide(1)}
+    L ${cx + 3} ${crotchY + 4}
+    L ${cx - 3} ${crotchY + 4}
+    ${buildSide(-1)}
+    Z
+  `;
+
+  return (
+    <div className="flex flex-col items-center pt-2 pb-1">
+      <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-3">Your proportions</p>
+      <svg
+        viewBox={`0 0 ${svgW} ${totalH + 10}`}
+        className="w-40 max-h-[320px]"
+        style={{ filter: "drop-shadow(0 2px 8px hsl(var(--primary) / 0.15))" }}
+      >
+        {/* Head */}
+        <ellipse
+          cx={cx}
+          cy={headTop + headR}
+          rx={headR * 0.82}
+          ry={headR}
+          fill="none"
+          stroke="hsl(var(--primary))"
+          strokeWidth="1.8"
+          opacity={0.7}
+        />
+        {/* Body outline */}
+        <path
+          d={outline}
+          fill="hsl(var(--primary) / 0.08)"
+          stroke="hsl(var(--primary))"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          opacity={0.7}
+        />
+        {/* Measurement guide lines */}
+        {bust > 0 && (
+          <line
+            x1={cx - bustW - 6} y1={bustY}
+            x2={cx + bustW + 6} y2={bustY}
+            stroke="hsl(var(--primary))"
+            strokeWidth="0.6"
+            strokeDasharray="3,3"
+            opacity={0.35}
+          />
+        )}
+        {waist > 0 && (
+          <line
+            x1={cx - waistW - 6} y1={waistY}
+            x2={cx + waistW + 6} y2={waistY}
+            stroke="hsl(var(--primary))"
+            strokeWidth="0.6"
+            strokeDasharray="3,3"
+            opacity={0.35}
+          />
+        )}
+        {hips > 0 && (
+          <line
+            x1={cx - hipW - 6} y1={hipY}
+            x2={cx + hipW + 6} y2={hipY}
+            stroke="hsl(var(--primary))"
+            strokeWidth="0.6"
+            strokeDasharray="3,3"
+            opacity={0.35}
+          />
+        )}
+      </svg>
     </div>
   );
 }
