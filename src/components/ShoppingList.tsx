@@ -7,6 +7,7 @@ import {
   toggleShoppingItem, clearShoppingList, formatShoppingListText, getWoolworthsSearchUrl, parseIngredient,
 } from "@/lib/ingredient-parser";
 import { haptic } from "@/hooks/use-mobile";
+import { getSupermarket } from "@/lib/fitness-profile";
 
 interface RecipeShoppingButtonProps {
   recipeId: string;
