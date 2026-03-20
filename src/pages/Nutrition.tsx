@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { GatedPage } from "@/components/FeatureGate";
 import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster } from "@/components/BotanicalElements";
 import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { TODAY_MEALS } from "@/data/meal-plans";
+import { TODAY_MEALS, type Meal } from "@/data/meal-plans";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { haptic } from "@/hooks/use-mobile";
@@ -15,6 +15,8 @@ import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import AIRecipesTab from "@/components/nutrition/AIRecipesTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
+import { getWeeklyPlan } from "@/lib/weekly-planner";
+import { findRecipeByName } from "@/lib/recipe-index";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",

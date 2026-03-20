@@ -648,9 +648,145 @@ function BodySVG({
   );
 }
 
+// ── Body Goals Section ──
+const BODY_GOALS = [
+  { id: "lose-weight", label: "Lose weight", emoji: "🔥" },
+  { id: "gain-muscle", label: "Build muscle", emoji: "💪" },
+  { id: "tone-up", label: "Tone & define", emoji: "✨" },
+  { id: "flexibility", label: "Improve flexibility", emoji: "🧘" },
+  { id: "endurance", label: "Build endurance", emoji: "🏃" },
+  { id: "stress-relief", label: "Stress relief", emoji: "🌿" },
+  { id: "posture", label: "Fix posture", emoji: "🦴" },
+  { id: "energy", label: "More energy", emoji: "⚡" },
+];
+
+const GOALS_KEY = "signal_body_goals";
+
+function loadBodyGoals(): string[] {
+  try {
+    const raw = localStorage.getItem(GOALS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveBodyGoals(goals: string[]) {
+  localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
+}
+
+function BodyGoalsSection() {
+  const [goals, setGoals] = useState<string[]>(loadBodyGoals());
+  const [customGoal, setCustomGoal] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  const toggleGoal = (id: string) => {
+    haptic("light");
+    setGoals(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]);
+  };
+
+  const handleSave = () => {
+    haptic("medium");
+    saveBodyGoals(goals);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1500);
+  };
+
+  const addCustom = () => {
+    if (!customGoal.trim()) return;
+    haptic("medium");
+    const id = `custom-${Date.now()}`;
+    setGoals(prev => [...prev, customGoal.trim()]);
+    setCustomGoal("");
+  };
+
+  return (
+    <div className="card-warm p-5 rounded-2xl space-y-4">
+      <div>
+        <h3 className="font-display text-base font-semibold italic text-foreground">What do you want from your body?</h3>
+        <p className="font-body text-xs text-muted-foreground mt-1">Select your goals — these shape your workout and nutrition plans.</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        {BODY_GOALS.map(g => {
+          const active = goals.includes(g.id);
+          return (
+            <button
+              key={g.id}
+              onClick={() => toggleGoal(g.id)}
+              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border ${
+                active ? "border-primary bg-primary/5" : "border-border bg-card"
+              }`}
+            >
+              <span className="text-base mr-1.5">{g.emoji}</span>
+              <span className="font-body text-xs font-medium text-foreground">{g.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Custom goal */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={customGoal}
+          onChange={e => setCustomGoal(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && addCustom()}
+          placeholder="Add your own goal..."
+          className="flex-1 rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+        <button onClick={addCustom} disabled={!customGoal.trim()} className="touch-btn rounded-xl px-4 py-2.5 bg-primary text-primary-foreground font-body text-sm font-bold disabled:opacity-30">
+          Add
+        </button>
+      </div>
+
+      {/* Custom goals display */}
+      {goals.filter(g => !BODY_GOALS.some(bg => bg.id === g)).length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {goals.filter(g => !BODY_GOALS.some(bg => bg.id === g)).map(g => (
+            <span key={g} className="rounded-full px-3 py-1 bg-primary/10 font-body text-xs text-primary font-medium flex items-center gap-1">
+              {g}
+              <button onClick={() => { haptic("light"); setGoals(prev => prev.filter(x => x !== g)); }} className="ml-1 text-primary/50 hover:text-primary">×</button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <button onClick={handleSave} className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all">
+        {saved ? "✓ Saved" : "Save goals"}
+      </button>
+    </div>
+  );
+}
+
+// ── BodyVisualizer Embed ──
+function BodyVisualizerEmbed() {
+  return (
+    <div className="space-y-3">
+      <div className="card-warm p-4 rounded-2xl">
+        <h3 className="font-display text-base font-semibold italic text-foreground mb-2">3D Body Visualizer</h3>
+        <p className="font-body text-xs text-muted-foreground mb-3">
+          Adjust measurements to see your body shape in 3D. Save a screenshot of your dream body and add it to your Dream Board!
+        </p>
+        <div className="rounded-xl overflow-hidden border border-border" style={{ height: "500px" }}>
+          <iframe
+            src="https://bodyvisualizer.com/female.html"
+            title="Body Visualizer"
+            className="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+            loading="lazy"
+          />
+        </div>
+        <p className="font-body text-[10px] text-muted-foreground mt-2 italic text-center">
+          Tip: Take a screenshot of your dream body and upload it to your Dream Board in Journal → Dream Studio
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function BodyVisualiser() {
   const info = getCycleInfo(getLastPeriodStart());
   const [view, setView] = useState<"front" | "back">("front");
+  const [subTab, setSubTab] = useState<"goals" | "muscle-map" | "3d-body">("goals");
   const phaseWorkouts = PHASE_WORKOUTS[info.phase];
   const todayId = TODAY_WORKOUT[info.phase];
   const todayWorkout = phaseWorkouts.find(w => w.id === todayId) || phaseWorkouts[0];
@@ -662,110 +798,136 @@ export default function BodyVisualiser() {
   const primaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "primary");
   const secondaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "secondary");
 
+  const SUB_TABS = [
+    { id: "goals" as const, label: "My Goals" },
+    { id: "muscle-map" as const, label: "Muscle Map" },
+    { id: "3d-body" as const, label: "3D Body" },
+  ];
+
   return (
     <div className="space-y-6">
-      {/* Measurements form */}
-      <MeasurementsForm />
-
-      {/* Workout selector */}
-      <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-        {phaseWorkouts.filter(w => w.exercises.length > 0).map(w => (
+      {/* Sub-tabs */}
+      <div className="flex gap-1 rounded-full bg-secondary p-1">
+        {SUB_TABS.map(t => (
           <button
-            key={w.id}
-            onClick={() => setSelectedWorkout(w)}
-            className={`scroll-snap-item flex-shrink-0 rounded-xl px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-              selectedWorkout.id === w.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-muted-foreground"
+            key={t.id}
+            onClick={() => { haptic("light"); setSubTab(t.id); }}
+            className={`flex-1 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+              subTab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
             }`}
           >
-            {w.name}
+            {t.label}
           </button>
         ))}
       </div>
 
-      {/* Body map */}
-      <div className="card-warm p-4 rounded-2xl">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-display text-base font-semibold text-foreground">{selectedWorkout.name}</h3>
-          <div className="flex rounded-full bg-secondary p-0.5">
-            {(["front", "back"] as const).map(v => (
+      {subTab === "goals" && <BodyGoalsSection />}
+
+      {subTab === "3d-body" && <BodyVisualizerEmbed />}
+
+      {subTab === "muscle-map" && (
+        <>
+          {/* Workout selector */}
+          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
+            {phaseWorkouts.filter(w => w.exercises.length > 0).map(w => (
               <button
-                key={v}
-                onClick={() => setView(v)}
-                className={`rounded-full px-3 py-1 font-body text-xs font-medium transition-all ${
-                  view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+                key={w.id}
+                onClick={() => setSelectedWorkout(w)}
+                className={`scroll-snap-item flex-shrink-0 rounded-xl px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+                  selectedWorkout.id === w.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground"
                 }`}
               >
-                {v.charAt(0).toUpperCase() + v.slice(1)}
+                {w.name}
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="flex items-start gap-4">
-          <div className="w-1/2 flex-shrink-0">
-            <BodySVG
-              regions={view === "front" ? FRONT_REGIONS : BACK_REGIONS}
-              muscleMap={muscleMap}
-              color={color}
-            />
-          </div>
+          {/* Body map */}
+          <div className="card-warm p-4 rounded-2xl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-display text-base font-semibold text-foreground">{selectedWorkout.name}</h3>
+              <div className="flex rounded-full bg-secondary p-0.5">
+                {(["front", "back"] as const).map(v => (
+                  <button
+                    key={v}
+                    onClick={() => setView(v)}
+                    className={`rounded-full px-3 py-1 font-body text-xs font-medium transition-all ${
+                      view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+                    }`}
+                  >
+                    {v.charAt(0).toUpperCase() + v.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          <div className="flex-1 space-y-4 pt-4">
-            {primaryMuscles.length > 0 && (
-              <div>
-                <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Primary</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {primaryMuscles.map(([muscle, info]) => (
-                    <span
-                      key={muscle}
-                      className="rounded-full px-2.5 py-1 font-body text-xs font-medium text-white"
-                      style={{ backgroundColor: color }}
-                    >
-                      {info.label}
-                    </span>
-                  ))}
+            <div className="flex items-start gap-4">
+              <div className="w-1/2 flex-shrink-0">
+                <BodySVG
+                  regions={view === "front" ? FRONT_REGIONS : BACK_REGIONS}
+                  muscleMap={muscleMap}
+                  color={color}
+                />
+              </div>
+
+              <div className="flex-1 space-y-4 pt-4">
+                {primaryMuscles.length > 0 && (
+                  <div>
+                    <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Primary</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {primaryMuscles.map(([muscle, info]) => (
+                        <span
+                          key={muscle}
+                          className="rounded-full px-2.5 py-1 font-body text-xs font-medium text-white"
+                          style={{ backgroundColor: color }}
+                        >
+                          {info.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {secondaryMuscles.length > 0 && (
+                  <div>
+                    <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Secondary</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {secondaryMuscles.map(([muscle, info]) => (
+                        <span
+                          key={muscle}
+                          className="rounded-full px-2.5 py-1 font-body text-xs font-medium border"
+                          style={{ borderColor: color, color }}
+                        >
+                          {info.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-1 pt-2">
+                  <p className="font-mono text-xs text-foreground">{selectedWorkout.duration}</p>
+                  <p className="font-body text-xs text-muted-foreground">{selectedWorkout.equipment}</p>
                 </div>
               </div>
-            )}
-            {secondaryMuscles.length > 0 && (
-              <div>
-                <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Secondary</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {secondaryMuscles.map(([muscle, info]) => (
-                    <span
-                      key={muscle}
-                      className="rounded-full px-2.5 py-1 font-body text-xs font-medium border"
-                      style={{ borderColor: color, color }}
-                    >
-                      {info.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            <div className="space-y-1 pt-2">
-              <p className="font-mono text-xs text-foreground">{selectedWorkout.duration}</p>
-              <p className="font-body text-xs text-muted-foreground">{selectedWorkout.equipment}</p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-4 justify-center">
-        {[
-          { label: "Primary", opacity: 0.85 },
-          { label: "Secondary", opacity: 0.5 },
-          { label: "Light", opacity: 0.25 },
-        ].map(l => (
-          <div key={l.label} className="flex items-center gap-1.5">
-            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: color, opacity: l.opacity }} />
-            <span className="font-body text-[10px] text-muted-foreground">{l.label}</span>
+          {/* Legend */}
+          <div className="flex items-center gap-4 justify-center">
+            {[
+              { label: "Primary", opacity: 0.85 },
+              { label: "Secondary", opacity: 0.5 },
+              { label: "Light", opacity: 0.25 },
+            ].map(l => (
+              <div key={l.label} className="flex items-center gap-1.5">
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: color, opacity: l.opacity }} />
+                <span className="font-body text-[10px] text-muted-foreground">{l.label}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }
