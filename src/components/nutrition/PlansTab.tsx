@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, Recipe } from "@/data/meal-plans";
-import { findRecipeByName } from "@/lib/recipe-index";
+import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
 import { RecipeIllustration } from "@/components/MealIllustration";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
+import { getWeeklyPlan, type WeeklyPlan } from "@/lib/weekly-planner";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
