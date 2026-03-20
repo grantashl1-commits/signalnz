@@ -860,7 +860,7 @@ export default function BodyVisualiser() {
 
   const SUB_TABS = [
     { id: "goals" as const, label: "My Goals" },
-    { id: "3d-body" as const, label: "3D Body" },
+    { id: "3d-body" as const, label: "My Measurements" },
   ];
 
   return (
