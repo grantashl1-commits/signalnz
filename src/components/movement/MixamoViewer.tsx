@@ -18,14 +18,40 @@ import { Camera, Download, Play, Pause, RotateCcw } from "lucide-react";
 // ── FBX file mapping — add your Mixamo downloads here ──
 // Key: exercise name (lowercase), Value: path to FBX in /public
 const FBX_MAP: Record<string, string> = {
-  // Example entries — uncomment when you add FBX files:
-  // "squat": "/animations/squat.fbx",
-  // "push-up": "/animations/push-up.fbx",
-  // "lunge": "/animations/lunge.fbx",
-  // "deadlift": "/animations/deadlift.fbx",
-  // "plank": "/animations/plank.fbx",
-  // "hip thrust": "/animations/hip-thrust.fbx",
-  // "bicep curl": "/animations/bicep-curl.fbx",
+  // Squat patterns
+  "squat": "/animations/back-squat.fbx",
+  "goblet squat": "/animations/back-squat.fbx",
+  "back squat": "/animations/back-squat.fbx",
+  "front squat": "/animations/back-squat.fbx",
+  "sumo squat": "/animations/back-squat.fbx",
+  "wall sit": "/animations/back-squat.fbx",
+  "thruster": "/animations/back-squat.fbx",
+  // Push patterns
+  "push-up": "/animations/push-up.fbx",
+  "push up": "/animations/push-up.fbx",
+  "press-up": "/animations/push-up.fbx",
+  "knee push-up": "/animations/push-up.fbx",
+  "incline push-up": "/animations/push-up.fbx",
+  // Hinge / pickup patterns
+  "deadlift": "/animations/picking-up.fbx",
+  "rdl": "/animations/picking-up.fbx",
+  "romanian deadlift": "/animations/picking-up.fbx",
+  "good morning": "/animations/picking-up.fbx",
+  "kettlebell swing": "/animations/picking-up.fbx",
+  "bent over row": "/animations/picking-up.fbx",
+  // Kneeling patterns
+  "lunge": "/animations/kneeling-down.fbx",
+  "reverse lunge": "/animations/kneeling-down.fbx",
+  "walking lunge": "/animations/kneeling-down.fbx",
+  "split squat": "/animations/kneeling-down.fbx",
+  "bulgarian split squat": "/animations/kneeling-down.fbx",
+  "curtsy lunge": "/animations/kneeling-down.fbx",
+  "step-up": "/animations/kneeling-down.fbx",
+  // Cardio / plyometric
+  "jumping jacks": "/animations/jumping-jacks.fbx",
+  "jumping jack": "/animations/jumping-jacks.fbx",
+  "star jumps": "/animations/jumping-jacks.fbx",
+  "warm-up": "/animations/jumping-jacks.fbx",
 };
 
 /** Check if we have a Mixamo FBX for this exercise */
