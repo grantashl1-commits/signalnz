@@ -37,7 +37,18 @@ function loadMeasurements(): Measurements {
 }
 
 function saveMeasurements(m: Measurements) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(m));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...m, _savedAt: new Date().toISOString() }));
+}
+
+function getSavedTimestamp(): string | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return parsed._savedAt || null;
+    }
+  } catch {}
+  return null;
 }
 
 function MeasurementsForm() {
