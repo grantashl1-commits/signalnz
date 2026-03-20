@@ -53,11 +53,13 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
           {/* Animation area */}
           {animation ? (
             <div className="flex flex-col items-center">
-              <div
-                className="bg-secondary/30 rounded-2xl p-6 flex items-center justify-center cursor-pointer"
-                onClick={() => setPlaying(!playing)}
-              >
-                <ExerciseRig animation={animation} size={110} playing={playing} />
+              <div className="bg-secondary/30 rounded-2xl w-full overflow-hidden">
+                <ExerciseRig3D
+                  animation={animation}
+                  playing={playing}
+                  mirrored={animation.unilateral ? false : false}
+                  height={280}
+                />
               </div>
               <button
                 onClick={() => setPlaying(!playing)}
