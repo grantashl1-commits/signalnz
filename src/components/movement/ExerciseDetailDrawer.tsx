@@ -104,7 +104,13 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
           {/* 3D Sketchfab View */}
           {show3D && sketchfabModel ? (
             <div className="flex flex-col items-center gap-2">
-              <div className="bg-secondary/30 rounded-2xl w-full overflow-hidden relative" style={{ aspectRatio: "4/3" }}>
+            <div
+                className="rounded-2xl w-full overflow-hidden relative"
+                style={{
+                  aspectRatio: "3/2",
+                  background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+                }}
+              >
                 <iframe
                   title={sketchfabModel.label}
                   src={sketchfabModel.url}
@@ -130,12 +136,17 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
               {/* Standard animation area */}
               {animation ? (
                 <div className="flex flex-col items-center">
-                  <div className="bg-secondary/30 rounded-2xl w-full overflow-hidden">
+                  <div
+                    className="rounded-2xl w-full overflow-hidden"
+                    style={{
+                      background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+                    }}
+                  >
                     <ExerciseRig3D
                       animation={animation}
                       playing={playing}
                       mirrored={false}
-                      height={280}
+                      height={360}
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-2">
@@ -161,10 +172,15 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
-                  <div className="bg-secondary/30 rounded-2xl w-full flex items-center justify-center py-4">
+                  <div
+                    className="rounded-2xl w-full flex items-center justify-center py-8"
+                    style={{
+                      background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+                    }}
+                  >
                     <ExerciseSilhouette
                       exerciseName={exercise.name}
-                      size={160}
+                      size={200}
                       playing={playing}
                     />
                   </div>
