@@ -173,7 +173,7 @@ export default function BoardCanvas({
       <div
         className="absolute inset-0 board-surface"
         style={{
-          backgroundImage: `radial-gradient(circle, hsl(25 20% 78% / 0.35) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, hsl(25 18% 80% / 0.28) 1px, transparent 1px)`,
           backgroundSize: `${dotSpacing}px ${dotSpacing}px`,
           backgroundPosition: `${panX % dotSpacing}px ${panY % dotSpacing}px`,
         }}
