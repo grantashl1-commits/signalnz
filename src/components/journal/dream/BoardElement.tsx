@@ -4,8 +4,19 @@
  *   text note (warm cream), image card, goal card (checkbox), quote card (italic serif)
  */
 import { useState, useRef, useCallback } from "react";
-import { Trash2, Copy, ArrowUp, ArrowDown, Link2, Check } from "lucide-react";
+import { Trash2, Copy, ArrowUp, ArrowDown, Link2, Check, Palette } from "lucide-react";
 import type { DreamElement } from "@/lib/journal-store";
+
+/* ── 6 pastel colour options ─────────────────────────────── */
+const PASTEL_COLORS = [
+  { name: "Default", value: "" },
+  { name: "Cream",   value: "hsl(36 50% 95%)" },
+  { name: "Blush",   value: "hsl(340 40% 95%)" },
+  { name: "Lavender", value: "hsl(264 35% 95%)" },
+  { name: "Mint",    value: "hsl(160 35% 94%)" },
+  { name: "Sky",     value: "hsl(210 40% 95%)" },
+  { name: "Peach",   value: "hsl(25 50% 94%)" },
+];
 
 interface Props {
   element: DreamElement;
