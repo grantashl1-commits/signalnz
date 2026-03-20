@@ -114,7 +114,20 @@ export default function NutritionPage() {
       </div>
 
       {activeTab === "today" && (
-        <TodayTab meals={todayMeals} phase={info.phase} cycleDay={info.cycleDay} />
+        <>
+          {weeklyPlan && (
+            <div className="rounded-xl bg-primary/10 p-3 flex items-center gap-2">
+              <span className="font-body text-xs text-primary font-medium">✨ Showing your custom weekly plan</span>
+              <button
+                onClick={() => { haptic("light"); setActiveTab("myweek"); }}
+                className="ml-auto font-body text-xs text-primary font-bold underline"
+              >
+                Edit plan
+              </button>
+            </div>
+          )}
+          <TodayTab meals={todayMeals} phase={info.phase} cycleDay={info.cycleDay} />
+        </>
       )}
 
       {activeTab === "plans" && <PlansTab phase={info.phase} cycleDay={info.cycleDay} />}
