@@ -89,6 +89,8 @@ export default function NutritionPage() {
 
       {activeTab === "plans" && <PlansTab phase={info.phase} cycleDay={info.cycleDay} />}
 
+      {activeTab === "ai" && <AIRecipesTab phase={info.phase} cycleDay={info.cycleDay} />}
+
       {activeTab === "recipes" && <RecipesGrid recipes={ALL_MEAL_RECIPES} currentPhase={info.phase} />}
 
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
