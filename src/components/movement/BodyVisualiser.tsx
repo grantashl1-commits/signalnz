@@ -866,23 +866,10 @@ function BodyVisualizerEmbed() {
 }
 
 export default function BodyVisualiser() {
-  const info = getCycleInfo(getLastPeriodStart());
-  const [view, setView] = useState<"front" | "back">("front");
-  const [subTab, setSubTab] = useState<"goals" | "muscle-map" | "3d-body">("goals");
-  const phaseWorkouts = PHASE_WORKOUTS[info.phase];
-  const todayId = TODAY_WORKOUT[info.phase];
-  const todayWorkout = phaseWorkouts.find(w => w.id === todayId) || phaseWorkouts[0];
-  const [selectedWorkout, setSelectedWorkout] = useState(todayWorkout);
-  const color = PHASE_COLOR[info.phase];
-
-  const muscleMap = useMemo(() => getMusclesFromWorkout(selectedWorkout), [selectedWorkout]);
-
-  const primaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "primary");
-  const secondaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "secondary");
+  const [subTab, setSubTab] = useState<"goals" | "3d-body">("goals");
 
   const SUB_TABS = [
     { id: "goals" as const, label: "My Goals" },
-    { id: "muscle-map" as const, label: "Muscle Map" },
     { id: "3d-body" as const, label: "3D Body" },
   ];
 
@@ -904,112 +891,7 @@ export default function BodyVisualiser() {
       </div>
 
       {subTab === "goals" && <BodyGoalsSection />}
-
       {subTab === "3d-body" && <BodyVisualizerEmbed />}
-
-      {subTab === "muscle-map" && (
-        <>
-          {/* Workout selector */}
-          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-            {phaseWorkouts.filter(w => w.exercises.length > 0).map(w => (
-              <button
-                key={w.id}
-                onClick={() => setSelectedWorkout(w)}
-                className={`scroll-snap-item flex-shrink-0 rounded-xl px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                  selectedWorkout.id === w.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-muted-foreground"
-                }`}
-              >
-                {w.name}
-              </button>
-            ))}
-          </div>
-
-          {/* Body map */}
-          <div className="card-warm p-4 rounded-2xl">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-display text-base font-semibold text-foreground">{selectedWorkout.name}</h3>
-              <div className="flex rounded-full bg-secondary p-0.5">
-                {(["front", "back"] as const).map(v => (
-                  <button
-                    key={v}
-                    onClick={() => setView(v)}
-                    className={`rounded-full px-3 py-1 font-body text-xs font-medium transition-all ${
-                      view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
-                    }`}
-                  >
-                    {v.charAt(0).toUpperCase() + v.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-1/2 flex-shrink-0">
-                <BodySVG
-                  regions={view === "front" ? FRONT_REGIONS : BACK_REGIONS}
-                  muscleMap={muscleMap}
-                  color={color}
-                />
-              </div>
-
-              <div className="flex-1 space-y-4 pt-4">
-                {primaryMuscles.length > 0 && (
-                  <div>
-                    <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Primary</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {primaryMuscles.map(([muscle, info]) => (
-                        <span
-                          key={muscle}
-                          className="rounded-full px-2.5 py-1 font-body text-xs font-medium text-white"
-                          style={{ backgroundColor: color }}
-                        >
-                          {info.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {secondaryMuscles.length > 0 && (
-                  <div>
-                    <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Secondary</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {secondaryMuscles.map(([muscle, info]) => (
-                        <span
-                          key={muscle}
-                          className="rounded-full px-2.5 py-1 font-body text-xs font-medium border"
-                          style={{ borderColor: color, color }}
-                        >
-                          {info.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="space-y-1 pt-2">
-                  <p className="font-mono text-xs text-foreground">{selectedWorkout.duration}</p>
-                  <p className="font-body text-xs text-muted-foreground">{selectedWorkout.equipment}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Legend */}
-          <div className="flex items-center gap-4 justify-center">
-            {[
-              { label: "Primary", opacity: 0.85 },
-              { label: "Secondary", opacity: 0.5 },
-              { label: "Light", opacity: 0.25 },
-            ].map(l => (
-              <div key={l.label} className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: color, opacity: l.opacity }} />
-                <span className="font-body text-[10px] text-muted-foreground">{l.label}</span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }
