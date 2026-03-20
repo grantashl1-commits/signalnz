@@ -1,19 +1,25 @@
 import { useRef, useCallback, useEffect } from "react";
-import type { DreamElement } from "@/lib/journal-store";
+import type { DreamElement, DreamConnection } from "@/lib/journal-store";
 import BoardElement from "./BoardElement";
+import BoardConnections from "./BoardConnections";
 
 interface Props {
   elements: DreamElement[];
+  connections: DreamConnection[];
   zoom: number;
   panX: number;
   panY: number;
   selectedId: string | null;
+  connectingFrom: string | null;
   onSelect: (id: string | null) => void;
   onUpdate: (id: string, updates: Partial<DreamElement>) => void;
   onDelete: (id: string) => void;
   onDuplicate: (id: string) => void;
   onBringForward: (id: string) => void;
   onSendBackward: (id: string) => void;
+  onStartConnect: (id: string) => void;
+  onCompleteConnect: (toId: string) => void;
+  onRemoveConnection: (id: string) => void;
   setPanX: (v: number) => void;
   setPanY: (v: number) => void;
   setZoom: (v: number) => void;
@@ -21,9 +27,10 @@ interface Props {
 }
 
 export default function BoardCanvas({
-  elements, zoom, panX, panY, selectedId,
+  elements, connections, zoom, panX, panY, selectedId, connectingFrom,
   onSelect, onUpdate, onDelete, onDuplicate,
   onBringForward, onSendBackward,
+  onStartConnect, onCompleteConnect, onRemoveConnection,
   setPanX, setPanY, setZoom, children,
 }: Props) {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -50,9 +57,7 @@ export default function BoardCanvas({
     }
   }, [setPanX, setPanY]);
 
-  const handleMouseUp = useCallback(() => {
-    isPanning.current = false;
-  }, []);
+  const handleMouseUp = useCallback(() => { isPanning.current = false; }, []);
 
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
@@ -80,7 +85,6 @@ export default function BoardCanvas({
     }
   };
 
-  // Dot spacing
   const dotSpacing = 32 * zoom;
 
   return (
@@ -90,39 +94,38 @@ export default function BoardCanvas({
       onMouseDown={handleMouseDown}
       onWheel={handleWheel}
       onClick={handleCanvasClick}
-      style={{
-        cursor: isPanning.current ? "grabbing" : "default",
-        backgroundColor: "hsl(30 33% 96%)",
-      }}
+      style={{ cursor: isPanning.current ? "grabbing" : connectingFrom ? "crosshair" : "default", backgroundColor: "hsl(30 33% 96%)" }}
     >
-      {/* Subtle warm linen background with soft dot grid */}
+      {/* Dot grid */}
       <div
         className="absolute inset-0 board-surface"
         style={{
-          backgroundImage: `
-            radial-gradient(circle, hsl(25 20% 78% / 0.35) 1px, transparent 1px)
-          `,
+          backgroundImage: `radial-gradient(circle, hsl(25 20% 78% / 0.35) 1px, transparent 1px)`,
           backgroundSize: `${dotSpacing}px ${dotSpacing}px`,
           backgroundPosition: `${panX % dotSpacing}px ${panY % dotSpacing}px`,
         }}
       />
 
-      {/* Soft vignette overlay for depth */}
+      {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none board-surface"
-        style={{
-          background: `radial-gradient(ellipse at center, transparent 50%, hsl(25 20% 78% / 0.12) 100%)`,
-        }}
+        style={{ background: `radial-gradient(ellipse at center, transparent 50%, hsl(25 20% 78% / 0.12) 100%)` }}
+      />
+
+      {/* Connection lines */}
+      <BoardConnections
+        connections={connections}
+        elements={elements}
+        zoom={zoom}
+        panX={panX}
+        panY={panY}
+        onRemove={onRemoveConnection}
       />
 
       {/* Transform layer */}
       <div
         className="absolute origin-top-left board-surface"
-        style={{
-          transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
-          width: "8000px",
-          height: "8000px",
-        }}
+        style={{ transform: `translate(${panX}px, ${panY}px) scale(${zoom})`, width: "8000px", height: "8000px" }}
         onClick={handleCanvasClick}
       >
         {elements.map((el) => (
@@ -131,17 +134,31 @@ export default function BoardCanvas({
             element={el}
             selected={selectedId === el.id}
             zoom={zoom}
-            onSelect={() => onSelect(el.id)}
+            isConnecting={connectingFrom !== null && connectingFrom !== el.id}
+            onSelect={() => {
+              if (connectingFrom && connectingFrom !== el.id) {
+                onCompleteConnect(el.id);
+              } else {
+                onSelect(el.id);
+              }
+            }}
             onUpdate={(updates) => onUpdate(el.id, updates)}
             onDelete={() => onDelete(el.id)}
             onDuplicate={() => onDuplicate(el.id)}
             onBringForward={() => onBringForward(el.id)}
             onSendBackward={() => onSendBackward(el.id)}
+            onStartConnect={() => onStartConnect(el.id)}
           />
         ))}
       </div>
 
-      {/* Overlay UI */}
+      {/* Connecting mode indicator */}
+      {connectingFrom && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-primary text-primary-foreground font-mono text-[11px] shadow-lg animate-pulse">
+          Click another element to connect · ESC to cancel
+        </div>
+      )}
+
       {children}
     </div>
   );
