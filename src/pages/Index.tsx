@@ -90,6 +90,15 @@ export default function HomePage() {
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const hasSetCycle = !!getLastPeriodStart();
 
+  // Extract first name from auth metadata, profile display name, or fallback
+  const firstName = (() => {
+    const meta = user?.user_metadata;
+    if (displayName) return displayName.split(" ")[0];
+    if (meta?.full_name) return (meta.full_name as string).split(" ")[0];
+    if (meta?.name) return (meta.name as string).split(" ")[0];
+    return null;
+  })();
+
   if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 
   const handleCheckin = (state: string) => {
