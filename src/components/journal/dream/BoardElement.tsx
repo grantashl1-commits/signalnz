@@ -4,7 +4,7 @@
  *   text note (warm cream), image card, goal card (checkbox), quote card (italic serif)
  */
 import { useState, useRef, useCallback } from "react";
-import { Trash2, Copy, ArrowUp, ArrowDown, Link2, Check, Palette } from "lucide-react";
+import { Trash2, Copy, ArrowUp, ArrowDown, Link2, Check, Palette, X } from "lucide-react";
 import type { DreamElement } from "@/lib/journal-store";
 
 /* ── 6 pastel colour options ─────────────────────────────── */
