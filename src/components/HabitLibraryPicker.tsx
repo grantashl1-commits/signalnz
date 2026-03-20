@@ -254,7 +254,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
                     style={{ minHeight: 90 }}
                   >
                     <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
-                    <span className="font-hand text-[11px] font-bold text-foreground leading-tight line-clamp-2">
+                    <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
                       {habit.name}
                     </span>
                     {habit.womenBadge && !added && (
