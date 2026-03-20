@@ -32,7 +32,35 @@ export default function NutritionPage() {
   
   const [activeTab, setActiveTab] = useState<TabId>("today");
 
-  const todayMeals = TODAY_MEALS[info.phase];
+  // Check for saved weekly plan and convert to today's meals
+  const weeklyPlan = useMemo(() => getWeeklyPlan(), []);
+  const todayDateStr = new Date().toISOString().split("T")[0];
+
+  const todayMeals: Meal[] = useMemo(() => {
+    if (weeklyPlan) {
+      const todayPlan = weeklyPlan.days.find(d => d.date === todayDateStr);
+      if (todayPlan) {
+        const meals: Meal[] = [];
+        const makeMeal = (type: string, planned: { name: string; isLeftover?: boolean }): Meal => {
+          const recipe = findRecipeByName(planned.name);
+          return {
+            type,
+            name: planned.name + (planned.isLeftover ? " (leftover)" : ""),
+            ingredients: recipe?.ingredients?.join(", "),
+            phaseBenefit: recipe?.phaseBenefit || `Optimised for your ${PHASE_SHORT[info.phase]} phase.`,
+            prepTime: recipe?.prepTime,
+          };
+        };
+        meals.push(makeMeal("Breakfast", todayPlan.breakfast));
+        meals.push(makeMeal("Morning Snack", todayPlan.morningSnack));
+        meals.push(makeMeal("Lunch", todayPlan.lunch));
+        meals.push(makeMeal("Afternoon Snack", todayPlan.afternoonSnack));
+        meals.push(makeMeal("Dinner", todayPlan.dinner));
+        return meals;
+      }
+    }
+    return TODAY_MEALS[info.phase];
+  }, [weeklyPlan, todayDateStr, info.phase]);
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
