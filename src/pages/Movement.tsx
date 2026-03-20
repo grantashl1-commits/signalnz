@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, Sparkles } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
@@ -20,6 +20,7 @@ import ExerciseRig from "@/components/movement/ExerciseRig";
 import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import { getAnimationForExercise } from "@/data/exercise-animations";
+import { getFitnessProfile } from "@/lib/fitness-profile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -32,6 +33,7 @@ const cardVariant = {
 
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
+  const fitnessProfile = getFitnessProfile();
   
   const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");
   const [feeling, setFeeling] = useState("");
@@ -138,6 +140,13 @@ export default function MovementPage() {
       
 
       <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
+
+      {fitnessProfile && (
+        <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 w-fit">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span className="font-body text-xs font-medium text-primary">Personalised for you</span>
+        </div>
+      )}
 
       {/* Tab bar - scrollable */}
       <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">

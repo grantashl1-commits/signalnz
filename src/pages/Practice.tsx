@@ -172,7 +172,7 @@ export default function PracticePage() {
                   <motion.div
                     key={habit.id}
                     {...fadeUp(0.05 + i * 0.04)}
-                    className={`rounded-[18px] p-5 md:p-6 flex items-center gap-5 transition-all shadow-soft ${
+                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all shadow-soft ${
                       done
                         ? "bg-primary/5 border border-primary/10"
                         : "bg-card border border-transparent"
@@ -191,20 +191,20 @@ export default function PracticePage() {
 
                     <div className="flex-1 min-w-0">
                       <p
-                        className={`font-display text-base md:text-lg font-semibold leading-snug ${
+                        className={`font-display text-lg md:text-xl font-semibold leading-snug ${
                           done ? "line-through text-muted-foreground" : "text-foreground"
                         }`}
                       >
                         {habit.name}
                       </p>
-                      <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex items-center gap-2 mt-2">
                         <span
-                          className="font-body text-xs font-medium uppercase tracking-wide"
+                          className="font-body text-sm font-medium uppercase tracking-wide"
                           style={{ color: catInfo?.color }}
                         >
                           {catInfo?.label || "Habit"}
                         </span>
-                        <span className="font-body text-xs text-muted-foreground">
+                        <span className="font-body text-sm text-muted-foreground">
                           · Daily
                         </span>
                       </div>
@@ -260,7 +260,7 @@ export default function PracticePage() {
                   return (
                     <div key={suggestion.ritualId}>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="font-body text-sm font-medium text-foreground">
+                        <span className="font-body text-base font-medium text-foreground">
                           {ritual.name}
                         </span>
                         <button

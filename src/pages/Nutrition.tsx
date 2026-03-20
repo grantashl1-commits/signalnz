@@ -13,6 +13,7 @@ import TodayTab from "@/components/nutrition/TodayTab";
 import PlansTab from "@/components/nutrition/PlansTab";
 import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
+import { ShoppingListPanel } from "@/components/ShoppingList";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -21,7 +22,7 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-type TabId = "today" | "plans" | "myweek" | "recipes" | "baking";
+type TabId = "today" | "plans" | "myweek" | "recipes" | "baking" | "shopping";
 
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
@@ -36,6 +37,7 @@ export default function NutritionPage() {
     { id: "myweek", label: "My Week" },
     { id: "recipes", label: "Recipes" },
     { id: "baking", label: "Baking" },
+    { id: "shopping", label: "🛒 List" },
   ];
 
   return (
@@ -90,6 +92,8 @@ export default function NutritionPage() {
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
 
       {activeTab === "myweek" && <MyWeekTab />}
+
+      {activeTab === "shopping" && <ShoppingListPanel />}
       </ContentSection>
     </div>
     </GatedPage>

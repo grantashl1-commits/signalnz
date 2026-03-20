@@ -7,6 +7,7 @@ import {
   toggleShoppingItem, clearShoppingList, formatShoppingListText, getWoolworthsSearchUrl, parseIngredient,
 } from "@/lib/ingredient-parser";
 import { haptic } from "@/hooks/use-mobile";
+import { getSupermarket } from "@/lib/fitness-profile";
 
 interface RecipeShoppingButtonProps {
   recipeId: string;
@@ -79,6 +80,7 @@ export function ShoppingListPanel() {
   const [items, setItems] = useState(getShoppingList);
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(true);
+  const supermarket = getSupermarket();
 
   if (items.length === 0) {
     return (
@@ -212,15 +214,28 @@ export function ShoppingListPanel() {
                 </button>
               </div>
 
+              {/* Supermarket link */}
+              <a
+                href={supermarket.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => haptic("medium")}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-all"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Shop at {supermarket.name}
+                <ExternalLink className="h-3.5 w-3.5 opacity-60" />
+              </a>
+
               {/* Woolworths note */}
-              <div className="flex items-start gap-2 bg-phase-follicular/5 rounded-xl p-3">
-                <WildStar size={14} color="hsl(var(--phase-follicular))" />
+              <div className="flex items-start gap-2 bg-primary/5 rounded-xl p-3">
+                <WildStar size={14} color="hsl(var(--primary))" />
                 <p className="font-body text-[10px] text-muted-foreground leading-relaxed">
-                  Tap <ExternalLink className="inline h-2.5 w-2.5" /> to search each item on{" "}
-                  <a href="https://www.woolworths.co.nz" target="_blank" rel="noopener noreferrer" className="text-phase-follicular underline">
-                    Woolworths NZ
+                  Tap <ExternalLink className="inline h-2.5 w-2.5" /> next to each item to search on{" "}
+                  <a href={supermarket.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                    {supermarket.name}
                   </a>{" "}
-                  and add to your cart directly.
+                  and add to your cart directly. Change your supermarket in Account settings.
                 </p>
               </div>
             </div>

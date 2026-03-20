@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart } from "lucide-react";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,12 @@ import { useEffect, useState } from "react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useProfile } from "@/hooks/useProfile";
+import {
+  FitnessGoal, FitnessLevel, Equipment, FitnessProfile,
+  GOAL_LABELS, LEVEL_LABELS, EQUIPMENT_LABELS,
+  getFitnessProfile, saveFitnessProfile,
+  getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
+} from "@/lib/fitness-profile";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
@@ -32,6 +38,26 @@ export default function AccountPage() {
   const [nameInput, setNameInput] = useState("");
   const [nameSaving, setNameSaving] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
+
+  // Fitness profile
+  const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("general");
+  const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>("beginner");
+  const [fitnessEquipment, setFitnessEquipment] = useState<Equipment[]>(["none"]);
+  const [fitnessInjuries, setFitnessInjuries] = useState("");
+  const [fitnessEditing, setFitnessEditing] = useState(false);
+
+  // Supermarket
+  const [supermarket, setSupermarket] = useState<SupermarketPreference>(getSupermarket());
+
+  useEffect(() => {
+    const fp = getFitnessProfile();
+    if (fp) {
+      setFitnessGoal(fp.goal);
+      setFitnessLevel(fp.level);
+      setFitnessEquipment(fp.equipment);
+      setFitnessInjuries(fp.injuries);
+    }
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -301,6 +327,106 @@ export default function AccountPage() {
               </div>
             )}
           </div>
+        </motion.div>
+
+        {/* Fitness Profile */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="card-warm p-5"
+        >
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
+            <Dumbbell className="h-4.5 w-4.5 text-primary" /> My Fitness Profile
+          </h2>
+          {!fitnessEditing && getFitnessProfile() ? (
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full bg-primary/10 px-3 py-1 font-body text-xs font-medium text-primary">{GOAL_LABELS[fitnessGoal]}</span>
+                <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs font-medium text-foreground">{LEVEL_LABELS[fitnessLevel]}</span>
+                {fitnessEquipment.map(e => (
+                  <span key={e} className="rounded-full bg-secondary px-3 py-1 font-body text-xs text-muted-foreground">{EQUIPMENT_LABELS[e]}</span>
+                ))}
+              </div>
+              {fitnessInjuries && <p className="font-body text-xs text-muted-foreground">Injuries/limitations: {fitnessInjuries}</p>}
+              <button onClick={() => setFitnessEditing(true)} className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground active:bg-secondary/80 transition-opacity mt-2">
+                <PenLine className="h-3 w-3" /> Edit
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Fitness Goal</p>
+                <select value={fitnessGoal} onChange={e => setFitnessGoal(e.target.value as FitnessGoal)} className="w-full rounded-xl border border-border bg-card px-3 py-2.5 font-body text-sm text-foreground">
+                  {(Object.keys(GOAL_LABELS) as FitnessGoal[]).map(g => <option key={g} value={g}>{GOAL_LABELS[g]}</option>)}
+                </select>
+              </div>
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Fitness Level</p>
+                <div className="flex gap-2">
+                  {(Object.keys(LEVEL_LABELS) as FitnessLevel[]).map(l => (
+                    <button key={l} onClick={() => setFitnessLevel(l)} className={`flex-1 rounded-xl px-3 py-2.5 font-body text-xs font-medium transition-all ${fitnessLevel === l ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                      {LEVEL_LABELS[l]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Equipment Available</p>
+                <div className="flex flex-wrap gap-2">
+                  {(Object.keys(EQUIPMENT_LABELS) as Equipment[]).map(eq => {
+                    const active = fitnessEquipment.includes(eq);
+                    return (
+                      <button key={eq} onClick={() => setFitnessEquipment(prev => active ? prev.filter(x => x !== eq) : [...prev, eq])} className={`rounded-xl px-3 py-2.5 font-body text-xs font-medium transition-all ${active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                        {EQUIPMENT_LABELS[eq]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Injuries / Limitations</p>
+                <input value={fitnessInjuries} onChange={e => setFitnessInjuries(e.target.value)} placeholder="e.g. lower back pain, knee injury..." className="w-full rounded-xl border border-border bg-card px-3 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+              <button
+                onClick={() => {
+                  saveFitnessProfile({ goal: fitnessGoal, level: fitnessLevel, equipment: fitnessEquipment, injuries: fitnessInjuries });
+                  setFitnessEditing(false);
+                  toast.success("Fitness profile saved");
+                  haptic("medium");
+                }}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
+              >
+                <Check className="h-3.5 w-3.5" /> Save Profile
+              </button>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Supermarket Preference */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.22 }}
+          className="card-warm p-5"
+        >
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
+            <ShoppingCart className="h-4.5 w-4.5 text-primary" /> Linked Supermarket
+          </h2>
+          <select
+            value={supermarket.name}
+            onChange={e => {
+              const found = SUPERMARKET_OPTIONS.find(s => s.name === e.target.value) || SUPERMARKET_OPTIONS[0];
+              setSupermarket(found);
+              saveSupermarket(found);
+              toast.success(`Supermarket set to ${found.name}`);
+              haptic("light");
+            }}
+            className="w-full rounded-xl border border-border bg-card px-3 py-2.5 font-body text-sm text-foreground"
+          >
+            {SUPERMARKET_OPTIONS.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
+          </select>
+          <p className="font-body text-[11px] text-muted-foreground mt-2">Your shopping list will link to {supermarket.name} for easy ordering.</p>
         </motion.div>
 
         {/* Quick Links */}
