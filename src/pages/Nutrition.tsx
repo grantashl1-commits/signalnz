@@ -37,6 +37,7 @@ export default function NutritionPage() {
     { id: "myweek", label: "My Week" },
     { id: "recipes", label: "Recipes" },
     { id: "baking", label: "Baking" },
+    { id: "shopping", label: "🛒 List" },
   ];
 
   return (
