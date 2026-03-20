@@ -123,7 +123,7 @@ export default function CyclePage() {
   const [lastPeriod, setLastPeriod] = useState(getLastPeriodStart() || "");
   
   const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights">("overview");
-  const [expandedPhase, setExpandedPhase] = useState<Phase | null>(null);
+  
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showDateEdit, setShowDateEdit] = useState(false);
