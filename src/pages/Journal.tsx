@@ -29,7 +29,7 @@ const TAB_SUBTITLES: Record<Tab, string> = {
 
 export default function JournalPage() {
   const info = getCycleInfo(getLastPeriodStart());
-  const { openSignal } = useSignalPanel();
+  
   const [tab, setTab] = useState<Tab>("entries");
   const [vaultRefresh, setVaultRefresh] = useState(0);
   const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
