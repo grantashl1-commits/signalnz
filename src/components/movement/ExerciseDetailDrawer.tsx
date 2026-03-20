@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { X } from "lucide-react";
-import ExerciseRig from "@/components/movement/ExerciseRig";
+import ExerciseRig3D from "@/components/movement/ExerciseRig3D";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import type { Exercise } from "@/data/workouts";
 import type { Phase } from "@/lib/cycle-utils";
