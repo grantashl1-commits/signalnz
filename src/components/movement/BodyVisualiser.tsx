@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Ruler } from "lucide-react";
+import { useState, useMemo, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Ruler, Camera, Image, Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { haptic } from "@/hooks/use-mobile";
