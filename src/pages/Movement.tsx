@@ -17,6 +17,7 @@ import LiveHRView from "@/components/movement/LiveHRView";
 import MovementCalendar from "@/components/movement/MovementCalendar";
 import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseRig from "@/components/movement/ExerciseRig";
+import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import SignalContextChips from "@/components/signal/SignalContextChips";
@@ -34,7 +35,7 @@ const cardVariant = {
 export default function MovementPage() {
   const info = getCycleInfo(getLastPeriodStart());
   const { openSignal } = useSignalPanel();
-  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "calendar" | "progress">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "calendar" | "progress" | "body">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -103,6 +104,7 @@ export default function MovementPage() {
     { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
+    { id: "body" as const, label: "Body" },
     { id: "calendar" as const, label: "Calendar" },
     { id: "progress" as const, label: "Progress" },
   ];
@@ -484,6 +486,9 @@ export default function MovementPage() {
 
       {/* CALENDAR TAB */}
       {activeTab === "calendar" && <MovementCalendar />}
+
+      {/* BODY TAB */}
+      {activeTab === "body" && <BodyVisualiser />}
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
