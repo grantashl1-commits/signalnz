@@ -80,6 +80,7 @@ export function ShoppingListPanel() {
   const [items, setItems] = useState(getShoppingList);
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(true);
+  const supermarket = getSupermarket();
 
   if (items.length === 0) {
     return (
