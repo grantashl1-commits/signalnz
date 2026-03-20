@@ -101,16 +101,27 @@ export interface DreamElement {
   styleVariant?: string;
   targetDate?: string;
   status?: string;
+  color?: string;
+}
+
+export interface DreamConnection {
+  id: string;
+  fromId: string;
+  toId: string;
+  label?: string;
+  color?: string;
 }
 
 export interface DreamBoard {
   id: string;
   title: string;
   elements: DreamElement[];
+  connections: DreamConnection[];
   zoom: number;
   panX: number;
   panY: number;
   createdAt: number;
+  coverColor?: string;
 }
 
 // ── Storage Helpers ───────────────────────────────────────────
