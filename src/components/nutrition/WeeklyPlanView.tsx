@@ -18,6 +18,7 @@ interface Props {
   phase: Phase;
   onProceedToShop: () => void;
   onStartFresh: () => void;
+  onPlanSaved?: () => void;
 }
 
 export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFresh }: Props) {
