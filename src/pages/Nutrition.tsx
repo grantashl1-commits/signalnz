@@ -31,10 +31,15 @@ export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
   
   const [activeTab, setActiveTab] = useState<TabId>("today");
+  const [planVersion, setPlanVersion] = useState(0); // bump to re-read plan
 
-  // Check for saved weekly plan and convert to today's meals
-  const weeklyPlan = useMemo(() => getWeeklyPlan(), []);
+  // Re-read weekly plan whenever tab changes or plan is updated
+  const weeklyPlan = useMemo(() => getWeeklyPlan(), [activeTab, planVersion]);
   const todayDateStr = new Date().toISOString().split("T")[0];
+
+  const handlePlanSaved = () => {
+    setPlanVersion(v => v + 1);
+  };
 
   const todayMeals: Meal[] = useMemo(() => {
     if (weeklyPlan) {
@@ -138,7 +143,7 @@ export default function NutritionPage() {
 
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
 
-      {activeTab === "myweek" && <MyWeekTab />}
+      {activeTab === "myweek" && <MyWeekTab onPlanSaved={handlePlanSaved} />}
 
       {activeTab === "shopping" && <ShoppingListPanel />}
       </ContentSection>

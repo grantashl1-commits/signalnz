@@ -231,6 +231,54 @@ export const PHASE_MEAL_PLANS: Record<Phase, { theme: string; days: DayPlan[] }>
   },
 };
 
+// ── Meat-inclusive alternatives (used when dietType is "No preference" or empty) ──
+export const MEAT_MEAL_PLANS: Record<Phase, { theme: string; days: DayPlan[] }> = {
+  menstrual: {
+    theme: "Iron-rich, anti-inflammatory, comforting — includes lean meats",
+    days: [
+      { day: 1, breakfast: "Warm spiced oat porridge with dates and almonds", lunch: "Chicken and vegetable soup with sourdough", dinner: "Slow-cooked beef and sweet potato stew" },
+      { day: 2, breakfast: "Smoothie bowl — spinach, banana, hemp seeds, cacao", lunch: "Grilled chicken Caesar salad", dinner: "Salmon with roasted vegetables and quinoa" },
+      { day: 3, breakfast: "Scrambled eggs on sourdough with spinach", lunch: "Lamb and lentil soup", dinner: "Chicken thigh curry with brown rice" },
+      { day: 4, breakfast: "Overnight oats with goji berries and flaxseed", lunch: "Tuna and white bean salad", dinner: "Beef bolognese with pasta" },
+      { day: 5, breakfast: "Avocado toast on rye with poached egg", lunch: "Chicken and pumpkin soup", dinner: "Pan-seared salmon with mashed potato and greens" },
+      { day: 6, breakfast: "Buckwheat pancakes with bacon and maple syrup", lunch: "Lamb kofta wrap with hummus", dinner: "Chicken and mushroom pie with salad" },
+      { day: 7, breakfast: "Eggs Benedict with smoked salmon", lunch: "Roast chicken sandwich with avocado", dinner: "Slow-cooked lamb shanks with root vegetables" },
+    ],
+  },
+  follicular: {
+    theme: "Light, energising, lean protein, complex carbs",
+    days: [
+      { day: 1, breakfast: "Overnight oats with blueberries and flaxseed", lunch: "Grilled chicken and quinoa bowl", dinner: "Lemon herb salmon with asparagus" },
+      { day: 2, breakfast: "Scrambled eggs with smoked salmon and avocado", lunch: "Turkey and avocado wrap", dinner: "Chicken stir-fry with broccoli and brown rice" },
+      { day: 3, breakfast: "Green smoothie with protein powder", lunch: "Tuna poke bowl with edamame", dinner: "Grilled fish tacos with slaw" },
+      { day: 4, breakfast: "Sourdough with smashed avocado and poached egg", lunch: "Chicken Caesar wrap", dinner: "Beef and vegetable stir-fry with noodles" },
+      { day: 5, breakfast: "Bircher muesli with yoghurt and berries", lunch: "Salmon and rocket salad", dinner: "Chicken schnitzel with sweet potato mash" },
+      { day: 6, breakfast: "Omelette with feta and spinach", lunch: "Prawn and mango salad", dinner: "Lamb cutlets with roasted vegetables" },
+      { day: 7, breakfast: "Buckwheat porridge with banana and honey", lunch: "Roast chicken and hummus plate", dinner: "Baked fish with lemon butter and greens" },
+    ],
+  },
+  ovulatory: {
+    theme: "Light, fresh, lean protein, antioxidant-rich",
+    days: [
+      { day: 1, breakfast: "Rainbow smoothie bowl with hemp seeds", lunch: "Grilled chicken and mango salad", dinner: "Seared tuna with quinoa and Asian greens" },
+      { day: 2, breakfast: "Poached eggs with avocado and tomato", lunch: "Prawn and avocado rice paper rolls", dinner: "Grilled fish with roasted capsicum and couscous" },
+      { day: 3, breakfast: "Greek yoghurt with berries and almonds", lunch: "Chicken and beetroot salad with feta", dinner: "Salmon teriyaki with stir-fried vegetables" },
+    ],
+  },
+  luteal: {
+    theme: "Warming, sustaining, nutrient-dense, lean protein",
+    days: [
+      { day: 1, breakfast: "Warm oat porridge with banana and almond butter", lunch: "Chicken and sweet potato soup", dinner: "Slow-cooked beef casserole with root vegetables" },
+      { day: 2, breakfast: "Banana oat pancakes with bacon", lunch: "Lamb and roasted vegetable wrap", dinner: "Salmon with mashed kumara and greens" },
+      { day: 3, breakfast: "Smoothie — banana, almond milk, cacao, chia", lunch: "Chicken and pumpkin salad", dinner: "Chicken tikka masala with rice" },
+      { day: 4, breakfast: "Avocado toast with poached egg", lunch: "Minestrone soup with shredded chicken", dinner: "Beef and mushroom stroganoff" },
+      { day: 5, breakfast: "Warm chia pudding with poached pear", lunch: "Tuna melt on sourdough", dinner: "Roast chicken with roasted vegetables" },
+      { day: 6, breakfast: "Buckwheat waffles with berries and yoghurt", lunch: "Lamb and lentil stew", dinner: "Fish pie with mashed potato" },
+      { day: 7, breakfast: "Cinnamon oat granola with milk", lunch: "Roast chicken and avocado salad", dinner: "Slow-cooked lamb curry with rice" },
+    ],
+  },
+};
+
 export type RecipeCategory = "meal" | "baking";
 
 export interface Recipe {

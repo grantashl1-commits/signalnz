@@ -29,7 +29,7 @@ const STEPS: { id: Step; label: string }[] = [
   { id: "shop", label: "Shop" },
 ];
 
-export default function MyWeekTab() {
+export default function MyWeekTab({ onPlanSaved }: { onPlanSaved?: () => void }) {
   const info = getCycleInfo(getLastPeriodStart());
   const phaseColor = PHASE_HEX[info.phase];
   const [step, setStep] = useState<Step>("prep");
@@ -52,6 +52,7 @@ export default function MyWeekTab() {
     const newPlan = generateWeeklyPlan(preferences);
     setPlan(newPlan);
     saveWeeklyPlan(newPlan);
+    onPlanSaved?.();
     setStep("plan");
   };
 
@@ -119,6 +120,7 @@ export default function MyWeekTab() {
           phase={info.phase}
           onProceedToShop={handleProceedToShop}
           onStartFresh={handleStartFresh}
+          onPlanSaved={onPlanSaved}
         />
       )}
 
