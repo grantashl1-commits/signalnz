@@ -140,14 +140,8 @@ function MeasurementsForm() {
         </p>
       )}
 
-      {/* Proportional silhouette */}
-      <ProportionalSilhouette
-        bust={parseFloat(measurements.bust) || 0}
-        waist={parseFloat(measurements.waist) || 0}
-        hips={parseFloat(measurements.hips) || 0}
-        height={parseFloat(measurements.height) || 0}
-        inseam={parseFloat(measurements.inseam) || 0}
-      />
+      {/* 3D Body Visualizer */}
+      <BodyVisualizerIframe measurements={measurements} />
     </div>
   );
 }
