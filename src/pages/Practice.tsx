@@ -260,7 +260,7 @@ export default function PracticePage() {
                   return (
                     <div key={suggestion.ritualId}>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="font-body text-sm font-medium text-foreground">
+                        <span className="font-body text-base font-medium text-foreground">
                           {ritual.name}
                         </span>
                         <button
