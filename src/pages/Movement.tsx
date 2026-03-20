@@ -51,7 +51,25 @@ export default function MovementPage() {
   const scheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const todaySchedule = WEEKLY_SCHEDULE[scheduleIdx];
 
-  // Phase-aware today workout
+  // ── AI-generated workout plan ──
+  const aiPlan = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("signal_ai_workout_plan");
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+  }, [activeTab]); // re-read when switching tabs
+
+  const aiTodayWorkout = useMemo(() => {
+    if (!aiPlan?.weeks) return null;
+    const dayNum = dayOfWeek === 0 ? 7 : dayOfWeek; // 1=Mon...7=Sun
+    const weekData = aiPlan.weeks[trainingWeek - 1];
+    if (!weekData?.days) return null;
+    const dayData = weekData.days.find((d: any) => d.day === dayNum);
+    return dayData || null;
+  }, [aiPlan, trainingWeek, dayOfWeek]);
+
+  // Phase-aware today workout (fallback if no AI plan)
   const phaseWorkouts = PHASE_WORKOUTS[info.phase];
   const todayWorkoutId = TODAY_WORKOUT[info.phase];
   const todayWorkoutData = phaseWorkouts.find(w => w.id === todayWorkoutId) || phaseWorkouts[0];
