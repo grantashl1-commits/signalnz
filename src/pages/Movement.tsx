@@ -105,7 +105,6 @@ export default function MovementPage() {
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "body" as const, label: "Body" },
-    { id: "calendar" as const, label: "Calendar" },
     { id: "progress" as const, label: "Progress" },
   ];
 
