@@ -726,11 +726,26 @@ function BodyGoalsSection() {
   );
 }
 
-// ── 3D Body Tab — uses native measurements + silhouette ──
+// ── 3D Body Tab — full-screen iframe with built-in controls ──
 function BodyVisualizerEmbed() {
   return (
-    <div className="space-y-4">
-      <MeasurementsForm />
+    <div className="flex flex-col items-center gap-2">
+      <div className="w-full rounded-xl overflow-hidden border border-border shadow-sm bg-black" style={{ height: "calc(100vh - 280px)", minHeight: 500 }}>
+        <iframe
+          src="https://bodyvisualizer.is.tue.mpg.de/"
+          title="Body Visualizer"
+          width="100%"
+          height="100%"
+          style={{ border: "none", display: "block" }}
+          allow="fullscreen"
+        />
+      </div>
+      <p className="text-[9px] text-muted-foreground/50 text-center">
+        Powered by{" "}
+        <a href="https://bodyvisualizer.is.tue.mpg.de/" target="_blank" rel="noopener noreferrer" className="underline hover:text-muted-foreground">
+          bodyvisualizer.is.tue.mpg.de
+        </a>
+      </p>
     </div>
   );
 }
