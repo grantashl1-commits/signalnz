@@ -151,6 +151,128 @@ function MeasurementsForm() {
   );
 }
 
+// ── Progress Photos ──
+const PHOTOS_KEY = "signal_body_photos";
+
+interface BodyPhoto {
+  id: string;
+  dataUrl: string;
+  date: string;
+}
+
+function loadPhotos(): BodyPhoto[] {
+  try {
+    const raw = localStorage.getItem(PHOTOS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+function savePhotos(photos: BodyPhoto[]) {
+  localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos));
+}
+
+function ProgressPhotos() {
+  const [photos, setPhotos] = useState<BodyPhoto[]>(loadPhotos);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const newPhoto: BodyPhoto = {
+        id: `photo-${Date.now()}`,
+        dataUrl: reader.result as string,
+        date: new Date().toISOString().split("T")[0],
+      };
+      const updated = [newPhoto, ...photos];
+      setPhotos(updated);
+      savePhotos(updated);
+      haptic("medium");
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  }, [photos]);
+
+  const removePhoto = useCallback((id: string) => {
+    haptic("light");
+    const updated = photos.filter(p => p.id !== id);
+    setPhotos(updated);
+    savePhotos(updated);
+  }, [photos]);
+
+  return (
+    <div className="card-warm p-4 rounded-2xl space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Camera className="h-4 w-4 text-primary" />
+          <h3 className="font-display text-base font-semibold text-foreground">Progress Photos</h3>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => cameraRef.current?.click()}
+            className="touch-btn rounded-full p-2 bg-primary/10 min-w-[36px] min-h-[36px] flex items-center justify-center"
+          >
+            <Camera className="h-4 w-4 text-primary" />
+          </button>
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="touch-btn rounded-full p-2 bg-primary/10 min-w-[36px] min-h-[36px] flex items-center justify-center"
+          >
+            <Image className="h-4 w-4 text-primary" />
+          </button>
+        </div>
+      </div>
+
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleFile} />
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+
+      <p className="font-body text-[11px] text-muted-foreground">
+        Photos are stored privately on your device only.
+      </p>
+
+      {photos.length === 0 ? (
+        <button
+          onClick={() => fileRef.current?.click()}
+          className="touch-btn w-full border-2 border-dashed border-border rounded-2xl py-8 flex flex-col items-center gap-2"
+        >
+          <Plus className="h-6 w-6 text-muted-foreground" />
+          <span className="font-body text-sm text-muted-foreground">Add your first photo</span>
+        </button>
+      ) : (
+        <div className="grid grid-cols-3 gap-2">
+          <AnimatePresence>
+            {photos.map(photo => (
+              <motion.div
+                key={photo.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="relative aspect-[3/4] rounded-xl overflow-hidden bg-secondary"
+              >
+                <img src={photo.dataUrl} alt="Progress" className="w-full h-full object-cover" />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-1.5">
+                  <p className="font-mono text-[9px] text-white">
+                    {new Date(photo.date).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}
+                  </p>
+                </div>
+                <button
+                  onClick={() => removePhoto(photo.id)}
+                  className="absolute top-1 right-1 rounded-full bg-black/40 p-1 min-w-[24px] min-h-[24px] flex items-center justify-center"
+                >
+                  <Trash2 className="h-3 w-3 text-white" />
+                </button>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Proportional feminine silhouette ──
 function ProportionalSilhouette({
   bust, waist, hips, height, inseam,
