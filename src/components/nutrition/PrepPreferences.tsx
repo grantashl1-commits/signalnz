@@ -147,6 +147,69 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild }: Props)
         )}
       </div>
 
+      {/* Dietary requirements */}
+      <div className="space-y-3 pt-2 border-t border-border">
+        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Dietary preferences</p>
+        
+        <div className="space-y-2">
+          <label className="font-body text-xs text-foreground">Diet type</label>
+          <div className="flex flex-wrap gap-2">
+            {["No preference", "Vegetarian", "Vegan", "Pescatarian", "Gluten-free", "Dairy-free", "Keto", "Paleo"].map(dt => (
+              <button
+                key={dt}
+                onClick={() => { haptic("light"); setDietType(dietType === dt ? "" : dt); }}
+                className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
+                  dietType === dt ? "text-white" : "bg-secondary text-muted-foreground"
+                }`}
+                style={dietType === dt ? { backgroundColor: phaseColor } : {}}
+              >
+                {dt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="font-body text-xs text-foreground">Allergies or intolerances</label>
+          <input
+            type="text"
+            value={allergies}
+            onChange={e => setAllergies(e.target.value)}
+            placeholder="e.g. nuts, shellfish, soy..."
+            className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="font-body text-xs text-foreground">Foods you dislike (won't include)</label>
+          <input
+            type="text"
+            value={dislikes}
+            onChange={e => setDislikes(e.target.value)}
+            placeholder="e.g. mushrooms, tofu, eggplant..."
+            className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="font-body text-xs text-foreground">Daily calorie target</label>
+          <div className="flex flex-wrap gap-2">
+            {["No preference", "1400–1600", "1600–1800", "1800–2000", "2000–2200", "2200+"].map(cal => (
+              <button
+                key={cal}
+                onClick={() => { haptic("light"); setCalorieTarget(calorieTarget === cal ? "" : cal); }}
+                className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
+                  calorieTarget === cal ? "text-white" : "bg-secondary text-muted-foreground"
+                }`}
+                style={calorieTarget === cal ? { backgroundColor: phaseColor } : {}}
+              >
+                {cal}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Build button */}
       <button
         onClick={handleBuild}
