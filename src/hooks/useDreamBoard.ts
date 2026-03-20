@@ -5,6 +5,8 @@ import {
 } from "@/lib/journal-store";
 
 const uid = () => `dream-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+const GRID = 16;
+const snap = (v: number) => Math.round(v / GRID) * GRID;
 
 export function useDreamBoard() {
   const [boards, setBoards] = useState<DreamBoard[]>(() => loadDreamBoards());
