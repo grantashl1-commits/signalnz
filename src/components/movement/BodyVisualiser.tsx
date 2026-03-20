@@ -54,6 +54,7 @@ function getSavedTimestamp(): string | null {
 function MeasurementsForm() {
   const [measurements, setMeasurements] = useState<Measurements>(loadMeasurements);
   const [saved, setSaved] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(getSavedTimestamp);
 
   const hasValues = Object.values(measurements).some(v => v.trim() !== "");
 
@@ -67,6 +68,7 @@ function MeasurementsForm() {
     haptic("medium");
     saveMeasurements(measurements);
     setSaved(true);
+    setLastUpdated(new Date().toISOString());
     setTimeout(() => setSaved(false), 2000);
   };
 
