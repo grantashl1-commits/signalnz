@@ -3,14 +3,15 @@ import { motion } from "framer-motion";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity, Sparkles } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import {
   WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
   FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
-  getAllSessions, type WorkoutCategory, type Exercise,
+  getAllSessions, saveWorkoutSession, getWorkoutSession, HR_ZONES, getZoneForBPM, getMaxHR, getUserAge,
+  type WorkoutCategory, type Exercise, type WorkoutSession,
 } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
 import LiveHRView from "@/components/movement/LiveHRView";
@@ -22,6 +23,7 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import { getFitnessProfile } from "@/lib/fitness-profile";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
