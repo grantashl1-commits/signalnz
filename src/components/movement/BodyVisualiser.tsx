@@ -834,30 +834,20 @@ function BodyGoalsSection() {
   );
 }
 
-// ── BodyVisualizer Embed ──
+// ── 3D Body Tab — uses native measurements + silhouette ──
 function BodyVisualizerEmbed() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      <MeasurementForm />
       <div className="card-warm p-4 rounded-2xl">
-        <h3 className="font-display text-base font-semibold italic text-foreground mb-2">3D Body Visualizer</h3>
-        <p className="font-body text-xs text-muted-foreground mb-3">
-          Adjust measurements to see your body shape in 3D. Save a screenshot of your dream body and add it to your Dream Board!
-        </p>
-        <div className="rounded-xl overflow-hidden border border-border" style={{ height: "500px" }}>
-          <iframe
-            src="https://bodyvisualizer.com/female.html"
-            title="Body Visualizer"
-            className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-            loading="lazy"
-          />
-        </div>
-        <div className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
+        <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
           <p className="font-body text-xs text-foreground font-medium mb-1">📸 Save your dream body image</p>
           <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
-            Press <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Cmd+Shift+4</kbd> (Mac)
+            Take a screenshot of your silhouette above and upload it to your <span className="text-primary font-medium">Dream Board</span> in Journal → Dream Studio. If you can see it, you can be it ✨
+          </p>
+          <p className="font-body text-[10px] text-muted-foreground mt-2">
+            <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Cmd+Shift+4</kbd> (Mac)
             or <kbd className="px-1.5 py-0.5 rounded bg-secondary text-foreground text-[10px] font-mono">Win+Shift+S</kbd> (Windows)
-            to screenshot your dream body, then upload it to your <span className="text-primary font-medium">Dream Board</span> in Journal → Dream Studio. If you can see it, you can be it ✨
           </p>
         </div>
       </div>
