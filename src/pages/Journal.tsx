@@ -10,8 +10,6 @@ import JournalActivities from "@/components/journal/JournalActivities";
 import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
 import DreamStudio from "@/components/journal/DreamStudio";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement, loadEntries, saveEntries } from "@/lib/journal-store";
-import SignalContextChips from "@/components/signal/SignalContextChips";
-import { useSignalPanel } from "@/hooks/useSignalPanel";
 
 type Tab = "entries" | "activities" | "vault" | "dream";
 
