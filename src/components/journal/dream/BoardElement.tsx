@@ -183,7 +183,13 @@ export default function BoardElement({
       const dy = (t.clientY - dragStart.current.my) / zoom;
       onUpdate({ x: dragStart.current.ex + dx, y: dragStart.current.ey + dy });
     };
-    const onEnd = () => { window.removeEventListener("touchmove", onMove); window.removeEventListener("touchend", onEnd); };
+    const onEnd = () => {
+      // Snap to grid on touch end
+      const entries = loadEntries?.() // not needed, just snap current pos
+      onUpdate({ x: snap(element.x), y: snap(element.y) });
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
     window.addEventListener("touchmove", onMove, { passive: false });
     window.addEventListener("touchend", onEnd);
   }, [editing, element.x, element.y, zoom, onUpdate, onSelect]);
