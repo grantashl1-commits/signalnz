@@ -1,15 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { MapPin, Search, Loader2 } from "lucide-react";
 import { MOCK_GROUPS, type CommunityGroup } from "@/data/community-data";
+import { supabase } from "@/integrations/supabase/client";
+import { haptic } from "@/hooks/use-mobile";
 
 interface CommunityDiscoverProps {
   onJoin: (id: string) => void;
   joined: string[];
 }
 
+interface PlacePrediction {
+  description: string;
+  placeId: string;
+  suburb: string;
+}
+
 export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverProps) {
   const [filter, setFilter] = useState("");
+  const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [selectedSuburb, setSelectedSuburb] = useState<string | null>(null);
+
+  // Debounced Google Places search
+  useEffect(() => {
+    if (filter.length < 2) {
+      setPredictions([]);
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const { data, error } = await supabase.functions.invoke("places-autocomplete", {
+          body: { input: filter },
+        });
+        if (data?.predictions) {
+          setPredictions(data.predictions);
+        }
+      } catch {
+        // Fallback to local filter
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [filter]);
+
+  const handleSelectSuburb = (suburb: string) => {
+    haptic("light");
+    setSelectedSuburb(suburb);
+    setFilter(suburb);
+    setPredictions([]);
+  };
+
+  const clearSelection = () => {
+    setSelectedSuburb(null);
+    setFilter("");
+  };
+
   const filtered = MOCK_GROUPS.filter(
-    (g) => !filter || g.suburb.toLowerCase().includes(filter.toLowerCase()) || g.city.toLowerCase().includes(filter.toLowerCase())
+    (g) => !selectedSuburb
+      ? (!filter || g.suburb.toLowerCase().includes(filter.toLowerCase()) || g.city.toLowerCase().includes(filter.toLowerCase()))
+      : g.suburb.toLowerCase().includes(selectedSuburb.toLowerCase())
   );
 
   return (
@@ -23,16 +76,56 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
         </p>
       </div>
 
-      {/* Search */}
-      <input
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        placeholder="Search by suburb or city…"
-        className="w-full px-4 py-3 rounded-full border border-border bg-card font-display text-sm italic text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm"
-        style={{ fontSize: "16px" }}
-        inputMode="search"
-        autoComplete="off"
-      />
+      {/* Google Places Search */}
+      <div className="relative">
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            value={filter}
+            onChange={(e) => { setFilter(e.target.value); setSelectedSuburb(null); }}
+            placeholder="Search your suburb…"
+            className="w-full pl-10 pr-10 py-3 rounded-full border border-border bg-card font-display text-sm italic text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm"
+            style={{ fontSize: "16px" }}
+            inputMode="search"
+            autoComplete="off"
+          />
+          {searching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />}
+          {selectedSuburb && !searching && (
+            <button onClick={clearSelection} className="absolute right-3 top-1/2 -translate-y-1/2 font-body text-xs text-muted-foreground">✕</button>
+          )}
+        </div>
+
+        {/* Predictions dropdown */}
+        {predictions.length > 0 && !selectedSuburb && (
+          <div className="absolute z-20 w-full mt-1 rounded-xl bg-card border border-border shadow-lg overflow-hidden">
+            {predictions.map(p => (
+              <button
+                key={p.placeId}
+                onClick={() => handleSelectSuburb(p.suburb)}
+                className="w-full text-left px-4 py-3 hover:bg-secondary transition-colors flex items-center gap-2"
+              >
+                <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                <span className="font-display text-sm italic text-foreground">{p.description}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Selected suburb — create group CTA */}
+      {selectedSuburb && filtered.length === 0 && (
+        <div className="card-warm p-5 text-center space-y-3">
+          <MapPin className="h-8 w-8 text-primary mx-auto" />
+          <h3 className="font-display text-lg font-bold italic text-foreground">{selectedSuburb}</h3>
+          <p className="font-body text-sm text-muted-foreground">No group for {selectedSuburb} yet. Be the first!</p>
+          <button
+            onClick={() => { haptic("medium"); onJoin(`new-${selectedSuburb.toLowerCase().replace(/\s/g, "-")}`); }}
+            className="touch-btn font-display text-sm italic text-primary-foreground bg-primary rounded-full px-6 py-3 active:scale-[0.97]"
+          >
+            Create {selectedSuburb} group
+          </button>
+        </div>
+      )}
 
       {/* Group cards */}
       {filtered.map((g) => {
