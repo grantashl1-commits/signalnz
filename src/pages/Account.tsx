@@ -409,6 +409,64 @@ export default function AccountPage() {
           )}
         </motion.div>
 
+        {/* Age & Weight for HR Zones */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.21 }}
+          className="card-warm p-5"
+        >
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
+            <Heart className="h-4.5 w-4.5 text-primary" /> Heart Rate Zones
+          </h2>
+          {!biometricsEditing && getUserAge() ? (
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full bg-primary/10 px-3 py-1 font-body text-xs font-medium text-primary">Age: {userAge}</span>
+                <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs font-medium text-foreground">Weight: {userWeight} kg</span>
+                <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs text-muted-foreground">Max HR: {getMaxHR(userAge)} bpm</span>
+              </div>
+              <button onClick={() => setBiometricsEditing(true)} className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground active:bg-secondary/80 transition-opacity mt-2">
+                <PenLine className="h-3 w-3" /> Edit
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Age</p>
+                <div className="flex items-center gap-4">
+                  <button onClick={() => setUserAgeState(a => Math.max(16, a - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
+                  <span className="font-mono text-2xl text-foreground w-12 text-center">{userAge}</span>
+                  <button onClick={() => setUserAgeState(a => Math.min(80, a + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+                  <span className="font-mono text-xs text-muted-foreground ml-2">Max HR: {getMaxHR(userAge)}</span>
+                </div>
+              </div>
+              <div>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Weight (kg)</p>
+                <div className="flex items-center gap-4">
+                  <button onClick={() => setUserWeightState(w => Math.max(30, w - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
+                  <span className="font-mono text-2xl text-foreground w-12 text-center">{userWeight}</span>
+                  <button onClick={() => setUserWeightState(w => Math.min(200, w + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+                  <span className="font-mono text-xs text-muted-foreground ml-2">kg</span>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setUserAge(userAge);
+                  setUserWeight(userWeight);
+                  setBiometricsEditing(false);
+                  toast.success("Age & weight saved");
+                  haptic("medium");
+                }}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
+              >
+                <Check className="h-3.5 w-3.5" /> Save
+              </button>
+            </div>
+          )}
+          <p className="font-body text-[11px] text-muted-foreground mt-3">Used to calculate your heart rate zones and calories burnt during workouts.</p>
+        </motion.div>
+
         {/* Supermarket Preference */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
