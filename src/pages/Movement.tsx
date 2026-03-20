@@ -402,6 +402,8 @@ export default function MovementPage() {
       {/* MY LOG TAB */}
       {activeTab === "log" && (
         <div className="space-y-4 md:space-y-6">
+          {/* Monthly calendar at the top */}
+          <MovementCalendar />
           <div className="grid grid-cols-3 gap-2">
             {[{ val: totalCompleted, label: "Workouts" }, { val: totalMinutes, label: "Minutes" }, { val: totalCompleted > 0 ? Math.round((totalCompleted / 7) * 100) + "%" : "0%", label: "Consistency" }].map(({ val, label }) => (
               <div key={label} className="card-warm p-3 text-center">
