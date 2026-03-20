@@ -25,7 +25,7 @@ type TabId = "today" | "plans" | "myweek" | "recipes" | "baking";
 
 export default function NutritionPage() {
   const info = getCycleInfo(getLastPeriodStart());
-  const { openSignal } = useSignalPanel();
+  
   const [activeTab, setActiveTab] = useState<TabId>("today");
 
   const todayMeals = TODAY_MEALS[info.phase];
