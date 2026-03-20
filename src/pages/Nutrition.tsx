@@ -92,6 +92,8 @@ export default function NutritionPage() {
       {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={info.phase} showBakingHeader />}
 
       {activeTab === "myweek" && <MyWeekTab />}
+
+      {activeTab === "shopping" && <ShoppingListPanel />}
       </ContentSection>
     </div>
     </GatedPage>
