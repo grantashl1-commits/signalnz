@@ -237,82 +237,25 @@ export default function MovementPage() {
 
           {/* AI-Generated Today's Workout */}
           {aiTodayWorkout && (
-            <div className="card-warm p-4 space-y-4 ring-1 ring-primary/20">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <h3 className="font-display text-lg italic text-foreground">{aiTodayWorkout.name}</h3>
-                  </div>
-                  <p className="font-body text-[9px] italic text-primary mt-0.5">AI Plan · Week {trainingWeek} · {aiPlan?.weeks?.[trainingWeek - 1]?.theme}</p>
-                  <div className="flex gap-2 mt-1 flex-wrap">
-                    <span className="font-mono text-[10px]" style={{ color: PHASE_HEX[info.phase] }}>{aiTodayWorkout.durationMin} min</span>
-                    <span className="font-body text-[10px] text-muted-foreground">{aiTodayWorkout.category}</span>
-                    {aiTodayWorkout.intensity && (
-                      <span className={`font-mono text-[10px] ${aiTodayWorkout.intensity === "high" ? "text-red-500" : aiTodayWorkout.intensity === "moderate" ? "text-amber-500" : "text-green-500"}`}>
-                        {aiTodayWorkout.intensity}
-                      </span>
-                    )}
-                  </div>
-                  {aiTodayWorkout.warmUp && <p className="font-body text-xs text-muted-foreground mt-1">🔥 {aiTodayWorkout.warmUp}</p>}
-                </div>
-              </div>
-
-              {aiTodayWorkout.exercises?.length > 0 && (
-                <>
-                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / aiTodayWorkout.exercises.length) * 100}%` }} />
-                  </div>
-                  <p className="font-mono text-[10px] text-muted-foreground">{completedExercises.size}/{aiTodayWorkout.exercises.length}</p>
-
-                  <div className="space-y-1.5">
-                    {aiTodayWorkout.exercises.map((ex: any, i: number) => {
-                      const done = completedExercises.has(ex.name);
-                      const showSection = i === 0 || ex.section !== aiTodayWorkout.exercises[i - 1]?.section;
-                      return (
-                        <div key={ex.name + i}>
-                          {showSection && ex.section && (
-                            <p className="font-hand text-xs font-bold text-primary mt-3 mb-1">{ex.section}</p>
-                          )}
-                          <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
-                            className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            <div
-                              className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}
-                              onClick={(e) => { e.stopPropagation(); toggleExercise(ex.name); }}
-                            >
-                              {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
-                            </div>
-                            <div className="flex-1 min-w-0" onClick={() => {
-                              haptic("light");
-                              setDrawerExercise({
-                                name: ex.name,
-                                sets: ex.sets,
-                                reps: ex.reps,
-                                duration: ex.duration,
-                                formCue: ex.formCue || "",
-                                section: ex.section,
-                              });
-                            }}>
-                              <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
-                              <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>
-                                {ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}
-                              </p>
-                            </div>
-                            <p className="font-display text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{ex.formCue}</p>
-                          </motion.div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {aiTodayWorkout.coolDown && (
-                    <p className="font-body text-xs text-muted-foreground bg-secondary/30 rounded-xl p-3">❄️ {aiTodayWorkout.coolDown}</p>
-                  )}
-                </>
-              )}
-            </div>
+            <AISessionCard
+              session={aiTodayWorkout}
+              trainingWeek={trainingWeek}
+              weekTheme={aiPlan?.weeks?.[trainingWeek - 1]?.theme}
+              phase={info.phase}
+              completedExercises={completedExercises}
+              onToggleExercise={toggleExercise}
+              onOpenExercise={(ex) => {
+                haptic("light");
+                setDrawerExercise({
+                  name: ex.name,
+                  sets: String(ex.sets || ""),
+                  reps: ex.reps_or_duration || "",
+                  duration: "",
+                  formCue: ex.form_cue || "",
+                  section: "",
+                });
+              }}
+            />
           )}
 
           {/* Default Today's workout (when no AI plan or as fallback) */}
