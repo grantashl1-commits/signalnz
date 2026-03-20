@@ -346,7 +346,10 @@ export default function BodyVisualiser() {
   const secondaryMuscles = [...muscleMap.entries()].filter(([, v]) => v.intensity === "secondary");
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      {/* Measurements form */}
+      <MeasurementsForm />
+
       {/* Workout selector */}
       <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
         {phaseWorkouts.filter(w => w.exercises.length > 0).map(w => (
