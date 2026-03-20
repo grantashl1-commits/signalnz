@@ -88,7 +88,7 @@ export default function AISessionCard({
             className="touch-btn w-full flex items-center justify-between p-3"
           >
             <div className="flex items-center gap-2">
-              <Flame className="h-3.5 w-3.5 text-orange-500" />
+              <Flame className="h-3.5 w-3.5 text-primary" />
               <span className="font-body text-xs font-semibold text-foreground">Warm-Up</span>
               <span className="font-mono text-[10px] text-muted-foreground">{session.warm_up.length} exercises</span>
             </div>
