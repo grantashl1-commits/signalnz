@@ -191,13 +191,13 @@ export default function AISessionCard({
 
       {/* Cool-down section */}
       {hasNewFormat && session.cool_down?.length > 0 && (
-        <div className="rounded-xl bg-blue-50/50 dark:bg-blue-950/20 overflow-hidden">
+        <div className="rounded-xl bg-secondary/40 overflow-hidden">
           <button
             onClick={() => { haptic("light"); setShowCoolDown(!showCoolDown); }}
             className="touch-btn w-full flex items-center justify-between p-3"
           >
             <div className="flex items-center gap-2">
-              <Snowflake className="h-3.5 w-3.5 text-blue-500" />
+              <Snowflake className="h-3.5 w-3.5 text-primary" />
               <span className="font-body text-xs font-semibold text-foreground">Cool-Down</span>
               <span className="font-mono text-[10px] text-muted-foreground">{session.cool_down.length} stretches</span>
             </div>
