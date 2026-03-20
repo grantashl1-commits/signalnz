@@ -90,13 +90,73 @@ export default function AccountPage() {
           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
             <User className="h-7 w-7 text-primary-foreground/70" />
           </div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold italic text-primary-foreground">My Account</h1>
+          <h1 className="font-display text-2xl md:text-3xl font-bold italic text-primary-foreground">
+            {displayName || "My Account"}
+          </h1>
           <p className="font-body text-sm text-primary-foreground/60 mt-1">{user.email}</p>
         </div>
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-5">
-        {/* Subscription Card */}
+        {/* Display Name Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-warm p-5"
+        >
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
+            <PenLine className="h-4.5 w-4.5 text-primary" /> Display Name
+          </h2>
+          {nameEditing ? (
+            <div className="flex items-center gap-2">
+              <input
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                placeholder="Enter your name..."
+                maxLength={50}
+                className="flex-1 rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    (async () => {
+                      setNameSaving(true);
+                      await updateDisplayName(nameInput);
+                      setNameEditing(false);
+                      setNameSaving(false);
+                      toast.success("Name updated");
+                    })();
+                  }
+                }}
+              />
+              <button
+                onClick={async () => {
+                  setNameSaving(true);
+                  await updateDisplayName(nameInput);
+                  setNameEditing(false);
+                  setNameSaving(false);
+                  toast.success("Name updated");
+                }}
+                disabled={nameSaving}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-3.5 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
+              >
+                <Check className="h-3.5 w-3.5" /> {nameSaving ? "Saving..." : "Save"}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <span className="font-body text-sm text-foreground/80">
+                {displayName || <span className="text-muted-foreground/40 italic">Not set</span>}
+              </span>
+              <button
+                onClick={() => { setNameInput(displayName || ""); setNameEditing(true); }}
+                className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground active:bg-secondary/80 transition-opacity"
+              >
+                <PenLine className="h-3 w-3" /> Edit
+              </button>
+            </div>
+          )}
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
