@@ -184,8 +184,6 @@ export default function BoardElement({
       onUpdate({ x: dragStart.current.ex + dx, y: dragStart.current.ey + dy });
     };
     const onEnd = () => {
-      // Snap to grid on touch end
-      const entries = loadEntries?.() // not needed, just snap current pos
       onUpdate({ x: snap(element.x), y: snap(element.y) });
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", onEnd);
