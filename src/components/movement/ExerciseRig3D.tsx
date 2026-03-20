@@ -254,6 +254,25 @@ function Floor() {
   );
 }
 
+// ── Screenshot helper ──
+
+function ScreenshotHelper({ onCapture }: { onCapture: (fn: () => void) => void }) {
+  const { gl, scene, camera } = useThree();
+
+  useEffect(() => {
+    onCapture(() => {
+      gl.render(scene, camera);
+      const dataUrl = gl.domElement.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = "exercise-3d.png";
+      link.href = dataUrl;
+      link.click();
+    });
+  }, [gl, scene, camera, onCapture]);
+
+  return null;
+}
+
 // ── Main exported component ──
 
 interface ExerciseRig3DProps {
@@ -261,6 +280,7 @@ interface ExerciseRig3DProps {
   playing?: boolean;
   mirrored?: boolean;
   height?: number;
+  onScreenshotReady?: (fn: () => void) => void;
 }
 
 export default function ExerciseRig3D({
@@ -268,32 +288,34 @@ export default function ExerciseRig3D({
   playing = true,
   mirrored = false,
   height = 280,
+  onScreenshotReady,
 }: ExerciseRig3DProps) {
+  const captureRef = useRef<(() => void) | null>(null);
+
+  const handleCapture = useCallback((fn: () => void) => {
+    captureRef.current = fn;
+    onScreenshotReady?.(fn);
+  }, [onScreenshotReady]);
+
   return (
     <div style={{ width: "100%", height }} className="rounded-2xl overflow-hidden">
       <Canvas
         camera={{ position: [0, 0, 5], fov: 35 }}
         dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: true, preserveDrawingBuffer: true, alpha: true }}
         style={{ background: "transparent" }}
       >
         <Suspense fallback={null}>
-          {/* Lighting */}
           <ambientLight intensity={0.5} />
           <directionalLight position={[3, 5, 4]} intensity={0.8} color="hsl(30, 30%, 100%)" />
           <directionalLight position={[-2, 3, -2]} intensity={0.3} color="hsl(270, 40%, 80%)" />
           <pointLight position={[0, -2, 3]} intensity={0.2} color="hsl(270, 30%, 70%)" />
 
-          {/* Soft environment */}
           <Environment preset="studio" />
-
-          {/* Figure */}
           <AnimatedFigure animation={animation} playing={playing} mirrored={mirrored} />
-
-          {/* Floor */}
           <Floor />
+          <ScreenshotHelper onCapture={handleCapture} />
 
-          {/* Camera controls - touch-friendly orbit */}
           <OrbitControls
             enableZoom={false}
             enablePan={false}
