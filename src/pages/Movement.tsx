@@ -17,6 +17,7 @@ import LiveHRView from "@/components/movement/LiveHRView";
 import MovementCalendar from "@/components/movement/MovementCalendar";
 import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseRig from "@/components/movement/ExerciseRig";
+import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import SignalContextChips from "@/components/signal/SignalContextChips";
