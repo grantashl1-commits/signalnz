@@ -1,5 +1,5 @@
 import { Phase, getPhaseFromDay, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "./cycle-utils";
-import { PHASE_MEAL_PLANS, Recipe } from "@/data/meal-plans";
+import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById, ALL_MEAL_RECIPES } from "./recipe-index";
 import { parseIngredient } from "./ingredient-parser";
 
