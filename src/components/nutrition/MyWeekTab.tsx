@@ -29,7 +29,7 @@ const STEPS: { id: Step; label: string }[] = [
   { id: "shop", label: "Shop" },
 ];
 
-export default function MyWeekTab({ onPlanSaved }: { onPlanSaved?: () => void }) {
+export default function MyWeekTab({ onPlanSaved, onSaveToToday }: { onPlanSaved?: () => void; onSaveToToday?: () => void }) {
   const info = getCycleInfo(getLastPeriodStart());
   const phaseColor = PHASE_HEX[info.phase];
   const [step, setStep] = useState<Step>("prep");
