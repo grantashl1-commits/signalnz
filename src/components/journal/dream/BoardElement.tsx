@@ -23,6 +23,8 @@ interface Props {
 
 const MIN_W = 140;
 const MIN_H = 70;
+const GRID = 16; // snap grid (half the 32px dot spacing for finer control)
+const snap = (v: number) => Math.round(v / GRID) * GRID;
 
 /* ── Type-specific visual themes ─────────────────────────── */
 const TYPE_THEMES: Record<string, {
