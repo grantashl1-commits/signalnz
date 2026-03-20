@@ -51,6 +51,7 @@ const App = () => (
                     <Route path="/modules" element={<Modules />} />
                     <Route path="/membership" element={<Membership />} />
                     <Route path="/my-practice" element={<Practice />} />
+                    <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
                     <Route path="/recommendations" element={<Recommendations />} />
                     <Route path="/community" element={<Community />} />
                     <Route path="/account" element={<Account />} />
