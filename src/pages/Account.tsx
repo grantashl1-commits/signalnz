@@ -39,6 +39,26 @@ export default function AccountPage() {
   const [nameSaving, setNameSaving] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
 
+  // Fitness profile
+  const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("general");
+  const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>("beginner");
+  const [fitnessEquipment, setFitnessEquipment] = useState<Equipment[]>(["none"]);
+  const [fitnessInjuries, setFitnessInjuries] = useState("");
+  const [fitnessEditing, setFitnessEditing] = useState(false);
+
+  // Supermarket
+  const [supermarket, setSupermarket] = useState<SupermarketPreference>(getSupermarket());
+
+  useEffect(() => {
+    const fp = getFitnessProfile();
+    if (fp) {
+      setFitnessGoal(fp.goal);
+      setFitnessLevel(fp.level);
+      setFitnessEquipment(fp.equipment);
+      setFitnessInjuries(fp.injuries);
+    }
+  }, []);
+
   useEffect(() => {
     if (!user) return;
     const fetchCredits = async () => {
