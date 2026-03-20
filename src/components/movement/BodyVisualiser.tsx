@@ -37,12 +37,24 @@ function loadMeasurements(): Measurements {
 }
 
 function saveMeasurements(m: Measurements) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(m));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...m, _savedAt: new Date().toISOString() }));
+}
+
+function getSavedTimestamp(): string | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return parsed._savedAt || null;
+    }
+  } catch {}
+  return null;
 }
 
 function MeasurementsForm() {
   const [measurements, setMeasurements] = useState<Measurements>(loadMeasurements);
   const [saved, setSaved] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(getSavedTimestamp);
 
   const hasValues = Object.values(measurements).some(v => v.trim() !== "");
 
@@ -56,6 +68,7 @@ function MeasurementsForm() {
     haptic("medium");
     saveMeasurements(measurements);
     setSaved(true);
+    setLastUpdated(new Date().toISOString());
     setTimeout(() => setSaved(false), 2000);
   };
 
@@ -117,6 +130,14 @@ function MeasurementsForm() {
       >
         {saved ? "Saved ✓" : "Save measurements"}
       </Button>
+
+      {lastUpdated && (
+        <p className="font-body text-[10px] text-muted-foreground text-center">
+          Last updated {new Date(lastUpdated).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
+          {" · "}
+          {new Date(lastUpdated).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+        </p>
+      )}
 
       {/* Proportional silhouette */}
       <ProportionalSilhouette
