@@ -174,6 +174,44 @@ export function saveDreamBoard(elements: DreamElement[]) {
   localStorage.setItem("signal_dream_board", JSON.stringify(elements));
 }
 
+// ── Multi-board helpers ───────────────────────────────────────
+const BOARDS_KEY = "signal_dream_boards";
+const ACTIVE_BOARD_KEY = "signal_dream_active_board";
+
+export function loadDreamBoards(): DreamBoard[] {
+  try {
+    const raw = localStorage.getItem(BOARDS_KEY);
+    if (raw) return JSON.parse(raw);
+    // Migrate legacy single board
+    const legacy = loadDreamBoard();
+    if (legacy.length > 0) {
+      const board: DreamBoard = {
+        id: "board-default",
+        title: "My Dream Board",
+        elements: legacy,
+        connections: [],
+        zoom: 1, panX: 0, panY: 0,
+        createdAt: Date.now(),
+      };
+      saveDreamBoards([board]);
+      return [board];
+    }
+    return [];
+  } catch { return []; }
+}
+
+export function saveDreamBoards(boards: DreamBoard[]) {
+  localStorage.setItem(BOARDS_KEY, JSON.stringify(boards));
+}
+
+export function getActiveBoardId(): string | null {
+  return localStorage.getItem(ACTIVE_BOARD_KEY);
+}
+
+export function setActiveBoardId(id: string) {
+  localStorage.setItem(ACTIVE_BOARD_KEY, id);
+}
+
 // ── Resurfacing helpers ───────────────────────────────────────
 export function getResurfacingMemories(vault: VaultEntry[]): { label: string; entry: VaultEntry }[] {
   if (vault.length === 0) return [];
