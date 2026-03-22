@@ -89,7 +89,7 @@ export function getNextPhase(currentPhase: Phase): { phase: Phase; daysUntil: nu
 }
 
 export function getDaysUntilNextPhase(cycleDay: number, currentPhase: Phase): number {
-  const phaseEnds: Record<Phase, number> = { menstrual: 5, follicular: 13, ovulatory: 16, luteal: 28 };
+  const phaseEnds: Record<Phase, number> = { menstrual: 5, follicular: 13, ovulatory: 14, luteal: 28 };
   return phaseEnds[currentPhase] - cycleDay + 1;
 }
 
