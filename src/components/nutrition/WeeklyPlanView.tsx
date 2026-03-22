@@ -116,9 +116,7 @@ export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFr
                         { label: "Dinner", meal: day.dinner, recipe: dRecipe },
                       ].map(({ label, meal, recipe }) => (
                         <div key={label} className="flex items-start gap-3">
-                          {recipe?.image && (
-                            <img src={recipe.image} alt={meal.name} className="h-12 w-12 rounded-lg object-contain bg-secondary/20 flex-shrink-0" />
-                          )}
+                          <RecipeImage recipeName={meal.name} recipeImage={recipe?.image} variant="thumb" />
                           <div className="min-w-0">
                             <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: phaseColor }}>{label}</p>
                             <p className="font-body text-sm text-foreground mt-0.5">{meal.name}</p>
