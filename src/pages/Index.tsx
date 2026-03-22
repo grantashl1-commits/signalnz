@@ -134,7 +134,7 @@ export default function HomePage() {
             {...fadeUp(0.45)}
             className="font-body text-xs text-primary-foreground/60 uppercase tracking-[0.25em] mb-8"
           >
-            Day {info.cycleDay} · {info.name}
+            Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
           </motion.p>
 
           {!hasSetCycle && (
