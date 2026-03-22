@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart, ShieldCheck } from "lucide-react";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
