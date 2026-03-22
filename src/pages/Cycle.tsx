@@ -132,7 +132,7 @@ export default function CyclePage() {
   const [showDateEdit, setShowDateEdit] = useState(false);
   const [dateEditValue, setDateEditValue] = useState(lastPeriod);
   const [refreshKey, setRefreshKey] = useState(0);
-
+  const [popover, setPopover] = useState<{ dateStr: string; cycleDay: number | null; type: "mood" | "weight" } | null>(null);
   const info = { phase: cycle.currentPhase, cycleDay: cycle.currentCycleDay, name: PHASE_LABELS[cycle.currentPhase], day: cycle.currentCycleDay };
   const daysUntil = getDaysUntilNextPhase(info.cycleDay, info.phase);
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
