@@ -85,7 +85,9 @@ export default function HomePage() {
     refetch();
   };
 
-  const todayWorkout = WORKOUTS.find((w) => w.id === TODAY_WORKOUT[info.phase]);
+  const bodyGoals = (() => { try { const r = localStorage.getItem("signal_body_goals"); return r ? JSON.parse(r) : []; } catch { return []; } })();
+  const todayAssignment = getTodayAssignment(info.phase, bodyGoals, new Date().getDay());
+  const todayWorkout = WORKOUTS.find((w) => w.id === todayAssignment.workoutId);
   const todayMeals = TODAY_MEALS[info.phase];
   const lunchMeal = todayMeals?.find((m) => m.type === "Lunch");
 
