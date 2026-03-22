@@ -19,6 +19,7 @@ import {
   DEFAULT_PREFS,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
+import SmartShoppingList from "./SmartShoppingList";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
