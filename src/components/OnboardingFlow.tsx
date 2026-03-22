@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { WildStar } from "@/components/BotanicalElements";
 import { setLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
