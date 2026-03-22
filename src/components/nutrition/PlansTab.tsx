@@ -1,14 +1,15 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
-import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
-import { PHASE_MEAL_PLANS, Recipe } from "@/data/meal-plans";
+import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
 import { RecipeIllustration } from "@/components/MealIllustration";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
-import { getWeeklyPlan, type WeeklyPlan } from "@/lib/weekly-planner";
+import { getWeeklyPlan } from "@/lib/weekly-planner";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -17,54 +18,110 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-interface PlansTabProps {
-  phase: Phase;
-  cycleDay: number;
-}
+const PHASE_NUTRITION_FOCUS: Record<Phase, string> = {
+  menstrual: "Iron-rich, gentle and warming",
+  follicular: "Light, energising, high fibre",
+  ovulatory: "Antioxidant-rich, raw and vibrant",
+  luteal: "Warming, sustaining, magnesium-rich",
+};
+
+const WEEK_PHASES: { phase: Phase; startDay: number; endDay: number }[] = [
+  { phase: "menstrual", startDay: 1, endDay: 7 },
+  { phase: "follicular", startDay: 8, endDay: 14 },
+  { phase: "ovulatory", startDay: 15, endDay: 21 },
+  { phase: "luteal", startDay: 22, endDay: 28 },
+];
 
 interface DayMeals {
-  day: number;
+  cycleDay: number;
+  calendarDate: Date | null;
   breakfast: { name: string; recipe?: Recipe };
   lunch: { name: string; recipe?: Recipe };
   dinner: { name: string; recipe?: Recipe };
 }
 
+interface PlansTabProps {
+  phase: Phase;
+  cycleDay: number;
+}
+
 export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
+  const { currentWeekNumber, currentCycleDay, getCalendarDateForCycleDay } = useCycle();
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
-  const phaseColor = PHASE_HEX[phase];
-  const [phaseStart, phaseEnd] = PHASE_DAYS[phase];
+  const [collapsedWeeks, setCollapsedWeeks] = useState<Set<number>>(new Set());
 
-  // Check for custom weekly plan first
   const customPlan = useMemo(() => getWeeklyPlan(), []);
-  const plan = PHASE_MEAL_PLANS[phase];
 
-  // Build day meals from custom plan or default
-  const dayMeals: DayMeals[] = customPlan
-    ? customPlan.days.map((day, i) => {
-        const bRecipe = day.breakfast.recipeId ? findRecipeById(day.breakfast.recipeId) : findRecipeByName(day.breakfast.name);
-        const lRecipe = day.lunch.recipeId ? findRecipeById(day.lunch.recipeId) : findRecipeByName(day.lunch.name);
-        const dRecipe = day.dinner.recipeId ? findRecipeById(day.dinner.recipeId) : findRecipeByName(day.dinner.name);
-        return {
-          day: i + 1,
-          breakfast: { name: day.breakfast.name, recipe: bRecipe },
-          lunch: { name: day.lunch.name, recipe: lRecipe },
-          dinner: { name: day.dinner.name, recipe: dRecipe },
-        };
-      })
-    : plan.days.map((day) => {
-        const bName = day.breakfast.split(" — ")[0];
-        const lName = day.lunch.split(" — ")[0];
-        const dName = day.dinner.split(" — ")[0];
-        return {
-          day: day.day,
-          breakfast: { name: bName, recipe: findRecipeByName(bName) },
-          lunch: { name: lName, recipe: findRecipeByName(lName) },
-          dinner: { name: dName, recipe: findRecipeByName(dName) },
-        };
-      });
+  // Build all 28 days grouped by phase-week
+  const weekData = useMemo(() => {
+    return WEEK_PHASES.map((week, weekIdx) => {
+      const weekNum = weekIdx + 1;
+      const plan = PHASE_MEAL_PLANS[week.phase];
+      const days: DayMeals[] = [];
 
-  const MealTile = ({ name, recipe, slot }: { name: string; recipe?: Recipe; slot: string }) => (
+      for (let i = 0; i < 7; i++) {
+        const cycleDay = week.startDay + i;
+        const planDayIdx = i; // 0-6 within the phase
+        const planDay = plan.days[planDayIdx];
+        const calendarDate = getCalendarDateForCycleDay(cycleDay);
+
+        if (planDay) {
+          const bName = planDay.breakfast.split(" — ")[0];
+          const lName = planDay.lunch.split(" — ")[0];
+          const dName = planDay.dinner.split(" — ")[0];
+          days.push({
+            cycleDay,
+            calendarDate,
+            breakfast: { name: bName, recipe: findRecipeByName(bName) },
+            lunch: { name: lName, recipe: findRecipeByName(lName) },
+            dinner: { name: dName, recipe: findRecipeByName(dName) },
+          });
+        } else {
+          // Phase has fewer than 7 days of data — repeat last day or leave placeholder
+          const lastDay = plan.days[plan.days.length - 1];
+          const bName = lastDay.breakfast.split(" — ")[0];
+          const lName = lastDay.lunch.split(" — ")[0];
+          const dName = lastDay.dinner.split(" — ")[0];
+          days.push({
+            cycleDay,
+            calendarDate,
+            breakfast: { name: bName, recipe: findRecipeByName(bName) },
+            lunch: { name: lName, recipe: findRecipeByName(lName) },
+            dinner: { name: dName, recipe: findRecipeByName(dName) },
+          });
+        }
+      }
+
+      return {
+        weekNum,
+        phase: week.phase,
+        phaseColor: PHASE_HEX[week.phase],
+        nutritionFocus: PHASE_NUTRITION_FOCUS[week.phase],
+        isCurrentWeek: weekNum === currentWeekNumber,
+        days,
+      };
+    });
+  }, [currentWeekNumber, getCalendarDateForCycleDay]);
+
+  const toggleWeek = (weekNum: number) => {
+    setCollapsedWeeks(prev => {
+      const next = new Set(prev);
+      if (next.has(weekNum)) next.delete(weekNum);
+      else next.add(weekNum);
+      return next;
+    });
+  };
+
+  const formatDate = (date: Date | null): string => {
+    if (!date) return "";
+    const weekday = date.toLocaleDateString("en-NZ", { weekday: "long" });
+    const day = date.getDate();
+    const month = date.toLocaleDateString("en-NZ", { month: "long" });
+    return `${weekday} ${day} ${month}`;
+  };
+
+  const MealTile = ({ name, recipe, slot, phaseColor }: { name: string; recipe?: Recipe; slot: string; phaseColor: string }) => (
     <button
       onClick={() => {
         haptic("light");
@@ -96,95 +153,169 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
   );
 
   return (
-    <div className="space-y-5">
-      {/* Phase header */}
+    <div className="space-y-8">
+      {/* Phase badge — auto-updating */}
       <div>
-        <span className={`inline-block rounded-full px-3 py-1.5 font-body text-sm font-bold phase-${phase}-light`}>
-          Your {PHASE_SHORT[phase].toLowerCase()} plan · days {phaseStart}–{phaseEnd}
+        <span
+          className="inline-block rounded-full px-3 py-1.5 font-body text-sm font-bold"
+          style={{ backgroundColor: `${PHASE_HEX[phase]}15`, color: PHASE_HEX[phase] }}
+        >
+          {PHASE_SHORT[phase].toLowerCase()} · D{currentCycleDay}
         </span>
         <p className="font-body text-sm italic text-muted-foreground mt-2">
-          Plans update automatically as your cycle moves.
+          Your 28-day plan updates automatically as your cycle moves.
         </p>
       </div>
 
-      <p className="font-display text-base italic text-foreground">{plan.theme}.</p>
-
-      {/* Day list */}
-      <div className="space-y-5">
-        {dayMeals.map((dm) => {
-          const isExpanded = expandedDay === dm.day;
-          return (
-            <div key={dm.day} className="space-y-3">
-              <button
-                onClick={() => {
-                  haptic("light");
-                  setExpandedDay(isExpanded ? null : dm.day);
-                }}
-                className="touch-btn flex items-center gap-3 w-full"
-              >
-                <span
-                  className="w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-bold text-white flex-shrink-0"
-                  style={{ backgroundColor: phaseColor }}
-                >
-                  {dm.day}
-                </span>
-                <span className="font-body text-base font-bold flex-1 text-left" style={{ color: phaseColor }}>
-                  Day {dm.day}
-                </span>
-                {isExpanded ? (
-                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+      {/* Week sections */}
+      {weekData.map((week) => {
+        const isCollapsed = collapsedWeeks.has(week.weekNum);
+        return (
+          <div key={week.weekNum} className="space-y-4">
+            {/* Week header */}
+            <button
+              onClick={() => {
+                haptic("light");
+                toggleWeek(week.weekNum);
+              }}
+              className="touch-btn w-full text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-1 h-10 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: week.phaseColor }}
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-base font-bold" style={{ color: week.phaseColor }}>
+                      Week {week.weekNum} — {PHASE_SHORT[week.phase]}
+                    </h3>
+                    {week.isCurrentWeek && (
+                      <span
+                        className="rounded-full px-2 py-0.5 font-body text-[10px] font-bold uppercase tracking-wider text-white"
+                        style={{ backgroundColor: week.phaseColor }}
+                      >
+                        This week
+                      </span>
+                    )}
+                  </div>
+                  <p className="font-body text-xs text-muted-foreground italic mt-0.5">
+                    {week.nutritionFocus}
+                  </p>
+                </div>
+                {isCollapsed ? (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 ) : (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  <ChevronUp className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 )}
-              </button>
-
-              {/* 3 tiles */}
-              <div className="grid grid-cols-3 gap-3 pl-11">
-                <MealTile name={dm.breakfast.name} recipe={dm.breakfast.recipe} slot="Breakfast" />
-                <MealTile name={dm.lunch.name} recipe={dm.lunch.recipe} slot="Lunch" />
-                <MealTile name={dm.dinner.name} recipe={dm.dinner.recipe} slot="Dinner" />
               </div>
+            </button>
 
-              {/* Expanded detail */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pl-11 space-y-3 pt-1">
-                      {[
-                        { slot: "Breakfast", meal: dm.breakfast },
-                        { slot: "Lunch", meal: dm.lunch },
-                        { slot: "Dinner", meal: dm.dinner },
-                      ].map(({ slot, meal }) => (
-                        <div key={slot} className="rounded-[14px] bg-card shadow-soft p-4">
-                          <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: phaseColor }}>{slot}</p>
-                          <p className="font-display text-sm font-semibold text-foreground mt-1">{meal.name}</p>
-                          {meal.recipe && (
-                            <div className="mt-2">
-                              <p className="font-body text-xs text-muted-foreground">
-                                {meal.recipe.ingredients.slice(0, 5).join(", ")}
-                                {meal.recipe.ingredients.length > 5 && "..."}
-                              </p>
-                              <p className="font-body text-xs text-muted-foreground mt-1">
-                                {meal.recipe.prepTime} · Serves {meal.recipe.serves}
-                              </p>
+            {/* Day list */}
+            <AnimatePresence initial={false}>
+              {!isCollapsed && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="overflow-hidden"
+                >
+                  <div className="space-y-5 pl-4">
+                    {week.days.map((dm) => {
+                      const isExpanded = expandedDay === dm.cycleDay;
+                      const isToday = dm.cycleDay === currentCycleDay;
+                      return (
+                        <div key={dm.cycleDay} className="space-y-3">
+                          <button
+                            onClick={() => {
+                              haptic("light");
+                              setExpandedDay(isExpanded ? null : dm.cycleDay);
+                            }}
+                            className="touch-btn flex items-center gap-3 w-full"
+                          >
+                            <span
+                              className="w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-bold flex-shrink-0"
+                              style={{
+                                backgroundColor: isToday ? week.phaseColor : `${week.phaseColor}20`,
+                                color: isToday ? "white" : week.phaseColor,
+                              }}
+                            >
+                              {dm.cycleDay}
+                            </span>
+                            <div className="flex-1 text-left min-w-0">
+                              <span className="font-body text-sm font-bold block" style={{ color: week.phaseColor }}>
+                                Day {dm.cycleDay}
+                                {isToday && (
+                                  <span className="font-body text-[10px] font-bold ml-1.5 uppercase tracking-wider opacity-70">
+                                    today
+                                  </span>
+                                )}
+                              </span>
+                              <span className="font-body text-xs text-muted-foreground block">
+                                {formatDate(dm.calendarDate)}
+                              </span>
                             </div>
-                          )}
+                            {isExpanded ? (
+                              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </button>
+
+                          {/* 3 meal tiles */}
+                          <div className="grid grid-cols-3 gap-3 pl-11">
+                            <MealTile name={dm.breakfast.name} recipe={dm.breakfast.recipe} slot="Breakfast" phaseColor={week.phaseColor} />
+                            <MealTile name={dm.lunch.name} recipe={dm.lunch.recipe} slot="Lunch" phaseColor={week.phaseColor} />
+                            <MealTile name={dm.dinner.name} recipe={dm.dinner.recipe} slot="Dinner" phaseColor={week.phaseColor} />
+                          </div>
+
+                          {/* Expanded detail */}
+                          <AnimatePresence>
+                            {isExpanded && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.25 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="pl-11 space-y-3 pt-1">
+                                  {[
+                                    { slot: "Breakfast", meal: dm.breakfast },
+                                    { slot: "Lunch", meal: dm.lunch },
+                                    { slot: "Dinner", meal: dm.dinner },
+                                  ].map(({ slot, meal }) => (
+                                    <div key={slot} className="rounded-[14px] bg-card shadow-soft p-4">
+                                      <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: week.phaseColor }}>{slot}</p>
+                                      <p className="font-display text-sm font-semibold text-foreground mt-1">{meal.name}</p>
+                                      {meal.recipe && (
+                                        <div className="mt-2">
+                                          <p className="font-body text-xs text-muted-foreground">
+                                            {meal.recipe.ingredients.slice(0, 5).join(", ")}
+                                            {meal.recipe.ingredients.length > 5 && "..."}
+                                          </p>
+                                          <p className="font-body text-xs text-muted-foreground mt-1">
+                                            {meal.recipe.prepTime} · Serves {meal.recipe.serves}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </div>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
 
       {/* Recipe detail bottom sheet */}
       <AnimatePresence>
@@ -223,7 +354,10 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
               <div className="p-6 space-y-5">
                 <div>
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className={`rounded-full px-2.5 py-1 font-body text-xs font-bold phase-${selectedRecipe.phase}-light`}>
+                    <span
+                      className="rounded-full px-2.5 py-1 font-body text-xs font-bold"
+                      style={{ backgroundColor: `${PHASE_HEX[selectedRecipe.phase]}15`, color: PHASE_HEX[selectedRecipe.phase] }}
+                    >
                       {PHASE_SHORT[selectedRecipe.phase]}
                     </span>
                     <span className="font-body text-xs text-muted-foreground">{selectedRecipe.prepTime}</span>
@@ -237,7 +371,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                     <span
                       key={n}
                       className="rounded-full px-2.5 py-0.5 font-body text-xs font-bold uppercase"
-                      style={{ backgroundColor: `${phaseColor}15`, color: phaseColor }}
+                      style={{ backgroundColor: `${PHASE_HEX[selectedRecipe.phase]}15`, color: PHASE_HEX[selectedRecipe.phase] }}
                     >
                       {n}
                     </span>
@@ -246,7 +380,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
 
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-body text-sm font-semibold" style={{ color: phaseColor }}>Ingredients</p>
+                    <p className="font-body text-sm font-semibold" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>Ingredients</p>
                     <RecipeShoppingButton
                       recipeId={selectedRecipe.id}
                       recipeName={selectedRecipe.name}
@@ -259,7 +393,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                 <BotanicalSprig width={100} opacity={0.15} />
 
                 <div>
-                  <p className="font-body text-sm font-semibold mb-3" style={{ color: phaseColor }}>Method</p>
+                  <p className="font-body text-sm font-semibold mb-3" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>Method</p>
                   <ol className="space-y-2">
                     {selectedRecipe.method.map((step, j) => (
                       <li key={j} className="font-body text-sm text-muted-foreground leading-relaxed">
@@ -269,7 +403,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                   </ol>
                 </div>
 
-                <p className="font-display text-sm italic" style={{ color: phaseColor }}>
+                <p className="font-display text-sm italic" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>
                   {selectedRecipe.phaseBenefit}
                 </p>
               </div>
