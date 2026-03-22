@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCycle } from "@/contexts/CycleContext";
