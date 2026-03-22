@@ -561,16 +561,10 @@ export default function MovementPage() {
             </button>
           </div>
 
-          {/* Training week selector */}
-          <div className="card-warm p-4">
-            <p className="font-body text-sm text-foreground mb-2">Which training week are you in?</p>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4].map(w => (
-                <button key={w} onClick={() => handleWeekChange(w)}
-                  className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[44px] font-mono text-sm ${trainingWeek === w ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                >{w}</button>
-              ))}
-            </div>
+          {/* Training week (auto-calculated) */}
+          <div className="card-warm p-4 space-y-1">
+            <p className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</p>
+            <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
           </div>
 
           {/* Manual log */}
