@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Minus, Plus, Dumbbell } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
 import {
@@ -11,7 +11,6 @@ import {
   savePreferences,
 } from "@/lib/weekly-planner";
 import { haptic } from "@/hooks/use-mobile";
-import { getFitnessProfile, GOAL_LABELS } from "@/lib/fitness-profile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -21,19 +20,25 @@ const PHASE_HEX: Record<Phase, string> = {
 };
 
 const BODY_GOAL_LABELS: Record<string, string> = {
-  general: "General Fitness",
-  strength: "Build Muscle",
-  "weight-loss": "Lose Weight",
-  flexibility: "Tone & Define",
-  "stress-relief": "Stress Relief",
+  "lose-weight": "Lose weight",
+  "gain-muscle": "Build muscle",
+  "tone-up": "Tone & define",
+  flexibility: "Improve flexibility",
+  endurance: "Build endurance",
+  "stress-relief": "Stress relief",
+  posture: "Fix posture",
+  energy: "More energy",
 };
 
 const BODY_GOAL_NUTRITION: Record<string, string> = {
-  general: "balanced, phase-focused nutrition",
-  strength: "higher protein and calorie surplus for muscle gain",
-  "weight-loss": "moderate calorie deficit with high fibre and satiety",
-  flexibility: "balanced macros with anti-inflammatory foods",
-  "stress-relief": "magnesium-rich, B vitamins and omega-3",
+  "lose-weight": "moderate calorie deficit with high fibre and satiety",
+  "gain-muscle": "higher protein and calorie surplus for muscle gain",
+  "tone-up": "balanced macros, 1.6g protein/kg target",
+  flexibility: "anti-inflammatory foods, magnesium-rich meals",
+  endurance: "complex carbs for sustained energy, iron-rich foods",
+  "stress-relief": "magnesium-rich, adaptogens, B vitamins and omega-3",
+  posture: "anti-inflammatory support, calcium and vitamin D",
+  energy: "B-vitamin rich foods, iron, complex carbs, reduced sugar",
 };
 
 interface Props {
@@ -81,15 +86,14 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const [cookingSkill, setCookingSkill] = useState<CookingSkill>(initialPrefs.cookingSkill || "confident");
   const [availableTime, setAvailableTime] = useState<AvailableTime>(initialPrefs.availableTime || "30");
   const [equipment, setEquipment] = useState<string[]>(initialPrefs.equipment || ["oven", "stovetop"]);
-  const [bodyGoal, setBodyGoal] = useState<string>(initialPrefs.bodyGoal || "");
   const phaseColor = PHASE_HEX[phase];
 
-  // Auto-populate body goal from Movement fitness profile
-  useEffect(() => {
-    const profile = getFitnessProfile();
-    if (profile?.goal) {
-      setBodyGoal(profile.goal);
-    }
+  // Read body goals array from BodyVisualiser's localStorage
+  const bodyGoals = useMemo<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("signal_body_goals");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
   }, []);
 
   const togglePrepDay = (day: string) => {
