@@ -23,6 +23,7 @@ import NotFound from "./pages/NotFound";
 import Feedback from "./pages/Feedback";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import AnimationPOC from "./pages/AnimationPOC";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
