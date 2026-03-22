@@ -150,6 +150,7 @@ export default function CyclePage() {
   const handleDateEditSave = () => {
     setLastPeriod(dateEditValue);
     setLastPeriodStart(dateEditValue);
+    cycle.setCycleStartDate(dateEditValue);
     setShowDateEdit(false);
     setRefreshKey((k) => k + 1);
   };
