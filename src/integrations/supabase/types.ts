@@ -65,6 +65,48 @@ export type Database = {
         }
         Relationships: []
       }
+      body_measurements: {
+        Row: {
+          arms: string | null
+          body_fat: string | null
+          chest: string | null
+          height: string | null
+          hips: string | null
+          id: string
+          recorded_at: string
+          thighs: string | null
+          user_id: string
+          waist: string | null
+          weight: string | null
+        }
+        Insert: {
+          arms?: string | null
+          body_fat?: string | null
+          chest?: string | null
+          height?: string | null
+          hips?: string | null
+          id?: string
+          recorded_at?: string
+          thighs?: string | null
+          user_id: string
+          waist?: string | null
+          weight?: string | null
+        }
+        Update: {
+          arms?: string | null
+          body_fat?: string | null
+          chest?: string | null
+          height?: string | null
+          hips?: string | null
+          id?: string
+          recorded_at?: string
+          thighs?: string | null
+          user_id?: string
+          waist?: string | null
+          weight?: string | null
+        }
+        Relationships: []
+      }
       community_groups: {
         Row: {
           challenges: Json | null
