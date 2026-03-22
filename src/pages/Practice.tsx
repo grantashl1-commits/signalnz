@@ -12,7 +12,7 @@ import {
   SELF_CARE_RITUALS,
   type Habit, type HabitCategory,
 } from "@/data/self-care-rituals";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 
 const fadeUp = (delay: number) => ({
