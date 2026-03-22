@@ -7,6 +7,8 @@ import { parseIngredient } from "./ingredient-parser";
 export type BreakfastPref = "batch" | "rotate" | "variety";
 export type LunchPref = "batch" | "rotate" | "variety";
 export type DinnerPref = "double" | "fresh" | "mix";
+export type CookingSkill = "beginner" | "confident" | "adventurous";
+export type AvailableTime = "15" | "30" | "45" | "60+";
 
 export interface PrepPreferences {
   breakfast: BreakfastPref;
@@ -19,6 +21,41 @@ export interface PrepPreferences {
   allergies?: string;
   dislikes?: string;
   calorieTarget?: string;
+  cookingSkill?: CookingSkill;
+  availableTime?: AvailableTime;
+  equipment?: string[];
+  bodyGoal?: string;
+}
+
+export interface AIMeal {
+  name: string;
+  phase: Phase;
+  mealType: "breakfast" | "lunch" | "dinner" | "snack";
+  prepTime: string;
+  serves: number;
+  ingredients: string[];
+  method: string[];
+  nutritionalNote: string;
+  keyNutrients?: string[];
+  isLeftover?: boolean;
+  leftoverFrom?: number; // cycle day reference
+}
+
+export interface AIPlannedDay {
+  cycleDay: number;
+  phase: Phase;
+  breakfast: AIMeal;
+  morningSnack: AIMeal;
+  lunch: AIMeal;
+  afternoonSnack: AIMeal;
+  dinner: AIMeal;
+}
+
+export interface AIMealPlan {
+  days: AIPlannedDay[];
+  prepPreferences: PrepPreferences;
+  createdAt: number;
+  lockedMeals: Record<string, boolean>; // key: "{cycleDay}-{mealType}"
 }
 
 export interface PlannedMeal {
@@ -73,6 +110,9 @@ export const DEFAULT_PREFS: PrepPreferences = {
   prepDays: ["Sunday"],
   adults: 2,
   kids: 0,
+  cookingSkill: "confident",
+  availableTime: "30",
+  equipment: ["oven", "stovetop"],
 };
 
 // ─── Week Generation ───────────────────────────────────────
@@ -113,12 +153,11 @@ function matchRecipe(name: string): { id: string; name: string } | undefined {
   return recipe ? { id: recipe.id, name: recipe.name } : undefined;
 }
 
-// ─── Plan Generation ───────────────────────────────────────
+// ─── Plan Generation (static fallback) ────────────────────
 export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
   const { dates, start, end } = getWeekDates();
   const info = getCycleInfo(getLastPeriodStart());
   const phase = info.phase;
-  // Use meat-inclusive plans when no dietary preference or explicitly "No preference"
   const useMeat = !prefs.dietType || prefs.dietType === "" || prefs.dietType === "No preference";
   const mealSource = useMeat ? MEAT_MEAL_PLANS : PHASE_MEAL_PLANS;
   const plan = mealSource[phase];
@@ -128,7 +167,6 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     const dayPlan = plan.days[i % plan.days.length];
     const dayName = DAY_NAMES[i];
 
-    // Breakfast
     let bName: string;
     if (prefs.breakfast === "batch") {
       bName = plan.days[0].breakfast.split(" — ")[0];
@@ -140,7 +178,6 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     const bMatch = matchRecipe(bName);
     const breakfast: PlannedMeal = { name: bMatch?.name || bName, recipeId: bMatch?.id };
 
-    // Lunch
     let lName: string;
     if (prefs.lunch === "batch") {
       lName = plan.days[0].lunch.split(" — ")[0];
@@ -152,17 +189,12 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     const lMatch = matchRecipe(lName);
     const lunch: PlannedMeal = { name: lMatch?.name || lName, recipeId: lMatch?.id };
 
-    // Dinner
     let dinner: PlannedMeal;
     if (prefs.dinner === "double") {
       const dinnerIdx = Math.floor(i / 2);
       const dName = plan.days[dinnerIdx % plan.days.length].dinner.split(" — ")[0];
       const dMatch = matchRecipe(dName);
-      dinner = {
-        name: dMatch?.name || dName,
-        recipeId: dMatch?.id,
-        isLeftover: i % 2 === 1,
-      };
+      dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id, isLeftover: i % 2 === 1 };
     } else if (prefs.dinner === "mix") {
       if (i % 3 === 2) {
         const dName = plan.days[Math.floor((i - 1) / 2) % plan.days.length].dinner.split(" — ")[0];
@@ -179,7 +211,6 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
       dinner = { name: dMatch?.name || dName, recipeId: dMatch?.id };
     }
 
-    // Snacks
     const morningSnack: PlannedMeal = { name: "Fruit + seeds" };
     const afternoonSnack: PlannedMeal = { name: "Trail mix" };
 
@@ -242,15 +273,10 @@ function categoriseIngredient(name: string): string {
   return "pantry";
 }
 
-/**
- * Generate a shopping list from a weekly plan.
- * Uses canonical recipe index for ingredient lookups via recipeId.
- */
 export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
   const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
   const ingredientMap: Record<string, { name: string; totalQty: number; unit: string; category: string }> = {};
 
-  // Count unique meals (by recipeId or name) and their repetitions
   const mealCounts: Record<string, { count: number; recipeId?: string }> = {};
   plan.days.forEach((day) => {
     [day.breakfast, day.lunch, day.dinner].forEach((meal) => {
@@ -264,9 +290,7 @@ export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
     });
   });
 
-  // For each unique meal, find its recipe and add ingredients
   Object.entries(mealCounts).forEach(([mealKey, { count, recipeId }]) => {
-    // Use recipeId for canonical lookup first, then fall back to name matching
     let recipe: Recipe | undefined;
     if (recipeId) {
       recipe = findRecipeById(recipeId);
@@ -292,7 +316,6 @@ export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
     }
   });
 
-  // Group by category
   const categories: Record<string, ShoppingIngredient[]> = {
     grains: [],
     produce: [],
@@ -331,6 +354,63 @@ export function generateShoppingList(plan: WeeklyPlan): ShoppingCategory[] {
   })).filter((c) => c.items.length > 0);
 }
 
+// ─── AI Meal Plan Shopping List ────────────────────────────
+export function generateAIShoppingList(plan: AIMealPlan, weekNumber: number): ShoppingCategory[] {
+  const startDay = (weekNumber - 1) * 7 + 1;
+  const endDay = weekNumber * 7;
+  const weekDays = plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= endDay);
+  
+  const ingredientMap: Record<string, { name: string; totalQty: number; unit: string; category: string }> = {};
+  const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
+
+  weekDays.forEach(day => {
+    [day.breakfast, day.lunch, day.dinner].forEach(meal => {
+      if (meal.isLeftover) return;
+      meal.ingredients.forEach(ingStr => {
+        const parsed = parseIngredient(ingStr);
+        const baseQty = parseQuantity(parsed.quantity);
+        const totalQty = baseQty * servingMultiplier / (meal.serves || 2);
+        const mapKey = parsed.searchTerm.toLowerCase();
+        const cat = categoriseIngredient(parsed.name);
+        if (ingredientMap[mapKey]) {
+          ingredientMap[mapKey].totalQty += totalQty;
+        } else {
+          ingredientMap[mapKey] = { name: parsed.name, totalQty, unit: parsed.unit, category: cat };
+        }
+      });
+    });
+  });
+
+  const categories: Record<string, ShoppingIngredient[]> = {};
+  const CATEGORY_META: Record<string, { name: string; emoji: string }> = {
+    grains: { name: "Grains & Legumes", emoji: "·" },
+    produce: { name: "Fresh Produce", emoji: "·" },
+    pantry: { name: "Pantry & Condiments", emoji: "·" },
+    dairy: { name: "Dairy Alternatives", emoji: "·" },
+    herbs: { name: "Herbs, Spices & Seeds", emoji: "·" },
+  };
+
+  Object.values(ingredientMap).forEach(item => {
+    const cat = item.category;
+    const displayQty = item.totalQty < 1 ? `${Math.round(item.totalQty * 100) / 100}` :
+      item.totalQty > 10 ? `${Math.round(item.totalQty)}` :
+        `${Math.round(item.totalQty * 10) / 10}`;
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push({
+      name: item.name.charAt(0).toUpperCase() + item.name.slice(1),
+      quantity: displayQty,
+      unit: item.unit,
+      checked: false,
+    });
+  });
+
+  return Object.entries(CATEGORY_META).map(([key, meta]) => ({
+    name: meta.name,
+    emoji: meta.emoji,
+    items: categories[key] || [],
+  })).filter(c => c.items.length > 0);
+}
+
 // ─── localStorage Persistence ──────────────────────────────
 export function saveWeeklyPlan(plan: WeeklyPlan): void {
   const key = `weeklyPlan:${getISOWeek(new Date(plan.dateRange.start))}`;
@@ -350,4 +430,22 @@ export function savePreferences(prefs: PrepPreferences): void {
 export function getSavedPreferences(): PrepPreferences | null {
   const val = localStorage.getItem("mealPrepPreferences");
   return val ? JSON.parse(val) : null;
+}
+
+// ─── AI Plan Persistence ──────────────────────────────────
+const AI_PLAN_KEY = "signal_ai_meal_plan";
+
+export function saveAIMealPlan(plan: AIMealPlan): void {
+  localStorage.setItem(AI_PLAN_KEY, JSON.stringify(plan));
+}
+
+export function getAIMealPlan(): AIMealPlan | null {
+  try {
+    const val = localStorage.getItem(AI_PLAN_KEY);
+    return val ? JSON.parse(val) : null;
+  } catch { return null; }
+}
+
+export function clearAIMealPlan(): void {
+  localStorage.removeItem(AI_PLAN_KEY);
 }
