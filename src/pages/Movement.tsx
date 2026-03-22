@@ -9,8 +9,8 @@ import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/Botanic
 import { useCycle } from "@/contexts/CycleContext";
 import { getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import {
-  WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
-  FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
+  WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, SUIT_COLORS, CATEGORY_LABELS,
+  FEELINGS, FEELING_REC, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
   getAllSessions, saveWorkoutSession, getWorkoutSession, HR_ZONES, getZoneForBPM, getMaxHR, getUserAge,
   type WorkoutCategory, type Exercise, type WorkoutSession,
 } from "@/data/workouts";
@@ -24,6 +24,7 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import { getFitnessProfile } from "@/lib/fitness-profile";
+import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -56,7 +57,21 @@ export default function MovementPage() {
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
   const scheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const todaySchedule = WEEKLY_SCHEDULE[scheduleIdx];
+
+  // ── Body goals from BodyVisualiser ──
+  const bodyGoals = useMemo<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("signal_body_goals");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }, [activeTab]);
+
+  // ── Weekly rotation based on goals + phase ──
+  const weeklyRotation = useMemo(
+    () => getWeeklyRotation(info.phase, bodyGoals),
+    [info.phase, bodyGoals],
+  );
+  const todayAssignment = weeklyRotation[scheduleIdx];
 
   // ── AI-generated workout plan ──
   const aiPlan = useMemo(() => {
@@ -65,7 +80,7 @@ export default function MovementPage() {
       if (raw) return JSON.parse(raw);
     } catch {}
     return null;
-  }, [activeTab]); // re-read when switching tabs
+  }, [activeTab]);
 
   const aiTodayWorkout = useMemo(() => {
     if (!aiPlan?.weeks) return null;
@@ -76,10 +91,12 @@ export default function MovementPage() {
     return dayData || null;
   }, [aiPlan, trainingWeek, dayOfWeek]);
 
-  // Phase-aware today workout (fallback if no AI plan)
+  // Phase-aware today workout — uses rotation, not static
   const phaseWorkouts = PHASE_WORKOUTS[info.phase];
-  const todayWorkoutId = TODAY_WORKOUT[info.phase];
-  const todayWorkoutData = phaseWorkouts.find(w => w.id === todayWorkoutId) || phaseWorkouts[0];
+  const allWorkoutsFlat = WORKOUTS;
+  const todayWorkoutData = allWorkoutsFlat.find(w => w.id === todayAssignment.workoutId)
+    || phaseWorkouts.find(w => w.id === todayAssignment.workoutId)
+    || phaseWorkouts[0];
   const rec = PHASE_MOVEMENT_REC[info.phase];
 
   const toggleExercise = (name: string) => {
@@ -218,20 +235,40 @@ export default function MovementPage() {
             </div>
           </div>
 
-          {/* Phase workout options */}
+          {/* Phase guidance */}
+          <div className="rounded-xl bg-primary/5 px-4 py-2.5">
+            <p className="font-body text-xs text-primary italic">{PHASE_GUIDANCE[info.phase]}</p>
+          </div>
+
+          {/* Weekly rotation carousel */}
           <div className="card-warm p-4 space-y-2">
             <p className="font-hand text-xs font-bold text-primary mb-2">
-              {phaseWorkouts.length} workouts for {PHASE_SHORT[info.phase].toLowerCase()}
+              This week's rotation
             </p>
             <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-              {phaseWorkouts.map(w => (
-                <button key={w.id} onClick={() => { haptic("light"); }}
-                  className={`scroll-snap-item flex-shrink-0 rounded-xl p-2.5 text-center min-w-[80px] ${w.id === todayWorkoutData?.id ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/40"}`}
-                >
-                  <p className="font-hand text-[10px] font-bold text-foreground leading-tight">{w.name}</p>
-                  <p className="font-mono text-[8px] text-muted-foreground mt-0.5">{w.duration}</p>
-                </button>
-              ))}
+              {weeklyRotation.map((assignment) => {
+                const workout = allWorkoutsFlat.find(w => w.id === assignment.workoutId) || phaseWorkouts.find(w => w.id === assignment.workoutId);
+                const isToday = assignment.dayIndex === scheduleIdx;
+                // Calendar date for this day
+                const today = new Date();
+                const mondayOff = today.getDay() === 0 ? -6 : 1 - today.getDay();
+                const dayDate = new Date(today);
+                dayDate.setDate(today.getDate() + mondayOff + assignment.dayIndex);
+                const dateLabel = dayDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short" });
+
+                return (
+                  <button key={assignment.dayIndex} onClick={() => { haptic("light"); }}
+                    className={`scroll-snap-item flex-shrink-0 rounded-xl p-2.5 text-center min-w-[80px] transition-all ${isToday ? "bg-card ring-2 ring-primary shadow-sm" : "bg-secondary/40"}`}
+                  >
+                    <p className={`font-mono text-[9px] uppercase ${isToday ? "text-primary font-bold" : "text-muted-foreground"}`}>
+                      {assignment.dayLabel} · {dateLabel}
+                    </p>
+                    <p className="font-hand text-[10px] font-bold text-foreground leading-tight mt-1">{workout?.name || "Rest"}</p>
+                    <p className="font-mono text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
+                    {isToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[7px] text-primary font-bold">Today</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
