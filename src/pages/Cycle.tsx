@@ -144,6 +144,7 @@ export default function CyclePage() {
     const val = e.target.value;
     setLastPeriod(val);
     setLastPeriodStart(val);
+    cycle.setCycleStartDate(val);
   };
 
   const handleDateEditSave = () => {
