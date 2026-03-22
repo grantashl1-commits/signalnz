@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Leaf, Search } from "lucide-react";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { RecipeShoppingButton } from "@/components/ShoppingList";
