@@ -3,10 +3,15 @@ import {
   loadDreamBoards, saveDreamBoards, getActiveBoardId, setActiveBoardId,
   type DreamElement, type DreamBoard, type DreamConnection,
 } from "@/lib/journal-store";
+import { supabase } from "@/integrations/supabase/client";
 
 const uid = () => `dream-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 const GRID = 16;
 const snap = (v: number) => Math.round(v / GRID) * GRID;
+
+const CLOUD_DEBOUNCE_MS = 1500;
+
+export type SaveStatus = "idle" | "saving" | "saved";
 
 export function useDreamBoard() {
   const [boards, setBoards] = useState<DreamBoard[]>(() => loadDreamBoards());
@@ -17,13 +22,99 @@ export function useDreamBoard() {
     return bs[0]?.id ?? null;
   });
 
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const saveTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const cloudSaveTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const savedFadeTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const latestBoardsRef = useRef(boards);
+  const cloudLoadedRef = useRef(false);
+
+  // Keep ref in sync
+  latestBoardsRef.current = boards;
+
+  // ── Cloud save ─────────────────────────────────────────────
+  const saveToCloud = useCallback(async (boardsToSave: DreamBoard[]) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return; // Not logged in, skip cloud save
+
+      setSaveStatus("saving");
+      const activeId = getActiveBoardId();
+      
+      const { error } = await supabase
+        .from("dream_boards")
+        .upsert({
+          user_id: user.id,
+          board_data: boardsToSave as any,
+          active_board_id: activeId,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "user_id" });
+
+      if (error) {
+        console.error("Cloud save error:", error);
+        setSaveStatus("idle");
+        return;
+      }
+
+      setSaveStatus("saved");
+      // Fade back to idle after 2s
+      if (savedFadeTimeout.current) clearTimeout(savedFadeTimeout.current);
+      savedFadeTimeout.current = setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (err) {
+      console.error("Cloud save error:", err);
+      setSaveStatus("idle");
+    }
+  }, []);
+
+  // ── Cloud load on mount ────────────────────────────────────
+  useEffect(() => {
+    if (cloudLoadedRef.current) return;
+    cloudLoadedRef.current = true;
+
+    (async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from("dream_boards")
+          .select("board_data, active_board_id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (error || !data) return;
+
+        const cloudBoards = data.board_data as unknown as DreamBoard[];
+        if (Array.isArray(cloudBoards) && cloudBoards.length > 0) {
+          // Merge: cloud wins if it has data, but keep local if cloud is empty
+          const localBoards = loadDreamBoards();
+          const useCloud = cloudBoards.length > 0;
+          const finalBoards = useCloud ? cloudBoards : localBoards;
+
+          setBoards(finalBoards);
+          saveDreamBoards(finalBoards);
+
+          if (data.active_board_id && finalBoards.find(b => b.id === data.active_board_id)) {
+            setActiveId(data.active_board_id);
+            setActiveBoardId(data.active_board_id);
+          }
+        }
+      } catch (err) {
+        console.error("Cloud load error:", err);
+      }
+    })();
+  }, []);
 
   const persist = useCallback((next: DreamBoard[]) => {
     setBoards(next);
+    // Immediate localStorage save (fast)
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => saveDreamBoards(next), 300);
-  }, []);
+
+    // Debounced cloud save (1.5s)
+    if (cloudSaveTimeout.current) clearTimeout(cloudSaveTimeout.current);
+    cloudSaveTimeout.current = setTimeout(() => saveToCloud(next), CLOUD_DEBOUNCE_MS);
+  }, [saveToCloud]);
 
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
   const elements = activeBoard?.elements ?? [];
@@ -150,5 +241,6 @@ export function useDreamBoard() {
     addElement, updateElement, deleteElement, duplicateElement,
     bringForward, sendBackward, addBulk,
     addConnection, removeConnection,
+    saveStatus,
   };
 }
