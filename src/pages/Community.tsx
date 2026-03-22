@@ -163,7 +163,7 @@ export default function CommunityPage() {
                 {joined.length > 1 && (
                   <div className="flex gap-1.5 mb-3 overflow-x-auto pb-0.5 scroll-snap-x">
                     {joined.map((id) => {
-                      const g = MOCK_GROUPS.find((g) => g.id === id);
+                      const g = dbGroups.find((g) => g.id === id);
                       if (!g) return null;
                       return (
                         <button
@@ -175,7 +175,7 @@ export default function CommunityPage() {
                               : "bg-card text-foreground border-border"
                           }`}
                         >
-                          {g.suburb}
+                          {g.name || g.suburb}
                         </button>
                       );
                     })}
