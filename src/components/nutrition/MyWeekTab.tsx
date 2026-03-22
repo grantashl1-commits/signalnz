@@ -93,7 +93,7 @@ interface WeekDay {
   isAI: boolean;
 }
 
-type Step = "prep" | "plan";
+type Step = "prep" | "plan" | "shop";
 
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
