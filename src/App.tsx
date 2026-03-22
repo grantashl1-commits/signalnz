@@ -66,6 +66,7 @@ const App = () => (
               } />
             </Routes>
           </SignalPanelProvider>
+          </CycleProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
