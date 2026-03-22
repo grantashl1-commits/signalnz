@@ -50,7 +50,7 @@ export default function MovementPage() {
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [showHR, setShowHR] = useState(false);
-  const [trainingWeek, setTrainingWeekState] = useState(getTrainingWeek());
+  const trainingWeek = currentWeekNumber;
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [sessionNotes, setSessionNotes] = useState<Record<string, string>>({});
