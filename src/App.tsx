@@ -57,6 +57,7 @@ const App = () => (
                     <Route path="/community" element={<Community />} />
                     <Route path="/account" element={<Account />} />
                     <Route path="/feedback" element={<Feedback />} />
+                    <Route path="/admin" element={<Admin />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
