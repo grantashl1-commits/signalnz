@@ -11,8 +11,9 @@ import { useCycle } from "@/contexts/CycleContext";
 import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
-  getDayIndicators, getMonthLogSummary,
+  getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
 } from "@/lib/cycle-utils";
+import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_DATA: Record<Phase, { hormones: string; energy: number; mood: string; body: string; focus: string; nutrition: string; movement: string; poetry: string }> = {
