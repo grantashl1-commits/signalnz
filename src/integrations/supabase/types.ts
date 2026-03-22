@@ -156,6 +156,30 @@ export type Database = {
           },
         ]
       }
+      dream_boards: {
+        Row: {
+          active_board_id: string | null
+          board_data: Json
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_board_id?: string | null
+          board_data?: Json
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_board_id?: string | null
+          board_data?: Json
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           admin_notes: string | null
