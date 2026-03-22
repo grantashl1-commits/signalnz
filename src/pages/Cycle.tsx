@@ -7,8 +7,9 @@ import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, MoonPhaseRow, BotanicalSprig, WildStar, RootSystem, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
 import InsightsTab from "@/components/InsightsTab";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  getCycleInfo, getLastPeriodStart, setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
+  setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
