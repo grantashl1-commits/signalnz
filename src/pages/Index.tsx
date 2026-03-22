@@ -67,7 +67,8 @@ export default function HomePage() {
   const { user } = useAuth();
   const { openSignal } = useSignalPanel();
   const { displayName, refetch } = useProfile();
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const focus = FOCUS[info.phase];
