@@ -7,7 +7,7 @@ import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
-import { getCheckin, setCheckin, getCheckinStreak, Phase } from "@/lib/cycle-utils";
+import { getCheckin, setCheckin, getCheckinStreak, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
