@@ -5,7 +5,7 @@ import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
-import { RecipeIllustration } from "@/components/MealIllustration";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
