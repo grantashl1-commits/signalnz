@@ -5,8 +5,9 @@ import { Send } from "lucide-react";
 import { BotanicalSprig, SeedGeometry, WildStar, CymatiSketch } from "@/components/BotanicalElements";
 import { MOOD_ICONS } from "@/components/TrackingIcons";
 import { supabase } from "@/integrations/supabase/client";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  Phase, getPhaseFromDay, getLastPeriodStart, getCycleDayForDate, getCycleInfo,
+  Phase, getPhaseFromDay, getCycleDayForDate,
   getSymptomFrequency, getMoodsByPhase, getDayIndicators, getRecentSymptoms,
   PHASE_SHORT, PHASE_LABELS,
 } from "@/lib/cycle-utils";
