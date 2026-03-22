@@ -121,7 +121,8 @@ const cardVariant = {
 };
 
 export default function CyclePage() {
-  const [lastPeriod, setLastPeriod] = useState(getLastPeriodStart() || "");
+  const cycle = useCycle();
+  const [lastPeriod, setLastPeriod] = useState(cycle.cycleStartDate || "");
   
   const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights">("overview");
   
@@ -131,7 +132,7 @@ export default function CyclePage() {
   const [dateEditValue, setDateEditValue] = useState(lastPeriod);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const info = getCycleInfo(lastPeriod || null);
+  const info = { phase: cycle.currentPhase, cycleDay: cycle.currentCycleDay, name: PHASE_LABELS[cycle.currentPhase], day: cycle.currentCycleDay };
   const daysUntil = getDaysUntilNextPhase(info.cycleDay, info.phase);
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const nextPhaseIdx = (phases.indexOf(info.phase) + 1) % 4;
