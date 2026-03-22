@@ -6,7 +6,8 @@ import SignalPulse from "@/components/SignalPulse";
 import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
-import { getCycleInfo, getLastPeriodStart, getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import {
   WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
   FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
