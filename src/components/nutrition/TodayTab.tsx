@@ -208,15 +208,7 @@ function MealCard({ slot, label, name, recipe, isExpanded, isEaten, phaseColor, 
     >
       {/* Image */}
       <div className="relative">
-        {recipe?.image ? (
-          <div className="w-full h-[180px] md:h-[220px] flex items-center justify-center bg-secondary/20">
-            <img src={recipe.image} alt={name} className="h-[160px] md:h-[200px] w-auto object-contain" loading="lazy" />
-          </div>
-        ) : (
-          <div className="w-full h-[140px] flex items-center justify-center bg-secondary/10">
-            <RecipeIllustration recipeName={name} height={110} />
-          </div>
-        )}
+        <RecipeImage recipeName={name} recipeImage={recipe?.image} height={180} variant="detail" />
         {/* Prep time + serves badges */}
         <div className="absolute bottom-3 right-4 flex gap-2">
           {recipe?.prepTime && (

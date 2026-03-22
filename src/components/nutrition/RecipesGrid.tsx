@@ -206,13 +206,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                 </div>
               )}
 
-              {selectedRecipe.image ? (
-                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/30 rounded-t-[20px]">
-                  <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
-                </div>
-              ) : (
-                <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
-              )}
+              <RecipeImage recipeName={selectedRecipe.name} recipeImage={selectedRecipe.image} height={180} variant="detail" />
 
               <div className="p-5 space-y-4">
                 <div>

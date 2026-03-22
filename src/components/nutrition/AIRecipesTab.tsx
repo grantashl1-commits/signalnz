@@ -108,22 +108,8 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
             transition={{ delay: 0.03 * i, duration: 0.25 }}
             className="card-warm p-4 flex gap-4"
           >
-            {/* Left: illustration or color block */}
-            {recipe.image ? (
-              <img
-                src={recipe.image}
-                alt={recipe.name}
-                className="h-20 w-20 rounded-xl object-cover flex-shrink-0"
-                loading="lazy"
-              />
-            ) : (
-              <div
-                className="h-20 w-20 rounded-xl flex-shrink-0 flex items-center justify-center"
-                style={{ backgroundColor: `${PHASE_HEX[recipe.phase]}15` }}
-              >
-                <Sparkles className="h-6 w-6" style={{ color: PHASE_HEX[recipe.phase] }} />
-              </div>
-            )}
+            {/* Left: illustration */}
+            <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} variant="thumb" className="!h-20 !w-20 rounded-xl" />
 
             {/* Right: info */}
             <div className="flex-1 min-w-0">
