@@ -335,13 +335,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                 </button>
               </div>
 
-              {selectedRecipe.image ? (
-                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/20 rounded-t-[20px]">
-                  <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
-                </div>
-              ) : (
-                <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
-              )}
+              <RecipeImage recipeName={selectedRecipe.name} recipeImage={selectedRecipe.image} height={180} variant="detail" />
 
               <div className="p-6 space-y-5">
                 <div>
