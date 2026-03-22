@@ -63,7 +63,7 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
   const cycleDay = ((diffDays - 1) % 28) + 1;
   const phase = getPhaseFromDay(cycleDay);
-  const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 17;
+  const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 15;
   const dayInPhase = cycleDay - phaseStartDay + 1;
 
   return {
