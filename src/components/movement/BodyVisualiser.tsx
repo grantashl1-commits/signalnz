@@ -535,23 +535,8 @@ function BodyGoalsSection() {
   );
 }
 
-// ── 3D Placeholder Card ──
-function ComingSoonCard() {
-  return (
-    <div className="rounded-2xl border border-dashed border-border bg-secondary/30 p-5 text-center space-y-2">
-      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-        <Sparkles className="h-5 w-5 text-primary/50" />
-      </div>
-      <h3 className="font-display text-sm font-semibold italic text-foreground">3D Body Visualisation</h3>
-      <p className="font-body text-xs text-muted-foreground leading-relaxed max-w-xs mx-auto">
-        Coming Soon. You'll be able to create a personalised avatar and track visual changes over time.
-      </p>
-      <span className="inline-block rounded-full bg-primary/10 px-3 py-1 font-mono text-[9px] text-primary font-medium">
-        In development
-      </span>
-    </div>
-  );
-}
+// ── 3D Body Visualisation Card ──
+import BodyVisualisationCard from "@/components/BodyVisualisationCard";
 
 // ── Main Export ──
 export default function BodyVisualiser() {
