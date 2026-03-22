@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, X, ArrowRight, LayoutGrid } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, Sparkles, X, ArrowRight, LayoutGrid, Check, Loader2 } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useDreamBoard } from "@/hooks/useDreamBoard";
+import { useDreamBoard, type SaveStatus } from "@/hooks/useDreamBoard";
 import BoardCanvas from "./dream/BoardCanvas";
 import BoardToolbar from "./dream/BoardToolbar";
 import BoardEmptyState from "./dream/BoardEmptyState";
