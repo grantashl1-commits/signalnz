@@ -5,7 +5,7 @@ import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
 import { findRecipeByName } from "@/lib/recipe-index";
-import { RecipeIllustration } from "@/components/MealIllustration";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
