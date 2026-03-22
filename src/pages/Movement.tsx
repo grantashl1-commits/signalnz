@@ -210,6 +210,31 @@ export default function MovementPage() {
       {/* TODAY TAB */}
       {activeTab === "today" && (
         <div className="space-y-4 md:space-y-6">
+          {/* Onboarding nudges */}
+          {!useCycle().cycleStartDate && (
+            <div className="rounded-xl border border-border bg-card p-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                <Moon className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-body text-xs font-medium text-foreground">Set your cycle start date first</p>
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Your workouts will adapt to your cycle phase.</p>
+              </div>
+              <Link to="/cycle" className="font-body text-xs font-semibold text-primary">Set up →</Link>
+            </div>
+          )}
+          {bodyGoals.length === 0 && (
+            <div className="rounded-xl border border-border bg-card p-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                <Flame className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-body text-xs font-medium text-foreground">Set your body goals</p>
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5">We'll personalise your workout rotation and nutrition.</p>
+              </div>
+              <button onClick={() => { haptic("light"); setActiveTab("body"); }} className="font-body text-xs font-semibold text-primary">Set goals →</button>
+            </div>
+          )}
           {/* Phase banner */}
           <div className="card-warm p-4 md:p-5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
