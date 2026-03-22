@@ -86,7 +86,7 @@ USER PROFILE:
 - Available cooking time: ${prefs.availableTime || "30"} minutes per meal
 - Equipment: ${prefs.equipment?.join(", ") || "oven, stovetop"}
 - Cooking for: ${prefs.adults} adult(s)${prefs.kids > 0 ? ` and ${prefs.kids} kid(s)` : ""}
-- Body goal: ${goalKey}
+- Body goals: ${goals.join(", ")}
 
 BODY GOAL GUIDANCE:
 ${goalAdvice}

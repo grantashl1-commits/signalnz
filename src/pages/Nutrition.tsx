@@ -13,6 +13,8 @@ import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import AIRecipesTab from "@/components/nutrition/AIRecipesTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
+import { Dumbbell, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type TabId = "today" | "plans" | "myweek" | "ai" | "recipes" | "baking" | "shopping";
 
