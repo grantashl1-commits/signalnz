@@ -1,435 +1,56 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles, Flame, Dumbbell, Star, PersonStanding, Activity, Leaf, Bone, Zap, type LucideIcon } from "lucide-react";
+import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles, Flame, Dumbbell, Star, PersonStanding, Activity, Leaf, Bone, Zap, TrendingUp, ChevronDown, type LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { haptic } from "@/hooks/use-mobile";
-import { useCycle } from "@/contexts/CycleContext";
-import { Phase } from "@/lib/cycle-utils";
-import { PHASE_WORKOUTS, TODAY_WORKOUT, type Workout } from "@/data/workouts";
+import { useCycle, type Phase } from "@/contexts/CycleContext";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from "recharts";
 
-// ── Measurements ──
-interface Measurements {
-  height: string;
+// ── Measurement History ──
+interface MeasurementEntry {
+  id: string;
+  date: string;
+  cycleDay: number;
+  phase: Phase;
   weight: string;
-  bust: string;
+  height: string;
+  chest: string;
   waist: string;
   hips: string;
-  inseam: string;
+  thighs: string;
+  arms: string;
+  bodyFat: string;
+  energyLevel: number;
+  notes: string;
+  weightUnit: "kg" | "lbs";
+  lengthUnit: "cm" | "in";
 }
 
-const MEASUREMENT_FIELDS: { key: keyof Measurements; label: string; unit: string; placeholder: string }[] = [
-  { key: "height", label: "Height", unit: "cm", placeholder: "165" },
-  { key: "weight", label: "Weight", unit: "kg", placeholder: "62" },
-  { key: "bust", label: "Bust", unit: "cm", placeholder: "88" },
-  { key: "waist", label: "Waist", unit: "cm", placeholder: "72" },
-  { key: "hips", label: "Hips", unit: "cm", placeholder: "96" },
-  { key: "inseam", label: "Inseam", unit: "cm", placeholder: "78" },
-];
+const HISTORY_KEY = "signal_measurement_history";
+const UNIT_KEY = "signal_measurement_units";
 
-const STORAGE_KEY = "signal_body_measurements";
-
-function loadMeasurements(): Measurements {
+function loadHistory(): MeasurementEntry[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return { height: "", weight: "", bust: "", waist: "", hips: "", inseam: "" };
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
 }
 
-function saveMeasurements(m: Measurements) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...m, _savedAt: new Date().toISOString() }));
+function saveHistory(entries: MeasurementEntry[]) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(entries));
 }
 
-function getSavedTimestamp(): string | null {
+function loadUnits(): { weight: "kg" | "lbs"; length: "cm" | "in" } {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return parsed._savedAt || null;
-    }
-  } catch {}
-  return null;
+    const raw = localStorage.getItem(UNIT_KEY);
+    return raw ? JSON.parse(raw) : { weight: "kg", length: "cm" };
+  } catch { return { weight: "kg", length: "cm" }; }
 }
 
-function MeasurementsForm() {
-  const [measurements, setMeasurements] = useState<Measurements>(loadMeasurements);
-  const [saved, setSaved] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<string | null>(getSavedTimestamp);
-
-  const hasValues = Object.values(measurements).some(v => v.trim() !== "");
-
-  const handleChange = (key: keyof Measurements, value: string) => {
-    const numeric = value.replace(/[^0-9.]/g, "").slice(0, 6);
-    setMeasurements(prev => ({ ...prev, [key]: numeric }));
-    setSaved(false);
-  };
-
-  const handleSave = () => {
-    haptic("medium");
-    saveMeasurements(measurements);
-    setSaved(true);
-    setLastUpdated(new Date().toISOString());
-    setTimeout(() => setSaved(false), 2000);
-  };
-
-  // Derived stats
-  const w = parseFloat(measurements.waist);
-  const h = parseFloat(measurements.hips);
-  const ht = parseFloat(measurements.height);
-  const wt = parseFloat(measurements.weight);
-  const whr = w && h ? (w / h).toFixed(2) : null;
-  const bmi = wt && ht ? (wt / ((ht / 100) ** 2)).toFixed(1) : null;
-
-  return (
-    <div className="card-warm p-4 rounded-2xl space-y-4">
-      <div className="flex items-center gap-2">
-        <Ruler className="h-4 w-4 text-primary" />
-        <h3 className="font-display text-base font-semibold text-foreground">My Measurements</h3>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        {MEASUREMENT_FIELDS.map(field => (
-          <div key={field.key} className="space-y-1">
-            <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
-              {field.label} ({field.unit})
-            </label>
-            <Input
-              type="text"
-              inputMode="decimal"
-              value={measurements[field.key]}
-              onChange={e => handleChange(field.key, e.target.value)}
-              placeholder={field.placeholder}
-              className="h-10 text-base rounded-xl bg-background border-border"
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Derived stats */}
-      {(whr || bmi) && (
-        <div className="flex gap-3">
-          {bmi && (
-            <div className="flex-1 rounded-xl bg-background p-3 text-center">
-              <p className="font-mono text-lg text-foreground">{bmi}</p>
-              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">BMI</p>
-            </div>
-          )}
-          {whr && (
-            <div className="flex-1 rounded-xl bg-background p-3 text-center">
-              <p className="font-mono text-lg text-foreground">{whr}</p>
-              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">Waist-Hip</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      <Button
-        onClick={handleSave}
-        disabled={!hasValues}
-        className="w-full h-10 rounded-full font-body text-sm font-semibold"
-      >
-        {saved ? "Saved ✓" : "Save measurements"}
-      </Button>
-
-      {lastUpdated && (
-        <p className="font-body text-[10px] text-muted-foreground text-center">
-          Last updated {new Date(lastUpdated).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
-          {" · "}
-          {new Date(lastUpdated).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
-        </p>
-      )}
-
-      {/* 3D Body Visualizer */}
-      <BodyVisualizerIframe measurements={measurements} />
-    </div>
-  );
-}
-
-// ── Progress Photos ──
-const PHOTOS_KEY = "signal_body_photos";
-
-interface BodyPhoto {
-  id: string;
-  dataUrl: string;
-  date: string;
-}
-
-function loadPhotos(): BodyPhoto[] {
-  try {
-    const raw = localStorage.getItem(PHOTOS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return [];
-}
-
-function savePhotos(photos: BodyPhoto[]) {
-  localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos));
-}
-
-function ProgressPhotos() {
-  const [photos, setPhotos] = useState<BodyPhoto[]>(loadPhotos);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const cameraRef = useRef<HTMLInputElement>(null);
-
-  const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const newPhoto: BodyPhoto = {
-        id: `photo-${Date.now()}`,
-        dataUrl: reader.result as string,
-        date: new Date().toISOString().split("T")[0],
-      };
-      const updated = [newPhoto, ...photos];
-      setPhotos(updated);
-      savePhotos(updated);
-      haptic("medium");
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  }, [photos]);
-
-  const removePhoto = useCallback((id: string) => {
-    haptic("light");
-    const updated = photos.filter(p => p.id !== id);
-    setPhotos(updated);
-    savePhotos(updated);
-  }, [photos]);
-
-  return (
-    <div className="card-warm p-4 rounded-2xl space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Camera className="h-4 w-4 text-primary" />
-          <h3 className="font-display text-base font-semibold text-foreground">Progress Photos</h3>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => cameraRef.current?.click()}
-            className="touch-btn rounded-full p-2 bg-primary/10 min-w-[36px] min-h-[36px] flex items-center justify-center"
-          >
-            <Camera className="h-4 w-4 text-primary" />
-          </button>
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="touch-btn rounded-full p-2 bg-primary/10 min-w-[36px] min-h-[36px] flex items-center justify-center"
-          >
-            <Image className="h-4 w-4 text-primary" />
-          </button>
-        </div>
-      </div>
-
-      <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleFile} />
-      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
-
-      <p className="font-body text-[11px] text-muted-foreground">
-        Photos are stored privately on your device only.
-      </p>
-
-      {photos.length === 0 ? (
-        <button
-          onClick={() => fileRef.current?.click()}
-          className="touch-btn w-full border-2 border-dashed border-border rounded-2xl py-8 flex flex-col items-center gap-2"
-        >
-          <Plus className="h-6 w-6 text-muted-foreground" />
-          <span className="font-body text-sm text-muted-foreground">Add your first photo</span>
-        </button>
-      ) : (
-        <div className="grid grid-cols-3 gap-2">
-          <AnimatePresence>
-            {photos.map(photo => (
-              <motion.div
-                key={photo.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="relative aspect-[3/4] rounded-xl overflow-hidden bg-secondary"
-              >
-                <img src={photo.dataUrl} alt="Progress" className="w-full h-full object-cover" />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-1.5">
-                  <p className="font-mono text-[9px] text-white">
-                    {new Date(photo.date).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}
-                  </p>
-                </div>
-                <button
-                  onClick={() => removePhoto(photo.id)}
-                  className="absolute top-1 right-1 rounded-full bg-black/40 p-1 min-w-[24px] min-h-[24px] flex items-center justify-center"
-                >
-                  <Trash2 className="h-3 w-3 text-white" />
-                </button>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── 3D Body Visualizer (iframe) ──
-function BodyVisualizerIframe({ measurements }: { measurements: Measurements }) {
-  const cmToIn = (cm: number) => Math.round(cm / 2.54);
-  const kgToLbs = (kg: number) => Math.round(kg * 2.205);
-
-  const h = parseFloat(measurements.height) || 165;
-  const w = parseFloat(measurements.weight) || 62;
-  const bust = parseFloat(measurements.bust) || 88;
-  const waist = parseFloat(measurements.waist) || 72;
-  const hips = parseFloat(measurements.hips) || 96;
-  const inseam = parseFloat(measurements.inseam) || 78;
-
-  const hasValues = h > 0 || w > 0;
-
-  const src = useMemo(() => {
-    const params = [
-      "female",
-      cmToIn(h),
-      kgToLbs(w),
-      cmToIn(bust),
-      cmToIn(waist),
-      cmToIn(hips),
-      cmToIn(inseam),
-      1,
-    ].join("/");
-    return `https://bodyvisualizer.is.tue.mpg.de/#${params}`;
-  }, [h, w, bust, waist, hips, inseam]);
-
-  if (!hasValues) return null;
-
-  return (
-    <div className="flex flex-col items-center gap-2 pt-2">
-      <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Your 3D body model</p>
-      <div className="w-full rounded-xl overflow-hidden border border-border shadow-sm bg-black" style={{ height: 400 }}>
-        <iframe
-          key={src}
-          src={src}
-          title="Body Visualizer"
-          width="100%"
-          height="100%"
-          style={{ border: "none", display: "block" }}
-          allow="fullscreen"
-        />
-      </div>
-      <p className="text-[9px] text-muted-foreground/50 text-center">
-        Powered by{" "}
-        <a href="https://bodyvisualizer.is.tue.mpg.de/" target="_blank" rel="noopener noreferrer" className="underline hover:text-muted-foreground">
-          bodyvisualizer.is.tue.mpg.de
-        </a>
-      </p>
-    </div>
-  );
-}
-
-// ── Muscle groups and their SVG region IDs ──
-export type MuscleGroup =
-  | "chest" | "shoulders" | "biceps" | "triceps" | "forearms"
-  | "upper-back" | "lats" | "lower-back"
-  | "core" | "obliques"
-  | "glutes" | "quads" | "hamstrings" | "calves" | "hip-flexors" | "adductors";
-
-interface MuscleInfo {
-  label: string;
-  intensity: "primary" | "secondary" | "light";
-}
-
-// Map exercise names → muscle groups
-const EXERCISE_MUSCLES: Record<string, MuscleGroup[]> = {
-  // Compound
-  "Dumbbell Deadlift": ["hamstrings", "glutes", "lower-back", "core"],
-  "Romanian Deadlift": ["hamstrings", "glutes", "lower-back"],
-  "Single-Leg Romanian Deadlift": ["hamstrings", "glutes", "lower-back", "core"],
-  "Single-Leg Deadlift": ["hamstrings", "glutes", "lower-back"],
-  "Sumo Deadlift": ["hamstrings", "glutes", "adductors", "quads"],
-  "Good Morning": ["hamstrings", "lower-back", "glutes"],
-  // Squat patterns
-  "Goblet Squat": ["quads", "glutes", "core"],
-  "Goblet Squat To Press": ["quads", "glutes", "shoulders", "core"],
-  "Sumo Squat": ["quads", "glutes", "adductors"],
-  "Squat Pulse": ["quads", "glutes"],
-  "Suitcase Carry Squat": ["quads", "glutes", "core", "obliques"],
-  "Split Squat": ["quads", "glutes", "hip-flexors"],
-  "Rear Foot Elevated Split Squat": ["quads", "glutes", "hip-flexors"],
-  // Lunges
-  "Reverse Lunge To Bicep Curl": ["quads", "glutes", "biceps"],
-  "Reverse Lunge Alternating": ["quads", "glutes"],
-  "Lateral Lunge To Lateral Raise": ["quads", "adductors", "shoulders"],
-  "Walking Lunge": ["quads", "glutes", "hamstrings"],
-  // Push
-  "Push-Up To Downward Dog": ["chest", "shoulders", "triceps", "core"],
-  "Push-Up Full Or Modified": ["chest", "shoulders", "triceps"],
-  "Pike Push-Up": ["shoulders", "triceps"],
-  "Single-Arm Push-Up Prep": ["chest", "triceps", "core"],
-  "Chest Press On Mat": ["chest", "triceps", "shoulders"],
-  "Chest Fly On Mat": ["chest", "shoulders"],
-  "Single-Arm Chest Fly On Mat": ["chest", "core"],
-  "Arnold Press": ["shoulders", "triceps"],
-  "Single-Arm Overhead Press": ["shoulders", "triceps", "core"],
-  "Lateral Raise": ["shoulders"],
-  "Rear Delt Fly": ["shoulders", "upper-back"],
-  "Upright Row": ["shoulders", "upper-back"],
-  "Band Pull-Apart": ["shoulders", "upper-back"],
-  "Face Pull With Band": ["shoulders", "upper-back"],
-  "Tricep Overhead Extension": ["triceps"],
-  "Tricep Kickback": ["triceps"],
-  // Pull
-  "Single-Arm Dumbbell Row": ["lats", "biceps", "upper-back"],
-  "Single-Arm Row To Rotation": ["lats", "obliques", "upper-back"],
-  "Bent-Over Row Bilateral": ["lats", "upper-back", "biceps"],
-  "Underhand Row Supinated Grip": ["lats", "biceps"],
-  "Renegade Row": ["lats", "core", "chest"],
-  "Bird Dog Row": ["lats", "core", "glutes"],
-  "Single-Arm Row In Side Plank": ["lats", "obliques", "core"],
-  "Bicep Curl": ["biceps"],
-  "Hammer Curl": ["biceps", "forearms"],
-  // Glutes & legs accessory
-  "Glute Bridge With Band": ["glutes", "hamstrings"],
-  "Hip Thrust With Dumbbell": ["glutes", "hamstrings"],
-  "Single-Leg Hip Thrust": ["glutes", "hamstrings", "core"],
-  "Bridge Pulse": ["glutes"],
-  "Frog Bridge": ["glutes", "adductors"],
-  "Donkey Kicks With Band": ["glutes"],
-  "Fire Hydrant Pulse": ["glutes", "hip-flexors"],
-  "Lateral Band Walk": ["glutes", "hip-flexors"],
-  "Side-Lying Leg Raise": ["glutes", "hip-flexors"],
-  "Calf Raise": ["calves"],
-  "Wall Sit": ["quads", "glutes"],
-  "Step Up With Dumbbell": ["quads", "glutes"],
-  // Core
-  "Dead Bug": ["core", "hip-flexors"],
-  "Dead Bug With Dumbbell Press": ["core", "chest"],
-  "Plank To Push-Up": ["core", "chest", "triceps"],
-  "Plank Shoulder Taps": ["core", "shoulders"],
-  "Bear Hold": ["core", "shoulders"],
-  "Hollow Body Hold": ["core"],
-  "Superman Hold": ["lower-back", "glutes"],
-  "Half-Kneeling Chop": ["core", "obliques"],
-  "Mountain Climbers": ["core", "hip-flexors", "shoulders"],
-  "Inchworm": ["core", "hamstrings", "shoulders"],
-  "Thoracic Rotation Half-Kneeling": ["core", "obliques"],
-};
-
-function getMusclesFromWorkout(workout: Workout): Map<MuscleGroup, MuscleInfo> {
-  const counts = new Map<MuscleGroup, number>();
-  for (const ex of workout.exercises) {
-    const muscles = EXERCISE_MUSCLES[ex.name] || [];
-    muscles.forEach((m, i) => {
-      const weight = i === 0 ? 3 : i === 1 ? 2 : 1;
-      counts.set(m, (counts.get(m) || 0) + weight);
-    });
-  }
-  const result = new Map<MuscleGroup, MuscleInfo>();
-  const max = Math.max(...counts.values(), 1);
-  for (const [muscle, count] of counts) {
-    const ratio = count / max;
-    result.set(muscle, {
-      label: muscle.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
-      intensity: ratio > 0.5 ? "primary" : ratio > 0.25 ? "secondary" : "light",
-    });
-  }
-  return result;
+function saveUnits(units: { weight: "kg" | "lbs"; length: "cm" | "in" }) {
+  localStorage.setItem(UNIT_KEY, JSON.stringify(units));
 }
 
 const PHASE_COLOR: Record<Phase, string> = {
@@ -439,101 +60,327 @@ const PHASE_COLOR: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-const INTENSITY_OPACITY: Record<string, number> = {
-  primary: 0.85,
-  secondary: 0.5,
-  light: 0.25,
+const PHASE_LABEL: Record<Phase, string> = {
+  menstrual: "Menstrual",
+  follicular: "Follicular",
+  ovulatory: "Ovulatory",
+  luteal: "Luteal",
 };
 
-// SVG body front regions (simplified anatomical paths)
-const FRONT_REGIONS: Record<MuscleGroup, string> = {
-  // Head/neck area omitted
-  chest: "M 85,95 Q 100,88 115,95 L 115,115 Q 100,120 85,115 Z",
-  shoulders: "M 70,85 Q 80,78 88,88 L 85,100 Q 77,95 70,100 Z M 130,85 Q 120,78 112,88 L 115,100 Q 123,95 130,100 Z",
-  biceps: "M 68,102 L 72,100 L 76,130 L 68,130 Z M 132,102 L 128,100 L 124,130 L 132,130 Z",
-  triceps: "M 62,102 L 68,102 L 68,130 L 62,128 Z M 138,102 L 132,102 L 132,130 L 138,128 Z",
-  forearms: "M 60,132 L 68,132 L 65,160 L 58,158 Z M 140,132 L 132,132 L 135,160 L 142,158 Z",
-  core: "M 88,118 L 112,118 L 110,155 Q 100,158 90,155 Z",
-  obliques: "M 80,118 L 88,118 L 90,150 L 82,145 Z M 120,118 L 112,118 L 110,150 L 118,145 Z",
-  "hip-flexors": "M 85,155 L 95,155 L 93,170 L 83,170 Z M 115,155 L 105,155 L 107,170 L 117,170 Z",
-  quads: "M 82,170 L 98,170 L 96,215 L 84,215 Z M 118,170 L 102,170 L 104,215 L 116,215 Z",
-  adductors: "M 96,170 L 104,170 L 103,210 L 97,210 Z",
-  calves: "M 84,222 L 96,222 L 94,260 L 86,260 Z M 116,222 L 104,222 L 106,260 L 114,260 Z",
-  // Back muscles shown faintly on front view
-  "upper-back": "",
-  lats: "",
-  "lower-back": "",
-  glutes: "",
-  hamstrings: "",
-};
+// ── Measurements Form ──
+function MeasurementsForm({ onSaved }: { onSaved: () => void }) {
+  const { currentCycleDay, currentPhase } = useCycle();
+  const [units, setUnits] = useState(loadUnits);
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [chest, setChest] = useState("");
+  const [waist, setWaist] = useState("");
+  const [hips, setHips] = useState("");
+  const [thighs, setThighs] = useState("");
+  const [arms, setArms] = useState("");
+  const [bodyFat, setBodyFat] = useState("");
+  const [energyLevel, setEnergyLevel] = useState(3);
+  const [notes, setNotes] = useState("");
+  const [saved, setSaved] = useState(false);
 
-const BACK_REGIONS: Record<MuscleGroup, string> = {
-  "upper-back": "M 85,90 L 115,90 L 112,110 Q 100,108 88,110 Z",
-  lats: "M 78,105 L 88,110 L 90,140 L 80,135 Z M 122,105 L 112,110 L 110,140 L 120,135 Z",
-  "lower-back": "M 90,140 L 110,140 L 108,160 Q 100,162 92,160 Z",
-  shoulders: "M 70,85 Q 80,78 88,88 L 85,100 Q 77,95 70,100 Z M 130,85 Q 120,78 112,88 L 115,100 Q 123,95 130,100 Z",
-  triceps: "M 62,102 L 68,102 L 68,130 L 62,128 Z M 138,102 L 132,102 L 132,130 L 138,128 Z",
-  glutes: "M 82,158 L 100,158 L 100,185 Q 90,188 82,182 Z M 118,158 L 100,158 L 100,185 Q 110,188 118,182 Z",
-  hamstrings: "M 82,188 L 98,188 L 96,230 L 84,230 Z M 118,188 L 102,188 L 104,230 L 116,230 Z",
-  calves: "M 84,232 L 96,232 L 94,265 L 86,265 Z M 116,232 L 104,232 L 106,265 L 114,265 Z",
-  // Not visible from back
-  chest: "", biceps: "", forearms: "", core: "", obliques: "",
-  "hip-flexors": "", quads: "", adductors: "",
-};
+  // Load height from last entry as default
+  useEffect(() => {
+    const history = loadHistory();
+    if (history.length > 0) {
+      setHeight(history[0].height);
+    }
+  }, []);
 
-function BodySVG({
-  regions,
-  muscleMap,
-  color,
-}: {
-  regions: Record<MuscleGroup, string>;
-  muscleMap: Map<MuscleGroup, MuscleInfo>;
-  color: string;
-}) {
+  const toggleWeightUnit = () => {
+    const next = units.weight === "kg" ? "lbs" as const : "kg" as const;
+    const newUnits = { ...units, weight: next };
+    setUnits(newUnits);
+    saveUnits(newUnits);
+    haptic("light");
+  };
+
+  const toggleLengthUnit = () => {
+    const next = units.length === "cm" ? "in" as const : "cm" as const;
+    const newUnits = { ...units, length: next };
+    setUnits(newUnits);
+    saveUnits(newUnits);
+    haptic("light");
+  };
+
+  const numericOnly = (val: string) => val.replace(/[^0-9.]/g, "").slice(0, 6);
+
+  const handleSave = () => {
+    haptic("medium");
+    const entry: MeasurementEntry = {
+      id: `m-${Date.now()}`,
+      date: new Date().toISOString(),
+      cycleDay: currentCycleDay,
+      phase: currentPhase,
+      weight, height, chest, waist, hips, thighs, arms, bodyFat,
+      energyLevel, notes,
+      weightUnit: units.weight,
+      lengthUnit: units.length,
+    };
+    const history = loadHistory();
+    history.unshift(entry);
+    saveHistory(history);
+    setSaved(true);
+    setTimeout(() => { setSaved(false); onSaved(); }, 1500);
+    // Reset form (keep height)
+    setWeight(""); setChest(""); setWaist(""); setHips(""); setThighs(""); setArms(""); setBodyFat(""); setNotes("");
+    setEnergyLevel(3);
+  };
+
+  const hasValues = weight || chest || waist || hips || thighs || arms;
+
   return (
-    <svg viewBox="30 60 140 220" className="w-full h-full max-h-[400px]">
-      {/* Body outline */}
-      <g fill="none" stroke="hsl(var(--border))" strokeWidth="1.2" opacity={0.5}>
-        {/* Head */}
-        <circle cx="100" cy="72" r="12" />
-        {/* Torso */}
-        <path d="M 78,85 Q 68,90 62,100 L 58,158 Q 80,168 100,170 Q 120,168 142,158 L 138,100 Q 132,90 122,85 Q 100,78 78,85" />
-        {/* Arms */}
-        <path d="M 68,100 Q 60,120 58,140 Q 55,155 50,168" />
-        <path d="M 132,100 Q 140,120 142,140 Q 145,155 150,168" />
-        {/* Legs */}
-        <path d="M 85,168 Q 82,200 84,230 Q 85,250 86,268" />
-        <path d="M 115,168 Q 118,200 116,230 Q 115,250 114,268" />
-        <path d="M 95,168 Q 96,200 96,230 Q 96,250 96,268" />
-        <path d="M 105,168 Q 104,200 104,230 Q 104,250 104,268" />
-      </g>
+    <div className="card-warm p-4 rounded-2xl space-y-4">
+      <div className="flex items-center gap-2">
+        <Ruler className="h-4 w-4 text-primary" />
+        <h3 className="font-display text-base font-semibold text-foreground">Log Measurements</h3>
+      </div>
 
-      {/* Muscle fills */}
-      {(Object.keys(regions) as MuscleGroup[]).map((muscle) => {
-        const path = regions[muscle];
-        if (!path) return null;
-        const info = muscleMap.get(muscle);
-        if (!info) return null;
-        return (
-          <motion.path
-            key={muscle}
-            d={path}
-            fill={color}
-            fillOpacity={INTENSITY_OPACITY[info.intensity]}
-            stroke={color}
-            strokeWidth={0.5}
-            strokeOpacity={0.3}
-            initial={{ fillOpacity: 0 }}
-            animate={{ fillOpacity: INTENSITY_OPACITY[info.intensity] }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          />
-        );
-      })}
-    </svg>
+      <div className="flex items-center gap-2 text-[10px]">
+        <span className="font-body text-muted-foreground">
+          {PHASE_LABEL[currentPhase]} · Day {currentCycleDay} · {new Date().toLocaleDateString("en-NZ", { weekday: "short", day: "numeric", month: "short" })}
+        </span>
+      </div>
+
+      {/* Weight + Height with unit toggles */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Weight</label>
+            <button onClick={toggleWeightUnit} className="font-mono text-[9px] text-primary underline">{units.weight}</button>
+          </div>
+          <Input type="text" inputMode="decimal" value={weight} onChange={e => setWeight(numericOnly(e.target.value))} placeholder={units.weight === "kg" ? "62" : "137"} className="h-10 text-base rounded-xl bg-background border-border" />
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Height</label>
+            <button onClick={toggleLengthUnit} className="font-mono text-[9px] text-primary underline">{units.length}</button>
+          </div>
+          <Input type="text" inputMode="decimal" value={height} onChange={e => setHeight(numericOnly(e.target.value))} placeholder={units.length === "cm" ? "165" : "65"} className="h-10 text-base rounded-xl bg-background border-border" />
+        </div>
+      </div>
+
+      {/* Body measurements */}
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          { key: "chest", label: "Chest", val: chest, set: setChest },
+          { key: "waist", label: "Waist", val: waist, set: setWaist },
+          { key: "hips", label: "Hips", val: hips, set: setHips },
+          { key: "thighs", label: "Thighs", val: thighs, set: setThighs },
+          { key: "arms", label: "Arms", val: arms, set: setArms },
+          { key: "bodyFat", label: "Body fat %", val: bodyFat, set: setBodyFat },
+        ].map(f => (
+          <div key={f.key} className="space-y-1">
+            <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">
+              {f.label} {f.key !== "bodyFat" ? `(${units.length})` : ""}
+            </label>
+            <Input type="text" inputMode="decimal" value={f.val} onChange={e => f.set(numericOnly(e.target.value))} className="h-10 text-base rounded-xl bg-background border-border" />
+          </div>
+        ))}
+      </div>
+
+      {/* Energy level */}
+      <div className="space-y-2">
+        <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Energy level</label>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map(level => (
+            <button
+              key={level}
+              onClick={() => { haptic("light"); setEnergyLevel(level); }}
+              className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[40px] font-mono text-sm font-bold transition-all ${
+                energyLevel === level ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+              }`}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+        <div className="flex justify-between">
+          <span className="font-body text-[9px] text-muted-foreground">Low</span>
+          <span className="font-body text-[9px] text-muted-foreground">High</span>
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div className="space-y-1">
+        <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Notes</label>
+        <textarea
+          value={notes}
+          onChange={e => setNotes(e.target.value)}
+          placeholder="e.g. feeling bloated this week, slept better..."
+          rows={2}
+          className="w-full rounded-xl bg-background px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+        />
+      </div>
+
+      <Button onClick={handleSave} disabled={!hasValues} className="w-full h-10 rounded-full font-body text-sm font-semibold">
+        {saved ? "Saved ✓" : "Log entry"}
+      </Button>
+    </div>
   );
 }
 
-// ── Body Goals Section ──
+// ── Comparison Stats ──
+function ComparisonCard({ history }: { history: MeasurementEntry[] }) {
+  if (history.length < 4) return null;
+
+  const latest = history[0];
+  const first = history[history.length - 1];
+
+  const changes: { label: string; diff: string; positive: boolean }[] = [];
+
+  const calc = (field: keyof MeasurementEntry, label: string) => {
+    const a = parseFloat(first[field] as string);
+    const b = parseFloat(latest[field] as string);
+    if (!a || !b) return;
+    const diff = b - a;
+    const sign = diff > 0 ? "+" : "";
+    const unit = field === "weight" ? latest.weightUnit : field === "bodyFat" ? "%" : latest.lengthUnit;
+    changes.push({ label, diff: `${sign}${diff.toFixed(1)} ${unit}`, positive: field === "weight" ? diff < 0 : diff < 0 });
+  };
+
+  calc("weight", "Weight");
+  calc("waist", "Waist");
+  calc("hips", "Hips");
+  calc("chest", "Chest");
+  calc("thighs", "Thighs");
+  calc("arms", "Arms");
+  calc("bodyFat", "Body fat");
+
+  if (changes.length === 0) return null;
+
+  return (
+    <div className="card-warm p-4 rounded-2xl space-y-3">
+      <div className="flex items-center gap-2">
+        <TrendingUp className="h-4 w-4 text-primary" />
+        <h3 className="font-display text-sm font-semibold text-foreground">Since you started</h3>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {changes.map(c => (
+          <div key={c.label} className="rounded-xl bg-background p-3">
+            <p className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">{c.label}</p>
+            <p className={`font-mono text-sm font-bold ${c.positive ? "text-accent" : "text-foreground"}`}>{c.diff}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Measurement Chart ──
+function MeasurementChart({ history }: { history: MeasurementEntry[] }) {
+  const [metric, setMetric] = useState<"weight" | "waist" | "hips" | "chest">("weight");
+
+  if (history.length < 2) return null;
+
+  const chartData = [...history].reverse().map(entry => ({
+    date: new Date(entry.date).toLocaleDateString("en-NZ", { day: "numeric", month: "short" }),
+    value: parseFloat(entry[metric] as string) || 0,
+    phase: entry.phase,
+  })).filter(d => d.value > 0);
+
+  if (chartData.length < 2) return null;
+
+  const unit = metric === "weight" ? history[0]?.weightUnit || "kg" : history[0]?.lengthUnit || "cm";
+
+  return (
+    <div className="card-warm p-4 rounded-2xl space-y-3">
+      <h3 className="font-display text-sm font-semibold text-foreground">Progress Chart</h3>
+      <div className="flex gap-1 rounded-full bg-secondary p-0.5">
+        {(["weight", "waist", "hips", "chest"] as const).map(m => (
+          <button key={m} onClick={() => { haptic("light"); setMetric(m); }}
+            className={`flex-1 rounded-full px-2 py-1.5 font-body text-[10px] font-medium transition-all capitalize ${metric === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`}
+          >{m}</button>
+        ))}
+      </div>
+      <div className="h-48">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <XAxis dataKey="date" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+            <YAxis tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} unit={` ${unit}`} domain={["auto", "auto"]} />
+            <Tooltip
+              contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11 }}
+              formatter={(value: number) => [`${value} ${unit}`, metric]}
+            />
+            <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))", r: 4 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+// ── History Timeline ──
+function HistoryTimeline({ history }: { history: MeasurementEntry[] }) {
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  if (history.length === 0) return null;
+
+  return (
+    <div className="card-warm p-4 rounded-2xl space-y-3">
+      <h3 className="font-display text-sm font-semibold text-foreground">History</h3>
+      <div className="space-y-2">
+        {history.slice(0, 12).map(entry => {
+          const isOpen = expanded === entry.id;
+          return (
+            <button
+              key={entry.id}
+              onClick={() => { haptic("light"); setExpanded(isOpen ? null : entry.id); }}
+              className="touch-card w-full text-left rounded-xl bg-background p-3 transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PHASE_COLOR[entry.phase] }} />
+                  <span className="font-body text-xs font-medium text-foreground">
+                    {new Date(entry.date).toLocaleDateString("en-NZ", { weekday: "short", day: "numeric", month: "short" })}
+                  </span>
+                  <span className="font-mono text-[9px] text-muted-foreground">
+                    Day {entry.cycleDay} · {PHASE_LABEL[entry.phase]}
+                  </span>
+                </div>
+                <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </div>
+
+              {/* Summary row */}
+              <div className="flex gap-3 mt-1.5">
+                {entry.weight && <span className="font-mono text-[10px] text-muted-foreground">{entry.weight} {entry.weightUnit}</span>}
+                {entry.waist && <span className="font-mono text-[10px] text-muted-foreground">W: {entry.waist}</span>}
+                {entry.hips && <span className="font-mono text-[10px] text-muted-foreground">H: {entry.hips}</span>}
+                <span className="font-mono text-[10px] text-muted-foreground">⚡{entry.energyLevel}/5</span>
+              </div>
+
+              {/* Expanded detail */}
+              <AnimatePresence>
+                {isOpen && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border">
+                      {entry.chest && <div><p className="font-body text-[9px] text-muted-foreground">Chest</p><p className="font-mono text-xs text-foreground">{entry.chest} {entry.lengthUnit}</p></div>}
+                      {entry.waist && <div><p className="font-body text-[9px] text-muted-foreground">Waist</p><p className="font-mono text-xs text-foreground">{entry.waist} {entry.lengthUnit}</p></div>}
+                      {entry.hips && <div><p className="font-body text-[9px] text-muted-foreground">Hips</p><p className="font-mono text-xs text-foreground">{entry.hips} {entry.lengthUnit}</p></div>}
+                      {entry.thighs && <div><p className="font-body text-[9px] text-muted-foreground">Thighs</p><p className="font-mono text-xs text-foreground">{entry.thighs} {entry.lengthUnit}</p></div>}
+                      {entry.arms && <div><p className="font-body text-[9px] text-muted-foreground">Arms</p><p className="font-mono text-xs text-foreground">{entry.arms} {entry.lengthUnit}</p></div>}
+                      {entry.bodyFat && <div><p className="font-body text-[9px] text-muted-foreground">Body fat</p><p className="font-mono text-xs text-foreground">{entry.bodyFat}%</p></div>}
+                    </div>
+                    {entry.notes && (
+                      <p className="font-body text-[11px] text-muted-foreground mt-2 italic">"{entry.notes}"</p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Body Goals Section (unchanged) ──
 const BODY_GOALS: { id: string; label: string; icon: LucideIcon }[] = [
   { id: "lose-weight", label: "Lose weight", icon: Flame },
   { id: "gain-muscle", label: "Build muscle", icon: Dumbbell },
@@ -567,7 +414,6 @@ function BodyGoalsSection() {
   const { currentPhase, currentCycleDay } = useCycle();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
-  // Check if a plan already exists
   useEffect(() => {
     try {
       const raw = localStorage.getItem("signal_ai_workout_plan");
@@ -590,21 +436,16 @@ function BodyGoalsSection() {
         const preset = BODY_GOALS.find(bg => bg.id === g);
         return preset ? preset.label : g;
       });
-
       const { data, error } = await supabase.functions.invoke("workout-plan", {
         body: { goals: goalLabels, phase: info.phase, cycleDay: info.cycleDay },
       });
-
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-
-      // Save plan to localStorage
       localStorage.setItem("signal_ai_workout_plan", JSON.stringify(data));
       setPlanSummary(data.summary || "Plan generated!");
       haptic("success");
     } catch (e: any) {
       console.error("Plan generation failed, using fallback:", e);
-      // Use static fallback plan
       const { getFallbackPlan } = await import("@/data/workout-plans");
       const goalLabels = goalsToUse.map(g => {
         const preset = BODY_GOALS.find(bg => bg.id === g);
@@ -624,7 +465,6 @@ function BodyGoalsSection() {
     saveBodyGoals(goals);
     setSaved(true);
     setTimeout(() => setSaved(false), 1500);
-    // Auto-generate plan when goals are saved
     if (goals.length > 0) {
       await generatePlan(goals);
     }
@@ -648,12 +488,8 @@ function BodyGoalsSection() {
         {BODY_GOALS.map(g => {
           const active = goals.includes(g.id);
           return (
-            <button
-              key={g.id}
-              onClick={() => toggleGoal(g.id)}
-              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border flex items-center gap-2 ${
-                active ? "border-primary bg-primary/5" : "border-border bg-card"
-              }`}
+            <button key={g.id} onClick={() => toggleGoal(g.id)}
+              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border flex items-center gap-2 ${active ? "border-primary bg-primary/5" : "border-border bg-card"}`}
             >
               <g.icon className={`h-4 w-4 flex-shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
               <span className="font-body text-xs font-medium text-foreground">{g.label}</span>
@@ -662,22 +498,12 @@ function BodyGoalsSection() {
         })}
       </div>
 
-      {/* Custom goal */}
       <div className="flex gap-2">
-        <input
-          type="text"
-          value={customGoal}
-          onChange={e => setCustomGoal(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && addCustom()}
-          placeholder="Add your own goal..."
-          className="flex-1 rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        <button onClick={addCustom} disabled={!customGoal.trim()} className="touch-btn rounded-xl px-4 py-2.5 bg-primary text-primary-foreground font-body text-sm font-bold disabled:opacity-30">
-          Add
-        </button>
+        <input type="text" value={customGoal} onChange={e => setCustomGoal(e.target.value)} onKeyDown={e => e.key === "Enter" && addCustom()}
+          placeholder="Add your own goal..." className="flex-1 rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary" />
+        <button onClick={addCustom} disabled={!customGoal.trim()} className="touch-btn rounded-xl px-4 py-2.5 bg-primary text-primary-foreground font-body text-sm font-bold disabled:opacity-30">Add</button>
       </div>
 
-      {/* Custom goals display */}
       {goals.filter(g => !BODY_GOALS.some(bg => bg.id === g)).length > 0 && (
         <div className="flex flex-wrap gap-2">
           {goals.filter(g => !BODY_GOALS.some(bg => bg.id === g)).map(g => (
@@ -689,33 +515,14 @@ function BodyGoalsSection() {
         </div>
       )}
 
-      <button 
-        onClick={handleSave} 
-        disabled={generating || goals.length === 0}
+      <button onClick={handleSave} disabled={generating || goals.length === 0}
         className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
       >
-        {generating ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Generating your plan...
-          </>
-        ) : saved ? (
-          "✓ Saved & plan generated!"
-        ) : (
-          <>
-            <Sparkles className="h-4 w-4" />
-            Save goals & generate plan
-          </>
-        )}
+        {generating ? (<><Loader2 className="h-4 w-4 animate-spin" />Generating your plan...</>) : saved ? ("✓ Saved & plan generated!") : (<><Sparkles className="h-4 w-4" />Save goals & generate plan</>)}
       </button>
 
-      {/* Plan summary */}
       {planSummary && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-xl bg-primary/5 border border-primary/10"
-        >
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-primary/5 border border-primary/10">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="h-4 w-4 text-primary" />
             <p className="font-display text-sm font-semibold italic text-foreground">Your AI Plan</p>
@@ -728,57 +535,62 @@ function BodyGoalsSection() {
   );
 }
 
-// ── 3D Body Tab — full-screen iframe with built-in controls ──
-function BodyVisualizerEmbed() {
+// ── 3D Placeholder Card ──
+function ComingSoonCard() {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="w-full rounded-xl overflow-hidden border border-border shadow-sm bg-black" style={{ height: "calc(100vh - 280px)", minHeight: 500 }}>
-        <iframe
-          src="https://bodyvisualizer.is.tue.mpg.de/"
-          title="Body Visualizer"
-          width="100%"
-          height="100%"
-          style={{ border: "none", display: "block" }}
-          allow="fullscreen"
-        />
+    <div className="rounded-2xl border border-dashed border-border bg-secondary/30 p-5 text-center space-y-2">
+      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+        <Sparkles className="h-5 w-5 text-primary/50" />
       </div>
-      <p className="text-[9px] text-muted-foreground/50 text-center">
-        Powered by{" "}
-        <a href="https://bodyvisualizer.is.tue.mpg.de/" target="_blank" rel="noopener noreferrer" className="underline hover:text-muted-foreground">
-          bodyvisualizer.is.tue.mpg.de
-        </a>
+      <h3 className="font-display text-sm font-semibold italic text-foreground">3D Body Visualisation</h3>
+      <p className="font-body text-xs text-muted-foreground leading-relaxed max-w-xs mx-auto">
+        Coming Soon. You'll be able to create a personalised avatar and track visual changes over time.
       </p>
+      <span className="inline-block rounded-full bg-primary/10 px-3 py-1 font-mono text-[9px] text-primary font-medium">
+        In development
+      </span>
     </div>
   );
 }
 
+// ── Main Export ──
 export default function BodyVisualiser() {
-  const [subTab, setSubTab] = useState<"goals" | "3d-body">("goals");
+  const [subTab, setSubTab] = useState<"goals" | "measurements">("goals");
+  const [historyVersion, setHistoryVersion] = useState(0);
+  const history = useMemo(() => loadHistory(), [historyVersion]);
 
   const SUB_TABS = [
     { id: "goals" as const, label: "My Goals" },
-    { id: "3d-body" as const, label: "My Measurements" },
+    { id: "measurements" as const, label: "My Measurements" },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Sub-tabs */}
       <div className="flex gap-1 rounded-full bg-secondary p-1">
         {SUB_TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => { haptic("light"); setSubTab(t.id); }}
-            className={`flex-1 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-              subTab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
-            }`}
-          >
-            {t.label}
-          </button>
+          <button key={t.id} onClick={() => { haptic("light"); setSubTab(t.id); }}
+            className={`flex-1 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${subTab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`}
+          >{t.label}</button>
         ))}
       </div>
 
       {subTab === "goals" && <BodyGoalsSection />}
-      {subTab === "3d-body" && <BodyVisualizerEmbed />}
+      {subTab === "measurements" && (
+        <div className="space-y-6">
+          <MeasurementsForm onSaved={() => setHistoryVersion(v => v + 1)} />
+          <ComparisonCard history={history} />
+          <MeasurementChart history={history} />
+          <HistoryTimeline history={history} />
+          <ComingSoonCard />
+        </div>
+      )}
     </div>
   );
 }
+
+// Re-export types used by other components
+export type MuscleGroup =
+  | "chest" | "shoulders" | "biceps" | "triceps" | "forearms"
+  | "upper-back" | "lats" | "lower-back"
+  | "core" | "obliques"
+  | "glutes" | "quads" | "hamstrings" | "calves" | "hip-flexors" | "adductors";

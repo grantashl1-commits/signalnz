@@ -9,7 +9,8 @@ import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
 import { getCheckin, setCheckin, getCheckinStreak, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
-import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
+import { WORKOUTS } from "@/data/workouts";
+import { getTodayAssignment } from "@/lib/workout-rotation";
 import { haptic } from "@/hooks/use-mobile";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -84,7 +85,9 @@ export default function HomePage() {
     refetch();
   };
 
-  const todayWorkout = WORKOUTS.find((w) => w.id === TODAY_WORKOUT[info.phase]);
+  const bodyGoals = (() => { try { const r = localStorage.getItem("signal_body_goals"); return r ? JSON.parse(r) : []; } catch { return []; } })();
+  const todayAssignment = getTodayAssignment(info.phase, bodyGoals, new Date().getDay());
+  const todayWorkout = WORKOUTS.find((w) => w.id === todayAssignment.workoutId);
   const todayMeals = TODAY_MEALS[info.phase];
   const lunchMeal = todayMeals?.find((m) => m.type === "Lunch");
 
