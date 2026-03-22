@@ -138,6 +138,24 @@ export default function AccountPage() {
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-5">
+        {/* Admin Button */}
+        {isAdmin && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={() => { haptic("light"); navigate("/admin"); }}
+            className="w-full card-warm p-4 flex items-center gap-3 text-left"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+              <ShieldCheck className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <p className="font-display text-base italic text-foreground">Admin Dashboard</p>
+              <p className="font-body text-xs text-muted-foreground">Manage users, groups & stats</p>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+          </motion.button>
+        )}
         {/* Display Name Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
