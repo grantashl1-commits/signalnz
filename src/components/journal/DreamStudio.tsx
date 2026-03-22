@@ -12,7 +12,33 @@ import BoardStackedView from "./dream/BoardStackedView";
 import AddImageModal from "./dream/AddImageModal";
 import type { DreamElement } from "@/lib/journal-store";
 import { WildStar, HandDrawnSparkle } from "@/components/BotanicalElements";
-import { motion } from "framer-motion";
+
+// ── Save Status Indicator ────────────────────────────────────
+function SaveIndicator({ status }: { status: SaveStatus }) {
+  if (status === "idle") return null;
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 4 }}
+        className="fixed bottom-5 left-5 z-[60] flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card/80 border border-border backdrop-blur-sm shadow-sm"
+      >
+        {status === "saving" ? (
+          <>
+            <Loader2 className="h-3 w-3 text-muted-foreground animate-spin" />
+            <span className="font-mono text-[10px] text-muted-foreground">Saving…</span>
+          </>
+        ) : (
+          <>
+            <Check className="h-3 w-3 text-primary/60" />
+            <span className="font-mono text-[10px] text-muted-foreground/60">Saved</span>
+          </>
+        )}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 // ── Dream Rituals (guided flow) ──────────────────────────────
 const DREAM_RITUALS = [
