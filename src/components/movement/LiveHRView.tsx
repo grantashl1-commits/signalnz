@@ -20,7 +20,6 @@ interface LiveHRViewProps {
 export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
   const hr = useHeartRate();
   const wakeLock = useWakeLock();
-  const requestWakeLock = wakeLock.toggle;
   const releaseWakeLock = wakeLock.release;
   const [age, setAge] = useState(getUserAge() || 30);
   const [weight, setWeight] = useState(getUserWeight() || 65);
@@ -57,7 +56,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
   useEffect(() => {
     if (running) {
-      requestWakeLock();
       startTimeRef.current = Date.now() - elapsedRef.current * 1000;
       intervalRef.current = window.setInterval(() => {
         setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
@@ -70,7 +68,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
         intervalRef.current = null;
       }
     };
-  }, [running, requestWakeLock]);
+  }, [running]);
 
   // Record HR data every 2 seconds while running
   useEffect(() => {
@@ -85,7 +83,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     const addSample = () => {
       const bpm = bpmRef.current;
       if (bpm <= 0) return;
-      setHrData(prev => [...prev, { time: elapsedRef.current, bpm }]);
+
+      const secsFromStart = startTimeRef.current > 0
+        ? Math.floor((Date.now() - startTimeRef.current) / 1000)
+        : elapsedRef.current;
+
+      setHrData(prev => [...prev, { time: secsFromStart, bpm }]);
     };
 
     // capture immediately, then continue on interval
@@ -108,6 +111,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
   const handleStart = () => {
     haptic("medium");
+    wakeLock.toggle();
     setElapsed(0);
     elapsedRef.current = 0;
     setHrData([]);
@@ -129,6 +133,13 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     }
 
     const finalHrData = hrData.length > 0 ? hrData : (hr.bpm > 0 ? [{ time: elapsed, bpm: hr.bpm }] : []);
+    const derivedDurationSecs = elapsed > 0
+      ? elapsed
+      : finalHrData.length > 1
+        ? finalHrData[finalHrData.length - 1].time
+        : finalHrData.length === 1
+          ? 2
+          : 0;
     const info = getCycleInfo(getLastPeriodStart());
     const zoneMins = [0, 0, 0, 0, 0];
     finalHrData.forEach(d => {
@@ -139,12 +150,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     const peakHR = finalHrData.length > 0 ? Math.max(...finalHrData.map(d => d.bpm)) : 0;
     const totalMins = zoneMins.reduce((s, m) => s + m, 0);
     const z2Plus = totalMins > 0 ? Math.round(((zoneMins[1] + zoneMins[2] + zoneMins[3] + zoneMins[4]) / totalMins) * 100) : 0;
-    const cals = estimateCalories(avgHR, elapsed / 60, weight, age);
+    const cals = estimateCalories(avgHR, derivedDurationSecs / 60, weight, age);
 
     const session: WorkoutSession = {
       id: `session-${Date.now()}`,
       workoutName,
-      duration: elapsed,
+      duration: derivedDurationSecs,
       avgHR,
       maxHR: peakHR,
       zoneMins: zoneMins.map(m => Math.round(m * 10) / 10),
@@ -179,12 +190,18 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
       const z = getZoneForBPM(d.bpm, maxHR);
       zoneTotals[z.zone - 1] += 2 / 60; // each point = 2 sec
     });
-    return HR_ZONES.map((z, i) => ({
+    return HR_ZONES.map((z, i) => {
+      const rawMins = zoneTotals[i];
+      const chartMins = rawMins > 0 ? Math.max(rawMins, 0.1) : 0;
+
+      return {
       name: `Z${z.zone}`,
-      minutes: Math.round(zoneTotals[i] * 10) / 10,
+      minutes: chartMins,
+      labelMinutes: Math.round(rawMins * 10) / 10,
       color: z.color,
       label: z.label,
-    }));
+      };
+    });
   };
 
   // Summary view
@@ -233,7 +250,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
                 <YAxis tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={30} unit="m" />
                 <Bar dataKey="minutes" radius={[6, 6, 0, 0]}>
                   {zoneChart.map((entry, idx) => (
-                    <Cell key={idx} fill={entry.color} />
+                    <Cell
+                      key={idx}
+                      fill={entry.color}
+                      stroke="hsl(var(--foreground) / 0.15)"
+                      strokeWidth={entry.name === "Z2" ? 1.6 : 1}
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -246,7 +268,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               <div key={z.name} className="flex items-center gap-1">
                 <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: z.color }} />
                 <span className="font-body text-[10px] text-muted-foreground">{z.name} {z.label}</span>
-                <span className="font-mono text-[10px] text-foreground">{z.minutes}m</span>
+                <span className="font-mono text-[10px] text-foreground">{z.labelMinutes}m</span>
               </div>
             ))}
           </div>
@@ -460,7 +482,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
                 <YAxis tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={30} unit="m" />
                 <Bar dataKey="minutes" radius={[6, 6, 0, 0]}>
                   {liveZoneChart.map((entry, idx) => (
-                    <Cell key={idx} fill={entry.color} />
+                    <Cell
+                      key={idx}
+                      fill={entry.color}
+                      stroke="hsl(var(--foreground) / 0.15)"
+                      strokeWidth={entry.name === "Z2" ? 1.6 : 1}
+                    />
                   ))}
                 </Bar>
               </BarChart>
