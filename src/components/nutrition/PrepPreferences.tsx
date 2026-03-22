@@ -127,18 +127,18 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </p>
       </div>
 
-      {/* Body Goal (auto-populated) */}
-      {bodyGoal && (
+      {/* Body Goals (auto-populated from Movement) */}
+      {bodyGoals.length > 0 && (
         <div className="rounded-xl border border-border bg-card p-3 flex items-start gap-3">
           <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
             <Dumbbell className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <p className="font-body text-xs font-semibold text-foreground">
-              {BODY_GOAL_LABELS[bodyGoal] || bodyGoal}
+              Your movement goals: {bodyGoals.map(g => BODY_GOAL_LABELS[g] || g).join(", ")}
             </p>
             <p className="font-body text-[10px] text-muted-foreground mt-0.5" style={{ fontWeight: 300 }}>
-              Your plan will be optimised for {BODY_GOAL_NUTRITION[bodyGoal] || "balanced nutrition"} — we'll adjust protein and calorie targets accordingly.
+              We've set your nutrition plan to support these — you can override your calorie target below.
             </p>
           </div>
         </div>
