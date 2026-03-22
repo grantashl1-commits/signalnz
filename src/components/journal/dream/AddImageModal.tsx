@@ -60,7 +60,10 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
     setGeneratedUrl(null);
 
     try {
-      const stylePrompt = `${prompt}, ${style.replace(/-/g, " ")} photography style, beautiful, high quality`;
+      // Build prompt with style prefix
+      const selectedStyle = STYLE_OPTIONS.find((s) => s.id === style);
+      const stylePrefix = selectedStyle?.prefix || "";
+      const fullPrompt = `${stylePrefix} ${prompt.trim()}`;
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/dream-image-generate`,
@@ -71,13 +74,13 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ prompt: stylePrompt }),
+          body: JSON.stringify({ prompt: fullPrompt }),
         }
       );
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Image generation failed");
+        throw new Error(data.error || "Image generation is temporarily unavailable. Please try again in a moment.");
       }
 
       const data = await response.json();
@@ -86,11 +89,11 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
       if (imageUrl) {
         setGeneratedUrl(imageUrl);
       } else {
-        throw new Error("No image returned");
+        throw new Error("Image generation didn't produce a result. Try a different prompt.");
       }
     } catch (err: any) {
       console.error("Image generation error:", err);
-      setError(err.message || "Failed to generate image");
+      setError(err.message || "Image generation is temporarily unavailable. Please try again in a moment.");
     } finally {
       setGenerating(false);
     }
