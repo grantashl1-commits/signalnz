@@ -36,7 +36,8 @@ const cardVariant = {
 };
 
 export default function MovementPage() {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
   const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");

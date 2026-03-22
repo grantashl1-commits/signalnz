@@ -29,7 +29,8 @@ const PHASE_HEX: Record<Phase, string> = {
 type TabId = "today" | "plans" | "myweek" | "ai" | "recipes" | "baking" | "shopping";
 
 export default function NutritionPage() {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   
   const [activeTab, setActiveTab] = useState<TabId>("today");
   const [planVersion, setPlanVersion] = useState(0);
