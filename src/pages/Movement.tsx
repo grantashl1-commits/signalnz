@@ -9,8 +9,8 @@ import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/Botanic
 import { useCycle } from "@/contexts/CycleContext";
 import { getLoggedWorkouts, logWorkout, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import {
-  WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, TODAY_WORKOUT, SUIT_COLORS, CATEGORY_LABELS,
-  FEELINGS, FEELING_REC, WEEKLY_SCHEDULE, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
+  WORKOUTS, PHASE_WORKOUTS, PHASE_MOVEMENT_LABEL, PHASE_MOVEMENT_REC, SUIT_COLORS, CATEGORY_LABELS,
+  FEELINGS, FEELING_REC, WEEK_LABELS, getTrainingWeek, setTrainingWeek,
   getAllSessions, saveWorkoutSession, getWorkoutSession, HR_ZONES, getZoneForBPM, getMaxHR, getUserAge,
   type WorkoutCategory, type Exercise, type WorkoutSession,
 } from "@/data/workouts";
@@ -24,6 +24,7 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import { getFitnessProfile } from "@/lib/fitness-profile";
+import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 
 const PHASE_HEX: Record<Phase, string> = {
