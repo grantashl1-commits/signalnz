@@ -4,8 +4,9 @@ import { X, Check } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { MOOD_ICONS, SYMPTOM_ICONS, MOODS, SYMPTOM_LIST, ScaleIcon, MoodFaceIcon, SpiralSymptomIcon, QuillIcon } from "@/components/TrackingIcons";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  Phase, getPhaseFromDay, getCycleDayForDate, getLastPeriodStart, setLastPeriodStart,
+  Phase, getPhaseFromDay, getCycleDayForDate, setLastPeriodStart,
   getMoods, setMoods, getSymptomsNew, setSymptomsNew,
   getWeight, setWeight, getWeightUnit, setWeightUnit, getWeightHistory,
   getNotes, setNotes, getPeriodEnd, setPeriodEnd, getPeriodLength,
@@ -27,7 +28,7 @@ type Panel = "main" | "mood" | "symptoms" | "weight" | "notes";
 
 export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Props) {
   const [panel, setPanel] = useState<Panel>("main");
-  const lastPeriod = getLastPeriodStart();
+  const { cycleStartDate: lastPeriod } = useCycle();
   const date = new Date(dateStr + "T12:00:00");
   const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
   const phase: Phase = cycleDay ? getPhaseFromDay(cycleDay) : "follicular";

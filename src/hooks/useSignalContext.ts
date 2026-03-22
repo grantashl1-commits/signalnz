@@ -1,6 +1,7 @@
 import { useMemo } from "react";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  getCycleInfo, getLastPeriodStart, getCheckin,
+  getCheckin,
   getRecentSymptoms, getRecentMoods, getWaterCount,
   PHASE_SHORT,
 } from "@/lib/cycle-utils";
@@ -30,8 +31,8 @@ function getTimeOfDay(): string {
 }
 
 export function useSignalContext(): SignalContext {
+  const { currentPhase, currentCycleDay } = useCycle();
   return useMemo(() => {
-    const info = getCycleInfo(getLastPeriodStart());
     const todayStr = new Date().toISOString().split("T")[0];
     const habits = getHabits();
     const habitLog = getHabitLog(todayStr);
@@ -54,9 +55,9 @@ export function useSignalContext(): SignalContext {
     } catch {}
 
     return {
-      cycleDay: info.cycleDay,
-      phase: PHASE_SHORT[info.phase],
-      phaseFull: info.phase,
+      cycleDay: currentCycleDay,
+      phase: PHASE_SHORT[currentPhase],
+      phaseFull: currentPhase,
       mood,
       habitsCompleted,
       habitsTotal: habits.length,
@@ -65,7 +66,7 @@ export function useSignalContext(): SignalContext {
       symptoms: recentSymptoms.length > 0 ? recentSymptoms.join(", ") : null,
       water: getWaterCount(),
     };
-  }, []);
+  }, [currentPhase, currentCycleDay]);
 }
 
 export const SIGNAL_MODES = [

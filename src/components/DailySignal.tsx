@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BotanicalSprig, HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { supabase } from "@/integrations/supabase/client";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  Phase, getCycleInfo, getLastPeriodStart, getDaysUntilNextPhase,
+  Phase, getDaysUntilNextPhase,
   getRecentSymptoms, getRecentMoods, getDailySignal, setDailySignal,
   PHASE_LABELS, PHASE_SHORT,
 } from "@/lib/cycle-utils";
@@ -28,8 +29,8 @@ const FALLBACK_SIGNALS: Record<Phase, string> = {
 };
 
 export default function DailySignalCard() {
-  const lastPeriod = getLastPeriodStart();
-  const info = getCycleInfo(lastPeriod);
+  const { currentPhase, currentCycleDay, cycleStartDate } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const todayStr = new Date().toISOString().split("T")[0];
   const [signal, setSignal] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -140,8 +141,8 @@ export default function DailySignalCard() {
 
 // Period due reminder banner
 export function PeriodDueReminder() {
-  const lastPeriod = getLastPeriodStart();
-  const info = getCycleInfo(lastPeriod);
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
   if (info.cycleDay < 25 || info.cycleDay > 28) return null;
 

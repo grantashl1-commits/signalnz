@@ -9,7 +9,7 @@ import {
   getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR, getZoneForBPM, HR_ZONES,
   saveWorkoutSession, estimateCalories, type WorkoutSession,
 } from "@/data/workouts";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 
 interface LiveHRViewProps {
@@ -19,6 +19,7 @@ interface LiveHRViewProps {
 
 export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
   const hr = useHeartRate();
+  const { currentPhase: cyclePhase, currentCycleDay } = useCycle();
   const wakeLock = useWakeLock();
   const releaseWakeLock = wakeLock.release;
   const [age, setAge] = useState(getUserAge() || 30);
@@ -140,7 +141,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
         : finalHrData.length === 1
           ? 2
           : 0;
-    const info = getCycleInfo(getLastPeriodStart());
+    const info = { phase: cyclePhase, cycleDay: currentCycleDay };
     const zoneMins = [0, 0, 0, 0, 0];
     finalHrData.forEach(d => {
       const z = getZoneForBPM(d.bpm, maxHR);

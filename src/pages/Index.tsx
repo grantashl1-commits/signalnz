@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
-import { getCycleInfo, getLastPeriodStart, getCheckin, setCheckin, getCheckinStreak, Phase } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { getCheckin, setCheckin, getCheckinStreak, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS } from "@/data/meal-plans";
 import { TODAY_WORKOUT, WORKOUTS } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
@@ -66,7 +67,8 @@ export default function HomePage() {
   const { user } = useAuth();
   const { openSignal } = useSignalPanel();
   const { displayName, refetch } = useProfile();
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const focus = FOCUS[info.phase];
@@ -88,7 +90,7 @@ export default function HomePage() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const hasSetCycle = !!getLastPeriodStart();
+  const hasSetCycle = !!useCycle().cycleStartDate;
 
   // Extract first name from auth metadata, profile display name, or fallback
   const firstName = (() => {
@@ -132,7 +134,7 @@ export default function HomePage() {
             {...fadeUp(0.45)}
             className="font-body text-xs text-primary-foreground/60 uppercase tracking-[0.25em] mb-8"
           >
-            Day {info.cycleDay} · {info.name}
+            Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
           </motion.p>
 
           {!hasSetCycle && (
@@ -304,7 +306,7 @@ export default function HomePage() {
                   path: "/cycle",
                   icon: Moon,
                   label: "Cycle",
-                  title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`,
+                  title: `Day ${info.cycleDay} — ${PHASE_SHORT[info.phase]}`,
                   desc: "Tap to explore your cycle insights.",
                 },
                 {

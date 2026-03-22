@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { SacredSpiral } from "@/components/BotanicalElements";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 
 interface BreathingTechnique {
   name: string;
@@ -58,7 +58,7 @@ interface Props {
 
 export default function BreathingModal({ techniqueId, onClose }: Props) {
   const technique = TECHNIQUES[techniqueId];
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase: cyclePhase } = useCycle();
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [timer, setTimer] = useState(0);
   const [cycles, setCycles] = useState(0);
@@ -85,7 +85,7 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
   }, [phaseIndex, currentPhase.duration, technique.phases.length]);
 
   const scale = isInhale ? 1.0 : isExhale ? 0.6 : 0.8;
-  const phaseColor = PHASE_HEX[info.phase] || "#5C4A9E";
+  const phaseColor = PHASE_HEX[cyclePhase] || "#5C4A9E";
 
   return (
     <AnimatePresence>

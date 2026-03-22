@@ -38,15 +38,19 @@ export const PHASE_SHORT: Record<Phase, string> = {
 export const PHASE_DAYS: Record<Phase, [number, number]> = {
   menstrual: [1, 5],
   follicular: [6, 13],
-  ovulatory: [14, 16],
-  luteal: [17, 28],
+  ovulatory: [14, 14],
+  luteal: [15, 28],
 };
 
 export function getPhaseFromDay(cycleDay: number): Phase {
   if (cycleDay >= 1 && cycleDay <= 5) return "menstrual";
   if (cycleDay >= 6 && cycleDay <= 13) return "follicular";
-  if (cycleDay >= 14 && cycleDay <= 16) return "ovulatory";
+  if (cycleDay === 14) return "ovulatory";
   return "luteal";
+}
+
+export function getWeekNumber(cycleDay: number): number {
+  return Math.ceil(cycleDay / 7);
 }
 
 export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
@@ -59,7 +63,7 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
   const cycleDay = ((diffDays - 1) % 28) + 1;
   const phase = getPhaseFromDay(cycleDay);
-  const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 17;
+  const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 15;
   const dayInPhase = cycleDay - phaseStartDay + 1;
 
   return {
@@ -85,7 +89,7 @@ export function getNextPhase(currentPhase: Phase): { phase: Phase; daysUntil: nu
 }
 
 export function getDaysUntilNextPhase(cycleDay: number, currentPhase: Phase): number {
-  const phaseEnds: Record<Phase, number> = { menstrual: 5, follicular: 13, ovulatory: 16, luteal: 28 };
+  const phaseEnds: Record<Phase, number> = { menstrual: 5, follicular: 13, ovulatory: 14, luteal: 28 };
   return phaseEnds[currentPhase] - cycleDay + 1;
 }
 

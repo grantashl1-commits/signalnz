@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { haptic } from "@/hooks/use-mobile";
-import { getCycleInfo, getLastPeriodStart, Phase } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { Phase } from "@/lib/cycle-utils";
 import { PHASE_WORKOUTS, TODAY_WORKOUT, type Workout } from "@/data/workouts";
 
 // ── Measurements ──
@@ -563,7 +564,8 @@ function BodyGoalsSection() {
   const [saved, setSaved] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [planSummary, setPlanSummary] = useState<string | null>(null);
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
   // Check if a plan already exists
   useEffect(() => {

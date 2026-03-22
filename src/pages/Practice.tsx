@@ -12,7 +12,7 @@ import {
   SELF_CARE_RITUALS,
   type Habit, type HabitCategory,
 } from "@/data/self-care-rituals";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 
 const fadeUp = (delay: number) => ({
@@ -22,7 +22,8 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function PracticePage() {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const todayStr = new Date().toISOString().split("T")[0];
   const [habits, setHabits] = useState(getHabits());
   const [todayLog, setTodayLog] = useState(getHabitLog(todayStr));

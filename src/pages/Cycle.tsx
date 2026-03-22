@@ -7,8 +7,9 @@ import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, MoonPhaseRow, BotanicalSprig, WildStar, RootSystem, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
 import InsightsTab from "@/components/InsightsTab";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  getCycleInfo, getLastPeriodStart, setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
+  setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary,
 } from "@/lib/cycle-utils";
@@ -120,7 +121,8 @@ const cardVariant = {
 };
 
 export default function CyclePage() {
-  const [lastPeriod, setLastPeriod] = useState(getLastPeriodStart() || "");
+  const cycle = useCycle();
+  const [lastPeriod, setLastPeriod] = useState(cycle.cycleStartDate || "");
   
   const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights">("overview");
   
@@ -130,7 +132,7 @@ export default function CyclePage() {
   const [dateEditValue, setDateEditValue] = useState(lastPeriod);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const info = getCycleInfo(lastPeriod || null);
+  const info = { phase: cycle.currentPhase, cycleDay: cycle.currentCycleDay, name: PHASE_LABELS[cycle.currentPhase], day: cycle.currentCycleDay };
   const daysUntil = getDaysUntilNextPhase(info.cycleDay, info.phase);
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const nextPhaseIdx = (phases.indexOf(info.phase) + 1) % 4;
@@ -142,19 +144,22 @@ export default function CyclePage() {
     const val = e.target.value;
     setLastPeriod(val);
     setLastPeriodStart(val);
+    cycle.setCycleStartDate(val);
   };
 
   const handleDateEditSave = () => {
     setLastPeriod(dateEditValue);
     setLastPeriodStart(dateEditValue);
+    cycle.setCycleStartDate(dateEditValue);
     setShowDateEdit(false);
     setRefreshKey((k) => k + 1);
   };
 
   const handleCycleUpdate = useCallback(() => {
-    setLastPeriod(getLastPeriodStart() || "");
+    cycle.refresh();
+    setLastPeriod(cycle.cycleStartDate || "");
     setRefreshKey((k) => k + 1);
-  }, []);
+  }, [cycle]);
 
   const calendarDays = useMemo(() => {
     const year = calendarMonth.getFullYear();

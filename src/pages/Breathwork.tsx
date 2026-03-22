@@ -12,7 +12,7 @@ import mbsrImg from "@/assets/meditations/mbsr-body-scan.png";
 import breathImg from "@/assets/meditations/mindful-breathing.png";
 import nsdrImg from "@/assets/meditations/nsdr.png";
 import innerChildImg from "@/assets/meditations/inner-child.png";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import {
   BREATHWORK_PRACTICES,

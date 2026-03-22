@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, RotateCcw } from "lucide-react";
-import { Phase, PHASE_SHORT, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
 import PrepPreferences from "./PrepPreferences";
 import WeeklyPlanView from "./WeeklyPlanView";
 import SmartShoppingList from "./SmartShoppingList";
@@ -30,7 +31,8 @@ const STEPS: { id: Step; label: string }[] = [
 ];
 
 export default function MyWeekTab({ onPlanSaved, onSaveToToday }: { onPlanSaved?: () => void; onSaveToToday?: () => void }) {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const phaseColor = PHASE_HEX[info.phase];
   const [step, setStep] = useState<Step>("prep");
   const [plan, setPlan] = useState<WeeklyPlan | null>(null);

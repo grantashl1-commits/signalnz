@@ -4,7 +4,8 @@ import PhaseBadge from "@/components/PhaseBadge";
 import { HerbCluster } from "@/components/BotanicalElements";
 import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import { getCycleInfo, getLastPeriodStart, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { TODAY_MEALS, type Meal } from "@/data/meal-plans";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
@@ -28,7 +29,8 @@ const PHASE_HEX: Record<Phase, string> = {
 type TabId = "today" | "plans" | "myweek" | "ai" | "recipes" | "baking" | "shopping";
 
 export default function NutritionPage() {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   
   const [activeTab, setActiveTab] = useState<TabId>("today");
   const [planVersion, setPlanVersion] = useState(0);
