@@ -3,7 +3,7 @@ import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import { MOCK_GROUPS } from "@/data/community-data";
+import { supabase } from "@/integrations/supabase/client";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
 import NearbyView from "@/components/community/NearbyView";
@@ -28,8 +28,9 @@ export default function CommunityPage() {
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [showOptIn, setShowOptIn] = useState(false);
   const [pendingJoin, setPendingJoin] = useState<string | null>(null);
+  const [dbGroups, setDbGroups] = useState<any[]>([]);
 
-  // Load persisted state
+  // Load persisted state + fetch groups
   useEffect(() => {
     try {
       const saved = localStorage.getItem("signal_community_joined");
@@ -37,7 +38,13 @@ export default function CommunityPage() {
       const loc = localStorage.getItem("signal_community_location");
       if (loc === "true") setLocationEnabled(true);
     } catch {}
+    fetchGroups();
   }, []);
+
+  const fetchGroups = async () => {
+    const { data } = await supabase.from("community_groups").select("*").eq("status", "approved");
+    if (data) setDbGroups(data);
+  };
 
   const persistJoined = (newJoined: string[]) => {
     setJoined(newJoined);
@@ -51,9 +58,7 @@ export default function CommunityPage() {
   };
 
   const join = (id: string) => {
-    // For suburb groups, validate location first
-    const group = MOCK_GROUPS.find(g => g.id === id);
-    if (group && !locationEnabled) {
+    if (!locationEnabled) {
       setPendingJoin(id);
       setShowOptIn(true);
       return;
@@ -77,7 +82,7 @@ export default function CommunityPage() {
     }
   };
 
-  const group = MOCK_GROUPS.find((g) => g.id === activeGroup) || MOCK_GROUPS.find((g) => joined.includes(g.id));
+  const group = dbGroups.find((g) => g.id === activeGroup) || dbGroups.find((g) => joined.includes(g.id));
 
   const handleNearbyTab = () => {
     if (!locationEnabled) setShowOptIn(true);
@@ -158,7 +163,7 @@ export default function CommunityPage() {
                 {joined.length > 1 && (
                   <div className="flex gap-1.5 mb-3 overflow-x-auto pb-0.5 scroll-snap-x">
                     {joined.map((id) => {
-                      const g = MOCK_GROUPS.find((g) => g.id === id);
+                      const g = dbGroups.find((g) => g.id === id);
                       if (!g) return null;
                       return (
                         <button
@@ -170,7 +175,7 @@ export default function CommunityPage() {
                               : "bg-card text-foreground border-border"
                           }`}
                         >
-                          {g.suburb}
+                          {g.name || g.suburb}
                         </button>
                       );
                     })}

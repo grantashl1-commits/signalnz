@@ -65,6 +65,97 @@ export type Database = {
         }
         Relationships: []
       }
+      community_groups: {
+        Row: {
+          challenges: Json | null
+          city: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          group_type: string
+          id: string
+          members_count: number | null
+          name: string
+          parent_group_id: string | null
+          questions: Json | null
+          status: string
+          suburb: string
+          updated_at: string
+        }
+        Insert: {
+          challenges?: Json | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          group_type?: string
+          id?: string
+          members_count?: number | null
+          name: string
+          parent_group_id?: string | null
+          questions?: Json | null
+          status?: string
+          suburb: string
+          updated_at?: string
+        }
+        Update: {
+          challenges?: Json | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          group_type?: string
+          id?: string
+          members_count?: number | null
+          name?: string
+          parent_group_id?: string | null
+          questions?: Json | null
+          status?: string
+          suburb?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_groups_parent_group_id_fkey"
+            columns: ["parent_group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_memberships: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_memberships_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feedback: {
         Row: {
           admin_notes: string | null

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { MOCK_GROUPS } from "@/data/community-data";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { HandDrawnVillage } from "@/components/BotanicalElements";
 
 interface ChallengesPanelProps {
@@ -26,7 +26,23 @@ function ChallengeItem({ text }: { text: string }) {
 }
 
 export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
-  const myGroups = MOCK_GROUPS.filter((g) => joined.includes(g.id));
+  const [myGroups, setMyGroups] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!joined.length) return;
+    supabase
+      .from("community_groups")
+      .select("*")
+      .in("id", joined)
+      .eq("status", "approved")
+      .then(({ data }) => {
+        if (data) setMyGroups(data.map((g: any) => ({
+          ...g,
+          challenges: Array.isArray(g.challenges) ? g.challenges : [],
+          questions: Array.isArray(g.questions) ? g.questions : [],
+        })));
+      });
+  }, [joined]);
 
   if (!myGroups.length) {
     return (
@@ -49,12 +65,12 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
 
       {myGroups.map((g) => (
         <div key={g.id} className="mb-5">
-          <h3 className="font-display text-lg font-bold italic text-foreground mb-2.5">{g.suburb}</h3>
-          {g.challenges.map((c, i) => <ChallengeItem key={i} text={c} />)}
+          <h3 className="font-display text-lg font-bold italic text-foreground mb-2.5">{g.name || g.suburb}</h3>
+          {g.challenges.map((c: string, i: number) => <ChallengeItem key={i} text={c} />)}
 
           <div className="mt-3">
             <p className="font-mono text-[11px] text-muted-foreground mb-2">Community questions</p>
-            {g.questions.map((q, i) => (
+            {g.questions.map((q: string, i: number) => (
               <div key={i} className="card-warm p-3.5 mb-2">
                 <p className="font-display text-[15px] italic text-foreground mb-2">{q}</p>
                 <textarea
