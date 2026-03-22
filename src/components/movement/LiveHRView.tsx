@@ -140,7 +140,8 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
         : finalHrData.length === 1
           ? 2
           : 0;
-    const info = getCycleInfo(getLastPeriodStart());
+    const { currentPhase: phase, currentCycleDay: cycleDay } = useCycle();
+    const info = { phase, cycleDay };
     const zoneMins = [0, 0, 0, 0, 0];
     finalHrData.forEach(d => {
       const z = getZoneForBPM(d.bpm, maxHR);

@@ -58,7 +58,7 @@ interface Props {
 
 export default function BreathingModal({ techniqueId, onClose }: Props) {
   const technique = TECHNIQUES[techniqueId];
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase } = useCycle();
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [timer, setTimer] = useState(0);
   const [cycles, setCycles] = useState(0);

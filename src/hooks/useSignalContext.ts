@@ -31,8 +31,8 @@ function getTimeOfDay(): string {
 }
 
 export function useSignalContext(): SignalContext {
+  const { currentPhase, currentCycleDay } = useCycle();
   return useMemo(() => {
-    const info = getCycleInfo(getLastPeriodStart());
     const todayStr = new Date().toISOString().split("T")[0];
     const habits = getHabits();
     const habitLog = getHabitLog(todayStr);

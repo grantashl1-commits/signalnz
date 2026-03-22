@@ -564,7 +564,8 @@ function BodyGoalsSection() {
   const [saved, setSaved] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [planSummary, setPlanSummary] = useState<string | null>(null);
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
   // Check if a plan already exists
   useEffect(() => {

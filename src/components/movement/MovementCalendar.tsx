@@ -16,7 +16,7 @@ export default function MovementCalendar() {
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
 
-  const lastPeriod = getLastPeriodStart();
+  const { cycleStartDate: lastPeriod } = useCycle();
   const sessions = getAllSessions();
   const todayStr = today.toISOString().split("T")[0];
 

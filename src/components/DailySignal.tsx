@@ -141,8 +141,8 @@ export default function DailySignalCard() {
 
 // Period due reminder banner
 export function PeriodDueReminder() {
-  const lastPeriod = getLastPeriodStart();
-  const info = getCycleInfo(lastPeriod);
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
   if (info.cycleDay < 25 || info.cycleDay > 28) return null;
 
