@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import JournalEntries from "@/components/journal/JournalEntries";
 import JournalActivities from "@/components/journal/JournalActivities";
