@@ -57,7 +57,21 @@ export default function MovementPage() {
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
   const scheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const todaySchedule = WEEKLY_SCHEDULE[scheduleIdx];
+
+  // ── Body goals from BodyVisualiser ──
+  const bodyGoals = useMemo<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("signal_body_goals");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }, [activeTab]);
+
+  // ── Weekly rotation based on goals + phase ──
+  const weeklyRotation = useMemo(
+    () => getWeeklyRotation(info.phase, bodyGoals),
+    [info.phase, bodyGoals],
+  );
+  const todayAssignment = weeklyRotation[scheduleIdx];
 
   // ── AI-generated workout plan ──
   const aiPlan = useMemo(() => {
@@ -66,7 +80,7 @@ export default function MovementPage() {
       if (raw) return JSON.parse(raw);
     } catch {}
     return null;
-  }, [activeTab]); // re-read when switching tabs
+  }, [activeTab]);
 
   const aiTodayWorkout = useMemo(() => {
     if (!aiPlan?.weeks) return null;
@@ -77,10 +91,12 @@ export default function MovementPage() {
     return dayData || null;
   }, [aiPlan, trainingWeek, dayOfWeek]);
 
-  // Phase-aware today workout (fallback if no AI plan)
+  // Phase-aware today workout — uses rotation, not static
   const phaseWorkouts = PHASE_WORKOUTS[info.phase];
-  const todayWorkoutId = TODAY_WORKOUT[info.phase];
-  const todayWorkoutData = phaseWorkouts.find(w => w.id === todayWorkoutId) || phaseWorkouts[0];
+  const allWorkoutsFlat = WORKOUTS;
+  const todayWorkoutData = allWorkoutsFlat.find(w => w.id === todayAssignment.workoutId)
+    || phaseWorkouts.find(w => w.id === todayAssignment.workoutId)
+    || phaseWorkouts[0];
   const rec = PHASE_MOVEMENT_REC[info.phase];
 
   const toggleExercise = (name: string) => {
