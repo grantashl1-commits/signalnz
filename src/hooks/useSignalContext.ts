@@ -55,9 +55,9 @@ export function useSignalContext(): SignalContext {
     } catch {}
 
     return {
-      cycleDay: info.cycleDay,
-      phase: PHASE_SHORT[info.phase],
-      phaseFull: info.phase,
+      cycleDay: currentCycleDay,
+      phase: PHASE_SHORT[currentPhase],
+      phaseFull: currentPhase,
       mood,
       habitsCompleted,
       habitsTotal: habits.length,
@@ -66,7 +66,7 @@ export function useSignalContext(): SignalContext {
       symptoms: recentSymptoms.length > 0 ? recentSymptoms.join(", ") : null,
       water: getWaterCount(),
     };
-  }, []);
+  }, [currentPhase, currentCycleDay]);
 }
 
 export const SIGNAL_MODES = [
