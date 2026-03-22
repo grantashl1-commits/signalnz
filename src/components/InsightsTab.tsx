@@ -29,8 +29,8 @@ const SUGGESTED_QUESTIONS = [
 ];
 
 export default function InsightsTab() {
-  const lastPeriod = getLastPeriodStart();
-  const info = getCycleInfo(lastPeriod);
+  const { cycleStartDate: lastPeriod, currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
   // Cycle Coach state
   const [coachOpen, setCoachOpen] = useState(false);

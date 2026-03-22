@@ -22,7 +22,8 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function PracticePage() {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const todayStr = new Date().toISOString().split("T")[0];
   const [habits, setHabits] = useState(getHabits());
   const [todayLog, setTodayLog] = useState(getHabitLog(todayStr));

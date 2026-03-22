@@ -28,7 +28,7 @@ type Panel = "main" | "mood" | "symptoms" | "weight" | "notes";
 
 export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Props) {
   const [panel, setPanel] = useState<Panel>("main");
-  const lastPeriod = getLastPeriodStart();
+  const { cycleStartDate: lastPeriod } = useCycle();
   const date = new Date(dateStr + "T12:00:00");
   const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
   const phase: Phase = cycleDay ? getPhaseFromDay(cycleDay) : "follicular";

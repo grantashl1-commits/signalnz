@@ -31,7 +31,8 @@ const STEPS: { id: Step; label: string }[] = [
 ];
 
 export default function MyWeekTab({ onPlanSaved, onSaveToToday }: { onPlanSaved?: () => void; onSaveToToday?: () => void }) {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const phaseColor = PHASE_HEX[info.phase];
   const [step, setStep] = useState<Step>("prep");
   const [plan, setPlan] = useState<WeeklyPlan | null>(null);
