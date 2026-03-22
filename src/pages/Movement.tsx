@@ -38,7 +38,7 @@ const cardVariant = {
 };
 
 export default function MovementPage() {
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase, currentCycleDay, currentWeekNumber } = useCycle();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
@@ -50,7 +50,7 @@ export default function MovementPage() {
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [showHR, setShowHR] = useState(false);
-  const [trainingWeek, setTrainingWeekState] = useState(getTrainingWeek());
+  const trainingWeek = currentWeekNumber;
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [sessionNotes, setSessionNotes] = useState<Record<string, string>>({});
@@ -137,10 +137,11 @@ export default function MovementPage() {
   const totalMinutes = weekWorkouts.flat().reduce((s, id) => s + (WORKOUTS.find(x => x.id === id)?.durationMin || 0), 0);
   const sessions = getAllSessions();
 
-  const handleWeekChange = (week: number) => {
-    haptic("light");
-    setTrainingWeek(week);
-    setTrainingWeekState(week);
+  const WEEK_PHASE_NOTES: Record<number, string> = {
+    1: "Focus on consistency over intensity.",
+    2: "Push harder — your energy is building.",
+    3: "Peak performance week.",
+    4: "Honour how you feel. Drop intensity if needed.",
   };
 
   const formatTime = (secs: number) => {
@@ -249,16 +250,10 @@ export default function MovementPage() {
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
-          {/* Training week badge */}
-          <div className="card-warm p-3 flex items-center justify-between">
-            <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]}</span>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4].map(w => (
-                <button key={w} onClick={() => handleWeekChange(w)}
-                  className={`touch-btn h-8 w-8 rounded-full font-mono text-xs ${trainingWeek === w ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                >{w}</button>
-              ))}
-            </div>
+          {/* Training week label (auto-calculated) */}
+          <div className="card-warm p-3 space-y-1">
+            <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
+            <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
           </div>
 
           {/* Phase guidance */}
@@ -566,16 +561,10 @@ export default function MovementPage() {
             </button>
           </div>
 
-          {/* Training week selector */}
-          <div className="card-warm p-4">
-            <p className="font-body text-sm text-foreground mb-2">Which training week are you in?</p>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4].map(w => (
-                <button key={w} onClick={() => handleWeekChange(w)}
-                  className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[44px] font-mono text-sm ${trainingWeek === w ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                >{w}</button>
-              ))}
-            </div>
+          {/* Training week (auto-calculated) */}
+          <div className="card-warm p-4 space-y-1">
+            <p className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</p>
+            <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
           </div>
 
           {/* Manual log */}
