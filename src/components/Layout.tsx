@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle } from "lucide-react";
-import { getCycleInfo, getLastPeriodStart, PHASE_SHORT } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useState, useEffect } from "react";
 import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
