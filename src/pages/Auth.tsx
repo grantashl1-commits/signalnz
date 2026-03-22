@@ -49,8 +49,7 @@ export default function AuthPage() {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/auth`,
-        extraParams: { prompt: "select_account" },
+        redirect_uri: window.location.origin,
       });
       if (result.error) throw result.error;
       if (!result.redirected) {
@@ -58,7 +57,12 @@ export default function AuthPage() {
         navigate("/account", { replace: true });
       }
     } catch (err: any) {
-      toast.error(err.message || "Google sign-in failed");
+      console.error("Google OAuth error:", err);
+      if (err.message?.includes("cancelled") || err.message?.includes("popup")) {
+        toast.error("Sign-in popup was blocked. Please allow popups for this site, or try again.");
+      } else {
+        toast.error(err.message || "Google sign-in failed");
+      }
       setLoading(false);
     }
   };
