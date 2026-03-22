@@ -110,7 +110,9 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
     const prefs: PrepPrefsType = {
       breakfast, lunch, dinner, prepDays, adults, kids,
       dietType, allergies, dislikes, calorieTarget,
-      cookingSkill, availableTime, equipment, bodyGoal,
+      cookingSkill, availableTime, equipment,
+      bodyGoal: bodyGoals[0] || "",
+      bodyGoals,
     };
     savePreferences(prefs);
     onBuild(prefs);
