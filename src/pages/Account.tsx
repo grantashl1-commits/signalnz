@@ -39,6 +39,7 @@ export default function AccountPage() {
   const [nameInput, setNameInput] = useState("");
   const [nameSaving, setNameSaving] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Fitness profile
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("general");
