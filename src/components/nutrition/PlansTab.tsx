@@ -129,15 +129,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
       }}
       className="touch-card w-full text-left rounded-[16px] bg-card shadow-soft overflow-hidden"
     >
-      {recipe?.image ? (
-        <div className="w-full h-[100px] flex items-center justify-center bg-secondary/20 rounded-t-[16px]">
-          <img src={recipe.image} alt={name} className="h-[85px] w-auto object-contain" loading="lazy" />
-        </div>
-      ) : (
-        <div className="w-full h-[100px] flex items-center justify-center bg-secondary/10 rounded-t-[16px]">
-          <RecipeIllustration recipeName={name} height={80} />
-        </div>
-      )}
+      <RecipeImage recipeName={name} recipeImage={recipe?.image} height={100} variant="card" />
       <div className="p-3">
         <span className="font-body text-[10px] uppercase tracking-[0.15em] font-semibold" style={{ color: phaseColor }}>
           {slot}
