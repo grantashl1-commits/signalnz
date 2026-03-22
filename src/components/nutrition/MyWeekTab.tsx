@@ -329,6 +329,14 @@ export default function MyWeekTab() {
           >
             Rebuild plan
           </button>
+          {aiPlan && (
+            <button
+              onClick={() => { haptic("light"); setStep("shop"); }}
+              className="font-body text-xs text-primary underline"
+            >
+              Shopping list →
+            </button>
+          )}
         </div>
       </div>
 
