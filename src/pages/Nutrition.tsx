@@ -71,7 +71,7 @@ export default function NutritionPage() {
         {activeTab === "ai" && <AIRecipesTab phase={currentPhase} cycleDay={currentCycleDay} />}
         {activeTab === "recipes" && <RecipesGrid recipes={ALL_MEAL_RECIPES} currentPhase={currentPhase} />}
         {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={currentPhase} showBakingHeader />}
-        {activeTab === "myweek" && <MyWeekTab onPlanSaved={handlePlanSaved} onSaveToToday={handleSaveToToday} />}
+        {activeTab === "myweek" && <MyWeekTab />}
         {activeTab === "shopping" && <ShoppingListPanel />}
       </ContentSection>
     </div>
