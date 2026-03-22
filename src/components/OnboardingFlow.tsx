@@ -20,6 +20,7 @@ interface Props {
 export default function OnboardingFlow({ onComplete }: Props) {
   const { user } = useAuth();
   const { updateDisplayName } = useProfile();
+  const { setCycleStartDate } = useCycle();
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [cycleDate, setCycleDate] = useState<Date | undefined>();
@@ -35,7 +36,9 @@ export default function OnboardingFlow({ onComplete }: Props) {
       await updateDisplayName(name.trim());
     }
     if (cycleDate) {
-      setLastPeriodStart(format(cycleDate, "yyyy-MM-dd"));
+      const dateStr = format(cycleDate, "yyyy-MM-dd");
+      setLastPeriodStart(dateStr);
+      setCycleStartDate(dateStr);
     }
     localStorage.setItem("signal_onboarding_complete", "true");
     setSaving(false);
