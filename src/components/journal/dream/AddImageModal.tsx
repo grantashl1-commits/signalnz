@@ -4,12 +4,12 @@ import { X, Upload, Sparkles, Image as ImageIcon, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const STYLE_OPTIONS = [
-  { id: "dreamy-editorial", label: "Dreamy editorial" },
-  { id: "soft-cinematic", label: "Soft cinematic" },
-  { id: "warm-lifestyle", label: "Warm lifestyle" },
-  { id: "feminine-wellness", label: "Feminine wellness" },
-  { id: "minimal-aspirational", label: "Minimal aspirational" },
-  { id: "magazine-moodboard", label: "Magazine moodboard" },
+  { id: "dreamy-editorial", label: "Dreamy editorial", prefix: "Dreamy editorial photography, soft diffused natural light, aspirational, muted warm tones:" },
+  { id: "soft-cinematic", label: "Soft cinematic", prefix: "Soft cinematic film still, moody and beautiful, shallow depth of field, golden hour light:" },
+  { id: "warm-lifestyle", label: "Warm lifestyle", prefix: "Warm lifestyle photography, cosy and inviting, natural textures, candid feel:" },
+  { id: "feminine-wellness", label: "Feminine wellness", prefix: "Feminine wellness aesthetic, soft pastels, clean and serene, intentional living:" },
+  { id: "minimal-aspirational", label: "Minimal aspirational", prefix: "Minimalist aspirational photography, clean white space, editorial, luxury understated:" },
+  { id: "magazine-moodboard", label: "Magazine moodboard", prefix: "Magazine editorial moodboard, collage aesthetic, styled and curated, luxury print:" },
 ];
 
 const EXAMPLE_PROMPTS = [
@@ -60,7 +60,10 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
     setGeneratedUrl(null);
 
     try {
-      const stylePrompt = `${prompt}, ${style.replace(/-/g, " ")} photography style, beautiful, high quality`;
+      // Build prompt with style prefix
+      const selectedStyle = STYLE_OPTIONS.find((s) => s.id === style);
+      const stylePrefix = selectedStyle?.prefix || "";
+      const fullPrompt = `${stylePrefix} ${prompt.trim()}`;
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/dream-image-generate`,
@@ -71,13 +74,13 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ prompt: stylePrompt }),
+          body: JSON.stringify({ prompt: fullPrompt }),
         }
       );
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Image generation failed");
+        throw new Error(data.error || "Image generation is temporarily unavailable. Please try again in a moment.");
       }
 
       const data = await response.json();
@@ -86,11 +89,11 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
       if (imageUrl) {
         setGeneratedUrl(imageUrl);
       } else {
-        throw new Error("No image returned");
+        throw new Error("Image generation didn't produce a result. Try a different prompt.");
       }
     } catch (err: any) {
       console.error("Image generation error:", err);
-      setError(err.message || "Failed to generate image");
+      setError(err.message || "Image generation is temporarily unavailable. Please try again in a moment.");
     } finally {
       setGenerating(false);
     }
