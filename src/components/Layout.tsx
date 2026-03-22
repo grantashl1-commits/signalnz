@@ -42,7 +42,8 @@ const PHASE_BORDER: Record<string, string> = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay, name: PHASE_SHORT[currentPhase] };
   const isMobile = useIsMobile();
   const keyboardVisible = useKeyboardVisible();
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
