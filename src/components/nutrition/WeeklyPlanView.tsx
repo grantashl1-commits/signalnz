@@ -1,4 +1,5 @@
 import { useState } from "react";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
