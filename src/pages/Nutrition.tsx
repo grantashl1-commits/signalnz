@@ -22,6 +22,14 @@ export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
   const [activeTab, setActiveTab] = useState<TabId>("today");
   const [planVersion, setPlanVersion] = useState(0);
+  const navigate = useNavigate();
+
+  const bodyGoals = useMemo<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("signal_body_goals");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }, []);
 
   const handlePlanSaved = () => setPlanVersion(v => v + 1);
   const handleSaveToToday = () => { setPlanVersion(v => v + 1); setActiveTab("today"); };
