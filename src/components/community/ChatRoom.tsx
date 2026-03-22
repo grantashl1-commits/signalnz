@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MOCK_MESSAGES, type CommunityGroup, type ChatMessage } from "@/data/community-data";
+import { MOCK_MESSAGES, type ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
 
 function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
@@ -12,7 +12,7 @@ function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
 }
 
 interface ChatRoomProps {
-  group: CommunityGroup;
+  group: { id: string; name?: string; suburb: string; city?: string | null; members_count?: number | null; [key: string]: any };
 }
 
 export default function ChatRoom({ group }: ChatRoomProps) {
