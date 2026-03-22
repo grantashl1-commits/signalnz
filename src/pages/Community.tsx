@@ -3,7 +3,7 @@ import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import { MOCK_GROUPS } from "@/data/community-data";
+import { supabase } from "@/integrations/supabase/client";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
 import NearbyView from "@/components/community/NearbyView";
