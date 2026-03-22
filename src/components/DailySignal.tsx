@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BotanicalSprig, HerbCluster, WildStar } from "@/components/BotanicalElements";
 import { supabase } from "@/integrations/supabase/client";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  Phase, getCycleInfo, getLastPeriodStart, getDaysUntilNextPhase,
+  Phase, getDaysUntilNextPhase,
   getRecentSymptoms, getRecentMoods, getDailySignal, setDailySignal,
   PHASE_LABELS, PHASE_SHORT,
 } from "@/lib/cycle-utils";
