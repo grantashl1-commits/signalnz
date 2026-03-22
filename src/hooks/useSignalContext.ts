@@ -1,6 +1,7 @@
 import { useMemo } from "react";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  getCycleInfo, getLastPeriodStart, getCheckin,
+  getCheckin,
   getRecentSymptoms, getRecentMoods, getWaterCount,
   PHASE_SHORT,
 } from "@/lib/cycle-utils";

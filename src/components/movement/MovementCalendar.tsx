@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Dumbbell, Star } from "lucide-react";
-import { getCycleInfo, getLastPeriodStart, getPhaseFromDay, getCycleDayForDate, getLoggedWorkouts } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { getPhaseFromDay, getCycleDayForDate, getLoggedWorkouts } from "@/lib/cycle-utils";
 import { getAllSessions, type WorkoutSession } from "@/data/workouts";
 import { PhaseIndicator, WildStar } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";

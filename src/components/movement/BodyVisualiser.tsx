@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { haptic } from "@/hooks/use-mobile";
-import { getCycleInfo, getLastPeriodStart, Phase } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { Phase } from "@/lib/cycle-utils";
 import { PHASE_WORKOUTS, TODAY_WORKOUT, type Workout } from "@/data/workouts";
 
 // ── Measurements ──

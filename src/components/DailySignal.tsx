@@ -29,8 +29,8 @@ const FALLBACK_SIGNALS: Record<Phase, string> = {
 };
 
 export default function DailySignalCard() {
-  const lastPeriod = getLastPeriodStart();
-  const info = getCycleInfo(lastPeriod);
+  const { currentPhase, currentCycleDay, cycleStartDate } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const todayStr = new Date().toISOString().split("T")[0];
   const [signal, setSignal] = useState<string>("");
   const [loading, setLoading] = useState(false);

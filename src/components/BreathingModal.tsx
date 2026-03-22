@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { SacredSpiral } from "@/components/BotanicalElements";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 
 interface BreathingTechnique {
   name: string;

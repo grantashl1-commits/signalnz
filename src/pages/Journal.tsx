@@ -28,7 +28,8 @@ const TAB_SUBTITLES: Record<Tab, string> = {
 };
 
 export default function JournalPage() {
-  const info = getCycleInfo(getLastPeriodStart());
+  const { currentPhase, currentCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   
   const [tab, setTab] = useState<Tab>("entries");
   const [vaultRefresh, setVaultRefresh] = useState(0);

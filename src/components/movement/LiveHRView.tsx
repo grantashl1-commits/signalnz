@@ -9,7 +9,7 @@ import {
   getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR, getZoneForBPM, HR_ZONES,
   saveWorkoutSession, estimateCalories, type WorkoutSession,
 } from "@/data/workouts";
-import { getCycleInfo, getLastPeriodStart } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 
 interface LiveHRViewProps {
