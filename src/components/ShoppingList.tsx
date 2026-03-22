@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, ExternalLink, Copy, Check, Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { ShoppingCart, ExternalLink, Copy, Check, Trash2, Plus, ChevronDown, ChevronUp, X } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import {
   ShoppingItem, getShoppingList, addRecipeToShoppingList, removeRecipeFromShoppingList,
   toggleShoppingItem, clearShoppingList, formatShoppingListText, getWoolworthsSearchUrl, parseIngredient,
+  addManualItem, removeItem,
 } from "@/lib/ingredient-parser";
 import { haptic } from "@/hooks/use-mobile";
 import { getSupermarket } from "@/lib/fitness-profile";
@@ -76,23 +77,38 @@ export function IngredientSearchLinks({ ingredients }: IngredientSearchLinksProp
   );
 }
 
+// Category classification for display grouping
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+  produce: ["onion", "garlic", "ginger", "tomato", "spinach", "kale", "broccoli", "capsicum", "pepper", "carrot", "potato", "sweet potato", "kumara", "zucchini", "mushroom", "avocado", "banana", "apple", "berry", "berries", "lemon", "lime", "mango", "kiwi", "cucumber", "asparagus", "bok choy", "pumpkin", "beetroot", "cabbage", "spring onion", "coriander", "parsley", "mint", "basil", "chilli", "pear", "orange", "fruit", "lettuce", "celery"],
+  protein: ["chicken", "beef", "lamb", "pork", "fish", "salmon", "tuna", "prawn", "tofu", "tempeh", "egg", "turkey", "lentil", "chickpea", "bean", "edamame"],
+  dairy: ["milk", "yoghurt", "yogurt", "cream", "cheese", "butter"],
+  pantry: ["coconut milk", "coconut oil", "olive oil", "sesame oil", "tamari", "miso", "mirin", "maple syrup", "honey", "vinegar", "soy", "stock", "tomato paste", "canned", "peanut butter", "almond butter", "tahini", "chocolate", "cacao", "vanilla", "flour", "sugar", "rice", "pasta", "noodle", "oat", "quinoa", "bread"],
+  frozen: ["frozen"],
+};
+
+function categoriseItem(name: string): string {
+  const lower = name.toLowerCase();
+  for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (keywords.some(kw => lower.includes(kw))) return cat;
+  }
+  return "other";
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  produce: "Produce",
+  protein: "Protein",
+  dairy: "Dairy / Alternatives",
+  pantry: "Pantry",
+  frozen: "Frozen",
+  other: "Other",
+};
+
 export function ShoppingListPanel() {
   const [items, setItems] = useState(getShoppingList);
   const [copied, setCopied] = useState(false);
-  const [expanded, setExpanded] = useState(true);
+  const [manualInput, setManualInput] = useState("");
+  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
   const supermarket = getSupermarket();
-
-  if (items.length === 0) {
-    return (
-      <div className="card-warm p-4 md:p-5 text-center">
-        <ShoppingCart className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
-        <p className="font-hand text-sm text-muted-foreground">Your shopping list is empty</p>
-        <p className="font-body text-xs text-muted-foreground/60 mt-1">
-          Tap "Add to list" on any recipe to get started
-        </p>
-      </div>
-    );
-  }
 
   const handleToggle = (index: number) => {
     haptic("light");
@@ -116,132 +132,232 @@ export function ShoppingListPanel() {
     setItems(removeRecipeFromShoppingList(recipeId));
   };
 
-  // Group by recipe
-  const grouped = items.reduce<Record<string, ShoppingItem[]>>((acc, item) => {
-    if (!acc[item.recipeId]) acc[item.recipeId] = [];
-    acc[item.recipeId].push(item);
-    return acc;
-  }, {});
+  const handleRemoveItem = (index: number) => {
+    haptic("light");
+    setItems(removeItem(index));
+  };
 
-  const checkedCount = items.filter((i) => i.checked).length;
+  const handleAddManual = () => {
+    if (!manualInput.trim()) return;
+    haptic("light");
+    setItems(addManualItem(manualInput.trim()));
+    setManualInput("");
+  };
+
+  const toggleCategory = (cat: string) => {
+    haptic("light");
+    setExpandedCats(prev => ({ ...prev, [cat]: prev[cat] === false ? true : false }));
+  };
+
+  // Group items by category
+  const grouped = useMemo(() => {
+    const cats: Record<string, { items: ShoppingItem[]; indices: number[] }> = {};
+    items.forEach((item, index) => {
+      const cat = categoriseItem(item.name);
+      if (!cats[cat]) cats[cat] = { items: [], indices: [] };
+      cats[cat].items.push(item);
+      cats[cat].indices.push(index);
+    });
+    return cats;
+  }, [items]);
+
+  const checkedCount = items.filter(i => i.checked).length;
+  const categoryOrder = ["produce", "protein", "dairy", "pantry", "frozen", "other"];
+
+  if (items.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="card-warm p-6 text-center">
+          <ShoppingCart className="h-8 w-8 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="font-display text-sm italic text-foreground">Your shopping list is empty</p>
+          <p className="font-body text-xs text-muted-foreground mt-1">
+            Add ingredients from AI Recipes or type them manually below.
+          </p>
+        </div>
+
+        {/* Manual add */}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={manualInput}
+            onChange={e => setManualInput(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleAddManual()}
+            placeholder="Add item manually..."
+            className="flex-1 rounded-xl border border-border bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            style={{ fontSize: "16px" }}
+          />
+          <button
+            onClick={handleAddManual}
+            className="touch-btn rounded-xl bg-primary px-4 py-2.5 min-h-[44px] font-body text-sm font-medium text-primary-foreground"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="card-warm overflow-hidden">
-      <button
-        onClick={() => { haptic("light"); setExpanded(!expanded); }}
-        className="touch-card w-full flex items-center justify-between p-4 md:p-5 min-h-[56px]"
-      >
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ShoppingCart className="h-4 w-4 text-primary" />
-          <span className="font-hand text-sm font-bold text-primary">shopping list</span>
+          <span className="font-display text-sm italic text-foreground">Shopping List</span>
           <span className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
             {checkedCount}/{items.length}
           </span>
         </div>
-        {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-      </button>
+        <button
+          onClick={handleClear}
+          className="touch-btn flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1.5 min-h-[32px] font-body text-[10px] text-muted-foreground"
+        >
+          <Trash2 className="h-3 w-3" />
+          Clear all
+        </button>
+      </div>
 
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-4">
-              {Object.entries(grouped).map(([recipeId, recipeItems]) => (
-                <div key={recipeId}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-display text-xs italic text-foreground">{recipeItems[0].recipeName}</span>
-                    <button
-                      onClick={() => handleRemoveRecipe(recipeId)}
-                      className="touch-btn p-1 min-h-[32px] min-w-[32px] flex items-center justify-center text-muted-foreground active:text-destructive transition-colors"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                  <div className="space-y-1.5">
-                    {recipeItems.map((item) => {
-                      const globalIndex = items.indexOf(item);
+      {/* Progress bar */}
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-1.5 rounded-full bg-secondary overflow-hidden">
+          <div
+            className="h-full rounded-full bg-primary transition-all"
+            style={{ width: `${items.length > 0 ? (checkedCount / items.length) * 100 : 0}%` }}
+          />
+        </div>
+        <span className="font-mono text-[10px] text-muted-foreground">{checkedCount}/{items.length}</span>
+      </div>
+
+      {/* Categories */}
+      {categoryOrder.filter(cat => grouped[cat]).map(cat => {
+        const { items: catItems, indices } = grouped[cat];
+        const isExpanded = expandedCats[cat] !== false;
+
+        return (
+          <div key={cat} className="card-warm overflow-hidden">
+            <button
+              onClick={() => toggleCategory(cat)}
+              className="touch-card w-full flex items-center justify-between p-3 min-h-[48px]"
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-body text-xs font-bold text-foreground">{CATEGORY_LABELS[cat]}</span>
+                <span className="font-mono text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                  {catItems.filter(i => i.checked).length}/{catItems.length}
+                </span>
+              </div>
+              {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
+            </button>
+
+            <AnimatePresence>
+              {isExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-3 pb-3 space-y-1.5">
+                    {catItems.map((item, ci) => {
+                      const globalIndex = indices[ci];
                       return (
                         <div key={globalIndex} className="flex items-center gap-2">
                           <button
                             onClick={() => handleToggle(globalIndex)}
                             className={`touch-btn h-5 w-5 rounded-full border flex-shrink-0 flex items-center justify-center transition-all ${
-                              item.checked ? "bg-phase-follicular/30 border-phase-follicular/60" : "border-border"
+                              item.checked ? "bg-primary/30 border-primary/60" : "border-border"
                             }`}
                           >
-                            {item.checked && <Check className="h-3 w-3 text-phase-follicular" />}
+                            {item.checked && <Check className="h-3 w-3 text-primary" />}
                           </button>
-                          <span className={`font-body text-xs flex-1 ${item.checked ? "line-through text-muted-foreground/50" : "text-muted-foreground"}`}>
-                            {item.quantity && <span className="font-mono text-[10px]">{item.quantity} </span>}
-                            {item.unit && <span className="font-mono text-[10px]">{item.unit} </span>}
-                            {item.name}
-                          </span>
-                          <a
-                            href={getWoolworthsSearchUrl(item)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => haptic("light")}
-                            className="touch-btn flex-shrink-0 p-1 min-h-[32px] min-w-[32px] flex items-center justify-center text-phase-follicular/60 active:text-phase-follicular"
-                          >
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
+                          <div className="flex-1 min-w-0">
+                            <span className={`font-body text-xs ${item.checked ? "line-through text-muted-foreground/50" : "text-foreground"}`}>
+                              {item.quantity && <span className="font-mono text-[10px]">{item.quantity} </span>}
+                              {item.unit && <span className="font-mono text-[10px]">{item.unit} </span>}
+                              {item.name}
+                            </span>
+                            {item.recipeName && item.recipeName !== "Manual" && (
+                              <p className="font-body text-[9px] text-muted-foreground/60 mt-0.5">{item.recipeName}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <a
+                              href={getWoolworthsSearchUrl(item)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => haptic("light")}
+                              className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-primary/50 active:text-primary"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                            <button
+                              onClick={() => handleRemoveItem(globalIndex)}
+                              className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-muted-foreground/40 active:text-destructive"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
                   </div>
-                </div>
-              ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
 
-              {/* Actions */}
-              <div className="flex gap-2 pt-2 border-t border-border">
-                <button
-                  onClick={handleCopy}
-                  className="touch-btn flex-1 flex items-center justify-center gap-1.5 rounded-full bg-primary/10 px-3 py-2.5 min-h-[44px] font-body text-xs font-medium text-primary active:bg-primary/20 transition-all"
-                >
-                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied ? "Copied!" : "Copy list"}
-                </button>
-                <button
-                  onClick={handleClear}
-                  className="touch-btn flex items-center justify-center gap-1.5 rounded-full bg-secondary px-3 py-2.5 min-h-[44px] font-body text-xs font-medium text-muted-foreground active:bg-secondary/80 transition-all"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  Clear
-                </button>
-              </div>
+      {/* Manual add */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={manualInput}
+          onChange={e => setManualInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && handleAddManual()}
+          placeholder="Add item manually..."
+          className="flex-1 rounded-xl border border-border bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          style={{ fontSize: "16px" }}
+        />
+        <button
+          onClick={handleAddManual}
+          className="touch-btn rounded-xl bg-primary px-4 py-2.5 min-h-[44px] font-body text-sm font-medium text-primary-foreground"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+      </div>
 
-              {/* Supermarket link */}
-              <a
-                href={supermarket.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => haptic("medium")}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-all"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Shop at {supermarket.name}
-                <ExternalLink className="h-3.5 w-3.5 opacity-60" />
-              </a>
+      {/* Actions */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleCopy}
+          className="touch-btn flex-1 flex items-center justify-center gap-1.5 rounded-[14px] py-3 min-h-[44px] font-body text-xs font-medium bg-primary/10 text-primary active:bg-primary/20 transition-all"
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied!" : "Copy list"}
+        </button>
+      </div>
 
-              {/* Woolworths note */}
-              <div className="flex items-start gap-2 bg-primary/5 rounded-xl p-3">
-                <WildStar size={14} color="hsl(var(--primary))" />
-                <p className="font-body text-[10px] text-muted-foreground leading-relaxed">
-                  Tap <ExternalLink className="inline h-2.5 w-2.5" /> next to each item to search on{" "}
-                  <a href={supermarket.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                    {supermarket.name}
-                  </a>{" "}
-                  and add to your cart directly. Change your supermarket in Account settings.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Supermarket link */}
+      <a
+        href={supermarket.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => haptic("medium")}
+        className="w-full flex items-center justify-center gap-2 rounded-[14px] bg-primary px-4 py-3 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-all"
+      >
+        <ShoppingCart className="h-4 w-4" />
+        Shop at {supermarket.name}
+        <ExternalLink className="h-3.5 w-3.5 opacity-60" />
+      </a>
+
+      {/* Tip */}
+      <div className="flex items-start gap-2 bg-primary/5 rounded-xl p-3">
+        <WildStar size={14} color="hsl(var(--primary))" />
+        <p className="font-body text-[10px] text-muted-foreground leading-relaxed">
+          This list is for individual recipes you've saved. Your weekly meal plan shopping list is in My Week → Shop.
+        </p>
+      </div>
     </div>
   );
 }

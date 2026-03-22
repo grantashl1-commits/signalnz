@@ -117,6 +117,26 @@ export function clearShoppingList(): ShoppingItem[] {
   return [];
 }
 
+export function addManualItem(text: string): ShoppingItem[] {
+  const items = getShoppingList();
+  const parsed = parseIngredient(text);
+  items.push({
+    ...parsed,
+    recipeId: "manual",
+    recipeName: "Manual",
+    checked: false,
+  });
+  saveShoppingList(items);
+  return items;
+}
+
+export function removeItem(index: number): ShoppingItem[] {
+  const items = getShoppingList();
+  items.splice(index, 1);
+  saveShoppingList(items);
+  return items;
+}
+
 export function formatShoppingListText(items: ShoppingItem[]): string {
   const lines = items.map((i) => `${i.checked ? "✓" : "☐"} ${i.quantity ? i.quantity + " " : ""}${i.unit ? i.unit + " " : ""}${i.name}`);
   return `Shopping List\n${"—".repeat(20)}\n${lines.join("\n")}`;
