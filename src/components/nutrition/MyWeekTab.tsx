@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, RotateCcw } from "lucide-react";
-import { Phase, PHASE_SHORT, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "@/lib/cycle-utils";
+import { useCycle } from "@/contexts/CycleContext";
+import { Phase, PHASE_SHORT, PHASE_DAYS } from "@/lib/cycle-utils";
 import PrepPreferences from "./PrepPreferences";
 import WeeklyPlanView from "./WeeklyPlanView";
 import SmartShoppingList from "./SmartShoppingList";
