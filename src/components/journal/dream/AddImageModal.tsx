@@ -4,12 +4,12 @@ import { X, Upload, Sparkles, Image as ImageIcon, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const STYLE_OPTIONS = [
-  { id: "dreamy-editorial", label: "Dreamy editorial" },
-  { id: "soft-cinematic", label: "Soft cinematic" },
-  { id: "warm-lifestyle", label: "Warm lifestyle" },
-  { id: "feminine-wellness", label: "Feminine wellness" },
-  { id: "minimal-aspirational", label: "Minimal aspirational" },
-  { id: "magazine-moodboard", label: "Magazine moodboard" },
+  { id: "dreamy-editorial", label: "Dreamy editorial", prefix: "Dreamy editorial photography, soft diffused natural light, aspirational, muted warm tones:" },
+  { id: "soft-cinematic", label: "Soft cinematic", prefix: "Soft cinematic film still, moody and beautiful, shallow depth of field, golden hour light:" },
+  { id: "warm-lifestyle", label: "Warm lifestyle", prefix: "Warm lifestyle photography, cosy and inviting, natural textures, candid feel:" },
+  { id: "feminine-wellness", label: "Feminine wellness", prefix: "Feminine wellness aesthetic, soft pastels, clean and serene, intentional living:" },
+  { id: "minimal-aspirational", label: "Minimal aspirational", prefix: "Minimalist aspirational photography, clean white space, editorial, luxury understated:" },
+  { id: "magazine-moodboard", label: "Magazine moodboard", prefix: "Magazine editorial moodboard, collage aesthetic, styled and curated, luxury print:" },
 ];
 
 const EXAMPLE_PROMPTS = [
