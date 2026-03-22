@@ -13,6 +13,8 @@ import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import AIRecipesTab from "@/components/nutrition/AIRecipesTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
+import { Dumbbell, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type TabId = "today" | "plans" | "myweek" | "ai" | "recipes" | "baking" | "shopping";
 
@@ -20,6 +22,14 @@ export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
   const [activeTab, setActiveTab] = useState<TabId>("today");
   const [planVersion, setPlanVersion] = useState(0);
+  const navigate = useNavigate();
+
+  const bodyGoals = useMemo<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("signal_body_goals");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }, []);
 
   const handlePlanSaved = () => setPlanVersion(v => v + 1);
   const handleSaveToToday = () => { setPlanVersion(v => v + 1); setActiveTab("today"); };
@@ -51,6 +61,22 @@ export default function NutritionPage() {
       <ContentSection className="px-5 md:px-4 space-y-10 md:space-y-12 pb-24">
         <PhaseBadge phase={currentPhase} cycleDay={currentCycleDay} />
 
+        {/* Nudge if no body goals set */}
+        {bodyGoals.length === 0 && (
+          <button
+            onClick={() => navigate("/movement")}
+            className="w-full rounded-xl border border-border bg-card p-3 flex items-center gap-3 text-left transition-all active:bg-secondary/50"
+          >
+            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+              <Dumbbell className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="flex-1">
+              <p className="font-body text-xs font-medium text-foreground">Want your meals to fuel your workouts?</p>
+              <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your body goals in Movement first →</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          </button>
+        )}
         {/* Tabs */}
         <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
           {TABS.map((tab) => (

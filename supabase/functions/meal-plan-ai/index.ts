@@ -39,13 +39,19 @@ const PHASE_GUIDANCE: Record<string, string> = {
 };
 
 const GOAL_GUIDANCE: Record<string, string> = {
-  "Build muscle": "Prioritise higher protein (1.6-2g per kg body weight), complex carbs for recovery, calorie surplus of ~300-500 cal. Include protein in every meal.",
-  "Lose weight": "Moderate calorie deficit (~300-500 cal below maintenance), high fibre, high satiety meals, lean protein at every meal. Avoid drastic restriction.",
-  "Tone & define": "Balanced macros with emphasis on lean protein, moderate carbs around training, healthy fats. Slight deficit or maintenance calories.",
+  "lose-weight": "Moderate calorie deficit (~300-500 cal below maintenance), high fibre, high satiety meals, lean protein at every meal. Avoid drastic restriction.",
+  "gain-muscle": "Prioritise higher protein (1.6-2g per kg body weight), complex carbs for recovery, calorie surplus of ~200-300 cal. Include protein in every meal.",
+  "tone-up": "Balanced macros with emphasis on lean protein (1.6g/kg target), moderate carbs around training, healthy fats. Slight deficit or maintenance calories.",
+  flexibility: "Anti-inflammatory foods (turmeric, ginger, omega-3), magnesium-rich meals, adaptogens (ashwagandha in smoothies), adequate hydration.",
+  endurance: "Complex carbs for sustained energy, iron-rich foods, adequate hydration, moderate protein for recovery.",
+  "stress-relief": "Magnesium-rich foods (dark chocolate, nuts, leafy greens), B vitamins, omega-3, adaptogens (ashwagandha, turmeric), complex carbs for serotonin production.",
+  posture: "Anti-inflammatory support, calcium and vitamin D for bone health, collagen-supporting foods (citrus, berries).",
+  energy: "B-vitamin rich foods (whole grains, eggs, leafy greens), iron (red meat, lentils, spinach), complex carbs, reduce refined sugar to avoid crashes.",
+  "Build muscle": "Prioritise higher protein (1.6-2g per kg body weight), complex carbs for recovery, calorie surplus of ~200-300 cal. Include protein in every meal.",
+  "Lose weight": "Moderate calorie deficit (~300-500 cal below maintenance), high fibre, high satiety meals, lean protein at every meal.",
+  "Tone & define": "Balanced macros with emphasis on lean protein, moderate carbs around training, healthy fats.",
   strength: "Higher protein intake, complex carbs for energy, adequate calories to support training recovery.",
   "weight-loss": "Moderate calorie deficit, high protein to preserve muscle, fibre-rich vegetables for satiety.",
-  flexibility: "Anti-inflammatory foods, adequate hydration, balanced macros.",
-  "stress-relief": "Magnesium-rich foods, B vitamins, omega-3, complex carbs for serotonin production.",
   general: "Balanced, phase-focused nutrition with adequate protein, complex carbs, and healthy fats.",
 };
 
@@ -62,12 +68,12 @@ serve(async (req) => {
       prepDays: string[]; adults: number; kids: number;
       dietType?: string; allergies?: string; dislikes?: string;
       calorieTarget?: string; cookingSkill?: string; availableTime?: string;
-      equipment?: string[]; bodyGoal?: string;
+      equipment?: string[]; bodyGoal?: string; bodyGoals?: string[];
     };
 
-    // Build system prompt
-    const goalKey = prefs.bodyGoal || "general";
-    const goalAdvice = GOAL_GUIDANCE[goalKey] || GOAL_GUIDANCE.general;
+    // Build system prompt — support both single goal and goals array
+    const goals = prefs.bodyGoals?.length ? prefs.bodyGoals : (prefs.bodyGoal ? [prefs.bodyGoal] : ["general"]);
+    const goalAdvice = goals.map(g => GOAL_GUIDANCE[g] || GOAL_GUIDANCE.general).join("\n");
 
     let systemPrompt = `You are a specialist cycle-syncing nutritionist creating personalised meal plans for women.
 
@@ -80,7 +86,7 @@ USER PROFILE:
 - Available cooking time: ${prefs.availableTime || "30"} minutes per meal
 - Equipment: ${prefs.equipment?.join(", ") || "oven, stovetop"}
 - Cooking for: ${prefs.adults} adult(s)${prefs.kids > 0 ? ` and ${prefs.kids} kid(s)` : ""}
-- Body goal: ${goalKey}
+- Body goals: ${goals.join(", ")}
 
 BODY GOAL GUIDANCE:
 ${goalAdvice}

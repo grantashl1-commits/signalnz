@@ -25,6 +25,7 @@ export interface PrepPreferences {
   availableTime?: AvailableTime;
   equipment?: string[];
   bodyGoal?: string;
+  bodyGoals?: string[];
 }
 
 export interface AIMeal {
