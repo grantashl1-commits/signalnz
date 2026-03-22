@@ -259,6 +259,22 @@ export default function MyWeekTab() {
     );
   }
 
+  if (step === "shop" && aiPlan) {
+    // Determine which cycle week we're in (1-4)
+    const currentWeek = Math.ceil(currentCycleDay / 7);
+    return (
+      <div className="space-y-4">
+        <button
+          onClick={() => { haptic("light"); setStep("plan"); }}
+          className="font-body text-xs text-muted-foreground underline"
+        >
+          ← Back to plan
+        </button>
+        <SmartShoppingList plan={aiPlan} weekNumber={currentWeek} />
+      </div>
+    );
+  }
+
   const { days, monday, dominantPhase } = weekData;
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
