@@ -156,9 +156,10 @@ export default function CyclePage() {
   };
 
   const handleCycleUpdate = useCallback(() => {
-    setLastPeriod(getLastPeriodStart() || "");
+    cycle.refresh();
+    setLastPeriod(cycle.cycleStartDate || "");
     setRefreshKey((k) => k + 1);
-  }, []);
+  }, [cycle]);
 
   const calendarDays = useMemo(() => {
     const year = calendarMonth.getFullYear();
