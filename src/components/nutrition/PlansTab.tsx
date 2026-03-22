@@ -5,7 +5,7 @@ import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
-import { RecipeIllustration } from "@/components/MealIllustration";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
@@ -129,15 +129,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
       }}
       className="touch-card w-full text-left rounded-[16px] bg-card shadow-soft overflow-hidden"
     >
-      {recipe?.image ? (
-        <div className="w-full h-[100px] flex items-center justify-center bg-secondary/20 rounded-t-[16px]">
-          <img src={recipe.image} alt={name} className="h-[85px] w-auto object-contain" loading="lazy" />
-        </div>
-      ) : (
-        <div className="w-full h-[100px] flex items-center justify-center bg-secondary/10 rounded-t-[16px]">
-          <RecipeIllustration recipeName={name} height={80} />
-        </div>
-      )}
+      <RecipeImage recipeName={name} recipeImage={recipe?.image} height={100} variant="card" />
       <div className="p-3">
         <span className="font-body text-[10px] uppercase tracking-[0.15em] font-semibold" style={{ color: phaseColor }}>
           {slot}
@@ -343,13 +335,7 @@ export default function PlansTab({ phase, cycleDay }: PlansTabProps) {
                 </button>
               </div>
 
-              {selectedRecipe.image ? (
-                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/20 rounded-t-[20px]">
-                  <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
-                </div>
-              ) : (
-                <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
-              )}
+              <RecipeImage recipeName={selectedRecipe.name} recipeImage={selectedRecipe.image} height={180} variant="detail" />
 
               <div className="p-6 space-y-5">
                 <div>

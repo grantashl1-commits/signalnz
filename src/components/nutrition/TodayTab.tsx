@@ -5,7 +5,7 @@ import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
 import { findRecipeByName } from "@/lib/recipe-index";
-import { RecipeIllustration } from "@/components/MealIllustration";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import SeedCyclingCard from "@/components/nutrition/SeedCyclingCard";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
@@ -208,15 +208,7 @@ function MealCard({ slot, label, name, recipe, isExpanded, isEaten, phaseColor, 
     >
       {/* Image */}
       <div className="relative">
-        {recipe?.image ? (
-          <div className="w-full h-[180px] md:h-[220px] flex items-center justify-center bg-secondary/20">
-            <img src={recipe.image} alt={name} className="h-[160px] md:h-[200px] w-auto object-contain" loading="lazy" />
-          </div>
-        ) : (
-          <div className="w-full h-[140px] flex items-center justify-center bg-secondary/10">
-            <RecipeIllustration recipeName={name} height={110} />
-          </div>
-        )}
+        <RecipeImage recipeName={name} recipeImage={recipe?.image} height={180} variant="detail" />
         {/* Prep time + serves badges */}
         <div className="absolute bottom-3 right-4 flex gap-2">
           {recipe?.prepTime && (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CakeSlice, Search, BookOpen } from "lucide-react";
-import { RecipeIllustration } from "@/components/MealIllustration";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { Recipe } from "@/data/meal-plans";
@@ -116,13 +116,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
               }}
               className="touch-card w-full text-left card-warm overflow-hidden"
             >
-              {recipe.image ? (
-                <div className="w-full h-[100px] flex items-center justify-center bg-secondary/30">
-                  <img src={recipe.image} alt={recipe.name} className="h-[90px] w-auto object-contain" loading="lazy" />
-                </div>
-              ) : (
-                <RecipeIllustration recipeName={recipe.name} height={100} />
-              )}
+              <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} height={100} variant="card" />
               <div className="p-3">
                 <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">
                   {recipe.name}
@@ -212,13 +206,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                 </div>
               )}
 
-              {selectedRecipe.image ? (
-                <div className="w-full h-[180px] flex items-center justify-center bg-secondary/30 rounded-t-[20px]">
-                  <img src={selectedRecipe.image} alt={selectedRecipe.name} className="h-[160px] w-auto object-contain" />
-                </div>
-              ) : (
-                <RecipeIllustration recipeName={selectedRecipe.name} height={180} className="rounded-t-[20px]" />
-              )}
+              <RecipeImage recipeName={selectedRecipe.name} recipeImage={selectedRecipe.image} height={180} variant="detail" />
 
               <div className="p-5 space-y-4">
                 <div>

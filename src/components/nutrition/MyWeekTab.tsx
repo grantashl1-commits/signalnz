@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import RecipeImage from "@/components/nutrition/RecipeImage";
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCycle } from "@/contexts/CycleContext";
@@ -431,8 +432,8 @@ export default function MyWeekTab() {
                           <div key={key} className="space-y-1">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex items-start gap-3 flex-1 min-w-0">
-                                {staticRecipe?.image && (
-                                  <img src={staticRecipe.image} alt={mealName} className="h-12 w-12 rounded-lg object-contain bg-secondary/20 flex-shrink-0" />
+                                {(staticRecipe?.image || mealName) && (
+                                  <RecipeImage recipeName={mealName} recipeImage={staticRecipe?.image} variant="thumb" />
                                 )}
                                 <div className="min-w-0 flex-1">
                                   <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: dayPhaseColor }}>{label}</p>
