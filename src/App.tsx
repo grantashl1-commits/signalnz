@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CycleProvider } from "@/contexts/CycleContext";
 import Index from "./pages/Index";
 import Cycle from "./pages/Cycle";
 import Nutrition from "./pages/Nutrition";
