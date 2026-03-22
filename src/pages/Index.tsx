@@ -90,7 +90,7 @@ export default function HomePage() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const hasSetCycle = !!getLastPeriodStart();
+  const hasSetCycle = !!useCycle().cycleStartDate;
 
   // Extract first name from auth metadata, profile display name, or fallback
   const firstName = (() => {
