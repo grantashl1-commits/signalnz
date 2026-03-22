@@ -35,6 +35,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <CycleProvider>
           <SignalPanelProvider>
             <Routes>
               <Route path="/brand" element={<BrandGuidelines />} />
