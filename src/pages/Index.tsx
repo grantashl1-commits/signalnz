@@ -306,7 +306,7 @@ export default function HomePage() {
                   path: "/cycle",
                   icon: Moon,
                   label: "Cycle",
-                  title: `Day ${info.cycleDay} — ${info.name.replace(" Phase", "")}`,
+                  title: `Day ${info.cycleDay} — ${PHASE_SHORT[info.phase]}`,
                   desc: "Tap to explore your cycle insights.",
                 },
                 {
