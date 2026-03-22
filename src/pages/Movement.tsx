@@ -38,7 +38,7 @@ const cardVariant = {
 };
 
 export default function MovementPage() {
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase, currentCycleDay, currentWeekNumber } = useCycle();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
