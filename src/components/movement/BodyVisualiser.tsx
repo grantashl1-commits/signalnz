@@ -566,7 +566,7 @@ export default function BodyVisualiser() {
           <ComparisonCard history={history} />
           <MeasurementChart history={history} />
           <HistoryTimeline history={history} />
-          <ComingSoonCard />
+          <BodyVisualisationCard />
         </div>
       )}
     </div>
