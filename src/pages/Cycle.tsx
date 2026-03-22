@@ -364,6 +364,18 @@ export default function CyclePage() {
               const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
               const phase = cycleDay ? getPhaseFromDay(cycleDay) : null;
               const indicators = getDayIndicators(dateStr, lastPeriod);
+              const moods = getMoods(dateStr);
+              const weightVal = getWeight(dateStr);
+              const wUnit = getWeightUnit();
+              const displayWeight = weightVal
+                ? wUnit === "lbs"
+                  ? `${Math.round(weightVal / 0.453592)}lb`
+                  : `${weightVal % 1 === 0 ? weightVal : weightVal.toFixed(1)}kg`
+                : null;
+              // Truncate weight display if too long
+              const shortWeight = displayWeight && displayWeight.length > 5
+                ? (wUnit === "lbs" ? `${Math.round(weightVal! / 0.453592)}lb` : `${Math.round(weightVal!)}kg`)
+                : displayWeight;
 
               return (
                 <button
@@ -372,15 +384,38 @@ export default function CyclePage() {
                   className={`touch-btn relative rounded-xl p-1 md:p-2 text-center transition-all active:bg-secondary min-h-[44px] ${isToday ? "ring-1 ring-primary" : ""}`}
                 >
                   <span className="font-mono text-xs text-foreground">{date.getDate()}</span>
-                  <div className="flex justify-center gap-[2px] mt-0.5 flex-wrap">
+
+                  {/* Phase dot */}
+                  <div className="flex justify-center gap-[2px] mt-0.5">
                     {phase && <div className="h-2 w-2 rounded-full" style={{ backgroundColor: PHASE_HEX[phase] }} />}
                   </div>
-                  {/* Indicator symbols */}
+
+                  {/* Mood colour dots — clickable */}
+                  {moods.length > 0 && (
+                    <div
+                      className="flex justify-center gap-[2px] mt-[1px]"
+                      onClick={(e) => { e.stopPropagation(); haptic("light"); setPopover({ dateStr, cycleDay, type: "mood" }); }}
+                    >
+                      {moods.slice(0, 2).map((mood, mi) => (
+                        <div key={mi} className="h-[5px] w-[5px] rounded-full" style={{ backgroundColor: getMoodDotColor(mood) }} />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Weight number — clickable */}
+                  {shortWeight && (
+                    <div
+                      className="mt-[1px]"
+                      onClick={(e) => { e.stopPropagation(); haptic("light"); setPopover({ dateStr, cycleDay, type: "weight" }); }}
+                    >
+                      <span className="font-mono text-muted-foreground leading-none" style={{ fontSize: "9px" }}>{shortWeight}</span>
+                    </div>
+                  )}
+
+                  {/* Other small indicators */}
                   <div className="flex justify-center gap-[2px] mt-[1px]">
                     {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#C4526E" }}>●</span>}
-                    {indicators.hasMood && <span className="text-[8px] leading-none text-foreground/50">♡</span>}
                     {indicators.hasSymptoms && <span className="text-[8px] leading-none" style={{ color: phase ? PHASE_HEX[phase] : undefined, opacity: 0.7 }}>◆</span>}
-                    {indicators.hasWeight && <span className="text-[8px] leading-none text-muted-foreground">⚖</span>}
                     {indicators.hasNotes && <span className="text-[8px] leading-none text-foreground/40">✎</span>}
                     {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#C47A8A" }}>✿</span>}
                   </div>
@@ -388,6 +423,17 @@ export default function CyclePage() {
               );
             })}
           </div>
+
+          {/* Mood/Weight popover */}
+          {popover && (
+            <CalendarMoodPopover
+              dateStr={popover.dateStr}
+              cycleDay={popover.cycleDay}
+              type={popover.type}
+              onEdit={() => { setPopover(null); setSelectedDate(popover.dateStr); }}
+              onClose={() => setPopover(null)}
+            />
+          )}
 
           {/* Day sheet */}
           {selectedDate && (
