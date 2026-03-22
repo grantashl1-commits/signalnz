@@ -443,6 +443,7 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
       </BoardCanvas>
 
       <AddImageModal open={showImageModal} onClose={() => setShowImageModal(false)} onImageReady={handleImageReady} />
+      <SaveIndicator status={board.saveStatus} />
     </div>
   );
 }
