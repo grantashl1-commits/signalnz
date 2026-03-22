@@ -116,13 +116,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
               }}
               className="touch-card w-full text-left card-warm overflow-hidden"
             >
-              {recipe.image ? (
-                <div className="w-full h-[100px] flex items-center justify-center bg-secondary/30">
-                  <img src={recipe.image} alt={recipe.name} className="h-[90px] w-auto object-contain" loading="lazy" />
-                </div>
-              ) : (
-                <RecipeIllustration recipeName={recipe.name} height={100} />
-              )}
+              <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} height={100} variant="card" />
               <div className="p-3">
                 <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">
                   {recipe.name}
