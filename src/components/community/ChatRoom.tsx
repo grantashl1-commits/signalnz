@@ -66,7 +66,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Header */}
       <div className="pb-3 border-b border-border mb-3 flex-shrink-0">
         <h3 className="font-display text-lg font-bold italic text-foreground">{group.suburb} Community</h3>
-        <p className="font-mono text-[11px] text-muted-foreground">{group.members} neighbours · {group.city}</p>
+        <p className="font-mono text-[11px] text-muted-foreground">{group.members_count || 0} neighbours · {group.city || group.suburb}</p>
       </div>
 
       {/* Challenge banner */}
