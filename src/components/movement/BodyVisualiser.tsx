@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Ruler, Camera, Image, Trash2, Plus, Loader2, Sparkles, Flame, Dumbbell, Star, PersonStanding, Activity, Leaf, Bone, Zap, TrendingUp, ChevronDown, type LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
