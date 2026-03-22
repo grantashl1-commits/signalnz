@@ -68,12 +68,12 @@ serve(async (req) => {
       prepDays: string[]; adults: number; kids: number;
       dietType?: string; allergies?: string; dislikes?: string;
       calorieTarget?: string; cookingSkill?: string; availableTime?: string;
-      equipment?: string[]; bodyGoal?: string;
+      equipment?: string[]; bodyGoal?: string; bodyGoals?: string[];
     };
 
-    // Build system prompt
-    const goalKey = prefs.bodyGoal || "general";
-    const goalAdvice = GOAL_GUIDANCE[goalKey] || GOAL_GUIDANCE.general;
+    // Build system prompt — support both single goal and goals array
+    const goals = prefs.bodyGoals?.length ? prefs.bodyGoals : (prefs.bodyGoal ? [prefs.bodyGoal] : ["general"]);
+    const goalAdvice = goals.map(g => GOAL_GUIDANCE[g] || GOAL_GUIDANCE.general).join("\n");
 
     let systemPrompt = `You are a specialist cycle-syncing nutritionist creating personalised meal plans for women.
 
