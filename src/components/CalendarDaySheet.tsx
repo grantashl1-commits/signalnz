@@ -4,8 +4,9 @@ import { X, Check } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { MOOD_ICONS, SYMPTOM_ICONS, MOODS, SYMPTOM_LIST, ScaleIcon, MoodFaceIcon, SpiralSymptomIcon, QuillIcon } from "@/components/TrackingIcons";
+import { useCycle } from "@/contexts/CycleContext";
 import {
-  Phase, getPhaseFromDay, getCycleDayForDate, getLastPeriodStart, setLastPeriodStart,
+  Phase, getPhaseFromDay, getCycleDayForDate, setLastPeriodStart,
   getMoods, setMoods, getSymptomsNew, setSymptomsNew,
   getWeight, setWeight, getWeightUnit, setWeightUnit, getWeightHistory,
   getNotes, setNotes, getPeriodEnd, setPeriodEnd, getPeriodLength,
