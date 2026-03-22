@@ -137,10 +137,11 @@ export default function MovementPage() {
   const totalMinutes = weekWorkouts.flat().reduce((s, id) => s + (WORKOUTS.find(x => x.id === id)?.durationMin || 0), 0);
   const sessions = getAllSessions();
 
-  const handleWeekChange = (week: number) => {
-    haptic("light");
-    setTrainingWeek(week);
-    setTrainingWeekState(week);
+  const WEEK_PHASE_NOTES: Record<number, string> = {
+    1: "Focus on consistency over intensity.",
+    2: "Push harder — your energy is building.",
+    3: "Peak performance week.",
+    4: "Honour how you feel. Drop intensity if needed.",
   };
 
   const formatTime = (secs: number) => {
