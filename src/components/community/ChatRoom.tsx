@@ -364,6 +364,17 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         </div>
         <p className="font-mono text-[10px] text-muted-foreground mt-1 text-center">Moderated for kindness, not censored for truth.</p>
       </div>
+
+      {/* Member profile sheet */}
+      {viewingMember && (
+        <Suspense fallback={null}>
+          <MemberProfileSheet
+            userId={viewingMember.userId}
+            displayName={viewingMember.name}
+            onClose={() => setViewingMember(null)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
