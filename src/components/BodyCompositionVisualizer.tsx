@@ -1,12 +1,11 @@
-// Add to .env: VITE_MUSCLE_API_KEY=your_key
+// MUSCLE_API_KEY is stored as a runtime secret and proxied via edge function
 // Free key at: https://rapidapi.com/ascendapi/api/muscle-visualizer-api
 
 import { useState, useCallback } from "react";
 import { Settings, Activity, Heart, Ruler } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
-
-const HAS_API_KEY = !!import.meta.env.VITE_MUSCLE_API_KEY;
+import { supabase } from "@/integrations/supabase/client";
 
 const ALL_MUSCLES = [
   "CHEST", "ABS", "OBLIQUES", "QUADRICEPS", "BICEPS", "TRICEPS",
@@ -29,7 +28,7 @@ function getBmiCategory(bmi: number): string {
   return "Obese";
 }
 
-function buildHeatmapUrl(gender: Gender, waist: number, bodyFat: number): string {
+function buildHeatmapParams(gender: Gender, waist: number, bodyFat: number) {
   const warmZone = new Set<string>();
 
   const waistThreshold = gender === "female" ? 88 : 102;
@@ -51,16 +50,7 @@ function buildHeatmapUrl(gender: Gender, waist: number, bodyFat: number): string
     warmZone.has(m) ? "E74C3C" : "A8D8A8"
   ).join(",");
 
-  const params = new URLSearchParams({
-    muscles,
-    colors,
-    gender,
-    background: "transparent",
-    size: "large",
-    format: "png",
-  });
-
-  return `https://muscle-visualizer-api.p.rapidapi.com/api/v1/visualize/heatmap?${params}`;
+  return { muscles, colors, gender, background: "transparent", size: "large", format: "png" };
 }
 
 function PillToggle({ options, value, onChange }: { options: [string, string]; value: string; onChange: (v: string) => void }) {
@@ -163,11 +153,6 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
   const [error, setError] = useState<string | null>(null);
 
   const handleVisualize = useCallback(async () => {
-    if (!HAS_API_KEY) {
-      setError("Body visualization unavailable — check your API key in settings");
-      return;
-    }
-
     const weightKg = weightUnit === "kg" ? Number(weightVal) : Number(weightVal) * 0.453592;
     const heightCm = heightUnit === "cm" ? Number(heightVal) : Number(heightVal) * 30.48;
     const heightM = heightCm / 100;
@@ -184,15 +169,15 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
     setError(null);
 
     try {
-      const url = buildHeatmapUrl(gender, waistCm, bodyFat);
-      const res = await fetch(url, {
-        headers: {
-          "x-rapidapi-host": "muscle-visualizer-api.p.rapidapi.com",
-          "x-rapidapi-key": import.meta.env.VITE_MUSCLE_API_KEY,
-        },
+      const params = buildHeatmapParams(gender, waistCm, bodyFat);
+      const { data, error: fnError } = await supabase.functions.invoke("muscle-visualize", {
+        body: params,
       });
-      if (!res.ok) throw new Error(`API ${res.status}`);
-      const blob = await res.blob();
+
+      if (fnError) throw fnError;
+
+      // data is already a Blob when content-type is image/*
+      const blob = data instanceof Blob ? data : new Blob([data]);
       setImageUrl(URL.createObjectURL(blob));
     } catch {
       setError("Body visualization unavailable — check your API key in settings");
