@@ -47,7 +47,7 @@ function buildHeatmapParams(gender: Gender, waist: number, bodyFat: number) {
 
   const muscles = ALL_MUSCLES.join(",");
   const colors = ALL_MUSCLES.map((m) =>
-    warmZone.has(m) ? "E74C3C" : "A8D8A8"
+    warmZone.has(m) ? "#E74C3C" : "#A8D8A8"
   ).join(",");
 
   return { muscles, colors, gender, background: "transparent", size: "small", format: "jpeg" };
