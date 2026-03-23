@@ -72,8 +72,8 @@ interface Props {
 }
 
 export default function ExerciseDemonstration({ exerciseName, size = 96, className = "" }: Props) {
-  const [gifUrl, setGifUrl] = useState<string | null>(gifCache.get(exerciseName) ?? undefined as any);
-  const [loading, setLoading] = useState(!gifCache.has(exerciseName));
+  const [gifUrl, setGifUrl] = useState<string | null>(gifCache.get(exerciseName) ?? null);
+  const [loading, setLoading] = useState(HAS_API_KEY && !gifCache.has(exerciseName));
 
   useEffect(() => {
     if (gifCache.has(exerciseName)) {
