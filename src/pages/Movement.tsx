@@ -681,10 +681,19 @@ export default function MovementPage() {
       )}
 
 
+      {/* MY BODY TAB */}
+      {activeTab === "mybody" && (
+        <BodyCompositionVisualizer defaultGender={(() => {
+          try {
+            const g = localStorage.getItem("signal_user_gender");
+            return g === "male" ? "male" : "female";
+          } catch { return "female"; }
+        })()} />
+      )}
+
       {/* BODY TAB */}
       {activeTab === "body" && (
         <div className="space-y-6">
-          <BodyCompositionVisualizer />
           <BodyVisualiser />
         </div>
       )}

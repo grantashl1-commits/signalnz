@@ -138,8 +138,15 @@ function StatBadge({ icon: Icon, label, value }: { icon: typeof Activity; label:
   );
 }
 
-export default function BodyCompositionVisualizer() {
-  const [gender, setGender] = useState<Gender>("female");
+export default function BodyCompositionVisualizer({ defaultGender = "female" }: { defaultGender?: Gender }) {
+  const [gender, setGender] = useState<Gender>(defaultGender);
+
+  // Persist gender choice for cross-component sync
+  const handleGenderChange = (v: string) => {
+    const g = v as Gender;
+    setGender(g);
+    try { localStorage.setItem("signal_user_gender", g); } catch {}
+  };
   const [heightVal, setHeightVal] = useState("");
   const [heightUnit, setHeightUnit] = useState("cm");
   const [weightVal, setWeightVal] = useState("");
