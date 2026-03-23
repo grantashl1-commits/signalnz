@@ -528,21 +528,6 @@ export default function MovementPage() {
             ))}
           </div>
 
-          <div className="flex gap-1.5">
-            {weekDays.map((date, i) => {
-              const dateStr = date.toISOString().split("T")[0];
-              const isToday = dateStr === todayStr;
-              const logged = getLoggedWorkouts(dateStr);
-              return (
-                <div key={i} className={`flex-1 rounded-xl p-2 text-center ${isToday ? "bg-card ring-1 ring-primary/30 shadow-sm" : "bg-secondary/30"}`}>
-                  <p className="font-body text-[9px] text-muted-foreground">{["M", "T", "W", "T", "F", "S", "S"][i]}</p>
-                  <p className="font-mono text-xs text-foreground mt-0.5">{date.getDate()}</p>
-                  {logged.length > 0 ? <Dumbbell className="h-3 w-3 text-primary mx-auto mt-1" /> : <div className="h-3 mt-1" />}
-                </div>
-              );
-            })}
-          </div>
-
           {/* Heart rate section */}
           <div className="card-warm p-5" style={{ backgroundColor: "hsl(36 47% 94%)" }}>
             <h3 className="font-display text-base italic text-foreground">Heart rate monitor.</h3>
@@ -555,12 +540,6 @@ export default function MovementPage() {
             <button onClick={() => setShowHR(true)} className="touch-btn w-full mt-3 rounded-[14px] py-3 min-h-[48px] font-body text-sm font-bold text-primary-foreground bg-primary flex items-center justify-center gap-2">
               <Bluetooth className="h-4 w-4" /> Connect monitor
             </button>
-          </div>
-
-          {/* Training week (auto-calculated) */}
-          <div className="card-warm p-4 space-y-1">
-            <p className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</p>
-            <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
           </div>
 
           {/* Manual log */}
