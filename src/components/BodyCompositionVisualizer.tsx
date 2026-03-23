@@ -50,7 +50,7 @@ function buildHeatmapParams(gender: Gender, waist: number, bodyFat: number) {
     warmZone.has(m) ? "E74C3C" : "A8D8A8"
   ).join(",");
 
-  return { muscles, colors, gender, background: "white", size: "large", format: "jpeg" };
+  return { muscles, colors, gender, background: "white", size: "small", format: "jpeg" };
 }
 
 function PillToggle({ options, value, onChange }: { options: [string, string]; value: string; onChange: (v: string) => void }) {
