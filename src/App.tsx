@@ -25,6 +25,7 @@ import Feedback from "./pages/Feedback";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import AnimationPOC from "./pages/AnimationPOC";
 import Admin from "./pages/Admin";
+import Coach from "./pages/Coach";
 
 const queryClient = new QueryClient();
 
