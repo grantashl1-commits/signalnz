@@ -37,6 +37,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const [viewingMember, setViewingMember] = useState<{ userId: string; name: string } | null>(null);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
