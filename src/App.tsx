@@ -7,6 +7,7 @@ import Layout from "@/components/Layout";
 import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CycleProvider } from "@/contexts/CycleContext";
+import { HeartRateProvider } from "@/contexts/HeartRateContext";
 import Index from "./pages/Index";
 import Cycle from "./pages/Cycle";
 import Nutrition from "./pages/Nutrition";
