@@ -629,9 +629,20 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {filteredUsers.map((user) => (
-            <UserCard key={user.user_id} user={user} />
+            <UserCard key={user.user_id} user={user} onViewProfile={setViewingProfile} />
           ))}
         </div>
+      )}
+
+      {/* Member profile sheet */}
+      {viewingProfile && (
+        <Suspense fallback={null}>
+          <MemberProfileSheet
+            userId={viewingProfile.user_id}
+            displayName={viewingProfile.display_name}
+            onClose={() => setViewingProfile(null)}
+          />
+        </Suspense>
       )}
     </div>
   );

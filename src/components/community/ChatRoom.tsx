@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MOCK_MESSAGES, type ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
 import { Play, Square } from "lucide-react";
+
+const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
 function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
   return (
