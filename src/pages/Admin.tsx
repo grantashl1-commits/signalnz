@@ -264,7 +264,7 @@ export default function AdminPage() {
                   Active ({approvedGroups.length})
                 </p>
                 {approvedGroups.map(g => (
-                  <GroupCard key={g.id} group={g} onAction={handleGroupAction} updating={updatingGroup === g.id} />
+                  <GroupCard key={g.id} group={g} onAction={handleGroupAction} onDelete={handleDeleteGroup} onArchive={handleArchiveGroup} updating={updatingGroup === g.id} showManage />
                 ))}
               </div>
 
