@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
 // ─── Types ────────────────────────────────────────────────
 interface NearbyUser {
