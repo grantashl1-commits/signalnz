@@ -275,7 +275,7 @@ export default function AdminPage() {
                     Rejected ({rejectedGroups.length})
                   </p>
                   {rejectedGroups.map(g => (
-                    <GroupCard key={g.id} group={g} onAction={handleGroupAction} updating={updatingGroup === g.id} showReapprove />
+                    <GroupCard key={g.id} group={g} onAction={handleGroupAction} onDelete={handleDeleteGroup} onArchive={handleArchiveGroup} updating={updatingGroup === g.id} showReapprove />
                   ))}
                 </div>
               )}
