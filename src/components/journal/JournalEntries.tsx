@@ -233,7 +233,6 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
 
     // Auto-save to vault
     if (autoVaultCategory) {
-      const { saveEntryToVault } = require("@/components/journal/MemoryVault");
       saveEntryToVault(entry, autoVaultCategory);
     }
 
