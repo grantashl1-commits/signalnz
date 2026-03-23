@@ -158,6 +158,7 @@ export default function MovementPage() {
     { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
+    { id: "mybody" as const, label: "My Body" },
     { id: "body" as const, label: "Body" },
     { id: "progress" as const, label: "Progress" },
   ];
