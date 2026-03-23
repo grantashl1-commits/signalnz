@@ -1,22 +1,28 @@
-// Exercise GIF demos via ExerciseDB, proxied through edge function
-// Uses MUSCLE_API_KEY (same RapidAPI key for both ExerciseDB & Muscle Visualizer)
+// Exercise GIF demos via ExerciseDB API, proxied through edge function
+// Uses MUSCLE_API_KEY secret (same RapidAPI key for ExerciseDB & Muscle Visualizer)
 
 import { useState, useEffect } from "react";
-import { User } from "lucide-react";
+import { Dumbbell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const gifCache = new Map<string, string | null>();
 
-const STRIP_WORDS = /\b(tempo|slow|fast|heavy|light|weighted|loaded|paused|controlled|unilateral|bilateral|modified|advanced|reverse|lateral|with|\d+-?\s*sec)\b/gi;
+const STRIP_WORDS = ["tempo", "slow", "fast", "heavy", "paused", "weighted", "reverse", "modified", "with", "4-sec", "hold", "pulse", "sumo", "goblet"];
 
 function getSearchVariants(name: string): string[] {
-  const lower = name.toLowerCase().trim();
-  const variants: string[] = [lower];
+  let current = name.toLowerCase().trim();
+  const variants: string[] = [current];
 
-  const stripped = lower.replace(STRIP_WORDS, "").replace(/\s+/g, " ").trim();
-  if (stripped && stripped !== lower) variants.push(stripped);
+  for (const word of STRIP_WORDS) {
+    const regex = new RegExp(`\\b${word}\\b`, "gi");
+    if (regex.test(current)) {
+      current = current.replace(regex, "").replace(/\s+/g, " ").trim();
+      if (current) variants.push(current);
+    }
+  }
 
-  const words = stripped.split(" ");
+  // Also try progressively removing leading words
+  const words = variants[variants.length - 1].split(" ");
   for (let i = 1; i < words.length; i++) {
     variants.push(words.slice(i).join(" "));
   }
@@ -34,7 +40,6 @@ async function fetchGif(exerciseName: string): Promise<string | null> {
       const { data, error } = await supabase.functions.invoke("exercise-lookup", {
         body: { query },
       });
-
       if (error) continue;
 
       const results = typeof data === "string" ? JSON.parse(data) : data;
@@ -81,7 +86,7 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
   if (loading) {
     return (
       <div
-        className="bg-accent animate-pulse rounded-xl"
+        className={`rounded-xl bg-accent animate-pulse ${className}`}
         style={{ width: size, height: size }}
       />
     );
@@ -90,10 +95,11 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
   if (!gifUrl) {
     return (
       <div
-        className={`flex items-center justify-center rounded-xl bg-muted ${className}`}
+        className={`flex flex-col items-center justify-center rounded-xl bg-muted gap-1 ${className}`}
         style={{ width: size, height: size }}
       >
-        <User className="h-1/2 w-1/2 text-muted-foreground/50" />
+        <Dumbbell className="h-5 w-5 text-muted-foreground/40" />
+        <span className="text-[10px] text-muted-foreground/40 leading-none">Demo unavailable</span>
       </div>
     );
   }
