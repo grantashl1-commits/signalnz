@@ -235,6 +235,7 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
           <FormInput label="Waist" value={waist} onChange={setWaist} placeholder="cm" />
           <FormInput label="Hips" value={hips} onChange={setHips} placeholder="cm" />
           <FormInput label="Chest" value={chest} onChange={setChest} placeholder="cm" />
+          <FormInput label="Inseam" value={inseam} onChange={setInseam} placeholder="cm" />
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
