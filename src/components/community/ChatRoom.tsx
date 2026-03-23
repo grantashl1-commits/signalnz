@@ -169,7 +169,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           const msg = m as any;
           return (
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
-              {!isMe && <Avatar initials={m.avatar} />}
+              {!isMe && <div className="cursor-pointer" onClick={() => setViewingMember({ userId: m.id, name: m.user })}><Avatar initials={m.avatar} /></div>}
               <div className={`max-w-[78%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
                 {!isMe && <span className="font-mono text-[10px] text-muted-foreground mb-0.5">{m.user} · {m.time}</span>}
 
