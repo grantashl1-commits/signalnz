@@ -198,6 +198,54 @@ export type Database = {
           },
         ]
       }
+      community_profiles: {
+        Row: {
+          barter: string | null
+          career: string | null
+          community_vision: string | null
+          created_at: string
+          employer: string | null
+          id: string
+          looking_for: string | null
+          offer: string | null
+          photo_url: string | null
+          skills: string | null
+          updated_at: string
+          user_id: string
+          visibility: Json
+        }
+        Insert: {
+          barter?: string | null
+          career?: string | null
+          community_vision?: string | null
+          created_at?: string
+          employer?: string | null
+          id?: string
+          looking_for?: string | null
+          offer?: string | null
+          photo_url?: string | null
+          skills?: string | null
+          updated_at?: string
+          user_id: string
+          visibility?: Json
+        }
+        Update: {
+          barter?: string | null
+          career?: string | null
+          community_vision?: string | null
+          created_at?: string
+          employer?: string | null
+          id?: string
+          looking_for?: string | null
+          offer?: string | null
+          photo_url?: string | null
+          skills?: string | null
+          updated_at?: string
+          user_id?: string
+          visibility?: Json
+        }
+        Relationships: []
+      }
       dream_boards: {
         Row: {
           active_board_id: string | null
