@@ -136,18 +136,13 @@ export default function BodyVisualisationCard() {
 
   return (
     <div className="space-y-4">
-      {/* ── 3D Body Viewer ── */}
-      {latestMeasurement && (
-        <div className="max-w-md mx-auto">
-          <Suspense fallback={
-            <div className="w-full aspect-[3/4] max-h-[400px] rounded-2xl bg-[#1a0533] flex items-center justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-purple-400" />
-            </div>
-          }>
-            <Body3DViewer measurements={latestMeasurement} />
-          </Suspense>
-        </div>
-      )}
+      {/* ── 3D Body Viewer (iframe) ── */}
+      <IframeBodyViewer
+        heightUnit={heightUnit}
+        measureUnit={measureUnit}
+        vals={{ heightCm, heightFt, heightIn, chestCm: chest, waistCm: waist, hipsCm: hips, thighsCm: thighs, armsCm: arms }}
+        latestMeasurement={latestMeasurement}
+      />
       {/* ── Card ── */}
       <div className="relative w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0533] via-[#2d1050] to-[#0d0d1a]" />
