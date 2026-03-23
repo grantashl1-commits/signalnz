@@ -256,10 +256,6 @@ export default function MovementPage() {
             <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
           </div>
 
-          {/* Phase guidance */}
-          <div className="rounded-xl bg-primary/5 px-4 py-2.5">
-            <p className="font-body text-xs text-primary italic">{PHASE_GUIDANCE[info.phase]}</p>
-          </div>
 
           {/* Weekly rotation carousel */}
           <div className="card-warm p-4 space-y-2">
