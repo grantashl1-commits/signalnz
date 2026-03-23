@@ -212,7 +212,7 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
 
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground font-medium">Gender</span>
-            <PillToggle options={["Female", "Male"]} value={gender} onChange={(v) => setGender(v as Gender)} />
+            <PillToggle options={["Female", "Male"]} value={gender} onChange={handleGenderChange} />
           </div>
 
           <FormInput
