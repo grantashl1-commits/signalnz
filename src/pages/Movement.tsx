@@ -40,6 +40,7 @@ const cardVariant = {
 
 export default function MovementPage() {
   const { currentPhase, currentCycleDay, currentWeekNumber } = useCycle();
+  const globalHR = useGlobalHeartRate();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
