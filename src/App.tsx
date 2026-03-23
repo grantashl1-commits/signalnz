@@ -38,6 +38,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CycleProvider>
+          <HeartRateProvider>
           <SignalPanelProvider>
             <Routes>
               <Route path="/brand" element={<BrandGuidelines />} />
