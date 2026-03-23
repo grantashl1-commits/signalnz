@@ -28,7 +28,7 @@ function getBmiCategory(bmi: number): string {
   return "Obese";
 }
 
-function buildHeatmapUrl(gender: Gender, waist: number, bodyFat: number): string {
+function buildHeatmapParams(gender: Gender, waist: number, bodyFat: number) {
   const warmZone = new Set<string>();
 
   const waistThreshold = gender === "female" ? 88 : 102;
@@ -50,16 +50,7 @@ function buildHeatmapUrl(gender: Gender, waist: number, bodyFat: number): string
     warmZone.has(m) ? "E74C3C" : "A8D8A8"
   ).join(",");
 
-  const params = new URLSearchParams({
-    muscles,
-    colors,
-    gender,
-    background: "transparent",
-    size: "large",
-    format: "png",
-  });
-
-  return `https://muscle-visualizer-api.p.rapidapi.com/api/v1/visualize/heatmap?${params}`;
+  return { muscles, colors, gender, background: "transparent", size: "large", format: "png" };
 }
 
 function PillToggle({ options, value, onChange }: { options: [string, string]; value: string; onChange: (v: string) => void }) {
