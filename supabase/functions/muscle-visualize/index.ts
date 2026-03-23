@@ -20,12 +20,13 @@ serve(async (req) => {
     }
 
     const { muscles, colors, gender, background, size, format } = await req.json();
+    const safeBackground = background === "transparent" ? "transparent" : "transparent";
 
     const params = new URLSearchParams({
       muscles: muscles || "",
       colors: colors || "",
       gender: gender || "female",
-      background: background || "transparent",
+      background: safeBackground,
       size: size || "small",
       format: format || "jpeg",
     });
