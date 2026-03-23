@@ -61,6 +61,7 @@ const App = () => (
                     <Route path="/account" element={<Account />} />
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/coach" element={<Coach />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
