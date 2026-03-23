@@ -680,7 +680,12 @@ export default function MovementPage() {
 
 
       {/* BODY TAB */}
-      {activeTab === "body" && <BodyVisualiser />}
+      {activeTab === "body" && (
+        <div className="space-y-6">
+          <BodyCompositionVisualizer />
+          <BodyVisualiser />
+        </div>
+      )}
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
