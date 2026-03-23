@@ -231,6 +231,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
   const [isNearbyVisible, setIsNearbyVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const [viewingProfile, setViewingProfile] = useState<NearbyUser | null>(null);
 
   const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
 
