@@ -154,6 +154,7 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
   const [waist, setWaist] = useState("");
   const [hips, setHips] = useState("");
   const [chest, setChest] = useState("");
+  const [inseam, setInseam] = useState("");
   const [bodyFat, setBodyFat] = useState(25);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
