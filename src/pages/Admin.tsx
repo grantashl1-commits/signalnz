@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import {
   Users, DollarSign, TrendingUp, Shield, Clock, CheckCircle, XCircle,
   MessageSquare, Activity, ChevronDown, ChevronUp, MapPin, Star, AlertCircle,
-  CreditCard, BarChart3, Loader2
+  CreditCard, BarChart3, Loader2, Trash2, Archive
 } from "lucide-react";
 
 interface AdminStats {
@@ -103,6 +103,35 @@ export default function AdminPage() {
       toast.error("Failed to update group");
     } else {
       toast.success(`Group ${status}`);
+      fetchStats();
+    }
+    setUpdatingGroup(null);
+  };
+
+  const handleDeleteGroup = async (groupId: string) => {
+    if (!confirm("Are you sure you want to permanently delete this community group? This cannot be undone.")) return;
+    setUpdatingGroup(groupId);
+    await supabase.from("community_memberships").delete().eq("group_id", groupId);
+    const { error } = await supabase.from("community_groups").delete().eq("id", groupId);
+    if (error) {
+      toast.error("Failed to delete group");
+    } else {
+      toast.success("Group deleted");
+      fetchStats();
+    }
+    setUpdatingGroup(null);
+  };
+
+  const handleArchiveGroup = async (groupId: string) => {
+    setUpdatingGroup(groupId);
+    const { error } = await supabase
+      .from("community_groups")
+      .update({ status: "rejected", updated_at: new Date().toISOString() })
+      .eq("id", groupId);
+    if (error) {
+      toast.error("Failed to archive group");
+    } else {
+      toast.success("Group archived");
       fetchStats();
     }
     setUpdatingGroup(null);
@@ -235,7 +264,7 @@ export default function AdminPage() {
                   Active ({approvedGroups.length})
                 </p>
                 {approvedGroups.map(g => (
-                  <GroupCard key={g.id} group={g} onAction={handleGroupAction} updating={updatingGroup === g.id} />
+                  <GroupCard key={g.id} group={g} onAction={handleGroupAction} onDelete={handleDeleteGroup} onArchive={handleArchiveGroup} updating={updatingGroup === g.id} showManage />
                 ))}
               </div>
 
@@ -246,7 +275,7 @@ export default function AdminPage() {
                     Rejected ({rejectedGroups.length})
                   </p>
                   {rejectedGroups.map(g => (
-                    <GroupCard key={g.id} group={g} onAction={handleGroupAction} updating={updatingGroup === g.id} showReapprove />
+                    <GroupCard key={g.id} group={g} onAction={handleGroupAction} onDelete={handleDeleteGroup} onArchive={handleArchiveGroup} updating={updatingGroup === g.id} showReapprove />
                   ))}
                 </div>
               )}
@@ -370,9 +399,10 @@ export default function AdminPage() {
 
 // ── Sub-components ──────────────────────────────────────
 
-function GroupCard({ group, onAction, updating, showActions, showReapprove }: {
+function GroupCard({ group, onAction, onDelete, onArchive, updating, showActions, showReapprove, showManage }: {
   group: any; onAction: (id: string, status: "approved" | "rejected") => void;
-  updating: boolean; showActions?: boolean; showReapprove?: boolean;
+  onDelete?: (id: string) => void; onArchive?: (id: string) => void;
+  updating: boolean; showActions?: boolean; showReapprove?: boolean; showManage?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   return (
@@ -392,32 +422,35 @@ function GroupCard({ group, onAction, updating, showActions, showReapprove }: {
         </div>
         {showActions && (
           <div className="flex gap-1.5">
-            <button
-              onClick={() => onAction(group.id, "approved")}
-              disabled={updating}
-              className="p-1.5 rounded-lg bg-phase-follicular/10 text-phase-follicular hover:bg-phase-follicular/20 transition-colors"
-            >
+            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="p-1.5 rounded-lg bg-phase-follicular/10 text-phase-follicular hover:bg-phase-follicular/20 transition-colors">
               <CheckCircle className="h-4 w-4" />
             </button>
-            <button
-              onClick={() => onAction(group.id, "rejected")}
-              disabled={updating}
-              className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
-            >
+            <button onClick={() => onAction(group.id, "rejected")} disabled={updating} className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
               <XCircle className="h-4 w-4" />
             </button>
           </div>
         )}
-        {showReapprove && (
-          <button
-            onClick={() => onAction(group.id, "approved")}
-            disabled={updating}
-            className="font-mono text-[11px] text-primary"
-          >
-            Re-approve
-          </button>
+        {showManage && (
+          <div className="flex gap-1.5">
+            <button onClick={() => onArchive?.(group.id)} disabled={updating} title="Archive" className="p-1.5 rounded-lg bg-secondary hover:bg-muted-foreground/10 text-muted-foreground transition-colors">
+              <Archive className="h-4 w-4" />
+            </button>
+            <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
         )}
-        {!showActions && !showReapprove && (
+        {showReapprove && (
+          <div className="flex gap-1.5">
+            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="font-mono text-[11px] text-primary">
+              Re-approve
+            </button>
+            <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+        {!showActions && !showReapprove && !showManage && (
           expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />
         )}
       </div>

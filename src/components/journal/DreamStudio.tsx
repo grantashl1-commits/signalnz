@@ -257,99 +257,91 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
   if (activeRitual) return <DreamRitualFlow ritual={activeRitual} onComplete={handleRitualComplete} onBack={() => setActiveRitual(null)} />;
   if (showFutureSelf) return <FutureSelfMode onComplete={handleFutureSelfComplete} onBack={() => setShowFutureSelf(false)} />;
 
-  // Mobile: stacked card view
+  // Mobile: full canvas (same as desktop)
   if (isMobile) {
     return (
-      <div className="relative w-full min-h-[60vh] pb-8">
-        {/* Board header */}
-        <div className="flex items-center justify-between px-1 mb-4">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowBoards(!showBoards)}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary/50 border border-border font-display text-[13px] italic text-foreground"
-            >
-              <LayoutGrid className="h-3.5 w-3.5 text-primary/60" />
-              {board.activeBoard?.title || "My Board"}
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={() => setShowRituals(true)} className="px-3 py-2 rounded-xl bg-primary/10 border border-primary/15 font-display text-[12px] italic text-primary flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> Rituals
-            </button>
-          </div>
-        </div>
-
-        {/* Board switcher dropdown (mobile) */}
-        {showBoards && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4 rounded-2xl border border-border bg-card p-3 space-y-2"
-          >
-            {board.boards.map((b) => (
-              <button
-                key={b.id}
-                onClick={() => { board.switchBoard(b.id); setShowBoards(false); }}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all ${
-                  b.id === board.activeBoardId ? "bg-primary/8 border border-primary/20" : "hover:bg-secondary/50"
-                }`}
-              >
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: b.coverColor || "hsl(284 22% 44%)" }} />
-                <div>
-                  <p className="font-display text-[13px] italic text-foreground">{b.title}</p>
-                  <p className="font-mono text-[9px] text-muted-foreground">{b.elements.length} elements</p>
-                </div>
-              </button>
-            ))}
-            <button
-              onClick={() => { board.createBoard("New Board"); setShowBoards(false); }}
-              className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-border text-muted-foreground/50 font-display text-[12px] italic"
-            >
-              + New board
-            </button>
-          </motion.div>
-        )}
-
-        {/* Elements or empty state */}
-        {board.elements.length === 0 ? (
-          <div className="text-center py-16">
-            <WildStar size={36} className="mx-auto mb-4 opacity-50" />
-            <h3 className="font-display text-xl italic text-foreground/70 mb-2">Start dreaming</h3>
-            <p className="font-body text-sm text-muted-foreground/50 mb-6 max-w-xs mx-auto">Add notes, images, and intentions to build a visual map of your future.</p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              <button onClick={() => handleAddElement("text")} className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-display text-[12px] italic">Add note</button>
-              <button onClick={() => setShowImageModal(true)} className="px-4 py-2.5 rounded-xl bg-secondary border border-border text-foreground/70 font-display text-[12px] italic">Add image</button>
-            </div>
-          </div>
-        ) : (
-          <BoardStackedView
-            elements={board.elements}
-            connections={board.connections}
-            onUpdate={board.updateElement}
-            onDelete={board.deleteElement}
-            onDuplicate={board.duplicateElement}
-            onSelect={board.setSelectedId}
-            selectedId={board.selectedId}
-          />
-        )}
-
-        {/* Mobile FAB toolbar */}
-        {board.elements.length > 0 && (
-          <div className="fixed bottom-24 right-4 z-50 flex flex-col gap-2">
-            <button onClick={() => handleAddElement("text")} className="w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center text-lg">+</button>
-          </div>
-        )}
-
-        {/* Rituals overlay */}
-        {showRituals && (
-          <div className="fixed inset-0 z-[100] bg-background/95 overflow-y-auto p-5" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-            <RitualsPanel
-              onStartRitual={(r) => { setActiveRitual(r); setShowRituals(false); }}
-              onStartFutureSelf={() => { setShowFutureSelf(true); setShowRituals(false); }}
-              onClose={() => setShowRituals(false)}
+      <div className="relative w-full" style={{ height: "calc(100vh - 220px)" }}>
+        <BoardCanvas
+          elements={board.elements}
+          connections={board.connections}
+          zoom={board.zoom}
+          panX={board.panX}
+          panY={board.panY}
+          selectedId={board.selectedId}
+          connectingFrom={board.connectingFrom}
+          onSelect={board.setSelectedId}
+          onUpdate={board.updateElement}
+          onDelete={board.deleteElement}
+          onDuplicate={board.duplicateElement}
+          onBringForward={board.bringForward}
+          onSendBackward={board.sendBackward}
+          onStartConnect={handleStartConnect}
+          onCompleteConnect={handleCompleteConnect}
+          onRemoveConnection={board.removeConnection}
+          setPanX={board.setPanX}
+          setPanY={board.setPanY}
+          setZoom={board.setZoom}
+        >
+          {board.elements.length === 0 && (
+            <BoardEmptyState
+              onAddNote={() => handleAddElement("text")}
+              onAddImage={() => setShowImageModal(true)}
+              onStartRitual={handleStarterRitual}
             />
-          </div>
-        )}
+          )}
+
+          <BoardToolbar
+            zoom={board.zoom}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onFit={handleFit}
+            onAddElement={handleAddElement}
+            onAddImage={() => setShowImageModal(true)}
+          />
+
+          <button
+            onClick={() => setShowBoards(!showBoards)}
+            className="absolute top-3 right-[100px] z-50 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border shadow-lg font-display text-[12px] italic text-foreground"
+          >
+            <LayoutGrid className="h-3.5 w-3.5 text-primary/60" />
+            {board.activeBoard?.title || "Boards"}
+          </button>
+
+          <button
+            onClick={() => setShowRituals(!showRituals)}
+            className="absolute top-3 right-3 z-50 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border shadow-lg font-display text-[12px] italic text-foreground"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> Rituals
+          </button>
+
+          {board.elements.length > 0 && (
+            <div className="absolute bottom-3 right-3 z-50 font-mono text-[10px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-2.5 py-1 backdrop-blur-sm">
+              {board.elements.length} elements
+            </div>
+          )}
+
+          {showRituals && (
+            <div className="absolute inset-0 z-[100] bg-background/95 overflow-y-auto p-4">
+              <RitualsPanel
+                onStartRitual={(r) => { setActiveRitual(r); setShowRituals(false); }}
+                onStartFutureSelf={() => { setShowFutureSelf(true); setShowRituals(false); }}
+                onClose={() => setShowRituals(false)}
+              />
+            </div>
+          )}
+
+          {showBoards && (
+            <BoardSwitcher
+              boards={board.boards}
+              activeBoardId={board.activeBoardId}
+              onSwitch={(id) => { board.switchBoard(id); setShowBoards(false); }}
+              onCreate={(title, color) => board.createBoard(title, color)}
+              onRename={board.renameBoard}
+              onDelete={board.deleteBoard}
+              onClose={() => setShowBoards(false)}
+            />
+          )}
+        </BoardCanvas>
 
         <AddImageModal open={showImageModal} onClose={() => setShowImageModal(false)} onImageReady={handleImageReady} />
         <SaveIndicator status={board.saveStatus} />
