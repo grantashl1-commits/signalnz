@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import {
   Users, DollarSign, TrendingUp, Shield, Clock, CheckCircle, XCircle,
   MessageSquare, Activity, ChevronDown, ChevronUp, MapPin, Star, AlertCircle,
-  CreditCard, BarChart3, Loader2
+  CreditCard, BarChart3, Loader2, Trash2, Archive
 } from "lucide-react";
 
 interface AdminStats {
