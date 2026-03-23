@@ -11,55 +11,46 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const MUSCLE_API_KEY = Deno.env.get("MUSCLE_API_KEY");
-    if (!MUSCLE_API_KEY) {
+    const API_KEY = Deno.env.get("MUSCLE_API_KEY");
+    if (!API_KEY) {
       return new Response(
         JSON.stringify({ error: "MUSCLE_API_KEY not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { muscles, colors, gender, background, size, format } = await req.json();
+    const { query } = await req.json();
+    if (!query || typeof query !== "string") {
+      return new Response(
+        JSON.stringify({ error: "Missing 'query' parameter" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    const params = new URLSearchParams({
-      muscles: muscles || "",
-      colors: colors || "",
-      gender: gender || "female",
-      background: background || "transparent",
-      size: size || "large",
-      format: format || "png",
-    });
-
-    const url = `https://muscle-visualizer-api.p.rapidapi.com/api/v1/visualize/heatmap?${params}`;
+    const url = `https://exercisedb.p.rapidapi.com/exercises/name/${encodeURIComponent(query)}?limit=1&offset=0`;
 
     const res = await fetch(url, {
       headers: {
-        "x-rapidapi-host": "muscle-visualizer-api.p.rapidapi.com",
-        "x-rapidapi-key": MUSCLE_API_KEY,
+        "X-RapidAPI-Key": API_KEY,
+        "X-RapidAPI-Host": "exercisedb.p.rapidapi.com",
       },
     });
 
     if (!res.ok) {
       const text = await res.text();
-      console.error("Muscle API error:", res.status, text);
+      console.error("ExerciseDB error:", res.status, text);
       return new Response(
-        JSON.stringify({ error: `API returned ${res.status}` }),
+        JSON.stringify({ error: `ExerciseDB returned ${res.status}` }),
         { status: res.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const blob = await res.arrayBuffer();
-    const contentType = res.headers.get("content-type") || "image/png";
-
-    return new Response(blob, {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": contentType,
-        "Cache-Control": "public, max-age=3600",
-      },
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.error("muscle-visualize error:", e);
+    console.error("exercise-lookup error:", e);
     return new Response(
       JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
