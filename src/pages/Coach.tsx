@@ -678,12 +678,13 @@ export default function CoachPage() {
 
   return (
     <>
-      <AtmosphericHero
-        phase="follicular"
-        label="MY COACH"
-        title="Your Plan"
-        subtitle="Check in, set goals, and get AI-powered training and nutrition plans."
-      />
+      <AtmosphericHero>
+        <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/60 mb-3">MY COACH</p>
+        <h1 className="font-display text-4xl md:text-5xl font-bold italic text-white mb-3">Your Plan</h1>
+        <p className="font-display text-base italic text-white/70 max-w-md">
+          Check in, set goals, and get AI-powered training and nutrition plans.
+        </p>
+      </AtmosphericHero>
 
       <div className="max-w-2xl mx-auto px-4 pb-32 space-y-6 mt-6">
         {/* Weekly Check-In */}
