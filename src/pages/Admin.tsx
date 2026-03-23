@@ -108,6 +108,35 @@ export default function AdminPage() {
     setUpdatingGroup(null);
   };
 
+  const handleDeleteGroup = async (groupId: string) => {
+    if (!confirm("Are you sure you want to permanently delete this community group? This cannot be undone.")) return;
+    setUpdatingGroup(groupId);
+    await supabase.from("community_memberships").delete().eq("group_id", groupId);
+    const { error } = await supabase.from("community_groups").delete().eq("id", groupId);
+    if (error) {
+      toast.error("Failed to delete group");
+    } else {
+      toast.success("Group deleted");
+      fetchStats();
+    }
+    setUpdatingGroup(null);
+  };
+
+  const handleArchiveGroup = async (groupId: string) => {
+    setUpdatingGroup(groupId);
+    const { error } = await supabase
+      .from("community_groups")
+      .update({ status: "rejected", updated_at: new Date().toISOString() })
+      .eq("id", groupId);
+    if (error) {
+      toast.error("Failed to archive group");
+    } else {
+      toast.success("Group archived");
+      fetchStats();
+    }
+    setUpdatingGroup(null);
+  };
+
   if (!user) return <Navigate to="/auth" replace />;
   if (isAdmin === null) return <div className="flex justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   if (isAdmin === false) return <Navigate to="/" replace />;
