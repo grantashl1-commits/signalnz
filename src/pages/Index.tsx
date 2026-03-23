@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, ArrowRight, Zap } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -325,6 +325,13 @@ export default function HomePage() {
                   label: "Nourish",
                   title: lunchMeal?.name || "Today's meal",
                   desc: "Tap to see your full meal plan.",
+                },
+                {
+                  path: "/coach",
+                  icon: Zap,
+                  label: "My Coach",
+                  title: "AI Training & Nutrition",
+                  desc: "Get personalised plans powered by your data.",
                 },
               ].map((tile, i) => (
                 <motion.div key={tile.path} whileTap={{ scale: 0.98 }}>

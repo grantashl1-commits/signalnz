@@ -264,6 +264,68 @@ export type Database = {
         }
         Relationships: []
       }
+      generated_plans: {
+        Row: {
+          generated_at: string
+          id: string
+          plan_content: string
+          plan_type: string
+          user_id: string
+          week_start_date: string
+        }
+        Insert: {
+          generated_at?: string
+          id?: string
+          plan_content: string
+          plan_type: string
+          user_id: string
+          week_start_date: string
+        }
+        Update: {
+          generated_at?: string
+          id?: string
+          plan_content?: string
+          plan_type?: string
+          user_id?: string
+          week_start_date?: string
+        }
+        Relationships: []
+      }
+      goal_progress: {
+        Row: {
+          goal_id: string
+          id: string
+          logged_at: string
+          note: string | null
+          user_id: string
+          value: number
+        }
+        Insert: {
+          goal_id: string
+          id?: string
+          logged_at?: string
+          note?: string | null
+          user_id: string
+          value: number
+        }
+        Update: {
+          goal_id?: string
+          id?: string
+          logged_at?: string
+          note?: string | null
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_progress_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -360,6 +422,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_goals: {
+        Row: {
+          created_at: string
+          goal_description: string
+          goal_type: string
+          id: string
+          metric_label: string | null
+          target_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          goal_description: string
+          goal_type?: string
+          id?: string
+          metric_label?: string | null
+          target_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          goal_description?: string
+          goal_type?: string
+          id?: string
+          metric_label?: string | null
+          target_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_insight_profiles: {
         Row: {
           common_stressors: Json | null
@@ -447,6 +542,69 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_checkins: {
+        Row: {
+          created_at: string
+          energy: number
+          id: string
+          notes: string | null
+          sleep_quality: number
+          soreness: string
+          user_id: string
+          week_start_date: string
+        }
+        Insert: {
+          created_at?: string
+          energy: number
+          id?: string
+          notes?: string | null
+          sleep_quality: number
+          soreness?: string
+          user_id: string
+          week_start_date: string
+        }
+        Update: {
+          created_at?: string
+          energy?: number
+          id?: string
+          notes?: string | null
+          sleep_quality?: number
+          soreness?: string
+          user_id?: string
+          week_start_date?: string
+        }
+        Relationships: []
+      }
+      workout_sessions: {
+        Row: {
+          completed_at: string
+          duration_minutes: number | null
+          id: string
+          intensity: string | null
+          notes: string | null
+          user_id: string
+          workout_type: string
+        }
+        Insert: {
+          completed_at?: string
+          duration_minutes?: number | null
+          id?: string
+          intensity?: string | null
+          notes?: string | null
+          user_id: string
+          workout_type: string
+        }
+        Update: {
+          completed_at?: string
+          duration_minutes?: number | null
+          id?: string
+          intensity?: string | null
+          notes?: string | null
+          user_id?: string
+          workout_type?: string
         }
         Relationships: []
       }

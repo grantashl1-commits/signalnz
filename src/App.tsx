@@ -25,6 +25,7 @@ import Feedback from "./pages/Feedback";
 import BrandGuidelines from "./pages/BrandGuidelines";
 import AnimationPOC from "./pages/AnimationPOC";
 import Admin from "./pages/Admin";
+import Coach from "./pages/Coach";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
                     <Route path="/account" element={<Account />} />
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/coach" element={<Coach />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
