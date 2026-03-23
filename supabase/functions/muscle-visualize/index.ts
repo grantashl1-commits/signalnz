@@ -20,12 +20,21 @@ serve(async (req) => {
     }
 
     const { muscles, colors, gender, background, size, format } = await req.json();
+    const safeBackground = background === "transparent" ? "transparent" : "transparent";
+    const safeColors = (colors || "")
+      .split(",")
+      .map((color: string) => color.trim())
+      .filter(Boolean)
+      .map((color: string) =>
+        color.startsWith("#") || color.startsWith("rgb") ? color : `#${color}`
+      )
+      .join(",");
 
     const params = new URLSearchParams({
       muscles: muscles || "",
-      colors: colors || "",
+      colors: safeColors,
       gender: gender || "female",
-      background: background || "transparent",
+      background: safeBackground,
       size: size || "small",
       format: format || "jpeg",
     });
