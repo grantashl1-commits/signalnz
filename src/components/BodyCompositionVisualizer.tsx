@@ -118,7 +118,7 @@ function FormInput({ label, value, onChange, placeholder, unit }: {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder ?? "—"}
-          className="w-24 rounded-xl border border-purple-100 bg-background px-3 py-2 text-sm text-foreground text-right placeholder:text-muted-foreground/40 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all"
+          className="w-24 rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground text-right placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
         />
         {unit}
       </div>
