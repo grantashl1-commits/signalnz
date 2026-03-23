@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Search, Plus, X, Sparkles, PenLine } from "lucide-r
 import { HandDrawnBook, HandDrawnSparkle, HandDrawnLeaf, WildStar } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
+import { saveEntryToVault } from "@/components/journal/MemoryVault";
 import {
   loadEntries,
   saveEntries,
