@@ -18,7 +18,7 @@ interface LiveHRViewProps {
 }
 
 export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
-  const hr = useHeartRate();
+  const hr = useGlobalHeartRate();
   const { currentPhase: cyclePhase, currentCycleDay } = useCycle();
   const wakeLock = useWakeLock();
   const releaseWakeLock = wakeLock.release;
