@@ -46,7 +46,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body" | "mybody">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -158,6 +158,7 @@ export default function MovementPage() {
     { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
+    { id: "mybody" as const, label: "My Body" },
     { id: "body" as const, label: "Body" },
     { id: "progress" as const, label: "Progress" },
   ];
@@ -680,10 +681,19 @@ export default function MovementPage() {
       )}
 
 
+      {/* MY BODY TAB */}
+      {activeTab === "mybody" && (
+        <BodyCompositionVisualizer defaultGender={(() => {
+          try {
+            const g = localStorage.getItem("signal_user_gender");
+            return g === "male" ? "male" : "female";
+          } catch { return "female"; }
+        })()} />
+      )}
+
       {/* BODY TAB */}
       {activeTab === "body" && (
         <div className="space-y-6">
-          <BodyCompositionVisualizer />
           <BodyVisualiser />
         </div>
       )}

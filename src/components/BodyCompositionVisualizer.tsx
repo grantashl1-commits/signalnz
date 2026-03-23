@@ -138,8 +138,15 @@ function StatBadge({ icon: Icon, label, value }: { icon: typeof Activity; label:
   );
 }
 
-export default function BodyCompositionVisualizer() {
-  const [gender, setGender] = useState<Gender>("female");
+export default function BodyCompositionVisualizer({ defaultGender = "female" }: { defaultGender?: Gender }) {
+  const [gender, setGender] = useState<Gender>(defaultGender);
+
+  // Persist gender choice for cross-component sync
+  const handleGenderChange = (v: string) => {
+    const g = v as Gender;
+    setGender(g);
+    try { localStorage.setItem("signal_user_gender", g); } catch {}
+  };
   const [heightVal, setHeightVal] = useState("");
   const [heightUnit, setHeightUnit] = useState("cm");
   const [weightVal, setWeightVal] = useState("");
@@ -205,7 +212,7 @@ export default function BodyCompositionVisualizer() {
 
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground font-medium">Gender</span>
-            <PillToggle options={["Female", "Male"]} value={gender} onChange={(v) => setGender(v as Gender)} />
+            <PillToggle options={["Female", "Male"]} value={gender} onChange={handleGenderChange} />
           </div>
 
           <FormInput
