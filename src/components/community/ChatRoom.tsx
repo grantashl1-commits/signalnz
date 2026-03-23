@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MOCK_MESSAGES, type ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
+import { Play, Square } from "lucide-react";
 
 function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
   return (
@@ -28,7 +29,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const [eventDate, setEventDate] = useState("");
   const [eventLoc, setEventLoc] = useState("");
   const [voted, setVoted] = useState<Record<string, number>>({});
+  const [rsvpd, setRsvpd] = useState<Set<string>>(new Set());
+  const [recording, setRecording] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
@@ -61,8 +67,86 @@ export default function ChatRoom({ group }: ChatRoomProps) {
     setEventTitle(""); setEventDate(""); setEventLoc(""); setShowEvent(false);
   };
 
+  const toggleRSVP = (msgId: string) => {
+    setRsvpd(prev => {
+      const next = new Set(prev);
+      if (next.has(msgId)) {
+        next.delete(msgId);
+        setMessages(msgs => msgs.map(m => m.id === msgId ? { ...m, going: Math.max(0, (m.going || 1) - 1) } : m));
+      } else {
+        next.add(msgId);
+        setMessages(msgs => msgs.map(m => m.id === msgId ? { ...m, going: (m.going || 0) + 1 } : m));
+      }
+      return next;
+    });
+  };
+
+  const handleImage = () => {
+    fileRef.current?.click();
+  };
+
+  const onImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setMessages(m => [...m, {
+        id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
+        type: "text", text: `📷 [Image shared]`, imageUrl: dataUrl,
+      } as any]);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleVoice = async () => {
+    if (recording) {
+      mediaRecorderRef.current?.stop();
+      setRecording(false);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setMessages(m => [...m, {
+          id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
+          type: "text", text: "🎤 Voice note", audioUrl,
+        } as any]);
+        stream.getTracks().forEach(t => t.stop());
+      };
+
+      mediaRecorder.start();
+      setRecording(true);
+
+      // Auto-stop after 60 seconds
+      setTimeout(() => {
+        if (mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+          setRecording(false);
+        }
+      }, 60000);
+    } catch {
+      // Permission denied or not supported
+    }
+  };
+
   return (
     <div className="flex flex-col" style={{ height: "calc(100vh - 280px)", minHeight: 400 }}>
+      {/* Hidden file input for images */}
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onImageSelected} />
+
       {/* Header */}
       <div className="pb-3 border-b border-border mb-3 flex-shrink-0">
         <h3 className="font-display text-lg font-bold italic text-foreground">{group.suburb} Community</h3>
@@ -79,6 +163,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       <div className="flex-1 overflow-y-auto pr-0.5 scroll-y">
         {messages.map((m) => {
           const isMe = m.user === "You";
+          const msg = m as any;
           return (
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
               {!isMe && <Avatar initials={m.avatar} />}
@@ -87,7 +172,14 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "text" && (
                   <div className={`px-3.5 py-2.5 shadow-sm ${isMe ? "bg-primary rounded-[14px_14px_4px_14px]" : "bg-card border border-border rounded-[14px_14px_14px_4px]"}`}>
-                    <span className={`font-display text-sm italic leading-relaxed ${isMe ? "text-primary-foreground" : "text-foreground"}`}>{m.text}</span>
+                    {msg.imageUrl && (
+                      <img src={msg.imageUrl} alt="Shared" className="rounded-lg mb-1.5 max-w-[200px]" loading="lazy" />
+                    )}
+                    {msg.audioUrl ? (
+                      <audio src={msg.audioUrl} controls className="max-w-[200px] h-8" />
+                    ) : (
+                      <span className={`font-display text-sm italic leading-relaxed ${isMe ? "text-primary-foreground" : "text-foreground"}`}>{m.text}</span>
+                    )}
                   </div>
                 )}
 
@@ -131,8 +223,15 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                     <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
                     {m.date && <p className="font-mono text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
                     {m.location && <p className="font-mono text-[11px] text-muted-foreground mb-2">{m.location}</p>}
-                    <button className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">
-                      I'm going ({m.going})
+                    <button
+                      onClick={() => toggleRSVP(m.id)}
+                      className={`touch-btn font-display text-[13px] italic rounded-full px-4 py-2 transition-colors ${
+                        rsvpd.has(m.id)
+                          ? "bg-phase-follicular text-primary-foreground"
+                          : "bg-primary text-primary-foreground"
+                      }`}
+                    >
+                      {rsvpd.has(m.id) ? `✓ Going (${m.going})` : `I'm going (${m.going})`}
                     </button>
                   </div>
                 )}
@@ -224,10 +323,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           {[
             { icon: <HandDrawnChart size={13} color="hsl(var(--muted-foreground))" />, label: "poll", action: () => { setShowPoll((p) => !p); setShowEvent(false); } },
             { icon: <HandDrawnCalendar size={13} color="hsl(var(--muted-foreground))" />, label: "event", action: () => { setShowEvent((e) => !e); setShowPoll(false); } },
-            { icon: <HandDrawnImage size={13} color="hsl(var(--muted-foreground))" />, label: "image", action: () => {} },
-            { icon: <HandDrawnMic size={13} color="hsl(var(--muted-foreground))" />, label: "voice", action: () => {} },
+            { icon: <HandDrawnImage size={13} color="hsl(var(--muted-foreground))" />, label: "image", action: handleImage },
+            { icon: recording ? <Square size={13} color="hsl(var(--destructive))" /> : <HandDrawnMic size={13} color="hsl(var(--muted-foreground))" />, label: recording ? "stop" : "voice", action: handleVoice },
           ].map((b) => (
-            <button key={b.label} onClick={b.action} className="touch-btn font-mono text-[11px] text-muted-foreground bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1">
+            <button key={b.label} onClick={b.action} className={`touch-btn font-mono text-[11px] bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1 ${
+              recording && b.label === "stop" ? "text-destructive" : "text-muted-foreground"
+            }`}>
               {b.icon} {b.label}
             </button>
           ))}
