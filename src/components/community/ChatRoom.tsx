@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MOCK_MESSAGES, type ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
 import { Play, Square } from "lucide-react";
+
+const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
 function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
   return (
@@ -35,6 +37,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const [viewingMember, setViewingMember] = useState<{ userId: string; name: string } | null>(null);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
@@ -166,7 +169,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           const msg = m as any;
           return (
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
-              {!isMe && <Avatar initials={m.avatar} />}
+              {!isMe && <div className="cursor-pointer" onClick={() => setViewingMember({ userId: m.id, name: m.user })}><Avatar initials={m.avatar} /></div>}
               <div className={`max-w-[78%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
                 {!isMe && <span className="font-mono text-[10px] text-muted-foreground mb-0.5">{m.user} · {m.time}</span>}
 
@@ -361,6 +364,17 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         </div>
         <p className="font-mono text-[10px] text-muted-foreground mt-1 text-center">Moderated for kindness, not censored for truth.</p>
       </div>
+
+      {/* Member profile sheet */}
+      {viewingMember && (
+        <Suspense fallback={null}>
+          <MemberProfileSheet
+            userId={viewingMember.userId}
+            displayName={viewingMember.name}
+            onClose={() => setViewingMember(null)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

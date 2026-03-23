@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Search, Plus, X, Sparkles, PenLine } from "lucide-r
 import { HandDrawnBook, HandDrawnSparkle, HandDrawnLeaf, WildStar } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
+import { saveEntryToVault } from "@/components/journal/MemoryVault";
 import {
   loadEntries,
   saveEntries,
@@ -198,6 +199,20 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
     setSaving(true);
     haptic("medium");
     const title = isSingle ? (prompts["main"] || "").slice(0, 60) || typeConfig?.label || "Untitled" : today;
+    const tone = typeConfig?.tone;
+
+    // Auto-vault certain entry types
+    const AUTO_VAULT_TYPES: Record<string, string> = {
+      "letter-future-self": "love-notes",
+      "tiny-win": "tiny-wins",
+      "funny-moment": "funny-moments",
+      "gratitude-note": "remember",
+      "lesson-learned": "lessons",
+      "dream-entry": "remember",
+      "release": "hard-days",
+    };
+    const autoVaultCategory = AUTO_VAULT_TYPES[entryType];
+
     const entry: JournalEntry = {
       id: Date.now().toString(),
       date: today,
@@ -208,11 +223,19 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
       ai: null,
       entryType,
       title,
-      emotionalTone: typeConfig?.tone,
+      emotionalTone: tone,
+      savedToVault: !!autoVaultCategory,
+      vaultCategory: autoVaultCategory,
     };
     const existing = loadEntries();
     const updated = [entry, ...existing];
     saveEntries(updated);
+
+    // Auto-save to vault
+    if (autoVaultCategory) {
+      saveEntryToVault(entry, autoVaultCategory);
+    }
+
     setSaving(false);
     onSaved(updated);
   };

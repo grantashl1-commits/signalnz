@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame, Moon } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame, Moon, Heart } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
@@ -27,6 +27,7 @@ import { getAnimationForExercise } from "@/data/exercise-animations";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
+import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -39,6 +40,7 @@ const cardVariant = {
 
 export default function MovementPage() {
   const { currentPhase, currentCycleDay, currentWeekNumber } = useCycle();
+  const globalHR = useGlobalHeartRate();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
@@ -254,7 +256,19 @@ export default function MovementPage() {
           <div className="card-warm p-3 space-y-1">
             <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
             <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
-          </div>
+      </div>
+
+      {/* Floating HR indicator when connected but modal closed */}
+      {!showHR && globalHR.connected && (
+        <button
+          onClick={() => setShowHR(true)}
+          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
+        >
+          <Heart className="h-4 w-4 text-primary-foreground" />
+          <span className="font-mono text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
+          <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
+        </button>
+      )}
 
 
           {/* Weekly rotation carousel */}

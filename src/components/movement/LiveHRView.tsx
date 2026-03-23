@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { X, Bluetooth, Activity } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 import { WildStar } from "@/components/BotanicalElements";
-import { useHeartRate } from "@/hooks/useHeartRate";
+import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR, getZoneForBPM, HR_ZONES,
@@ -18,7 +18,7 @@ interface LiveHRViewProps {
 }
 
 export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
-  const hr = useHeartRate();
+  const hr = useGlobalHeartRate();
   const { currentPhase: cyclePhase, currentCycleDay } = useCycle();
   const wakeLock = useWakeLock();
   const releaseWakeLock = wakeLock.release;
@@ -174,6 +174,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
   const handleClose = () => {
     releaseWakeLock();
+    // Don't disconnect HR — it persists across navigation
     onClose();
   };
 

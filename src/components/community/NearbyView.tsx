@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
 // ─── Types ────────────────────────────────────────────────
 interface NearbyUser {
@@ -165,9 +166,12 @@ function SuburbMap({
 }
 
 // ─── User Card ─────────────────────────────────────────────
-function UserCard({ user }: { user: NearbyUser }) {
+function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (u: NearbyUser) => void }) {
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-2 relative">
+    <div
+      className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-2 relative cursor-pointer active:bg-secondary/50 transition-colors"
+      onClick={() => onViewProfile?.(user)}
+    >
       <span className="absolute top-3 right-3 text-[10px] text-muted-foreground">
         same suburb
       </span>
@@ -227,6 +231,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
   const [isNearbyVisible, setIsNearbyVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const [viewingProfile, setViewingProfile] = useState<NearbyUser | null>(null);
 
   const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
 
@@ -624,9 +629,20 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {filteredUsers.map((user) => (
-            <UserCard key={user.user_id} user={user} />
+            <UserCard key={user.user_id} user={user} onViewProfile={setViewingProfile} />
           ))}
         </div>
+      )}
+
+      {/* Member profile sheet */}
+      {viewingProfile && (
+        <Suspense fallback={null}>
+          <MemberProfileSheet
+            userId={viewingProfile.user_id}
+            displayName={viewingProfile.display_name}
+            onClose={() => setViewingProfile(null)}
+          />
+        </Suspense>
       )}
     </div>
   );

@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+
+const Body3DViewer = lazy(() => import("@/components/movement/Body3DViewer"));
 
 const UNIT_SETS = {
   weight: ["kg", "lbs"] as const,
@@ -61,6 +63,7 @@ interface HistoryRow {
 }
 
 export default function BodyVisualisationCard() {
+  const [latestMeasurement, setLatestMeasurement] = useState<any>(null);
   const [weightUnit, setWeightUnit] = useState("kg");
   const [heightUnit, setHeightUnit] = useState("cm");
   const [measureUnit, setMeasureUnit] = useState("cm");
@@ -84,11 +87,14 @@ export default function BodyVisualisationCard() {
     if (!user) return;
     const { data } = await supabase
       .from("body_measurements")
-      .select("id, recorded_at, weight, waist, body_fat")
+      .select("*")
       .eq("user_id", user.id)
       .order("recorded_at", { ascending: false })
       .limit(5);
-    if (data) setHistory(data);
+    if (data && data.length > 0) {
+      setHistory(data);
+      setLatestMeasurement(data[0]);
+    }
   }, []);
 
   useEffect(() => { loadHistory(); }, [loadHistory]);
@@ -132,6 +138,18 @@ export default function BodyVisualisationCard() {
 
   return (
     <div className="space-y-4">
+      {/* ── 3D Body Viewer ── */}
+      {latestMeasurement && (
+        <div className="max-w-md mx-auto">
+          <Suspense fallback={
+            <div className="w-full aspect-[3/4] max-h-[400px] rounded-2xl bg-[#1a0533] flex items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-purple-400" />
+            </div>
+          }>
+            <Body3DViewer measurements={latestMeasurement} />
+          </Suspense>
+        </div>
+      )}
       {/* ── Card ── */}
       <div className="relative w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0533] via-[#2d1050] to-[#0d0d1a]" />
