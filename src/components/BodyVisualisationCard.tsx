@@ -1,8 +1,6 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-
-const Body3DViewer = lazy(() => import("@/components/movement/Body3DViewer"));
 
 const UNIT_SETS = {
   weight: ["kg", "lbs"] as const,
@@ -50,6 +48,79 @@ function InputRow({ label, value, onChange, placeholder = "—", optional = fals
         placeholder={placeholder}
         className="w-28 bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white placeholder-white/30 text-right focus:outline-none focus:border-purple-400 focus:bg-white/15 transition-all"
       />
+    </div>
+  );
+}
+
+function parseNumeric(val: string | null | undefined): number | undefined {
+  if (!val) return undefined;
+  const n = parseFloat(val.replace(/[^0-9.]/g, ""));
+  return isNaN(n) ? undefined : n;
+}
+
+interface IframeBodyViewerProps {
+  heightUnit: string;
+  measureUnit: string;
+  vals: {
+    heightCm: string; heightFt: string; heightIn: string;
+    chestCm: string; waistCm: string; hipsCm: string;
+    thighsCm: string; armsCm: string;
+  };
+  latestMeasurement: any;
+}
+
+function IframeBodyViewer({ heightUnit, measureUnit, vals, latestMeasurement }: IframeBodyViewerProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Derive cm values from current form inputs OR from latest saved measurement
+  const measurements = {
+    heightCm: heightUnit === "cm"
+      ? Number(vals.heightCm) || parseNumeric(latestMeasurement?.height) || 0
+      : (Number(vals.heightFt) || 0) * 30.48 + (Number(vals.heightIn) || 0) * 2.54 || parseNumeric(latestMeasurement?.height) || 0,
+    chestCm: measureUnit === "in"
+      ? (Number(vals.chestCm) || 0) * 2.54
+      : Number(vals.chestCm) || parseNumeric(latestMeasurement?.chest) || 0,
+    waistCm: measureUnit === "in"
+      ? (Number(vals.waistCm) || 0) * 2.54
+      : Number(vals.waistCm) || parseNumeric(latestMeasurement?.waist) || 0,
+    hipsCm: measureUnit === "in"
+      ? (Number(vals.hipsCm) || 0) * 2.54
+      : Number(vals.hipsCm) || parseNumeric(latestMeasurement?.hips) || 0,
+    thighsCm: measureUnit === "in"
+      ? (Number(vals.thighsCm) || 0) * 2.54
+      : Number(vals.thighsCm) || parseNumeric(latestMeasurement?.thighs) || 0,
+    armsCm: measureUnit === "in"
+      ? (Number(vals.armsCm) || 0) * 2.54
+      : Number(vals.armsCm) || parseNumeric(latestMeasurement?.arms) || 0,
+  };
+
+  const hasAnyValue = Object.values(measurements).some(v => v > 0);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe || !hasAnyValue) return;
+    const send = () => iframe.contentWindow?.postMessage({
+      type: "updateMeasurements",
+      measurements,
+    }, "*");
+    iframe.addEventListener("load", send);
+    send();
+    return () => iframe.removeEventListener("load", send);
+  }, [measurements, hasAnyValue]);
+
+  if (!hasAnyValue && !latestMeasurement) return null;
+
+  return (
+    <div className="max-w-md mx-auto relative w-full aspect-[3/4] max-h-[400px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#1a0533] to-[#0d0d1a] border border-white/10">
+      <iframe
+        ref={iframeRef}
+        src="/body-visualizer.html"
+        className="w-full h-full border-0"
+        title="3D Body Visualiser"
+      />
+      <p className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[11px] text-purple-400/50 whitespace-nowrap pointer-events-none">
+        Drag to rotate · Scroll to zoom
+      </p>
     </div>
   );
 }
@@ -138,18 +209,13 @@ export default function BodyVisualisationCard() {
 
   return (
     <div className="space-y-4">
-      {/* ── 3D Body Viewer ── */}
-      {latestMeasurement && (
-        <div className="max-w-md mx-auto">
-          <Suspense fallback={
-            <div className="w-full aspect-[3/4] max-h-[400px] rounded-2xl bg-[#1a0533] flex items-center justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-purple-400" />
-            </div>
-          }>
-            <Body3DViewer measurements={latestMeasurement} />
-          </Suspense>
-        </div>
-      )}
+      {/* ── 3D Body Viewer (iframe) ── */}
+      <IframeBodyViewer
+        heightUnit={heightUnit}
+        measureUnit={measureUnit}
+        vals={{ heightCm, heightFt, heightIn, chestCm: chest, waistCm: waist, hipsCm: hips, thighsCm: thighs, armsCm: arms }}
+        latestMeasurement={latestMeasurement}
+      />
       {/* ── Card ── */}
       <div className="relative w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0533] via-[#2d1050] to-[#0d0d1a]" />
