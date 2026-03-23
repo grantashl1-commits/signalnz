@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame, Moon } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame, Moon, Heart } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
