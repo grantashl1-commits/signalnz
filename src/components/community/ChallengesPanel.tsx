@@ -1,10 +1,25 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { HandDrawnVillage } from "@/components/BotanicalElements";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ChallengesPanelProps {
   joined: string[];
 }
+
+const DEFAULT_CHALLENGES = [
+  "☕ Arrange a coffee date at a local café this week",
+  "🚶 Organise a walk + talk in your neighbourhood",
+  "🌱 Share one skill you could teach someone nearby",
+  "🤝 Introduce yourself to a neighbour you haven't met",
+  "📦 Offer to pick up something from the shops for a neighbour",
+];
+
+const DEFAULT_QUESTIONS = [
+  "What are you looking to get out of this community?",
+  "In what ways could our neighbourhood come together?",
+  "What services or skills can you offer?",
+];
 
 function ChallengeItem({ text }: { text: string }) {
   const [done, setDone] = useState(false);
@@ -26,23 +41,45 @@ function ChallengeItem({ text }: { text: string }) {
 }
 
 export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
+  const { user } = useAuth();
   const [myGroups, setMyGroups] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!joined.length) return;
-    supabase
+    loadGroups();
+  }, [joined, user]);
+
+  const loadGroups = async () => {
+    // Combine localStorage joined IDs with DB memberships
+    const groupIds = new Set(joined);
+
+    if (user) {
+      const { data: memberships } = await supabase
+        .from("community_memberships")
+        .select("group_id")
+        .eq("user_id", user.id);
+      if (memberships) {
+        memberships.forEach((m: any) => groupIds.add(m.group_id));
+      }
+    }
+
+    if (groupIds.size === 0) {
+      setMyGroups([]);
+      return;
+    }
+
+    const { data } = await supabase
       .from("community_groups")
       .select("*")
-      .in("id", joined)
-      .eq("status", "approved")
-      .then(({ data }) => {
-        if (data) setMyGroups(data.map((g: any) => ({
-          ...g,
-          challenges: Array.isArray(g.challenges) ? g.challenges : [],
-          questions: Array.isArray(g.questions) ? g.questions : [],
-        })));
-      });
-  }, [joined]);
+      .in("id", Array.from(groupIds));
+
+    if (data) {
+      setMyGroups(data.map((g: any) => ({
+        ...g,
+        challenges: Array.isArray(g.challenges) && g.challenges.length > 0 ? g.challenges : DEFAULT_CHALLENGES,
+        questions: Array.isArray(g.questions) && g.questions.length > 0 ? g.questions : DEFAULT_QUESTIONS,
+      })));
+    }
+  };
 
   if (!myGroups.length) {
     return (
