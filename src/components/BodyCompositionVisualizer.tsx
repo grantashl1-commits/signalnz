@@ -153,11 +153,6 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
   const [error, setError] = useState<string | null>(null);
 
   const handleVisualize = useCallback(async () => {
-    if (!HAS_API_KEY) {
-      setError("Body visualization unavailable — check your API key in settings");
-      return;
-    }
-
     const weightKg = weightUnit === "kg" ? Number(weightVal) : Number(weightVal) * 0.453592;
     const heightCm = heightUnit === "cm" ? Number(heightVal) : Number(heightVal) * 30.48;
     const heightM = heightCm / 100;
@@ -174,15 +169,15 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
     setError(null);
 
     try {
-      const url = buildHeatmapUrl(gender, waistCm, bodyFat);
-      const res = await fetch(url, {
-        headers: {
-          "x-rapidapi-host": "muscle-visualizer-api.p.rapidapi.com",
-          "x-rapidapi-key": import.meta.env.VITE_MUSCLE_API_KEY,
-        },
+      const params = buildHeatmapParams(gender, waistCm, bodyFat);
+      const { data, error: fnError } = await supabase.functions.invoke("muscle-visualize", {
+        body: params,
       });
-      if (!res.ok) throw new Error(`API ${res.status}`);
-      const blob = await res.blob();
+
+      if (fnError) throw fnError;
+
+      // data is already a Blob when content-type is image/*
+      const blob = data instanceof Blob ? data : new Blob([data]);
       setImageUrl(URL.createObjectURL(blob));
     } catch {
       setError("Body visualization unavailable — check your API key in settings");
