@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind, ArrowRight } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, ArrowRight, Zap } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
