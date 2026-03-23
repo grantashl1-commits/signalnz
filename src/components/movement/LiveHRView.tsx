@@ -174,6 +174,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
 
   const handleClose = () => {
     releaseWakeLock();
+    // Don't disconnect HR — it persists across navigation
     onClose();
   };
 
