@@ -26,7 +26,7 @@ serve(async (req) => {
       colors: colors || "",
       gender: gender || "female",
       background: background || "transparent",
-      size: size || "large",
+      size: size || "small",
       format: format || "jpeg",
     });
 
