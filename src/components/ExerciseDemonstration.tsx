@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { User } from "lucide-react";
 
 const gifCache = new Map<string, string | null>();
+const HAS_API_KEY = !!import.meta.env.VITE_RAPIDAPI_KEY;
 
 const STRIP_WORDS = /\b(tempo|slow|fast|heavy|light|weighted|loaded|paused|controlled|unilateral|bilateral|modified|advanced|reverse|lateral|with|\d+-?\s*sec)\b/gi;
 
