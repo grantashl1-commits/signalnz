@@ -404,15 +404,9 @@ export default function MovementPage() {
                               {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                             </div>
                             {/* Mini animation preview */}
-                            {(() => {
-                              const anim = getAnimationForExercise(ex.name);
-                              return anim ? (
-                                <div className="flex-shrink-0 w-8 h-10 flex items-center justify-center"
-                                  onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}>
-                                  <ExerciseRig animation={anim} size={22} playing={!done} />
-                                </div>
-                              ) : null;
-                            })()}
+                            <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}>
+                              <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                            </div>
                             <div className="flex-1 min-w-0" onClick={() => { haptic("light"); setDrawerExercise(ex); }}>
                               <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
                               <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
