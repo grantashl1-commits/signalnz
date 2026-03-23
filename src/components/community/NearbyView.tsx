@@ -23,6 +23,7 @@ interface SuburbCluster {
 // ─── Constants ────────────────────────────────────────────
 const FUZZ_AMOUNT = 0.005; // ~500m radius fuzz
 const GOOGLE_GEOCODE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
+const NOMINATIM_URL = "https://nominatim.openstreetmap.org/reverse";
 
 // ─── Helper: fuzz coordinates for privacy ─────────────────
 function fuzzCoords(lat: number, lng: number) {
@@ -31,42 +32,56 @@ function fuzzCoords(lat: number, lng: number) {
   return { lat: lat + fuzzLat, lng: lng + fuzzLng };
 }
 
-// ─── Helper: reverse geocode ──────────────────────────────
+// ─── Helper: reverse geocode with fallback ────────────────
 async function reverseGeocode(
   lat: number,
   lng: number,
   apiKey: string
 ): Promise<{ suburb: string; city: string } | null> {
+  // Try Google first if key is available
+  if (apiKey) {
+    try {
+      const res = await fetch(
+        `${GOOGLE_GEOCODE_URL}?latlng=${lat},${lng}&key=${apiKey}&result_type=sublocality|neighborhood|locality`
+      );
+      const data = await res.json();
+      if (data.status === "OK") {
+        let suburb = "";
+        let city = "";
+        for (const result of data.results) {
+          for (const component of result.address_components) {
+            if (
+              component.types.includes("sublocality_level_1") ||
+              component.types.includes("neighborhood")
+            ) {
+              suburb = suburb || component.long_name;
+            }
+            if (component.types.includes("locality")) {
+              city = city || component.long_name;
+            }
+          }
+          if (suburb && city) break;
+        }
+        if (!suburb && city) suburb = city;
+        if (suburb) return { suburb, city };
+      }
+    } catch {}
+  }
+
+  // Fallback to Nominatim (free, no API key needed)
   try {
     const res = await fetch(
-      `${GOOGLE_GEOCODE_URL}?latlng=${lat},${lng}&key=${apiKey}&result_type=sublocality|neighborhood|locality`
+      `${NOMINATIM_URL}?lat=${lat}&lon=${lng}&format=json&zoom=14&addressdetails=1`,
+      { headers: { "User-Agent": "Signal NZ App" } }
     );
     const data = await res.json();
-    if (data.status !== "OK") return null;
+    const addr = data.address || {};
+    const suburb = addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || "";
+    const city = addr.city || addr.town || addr.village || "";
+    if (suburb) return { suburb, city };
+  } catch {}
 
-    let suburb = "";
-    let city = "";
-
-    for (const result of data.results) {
-      for (const component of result.address_components) {
-        if (
-          component.types.includes("sublocality_level_1") ||
-          component.types.includes("neighborhood")
-        ) {
-          suburb = suburb || component.long_name;
-        }
-        if (component.types.includes("locality")) {
-          city = city || component.long_name;
-        }
-      }
-      if (suburb && city) break;
-    }
-
-    if (!suburb && city) suburb = city;
-    return suburb ? { suburb, city } : null;
-  } catch {
-    return null;
-  }
+  return null;
 }
 
 // ─── Helper: generate initials ────────────────────────────
@@ -285,12 +300,18 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           toast({
             title: "Location access denied",
             description:
-              "Enable location in your browser settings to appear in Nearby.",
+              "To enable location: open your phone Settings → find your browser → enable Location access, then try again.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Location unavailable",
+            description: "Couldn't get your location. Make sure location services are enabled on your device.",
             variant: "destructive",
           });
         }
       },
-      { enableHighAccuracy: false, timeout: 10000 }
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 }
     );
   }, [MAPS_API_KEY, toast]);
 

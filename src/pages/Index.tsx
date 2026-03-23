@@ -326,13 +326,6 @@ export default function HomePage() {
                   title: lunchMeal?.name || "Today's meal",
                   desc: "Tap to see your full meal plan.",
                 },
-                {
-                  path: "/coach",
-                  icon: Zap,
-                  label: "My Coach",
-                  title: "AI Training & Nutrition",
-                  desc: "Get personalised plans powered by your data.",
-                },
               ].map((tile, i) => (
                 <motion.div key={tile.path} whileTap={{ scale: 0.98 }}>
                   <Link

@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { HandDrawnCamera, HandDrawnEye, HandDrawnLock } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface CommunityProfileProps {
   locationEnabled: boolean;
@@ -17,7 +20,10 @@ const FIELDS = [
   { key: "barter", label: "What would you love to receive or learn in exchange?", ph: "What have you always wanted to learn? What help would you genuinely love?", rows: 2, hint: "Helps others know how they can contribute to you.", sensitiveDefault: true },
 ];
 
-const STORAGE_KEY = "signal_community_profile";
+const DEFAULT_VISIBILITY: Record<string, boolean> = {
+  career: true, employer: false, skills: true, offer: true,
+  looking_for: false, community_vision: true, barter: false,
+};
 
 interface ProfileData {
   photo: string | null;
@@ -25,30 +31,63 @@ interface ProfileData {
   visibility: Record<string, boolean>;
 }
 
-function loadProfile(): ProfileData {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return {
+export default function CommunityProfile({ locationEnabled, onToggleLocation }: CommunityProfileProps) {
+  const { user } = useAuth();
+  const [profileData, setProfileData] = useState<ProfileData>({
     photo: null,
     form: {},
-    visibility: {
-      career: true, employer: false, skills: true, offer: true,
-      looking_for: false, community_vision: true, barter: false,
-    },
-  };
-}
-
-function saveProfile(data: ProfileData) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-export default function CommunityProfile({ locationEnabled, onToggleLocation }: CommunityProfileProps) {
-  const [profileData, setProfileData] = useState<ProfileData>(loadProfile);
+    visibility: { ...DEFAULT_VISIBILITY },
+  });
   const { photo, form, visibility } = profileData;
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Load from database on mount
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    loadProfile();
+  }, [user]);
+
+  const loadProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("community_profiles" as any)
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (data) {
+      const d = data as any;
+      setProfileData({
+        photo: d.photo_url || null,
+        form: {
+          career: d.career || "",
+          employer: d.employer || "",
+          skills: d.skills || "",
+          offer: d.offer || "",
+          looking_for: d.looking_for || "",
+          community_vision: d.community_vision || "",
+          barter: d.barter || "",
+        },
+        visibility: (d.visibility && typeof d.visibility === "object") ? d.visibility : { ...DEFAULT_VISIBILITY },
+      });
+    } else {
+      // Try loading from localStorage for migration
+      try {
+        const raw = localStorage.getItem("signal_community_profile");
+        if (raw) {
+          const legacy = JSON.parse(raw);
+          setProfileData({
+            photo: legacy.photo || null,
+            form: legacy.form || {},
+            visibility: legacy.visibility || { ...DEFAULT_VISIBILITY },
+          });
+        }
+      } catch {}
+    }
+    setLoading(false);
+  };
 
   const updateField = (key: string, value: string) => {
     setProfileData(prev => ({ ...prev, form: { ...prev.form, [key]: value } }));
@@ -68,12 +107,53 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
     reader.readAsDataURL(file);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     haptic("medium");
-    saveProfile(profileData);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+
+    if (!user) {
+      toast.error("Please sign in to save your profile");
+      return;
+    }
+
+    try {
+      const payload = {
+        user_id: user.id,
+        career: form.career || null,
+        employer: form.employer || null,
+        skills: form.skills || null,
+        offer: form.offer || null,
+        looking_for: form.looking_for || null,
+        community_vision: form.community_vision || null,
+        barter: form.barter || null,
+        photo_url: photo,
+        visibility,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from("community_profiles" as any)
+        .upsert(payload as any, { onConflict: "user_id" });
+
+      if (error) throw error;
+
+      // Also keep localStorage as backup
+      localStorage.setItem("signal_community_profile", JSON.stringify(profileData));
+
+      setSaved(true);
+      toast.success("Profile saved");
+      setTimeout(() => setSaved(false), 3000);
+    } catch (e: any) {
+      toast.error("Failed to save: " + (e.message || "Unknown error"));
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="text-center pt-16">
+        <p className="font-mono text-xs text-muted-foreground">Loading profile…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pb-10 space-y-3">
@@ -186,7 +266,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
         onClick={handleSave}
         className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic active:scale-[0.97]"
       >
-        {saved ? "Saved" : "Save profile"}
+        {saved ? "Saved ✓" : "Save profile"}
       </button>
     </div>
   );

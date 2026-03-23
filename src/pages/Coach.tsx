@@ -596,6 +596,15 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
         </button>
       </div>
 
+      {/* Stay on page warning */}
+      {generating && (
+        <div className="rounded-xl bg-primary/5 px-4 py-3 text-center">
+          <p className="font-body text-xs text-primary italic">
+            Please stay on this page while your plan is being created…
+          </p>
+        </div>
+      )}
+
       {/* Generated plan display */}
       <AnimatePresence>
         {plan && (
