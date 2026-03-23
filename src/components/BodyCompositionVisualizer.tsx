@@ -1,12 +1,11 @@
-// Add to .env: VITE_MUSCLE_API_KEY=your_key
+// MUSCLE_API_KEY is stored as a runtime secret and proxied via edge function
 // Free key at: https://rapidapi.com/ascendapi/api/muscle-visualizer-api
 
 import { useState, useCallback } from "react";
 import { Settings, Activity, Heart, Ruler } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
-
-const HAS_API_KEY = !!import.meta.env.VITE_MUSCLE_API_KEY;
+import { supabase } from "@/integrations/supabase/client";
 
 const ALL_MUSCLES = [
   "CHEST", "ABS", "OBLIQUES", "QUADRICEPS", "BICEPS", "TRICEPS",
