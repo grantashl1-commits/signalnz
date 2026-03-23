@@ -27,7 +27,7 @@ serve(async (req) => {
       gender: gender || "female",
       background: background || "transparent",
       size: size || "large",
-      format: format || "png",
+      format: format || "jpeg",
     });
 
     const url = `https://muscle-visualizer-api.p.rapidapi.com/api/v1/visualize/heatmap?${params}`;
