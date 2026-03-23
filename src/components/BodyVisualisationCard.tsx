@@ -63,6 +63,7 @@ interface HistoryRow {
 }
 
 export default function BodyVisualisationCard() {
+  const [latestMeasurement, setLatestMeasurement] = useState<any>(null);
   const [weightUnit, setWeightUnit] = useState("kg");
   const [heightUnit, setHeightUnit] = useState("cm");
   const [measureUnit, setMeasureUnit] = useState("cm");
