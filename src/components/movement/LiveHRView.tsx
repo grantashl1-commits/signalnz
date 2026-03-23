@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { X, Bluetooth, Activity } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 import { WildStar } from "@/components/BotanicalElements";
-import { useHeartRate } from "@/hooks/useHeartRate";
+import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR, getZoneForBPM, HR_ZONES,
