@@ -87,11 +87,14 @@ export default function BodyVisualisationCard() {
     if (!user) return;
     const { data } = await supabase
       .from("body_measurements")
-      .select("id, recorded_at, weight, waist, body_fat")
+      .select("*")
       .eq("user_id", user.id)
       .order("recorded_at", { ascending: false })
       .limit(5);
-    if (data) setHistory(data);
+    if (data && data.length > 0) {
+      setHistory(data);
+      setLatestMeasurement(data[0]);
+    }
   }, []);
 
   useEffect(() => { loadHistory(); }, [loadHistory]);
