@@ -11,8 +11,16 @@ function getWeekStart(): string {
   const d = new Date();
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const mon = new Date(d.setDate(diff));
+  const mon = new Date(d.getFullYear(), d.getMonth(), diff);
   return mon.toISOString().split("T")[0];
+}
+
+// Cycle phase utilities
+function getCyclePhase(cycleDay: number): { phase: string; guidance: string } {
+  if (cycleDay <= 5) return { phase: "Menstrual", guidance: "Focus on gentle movement: yoga, stretching, light walks. Iron-rich foods are key — leafy greens, red meat, legumes. Prioritise warmth and rest." };
+  if (cycleDay <= 13) return { phase: "Follicular", guidance: "Energy is rising — embrace strength training, HIIT, and progressive overload. Fuel with complex carbs, fermented foods, and protein for muscle repair." };
+  if (cycleDay <= 16) return { phase: "Ovulatory", guidance: "Peak performance window — push for PRs, group classes, high-intensity work. Antioxidant-rich foods, lighter meals, plenty of hydration." };
+  return { phase: "Luteal", guidance: "Energy may dip — moderate steady-state cardio, pilates, swimming. Magnesium-rich foods (dark chocolate, nuts, seeds), healthy fats, and complex carbs to manage cravings." };
 }
 
 async function getUserAIContext(supabase: any, userId: string) {
@@ -82,7 +90,7 @@ async function getUserAIContext(supabase: any, userId: string) {
   const sessionsThisWeek = sessions?.length || 0;
   const activeMinutes = sessions?.reduce((sum: number, s: any) => sum + (s.duration_minutes || 0), 0) || 0;
 
-  // Community stats — all sessions this week across all users
+  // Community stats
   const { data: allSessions } = await supabase
     .from("workout_sessions")
     .select("user_id, workout_type, duration_minutes")
@@ -112,16 +120,26 @@ async function getUserAIContext(supabase: any, userId: string) {
     ? Math.max(0, Math.ceil((new Date(activeGoal.target_date).getTime() - Date.now()) / (7 * 24 * 60 * 60 * 1000)))
     : null;
 
+  // Estimate cycle day (assume 28-day cycle, use profile or default)
+  const cycleDay = ((Math.floor(Date.now() / (24 * 60 * 60 * 1000))) % 28) + 1;
+  const cycleInfo = getCyclePhase(cycleDay);
+
   return {
     user: {
       firstName: profile?.display_name?.split(" ")[0] || "Friend",
       goal: activeGoal?.goal_description || "General wellness",
       dietaryNotes: "No specific restrictions noted",
+      suburb: profile?.suburb || "",
     },
     biometrics: {
       weight: measurements?.weight || "Not recorded",
       height: measurements?.height || "Not recorded",
       bodyFat: measurements?.body_fat || "Not recorded",
+      chest: measurements?.chest || null,
+      waist: measurements?.waist || null,
+      hips: measurements?.hips || null,
+      thighs: measurements?.thighs || null,
+      arms: measurements?.arms || null,
       sessionsThisWeek,
       activeMinutes,
     },
@@ -144,6 +162,7 @@ async function getUserAIContext(supabase: any, userId: string) {
       userRank,
       groupSize,
     },
+    cycle: cycleInfo,
   };
 }
 
@@ -153,7 +172,19 @@ function buildTrainingPrompt(ctx: any) {
 USER PROFILE:
 - Name: ${ctx.user.firstName}
 - Goal: ${ctx.user.goal}
+- Location: ${ctx.user.suburb || "New Zealand"}
+
+BODY MEASUREMENTS:
 - Weight: ${ctx.biometrics.weight}
+- Height: ${ctx.biometrics.height}
+- Body fat: ${ctx.biometrics.bodyFat}
+${ctx.biometrics.chest ? `- Chest: ${ctx.biometrics.chest}` : ""}
+${ctx.biometrics.waist ? `- Waist: ${ctx.biometrics.waist}` : ""}
+${ctx.biometrics.hips ? `- Hips: ${ctx.biometrics.hips}` : ""}
+
+CYCLE PHASE:
+- Current phase: ${ctx.cycle.phase}
+- Phase guidance: ${ctx.cycle.guidance}
 
 ACTIVITY THIS WEEK:
 - Sessions completed: ${ctx.biometrics.sessionsThisWeek}
@@ -177,9 +208,12 @@ COMMUNITY (their Signal group):
 - Their rank: ${ctx.community.userRank} of ${ctx.community.groupSize} members
 
 RULES:
-- If soreness is high, reduce intensity
-- Reference community stats naturally in the plan
-- 5-7 day plan with 1-2 recovery days
+- Adapt the plan to their current cycle phase — honour the body's natural rhythms
+- If soreness is high or energy is low, reduce intensity and suggest recovery activities
+- Reference community stats naturally ("your group is averaging X sessions — keep the momentum")
+- 5-7 day plan with 1-2 recovery days based on body signals
+- Include specific exercise suggestions with sets, reps, and duration
+- Mix workout types: strength, cardio, flexibility, and active recovery
 - End with a short motivational note referencing their specific progress
 - Format day by day with duration, type, and intensity
 - Tone: warm and encouraging, like a coach who knows them well
@@ -196,6 +230,15 @@ USER:
 - Activity this week: ${ctx.biometrics.activeMinutes} active minutes
 - Sessions: ${ctx.biometrics.sessionsThisWeek}
 
+BODY MEASUREMENTS:
+- Weight: ${ctx.biometrics.weight}
+- Height: ${ctx.biometrics.height}
+${ctx.biometrics.waist ? `- Waist: ${ctx.biometrics.waist}` : ""}
+
+CYCLE PHASE:
+- Current phase: ${ctx.cycle.phase}
+- Phase guidance: ${ctx.cycle.guidance}
+
 SELF-REPORTED:
 - Energy: ${ctx.checkin.energyRating}/10
 - Sleep: ${ctx.checkin.sleepRating}/10
@@ -205,11 +248,15 @@ GOAL PROGRESS:
 - ${ctx.goalProgress.goalDescription} — ${ctx.goalProgress.progressPercent}% complete
 
 RULES:
-- Match calorie guidance to activity level
-- 3 practical meal ideas per day, use NZ-available foods
+- Match calorie and macro guidance to their activity level and body composition goals
+- Adapt nutrition advice to their current cycle phase (e.g., iron-rich foods during menstrual, anti-inflammatory during luteal)
+- 3 practical meal ideas per day using common, everyday ingredients available at NZ supermarkets (Countdown, New World, Pak'nSave)
+- Keep recipes simple and achievable — no specialist equipment or hard-to-find ingredients
+- Include snack suggestions between meals
 - Include hydration guidance based on activity level
+- If training load is heavy, prioritise recovery nutrition (protein timing, anti-inflammatory foods)
 - End with ONE specific actionable focus for the week
-- Tone: practical, friendly, not preachy
+- Tone: practical, friendly, not preachy — like a mate who happens to know nutrition
 - Use markdown formatting with headers and bullet points`;
 }
 

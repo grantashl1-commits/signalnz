@@ -300,12 +300,18 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           toast({
             title: "Location access denied",
             description:
-              "Enable location in your browser settings to appear in Nearby.",
+              "To enable location: open your phone Settings → find your browser → enable Location access, then try again.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Location unavailable",
+            description: "Couldn't get your location. Make sure location services are enabled on your device.",
             variant: "destructive",
           });
         }
       },
-      { enableHighAccuracy: false, timeout: 10000 }
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 }
     );
   }, [MAPS_API_KEY, toast]);
 
