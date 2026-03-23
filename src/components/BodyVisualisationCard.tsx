@@ -1,8 +1,6 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-
-const Body3DViewer = lazy(() => import("@/components/movement/Body3DViewer"));
 
 const UNIT_SETS = {
   weight: ["kg", "lbs"] as const,
