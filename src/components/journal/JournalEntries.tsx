@@ -453,12 +453,27 @@ function EntryCard({
 export default function JournalEntries({
   onSaveToVault,
   onPinToDreamStudio,
+  journalSync,
 }: {
   onSaveToVault?: (entry: JournalEntry) => void;
   onPinToDreamStudio?: (entry: JournalEntry) => void;
+  journalSync?: {
+    entries: JournalEntry[];
+    milestones: MilestoneAnalysis[];
+    saveEntry: (entry: JournalEntry) => Promise<void>;
+    updateEntry: (entry: JournalEntry) => Promise<void>;
+    updateEntries: (entries: JournalEntry[]) => Promise<void>;
+    saveMilestone: (milestone: MilestoneAnalysis) => Promise<void>;
+    setEntries: React.Dispatch<React.SetStateAction<JournalEntry[]>>;
+  };
 }) {
-  const [entries, setEntries] = useState<JournalEntry[]>(() => loadEntries());
-  const [milestones, setMilestones] = useState<MilestoneAnalysis[]>(() => loadMilestones());
+  const [localEntries, setLocalEntries] = useState<JournalEntry[]>(() => loadEntries());
+  const [localMilestones, setLocalMilestones] = useState<MilestoneAnalysis[]>(() => loadMilestones());
+
+  const entries = journalSync?.entries ?? localEntries;
+  const milestones = journalSync?.milestones ?? localMilestones;
+  const setEntries = journalSync?.setEntries ?? setLocalEntries;
+
   const [view, setView] = useState<"list" | "pick-type" | "new" | "analysis" | "milestone">("list");
   const [entryType, setEntryType] = useState("free-write");
   const [activeEntry, setActiveEntry] = useState<JournalEntry | null>(null);
