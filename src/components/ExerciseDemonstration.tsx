@@ -37,7 +37,7 @@ async function lookupGif(exerciseName: string): Promise<string | null> {
       .select("gif_url")
       .ilike("name", `%${query}%`)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (data?.gif_url) {
       gifCache.set(exerciseName, data.gif_url);
