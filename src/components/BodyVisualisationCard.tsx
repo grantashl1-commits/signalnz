@@ -1,55 +1,23 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Activity } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const UNIT_SETS = {
-  weight: ["kg", "lbs"] as const,
-  height: ["cm", "ft/in"] as const,
-  measurement: ["cm", "in"] as const,
-};
+const ALL_MUSCLES = [
+  "CHEST", "ABS", "OBLIQUES", "QUADRICEPS", "BICEPS", "TRICEPS",
+  "SHOULDERS", "UPPER_BACK", "LOWER_BACK", "GLUTES", "HAMSTRINGS", "CALVES",
+] as const;
 
-function UnitToggle({ options, value, onChange }: { options: readonly string[]; value: string; onChange: (v: string) => void }) {
-  return (
-    <span className="inline-flex items-center rounded-full bg-white/10 border border-white/20 p-0.5 gap-0.5 ml-2">
-      {options.map((opt) => (
-        <button
-          key={opt}
-          type="button"
-          onClick={() => onChange(opt)}
-          className={`px-2 py-0.5 rounded-full text-xs font-semibold transition-all duration-200 ${
-            value === opt
-              ? "bg-white text-purple-900 shadow"
-              : "text-white/60 hover:text-white"
-          }`}
-        >
-          {opt}
-        </button>
-      ))}
-    </span>
-  );
-}
+function buildHeatmapParams(gender: string, waist: number, bodyFat: number) {
+  const warmZone = new Set<string>();
+  const waistThreshold = gender === "female" ? 88 : 102;
+  if (waist > waistThreshold) { warmZone.add("OBLIQUES"); warmZone.add("ABS"); }
+  if (bodyFat > 30) { warmZone.add("CHEST"); warmZone.add("UPPER_BACK"); }
+  if (bodyFat > 35) { warmZone.add("QUADRICEPS"); warmZone.add("GLUTES"); }
 
-function InputRow({ label, value, onChange, placeholder = "—", optional = false }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; optional?: boolean }) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <span className="text-sm text-white/70 min-w-[90px]">
-        {label}
-        {optional && (
-          <span className="ml-1 text-[10px] uppercase tracking-widest text-white/30 font-semibold">
-            optional
-          </span>
-        )}
-      </span>
-      <input
-        type="number"
-        min="0"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-28 bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white placeholder-white/30 text-right focus:outline-none focus:border-purple-400 focus:bg-white/15 transition-all"
-      />
-    </div>
-  );
+  const muscles = ALL_MUSCLES.join(",");
+  const colors = ALL_MUSCLES.map((m) => warmZone.has(m) ? "#E74C3C" : "#A8D8A8").join(",");
+  return { muscles, colors, gender, background: "transparent", size: "small", format: "jpeg" };
 }
 
 function parseNumeric(val: string | null | undefined): number | undefined {
@@ -58,72 +26,51 @@ function parseNumeric(val: string | null | undefined): number | undefined {
   return isNaN(n) ? undefined : n;
 }
 
-interface IframeBodyViewerProps {
-  heightUnit: string;
-  measureUnit: string;
-  vals: {
-    heightCm: string; heightFt: string; heightIn: string;
-    chestCm: string; waistCm: string; hipsCm: string;
-    thighsCm: string; armsCm: string;
-  };
-  latestMeasurement: any;
-}
-
-function IframeBodyViewer({ heightUnit, measureUnit, vals, latestMeasurement }: IframeBodyViewerProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  // Derive cm values from current form inputs OR from latest saved measurement
-  const measurements = {
-    heightCm: heightUnit === "cm"
-      ? Number(vals.heightCm) || parseNumeric(latestMeasurement?.height) || 0
-      : (Number(vals.heightFt) || 0) * 30.48 + (Number(vals.heightIn) || 0) * 2.54 || parseNumeric(latestMeasurement?.height) || 0,
-    chestCm: measureUnit === "in"
-      ? (Number(vals.chestCm) || 0) * 2.54
-      : Number(vals.chestCm) || parseNumeric(latestMeasurement?.chest) || 0,
-    waistCm: measureUnit === "in"
-      ? (Number(vals.waistCm) || 0) * 2.54
-      : Number(vals.waistCm) || parseNumeric(latestMeasurement?.waist) || 0,
-    hipsCm: measureUnit === "in"
-      ? (Number(vals.hipsCm) || 0) * 2.54
-      : Number(vals.hipsCm) || parseNumeric(latestMeasurement?.hips) || 0,
-    thighsCm: measureUnit === "in"
-      ? (Number(vals.thighsCm) || 0) * 2.54
-      : Number(vals.thighsCm) || parseNumeric(latestMeasurement?.thighs) || 0,
-    armsCm: measureUnit === "in"
-      ? (Number(vals.armsCm) || 0) * 2.54
-      : Number(vals.armsCm) || parseNumeric(latestMeasurement?.arms) || 0,
-  };
-
-  const hasAnyValue = Object.values(measurements).some(v => v > 0);
+function MuscleHeatmap({ gender, waist, bodyFat }: { gender: string; waist: number; bodyFat: number }) {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const iframe = iframeRef.current;
-    if (!iframe || !hasAnyValue) return;
-    const send = () => iframe.contentWindow?.postMessage({
-      type: "updateMeasurements",
-      measurements,
-    }, "*");
-    iframe.addEventListener("load", send);
-    send();
-    return () => iframe.removeEventListener("load", send);
-  }, [measurements, hasAnyValue]);
+    if (!waist && !bodyFat) return;
+    let cancelled = false;
+    setLoading(true);
+    setError(false);
 
-  if (!hasAnyValue && !latestMeasurement) return null;
+    const params = buildHeatmapParams(gender, waist, bodyFat);
+    supabase.functions.invoke("muscle-visualize", { body: params }).then(({ data, error: fnError }) => {
+      if (cancelled) return;
+      if (fnError) { setError(true); setLoading(false); return; }
+      const blob = data instanceof Blob ? data : new Blob([data]);
+      setImageUrl(URL.createObjectURL(blob));
+      setLoading(false);
+    }).catch(() => { if (!cancelled) { setError(true); setLoading(false); } });
+
+    return () => { cancelled = true; };
+  }, [gender, waist, bodyFat]);
+
+  if (!waist && !bodyFat) return null;
 
   return (
-    <div className="max-w-md mx-auto relative w-full aspect-[3/4] max-h-[400px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#1a0533] to-[#0d0d1a] border border-white/10">
-      <iframe
-        ref={iframeRef}
-        src="/body-visualizer.html"
-        className="w-full h-full border-0"
-        title="3D Body Visualiser"
-      />
-      <p className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[11px] text-purple-400/50 whitespace-nowrap pointer-events-none">
-        Drag to rotate · Scroll to zoom
-      </p>
+    <div className="max-w-md mx-auto flex flex-col items-center gap-3">
+      {loading ? (
+        <Skeleton className="w-[200px] h-[280px] rounded-2xl animate-pulse" />
+      ) : error ? (
+        <div className="w-[200px] h-[280px] rounded-2xl bg-muted flex items-center justify-center">
+          <p className="text-xs text-muted-foreground text-center px-4">Heatmap unavailable</p>
+        </div>
+      ) : imageUrl ? (
+        <img src={imageUrl} alt="Body composition heatmap" className="max-h-[300px] object-contain rounded-xl" />
+      ) : null}
     </div>
   );
 }
+
+const UNIT_SETS = {
+  weight: ["kg", "lbs"] as const,
+  height: ["cm", "ft/in"] as const,
+  measurement: ["cm", "in"] as const,
+};
 
 interface HistoryRow {
   id: string;
