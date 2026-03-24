@@ -174,13 +174,40 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
         body: params,
       });
 
-      if (fnError) throw fnError;
+      console.log("[BodyViz] response type:", typeof data, data instanceof Blob ? `Blob(${(data as Blob).size}b, ${(data as Blob).type})` : data);
 
-      // data is already a Blob when content-type is image/*
-      const blob = data instanceof Blob ? data : new Blob([data]);
-      setImageUrl(URL.createObjectURL(blob));
-    } catch {
-      setError("Body visualization unavailable — check your API key in settings");
+      if (fnError) {
+        console.error("[BodyViz] function error:", fnError);
+        throw fnError;
+      }
+
+      // If the edge function returned JSON (error), handle it
+      if (data && typeof data === "object" && !(data instanceof Blob) && data.error) {
+        console.error("[BodyViz] API error:", data.error);
+        throw new Error(data.error);
+      }
+
+      if (data instanceof Blob && data.size > 0 && data.type.startsWith("image/")) {
+        setImageUrl(URL.createObjectURL(data));
+      } else if (data instanceof Blob && data.size > 0) {
+        // Blob but wrong type — try reading as text to check for error
+        const text = await data.text();
+        console.error("[BodyViz] non-image blob:", text);
+        try {
+          const parsed = JSON.parse(text);
+          throw new Error(parsed.error || "Invalid response");
+        } catch {
+          // Force-treat as image anyway
+          setImageUrl(URL.createObjectURL(new Blob([data], { type: "image/png" })));
+        }
+      } else {
+        throw new Error("No image returned");
+      }
+    } catch (e: any) {
+      console.error("[BodyViz] error:", e);
+      setError(e?.message?.includes("429") 
+        ? "Rate limit reached — please try again in a minute"
+        : "Body visualization unavailable — please try again");
     } finally {
       setLoading(false);
     }
