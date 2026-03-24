@@ -22,7 +22,6 @@ import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseRig from "@/components/movement/ExerciseRig";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import BodyVisualiser from "@/components/movement/BodyVisualiser";
-import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
