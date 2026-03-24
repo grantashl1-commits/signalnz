@@ -549,7 +549,14 @@ export default function JournalEntries({
     return <AnalysisView entry={fakeEntry} onBack={() => setView("list")} isMilestone />;
   }
   if (view === "pick-type") return <EntryTypePicker onSelect={(t) => { setEntryType(t); setView("new"); }} onCancel={() => setView("list")} />;
-  if (view === "new") return <NewEntryForm entryType={entryType} onSaved={(updated) => { setEntries(updated); setView("list"); }} onCancel={() => setView("list")} />;
+  if (view === "new") return <NewEntryForm entryType={entryType} onSaved={(updated) => {
+    setEntries(updated);
+    // Cloud sync the new entry (first in list)
+    if (journalSync && updated.length > 0) {
+      journalSync.saveEntry(updated[0]);
+    }
+    setView("list");
+  }} onCancel={() => setView("list")} />;
 
   return (
     <div className="space-y-4 pb-10 relative">
