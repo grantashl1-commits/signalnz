@@ -508,7 +508,11 @@ export default function JournalEntries({
       const updated = entries.map((e) => e.id === entry.id ? { ...e, ai: data, tags: data.tags || [] } : e);
       setEntries(updated);
       saveEntries(updated);
-      setActiveEntry({ ...entry, ai: data, tags: data.tags || [] });
+      const updatedEntry = { ...entry, ai: data, tags: data.tags || [] };
+      setActiveEntry(updatedEntry);
+      if (journalSync) {
+        journalSync.updateEntry(updatedEntry);
+      }
 
       // Fire journal-insights in background to build user profile
       const userId = localStorage.getItem("signal_user_id") || crypto.randomUUID();
