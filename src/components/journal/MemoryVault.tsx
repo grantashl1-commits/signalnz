@@ -232,8 +232,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
 
 // Public utility - still used by JournalActivities for auto-vault (legacy localStorage path)
 export function saveEntryToVault(entry: { id: string; title?: string; date: string; timestamp: number; prompts: Record<string, string> }, category: string) {
-  const { loadVault: lv, saveVault: sv } = await import("@/lib/journal-store");
-  const vault = lv();
+  const vault = loadVault();
   const preview = Object.values(entry.prompts).filter(Boolean)[0] || "";
   const ve: VaultEntry = {
     id: Date.now().toString(),
@@ -244,5 +243,5 @@ export function saveEntryToVault(entry: { id: string; title?: string; date: stri
     date: entry.date,
     timestamp: entry.timestamp,
   };
-  sv([ve, ...vault]);
+  saveVault([ve, ...vault]);
 }
