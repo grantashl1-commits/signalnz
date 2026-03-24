@@ -9,7 +9,8 @@ import JournalEntries from "@/components/journal/JournalEntries";
 import JournalActivities from "@/components/journal/JournalActivities";
 import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
 import DreamStudio from "@/components/journal/DreamStudio";
-import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement, loadEntries, saveEntries } from "@/lib/journal-store";
+import { useJournalSync } from "@/hooks/useJournalSync";
+import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
 
 type Tab = "entries" | "activities" | "vault" | "dream";
 
@@ -32,20 +33,28 @@ export default function JournalPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   
   const [tab, setTab] = useState<Tab>("entries");
-  const [vaultRefresh, setVaultRefresh] = useState(0);
   const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
 
-  const handleSaveToVault = useCallback((entry: JournalEntry) => {
-    haptic("medium");
-    saveEntryToVault(entry, "remember");
-    // Mark entry as saved to vault
-    const entries = loadEntries();
-    const updated = entries.map((e) => e.id === entry.id ? { ...e, savedToVault: true } : e);
-    saveEntries(updated);
-    setVaultRefresh((v) => v + 1);
-  }, []);
+  const journalSync = useJournalSync();
 
-  const handlePinToDreamStudio = useCallback((entry: JournalEntry) => {
+  const handleSaveToVault = useCallback(async (entry: JournalEntry) => {
+    haptic("medium");
+    const preview = Object.values(entry.prompts).filter(Boolean)[0] || "";
+    const ve = {
+      id: Date.now().toString(),
+      entryId: entry.id,
+      category: "remember",
+      title: entry.title || entry.date,
+      preview: preview.slice(0, 150),
+      date: entry.date,
+      timestamp: entry.timestamp,
+    };
+    await journalSync.saveVaultEntry(ve);
+    // Mark entry as saved to vault
+    await journalSync.updateEntry({ ...entry, savedToVault: true });
+  }, [journalSync]);
+
+  const handlePinToDreamStudio = useCallback(async (entry: JournalEntry) => {
     haptic("medium");
     const content = Object.values(entry.prompts).filter(Boolean)[0] || entry.title || "";
     const el: DreamElement = {
@@ -58,17 +67,13 @@ export default function JournalPage() {
     };
     const board = loadDreamBoard();
     saveDreamBoard([...board, el]);
-    // Mark entry
-    const entries = loadEntries();
-    const updated = entries.map((e) => e.id === entry.id ? { ...e, pinnedToDreamStudio: true } : e);
-    saveEntries(updated);
+    await journalSync.updateEntry({ ...entry, pinnedToDreamStudio: true });
     setTab("dream");
-  }, []);
+  }, [journalSync]);
 
   return (
     <GatedPage requiredTier="nourished">
     <div className="relative">
-      {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <div className="text-center">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
@@ -82,7 +87,6 @@ export default function JournalPage() {
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4">
-
       <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">
           {TABS.map((t) => (
@@ -109,9 +113,21 @@ export default function JournalPage() {
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.15 }}
         >
-          {tab === "entries" && <JournalEntries onSaveToVault={handleSaveToVault} onPinToDreamStudio={handlePinToDreamStudio} />}
+          {tab === "entries" && (
+            <JournalEntries
+              onSaveToVault={handleSaveToVault}
+              onPinToDreamStudio={handlePinToDreamStudio}
+              journalSync={journalSync}
+            />
+          )}
           {tab === "activities" && <JournalActivities />}
-          {tab === "vault" && <MemoryVault key={vaultRefresh} />}
+          {tab === "vault" && (
+            <MemoryVault
+              vault={journalSync.vault}
+              onSaveVaultEntry={journalSync.saveVaultEntry}
+              onRemoveVaultEntry={journalSync.removeVaultEntry}
+            />
+          )}
           {tab === "dream" && <DreamStudio pinnedEntry={pinnedEntry} />}
         </motion.div>
       </AnimatePresence>
