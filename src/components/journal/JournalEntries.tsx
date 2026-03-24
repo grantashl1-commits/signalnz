@@ -529,9 +529,13 @@ export default function JournalEntries({
       const { data, error } = await supabase.functions.invoke("journal-ai", { body: { milestoneType: nextMilestone.type, milestoneCount: nextMilestone.count, milestoneLabel: nextMilestone.label, allEntries: entries.slice(0, nextMilestone.count) } });
       if (error) throw error;
       const nm: MilestoneAnalysis = { milestoneType: nextMilestone.type, count: nextMilestone.count, date: new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" }), analysis: data };
-      const updatedMilestones = [...milestones, nm];
-      setMilestones(updatedMilestones);
-      saveMilestones(updatedMilestones);
+      if (journalSync) {
+        await journalSync.saveMilestone(nm);
+      } else {
+        const updatedMilestones = [...milestones, nm];
+        setLocalMilestones(updatedMilestones);
+        saveMilestones(updatedMilestones);
+      }
       setActiveMilestone(nm);
       setView("milestone");
     } catch { /* silently fail */ }
