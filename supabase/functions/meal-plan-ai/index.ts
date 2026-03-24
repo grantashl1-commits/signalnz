@@ -132,16 +132,37 @@ MACRO TARGETS (calculate based on TDEE and goal):
 - Hydration target: ${(weight * 35 / 1000).toFixed(1)}L/day minimum`;
     }
 
+    // Map dinner pref: "double" = same every day, "fresh" = 2-3 rotate with double serves, "mix" = different every day
+    const breakfastDesc = prefs.breakfast === "batch" ? "SAME breakfast every day — one recipe batch-prepped for the week" : prefs.breakfast === "rotate" ? "2-3 breakfast options per week — cook a double serve and save half for another day" : "A different breakfast recipe every day — all unique";
+    const lunchDesc = prefs.lunch === "batch" ? "SAME lunch every day — one recipe batch-prepped for the week" : prefs.lunch === "rotate" ? "2-3 lunch options per week — cook a double serve and save half for another day" : "A different lunch recipe every day — all unique";
+    const dinnerDesc = prefs.dinner === "double" ? "SAME dinner every day — one recipe batch-prepped for the week" : prefs.dinner === "fresh" ? "2-3 dinner options per week — cook a double serve and reheat leftovers the next night. Mark leftover days with isLeftover: true." : "A different dinner recipe every day — all unique";
+
+    const cookingSkillDesc = prefs.cookingSkill === "beginner" ? "BEGINNER — only simple recipes with under 5 ingredients, minimal techniques, no complex methods. Maximum 15-20 minutes active cooking." : prefs.cookingSkill === "confident" ? "CONFIDENT — standard home cooking techniques. Happy with stir-fries, roasting, basic sauces, marinades. Up to 30-45 minutes active cooking." : "ADVENTUROUS — bring on the challenge. Fermenting, slow-cooking, global cuisines, multi-step recipes welcome.";
+
+    const equipmentPriority = prefs.equipment?.length ? `PRIORITISE recipes that use: ${prefs.equipment.join(", ")}. Design meals around this equipment. If they have an air fryer, prefer air fryer recipes. If they have a slow cooker, schedule slow cooker meals on busy days. If they have a blender, include smoothies and blended soups.` : "Standard oven and stovetop only.";
+
+    const prepDayInstructions = prefs.prepDays.includes("No set day") ? "No fixed prep day — all meals should be cookable day-of within the time limit." : `Prep day(s): ${prefs.prepDays.join(", ")}. Schedule bigger, batch-friendly meals on these days. These are the days the user will do advance cooking — plan larger quantities, stews, marinated proteins, grain bowls, etc. that can be portioned and stored.`;
+
+    // Auto-set calorie guidance from body goals
+    let calorieGuidance = prefs.calorieTarget || "Not specified";
+    if (!prefs.calorieTarget || prefs.calorieTarget === "" || prefs.calorieTarget === "No preference") {
+      if (goals.includes("lose-weight")) calorieGuidance = "CALORIE DEFICIT required — 300-500 cal below TDEE. Low-calorie, high-satiety meals. Target 1400-1800 kcal depending on TDEE.";
+      else if (goals.includes("gain-muscle")) calorieGuidance = "CALORIE SURPLUS required — 200-300 cal above TDEE. Higher protein and carbs. Target 2000-2400 kcal depending on TDEE.";
+      else if (goals.includes("tone-up")) calorieGuidance = "Maintenance or slight deficit (-200 cal). Target 1600-2000 kcal depending on TDEE.";
+      else calorieGuidance = "Calculate from TDEE — balanced intake for maintenance.";
+    }
+
     let systemPrompt = `You are a registered dietitian (NZ Dietitians Board) and sports nutritionist creating personalised, evidence-based meal plans for women. You have an MSc in Human Nutrition and specialise in female hormonal health, cycle-syncing nutrition, and sports performance nutrition.
 
 USER PROFILE:
-- Diet type: ${prefs.dietType || "No preference"}
-- Allergies/intolerances: ${prefs.allergies || "None"}
-- Food dislikes: ${prefs.dislikes || "None"}
-- Daily calorie target: ${prefs.calorieTarget || "Not specified — calculate from TDEE"}
-- Cooking skill: ${prefs.cookingSkill || "confident"}
-- Available cooking time: ${prefs.availableTime || "30"} minutes per meal
-- Kitchen equipment: ${prefs.equipment?.join(", ") || "oven, stovetop, basic equipment"}
+- Diet type: ${prefs.dietType || "No preference"} — STRICTLY adhere to this. ${prefs.dietType && prefs.dietType !== "No preference" ? `NEVER include foods outside of ${prefs.dietType} diet.` : ""}
+- Allergies/intolerances: ${prefs.allergies || "None"} — NEVER include these ingredients, including hidden sources.
+- Food dislikes: ${prefs.dislikes || "None"} — NEVER include these foods.
+- Daily calorie target: ${calorieGuidance}
+- Cooking skill: ${cookingSkillDesc}
+  IMPORTANT: Recipe complexity MUST match the cooking skill level. Beginner = simple. Confident = moderate. Adventurous = complex.
+- Available cooking time: ${prefs.availableTime || "30"} minutes per meal — recipes must be completable within this time.
+- Kitchen equipment: ${equipmentPriority}
 - Cooking for: ${prefs.adults} adult(s)${prefs.kids > 0 ? ` and ${prefs.kids} kid(s)` : ""}
 - Body/fitness goals: ${goals.join(", ")}
 ${tdeeSection}
@@ -150,10 +171,11 @@ ${tdeeSection}
 ${goalAdvice}
 
 ═══ PREP STYLE CONFIGURATION ═══
-- Breakfast: ${prefs.breakfast === "batch" ? "Same breakfast all week (batch prep — e.g., overnight oats, egg muffins)" : prefs.breakfast === "rotate" ? "2-3 options rotated through the week" : "Different each day"}
-- Lunch: ${prefs.lunch === "batch" ? "Same lunch all week (batch prep — e.g., grain bowls, soup)" : prefs.lunch === "rotate" ? "2-3 options rotated" : "Different each day"}
-- Dinner: ${prefs.dinner === "double" ? "Double batch — cook once, eat leftovers next day. Mark leftover days clearly." : prefs.dinner === "fresh" ? "Fresh dinner each night" : "Mix of fresh and leftover nights"}
-- Prep day(s): ${prefs.prepDays.join(", ")}
+- Breakfast: ${breakfastDesc}
+- Lunch: ${lunchDesc}
+- Dinner: ${dinnerDesc}
+- ${prepDayInstructions}
+- For "2-3 options" mode: cook a DOUBLE SERVE each time. Label the repeat day with isLeftover: true and leftoverFrom pointing to the original day.
 
 ═══ PHASE-SPECIFIC NUTRITION PROTOCOLS ═══
 ${Object.values(PHASE_GUIDANCE).join("\n\n")}

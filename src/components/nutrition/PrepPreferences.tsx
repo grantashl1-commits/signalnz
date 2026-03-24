@@ -198,32 +198,33 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       {/* Breakfast */}
       <div className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Breakfast</p>
-        <RadioCard selected={breakfast === "batch"} label="I'll prep overnight oats on Sunday for the whole week." description="Same breakfast every day." onSelect={() => setBreakfast("batch")} />
-        <RadioCard selected={breakfast === "rotate"} label="I'll batch cook 2–3 options and rotate." onSelect={() => setBreakfast("rotate")} />
-        <RadioCard selected={breakfast === "variety"} label="I prefer variety — different each day." onSelect={() => setBreakfast("variety")} />
+        <RadioCard selected={breakfast === "batch"} label="Same breakfast every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setBreakfast("batch")} />
+        <RadioCard selected={breakfast === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setBreakfast("rotate")} />
+        <RadioCard selected={breakfast === "variety"} label="A different recipe every day." onSelect={() => setBreakfast("variety")} />
       </div>
 
       {/* Lunch */}
       <div className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Lunch</p>
-        <RadioCard selected={lunch === "batch"} label="I'll roast a tray of tofu + veg + cook rice on Sunday." description="Use that for all lunches." onSelect={() => setLunch("batch")} />
-        <RadioCard selected={lunch === "rotate"} label="I'll make 2–3 lunch options and rotate." onSelect={() => setLunch("rotate")} />
-        <RadioCard selected={lunch === "variety"} label="I prefer variety — different each day." onSelect={() => setLunch("variety")} />
+        <RadioCard selected={lunch === "batch"} label="Same lunch every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setLunch("batch")} />
+        <RadioCard selected={lunch === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setLunch("rotate")} />
+        <RadioCard selected={lunch === "variety"} label="A different recipe every day." onSelect={() => setLunch("variety")} />
       </div>
 
       {/* Dinner */}
       <div className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Dinner</p>
-        <RadioCard selected={dinner === "double"} label="Cook dinner 2× serving size — I'll reheat leftovers the next night." description="This halves unique dinners: 4 meals covers 7 nights." onSelect={() => setDinner("double")} />
-        <RadioCard selected={dinner === "fresh"} label="I prefer a fresh dinner each night." onSelect={() => setDinner("fresh")} />
-        <RadioCard selected={dinner === "mix"} label="Mix — some nights reheat, some fresh." onSelect={() => setDinner("mix")} />
+        <RadioCard selected={dinner === "double"} label="Same dinner every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setDinner("double")} />
+        <RadioCard selected={dinner === "fresh"} label="2–3 options per week." description="Cook a double serve and reheat leftovers the next night." onSelect={() => setDinner("fresh")} />
+        <RadioCard selected={dinner === "mix"} label="A different recipe every day." onSelect={() => setDinner("mix")} />
       </div>
 
       {/* Prep day */}
       <div className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>When can you do your main prep?</p>
+        <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>Bigger meals will be scheduled on your prep day(s) for advance cooking.</p>
         <div className="flex flex-wrap gap-2">
-          {["Sunday", "Saturday", "Wednesday", "No set day"].map((day) => (
+          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "No set day"].map((day) => (
             <button
               key={day}
               onClick={() => togglePrepDay(day)}

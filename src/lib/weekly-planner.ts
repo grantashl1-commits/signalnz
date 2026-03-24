@@ -6,7 +6,7 @@ import { parseIngredient } from "./ingredient-parser";
 // ─── Types ─────────────────────────────────────────────────
 export type BreakfastPref = "batch" | "rotate" | "variety";
 export type LunchPref = "batch" | "rotate" | "variety";
-export type DinnerPref = "double" | "fresh" | "mix";
+export type DinnerPref = "double" | "fresh" | "mix"; // double=same every day, fresh=2-3 rotate, mix=variety
 export type CookingSkill = "beginner" | "confident" | "adventurous";
 export type AvailableTime = "15" | "30" | "45" | "60+";
 
