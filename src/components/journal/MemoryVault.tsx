@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, Plus, X, Sparkles } from "lucide-react";
+import { Trash2, Plus, X, Sparkles, BookOpen, Lock } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
@@ -17,7 +17,6 @@ const VAULT_CATEGORIES = [
   { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", motif: "A sun ray" },
 ];
 
-// ── Decorative ────────────────────────────────────────────────
 function VaultDrawer({ label }: { label: string }) {
   return (
     <svg viewBox="0 0 24 16" className="w-5 h-3.5 text-primary/30 flex-shrink-0">
@@ -27,8 +26,48 @@ function VaultDrawer({ label }: { label: string }) {
   );
 }
 
-export default function MemoryVault() {
-  const [vault, setVault] = useState<VaultEntry[]>(() => loadVault());
+// Coming Soon: Printed Journal Card
+function PrintedJournalCard() {
+  return (
+    <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 via-accent/5 to-phase-follicular/5 p-6 relative overflow-hidden">
+      {/* Badge */}
+      <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-primary/10 rounded-full px-3 py-1">
+        <Lock className="h-3 w-3 text-primary" />
+        <span className="font-mono text-[10px] text-primary font-semibold uppercase tracking-wider">Coming Soon</span>
+      </div>
+
+      <div className="flex items-start gap-4">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center flex-shrink-0">
+          <BookOpen className="h-7 w-7 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-display text-lg italic text-foreground mb-1">Your Printed Journal</h3>
+          <p className="font-display text-sm italic text-muted-foreground leading-relaxed mb-3">
+            Turn your journal entries and memory vault into a beautifully printed book. 
+            Download as a PDF or have a physical copy delivered to your door.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">PDF Download</span>
+            <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">Printed Hardcover</span>
+            <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">Custom Cover Design</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative elements */}
+      <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary/5 blur-2xl" />
+      <div className="absolute -top-8 -right-8 w-20 h-20 rounded-full bg-accent/5 blur-2xl" />
+    </div>
+  );
+}
+
+interface MemoryVaultProps {
+  vault: VaultEntry[];
+  onSaveVaultEntry: (entry: VaultEntry) => Promise<void>;
+  onRemoveVaultEntry: (id: string) => Promise<void>;
+}
+
+export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntry }: MemoryVaultProps) {
   const [adding, setAdding] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newPreview, setNewPreview] = useState("");
@@ -46,7 +85,7 @@ export default function MemoryVault() {
 
   const totalMemories = vault.length;
 
-  const addManual = (category: string) => {
+  const addManual = async (category: string) => {
     if (!newTitle.trim()) return;
     haptic("medium");
     const entry: VaultEntry = {
@@ -58,19 +97,15 @@ export default function MemoryVault() {
       date: new Date().toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" }),
       timestamp: Date.now(),
     };
-    const updated = [entry, ...vault];
-    setVault(updated);
-    saveVault(updated);
+    await onSaveVaultEntry(entry);
     setAdding(null);
     setNewTitle("");
     setNewPreview("");
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     haptic("light");
-    const updated = vault.filter((e) => e.id !== id);
-    setVault(updated);
-    saveVault(updated);
+    await onRemoveVaultEntry(id);
   };
 
   return (
@@ -81,9 +116,12 @@ export default function MemoryVault() {
           A curated archive of the moments, lessons, and memories that matter most to you.
         </p>
         {totalMemories > 0 && (
-          <p className="font-mono text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved</p>
+          <p className="font-mono text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
         )}
       </div>
+
+      {/* Coming Soon: Printed Journal */}
+      <PrintedJournalCard />
 
       {/* Empty state */}
       {totalMemories === 0 && (
@@ -137,7 +175,6 @@ export default function MemoryVault() {
             </button>
           </div>
 
-          {/* Add form */}
           <AnimatePresence>
             {adding === cat.key && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
@@ -164,7 +201,6 @@ export default function MemoryVault() {
             )}
           </AnimatePresence>
 
-          {/* Entries */}
           {grouped[cat.key]?.length > 0 ? (
             <div className="space-y-2 mb-2">
               {grouped[cat.key].map((e) => (
@@ -194,7 +230,7 @@ export default function MemoryVault() {
   );
 }
 
-// ── Public utility ────────────────────────────────────────────
+// Public utility - still used by JournalActivities for auto-vault (legacy localStorage path)
 export function saveEntryToVault(entry: { id: string; title?: string; date: string; timestamp: number; prompts: Record<string, string> }, category: string) {
   const vault = loadVault();
   const preview = Object.values(entry.prompts).filter(Boolean)[0] || "";

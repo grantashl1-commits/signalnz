@@ -453,12 +453,27 @@ function EntryCard({
 export default function JournalEntries({
   onSaveToVault,
   onPinToDreamStudio,
+  journalSync,
 }: {
   onSaveToVault?: (entry: JournalEntry) => void;
   onPinToDreamStudio?: (entry: JournalEntry) => void;
+  journalSync?: {
+    entries: JournalEntry[];
+    milestones: MilestoneAnalysis[];
+    saveEntry: (entry: JournalEntry) => Promise<void>;
+    updateEntry: (entry: JournalEntry) => Promise<void>;
+    updateEntries: (entries: JournalEntry[]) => Promise<void>;
+    saveMilestone: (milestone: MilestoneAnalysis) => Promise<void>;
+    setEntries: React.Dispatch<React.SetStateAction<JournalEntry[]>>;
+  };
 }) {
-  const [entries, setEntries] = useState<JournalEntry[]>(() => loadEntries());
-  const [milestones, setMilestones] = useState<MilestoneAnalysis[]>(() => loadMilestones());
+  const [localEntries, setLocalEntries] = useState<JournalEntry[]>(() => loadEntries());
+  const [localMilestones, setLocalMilestones] = useState<MilestoneAnalysis[]>(() => loadMilestones());
+
+  const entries = journalSync?.entries ?? localEntries;
+  const milestones = journalSync?.milestones ?? localMilestones;
+  const setEntries = journalSync?.setEntries ?? setLocalEntries;
+
   const [view, setView] = useState<"list" | "pick-type" | "new" | "analysis" | "milestone">("list");
   const [entryType, setEntryType] = useState("free-write");
   const [activeEntry, setActiveEntry] = useState<JournalEntry | null>(null);
@@ -493,7 +508,11 @@ export default function JournalEntries({
       const updated = entries.map((e) => e.id === entry.id ? { ...e, ai: data, tags: data.tags || [] } : e);
       setEntries(updated);
       saveEntries(updated);
-      setActiveEntry({ ...entry, ai: data, tags: data.tags || [] });
+      const updatedEntry = { ...entry, ai: data, tags: data.tags || [] };
+      setActiveEntry(updatedEntry);
+      if (journalSync) {
+        journalSync.updateEntry(updatedEntry);
+      }
 
       // Fire journal-insights in background to build user profile
       const userId = localStorage.getItem("signal_user_id") || crypto.randomUUID();
@@ -514,9 +533,13 @@ export default function JournalEntries({
       const { data, error } = await supabase.functions.invoke("journal-ai", { body: { milestoneType: nextMilestone.type, milestoneCount: nextMilestone.count, milestoneLabel: nextMilestone.label, allEntries: entries.slice(0, nextMilestone.count) } });
       if (error) throw error;
       const nm: MilestoneAnalysis = { milestoneType: nextMilestone.type, count: nextMilestone.count, date: new Date().toLocaleDateString("en-NZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" }), analysis: data };
-      const updatedMilestones = [...milestones, nm];
-      setMilestones(updatedMilestones);
-      saveMilestones(updatedMilestones);
+      if (journalSync) {
+        await journalSync.saveMilestone(nm);
+      } else {
+        const updatedMilestones = [...milestones, nm];
+        setLocalMilestones(updatedMilestones);
+        saveMilestones(updatedMilestones);
+      }
       setActiveMilestone(nm);
       setView("milestone");
     } catch { /* silently fail */ }
@@ -530,7 +553,14 @@ export default function JournalEntries({
     return <AnalysisView entry={fakeEntry} onBack={() => setView("list")} isMilestone />;
   }
   if (view === "pick-type") return <EntryTypePicker onSelect={(t) => { setEntryType(t); setView("new"); }} onCancel={() => setView("list")} />;
-  if (view === "new") return <NewEntryForm entryType={entryType} onSaved={(updated) => { setEntries(updated); setView("list"); }} onCancel={() => setView("list")} />;
+  if (view === "new") return <NewEntryForm entryType={entryType} onSaved={(updated) => {
+    setEntries(updated);
+    // Cloud sync the new entry (first in list)
+    if (journalSync && updated.length > 0) {
+      journalSync.saveEntry(updated[0]);
+    }
+    setView("list");
+  }} onCancel={() => setView("list")} />;
 
   return (
     <div className="space-y-4 pb-10 relative">
