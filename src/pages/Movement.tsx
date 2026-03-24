@@ -240,39 +240,7 @@ export default function MovementPage() {
               <button onClick={() => { haptic("light"); setActiveTab("body"); }} className="font-body text-xs font-semibold text-primary">Set goals →</button>
             </div>
           )}
-          {/* Phase banner */}
-          <div className="card-warm p-4 md:p-5 relative overflow-hidden">
-            <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
-              <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
-            </div>
-            <div className="flex items-center gap-2 mb-1">
-              <PhaseIndicator phase={info.phase} size={18} />
-              <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">{PHASE_MOVEMENT_LABEL[info.phase]}</span>
-            </div>
-            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
-            <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
-          </div>
-
-          {/* Training week label (auto-calculated) */}
-          <div className="card-warm p-3 space-y-1">
-            <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
-            <p className="font-body text-xs text-muted-foreground italic">{WEEK_PHASE_NOTES[trainingWeek]}</p>
-      </div>
-
-      {/* Floating HR indicator when connected but modal closed */}
-      {!showHR && globalHR.connected && (
-        <button
-          onClick={() => setShowHR(true)}
-          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
-        >
-          <Heart className="h-4 w-4 text-primary-foreground" />
-          <span className="font-mono text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
-          <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
-        </button>
-      )}
-
-
-          {/* Weekly rotation carousel */}
+          {/* Weekly rotation carousel — top of Today */}
           <div className="card-warm p-4 space-y-2">
             <p className="font-hand text-xs font-bold text-primary mb-2">
               This week's rotation
@@ -281,7 +249,6 @@ export default function MovementPage() {
               {weeklyRotation.map((assignment) => {
                 const workout = allWorkoutsFlat.find(w => w.id === assignment.workoutId) || phaseWorkouts.find(w => w.id === assignment.workoutId);
                 const isToday = assignment.dayIndex === scheduleIdx;
-                // Calendar date for this day
                 const today = new Date();
                 const mondayOff = today.getDay() === 0 ? -6 : 1 - today.getDay();
                 const dayDate = new Date(today);
@@ -303,6 +270,32 @@ export default function MovementPage() {
               })}
             </div>
           </div>
+
+          {/* Phase + training week combined */}
+          <div className="card-warm p-4 md:p-5 relative overflow-hidden">
+            <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
+              <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
+            </div>
+            <div className="flex items-center gap-2 mb-1">
+              <PhaseIndicator phase={info.phase} size={18} />
+              <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
+            </div>
+            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
+            <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
+            <p className="font-body text-xs text-muted-foreground/70 italic mt-1">{WEEK_PHASE_NOTES[trainingWeek]}</p>
+          </div>
+
+      {/* Floating HR indicator when connected but modal closed */}
+      {!showHR && globalHR.connected && (
+        <button
+          onClick={() => setShowHR(true)}
+          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
+        >
+          <Heart className="h-4 w-4 text-primary-foreground" />
+          <span className="font-mono text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
+          <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
+        </button>
+      )}
 
           {/* How do you feel */}
           <div className="card-warm p-4 space-y-3">
