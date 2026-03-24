@@ -22,7 +22,6 @@ import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseRig from "@/components/movement/ExerciseRig";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import BodyVisualiser from "@/components/movement/BodyVisualiser";
-import BodyCompositionVisualizer from "@/components/BodyCompositionVisualizer";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
@@ -46,7 +45,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body" | "mybody">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -158,7 +157,6 @@ export default function MovementPage() {
     { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
-    { id: "mybody" as const, label: "My Body" },
     { id: "body" as const, label: "Body" },
     { id: "progress" as const, label: "Progress" },
   ];
@@ -680,16 +678,6 @@ export default function MovementPage() {
         </div>
       )}
 
-
-      {/* MY BODY TAB */}
-      {activeTab === "mybody" && (
-        <BodyCompositionVisualizer defaultGender={(() => {
-          try {
-            const g = localStorage.getItem("signal_user_gender");
-            return g === "male" ? "male" : "female";
-          } catch { return "female"; }
-        })()} />
-      )}
 
       {/* BODY TAB */}
       {activeTab === "body" && (
