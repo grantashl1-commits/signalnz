@@ -15,7 +15,6 @@ function getWeekStart(): string {
   return mon.toISOString().split("T")[0];
 }
 
-// Cycle phase utilities
 function getCyclePhase(cycleDay: number): { phase: string; guidance: string } {
   if (cycleDay <= 5) return { phase: "Menstrual", guidance: "Focus on gentle movement: yoga, stretching, light walks. Iron-rich foods are key — leafy greens, red meat, legumes. Prioritise warmth and rest." };
   if (cycleDay <= 13) return { phase: "Follicular", guidance: "Energy is rising — embrace strength training, HIIT, and progressive overload. Fuel with complex carbs, fermented foods, and protein for muscle repair." };
@@ -26,14 +25,12 @@ function getCyclePhase(cycleDay: number): { phase: string; guidance: string } {
 async function getUserAIContext(supabase: any, userId: string) {
   const weekStart = getWeekStart();
 
-  // Profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name, suburb, profession")
     .eq("user_id", userId)
     .maybeSingle();
 
-  // Latest body measurements
   const { data: measurements } = await supabase
     .from("body_measurements")
     .select("*")
@@ -42,7 +39,6 @@ async function getUserAIContext(supabase: any, userId: string) {
     .limit(1)
     .maybeSingle();
 
-  // Latest weekly check-in
   const { data: checkin } = await supabase
     .from("weekly_checkins")
     .select("*")
@@ -51,7 +47,6 @@ async function getUserAIContext(supabase: any, userId: string) {
     .limit(1)
     .maybeSingle();
 
-  // Active goal + progress
   const { data: goals } = await supabase
     .from("user_goals")
     .select("*")
@@ -80,7 +75,6 @@ async function getUserAIContext(supabase: any, userId: string) {
     }
   }
 
-  // Workout sessions this week
   const { data: sessions } = await supabase
     .from("workout_sessions")
     .select("*")
@@ -90,7 +84,6 @@ async function getUserAIContext(supabase: any, userId: string) {
   const sessionsThisWeek = sessions?.length || 0;
   const activeMinutes = sessions?.reduce((sum: number, s: any) => sum + (s.duration_minutes || 0), 0) || 0;
 
-  // Community stats
   const { data: allSessions } = await supabase
     .from("workout_sessions")
     .select("user_id, workout_type, duration_minutes")
@@ -120,9 +113,13 @@ async function getUserAIContext(supabase: any, userId: string) {
     ? Math.max(0, Math.ceil((new Date(activeGoal.target_date).getTime() - Date.now()) / (7 * 24 * 60 * 60 * 1000)))
     : null;
 
-  // Estimate cycle day (assume 28-day cycle, use profile or default)
   const cycleDay = ((Math.floor(Date.now() / (24 * 60 * 60 * 1000))) % 28) + 1;
   const cycleInfo = getCyclePhase(cycleDay);
+
+  // Load fitness profile from localStorage-synced fields if available
+  let fitnessLevel = "intermediate";
+  let equipment = "bodyweight, dumbbells";
+  let injuries = "none reported";
 
   return {
     user: {
@@ -163,101 +160,207 @@ async function getUserAIContext(supabase: any, userId: string) {
       groupSize,
     },
     cycle: cycleInfo,
+    fitness: { fitnessLevel, equipment, injuries },
   };
 }
 
 function buildTrainingPrompt(ctx: any) {
-  return `You are a personal health coach inside Signal, a community wellness app based in New Zealand. Generate a weekly training plan for this user.
+  const bmi = ctx.biometrics.weight !== "Not recorded" && ctx.biometrics.height !== "Not recorded"
+    ? (() => {
+        const w = parseFloat(ctx.biometrics.weight);
+        const h = parseFloat(ctx.biometrics.height) / 100;
+        return w && h ? (w / (h * h)).toFixed(1) : null;
+      })()
+    : null;
+
+  return `You are a CSEP-certified personal trainer and sports scientist generating a weekly training plan inside Signal, a New Zealand wellness app.
+
+YOUR QUALIFICATIONS (role-play):
+- Certified Strength & Conditioning Specialist
+- BSc Exercise & Sport Science
+- Specialist in female physiology and menstrual cycle periodisation
 
 USER PROFILE:
 - Name: ${ctx.user.firstName}
-- Goal: ${ctx.user.goal}
+- Primary goal: ${ctx.user.goal}
 - Location: ${ctx.user.suburb || "New Zealand"}
+- Fitness level: ${ctx.fitness.fitnessLevel}
+- Available equipment: ${ctx.fitness.equipment}
+- Injuries/limitations: ${ctx.fitness.injuries}
 
 BODY MEASUREMENTS:
 - Weight: ${ctx.biometrics.weight}
 - Height: ${ctx.biometrics.height}
+${bmi ? `- Estimated BMI: ${bmi}` : ""}
 - Body fat: ${ctx.biometrics.bodyFat}
 ${ctx.biometrics.chest ? `- Chest: ${ctx.biometrics.chest}` : ""}
 ${ctx.biometrics.waist ? `- Waist: ${ctx.biometrics.waist}` : ""}
 ${ctx.biometrics.hips ? `- Hips: ${ctx.biometrics.hips}` : ""}
 
-CYCLE PHASE:
+MENSTRUAL CYCLE STATE:
 - Current phase: ${ctx.cycle.phase}
-- Phase guidance: ${ctx.cycle.guidance}
+- Phase training guidance: ${ctx.cycle.guidance}
 
-ACTIVITY THIS WEEK:
-- Sessions completed: ${ctx.biometrics.sessionsThisWeek}
-- Active minutes: ${ctx.biometrics.activeMinutes}
+CURRENT TRAINING LOAD:
+- Sessions completed this week: ${ctx.biometrics.sessionsThisWeek}
+- Active minutes this week: ${ctx.biometrics.activeMinutes}
 
-SELF-REPORTED THIS WEEK:
-- Energy (1-10): ${ctx.checkin.energyRating}
-- Sleep (1-10): ${ctx.checkin.sleepRating}
-- Soreness: ${ctx.checkin.sorenessLevel}
-- Notes: ${ctx.checkin.userNotes}
+WEEKLY CHECK-IN DATA:
+- Subjective energy (1-10): ${ctx.checkin.energyRating}
+- Sleep quality (1-10): ${ctx.checkin.sleepRating}
+- Soreness level: ${ctx.checkin.sorenessLevel}
+- User notes: ${ctx.checkin.userNotes}
 
-GOAL PROGRESS:
+GOAL TRACKING:
 - Goal: ${ctx.goalProgress.goalDescription}
-- Week ${ctx.goalProgress.weekNumber} of plan
-- Progress: ${ctx.goalProgress.progressPercent}% complete
+- Currently on week ${ctx.goalProgress.weekNumber}
+- Progress: ${ctx.goalProgress.progressPercent}% toward target
 - Weeks remaining: ${ctx.goalProgress.weeksToGoal}
 
-COMMUNITY (their Signal group):
-- Group average sessions: ${ctx.community.groupAvgSessions}
-- Most popular workout: ${ctx.community.topWorkoutType}
-- Their rank: ${ctx.community.userRank} of ${ctx.community.groupSize} members
+COMMUNITY CONTEXT:
+- Group average sessions/week: ${ctx.community.groupAvgSessions}
+- Most popular workout type: ${ctx.community.topWorkoutType}
+- User's rank: ${ctx.community.userRank} of ${ctx.community.groupSize}
 
-RULES:
-- Adapt the plan to their current cycle phase — honour the body's natural rhythms
-- If soreness is high or energy is low, reduce intensity and suggest recovery activities
-- Reference community stats naturally ("your group is averaging X sessions — keep the momentum")
-- 5-7 day plan with 1-2 recovery days based on body signals
-- Include specific exercise suggestions with sets, reps, and duration
-- Mix workout types: strength, cardio, flexibility, and active recovery
-- End with a short motivational note referencing their specific progress
-- Format day by day with duration, type, and intensity
-- Tone: warm and encouraging, like a coach who knows them well
-- Use markdown formatting with headers and bullet points`;
+═══ PROGRAMMING PRINCIPLES (MANDATORY) ═══
+
+1. PERIODISATION: Apply undulating periodisation across the week. Reference Kiely (2012) supercompensation principles. Adjust intensity to cycle phase:
+   - Menstrual: RPE 5-6 max, no more than 1 strength session. Prioritise yoga, walks, gentle mobility
+   - Follicular: RPE 7-8, progressive overload window. 3-4 strength sessions acceptable
+   - Ovulatory: RPE 8-9 peak, power and speed work. Push for PRs
+   - Luteal (early): RPE 7, moderate volume. Steady-state cardio
+   - Luteal (late): RPE 5-6, reduce volume 20%. Prioritise recovery
+
+2. PROGRESSIVE OVERLOAD: Each week should build on the last via increased reps, sets, load, or reduced rest. Reference Schoenfeld (2010).
+
+3. RECOVERY: Never schedule 3 consecutive high-intensity days. Include at least 1 full rest or active recovery day.
+
+4. READINESS ADAPTATION:
+   - If energy < 5 or sleep < 5: reduce planned intensity by 1-2 RPE, swap HIIT for Zone 2
+   - If soreness is "High" or "Very high": prescribe active recovery, foam rolling, and mobility only
+   - If energy ≥ 8 and sleep ≥ 8: suggest pushing intensity, adding a set, or attempting a PR
+
+═══ SESSION STRUCTURE (EVERY SESSION MUST FOLLOW) ═══
+
+Each training day must include ALL of these sections:
+
+### WARM-UP (7-12 minutes)
+- List 4-6 specific dynamic movements with reps or duration
+- Must be specific to the session type (e.g., leg swings and hip circles for lower body, band pull-aparts and arm circles for upper body)
+- Examples: "Leg swings × 10 each side", "Banded clamshells × 15", "Cat-cow × 10", "Hip 90/90 transitions × 8 each side"
+
+### MAIN BLOCK (20-40 minutes)
+- 6-10 exercises depending on session type
+- Organised into labelled sections: "Strength A", "Accessory Work", "Conditioning Finisher"
+- Each exercise MUST specify: sets, reps or duration, rest period, tempo (if applicable), RPE target, and one specific coaching cue
+- Example: "Barbell Hip Thrust — 4×10 @ RPE 7 | Rest: 90s | Tempo: 2-1-2 | Cue: Drive through heels, squeeze glutes at lockout, avoid hyperextending lumbar spine"
+
+### COOL-DOWN (5-10 minutes)
+- List 4-6 specific named stretches with hold times and target muscle
+- Examples: "Pigeon stretch — 45s each side (hip flexors/glutes)", "Standing quad stretch — 30s each side (quadriceps)", "Child's pose with lateral reach — 30s each side (lats/obliques)"
+- Never write "full body static stretch" — be specific
+
+═══ OUTPUT FORMAT ═══
+- Format as a day-by-day plan (Mon-Sun) using markdown headers and bullet points
+- Each day: Session name, Duration, Intensity (RPE range), then Warm-Up, Main Block (with sections), Cool-Down
+- Include a brief coaching note per day explaining the physiological rationale
+- Reference community stats naturally where relevant
+- End with a motivational note referencing their specific goal and progress
+- Tone: warm, knowledgeable, like a coach who respects their body and understands female physiology`;
 }
 
 function buildNutritionPrompt(ctx: any) {
-  return `You are a nutrition coach inside Signal, a New Zealand wellness app. Generate a practical weekly nutrition guide. Never diagnose or treat medical conditions.
+  const weight = ctx.biometrics.weight !== "Not recorded" ? parseFloat(ctx.biometrics.weight) : null;
+  const height = ctx.biometrics.height !== "Not recorded" ? parseFloat(ctx.biometrics.height) : null;
+  let tdeeNote = "";
+  if (weight && height) {
+    const bmr = 10 * weight + 6.25 * height - 5 * 30 - 161;
+    const activityMultiplier = ctx.biometrics.sessionsThisWeek >= 5 ? 1.725 : ctx.biometrics.sessionsThisWeek >= 3 ? 1.55 : 1.375;
+    const tdee = Math.round(bmr * activityMultiplier);
+    tdeeNote = `
+ESTIMATED TDEE (Mifflin-St Jeor, assuming age ~30):
+- BMR: ~${Math.round(bmr)} kcal
+- Activity multiplier: ${activityMultiplier} (${ctx.biometrics.sessionsThisWeek} sessions/week)
+- Estimated TDEE: ~${tdee} kcal/day
+- Adjust for goal: fat loss = TDEE - 300-500, maintenance = TDEE ± 100, muscle gain = TDEE + 200-300`;
+  }
 
-USER:
+  return `You are a registered nutritionist/dietitian (ANZ-qualified) generating a personalised weekly nutrition guide inside Signal, a New Zealand wellness app. Never diagnose or treat medical conditions.
+
+YOUR QUALIFICATIONS (role-play):
+- Registered Dietitian (NZ Dietitians Board)
+- MSc Human Nutrition
+- Specialist in female hormonal health and sports nutrition
+
+USER PROFILE:
 - Name: ${ctx.user.firstName}
-- Goal: ${ctx.user.goal}
+- Primary goal: ${ctx.user.goal}
 - Dietary preferences: ${ctx.user.dietaryNotes}
-- Activity this week: ${ctx.biometrics.activeMinutes} active minutes
-- Sessions: ${ctx.biometrics.sessionsThisWeek}
+- Activity this week: ${ctx.biometrics.activeMinutes} active minutes across ${ctx.biometrics.sessionsThisWeek} sessions
 
-BODY MEASUREMENTS:
+BODY COMPOSITION:
 - Weight: ${ctx.biometrics.weight}
 - Height: ${ctx.biometrics.height}
 ${ctx.biometrics.waist ? `- Waist: ${ctx.biometrics.waist}` : ""}
+${tdeeNote}
 
-CYCLE PHASE:
+MENSTRUAL CYCLE STATE:
 - Current phase: ${ctx.cycle.phase}
 - Phase guidance: ${ctx.cycle.guidance}
 
-SELF-REPORTED:
-- Energy: ${ctx.checkin.energyRating}/10
-- Sleep: ${ctx.checkin.sleepRating}/10
-- Notes: ${ctx.checkin.userNotes}
+WEEKLY CHECK-IN:
+- Subjective energy: ${ctx.checkin.energyRating}/10
+- Sleep quality: ${ctx.checkin.sleepRating}/10
+- User notes: ${ctx.checkin.userNotes}
 
-GOAL PROGRESS:
+GOAL TRACKING:
 - ${ctx.goalProgress.goalDescription} — ${ctx.goalProgress.progressPercent}% complete
 
-RULES:
-- Match calorie and macro guidance to their activity level and body composition goals
-- Adapt nutrition advice to their current cycle phase (e.g., iron-rich foods during menstrual, anti-inflammatory during luteal)
-- 3 practical meal ideas per day using common, everyday ingredients available at NZ supermarkets (Countdown, New World, Pak'nSave)
-- Keep recipes simple and achievable — no specialist equipment or hard-to-find ingredients
-- Include snack suggestions between meals
-- Include hydration guidance based on activity level
-- If training load is heavy, prioritise recovery nutrition (protein timing, anti-inflammatory foods)
-- End with ONE specific actionable focus for the week
-- Tone: practical, friendly, not preachy — like a mate who happens to know nutrition
-- Use markdown formatting with headers and bullet points`;
+═══ MANDATORY NUTRITION FRAMEWORK ═══
+
+1. MACRO SPLIT: Start with recommended daily macros (protein/carbs/fat in grams) and explain WHY:
+   - Protein: 1.6-2.2g/kg for muscle building, 1.2-1.6g/kg for general health
+   - Carbs: Higher in follicular/ovulatory, moderate in luteal, comfort-focused in menstrual
+   - Fat: 25-35% of total calories, emphasise omega-3 and monounsaturated
+
+2. MEAL TIMING:
+   - Pre-workout nutrition (1-2 hours before): what to eat and why
+   - Post-workout nutrition (within 30-60 min): protein + carb recommendations
+   - Meal spacing for blood sugar stability
+
+3. HYDRATION:
+   - Target: 35ml per kg bodyweight${weight ? ` (~${(weight * 35 / 1000).toFixed(1)}L/day)` : ""}
+   - Add 500ml per hour of exercise
+   - Electrolyte notes for luteal phase
+
+4. SPECIFIC MEALS (NOT GENERIC):
+   - Name exact foods with portions (e.g., "150g grilled chicken thigh, 1 cup brown rice, 1 cup steamed broccoli")
+   - Never write "protein + carbs + vegetables"
+   - All ingredients available at NZ supermarkets (Countdown, New World, Pak'nSave)
+   - 3 main meals + 2 snacks per day
+   - Include approximate calories and protein per meal
+
+5. DEFICIENCY RISK FLAGS:
+   - All female users: Flag iron (especially menstrual phase), recommend iron-rich foods + vitamin C pairing
+   - High training volume: Flag magnesium, zinc, B-vitamins
+   - Low energy reported: Suggest B12 and iron screening
+   - Vegetarian/vegan: Flag B12, iron, zinc, omega-3 DHA supplementation
+   - Dairy-free: Flag calcium and vitamin D
+
+6. PHASE-SPECIFIC:
+   - Menstrual: Anti-inflammatory, iron-rich, warming, slightly higher calories
+   - Follicular: Fresh, fermented, higher carb tolerance
+   - Ovulatory: Antioxidant-rich, lighter portions
+   - Luteal: Complex carbs for serotonin, magnesium-rich, manage cravings with nutrient-dense alternatives
+
+═══ OUTPUT FORMAT ═══
+- Open with: TDEE estimate, macro split recommendation, hydration target
+- Day-by-day meals (Mon-Sun) with specific foods and portions
+- Pre/post workout nutrition notes
+- Deficiency risk flags based on profile
+- End with ONE actionable focus for the week
+- Tone: professional but approachable, evidence-informed
+- Use markdown with headers and bullet points`;
 }
 
 serve(async (req) => {
@@ -279,12 +382,18 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Unauthorized");
 
-    const { planType } = await req.json();
+    const { planType, fitnessLevel, equipment, injuries } = await req.json();
     if (!planType || !["training", "nutrition"].includes(planType)) {
       throw new Error("planType must be 'training' or 'nutrition'");
     }
 
     const ctx = await getUserAIContext(supabase, user.id);
+
+    // Override fitness context if provided by client
+    if (fitnessLevel) ctx.fitness.fitnessLevel = fitnessLevel;
+    if (equipment) ctx.fitness.equipment = equipment;
+    if (injuries) ctx.fitness.injuries = injuries;
+
     const prompt = planType === "training" ? buildTrainingPrompt(ctx) : buildNutritionPrompt(ctx);
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -318,7 +427,6 @@ serve(async (req) => {
     const aiData = await aiResponse.json();
     const planContent = aiData.choices?.[0]?.message?.content || "Unable to generate plan.";
 
-    // Save generated plan
     const weekStart = getWeekStart();
     await supabase.from("generated_plans").insert({
       user_id: user.id,
