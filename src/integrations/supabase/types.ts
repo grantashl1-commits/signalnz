@@ -503,6 +503,39 @@ export type Database = {
         }
         Relationships: []
       }
+      stretches: {
+        Row: {
+          category: string
+          created_at: string
+          gif_url: string | null
+          hold_duration: string
+          id: string
+          instructions: Json
+          name: string
+          target_muscle: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          gif_url?: string | null
+          hold_duration?: string
+          id?: string
+          instructions?: Json
+          name: string
+          target_muscle: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          gif_url?: string | null
+          hold_duration?: string
+          id?: string
+          instructions?: Json
+          name?: string
+          target_muscle?: string
+        }
+        Relationships: []
+      }
       user_goals: {
         Row: {
           created_at: string

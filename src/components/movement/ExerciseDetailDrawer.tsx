@@ -1,16 +1,14 @@
 /**
  * Exercise Detail Drawer
  * Opens when tapping an exercise row in a workout.
- * Shows: 3D rig animation, name, sets/reps, tempo, coaching cue, tags.
- * Falls back to ExerciseDemonstration GIF when no rig animation exists.
+ * Shows: GIF demo, name, sets/reps, tempo, coaching cue, muscles targeted.
  */
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { X, Camera } from "lucide-react";
-import ExerciseRig3D from "@/components/movement/ExerciseRig3D";
+import { X, Target } from "lucide-react";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
-import { getAnimationForExercise } from "@/data/exercise-animations";
+import { supabase } from "@/integrations/supabase/client";
 import type { Exercise } from "@/data/workouts";
 import type { Phase } from "@/lib/cycle-utils";
 
@@ -21,6 +19,16 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
+interface ExerciseDB {
+  name: string;
+  body_part: string | null;
+  target: string | null;
+  equipment: string | null;
+  instructions: string[];
+  secondary_muscles: string[];
+  gif_url: string | null;
+}
+
 interface ExerciseDetailDrawerProps {
   exercise: Exercise | null;
   open: boolean;
@@ -29,13 +37,29 @@ interface ExerciseDetailDrawerProps {
 }
 
 export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }: ExerciseDetailDrawerProps) {
-  const [playing, setPlaying] = useState(true);
-  const screenshotFnRef = useRef<(() => void) | null>(null);
+  const [dbData, setDbData] = useState<ExerciseDB | null>(null);
+  const phaseColor = PHASE_HEX[phase];
+
+  useEffect(() => {
+    if (!exercise || !open) return;
+    setDbData(null);
+
+    const searchTerms = exercise.name.toLowerCase().replace(/[^a-z ]/g, "").split(" ").slice(0, 3).join(" ");
+    supabase
+      .from("exercises")
+      .select("name, body_part, target, equipment, instructions, secondary_muscles, gif_url")
+      .ilike("name", `%${searchTerms}%`)
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) setDbData(data as unknown as ExerciseDB);
+      });
+  }, [exercise?.name, open]);
 
   if (!exercise) return null;
 
-  const animation = getAnimationForExercise(exercise.name);
-  const phaseColor = PHASE_HEX[phase];
+  const instructions = dbData?.instructions || [];
+  const secondaryMuscles = dbData?.secondary_muscles || [];
 
   return (
     <Drawer open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
@@ -53,54 +77,17 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
         </DrawerHeader>
 
         <div className="px-6 pb-8 pt-4 space-y-5 overflow-y-auto">
-          {/* Animation area */}
-          {animation ? (
-            <div className="flex flex-col items-center">
-              <div
-                className="rounded-2xl w-full overflow-hidden"
-                style={{
-                  background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
-                }}
-              >
-                <ExerciseRig3D
-                  animation={animation}
-                  playing={playing}
-                  mirrored={false}
-                  height={360}
-                  onScreenshotReady={(fn) => { screenshotFnRef.current = fn; }}
-                />
-              </div>
-              <div className="flex items-center gap-2 mt-2">
-                <button
-                  onClick={() => setPlaying(!playing)}
-                  className="px-4 py-1.5 rounded-full bg-secondary text-muted-foreground font-mono text-[10px]"
-                >
-                  {playing ? "pause" : "play"}
-                </button>
-                <button
-                  onClick={() => screenshotFnRef.current?.()}
-                  className="px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] flex items-center gap-1.5 transition-colors hover:bg-primary/15"
-                >
-                  <Camera className="h-3 w-3" />
-                  save image
-                </button>
-              </div>
-              {animation.unilateral && (
-                <p className="font-mono text-[9px] text-muted-foreground mt-1">unilateral · each side</p>
-              )}
+          {/* GIF demonstration */}
+          <div className="flex flex-col items-center">
+            <div
+              className="rounded-2xl w-full flex items-center justify-center py-4"
+              style={{
+                background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
+              }}
+            >
+              <ExerciseDemonstration exerciseName={exercise.name} size={240} className="rounded-xl" />
             </div>
-          ) : (
-            <div className="flex flex-col items-center">
-              <div
-                className="rounded-2xl w-full flex items-center justify-center py-6"
-                style={{
-                  background: "linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.5) 50%, hsl(var(--primary) / 0.05) 100%)",
-                }}
-              >
-                <ExerciseDemonstration exerciseName={exercise.name} size={200} className="rounded-xl" />
-              </div>
-            </div>
-          )}
+          </div>
 
           {/* Exercise details */}
           <div className="space-y-3">
@@ -123,37 +110,55 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                   <p className="font-mono text-sm text-foreground">{exercise.duration}</p>
                 </div>
               )}
-              {animation?.defaultTempo && (
-                <div className="bg-secondary/50 rounded-xl px-4 py-2.5">
-                  <p className="font-mono text-[9px] text-muted-foreground">tempo</p>
-                  <p className="font-mono text-sm" style={{ color: phaseColor }}>{animation.defaultTempo}</p>
+            </div>
+
+            {/* Muscles targeted */}
+            {(dbData?.target || secondaryMuscles.length > 0) && (
+              <div className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <Target className="h-3.5 w-3.5 text-primary" />
+                  <p className="font-hand text-xs font-bold text-primary">Muscles targeted</p>
                 </div>
-              )}
-            </div>
+                <div className="flex gap-2 flex-wrap">
+                  {dbData?.target && (
+                    <span className="rounded-full px-3 py-1 text-[10px] font-mono font-bold" style={{ backgroundColor: `${phaseColor}20`, color: phaseColor }}>
+                      {dbData.target}
+                    </span>
+                  )}
+                  {secondaryMuscles.map((m) => (
+                    <span key={m} className="rounded-full px-3 py-1 bg-secondary font-mono text-[9px] text-muted-foreground">
+                      {m}
+                    </span>
+                  ))}
+                  {dbData?.equipment && (
+                    <span className="rounded-full px-3 py-1 bg-accent font-mono text-[9px] text-muted-foreground">
+                      {dbData.equipment}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
-            <div className="bg-card border border-border rounded-xl p-4">
-              <p className="font-hand text-xs font-bold text-primary mb-1">coaching cue</p>
-              <p className="font-body text-sm text-foreground">{exercise.formCue}</p>
-            </div>
+            {/* Coaching cue */}
+            {exercise.formCue && (
+              <div className="bg-card border border-border rounded-xl p-4">
+                <p className="font-hand text-xs font-bold text-primary mb-1">coaching cue</p>
+                <p className="font-body text-sm text-foreground">{exercise.formCue}</p>
+              </div>
+            )}
 
-            {animation && (
-              <div className="flex gap-2 flex-wrap">
-                <span className="rounded-full px-3 py-1 bg-secondary font-mono text-[9px] text-muted-foreground">
-                  {animation.movementType}
-                </span>
-                <span className="rounded-full px-3 py-1 bg-secondary font-mono text-[9px] text-muted-foreground">
-                  {animation.orientation}
-                </span>
-                {animation.holdable && (
-                  <span className="rounded-full px-3 py-1 bg-primary/10 font-mono text-[9px] text-primary">
-                    holdable
-                  </span>
-                )}
-                {animation.unilateral && (
-                  <span className="rounded-full px-3 py-1 bg-primary/10 font-mono text-[9px] text-primary">
-                    unilateral
-                  </span>
-                )}
+            {/* Instructions from DB */}
+            {instructions.length > 0 && (
+              <div className="bg-card border border-border rounded-xl p-4">
+                <p className="font-hand text-xs font-bold text-primary mb-2">step-by-step</p>
+                <ol className="space-y-1.5">
+                  {instructions.map((step, i) => (
+                    <li key={i} className="flex gap-2">
+                      <span className="font-mono text-[10px] text-primary font-bold mt-0.5">{i + 1}</span>
+                      <p className="font-body text-xs text-muted-foreground leading-relaxed">{step}</p>
+                    </li>
+                  ))}
+                </ol>
               </div>
             )}
           </div>

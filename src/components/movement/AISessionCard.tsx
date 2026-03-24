@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Sparkles, Clock, Flame, Snowflake, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
+import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import { supabase } from "@/integrations/supabase/client";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -17,6 +19,30 @@ const cardVariant = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.05 * i, duration: 0.3 } }),
 };
 
+// Cache for stretch lookups
+const stretchCache = new Map<string, { gif_url: string | null; hold_duration: string; target_muscle: string }>();
+
+async function lookupStretch(name: string) {
+  const key = name.toLowerCase();
+  if (stretchCache.has(key)) return stretchCache.get(key)!;
+  
+  const searchTerms = key.split(" ").slice(0, 2).join(" ");
+  const { data } = await supabase
+    .from("stretches")
+    .select("gif_url, hold_duration, target_muscle")
+    .ilike("name", `%${searchTerms}%`)
+    .limit(1)
+    .maybeSingle();
+  
+  const result = { 
+    gif_url: data?.gif_url || null, 
+    hold_duration: data?.hold_duration || "", 
+    target_muscle: data?.target_muscle || "" 
+  };
+  stretchCache.set(key, result);
+  return result;
+}
+
 interface AISessionCardProps {
   session: any;
   trainingWeek: number;
@@ -25,6 +51,37 @@ interface AISessionCardProps {
   completedExercises: Set<string>;
   onToggleExercise: (name: string) => void;
   onOpenExercise: (ex: any) => void;
+}
+
+function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
+  const [stretchData, setStretchData] = useState<{ gif_url: string | null; hold_duration: string; target_muscle: string } | null>(null);
+
+  useEffect(() => {
+    lookupStretch(item.name).then(setStretchData);
+  }, [item.name]);
+
+  return (
+    <div className="flex items-center gap-2.5 py-1.5">
+      {showGif && (
+        <div className="flex-shrink-0">
+          {stretchData?.gif_url ? (
+            <img src={stretchData.gif_url} alt={item.name} className="w-9 h-9 rounded-lg object-cover" loading="lazy" />
+          ) : (
+            <ExerciseDemonstration exerciseName={item.name} size={36} className="rounded-lg" />
+          )}
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <span className="font-body text-xs text-foreground">{item.name}</span>
+        {stretchData?.target_muscle && (
+          <p className="font-mono text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
+        )}
+      </div>
+      <span className="font-mono text-[10px] text-muted-foreground flex-shrink-0">
+        {stretchData?.hold_duration || item.duration || item.hold_duration || ""}
+      </span>
+    </div>
+  );
 }
 
 export default function AISessionCard({
@@ -36,14 +93,12 @@ export default function AISessionCard({
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const phaseColor = PHASE_HEX[phase];
 
-  // Count all exercises across main_block sections
   const allExercises = session.main_block
     ? session.main_block.flatMap((b: any) => b.exercises || [])
     : session.exercises || [];
   const totalExercises = allExercises.length;
   const completedCount = allExercises.filter((ex: any) => completedExercises.has(ex.name)).length;
 
-  // Support both old format (exercises array) and new format (warm_up/main_block/cool_down)
   const hasNewFormat = Array.isArray(session.warm_up) || Array.isArray(session.main_block);
 
   return (
@@ -80,7 +135,7 @@ export default function AISessionCard({
         </div>
       )}
 
-      {/* Warm-up section */}
+      {/* Warm-up section with GIFs */}
       {hasNewFormat && session.warm_up?.length > 0 && (
         <div className="rounded-xl bg-accent/30 overflow-hidden">
           <button
@@ -90,19 +145,16 @@ export default function AISessionCard({
             <div className="flex items-center gap-2">
               <Flame className="h-3.5 w-3.5 text-primary" />
               <span className="font-body text-xs font-semibold text-foreground">Warm-Up</span>
-              <span className="font-mono text-[10px] text-muted-foreground">{session.warm_up.length} exercises</span>
+              <span className="font-mono text-[10px] text-muted-foreground">{session.warm_up.length} movements</span>
             </div>
             {showWarmUp ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
           </button>
           <AnimatePresence>
             {showWarmUp && (
               <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
-                <div className="px-3 pb-3 space-y-1.5">
+                <div className="px-3 pb-3 space-y-1">
                   {session.warm_up.map((wu: any, i: number) => (
-                    <div key={i} className="flex items-center justify-between py-1.5">
-                      <span className="font-body text-xs text-foreground">{wu.name}</span>
-                      <span className="font-mono text-[10px] text-muted-foreground">{wu.duration}</span>
-                    </div>
+                    <StretchRow key={i} item={wu} showGif />
                   ))}
                 </div>
               </motion.div>
@@ -138,6 +190,10 @@ export default function AISessionCard({
                   onClick={(e) => { e.stopPropagation(); onToggleExercise(ex.name); }}
                 >
                   {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
+                </div>
+                {/* GIF thumbnail */}
+                <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
+                  <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
                 </div>
                 <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
                   <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
@@ -175,6 +231,10 @@ export default function AISessionCard({
                   >
                     {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                   </div>
+                  {/* GIF thumbnail */}
+                  <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
+                    <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                  </div>
                   <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
                     <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
                     <p className="font-mono text-[9px]" style={{ color: phaseColor }}>
@@ -189,7 +249,7 @@ export default function AISessionCard({
         </div>
       )}
 
-      {/* Cool-down section */}
+      {/* Cool-down section with GIFs */}
       {hasNewFormat && session.cool_down?.length > 0 && (
         <div className="rounded-xl bg-secondary/40 overflow-hidden">
           <button
@@ -206,12 +266,9 @@ export default function AISessionCard({
           <AnimatePresence>
             {showCoolDown && (
               <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
-                <div className="px-3 pb-3 space-y-1.5">
+                <div className="px-3 pb-3 space-y-1">
                   {session.cool_down.map((cd: any, i: number) => (
-                    <div key={i} className="flex items-center justify-between py-1.5">
-                      <span className="font-body text-xs text-foreground">{cd.name}</span>
-                      <span className="font-mono text-[10px] text-muted-foreground">{cd.duration}</span>
-                    </div>
+                    <StretchRow key={i} item={cd} showGif />
                   ))}
                 </div>
               </motion.div>
