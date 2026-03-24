@@ -543,7 +543,6 @@ export default function BodyVisualiser() {
   return (
     <div className="space-y-6">
       <BodyGoalsSection />
-      )}
     </div>
   );
 }
