@@ -3,13 +3,8 @@ import { Dumbbell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const gifCache = new Map<string, string | null>();
-const pendingRequests = new Map<string, Promise<string | null>>();
 
 const STRIP_WORDS = ["tempo", "slow", "fast", "heavy", "paused", "weighted", "reverse", "modified", "with", "4-sec", "hold", "pulse", "sumo", "goblet"];
-
-// Simple sequential queue to avoid 429s
-let queuePromise = Promise.resolve();
-const DELAY_MS = 600; // delay between API calls
 
 function getSearchVariants(name: string): string[] {
   let current = name.toLowerCase().trim();
@@ -31,53 +26,27 @@ function getSearchVariants(name: string): string[] {
   return [...new Set(variants.filter(Boolean))];
 }
 
-async function singleLookup(query: string): Promise<{ gifUrl?: string } | null> {
-  const { data, error } = await supabase.functions.invoke("exercise-lookup", {
-    body: { query },
-  });
-  if (error) return null;
-  const results = typeof data === "string" ? JSON.parse(data) : data;
-  if (Array.isArray(results) && results.length > 0 && results[0].gifUrl) {
-    return results[0];
-  }
-  return null;
-}
+async function lookupGif(exerciseName: string): Promise<string | null> {
+  if (gifCache.has(exerciseName)) return gifCache.get(exerciseName) ?? null;
 
-function fetchGif(exerciseName: string): Promise<string | null> {
-  if (gifCache.has(exerciseName)) return Promise.resolve(gifCache.get(exerciseName) ?? null);
-  if (pendingRequests.has(exerciseName)) return pendingRequests.get(exerciseName)!;
+  const variants = getSearchVariants(exerciseName);
 
-  const work = (async (): Promise<string | null> => {
-    // Wait for our turn in the queue
-    await new Promise<void>((resolve) => {
-      queuePromise = queuePromise.then(() =>
-        new Promise<void>((r) => setTimeout(r, DELAY_MS))
-      ).then(resolve);
-    });
+  for (const query of variants) {
+    const { data } = await supabase
+      .from("exercises")
+      .select("gif_url")
+      .ilike("name", `%${query}%`)
+      .limit(1)
+      .single();
 
-    if (gifCache.has(exerciseName)) return gifCache.get(exerciseName) ?? null;
-
-    const variants = getSearchVariants(exerciseName);
-    for (const query of variants) {
-      try {
-        const result = await singleLookup(query);
-        if (result?.gifUrl) {
-          gifCache.set(exerciseName, result.gifUrl);
-          pendingRequests.delete(exerciseName);
-          return result.gifUrl;
-        }
-      } catch {
-        // try next variant
-      }
+    if (data?.gif_url) {
+      gifCache.set(exerciseName, data.gif_url);
+      return data.gif_url;
     }
+  }
 
-    gifCache.set(exerciseName, null);
-    pendingRequests.delete(exerciseName);
-    return null;
-  })();
-
-  pendingRequests.set(exerciseName, work);
-  return work;
+  gifCache.set(exerciseName, null);
+  return null;
 }
 
 interface Props {
@@ -98,7 +67,7 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
     }
     let cancelled = false;
     setLoading(true);
-    fetchGif(exerciseName).then((url) => {
+    lookupGif(exerciseName).then((url) => {
       if (!cancelled) {
         setGifUrl(url);
         setLoading(false);
