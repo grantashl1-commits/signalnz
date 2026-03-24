@@ -7,6 +7,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const IMG_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises";
+
 serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
@@ -19,31 +21,34 @@ serve(async (req) => {
     // Check if already seeded
     const { count } = await supabase.from("exercises").select("id", { count: "exact", head: true });
     if (count && count > 100) {
-      return new Response(JSON.stringify({ message: `Already seeded (${count} rows)` }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      // Check if gif_url is populated
+      const { data: sample } = await supabase.from("exercises").select("gif_url").limit(1).single();
+      if (sample?.gif_url) {
+        return new Response(JSON.stringify({ message: `Already seeded (${count} rows)` }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      // gif_url empty — re-seed
+      await supabase.from("exercises").delete().neq("id", "");
     }
 
-    // Fetch the free dataset
     const res = await fetch(
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json"
     );
     if (!res.ok) throw new Error(`GitHub fetch failed: ${res.status}`);
     const exercises = await res.json();
 
-    // Map to our schema
     const rows = exercises.map((e: any) => ({
       id: e.id,
       name: e.name,
-      body_part: e.bodyPart,
-      equipment: e.equipment,
-      target: e.target,
-      gif_url: e.gifUrl,
+      body_part: (e.primaryMuscles || [])[0] || e.category || null,
+      equipment: e.equipment || null,
+      target: (e.primaryMuscles || [])[0] || null,
+      gif_url: e.images?.[0] ? `${IMG_BASE}/${e.images[0]}` : null,
       instructions: e.instructions || [],
       secondary_muscles: e.secondaryMuscles || [],
     }));
 
-    // Insert in batches of 500
     let inserted = 0;
     for (let i = 0; i < rows.length; i += 500) {
       const batch = rows.slice(i, i + 500);
