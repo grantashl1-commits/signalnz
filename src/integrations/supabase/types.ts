@@ -407,6 +407,93 @@ export type Database = {
           },
         ]
       }
+      journal_entries: {
+        Row: {
+          ai: Json | null
+          created_at: string
+          date: string
+          emotional_tone: string | null
+          entry_type: string | null
+          id: string
+          pinned_to_dream_studio: boolean | null
+          prompts: Json
+          saved_to_vault: boolean | null
+          tags: Json
+          timestamp: number
+          title: string | null
+          tracking: Json
+          updated_at: string
+          user_id: string
+          vault_category: string | null
+        }
+        Insert: {
+          ai?: Json | null
+          created_at?: string
+          date: string
+          emotional_tone?: string | null
+          entry_type?: string | null
+          id: string
+          pinned_to_dream_studio?: boolean | null
+          prompts?: Json
+          saved_to_vault?: boolean | null
+          tags?: Json
+          timestamp: number
+          title?: string | null
+          tracking?: Json
+          updated_at?: string
+          user_id: string
+          vault_category?: string | null
+        }
+        Update: {
+          ai?: Json | null
+          created_at?: string
+          date?: string
+          emotional_tone?: string | null
+          entry_type?: string | null
+          id?: string
+          pinned_to_dream_studio?: boolean | null
+          prompts?: Json
+          saved_to_vault?: boolean | null
+          tags?: Json
+          timestamp?: number
+          title?: string | null
+          tracking?: Json
+          updated_at?: string
+          user_id?: string
+          vault_category?: string | null
+        }
+        Relationships: []
+      }
+      journal_milestones: {
+        Row: {
+          analysis: Json | null
+          count: number
+          created_at: string
+          date: string
+          id: string
+          milestone_type: string
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json | null
+          count: number
+          created_at?: string
+          date: string
+          id?: string
+          milestone_type: string
+          user_id: string
+        }
+        Update: {
+          analysis?: Json | null
+          count?: number
+          created_at?: string
+          date?: string
+          id?: string
+          milestone_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -655,6 +742,42 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vault_entries: {
+        Row: {
+          category: string
+          created_at: string
+          date: string
+          entry_id: string | null
+          id: string
+          preview: string | null
+          timestamp: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          date: string
+          entry_id?: string | null
+          id: string
+          preview?: string | null
+          timestamp: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string
+          entry_id?: string | null
+          id?: string
+          preview?: string | null
+          timestamp?: number
+          title?: string
           user_id?: string
         }
         Relationships: []
