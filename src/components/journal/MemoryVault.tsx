@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Plus, X, Sparkles, BookOpen, Lock } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
-import { getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
+import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
 
 const VAULT_CATEGORIES = [
