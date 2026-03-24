@@ -1,13 +1,15 @@
-// Exercise GIF demos via ExerciseDB API, proxied through edge function
-// Uses MUSCLE_API_KEY secret (same RapidAPI key for ExerciseDB & Muscle Visualizer)
-
 import { useState, useEffect } from "react";
 import { Dumbbell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const gifCache = new Map<string, string | null>();
+const pendingRequests = new Map<string, Promise<string | null>>();
 
 const STRIP_WORDS = ["tempo", "slow", "fast", "heavy", "paused", "weighted", "reverse", "modified", "with", "4-sec", "hold", "pulse", "sumo", "goblet"];
+
+// Simple sequential queue to avoid 429s
+let queuePromise = Promise.resolve();
+const DELAY_MS = 600; // delay between API calls
 
 function getSearchVariants(name: string): string[] {
   let current = name.toLowerCase().trim();
@@ -21,7 +23,6 @@ function getSearchVariants(name: string): string[] {
     }
   }
 
-  // Also try progressively removing leading words
   const words = variants[variants.length - 1].split(" ");
   for (let i = 1; i < words.length; i++) {
     variants.push(words.slice(i).join(" "));
@@ -30,30 +31,53 @@ function getSearchVariants(name: string): string[] {
   return [...new Set(variants.filter(Boolean))];
 }
 
-async function fetchGif(exerciseName: string): Promise<string | null> {
-  if (gifCache.has(exerciseName)) return gifCache.get(exerciseName) ?? null;
-
-  const variants = getSearchVariants(exerciseName);
-
-  for (const query of variants) {
-    try {
-      const { data, error } = await supabase.functions.invoke("exercise-lookup", {
-        body: { query },
-      });
-      if (error) continue;
-
-      const results = typeof data === "string" ? JSON.parse(data) : data;
-      if (Array.isArray(results) && results.length > 0 && results[0].gifUrl) {
-        gifCache.set(exerciseName, results[0].gifUrl);
-        return results[0].gifUrl;
-      }
-    } catch {
-      // try next variant
-    }
+async function singleLookup(query: string): Promise<{ gifUrl?: string } | null> {
+  const { data, error } = await supabase.functions.invoke("exercise-lookup", {
+    body: { query },
+  });
+  if (error) return null;
+  const results = typeof data === "string" ? JSON.parse(data) : data;
+  if (Array.isArray(results) && results.length > 0 && results[0].gifUrl) {
+    return results[0];
   }
-
-  gifCache.set(exerciseName, null);
   return null;
+}
+
+function fetchGif(exerciseName: string): Promise<string | null> {
+  if (gifCache.has(exerciseName)) return Promise.resolve(gifCache.get(exerciseName) ?? null);
+  if (pendingRequests.has(exerciseName)) return pendingRequests.get(exerciseName)!;
+
+  const work = (async (): Promise<string | null> => {
+    // Wait for our turn in the queue
+    await new Promise<void>((resolve) => {
+      queuePromise = queuePromise.then(() =>
+        new Promise<void>((r) => setTimeout(r, DELAY_MS))
+      ).then(resolve);
+    });
+
+    if (gifCache.has(exerciseName)) return gifCache.get(exerciseName) ?? null;
+
+    const variants = getSearchVariants(exerciseName);
+    for (const query of variants) {
+      try {
+        const result = await singleLookup(query);
+        if (result?.gifUrl) {
+          gifCache.set(exerciseName, result.gifUrl);
+          pendingRequests.delete(exerciseName);
+          return result.gifUrl;
+        }
+      } catch {
+        // try next variant
+      }
+    }
+
+    gifCache.set(exerciseName, null);
+    pendingRequests.delete(exerciseName);
+    return null;
+  })();
+
+  pendingRequests.set(exerciseName, work);
+  return work;
 }
 
 interface Props {
