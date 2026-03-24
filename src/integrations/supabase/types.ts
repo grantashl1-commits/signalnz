@@ -270,6 +270,39 @@ export type Database = {
         }
         Relationships: []
       }
+      exercises: {
+        Row: {
+          body_part: string | null
+          equipment: string | null
+          gif_url: string | null
+          id: string
+          instructions: Json | null
+          name: string
+          secondary_muscles: Json | null
+          target: string | null
+        }
+        Insert: {
+          body_part?: string | null
+          equipment?: string | null
+          gif_url?: string | null
+          id: string
+          instructions?: Json | null
+          name: string
+          secondary_muscles?: Json | null
+          target?: string | null
+        }
+        Update: {
+          body_part?: string | null
+          equipment?: string | null
+          gif_url?: string | null
+          id?: string
+          instructions?: Json | null
+          name?: string
+          secondary_muscles?: Json | null
+          target?: string | null
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           admin_notes: string | null
