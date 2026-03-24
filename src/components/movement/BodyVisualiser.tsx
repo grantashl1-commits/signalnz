@@ -540,35 +540,9 @@ import BodyVisualisationCard from "@/components/BodyVisualisationCard";
 
 // ── Main Export ──
 export default function BodyVisualiser() {
-  const [subTab, setSubTab] = useState<"goals" | "measurements">("goals");
-  const [historyVersion, setHistoryVersion] = useState(0);
-  const history = useMemo(() => loadHistory(), [historyVersion]);
-
-  const SUB_TABS = [
-    { id: "goals" as const, label: "My Goals" },
-    { id: "measurements" as const, label: "My Measurements" },
-  ];
-
   return (
     <div className="space-y-6">
-      <div className="flex gap-1 rounded-full bg-secondary p-1">
-        {SUB_TABS.map(t => (
-          <button key={t.id} onClick={() => { haptic("light"); setSubTab(t.id); }}
-            className={`flex-1 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${subTab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`}
-          >{t.label}</button>
-        ))}
-      </div>
-
-      {subTab === "goals" && <BodyGoalsSection />}
-      {subTab === "measurements" && (
-        <div className="space-y-6">
-          <MeasurementsForm onSaved={() => setHistoryVersion(v => v + 1)} />
-          <ComparisonCard history={history} />
-          <MeasurementChart history={history} />
-          <HistoryTimeline history={history} />
-          <BodyVisualisationCard />
-        </div>
-      )}
+      <BodyGoalsSection />
     </div>
   );
 }
