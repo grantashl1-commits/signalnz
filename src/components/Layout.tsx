@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X, Zap } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -10,6 +10,7 @@ import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
 import SignalAmbientRipple from "@/components/SignalAmbientRipple";
+import { useAICredits } from "@/hooks/useAICredits";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
