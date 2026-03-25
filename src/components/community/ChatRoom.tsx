@@ -125,7 +125,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         const audioUrl = URL.createObjectURL(audioBlob);
         setMessages(m => [...m, {
           id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
-          type: "text", text: "🎤 Voice note", audioUrl,
+          type: "text", text: "Voice note", audioUrl,
         } as any]);
         stream.getTracks().forEach(t => t.stop());
       };

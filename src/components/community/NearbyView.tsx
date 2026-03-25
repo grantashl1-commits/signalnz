@@ -620,7 +620,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
         </div>
       ) : filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center py-10 gap-2 text-center">
-          <span className="text-3xl">🌿</span>
+          <Leaf className="h-8 w-8 text-primary" />
           <p className="font-display text-sm font-medium text-foreground">No one here yet</p>
           <p className="text-xs text-muted-foreground">
             Be the first in your suburb — invite others to join!

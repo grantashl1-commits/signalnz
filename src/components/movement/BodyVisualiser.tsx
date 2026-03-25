@@ -351,7 +351,7 @@ function HistoryTimeline({ history }: { history: MeasurementEntry[] }) {
                 {entry.weight && <span className="font-mono text-[10px] text-muted-foreground">{entry.weight} {entry.weightUnit}</span>}
                 {entry.waist && <span className="font-mono text-[10px] text-muted-foreground">W: {entry.waist}</span>}
                 {entry.hips && <span className="font-mono text-[10px] text-muted-foreground">H: {entry.hips}</span>}
-                <span className="font-mono text-[10px] text-muted-foreground">⚡{entry.energyLevel}/5</span>
+                <span className="font-mono text-[10px] text-muted-foreground">E {entry.energyLevel}/5</span>
               </div>
 
               {/* Expanded detail */}

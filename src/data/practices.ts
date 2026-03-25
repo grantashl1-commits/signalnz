@@ -128,7 +128,7 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
     mode: "timed-breath",
     durationSec: 228,
     rounds: 12,
-    emoji: "🌙",
+    emoji: "☽",
     benefit: "Dr. Weil's natural tranquiliser. The extended hold activates a profound parasympathetic response.",
     audio: {
       enabled: true,

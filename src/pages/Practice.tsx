@@ -137,24 +137,24 @@ export default function PracticePage() {
                 <WildStar size={14} /> All habits complete!
               </p>
               {/* Confetti burst */}
-              <div className="flex justify-center gap-1 relative h-6">
-                {["🌿", "✨", "🌸", "💜", "🌱"].map((emoji, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ scale: 0, y: 0, rotate: 0 }}
-                    animate={{
-                      scale: [0, 1.3, 0],
-                      y: [0, -20 - i * 5, -40],
-                      x: [(i - 2) * 8, (i - 2) * 20],
-                      rotate: [0, (i - 2) * 40],
-                    }}
-                    transition={{ duration: 1.2, delay: i * 0.08, ease: "easeOut" }}
-                    className="text-lg absolute"
-                  >
-                    {emoji}
-                  </motion.span>
-                ))}
-              </div>
+               <div className="flex justify-center gap-1 relative h-6">
+                 {["·", "✦", "·", "✦", "·"].map((symbol, i) => (
+                   <motion.span
+                     key={i}
+                     initial={{ scale: 0, y: 0, rotate: 0 }}
+                     animate={{
+                       scale: [0, 1.3, 0],
+                       y: [0, -20 - i * 5, -40],
+                       x: [(i - 2) * 8, (i - 2) * 20],
+                       rotate: [0, (i - 2) * 40],
+                     }}
+                     transition={{ duration: 1.2, delay: i * 0.08, ease: "easeOut" }}
+                     className="text-lg absolute text-primary"
+                   >
+                     {symbol}
+                   </motion.span>
+                 ))}
+               </div>
             </motion.div>
           )}
         </motion.div>

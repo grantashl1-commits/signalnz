@@ -552,7 +552,7 @@ export default function MyWeekTab() {
                                 </div>
                                 {staticRecipe.phaseBenefit && (
                                   <p className="font-body text-xs italic text-muted-foreground mt-1">
-                                    💡 {staticRecipe.phaseBenefit}
+                                    {staticRecipe.phaseBenefit}
                                   </p>
                                 )}
                               </div>

@@ -397,7 +397,7 @@ function LogWorkout({ userId, onLogged }: { userId: string; onLogged: () => void
       intensity,
     });
     if (error) toast.error("Couldn't log session");
-    else { toast.success("Workout logged 💪"); onLogged(); }
+    else { toast.success("Workout logged"); onLogged(); }
     setSaving(false);
   };
 

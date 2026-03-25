@@ -70,8 +70,8 @@ export const MOCK_NEARBY: NearbyUser[] = [
 ];
 
 export const MOCK_MESSAGES: ChatMessage[] = [
-  { id: "1", user: "Sarah K.", avatar: "SK", time: "9:14 am", type: "text", text: "Good morning everyone 🌿 anyone up for a walk through Western Park this Saturday around 8am?" },
-  { id: "2", user: "Marcus T.", avatar: "MT", time: "9:22 am", type: "text", text: "I'm in! I'll bring coffee 😄" },
+  { id: "1", user: "Sarah K.", avatar: "SK", time: "9:14 am", type: "text", text: "Good morning everyone — anyone up for a walk through Western Park this Saturday around 8am?" },
+  { id: "2", user: "Marcus T.", avatar: "MT", time: "9:22 am", type: "text", text: "I'm in! I'll bring coffee" },
   { id: "3", user: "Lena W.", avatar: "LW", time: "9:31 am", type: "poll", question: "What time works for Saturday walk?", options: ["7:30am", "8:00am", "8:30am", "9:00am"], votes: [2, 5, 3, 1] },
   { id: "4", user: "James R.", avatar: "JR", time: "9:45 am", type: "text", text: "I'm a carpenter by trade — happy to swap skills. Would love someone who can help with bookkeeping." },
   { id: "5", user: "Sarah K.", avatar: "SK", time: "10:02 am", type: "event", title: "Morning Walk + Talk", date: "This Saturday, 8:00am", location: "Western Park entrance, Ponsonby", going: 6 },

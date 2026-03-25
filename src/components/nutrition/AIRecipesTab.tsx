@@ -356,7 +356,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
                         {recipe.usedIngredients && (
                           <div className="flex flex-wrap gap-1">
                             {recipe.usedIngredients.map(ing => (
-                              <span key={ing} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-accent text-accent-foreground">✓ {ing}</span>
+                              <span key={ing} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-accent text-accent-foreground">{ing}</span>
                             ))}
                             {recipe.addedStaples?.map(ing => (
                               <span key={ing} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-secondary text-muted-foreground">+ {ing}</span>

@@ -8,11 +8,11 @@ interface ChallengesPanelProps {
 }
 
 const DEFAULT_CHALLENGES = [
-  "☕ Arrange a coffee date at a local café this week",
-  "🚶 Organise a walk + talk in your neighbourhood",
-  "🌱 Share one skill you could teach someone nearby",
-  "🤝 Introduce yourself to a neighbour you haven't met",
-  "📦 Offer to pick up something from the shops for a neighbour",
+  "Arrange a coffee date at a local café this week",
+  "Organise a walk + talk in your neighbourhood",
+  "Share one skill you could teach someone nearby",
+  "Introduce yourself to a neighbour you haven't met",
+  "Offer to pick up something from the shops for a neighbour",
 ];
 
 const DEFAULT_QUESTIONS = [
