@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Users } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
@@ -90,7 +91,15 @@ export default function CommunityPage() {
   };
 
   return (
-    <GatedPage requiredTier="thriving">
+    <GatedPage
+      requiredTier="thriving"
+      customMessage={{
+        icon: <Users className="h-4 w-4" />,
+        title: "Community is a Thriving feature",
+        subtitle: "Connect with women near you, join interest groups, and build your village.",
+        buttonLabel: "Upgrade to Thriving →",
+      }}
+    >
     <div className="relative">
       {/* Location opt-in modal */}
       <AnimatePresence>
