@@ -88,11 +88,13 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
   if (!gifUrl) {
     return (
       <div
-        className={`flex flex-col items-center justify-center rounded-xl bg-muted gap-1 ${className}`}
-        style={{ width: size, height: size }}
+        className={`flex flex-col items-center justify-center rounded-xl gap-1 ${className}`}
+        style={{ width: size, height: size, backgroundColor: "#EDE4F5" }}
       >
-        <Dumbbell className="h-5 w-5 text-muted-foreground/40" />
-        <span className="text-[10px] text-muted-foreground/40 leading-none">Demo unavailable</span>
+        <Dumbbell className="text-primary/50" style={{ width: size * 0.28, height: size * 0.28 }} />
+        {size >= 64 && (
+          <span className="text-[9px] text-primary/60 italic leading-tight text-center px-1 line-clamp-2">{exerciseName}</span>
+        )}
       </div>
     );
   }
