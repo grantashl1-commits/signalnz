@@ -253,11 +253,15 @@ export default function PracticePage() {
             </motion.button>
 
             {/* Phase-specific suggestions */}
-            <motion.div {...fadeUp(0.25)} className="rounded-[22px] bg-card p-6 md:p-7 shadow-soft">
-              <p className="font-body text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            <motion.div
+              {...fadeUp(0.25)}
+              className="rounded-[22px] p-6 md:p-7 shadow-soft"
+              style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
+            >
+              <p className="font-body text-xs uppercase tracking-[0.2em] mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>
                 Suggested for you
               </p>
-              <h3 className="font-display text-lg font-bold text-foreground mb-5">
+              <h3 className="font-display text-lg font-bold mb-5" style={{ color: "hsl(var(--foreground))" }}>
                 Rituals for your {info.phase} phase
               </h3>
 
