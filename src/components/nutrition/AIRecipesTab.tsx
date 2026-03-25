@@ -120,7 +120,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
     const reader = new FileReader();
     reader.onload = async () => {
       const base64 = (reader.result as string).split(",")[1];
-      setIngredientSearch("📸 Analysing your fridge photo...");
+      setIngredientSearch("Analysing your fridge photo...");
       await generateFromIngredients("", base64);
       setIngredientSearch("");
     };
