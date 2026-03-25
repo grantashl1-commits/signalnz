@@ -124,6 +124,7 @@ export default function HomePage() {
 
   return (
     <div className="relative">
+      <NPSSurvey />
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
