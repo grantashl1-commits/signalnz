@@ -180,9 +180,13 @@ export default function PracticePage() {
                     {...fadeUp(0.05 + i * 0.04)}
                     className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all shadow-soft ${
                       done
-                        ? "bg-primary/5 border border-primary/10"
-                        : "bg-card border border-transparent"
+                        ? "border border-primary/10"
+                        : "border border-transparent"
                     }`}
+                    style={{
+                      backgroundColor: done ? "hsl(var(--primary) / 0.05)" : "hsl(var(--card))",
+                      color: "hsl(var(--card-foreground))",
+                    }}
                   >
                     <button
                       onClick={() => handleToggle(habit.id)}
