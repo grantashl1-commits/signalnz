@@ -16,6 +16,7 @@ import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { useProfile } from "@/hooks/useProfile";
+import NPSSurvey from "@/components/NPSSurvey";
 
 const CHECKIN_STATES = [
   { label: "Radiant", phase: "ovulatory" as Phase, color: "#F4A63A", response: "Golden. Today's plan leans into your glow." },
@@ -123,6 +124,7 @@ export default function HomePage() {
 
   return (
     <div className="relative">
+      <NPSSurvey />
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
