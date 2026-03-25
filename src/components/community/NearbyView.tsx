@@ -494,8 +494,8 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
   if (locationStatus === "idle" || locationStatus === "denied") {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-6 gap-5">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl bg-secondary">
-          📍
+        <div className="w-16 h-16 rounded-full flex items-center justify-center bg-secondary">
+          <MapPin className="h-7 w-7 text-primary" />
         </div>
         <div className="text-center">
           <h3 className="font-display text-lg font-semibold text-foreground mb-1">
