@@ -339,7 +339,7 @@ export default function MembershipPage() {
                     : "bg-secondary text-foreground active:bg-secondary/80"
                 }`}
               >
-                {isCurrent ? "Current plan" : t.price === "$0" ? (user ? "Current plan" : "Get started") : "Subscribe"}
+                {isCurrent ? "Current plan" : t.monthlyPrice === "$0" ? (user ? "Current plan" : "Get started") : "Subscribe"}
               </button>
             </motion.div>
           );
