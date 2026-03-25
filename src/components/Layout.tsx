@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -21,16 +21,21 @@ const navItems = [
   { path: "/community", icon: Users, label: "Community" },
 ];
 
-// Mobile bottom tab items — all 7 in a scrollable bar
+// Primary bottom nav — 5 items
 const mobileNavItems = [
   { path: "/", icon: Home, label: "Home" },
-  { path: "/my-practice", icon: Heart, label: "Habits" },
   { path: "/nutrition", icon: Salad, label: "Nourish" },
   { path: "/movement", icon: Dumbbell, label: "Move" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
+];
+
+// "More" sheet items
+const moreMenuItems = [
+  { path: "/my-practice", icon: Heart, label: "My Practice" },
   { path: "/breathwork", icon: Wind, label: "Mindful" },
   { path: "/journal", icon: PenLine, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
+  { path: "/account", icon: UserCircle, label: "Account" },
 ];
 
 const PHASE_BORDER: Record<string, string> = {
