@@ -269,7 +269,7 @@ function GoalTracker({ userId }: { userId: string }) {
               />
             </div>
             <button onClick={handleCreateGoal} className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-display text-sm italic">
-              Set Goal 🎯
+              Set Goal
             </button>
           </div>
         )}
