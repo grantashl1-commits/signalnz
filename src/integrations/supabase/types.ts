@@ -494,6 +494,30 @@ export type Database = {
         }
         Relationships: []
       }
+      nps_responses: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          score: number
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
