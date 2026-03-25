@@ -282,7 +282,9 @@ export default function AccountPage() {
           <div className="card-warm p-4 text-center">
             <Brain className="h-5 w-5 text-primary mx-auto mb-2" />
             <p className="font-mono text-xl text-foreground">{credits ?? "—"}</p>
-            <p className="font-body text-[11px] text-muted-foreground mt-0.5">AI credits left</p>
+            <p className="font-body text-[11px] text-muted-foreground mt-0.5">
+              {subscription.tier === "free" ? "of 5 signals left" : "AI credits left"}
+            </p>
           </div>
           <div className="card-warm p-4 text-center">
             <Calendar className="h-5 w-5 text-primary mx-auto mb-2" />
