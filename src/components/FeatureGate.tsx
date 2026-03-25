@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Crown, Sparkles } from "lucide-react";
+import { Lock, Crown, Sparkles, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFeatureGate, type FeatureTier } from "@/hooks/useFeatureGate";
 import { useAuth } from "@/contexts/AuthContext";
