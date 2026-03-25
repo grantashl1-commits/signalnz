@@ -83,7 +83,7 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
     mode: "timed-breath",
     durationSec: 135,
     rounds: 15,
-    emoji: "🌬",
+    emoji: "≋",
     benefit: "The fastest-known way to reduce acute stress. Your body already does this instinctively.",
     audio: {
       enabled: true,
