@@ -1,12 +1,13 @@
 import { cn } from "@/lib/utils";
 
-function Shimmer({ className }: { className?: string }) {
+function Shimmer({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <div
       className={cn(
         "rounded-xl animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]",
         className
       )}
+      style={style}
     />
   );
 }
