@@ -6,22 +6,25 @@ export function useProfile() {
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async () => {
     if (!user) {
       setDisplayName(null);
       setOnboardingComplete(null);
+      setReferralCode(null);
       setLoading(false);
       return;
     }
     const { data } = await supabase
       .from("profiles")
-      .select("display_name, onboarding_complete")
+      .select("display_name, onboarding_complete, referral_code")
       .eq("user_id", user.id)
       .maybeSingle();
     setDisplayName(data?.display_name ?? null);
     setOnboardingComplete((data as any)?.onboarding_complete ?? false);
+    setReferralCode((data as any)?.referral_code ?? null);
     setLoading(false);
   }, [user]);
 
@@ -42,5 +45,5 @@ export function useProfile() {
     [user],
   );
 
-  return { displayName, onboardingComplete, loading, updateDisplayName, refetch: fetchProfile };
+  return { displayName, onboardingComplete, referralCode, loading, updateDisplayName, refetch: fetchProfile };
 }
