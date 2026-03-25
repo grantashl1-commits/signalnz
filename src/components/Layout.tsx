@@ -194,7 +194,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </motion.main>
       </AnimatePresence>
 
-      {/* Mobile bottom tab bar — horizontally scrollable */}
+      {/* Mobile bottom tab bar — 5 items */}
       {!keyboardVisible && (
         <nav
           className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md md:hidden select-none-chrome"
@@ -203,7 +203,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             height: "calc(60px + env(safe-area-inset-bottom))",
           }}
         >
-          <div className="flex items-center h-[60px] overflow-x-auto scroll-snap-x px-1 gap-0">
+          <div className="flex items-center justify-around h-[60px] px-2">
             {mobileNavItems.map((item) => {
               const active = location.pathname === item.path;
               return (
@@ -211,7 +211,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   key={item.path}
                   to={item.path}
                   onClick={() => haptic("light")}
-                  className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-2.5 py-1.5 min-w-[48px] min-h-[44px] justify-center flex-shrink-0 scroll-snap-item transition-all ${
+                  className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 min-w-[52px] min-h-[44px] justify-center transition-all ${
                     active ? "text-primary" : "text-muted-foreground opacity-60"
                   }`}
                 >
@@ -221,9 +221,66 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
+            {/* More button */}
+            <button
+              onClick={() => { haptic("light"); setMoreOpen(true); }}
+              className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 min-w-[52px] min-h-[44px] justify-center transition-all ${
+                moreOpen ? "text-primary" : "text-muted-foreground opacity-60"
+              }`}
+            >
+              <LayoutGrid className="h-4 w-4 transition-all" />
+              <span className="text-[9px] font-body leading-none font-medium">More</span>
+            </button>
           </div>
         </nav>
       )}
+
+      {/* More bottom sheet */}
+      <AnimatePresence>
+        {moreOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm md:hidden"
+              onClick={() => setMoreOpen(false)}
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 z-[61] md:hidden rounded-t-3xl bg-card shadow-xl"
+              style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            >
+              <div className="flex items-center justify-between px-5 pt-4 pb-2">
+                <span className="font-display text-sm font-bold text-foreground">More</span>
+                <button onClick={() => setMoreOpen(false)} className="p-1.5 rounded-full bg-secondary/60 text-muted-foreground">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="px-4 pb-6 space-y-1">
+                {moreMenuItems.map((item) => {
+                  const active = location.pathname === item.path;
+                  return (
+                    <button
+                      key={item.path}
+                      onClick={() => { haptic("light"); setMoreOpen(false); navigate(item.path); }}
+                      className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${
+                        active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
+                      }`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span className="font-body text-sm font-medium">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Give me a signal — floating CTA + panel */}
       <SignalFloatingCTA onClick={() => openSignal()} />
