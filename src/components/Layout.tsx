@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X, Zap } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -10,6 +10,7 @@ import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
 import SignalAmbientRipple from "@/components/SignalAmbientRipple";
+import { useAICredits } from "@/hooks/useAICredits";
 
 const navItems = [
   { path: "/my-practice", icon: Heart, label: "Daily Habits" },
@@ -54,6 +55,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
   const [moreOpen, setMoreOpen] = useState(false);
   const navigate = useNavigate();
+  const { creditsRemaining, tier } = useAICredits();
+  const showCreditCounter = tier === "free";
 
   // Swipe navigation between mobile tabs
   const mainRef = useRef<HTMLDivElement>(null);
@@ -139,6 +142,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-3 flex-shrink-0 ml-6">
+            {showCreditCounter && (
+              <Link
+                to="/membership"
+                className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5"
+              >
+                <Zap className="h-3.5 w-3.5 text-primary" />
+                <span className="font-mono text-xs font-bold text-primary">{creditsRemaining} left</span>
+              </Link>
+            )}
             <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
                 day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
@@ -162,6 +174,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
           <div className="flex items-center gap-2">
+            {showCreditCounter && (
+              <Link
+                to="/membership"
+                className="flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2 py-1"
+              >
+                <Zap className="h-3 w-3 text-primary" />
+                <span className="font-mono text-[10px] font-bold text-primary">{creditsRemaining}</span>
+              </Link>
+            )}
             <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
                 D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}

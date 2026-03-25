@@ -17,7 +17,7 @@ function getUserIdentifier(): string {
 }
 
 export function useAICredits(): AICredits & { refresh: () => void } {
-  const [creditsRemaining, setCreditsRemaining] = useState(20);
+  const [creditsRemaining, setCreditsRemaining] = useState(5);
   const [tier, setTier] = useState("free");
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +34,7 @@ export function useAICredits(): AICredits & { refresh: () => void } {
         setCreditsRemaining(data.credits_remaining);
         setTier(data.tier);
       } else {
-        setCreditsRemaining(20);
+        setCreditsRemaining(5);
         setTier("free");
       }
     } catch {

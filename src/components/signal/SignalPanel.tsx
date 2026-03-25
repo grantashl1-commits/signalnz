@@ -1,13 +1,15 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, RotateCcw, ChevronRight } from "lucide-react";
+import { X, ArrowRight, RotateCcw, ChevronRight, Zap } from "lucide-react";
 import { useSignalContext, SIGNAL_MODES, PROMPT_CHIPS, type SignalMode } from "@/hooks/useSignalContext";
 import { useSignalAI } from "@/hooks/useSignalAI";
+import { useAICredits } from "@/hooks/useAICredits";
 import SignalResponseCard from "./SignalResponseCard";
 import SignalListeningState from "./SignalListeningState";
 import { WildStar, BotanicalSprig } from "@/components/BotanicalElements";
 import { DotPattern } from "@/components/AtmosphericSection";
 import { haptic } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -24,8 +26,11 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
   const [stage, setStage] = useState<Stage>("invitation");
   const [currentPrompt, setCurrentPrompt] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showUpgradeGate, setShowUpgradeGate] = useState(false);
   const context = useSignalContext();
   const { response, loading, error, generate, reset, rawText } = useSignalAI();
+  const { creditsRemaining, tier, refresh: refreshCredits } = useAICredits();
+  const navigate = useNavigate();
 
   // When response arrives, move to signal stage
   useEffect(() => {
@@ -50,6 +55,11 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
   const handleGenerate = useCallback(
     (prompt: string) => {
+      // Gate free users who have exhausted credits
+      if (tier === "free" && creditsRemaining <= 0) {
+        setShowUpgradeGate(true);
+        return;
+      }
       haptic("medium");
       setCurrentPrompt(prompt);
       setStage("listening");
@@ -57,7 +67,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
       setInput("");
       setShowCustomInput(false);
     },
-    [generate, mode, context]
+    [generate, mode, context, tier, creditsRemaining]
   );
 
   const handleReset = () => {
@@ -76,8 +86,16 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
       setStage("invitation");
       setCurrentPrompt("");
       setShowCustomInput(false);
+      setShowUpgradeGate(false);
     }, 400);
   };
+
+  // Refresh credits after a signal is generated
+  useEffect(() => {
+    if (response && !loading) {
+      refreshCredits();
+    }
+  }, [response, loading, refreshCredits]);
 
   const chips = PROMPT_CHIPS[pageContext || "general"] || PROMPT_CHIPS.general;
 
@@ -86,6 +104,52 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
     hour < 12 ? "this morning" : hour < 17 ? "this afternoon" : "this evening";
 
   if (!open) return null;
+
+  // Upgrade gate modal for free users with 0 credits
+  if (showUpgradeGate) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] flex items-center justify-center"
+        onClick={() => { setShowUpgradeGate(false); handleClose(); }}
+      >
+        <div className="absolute inset-0 bg-foreground/30 backdrop-blur-md" />
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-sm mx-4 rounded-[24px] p-8 text-center"
+          style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
+        >
+          <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-5">
+            <Zap className="h-7 w-7 text-primary" />
+          </div>
+          <h2 className="font-display text-xl font-bold italic text-foreground mb-2">
+            You've used your 5 free signals this month
+          </h2>
+          <p className="font-body text-sm text-muted-foreground mb-6">
+            Upgrade to Nourished for 150 signals — or Thriving for unlimited.
+          </p>
+          <div className="flex flex-col gap-2.5">
+            <button
+              onClick={() => { setShowUpgradeGate(false); handleClose(); navigate("/membership"); }}
+              className="w-full rounded-xl bg-primary px-4 py-3 font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity"
+            >
+              See plans
+            </button>
+            <button
+              onClick={() => { setShowUpgradeGate(false); handleClose(); }}
+              className="w-full rounded-xl bg-secondary px-4 py-3 font-body text-sm font-medium text-foreground active:bg-secondary/80 transition-opacity"
+            >
+              Not now
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  }
 
   return (
     <AnimatePresence>

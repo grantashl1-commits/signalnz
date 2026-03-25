@@ -41,7 +41,7 @@ const TIERS = [
       "Cycle tracker",
       "Daily check-in",
       "Basic phase guidance",
-      "20 AI signals per month",
+      "5 AI signals per month",
     ],
   },
   {
