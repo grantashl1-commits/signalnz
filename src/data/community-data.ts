@@ -43,19 +43,19 @@ export const MOCK_GROUPS: CommunityGroup[] = [
   {
     id: "ponsonby", suburb: "Ponsonby", city: "Auckland", country: "NZ", members: 34,
     description: "A warm corner of Ponsonby — sharing skills, walks, coffee dates and whatever the neighbourhood needs.",
-    challenges: ["☕ Arrange a coffee date at a local café this week", "🚶 Organise a walk + talk in Western Park", "🌱 Share one skill you could teach someone nearby"],
+    challenges: ["Arrange a coffee date at a local café this week", "Organise a walk + talk in Western Park", "Share one skill you could teach someone nearby"],
     questions: ["What are you looking to get out of this community?", "In what ways could our neighbourhood come together?", "What services or skills can you offer?"],
   },
   {
     id: "grey_lynn", suburb: "Grey Lynn", city: "Auckland", country: "NZ", members: 21,
     description: "Grey Lynn neighbours connecting, trading skills and looking out for each other.",
-    challenges: ["☕ Find a coffee date in Grey Lynn", "🔧 Offer one skill swap this fortnight", "🌿 Organise a shared garden session"],
+    challenges: ["Find a coffee date in Grey Lynn", "Offer one skill swap this fortnight", "Organise a shared garden session"],
     questions: ["What drew you to Grey Lynn?", "What do you wish existed in our suburb?", "What's something you could teach or offer?"],
   },
   {
     id: "newmarket", suburb: "Newmarket", city: "Auckland", country: "NZ", members: 47,
     description: "Newmarket locals — busy suburb, but community is the thread that holds it together.",
-    challenges: ["🛒 Do a favour for a neighbour this week", "🎨 Share a creative skill or project", "🏃 Organise a morning run group"],
+    challenges: ["Do a favour for a neighbour this week", "Share a creative skill or project", "Organise a morning run group"],
     questions: ["What would make Newmarket feel more like a village?", "What professional skill could you share freely?", "How could we support each other through change?"],
   },
 ];
