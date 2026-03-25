@@ -220,7 +220,7 @@ function GoalTracker({ userId }: { userId: string }) {
       value: parseFloat(logValue),
       note: logNote || null,
     });
-    toast.success("Progress logged ✓");
+    toast.success("Progress logged");
     setLogValue("");
     setLogNote("");
     fetchGoal();
