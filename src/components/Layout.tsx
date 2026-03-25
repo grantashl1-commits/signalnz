@@ -55,6 +55,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
   const [moreOpen, setMoreOpen] = useState(false);
   const navigate = useNavigate();
+  const { creditsRemaining, tier } = useAICredits();
+  const showCreditCounter = tier === "free";
 
   // Swipe navigation between mobile tabs
   const mainRef = useRef<HTMLDivElement>(null);
