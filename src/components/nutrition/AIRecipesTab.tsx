@@ -226,7 +226,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
             <Camera className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
-            <p className="font-body text-sm font-medium text-foreground">📸 Snap your fridge</p>
+            <p className="font-body text-sm font-medium text-foreground">Snap your fridge</p>
             <p className="font-body text-[11px] text-muted-foreground mt-0.5">Take a photo and we'll identify ingredients & create recipes that match your dietary preferences and cycle phase</p>
           </div>
         </button>
