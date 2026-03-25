@@ -166,7 +166,7 @@ function SnackCard({ label, name, benefit, slot, isEaten, phaseColor, onMarkEate
   isEaten: boolean; phaseColor: string; onMarkEaten: () => void;
 }) {
   return (
-    <div className="rounded-[18px] bg-card p-5 shadow-soft flex items-center justify-between gap-4">
+    <div className="rounded-[18px] bg-card p-5 shadow-soft space-y-3">
       <div className="min-w-0">
         <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium mb-1">
           {label}
@@ -177,13 +177,18 @@ function SnackCard({ label, name, benefit, slot, isEaten, phaseColor, onMarkEate
       <button
         onClick={() => !isEaten && onMarkEaten()}
         disabled={isEaten}
-        className="touch-btn h-10 w-10 rounded-full flex-shrink-0 flex items-center justify-center transition-all"
+        className="touch-btn rounded-full py-2 px-5 min-h-[36px] font-body text-xs font-bold transition-all flex items-center justify-center gap-1.5"
         style={{
           backgroundColor: isEaten ? phaseColor : "transparent",
-          border: `2px solid ${isEaten ? phaseColor : "hsl(var(--border))"}`,
+          color: isEaten ? "white" : phaseColor,
+          border: `2px solid ${phaseColor}`,
         }}
       >
-        {isEaten && <WildStar size={14} color="white" />}
+        {isEaten ? (
+          <>Logged <WildStar size={12} color="white" /></>
+        ) : (
+          "Log it"
+        )}
       </button>
     </div>
   );
