@@ -213,13 +213,16 @@ export default function PracticePage() {
                   <motion.div
                     key={habit.id}
                     {...fadeUp(0.05 + i * 0.04)}
-                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all shadow-soft ${
+                    whileTap={{ scale: 1.05 }}
+                    animate={done ? { scale: [1.05, 1] } : {}}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all duration-250 shadow-soft ${
                       done
                         ? "border border-primary/10"
                         : "border border-transparent"
                     }`}
                     style={{
-                      backgroundColor: done ? "hsl(var(--primary) / 0.05)" : "hsl(var(--card))",
+                      backgroundColor: done ? "hsl(284 30% 96%)" : "hsl(var(--card))",
                       color: "hsl(var(--card-foreground))",
                     }}
                   >
@@ -231,12 +234,23 @@ export default function PracticePage() {
                           : "border-border hover:border-primary/40"
                       }`}
                     >
-                      {done && <WildStar size={18} color="hsl(var(--primary))" />}
+                      <AnimatePresence>
+                        {done && (
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                          >
+                            <WildStar size={18} color="hsl(var(--primary))" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </button>
 
                     <div className="flex-1 min-w-0">
                       <p
-                        className={`font-display text-lg md:text-xl font-semibold leading-snug ${
+                        className={`font-display text-lg md:text-xl font-semibold leading-snug transition-all duration-250 ${
                           done ? "line-through text-muted-foreground" : "text-foreground"
                         }`}
                       >

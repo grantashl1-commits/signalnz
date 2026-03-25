@@ -606,9 +606,15 @@ export default function JournalEntries({
           <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity }}>
             <HandDrawnBook size={56} color="hsl(var(--primary))" className="mx-auto mb-4" />
           </motion.div>
-          <h2 className="font-display text-2xl italic text-foreground mb-2">Your story begins today.</h2>
-          <p className="font-display text-sm italic text-muted-foreground mb-1">Small thoughts become chapters.</p>
-          <p className="font-body text-xs text-muted-foreground/60 mt-4 max-w-xs mx-auto">
+          <h2 className="font-display text-2xl italic text-foreground mb-2">Your first chapter starts here.</h2>
+          <p className="font-display text-sm italic text-muted-foreground mb-4">Small thoughts become chapters.</p>
+          <button
+            onClick={() => { haptic("medium"); setView("pick-type"); }}
+            className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3 font-display text-sm font-semibold active:scale-[0.97] transition-transform"
+          >
+            Write something →
+          </button>
+          <p className="font-body text-xs text-muted-foreground/60 mt-6 max-w-xs mx-auto">
             This is your private inner world. A place for reflection, imagination, and becoming.
           </p>
           <JournalLineart className="w-48 h-5 mx-auto mt-6" />
