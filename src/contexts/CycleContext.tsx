@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from "react";
 
 // ─── Types ─────────────────────────────────────────────────
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
@@ -26,18 +26,32 @@ function getPhaseFromDay(cycleDay: number): Phase {
   return "luteal"; // 15-28
 }
 
+/**
+ * Normalise a date string like "2025-03-01" to LOCAL midnight
+ * to avoid the UTC-parsing pitfall of `new Date("YYYY-MM-DD")`.
+ */
+function localMidnight(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function todayLocalStr(): string {
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+}
+
 function computeCycleDay(startDate: string): number {
-  const start = new Date(startDate);
-  const today = new Date();
-  const diffMs = today.getTime() - start.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+  const start = localMidnight(startDate);
+  const today = localMidnight(todayLocalStr());
+  const diffDays = Math.round((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   return ((diffDays - 1) % 28) + 1;
 }
 
 function computeCycleDayForDate(startDate: string, date: Date): number {
-  const start = new Date(startDate);
-  const diffMs = date.getTime() - start.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+  const start = localMidnight(startDate);
+  // Normalise the target date to local midnight too
+  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round((target.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   return ((diffDays - 1) % 28) + 1;
 }
 
@@ -68,9 +82,20 @@ const CycleContext = createContext<CycleState | null>(null);
 
 export function CycleProvider({ children }: { children: ReactNode }) {
   const [startDate, setStartDate] = useState<string | null>(readStartDate);
+  // Track today's date string so cycle day updates if app stays open across midnight
+  const [todayStr, setTodayStr] = useState(todayLocalStr);
 
   // Trigger to force dependents to re-derive
   const [, setTick] = useState(0);
+
+  // Check for date rollover every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = todayLocalStr();
+      setTodayStr((prev) => (prev !== now ? now : prev));
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const setCycleStartDate = useCallback((date: string) => {
     writeStartDate(date);
@@ -80,12 +105,13 @@ export function CycleProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(() => {
     const fresh = readStartDate();
     setStartDate(fresh);
+    setTodayStr(todayLocalStr());
     setTick((t) => t + 1);
   }, []);
 
   const currentCycleDay = useMemo(
     () => (startDate ? computeCycleDay(startDate) : DEFAULT_CYCLE_DAY),
-    [startDate],
+    [startDate, todayStr],
   );
 
   const currentPhase = useMemo(() => getPhaseFromDay(currentCycleDay), [currentCycleDay]);
