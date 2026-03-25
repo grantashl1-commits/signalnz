@@ -497,3 +497,68 @@ function TierBar({ label, count, total, color }: { label: string; count: number;
     </div>
   );
 }
+
+function NPSTab() {
+  const [responses, setResponses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("nps_responses")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(100)
+      .then(({ data }) => {
+        setResponses(data || []);
+        setLoading(false);
+      });
+  }, []);
+
+  const avg = responses.length
+    ? (responses.reduce((s, r) => s + r.score, 0) / responses.length).toFixed(1)
+    : "—";
+
+  const promoters = responses.filter(r => r.score >= 9).length;
+  const detractors = responses.filter(r => r.score <= 6).length;
+  const npsScore = responses.length
+    ? Math.round(((promoters - detractors) / responses.length) * 100)
+    : "—";
+
+  if (loading) return <div className="flex justify-center py-10"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>;
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        <StatCard icon={Star} label="NPS Score" value={npsScore} />
+        <StatCard icon={Star} label="Avg Rating" value={avg} sub={`${responses.length} responses`} />
+        <StatCard icon={Users} label="Promoters" value={promoters} sub={`${detractors} detractors`} />
+      </div>
+
+      <div>
+        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent Responses</p>
+        {responses.length === 0 && (
+          <p className="font-body text-sm text-muted-foreground text-center py-8">No NPS responses yet.</p>
+        )}
+        {responses.map((r: any) => (
+          <div key={r.id} className="card-warm p-3 mb-2">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-sm font-bold ${
+                r.score >= 9 ? "bg-phase-follicular/20 text-phase-follicular" :
+                r.score >= 7 ? "bg-phase-ovulatory/20 text-phase-ovulatory" :
+                "bg-destructive/15 text-destructive"
+              }`}>
+                {r.score}
+              </div>
+              <div className="flex-1 min-w-0">
+                {r.comment && <p className="font-body text-xs text-foreground">{r.comment}</p>}
+                <p className="font-mono text-[10px] text-muted-foreground">
+                  {new Date(r.created_at).toLocaleDateString()} · {r.user_id.slice(0, 8)}…
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
