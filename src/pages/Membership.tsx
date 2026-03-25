@@ -102,6 +102,7 @@ const TIERS = [
     annualSavings: "$156/yr",
     accent: undefined,
     features: [
+      "Full community access",
       "Full module library",
       "AI nervous system check-in",
       "Weekly phase reports",

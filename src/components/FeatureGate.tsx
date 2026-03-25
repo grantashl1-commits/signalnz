@@ -27,9 +27,16 @@ const TIER_ICONS: Record<FeatureTier, React.ReactNode> = {
 export function GatedPage({
   requiredTier,
   children,
+  customMessage,
 }: {
   requiredTier: FeatureTier;
   children: React.ReactNode;
+  customMessage?: {
+    icon?: React.ReactNode;
+    title: string;
+    subtitle?: string;
+    buttonLabel: string;
+  };
 }) {
   const { hasAccess, isLoggedIn } = useFeatureGate();
   const navigate = useNavigate();
@@ -47,16 +54,25 @@ export function GatedPage({
           >
             <div className="rounded-2xl border border-primary/20 bg-primary/8 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
               <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/15 text-primary flex-shrink-0">
-                <Lock className="h-4 w-4" />
+                {customMessage?.icon ?? <Lock className="h-4 w-4" />}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-body text-sm text-foreground">
-                  {isLoggedIn ? (
-                    <>This feature requires the <strong>{TIER_LABELS[requiredTier]}</strong> plan</>
-                  ) : (
-                    <>Sign in and subscribe to unlock this feature</>
-                  )}
-                </p>
+                {customMessage ? (
+                  <>
+                    <p className="font-body text-sm font-semibold text-foreground">{customMessage.title}</p>
+                    {customMessage.subtitle && (
+                      <p className="font-body text-xs text-muted-foreground mt-0.5">{customMessage.subtitle}</p>
+                    )}
+                  </>
+                ) : (
+                  <p className="font-body text-sm text-foreground">
+                    {isLoggedIn ? (
+                      <>This feature requires the <strong>{TIER_LABELS[requiredTier]}</strong> plan</>
+                    ) : (
+                      <>Sign in and subscribe to unlock this feature</>
+                    )}
+                  </p>
+                )}
               </div>
               <button
                 onClick={() => {
@@ -65,7 +81,7 @@ export function GatedPage({
                 }}
                 className="flex-shrink-0 rounded-xl bg-primary px-3 py-1.5 font-body text-xs font-bold text-primary-foreground"
               >
-                {isLoggedIn ? "Upgrade" : "Sign in"}
+                {customMessage?.buttonLabel ?? (isLoggedIn ? "Upgrade" : "Sign in")}
               </button>
             </div>
           </motion.div>
