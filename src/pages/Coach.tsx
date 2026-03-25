@@ -95,7 +95,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
       {/* Sleep */}
       <div>
         <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
-          Sleep quality 🌙
+          Sleep quality
         </label>
         <input
           type="range" min={1} max={10} value={sleep} onChange={(e) => setSleep(+e.target.value)}
