@@ -75,10 +75,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      (event, newSession) => {
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setLoading(false);
+        // Link referral on first sign-up
+        if (event === "SIGNED_IN" && newSession?.user) {
+          linkReferral(newSession.user.id);
+        }
       }
     );
 
