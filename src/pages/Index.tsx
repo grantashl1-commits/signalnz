@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind, ArrowRight, Zap } from "lucide-react";
+import { Moon, Salad, Dumbbell, Wind, ArrowRight, Zap, ChevronDown } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -72,8 +72,15 @@ export default function HomePage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const focus = FOCUS[info.phase];
   const streak = getCheckinStreak();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 100);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const done = localStorage.getItem("signal_onboarding_complete");
@@ -183,6 +190,21 @@ export default function HomePage() {
               <WildStar size={16} color="hsl(var(--primary))" />
               Give me a signal
             </motion.button>
+          </motion.div>
+
+          {/* Scroll hint arrow */}
+          <motion.div
+            {...fadeUp(0.8)}
+            className="mt-10 flex flex-col items-center gap-1"
+            style={{ opacity: scrolled ? 0 : 1, transition: "opacity 0.3s" }}
+          >
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ChevronDown className="h-5 w-5" style={{ color: "#C9B8E8" }} />
+            </motion.div>
+            <span className="font-hand text-[10px] italic" style={{ color: "#C9B8E8" }}>your day at a glance</span>
           </motion.div>
         </div>
       </AtmosphericHero>
