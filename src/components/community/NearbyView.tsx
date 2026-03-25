@@ -544,7 +544,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       {/* Privacy banner */}
       <div className="flex items-center justify-between px-4 py-2.5 rounded-xl text-xs bg-secondary/50 text-muted-foreground">
         <div className="flex items-center gap-2">
-          <span>🔒</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
           <span>Showing suburb-level only · your address is never visible</span>
         </div>
         <button
