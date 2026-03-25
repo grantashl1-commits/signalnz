@@ -33,7 +33,8 @@ const TIER_LABELS: Record<string, string> = {
 
 export default function AccountPage() {
   const { user, session, subscription, refreshSubscription, loading } = useAuth();
-  const { displayName, updateDisplayName } = useProfile();
+  const { displayName, updateDisplayName, referralCode } = useProfile();
+  const { stats: referralStats } = useReferralStats();
   const navigate = useNavigate();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
