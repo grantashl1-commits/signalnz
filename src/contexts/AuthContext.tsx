@@ -17,7 +17,8 @@ interface AuthState {
   refreshSubscription: () => Promise<void>;
 }
 
-const TIERS_MAP: Record<string, "nourished" | "thriving"> = {
+const TIERS_MAP: Record<string, "rooted" | "nourished" | "thriving"> = {
+  prod_UDBbsFCvpYtvUN: "rooted",
   prod_U9Pqh2vkb2wrNR: "nourished",
   prod_U9Pr8k3iP6Bler: "thriving",
 };
