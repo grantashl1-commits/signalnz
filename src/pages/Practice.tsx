@@ -104,15 +104,16 @@ export default function PracticePage() {
         <motion.div
           {...fadeUp(0.1)}
           className="rounded-[22px] bg-card p-7 md:p-8 shadow-soft mb-10 md:mb-14 max-w-md"
+          style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
         >
-          <p className="font-body text-sm text-muted-foreground uppercase tracking-[0.15em] mb-2">
+          <p className="font-body text-sm uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>
             Today
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="font-display text-4xl md:text-5xl font-extrabold text-foreground">
+            <span className="font-display text-4xl md:text-5xl font-extrabold" style={{ color: "hsl(var(--foreground))" }}>
               {completedToday}
             </span>
-            <span className="font-body text-lg text-muted-foreground">
+            <span className="font-body text-lg" style={{ color: "hsl(var(--muted-foreground))" }}>
               / {totalHabits} complete
             </span>
           </div>
