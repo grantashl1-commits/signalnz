@@ -366,7 +366,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
     setIsNearbyVisible(true);
 
     toast({
-      title: "You're on the map! 📍",
+      title: "You're on the map!",
       description: `Showing you in ${suburb}`,
     });
 
