@@ -165,6 +165,8 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
         "node-pulse": "node-pulse 3s ease-in-out infinite",
+        shimmer: "shimmer 2s ease-in-out infinite",
+        "confetti-burst": "confetti-burst 0.8s ease-out forwards",
       },
     },
   },
