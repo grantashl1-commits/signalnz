@@ -1,11 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
 
-export type FeatureTier = "free" | "nourished" | "thriving";
+export type FeatureTier = "free" | "rooted" | "nourished" | "thriving";
 
 const TIER_LEVEL: Record<FeatureTier, number> = {
   free: 0,
-  nourished: 1,
-  thriving: 2,
+  rooted: 1,
+  nourished: 2,
+  thriving: 3,
 };
 
 /** Which minimum tier each route requires */
