@@ -29,7 +29,7 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
         className="relative"
       >
         <div className="absolute -left-3 top-0 bottom-0 w-[3px] rounded-full" style={{ backgroundColor: phaseColor }} />
-        <h3 className="font-display text-xl md:text-2xl font-bold italic text-foreground leading-snug pl-3">
+        <h3 className="font-display text-xl md:text-2xl font-bold italic leading-snug pl-3" style={{ color: "hsl(280 20% 25%)" }}>
           {response.headline}
         </h3>
       </motion.div>
