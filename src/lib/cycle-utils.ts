@@ -76,9 +76,10 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
 }
 
 export function getCycleDayForDate(lastPeriodStart: string, date: Date): number {
-  const start = new Date(lastPeriodStart);
-  const diffTime = date.getTime() - start.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  const [sy, sm, sd] = lastPeriodStart.split("-").map(Number);
+  const start = new Date(sy, sm - 1, sd);
+  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round((target.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   return ((diffDays - 1) % 28) + 1;
 }
 
