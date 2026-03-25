@@ -67,7 +67,7 @@ const fadeUp = (delay: number) => ({
 export default function HomePage() {
   const { user } = useAuth();
   const { openSignal } = useSignalPanel();
-  const { displayName, refetch } = useProfile();
+  const { displayName, onboardingComplete, loading: profileLoading, refetch } = useProfile();
   const { currentPhase, currentCycleDay } = useCycle();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [checkin, setCheckinState] = useState(getCheckin() || "");
@@ -83,9 +83,11 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    const done = localStorage.getItem("signal_onboarding_complete");
-    if (user && !done) setShowOnboarding(true);
-  }, [user]);
+    const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
+    if (user && !profileLoading && onboardingComplete === false && !localDone) {
+      setShowOnboarding(true);
+    }
+  }, [user, profileLoading, onboardingComplete]);
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);

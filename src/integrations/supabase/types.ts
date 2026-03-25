@@ -498,9 +498,13 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          cycle_length: number | null
           display_name: string | null
+          fitness_level: string | null
           id: string
           is_nearby_visible: boolean | null
+          onboarding_complete: boolean
+          primary_goal: string | null
           profession: string | null
           suburb: string | null
           updated_at: string
@@ -509,9 +513,13 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          cycle_length?: number | null
           display_name?: string | null
+          fitness_level?: string | null
           id?: string
           is_nearby_visible?: boolean | null
+          onboarding_complete?: boolean
+          primary_goal?: string | null
           profession?: string | null
           suburb?: string | null
           updated_at?: string
@@ -520,9 +528,13 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          cycle_length?: number | null
           display_name?: string | null
+          fitness_level?: string | null
           id?: string
           is_nearby_visible?: boolean | null
+          onboarding_complete?: boolean
+          primary_goal?: string | null
           profession?: string | null
           suburb?: string | null
           updated_at?: string
