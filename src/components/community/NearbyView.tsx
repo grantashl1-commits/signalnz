@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { MapPin, ShieldCheck, Leaf } from "lucide-react";
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
 // ─── Types ────────────────────────────────────────────────
