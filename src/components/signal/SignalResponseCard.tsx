@@ -95,8 +95,8 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           transition={sectionDelay(4)}
           className="rounded-2xl p-5 bg-card/60 border border-border/40"
         >
-          <p className="font-hand text-xs font-bold text-muted-foreground mb-2">Supporting practice</p>
-          <p className="font-body text-sm text-foreground leading-relaxed">{response.practice}</p>
+          <p className="font-hand text-xs font-bold mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>Supporting practice</p>
+          <p className="font-body text-sm leading-relaxed" style={{ color: "hsl(280 20% 25%)" }}>{response.practice}</p>
         </motion.div>
       )}
 
