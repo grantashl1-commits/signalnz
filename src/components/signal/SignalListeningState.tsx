@@ -60,7 +60,8 @@ export default function SignalListeningState({ prompt }: Props) {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="font-display text-base italic text-foreground/80"
+          className="font-display text-base italic"
+          style={{ color: "hsl(280 20% 25%)" }}
         >
           Listening for your signal...
         </motion.p>
