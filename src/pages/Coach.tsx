@@ -58,7 +58,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
     if (error) {
       toast.error("Couldn't save check-in");
     } else {
-      toast.success("Check-in saved ✓");
+      toast.success("Check-in saved");
       setAlreadyDone(true);
       onComplete();
     }
