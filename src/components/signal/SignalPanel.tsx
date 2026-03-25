@@ -26,8 +26,11 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
   const [stage, setStage] = useState<Stage>("invitation");
   const [currentPrompt, setCurrentPrompt] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showUpgradeGate, setShowUpgradeGate] = useState(false);
   const context = useSignalContext();
   const { response, loading, error, generate, reset, rawText } = useSignalAI();
+  const { creditsRemaining, tier, refresh: refreshCredits } = useAICredits();
+  const navigate = useNavigate();
 
   // When response arrives, move to signal stage
   useEffect(() => {
