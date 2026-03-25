@@ -184,6 +184,21 @@ export default function HomePage() {
               Give me a signal
             </motion.button>
           </motion.div>
+
+          {/* Scroll hint arrow */}
+          <motion.div
+            {...fadeUp(0.8)}
+            className="mt-10 flex flex-col items-center gap-1"
+            style={{ opacity: scrolled ? 0 : 1, transition: "opacity 0.3s" }}
+          >
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ChevronDown className="h-5 w-5" style={{ color: "#C9B8E8" }} />
+            </motion.div>
+            <span className="font-hand text-[10px] italic" style={{ color: "#C9B8E8" }}>your day at a glance</span>
+          </motion.div>
         </div>
       </AtmosphericHero>
 
