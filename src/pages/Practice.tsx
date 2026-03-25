@@ -134,7 +134,7 @@ export default function PracticePage() {
               className="mt-3 space-y-2"
             >
               <p className="font-body text-sm text-primary flex items-center gap-1.5">
-                <WildStar size={14} /> All habits complete! 🌿
+                <WildStar size={14} /> All habits complete!
               </p>
               {/* Confetti burst */}
               <div className="flex justify-center gap-1 relative h-6">
