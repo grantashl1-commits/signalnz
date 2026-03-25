@@ -18,10 +18,10 @@ import SignalPulse from "@/components/SignalPulse";
 import { useProfile } from "@/hooks/useProfile";
 
 const CHECKIN_STATES = [
-  { label: "Radiant", phase: "ovulatory" as Phase },
-  { label: "Clear", phase: "follicular" as Phase },
-  { label: "Muted", phase: "luteal" as Phase },
-  { label: "Static", phase: "menstrual" as Phase },
+  { label: "Radiant", phase: "ovulatory" as Phase, color: "#F4A63A", response: "Golden. Today's plan leans into your glow." },
+  { label: "Clear", phase: "follicular" as Phase, color: "#5B8DB8", response: "Clarity is power. Let's make the most of it." },
+  { label: "Muted", phase: "luteal" as Phase, color: "#9B8FA6", response: "Noted. Today's plan is gentle." },
+  { label: "Static", phase: "menstrual" as Phase, color: "#4A236E", response: "Quiet days matter. We'll keep things soft." },
 ];
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
