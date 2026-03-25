@@ -18,10 +18,10 @@ import SignalPulse from "@/components/SignalPulse";
 import { useProfile } from "@/hooks/useProfile";
 
 const CHECKIN_STATES = [
-  { label: "Radiant", phase: "ovulatory" as Phase },
-  { label: "Clear", phase: "follicular" as Phase },
-  { label: "Muted", phase: "luteal" as Phase },
-  { label: "Static", phase: "menstrual" as Phase },
+  { label: "Radiant", phase: "ovulatory" as Phase, color: "#F4A63A", response: "Golden. Today's plan leans into your glow." },
+  { label: "Clear", phase: "follicular" as Phase, color: "#5B8DB8", response: "Clarity is power. Let's make the most of it." },
+  { label: "Muted", phase: "luteal" as Phase, color: "#9B8FA6", response: "Noted. Today's plan is gentle." },
+  { label: "Static", phase: "menstrual" as Phase, color: "#4A236E", response: "Quiet days matter. We'll keep things soft." },
 ];
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
@@ -270,35 +270,45 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-4 justify-start">
               {CHECKIN_STATES.map((state) => {
                 const selected = checkin === state.label;
+                const unselectedFade = checkin && !selected;
                 return (
-                  <button
+                  <motion.button
                     key={state.label}
                     onClick={() => handleCheckin(state.label)}
-                    className={`touch-btn flex flex-col items-center gap-3 rounded-2xl p-4 w-[72px] transition-all ${
+                    animate={selected ? { scale: 1.08 } : { scale: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    className={`touch-btn flex flex-col items-center gap-3 rounded-2xl p-4 w-[72px] transition-all duration-250 ${
+                      unselectedFade ? "opacity-50" : ""
+                    } ${
                       selected
-                        ? "ring-2 ring-primary scale-105 bg-card shadow-medium"
+                        ? "ring-2 shadow-medium"
                         : "bg-card/60 hover:bg-card hover:shadow-soft"
                     }`}
+                    style={selected ? {
+                      backgroundColor: state.color,
+                      boxShadow: `0 0 0 2px ${state.color}, 0 4px 20px ${state.color}40`,
+                    } : undefined}
                   >
                     <div
                       className={`h-14 w-14 rounded-full flex items-center justify-center transition-all ${
-                        selected ? "bg-background shadow-soft" : "bg-background/80"
+                        selected ? "shadow-soft" : "bg-background/80"
                       }`}
+                      style={selected ? { backgroundColor: `${state.color}30` } : undefined}
                     >
                       <SeedGeometry
                         size={44}
-                        opacity={selected ? 0.55 : 0.2}
-                        color={selected ? `hsl(var(--phase-${state.phase}))` : undefined}
+                        opacity={selected ? 0.7 : 0.2}
+                        color={selected ? "white" : undefined}
                       />
                     </div>
                     <span
-                      className={`font-body text-xs font-medium ${
-                        selected ? "text-primary" : "text-foreground"
+                      className={`font-body text-xs font-medium transition-colors duration-250 ${
+                        selected ? "text-white" : "text-foreground"
                       }`}
                     >
                       {state.label}
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
@@ -307,16 +317,21 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 mt-6"
+                className="mt-6 space-y-2"
               >
-                <span className="font-body text-sm text-primary">
-                  Logged: {checkin.toLowerCase()}
-                </span>
-                {streak > 1 && (
-                  <span className="flex items-center gap-1 font-body text-sm text-muted-foreground">
-                    <WildStar size={14} /> {streak}-day streak
+                <p className="font-display text-sm italic text-foreground/80">
+                  {CHECKIN_STATES.find(s => s.label === checkin)?.response}
+                </p>
+                <div className="flex items-center gap-3">
+                  <span className="font-body text-xs text-primary">
+                    Logged: {checkin.toLowerCase()}
                   </span>
-                )}
+                  {streak > 1 && (
+                    <span className="flex items-center gap-1 font-body text-xs text-muted-foreground">
+                      <WildStar size={14} /> {streak}-day streak
+                    </span>
+                  )}
+                </div>
               </motion.div>
             )}
           </motion.div>

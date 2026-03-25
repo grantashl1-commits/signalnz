@@ -188,9 +188,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     return (
       <div className="card-warm p-6 text-center">
         <ShoppingCart className="h-8 w-8 text-muted-foreground/40 mx-auto mb-3" />
-        <p className="font-display text-sm italic text-foreground">No ingredients to show</p>
+        <p className="font-display text-sm italic text-foreground">Nothing here yet</p>
         <p className="font-body text-xs text-muted-foreground mt-1">
-          Your AI plan meals don't have ingredient data for this week yet.
+          Add ingredients from AI Recipes or type something in.
         </p>
       </div>
     );

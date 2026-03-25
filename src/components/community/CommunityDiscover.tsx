@@ -166,7 +166,41 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
   return (
     <div className="space-y-3">
+      {/* Empty state when no groups at all */}
+      {!loading && approvedGroups.length === 0 && !selectedSuburb && (
+        <div className="text-center py-12 space-y-4">
+          <svg width="80" height="80" viewBox="0 0 80 80" className="mx-auto text-primary/30" fill="none" stroke="currentColor" strokeWidth={1.5}>
+            <circle cx="25" cy="30" r="8" />
+            <circle cx="55" cy="30" r="8" />
+            <circle cx="40" cy="55" r="8" />
+            <path d="M32 34 L34 50" strokeLinecap="round" />
+            <path d="M48 34 L46 50" strokeLinecap="round" />
+            <path d="M25 38 C20 50 35 55 33 48" strokeLinecap="round" opacity="0.5" />
+            <path d="M55 38 C60 50 45 55 47 48" strokeLinecap="round" opacity="0.5" />
+          </svg>
+          <h3 className="font-display text-xl font-bold italic text-foreground">Your village is being built.</h3>
+          <p className="font-display text-sm italic text-muted-foreground">Be the first in your area.</p>
+          <button
+            onClick={async () => {
+              haptic("medium");
+              if (navigator.share) {
+                try {
+                  await navigator.share({ title: "Signal Community", text: "Join me on Signal — a wellness app for cycle-synced living.", url: window.location.origin });
+                } catch {}
+              } else {
+                await navigator.clipboard.writeText(window.location.origin);
+                toast.success("Link copied to clipboard!");
+              }
+            }}
+            className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3 font-display text-sm font-semibold active:scale-[0.97] transition-transform"
+          >
+            Invite someone →
+          </button>
+        </div>
+      )}
+
       {/* Vision card */}
+      {(approvedGroups.length > 0 || selectedSuburb) && (
       <div className="card-warm p-5">
         <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-1.5">The vision</p>
         <p className="font-display text-sm italic text-foreground leading-relaxed">
@@ -174,6 +208,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
           Share your skills. Trade what you know. Build the village that's been there all along.
         </p>
       </div>
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -262,8 +297,19 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
       {/* Group cards */}
       {loading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-6 w-6 text-primary animate-spin" />
+        <div className="space-y-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="card-warm p-5 space-y-3">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2 flex-1">
+                  <div className="h-6 w-2/3 rounded-xl animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+                  <div className="h-4 w-full rounded-lg animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+                </div>
+                <div className="h-9 w-20 rounded-full animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+              </div>
+              <div className="h-3 w-24 rounded animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+            </div>
+          ))}
         </div>
       ) : (
         <>

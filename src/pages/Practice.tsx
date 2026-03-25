@@ -110,17 +110,52 @@ export default function PracticePage() {
             Today
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="font-display text-4xl md:text-5xl font-extrabold" style={{ color: "hsl(var(--foreground))" }}>
-              {completedToday}
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={completedToday}
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="font-display text-4xl md:text-5xl font-extrabold inline-block"
+                style={{ color: "hsl(var(--foreground))" }}
+              >
+                {completedToday}
+              </motion.span>
+            </AnimatePresence>
             <span className="font-body text-lg" style={{ color: "hsl(var(--muted-foreground))" }}>
               / {totalHabits} complete
             </span>
           </div>
           {completedToday > 0 && completedToday === totalHabits && (
-            <p className="font-body text-sm text-primary mt-3 flex items-center gap-1.5">
-              <WildStar size={14} /> All rituals complete today.
-            </p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-3 space-y-2"
+            >
+              <p className="font-body text-sm text-primary flex items-center gap-1.5">
+                <WildStar size={14} /> All habits complete! 🌿
+              </p>
+              {/* Confetti burst */}
+              <div className="flex justify-center gap-1 relative h-6">
+                {["🌿", "✨", "🌸", "💜", "🌱"].map((emoji, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ scale: 0, y: 0, rotate: 0 }}
+                    animate={{
+                      scale: [0, 1.3, 0],
+                      y: [0, -20 - i * 5, -40],
+                      x: [(i - 2) * 8, (i - 2) * 20],
+                      rotate: [0, (i - 2) * 40],
+                    }}
+                    transition={{ duration: 1.2, delay: i * 0.08, ease: "easeOut" }}
+                    className="text-lg absolute"
+                  >
+                    {emoji}
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
           )}
         </motion.div>
 
@@ -178,13 +213,16 @@ export default function PracticePage() {
                   <motion.div
                     key={habit.id}
                     {...fadeUp(0.05 + i * 0.04)}
-                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all shadow-soft ${
+                    whileTap={{ scale: 1.05 }}
+                    animate={done ? { scale: [1.05, 1] } : {}}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all duration-250 shadow-soft ${
                       done
                         ? "border border-primary/10"
                         : "border border-transparent"
                     }`}
                     style={{
-                      backgroundColor: done ? "hsl(var(--primary) / 0.05)" : "hsl(var(--card))",
+                      backgroundColor: done ? "hsl(284 30% 96%)" : "hsl(var(--card))",
                       color: "hsl(var(--card-foreground))",
                     }}
                   >
@@ -196,12 +234,23 @@ export default function PracticePage() {
                           : "border-border hover:border-primary/40"
                       }`}
                     >
-                      {done && <WildStar size={18} color="hsl(var(--primary))" />}
+                      <AnimatePresence>
+                        {done && (
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                          >
+                            <WildStar size={18} color="hsl(var(--primary))" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </button>
 
                     <div className="flex-1 min-w-0">
                       <p
-                        className={`font-display text-lg md:text-xl font-semibold leading-snug ${
+                        className={`font-display text-lg md:text-xl font-semibold leading-snug transition-all duration-250 ${
                           done ? "line-through text-muted-foreground" : "text-foreground"
                         }`}
                       >

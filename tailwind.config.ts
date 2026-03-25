@@ -149,6 +149,15 @@ export default {
           "0%, 100%": { opacity: "0.4" },
           "50%": { opacity: "0.8" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
+        "confetti-burst": {
+          "0%": { transform: "scale(0) rotate(0deg)", opacity: "1" },
+          "50%": { opacity: "1" },
+          "100%": { transform: "scale(1.5) rotate(180deg)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -156,6 +165,8 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
         "node-pulse": "node-pulse 3s ease-in-out infinite",
+        shimmer: "shimmer 2s ease-in-out infinite",
+        "confetti-burst": "confetti-burst 0.8s ease-out forwards",
       },
     },
   },
