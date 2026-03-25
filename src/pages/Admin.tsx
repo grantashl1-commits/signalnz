@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import {
   Users, DollarSign, TrendingUp, Shield, Clock, CheckCircle, XCircle,
   MessageSquare, Activity, ChevronDown, ChevronUp, MapPin, Star, AlertCircle,
-  CreditCard, BarChart3, Loader2, Trash2, Archive
+  CreditCard, BarChart3, Loader2, Trash2, Archive, Info
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AdminStats {
   stripe: {
