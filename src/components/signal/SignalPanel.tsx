@@ -86,8 +86,16 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
       setStage("invitation");
       setCurrentPrompt("");
       setShowCustomInput(false);
+      setShowUpgradeGate(false);
     }, 400);
   };
+
+  // Refresh credits after a signal is generated
+  useEffect(() => {
+    if (response && !loading) {
+      refreshCredits();
+    }
+  }, [response, loading, refreshCredits]);
 
   const chips = PROMPT_CHIPS[pageContext || "general"] || PROMPT_CHIPS.general;
 
