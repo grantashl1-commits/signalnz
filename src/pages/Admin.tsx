@@ -203,9 +203,10 @@ export default function AdminPage() {
             <div className="space-y-4">
               {/* Revenue stats */}
               <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">Revenue</p>
-              <div className="grid grid-cols-2 gap-3">
-                <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-phase-follicular" />
-                <StatCard icon={TrendingUp} label="30-Day Revenue" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="NZD collected" color="text-phase-follicular" />
+              <div className="grid grid-cols-3 gap-3">
+                <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-phase-follicular" tooltip="Monthly Recurring Revenue — calculated from active subscription values. May differ from collected revenue if billing cycle falls outside this window." />
+                <StatCard icon={TrendingUp} label="Collected (30 Days)" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="Payments received in last 30 days" color="text-phase-follicular" />
+                <StatCard icon={BarChart3} label="Lifetime Revenue" value="$0" sub="Lifetime total" color="text-phase-follicular" />
                 <StatCard icon={CreditCard} label="Active Subs" value={stats.stripe?.activeSubscriptions || 0} sub={`${stats.stripe?.tierCounts.nourished || 0} nourished · ${stats.stripe?.tierCounts.thriving || 0} thriving`} />
                 <StatCard icon={XCircle} label="Cancelled" value={stats.stripe?.canceledSubscriptions || 0} color="text-destructive" />
               </div>
