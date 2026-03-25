@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import {
   Users, DollarSign, TrendingUp, Shield, Clock, CheckCircle, XCircle,
   MessageSquare, Activity, ChevronDown, ChevronUp, MapPin, Star, AlertCircle,
-  CreditCard, BarChart3, Loader2, Trash2, Archive
+  CreditCard, BarChart3, Loader2, Trash2, Archive, Info
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AdminStats {
   stripe: {
@@ -34,8 +35,8 @@ interface AdminStats {
   feedback: any[];
 }
 
-function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
-  icon: any; label: string; value: string | number; sub?: string; color?: string;
+function StatCard({ icon: Icon, label, value, sub, color = "text-primary", tooltip }: {
+  icon: any; label: string; value: string | number; sub?: string; color?: string; tooltip?: string;
 }) {
   return (
     <div className="card-warm p-4">
@@ -44,7 +45,21 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+          <div className="flex items-center gap-1">
+            <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+            {tooltip && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[240px] text-xs">
+                    {tooltip}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
           <p className="font-display text-2xl font-bold text-foreground">{value}</p>
           {sub && <p className="font-mono text-[10px] text-muted-foreground">{sub}</p>}
         </div>
@@ -188,9 +203,10 @@ export default function AdminPage() {
             <div className="space-y-4">
               {/* Revenue stats */}
               <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">Revenue</p>
-              <div className="grid grid-cols-2 gap-3">
-                <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-phase-follicular" />
-                <StatCard icon={TrendingUp} label="30-Day Revenue" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="NZD collected" color="text-phase-follicular" />
+              <div className="grid grid-cols-3 gap-3">
+                <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-phase-follicular" tooltip="Monthly Recurring Revenue — calculated from active subscription values. May differ from collected revenue if billing cycle falls outside this window." />
+                <StatCard icon={TrendingUp} label="Collected (30 Days)" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="Payments received in last 30 days" color="text-phase-follicular" />
+                <StatCard icon={BarChart3} label="Lifetime Revenue" value="$0" sub="Lifetime total" color="text-phase-follicular" />
                 <StatCard icon={CreditCard} label="Active Subs" value={stats.stripe?.activeSubscriptions || 0} sub={`${stats.stripe?.tierCounts.nourished || 0} nourished · ${stats.stripe?.tierCounts.thriving || 0} thriving`} />
                 <StatCard icon={XCircle} label="Cancelled" value={stats.stripe?.canceledSubscriptions || 0} color="text-destructive" />
               </div>
