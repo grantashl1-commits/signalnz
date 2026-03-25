@@ -285,9 +285,8 @@ export default function HomePage() {
                         : "bg-card/60 hover:bg-card hover:shadow-soft"
                     }`}
                     style={selected ? {
-                      ringColor: state.color,
                       backgroundColor: state.color,
-                      boxShadow: `0 4px 20px ${state.color}40`,
+                      boxShadow: `0 0 0 2px ${state.color}, 0 4px 20px ${state.color}40`,
                     } : undefined}
                   >
                     <div
