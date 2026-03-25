@@ -20,7 +20,7 @@ function getWeekStart(): string {
   return new Date(d.getFullYear(), d.getMonth(), diff).toISOString().split("T")[0];
 }
 
-const ENERGY_EMOJI = ["", "😴", "😶", "😐", "🙂", "😊", "😄", "🤩", "💪", "🔥", "⚡"];
+const ENERGY_LABELS = ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 const SORENESS_OPTIONS = ["None", "Mild", "Moderate", "High"];
 const GOAL_TYPES = [
   "Lose weight", "Build fitness", "Run a race", "Improve energy", "Build strength", "Custom"
