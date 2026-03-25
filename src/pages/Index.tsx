@@ -72,8 +72,15 @@ export default function HomePage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const focus = FOCUS[info.phase];
   const streak = getCheckinStreak();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 100);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const done = localStorage.getItem("signal_onboarding_complete");
