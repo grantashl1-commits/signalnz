@@ -323,7 +323,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
                       <div className="px-4 pb-4 space-y-4 border-t border-border pt-3">
                         {/* Nutritional note */}
                         <p className="font-body text-xs text-primary/80 italic bg-primary/5 rounded-lg p-2.5">
-                          💡 {recipe.nutritionalNote}
+                          {recipe.nutritionalNote}
                         </p>
 
                         {/* Ingredients */}
