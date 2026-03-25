@@ -61,6 +61,9 @@ const App = () => (
                     <Route path="/recommendations" element={<Recommendations />} />
                     <Route path="/community" element={<Community />} />
                     <Route path="/account" element={<Account />} />
+                    <Route path="/settings" element={<Navigate to="/account" replace />} />
+                    <Route path="/profile" element={<Navigate to="/account" replace />} />
+                    <Route path="/home" element={<Navigate to="/" replace />} />
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/coach" element={<Coach />} />
