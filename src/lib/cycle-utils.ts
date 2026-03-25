@@ -57,10 +57,11 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
   if (!lastPeriodStart) {
     return { name: "Follicular Phase", phase: "follicular", day: 3, cycleDay: 8 };
   }
-  const start = new Date(lastPeriodStart);
+  const [sy, sm, sd] = lastPeriodStart.split("-").map(Number);
+  const start = new Date(sy, sm - 1, sd);
   const today = new Date();
-  const diffTime = today.getTime() - start.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const diffDays = Math.round((todayMidnight.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   const cycleDay = ((diffDays - 1) % 28) + 1;
   const phase = getPhaseFromDay(cycleDay);
   const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 15;
@@ -75,9 +76,10 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
 }
 
 export function getCycleDayForDate(lastPeriodStart: string, date: Date): number {
-  const start = new Date(lastPeriodStart);
-  const diffTime = date.getTime() - start.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  const [sy, sm, sd] = lastPeriodStart.split("-").map(Number);
+  const start = new Date(sy, sm - 1, sd);
+  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round((target.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   return ((diffDays - 1) % 28) + 1;
 }
 
