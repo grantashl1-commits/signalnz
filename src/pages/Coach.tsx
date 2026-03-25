@@ -81,7 +81,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
       {/* Energy */}
       <div>
         <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
-          Energy this week {ENERGY_EMOJI[energy]}
+          Energy this week
         </label>
         <input
           type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(+e.target.value)}
