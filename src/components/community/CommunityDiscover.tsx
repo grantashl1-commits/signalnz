@@ -297,8 +297,19 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
       {/* Group cards */}
       {loading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-6 w-6 text-primary animate-spin" />
+        <div className="space-y-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="card-warm p-5 space-y-3">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2 flex-1">
+                  <div className="h-6 w-2/3 rounded-xl animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+                  <div className="h-4 w-full rounded-lg animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+                </div>
+                <div className="h-9 w-20 rounded-full animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+              </div>
+              <div className="h-3 w-24 rounded animate-shimmer bg-gradient-to-r from-[#E8E0F0] via-[#F3EEF8] to-[#E8E0F0] bg-[length:200%_100%]" />
+            </div>
+          ))}
         </div>
       ) : (
         <>
