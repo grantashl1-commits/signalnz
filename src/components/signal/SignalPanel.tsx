@@ -1,13 +1,15 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, RotateCcw, ChevronRight } from "lucide-react";
+import { X, ArrowRight, RotateCcw, ChevronRight, Zap } from "lucide-react";
 import { useSignalContext, SIGNAL_MODES, PROMPT_CHIPS, type SignalMode } from "@/hooks/useSignalContext";
 import { useSignalAI } from "@/hooks/useSignalAI";
+import { useAICredits } from "@/hooks/useAICredits";
 import SignalResponseCard from "./SignalResponseCard";
 import SignalListeningState from "./SignalListeningState";
 import { WildStar, BotanicalSprig } from "@/components/BotanicalElements";
 import { DotPattern } from "@/components/AtmosphericSection";
 import { haptic } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
