@@ -408,6 +408,9 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* ═══ NPS ═══ */}
+          {activeTab === "nps" && <NPSTab />}
         </>
       )}
     </div>
