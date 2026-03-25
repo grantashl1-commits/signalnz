@@ -127,7 +127,7 @@ export default function MembershipPage() {
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
-      toast.success("Subscription activated! 🎉");
+      toast.success("Subscription activated!");
       refreshSubscription();
     }
   }, [searchParams, refreshSubscription]);

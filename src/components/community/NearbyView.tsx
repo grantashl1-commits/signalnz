@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { MapPin, ShieldCheck, Leaf } from "lucide-react";
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
 // ─── Types ────────────────────────────────────────────────
@@ -366,7 +367,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
     setIsNearbyVisible(true);
 
     toast({
-      title: "You're on the map! 📍",
+      title: "You're on the map!",
       description: `Showing you in ${suburb}`,
     });
 
@@ -494,8 +495,8 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
   if (locationStatus === "idle" || locationStatus === "denied") {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-6 gap-5">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl bg-secondary">
-          📍
+        <div className="w-16 h-16 rounded-full flex items-center justify-center bg-secondary">
+          <MapPin className="h-7 w-7 text-primary" />
         </div>
         <div className="text-center">
           <h3 className="font-display text-lg font-semibold text-foreground mb-1">
@@ -544,7 +545,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       {/* Privacy banner */}
       <div className="flex items-center justify-between px-4 py-2.5 rounded-xl text-xs bg-secondary/50 text-muted-foreground">
         <div className="flex items-center gap-2">
-          <span>🔒</span>
+          <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
           <span>Showing suburb-level only · your address is never visible</span>
         </div>
         <button
@@ -620,7 +621,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
         </div>
       ) : filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center py-10 gap-2 text-center">
-          <span className="text-3xl">🌿</span>
+          <Leaf className="h-8 w-8 text-primary" />
           <p className="font-display text-sm font-medium text-foreground">No one here yet</p>
           <p className="text-xs text-muted-foreground">
             Be the first in your suburb — invite others to join!

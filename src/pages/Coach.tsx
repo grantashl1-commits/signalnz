@@ -20,7 +20,7 @@ function getWeekStart(): string {
   return new Date(d.getFullYear(), d.getMonth(), diff).toISOString().split("T")[0];
 }
 
-const ENERGY_EMOJI = ["", "😴", "😶", "😐", "🙂", "😊", "😄", "🤩", "💪", "🔥", "⚡"];
+const ENERGY_LABELS = ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 const SORENESS_OPTIONS = ["None", "Mild", "Moderate", "High"];
 const GOAL_TYPES = [
   "Lose weight", "Build fitness", "Run a race", "Improve energy", "Build strength", "Custom"
@@ -58,7 +58,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
     if (error) {
       toast.error("Couldn't save check-in");
     } else {
-      toast.success("Check-in saved ✓");
+      toast.success("Check-in saved");
       setAlreadyDone(true);
       onComplete();
     }
@@ -81,7 +81,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
       {/* Energy */}
       <div>
         <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
-          Energy this week {ENERGY_EMOJI[energy]}
+          Energy this week
         </label>
         <input
           type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(+e.target.value)}
@@ -95,7 +95,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
       {/* Sleep */}
       <div>
         <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
-          Sleep quality 🌙
+          Sleep quality
         </label>
         <input
           type="range" min={1} max={10} value={sleep} onChange={(e) => setSleep(+e.target.value)}
@@ -205,7 +205,7 @@ function GoalTracker({ userId }: { userId: string }) {
       goal_description: desc,
       target_date: targetDate || null,
     });
-    toast.success("Goal set! 🎯");
+    toast.success("Goal set!");
     setShowCreate(false);
     setNewGoalDesc("");
     fetchGoal();
@@ -220,7 +220,7 @@ function GoalTracker({ userId }: { userId: string }) {
       value: parseFloat(logValue),
       note: logNote || null,
     });
-    toast.success("Progress logged ✓");
+    toast.success("Progress logged");
     setLogValue("");
     setLogNote("");
     fetchGoal();
@@ -269,7 +269,7 @@ function GoalTracker({ userId }: { userId: string }) {
               />
             </div>
             <button onClick={handleCreateGoal} className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-display text-sm italic">
-              Set Goal 🎯
+              Set Goal
             </button>
           </div>
         )}
@@ -397,7 +397,7 @@ function LogWorkout({ userId, onLogged }: { userId: string; onLogged: () => void
       intensity,
     });
     if (error) toast.error("Couldn't log session");
-    else { toast.success("Workout logged 💪"); onLogged(); }
+    else { toast.success("Workout logged"); onLogged(); }
     setSaving(false);
   };
 

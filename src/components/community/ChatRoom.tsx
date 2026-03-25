@@ -96,7 +96,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       const dataUrl = ev.target?.result as string;
       setMessages(m => [...m, {
         id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
-        type: "text", text: `📷 [Image shared]`, imageUrl: dataUrl,
+        type: "text", text: "[Image shared]", imageUrl: dataUrl,
       } as any]);
     };
     reader.readAsDataURL(file);
@@ -125,7 +125,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         const audioUrl = URL.createObjectURL(audioBlob);
         setMessages(m => [...m, {
           id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
-          type: "text", text: "🎤 Voice note", audioUrl,
+          type: "text", text: "Voice note", audioUrl,
         } as any]);
         stream.getTracks().forEach(t => t.stop());
       };

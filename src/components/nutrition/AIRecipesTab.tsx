@@ -120,7 +120,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
     const reader = new FileReader();
     reader.onload = async () => {
       const base64 = (reader.result as string).split(",")[1];
-      setIngredientSearch("📸 Analysing your fridge photo...");
+      setIngredientSearch("Analysing your fridge photo...");
       await generateFromIngredients("", base64);
       setIngredientSearch("");
     };
@@ -226,7 +226,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
             <Camera className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
-            <p className="font-body text-sm font-medium text-foreground">📸 Snap your fridge</p>
+            <p className="font-body text-sm font-medium text-foreground">Snap your fridge</p>
             <p className="font-body text-[11px] text-muted-foreground mt-0.5">Take a photo and we'll identify ingredients & create recipes that match your dietary preferences and cycle phase</p>
           </div>
         </button>
@@ -262,7 +262,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
                 </h3>
                 {identifiedIngredients && (
                   <p className="font-body text-[11px] text-muted-foreground mt-1">
-                    {fromPhoto ? "📸 Spotted: " : "Using: "}
+                    {fromPhoto ? "Spotted: " : "Using: "}
                     <span className="text-foreground">{identifiedIngredients.slice(0, 120)}{identifiedIngredients.length > 120 ? "..." : ""}</span>
                   </p>
                 )}
@@ -323,7 +323,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
                       <div className="px-4 pb-4 space-y-4 border-t border-border pt-3">
                         {/* Nutritional note */}
                         <p className="font-body text-xs text-primary/80 italic bg-primary/5 rounded-lg p-2.5">
-                          💡 {recipe.nutritionalNote}
+                          {recipe.nutritionalNote}
                         </p>
 
                         {/* Ingredients */}
@@ -356,7 +356,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
                         {recipe.usedIngredients && (
                           <div className="flex flex-wrap gap-1">
                             {recipe.usedIngredients.map(ing => (
-                              <span key={ing} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-accent text-accent-foreground">✓ {ing}</span>
+                              <span key={ing} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-accent text-accent-foreground">{ing}</span>
                             ))}
                             {recipe.addedStaples?.map(ing => (
                               <span key={ing} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-secondary text-muted-foreground">+ {ing}</span>
