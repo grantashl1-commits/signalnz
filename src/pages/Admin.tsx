@@ -166,6 +166,7 @@ export default function AdminPage() {
     { id: "members" as const, label: "Members" },
     { id: "feedback" as const, label: "Feedback" },
     { id: "ai" as const, label: "AI Usage" },
+    { id: "nps" as const, label: "NPS" },
   ];
 
   return (
