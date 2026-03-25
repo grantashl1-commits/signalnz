@@ -149,6 +149,15 @@ export default {
           "0%, 100%": { opacity: "0.4" },
           "50%": { opacity: "0.8" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
+        "confetti-burst": {
+          "0%": { transform: "scale(0) rotate(0deg)", opacity: "1" },
+          "50%": { opacity: "1" },
+          "100%": { transform: "scale(1.5) rotate(180deg)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
