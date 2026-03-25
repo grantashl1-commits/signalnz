@@ -18,13 +18,6 @@ import {
   getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
 } from "@/lib/fitness-profile";
 import { getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR } from "@/data/workouts";
-import {
-  FitnessGoal, FitnessLevel, Equipment, FitnessProfile,
-  GOAL_LABELS, LEVEL_LABELS, EQUIPMENT_LABELS,
-  getFitnessProfile, saveFitnessProfile,
-  getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
-} from "@/lib/fitness-profile";
-import { getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR } from "@/data/workouts";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
