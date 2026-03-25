@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { Check, Crown, Zap, Plus, LogIn, Settings } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,10 +13,12 @@ const STRIPE_TIERS = {
   nourished: {
     priceId: "price_1TB71HEAvaJHDMD49yoKtzpf",
     productId: "prod_U9Pqh2vkb2wrNR",
+    annualPriceId: "price_annual_nourished", // placeholder — replace with real Stripe price ID
   },
   thriving: {
     priceId: "price_1TB71pEAvaJHDMD4gkBPg6Vt",
     productId: "prod_U9Pr8k3iP6Bler",
+    annualPriceId: "price_annual_thriving", // placeholder — replace with real Stripe price ID
   },
   topup: {
     priceId: "price_1TB729EAvaJHDMD4kgzSS7JM",
@@ -26,10 +29,14 @@ const STRIPE_TIERS = {
 const TIERS = [
   {
     name: "Free",
-    price: "$0",
+    monthlyPrice: "$0",
+    annualPrice: "$0",
+    annualSub: "",
     period: "forever",
+    annualPeriod: "forever",
     popular: false,
     key: "free" as const,
+    annualSavings: "",
     features: [
       "Cycle tracker",
       "Daily check-in",
@@ -39,10 +46,14 @@ const TIERS = [
   },
   {
     name: "Nourished",
-    price: "$19",
+    monthlyPrice: "$19",
+    annualPrice: "$152",
+    annualSub: "just $12.67/mo",
     period: "/mo",
+    annualPeriod: "/yr",
     popular: true,
     key: "nourished" as const,
+    annualSavings: "$76/yr",
     features: [
       "AI meal ideas for your phase",
       "Full movement library",
@@ -54,10 +65,14 @@ const TIERS = [
   },
   {
     name: "Thriving",
-    price: "$39",
+    monthlyPrice: "$39",
+    annualPrice: "$312",
+    annualSub: "just $26/mo",
     period: "/mo",
+    annualPeriod: "/yr",
     popular: false,
     key: "thriving" as const,
+    annualSavings: "$156/yr",
     features: [
       "Full module library",
       "AI nervous system check-in",
@@ -79,6 +94,7 @@ export default function MembershipPage() {
   const { user, session, subscription, refreshSubscription } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [isAnnual, setIsAnnual] = useState(false);
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
@@ -125,6 +141,10 @@ export default function MembershipPage() {
   };
 
   const isCurrentTier = (key: string) => subscription.tier === key;
+
+  const getPriceId = (key: "nourished" | "thriving") => {
+    return isAnnual ? STRIPE_TIERS[key].annualPriceId : STRIPE_TIERS[key].priceId;
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 md:space-y-10 relative">
@@ -184,10 +204,35 @@ export default function MembershipPage() {
       <BotanicalSprig width={160} className="mx-auto md:hidden" />
       <BotanicalSprig width={200} className="mx-auto hidden md:block" />
 
+      {/* Billing toggle */}
+      <div className="flex items-center justify-center gap-3">
+        <button
+          onClick={() => { haptic("light"); setIsAnnual(false); }}
+          className={`font-body text-sm font-semibold px-4 py-2 rounded-xl transition-all ${
+            !isAnnual ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => { haptic("light"); setIsAnnual(true); }}
+          className={`font-body text-sm font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
+            isAnnual ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Annual
+          <span className="inline-flex items-center gap-1 rounded-full bg-phase-ovulatory/20 text-phase-ovulatory px-2 py-0.5 font-mono text-[10px] font-bold">
+            <Sparkles className="h-3 w-3" /> Save 20%
+          </span>
+        </button>
+      </div>
+
       {/* Tier cards */}
       <div className="grid gap-4 md:gap-6 sm:grid-cols-3">
         {TIERS.map((t, i) => {
           const isCurrent = isCurrentTier(t.key);
+          const displayPrice = isAnnual ? t.annualPrice : t.monthlyPrice;
+          const displayPeriod = isAnnual ? t.annualPeriod : t.period;
           return (
             <motion.div
               key={t.name}
@@ -222,9 +267,40 @@ export default function MembershipPage() {
                   <h3 className="font-display text-lg md:text-xl italic text-foreground">{t.name}</h3>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="font-mono text-3xl md:text-4xl text-foreground">{t.price}</span>
-                  <span className="font-body text-sm text-muted-foreground">{t.period}</span>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={displayPrice}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.25 }}
+                      className="font-mono text-3xl md:text-4xl text-foreground"
+                    >
+                      {displayPrice}
+                    </motion.span>
+                  </AnimatePresence>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={displayPeriod}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="font-body text-sm text-muted-foreground"
+                    >
+                      {displayPeriod}
+                    </motion.span>
+                  </AnimatePresence>
                 </div>
+                {isAnnual && t.annualSub && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="font-body text-xs text-primary mt-1"
+                  >
+                    {t.annualSub}
+                  </motion.p>
+                )}
               </div>
 
               <ul className="space-y-3 flex-1">
@@ -236,13 +312,25 @@ export default function MembershipPage() {
                 ))}
               </ul>
 
+              {/* Annual upsell for Thriving when on monthly */}
+              {t.key === "thriving" && isCurrent && !isAnnual && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  onClick={() => { haptic("light"); setIsAnnual(true); }}
+                  className="mt-3 font-body text-xs text-primary hover:underline text-left"
+                >
+                  Switch to annual and save $156/yr →
+                </motion.button>
+              )}
+
               <button
                 onClick={() => {
                   if (t.key === "free") {
                     if (!user) navigate("/auth");
                     return;
                   }
-                  handleCheckout(STRIPE_TIERS[t.key].priceId);
+                  handleCheckout(getPriceId(t.key));
                 }}
                 disabled={isCurrent}
                 className={`touch-btn mt-5 md:mt-6 w-full rounded-xl px-4 py-3 min-h-[52px] font-body text-sm font-bold transition-opacity disabled:opacity-50 ${
