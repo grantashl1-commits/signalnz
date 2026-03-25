@@ -60,8 +60,8 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
         >
           {response.leanInto && (
             <div className="rounded-2xl border border-border/60 p-5 bg-card/40">
-              <p className="font-hand text-xs font-bold text-primary mb-2">What to lean into</p>
-              <p className="font-body text-sm text-foreground leading-relaxed">{response.leanInto}</p>
+              <p className="font-hand text-xs font-bold mb-2" style={{ color: "hsl(var(--primary))" }}>What to lean into</p>
+              <p className="font-body text-sm leading-relaxed" style={{ color: "hsl(280 20% 25%)" }}>{response.leanInto}</p>
             </div>
           )}
           {response.soften && (
