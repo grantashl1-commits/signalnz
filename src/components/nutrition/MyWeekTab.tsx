@@ -516,7 +516,7 @@ export default function MyWeekTab() {
                                 </div>
                                 {aiMeal.nutritionalNote && (
                                   <p className="font-body text-xs italic text-muted-foreground mt-1">
-                                    💡 {aiMeal.nutritionalNote}
+                                    {aiMeal.nutritionalNote}
                                   </p>
                                 )}
                               </div>
