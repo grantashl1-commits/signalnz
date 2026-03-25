@@ -83,9 +83,11 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    const done = localStorage.getItem("signal_onboarding_complete");
-    if (user && !done) setShowOnboarding(true);
-  }, [user]);
+    const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
+    if (user && !profileLoading && onboardingComplete === false && !localDone) {
+      setShowOnboarding(true);
+    }
+  }, [user, profileLoading, onboardingComplete]);
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
