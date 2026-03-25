@@ -73,7 +73,7 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "groups" | "members" | "feedback" | "ai">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "groups" | "members" | "feedback" | "ai" | "nps">("overview");
   const [updatingGroup, setUpdatingGroup] = useState<string | null>(null);
 
   // Check admin role
