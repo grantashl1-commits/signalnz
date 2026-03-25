@@ -303,7 +303,7 @@ export default function MyWeekTab() {
             <p className="font-body text-sm mt-0.5" style={{ color: phaseColor }}>{dateRangeLabel}</p>
             <p className="font-body text-xs text-muted-foreground mt-0.5">{PHASE_FOCUS[dominantPhase]}</p>
             {aiPlan && (
-              <p className="font-body text-[10px] text-muted-foreground mt-0.5">✨ AI-personalised plan</p>
+              <p className="font-body text-[10px] text-muted-foreground mt-0.5">AI-personalised plan</p>
             )}
           </div>
 
