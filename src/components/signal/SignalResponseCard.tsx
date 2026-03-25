@@ -66,8 +66,8 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           )}
           {response.soften && (
             <div className="rounded-2xl border border-border/60 p-5 bg-card/40">
-              <p className="font-hand text-xs font-bold text-muted-foreground mb-2">What to soften</p>
-              <p className="font-body text-sm text-foreground leading-relaxed">{response.soften}</p>
+              <p className="font-hand text-xs font-bold mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>What to soften</p>
+              <p className="font-body text-sm leading-relaxed" style={{ color: "hsl(280 20% 25%)" }}>{response.soften}</p>
             </div>
           )}
         </motion.div>
