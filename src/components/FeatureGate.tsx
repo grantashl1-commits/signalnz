@@ -7,12 +7,14 @@ import { haptic } from "@/hooks/use-mobile";
 
 const TIER_LABELS: Record<FeatureTier, string> = {
   free: "Free",
+  rooted: "Rooted",
   nourished: "Nourished",
   thriving: "Thriving",
 };
 
 const TIER_ICONS: Record<FeatureTier, React.ReactNode> = {
   free: null,
+  rooted: <Sparkles className="h-4 w-4" />,
   nourished: <Sparkles className="h-4 w-4" />,
   thriving: <Crown className="h-4 w-4" />,
 };
