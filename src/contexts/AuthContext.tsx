@@ -5,7 +5,7 @@ import type { User, Session } from "@supabase/supabase-js";
 interface SubscriptionInfo {
   subscribed: boolean;
   productId: string | null;
-  tier: "free" | "nourished" | "thriving";
+  tier: "free" | "rooted" | "nourished" | "thriving";
   subscriptionEnd: string | null;
 }
 
