@@ -132,11 +132,15 @@ export default function PracticePage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id as HabitCategory | "all")}
-                className={`touch-btn rounded-full px-6 py-3 font-body text-sm font-medium transition-all ${
+                className={`touch-btn rounded-full px-6 py-3 font-body text-sm font-medium transition-all shadow-soft ${
                   active
-                    ? "bg-primary text-primary-foreground shadow-soft"
-                    : "bg-card text-muted-foreground hover:bg-card hover:text-foreground shadow-soft"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card hover:bg-card hover:text-foreground"
                 }`}
+                style={active
+                  ? { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }
+                  : { backgroundColor: "hsl(var(--card))", color: "hsl(var(--muted-foreground))" }
+                }
               >
                 {cat.label}
               </button>
