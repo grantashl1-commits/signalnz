@@ -518,6 +518,21 @@ export default function MovementPage() {
         <div className="space-y-4 md:space-y-6">
           {/* Monthly calendar at the top */}
           <MovementCalendar />
+
+          {/* Empty state when no workouts logged */}
+          {totalCompleted === 0 && sessions.length === 0 && (
+            <div className="card-warm p-8 text-center space-y-4">
+              <Dumbbell className="h-10 w-10 text-muted-foreground/30 mx-auto" />
+              <h3 className="font-display text-lg font-bold italic text-foreground">Your movement history will appear here.</h3>
+              <p className="font-body text-sm text-muted-foreground">Complete your first workout to start tracking.</p>
+              <button
+                onClick={() => { haptic("light"); setActiveTab("today"); }}
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3 font-display text-sm font-semibold active:scale-[0.97] transition-transform"
+              >
+                Today's workout →
+              </button>
+            </div>
+          )}
           <div className="grid grid-cols-3 gap-2">
             {[{ val: totalCompleted, label: "Workouts" }, { val: totalMinutes, label: "Minutes" }, { val: totalCompleted > 0 ? Math.round((totalCompleted / 7) * 100) + "%" : "0%", label: "Consistency" }].map(({ val, label }) => (
               <div key={label} className="card-warm p-3 text-center">
