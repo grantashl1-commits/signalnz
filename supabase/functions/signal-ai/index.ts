@@ -54,7 +54,7 @@ serve(async (req) => {
       if (!credits) {
         await supabase.from("ai_credits").insert({
           user_identifier: userIdentifier,
-          credits_remaining: 19,
+          credits_remaining: 4,
           tier: "free",
         });
       }

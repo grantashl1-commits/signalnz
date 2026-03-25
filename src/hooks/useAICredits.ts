@@ -34,7 +34,7 @@ export function useAICredits(): AICredits & { refresh: () => void } {
         setCreditsRemaining(data.credits_remaining);
         setTier(data.tier);
       } else {
-        setCreditsRemaining(20);
+        setCreditsRemaining(5);
         setTier("free");
       }
     } catch {

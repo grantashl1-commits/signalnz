@@ -55,6 +55,11 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
   const handleGenerate = useCallback(
     (prompt: string) => {
+      // Gate free users who have exhausted credits
+      if (tier === "free" && creditsRemaining <= 0) {
+        setShowUpgradeGate(true);
+        return;
+      }
       haptic("medium");
       setCurrentPrompt(prompt);
       setStage("listening");
@@ -62,7 +67,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
       setInput("");
       setShowCustomInput(false);
     },
-    [generate, mode, context]
+    [generate, mode, context, tier, creditsRemaining]
   );
 
   const handleReset = () => {
