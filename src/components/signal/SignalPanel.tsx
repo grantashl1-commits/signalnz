@@ -105,6 +105,52 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
   if (!open) return null;
 
+  // Upgrade gate modal for free users with 0 credits
+  if (showUpgradeGate) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] flex items-center justify-center"
+        onClick={() => { setShowUpgradeGate(false); handleClose(); }}
+      >
+        <div className="absolute inset-0 bg-foreground/30 backdrop-blur-md" />
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-sm mx-4 rounded-[24px] p-8 text-center"
+          style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
+        >
+          <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-5">
+            <Zap className="h-7 w-7 text-primary" />
+          </div>
+          <h2 className="font-display text-xl font-bold italic text-foreground mb-2">
+            You've used your 5 free signals this month
+          </h2>
+          <p className="font-body text-sm text-muted-foreground mb-6">
+            Upgrade to Nourished for 150 signals — or Thriving for unlimited.
+          </p>
+          <div className="flex flex-col gap-2.5">
+            <button
+              onClick={() => { setShowUpgradeGate(false); handleClose(); navigate("/membership"); }}
+              className="w-full rounded-xl bg-primary px-4 py-3 font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity"
+            >
+              See plans
+            </button>
+            <button
+              onClick={() => { setShowUpgradeGate(false); handleClose(); }}
+              className="w-full rounded-xl bg-secondary px-4 py-3 font-body text-sm font-medium text-foreground active:bg-secondary/80 transition-opacity"
+            >
+              Not now
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
   return (
     <AnimatePresence>
       <motion.div
