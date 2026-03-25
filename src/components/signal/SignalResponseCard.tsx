@@ -82,8 +82,8 @@ export default function SignalResponseCard({ response, onFollowUp, phase }: Prop
           className="rounded-2xl p-5 border border-primary/15"
           style={{ backgroundColor: "hsl(284 22% 44% / 0.05)" }}
         >
-          <p className="font-hand text-xs font-bold text-primary mb-2">A gentle next step</p>
-          <p className="font-body text-sm text-foreground leading-relaxed">{response.action}</p>
+          <p className="font-hand text-xs font-bold mb-2" style={{ color: "hsl(var(--primary))" }}>A gentle next step</p>
+          <p className="font-body text-sm leading-relaxed" style={{ color: "hsl(280 20% 25%)" }}>{response.action}</p>
         </motion.div>
       )}
 
