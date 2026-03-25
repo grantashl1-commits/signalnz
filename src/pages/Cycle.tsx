@@ -56,10 +56,10 @@ const PHASE_DATA: Record<Phase, { hormones: string; energy: number; mood: string
 };
 
 const PHASE_HEX: Record<Phase, string> = {
-  menstrual: "#C4526E",
-  follicular: "#5C4A9E",
-  ovulatory: "#C47A8A",
-  luteal: "#9B89B4",
+  menstrual: "#C0392B",
+  follicular: "#F4A63A",
+  ovulatory: "#E91E8C",
+  luteal: "#7B50A3",
 };
 
 // Moon Wheel
@@ -69,6 +69,29 @@ function MoonWheel({ currentPhase, cycleDay }: { currentPhase: Phase; cycleDay: 
   const cy = size / 2;
   const r = 100;
 
+  // Build arc paths for each phase segment
+  const phaseRanges: { phase: Phase; start: number; end: number }[] = [
+    { phase: "menstrual", start: 1, end: 5 },
+    { phase: "follicular", start: 6, end: 13 },
+    { phase: "ovulatory", start: 14, end: 14 },
+    { phase: "luteal", start: 15, end: 28 },
+  ];
+
+  function dayToAngle(day: number) {
+    return ((day - 1) / 28) * Math.PI * 2 - Math.PI / 2;
+  }
+
+  function arcPath(startDay: number, endDay: number) {
+    const a1 = dayToAngle(startDay - 0.4);
+    const a2 = dayToAngle(endDay + 0.4);
+    const x1 = cx + r * Math.cos(a1);
+    const y1 = cy + r * Math.sin(a1);
+    const x2 = cx + r * Math.cos(a2);
+    const y2 = cy + r * Math.sin(a2);
+    const largeArc = (endDay - startDay + 1) > 14 ? 1 : 0;
+    return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
+  }
+
   return (
     <div className="relative mx-auto" style={{ width: size, height: size }}>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -76,42 +99,65 @@ function MoonWheel({ currentPhase, cycleDay }: { currentPhase: Phase; cycleDay: 
       </div>
 
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#8B6F5E" strokeWidth={0.8} strokeDasharray="8 4" opacity={0.2} />
+        {/* Phase arc segments */}
+        {phaseRanges.map(({ phase, start, end }) => (
+          <path
+            key={phase}
+            d={arcPath(start, end)}
+            fill="none"
+            stroke={PHASE_HEX[phase]}
+            strokeWidth={4}
+            strokeLinecap="round"
+            opacity={1}
+          />
+        ))}
+
+        {/* Day dots */}
         {Array.from({ length: 28 }, (_, i) => {
           const day = i + 1;
-          const angle = (i / 28) * Math.PI * 2 - Math.PI / 2;
+          const angle = dayToAngle(day);
           const x = cx + r * Math.cos(angle);
           const y = cy + r * Math.sin(angle);
           const phase = getPhaseFromDay(day);
           const isCurrent = day === cycleDay;
           const isPast = day < cycleDay;
-          const nodeR = isCurrent ? 6 : 3;
-          const opacity = isCurrent ? 1 : isPast ? 0.6 : 0.25;
+          const nodeR = isCurrent ? 7 : 3.5;
 
           return (
             <g key={day}>
-              <circle cx={x} cy={y} r={nodeR} fill={isCurrent ? PHASE_HEX[phase] : "none"} stroke={PHASE_HEX[phase]} strokeWidth={1} opacity={opacity} />
+              <circle
+                cx={x}
+                cy={y}
+                r={nodeR}
+                fill={isCurrent || isPast ? PHASE_HEX[phase] : "hsl(24 33% 92%)"}
+                stroke={isCurrent ? "#FFFFFF" : PHASE_HEX[phase]}
+                strokeWidth={isCurrent ? 2.5 : 1.2}
+                opacity={1}
+              />
               {isCurrent && (
-                <circle cx={x} cy={y} r={10} fill="none" stroke={PHASE_HEX[phase]} strokeWidth={0.8} opacity={0.3}>
-                  <animate attributeName="r" values="10;14;10" dur="2s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite" />
+                <circle cx={x} cy={y} r={12} fill="none" stroke={PHASE_HEX[phase]} strokeWidth={1.5} opacity={0.9}>
+                  <animate attributeName="r" values="12;16;12" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite" />
                 </circle>
               )}
             </g>
           );
         })}
-        <text x={cx} y={cy - 4} textAnchor="middle" fill="#2C1810" className="text-2xl font-bold" style={{ fontFamily: "Space Mono" }}>
+
+        {/* Centre text */}
+        <text x={cx} y={cy - 4} textAnchor="middle" fill="#4A236E" className="text-2xl font-bold" style={{ fontFamily: "Space Mono" }}>
           {cycleDay}
         </text>
-        <text x={cx} y={cy + 16} textAnchor="middle" fill="#2C1810" opacity={0.5} className="text-xs" style={{ fontFamily: "Caveat" }}>
+        <text x={cx} y={cy + 16} textAnchor="middle" fill="#4A236E" opacity={0.7} className="text-xs" style={{ fontFamily: "Caveat" }}>
           {PHASE_SHORT[currentPhase].toLowerCase()}
         </text>
       </svg>
 
-      <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 font-hand text-[10px] text-phase-menstrual">menstrual</span>
-      <span className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 font-hand text-[10px] text-phase-follicular">follicular</span>
-      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 font-hand text-[10px] text-phase-ovulatory">ovulatory</span>
-      <span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 font-hand text-[10px] text-phase-luteal">luteal</span>
+      {/* Phase labels — positioned outside the ring */}
+      <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 font-hand font-bold" style={{ fontSize: 11, color: "#4A236E" }}>menstrual</span>
+      <span className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 font-hand font-bold" style={{ fontSize: 11, color: "#4A236E" }}>follicular</span>
+      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1 font-hand font-bold" style={{ fontSize: 11, color: "#4A236E" }}>ovulatory</span>
+      <span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 font-hand font-bold" style={{ fontSize: 11, color: "#4A236E" }}>luteal</span>
     </div>
   );
 }
