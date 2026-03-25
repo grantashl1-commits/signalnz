@@ -104,15 +104,16 @@ export default function PracticePage() {
         <motion.div
           {...fadeUp(0.1)}
           className="rounded-[22px] bg-card p-7 md:p-8 shadow-soft mb-10 md:mb-14 max-w-md"
+          style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
         >
-          <p className="font-body text-sm text-muted-foreground uppercase tracking-[0.15em] mb-2">
+          <p className="font-body text-sm uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>
             Today
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="font-display text-4xl md:text-5xl font-extrabold text-foreground">
+            <span className="font-display text-4xl md:text-5xl font-extrabold" style={{ color: "hsl(var(--foreground))" }}>
               {completedToday}
             </span>
-            <span className="font-body text-lg text-muted-foreground">
+            <span className="font-body text-lg" style={{ color: "hsl(var(--muted-foreground))" }}>
               / {totalHabits} complete
             </span>
           </div>
@@ -131,11 +132,15 @@ export default function PracticePage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id as HabitCategory | "all")}
-                className={`touch-btn rounded-full px-6 py-3 font-body text-sm font-medium transition-all ${
+                className={`touch-btn rounded-full px-6 py-3 font-body text-sm font-medium transition-all shadow-soft ${
                   active
-                    ? "bg-primary text-primary-foreground shadow-soft"
-                    : "bg-card text-muted-foreground hover:bg-card hover:text-foreground shadow-soft"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card hover:bg-card hover:text-foreground"
                 }`}
+                style={active
+                  ? { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }
+                  : { backgroundColor: "hsl(var(--card))", color: "hsl(var(--muted-foreground))" }
+                }
               >
                 {cat.label}
               </button>
@@ -175,9 +180,13 @@ export default function PracticePage() {
                     {...fadeUp(0.05 + i * 0.04)}
                     className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all shadow-soft ${
                       done
-                        ? "bg-primary/5 border border-primary/10"
-                        : "bg-card border border-transparent"
+                        ? "border border-primary/10"
+                        : "border border-transparent"
                     }`}
+                    style={{
+                      backgroundColor: done ? "hsl(var(--primary) / 0.05)" : "hsl(var(--card))",
+                      color: "hsl(var(--card-foreground))",
+                    }}
                   >
                     <button
                       onClick={() => handleToggle(habit.id)}
@@ -244,11 +253,15 @@ export default function PracticePage() {
             </motion.button>
 
             {/* Phase-specific suggestions */}
-            <motion.div {...fadeUp(0.25)} className="rounded-[22px] bg-card p-6 md:p-7 shadow-soft">
-              <p className="font-body text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            <motion.div
+              {...fadeUp(0.25)}
+              className="rounded-[22px] p-6 md:p-7 shadow-soft"
+              style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
+            >
+              <p className="font-body text-xs uppercase tracking-[0.2em] mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>
                 Suggested for you
               </p>
-              <h3 className="font-display text-lg font-bold text-foreground mb-5">
+              <h3 className="font-display text-lg font-bold mb-5" style={{ color: "hsl(var(--foreground))" }}>
                 Rituals for your {info.phase} phase
               </h3>
 
