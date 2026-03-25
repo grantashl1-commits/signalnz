@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart, ShieldCheck } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart, ShieldCheck, Copy, Share2, Gift } from "lucide-react";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useProfile } from "@/hooks/useProfile";
+import { useReferralStats } from "@/hooks/useReferral";
 import {
   FitnessGoal, FitnessLevel, Equipment, FitnessProfile,
   GOAL_LABELS, LEVEL_LABELS, EQUIPMENT_LABELS,
@@ -32,7 +33,8 @@ const TIER_LABELS: Record<string, string> = {
 
 export default function AccountPage() {
   const { user, session, subscription, refreshSubscription, loading } = useAuth();
-  const { displayName, updateDisplayName } = useProfile();
+  const { displayName, updateDisplayName, referralCode } = useProfile();
+  const { stats: referralStats } = useReferralStats();
   const navigate = useNavigate();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -551,6 +553,70 @@ export default function AccountPage() {
             </div>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </button>
+
+          {/* ═══ REFERRAL SECTION ═══ */}
+          <div className="card-warm p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Gift className="h-5 w-5 text-primary" />
+              <h3 className="font-display text-base italic text-foreground">Share Signal, earn a free month</h3>
+            </div>
+            <p className="font-body text-sm text-muted-foreground">
+              When a friend signs up and subscribes using your link, you both win. You get a free month. They get 50% off their first month.
+            </p>
+
+            {referralCode && (
+              <>
+                <div className="flex items-center gap-2">
+                  <input
+                    readOnly
+                    value={`signalnz.lovable.app?ref=${referralCode}`}
+                    className="flex-1 rounded-xl border border-border bg-secondary/30 px-3 py-2.5 font-mono text-xs text-foreground"
+                  />
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`https://signalnz.lovable.app?ref=${referralCode}`);
+                      haptic("light");
+                      toast.success("Link copied!");
+                    }}
+                    className="rounded-xl bg-secondary px-3 py-2.5 text-foreground"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => {
+                    haptic("medium");
+                    const text = `I've been using Signal to sync my life with my cycle — it's genuinely changed how I feel. Try it free: https://signalnz.lovable.app?ref=${referralCode}`;
+                    if (navigator.share) {
+                      navigator.share({ text }).catch(() => {});
+                    } else {
+                      navigator.clipboard.writeText(text);
+                      toast.success("Share text copied!");
+                    }
+                  }}
+                  className="w-full rounded-xl bg-primary px-4 py-3 font-body text-sm font-bold text-primary-foreground flex items-center justify-center gap-2"
+                >
+                  <Share2 className="h-4 w-4" /> Share with a friend
+                </button>
+
+                <div className="flex justify-between text-center pt-1">
+                  <div>
+                    <p className="font-mono text-lg font-bold text-foreground">{referralStats.total}</p>
+                    <p className="font-body text-[10px] text-muted-foreground">Referred</p>
+                  </div>
+                  <div>
+                    <p className="font-mono text-lg font-bold text-foreground">{referralStats.converted}</p>
+                    <p className="font-body text-[10px] text-muted-foreground">Subscribed</p>
+                  </div>
+                  <div>
+                    <p className="font-mono text-lg font-bold text-primary">{referralStats.freeMonths}</p>
+                    <p className="font-body text-[10px] text-muted-foreground">Free months</p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           <button
             onClick={handleSignOut}

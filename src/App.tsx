@@ -3,6 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { captureReferralParam } from "@/hooks/useReferral";
+
+// Capture ?ref= on first load
+captureReferralParam();
 import Layout from "@/components/Layout";
 import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";

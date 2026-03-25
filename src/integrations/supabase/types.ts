@@ -530,6 +530,7 @@ export type Database = {
           onboarding_complete: boolean
           primary_goal: string | null
           profession: string | null
+          referral_code: string | null
           suburb: string | null
           updated_at: string
           user_id: string
@@ -545,6 +546,7 @@ export type Database = {
           onboarding_complete?: boolean
           primary_goal?: string | null
           profession?: string | null
+          referral_code?: string | null
           suburb?: string | null
           updated_at?: string
           user_id: string
@@ -560,9 +562,37 @@ export type Database = {
           onboarding_complete?: boolean
           primary_goal?: string | null
           profession?: string | null
+          referral_code?: string | null
           suburb?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          id: string
+          referred_user_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referred_user_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referred_user_id?: string | null
+          referrer_id?: string
+          status?: string
         }
         Relationships: []
       }
