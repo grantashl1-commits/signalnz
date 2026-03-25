@@ -165,6 +165,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
           <div className="flex items-center gap-2">
+            {showCreditCounter && (
+              <Link
+                to="/membership"
+                className="flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2 py-1"
+              >
+                <Zap className="h-3 w-3 text-primary" />
+                <span className="font-mono text-[10px] font-bold text-primary">{creditsRemaining}</span>
+              </Link>
+            )}
             <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
                 D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
