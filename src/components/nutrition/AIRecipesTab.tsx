@@ -262,7 +262,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
                 </h3>
                 {identifiedIngredients && (
                   <p className="font-body text-[11px] text-muted-foreground mt-1">
-                    {fromPhoto ? "📸 Spotted: " : "Using: "}
+                    {fromPhoto ? "Spotted: " : "Using: "}
                     <span className="text-foreground">{identifiedIngredients.slice(0, 120)}{identifiedIngredients.length > 120 ? "..." : ""}</span>
                   </p>
                 )}
