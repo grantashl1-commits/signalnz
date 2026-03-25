@@ -192,7 +192,14 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
 
           {/* Content area */}
           <div className="relative z-10 flex-1 overflow-y-auto px-6 pb-4">
-            <div className="rounded-[22px] bg-card/95 backdrop-blur-sm p-7" style={{ boxShadow: "var(--shadow-elevated)" }}>
+              <div
+                className="rounded-[22px] backdrop-blur-sm p-7"
+                style={{
+                  backgroundColor: "hsl(24 33% 96%)",
+                  color: "hsl(280 20% 25%)",
+                  boxShadow: "var(--shadow-elevated)",
+                }}
+              >
               <AnimatePresence mode="wait">
                 {/* === INVITATION STAGE === */}
                 {stage === "invitation" && !error && (
