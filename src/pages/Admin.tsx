@@ -35,8 +35,8 @@ interface AdminStats {
   feedback: any[];
 }
 
-function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
-  icon: any; label: string; value: string | number; sub?: string; color?: string;
+function StatCard({ icon: Icon, label, value, sub, color = "text-primary", tooltip }: {
+  icon: any; label: string; value: string | number; sub?: string; color?: string; tooltip?: string;
 }) {
   return (
     <div className="card-warm p-4">
@@ -45,7 +45,21 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+          <div className="flex items-center gap-1">
+            <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+            {tooltip && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[240px] text-xs">
+                    {tooltip}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
           <p className="font-display text-2xl font-bold text-foreground">{value}</p>
           {sub && <p className="font-mono text-[10px] text-muted-foreground">{sub}</p>}
         </div>
