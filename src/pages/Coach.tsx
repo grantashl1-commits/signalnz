@@ -205,7 +205,7 @@ function GoalTracker({ userId }: { userId: string }) {
       goal_description: desc,
       target_date: targetDate || null,
     });
-    toast.success("Goal set! 🎯");
+    toast.success("Goal set!");
     setShowCreate(false);
     setNewGoalDesc("");
     fetchGoal();
