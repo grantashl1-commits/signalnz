@@ -393,6 +393,7 @@ export default function BreathworkPage() {
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(
     null
   );
+  const [showFasciaRelease, setShowFasciaRelease] = useState(false);
 
   const sections = [
     { id: "breathwork" as const, label: "Breathwork" },
