@@ -487,7 +487,9 @@ export default function BreathworkPage() {
           onClose={() => setActivePractice(null)}
         />
       )}
-      </ContentSection>
+      {showFasciaRelease && (
+        <FasciaReleasePlayer onClose={() => setShowFasciaRelease(false)} />
+      )}
     </div>
     </GatedPage>
   );
