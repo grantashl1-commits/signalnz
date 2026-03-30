@@ -18,6 +18,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
   const [secondsLeft, setSecondsLeft] = useState(FASCIA_EXERCISES[0].durationSec);
   const [transitionCount, setTransitionCount] = useState(TRANSITION_SECONDS);
   const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // TTS audio refs
@@ -58,24 +59,24 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
   // Play TTS for current exercise
   const playTTS = useCallback(
     async (ex: FasciaExercise, idx: number) => {
-      if (muted) return;
+      if (mutedRef.current) return;
 
       // Check prefetch cache
       if (prefetchedAudioRef.current?.idx === idx) {
         const audio = prefetchedAudioRef.current.audio;
         prefetchedAudioRef.current = null;
         currentAudioRef.current = audio;
-        audio.play().catch(() => {});
+        try { await audio.play(); } catch { /* autoplay blocked */ }
         return;
       }
 
       const audio = await generateTTS(ex.ttsScript);
-      if (audio && !muted) {
+      if (audio && !mutedRef.current) {
         currentAudioRef.current = audio;
-        audio.play().catch(() => {});
+        try { await audio.play(); } catch { /* autoplay blocked */ }
       }
     },
-    [muted, generateTTS]
+    [generateTTS]
   );
 
   // Prefetch next exercise audio
@@ -129,8 +130,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
       clearTimeout(prefetchTimeout);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, exerciseIdx]);
+  }, [phase, exerciseIdx, playTTS, prefetchNext, exercise, totalExercises]);
 
   // ── Transition Timer ────────────────────────────────────────
   useEffect(() => {
@@ -160,6 +160,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
     haptic("light");
     setMuted((prev) => {
       const next = !prev;
+      mutedRef.current = next;
       if (next && currentAudioRef.current) {
         currentAudioRef.current.pause();
       }
