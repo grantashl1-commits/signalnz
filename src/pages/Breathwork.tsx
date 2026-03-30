@@ -1,6 +1,8 @@
 import { useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, Clock, ExternalLink } from "lucide-react";
+import fasciaReleaseImg from "@/assets/somatic/morning-fascia-release.png";
+import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -204,15 +206,65 @@ function BreathworkCards({
 // ── Somatic Cards ────────────────────────────────────────────
 function SomaticCards({
   onSelect,
+  onFasciaRelease,
 }: {
   onSelect: (p: PracticeConfig) => void;
+  onFasciaRelease: () => void;
 }) {
   return (
     <div className="space-y-3">
+      {/* Morning Fascia Release — special card */}
+      <motion.div
+        custom={0}
+        initial="hidden"
+        animate="visible"
+        variants={cardVariant}
+        className="card-warm p-5"
+      >
+        <div className="flex gap-3 items-start mb-3">
+          <img
+            src={fasciaReleaseImg}
+            alt="Morning Fascia Release"
+            className="w-[42px] h-[42px] object-contain flex-shrink-0 rounded-lg"
+            loading="lazy"
+            width={42}
+            height={42}
+          />
+          <div className="flex-1 min-w-0">
+            <h3 className="font-display text-lg italic text-foreground mb-1">
+              Morning Fascia Release
+            </h3>
+            <div className="flex gap-1.5 mb-1.5 flex-wrap">
+              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
+                full body
+              </span>
+              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">
+                7 min
+              </span>
+              <span className="flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                <Volume2 className="h-3 w-3" /> guided
+              </span>
+            </div>
+            <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed">
+              A 7-move morning sequence to wake up the fascia, move the lymph, and reset your nervous system.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => {
+            haptic("medium");
+            onFasciaRelease();
+          }}
+          className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+        >
+          begin this practice →
+        </button>
+      </motion.div>
+
       {SOMATIC_PRACTICES.map((p, i) => (
         <motion.div
           key={p.id}
-          custom={i}
+          custom={i + 1}
           initial="hidden"
           animate="visible"
           variants={cardVariant}
@@ -341,6 +393,7 @@ export default function BreathworkPage() {
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(
     null
   );
+  const [showFasciaRelease, setShowFasciaRelease] = useState(false);
 
   const sections = [
     { id: "breathwork" as const, label: "Breathwork" },
@@ -412,7 +465,7 @@ export default function BreathworkPage() {
             <BreathworkCards onSelect={setActivePractice} />
           )}
           {section === "somatic" && (
-            <SomaticCards onSelect={setActivePractice} />
+            <SomaticCards onSelect={setActivePractice} onFasciaRelease={() => setShowFasciaRelease(true)} />
           )}
           {section === "meditations" && <MeditationsSection />}
         </motion.div>
@@ -433,6 +486,9 @@ export default function BreathworkPage() {
           practice={activePractice}
           onClose={() => setActivePractice(null)}
         />
+      )}
+      {showFasciaRelease && (
+        <FasciaReleasePlayer onClose={() => setShowFasciaRelease(false)} />
       )}
       </ContentSection>
     </div>
