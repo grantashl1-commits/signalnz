@@ -130,8 +130,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
       clearTimeout(prefetchTimeout);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, exerciseIdx]);
+  }, [phase, exerciseIdx, playTTS, prefetchNext, exercise, totalExercises]);
 
   // ── Transition Timer ────────────────────────────────────────
   useEffect(() => {
