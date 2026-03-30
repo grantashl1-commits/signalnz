@@ -18,6 +18,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
   const [secondsLeft, setSecondsLeft] = useState(FASCIA_EXERCISES[0].durationSec);
   const [transitionCount, setTransitionCount] = useState(TRANSITION_SECONDS);
   const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // TTS audio refs
