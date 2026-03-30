@@ -59,24 +59,24 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
   // Play TTS for current exercise
   const playTTS = useCallback(
     async (ex: FasciaExercise, idx: number) => {
-      if (muted) return;
+      if (mutedRef.current) return;
 
       // Check prefetch cache
       if (prefetchedAudioRef.current?.idx === idx) {
         const audio = prefetchedAudioRef.current.audio;
         prefetchedAudioRef.current = null;
         currentAudioRef.current = audio;
-        audio.play().catch(() => {});
+        try { await audio.play(); } catch { /* autoplay blocked */ }
         return;
       }
 
       const audio = await generateTTS(ex.ttsScript);
-      if (audio && !muted) {
+      if (audio && !mutedRef.current) {
         currentAudioRef.current = audio;
-        audio.play().catch(() => {});
+        try { await audio.play(); } catch { /* autoplay blocked */ }
       }
     },
-    [muted, generateTTS]
+    [generateTTS]
   );
 
   // Prefetch next exercise audio
