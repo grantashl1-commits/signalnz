@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, Clock, ExternalLink, Leaf } from "lucide-react";
+import { Volume2, Clock, ExternalLink } from "lucide-react";
 import fasciaReleaseImg from "@/assets/somatic/morning-fascia-release.png";
 import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
 import { SeedGeometry, BotanicalSprig } from "@/components/BotanicalElements";
