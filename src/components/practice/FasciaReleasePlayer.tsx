@@ -160,6 +160,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
     haptic("light");
     setMuted((prev) => {
       const next = !prev;
+      mutedRef.current = next;
       if (next && currentAudioRef.current) {
         currentAudioRef.current.pause();
       }
