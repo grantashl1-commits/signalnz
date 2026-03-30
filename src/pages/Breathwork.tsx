@@ -490,6 +490,7 @@ export default function BreathworkPage() {
       {showFasciaRelease && (
         <FasciaReleasePlayer onClose={() => setShowFasciaRelease(false)} />
       )}
+      </ContentSection>
     </div>
     </GatedPage>
   );
