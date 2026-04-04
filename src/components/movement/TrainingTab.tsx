@@ -127,9 +127,9 @@ export default function TrainingTab() {
           )}
 
           {/* Phase focus */}
-          {phases[selectedPhaseIdx]?.focus && (
+          {phases[selectedPhaseIdx]?.phase_goal && (
             <p className="font-body text-sm text-muted-foreground leading-relaxed">
-              {phases[selectedPhaseIdx].focus}
+              {phases[selectedPhaseIdx].phase_goal}
             </p>
           )}
 
