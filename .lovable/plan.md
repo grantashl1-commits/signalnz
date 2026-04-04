@@ -1,189 +1,55 @@
 
-
-# Signal App — Multi-Fix & Enhancement Plan
-
-This plan addresses 15+ issues raised across Community, Movement, Nutrition, Journal, and Coach pages.
-
----
-
-## 1. Remove Coach Tile from Homepage
-
-**File:** `src/pages/Index.tsx`
-
-Remove the "My Coach" tile from the "Your day at a glance" section (the tile linking to `/coach` with "AI Training & Nutrition" text around lines 329-335).
-
----
-
-## 2. Enrich AI Prompts in generate-plan Edge Function
-
-**File:** `supabase/functions/generate-plan/index.ts`
-
-Update the training and nutrition prompts sent to Gemini to include richer context:
-- Add body measurements data to the prompt
-- Include recent journal reflections (query from localStorage-synced entries or a new journal_entries table)
-- Add cycle phase guidance and phase-specific nutrition rules (from existing `PHASE_GUIDANCE` and `GOAL_GUIDANCE`)
-- Make meal suggestions generic (not specific like "roasted tofu tray") — update prompt rules to say "use common, everyday ingredients accessible in NZ supermarkets"
-- Add a "stay on this page" caption in the Coach UI while generating
-
----
-
-## 3. Fix Location Services on Mobile
-
-**File:** `src/components/community/NearbyView.tsx`
-
-The location flow uses Google Geocode API but `VITE_GOOGLE_MAPS_API_KEY` may not be set, causing "Couldn't determine your suburb" error. Fix:
-- Add fallback using browser's built-in reverse geocoding or a free Nominatim API when Google key is missing
-- Ensure only suburb-level data is stored (already fuzzed by ~500m, which is good)
-- Show a better error message if geolocation permission is denied on mobile
-
----
-
-## 4. Make "I'm Going" Clickable on Events in Chat
-
-**File:** `src/components/community/ChatRoom.tsx`
-
-The event "I'm going" button (line 134) has no click handler. Add:
-- onClick handler that increments the `going` count
-- Toggle state so user can un-RSVP
-- Visual feedback showing the user has RSVP'd
-
----
-
-## 5. Image & Voice Buttons in Chat
-
-**File:** `src/components/community/ChatRoom.tsx`
-
-Lines 227-228 show image and voice buttons with empty `action: () => {}`. Implement:
-- **Image:** Open file picker, display selected image as a message with type "image"
-- **Voice:** Use MediaRecorder API for short voice clips, display as playable audio message
-- Add new message types to the ChatMessage interface
-
----
-
-## 6. Moderation Explanation
-
-The moderation system (in `supabase/functions/community-moderate/index.ts`) uses AI to evaluate messages. It:
-- **Flags:** personal attacks, contempt, shaming, belittling
-- **Allows:** frustration, directness, disagreement, mild profanity, strong opinions
-- Example: "That's a shit idea, I'm not coming" would likely be flagged as contemptuous/dismissive. The AI returns a reflection question and suggested rewrite.
-
-No code changes needed here — this is informational. The system is working as shown in the screenshot.
-
----
-
-## 7. Challenges Tab — Show Content for Joined Groups
-
-**File:** `src/components/community/ChallengesPanel.tsx`
-
-The tab shows empty because `joined` state uses localStorage group IDs that may not match database UUIDs. Fix:
-- Also query groups where the user has a `community_memberships` record
-- Add default challenges for groups that have empty challenges arrays
-
----
-
-## 8. Community Profile — Save to Database
-
-**File:** `src/components/community/CommunityProfile.tsx`
-
-Currently saves to localStorage only. Wire up to Supabase:
-- Create a `community_profiles` table (or extend `profiles`) to store career, skills, offer, etc.
-- Save button writes to database
-- Other users can view profiles when clicking on members
-
----
-
-## 9. View Community Members' Profiles
-
-**Files:** `src/components/community/NearbyView.tsx`, `src/components/community/ChatRoom.tsx`
-
-Add clickable member cards that open a profile sheet showing their public fields (skills, offer, community vision).
-
----
-
-## 10. Memory Vault — Show Saved Activity Entries
-
-**File:** `src/components/journal/MemoryVault.tsx`
-
-Journal entries saved via "Save to Vault" should appear. The vault uses `loadVault()` from `journal-store.ts`. Verify the save flow in JournalEntries properly calls `saveVault()` and entries appear in the correct categories. If activities (like "Letter to Future Self") are saved as entries but not explicitly vaulted, add an option to auto-vault completed activities.
-
----
-
-## 11. Movement Today — Remove Duplicate Phase Phrases
-
-**File:** `src/pages/Movement.tsx`
-
-Lines 241-262 show three overlapping elements:
-1. Phase banner with "Drop intensity 20%..." (line 250)
-2. Training week label with phase note (line 255-257)
-3. Phase guidance block (line 260-262)
-
-Remove the standalone phase guidance block (item 3) since it duplicates the banner text.
-
----
-
-## 12. My Log — Fix Stats & Remove Duplicate Week Blocks
-
-**File:** `src/pages/Movement.tsx`
-
-- The "This Week" mini calendar + stats block (lines 526-548) duplicates the monthly calendar. Remove the weekly mini-calendar, the 3-stat row below it, and the training week label block (lines 564-568).
-- Fix stat calculations: derive workouts/minutes from actual `getLoggedWorkouts()` data for the visible week, not hardcoded zeros.
-
----
-
-## 13. Heart Rate Monitor — Persist Across Navigation
-
-**Files:** `src/pages/Movement.tsx`, `src/components/movement/LiveHRView.tsx`
-
-- Move HR connection state to a context/global store so it persists when switching tabs
-- Add an "X" close button to the HR modal that hides the UI but keeps the Bluetooth connection active
-- Show a small floating indicator when HR is connected but modal is closed
-
----
-
-## 14. 3D Body Visualizer
-
-**File:** `src/components/BodyVisualisationCard.tsx` or new component
-
-The current card collects measurements but doesn't render a 3D body. Building a full 3D body visualizer like bodyvisualizer.com requires Three.js with a parametric human mesh. This is a significant feature:
-- Use Three.js + a simple parametric body mesh
-- Map saved measurements to body proportions
-- Render in the Body tab of Movement
-
-This is a large standalone task and may need to be phased.
-
----
-
-## 15. AI Recipes — Fridge Ingredient Input
-
-**File:** `src/components/nutrition/AIRecipesTab.tsx`
-
-Transform from static recipe filtering to AI-powered generation:
-- Add a "What's in your fridge?" text input
-- Call an edge function that sends fridge contents + user dietary preferences to Gemini
-- Generate custom recipes with those ingredients
-- Keep existing recipe browsing as a fallback tab
-
----
-
-## 16. Coach Page — Stay-on-Page Caption
-
-**File:** `src/pages/Coach.tsx`
-
-Add a caption under the generate button: "Please stay on this page while your plan is being created" visible during loading state.
-
----
-
-## Execution Priority
-
-1. Quick fixes: Remove coach tile from homepage, remove duplicate movement phrases, remove duplicate log blocks, fix "I'm going" button, add stay-on-page caption
-2. Medium fixes: Fix location services, fix challenges tab, wire profile save, fix vault entries, fix log stats, image/voice chat buttons
-3. Larger features: Enrich AI prompts, AI fridge recipes, HR persistence, member profile viewing
-4. Major feature (separate phase): 3D body visualizer
-
----
-
-## Database Changes Required
-
-- New migration for `community_profiles` table (or add columns to `profiles`) for career/skills/offer fields
-- RLS policies for community profile data (public read for visible fields, owner write)
-
+# Signal Exercise & Program System — Build Plan
+
+## Phase 1: Database Schema (Migration)
+Create 4 new tables and extend the existing `exercises` table:
+
+### New tables:
+- **`goal_categories`** — 11 training goals with slug, label, description, intensity range, hormonal notes
+- **`training_programs`** — 8 programs linked to goal categories, with duration, equipment, description
+- **`program_phases`** — Phase blocks within each program (e.g. 3 × 4-week), with RPE targets
+- **`workout_templates`** — Individual sessions within phases (Day A, B, C etc), warmup/cooldown notes, duration
+- **`workout_exercises`** — Join table linking templates to exercises with sets, reps, rest, RPE, load guidance, progression notes, superset info
+
+### Extend `exercises` table:
+- Add columns: `category`, `primary_muscles` (jsonb), `difficulty` (int), `cues` (jsonb), `is_low_impact`, `is_somatic`, `evidence_source`
+- Keep existing columns for backward compatibility
+
+### Add `goal_category_id` to `profiles`:
+- So each user's selected training goal is persisted
+
+### RLS:
+- All program/exercise tables: read-only for authenticated users
+- Profiles: existing policies already cover goal updates
+
+## Phase 2: Seed Data
+- Insert all 11 goal categories
+- Insert 8 training programs
+- Insert program phases, workout templates, and workout exercises
+- Update existing exercises with new fields + insert new exercises
+- Insert 52 stretches into exercises table (with category = 'stretch')
+
+*Note: Full seed data for 120 exercises × sets/reps across 8 programs is extensive. I'll create a representative seed covering all 11 goals, 8 programs, and a subset of exercises/workouts to demonstrate the full flow. You can expand the data later.*
+
+## Phase 3: UI — Goal Selection Screen
+- Beautiful card grid showing all 11 goals
+- Each card: label, description, intensity bar, hormonal note (expandable)
+- Integrated into both **onboarding flow** (new step) and **Movement page** (shown if no goal set, changeable from settings)
+- Saves selection to `profiles.goal_category_id`
+
+## Phase 4: UI — Program Assignment
+- After goal selection, show the matched program
+- Display: title, duration, intensity, description, equipment, phase overview
+- "Start Program" button to begin
+
+## Phase 5: UI — Workout Delivery
+- Session view querying current phase → today's workout template → exercises
+- Each exercise shown with: name, sets, reps, rest, RPE, load guidance
+- **Coaching cues** visually distinct from instructions (Signal brand differentiator)
+- Warmup/cooldown sections from template notes
+
+## Key Design Principles:
+- Goal selection is a premium onboarding moment — not a dropdown
+- Hormonal/cycle notes surfaced prominently (brand differentiator)
+- Coaching cues styled distinctly from instructions
+- Follows existing Signal design system (purple hero, ivory cards, same typography)
