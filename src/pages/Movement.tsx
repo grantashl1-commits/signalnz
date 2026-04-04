@@ -155,6 +155,7 @@ export default function MovementPage() {
 
   const TABS = [
     { id: "today" as const, label: "Today" },
+    { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "body" as const, label: "Body" },
