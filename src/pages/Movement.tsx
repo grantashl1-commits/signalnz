@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { GatedPage } from "@/components/FeatureGate";
@@ -25,6 +25,7 @@ import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
+import TrainingTab from "@/components/movement/TrainingTab";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
@@ -45,7 +46,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "library" | "log" | "progress" | "body">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress" | "body">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -155,6 +156,7 @@ export default function MovementPage() {
 
   const TABS = [
     { id: "today" as const, label: "Today" },
+    { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "body" as const, label: "Body" },
@@ -696,6 +698,9 @@ export default function MovementPage() {
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
+
+      {/* TRAINING TAB */}
+      {activeTab === "training" && <TrainingTab />}
 
       {/* Floating HR button on today/library */}
       {(activeTab === "today" || activeTab === "library") && (
