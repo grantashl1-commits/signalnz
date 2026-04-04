@@ -20,37 +20,44 @@ export interface TrainingProgram {
   description: string | null;
   who_its_for: string | null;
   duration_weeks: number;
-  days_per_week: number;
-  intensity_level: string | null;
-  equipment: string[] | null;
+  sessions_per_week: number;
+  intensity_level: number | null;
+  equipment_needed: string[] | null;
+  slug: string | null;
+  phase_structure: string | null;
+  evidence_basis: string | null;
+  tags: string[] | null;
 }
 
 export interface ProgramPhase {
   id: string;
   program_id: string;
   phase_number: number;
-  name: string;
-  duration_weeks: number;
-  rpe_min: number | null;
-  rpe_max: number | null;
-  focus: string | null;
+  title: string;
+  week_start: number | null;
+  week_end: number | null;
+  rpe_target_min: number | null;
+  rpe_target_max: number | null;
+  phase_goal: string | null;
 }
 
 export interface WorkoutTemplate {
   id: string;
   phase_id: string;
-  day_label: string;
-  session_name: string;
+  program_id: string | null;
+  session_number: number | null;
+  title: string;
+  day_label: string | null;
+  session_type: string | null;
   warmup_notes: string | null;
   cooldown_notes: string | null;
   session_notes: string | null;
-  estimated_duration_min: number;
-  sort_order: number;
+  estimated_duration_mins: number;
 }
 
 export interface WorkoutExercise {
   id: string;
-  workout_template_id: string;
+  workout_id: string;
   exercise_id: string;
   order_index: number;
   sets: number | null;
@@ -66,11 +73,11 @@ export interface WorkoutExercise {
     name: string;
     body_part: string | null;
     target: string | null;
-    equipment: string | null;
-    instructions: any;
-    cues: any;
+    equipment: string[] | null;
+    instructions: string | null;
+    cues: string[] | null;
     category: string | null;
-    primary_muscles: any;
+    primary_muscles: string[] | null;
     difficulty: number | null;
     is_low_impact: boolean | null;
     is_somatic: boolean | null;
@@ -124,7 +131,6 @@ export function useTrainingProgram() {
         if (data) {
           const prog = data as unknown as TrainingProgram;
           setProgram(prog);
-          // Fetch phases
           supabase
             .from("program_phases")
             .select("*")
@@ -148,22 +154,20 @@ export function useTrainingProgram() {
       .upsert({ user_id: user.id, goal_category_id: goalId } as any, { onConflict: "user_id" });
   }, [user]);
 
-  // Fetch workouts for a specific phase
   const fetchWorkouts = useCallback(async (phaseId: string): Promise<WorkoutTemplate[]> => {
     const { data } = await supabase
       .from("workout_templates")
       .select("*")
       .eq("phase_id", phaseId)
-      .order("sort_order");
+      .order("session_number");
     return (data as unknown as WorkoutTemplate[]) || [];
   }, []);
 
-  // Fetch exercises for a specific workout
   const fetchWorkoutExercises = useCallback(async (templateId: string): Promise<WorkoutExercise[]> => {
     const { data } = await supabase
       .from("workout_exercises")
-      .select("*, exercise:exercises(*)")
-      .eq("workout_template_id", templateId)
+      .select(`*, exercise:exercises(*)`)
+      .eq("workout_id", templateId)
       .order("order_index");
     return (data as unknown as WorkoutExercise[]) || [];
   }, []);
