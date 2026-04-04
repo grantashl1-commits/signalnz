@@ -178,7 +178,7 @@ export default function TrainingTab() {
         <WorkoutSessionView
           template={activeWorkout}
           exercises={activeExercises}
-          phaseName={phases[selectedPhaseIdx]?.name}
+          phaseName={phases[selectedPhaseIdx]?.title}
           onBack={() => setView("phase-workouts")}
         />
       )}
