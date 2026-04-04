@@ -120,7 +120,7 @@ export default function TrainingTab() {
                       : "bg-card text-muted-foreground border-border hover:bg-muted/30"
                   }`}
                 >
-                  Phase {ph.phase_number}: {ph.name}
+                  Phase {ph.phase_number}: {ph.title}
                 </button>
               ))}
             </div>
