@@ -25,6 +25,7 @@ import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
+import TrainingTab from "@/components/movement/TrainingTab";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
