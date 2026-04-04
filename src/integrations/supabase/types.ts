@@ -274,52 +274,55 @@ export type Database = {
         Row: {
           body_part: string | null
           category: string | null
-          cues: Json | null
+          cues: string[] | null
           difficulty: number | null
-          equipment: string | null
+          equipment: string[] | null
           evidence_source: string | null
           gif_url: string | null
           id: string
-          instructions: Json | null
+          instructions: string | null
           is_low_impact: boolean | null
           is_somatic: boolean | null
           name: string
-          primary_muscles: Json | null
-          secondary_muscles: Json | null
+          primary_muscles: string[] | null
+          secondary_muscles: string[] | null
+          slug: string | null
           target: string | null
         }
         Insert: {
           body_part?: string | null
           category?: string | null
-          cues?: Json | null
+          cues?: string[] | null
           difficulty?: number | null
-          equipment?: string | null
+          equipment?: string[] | null
           evidence_source?: string | null
           gif_url?: string | null
           id: string
-          instructions?: Json | null
+          instructions?: string | null
           is_low_impact?: boolean | null
           is_somatic?: boolean | null
           name: string
-          primary_muscles?: Json | null
-          secondary_muscles?: Json | null
+          primary_muscles?: string[] | null
+          secondary_muscles?: string[] | null
+          slug?: string | null
           target?: string | null
         }
         Update: {
           body_part?: string | null
           category?: string | null
-          cues?: Json | null
+          cues?: string[] | null
           difficulty?: number | null
-          equipment?: string | null
+          equipment?: string[] | null
           evidence_source?: string | null
           gif_url?: string | null
           id?: string
-          instructions?: Json | null
+          instructions?: string | null
           is_low_impact?: boolean | null
           is_somatic?: boolean | null
           name?: string
-          primary_muscles?: Json | null
-          secondary_muscles?: Json | null
+          primary_muscles?: string[] | null
+          secondary_muscles?: string[] | null
+          slug?: string | null
           target?: string | null
         }
         Relationships: []
@@ -640,36 +643,39 @@ export type Database = {
       program_phases: {
         Row: {
           created_at: string
-          duration_weeks: number
-          focus: string | null
           id: string
-          name: string
+          phase_goal: string | null
           phase_number: number
           program_id: string
-          rpe_max: number | null
-          rpe_min: number | null
+          rpe_target_max: number | null
+          rpe_target_min: number | null
+          title: string
+          week_end: number | null
+          week_start: number | null
         }
         Insert: {
           created_at?: string
-          duration_weeks?: number
-          focus?: string | null
           id: string
-          name: string
+          phase_goal?: string | null
           phase_number: number
           program_id: string
-          rpe_max?: number | null
-          rpe_min?: number | null
+          rpe_target_max?: number | null
+          rpe_target_min?: number | null
+          title: string
+          week_end?: number | null
+          week_start?: number | null
         }
         Update: {
           created_at?: string
-          duration_weeks?: number
-          focus?: string | null
           id?: string
-          name?: string
+          phase_goal?: string | null
           phase_number?: number
           program_id?: string
-          rpe_max?: number | null
-          rpe_min?: number | null
+          rpe_target_max?: number | null
+          rpe_target_min?: number | null
+          title?: string
+          week_end?: number | null
+          week_start?: number | null
         }
         Relationships: [
           {
@@ -804,37 +810,49 @@ export type Database = {
       training_programs: {
         Row: {
           created_at: string
-          days_per_week: number
           description: string | null
           duration_weeks: number
-          equipment: string[] | null
+          equipment_needed: string[] | null
+          evidence_basis: string | null
           goal_category_id: string
           id: string
-          intensity_level: string | null
+          intensity_level: number | null
+          phase_structure: string | null
+          sessions_per_week: number
+          slug: string | null
+          tags: string[] | null
           title: string
           who_its_for: string | null
         }
         Insert: {
           created_at?: string
-          days_per_week?: number
           description?: string | null
           duration_weeks?: number
-          equipment?: string[] | null
+          equipment_needed?: string[] | null
+          evidence_basis?: string | null
           goal_category_id: string
           id: string
-          intensity_level?: string | null
+          intensity_level?: number | null
+          phase_structure?: string | null
+          sessions_per_week?: number
+          slug?: string | null
+          tags?: string[] | null
           title: string
           who_its_for?: string | null
         }
         Update: {
           created_at?: string
-          days_per_week?: number
           description?: string | null
           duration_weeks?: number
-          equipment?: string[] | null
+          equipment_needed?: string[] | null
+          evidence_basis?: string | null
           goal_category_id?: string
           id?: string
-          intensity_level?: string | null
+          intensity_level?: number | null
+          phase_structure?: string | null
+          sessions_per_week?: number
+          slug?: string | null
+          tags?: string[] | null
           title?: string
           who_its_for?: string | null
         }
@@ -1054,7 +1072,7 @@ export type Database = {
           rpe_target: number | null
           sets: number | null
           superset_group: string | null
-          workout_template_id: string
+          workout_id: string
         }
         Insert: {
           created_at?: string
@@ -1069,7 +1087,7 @@ export type Database = {
           rpe_target?: number | null
           sets?: number | null
           superset_group?: string | null
-          workout_template_id: string
+          workout_id: string
         }
         Update: {
           created_at?: string
@@ -1084,7 +1102,7 @@ export type Database = {
           rpe_target?: number | null
           sets?: number | null
           superset_group?: string | null
-          workout_template_id?: string
+          workout_id?: string
         }
         Relationships: [
           {
@@ -1096,7 +1114,7 @@ export type Database = {
           },
           {
             foreignKeyName: "workout_exercises_workout_template_id_fkey"
-            columns: ["workout_template_id"]
+            columns: ["workout_id"]
             isOneToOne: false
             referencedRelation: "workout_templates"
             referencedColumns: ["id"]
@@ -1137,37 +1155,43 @@ export type Database = {
         Row: {
           cooldown_notes: string | null
           created_at: string
-          day_label: string
-          estimated_duration_min: number
+          day_label: string | null
+          estimated_duration_mins: number
           id: string
           phase_id: string
-          session_name: string
+          program_id: string | null
           session_notes: string | null
-          sort_order: number
+          session_number: number | null
+          session_type: string | null
+          title: string
           warmup_notes: string | null
         }
         Insert: {
           cooldown_notes?: string | null
           created_at?: string
-          day_label: string
-          estimated_duration_min?: number
+          day_label?: string | null
+          estimated_duration_mins?: number
           id: string
           phase_id: string
-          session_name: string
+          program_id?: string | null
           session_notes?: string | null
-          sort_order?: number
+          session_number?: number | null
+          session_type?: string | null
+          title: string
           warmup_notes?: string | null
         }
         Update: {
           cooldown_notes?: string | null
           created_at?: string
-          day_label?: string
-          estimated_duration_min?: number
+          day_label?: string | null
+          estimated_duration_mins?: number
           id?: string
           phase_id?: string
-          session_name?: string
+          program_id?: string | null
           session_notes?: string | null
-          sort_order?: number
+          session_number?: number | null
+          session_type?: string | null
+          title?: string
           warmup_notes?: string | null
         }
         Relationships: [
@@ -1176,6 +1200,13 @@ export type Database = {
             columns: ["phase_id"]
             isOneToOne: false
             referencedRelation: "program_phases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_templates_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "training_programs"
             referencedColumns: ["id"]
           },
         ]
