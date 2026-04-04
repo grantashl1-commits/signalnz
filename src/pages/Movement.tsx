@@ -699,6 +699,9 @@ export default function MovementPage() {
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
 
+      {/* TRAINING TAB */}
+      {activeTab === "training" && <TrainingTab />}
+
       {/* Floating HR button on today/library */}
       {(activeTab === "today" || activeTab === "library") && (
         <button
