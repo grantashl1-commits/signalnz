@@ -154,7 +154,7 @@ export default function TrainingTab() {
                       <p className="font-mono text-[10px] text-primary uppercase tracking-[0.15em]">{wt.day_label}</p>
                       <h3 className="font-display text-base font-bold text-foreground mt-0.5">{wt.title}</h3>
                     </div>
-                    <span className="font-body text-xs text-muted-foreground shrink-0">{wt.estimated_duration_min} min</span>
+                    <span className="font-body text-xs text-muted-foreground shrink-0">{wt.estimated_duration_mins} min</span>
                   </div>
                   {wt.session_notes && (
                     <p className="font-body text-xs text-muted-foreground mt-1.5 line-clamp-2">{wt.session_notes}</p>
