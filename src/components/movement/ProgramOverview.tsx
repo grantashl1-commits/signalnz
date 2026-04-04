@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Clock, Calendar, Dumbbell, Target, ChevronRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import type { TrainingProgram, ProgramPhase } from "@/hooks/useTrainingProgram";
 
 interface Props {
@@ -42,28 +41,28 @@ export default function ProgramOverview({ program, phases, onStartProgram, onCha
           </div>
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 text-primary" />
-            <span className="font-body text-sm text-foreground">{program.days_per_week} days/week</span>
+            <span className="font-body text-sm text-foreground">{program.sessions_per_week} days/week</span>
           </div>
           {program.intensity_level && (
             <div className="flex items-center gap-1.5">
               <Zap className="h-4 w-4 text-primary" />
-              <span className="font-body text-sm text-foreground">{program.intensity_level}</span>
+              <span className="font-body text-sm text-foreground">Intensity {program.intensity_level}/10</span>
             </div>
           )}
         </div>
 
         {/* Equipment */}
-        {program.equipment && program.equipment.length > 0 && (
+        {program.equipment_needed && program.equipment_needed.length > 0 && (
           <div className="pt-2">
             <p className="font-body text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Equipment</p>
             <div className="flex flex-wrap gap-1.5">
-              {program.equipment.map((eq) => (
+              {program.equipment_needed.map((eq) => (
                 <span
                   key={eq}
                   className="inline-flex items-center gap-1 rounded-full bg-muted/30 px-2.5 py-1 font-body text-xs text-foreground"
                 >
                   <Dumbbell className="h-3 w-3 text-muted-foreground" />
-                  {eq}
+                  {eq.replace(/_/g, " ")}
                 </span>
               ))}
             </div>
@@ -83,36 +82,41 @@ export default function ProgramOverview({ program, phases, onStartProgram, onCha
         <div className="space-y-3">
           <h3 className="font-display text-lg font-bold text-foreground">Program phases</h3>
           <div className="space-y-2">
-            {phases.map((phase, i) => (
-              <motion.div
-                key={phase.id}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="rounded-xl bg-card border border-border p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <span className="font-display text-sm font-bold text-primary">{phase.phase_number}</span>
+            {phases.map((phase, i) => {
+              const weekRange = phase.week_start && phase.week_end
+                ? `Weeks ${phase.week_start}–${phase.week_end}`
+                : null;
+              return (
+                <motion.div
+                  key={phase.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  className="rounded-xl bg-card border border-border p-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <span className="font-display text-sm font-bold text-primary">{phase.phase_number}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-display text-sm font-bold text-foreground">{phase.title}</h4>
+                        <p className="font-body text-xs text-muted-foreground">
+                          {weekRange}
+                          {phase.rpe_target_min && phase.rpe_target_max && ` · RPE ${phase.rpe_target_min}–${phase.rpe_target_max}`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-display text-sm font-bold text-foreground">{phase.name}</h4>
-                      <p className="font-body text-xs text-muted-foreground">
-                        {phase.duration_weeks} {phase.duration_weeks === 1 ? "week" : "weeks"}
-                        {phase.rpe_min && phase.rpe_max && ` · RPE ${phase.rpe_min}–${phase.rpe_max}`}
-                      </p>
-                    </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </div>
-                {phase.focus && (
-                  <p className="font-body text-xs text-muted-foreground mt-2 leading-relaxed pl-11">
-                    {phase.focus}
-                  </p>
-                )}
-              </motion.div>
-            ))}
+                  {phase.phase_goal && (
+                    <p className="font-body text-xs text-muted-foreground mt-2 leading-relaxed pl-11">
+                      {phase.phase_goal}
+                    </p>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       )}

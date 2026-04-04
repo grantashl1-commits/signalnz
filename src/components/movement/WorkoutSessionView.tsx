@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Clock, Dumbbell, ChevronDown, ChevronUp, Target, Flame, MessageCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -60,15 +60,15 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         </button>
         <div className="flex-1 min-w-0">
           <p className="font-mono text-[10px] text-primary uppercase tracking-[0.15em]">
-            {template.day_label} · {phaseName || ""}
+            {template.day_label || `Session ${template.session_number || ""}`} · {phaseName || ""}
           </p>
           <h2 className="font-display text-xl font-extrabold text-foreground truncate">
-            {template.session_name}
+            {template.title}
           </h2>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="font-body text-xs text-muted-foreground">{template.estimated_duration_min} min</span>
+          <span className="font-body text-xs text-muted-foreground">{template.estimated_duration_mins} min</span>
         </div>
       </div>
 
@@ -95,7 +95,6 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         
         {groupedExercises.map((item, idx) => {
           if (Array.isArray(item)) {
-            // Superset group
             return (
               <div key={`superset-${idx}`} className="rounded-xl border-2 border-primary/20 overflow-hidden">
                 <div className="bg-primary/5 px-3.5 py-1.5">
@@ -171,7 +170,7 @@ function ExerciseCard({
   const exercise = ex.exercise;
   if (!exercise) return null;
 
-  const instructions = Array.isArray(exercise.instructions) ? exercise.instructions : [];
+  const instructions = exercise.instructions ? [exercise.instructions] : [];
   const cues = Array.isArray(exercise.cues) ? exercise.cues : [];
 
   return (
@@ -184,7 +183,6 @@ function ExerciseCard({
         className="w-full p-3.5 text-left"
       >
         <div className="flex items-start gap-3">
-          {/* Complete toggle */}
           <button
             onClick={(e) => { e.stopPropagation(); onToggleComplete(); }}
             className={cn(
@@ -204,28 +202,18 @@ function ExerciseCard({
             )}>
               {exercise.name}
             </h4>
-
-            {/* Sets / Reps / Rest row */}
             <div className="flex flex-wrap gap-3 mt-1">
               {ex.sets && (
-                <span className="font-body text-xs text-muted-foreground">
-                  {ex.sets} sets
-                </span>
+                <span className="font-body text-xs text-muted-foreground">{ex.sets} sets</span>
               )}
               {ex.reps && (
-                <span className="font-body text-xs text-muted-foreground">
-                  {ex.reps} reps
-                </span>
+                <span className="font-body text-xs text-muted-foreground">{ex.reps} reps</span>
               )}
               {ex.rest_seconds != null && ex.rest_seconds > 0 && (
-                <span className="font-body text-xs text-muted-foreground">
-                  {ex.rest_seconds}s rest
-                </span>
+                <span className="font-body text-xs text-muted-foreground">{ex.rest_seconds}s rest</span>
               )}
               {ex.rpe_target != null && (
-                <span className="font-mono text-[10px] text-primary uppercase">
-                  RPE {ex.rpe_target}
-                </span>
+                <span className="font-mono text-[10px] text-primary uppercase">RPE {ex.rpe_target}</span>
               )}
             </div>
           </div>
@@ -246,7 +234,6 @@ function ExerciseCard({
             className="overflow-hidden"
           >
             <div className="px-3.5 pb-4 pt-1 space-y-3 pl-[3.25rem]">
-              {/* Load guidance */}
               {ex.load_guidance && (
                 <div className="flex items-start gap-2">
                   <Dumbbell className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
@@ -254,7 +241,6 @@ function ExerciseCard({
                 </div>
               )}
 
-              {/* Instructions */}
               {instructions.length > 0 && (
                 <div>
                   <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-wider mb-1">How to</p>
@@ -264,7 +250,6 @@ function ExerciseCard({
                 </div>
               )}
 
-              {/* Coaching cues — visually distinct */}
               {cues.length > 0 && (
                 <div className="rounded-lg bg-primary/5 border border-primary/10 p-3">
                   <div className="flex items-center gap-1.5 mb-2">
@@ -282,7 +267,6 @@ function ExerciseCard({
                 </div>
               )}
 
-              {/* Progression notes */}
               {ex.progression_notes && (
                 <div className="flex items-start gap-2">
                   <Target className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />

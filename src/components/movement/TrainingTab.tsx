@@ -120,16 +120,16 @@ export default function TrainingTab() {
                       : "bg-card text-muted-foreground border-border hover:bg-muted/30"
                   }`}
                 >
-                  Phase {ph.phase_number}: {ph.name}
+                  Phase {ph.phase_number}: {ph.title}
                 </button>
               ))}
             </div>
           )}
 
           {/* Phase focus */}
-          {phases[selectedPhaseIdx]?.focus && (
+          {phases[selectedPhaseIdx]?.phase_goal && (
             <p className="font-body text-sm text-muted-foreground leading-relaxed">
-              {phases[selectedPhaseIdx].focus}
+              {phases[selectedPhaseIdx].phase_goal}
             </p>
           )}
 
@@ -152,9 +152,9 @@ export default function TrainingTab() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-mono text-[10px] text-primary uppercase tracking-[0.15em]">{wt.day_label}</p>
-                      <h3 className="font-display text-base font-bold text-foreground mt-0.5">{wt.session_name}</h3>
+                      <h3 className="font-display text-base font-bold text-foreground mt-0.5">{wt.title}</h3>
                     </div>
-                    <span className="font-body text-xs text-muted-foreground shrink-0">{wt.estimated_duration_min} min</span>
+                    <span className="font-body text-xs text-muted-foreground shrink-0">{wt.estimated_duration_mins} min</span>
                   </div>
                   {wt.session_notes && (
                     <p className="font-body text-xs text-muted-foreground mt-1.5 line-clamp-2">{wt.session_notes}</p>
@@ -178,7 +178,7 @@ export default function TrainingTab() {
         <WorkoutSessionView
           template={activeWorkout}
           exercises={activeExercises}
-          phaseName={phases[selectedPhaseIdx]?.name}
+          phaseName={phases[selectedPhaseIdx]?.title}
           onBack={() => setView("phase-workouts")}
         />
       )}
