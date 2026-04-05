@@ -308,9 +308,15 @@ ${verse.text} — ${verse.chapter}
 Write 60–100 words. Begin with a concrete image. Let the fable's shape move through your words. End with something that opens rather than closes.`;
 
     // Use Lovable AI (Gemini 2.5 Flash)
-    const aiResponse = await fetch("https://hwcgbcfqxzzhvivcdroh.supabase.co/functions/v1/proxy-ai", {
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
