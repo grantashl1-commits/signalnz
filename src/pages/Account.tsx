@@ -183,7 +183,7 @@ export default function AccountPage() {
           className="card-warm p-5"
         >
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
-            <PenLine className="h-4.5 w-4.5 text-primary" /> Display Name
+            <PenLine className="h-[1.125rem] w-[1.125rem] text-primary" /> Display Name
           </h2>
           {nameEditing ? (
             <div className="flex items-center gap-2">
@@ -242,7 +242,7 @@ export default function AccountPage() {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
-              <Crown className="h-4.5 w-4.5 text-primary" /> Subscription
+              <Crown className="h-[1.125rem] w-[1.125rem] text-primary" /> Subscription
             </h2>
             <button onClick={handleRefresh} disabled={refreshing} className="text-muted-foreground hover:text-foreground transition-colors">
               <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
@@ -321,7 +321,7 @@ export default function AccountPage() {
           className="card-warm p-5"
         >
           <h2 className="font-display text-lg italic text-foreground mb-4 flex items-center gap-2">
-            <Mail className="h-4.5 w-4.5 text-primary" /> Profile
+            <Mail className="h-[1.125rem] w-[1.125rem] text-primary" /> Profile
           </h2>
           <div className="space-y-3">
             <div>
@@ -391,7 +391,7 @@ export default function AccountPage() {
           className="card-warm p-5"
         >
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
-            <Dumbbell className="h-4.5 w-4.5 text-primary" /> My Fitness Profile
+            <Dumbbell className="h-[1.125rem] w-[1.125rem] text-primary" /> My Fitness Profile
           </h2>
           {!fitnessEditing && getFitnessProfile() ? (
             <div className="space-y-2">
@@ -465,7 +465,7 @@ export default function AccountPage() {
           className="card-warm p-5"
         >
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
-            <Heart className="h-4.5 w-4.5 text-primary" /> Heart Rate Zones
+            <Heart className="h-[1.125rem] w-[1.125rem] text-primary" /> Heart Rate Zones
           </h2>
           {!biometricsEditing && getUserAge() ? (
             <div className="space-y-2">
@@ -523,7 +523,7 @@ export default function AccountPage() {
           className="card-warm p-5"
         >
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
-            <Calendar className="h-4.5 w-4.5 text-primary" /> Date of Birth
+            <Calendar className="h-[1.125rem] w-[1.125rem] text-primary" /> Date of Birth
           </h2>
           <input
             type="date"
@@ -558,7 +558,7 @@ export default function AccountPage() {
           className="card-warm p-5"
         >
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
-            <ShoppingCart className="h-4.5 w-4.5 text-primary" /> Linked Supermarket
+            <ShoppingCart className="h-[1.125rem] w-[1.125rem] text-primary" /> Linked Supermarket
           </h2>
           <select
             value={supermarket.name}

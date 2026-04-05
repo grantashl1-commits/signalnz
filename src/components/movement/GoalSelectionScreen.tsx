@@ -170,7 +170,7 @@ export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, v
                           : selected ? "bg-primary/10" : "bg-muted/30"
                       )}>
                         <Icon className={cn(
-                          "h-4.5 w-4.5",
+                          "h-[1.125rem] w-[1.125rem]",
                           isOnboarding
                             ? selected ? "text-primary" : "text-white/70"
                             : selected ? "text-primary" : "text-muted-foreground"
