@@ -189,7 +189,7 @@ export default function HomePage() {
               whileTap={{ scale: 0.97 }}
               onClick={() => {
                 haptic("medium");
-                openSignal("Give me a signal for today", "home");
+                setGiveSignalOpen(true);
               }}
               className="relative z-10 inline-flex items-center gap-2.5 px-10 py-4.5 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
             >
