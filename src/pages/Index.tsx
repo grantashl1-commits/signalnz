@@ -191,7 +191,7 @@ export default function HomePage() {
                 haptic("medium");
                 setGiveSignalOpen(true);
               }}
-              className="relative z-10 inline-flex items-center gap-2.5 px-10 py-4.5 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
+              className="relative z-10 inline-flex items-center gap-2.5 px-10 py-[1.125rem] rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
             >
               <WildStar size={16} color="hsl(var(--primary))" />
               Give me a signal
@@ -377,7 +377,7 @@ export default function HomePage() {
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div className="h-10 w-10 rounded-full bg-background flex items-center justify-center">
-                        <tile.icon className="h-4.5 w-4.5 text-primary" />
+                        <tile.icon className="h-[1.125rem] w-[1.125rem] text-primary" />
                       </div>
                       <span className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
                         {tile.label}

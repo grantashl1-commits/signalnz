@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Headphones, BookOpen, Heart, Moon, Clock, Check, Loader2, Play, Sparkles, ExternalLink } from "lucide-react";
 import DailyStoicCard from "@/components/DailyStoicCard";
 import { GatedPage } from "@/components/FeatureGate";
@@ -580,9 +581,9 @@ export default function NervousSystemPage() {
 
           {/* Breathwork link */}
           <div className="mt-8 text-center">
-            <a href="/breathwork" className="font-body text-sm text-primary hover:underline">
+            <Link to="/breathwork" className="font-body text-sm text-primary hover:underline">
               For breathwork and body-based practices → Breathwork
-            </a>
+            </Link>
           </div>
 
           <BotanicalSprig width={160} className="mx-auto mt-8" />

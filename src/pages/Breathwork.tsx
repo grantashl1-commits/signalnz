@@ -388,7 +388,7 @@ function MeditationsSection() {
 export default function BreathworkPage() {
   
   const [section, setSection] = useState<
-    "breathwork" | "somatic"
+    "breathwork" | "somatic" | "meditate"
   >("breathwork");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(
     null
@@ -398,6 +398,7 @@ export default function BreathworkPage() {
   const sections = [
     { id: "breathwork" as const, label: "Breathwork" },
     { id: "somatic" as const, label: "Somatic" },
+    { id: "meditate" as const, label: "Meditate" },
   ];
 
   const titles = {
@@ -464,7 +465,9 @@ export default function BreathworkPage() {
           {section === "somatic" && (
             <SomaticCards onSelect={setActivePractice} onFasciaRelease={() => setShowFasciaRelease(true)} />
           )}
-          
+          {section === "meditate" && (
+            <MeditationsSection />
+          )}
         </motion.div>
       </AnimatePresence>
 

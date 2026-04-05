@@ -106,6 +106,9 @@ export default {
         "space-2xl": "var(--space-2xl)",
         "space-3xl": "var(--space-3xl)",
       },
+      padding: {
+        safe: "env(safe-area-inset-top)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

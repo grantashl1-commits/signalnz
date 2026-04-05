@@ -37,6 +37,7 @@ const CAT_ICON: Record<string, typeof Bug> = {
 
 export default function FeedbackDashboard() {
   const { user, loading: authLoading } = useAuth();
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [items, setItems] = useState<FeedbackRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -60,9 +61,16 @@ export default function FeedbackDashboard() {
     setLoading(false);
   };
 
+  // Check admin role
   useEffect(() => {
-    if (!authLoading) fetchFeedback();
-  }, [authLoading]);
+    if (!user) return;
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+
+  useEffect(() => {
+    if (!authLoading && isAdmin === true) fetchFeedback();
+  }, [authLoading, isAdmin]);
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
@@ -86,10 +94,18 @@ export default function FeedbackDashboard() {
     resolved: items.filter((i) => i.status === "resolved").length,
   };
 
-  if (authLoading || loading) {
+  if (authLoading || loading || isAdmin === null) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="font-body text-sm text-muted-foreground">You don't have access to this page.</p>
       </div>
     );
   }
