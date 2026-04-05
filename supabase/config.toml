@@ -35,3 +35,15 @@ verify_jwt = false
 
 [functions.seed-exercises]
 verify_jwt = false
+
+[functions.meal-plan-ai]
+verify_jwt = false
+
+[functions.fridge-recipe]
+verify_jwt = false
+
+[functions.generate-plan]
+verify_jwt = false
+
+[functions.workout-plan]
+verify_jwt = false

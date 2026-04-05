@@ -127,18 +127,37 @@ export default function MyWeekTab() {
     haptic("medium");
 
     try {
-      const { data, error } = await supabase.functions.invoke("meal-plan-ai", {
-        body: { preferences, mode: "full", lockedMeals: {} },
-      });
+      // Generate in 4 batches of 7 days to avoid timeouts
+      const batches = [
+        { start: 1, end: 7 },
+        { start: 8, end: 14 },
+        { start: 15, end: 21 },
+        { start: 22, end: 28 },
+      ];
 
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      let allDays: AIPlannedDay[] = [];
 
-      const days: AIPlannedDay[] = Array.isArray(data.plan) ? data.plan : [];
-      if (days.length === 0) throw new Error("No meals generated");
+      for (const batch of batches) {
+        const { data, error } = await supabase.functions.invoke("meal-plan-ai", {
+          body: {
+            preferences,
+            mode: "full",
+            lockedMeals: {},
+            startCycleDay: batch.start,
+            endCycleDay: batch.end,
+          },
+        });
+
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+
+        const days: AIPlannedDay[] = Array.isArray(data.plan) ? data.plan : [];
+        if (days.length === 0) throw new Error(`No meals generated for days ${batch.start}-${batch.end}`);
+        allDays = [...allDays, ...days];
+      }
 
       const plan: AIMealPlan = {
-        days,
+        days: allDays,
         prepPreferences: preferences,
         createdAt: Date.now(),
         lockedMeals: {},

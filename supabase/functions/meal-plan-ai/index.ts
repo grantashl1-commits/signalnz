@@ -94,7 +94,7 @@ serve(async (req) => {
   try {
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
       exerciseGoal, exerciseGoalLabel, proteinTargetMin, proteinTargetMax,
-      carbEmphasis, cycleMode, weightKg, dislikedRecipeIds } = await req.json();
+      carbEmphasis, cycleMode, weightKg, dislikedRecipeIds, startCycleDay, endCycleDay } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -252,15 +252,27 @@ ${lockedForDay.length > 0 ? `Keep these meals locked (do not change): ${lockedFo
 
 Return the full day as JSON matching the AIPlannedDay format below. Include specific foods with exact quantities, calories, and protein per meal.`;
     } else {
-      userPrompt = `Generate a complete 28-day meal plan. Each day must include breakfast, morningSnack, lunch, afternoonSnack, and dinner.
+      const dayStart = startCycleDay || 1;
+      const dayEnd = endCycleDay || Math.min(dayStart + 6, 28);
+      const numDays = dayEnd - dayStart + 1;
+
+      // Build phase info for the requested range
+      const phaseForDay = (d: number) => {
+        if (d <= 5) return "menstrual";
+        if (d <= 13) return "follicular";
+        if (d === 14) return "ovulatory";
+        return "luteal";
+      };
+
+      userPrompt = `Generate a ${numDays}-day meal plan for cycle days ${dayStart} to ${dayEnd}. Each day must include breakfast, morningSnack, lunch, afternoonSnack, and dinner.
 
 ${lockedMeals && Object.keys(lockedMeals).length > 0 ? `LOCKED MEALS (do not change these):\n${JSON.stringify(lockedMeals)}` : ""}
 
-Return as JSON array of 28 days:
+Return as JSON array of ${numDays} days:
 [
   {
-    "cycleDay": 1,
-    "phase": "menstrual",
+    "cycleDay": ${dayStart},
+    "phase": "${phaseForDay(dayStart)}",
     "dailyCalories": "~1800 kcal",
     "dailyProtein": "~120g",
     "hydrationTarget": "2.5L",
@@ -269,7 +281,7 @@ Return as JSON array of 28 days:
     "postWorkoutNote": "Within 60 min: 30g protein + 40g carbs (e.g., Greek yoghurt with banana and honey)",
     "breakfast": {
       "name": "Iron-Rich Spinach & Mushroom Omelette with Sourdough",
-      "phase": "menstrual",
+      "phase": "${phaseForDay(dayStart)}",
       "mealType": "breakfast",
       "prepTime": "15 min",
       "serves": 1,
@@ -277,7 +289,7 @@ Return as JSON array of 28 days:
       "protein": "~28g",
       "ingredients": ["3 large eggs", "2 cups baby spinach", "100g sliced mushrooms", "1 slice sourdough bread", "1 tsp butter", "pinch sea salt and pepper"],
       "method": ["1. Heat butter in a non-stick pan over medium heat", "2. Sauté mushrooms for 3 minutes until golden", "3. Add spinach and cook until wilted, about 1 minute", "4. Pour beaten eggs over vegetables", "5. Cook for 2-3 minutes until edges set, fold in half", "6. Toast sourdough and serve alongside"],
-      "nutritionalNote": "Iron-rich spinach paired with eggs (vitamin C in spinach aids iron absorption). Mushrooms provide B vitamins and selenium. Sourdough is easier to digest than regular bread during menstruation.",
+      "nutritionalNote": "Iron-rich spinach paired with eggs...",
       "keyNutrients": ["Iron", "B12", "Protein 28g", "Selenium"]
     },
     "morningSnack": { ... },
@@ -297,7 +309,8 @@ CRITICAL REMINDERS:
 - Snacks: simple, phase-appropriate, 2-3 ingredients max, include protein
 - Include dailyCalories, dailyProtein, hydrationTarget, and deficiencyFlags for each day
 - Every single ingredient must have a specific quantity
-- All food must be available at NZ supermarkets`;
+- All food must be available at NZ supermarkets
+- Return ONLY valid JSON, no markdown code fences`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
