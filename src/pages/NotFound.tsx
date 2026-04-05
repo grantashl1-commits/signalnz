@@ -8,6 +8,7 @@ export default function NotFound() {
       <div className="absolute top-10 right-10 pointer-events-none opacity-[0.06]">
         <SeedGeometry size={160} opacity={1} />
       </div>
+      <motion.div
         className="text-center z-10 max-w-sm"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -20,7 +21,7 @@ export default function NotFound() {
           404
         </h1>
         <p className="font-body text-foreground/50 text-sm leading-relaxed mb-8">
-          This page doesn't exist. Like thoughts that pass through — let it go.
+          This page doesn&apos;t exist. Like thoughts that pass through — let it go.
         </p>
         <Link
           to="/"
