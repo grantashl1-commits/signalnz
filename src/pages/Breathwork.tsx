@@ -465,7 +465,9 @@ export default function BreathworkPage() {
           {section === "somatic" && (
             <SomaticCards onSelect={setActivePractice} onFasciaRelease={() => setShowFasciaRelease(true)} />
           )}
-          
+          {section === "meditate" && (
+            <MeditationsSection />
+          )}
         </motion.div>
       </AnimatePresence>
 
