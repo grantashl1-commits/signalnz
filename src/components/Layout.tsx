@@ -1,44 +1,34 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X, Zap, BrainCircuit } from "lucide-react";
+import { Home, Moon, Dumbbell, BookOpen, User, Zap, UserCircle } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
 import SignalAmbientRipple from "@/components/SignalAmbientRipple";
 import { useAICredits } from "@/hooks/useAICredits";
+import PageTransition from "@/components/PageTransition";
 
 const navItems = [
-  { path: "/my-practice", icon: Heart, label: "Daily Habits" },
-  { path: "/nutrition", icon: Salad, label: "Nutrition" },
+  { path: "/my-practice", icon: Home, label: "Daily Habits" },
+  { path: "/nutrition", icon: Home, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
-  { path: "/mindfulness", icon: Wind, label: "Mindfulness" },
-  { path: "/journal", icon: PenLine, label: "Journal" },
-  { path: "/community", icon: Users, label: "Community" },
+  { path: "/mindfulness", icon: Home, label: "Mindfulness" },
+  { path: "/journal", icon: BookOpen, label: "Journal" },
+  { path: "/community", icon: Home, label: "Community" },
 ];
 
-// Primary bottom nav — 5 items (Task 14)
-const mobileNavItems = [
-  { path: "/", icon: Home, label: "Home" },
-  { path: "/cycle", icon: Moon, label: "Cycle" },
-  { path: "/journal", icon: PenLine, label: "Journal" },
-  { path: "/movement", icon: Dumbbell, label: "Move" },
-];
-
-// "More" sheet items (Task 14 + Task 15)
-const moreMenuItems = [
-  { path: "/my-practice", icon: Heart, label: "My Practice" },
-  { path: "/mindfulness", icon: Wind, label: "Mindful" },
-  { path: "/nutrition", icon: Salad, label: "Nutrition" },
-  { path: "/breathwork", icon: Wind, label: "Breathwork" },
-  { path: "/community", icon: Users, label: "Community" },
-  { path: "/coach", icon: BrainCircuit, label: "My Coach" },
-  { path: "/account", icon: UserCircle, label: "Account" },
+const PRIMARY_TABS = [
+  { path: "/", label: "Home", icon: Home },
+  { path: "/cycle", label: "Cycle", icon: Moon },
+  { path: "/journal", label: "Journal", icon: BookOpen },
+  { path: "/movement", label: "Move", icon: Dumbbell },
+  { path: "/account", label: "You", icon: User },
 ];
 
 const PHASE_BORDER: Record<string, string> = {
@@ -55,50 +45,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile();
   const keyboardVisible = useKeyboardVisible();
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
-  const [moreOpen, setMoreOpen] = useState(false);
   const navigate = useNavigate();
   const { creditsRemaining, tier } = useAICredits();
   const showCreditCounter = tier === "free";
 
-  // Swipe navigation between mobile tabs
-  const mainRef = useRef<HTMLDivElement>(null);
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-
-  const currentMobileIdx = mobileNavItems.findIndex((n) => n.path === location.pathname);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  };
-
-  // Task 2: Use navigate() instead of window.location.href
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStart.current) return;
-    const dx = e.changedTouches[0].clientX - touchStart.current.x;
-    const dy = e.changedTouches[0].clientY - touchStart.current.y;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-      if (dx > 0 && currentMobileIdx > 0) {
-        haptic("light");
-        navigate(mobileNavItems[currentMobileIdx - 1].path);
-      } else if (dx < 0 && currentMobileIdx < mobileNavItems.length - 1 && currentMobileIdx >= 0) {
-        haptic("light");
-        navigate(mobileNavItems[currentMobileIdx + 1].path);
-      }
-    }
-    touchStart.current = null;
-  };
-
-  // Slide direction for page transitions
-  const [slideDir, setSlideDir] = useState(0);
-  const prevPathRef = useRef(location.pathname);
+  // Track previous path for PageTransition
+  const previousPathRef = useRef(location.pathname);
+  const previousPath = previousPathRef.current;
   useEffect(() => {
-    const prevIdx = mobileNavItems.findIndex((n) => n.path === prevPathRef.current);
-    const newIdx = mobileNavItems.findIndex((n) => n.path === location.pathname);
-    if (prevIdx >= 0 && newIdx >= 0) {
-      setSlideDir(newIdx > prevIdx ? 1 : -1);
-    } else {
-      setSlideDir(0);
-    }
-    prevPathRef.current = location.pathname;
+    previousPathRef.current = location.pathname;
   }, [location.pathname]);
 
   return (
@@ -191,121 +146,82 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
               </span>
             </div>
-            <Link
-              to="/account"
-              className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary/70 text-muted-foreground"
-            >
-              <UserCircle className="h-4 w-4" />
-            </Link>
           </div>
         </div>
       </header>
 
-      {/* Main content — Task 3a: safe area bottom padding */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.main
-          key={location.pathname}
-          ref={mainRef}
-          initial={isMobile ? { opacity: 0, x: slideDir * 60 } : { opacity: 0, y: 8 }}
-          animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
-          exit={isMobile ? { opacity: 0, x: slideDir * -30 } : { opacity: 0, y: -8 }}
-          transition={{ duration: isMobile ? 0.25 : 0.35, ease: "easeOut" as const }}
-          className="flex-1 md:pb-8 scroll-y overflow-x-hidden"
-          style={{ paddingBottom: "calc(7rem + env(safe-area-inset-bottom))" }}
-          onTouchStart={isMobile ? handleTouchStart : undefined}
-          onTouchEnd={isMobile ? handleTouchEnd : undefined}
-        >
-          {children}
-        </motion.main>
-      </AnimatePresence>
+      {/* Main content with page transitions */}
+      <div className="flex-1 relative overflow-hidden" style={{ paddingBottom: isMobile ? "calc(56px + env(safe-area-inset-bottom))" : "2rem" }}>
+        {isMobile ? (
+          <PageTransition previousPath={previousPath}>
+            <div className="h-full overflow-y-auto">
+              {children}
+            </div>
+          </PageTransition>
+        ) : (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.main
+              key={location.pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="md:pb-8 scroll-y overflow-x-hidden"
+            >
+              {children}
+            </motion.main>
+          </AnimatePresence>
+        )}
+      </div>
 
-      {/* Mobile bottom tab bar — 5 items (Task 14) */}
+      {/* Mobile bottom tab bar — 5 fixed tabs */}
       {!keyboardVisible && (
         <nav
-          className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md md:hidden select-none-chrome"
-          style={{
-            paddingBottom: "env(safe-area-inset-bottom)",
-            height: "calc(60px + env(safe-area-inset-bottom))",
-          }}
+          className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-t border-border/10 md:hidden select-none"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
-          <div className="flex items-center justify-around h-[60px] px-2">
-            {mobileNavItems.map((item) => {
-              const active = location.pathname === item.path;
+          <div className="flex items-stretch max-w-lg mx-auto">
+            {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {
+              const isActive = location.pathname === path ||
+                (path !== "/" && location.pathname.startsWith(path));
               return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => haptic("light")}
-                  className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 min-w-[52px] min-h-[44px] justify-center transition-all ${
-                    active ? "text-primary" : "text-muted-foreground opacity-60"
-                  }`}
+                <button
+                  key={path}
+                  onClick={() => { haptic("light"); navigate(path); }}
+                  className="flex-1 flex flex-col items-center justify-center gap-0.5 pt-2 pb-1 min-h-[56px] relative select-none"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                 >
-                  <item.icon className={`${active ? "h-5 w-5 fill-primary" : "h-4 w-4"} transition-all`} />
-                  <span className={`text-[9px] font-body leading-none ${active ? "font-bold" : "font-medium"}`}>{item.label}</span>
-                  {active && <div className="w-1 h-1 rounded-full bg-primary mt-0.5" />}
-                </Link>
+                  {isActive && (
+                    <motion.div
+                      layoutId="tab-indicator"
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-primary"
+                      transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                    />
+                  )}
+                  <motion.div
+                    animate={{ scale: isActive ? 1.1 : 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  >
+                    <Icon
+                      className={`w-5 h-5 transition-colors duration-200 ${
+                        isActive ? "text-primary" : "text-muted-foreground/40"
+                      }`}
+                      strokeWidth={isActive ? 2 : 1.5}
+                    />
+                  </motion.div>
+                  <span
+                    className={`text-[10px] font-mono tracking-wide transition-colors duration-200 ${
+                      isActive ? "text-primary" : "text-muted-foreground/35"
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </button>
               );
             })}
-            {/* More button */}
-            <button
-              onClick={() => { haptic("light"); setMoreOpen(true); }}
-              className={`touch-tab flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 min-w-[52px] min-h-[44px] justify-center transition-all ${
-                moreOpen ? "text-primary" : "text-muted-foreground opacity-60"
-              }`}
-            >
-              <LayoutGrid className="h-4 w-4 transition-all" />
-              <span className="text-[9px] font-body leading-none font-medium">More</span>
-            </button>
           </div>
         </nav>
       )}
-
-      {/* More bottom sheet */}
-      <AnimatePresence>
-        {moreOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm md:hidden"
-              onClick={() => setMoreOpen(false)}
-            />
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 28, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[61] md:hidden rounded-t-3xl bg-card shadow-xl"
-              style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-            >
-              <div className="flex items-center justify-between px-5 pt-4 pb-2">
-                <span className="font-display text-sm font-bold text-foreground">More</span>
-                <button onClick={() => setMoreOpen(false)} className="p-1.5 rounded-full bg-secondary/60 text-muted-foreground">
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="px-4 pb-6 space-y-1">
-                {moreMenuItems.map((item) => {
-                  const active = location.pathname === item.path;
-                  return (
-                    <button
-                      key={item.path}
-                      onClick={() => { haptic("light"); setMoreOpen(false); navigate(item.path); }}
-                      className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${
-                        active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
-                      }`}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span className="font-body text-sm font-medium">{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       {/* Give me a signal — floating CTA + panel */}
       <SignalFloatingCTA onClick={() => openSignal()} />
