@@ -63,7 +63,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: Moon,
         text: `Your luteal phase consistently shows higher fatigue — logged ${lutealFatigueCount} times. This is driven by progesterone and is expected.`,
-        colour: "#D4722A",
+        colour: "#9B89B4",
       });
     }
 
