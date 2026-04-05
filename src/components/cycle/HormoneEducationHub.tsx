@@ -28,7 +28,7 @@ const HORMONES: HormoneCard[] = [
   },
   {
     name: "Testosterone",
-    colour: "#F4A63A",
+    colour: "#C47A8A",
     summary: "Yes, women have it. Brief surge at ovulation drives confidence, libido, and strength.",
     detail: "Testosterone declines with age in women just as it does in men, though from a much lower baseline. Around ovulation, a small testosterone spike is partly responsible for increased confidence, motivation, and physical performance. Strength training — particularly heavy compound lifts — supports healthy testosterone levels throughout life.",
     source: "Sims — Next Level; Vitti — In the Flo",
