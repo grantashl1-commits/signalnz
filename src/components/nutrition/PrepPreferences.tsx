@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { Minus, Plus, Dumbbell } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Minus, Plus, Dumbbell, Eye, EyeOff, Check } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
 import {
   PrepPreferences as PrepPrefsType,
@@ -11,6 +11,8 @@ import {
   savePreferences,
 } from "@/lib/weekly-planner";
 import { haptic } from "@/hooks/use-mobile";
+import { getPantryStaples, savePantryStaples, getDislikedRecipes, removeDislikedRecipe } from "@/lib/fitness-profile";
+import { findRecipeById } from "@/lib/recipe-index";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -30,16 +32,12 @@ const BODY_GOAL_LABELS: Record<string, string> = {
   energy: "More energy",
 };
 
-const BODY_GOAL_NUTRITION: Record<string, string> = {
-  "lose-weight": "moderate calorie deficit with high fibre and satiety",
-  "gain-muscle": "higher protein and calorie surplus for muscle gain",
-  "tone-up": "balanced macros, 1.6g protein/kg target",
-  flexibility: "anti-inflammatory foods, magnesium-rich meals",
-  endurance: "complex carbs for sustained energy, iron-rich foods",
-  "stress-relief": "magnesium-rich, adaptogens, B vitamins and omega-3",
-  posture: "anti-inflammatory support, calcium and vitamin D",
-  energy: "B-vitamin rich foods, iron, complex carbs, reduced sugar",
-};
+const PANTRY_STAPLE_OPTIONS = [
+  "Olive oil", "Coconut oil", "Butter", "Salt & pepper", "Garlic", "Onions",
+  "Tinned tomatoes", "Coconut milk", "Soy sauce / tamari", "Rice", "Pasta",
+  "Oats", "Plain flour", "Baking powder", "Eggs", "Honey",
+  "Apple cider vinegar", "Dried herbs & spices",
+];
 
 interface Props {
   initialPrefs: PrepPrefsType;
@@ -86,9 +84,11 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const [cookingSkill, setCookingSkill] = useState<CookingSkill>(initialPrefs.cookingSkill || "confident");
   const [availableTime, setAvailableTime] = useState<AvailableTime>(initialPrefs.availableTime || "30");
   const [equipment, setEquipment] = useState<string[]>(initialPrefs.equipment || ["oven", "stovetop"]);
+  const [pantryStaples, setPantryStaplesState] = useState<string[]>(getPantryStaples);
+  const [showHiddenRecipes, setShowHiddenRecipes] = useState(false);
+  const [dislikedRecipes, setDislikedRecipes] = useState<string[]>(getDislikedRecipes);
   const phaseColor = PHASE_HEX[phase];
 
-  // Read body goals array from BodyVisualiser's localStorage
   const bodyGoals = useMemo<string[]>(() => {
     try {
       const raw = localStorage.getItem("signal_body_goals");
@@ -104,6 +104,21 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const toggleEquipment = (item: string) => {
     haptic("light");
     setEquipment((prev) => prev.includes(item) ? prev.filter((e) => e !== item) : [...prev, item]);
+  };
+
+  const togglePantryStaple = (item: string) => {
+    haptic("light");
+    setPantryStaplesState(prev => {
+      const next = prev.includes(item) ? prev.filter(s => s !== item) : [...prev, item];
+      savePantryStaples(next);
+      return next;
+    });
+  };
+
+  const handleUnhideRecipe = (recipeId: string) => {
+    haptic("light");
+    removeDislikedRecipe(recipeId);
+    setDislikedRecipes(prev => prev.filter(id => id !== recipeId));
   };
 
   const handleBuild = () => {
@@ -127,7 +142,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </p>
       </div>
 
-      {/* Body Goals (auto-populated from Movement) */}
+      {/* Body Goals */}
       {bodyGoals.length > 0 && (
         <div className="rounded-xl border border-border bg-card p-3 flex items-start gap-3">
           <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
@@ -162,14 +177,11 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             { value: "45" as AvailableTime, label: "45 min" },
             { value: "60+" as AvailableTime, label: "60+ min" },
           ]).map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => { haptic("light"); setAvailableTime(value); }}
+            <button key={value} onClick={() => { haptic("light"); setAvailableTime(value); }}
               className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
                 availableTime === value ? "text-white" : "bg-secondary text-muted-foreground"
               }`}
-              style={availableTime === value ? { backgroundColor: phaseColor } : {}}
-            >
+              style={availableTime === value ? { backgroundColor: phaseColor } : {}}>
               {label}
             </button>
           ))}
@@ -181,14 +193,11 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Kitchen equipment</p>
         <div className="flex flex-wrap gap-2">
           {["Oven", "Stovetop", "Air fryer", "Slow cooker", "Blender", "Food processor", "Instant Pot"].map(item => (
-            <button
-              key={item}
-              onClick={() => toggleEquipment(item.toLowerCase())}
+            <button key={item} onClick={() => toggleEquipment(item.toLowerCase())}
               className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
                 equipment.includes(item.toLowerCase()) ? "text-white" : "bg-secondary text-muted-foreground"
               }`}
-              style={equipment.includes(item.toLowerCase()) ? { backgroundColor: phaseColor } : {}}
-            >
+              style={equipment.includes(item.toLowerCase()) ? { backgroundColor: phaseColor } : {}}>
               {item}
             </button>
           ))}
@@ -225,14 +234,11 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>Bigger meals will be scheduled on your prep day(s) for advance cooking.</p>
         <div className="flex flex-wrap gap-2">
           {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "No set day"].map((day) => (
-            <button
-              key={day}
-              onClick={() => togglePrepDay(day)}
+            <button key={day} onClick={() => togglePrepDay(day)}
               className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
                 prepDays.includes(day) ? "text-primary-foreground" : "bg-secondary text-muted-foreground"
               }`}
-              style={prepDays.includes(day) ? { backgroundColor: phaseColor, color: "white" } : {}}
-            >
+              style={prepDays.includes(day) ? { backgroundColor: phaseColor, color: "white" } : {}}>
               {day}
             </button>
           ))}
@@ -263,6 +269,29 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         )}
       </div>
 
+      {/* Pantry Staples */}
+      <div className="space-y-3 pt-2 border-t border-border">
+        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Pantry staples I always have</p>
+        <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
+          Items you mark will be excluded from the shopping list.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {PANTRY_STAPLE_OPTIONS.map(item => {
+            const isSelected = pantryStaples.includes(item);
+            return (
+              <button key={item} onClick={() => togglePantryStaple(item)}
+                className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  isSelected ? "text-white" : "bg-secondary text-muted-foreground"
+                }`}
+                style={isSelected ? { backgroundColor: phaseColor } : {}}>
+                {isSelected && <Check className="h-3 w-3" />}
+                {item}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Dietary requirements */}
       <div className="space-y-3 pt-2 border-t border-border">
         <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Dietary preferences</p>
@@ -271,14 +300,11 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
           <label className="font-body text-xs text-foreground">Diet type</label>
           <div className="flex flex-wrap gap-2">
             {["No preference", "Vegetarian", "Vegan", "Pescatarian", "Gluten-free", "Dairy-free", "Keto", "Paleo"].map(dt => (
-              <button
-                key={dt}
-                onClick={() => { haptic("light"); setDietType(dietType === dt ? "" : dt); }}
+              <button key={dt} onClick={() => { haptic("light"); setDietType(dietType === dt ? "" : dt); }}
                 className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
                   dietType === dt ? "text-white" : "bg-secondary text-muted-foreground"
                 }`}
-                style={dietType === dt ? { backgroundColor: phaseColor } : {}}
-              >
+                style={dietType === dt ? { backgroundColor: phaseColor } : {}}>
                 {dt}
               </button>
             ))}
@@ -287,38 +313,27 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
         <div className="space-y-1.5">
           <label className="font-body text-xs text-foreground">Allergies or intolerances</label>
-          <input
-            type="text"
-            value={allergies}
-            onChange={e => setAllergies(e.target.value)}
+          <input type="text" value={allergies} onChange={e => setAllergies(e.target.value)}
             placeholder="e.g. nuts, shellfish, soy..."
-            className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+            className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary" />
         </div>
 
         <div className="space-y-1.5">
           <label className="font-body text-xs text-foreground">Foods you dislike (won't include)</label>
-          <input
-            type="text"
-            value={dislikes}
-            onChange={e => setDislikes(e.target.value)}
+          <input type="text" value={dislikes} onChange={e => setDislikes(e.target.value)}
             placeholder="e.g. mushrooms, tofu, eggplant..."
-            className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+            className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary" />
         </div>
 
         <div className="space-y-1.5">
           <label className="font-body text-xs text-foreground">Daily calorie target</label>
           <div className="flex flex-wrap gap-2">
             {["No preference", "1400–1600", "1600–1800", "1800–2000", "2000–2200", "2200+"].map(cal => (
-              <button
-                key={cal}
-                onClick={() => { haptic("light"); setCalorieTarget(calorieTarget === cal ? "" : cal); }}
+              <button key={cal} onClick={() => { haptic("light"); setCalorieTarget(calorieTarget === cal ? "" : cal); }}
                 className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
                   calorieTarget === cal ? "text-white" : "bg-secondary text-muted-foreground"
                 }`}
-                style={calorieTarget === cal ? { backgroundColor: phaseColor } : {}}
-              >
+                style={calorieTarget === cal ? { backgroundColor: phaseColor } : {}}>
                 {cal}
               </button>
             ))}
@@ -326,13 +341,37 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </div>
       </div>
 
+      {/* Hidden recipes */}
+      {dislikedRecipes.length > 0 && (
+        <div className="space-y-3 pt-2 border-t border-border">
+          <button onClick={() => { haptic("light"); setShowHiddenRecipes(!showHiddenRecipes); }}
+            className="flex items-center gap-2 font-body text-xs text-muted-foreground">
+            {showHiddenRecipes ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+            {dislikedRecipes.length} hidden recipe{dislikedRecipes.length !== 1 ? "s" : ""}
+          </button>
+          {showHiddenRecipes && (
+            <div className="space-y-2">
+              {dislikedRecipes.map(id => {
+                const recipe = findRecipeById(id);
+                return (
+                  <div key={id} className="flex items-center justify-between rounded-xl bg-card p-3 border border-border">
+                    <span className="font-body text-xs text-foreground">{recipe?.name || id}</span>
+                    <button onClick={() => handleUnhideRecipe(id)}
+                      className="touch-btn font-body text-[10px] text-primary underline">
+                      Unhide
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Build button */}
-      <button
-        onClick={handleBuild}
-        disabled={isGenerating}
+      <button onClick={handleBuild} disabled={isGenerating}
         className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-white transition-all active:opacity-90 disabled:opacity-50"
-        style={{ backgroundColor: phaseColor }}
-      >
+        style={{ backgroundColor: phaseColor }}>
         {isGenerating ? (
           <span className="flex items-center justify-center gap-2">
             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
