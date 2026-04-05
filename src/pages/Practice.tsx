@@ -496,7 +496,7 @@ export default function PracticePage() {
                         key={cat.id}
                         onClick={() => {
                           setShowCategoryChooser(false);
-                          openPicker(cat.id === "foundations" ? "self-care" : cat.id);
+                          openPicker(cat.id === ("foundations" as string) ? "self-care" : cat.id as HabitCategory);
                         }}
                         className="touch-btn rounded-[16px] p-5 text-center border border-border bg-card shadow-soft hover:shadow-medium hover:border-primary/20"
                       >
