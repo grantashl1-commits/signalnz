@@ -17,6 +17,8 @@ export interface StoicReading {
   journal_prompt: string | null;
   tts_script: string | null;
   duration_sec: number | null;
+  month: string | null;
+  day_of_month: number | null;
 }
 
 export interface StoicLens {
