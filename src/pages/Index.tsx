@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import GiveSignalPanel from "@/components/signal/GiveSignalPanel";
 import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
