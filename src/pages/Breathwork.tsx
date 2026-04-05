@@ -403,7 +403,6 @@ export default function BreathworkPage() {
   const titles = {
     breathwork: "Breathwork & Regulation",
     somatic: "Somatic Practices",
-    meditations: "Meditation Library",
   };
 
   const icons = {
