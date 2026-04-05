@@ -56,7 +56,8 @@ const App = () => (
                     <Route path="/nutrition" element={<Nutrition />} />
                     <Route path="/movement" element={<Movement />} />
                     <Route path="/breathwork" element={<Breathwork />} />
-                    <Route path="/nervous-system" element={<Breathwork />} />
+                    <Route path="/nervous-system" element={<NervousSystem />} />
+                    <Route path="/mindfulness" element={<NervousSystem />} />
                     <Route path="/journal" element={<Journal />} />
                     <Route path="/modules" element={<Modules />} />
                     <Route path="/membership" element={<Membership />} />
