@@ -37,6 +37,8 @@ const CAT_ICON: Record<string, typeof Bug> = {
 
 export default function FeedbackDashboard() {
   const { user, loading: authLoading } = useAuth();
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [items, setItems] = useState<FeedbackRow[]>([]);
   const [items, setItems] = useState<FeedbackRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
