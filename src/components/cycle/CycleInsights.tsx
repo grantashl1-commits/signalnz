@@ -99,7 +99,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: TrendingUp,
         text: `You have logged ${loggedDays} days across ${cycleCount} cycle${cycleCount > 1 ? "s" : ""}. Keep logging for richer insights.`,
-        colour: "#7B50A3",
+        colour: "#9B89B4",
       });
     }
 

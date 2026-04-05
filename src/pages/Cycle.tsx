@@ -115,13 +115,13 @@ export default function CyclePage() {
     ? [
         { id: "overview" as const, label: "Overview" },
         { id: "insights" as const, label: "Insights" },
-        { id: "learn" as const, label: "Learn" },
+        { id: "learn" as const, label: "Hormones" },
       ]
     : [
         { id: "overview" as const, label: "Overview" },
         { id: "calendar" as const, label: "Calendar" },
         { id: "insights" as const, label: "Insights" },
-        { id: "learn" as const, label: "Learn" },
+        { id: "learn" as const, label: "Hormones" },
       ];
 
   return (

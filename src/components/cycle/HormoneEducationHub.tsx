@@ -42,7 +42,7 @@ const HORMONES: HormoneCard[] = [
   },
   {
     name: "Insulin",
-    colour: "#7B50A3",
+    colour: "#9B89B4",
     summary: "Blood sugar directly affects hormonal balance.",
     detail: "Oestrogen improves insulin sensitivity in the follicular phase — this is why lighter eating feels natural early in your cycle. Progesterone reduces insulin sensitivity in the luteal phase — this is why carb cravings are real and hormonally driven, not a willpower failure. Balancing blood sugar with protein, fibre, and complex carbs supports every other hormone in the cascade.",
     source: "Shah — Hormone Havoc; Inchauspé — Glucose Revolution",
