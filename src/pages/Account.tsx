@@ -58,6 +58,10 @@ export default function AccountPage() {
   const [userWeight, setUserWeightState] = useState(getUserWeight() || 65);
   const [biometricsEditing, setBiometricsEditing] = useState(!getUserAge());
 
+  // Date of birth for Signal readings
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [dobSaving, setDobSaving] = useState(false);
+
   useEffect(() => {
     const fp = getFitnessProfile();
     if (fp) {
