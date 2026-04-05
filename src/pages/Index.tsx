@@ -75,6 +75,7 @@ export default function HomePage() {
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [giveSignalOpen, setGiveSignalOpen] = useState(false);
   const focus = FOCUS[info.phase];
   const streak = getCheckinStreak();
 
