@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X, Zap } from "lucide-react";
+import { Home, Moon, Salad, Dumbbell, Wind, PenLine, BookOpen, Crown, Heart, Users, UserCircle, LayoutGrid, X, Zap, BrainCircuit } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -22,20 +22,22 @@ const navItems = [
   { path: "/community", icon: Users, label: "Community" },
 ];
 
-// Primary bottom nav — 5 items
+// Primary bottom nav — 5 items (Task 14)
 const mobileNavItems = [
   { path: "/", icon: Home, label: "Home" },
-  { path: "/nutrition", icon: Salad, label: "Nourish" },
-  { path: "/movement", icon: Dumbbell, label: "Move" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
+  { path: "/journal", icon: PenLine, label: "Journal" },
+  { path: "/movement", icon: Dumbbell, label: "Move" },
 ];
 
-// "More" sheet items
+// "More" sheet items (Task 14 + Task 15)
 const moreMenuItems = [
   { path: "/my-practice", icon: Heart, label: "My Practice" },
   { path: "/mindfulness", icon: Wind, label: "Mindful" },
-  { path: "/journal", icon: PenLine, label: "Journal" },
+  { path: "/nutrition", icon: Salad, label: "Nutrition" },
+  { path: "/breathwork", icon: Wind, label: "Breathwork" },
   { path: "/community", icon: Users, label: "Community" },
+  { path: "/coach", icon: BrainCircuit, label: "My Coach" },
   { path: "/account", icon: UserCircle, label: "Account" },
 ];
 
@@ -68,6 +70,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
 
+  // Task 2: Use navigate() instead of window.location.href
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStart.current) return;
     const dx = e.changedTouches[0].clientX - touchStart.current.x;
@@ -75,10 +78,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
       if (dx > 0 && currentMobileIdx > 0) {
         haptic("light");
-        window.location.href = mobileNavItems[currentMobileIdx - 1].path;
+        navigate(mobileNavItems[currentMobileIdx - 1].path);
       } else if (dx < 0 && currentMobileIdx < mobileNavItems.length - 1 && currentMobileIdx >= 0) {
         haptic("light");
-        window.location.href = mobileNavItems[currentMobileIdx + 1].path;
+        navigate(mobileNavItems[currentMobileIdx + 1].path);
       }
     }
     touchStart.current = null;
@@ -103,7 +106,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <SignalAmbientDots />
       <SignalAmbientRipple />
       {/* Desktop header — hidden on mobile */}
-      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md hidden md:block pt-safe">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md hidden md:block pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0 mr-6">
             <img src="/logos/Icon.png" alt="Signal" className="h-8 w-8 object-contain" />
@@ -167,7 +170,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Mobile header — minimal, just branding + phase */}
-      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md md:hidden pt-safe">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md md:hidden pt-[env(safe-area-inset-top)]">
         <div className="flex items-center justify-between px-5 py-3">
           <Link to="/" className="flex items-center gap-1.5">
             <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
@@ -198,7 +201,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Main content */}
+      {/* Main content — Task 3a: safe area bottom padding */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.main
           key={location.pathname}
@@ -207,7 +210,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
           exit={isMobile ? { opacity: 0, x: slideDir * -30 } : { opacity: 0, y: -8 }}
           transition={{ duration: isMobile ? 0.25 : 0.35, ease: "easeOut" as const }}
-          className="flex-1 pb-28 md:pb-8 scroll-y overflow-x-hidden"
+          className="flex-1 md:pb-8 scroll-y overflow-x-hidden"
+          style={{ paddingBottom: "calc(7rem + env(safe-area-inset-bottom))" }}
           onTouchStart={isMobile ? handleTouchStart : undefined}
           onTouchEnd={isMobile ? handleTouchEnd : undefined}
         >
@@ -215,7 +219,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </motion.main>
       </AnimatePresence>
 
-      {/* Mobile bottom tab bar — 5 items */}
+      {/* Mobile bottom tab bar — 5 items (Task 14) */}
       {!keyboardVisible && (
         <nav
           className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md md:hidden select-none-chrome"
