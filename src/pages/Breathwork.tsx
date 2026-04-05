@@ -388,7 +388,7 @@ function MeditationsSection() {
 export default function BreathworkPage() {
   
   const [section, setSection] = useState<
-    "breathwork" | "somatic" | "meditations"
+    "breathwork" | "somatic"
   >("breathwork");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(
     null
