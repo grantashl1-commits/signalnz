@@ -16,6 +16,9 @@ import {
   INNER_WORK_SCRIPTS,
   SLEEP_SCRIPTS,
   PHASE_SCRIPTS,
+  QUICK_PRACTICES,
+  GROUNDING_PRACTICES,
+  PRESENCE_PRACTICES,
   getMeditationById,
   getMeditationsForPhase,
   formatMeditationDuration,
@@ -72,7 +75,7 @@ const TABS: { id: TabId; label: string; icon: typeof Headphones }[] = [
 ];
 
 const CATEGORY_FILTERS: Record<TabId, string[]> = {
-  meditate: ["All", "Nervous System", "Self-Compassion", "Phase Practice"],
+  meditate: ["All", "Quick · Under 5 min", "Nervous System", "Self-Compassion", "Phase Practice"],
   read: ["All", "Morning", "Evening", "Inner Work"],
   "inner-work": ["All", "Inner Child", "Self-Care", "Parts Work"],
   sleep: ["All", "10 min", "15 min", "30 min"],
@@ -334,15 +337,19 @@ function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScrip
 // ── Tab Content ──
 function getScriptsForTab(tab: TabId): MeditationScript[] {
   switch (tab) {
-    case "meditate": return [...MEDITATION_SCRIPTS, ...PHASE_SCRIPTS];
-    case "read": return READING_SCRIPTS;
-    case "inner-work": return INNER_WORK_SCRIPTS;
-    case "sleep": return SLEEP_SCRIPTS;
+    case "meditate": return [...MEDITATION_SCRIPTS, ...PHASE_SCRIPTS, ...QUICK_PRACTICES, ...GROUNDING_PRACTICES.filter(g => g.category === "meditation")];
+    case "read": return [...READING_SCRIPTS, ...PRESENCE_PRACTICES.filter(p => p.category === "reading")];
+    case "inner-work": return [...INNER_WORK_SCRIPTS, ...PRESENCE_PRACTICES.filter(p => p.category === "inner-work")];
+    case "sleep": return [...SLEEP_SCRIPTS, ...GROUNDING_PRACTICES.filter(g => g.category === "sleep")];
   }
 }
 
 function filterScripts(scripts: MeditationScript[], filter: string, tab: TabId): MeditationScript[] {
   if (filter === "All") return scripts;
+
+  if (filter === "Quick · Under 5 min") {
+    return scripts.filter((s) => s.tags.includes("quick") || s.durationSec <= 300);
+  }
   
   if (tab === "sleep") {
     const minMap: Record<string, [number, number]> = {
@@ -368,6 +375,63 @@ function filterScripts(scripts: MeditationScript[], filter: string, tab: TabId):
   const tags = tagMap[filter];
   if (tags) return scripts.filter((s) => s.tags.some((t) => tags.includes(t)));
   return scripts;
+}
+
+// ── "Right now I need..." contextual chips ──
+const CONTEXTUAL_CHIPS: Record<string, { label: string; practiceId: string }[]> = {
+  "morning-default": [
+    { label: "A 5-min reset", practiceId: "quick-001" },
+    { label: "Set my intention", practiceId: "quick-005" },
+    { label: "Arrive in my body", practiceId: "quick-004" },
+  ],
+  "midday-active": [
+    { label: "Focus", practiceId: "quick-003" },
+    { label: "Quick breath", practiceId: "quick-004" },
+    { label: "Values check-in", practiceId: "quick-005" },
+  ],
+  "evening-luteal": [
+    { label: "Let go of the day", practiceId: "ground-002" },
+    { label: "Make room for how I feel", practiceId: "presence-003" },
+    { label: "Wind down", practiceId: "sleep-003" },
+  ],
+  "menstrual": [
+    { label: "Pebble meditation", practiceId: "quick-002" },
+    { label: "Full body release", practiceId: "ground-002" },
+    { label: "Something short", practiceId: "quick-001" },
+  ],
+};
+
+function getContextualChips(phase: string): { label: string; practiceId: string }[] {
+  const h = new Date().getHours();
+  if (phase === "menstrual") return CONTEXTUAL_CHIPS["menstrual"];
+  if (h >= 18 && (phase === "luteal")) return CONTEXTUAL_CHIPS["evening-luteal"];
+  if (h >= 11 && h < 18 && (phase === "follicular" || phase === "ovulatory")) return CONTEXTUAL_CHIPS["midday-active"];
+  return CONTEXTUAL_CHIPS["morning-default"];
+}
+
+function RightNowChips({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
+  const { currentPhase } = useCycle();
+  const chips = getContextualChips(currentPhase);
+
+  return (
+    <div className="mb-5">
+      <p className="font-hand text-sm font-bold text-muted-foreground/60 mb-2 italic">Right now I need...</p>
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        {chips.map((chip) => (
+          <button
+            key={chip.practiceId}
+            onClick={() => {
+              const s = getMeditationById(chip.practiceId);
+              if (s) { haptic("medium"); onSelect(s); }
+            }}
+            className="whitespace-nowrap rounded-full border border-primary/20 bg-primary/5 px-4 py-2 font-body text-xs text-foreground hover:bg-primary/10 transition-colors"
+          >
+            {chip.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ── MAIN PAGE ──
@@ -415,6 +479,9 @@ export default function NervousSystemPage() {
         <ContentSection className="px-5 md:px-4">
           {/* Today's Practice */}
           <TodaySuggestion onSelect={handleSelect} />
+
+          {/* Right now I need... */}
+          <RightNowChips onSelect={handleSelect} />
 
           {/* Tabs */}
           <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">

@@ -11,23 +11,25 @@ const corsHeaders = {
 
 // Practice recommendations mapped by emotional state + phase
 const PRACTICE_MAP: Record<string, string[]> = {
-  anxiety: ["med-004", "med-002", "med-005"],
-  stress: ["med-004", "med-001", "med-005"],
-  overwhelm: ["med-004", "med-005", "sleep-003"],
-  tired: ["med-005", "sleep-001", "sleep-003"],
-  sleep: ["sleep-001", "sleep-002", "sleep-003"],
-  sadness: ["med-002", "med-003", "inner-002"],
-  emotional: ["med-002", "med-006", "inner-001"],
-  heavy: ["med-002", "phase-004", "inner-002"],
-  reset: ["med-004", "med-001", "med-005"],
-  luteal: ["phase-004", "med-002", "sleep-002"],
-  menstrual: ["phase-001", "med-002", "inner-001"],
-  short: ["med-004", "read-001", "read-004"],
-  morning: ["read-001", "phase-002", "med-004"],
-  evening: ["read-004", "sleep-003", "sleep-002"],
+  anxiety: ["ground-003", "quick-002", "med-004"],
+  stress: ["med-004", "quick-001", "med-005"],
+  overwhelm: ["ground-003", "quick-002", "med-005"],
+  tired: ["med-005", "sleep-001", "ground-002"],
+  sleep: ["sleep-001", "ground-002", "sleep-003"],
+  sadness: ["med-002", "med-003", "presence-003"],
+  emotional: ["med-002", "presence-003", "inner-001"],
+  heavy: ["presence-003", "phase-004", "inner-002"],
+  reset: ["quick-001", "quick-004", "med-004"],
+  luteal: ["phase-004", "presence-003", "ground-003"],
+  menstrual: ["phase-001", "quick-002", "ground-002"],
+  short: ["quick-001", "quick-003", "quick-004"],
+  morning: ["ground-001", "quick-005", "quick-004"],
+  evening: ["ground-002", "sleep-003", "sleep-002"],
+  focus: ["quick-003", "quick-005", "med-004"],
+  transition: ["quick-004", "quick-001", "ground-001"],
   "inner-child": ["inner-001", "inner-002", "med-006"],
-  "self-care": ["inner-003", "read-002", "med-003"],
-  default: ["med-004", "med-001", "med-005"],
+  "self-care": ["inner-003", "presence-001", "quick-005"],
+  default: ["quick-001", "med-004", "med-005"],
 };
 
 function detectIntent(input: string): string {
@@ -46,6 +48,8 @@ function detectIntent(input: string): string {
   if (lower.includes("short") || lower.includes("5 min") || lower.includes("quick")) return "short";
   if (lower.includes("morning")) return "morning";
   if (lower.includes("evening") || lower.includes("night") || lower.includes("wind down")) return "evening";
+  if (lower.includes("focus") || lower.includes("concentrate") || lower.includes("distracted")) return "focus";
+  if (lower.includes("transition") || lower.includes("between") || lower.includes("commute")) return "transition";
   if (lower.includes("inner child") || lower.includes("younger")) return "inner-child";
   if (lower.includes("self-care") || lower.includes("boundaries")) return "self-care";
   return "default";
@@ -99,6 +103,17 @@ Deno.serve(async (req) => {
       "phase-002": "Your energy is rising. Set intention for this cycle with expanding light visualisation.",
       "phase-003": "Your heart meridian is most active at ovulation. A loving-kindness practice for peak energy.",
       "phase-004": "The luteal phase is your truth-teller. This practice holds you through it with RAIN and self-compassion.",
+      "quick-001": "The Half-Smile — 3 minutes of soft nervous system reset. A conscious lift at the corners of your mouth that signals ease.",
+      "quick-002": "The Pebble — imagine yourself sinking through clear water to the riverbed. 5 minutes of effortless settling.",
+      "quick-003": "Counting your breath from 1 to 10. Simple, powerful, and humbling. The losing count is the practice.",
+      "quick-004": "Breathing to Arrive — a mantra practice for transitions. 'I have arrived. I am home.'",
+      "quick-005": "Three questions to check in with what actually matters. A 5-minute values compass.",
+      "ground-001": "Mindful tea or coffee — a 7-minute everyday mindfulness practice. The cup is the whole meditation.",
+      "ground-002": "A 10-minute full body release. Surrender each body part to gravity. Excellent before sleep.",
+      "ground-003": "Hold something solid — a 5-minute somatic anchor for intense anxiety. The fastest way back is through the body.",
+      "presence-001": "A Day of Mindfulness — an invitation to slow everything down. One morning changes all the others.",
+      "presence-002": "Who Am I Right Now? — a gentle self-inquiry. Not your roles. What is most alive in you?",
+      "presence-003": "Making Room for What's Hard — move toward the feeling rather than away. This is what brave feels like.",
     };
 
     const explanation = (explanations[selectedId] || "This practice matches what you're describing.") + phaseContext + symptomContext;

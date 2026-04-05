@@ -959,6 +959,19 @@ Open your eyes when you're ready.`,
 // EXPORTS
 // ═══════════════════════════════════════════════════════════
 
+import {
+  ALL_EXERCISES,
+  QUICK_PRACTICES,
+  GROUNDING_PRACTICES,
+  PRESENCE_PRACTICES,
+} from "./mindfulness-exercises";
+
+export {
+  QUICK_PRACTICES,
+  GROUNDING_PRACTICES,
+  PRESENCE_PRACTICES,
+};
+
 export const MEDITATION_SCRIPTS: MeditationScript[] = [
   medBodyScan,
   medRain,
@@ -1001,6 +1014,7 @@ export const ALL_MEDITATION_SCRIPTS: MeditationScript[] = [
   ...INNER_WORK_SCRIPTS,
   ...SLEEP_SCRIPTS,
   ...PHASE_SCRIPTS,
+  ...ALL_EXERCISES,
 ];
 
 export function getMeditationById(id: string): MeditationScript | undefined {
