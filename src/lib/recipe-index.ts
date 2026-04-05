@@ -5,9 +5,10 @@
 import { Recipe, RECIPES } from "@/data/meal-plans";
 import { PDF_RECIPES } from "@/data/pdf-recipes";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
+import { LIBRARY_RECIPES } from "@/data/pdf-library-recipes";
 
 /** All meal recipes (not baking) */
-export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES];
+export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES];
 
 /** All recipes including baking */
 export const ALL_RECIPES: Recipe[] = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES];
