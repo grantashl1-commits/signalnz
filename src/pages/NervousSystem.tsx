@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Headphones, BookOpen, Heart, Moon, Clock, Check, Loader2, Play, Sparkles, ExternalLink } from "lucide-react";
 import DailyStoicCard from "@/components/DailyStoicCard";
 import { GatedPage } from "@/components/FeatureGate";
