@@ -9,6 +9,8 @@ import {
   getSymptomFrequency, getRecentSymptoms,
   PHASE_SHORT,
 } from "@/lib/cycle-utils";
+import { getRecentStructuredCheckins } from "@/lib/cycle-symptom-utils";
+import { useProfile } from "@/hooks/useProfile";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -20,19 +22,52 @@ const cardVariant = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.35 } }),
 };
 
-const SUGGESTED_QUESTIONS = [
-  "why do I crave sugar before my period?",
-  "is my luteal phase too long?",
-  "what does my mood pattern tell me?",
+const PHASE_CHIPS: Record<Phase, string[]> = {
+  menstrual: [
+    "Why am I so exhausted?",
+    "Why do I feel emotional?",
+    "Is it okay to skip training today?",
+  ],
+  follicular: [
+    "What should I focus on this week?",
+    "Why do I feel so good?",
+    "What's the best training for right now?",
+  ],
+  ovulatory: [
+    "Why am I so confident this week?",
+    "What's the injury risk I should know about?",
+    "Why is my appetite lower?",
+  ],
+  luteal: [
+    "Why are my cravings so high?",
+    "Why can't I sleep even though I'm tired?",
+    "Why do I feel anxious for no reason?",
+    "Why did my workout feel so hard?",
+  ],
+};
+
+const PERI_CHIPS = [
+  "Why do I feel rage out of nowhere?",
+  "Why are my joints sore?",
+  "Why is my memory worse?",
+  "What can I do about hot flushes?",
 ];
 
 export default function InsightsTab() {
   const { cycleStartDate: lastPeriod, currentPhase, currentCycleDay } = useCycle();
+  const { cycleMode } = useProfile();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
 
   const [coachMessages, setCoachMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   const [coachInput, setCoachInput] = useState("");
   const [coachLoading, setCoachLoading] = useState(false);
+
+  // Phase-aware suggested questions
+  const suggestedChips = useMemo(() => {
+    const base = PHASE_CHIPS[info.phase] || [];
+    if (cycleMode === "perimenopause") return [...base.slice(0, 2), ...PERI_CHIPS.slice(0, 3)];
+    return base;
+  }, [info.phase, cycleMode]);
 
   // Symptom frequency
   const symptomFreq = useMemo(() => getSymptomFrequency(), []);
@@ -44,7 +79,7 @@ export default function InsightsTab() {
   }, [symptomFreq]);
   const topSymptom = symptomChartData[0];
 
-  // Cycle Coach
+  // Cycle Coach — pass richer context
   const sendCoachMessage = async (text: string) => {
     if (!text.trim()) return;
     haptic("light");
@@ -55,10 +90,16 @@ export default function InsightsTab() {
     setCoachLoading(true);
 
     try {
+      // Gather recent structured symptoms
+      const recentCheckins = getRecentStructuredCheckins(3);
+      const recentSymptomNames = recentCheckins.flatMap(c => c.data.symptoms.map(s => s.name));
+      const legacySymptoms = getRecentSymptoms(3).flatMap(s => s.symptoms);
+      const allRecentSymptoms = [...new Set([...recentSymptomNames, ...legacySymptoms])];
+
       const contextPrefix = updatedMessages.length === 1
-        ? `[Context: Cycle day ${info.cycleDay}, ${PHASE_SHORT[info.phase]} phase. ${
-            getRecentSymptoms(3).flatMap(s => s.symptoms).length > 0
-              ? `Recent symptoms: ${getRecentSymptoms(3).flatMap(s => s.symptoms).join(", ")}.`
+        ? `[Context: Cycle day ${info.cycleDay}, ${PHASE_SHORT[info.phase]} phase. Mode: ${cycleMode}. ${
+            allRecentSymptoms.length > 0
+              ? `Recent symptoms: ${allRecentSymptoms.join(", ")}.`
               : ""
           }]\n\n`
         : "";
@@ -69,7 +110,14 @@ export default function InsightsTab() {
       }));
 
       const { data, error } = await supabase.functions.invoke("cycle-ai", {
-        body: { type: "cycle-coach", messages: messagesForAI },
+        body: {
+          type: "cycle-coach",
+          messages: messagesForAI,
+          cycle_mode: cycleMode,
+          current_phase: info.phase,
+          cycle_day: info.cycleDay,
+          recent_symptoms: allRecentSymptoms,
+        },
       });
 
       if (error) throw error;
@@ -111,12 +159,12 @@ export default function InsightsTab() {
           <p className="font-hand text-sm text-muted-foreground mb-4">what would you like to understand?</p>
 
           {coachMessages.length === 0 && (
-            <div className="flex flex-col gap-2 mb-4">
-              {SUGGESTED_QUESTIONS.map((q) => (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {suggestedChips.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendCoachMessage(q)}
-                  className="touch-btn card-warm px-4 py-3 min-h-[44px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors"
+                  className="touch-btn card-warm px-3 py-2.5 min-h-[40px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors rounded-full"
                 >
                   {q}
                 </button>

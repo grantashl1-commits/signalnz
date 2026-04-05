@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { type, messages, cycleDay, phase, phaseDescription, recentSymptoms, recentMoods, periodDueIn } = await req.json();
+    const { type, messages, cycleDay, phase, phaseDescription, recentSymptoms, recentMoods, periodDueIn, cycle_mode, current_phase, cycle_day, recent_symptoms } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -42,7 +42,30 @@ Return ONLY the message text. No JSON. No preamble.`;
       userMessage = messages?.[0]?.content || "Write a monthly reflection.";
 
     } else if (type === "cycle-coach") {
-      systemPrompt = `You are a warm, knowledgeable women's health guide acting as a personal cycle coach. You answer questions about menstrual cycles, hormones, symptoms, and wellness with warmth, evidence-based knowledge, and practical advice. You speak directly to her as 'you'. You never diagnose. Keep answers concise (3-5 sentences) unless the question requires more detail. Be encouraging and validating.`;
+      const modeContext = cycle_mode === "perimenopause"
+        ? " She is in perimenopause — her cycles may be irregular and she may experience hot flushes, brain fog, joint pain, mood changes, and sleep disruption. Validate these as hormonal, not psychological."
+        : cycle_mode === "post-menopause"
+        ? " She is post-menopause. Focus on strength, bone health, cardiovascular support, and the ongoing benefits of movement and nutrition."
+        : "";
+
+      const symptomContext = recent_symptoms && recent_symptoms.length > 0
+        ? ` Her recent symptoms include: ${recent_symptoms.join(", ")}.`
+        : "";
+
+      const phaseCtx = current_phase && cycle_day
+        ? ` She is currently on cycle day ${cycle_day} in her ${current_phase} phase.`
+        : "";
+
+      systemPrompt = `You are a warm, knowledgeable women's health guide acting as a personal cycle coach. You answer questions about menstrual cycles, hormones, symptoms, and wellness with warmth, evidence-based knowledge, and practical advice.${modeContext}${phaseCtx}${symptomContext}
+
+Key principles:
+- Never dismissive — every symptom is valid
+- Explain the hormonal mechanism, not just "that's normal"
+- Give one practical, actionable suggestion tied to her current phase
+- Never diagnose — always signpost to a GP for clinical concerns
+- Cite the framework when relevant (e.g. "During the luteal phase, progesterone rises and increases protein breakdown — this is why your body is asking for more food")
+
+Speak directly to her as 'you'. Keep answers concise (3-5 sentences) unless the question requires more detail. Be encouraging and validating.`;
 
       const allMessages = [
         { role: "system", content: systemPrompt },

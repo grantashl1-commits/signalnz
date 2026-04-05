@@ -63,7 +63,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: Moon,
         text: `Your luteal phase consistently shows higher fatigue — logged ${lutealFatigueCount} times. This is driven by progesterone and is expected.`,
-        colour: "#D4722A",
+        colour: "#9B89B4",
       });
     }
 
@@ -79,7 +79,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: Zap,
         text: "Your energy and mood tend to peak in your follicular and ovulatory phases. This is your superpower window.",
-        colour: "#4CAF50",
+        colour: "#5C4A9E",
       });
     }
 
@@ -89,7 +89,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: AlertCircle,
         text: `Headaches appear most commonly in your menstrual phase (${menstrualHeadache} times). This is linked to the oestrogen drop.`,
-        colour: "#8B1A2B",
+        colour: "#C4526E",
       });
     }
 
@@ -99,7 +99,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: TrendingUp,
         text: `You have logged ${loggedDays} days across ${cycleCount} cycle${cycleCount > 1 ? "s" : ""}. Keep logging for richer insights.`,
-        colour: "#7B50A3",
+        colour: "#9B89B4",
       });
     }
 

@@ -29,10 +29,10 @@ import CycleInsights from "@/components/cycle/CycleInsights";
 import IrregularPeriodSupport from "@/components/cycle/IrregularPeriodSupport";
 
 const PHASE_HEX: Record<Phase, string> = {
-  menstrual: "#8B1A2B",
-  follicular: "#4CAF50",
-  ovulatory: "#F4A63A",
-  luteal: "#D4722A",
+  menstrual: "#C4526E",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
+  luteal: "#9B89B4",
 };
 
 const POETRY: Record<Phase, string> = {
@@ -115,13 +115,13 @@ export default function CyclePage() {
     ? [
         { id: "overview" as const, label: "Overview" },
         { id: "insights" as const, label: "Insights" },
-        { id: "learn" as const, label: "Learn" },
+        { id: "learn" as const, label: "Hormones" },
       ]
     : [
         { id: "overview" as const, label: "Overview" },
         { id: "calendar" as const, label: "Calendar" },
         { id: "insights" as const, label: "Insights" },
-        { id: "learn" as const, label: "Learn" },
+        { id: "learn" as const, label: "Hormones" },
       ];
 
   return (
@@ -364,10 +364,10 @@ export default function CyclePage() {
                       </div>
                     )}
                     <div className="flex justify-center gap-[2px] mt-[1px]">
-                      {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#8B1A2B" }}>●</span>}
+                      {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#C4526E" }}>●</span>}
                       {indicators.hasSymptoms && <span className="text-[8px] leading-none" style={{ color: phase ? PHASE_HEX[phase] : undefined, opacity: 0.7 }}>◆</span>}
                       {indicators.hasNotes && <span className="text-[8px] leading-none text-foreground/40">✎</span>}
-                      {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#D4722A" }}>✿</span>}
+                      {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#9B89B4" }}>✿</span>}
                     </div>
                   </button>
                 );
