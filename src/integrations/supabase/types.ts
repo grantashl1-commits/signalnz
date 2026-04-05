@@ -515,6 +515,36 @@ export type Database = {
           },
         ]
       }
+      habit_logs: {
+        Row: {
+          completed_count: number
+          completion_pct: number
+          created_at: string
+          id: string
+          log_date: string
+          total_count: number
+          user_id: string
+        }
+        Insert: {
+          completed_count?: number
+          completion_pct?: number
+          created_at?: string
+          id?: string
+          log_date: string
+          total_count?: number
+          user_id: string
+        }
+        Update: {
+          completed_count?: number
+          completion_pct?: number
+          created_at?: string
+          id?: string
+          log_date?: string
+          total_count?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           ai: Json | null
@@ -825,6 +855,39 @@ export type Database = {
           signal_text?: string
           theme?: string | null
           user_identifier?: string
+        }
+        Relationships: []
+      }
+      sleep_logs: {
+        Row: {
+          bedtime: string | null
+          created_at: string
+          hours_slept: number | null
+          id: string
+          log_date: string
+          quality_rating: number | null
+          user_id: string
+          wake_time: string | null
+        }
+        Insert: {
+          bedtime?: string | null
+          created_at?: string
+          hours_slept?: number | null
+          id?: string
+          log_date: string
+          quality_rating?: number | null
+          user_id: string
+          wake_time?: string | null
+        }
+        Update: {
+          bedtime?: string | null
+          created_at?: string
+          hours_slept?: number | null
+          id?: string
+          log_date?: string
+          quality_rating?: number | null
+          user_id?: string
+          wake_time?: string | null
         }
         Relationships: []
       }
