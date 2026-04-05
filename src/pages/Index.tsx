@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import GiveSignalPanel from "@/components/signal/GiveSignalPanel";
 import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
@@ -74,6 +75,7 @@ export default function HomePage() {
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [giveSignalOpen, setGiveSignalOpen] = useState(false);
   const focus = FOCUS[info.phase];
   const streak = getCheckinStreak();
 
@@ -187,7 +189,7 @@ export default function HomePage() {
               whileTap={{ scale: 0.97 }}
               onClick={() => {
                 haptic("medium");
-                openSignal("Give me a signal for today", "home");
+                setGiveSignalOpen(true);
               }}
               className="relative z-10 inline-flex items-center gap-2.5 px-10 py-4.5 rounded-full bg-card text-foreground font-display text-base font-semibold shadow-elevated hover:shadow-glow transition-shadow"
             >
@@ -397,6 +399,8 @@ export default function HomePage() {
 
       {/* Bottom breathing room */}
       <div className="h-16 md:h-24" />
+
+      <GiveSignalPanel open={giveSignalOpen} onClose={() => setGiveSignalOpen(false)} />
     </div>
   );
 }
