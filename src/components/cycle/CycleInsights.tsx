@@ -79,7 +79,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: Zap,
         text: "Your energy and mood tend to peak in your follicular and ovulatory phases. This is your superpower window.",
-        colour: "#4CAF50",
+        colour: "#5C4A9E",
       });
     }
 
