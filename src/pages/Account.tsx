@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart, ShieldCheck, Copy, Share2, Gift, ChevronDown, Salad, Wind, Users, BrainCircuit, Compass, BookOpen } from "lucide-react";
-import FeedbackForm from "@/components/FeedbackForm";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,6 @@ import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import { useEffect, useState } from "react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useProfile } from "@/hooks/useProfile";
 import { useReferralStats } from "@/hooks/useReferral";
 import {
@@ -17,7 +15,6 @@ import {
   getFitnessProfile, saveFitnessProfile,
   getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
 } from "@/lib/fitness-profile";
-import { getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR } from "@/data/workouts";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
@@ -34,7 +31,6 @@ const TIER_LABELS: Record<string, string> = {
 export default function AccountPage() {
   const { user, session, subscription, refreshSubscription, loading } = useAuth();
   const { displayName, updateDisplayName, referralCode } = useProfile();
-  const { stats: referralStats } = useReferralStats();
   const navigate = useNavigate();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -53,12 +49,7 @@ export default function AccountPage() {
   // Supermarket
   const [supermarket, setSupermarket] = useState<SupermarketPreference>(getSupermarket());
 
-  // Age & weight for HR zones
-  const [userAge, setUserAgeState] = useState(getUserAge() || 30);
-  const [userWeight, setUserWeightState] = useState(getUserWeight() || 65);
-  const [biometricsEditing, setBiometricsEditing] = useState(!getUserAge());
-
-  // Date of birth for Signal readings
+  // Date of birth
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [dobSaving, setDobSaving] = useState(false);
 
@@ -85,7 +76,6 @@ export default function AccountPage() {
     fetchCredits();
   }, [user]);
 
-  // Fetch DOB
   useEffect(() => {
     if (!user) return;
     const fetchDob = async () => {
@@ -132,7 +122,6 @@ export default function AccountPage() {
     navigate("/");
   };
 
-  // Check admin role
   useEffect(() => {
     if (!user) return;
     supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
@@ -177,253 +166,102 @@ export default function AccountPage() {
           </motion.button>
         )}
 
-        {/* Quick Links Grid — secondary navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="card-warm p-4"
-        >
-          <h2 className="font-display text-sm italic text-foreground mb-3">Explore</h2>
-          <div className="grid grid-cols-4 gap-2">
-            {[
-              { path: "/my-practice", icon: Heart, label: "Practice" },
-              { path: "/nutrition", icon: Salad, label: "Nutrition" },
-              { path: "/mindfulness", icon: Wind, label: "Mindful" },
-              { path: "/breathwork", icon: Wind, label: "Breathe" },
-              { path: "/community", icon: Users, label: "Community" },
-              { path: "/coach", icon: BrainCircuit, label: "Coach" },
-              { path: "/modules", icon: Compass, label: "Modules" },
-              { path: "/recommendations", icon: BookOpen, label: "For You" },
-            ].map((item) => (
-              <button
-                key={item.path}
-                onClick={() => { haptic("light"); navigate(item.path); }}
-                className="touch-card flex flex-col items-center gap-1 rounded-xl bg-secondary/50 p-3"
-              >
-                <item.icon className="h-5 w-5 text-primary" />
-                <span className="font-body text-[10px] font-medium text-foreground">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Display Name Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="card-warm p-5"
-        >
-          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
-            <PenLine className="h-[1.125rem] w-[1.125rem] text-primary" /> Display Name
+        {/* ═══ SECTION 1: YOU ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-5 space-y-4">
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+            <User className="h-[1.125rem] w-[1.125rem] text-primary" /> You
           </h2>
-          {nameEditing ? (
-            <div className="flex items-center gap-2">
-              <input
-                value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Enter your name..."
-                maxLength={50}
-                className="flex-1 rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    (async () => {
-                      setNameSaving(true);
-                      await updateDisplayName(nameInput);
-                      setNameEditing(false);
-                      setNameSaving(false);
-                      toast.success("Name updated");
-                    })();
-                  }
-                }}
-              />
-              <button
-                onClick={async () => {
-                  setNameSaving(true);
-                  await updateDisplayName(nameInput);
-                  setNameEditing(false);
-                  setNameSaving(false);
-                  toast.success("Name updated");
-                }}
-                disabled={nameSaving}
-                className="inline-flex items-center gap-1 rounded-xl bg-primary px-3.5 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
-              >
-                <Check className="h-3.5 w-3.5" /> {nameSaving ? "Saving..." : "Save"}
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <span className="font-body text-sm text-foreground/80">
-                {displayName || <span className="text-muted-foreground/40 italic">Not set</span>}
-              </span>
-              <button
-                onClick={() => { setNameInput(displayName || ""); setNameEditing(true); }}
-                className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground active:bg-secondary/80 transition-opacity"
-              >
-                <PenLine className="h-3 w-3" /> Edit
-              </button>
-            </div>
-          )}
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="card-warm p-5"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
-              <Crown className="h-[1.125rem] w-[1.125rem] text-primary" /> Subscription
-            </h2>
-            <button onClick={handleRefresh} disabled={refreshing} className="text-muted-foreground hover:text-foreground transition-colors">
-              <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3 mb-3">
-            <span className={`font-display text-2xl font-bold italic ${TIER_COLORS[subscription.tier]}`}>
-              {TIER_LABELS[subscription.tier]}
-            </span>
-            {subscription.subscribed && (
-              <span className="rounded-full bg-phase-follicular/15 px-2.5 py-0.5 font-body text-[11px] font-semibold text-phase-follicular">
-                Active
-              </span>
-            )}
-          </div>
-
-          {subscription.subscriptionEnd && (
-            <p className="font-body text-xs text-muted-foreground mb-3">
-              Renews {new Date(subscription.subscriptionEnd).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
-            </p>
-          )}
-
-          <div className="flex gap-2 flex-wrap">
-            {subscription.subscribed ? (
-              <button
-                onClick={handleManage}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-secondary px-4 py-2.5 font-body text-sm font-semibold text-foreground active:bg-secondary/80 transition-opacity"
-              >
-                <Settings className="h-3.5 w-3.5" /> Manage billing
-                <ArrowUpRight className="h-3 w-3 opacity-50" />
-              </button>
+          {/* Display Name */}
+          <div>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Display name</p>
+            {nameEditing ? (
+              <div className="flex items-center gap-2">
+                <input
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  placeholder="Enter your name..."
+                  maxLength={50}
+                  className="flex-1 rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      (async () => {
+                        setNameSaving(true);
+                        await updateDisplayName(nameInput);
+                        setNameEditing(false);
+                        setNameSaving(false);
+                        toast.success("Name updated");
+                      })();
+                    }
+                  }}
+                />
+                <button
+                  onClick={async () => {
+                    setNameSaving(true);
+                    await updateDisplayName(nameInput);
+                    setNameEditing(false);
+                    setNameSaving(false);
+                    toast.success("Name updated");
+                  }}
+                  disabled={nameSaving}
+                  className="inline-flex items-center gap-1 rounded-xl bg-primary px-3.5 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
+                >
+                  <Check className="h-3.5 w-3.5" /> {nameSaving ? "..." : "Save"}
+                </button>
+              </div>
             ) : (
               <button
-                onClick={() => navigate("/membership")}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity"
+                onClick={() => { setNameInput(displayName || ""); setNameEditing(true); }}
+                className="font-body text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
               >
-                <Zap className="h-3.5 w-3.5" /> Upgrade plan
+                {displayName || "Set your name"} <PenLine className="h-3 w-3 text-muted-foreground" />
               </button>
             )}
-            <button
-              onClick={() => navigate("/membership")}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-secondary/60 px-4 py-2.5 font-body text-sm font-medium text-foreground active:bg-secondary/80 transition-opacity"
-            >
-              View plans
-            </button>
+          </div>
+
+          {/* Date of Birth */}
+          <div>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Date of birth</p>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                className="flex-1 bg-secondary border border-border rounded-lg px-3 py-2 text-foreground font-body text-sm"
+              />
+              <button
+                disabled={dobSaving || !dateOfBirth}
+                onClick={async () => {
+                  if (!user || !dateOfBirth) return;
+                  setDobSaving(true);
+                  await supabase
+                    .from("profiles")
+                    .upsert({ user_id: user.id, date_of_birth: dateOfBirth } as any, { onConflict: "user_id" });
+                  setDobSaving(false);
+                  toast.success("Saved");
+                  haptic("medium");
+                }}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-3 py-2 font-body text-xs font-semibold text-primary-foreground disabled:opacity-40"
+              >
+                <Check className="h-3 w-3" /> {dobSaving ? "..." : "Save"}
+              </button>
+            </div>
+          </div>
+
+          {/* Email (read only) */}
+          <div>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Email</p>
+            <p className="font-body text-sm text-foreground">{user.email}</p>
           </div>
         </motion.div>
 
-        {/* Stats Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-          className="grid grid-cols-2 gap-3"
-        >
-          <div className="card-warm p-4 text-center">
-            <Brain className="h-5 w-5 text-primary mx-auto mb-2" />
-            <p className="font-mono text-xl text-foreground">{credits ?? "—"}</p>
-            <p className="font-body text-[11px] text-muted-foreground mt-0.5">
-              {subscription.tier === "free" ? "of 5 signals left" : "AI credits left"}
-            </p>
-          </div>
-          <div className="card-warm p-4 text-center">
-            <Calendar className="h-5 w-5 text-primary mx-auto mb-2" />
-            <p className="font-body text-sm font-semibold text-foreground">{memberSince}</p>
-            <p className="font-body text-[11px] text-muted-foreground mt-0.5">Member since</p>
-          </div>
-        </motion.div>
-
-        {/* Profile Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.16 }}
-          className="card-warm p-5"
-        >
-          <h2 className="font-display text-lg italic text-foreground mb-4 flex items-center gap-2">
-            <Mail className="h-[1.125rem] w-[1.125rem] text-primary" /> Profile
+        {/* ═══ SECTION 2: YOUR BODY ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="card-warm p-5 space-y-4">
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+            <Dumbbell className="h-[1.125rem] w-[1.125rem] text-primary" /> Your Body
           </h2>
-          <div className="space-y-3">
-            <div>
-              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Display name</p>
-              {nameEditing ? (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    placeholder="Your name"
-                    className="flex-1 rounded-lg border border-border bg-card px-3 py-1.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    autoFocus
-                  />
-                  <button
-                    disabled={nameSaving}
-                    onClick={async () => {
-                      setNameSaving(true);
-                      const err = await updateDisplayName(nameInput);
-                      setNameSaving(false);
-                      if (err) {
-                        toast.error("Failed to save name");
-                      } else {
-                        toast.success("Name saved");
-                        setNameEditing(false);
-                      }
-                    }}
-                    className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 font-body text-xs font-semibold text-primary-foreground disabled:opacity-50"
-                  >
-                    <Check className="h-3 w-3" /> Save
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => {
-                    setNameInput(displayName || "");
-                    setNameEditing(true);
-                  }}
-                  className="font-body text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
-                >
-                  {displayName || "Set your name"} <PenLine className="h-3 w-3 text-muted-foreground" />
-                </button>
-              )}
-            </div>
-            <div>
-              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Email</p>
-              <p className="font-body text-sm text-foreground">{user.email}</p>
-            </div>
-            <div>
-              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">User ID</p>
-              <p className="font-mono text-xs text-muted-foreground">{user.id.slice(0, 8)}…</p>
-            </div>
-            {user.app_metadata?.provider && (
-              <div>
-                <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Sign-in method</p>
-                <p className="font-body text-sm text-foreground capitalize">{user.app_metadata.provider}</p>
-              </div>
-            )}
-          </div>
-        </motion.div>
 
-        {/* Fitness Profile */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="card-warm p-5"
-        >
-          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
-            <Dumbbell className="h-[1.125rem] w-[1.125rem] text-primary" /> My Fitness Profile
-          </h2>
           {!fitnessEditing && getFitnessProfile() ? (
             <div className="space-y-2">
               <div className="flex flex-wrap gap-2">
@@ -433,8 +271,8 @@ export default function AccountPage() {
                   <span key={e} className="rounded-full bg-secondary px-3 py-1 font-body text-xs text-muted-foreground">{EQUIPMENT_LABELS[e]}</span>
                 ))}
               </div>
-              {fitnessInjuries && <p className="font-body text-xs text-muted-foreground">Injuries/limitations: {fitnessInjuries}</p>}
-              <button onClick={() => setFitnessEditing(true)} className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground active:bg-secondary/80 transition-opacity mt-2">
+              {fitnessInjuries && <p className="font-body text-xs text-muted-foreground">Injuries: {fitnessInjuries}</p>}
+              <button onClick={() => setFitnessEditing(true)} className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground">
                 <PenLine className="h-3 w-3" /> Edit
               </button>
             </div>
@@ -447,7 +285,7 @@ export default function AccountPage() {
                 </select>
               </div>
               <div>
-                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Fitness Level</p>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Experience Level</p>
                 <div className="flex gap-2">
                   {(Object.keys(LEVEL_LABELS) as FitnessLevel[]).map(l => (
                     <button key={l} onClick={() => setFitnessLevel(l)} className={`flex-1 rounded-xl px-3 py-2.5 font-body text-xs font-medium transition-all ${fitnessLevel === l ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
@@ -457,7 +295,7 @@ export default function AccountPage() {
                 </div>
               </div>
               <div>
-                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Equipment Available</p>
+                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Equipment</p>
                 <div className="flex flex-wrap gap-2">
                   {(Object.keys(EQUIPMENT_LABELS) as Equipment[]).map(eq => {
                     const active = fitnessEquipment.includes(eq);
@@ -469,10 +307,6 @@ export default function AccountPage() {
                   })}
                 </div>
               </div>
-              <div>
-                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Injuries / Limitations</p>
-                <input value={fitnessInjuries} onChange={e => setFitnessInjuries(e.target.value)} placeholder="e.g. lower back pain, knee injury..." className="w-full rounded-xl border border-border bg-card px-3 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30" />
-              </div>
               <button
                 onClick={() => {
                   saveFitnessProfile({ goal: fitnessGoal, level: fitnessLevel, equipment: fitnessEquipment, injuries: fitnessInjuries });
@@ -480,258 +314,129 @@ export default function AccountPage() {
                   toast.success("Fitness profile saved");
                   haptic("medium");
                 }}
-                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground"
               >
                 <Check className="h-3.5 w-3.5" /> Save Profile
               </button>
             </div>
           )}
-        </motion.div>
 
-        {/* Age & Weight for HR Zones */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.21 }}
-          className="card-warm p-5"
-        >
-          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
-            <Heart className="h-[1.125rem] w-[1.125rem] text-primary" /> Heart Rate Zones
-          </h2>
-          {!biometricsEditing && getUserAge() ? (
-            <div className="space-y-2">
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-primary/10 px-3 py-1 font-body text-xs font-medium text-primary">Age: {userAge}</span>
-                <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs font-medium text-foreground">Weight: {userWeight} kg</span>
-                <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs text-muted-foreground">Max HR: {getMaxHR(userAge)} bpm</span>
-              </div>
-              <button onClick={() => setBiometricsEditing(true)} className="inline-flex items-center gap-1 rounded-xl bg-secondary px-3 py-2 font-body text-xs font-semibold text-foreground active:bg-secondary/80 transition-opacity mt-2">
-                <PenLine className="h-3 w-3" /> Edit
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Age</p>
-                <div className="flex items-center gap-4">
-                  <button onClick={() => setUserAgeState(a => Math.max(16, a - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
-                  <span className="font-mono text-2xl text-foreground w-12 text-center">{userAge}</span>
-                  <button onClick={() => setUserAgeState(a => Math.min(80, a + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
-                  <span className="font-mono text-xs text-muted-foreground ml-2">Max HR: {getMaxHR(userAge)}</span>
-                </div>
-              </div>
-              <div>
-                <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Weight (kg)</p>
-                <div className="flex items-center gap-4">
-                  <button onClick={() => setUserWeightState(w => Math.max(30, w - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
-                  <span className="font-mono text-2xl text-foreground w-12 text-center">{userWeight}</span>
-                  <button onClick={() => setUserWeightState(w => Math.min(200, w + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
-                  <span className="font-mono text-xs text-muted-foreground ml-2">kg</span>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setUserAge(userAge);
-                  setUserWeight(userWeight);
-                  setBiometricsEditing(false);
-                  toast.success("Age & weight saved");
-                  haptic("medium");
-                }}
-                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
-              >
-                <Check className="h-3.5 w-3.5" /> Save
-              </button>
-            </div>
-          )}
-          <p className="font-body text-[11px] text-muted-foreground mt-3">Used to calculate your heart rate zones and calories burnt during workouts.</p>
-        </motion.div>
-
-        {/* Date of Birth for Signal readings */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.22 }}
-          className="card-warm p-5"
-        >
-          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
-            <Calendar className="h-[1.125rem] w-[1.125rem] text-primary" /> Date of Birth
-          </h2>
-          <input
-            type="date"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-            className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground font-body text-sm"
-          />
-          <p className="font-body text-[11px] text-muted-foreground mt-2">
-            Used to personalise your Signal readings
-          </p>
-          <button
-            disabled={dobSaving || !dateOfBirth}
-            onClick={async () => {
-              if (!user || !dateOfBirth) return;
-              setDobSaving(true);
-              await supabase
-                .from("profiles")
-                .upsert({ user_id: user.id, date_of_birth: dateOfBirth } as any, { onConflict: "user_id" });
-              setDobSaving(false);
-              toast.success("Date of birth saved");
-              haptic("medium");
-            }}
-            className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity mt-3 disabled:opacity-40"
-          >
-            <Check className="h-3.5 w-3.5" /> {dobSaving ? "Saving..." : "Save"}
-          </button>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.22 }}
-          className="card-warm p-5"
-        >
-          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
-            <ShoppingCart className="h-[1.125rem] w-[1.125rem] text-primary" /> Linked Supermarket
-          </h2>
-          <div className="space-y-1">
-            {SUPERMARKET_OPTIONS.map(s => (
-              <button
-                key={s.name}
-                onClick={() => {
-                  setSupermarket(s);
-                  saveSupermarket(s);
-                  toast.success(`Supermarket set to ${s.name}`);
-                  haptic("light");
-                }}
-                className={`w-full flex items-center justify-between rounded-xl px-4 py-3 text-sm font-body transition-all ${
-                  supermarket.name === s.name
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "bg-secondary/30 text-foreground hover:bg-secondary/50"
-                }`}
-              >
-                <span>{s.name}</span>
-                {supermarket.name === s.name && <Check className="h-4 w-4" />}
-              </button>
-            ))}
-          </div>
-          <p className="font-body text-[11px] text-muted-foreground mt-2">Your shopping list will link to {supermarket.name} for easy ordering.</p>
-        </motion.div>
-
-        {/* Quick Links */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.24 }}
-          className="space-y-2"
-        >
-          <button
-            onClick={() => navigate("/membership")}
-            className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-secondary/80 transition-colors"
-          >
-            <Crown className="h-5 w-5 text-primary flex-shrink-0" />
-            <div className="flex-1">
-              <p className="font-display text-sm italic text-foreground">Membership plans</p>
-              <p className="font-body text-[11px] text-muted-foreground">Compare tiers & upgrade</p>
-            </div>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
-          </button>
-
-          <button
-            onClick={() => navigate("/feedback")}
-            className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-secondary/80 transition-colors"
-          >
-            <MessageSquareText className="h-5 w-5 text-primary flex-shrink-0" />
-            <div className="flex-1">
-              <p className="font-display text-sm italic text-foreground">Feedback dashboard</p>
-              <p className="font-body text-[11px] text-muted-foreground">View all submitted feedback</p>
-            </div>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
-          </button>
-
-          {/* ═══ REFERRAL SECTION ═══ */}
-          <div className="card-warm p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <Gift className="h-5 w-5 text-primary" />
-              <h3 className="font-display text-base italic text-foreground">Share Signal, earn a free month</h3>
-            </div>
-            <p className="font-body text-sm text-muted-foreground">
-              When a friend signs up and subscribes using your link, you both win. You get a free month. They get 50% off their first month.
-            </p>
-
-            {referralCode && (
-              <>
-                <div className="flex items-center gap-2">
-                  <input
-                    readOnly
-                    value={`signalnz.lovable.app?ref=${referralCode}`}
-                    className="flex-1 rounded-xl border border-border bg-secondary/30 px-3 py-2.5 font-mono text-xs text-foreground"
-                  />
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(`https://signalnz.lovable.app?ref=${referralCode}`);
-                      haptic("light");
-                      toast.success("Link copied!");
-                    }}
-                    className="rounded-xl bg-secondary px-3 py-2.5 text-foreground"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </button>
-                </div>
-
+          {/* Supermarket */}
+          <div className="pt-3 border-t border-border/30">
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-2">Linked Supermarket</p>
+            <div className="space-y-1">
+              {SUPERMARKET_OPTIONS.map(s => (
                 <button
+                  key={s.name}
                   onClick={() => {
-                    haptic("medium");
-                    const text = `I've been using Signal to sync my life with my cycle — it's genuinely changed how I feel. Try it free: https://signalnz.lovable.app?ref=${referralCode}`;
-                    if (navigator.share) {
-                      navigator.share({ text }).catch(() => {});
-                    } else {
-                      navigator.clipboard.writeText(text);
-                      toast.success("Share text copied!");
-                    }
+                    setSupermarket(s);
+                    saveSupermarket(s);
+                    toast.success(`Set to ${s.name}`);
+                    haptic("light");
                   }}
-                  className="w-full rounded-xl bg-primary px-4 py-3 font-body text-sm font-bold text-primary-foreground flex items-center justify-center gap-2"
+                  className={`w-full flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-body transition-all ${
+                    supermarket.name === s.name
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "bg-secondary/30 text-foreground hover:bg-secondary/50"
+                  }`}
                 >
-                  <Share2 className="h-4 w-4" /> Share with a friend
+                  <span>{s.name}</span>
+                  {supermarket.name === s.name && <Check className="h-4 w-4" />}
                 </button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
 
-                <div className="flex justify-between text-center pt-1">
-                  <div>
-                    <p className="font-mono text-lg font-bold text-foreground">{referralStats.total}</p>
-                    <p className="font-body text-[10px] text-muted-foreground">Referred</p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-lg font-bold text-foreground">{referralStats.converted}</p>
-                    <p className="font-body text-[10px] text-muted-foreground">Subscribed</p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-lg font-bold text-primary">{referralStats.freeMonths}</p>
-                    <p className="font-body text-[10px] text-muted-foreground">Free months</p>
-                  </div>
-                </div>
-              </>
+        {/* ═══ SECTION 3: MEMBERSHIP ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }} className="card-warm p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+              <Crown className="h-[1.125rem] w-[1.125rem] text-primary" /> Membership
+            </h2>
+            <button onClick={handleRefresh} disabled={refreshing} className="text-muted-foreground hover:text-foreground">
+              <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className={`font-display text-2xl font-bold italic ${TIER_COLORS[subscription.tier]}`}>
+              {TIER_LABELS[subscription.tier]}
+            </span>
+            {subscription.subscribed && (
+              <span className="rounded-full bg-phase-follicular/15 px-2.5 py-0.5 font-body text-[11px] font-semibold text-phase-follicular">Active</span>
             )}
           </div>
 
-          <button
-            onClick={handleSignOut}
-            className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors"
-          >
-            <LogOut className="h-5 w-5 text-destructive flex-shrink-0" />
-            <div className="flex-1">
-              <p className="font-display text-sm italic text-destructive">Sign out</p>
-              <p className="font-body text-[11px] text-muted-foreground">Log out of your account</p>
+          {subscription.subscriptionEnd && (
+            <p className="font-body text-xs text-muted-foreground">
+              Renews {new Date(subscription.subscriptionEnd).toLocaleDateString("en-NZ", { day: "numeric", month: "long", year: "numeric" })}
+            </p>
+          )}
+
+          <div className="flex gap-2 flex-wrap">
+            {subscription.subscribed ? (
+              <button onClick={handleManage} className="inline-flex items-center gap-1.5 rounded-xl bg-secondary px-4 py-2.5 font-body text-sm font-semibold text-foreground">
+                <Settings className="h-3.5 w-3.5" /> Manage billing <ArrowUpRight className="h-3 w-3 opacity-50" />
+              </button>
+            ) : (
+              <button onClick={() => navigate("/membership")} className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-bold text-primary-foreground">
+                <Zap className="h-3.5 w-3.5" /> Upgrade plan
+              </button>
+            )}
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="text-center">
+              <Brain className="h-4 w-4 text-primary mx-auto mb-1" />
+              <p className="font-mono text-lg text-foreground">{credits ?? "—"}</p>
+              <p className="font-body text-[10px] text-muted-foreground">{subscription.tier === "free" ? "of 5 signals left" : "AI credits"}</p>
             </div>
-          </button>
+            <div className="text-center">
+              <Calendar className="h-4 w-4 text-primary mx-auto mb-1" />
+              <p className="font-body text-xs font-semibold text-foreground">{memberSince}</p>
+              <p className="font-body text-[10px] text-muted-foreground">Member since</p>
+            </div>
+          </div>
+
+          {/* Referral — single row */}
+          {referralCode && (
+            <div className="pt-3 border-t border-border/30">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">refer a friend</p>
+                  <p className="text-sm text-foreground/70 mt-0.5">{referralCode}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://signalnz.lovable.app?ref=${referralCode}`);
+                    haptic("light");
+                    toast.success("Link copied!");
+                  }}
+                  className="font-mono text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground"
+                >
+                  copy
+                </button>
+              </div>
+            </div>
+          )}
         </motion.div>
 
-        {/* Feedback Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+        {/* Share feedback link */}
+        <button onClick={() => navigate("/feedback")} className="flex items-center justify-between w-full py-3 border-b border-border/10">
+          <span className="text-sm text-muted-foreground">Share feedback</span>
+          <ChevronRight className="w-4 h-4 text-muted-foreground/25" />
+        </button>
+
+        {/* Sign out */}
+        <button
+          onClick={handleSignOut}
+          className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors"
         >
-          <FeedbackForm />
-        </motion.div>
-
-        <BotanicalSprig width={140} className="mx-auto mt-6" />
+          <LogOut className="h-5 w-5 text-destructive flex-shrink-0" />
+          <p className="font-display text-sm italic text-destructive">Sign out</p>
+        </button>
       </ContentSection>
     </div>
   );

@@ -14,33 +14,29 @@ import JournalEntries from "@/components/journal/JournalEntries";
 import JournalActivities from "@/components/journal/JournalActivities";
 import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
 import DreamStudio from "@/components/journal/DreamStudio";
-import MoodCheckin from "@/components/journal/MoodCheckin";
-import EntryTypeSelector, { type JournalEntryType } from "@/components/journal/EntryTypeSelector";
 import GratitudeEditor from "@/components/journal/GratitudeEditor";
 import OneLineEditor from "@/components/journal/OneLineEditor";
 import PhaseHeatMap from "@/components/journal/PhaseHeatMap";
-import WordCountBar from "@/components/journal/WordCountBar";
 import JournalInsights from "@/components/journal/JournalInsights";
 import { useJournalSync } from "@/hooks/useJournalSync";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
 import type { PracticeConfig } from "@/data/practices";
 
-type Tab = "entries" | "activities" | "vault" | "dream";
-type View = "list" | "write" | "detail" | "mood-checkin" | "type-select" | "gratitude" | "one-line";
+type Tab = "write" | "entries" | "insights";
+type View = "list" | "write" | "detail" | "gratitude" | "one-line";
+type EntryType = "reflect" | "gratitude" | "one line";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "entries", label: "My Entries" },
-  { id: "activities", label: "Activities" },
-  { id: "vault", label: "Memory Vault" },
-  { id: "dream", label: "Dream Studio" },
+  { id: "write", label: "Write" },
+  { id: "entries", label: "Entries" },
+  { id: "insights", label: "Insights" },
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {
-  entries: "Your story, one chapter at a time.",
-  activities: "Creative rituals for reflection and play.",
-  vault: "Your favourite pieces of your life.",
-  dream: "Imagine the life you are quietly building.",
+  write: "Your story, one chapter at a time.",
+  entries: "Everything you've written.",
+  insights: "Patterns, reflections, and memories.",
 };
 
 const PHASE_COLORS: Record<string, string> = {
@@ -57,7 +53,6 @@ const PHASE_HEX: Record<string, string> = {
   luteal: "#9B89B4",
 };
 
-// Phase-aware placeholder prompts
 const PHASE_PROMPTS: Record<string, Record<string, string>> = {
   menstrual: {
     default: "What does your body want you to know right now?",
@@ -84,7 +79,6 @@ function getPlaceholder(phase: string, mood: string | null): string {
   return (mood && phasePrompts[mood]) || phasePrompts.default || "Start writing...";
 }
 
-// ── Stoic TTS player config ──
 function stoicToPracticeConfig(reading: { title: string; tts_script: string | null; duration_sec: number | null; seq_day: number }): PracticeConfig {
   return {
     id: `stoic-day-${reading.seq_day}`,
@@ -98,15 +92,12 @@ function stoicToPracticeConfig(reading: { title: string; tts_script: string | nu
   };
 }
 
-// ── Streak calculation ──
 function calculateStreak(entries: JournalEntryRow[]): number {
   if (entries.length === 0) return 0;
   const dates = [...new Set(entries.map((e) => e.date || e.created_at?.split("T")[0]))].sort().reverse();
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-
   if (dates[0] !== today && dates[0] !== yesterday) return 0;
-
   let streak = 1;
   for (let i = 1; i < dates.length; i++) {
     const prev = new Date(dates[i - 1]);
@@ -118,54 +109,15 @@ function calculateStreak(entries: JournalEntryRow[]): number {
   return streak;
 }
 
-// ── Today's Stoic Card (compact, top of journal) ──
-function TodayStoicCard({ onListen, onWrite }: { onListen: () => void; onWrite: () => void }) {
-  const { currentDay, reading, listenedToday, loading } = useDailyStoic();
-
-  if (loading || !reading) return null;
-
-  return (
-    <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-4 mb-5">
-      <div className="flex items-center gap-2 mb-2">
-        <BookOpen className="h-4 w-4 text-primary" />
-        <span className="font-mono text-[11px] text-muted-foreground">Day {currentDay} of 366</span>
-      </div>
-      <h3 className="font-display text-lg italic text-foreground mb-1">"{reading.title}"</h3>
-      <p className="font-mono text-[10px] text-muted-foreground mb-3">{reading.author} · {reading.source}</p>
-      <div className="flex gap-3">
-        <button
-          onClick={() => { haptic("medium"); onListen(); }}
-          className={`touch-btn flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 font-display text-sm italic transition-all ${
-            listenedToday ? "bg-phase-follicular/10 text-phase-follicular" : "bg-secondary text-foreground active:scale-[0.97]"
-          }`}
-        >
-          {listenedToday ? "✓ Listened today" : `▶ Listen · ${Math.round((reading.duration_sec || 240) / 60)} min`}
-        </button>
-        <button
-          onClick={() => { haptic("medium"); onWrite(); }}
-          className="touch-btn flex-1 rounded-xl bg-primary py-2.5 font-display text-sm italic text-primary-foreground active:scale-[0.97]"
-        >
-          Write + Reflect
-        </button>
-      </div>
-      {/* Progress bar */}
-      <div className="mt-3 flex items-center gap-2">
-        <div className="flex-1 h-1 rounded-full bg-muted/40 overflow-hidden">
-          <div className="h-full rounded-full bg-primary/40" style={{ width: `${(currentDay / 366) * 100}%` }} />
-        </div>
-        <span className="font-mono text-[9px] text-muted-foreground/50">{currentDay} / 366</span>
-      </div>
-    </motion.div>
-  );
-}
-
-// ── Writing View (Standard Reflection) ──
+// ── Writing View (with inline mood + type + collapsible stoic) ──
 function WritingView({
   mood,
+  entryType,
   onSave,
   onClose,
 }: {
   mood: string | null;
+  entryType: EntryType;
   onSave: (content: string, wordCount: number) => void;
   onClose: () => void;
 }) {
@@ -173,7 +125,7 @@ function WritingView({
   const [text, setText] = useState("");
   const [saved, setSaved] = useState(false);
   const { currentDay, reading, listenedToday, markListened } = useDailyStoic();
-  const [showStoicCard, setShowStoicCard] = useState(true);
+  const [stoicOpen, setStoicOpen] = useState(false);
   const [showPlayer, setShowPlayer] = useState(false);
 
   const wordCount = text.split(/\s+/).filter(Boolean).length;
@@ -211,14 +163,26 @@ function WritingView({
       </div>
 
       <div className="flex-1 flex flex-col px-5 pb-6 pt-4 overflow-y-auto">
-        {reading && showStoicCard && (
-          <StoicJournalSeedCard
-            reading={reading}
-            currentDay={currentDay}
-            listenedToday={listenedToday}
-            onListen={handleListen}
-            onSkip={() => setShowStoicCard(false)}
-          />
+        {/* Collapsible Stoic card */}
+        {reading && (
+          <>
+            <button
+              onClick={() => setStoicOpen(!stoicOpen)}
+              className="flex items-center gap-2 text-muted-foreground/30 font-mono text-[10px] tracking-wide mb-3"
+            >
+              <span>{stoicOpen ? "▾" : "▸"}</span>
+              <span>today's stoic</span>
+            </button>
+            {stoicOpen && (
+              <StoicJournalSeedCard
+                reading={reading}
+                currentDay={currentDay}
+                listenedToday={listenedToday}
+                onListen={handleListen}
+                onSkip={() => setStoicOpen(false)}
+              />
+            )}
+          </>
         )}
 
         <textarea
@@ -229,8 +193,6 @@ function WritingView({
           autoFocus
           style={{ caretColor: "hsl(14, 100%, 64%)", fontSize: "18px" }}
         />
-
-        <WordCountBar wordCount={wordCount} phaseColor={PHASE_HEX[currentPhase] || "#C4526E"} />
 
         <div className="flex items-center justify-between gap-3 mt-4">
           <span className="font-mono text-xs text-muted-foreground">{wordCount} words</span>
@@ -276,7 +238,6 @@ function EntryDetailView({
 
   const displayContent = entry.content || (entry.prompts ? Object.values(entry.prompts).filter(Boolean).join("\n\n") : "");
 
-  // Entry type badge
   const typeBadge = entry.entry_type === "gratitude" ? "· Gratitude" : entry.entry_type === "one-line" ? "· One line" : null;
 
   return (
@@ -406,13 +367,14 @@ function StoicEntryCard({ entry, onClick }: { entry: JournalEntryRow; onClick: (
 // ── MAIN PAGE ──
 export default function JournalPage() {
   const { currentPhase, currentCycleDay } = useCycle();
-  const [tab, setTab] = useState<Tab>("entries");
+  const [tab, setTab] = useState<Tab>("write");
   const [view, setView] = useState<View>("list");
   const [selectedEntry, setSelectedEntry] = useState<JournalEntryRow | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStoic, setFilterStoic] = useState(false);
   const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
   const [currentMood, setCurrentMood] = useState<string | null>(null);
+  const [entryType, setEntryType] = useState<EntryType>("reflect");
 
   const { currentDay, reading, listenedToday, markListened, advanceDay } = useDailyStoic();
   const { entries, loading, saveEntry, updateStoicLens } = useJournalEntries2();
@@ -423,10 +385,8 @@ export default function JournalPage() {
 
   const streak = useMemo(() => calculateStreak(entries), [entries]);
 
-  // Android back button support — close internal views before leaving page
   const handleAndroidBack = useCallback(() => {
-    if (view === "write" || view === "detail" || view === "mood-checkin" ||
-        view === "type-select" || view === "gratitude" || view === "one-line") {
+    if (view === "write" || view === "detail" || view === "gratitude" || view === "one-line") {
       setView("list");
       return true;
     }
@@ -434,28 +394,14 @@ export default function JournalPage() {
   }, [view]);
   useAndroidBack(handleAndroidBack);
 
-  // Start the write flow: show entry type selector
-  const handleWrite = () => setView("type-select");
-
-  // Entry type selected → mood check-in for standard, skip for others
-  const handleTypeSelect = (type: JournalEntryType) => {
-    if (type === "standard") {
-      setView("mood-checkin");
-    } else if (type === "gratitude") {
+  const handleWrite = () => {
+    if (entryType === "gratitude") {
       setView("gratitude");
-    } else {
+    } else if (entryType === "one line") {
       setView("one-line");
+    } else {
+      setView("write");
     }
-  };
-
-  const handleMoodSelected = (mood: string) => {
-    setCurrentMood(mood);
-    setView("write");
-  };
-
-  const handleMoodSkip = () => {
-    setCurrentMood(null);
-    setView("write");
   };
 
   const handleListen = () => {
@@ -463,22 +409,22 @@ export default function JournalPage() {
     markListened();
   };
 
-  const handleSave = async (content: string, wordCount: number, entryType: string = "standard") => {
+  const handleSave = async (content: string, wordCount: number, saveEntryType: string = "standard") => {
     const saved = await saveEntry({
       content,
       word_count: wordCount,
-      entry_type: entryType,
+      entry_type: saveEntryType,
       mood: currentMood || undefined,
       cycle_phase: currentPhase,
       cycle_day: currentCycleDay,
       cycle_mode: "cycling",
-      stoic_seq_day: entryType === "standard" ? reading?.seq_day : undefined,
-      stoic_title: entryType === "standard" ? reading?.title : undefined,
+      stoic_seq_day: saveEntryType === "standard" ? reading?.seq_day : undefined,
+      stoic_title: saveEntryType === "standard" ? reading?.title : undefined,
     });
 
     if (saved) {
       setPostSaveEntry(saved);
-      if (listenedToday && entryType === "standard") advanceDay();
+      if (listenedToday && saveEntryType === "standard") advanceDay();
     }
     setView("list");
     setCurrentMood(null);
@@ -511,7 +457,6 @@ export default function JournalPage() {
     }
   };
 
-  // Legacy journal sync callbacks
   const handleSaveToVault = useCallback(async (entry: JournalEntry) => {
     haptic("medium");
     const preview = Object.values(entry.prompts).filter(Boolean)[0] || "";
@@ -527,7 +472,6 @@ export default function JournalPage() {
     const board = loadDreamBoard();
     saveDreamBoard([...board, el]);
     await journalSync.updateEntry({ ...entry, pinnedToDreamStudio: true });
-    setTab("dream");
   }, [journalSync]);
 
   return (
@@ -537,17 +481,16 @@ export default function JournalPage() {
           <div className="text-center">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
             <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
-              {tab === "entries" ? "My Journal" : tab === "activities" ? "Activities" : tab === "vault" ? "Memory Vault" : "Dream Studio"}
+              {tab === "write" ? "My Journal" : tab === "entries" ? "Entries" : "Insights"}
             </h1>
             <div className="flex items-center justify-center gap-3">
               <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md">
                 {TAB_SUBTITLES[tab]}
               </p>
-              {streak > 0 && tab === "entries" && (
+              {streak > 0 && (
                 <span className="flex items-center gap-1 font-mono text-xs text-primary-foreground/50">
                   <Flame className="h-3.5 w-3.5 text-orange-400" />
                   {streak} day{streak > 1 ? "s" : ""}
-                  {streak >= 7 ? " — you're building something real" : ""}
                 </span>
               )}
             </div>
@@ -557,12 +500,12 @@ export default function JournalPage() {
         <ContentSection className="px-5 md:px-4">
           {/* Tabs */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-xl overflow-x-auto scrollbar-hide">
+            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-md overflow-x-auto scrollbar-hide">
               {TABS.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => { haptic("light"); setTab(t.id); setView("list"); setSelectedEntry(null); setPostSaveEntry(null); }}
-                  className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[12px] md:text-[13px] transition-all whitespace-nowrap min-w-0 ${
+                  className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[13px] transition-all whitespace-nowrap ${
                     tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
                   }`}
                 >
@@ -580,10 +523,51 @@ export default function JournalPage() {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.15 }}
             >
-              {tab === "entries" && view === "list" && (
+              {/* ═══ WRITE TAB ═══ */}
+              {tab === "write" && view === "list" && (
                 <div className="space-y-4">
-                  {/* Today's Stoic card */}
-                  <TodayStoicCard onListen={handleListen} onWrite={handleWrite} />
+                  {/* Inline mood row */}
+                  <div className="flex gap-2 flex-wrap">
+                    <p className="font-mono text-[10px] text-muted-foreground/25 self-center">feeling</p>
+                    {["grounded", "heavy", "clear", "unsettled", "open"].map((mood) => (
+                      <button
+                        key={mood}
+                        onClick={() => setCurrentMood(currentMood === mood ? null : mood)}
+                        className={`font-mono text-[9px] tracking-wide px-2.5 py-1 rounded-full border transition-all ${
+                          currentMood === mood
+                            ? "border-primary text-primary"
+                            : "border-border/30 text-muted-foreground/20"
+                        }`}
+                      >
+                        {mood}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Inline entry type toggle */}
+                  <div className="flex gap-2">
+                    {(["reflect", "gratitude", "one line"] as EntryType[]).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setEntryType(type)}
+                        className={`font-mono text-[10px] tracking-wide px-3 py-1.5 rounded-full border transition-all ${
+                          entryType === type
+                            ? "border-primary text-primary"
+                            : "border-border/30 text-muted-foreground/30"
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Write button */}
+                  <button
+                    onClick={handleWrite}
+                    className="touch-btn w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-4 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+                  >
+                    <Plus className="h-4 w-4" /> Start writing
+                  </button>
 
                   {/* Post-save Stoic Lens prompt */}
                   {postSaveEntry && !postSaveEntry.stoic_lens && postSaveEntry.stoic_seq_day && (
@@ -602,18 +586,14 @@ export default function JournalPage() {
                       />
                     </div>
                   )}
+                </div>
+              )}
 
-                  {/* Phase Heat Map */}
-                  <PhaseHeatMap entries={entries} onTapDay={handleHeatMapTap} />
-
-                  {/* New Entry + Search */}
+              {/* ═══ ENTRIES TAB ═══ */}
+              {tab === "entries" && view === "list" && (
+                <div className="space-y-4">
+                  {/* Search */}
                   <div className="flex gap-3">
-                    <button
-                      onClick={handleWrite}
-                      className="touch-btn flex items-center gap-2 rounded-xl bg-primary px-5 py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97]"
-                    >
-                      <Plus className="h-4 w-4" /> Write
-                    </button>
                     <div className="flex-1 relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <input
@@ -625,7 +605,6 @@ export default function JournalPage() {
                     </div>
                   </div>
 
-                  {/* Filter */}
                   <button
                     onClick={() => setFilterStoic(!filterStoic)}
                     className={`rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${
@@ -635,7 +614,6 @@ export default function JournalPage() {
                     With Stoic reflection
                   </button>
 
-                  {/* Entry list */}
                   {filteredEntries.length > 0 ? (
                     <div className="space-y-3">
                       {filteredEntries.map((entry) => (
@@ -653,29 +631,31 @@ export default function JournalPage() {
                       journalSync={journalSync}
                     />
                   )}
-
-                  {/* Journal Insights */}
-                  <JournalInsights entries={entries} />
                 </div>
               )}
 
-              {tab === "entries" && view === "detail" && selectedEntry && (
+              {/* ═══ INSIGHTS TAB ═══ */}
+              {tab === "insights" && (
+                <div className="space-y-6">
+                  <PhaseHeatMap entries={entries} onTapDay={handleHeatMapTap} />
+                  <JournalInsights entries={entries} />
+                  <MemoryVault
+                    vault={journalSync.vault}
+                    onSaveVaultEntry={journalSync.saveVaultEntry}
+                    onRemoveVaultEntry={journalSync.removeVaultEntry}
+                  />
+                  <DreamStudio pinnedEntry={pinnedEntry} />
+                </div>
+              )}
+
+              {/* Entry detail */}
+              {(tab === "write" || tab === "entries") && view === "detail" && selectedEntry && (
                 <EntryDetailView
                   entry={selectedEntry}
                   onBack={() => { setView("list"); setSelectedEntry(null); }}
                   onLensGenerated={handleLensGenerated}
                 />
               )}
-
-              {tab === "activities" && <JournalActivities />}
-              {tab === "vault" && (
-                <MemoryVault
-                  vault={journalSync.vault}
-                  onSaveVaultEntry={journalSync.saveVaultEntry}
-                  onRemoveVaultEntry={journalSync.removeVaultEntry}
-                />
-              )}
-              {tab === "dream" && <DreamStudio pinnedEntry={pinnedEntry} />}
             </motion.div>
           </AnimatePresence>
 
@@ -683,28 +663,10 @@ export default function JournalPage() {
           <BotanicalSprig width={200} className="mx-auto mt-10 hidden md:block" />
         </ContentSection>
 
-        {/* Entry Type Selector */}
-        <AnimatePresence>
-          {view === "type-select" && (
-            <EntryTypeSelector onSelect={handleTypeSelect} onCancel={() => setView("list")} />
-          )}
-        </AnimatePresence>
-
-        {/* Mood Check-in */}
-        <AnimatePresence>
-          {view === "mood-checkin" && (
-            <MoodCheckin
-              phaseColor={PHASE_HEX[currentPhase] || "#C4526E"}
-              onSelect={handleMoodSelected}
-              onSkip={handleMoodSkip}
-            />
-          )}
-        </AnimatePresence>
-
         {/* Standard Writing modal */}
         <AnimatePresence>
           {view === "write" && (
-            <WritingView mood={currentMood} onSave={(c, w) => handleSave(c, w, "standard")} onClose={() => setView("list")} />
+            <WritingView mood={currentMood} entryType={entryType} onSave={(c, w) => handleSave(c, w, "standard")} onClose={() => setView("list")} />
           )}
         </AnimatePresence>
 
