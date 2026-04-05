@@ -29,6 +29,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Chia seeds are rich in omega-3 and fibre, supporting gentle digestion during menstruation. Berries provide antioxidants and vitamin C for iron absorption.",
+      nutrition: { calories: 220, protein: 8, carbs: 24, fat: 10, fibre: 10 },
   },
 
   // ─── Vegan Cleanse – Breakfast / Staples ───
@@ -61,6 +62,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Buckwheat provides complex carbs for rising energy. Pumpkin seeds supply zinc for follicular development.",
+      nutrition: { calories: 420, protein: 12, carbs: 44, fat: 22, fibre: 8 },
   },
   {
     id: "coconut-smoothie-cleanse",
@@ -82,6 +84,7 @@ export const PDF_RECIPES: Recipe[] = [
     method: ["Blend all ingredients until smooth. Serve immediately."],
     phaseBenefit:
       "Coconut provides healthy fats for hormone support. Spinach adds plant iron, berries provide vitamin C for absorption.",
+      nutrition: { calories: 280, protein: 4, carbs: 36, fat: 14, fibre: 4 },
   },
   {
     id: "slow-cooked-lentils",
@@ -113,6 +116,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Iron-rich lentils replenish stores during menstruation. Turmeric and ginger are anti-inflammatory, easing cramps.",
+      nutrition: { calories: 440, protein: 22, carbs: 42, fat: 20, fibre: 14 },
   },
   {
     id: "mushroom-risotto-cleanse",
@@ -139,6 +143,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Complex carbs support rising energy. Mushrooms are rich in B vitamins and selenium.",
+      nutrition: { calories: 420, protein: 12, carbs: 58, fat: 14, fibre: 4 },
   },
   {
     id: "scrambled-tofu-cleanse",
@@ -165,6 +170,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Tofu provides phytoestrogens that support rising estrogen. Turmeric supports gut health.",
+      nutrition: { calories: 280, protein: 18, carbs: 16, fat: 16, fibre: 4 },
   },
   {
     id: "quinoa-tabbouleh-cleanse",
@@ -192,6 +198,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Quinoa provides complete protein and zinc for egg development. Fresh herbs are rich in folate.",
+      nutrition: { calories: 480, protein: 12, carbs: 38, fat: 28, fibre: 6 },
   },
   {
     id: "pumpkin-kale-chilli",
@@ -221,6 +228,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Pumpkin provides B6 for progesterone support. Kidney beans supply magnesium and iron for the luteal phase.",
+      nutrition: { calories: 380, protein: 16, carbs: 48, fat: 12, fibre: 14 },
   },
   {
     id: "beetroot-patties",
@@ -248,6 +256,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Beetroot supports liver detox and iron replenishment. Black beans provide magnesium for PMS relief.",
+      nutrition: { calories: 320, protein: 16, carbs: 42, fat: 10, fibre: 10 },
   },
   {
     id: "sweet-potato-bean-chilli-cleanse",
@@ -275,6 +284,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Sweet potato (kumara) provides B6 for progesterone support. Black beans stabilise blood sugar in the luteal phase.",
+      nutrition: { calories: 380, protein: 14, carbs: 56, fat: 8, fibre: 14 },
   },
   {
     id: "spiced-cauliflower-bowl",
@@ -302,6 +312,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Light yet satisfying. Cauliflower supports estrogen metabolism. Almonds and quinoa provide zinc.",
+      nutrition: { calories: 440, protein: 16, carbs: 44, fat: 22, fibre: 8 },
   },
   {
     id: "raw-pad-thai-cleanse",
@@ -331,6 +342,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Raw foods are easiest to digest during ovulation. Pumpkin seeds provide zinc for egg development.",
+      nutrition: { calories: 380, protein: 10, carbs: 28, fat: 26, fibre: 8 },
   },
   {
     id: "green-pea-fritters",
@@ -358,6 +370,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Chickpea flour provides plant protein and iron. Light and energising for the follicular phase.",
+      nutrition: { calories: 320, protein: 18, carbs: 40, fat: 10, fibre: 10 },
   },
   {
     id: "pulled-jackfruit-tacos",
@@ -383,6 +396,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Jackfruit provides fibre and prebiotic benefits for the estrobolome. Light and energising.",
+      nutrition: { calories: 280, protein: 8, carbs: 36, fat: 12, fibre: 6 },
   },
 
   // ─── Plant Powered Lunchbox Snacks (Renee Brown) ───
@@ -413,6 +427,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Tahini is rich in calcium and magnesium — key for reducing PMS. Dark chocolate adds iron and mood-boosting compounds.",
+      nutrition: { calories: 160, protein: 4, carbs: 20, fat: 8, fibre: 2 },
   },
   {
     id: "date-cacao-bliss-balls",
@@ -438,6 +453,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Cacao is one of the richest food sources of magnesium. Dates provide natural energy during the lower-energy luteal phase.",
+      nutrition: { calories: 120, protein: 2, carbs: 14, fat: 6, fibre: 2 },
   },
   {
     id: "carrot-cake-bliss-balls",
@@ -463,6 +479,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Carrots provide B6 for progesterone support. Oats and dates give sustained energy during the luteal phase.",
+      nutrition: { calories: 110, protein: 2, carbs: 16, fat: 4, fibre: 2 },
   },
   {
     id: "chunky-monkey-chickpea-cookies",
@@ -489,6 +506,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Chickpeas are rich in iron, replacing stores lost during menstruation. Dark chocolate provides magnesium for cramp relief.",
+      nutrition: { calories: 140, protein: 4, carbs: 20, fat: 6, fibre: 3 },
   },
   {
     id: "wild-blueberry-oat-bars",
@@ -517,6 +535,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Wild blueberries contain double the antioxidants of regular berries — protecting egg quality during ovulation.",
+      nutrition: { calories: 180, protein: 4, carbs: 22, fat: 10, fibre: 3 },
   },
   {
     id: "banana-zucchini-bread",
@@ -547,6 +566,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Bananas provide B6 for progesterone support. Zucchini adds hidden nutrients. Dark chocolate supplies magnesium.",
+      nutrition: { calories: 240, protein: 4, carbs: 32, fat: 12, fibre: 3 },
   },
 
   // ─── Wellness by Renee (My Plant Based Family) ───
@@ -578,6 +598,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Complex carbs and seeds fuel rising energy. Hemp and chia provide omega-3 and iron for follicular support.",
+      nutrition: { calories: 420, protein: 14, carbs: 48, fat: 18, fibre: 10 },
   },
   {
     id: "everyday-chia-pudding",
@@ -600,6 +621,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Chia seeds are rich in calcium and omega-3, supporting gentle recovery during menstruation. Cinnamon is anti-inflammatory.",
+      nutrition: { calories: 280, protein: 12, carbs: 24, fat: 14, fibre: 12 },
   },
   {
     id: "vegan-pizza-cleanse",
@@ -630,6 +652,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Almond flour provides zinc and protein. Light yet satisfying during the ovulatory phase when appetite is naturally lower.",
+      nutrition: { calories: 440, protein: 16, carbs: 48, fat: 20, fibre: 6 },
   },
   {
     id: "rice-bean-salad-cleanse",
@@ -660,6 +683,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Edamame provides zinc and phytoestrogens for ovulation support. Light and antioxidant-rich.",
+      nutrition: { calories: 380, protein: 16, carbs: 48, fat: 12, fibre: 10 },
   },
   {
     id: "vegan-breakfast-patties",
@@ -687,6 +711,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Quinoa provides complete protein and iron. Complex carbs fuel rising follicular energy.",
+      nutrition: { calories: 340, protein: 14, carbs: 28, fat: 18, fibre: 6 },
   },
   {
     id: "tomato-soup-cleanse",
@@ -714,6 +739,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Warming and comforting during menstruation. Tomatoes provide vitamin C for iron absorption. Basil is anti-inflammatory.",
+      nutrition: { calories: 240, protein: 4, carbs: 28, fat: 12, fibre: 4 },
   },
   {
     id: "shepherds-pie-cleanse",
@@ -739,6 +765,7 @@ export const PDF_RECIPES: Recipe[] = [
     ],
     phaseBenefit:
       "Deeply nourishing comfort food. Lentils provide iron and B6, kumara adds complex carbs for the luteal phase.",
+      nutrition: { calories: 380, protein: 18, carbs: 48, fat: 12, fibre: 10 },
   },
   {
     id: "curry-lentil-soup",
@@ -769,6 +796,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Add lentils, reduce heat and simmer 20-30 min. Divide into two serves.",
     ],
     phaseBenefit: "Lentils provide iron for replenishment during menstruation. Turmeric and cumin are anti-inflammatory.",
+    nutrition: { calories: 340, protein: 16, carbs: 48, fat: 6, fibre: 12 },
   },
   {
     id: "chimichurri-black-bean-tacos",
@@ -801,6 +829,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Serve tortillas with spinach, tomato, cucumber, onion, avocado, beans and chimichurri.",
     ],
     phaseBenefit: "Fresh herbs provide antioxidants. Black beans and avocado support hormone production during ovulation.",
+    nutrition: { calories: 380, protein: 14, carbs: 42, fat: 16, fibre: 12 },
   },
   {
     id: "curried-chickpea-salad-sandwich",
@@ -826,6 +855,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Layer bread with spinach, curried chickpeas, cucumber, tomato and onion.",
     ],
     phaseBenefit: "Chickpeas provide plant protein and iron to fuel rising energy during the follicular phase.",
+    nutrition: { calories: 340, protein: 14, carbs: 44, fat: 12, fibre: 8 },
   },
   {
     id: "miso-tofu-greens",
@@ -854,6 +884,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Pour sauce over and heat 2-3 min. Serve over rice.",
     ],
     phaseBenefit: "Tofu provides phytoestrogens and calcium. Leafy greens add iron and folate to support ovulation.",
+    nutrition: { calories: 420, protein: 26, carbs: 38, fat: 18, fibre: 6 },
   },
   {
     id: "chickpea-pumpkin-pasta",
@@ -882,6 +913,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Mix through pasta, season and divide into two serves.",
     ],
     phaseBenefit: "Pumpkin provides vitamin A and complex carbs for steady energy. Chickpeas add fibre to support the luteal phase.",
+    nutrition: { calories: 440, protein: 18, carbs: 62, fat: 12, fibre: 10 },
   },
   {
     id: "chickpea-rice-salad",
@@ -910,6 +942,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Whisk oil, lemon juice, curry powder, salt and pepper. Pour over salad and mix.",
     ],
     phaseBenefit: "Nutritional yeast provides B vitamins for energy. Chickpeas and rice create a complete protein for the follicular phase.",
+    nutrition: { calories: 380, protein: 16, carbs: 54, fat: 10, fibre: 8 },
   },
   {
     id: "colourful-lentil-salad-bowl",
@@ -940,6 +973,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Whisk lemon juice, olive oil, mustard and tahini for dressing. Toss through salad.",
     ],
     phaseBenefit: "Beetroot and lentils provide iron and folate. Quinoa adds complete protein for rising follicular energy.",
+    nutrition: { calories: 360, protein: 18, carbs: 44, fat: 12, fibre: 12 },
   },
   {
     id: "cottage-pie",
@@ -971,6 +1005,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Bake 25 min until golden. Divide into four serves.",
     ],
     phaseBenefit: "Warming comfort food with iron from kidney beans and mince. Potato mash provides gentle complex carbs during menstruation.",
+    nutrition: { calories: 440, protein: 24, carbs: 52, fat: 14, fibre: 10 },
   },
   {
     id: "cranberry-walnut-chickpea-salad",
@@ -999,6 +1034,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Dress the salad and serve.",
     ],
     phaseBenefit: "Walnuts provide omega-3 for hormone support. Cranberries add antioxidants — light and vibrant for ovulation.",
+    nutrition: { calories: 340, protein: 12, carbs: 32, fat: 18, fibre: 8 },
   },
   {
     id: "one-pan-tempeh-potatoes",
@@ -1031,6 +1067,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Roast 40-50 min until potatoes are tender. Serve with a side salad of spinach, tomato, onion and cucumber dressed with lemon juice.",
     ],
     phaseBenefit: "Tempeh provides plant protein and probiotics. Herbs and spices support rising energy during the follicular phase.",
+    nutrition: { calories: 420, protein: 24, carbs: 38, fat: 18, fibre: 6 },
   },
   {
     id: "falafel-quinoa-bowl",
@@ -1057,6 +1094,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Assemble bowl with quinoa, spinach, cucumber, carrot and falafel. Drizzle with avocado dressing.",
     ],
     phaseBenefit: "Quinoa provides complete protein. Avocado dressing adds healthy fats to support ovulation.",
+    nutrition: { calories: 440, protein: 18, carbs: 48, fat: 18, fibre: 10 },
   },
   {
     id: "ginger-tofu-stir-fry",
@@ -1086,6 +1124,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Combine lemongrass, soy sauce and maple syrup. Add sauce and cook 1-2 min. Serve over rice.",
     ],
     phaseBenefit: "Ginger is anti-inflammatory. Tofu provides phytoestrogens and calcium to support ovulation.",
+    nutrition: { calories: 380, protein: 22, carbs: 42, fat: 12, fibre: 4 },
   },
   {
     id: "greek-lentil-meatballs",
@@ -1125,6 +1164,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Serve rice topped with meatballs, roasted veg and tzatziki.",
     ],
     phaseBenefit: "Lentils provide iron and fibre. Chia seeds add omega-3 for hormone support during the luteal phase.",
+    nutrition: { calories: 460, protein: 22, carbs: 56, fat: 14, fibre: 12 },
   },
   {
     id: "healthy-nachos",
@@ -1149,6 +1189,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Layer toasted wrap with kidney beans, tomato, onion and avocado.",
     ],
     phaseBenefit: "Kidney beans provide plant protein and iron. Nutritional yeast adds B vitamins for rising follicular energy.",
+    nutrition: { calories: 340, protein: 14, carbs: 38, fat: 14, fibre: 10 },
   },
   {
     id: "kidney-bean-melt-quesadilla",
@@ -1175,6 +1216,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Fold and toast in pan or sandwich press until cheese melts.",
     ],
     phaseBenefit: "Kidney beans and corn provide complex carbs and fibre for sustained energy during the luteal phase.",
+    nutrition: { calories: 380, protein: 18, carbs: 48, fat: 12, fibre: 12 },
   },
   {
     id: "lemongrass-vegan-meatballs-thai-curry",
@@ -1209,6 +1251,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Boil broccoli, cauliflower and beans 5 min. Serve over rice with curry sauce.",
     ],
     phaseBenefit: "Warming curry with anti-inflammatory ginger and lemongrass. Coconut milk provides comfort during menstruation.",
+    nutrition: { calories: 480, protein: 26, carbs: 46, fat: 20, fibre: 8 },
   },
   {
     id: "loaded-potatoes",
@@ -1242,6 +1285,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Top potatoes with bean mixture, pico de gallo and avocado.",
     ],
     phaseBenefit: "Warming comfort food with iron from kidney beans. Potatoes provide gentle complex carbs during menstruation.",
+    nutrition: { calories: 380, protein: 14, carbs: 52, fat: 12, fibre: 12 },
   },
   {
     id: "mexican-kidney-beans",
@@ -1269,6 +1313,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Divide into two serves, sprinkle with nutritional yeast.",
     ],
     phaseBenefit: "Kidney beans provide iron and protein. Nutritional yeast adds B vitamins for energy during the luteal phase.",
+    nutrition: { calories: 400, protein: 18, carbs: 56, fat: 8, fibre: 12 },
   },
   {
     id: "moroccan-tofu-pizza",
@@ -1296,6 +1341,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Bake 15 min until cheese melts. Serve.",
     ],
     phaseBenefit: "Tofu provides phytoestrogens and calcium. Light and flavourful — perfect for the ovulatory phase.",
+    nutrition: { calories: 380, protein: 22, carbs: 34, fat: 16, fibre: 6 },
   },
   {
     id: "one-pot-black-bean-fajitas-rice",
@@ -1322,6 +1368,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Reduce heat, cover and simmer 20 min until liquid absorbed and rice cooked.",
     ],
     phaseBenefit: "Black beans provide iron for replenishment. One-pot warming comfort food during menstruation.",
+    nutrition: { calories: 380, protein: 14, carbs: 58, fat: 8, fibre: 12 },
   },
   {
     id: "pb-maple-overnight-oats",
@@ -1347,6 +1394,7 @@ export const PDF_RECIPES: Recipe[] = [
       "When ready to serve, add cinnamon, half a sliced banana and drizzle with maple syrup.",
     ],
     phaseBenefit: "Oats provide complex carbs for sustained energy. Peanut butter adds healthy fats for rising follicular energy.",
+    nutrition: { calories: 380, protein: 20, carbs: 44, fat: 14, fibre: 6 },
   },
   {
     id: "spicy-thai-edamame-quinoa-salad",
@@ -1379,6 +1427,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Combine all vegetables with quinoa and edamame. Pour dressing over and toss.",
     ],
     phaseBenefit: "Edamame provides phytoestrogens and protein. Vibrant and energising for the ovulatory phase.",
+    nutrition: { calories: 420, protein: 20, carbs: 40, fat: 18, fibre: 8 },
   },
   {
     id: "tahini-mustard-tempeh-wraps",
@@ -1411,6 +1460,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Fry tempeh 5 min. Assemble wraps with spinach, carrot, onion, tempeh and yoghurt sauce.",
     ],
     phaseBenefit: "Tempeh provides probiotics and plant protein. Tahini adds iron and healthy fats for the follicular phase.",
+    nutrition: { calories: 420, protein: 24, carbs: 34, fat: 20, fibre: 6 },
   },
   {
     id: "vegan-egg-roll-in-a-bowl",
@@ -1440,6 +1490,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Serve over rice with sauce drizzled on top.",
     ],
     phaseBenefit: "TVP provides high protein for sustained energy. Cabbage and ginger support digestion during the luteal phase.",
+    nutrition: { calories: 380, protein: 22, carbs: 46, fat: 12, fibre: 6 },
   },
   {
     id: "white-bean-pasta-bake",
@@ -1472,6 +1523,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Stir in pasta, transfer to oven dish, top with cheese. Bake 20 min until golden.",
     ],
     phaseBenefit: "Cannellini beans provide iron and fibre. Warming baked pasta is deeply comforting during menstruation.",
+    nutrition: { calories: 440, protein: 18, carbs: 62, fat: 12, fibre: 10 },
   },
 
   // ─── Form Fuel ───
@@ -1484,7 +1536,7 @@ export const PDF_RECIPES: Recipe[] = [
     prepTime: "40 min",
     keyNutrients: ["Vitamin C", "Fibre", "Folate", "Vitamin K"],
     ingredients: [
-      "1 bunch asparagus, trimmed and cut into 2\" pieces",
+      "1 bunch asparagus, trimmed and cut into 5cm pieces",
       "½ large head broccoli, cut into florets",
       "3 large carrots, diced",
       "¼ red onion, thinly sliced",
@@ -1496,12 +1548,13 @@ export const PDF_RECIPES: Recipe[] = [
       "Optional: balsamic glaze",
     ],
     method: [
-      "Preheat oven to 425°F (220°C) and line a large baking sheet with parchment paper.",
+      "Preheat oven to 220°C and line a large baking sheet with parchment paper.",
       "Whisk together olive oil, balsamic, garlic and Italian seasonings. Toss all veggies until well coated. Season with salt and pepper.",
       "Lay veggies in an even layer on the baking sheet. Roast for 30 minutes, tossing once halfway through.",
       "Drizzle with balsamic glaze if desired and serve.",
     ],
     phaseBenefit: "Spring vegetables are rich in folate and vitamin C — ideal during the follicular phase to support rising oestrogen and energy.",
+    nutrition: { calories: 220, protein: 6, carbs: 18, fat: 14, fibre: 6 },
   },
   {
     id: "veggie-tofu-tahini-bake",
@@ -1513,8 +1566,8 @@ export const PDF_RECIPES: Recipe[] = [
     keyNutrients: ["Plant Protein", "Calcium", "Iron", "Vitamin A"],
     ingredients: [
       "2 sweet potatoes, cubed",
-      "1 lb brussels sprouts, halved",
-      "2 bell peppers, sliced into strips",
+      "450g brussels sprouts, halved",
+      "2 capsicums, sliced into strips",
       "⅓ red onion, thinly sliced",
       "3 tbsp olive or avocado oil",
       "½ tsp garlic powder",
@@ -1530,13 +1583,14 @@ export const PDF_RECIPES: Recipe[] = [
       "Sriracha to taste",
     ],
     method: [
-      "Press tofu for 15–20 minutes. Preheat oven to 425°F (220°C) and line a baking sheet with parchment.",
+      "Press tofu for 15–20 minutes. Preheat oven to 220°C and line a baking sheet with parchment.",
       "Add veggies and tofu to sheet pan. Drizzle with oil, garlic powder, Italian seasonings, salt and pepper. Toss to combine.",
       "Bake 30–40 minutes, stirring once halfway through.",
       "Blend tahini, water, olive oil, apple cider vinegar, maple syrup, garlic and sriracha until smooth. Add more water as needed.",
       "Drizzle sauce over roasted veggies and tofu. Store leftover sauce up to 10 days.",
     ],
     phaseBenefit: "Tofu provides phytoestrogens that complement the ovulatory phase. Tahini adds calcium and healthy fats for hormonal balance.",
+    nutrition: { calories: 460, protein: 22, carbs: 42, fat: 22, fibre: 8 },
   },
   {
     id: "nourish-buddha-bowl",
@@ -1560,11 +1614,12 @@ export const PDF_RECIPES: Recipe[] = [
       "Optional: lemon juice",
     ],
     method: [
-      "Heat quinoa or rice according to package directions. Transfer to a bowl.",
+      "Heat quinoa or rice according to packet directions. Transfer to a bowl.",
       "Top with mixed greens, tomatoes, red onion, carrot, chickpeas, avocado, hummus, sunflower seeds, almonds and lemon juice if desired.",
       "Enjoy!",
     ],
     phaseBenefit: "Whole grains, nuts, seeds and leafy greens are rich in magnesium — supporting calmness, nerve function and rising energy during the follicular phase.",
+    nutrition: { calories: 480, protein: 18, carbs: 48, fat: 24, fibre: 12 },
   },
   {
     id: "macro-lunch-bowl",
@@ -1590,6 +1645,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Season with salt and pepper to taste. Enjoy!",
     ],
     phaseBenefit: "High-protein bowl supports the energy peak of ovulation. Sweet potato provides beta-carotene for glowing skin and hormone metabolism.",
+    nutrition: { calories: 440, protein: 36, carbs: 38, fat: 14, fibre: 6 },
   },
   {
     id: "rainbow-crunch-quinoa-salad",
@@ -1604,7 +1660,7 @@ export const PDF_RECIPES: Recipe[] = [
       "1 cup purple cabbage, thinly sliced",
       "1 cup green cabbage, thinly sliced",
       "1 cup shredded carrot",
-      "1 bell pepper, thinly sliced",
+      "1 capsicum, thinly sliced",
       "1 cup edamame",
       "Optional: 2 cups cooked chicken or tofu",
       "2 tbsp almond butter",
@@ -1616,12 +1672,13 @@ export const PDF_RECIPES: Recipe[] = [
       "¼ tsp garlic powder",
     ],
     method: [
-      "Cook quinoa according to package directions.",
+      "Cook quinoa according to packet directions.",
       "While quinoa cooks, whisk together almond butter, oil, soy sauce, honey, rice wine vinegar, lime juice and garlic powder.",
-      "In a large bowl, combine cooked quinoa, purple cabbage, green cabbage, carrot, bell pepper, edamame and chicken/tofu if desired.",
+      "In a large bowl, combine cooked quinoa, purple cabbage, green cabbage, carrot, capsicum, edamame and chicken/tofu if desired.",
       "Pour dressing over salad and toss well. Serve and enjoy!",
     ],
     phaseBenefit: "A rainbow of phytonutrients supports liver detox pathways during the follicular phase. Edamame adds plant oestrogens to complement rising hormones.",
+    nutrition: { calories: 420, protein: 18, carbs: 44, fat: 18, fibre: 8 },
   },
   {
     id: "turmeric-tahini-bowl",
@@ -1647,13 +1704,14 @@ export const PDF_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Preheat oven to 400°F (200°C). Toss broccoli and sweet potato with olive oil, salt and pepper on a baking sheet. Roast 20 min, remove broccoli, flip sweet potato and roast 5–10 more min.",
-      "Cook quinoa or rice according to package directions.",
+      "Preheat oven to 200°C. Toss broccoli and sweet potato with olive oil, salt and pepper on a baking sheet. Roast 20 min, remove broccoli, flip sweet potato and roast 5–10 more min.",
+      "Cook quinoa or rice according to packet directions.",
       "Quick-pickle onions: mix red onion, honey, vinegar and 2–3 tbsp water. Microwave 2 minutes, then set aside.",
       "Make sauce: whisk tahini, lemon juice, maple syrup and turmeric. Add water to thin as needed.",
       "Build bowl: quinoa, kale, broccoli, sweet potato, pickled onion. Drizzle with turmeric tahini sauce and top with black pepper.",
     ],
     phaseBenefit: "Turmeric's curcumin is anti-inflammatory — amplified by black pepper. Ideal during the luteal phase to ease PMS symptoms and support progesterone.",
+    nutrition: { calories: 440, protein: 14, carbs: 48, fat: 22, fibre: 8 },
   },
   {
     id: "taco-crunch-bowl",
@@ -1664,7 +1722,7 @@ export const PDF_RECIPES: Recipe[] = [
     prepTime: "25 min",
     keyNutrients: ["Protein", "Fibre", "Vitamin C", "Iron"],
     ingredients: [
-      "1 lb ground beef (or tofu / plant-based mince)",
+      "450g beef mince (or tofu / plant-based mince)",
       "1 taco seasoning packet",
       "1 cup quinoa or brown rice",
       "1 cup romaine, chopped",
@@ -1678,12 +1736,13 @@ export const PDF_RECIPES: Recipe[] = [
       "1 tbsp olive oil",
     ],
     method: [
-      "Cook quinoa or rice according to package directions.",
-      "Heat olive oil in a pan on medium heat. Brown the ground beef, breaking into small pieces. Add taco seasoning and cook until fully done.",
+      "Cook quinoa or rice according to packet directions.",
+      "Heat olive oil in a pan on medium heat. Brown the beef mince, breaking into small pieces. Add taco seasoning and cook until fully done.",
       "Combine cherry tomatoes, jalapeño, red onion and juice of 1 lime for a quick salsa.",
       "Assemble bowls: quinoa/rice, romaine, taco meat, tomato salsa, corn, black beans and crushed tortilla chips. Squeeze lime and enjoy!",
     ],
     phaseBenefit: "Protein-rich and vibrant — supports the high energy of ovulation. Black beans add fibre and iron for sustained stamina.",
+    nutrition: { calories: 480, protein: 28, carbs: 48, fat: 18, fibre: 10 },
   },
   {
     id: "tahini-glow-bowl",
@@ -1695,10 +1754,10 @@ export const PDF_RECIPES: Recipe[] = [
     keyNutrients: ["Plant Protein", "Calcium", "Iron", "Magnesium"],
     ingredients: [
       "½ cup rice, uncooked",
-      "1 block tofu, pressed and cubed (or 1 lb chicken)",
+      "1 block tofu, pressed and cubed (or 450g chicken)",
       "1 medium sweet potato, cut into ½\" pieces",
       "1 can chickpeas, drained and rinsed",
-      "12 oz brussels sprouts, halved",
+      "340g brussels sprouts, halved",
       "1 tbsp olive oil",
       "4 cups kale, chopped",
       "¼–⅓ cup pickled red onion",
@@ -1709,13 +1768,14 @@ export const PDF_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Preheat oven to 400°F (200°C). Cook rice according to package directions.",
+      "Preheat oven to 200°C. Cook rice according to packet directions.",
       "Place tofu/chicken, sweet potato, chickpeas and brussels sprouts on a baking sheet. Drizzle with olive oil, salt and pepper. Flip brussels cut-side down.",
       "Roast about 20 minutes until veggies are tender and crisp.",
       "Mix tahini, maple syrup and lemon juice. Add water to thin as needed. Season with salt and pepper.",
       "Build bowl: rice, roasted veggies and chickpeas, kale, pickled red onion, pumpkin seeds. Drizzle with tahini sauce.",
     ],
     phaseBenefit: "Kale and pumpkin seeds are rich in magnesium to ease luteal-phase tension. Tahini provides calcium for progesterone support.",
+    nutrition: { calories: 460, protein: 22, carbs: 48, fat: 20, fibre: 10 },
   },
   {
     id: "hummus-sweet-potato-bowl",
@@ -1740,6 +1800,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Season with salt and pepper to taste. Enjoy!",
     ],
     phaseBenefit: "Sweet potato is rich in vitamin A to support the uterine lining. Simple, nourishing and easy to prepare during menstruation.",
+    nutrition: { calories: 380, protein: 30, carbs: 32, fat: 14, fibre: 6 },
   },
   {
     id: "fried-rice-bowl",
@@ -1758,13 +1819,14 @@ export const PDF_RECIPES: Recipe[] = [
       "1 tbsp soy sauce",
       "1 hard-boiled egg",
       "1–2 tsp chili crisp",
-      "Optional: scallion for topping",
+      "Optional: spring onion for topping",
     ],
     method: [
       "Heat olive oil in a pan on medium heat. Add rice, chicken, broccoli, onion and soy sauce. Sauté for about 3 minutes.",
-      "Transfer to a bowl. Top with a hard-boiled egg, chili crisp and scallion if desired. Enjoy!",
+      "Transfer to a bowl. Top with a hard-boiled egg, chili crisp and spring onion if desired. Enjoy!",
     ],
     phaseBenefit: "High-protein and quick to prepare — perfect for the high-energy ovulatory phase. Egg adds choline for hormonal signalling.",
+    nutrition: { calories: 420, protein: 34, carbs: 36, fat: 14, fibre: 4 },
   },
   {
     id: "taco-bowl",
@@ -1778,7 +1840,7 @@ export const PDF_RECIPES: Recipe[] = [
       "1 cup spinach",
       "½ cup cooked rice",
       "½ cup cooked mixed veggies",
-      "½ cup ground turkey",
+      "½ cup turkey mince",
       "5 cherry tomatoes, sliced",
       "¼ cup black beans",
       "¼ avocado, diced",
@@ -1791,6 +1853,7 @@ export const PDF_RECIPES: Recipe[] = [
       "Season with salt and pepper to taste. Enjoy!",
     ],
     phaseBenefit: "Avocado and black beans provide fibre and healthy fats to stabilise blood sugar during the luteal phase. Turkey adds tryptophan for mood support.",
+    nutrition: { calories: 400, protein: 26, carbs: 38, fat: 16, fibre: 8 },
   },
   {
     id: "mexican-style-smash-tacos",
@@ -1802,28 +1865,29 @@ export const PDF_RECIPES: Recipe[] = [
     keyNutrients: ["Protein", "Fibre", "Probiotics", "Vitamin C"],
     ingredients: [
       "Tortillas of choice",
-      "1 lb ground turkey, beef or chicken",
+      "450g turkey mince, beef or chicken",
       "Taco seasoning",
       "1 cup black beans",
       "1 cup corn",
       "1 pint cherry tomatoes",
-      "½ cup Greek yogurt",
+      "½ cup Greek yoghurt",
       "½ lemon, juiced",
       "1 tsp dried dill",
       "½ tsp garlic powder",
       "½ tsp onion powder",
       "Salt and pepper",
       "Olive oil",
-      "Optional: lime juice, cilantro",
+      "Optional: lime juice, coriander",
     ],
     method: [
       "Heat olive oil in a pan on medium heat.",
       "Spread 2–3 tbsp ground meat onto each tortilla in a thin even layer. Sprinkle with taco seasoning.",
       "Place tortillas meat-side down in the pan. Cook 3–5 minutes until meat is fully cooked. Repeat for all tacos.",
-      "Mix yogurt, lemon juice, dill, garlic powder, onion powder, salt and pepper for ranch dressing.",
-      "Top each taco with ranch dressing, black beans, corn and cherry tomatoes. Add lime juice and cilantro if desired.",
+      "Mix yoghurt, lemon juice, dill, garlic powder, onion powder, salt and pepper for ranch dressing.",
+      "Top each taco with ranch dressing, black beans, corn and cherry tomatoes. Add lime juice and coriander if desired.",
     ],
-    phaseBenefit: "Greek yogurt adds probiotics for gut health. High protein supports the energy peak of ovulation.",
+    phaseBenefit: "Greek yoghurt adds probiotics for gut health. High protein supports the energy peak of ovulation.",
+    nutrition: { calories: 440, protein: 30, carbs: 36, fat: 18, fibre: 6 },
   },
   {
     id: "green-goddess-sweet-potato-bowl",
@@ -1835,7 +1899,7 @@ export const PDF_RECIPES: Recipe[] = [
     keyNutrients: ["Vitamin A", "Protein", "Iron", "Vitamin K"],
     ingredients: [
       "1 large sweet potato, cubed",
-      "1 lb chicken breast, cubed",
+      "450g chicken breast, cubed",
       "1–2 heads broccoli, cut into florets",
       "½ purple onion, sliced",
       "2 tbsp olive oil",
@@ -1848,13 +1912,14 @@ export const PDF_RECIPES: Recipe[] = [
       "1 tbsp maple syrup",
     ],
     method: [
-      "Preheat oven to 425°F (220°C). Add sweet potato to a baking sheet, toss with salt, pepper and 1 tbsp olive oil. Bake 10 minutes.",
+      "Preheat oven to 220°C. Add sweet potato to a baking sheet, toss with salt, pepper and 1 tbsp olive oil. Bake 10 minutes.",
       "Toss chicken, broccoli and onion with remaining olive oil, salt and pepper.",
-      "Flip sweet potato and add the chicken/veggie mixture. Reduce to 375°F (190°C) and bake 20–25 minutes until chicken is cooked through.",
+      "Flip sweet potato and add the chicken/veggie mixture. Reduce to 190°C and bake 20–25 minutes until chicken is cooked through.",
       "Blend spinach, basil, tahini, lemon juice, garlic powder and maple syrup until smooth for the green goddess sauce.",
       "Serve over greens, rice or quinoa. Drizzle with green goddess sauce.",
     ],
     phaseBenefit: "Spinach and basil sauce is rich in iron and folate — ideal for the follicular phase when the body is rebuilding after menstruation.",
+    nutrition: { calories: 460, protein: 32, carbs: 36, fat: 20, fibre: 6 },
   },
   {
     id: "cashew-chicken-sheet-pan",
@@ -1866,8 +1931,8 @@ export const PDF_RECIPES: Recipe[] = [
     keyNutrients: ["Protein", "Zinc", "Magnesium", "Vitamin C"],
     ingredients: [
       "1 cup rice",
-      "1 lb chicken breast, cut into pieces",
-      "2 bell peppers, chopped",
+      "450g chicken breast, cut into pieces",
+      "2 capsicums, chopped",
       "2 heads broccoli, cut into florets",
       "4 sprigs green onion, diced",
       "⅓ cup cashews",
@@ -1880,13 +1945,14 @@ export const PDF_RECIPES: Recipe[] = [
       "Optional: sesame seeds",
     ],
     method: [
-      "Cook rice according to package directions. Preheat oven to 375°F (190°C).",
-      "Add chicken, bell peppers, broccoli, green onion greens and cashews to a baking sheet.",
+      "Cook rice according to packet directions. Preheat oven to 190°C.",
+      "Add chicken, capsicums, broccoli, green onion greens and cashews to a baking sheet.",
       "Mix soy sauce, hoisin, honey, rice vinegar, garlic powder and oil. Pour over chicken and veggies, toss to combine.",
       "Bake 25–30 minutes until chicken is cooked through. Top with sesame seeds and green onion greens.",
       "Serve on its own or over rice. Enjoy!",
     ],
     phaseBenefit: "Cashews provide zinc and magnesium for hormone production. High-protein sheet pan meal supports peak ovulatory energy.",
+    nutrition: { calories: 480, protein: 34, carbs: 44, fat: 18, fibre: 4 },
   },
   {
     id: "lentil-vegetable-cottage-pie",
@@ -1918,5 +1984,6 @@ export const PDF_RECIPES: Recipe[] = [
       "Bake 30 minutes until potato is golden and crunchy on top. Serve.",
     ],
     phaseBenefit: "Lentils are rich in iron to replenish what's lost during menstruation. Warming comfort food supports rest and recovery.",
+    nutrition: { calories: 320, protein: 16, carbs: 44, fat: 6, fibre: 10 },
   },
 ];

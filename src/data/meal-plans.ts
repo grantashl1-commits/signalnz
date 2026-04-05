@@ -338,6 +338,7 @@ export const RECIPES: Recipe[] = [
       "Finish with lemon juice and salt to taste.",
     ],
     phaseBenefit: "Turmeric reduces prostaglandins (cause of cramps). Lentils replace iron lost during menstruation.",
+    nutrition: { calories: 380, protein: 16, carbs: 42, fat: 16, fibre: 12 },
   },
   {
     id: "miso-tofu-soba",
@@ -366,6 +367,7 @@ export const RECIPES: Recipe[] = [
       "Top with nori and sesame seeds.",
     ],
     phaseBenefit: "Fermented miso feeds gut bacteria that metabolise estrogen. Tofu provides phytoestrogens that gently support rising estrogen.",
+    nutrition: { calories: 480, protein: 24, carbs: 58, fat: 14, fibre: 6 },
   },
   {
     id: "rainbow-sushi-bowl",
@@ -390,6 +392,7 @@ export const RECIPES: Recipe[] = [
       "Serve with tamari and pickled ginger.",
     ],
     phaseBenefit: "Zinc from edamame supports ovulation. Mango and avocado provide antioxidants that protect egg quality.",
+    nutrition: { calories: 420, protein: 14, carbs: 62, fat: 14, fibre: 8 },
   },
   {
     id: "chocolate-nice-cream",
@@ -414,6 +417,7 @@ export const RECIPES: Recipe[] = [
       "Eat immediately as soft serve or freeze 1 hour for firmer texture.",
     ],
     phaseBenefit: "Cacao is one of the highest food sources of magnesium — the key luteal phase mineral for reducing PMS, improving sleep, and easing cramps.",
+    nutrition: { calories: 280, protein: 6, carbs: 48, fat: 10, fibre: 6 },
   },
   // Additional recipes per phase for the library
   { id: "iron-smoothie", name: "Iron Power Smoothie Bowl", phase: "menstrual", serves: 1, prepTime: "5 min", keyNutrients: ["Iron", "Vitamin C", "B12"], ingredients: ["Spinach", "Banana", "Hemp seeds", "Cacao", "Oat milk", "Goji berries"], method: ["Blend all until smooth.", "Top with seeds and berries."], phaseBenefit: "Spinach and hemp seeds provide plant-based iron. Vitamin C from goji aids absorption.", image: "/images/recipes/meals/iron-power-smoothie-bowl.png" },
