@@ -171,6 +171,7 @@ export function useJournalEntries2() {
     content: string;
     title?: string;
     word_count?: number;
+    entry_type?: string;
     mood?: string;
     cycle_phase?: string;
     cycle_day?: number;
