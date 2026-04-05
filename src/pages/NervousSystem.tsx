@@ -1,257 +1,532 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Loader2, Wind, PenLine, Hand, ExternalLink, Headphones } from "lucide-react";
-import BreathingModal from "@/components/BreathingModal";
-import JournalEditor from "@/components/JournalEditor";
+import { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Headphones, BookOpen, Heart, Moon, Clock, Check, Loader2, Play, Sparkles, ExternalLink } from "lucide-react";
+import { GatedPage } from "@/components/FeatureGate";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import { BotanicalSprig } from "@/components/BotanicalElements";
+import { useCycle } from "@/contexts/CycleContext";
+import { haptic } from "@/hooks/use-mobile";
+import SomaticPlayer from "@/components/practice/SomaticPlayer";
+import type { PracticeConfig } from "@/data/practices";
+import {
+  ALL_MEDITATION_SCRIPTS,
+  MEDITATION_SCRIPTS,
+  READING_SCRIPTS,
+  INNER_WORK_SCRIPTS,
+  SLEEP_SCRIPTS,
+  PHASE_SCRIPTS,
+  getMeditationById,
+  getMeditationsForPhase,
+  formatMeditationDuration,
+  type MeditationScript,
+} from "@/data/meditation-scripts";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-const BREATHWORK = [
-  { id: "box", name: "Box Breathing", pattern: "4-4-4-4", evidence: "STRONG", useCase: "Acute stress and focus" },
-  { id: "sigh", name: "Physiological Sigh", pattern: "Double inhale + long exhale", evidence: "STRONG", useCase: "Panic and overwhelm" },
-  { id: "coherent", name: "Coherent Breathing", pattern: "5 breaths per minute", evidence: "STRONG", useCase: "Daily regulation and HRV" },
-  { id: "4-7-8", name: "4-7-8 Breathing", pattern: "4-7-8", evidence: "EMERGING", useCase: "Sleep and pre-bed wind down" },
+// ── Convert MeditationScript → PracticeConfig for SomaticPlayer ──
+function toPracticeConfig(script: MeditationScript): PracticeConfig {
+  return {
+    id: script.id,
+    title: script.title,
+    subtitle: script.subtitle,
+    category: "somatic",
+    mode: "narrated-sequence",
+    durationSec: script.durationSec,
+    benefit: script.description,
+    audio: {
+      enabled: true,
+      audioUrl: `/audio/${script.id}.mp3`,
+      durationSec: script.durationSec,
+      voiceName: "SIGNAL Calm",
+      provider: "elevenlabs",
+    },
+    steps: script.steps,
+  };
+}
+
+// ── Further Listening (curated external) ──
+const FURTHER_LISTENING = [
+  { title: "RAIN Meditation", teacher: "Tara Brach", platform: "Insight Timer", dur: "20 min", url: "https://insighttimer.com/tarabrach/guided-meditations/rain-meditation-25" },
+  { title: "MBSR Body Scan", teacher: "Jon Kabat-Zinn", platform: "YouTube", dur: "45 min", url: "https://www.youtube.com/watch?v=u4gZgnCy5ew" },
+  { title: "Loving-kindness", teacher: "Sharon Salzberg", platform: "Insight Timer", dur: "15 min", url: "https://insighttimer.com/sharonsalzberg/guided-meditations/lovingkindness-meditation" },
 ];
 
-const JOURNALS = [
-  { id: "expressive" as const, title: "Expressive Writing", subtitle: "Pennebaker Protocol", desc: "Write freely about difficult emotions. No editing, no judgement." },
-  { id: "gratitude" as const, title: "Gratitude Journal", subtitle: "Three prompts", desc: "Reflect on what went well, who helped, and what's ahead." },
-  { id: "future-self" as const, title: "Future Self", subtitle: "Letter writing", desc: "Write a letter from your future self, 5 years from now." },
+// ── AI Check-in chips ──
+const AI_CHIPS = [
+  "I feel anxious and can't settle",
+  "I'm really tired but can't sleep",
+  "I feel emotionally heavy today",
+  "I need to reset — I've been in my head all day",
+  "I'm in my luteal phase and struggling",
+  "I need something short — 5 minutes",
 ];
 
-const SOMATIC = [
-  { title: "Humming", desc: "Hum any note for 2 minutes. Feel the vibration in your chest. This directly activates your vagus nerve.", hasTimer: true },
-  { title: "Cold Water", desc: "Splash cold water on your face 3 times, or hold wrists under cold water for 30 seconds. Activates the dive reflex — instant calm.", hasTimer: false },
-  { title: "5-4-3-2-1 Grounding", desc: "A sensory grounding sequence to bring you into the present moment.", hasSequence: true },
-  { title: "EFT Tapping", desc: "Tap through the 8-point sequence: karate chop, eyebrow, side of eye, under eye, under nose, chin, collarbone, under arm.", hasTimer: false },
+// ── Tabs ──
+type TabId = "meditate" | "read" | "inner-work" | "sleep";
+const TABS: { id: TabId; label: string; icon: typeof Headphones }[] = [
+  { id: "meditate", label: "Meditate", icon: Headphones },
+  { id: "read", label: "Read & Reflect", icon: BookOpen },
+  { id: "inner-work", label: "Inner Work", icon: Heart },
+  { id: "sleep", label: "Sleep", icon: Moon },
 ];
 
-const MEDITATIONS = [
-  { title: "RAIN Meditation", teacher: "Tara Brach", platform: "Insight Timer", duration: "20 min", desc: "A guided practice using the RAIN framework — Recognise, Allow, Investigate, Nurture — for working with difficult emotions.", url: "https://insighttimer.com/tarabrach/guided-meditations/rain-meditation-25" },
-  { title: "Loving-kindness (Metta)", teacher: "Sharon Salzberg", platform: "Insight Timer", duration: "15 min", desc: "A classic metta meditation cultivating compassion for yourself and others through repeated phrases of goodwill.", url: "https://insighttimer.com/sharonsalzberg/guided-meditations/lovingkindness-meditation" },
-  { title: "Mindful Breathing", teacher: "Thích Nhất Hạnh", platform: "YouTube", duration: "20 min", desc: "A calming guided meditation from the Plum Village tradition, anchoring awareness in the breath.", url: "https://www.youtube.com/watch?v=XHvtIcaD194" },
-  { title: "3-Minute Breathing Space", teacher: "Mark Williams", platform: "Insight Timer", duration: "3 min", desc: "A brief MBCT practice perfect for micro-pauses throughout your day. Awareness, gathering, expanding.", url: "https://insighttimer.com/markwilliams/guided-meditations/the-3-minute-breathing-space" },
-  { title: "Yoga Nidra", teacher: "Richard Miller", platform: "Insight Timer", duration: "37 min", desc: "A full iRest Yoga Nidra session for deep rest and nervous system reset. Best done lying down.", url: "https://insighttimer.com/richardmiller/guided-meditations/full-irest-yoga-nidra-practice" },
-  { title: "IFS Parts Meditation", teacher: "Richard Schwartz", platform: "Insight Timer", duration: "12 min", desc: "An Internal Family Systems meditation to connect with and understand your inner parts with compassion.", url: "https://insighttimer.com/drrichardschwartz/guided-meditations/ifs-meditation" },
-];
+const CATEGORY_FILTERS: Record<TabId, string[]> = {
+  meditate: ["All", "Nervous System", "Self-Compassion", "Phase Practice"],
+  read: ["All", "Morning", "Evening", "Inner Work"],
+  "inner-work": ["All", "Inner Child", "Self-Care", "Parts Work"],
+  sleep: ["All", "10 min", "15 min", "30 min"],
+};
 
-const GROUNDING_STEPS = [
-  "Name 5 things you can see",
-  "Name 4 things you can touch",
-  "Name 3 things you can hear",
-  "Name 2 things you can smell",
-  "Name 1 thing you can taste",
-];
+const cardVariant = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: 0.06 * i, duration: 0.3, ease: "easeOut" as const },
+  }),
+};
 
-export default function NervousSystemPage() {
-  const [breathingId, setBreathingId] = useState<string | null>(null);
-  const [journalType, setJournalType] = useState<"expressive" | "gratitude" | "future-self" | null>(null);
-  const [groundingStep, setGroundingStep] = useState(-1);
-  const [hummingTimer, setHummingTimer] = useState(0);
-  const [hummingActive, setHummingActive] = useState(false);
-  const [aiInput, setAiInput] = useState("");
-  const [aiResult, setAiResult] = useState<{ tool: string; reason: string; instruction: string } | null>(null);
-  const [aiLoading, setAiLoading] = useState(false);
+// ── Completion tracking hook ──
+function useMindfulnessLogs() {
+  const { user } = useAuth();
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [minutesThisWeek, setMinutesThisWeek] = useState(0);
+  const [streak, setStreak] = useState(0);
 
-  const startHumming = () => {
-    setHummingActive(true);
-    setHummingTimer(120);
-    const interval = setInterval(() => {
-      setHummingTimer((prev) => {
-        if (prev <= 1) { clearInterval(interval); setHummingActive(false); return 0; }
-        return prev - 1;
+  useEffect(() => {
+    if (!user) return;
+    const today = new Date().toISOString().split("T")[0];
+    
+    // Fetch today's completions
+    supabase
+      .from("mindfulness_logs")
+      .select("practice_id, duration_sec, log_date")
+      .eq("user_id", user.id)
+      .eq("completed", true)
+      .gte("log_date", new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0])
+      .then(({ data }) => {
+        if (!data) return;
+        const todayDone = new Set(data.filter((d) => d.log_date === today).map((d) => d.practice_id));
+        setCompleted(todayDone);
+        const totalSec = data.reduce((sum, d) => sum + (d.duration_sec || 0), 0);
+        setMinutesThisWeek(Math.round(totalSec / 60));
+        
+        // Streak: count consecutive days with completions
+        const days = new Set(data.map((d) => d.log_date));
+        let s = 0;
+        for (let i = 0; i < 30; i++) {
+          const d = new Date(Date.now() - i * 86400000).toISOString().split("T")[0];
+          if (days.has(d)) s++;
+          else if (i > 0) break;
+        }
+        setStreak(s);
       });
-    }, 1000);
+  }, [user]);
+
+  const logCompletion = async (practiceId: string, durationSec: number, phase: string) => {
+    if (!user) return;
+    const today = new Date().toISOString().split("T")[0];
+    const script = getMeditationById(practiceId);
+    await supabase.from("mindfulness_logs").insert({
+      user_id: user.id,
+      practice_id: practiceId,
+      practice_type: script?.category || "meditation",
+      duration_sec: durationSec,
+      completed: true,
+      log_date: today,
+      cycle_phase: phase,
+    });
+    setCompleted((prev) => new Set([...prev, practiceId]));
+    setMinutesThisWeek((prev) => prev + Math.round(durationSec / 60));
   };
 
-  const handleAiCheckin = () => {
-    if (!aiInput.trim()) return;
-    setAiLoading(true); setAiResult(null);
-    setTimeout(() => {
-      setAiResult({
-        tool: "Coherent Breathing",
-        reason: "Based on how you're feeling, your nervous system would benefit from gentle, rhythmic regulation.",
-        instruction: "Find a quiet spot. Breathe in for 6 seconds, out for 6 seconds. Continue for 5 minutes.",
-      });
-      setAiLoading(false);
-    }, 2000);
+  return { completed, minutesThisWeek, streak, logCompletion };
+}
+
+// ── Practice Card ──
+function PracticeCard({
+  script,
+  index,
+  isDone,
+  onSelect,
+}: {
+  script: MeditationScript;
+  index: number;
+  isDone: boolean;
+  onSelect: (s: MeditationScript) => void;
+}) {
+  const categoryColors: Record<string, string> = {
+    meditation: "bg-phase-follicular/10 text-phase-follicular",
+    reading: "bg-phase-ovulatory/10 text-phase-ovulatory",
+    "inner-work": "bg-phase-menstrual/10 text-phase-menstrual",
+    sleep: "bg-phase-luteal/10 text-phase-luteal",
+    "phase-practice": "bg-primary/10 text-primary",
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-12">
-      <div>
-        <p className="font-hand text-sm font-bold text-primary">nervous system</p>
-        <h1 className="font-display text-4xl font-bold italic text-foreground">Nervous System</h1>
-        <p className="font-body text-sm text-muted-foreground mt-1">Regulate from the inside out</p>
+    <motion.div
+      custom={index}
+      initial="hidden"
+      animate="visible"
+      variants={cardVariant}
+      className="card-warm p-5"
+    >
+      <div className="flex items-start justify-between gap-2 mb-1">
+        <h3 className="font-display text-lg italic text-foreground leading-snug">{script.title}</h3>
+        {isDone && (
+          <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-mono text-[10px] text-phase-follicular shrink-0">
+            <Check className="h-3 w-3" /> Done
+          </span>
+        )}
       </div>
+      <p className="font-hand text-sm font-bold text-primary mb-1">{script.subtitle}</p>
+      <div className="flex items-center gap-2 mb-2 flex-wrap">
+        <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
+          {script.category.replace("-", " ")}
+        </span>
+        <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground flex items-center gap-1">
+          <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
+        </span>
+        {script.phase !== "all" && Array.isArray(script.phase) && script.phase.map((p) => (
+          <span key={p} className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{p}</span>
+        ))}
+      </div>
+      <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
+      <button
+        onClick={() => { haptic("medium"); onSelect(script); }}
+        className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+      >
+        <Play className="h-4 w-4" /> begin this practice
+      </button>
+    </motion.div>
+  );
+}
 
-      {/* Breathwork */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-2">
-          <Wind className="h-5 w-5 text-phase-follicular" /> Breathwork
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          {BREATHWORK.map((b, i) => (
-            <motion.div key={b.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-              className="card-warm p-5 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-display text-lg italic text-foreground">{b.name}</h3>
-                  <span className={`rounded-full px-2 py-0.5 font-hand text-[11px] font-bold ${
-                    b.evidence === "STRONG" ? "bg-phase-follicular/15 text-phase-follicular" : "bg-phase-ovulatory/15 text-phase-ovulatory"
-                  }`}>{b.evidence.toLowerCase()}</span>
-                </div>
-                <p className="font-mono text-[10px] text-muted-foreground mb-1">{b.pattern}</p>
-                <p className="font-body text-sm text-muted-foreground">{b.useCase}</p>
-              </div>
-              <button onClick={() => setBreathingId(b.id)}
-                className="mt-4 w-full rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity"
-              >Guide Me</button>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+// ── Today's Practice suggestion ──
+function TodaySuggestion({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
+  const { currentPhase, currentCycleDay } = useCycle();
 
-      {/* Journaling */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-2">
-          <PenLine className="h-5 w-5 text-lavender-dust" /> Journaling
-        </h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          {JOURNALS.map((j, i) => (
-            <motion.div key={j.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-              className="card-warm p-5 cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => setJournalType(j.id)}
-            >
-              <h3 className="font-display text-lg italic text-foreground">{j.title}</h3>
-              <p className="font-hand text-sm text-primary font-bold mt-0.5">{j.subtitle}</p>
-              <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">{j.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+  const suggestion = useMemo(() => {
+    const h = new Date().getHours();
+    // Evening → sleep practice
+    if (h >= 20) {
+      return SLEEP_SCRIPTS[2]; // Letting Go of the Day
+    }
+    // Phase-specific
+    const phaseMap: Record<string, string> = {
+      menstrual: "phase-001",
+      follicular: "read-001",
+      ovulatory: "phase-003",
+      luteal: "phase-004",
+    };
+    const id = phaseMap[currentPhase] || "med-004";
+    return getMeditationById(id) || MEDITATION_SCRIPTS[0];
+  }, [currentPhase]);
 
-      <BotanicalSprig width={200} className="mx-auto" />
+  if (!suggestion) return null;
 
-      {/* Somatic Tools */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-2">
-          <Hand className="h-5 w-5 text-phase-ovulatory" /> Somatic Tools
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          {SOMATIC.map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-              className="card-warm p-5"
-            >
-              <h3 className="font-display text-lg italic text-foreground mb-2">{s.title}</h3>
-              <p className="font-body text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-warm p-5 mb-6 border border-primary/20"
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <Sparkles className="h-4 w-4 text-primary" />
+        <span className="font-hand text-sm font-bold text-primary">Today's Practice</span>
+        <span className="font-mono text-[10px] text-muted-foreground ml-auto">
+          Day {currentCycleDay} · {currentPhase}
+        </span>
+      </div>
+      <h3 className="font-display text-xl italic text-foreground mb-1">{suggestion.title}</h3>
+      <p className="font-body text-sm text-muted-foreground mb-3">{suggestion.subtitle} · {formatMeditationDuration(suggestion.durationSec)}</p>
+      <button
+        onClick={() => { haptic("medium"); onSelect(suggestion); }}
+        className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+      >
+        <Play className="h-4 w-4" /> begin
+      </button>
+    </motion.div>
+  );
+}
 
-              {s.title === "Humming" && (
-                <div className="mt-3">
-                  {hummingActive ? (
-                    <div className="text-center">
-                      <p className="font-mono text-2xl text-foreground">{Math.floor(hummingTimer / 60)}:{(hummingTimer % 60).toString().padStart(2, "0")}</p>
-                      <p className="font-hand text-sm text-muted-foreground mt-1">keep humming...</p>
-                    </div>
-                  ) : (
-                    <button onClick={startHumming} className="rounded-xl bg-secondary px-4 py-2 font-body text-sm font-medium text-foreground hover:bg-secondary/80 transition-colors">
-                      Start 2-min Timer
-                    </button>
-                  )}
-                </div>
-              )}
+// ── AI Check-in ──
+function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScript) => void }) {
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ practiceId: string; explanation: string } | null>(null);
+  const { currentPhase, currentCycleDay } = useCycle();
 
-              {s.title === "5-4-3-2-1 Grounding" && (
-                <div className="mt-3 space-y-2">
-                  {groundingStep >= 0 ? (
-                    <>
-                      <p className="font-body text-sm font-medium text-foreground">{GROUNDING_STEPS[groundingStep]}</p>
-                      <button onClick={() => setGroundingStep((prev) => (prev < 4 ? prev + 1 : -1))}
-                        className="rounded-xl bg-secondary px-4 py-2 font-body text-sm font-medium text-foreground hover:bg-secondary/80 transition-colors"
-                      >{groundingStep < 4 ? "Next" : "Done"}</button>
-                    </>
-                  ) : (
-                    <button onClick={() => setGroundingStep(0)}
-                      className="rounded-xl bg-secondary px-4 py-2 font-body text-sm font-medium text-foreground hover:bg-secondary/80 transition-colors"
-                    >Begin Sequence</button>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </section>
+  const handleSubmit = async (text: string) => {
+    if (!text.trim()) return;
+    setInput(text);
+    setLoading(true);
+    setResult(null);
+    try {
+      const { data } = await supabase.functions.invoke("mindfulness-ai", {
+        body: { input: text, currentPhase, currentCycleDay },
+      });
+      if (data) setResult(data);
+    } catch {
+      // Fallback
+      setResult({ practiceId: "med-004", explanation: "Based on how you're feeling, the Relaxation Response may help — it's one of the most evidence-based stress-reduction techniques available." });
+    }
+    setLoading(false);
+  };
 
-      {/* Meditations */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl italic text-foreground flex items-center gap-2">
-          <Headphones className="h-5 w-5 text-primary" /> Meditations
-        </h2>
-        <p className="font-body text-sm text-muted-foreground">Curated guided sessions from world-class teachers. These link to external platforms where you can listen for free.</p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {MEDITATIONS.map((m, i) => (
-            <motion.a
-              key={m.title}
-              href={m.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
-              className="card-warm p-5 flex flex-col justify-between hover:shadow-lg transition-shadow group"
-            >
-              <div>
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="font-display text-lg italic text-foreground">{m.title}</h3>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mt-1 group-hover:text-primary transition-colors" />
-                </div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-hand text-sm font-bold text-primary">{m.teacher}</span>
-                  <span className="text-muted-foreground/40">·</span>
-                  <span className="font-mono text-[10px] text-muted-foreground">{m.duration}</span>
-                </div>
-                <p className="font-body text-sm text-muted-foreground leading-relaxed">{m.desc}</p>
-              </div>
-              <div className="mt-3 flex items-center gap-1.5">
-                <span className="rounded-full bg-secondary px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">{m.platform}</span>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-      </section>
+  const recommended = result ? getMeditationById(result.practiceId) : null;
 
-      <BotanicalSprig width={180} className="mx-auto" />
-
-      {/* AI Check-in */}
-      <section className="card-warm p-6 space-y-4">
-        <h2 className="font-display text-xl italic text-foreground">How are you feeling right now?</h2>
-        <textarea value={aiInput} onChange={(e) => setAiInput(e.target.value)} placeholder="Describe how you feel..."
-          className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-24"
-        />
-        <button onClick={handleAiCheckin} disabled={aiLoading || !aiInput.trim()}
-          className="rounded-xl bg-primary px-6 py-3 font-body text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
-        >Get a Recommendation</button>
-
-        {aiLoading && (
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="font-hand text-sm animate-pulse-gentle">finding what your body needs...</span>
-          </div>
-        )}
-
-        {aiResult && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl border border-primary/20 bg-primary/5 p-5"
+  return (
+    <div className="card-warm p-6 space-y-4">
+      <h2 className="font-display text-xl italic text-foreground">How are you feeling right now?</h2>
+      <div className="flex flex-wrap gap-2">
+        {AI_CHIPS.map((chip) => (
+          <button
+            key={chip}
+            onClick={() => handleSubmit(chip)}
+            className="rounded-full border border-border px-3 py-1.5 font-body text-xs text-muted-foreground hover:bg-secondary/60 transition-colors"
           >
-            <h3 className="font-display text-lg italic text-foreground">{aiResult.tool}</h3>
-            <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">{aiResult.reason}</p>
-            <p className="font-display text-sm italic text-foreground mt-3 leading-relaxed">{aiResult.instruction}</p>
-          </motion.div>
-        )}
-      </section>
+            {chip}
+          </button>
+        ))}
+      </div>
+      <textarea
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Or describe how you feel in your own words..."
+        className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-20"
+      />
+      <button
+        onClick={() => handleSubmit(input)}
+        disabled={loading || !input.trim()}
+        className="rounded-xl bg-primary px-6 py-3 font-body text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+      >
+        Get a Recommendation
+      </button>
 
-      {breathingId && <BreathingModal techniqueId={breathingId} onClose={() => setBreathingId(null)} />}
-      {journalType && <JournalEditor type={journalType} onClose={() => setJournalType(null)} />}
+      {loading && (
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="font-hand text-sm animate-pulse">finding what your body needs...</span>
+        </div>
+      )}
+
+      {result && recommended && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">recommended</span>
+            <span className="font-mono text-[11px] text-muted-foreground">{formatMeditationDuration(recommended.durationSec)}</span>
+          </div>
+          <h3 className="font-display text-lg italic text-foreground">{recommended.title}</h3>
+          <p className="font-body text-sm text-muted-foreground leading-relaxed">{result.explanation}</p>
+          <button
+            onClick={() => { haptic("medium"); onSelectPractice(recommended); }}
+            className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+          >
+            <Play className="h-4 w-4" /> start practice →
+          </button>
+        </motion.div>
+      )}
     </div>
+  );
+}
+
+// ── Tab Content ──
+function getScriptsForTab(tab: TabId): MeditationScript[] {
+  switch (tab) {
+    case "meditate": return [...MEDITATION_SCRIPTS, ...PHASE_SCRIPTS];
+    case "read": return READING_SCRIPTS;
+    case "inner-work": return INNER_WORK_SCRIPTS;
+    case "sleep": return SLEEP_SCRIPTS;
+  }
+}
+
+function filterScripts(scripts: MeditationScript[], filter: string, tab: TabId): MeditationScript[] {
+  if (filter === "All") return scripts;
+  
+  if (tab === "sleep") {
+    const minMap: Record<string, [number, number]> = {
+      "10 min": [0, 660],
+      "15 min": [660, 960],
+      "30 min": [960, 9999],
+    };
+    const range = minMap[filter];
+    if (range) return scripts.filter((s) => s.durationSec >= range[0] && s.durationSec < range[1]);
+  }
+
+  const tagMap: Record<string, string[]> = {
+    "Nervous System": ["nervous-system", "stress-reduction", "parasympathetic"],
+    "Self-Compassion": ["self-compassion", "warmth"],
+    "Phase Practice": ["menstrual", "follicular", "ovulatory", "luteal"],
+    "Morning": ["morning", "intention"],
+    "Evening": ["evening", "wind-down"],
+    "Inner Work": ["inner-work", "psychology"],
+    "Inner Child": ["inner-child", "reparenting"],
+    "Self-Care": ["self-care", "values", "boundaries"],
+    "Parts Work": ["parts-work", "inner-work"],
+  };
+  const tags = tagMap[filter];
+  if (tags) return scripts.filter((s) => s.tags.some((t) => tags.includes(t)));
+  return scripts;
+}
+
+// ── MAIN PAGE ──
+export default function NervousSystemPage() {
+  const [tab, setTab] = useState<TabId>(() => {
+    // Time-aware: default to Sleep after 8pm
+    return new Date().getHours() >= 20 ? "sleep" : "meditate";
+  });
+  const [filter, setFilter] = useState("All");
+  const [activePractice, setActivePractice] = useState<PracticeConfig | null>(null);
+  const { currentPhase } = useCycle();
+  const { completed, minutesThisWeek, streak, logCompletion } = useMindfulnessLogs();
+
+  const scripts = useMemo(() => filterScripts(getScriptsForTab(tab), filter, tab), [tab, filter]);
+
+  const handleSelect = (script: MeditationScript) => {
+    setActivePractice(toPracticeConfig(script));
+  };
+
+  const handleClose = () => {
+    if (activePractice) {
+      logCompletion(activePractice.id, activePractice.durationSec, currentPhase);
+    }
+    setActivePractice(null);
+  };
+
+  return (
+    <GatedPage requiredTier="nourished">
+      <div className="relative">
+        <AtmosphericHero size="md">
+          <SignalPulse />
+          <div className="text-center relative z-10">
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
+            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-2">
+              Mindfulness & Inner Work
+            </h1>
+            {minutesThisWeek > 0 && (
+              <p className="font-mono text-xs text-primary-foreground/50">
+                {minutesThisWeek} min this week{streak > 1 ? ` · ${streak}-day streak` : ""}
+              </p>
+            )}
+          </div>
+        </AtmosphericHero>
+
+        <ContentSection className="px-5 md:px-4">
+          {/* Today's Practice */}
+          <TodaySuggestion onSelect={handleSelect} />
+
+          {/* Tabs */}
+          <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
+            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-lg mx-auto">
+              {TABS.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => { haptic("light"); setTab(t.id); setFilter("All"); }}
+                  className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all ${
+                    tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="flex gap-2 overflow-x-auto pb-3 -mx-1 px-1 scrollbar-hide">
+            {CATEGORY_FILTERS[tab].map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${
+                  filter === f
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
+          {/* Inner Work content warning */}
+          {tab === "inner-work" && (
+            <div className="rounded-xl bg-phase-menstrual/5 border border-phase-menstrual/15 p-4 mb-4">
+              <p className="font-body text-sm text-muted-foreground leading-relaxed italic">
+                These practices invite deeper self-inquiry. Choose a time when you have space and quiet. You are always in control.
+              </p>
+            </div>
+          )}
+
+          {/* Practice Cards */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${tab}-${filter}`}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-4"
+            >
+              {scripts.map((s, i) => (
+                <PracticeCard
+                  key={s.id}
+                  script={s}
+                  index={i}
+                  isDone={completed.has(s.id)}
+                  onSelect={handleSelect}
+                />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Further Listening (bottom of Meditate tab) */}
+          {tab === "meditate" && (
+            <div className="mt-10 space-y-4">
+              <h3 className="font-hand text-sm font-bold text-muted-foreground/60">From the teachers who inspired us</h3>
+              <div className="space-y-3">
+                {FURTHER_LISTENING.map((fl) => (
+                  <a
+                    key={fl.title}
+                    href={fl.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="card-warm p-4 flex items-center justify-between group hover:shadow-md transition-shadow"
+                  >
+                    <div>
+                      <p className="font-display text-sm italic text-foreground">{fl.title}</p>
+                      <p className="font-mono text-[10px] text-muted-foreground">{fl.teacher} · {fl.platform} · {fl.dur}</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Breathwork link */}
+          <div className="mt-8 text-center">
+            <a href="/breathwork" className="font-body text-sm text-primary hover:underline">
+              For breathwork and body-based practices → Breathwork
+            </a>
+          </div>
+
+          <BotanicalSprig width={160} className="mx-auto mt-8" />
+
+          {/* AI Check-in */}
+          <div className="mt-8">
+            <AICheckin onSelectPractice={handleSelect} />
+          </div>
+
+          <BotanicalSprig width={180} className="mx-auto mt-8 hidden md:block" />
+        </ContentSection>
+
+        {/* Player */}
+        {activePractice && (
+          <SomaticPlayer practice={activePractice} onClose={handleClose} />
+        )}
+      </div>
+    </GatedPage>
   );
 }
