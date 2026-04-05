@@ -75,7 +75,7 @@ const TABS: { id: TabId; label: string; icon: typeof Headphones }[] = [
 ];
 
 const CATEGORY_FILTERS: Record<TabId, string[]> = {
-  meditate: ["All", "Nervous System", "Self-Compassion", "Phase Practice"],
+  meditate: ["All", "Quick · Under 5 min", "Nervous System", "Self-Compassion", "Phase Practice"],
   read: ["All", "Morning", "Evening", "Inner Work"],
   "inner-work": ["All", "Inner Child", "Self-Care", "Parts Work"],
   sleep: ["All", "10 min", "15 min", "30 min"],
