@@ -35,7 +35,7 @@ const HORMONES: HormoneCard[] = [
   },
   {
     name: "Cortisol",
-    colour: "#8B1A2B",
+    colour: "#C4526E",
     summary: "The stress hormone. Chronically elevated cortisol disrupts the entire hormonal cascade.",
     detail: "Sleep, rest, and stress management are hormonal interventions — not luxuries. When cortisol stays elevated, it suppresses oestrogen and progesterone production, disrupts ovulation, and can contribute to hypothalamic amenorrhea. Your nervous system state directly shapes your hormonal health.",
     source: "Cabeca — The Hormone Fix",
