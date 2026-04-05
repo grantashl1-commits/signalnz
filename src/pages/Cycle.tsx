@@ -29,10 +29,10 @@ import CycleInsights from "@/components/cycle/CycleInsights";
 import IrregularPeriodSupport from "@/components/cycle/IrregularPeriodSupport";
 
 const PHASE_HEX: Record<Phase, string> = {
-  menstrual: "#8B1A2B",
-  follicular: "#4CAF50",
-  ovulatory: "#F4A63A",
-  luteal: "#D4722A",
+  menstrual: "#C4526E",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
+  luteal: "#9B89B4",
 };
 
 const POETRY: Record<Phase, string> = {
