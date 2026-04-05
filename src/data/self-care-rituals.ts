@@ -4,7 +4,7 @@ export interface SelfCareRitual {
   id: string;
   name: string;
   category: string;
-  icon: string; // key for SVG lookup
+  icon: string;
   suggestedDuration: string;
   timing: string;
   notesPlaceholder: string;
@@ -61,26 +61,192 @@ export const SELF_CARE_RITUALS: SelfCareRitual[] = [
   { id: "sound-bath", name: "Sound Bath", category: "Wellness Experiences", icon: "soundBath", suggestedDuration: "45–60 min", timing: "As attended", notesPlaceholder: "Great for luteal and menstrual phases." },
 ];
 
-export const PHASE_RITUAL_SUGGESTIONS: Record<Phase, { ritualId: string; reason: string }[]> = {
+// ── Expanded Phase Rituals with TCM + Ayurveda ──
+
+export interface PhaseRitualSuggestion {
+  ritualId: string;
+  reason: string;
+  modern?: string;
+  tcm?: string;
+  ayurveda?: string;
+}
+
+export const PHASE_RITUAL_SUGGESTIONS: Record<Phase, PhaseRitualSuggestion[]> = {
   menstrual: [
-    { ritualId: "epsom-salt-bath", reason: "Magnesium helps reduce cramping and supports progesterone drop." },
-    { ritualId: "castor-oil-pack", reason: "Supports uterine circulation and eases pelvic tension." },
-    { ritualId: "yin-yoga", reason: "Gentle restoration honours your body's need for rest in inner winter." },
+    {
+      ritualId: "epsom-salt-bath",
+      reason: "Magnesium helps reduce cramping and supports progesterone drop.",
+      modern: "Magnesium absorption supports progesterone drop and reduces cramping.",
+      tcm: "Warms the Uterus meridian; dispels cold and stagnation.",
+      ayurveda: "Warming oil baths (Abhyanga) are prescribed for Vata pacification — this is the modern equivalent.",
+    },
+    {
+      ritualId: "castor-oil-pack",
+      reason: "Supports uterine circulation and eases pelvic tension.",
+      modern: "Supports uterine circulation and reduces pelvic inflammation (prostaglandins).",
+      tcm: "Moves Liver Qi stagnation — the root cause of painful periods in TCM.",
+      ayurveda: "External oleation (Snehana) — applying oil to the lower abdomen is Vata-pacifying and warming.",
+    },
+    {
+      ritualId: "yin-yoga",
+      reason: "Gentle restoration honours your body's need for rest in inner winter.",
+      modern: "Parasympathetic activation reduces cortisol and pain perception.",
+      tcm: "Long-held poses open meridian pathways; kidney and bladder meridians run through the inner legs.",
+      ayurveda: "Gentle Vata-pacifying movement; avoid inversions during menstruation.",
+    },
+    {
+      ritualId: "sound-bath",
+      reason: "Deep sound vibration supports nervous system reset during the low-energy phase.",
+      modern: "Sound frequencies activate the vagus nerve and shift brainwaves to alpha/theta states.",
+      tcm: "Sound vibration opens meridian channels; supports Kidney energy which governs the menstrual cycle.",
+      ayurveda: "Nada yoga (sound practice) pacifies Vata — the dominant energy during menstruation.",
+    },
+    {
+      ritualId: "acupuncture",
+      reason: "Acupuncture during menstruation can reduce pain and regulate flow.",
+      modern: "SP6 acupoint on the inner ankle has been studied for menstrual pain reduction.",
+      tcm: "SP6 tonifies the Spleen, Liver and Kidney meridians simultaneously — the three most important for menstrual health.",
+      ayurveda: "Marma point stimulation on the inner leg corresponds to Apana Vata (downward moving energy) regulation.",
+    },
+    {
+      ritualId: "scalp-massage",
+      reason: "Gentle scalp massage promotes relaxation and blood flow during your lowest-energy phase.",
+      modern: "Scalp massage activates parasympathetic response and promotes circulation to the head.",
+      tcm: "The Bladder and Gallbladder meridians cross the scalp — gentle stimulation supports restful energy.",
+      ayurveda: "Shiro Abhyanga (head massage with warm oil) is prescribed for calming Vata and promoting deep sleep.",
+    },
   ],
   follicular: [
-    { ritualId: "infrared-sauna", reason: "Rising estrogen increases heat tolerance. Great detox window." },
-    { ritualId: "dry-body-brushing", reason: "Lymphatic system is more responsive in the follicular phase." },
-    { ritualId: "facial-massage", reason: "Collagen production peaks with estrogen. Maximum benefit now." },
+    {
+      ritualId: "infrared-sauna",
+      reason: "Rising estrogen increases heat tolerance. Great detox window.",
+      modern: "Rising oestrogen increases heat tolerance and cardiovascular response to heat; ideal detox window.",
+      tcm: "Activates the Heart and Small Intestine meridians (fire element) — supports Qi circulation.",
+      ayurveda: "Swedana (therapeutic sweat) is an Ayurvedic detoxification practice; reduces Kapha heaviness of early follicular.",
+    },
+    {
+      ritualId: "dry-body-brushing",
+      reason: "Lymphatic system is more responsive in the follicular phase.",
+      modern: "Lymphatic circulation increases with rising oestrogen — stimulation has maximum effect now.",
+      tcm: "Opens the Wei Qi (defensive energy) at the skin surface; stimulates Lung meridian which governs skin.",
+      ayurveda: "Garshana (dry brushing) is a classic Dinacharya practice to stimulate lymph and remove ama (toxins).",
+    },
+    {
+      ritualId: "facial-massage",
+      reason: "Collagen production peaks with estrogen. Maximum benefit now.",
+      modern: "Collagen production peaks with oestrogen — facial massage increases circulation and amplifies this.",
+      tcm: "Facial meridian pathways connect to Stomach, Large Intestine, and Liver — facial gua sha moves Qi through all three.",
+      ayurveda: "Mukha Abhyanga (facial self-massage with warm oil) is prescribed in the morning Dinacharya.",
+    },
+    {
+      ritualId: "cold-shower",
+      reason: "Rising energy and oestrogen make the follicular phase ideal for building cold tolerance.",
+      modern: "Cold exposure activates the sympathetic-then-parasympathetic rebound; dopamine increase up to 250%.",
+      tcm: "Tones the Kidney Yang (vital energy); stimulates Wei Qi.",
+      ayurveda: "Cool water in the morning (after oil massage) awakens Prana and activates the nervous system.",
+    },
+    {
+      ritualId: "lymphatic-drainage",
+      reason: "Oestrogen increase in follicular phase supports lymphatic responsiveness.",
+      modern: "Oestrogen increase supports lymphatic responsiveness — best phase for manual drainage.",
+      tcm: "Moves stuck fluids along San Jiao (Triple Burner) meridian which governs fluid metabolism.",
+      ayurveda: "Abhyanga stimulates the lymphatic system and removes Ama; prescribed daily in Dinacharya.",
+    },
+    {
+      ritualId: "red-light-panel",
+      reason: "Red light therapy supports collagen and cellular energy as oestrogen rises.",
+      modern: "Red light photobiomodulation increases mitochondrial ATP — amplified by rising oestrogen.",
+      tcm: "Red light corresponds to Fire element energy — aligning with the rising Yang of the follicular phase.",
+      ayurveda: "Light therapy corresponds to Tejas (subtle fire) cultivation — building cellular intelligence.",
+    },
   ],
   ovulatory: [
-    { ritualId: "lymphatic-drainage", reason: "High estrogen supports fluid movement — ideal for drainage work." },
-    { ritualId: "red-light-mask", reason: "Skin is at peak radiance — amplify with red light therapy." },
-    { ritualId: "biocellulose-mask", reason: "Skin is at peak hydration and receptivity at ovulation." },
+    {
+      ritualId: "lymphatic-drainage",
+      reason: "High estrogen supports fluid movement — ideal for drainage work.",
+      modern: "High oestrogen supports maximum fluid movement — best phase for lymphatic work.",
+      tcm: "Supports Spleen function (fluid transformation and transportation) which is robust at this phase.",
+      ayurveda: "Deep Abhyanga with cooling oils (coconut, brahmi) moves lymph and pacifies building Pitta.",
+    },
+    {
+      ritualId: "red-light-mask",
+      reason: "Skin is at peak radiance — amplify with red light therapy.",
+      modern: "Skin at peak radiance and receptivity — red light ATP production amplified by oestrogen.",
+      tcm: "Red light stimulates the Heart meridian (fire element dominant at ovulation); supports Shen.",
+      ayurveda: "Light therapy corresponds to Tejas (subtle fire) cultivation — amplifying natural radiance.",
+    },
+    {
+      ritualId: "biocellulose-mask",
+      reason: "Skin is at peak hydration and receptivity at ovulation.",
+      modern: "Skin at peak hydration and permeability — active ingredients absorb best now.",
+      tcm: "Lung meridian governs the skin — peak skin health reflects robust Lung Qi and Blood.",
+      ayurveda: "Mukha Lepa (herbal face mask) with nourishing herbs prescribed at peak vitality periods.",
+    },
+    {
+      ritualId: "ice-plunge",
+      reason: "Peak oestrogen gives you highest heat tolerance and fastest cold adaptation.",
+      modern: "Peak oestrogen — highest heat tolerance and fastest cold adaptation; dopamine sustained up to 3 hours.",
+      tcm: "Tonifies Kidney Yang while clearing excess Heat from the Heart at ovulation.",
+      ayurveda: "Pitta peaks at ovulation — cooling practices balance excess heat. Recommended in Pitta-dominant seasons.",
+    },
+    {
+      ritualId: "sound-bath",
+      reason: "At ovulation, the voice is at its peak frequency — sound vibration is amplified.",
+      modern: "Vagal tone activated by humming; at ovulation, the voice is literally at its peak frequency.",
+      tcm: "Sound vibration opens meridian channels; Heart meridian (dominant now) governs joy and communication.",
+      ayurveda: "Mantra and Nada yoga at this phase amplify Prana through the throat chakra (Vishuddha).",
+    },
+    {
+      ritualId: "gua-sha",
+      reason: "Facial gua sha at ovulation maximises collagen and circulation benefits.",
+      modern: "Peak skin radiance and collagen production make facial treatments most effective now.",
+      tcm: "Gua sha moves stagnant Qi and Blood in the facial meridians — maximum benefit at peak energy.",
+      ayurveda: "Facial massage with cooling oils balances Pitta heat and enhances natural radiance.",
+    },
   ],
   luteal: [
-    { ritualId: "magnesium-flake-bath", reason: "Progesterone depletes magnesium. Transdermal absorption supports mood and reduces PMS." },
-    { ritualId: "pemf-mat", reason: "Electromagnetic therapy reduces inflammation as prostaglandins rise." },
-    { ritualId: "foam-rolling", reason: "Muscle tension increases in luteal phase. Regular rolling prevents buildup." },
+    {
+      ritualId: "magnesium-flake-bath",
+      reason: "Progesterone depletes magnesium. Transdermal absorption supports mood and reduces PMS.",
+      modern: "Progesterone depletes magnesium; transdermal absorption bypasses GI limitations; reduces PMS, cramping, and sleep disruption.",
+      tcm: "Warming water practices support the Liver meridian which is prone to stagnation in the luteal phase.",
+      ayurveda: "Warm Snehana (oil + water immersion) is the primary Vata-pacifying therapy; late luteal is the most Vata-aggravated phase.",
+    },
+    {
+      ritualId: "pemf-mat",
+      reason: "Electromagnetic therapy reduces inflammation as prostaglandins rise.",
+      modern: "Reduces inflammation as prostaglandins rise in late luteal; supports mitochondrial function.",
+      tcm: "Electromagnetic stimulation corresponds to Qi movement through meridians; reduces PMS stagnation.",
+      ayurveda: "Corresponds to subtle Prana Vata regulation — electromagnetic fields are subtle energy in Ayurvedic framework.",
+    },
+    {
+      ritualId: "foam-rolling",
+      reason: "Muscle tension increases in luteal phase. Regular rolling prevents buildup.",
+      modern: "Progesterone increases muscle tension and fascia density — regular myofascial release prevents buildup.",
+      tcm: "The Liver meridian runs through the inner thighs — rolling these areas moves Liver Qi and reduces PMS.",
+      ayurveda: "Marma point massage along the legs stimulates Apana Vata and reduces late luteal stagnation.",
+    },
+    {
+      ritualId: "yin-yoga",
+      reason: "Long-held hip stretches counteract the muscle guarding pattern driven by rising prostaglandins.",
+      modern: "Long-held hip flexor and inner leg stretches counteract muscle guarding driven by rising prostaglandins.",
+      tcm: "Kidney, Liver, and Spleen meridians all run through the inner legs — yin holds of 3–5 min open these channels.",
+      ayurveda: "Vata-pacifying yoga: supported poses, no inversions, held for 3–5 min with warm blanket.",
+    },
+    {
+      ritualId: "castor-oil-pack",
+      reason: "Applied over the liver, castor oil supports Phase 2 liver detox of excess hormones.",
+      modern: "Castor oil (ricinoleic acid) reduces inflammation; applied over the liver supports Phase 2 detoxification.",
+      tcm: "Directly supports the Liver organ — the most critical organ for hormonal regulation in TCM.",
+      ayurveda: "External oleation over the liver area pacifies Pitta and supports Rasa Dhatu purification.",
+    },
+    {
+      ritualId: "epsom-salt-bath",
+      reason: "Warming bath with magnesium supports the body's need for grounding in late luteal.",
+      modern: "Magnesium supports progesterone metabolism and reduces the cortisol spike of the late luteal phase.",
+      tcm: "Warm water moves stuck Liver Qi — the primary pattern behind PMS in traditional Chinese medicine.",
+      ayurveda: "Warm immersion is the most Vata-pacifying practice available — essential in the most Vata-aggravated phase.",
+    },
   ],
 };
 
@@ -98,7 +264,7 @@ export const CATEGORY_DOT_CLASSES: Record<string, string> = {
   nutrition: "bg-petal-gold",
   movement: "bg-coral",
   "self-care": "bg-bloom",
-  // legacy categories mapped to self-care
+  foundations: "bg-primary",
   wellness: "bg-bloom",
   mindset: "bg-bloom",
   custom: "bg-sketch",
@@ -107,7 +273,7 @@ export const CATEGORY_DOT_CLASSES: Record<string, string> = {
 export interface Habit {
   id: string;
   name: string;
-  category: HabitCategory | string; // string for legacy categories
+  category: HabitCategory | string;
   duration?: string;
   timing?: string;
   notes?: string;
