@@ -36,6 +36,7 @@ export interface JournalEntryRow {
   content: string | null;
   title: string | null;
   word_count: number | null;
+  entry_type: string | null;
   mood: string | null;
   cycle_phase: string | null;
   cycle_day: number | null;
