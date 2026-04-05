@@ -246,6 +246,54 @@ export type Database = {
         }
         Relationships: []
       }
+      cycle_logs: {
+        Row: {
+          created_at: string
+          cycle_day: number | null
+          energy: number | null
+          id: string
+          log_date: string
+          mood: string | null
+          notes: string | null
+          period_start: boolean | null
+          phase: string | null
+          symptom_severity: Json | null
+          symptoms: string[] | null
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string
+          cycle_day?: number | null
+          energy?: number | null
+          id?: string
+          log_date: string
+          mood?: string | null
+          notes?: string | null
+          period_start?: boolean | null
+          phase?: string | null
+          symptom_severity?: Json | null
+          symptoms?: string[] | null
+          user_id: string
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string
+          cycle_day?: number | null
+          energy?: number | null
+          id?: string
+          log_date?: string
+          mood?: string | null
+          notes?: string | null
+          period_start?: boolean | null
+          phase?: string | null
+          symptom_severity?: Json | null
+          symptoms?: string[] | null
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
       dream_boards: {
         Row: {
           active_board_id: string | null
