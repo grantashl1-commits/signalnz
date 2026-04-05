@@ -159,12 +159,12 @@ export default function InsightsTab() {
           <p className="font-hand text-sm text-muted-foreground mb-4">what would you like to understand?</p>
 
           {coachMessages.length === 0 && (
-            <div className="flex flex-col gap-2 mb-4">
-              {SUGGESTED_QUESTIONS.map((q) => (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {suggestedChips.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendCoachMessage(q)}
-                  className="touch-btn card-warm px-4 py-3 min-h-[44px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors"
+                  className="touch-btn card-warm px-3 py-2.5 min-h-[40px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors rounded-full"
                 >
                   {q}
                 </button>
