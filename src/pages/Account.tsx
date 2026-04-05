@@ -515,7 +515,42 @@ export default function AccountPage() {
           <p className="font-body text-[11px] text-muted-foreground mt-3">Used to calculate your heart rate zones and calories burnt during workouts.</p>
         </motion.div>
 
-        {/* Supermarket Preference */}
+        {/* Date of Birth for Signal readings */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.22 }}
+          className="card-warm p-5"
+        >
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-4">
+            <Calendar className="h-4.5 w-4.5 text-primary" /> Date of Birth
+          </h2>
+          <input
+            type="date"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
+            className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground font-body text-sm"
+          />
+          <p className="font-body text-[11px] text-muted-foreground mt-2">
+            Used to personalise your Signal readings
+          </p>
+          <button
+            disabled={dobSaving || !dateOfBirth}
+            onClick={async () => {
+              if (!user || !dateOfBirth) return;
+              setDobSaving(true);
+              await supabase
+                .from("profiles")
+                .upsert({ user_id: user.id, date_of_birth: dateOfBirth } as any, { onConflict: "user_id" });
+              setDobSaving(false);
+              toast.success("Date of birth saved");
+              haptic("medium");
+            }}
+            className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity mt-3 disabled:opacity-40"
+          >
+            <Check className="h-3.5 w-3.5" /> {dobSaving ? "Saving..." : "Save"}
+          </button>
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
