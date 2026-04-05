@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Calendar, Dumbbell, Target, ChevronRight, Zap } from "lucide-react";
+import { Clock, Calendar, Dumbbell, Target, ChevronRight, Zap, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { TrainingProgram, ProgramPhase } from "@/hooks/useTrainingProgram";
 
@@ -118,6 +118,16 @@ export default function ProgramOverview({ program, phases, onStartProgram, onCha
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Evidence basis */}
+      {program.evidence_basis && (
+        <div className="flex items-start gap-2 px-1">
+          <BookOpen className="h-3.5 w-3.5 text-muted-foreground/50 mt-0.5 shrink-0" />
+          <p className="font-body text-[11px] text-muted-foreground/60 italic leading-relaxed">
+            {program.evidence_basis}
+          </p>
         </div>
       )}
 
