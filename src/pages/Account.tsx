@@ -560,15 +560,27 @@ export default function AccountPage() {
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2 mb-3">
             <ShoppingCart className="h-[1.125rem] w-[1.125rem] text-primary" /> Linked Supermarket
           </h2>
-          <SupermarketPicker
-            value={supermarket}
-            onChange={(s) => {
-              setSupermarket(s);
-              saveSupermarket(s);
-              toast.success(`Supermarket set to ${s.name}`);
-              haptic("light");
-            }}
-          />
+          <div className="space-y-1">
+            {SUPERMARKET_OPTIONS.map(s => (
+              <button
+                key={s.name}
+                onClick={() => {
+                  setSupermarket(s);
+                  saveSupermarket(s);
+                  toast.success(`Supermarket set to ${s.name}`);
+                  haptic("light");
+                }}
+                className={`w-full flex items-center justify-between rounded-xl px-4 py-3 text-sm font-body transition-all ${
+                  supermarket.name === s.name
+                    ? "bg-primary/10 text-primary font-semibold"
+                    : "bg-secondary/30 text-foreground hover:bg-secondary/50"
+                }`}
+              >
+                <span>{s.name}</span>
+                {supermarket.name === s.name && <Check className="h-4 w-4" />}
+              </button>
+            ))}
+          </div>
           <p className="font-body text-[11px] text-muted-foreground mt-2">Your shopping list will link to {supermarket.name} for easy ordering.</p>
         </motion.div>
 
