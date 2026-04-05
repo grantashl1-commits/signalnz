@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
+import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowLeft, Search, Check, BookOpen, X, Flame } from "lucide-react";
 import { BotanicalSprig } from "@/components/BotanicalElements";
