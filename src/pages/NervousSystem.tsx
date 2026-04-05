@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Headphones, BookOpen, Heart, Moon, Clock, Check, Loader2, Play, Sparkles, ExternalLink } from "lucide-react";
+import DailyStoicCard from "@/components/DailyStoicCard";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
@@ -524,6 +525,11 @@ export default function NervousSystemPage() {
                 These practices invite deeper self-inquiry. Choose a time when you have space and quiet. You are always in control.
               </p>
             </div>
+          )}
+
+          {/* Daily Stoic — featured in Read tab */}
+          {tab === "read" && (
+            <DailyStoicCard onPlayAudio={(config) => setActivePractice(config)} />
           )}
 
           {/* Practice Cards */}

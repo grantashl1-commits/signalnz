@@ -17,6 +17,8 @@ export interface StoicReading {
   journal_prompt: string | null;
   tts_script: string | null;
   duration_sec: number | null;
+  month: string | null;
+  day_of_month: number | null;
 }
 
 export interface StoicLens {
@@ -57,11 +59,19 @@ export function useDailyStoic() {
   const [listenedToday, setListenedToday] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const fetchReading = useCallback(async (day: number) => {
+    const { data: readingData } = await supabase
+      .from("daily_stoic_readings")
+      .select("*")
+      .eq("seq_day", day)
+      .maybeSingle();
+    if (readingData) setReading(readingData as unknown as StoicReading);
+  }, []);
+
   useEffect(() => {
     if (!user) { setLoading(false); return; }
 
     const fetchProgress = async () => {
-      // Get or create progress
       const { data: progress } = await supabase
         .from("member_stoic_progress")
         .select("current_seq_day, last_listened_at")
@@ -71,26 +81,18 @@ export function useDailyStoic() {
       const day = progress?.current_seq_day || 1;
       setCurrentDay(day);
 
-      // Check if listened today
       if (progress?.last_listened_at) {
         const today = new Date().toISOString().split("T")[0];
         const lastListened = progress.last_listened_at.split("T")[0];
         setListenedToday(lastListened === today);
       }
 
-      // Fetch reading
-      const { data: readingData } = await supabase
-        .from("daily_stoic_readings")
-        .select("*")
-        .eq("seq_day", day)
-        .maybeSingle();
-
-      if (readingData) setReading(readingData as unknown as StoicReading);
+      await fetchReading(day);
       setLoading(false);
     };
 
     fetchProgress();
-  }, [user]);
+  }, [user, fetchReading]);
 
   const markListened = useCallback(async () => {
     if (!user) return;
@@ -132,9 +134,16 @@ export function useDailyStoic() {
       .eq("user_id", user.id);
 
     setCurrentDay(nextDay);
-  }, [user, currentDay]);
+    await fetchReading(nextDay);
+  }, [user, currentDay, fetchReading]);
 
-  return { currentDay, reading, listenedToday, loading, markListened, advanceDay };
+  // Navigate to a specific day without changing progress
+  const previewDay = useCallback(async (day: number) => {
+    if (day < 1 || day > 366) return;
+    await fetchReading(day);
+  }, [fetchReading]);
+
+  return { currentDay, reading, listenedToday, loading, markListened, advanceDay, previewDay };
 }
 
 export function useJournalEntries2() {

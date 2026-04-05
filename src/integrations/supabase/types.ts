@@ -298,9 +298,11 @@ export type Database = {
         Row: {
           author: string
           created_at: string
+          day_of_month: number | null
           duration_sec: number | null
           id: string
           journal_prompt: string | null
+          month: string | null
           quote: string
           reflection: string
           seq_day: number
@@ -312,9 +314,11 @@ export type Database = {
         Insert: {
           author?: string
           created_at?: string
+          day_of_month?: number | null
           duration_sec?: number | null
           id?: string
           journal_prompt?: string | null
+          month?: string | null
           quote: string
           reflection: string
           seq_day: number
@@ -326,9 +330,11 @@ export type Database = {
         Update: {
           author?: string
           created_at?: string
+          day_of_month?: number | null
           duration_sec?: number | null
           id?: string
           journal_prompt?: string | null
+          month?: string | null
           quote?: string
           reflection?: string
           seq_day?: number
