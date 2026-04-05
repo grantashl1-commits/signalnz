@@ -1061,6 +1061,7 @@ export type Database = {
           created_at: string
           cycle_length: number | null
           cycle_mode: string
+          date_of_birth: string | null
           display_name: string | null
           fitness_level: string | null
           goal_category_id: string | null
@@ -1079,6 +1080,7 @@ export type Database = {
           created_at?: string
           cycle_length?: number | null
           cycle_mode?: string
+          date_of_birth?: string | null
           display_name?: string | null
           fitness_level?: string | null
           goal_category_id?: string | null
@@ -1097,6 +1099,7 @@ export type Database = {
           created_at?: string
           cycle_length?: number | null
           cycle_mode?: string
+          date_of_birth?: string | null
           display_name?: string | null
           fitness_level?: string | null
           goal_category_id?: string | null
@@ -1251,6 +1254,45 @@ export type Database = {
           signal_text?: string
           theme?: string | null
           user_identifier?: string
+        }
+        Relationships: []
+      }
+      signal_messages: {
+        Row: {
+          created_at: string
+          cycle_phase: string | null
+          dao_chapter: string | null
+          dao_verse: string | null
+          fable_title: string | null
+          id: string
+          message: string
+          moon_phase: string | null
+          sun_sign: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          cycle_phase?: string | null
+          dao_chapter?: string | null
+          dao_verse?: string | null
+          fable_title?: string | null
+          id?: string
+          message: string
+          moon_phase?: string | null
+          sun_sign?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          cycle_phase?: string | null
+          dao_chapter?: string | null
+          dao_verse?: string | null
+          fable_title?: string | null
+          id?: string
+          message?: string
+          moon_phase?: string | null
+          sun_sign?: string | null
+          user_id?: string
         }
         Relationships: []
       }
