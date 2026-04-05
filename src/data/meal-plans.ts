@@ -281,6 +281,17 @@ export const MEAT_MEAL_PLANS: Record<Phase, { theme: string; days: DayPlan[] }> 
 
 export type RecipeCategory = "meal" | "baking";
 
+export interface NutritionInfo {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fibre?: number;
+  iron?: number;
+  magnesium?: number;
+  calcium?: number;
+}
+
 export interface Recipe {
   id: string;
   name: string;
@@ -293,6 +304,8 @@ export interface Recipe {
   phaseBenefit: string;
   category?: RecipeCategory;
   image?: string;
+  nutrition?: NutritionInfo;
+  tags?: string[];
 }
 
 export const RECIPES: Recipe[] = [
