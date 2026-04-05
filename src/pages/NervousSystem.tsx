@@ -581,9 +581,9 @@ export default function NervousSystemPage() {
 
           {/* Breathwork link */}
           <div className="mt-8 text-center">
-            <a href="/breathwork" className="font-body text-sm text-primary hover:underline">
+            <Link to="/breathwork" className="font-body text-sm text-primary hover:underline">
               For breathwork and body-based practices → Breathwork
-            </a>
+            </Link>
           </div>
 
           <BotanicalSprig width={160} className="mx-auto mt-8" />
