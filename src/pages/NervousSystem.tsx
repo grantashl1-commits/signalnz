@@ -527,6 +527,11 @@ export default function NervousSystemPage() {
             </div>
           )}
 
+          {/* Daily Stoic — featured in Read tab */}
+          {tab === "read" && (
+            <DailyStoicCard onPlayAudio={(config) => setActivePractice(config)} />
+          )}
+
           {/* Practice Cards */}
           <AnimatePresence mode="wait">
             <motion.div
