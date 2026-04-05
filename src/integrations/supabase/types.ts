@@ -632,6 +632,42 @@ export type Database = {
         }
         Relationships: []
       }
+      mindfulness_logs: {
+        Row: {
+          completed: boolean
+          created_at: string
+          cycle_phase: string | null
+          duration_sec: number | null
+          id: string
+          log_date: string
+          practice_id: string
+          practice_type: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          cycle_phase?: string | null
+          duration_sec?: number | null
+          id?: string
+          log_date?: string
+          practice_id: string
+          practice_type?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          cycle_phase?: string | null
+          duration_sec?: number | null
+          id?: string
+          log_date?: string
+          practice_id?: string
+          practice_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       nps_responses: {
         Row: {
           comment: string | null
