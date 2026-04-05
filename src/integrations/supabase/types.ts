@@ -294,6 +294,51 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_stoic_readings: {
+        Row: {
+          author: string
+          created_at: string
+          duration_sec: number | null
+          id: string
+          journal_prompt: string | null
+          quote: string
+          reflection: string
+          seq_day: number
+          source: string
+          tags: string[] | null
+          title: string
+          tts_script: string | null
+        }
+        Insert: {
+          author?: string
+          created_at?: string
+          duration_sec?: number | null
+          id?: string
+          journal_prompt?: string | null
+          quote: string
+          reflection: string
+          seq_day: number
+          source?: string
+          tags?: string[] | null
+          title: string
+          tts_script?: string | null
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          duration_sec?: number | null
+          id?: string
+          journal_prompt?: string | null
+          quote?: string
+          reflection?: string
+          seq_day?: number
+          source?: string
+          tags?: string[] | null
+          title?: string
+          tts_script?: string | null
+        }
+        Relationships: []
+      }
       dream_boards: {
         Row: {
           active_board_id: string | null
@@ -548,14 +593,22 @@ export type Database = {
       journal_entries: {
         Row: {
           ai: Json | null
+          content: string | null
           created_at: string
+          cycle_day: number | null
+          cycle_mode: string | null
+          cycle_phase: string | null
           date: string
           emotional_tone: string | null
           entry_type: string | null
           id: string
+          mood: string | null
           pinned_to_dream_studio: boolean | null
           prompts: Json
           saved_to_vault: boolean | null
+          stoic_lens: Json | null
+          stoic_seq_day: number | null
+          stoic_title: string | null
           tags: Json
           timestamp: number
           title: string | null
@@ -563,17 +616,26 @@ export type Database = {
           updated_at: string
           user_id: string
           vault_category: string | null
+          word_count: number | null
         }
         Insert: {
           ai?: Json | null
+          content?: string | null
           created_at?: string
+          cycle_day?: number | null
+          cycle_mode?: string | null
+          cycle_phase?: string | null
           date: string
           emotional_tone?: string | null
           entry_type?: string | null
           id: string
+          mood?: string | null
           pinned_to_dream_studio?: boolean | null
           prompts?: Json
           saved_to_vault?: boolean | null
+          stoic_lens?: Json | null
+          stoic_seq_day?: number | null
+          stoic_title?: string | null
           tags?: Json
           timestamp: number
           title?: string | null
@@ -581,17 +643,26 @@ export type Database = {
           updated_at?: string
           user_id: string
           vault_category?: string | null
+          word_count?: number | null
         }
         Update: {
           ai?: Json | null
+          content?: string | null
           created_at?: string
+          cycle_day?: number | null
+          cycle_mode?: string | null
+          cycle_phase?: string | null
           date?: string
           emotional_tone?: string | null
           entry_type?: string | null
           id?: string
+          mood?: string | null
           pinned_to_dream_studio?: boolean | null
           prompts?: Json
           saved_to_vault?: boolean | null
+          stoic_lens?: Json | null
+          stoic_seq_day?: number | null
+          stoic_title?: string | null
           tags?: Json
           timestamp?: number
           title?: string | null
@@ -599,6 +670,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           vault_category?: string | null
+          word_count?: number | null
         }
         Relationships: []
       }
@@ -628,6 +700,36 @@ export type Database = {
           date?: string
           id?: string
           milestone_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      member_stoic_progress: {
+        Row: {
+          created_at: string
+          current_seq_day: number
+          id: string
+          last_listened_at: string | null
+          total_days_completed: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_seq_day?: number
+          id?: string
+          last_listened_at?: string | null
+          total_days_completed?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_seq_day?: number
+          id?: string
+          last_listened_at?: string | null
+          total_days_completed?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
