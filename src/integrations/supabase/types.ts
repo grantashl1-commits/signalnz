@@ -583,6 +583,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           cycle_length: number | null
+          cycle_mode: string
           display_name: string | null
           fitness_level: string | null
           goal_category_id: string | null
@@ -600,6 +601,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           cycle_length?: number | null
+          cycle_mode?: string
           display_name?: string | null
           fitness_level?: string | null
           goal_category_id?: string | null
@@ -617,6 +619,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           cycle_length?: number | null
+          cycle_mode?: string
           display_name?: string | null
           fitness_level?: string | null
           goal_category_id?: string | null

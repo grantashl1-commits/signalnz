@@ -1,55 +1,71 @@
 
-# Signal Exercise & Program System — Build Plan
+# Cycle Tab Enhancement Plan
 
-## Phase 1: Database Schema (Migration)
-Create 4 new tables and extend the existing `exercises` table:
+## Database Changes
+1. **Add `cycle_mode` to profiles** — `TEXT DEFAULT 'cycling'` (values: cycling, perimenopause, post-menopause)
+2. **No new tables needed** — symptom severity data stored in localStorage (matching existing pattern) with structured format `{symptom: string, severity: 0-3}`
 
-### New tables:
-- **`goal_categories`** — 11 training goals with slug, label, description, intensity range, hormonal notes
-- **`training_programs`** — 8 programs linked to goal categories, with duration, equipment, description
-- **`program_phases`** — Phase blocks within each program (e.g. 3 × 4-week), with RPE targets
-- **`workout_templates`** — Individual sessions within phases (Day A, B, C etc), warmup/cooldown notes, duration
-- **`workout_exercises`** — Join table linking templates to exercises with sets, reps, rest, RPE, load guidance, progression notes, superset info
+## UI Components to Create
 
-### Extend `exercises` table:
-- Add columns: `category`, `primary_muscles` (jsonb), `difficulty` (int), `cues` (jsonb), `is_low_impact`, `is_somatic`, `evidence_source`
-- Keep existing columns for backward compatibility
+### 1. CycleModeSelector.tsx
+- First-time modal: "Which best describes where you are right now?"
+- Three mode cards: Cycling / Perimenopause / Post-menopause
+- Stores to profile + localStorage
 
-### Add `goal_category_id` to `profiles`:
-- So each user's selected training goal is persisted
+### 2. PhaseProgressStrip.tsx
+- Horizontal coloured bar showing all 4 phases
+- Current day marker with pulse animation
+- Tap any phase to preview
 
-### RLS:
-- All program/exercise tables: read-only for authenticated users
-- Profiles: existing policies already cover goal updates
+### 3. PhaseDashboard.tsx
+- Hero card with phase name, colour, day info
+- One-line hormonal summary
+- 3 quick-read tiles: Body / Mind / Train
+- Expandable phase guide (training, nutrition, sleep, energy, coaching note)
 
-## Phase 2: Seed Data
-- Insert all 11 goal categories
-- Insert 8 training programs
-- Insert program phases, workout templates, and workout exercises
-- Update existing exercises with new fields + insert new exercises
-- Insert 52 stretches into exercises table (with category = 'stretch')
+### 4. EnhancedSymptomTracker.tsx
+- Structured daily check-in with categories: Physical, Mental/Emotional, Sleep, Body Signals
+- Each symptom rated 0–3 (none/mild/moderate/severe)
+- Quick-tap icons, fast logging
+- Free text note field
 
-*Note: Full seed data for 120 exercises × sets/reps across 8 programs is extensive. I'll create a representative seed covering all 11 goals, 8 programs, and a subset of exercises/workouts to demonstrate the full flow. You can expand the data later.*
+### 5. PerimenopauseMode.tsx
+- Irregular cycle support (flexible period tracking)
+- Additional perimenopause symptoms
+- Rotating education cards with evidence citations
+- Training integration links
 
-## Phase 3: UI — Goal Selection Screen
-- Beautiful card grid showing all 11 goals
-- Each card: label, description, intensity bar, hormonal note (expandable)
-- Integrated into both **onboarding flow** (new step) and **Movement page** (shown if no goal set, changeable from settings)
-- Saves selection to `profiles.goal_category_id`
+### 6. HormoneEducationHub.tsx
+- Scrollable cards for Oestrogen, Progesterone, Testosterone, Cortisol, Insulin
+- 3–4 sentences each, conversational tone, source citations
 
-## Phase 4: UI — Program Assignment
-- After goal selection, show the matched program
-- Display: title, duration, intensity, description, equipment, phase overview
-- "Start Program" button to begin
+### 7. CycleInsights.tsx
+- Pattern analysis from logged data (after 2+ cycles)
+- Auto-generated insights about luteal fatigue, energy peaks, symptom patterns
 
-## Phase 5: UI — Workout Delivery
-- Session view querying current phase → today's workout template → exercises
-- Each exercise shown with: name, sets, reps, rest, RPE, load guidance
-- **Coaching cues** visually distinct from instructions (Signal brand differentiator)
-- Warmup/cooldown sections from template notes
+### 8. IrregularPeriodSupport.tsx
+- Flag option for missing/irregular periods
+- Compassionate education (HA, perimenopause, post-HBC)
+- GP signposting
+- Training adjustment suggestions
 
-## Key Design Principles:
-- Goal selection is a premium onboarding moment — not a dropdown
-- Hormonal/cycle notes surfaced prominently (brand differentiator)
-- Coaching cues styled distinctly from instructions
-- Follows existing Signal design system (purple hero, ivory cards, same typography)
+## Modified Files
+- **Cycle.tsx** — Restructured with new tab layout, mode-aware rendering
+- **InsightsTab.tsx** — Enhanced AI context with mode, symptoms, training data
+- **cycle-utils.ts** — New helpers for structured symptoms, severity data
+- **CycleContext.tsx** — Add cycle mode awareness
+
+## Phase Colours (updated per prompt)
+- Menstrual: Deep red/burgundy (#8B1A2B)
+- Follicular: Spring green (#4CAF50)
+- Ovulatory: Warm gold (#F4A63A)
+- Luteal: Amber/deep orange (#D4722A)
+
+## Build Order
+1. DB migration (cycle_mode column)
+2. Core components (PhaseProgressStrip, PhaseDashboard, CycleModeSelector)
+3. Enhanced symptom tracker
+4. Phase guides + Hormone hub
+5. Perimenopause mode + Irregular period support
+6. Enhanced AI context + Cycle insights
+7. Wire everything into Cycle.tsx
