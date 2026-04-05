@@ -49,7 +49,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { creditsRemaining, tier } = useAICredits();
   const showCreditCounter = tier === "free";
 
-  // Track previous path for PageTransition
   const previousPathRef = useRef(location.pathname);
   const previousPath = previousPathRef.current;
   useEffect(() => {
@@ -57,12 +56,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden relative">
+    <div className="fixed inset-0 flex flex-col bg-background overflow-hidden">
       <SignalAmbientDots />
       <SignalAmbientRipple />
+
       {/* Desktop header — hidden on mobile */}
-      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md hidden md:block pt-[env(safe-area-inset-top)]">
-        <div className="container mx-auto flex items-center justify-between px-4 py-3">
+      <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
+        <div className="container mx-auto flex items-center justify-between px-4 h-[52px]">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0 mr-6">
             <img src="/logos/Icon.png" alt="Signal" className="h-8 w-8 object-contain" />
             <span className="font-display text-lg font-extrabold text-primary tracking-wide uppercase">Signal</span>
@@ -124,9 +124,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Mobile header — minimal, just branding + phase */}
-      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md md:hidden pt-[env(safe-area-inset-top)]">
-        <div className="flex items-center justify-between px-5 py-3">
+      {/* Mobile header */}
+      <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 md:hidden" style={{ paddingTop: "var(--safe-top)" }}>
+        <div className="flex items-center justify-between px-5 h-[52px]">
           <Link to="/" className="flex items-center gap-1.5">
             <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
             <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
@@ -150,35 +150,35 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Main content with page transitions */}
-      <div className="flex-1 relative overflow-hidden" style={{ paddingBottom: isMobile ? "calc(56px + env(safe-area-inset-bottom))" : "2rem" }}>
+      {/* Scrollable content area */}
+      <main className="flex-1 overflow-hidden relative">
         {isMobile ? (
           <PageTransition previousPath={previousPath}>
-            <div className="h-full overflow-y-auto">
+            <div className="h-full overflow-y-auto overscroll-none">
               {children}
             </div>
           </PageTransition>
         ) : (
           <AnimatePresence mode="wait" initial={false}>
-            <motion.main
+            <motion.div
               key={location.pathname}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="md:pb-8 scroll-y overflow-x-hidden"
+              className="h-full overflow-y-auto overflow-x-hidden pb-8"
             >
               {children}
-            </motion.main>
+            </motion.div>
           </AnimatePresence>
         )}
-      </div>
+      </main>
 
       {/* Mobile bottom tab bar — 5 fixed tabs */}
       {!keyboardVisible && (
         <nav
-          className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-t border-border/10 md:hidden select-none"
-          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+          className="flex-none bg-background/95 backdrop-blur-xl border-t border-border/10 z-40 md:hidden select-none"
+          style={{ paddingBottom: "var(--safe-bottom)" }}
         >
           <div className="flex items-stretch max-w-lg mx-auto">
             {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {

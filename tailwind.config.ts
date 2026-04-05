@@ -105,6 +105,12 @@ export default {
         "space-xl": "var(--space-xl)",
         "space-2xl": "var(--space-2xl)",
         "space-3xl": "var(--space-3xl)",
+        "safe-top": "env(safe-area-inset-top, 0px)",
+        "safe-bottom": "env(safe-area-inset-bottom, 0px)",
+        "safe-left": "env(safe-area-inset-left, 0px)",
+        "safe-right": "env(safe-area-inset-right, 0px)",
+        "header": "var(--header-height)",
+        "nav": "var(--nav-height)",
       },
       padding: {
         safe: "env(safe-area-inset-top)",

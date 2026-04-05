@@ -383,3 +383,43 @@ button, a, [role="button"] {
   transform: scale(0.97);
   opacity: 0.85;
 }
+
+/* ── Prevent text selection and context menus on UI elements ── */
+button,
+[role="button"],
+.touch-card,
+nav,
+.bottom-nav,
+.tab-bar {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+img {
+  -webkit-touch-callout: none;
+  pointer-events: none;
+}
+
+a img {
+  pointer-events: auto;
+}
+
+/* ── iOS momentum scrolling ── */
+.overflow-y-auto,
+.overflow-y-scroll,
+.overflow-x-auto,
+.overflow-x-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Horizontal scroll containers (carousels, tab bars) ── */
+.scroll-x-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-x-container::-webkit-scrollbar {
+  display: none;
+}
