@@ -364,10 +364,10 @@ export default function CyclePage() {
                       </div>
                     )}
                     <div className="flex justify-center gap-[2px] mt-[1px]">
-                      {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#8B1A2B" }}>●</span>}
+                      {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#C4526E" }}>●</span>}
                       {indicators.hasSymptoms && <span className="text-[8px] leading-none" style={{ color: phase ? PHASE_HEX[phase] : undefined, opacity: 0.7 }}>◆</span>}
                       {indicators.hasNotes && <span className="text-[8px] leading-none text-foreground/40">✎</span>}
-                      {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#D4722A" }}>✿</span>}
+                      {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#9B89B4" }}>✿</span>}
                     </div>
                   </button>
                 );
