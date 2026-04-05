@@ -136,7 +136,7 @@ export default function MovementCalendar() {
       {/* Calendar grid */}
       <div className="card-warm p-3">
         <div className="grid grid-cols-7 gap-1 mb-1">
-          {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+          {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
             <div key={i} className="text-center">
               <span className="font-body text-[9px] text-muted-foreground">{d}</span>
             </div>

@@ -95,10 +95,18 @@ export default function FeedbackDashboard() {
     resolved: items.filter((i) => i.status === "resolved").length,
   };
 
-  if (authLoading || loading) {
+  if (authLoading || loading || isAdmin === null) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="font-body text-sm text-muted-foreground">You don't have access to this page.</p>
       </div>
     );
   }
