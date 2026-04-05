@@ -89,7 +89,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       result.push({
         icon: AlertCircle,
         text: `Headaches appear most commonly in your menstrual phase (${menstrualHeadache} times). This is linked to the oestrogen drop.`,
-        colour: "#8B1A2B",
+        colour: "#C4526E",
       });
     }
 
