@@ -199,7 +199,7 @@ export function useJournalEntries2() {
   const updateStoicLens = useCallback(async (entryId: string, lens: StoicLens) => {
     await supabase
       .from("journal_entries")
-      .update({ stoic_lens: lens as unknown as Record<string, unknown> })
+      .update({ stoic_lens: JSON.parse(JSON.stringify(lens)) })
       .eq("id", entryId);
 
     setEntries((prev) =>
