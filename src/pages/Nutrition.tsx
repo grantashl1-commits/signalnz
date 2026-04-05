@@ -4,24 +4,19 @@ import PhaseBadge from "@/components/PhaseBadge";
 import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
-import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
-import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { haptic } from "@/hooks/use-mobile";
 import TodayTab from "@/components/nutrition/TodayTab";
-import PlansTab from "@/components/nutrition/PlansTab";
-import RecipesGrid from "@/components/nutrition/RecipesGrid";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
-import AIRecipesTab from "@/components/nutrition/AIRecipesTab";
+import DiscoverTab from "@/components/nutrition/DiscoverTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
 import { Dumbbell, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type TabId = "today" | "plans" | "myweek" | "ai" | "recipes" | "baking" | "shopping";
+type TabId = "today" | "myweek" | "discover" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
   const [activeTab, setActiveTab] = useState<TabId>("today");
-  const [planVersion, setPlanVersion] = useState(0);
   const navigate = useNavigate();
 
   const bodyGoals = useMemo<string[]>(() => {
@@ -31,17 +26,11 @@ export default function NutritionPage() {
     } catch { return []; }
   }, []);
 
-  const handlePlanSaved = () => setPlanVersion(v => v + 1);
-  const handleSaveToToday = () => { setPlanVersion(v => v + 1); setActiveTab("today"); };
-
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
-    { id: "plans", label: "Plans" },
     { id: "myweek", label: "My Week" },
-    { id: "ai", label: "AI Recipes" },
-    { id: "recipes", label: "Recipes" },
-    { id: "baking", label: "Baking" },
-    { id: "shopping", label: "Shopping List" },
+    { id: "discover", label: "Discover" },
+    { id: "shop", label: "Shop" },
   ];
 
   return (
@@ -77,6 +66,7 @@ export default function NutritionPage() {
             <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </button>
         )}
+
         {/* Tabs */}
         <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
           {TABS.map((tab) => (
@@ -93,12 +83,9 @@ export default function NutritionPage() {
         </div>
 
         {activeTab === "today" && <TodayTab />}
-        {activeTab === "plans" && <PlansTab phase={currentPhase} cycleDay={currentCycleDay} />}
-        {activeTab === "ai" && <AIRecipesTab phase={currentPhase} cycleDay={currentCycleDay} />}
-        {activeTab === "recipes" && <RecipesGrid recipes={ALL_MEAL_RECIPES} currentPhase={currentPhase} />}
-        {activeTab === "baking" && <RecipesGrid recipes={BAKING_RECIPES} currentPhase={currentPhase} showBakingHeader />}
         {activeTab === "myweek" && <MyWeekTab />}
-        {activeTab === "shopping" && <ShoppingListPanel />}
+        {activeTab === "discover" && <DiscoverTab />}
+        {activeTab === "shop" && <ShoppingListPanel />}
       </ContentSection>
     </div>
     </GatedPage>
