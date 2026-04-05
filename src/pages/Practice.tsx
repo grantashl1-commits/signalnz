@@ -1,19 +1,40 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, X, ChevronDown } from "lucide-react";
+import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
+import ConsistencyStrip from "@/components/practice/ConsistencyStrip";
+import SleepCard from "@/components/practice/SleepCard";
+import PhilosophyBanner from "@/components/practice/PhilosophyBanner";
+import StarterPacksPanel from "@/components/practice/StarterPacksPanel";
+import OrganClockCard from "@/components/practice/OrganClockCard";
+import DoshaQuiz from "@/components/practice/DoshaQuiz";
 import {
   getHabits, addHabit, removeHabit,
   getHabitLog, toggleHabitForDate,
   HABIT_CATEGORIES, PHASE_RITUAL_SUGGESTIONS,
   SELF_CARE_RITUALS,
-  type Habit, type HabitCategory,
+  type Habit, type HabitCategory, type PhaseRitualSuggestion,
 } from "@/data/self-care-rituals";
+import { HABIT_LIBRARY, type HabitTiming } from "@/data/habit-library";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+
+const PHASE_COLORS: Record<string, string> = {
+  menstrual: "#C4526E",
+  follicular: "#5C4A9E",
+  ovulatory: "#C47A8A",
+  luteal: "#9B89B4",
+};
+
+const TIMING_SECTIONS: { key: HabitTiming; label: string; icon: typeof Sun }[] = [
+  { key: "morning", label: "Morning", icon: Sun },
+  { key: "afternoon", label: "Afternoon", icon: Sunset },
+  { key: "evening", label: "Evening", icon: MoonIcon },
+  { key: "anytime", label: "Anytime", icon: Leaf },
+];
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 14 },
@@ -21,17 +42,22 @@ const fadeUp = (delay: number) => ({
   transition: { delay, duration: 0.45, ease: "easeOut" as const },
 });
 
+type PracticeTab = "habits" | "rituals" | "supplements" | "explore";
+
 export default function PracticePage() {
   const { currentPhase, currentCycleDay } = useCycle();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const todayStr = new Date().toISOString().split("T")[0];
+  const phaseColor = PHASE_COLORS[currentPhase] || PHASE_COLORS.follicular;
+
   const [habits, setHabits] = useState(getHabits());
   const [todayLog, setTodayLog] = useState(getHabitLog(todayStr));
-  const [activeCategory, setActiveCategory] = useState<HabitCategory | "all">("all");
   const [showLibraryPicker, setShowLibraryPicker] = useState(false);
   const [showCategoryChooser, setShowCategoryChooser] = useState(false);
   const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("self-care");
   const [expandedReason, setExpandedReason] = useState<string | null>(null);
+  const [collapsedTiming, setCollapsedTiming] = useState<Set<HabitTiming>>(new Set());
+  const [libraryTab, setLibraryTab] = useState<PracticeTab>("habits");
 
   const refreshHabits = useCallback(() => {
     setHabits(getHabits());
@@ -73,14 +99,24 @@ export default function PracticePage() {
     setShowLibraryPicker(true);
   };
 
-  const mapCategory = (cat: string): string => {
-    if (cat === "wellness" || cat === "mindset" || cat === "custom") return "self-care";
-    return cat;
+  const toggleTimingCollapse = (timing: HabitTiming) => {
+    setCollapsedTiming(prev => {
+      const next = new Set(prev);
+      next.has(timing) ? next.delete(timing) : next.add(timing);
+      return next;
+    });
   };
 
-  const filtered = activeCategory === "all"
-    ? habits
-    : habits.filter(h => mapCategory(h.category) === activeCategory);
+  // Map habit timing from library
+  const getHabitTiming = (habit: Habit): HabitTiming => {
+    const libHabit = HABIT_LIBRARY.find(h => h.name === habit.name);
+    if (libHabit?.timing) return libHabit.timing;
+    const t = habit.timing?.toLowerCase() || "";
+    if (t.includes("morning")) return "morning";
+    if (t.includes("evening") || t.includes("night")) return "evening";
+    if (t.includes("afternoon")) return "afternoon";
+    return "anytime";
+  };
 
   const completedToday = Object.values(todayLog).filter(Boolean).length;
   const totalHabits = habits.length;
@@ -91,7 +127,7 @@ export default function PracticePage() {
       <div className="max-w-6xl mx-auto px-5 md:px-8 py-8 md:py-12">
 
         {/* ═══ PAGE HEADER ═══ */}
-        <motion.div {...fadeUp(0)} className="mb-10 md:mb-14">
+        <motion.div {...fadeUp(0)} className="mb-8">
           <h1 className="font-display text-4xl md:text-5xl font-extrabold text-foreground leading-tight">
             My Practice
           </h1>
@@ -100,188 +136,160 @@ export default function PracticePage() {
           </p>
         </motion.div>
 
-        {/* ═══ PROGRESS CARD ═══ */}
-        <motion.div
-          {...fadeUp(0.1)}
-          className="rounded-[22px] bg-card p-7 md:p-8 shadow-soft mb-10 md:mb-14 max-w-md"
-          style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
-        >
-          <p className="font-body text-sm uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>
-            Today
-          </p>
-          <div className="flex items-baseline gap-2">
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={completedToday}
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="font-display text-4xl md:text-5xl font-extrabold inline-block"
-                style={{ color: "hsl(var(--foreground))" }}
-              >
-                {completedToday}
-              </motion.span>
-            </AnimatePresence>
-            <span className="font-body text-lg" style={{ color: "hsl(var(--muted-foreground))" }}>
-              / {totalHabits} complete
-            </span>
-          </div>
-          {completedToday > 0 && completedToday === totalHabits && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-3 space-y-2"
-            >
-              <p className="font-body text-sm text-primary flex items-center gap-1.5">
-                <WildStar size={14} /> All habits complete!
-              </p>
-              {/* Confetti burst */}
-               <div className="flex justify-center gap-1 relative h-6">
-                 {["·", "✦", "·", "✦", "·"].map((symbol, i) => (
-                   <motion.span
-                     key={i}
-                     initial={{ scale: 0, y: 0, rotate: 0 }}
-                     animate={{
-                       scale: [0, 1.3, 0],
-                       y: [0, -20 - i * 5, -40],
-                       x: [(i - 2) * 8, (i - 2) * 20],
-                       rotate: [0, (i - 2) * 40],
-                     }}
-                     transition={{ duration: 1.2, delay: i * 0.08, ease: "easeOut" }}
-                     className="text-lg absolute text-primary"
-                   >
-                     {symbol}
-                   </motion.span>
-                 ))}
-               </div>
-            </motion.div>
-          )}
-        </motion.div>
-
-        {/* ═══ CATEGORY FILTERS ═══ */}
-        <motion.div {...fadeUp(0.15)} className="flex flex-wrap gap-3 mb-8 md:mb-10">
-          {[{ id: "all" as const, label: "All" }, ...HABIT_CATEGORIES].map(cat => {
-            const active = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id as HabitCategory | "all")}
-                className={`touch-btn rounded-full px-6 py-3 font-body text-sm font-medium transition-all shadow-soft ${
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card hover:bg-card hover:text-foreground"
-                }`}
-                style={active
-                  ? { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }
-                  : { backgroundColor: "hsl(var(--card))", color: "hsl(var(--muted-foreground))" }
-                }
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </motion.div>
+        <PhilosophyBanner />
 
         {/* ═══ MAIN CONTENT — TWO COLUMNS ON DESKTOP ═══ */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-10 md:gap-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10 md:gap-14">
 
-          {/* LEFT COLUMN — Today's Habits */}
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                Today's habits
-              </h2>
-            </div>
+          {/* LEFT COLUMN — Today's Practice */}
+          <div className="space-y-6">
+            
+            {/* Sleep Card */}
+            <motion.div {...fadeUp(0.05)}>
+              <SleepCard phaseColor={phaseColor} />
+            </motion.div>
 
-            {filtered.length === 0 && (
+            {/* Consistency Strip */}
+            <motion.div {...fadeUp(0.1)}>
+              <ConsistencyStrip phaseColor={phaseColor} />
+            </motion.div>
+
+            {/* Progress Summary */}
+            <motion.div
+              {...fadeUp(0.15)}
+              className="rounded-[22px] bg-card p-6 shadow-soft"
+            >
+              <div className="flex items-baseline gap-2">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={completedToday}
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 20, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="font-display text-4xl font-extrabold text-foreground"
+                  >
+                    {completedToday}
+                  </motion.span>
+                </AnimatePresence>
+                <span className="font-body text-lg text-muted-foreground">/ {totalHabits} complete</span>
+              </div>
+              {completedToday > 0 && completedToday === totalHabits && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="font-body text-sm text-primary flex items-center gap-1.5 mt-2"
+                >
+                  <WildStar size={14} /> All habits complete!
+                </motion.p>
+              )}
+            </motion.div>
+
+            {/* ═══ HABITS BY TIME OF DAY ═══ */}
+            {TIMING_SECTIONS.map(section => {
+              const sectionHabits = habits.filter(h => getHabitTiming(h) === section.key);
+              if (sectionHabits.length === 0) return null;
+              const isCollapsed = collapsedTiming.has(section.key);
+              const Icon = section.icon;
+
+              return (
+                <motion.div key={section.key} {...fadeUp(0.2)}>
+                  <button
+                    onClick={() => toggleTimingCollapse(section.key)}
+                    className="touch-btn flex items-center gap-2 mb-3 w-full text-left"
+                  >
+                    <Icon className="h-4 w-4" style={{ color: phaseColor }} />
+                    <h3 className="font-display text-lg font-bold text-foreground flex-1">
+                      {section.label}
+                    </h3>
+                    <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${isCollapsed ? "" : "rotate-180"}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {!isCollapsed && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="space-y-2 overflow-hidden"
+                      >
+                        {sectionHabits.map(habit => {
+                          const done = todayLog[habit.id] || false;
+                          const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category) ||
+                            HABIT_CATEGORIES.find(c => c.id === "self-care");
+
+                          return (
+                            <motion.div
+                              key={habit.id}
+                              whileTap={{ scale: 1.02 }}
+                              className={`rounded-[16px] p-5 flex items-center gap-4 shadow-soft transition-all ${
+                                done ? "border border-primary/10" : "border border-transparent"
+                              }`}
+                              style={{
+                                backgroundColor: done ? "hsl(284 30% 96%)" : "hsl(var(--card))",
+                              }}
+                            >
+                              <button
+                                onClick={() => handleToggle(habit.id)}
+                                className={`touch-btn flex-shrink-0 h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
+                                  done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
+                                }`}
+                              >
+                                <AnimatePresence>
+                                  {done && (
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      exit={{ scale: 0 }}
+                                    >
+                                      <WildStar size={16} color="hsl(var(--primary))" />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </button>
+
+                              <div className="flex-1 min-w-0">
+                                <p className={`font-display text-base font-semibold leading-snug transition-all ${
+                                  done ? "line-through text-muted-foreground" : "text-foreground"
+                                }`}>
+                                  {habit.name}
+                                </p>
+                                <span
+                                  className="font-body text-xs font-medium uppercase tracking-wide"
+                                  style={{ color: catInfo?.color }}
+                                >
+                                  {catInfo?.label || "Habit"}
+                                </span>
+                              </div>
+
+                              <button
+                                onClick={() => handleDelete(habit.id)}
+                                className="touch-btn p-1.5 rounded-full hover:bg-secondary"
+                              >
+                                <Trash2 className="h-3.5 w-3.5 text-muted-foreground/40" />
+                              </button>
+                            </motion.div>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+
+            {/* No habits state */}
+            {habits.length === 0 && (
               <div className="rounded-[22px] bg-card p-10 text-center shadow-soft">
                 <SelfCareHandIcon size={48} color="hsl(var(--muted-foreground))" />
                 <p className="font-body text-base text-muted-foreground mt-4">
-                  No habits yet. Add your first ritual to begin.
+                  No habits yet. Add your first ritual or try a Starter Pack.
                 </p>
               </div>
             )}
-
-            <div className="space-y-3">
-              {filtered.map((habit, i) => {
-                const done = todayLog[habit.id] || false;
-                const mappedCat = mapCategory(habit.category);
-                const catInfo = HABIT_CATEGORIES.find(c => c.id === mappedCat);
-
-                return (
-                  <motion.div
-                    key={habit.id}
-                    {...fadeUp(0.05 + i * 0.04)}
-                    whileTap={{ scale: 1.05 }}
-                    animate={done ? { scale: [1.05, 1] } : {}}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className={`rounded-[18px] p-6 md:p-7 flex items-center gap-5 transition-all duration-250 shadow-soft ${
-                      done
-                        ? "border border-primary/10"
-                        : "border border-transparent"
-                    }`}
-                    style={{
-                      backgroundColor: done ? "hsl(284 30% 96%)" : "hsl(var(--card))",
-                      color: "hsl(var(--card-foreground))",
-                    }}
-                  >
-                    <button
-                      onClick={() => handleToggle(habit.id)}
-                      className={`touch-btn flex-shrink-0 h-10 w-10 rounded-full border-2 flex items-center justify-center transition-all ${
-                        done
-                          ? "border-primary bg-primary/15"
-                          : "border-border hover:border-primary/40"
-                      }`}
-                    >
-                      <AnimatePresence>
-                        {done && (
-                          <motion.div
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            transition={{ duration: 0.25, ease: "easeOut" }}
-                          >
-                            <WildStar size={18} color="hsl(var(--primary))" />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </button>
-
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`font-display text-lg md:text-xl font-semibold leading-snug transition-all duration-250 ${
-                          done ? "line-through text-muted-foreground" : "text-foreground"
-                        }`}
-                      >
-                        {habit.name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span
-                          className="font-body text-sm font-medium uppercase tracking-wide"
-                          style={{ color: catInfo?.color }}
-                        >
-                          {catInfo?.label || "Habit"}
-                        </span>
-                        <span className="font-body text-sm text-muted-foreground">
-                          · Daily
-                        </span>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleDelete(habit.id)}
-                      className="touch-btn p-2 rounded-full hover:bg-secondary transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4 text-muted-foreground/40" />
-                    </button>
-                  </motion.div>
-                );
-              })}
-            </div>
           </div>
 
-          {/* RIGHT COLUMN — Add Habit + Phase Suggestions */}
+          {/* RIGHT COLUMN — Rituals + Library */}
           <div className="space-y-8">
 
             {/* Add habit button */}
@@ -289,47 +297,42 @@ export default function PracticePage() {
               {...fadeUp(0.2)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => {
-                haptic("light");
-                setShowCategoryChooser(true);
-              }}
-              className="w-full rounded-[18px] bg-card p-6 shadow-soft flex items-center justify-center gap-3 text-foreground hover:shadow-medium transition-all"
+              onClick={() => setShowCategoryChooser(true)}
+              className="w-full rounded-[18px] bg-card p-5 shadow-soft flex items-center justify-center gap-3 text-foreground hover:shadow-medium transition-all"
             >
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
                 <Plus className="h-5 w-5 text-primary" />
               </div>
               <span className="font-display text-base font-semibold">Add a habit</span>
             </motion.button>
 
-            {/* Phase-specific suggestions */}
+            {/* ═══ SIGNAL RITUALS — Phase suggestions ═══ */}
             <motion.div
               {...fadeUp(0.25)}
-              className="rounded-[22px] p-6 md:p-7 shadow-soft"
-              style={{ backgroundColor: "hsl(var(--card))", color: "hsl(var(--card-foreground))" }}
+              className="rounded-[22px] p-6 shadow-soft bg-card"
             >
-              <p className="font-body text-xs uppercase tracking-[0.2em] mb-2" style={{ color: "hsl(var(--muted-foreground))" }}>
-                Suggested for you
+              <p className="font-body text-xs uppercase tracking-[0.2em] mb-1 text-muted-foreground">
+                Signal Rituals
               </p>
-              <h3 className="font-display text-lg font-bold mb-5" style={{ color: "hsl(var(--foreground))" }}>
+              <h3 className="font-display text-lg font-bold mb-4 text-foreground">
                 Rituals for your {info.phase} phase
               </h3>
 
               <div className="space-y-4">
-                {phaseSuggestions.map(suggestion => {
+                {phaseSuggestions.map((suggestion: PhaseRitualSuggestion) => {
                   const ritual = SELF_CARE_RITUALS.find(r => r.id === suggestion.ritualId);
                   if (!ritual) return null;
                   const alreadyAdded = habits.some(h => h.name === ritual.name);
+                  const isExpanded = expandedReason === suggestion.ritualId;
 
                   return (
                     <div key={suggestion.ritualId}>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="font-body text-base font-medium text-foreground">
-                          {ritual.name}
-                        </span>
+                        <span className="font-body text-sm font-medium text-foreground">{ritual.name}</span>
                         <button
                           onClick={() => !alreadyAdded && handleAddSuggestion(suggestion.ritualId)}
                           disabled={alreadyAdded}
-                          className={`touch-btn rounded-full px-4 py-2 font-body text-xs font-medium transition-all flex-shrink-0 ${
+                          className={`touch-btn rounded-full px-3 py-1.5 font-body text-xs font-medium ${
                             alreadyAdded
                               ? "bg-primary/10 text-primary/50"
                               : "bg-primary/10 text-primary hover:bg-primary/20"
@@ -339,36 +342,124 @@ export default function PracticePage() {
                         </button>
                       </div>
                       <button
-                        onClick={() =>
-                          setExpandedReason(
-                            expandedReason === suggestion.ritualId ? null : suggestion.ritualId
-                          )
-                        }
-                        className="flex items-center gap-1 font-body text-xs text-muted-foreground mt-1.5 hover:text-foreground transition-colors"
+                        onClick={() => setExpandedReason(isExpanded ? null : suggestion.ritualId)}
+                        className="flex items-center gap-1 font-body text-xs text-muted-foreground mt-1 hover:text-foreground"
                       >
-                        Why now?
-                        <ChevronDown
-                          className={`h-3 w-3 transition-transform ${
-                            expandedReason === suggestion.ritualId ? "rotate-180" : ""
-                          }`}
-                        />
+                        Why this, why now?
+                        <ChevronDown className={`h-3 w-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                       </button>
                       <AnimatePresence>
-                        {expandedReason === suggestion.ritualId && (
-                          <motion.p
+                        {isExpanded && (
+                          <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="font-body text-sm text-muted-foreground mt-2 overflow-hidden leading-relaxed"
+                            className="overflow-hidden"
                           >
-                            {suggestion.reason}
-                          </motion.p>
+                            <div className="mt-2 space-y-1.5 pl-3 border-l-2 border-primary/20">
+                              {suggestion.modern && (
+                                <p className="font-body text-xs text-muted-foreground">
+                                  <span className="font-semibold text-foreground/70">Modern science: </span>
+                                  {suggestion.modern}
+                                </p>
+                              )}
+                              {suggestion.tcm && (
+                                <p className="font-body text-xs text-muted-foreground">
+                                  <span className="font-semibold text-foreground/70">Chinese medicine: </span>
+                                  {suggestion.tcm}
+                                </p>
+                              )}
+                              {suggestion.ayurveda && (
+                                <p className="font-body text-xs text-muted-foreground">
+                                  <span className="font-semibold text-foreground/70">Ayurveda: </span>
+                                  {suggestion.ayurveda}
+                                </p>
+                              )}
+                            </div>
+                          </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
                   );
                 })}
               </div>
+            </motion.div>
+
+            {/* ═══ PRACTICE LIBRARY ═══ */}
+            <motion.div {...fadeUp(0.3)} className="rounded-[22px] p-6 shadow-soft bg-card">
+              <h3 className="font-display text-lg font-bold mb-4 text-foreground">
+                Your Practice Library
+              </h3>
+
+              {/* Tab strip */}
+              <div className="flex gap-1 mb-4 bg-secondary/50 rounded-full p-1">
+                {(["habits", "rituals", "supplements", "explore"] as PracticeTab[]).map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setLibraryTab(tab)}
+                    className={`touch-btn flex-1 rounded-full py-2 font-body text-xs font-medium capitalize transition-all ${
+                      libraryTab === tab
+                        ? "bg-card text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              {libraryTab === "habits" && (
+                <div className="space-y-2">
+                  {HABIT_CATEGORIES.filter(c => c.id !== "supplements").map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => openPicker(cat.id)}
+                      className="touch-btn w-full rounded-[12px] p-3.5 text-left border border-border hover:border-primary/20 transition-all"
+                    >
+                      <span className="font-body text-sm font-medium text-foreground">{cat.label}</span>
+                      <span className="font-body text-xs text-muted-foreground block mt-0.5">
+                        Browse {cat.label.toLowerCase()} habits
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {libraryTab === "rituals" && (
+                <div className="space-y-2">
+                  <button
+                    onClick={() => openPicker("self-care")}
+                    className="touch-btn w-full rounded-[12px] p-3.5 text-left border border-border hover:border-primary/20 transition-all"
+                  >
+                    <span className="font-body text-sm font-medium text-foreground">Browse all rituals</span>
+                    <span className="font-body text-xs text-muted-foreground block mt-0.5">
+                      Light therapy, cold therapy, bodywork, bathing, facial care, and more
+                    </span>
+                  </button>
+                </div>
+              )}
+
+              {libraryTab === "supplements" && (
+                <div className="space-y-2">
+                  <button
+                    onClick={() => openPicker("supplements")}
+                    className="touch-btn w-full rounded-[12px] p-3.5 text-left border border-border hover:border-primary/20 transition-all"
+                  >
+                    <span className="font-body text-sm font-medium text-foreground">Browse supplements</span>
+                    <span className="font-body text-xs text-muted-foreground block mt-0.5">
+                      NZ brands, RDI data, phase-specific dosing
+                    </span>
+                  </button>
+                </div>
+              )}
+
+              {libraryTab === "explore" && (
+                <div className="space-y-4">
+                  <StarterPacksPanel onAdded={refreshHabits} />
+                  <DoshaQuiz />
+                  <OrganClockCard />
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -394,32 +485,22 @@ export default function PracticePage() {
                 <div className="bottom-sheet-handle" />
                 <div className="px-6 py-5 space-y-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold text-foreground">
-                      Add a habit
-                    </h3>
-                    <button
-                      onClick={() => setShowCategoryChooser(false)}
-                      className="touch-btn p-2.5 rounded-full bg-secondary"
-                    >
+                    <h3 className="font-display text-xl font-bold text-foreground">Add a habit</h3>
+                    <button onClick={() => setShowCategoryChooser(false)} className="touch-btn p-2.5 rounded-full bg-secondary">
                       <X className="h-4 w-4 text-muted-foreground" />
                     </button>
                   </div>
-                  <p className="font-body text-sm text-muted-foreground">
-                    Choose a category
-                  </p>
                   <div className="grid grid-cols-2 gap-4">
-                    {HABIT_CATEGORIES.map(cat => (
+                    {[...HABIT_CATEGORIES, { id: "foundations" as HabitCategory, label: "Foundations", color: "hsl(var(--primary))" }].map(cat => (
                       <button
                         key={cat.id}
                         onClick={() => {
                           setShowCategoryChooser(false);
-                          openPicker(cat.id);
+                          openPicker(cat.id === "foundations" ? "self-care" : cat.id);
                         }}
-                        className="touch-btn rounded-[16px] p-5 text-center transition-all border border-border bg-card shadow-soft hover:shadow-medium hover:border-primary/20"
+                        className="touch-btn rounded-[16px] p-5 text-center border border-border bg-card shadow-soft hover:shadow-medium hover:border-primary/20"
                       >
-                        <span className="font-display text-base font-semibold text-foreground">
-                          {cat.label}
-                        </span>
+                        <span className="font-display text-base font-semibold text-foreground">{cat.label}</span>
                       </button>
                     ))}
                   </div>

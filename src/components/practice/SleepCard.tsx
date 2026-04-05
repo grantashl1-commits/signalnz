@@ -43,7 +43,8 @@ interface Props {
 }
 
 export default function SleepCard({ phaseColor }: Props) {
-  const { currentPhase, cycleMode } = useCycle();
+  const { currentPhase } = useCycle();
+  const cycleMode = localStorage.getItem("cycle_mode") || "cycling";
   const todayStr = new Date().toISOString().split("T")[0];
   const [data, setData] = useState<SleepData | null>(getSleepData(todayStr));
   const [editing, setEditing] = useState(!data);
