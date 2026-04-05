@@ -78,9 +78,11 @@ export interface WorkoutExercise {
     cues: string[] | null;
     category: string | null;
     primary_muscles: string[] | null;
+    secondary_muscles: string[] | null;
     difficulty: number | null;
     is_low_impact: boolean | null;
     is_somatic: boolean | null;
+    evidence_source: string | null;
   };
 }
 

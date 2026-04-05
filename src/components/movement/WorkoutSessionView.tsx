@@ -241,10 +241,10 @@ function ExerciseCard({
                 {exercise.name}
               </h4>
               {exercise.is_low_impact && (
-                <Shield className="h-3 w-3 text-emerald-500 shrink-0" title="Low impact" />
+                <Shield className="h-3 w-3 text-emerald-500 shrink-0" />
               )}
               {exercise.is_somatic && (
-                <Wind className="h-3 w-3 text-sky-500 shrink-0" title="Somatic" />
+                <Wind className="h-3 w-3 text-sky-500 shrink-0" />
               )}
             </div>
 
