@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN cycle_mode TEXT NOT NULL DEFAULT 'cycling';
