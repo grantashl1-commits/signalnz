@@ -9,6 +9,8 @@ import {
   getSymptomFrequency, getRecentSymptoms,
   PHASE_SHORT,
 } from "@/lib/cycle-utils";
+import { getRecentStructuredCheckins } from "@/lib/cycle-symptom-utils";
+import { useProfile } from "@/hooks/useProfile";
 import { haptic } from "@/hooks/use-mobile";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -20,10 +22,35 @@ const cardVariant = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.35 } }),
 };
 
-const SUGGESTED_QUESTIONS = [
-  "why do I crave sugar before my period?",
-  "is my luteal phase too long?",
-  "what does my mood pattern tell me?",
+const PHASE_CHIPS: Record<Phase, string[]> = {
+  menstrual: [
+    "Why am I so exhausted?",
+    "Why do I feel emotional?",
+    "Is it okay to skip training today?",
+  ],
+  follicular: [
+    "What should I focus on this week?",
+    "Why do I feel so good?",
+    "What's the best training for right now?",
+  ],
+  ovulatory: [
+    "Why am I so confident this week?",
+    "What's the injury risk I should know about?",
+    "Why is my appetite lower?",
+  ],
+  luteal: [
+    "Why are my cravings so high?",
+    "Why can't I sleep even though I'm tired?",
+    "Why do I feel anxious for no reason?",
+    "Why did my workout feel so hard?",
+  ],
+};
+
+const PERI_CHIPS = [
+  "Why do I feel rage out of nowhere?",
+  "Why are my joints sore?",
+  "Why is my memory worse?",
+  "What can I do about hot flushes?",
 ];
 
 export default function InsightsTab() {
