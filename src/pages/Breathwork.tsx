@@ -398,6 +398,7 @@ export default function BreathworkPage() {
   const sections = [
     { id: "breathwork" as const, label: "Breathwork" },
     { id: "somatic" as const, label: "Somatic" },
+    { id: "meditate" as const, label: "Meditate" },
   ];
 
   const titles = {
