@@ -21,7 +21,7 @@ const HORMONES: HormoneCard[] = [
   },
   {
     name: "Progesterone",
-    colour: "#D4722A",
+    colour: "#9B89B4",
     summary: "The settler — when balanced. Rises in luteal phase.",
     detail: "Can cause fatigue, bloating, and sleep disruption when dominant. Progesterone is your body's calming hormone — it promotes sleep and reduces anxiety when in balance. But in the second half of your cycle, high progesterone raises core temperature, increases perceived exertion during exercise, and accelerates protein breakdown. This is why you feel more hungry and more tired.",
     source: "Vitti — In the Flo; Sims — Roar",
