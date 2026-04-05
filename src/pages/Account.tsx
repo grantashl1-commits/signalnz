@@ -6,8 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
-import { AnimatePresence } from "framer-motion";
-import { useState as useStateReact } from "react";
 import { useEffect, useState } from "react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { BotanicalSprig } from "@/components/BotanicalElements";
