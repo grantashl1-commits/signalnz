@@ -337,10 +337,10 @@ function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScrip
 // ── Tab Content ──
 function getScriptsForTab(tab: TabId): MeditationScript[] {
   switch (tab) {
-    case "meditate": return [...MEDITATION_SCRIPTS, ...PHASE_SCRIPTS];
-    case "read": return READING_SCRIPTS;
-    case "inner-work": return INNER_WORK_SCRIPTS;
-    case "sleep": return SLEEP_SCRIPTS;
+    case "meditate": return [...MEDITATION_SCRIPTS, ...PHASE_SCRIPTS, ...QUICK_PRACTICES, ...GROUNDING_PRACTICES.filter(g => g.category === "meditation")];
+    case "read": return [...READING_SCRIPTS, ...PRESENCE_PRACTICES.filter(p => p.category === "reading")];
+    case "inner-work": return [...INNER_WORK_SCRIPTS, ...PRESENCE_PRACTICES.filter(p => p.category === "inner-work")];
+    case "sleep": return [...SLEEP_SCRIPTS, ...GROUNDING_PRACTICES.filter(g => g.category === "sleep")];
   }
 }
 
