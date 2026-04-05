@@ -36,6 +36,7 @@ export interface JournalEntryRow {
   content: string | null;
   title: string | null;
   word_count: number | null;
+  entry_type: string | null;
   mood: string | null;
   cycle_phase: string | null;
   cycle_day: number | null;
@@ -170,6 +171,7 @@ export function useJournalEntries2() {
     content: string;
     title?: string;
     word_count?: number;
+    entry_type?: string;
     mood?: string;
     cycle_phase?: string;
     cycle_day?: number;
@@ -186,6 +188,7 @@ export function useJournalEntries2() {
       content: entry.content,
       title: entry.title || entry.content.slice(0, 60),
       word_count: entry.word_count,
+      entry_type: entry.entry_type || "standard",
       mood: entry.mood,
       cycle_phase: entry.cycle_phase,
       cycle_day: entry.cycle_day,
