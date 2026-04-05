@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
+import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowLeft, Search, Check, BookOpen, X, Flame } from "lucide-react";
 import { BotanicalSprig } from "@/components/BotanicalElements";
@@ -421,6 +422,17 @@ export default function JournalPage() {
   const [postSaveEntry, setPostSaveEntry] = useState<JournalEntryRow | null>(null);
 
   const streak = useMemo(() => calculateStreak(entries), [entries]);
+
+  // Android back button support — close internal views before leaving page
+  const handleAndroidBack = useCallback(() => {
+    if (view === "write" || view === "detail" || view === "mood-checkin" ||
+        view === "type-select" || view === "gratitude" || view === "one-line") {
+      setView("list");
+      return true;
+    }
+    return false;
+  }, [view]);
+  useAndroidBack(handleAndroidBack);
 
   // Start the write flow: show entry type selector
   const handleWrite = () => setView("type-select");

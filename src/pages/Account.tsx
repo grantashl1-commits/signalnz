@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart, ShieldCheck, Copy, Share2, Gift, ChevronDown } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, Heart, ShieldCheck, Copy, Share2, Gift, ChevronDown, Salad, Wind, Users, BrainCircuit, Compass, BookOpen } from "lucide-react";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -176,6 +176,37 @@ export default function AccountPage() {
             <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
           </motion.button>
         )}
+
+        {/* Quick Links Grid — secondary navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-warm p-4"
+        >
+          <h2 className="font-display text-sm italic text-foreground mb-3">Explore</h2>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { path: "/my-practice", icon: Heart, label: "Practice" },
+              { path: "/nutrition", icon: Salad, label: "Nutrition" },
+              { path: "/mindfulness", icon: Wind, label: "Mindful" },
+              { path: "/breathwork", icon: Wind, label: "Breathe" },
+              { path: "/community", icon: Users, label: "Community" },
+              { path: "/coach", icon: BrainCircuit, label: "Coach" },
+              { path: "/modules", icon: Compass, label: "Modules" },
+              { path: "/recommendations", icon: BookOpen, label: "For You" },
+            ].map((item) => (
+              <button
+                key={item.path}
+                onClick={() => { haptic("light"); navigate(item.path); }}
+                className="touch-card flex flex-col items-center gap-1 rounded-xl bg-secondary/50 p-3"
+              >
+                <item.icon className="h-5 w-5 text-primary" />
+                <span className="font-body text-[10px] font-medium text-foreground">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
         {/* Display Name Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
