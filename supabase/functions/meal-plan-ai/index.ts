@@ -92,7 +92,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal } = await req.json();
+    const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
+      exerciseGoal, exerciseGoalLabel, proteinTargetMin, proteinTargetMax,
+      carbEmphasis, cycleMode, weightKg, dislikedRecipeIds } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -104,6 +106,8 @@ serve(async (req) => {
       equipment?: string[]; bodyGoal?: string; bodyGoals?: string[];
       weight?: string; height?: string; age?: string;
     };
+
+    const dislikedIds: string[] = dislikedRecipeIds || [];
 
     const goals = prefs.bodyGoals?.length ? prefs.bodyGoals : (prefs.bodyGoal ? [prefs.bodyGoal] : ["general"]);
     const goalAdvice = goals.map(g => GOAL_GUIDANCE[g] || GOAL_GUIDANCE.general).join("\n\n");
