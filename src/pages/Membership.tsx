@@ -249,15 +249,16 @@ export default function MembershipPage() {
           Monthly
         </button>
         <button
-          onClick={() => { haptic("light"); setIsAnnual(true); }}
+          onClick={() => {
+            haptic("light");
+            setIsAnnual(true);
+            toast.info("Annual billing is coming soon. Monthly plans are available now.");
+          }}
           className={`font-body text-sm font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
             isAnnual ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          Annual
-          <span className="inline-flex items-center gap-1 rounded-full bg-phase-ovulatory/20 text-phase-ovulatory px-2 py-0.5 font-mono text-[10px] font-bold">
-            <Sparkles className="h-3 w-3" /> Save 20%
-          </span>
+          Annual <span className="text-muted-foreground/50">(soon)</span>
         </button>
       </div>
 
