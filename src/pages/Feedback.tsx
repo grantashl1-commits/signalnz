@@ -62,9 +62,16 @@ export default function FeedbackDashboard() {
     setLoading(false);
   };
 
+  // Check admin role
   useEffect(() => {
-    if (!authLoading) fetchFeedback();
-  }, [authLoading]);
+    if (!user) return;
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+
+  useEffect(() => {
+    if (!authLoading && isAdmin === true) fetchFeedback();
+  }, [authLoading, isAdmin]);
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
