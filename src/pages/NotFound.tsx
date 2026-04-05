@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import BotanicalElements from "@/components/BotanicalElements";
+import { SeedGeometry } from "@/components/BotanicalElements";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden px-6">
-      <BotanicalElements variant="subtle" />
-      <motion.div
+      <div className="absolute top-10 right-10 pointer-events-none opacity-[0.06]">
+        <SeedGeometry size={160} opacity={1} />
+      </div>
         className="text-center z-10 max-w-sm"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
