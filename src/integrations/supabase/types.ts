@@ -107,6 +107,109 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          joined_at: string | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          joined_at?: string | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          joined_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "community_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_challenges: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          is_admin_created: boolean | null
+          participant_count: number | null
+          starts_at: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_admin_created?: boolean | null
+          participant_count?: number | null
+          starts_at?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_admin_created?: boolean | null
+          participant_count?: number | null
+          starts_at?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      community_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          heart_count: number | null
+          id: string
+          is_helpful: boolean | null
+          is_removed: boolean | null
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          heart_count?: number | null
+          id?: string
+          is_helpful?: boolean | null
+          is_removed?: boolean | null
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          heart_count?: number | null
+          id?: string
+          is_helpful?: boolean | null
+          is_removed?: boolean | null
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_groups: {
         Row: {
           challenges: Json | null
@@ -169,6 +272,32 @@ export type Database = {
           },
         ]
       }
+      community_hearts: {
+        Row: {
+          created_at: string | null
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_hearts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_memberships: {
         Row: {
           group_id: string
@@ -197,6 +326,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      community_posts: {
+        Row: {
+          challenge_id: string | null
+          comment_count: number | null
+          content: string
+          created_at: string | null
+          heart_count: number | null
+          id: string
+          is_anonymous: boolean | null
+          is_removed: boolean | null
+          media_url: string | null
+          phase_tag: string | null
+          post_type: string | null
+          resource_url: string | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id?: string | null
+          comment_count?: number | null
+          content: string
+          created_at?: string | null
+          heart_count?: number | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_removed?: boolean | null
+          media_url?: string | null
+          phase_tag?: string | null
+          post_type?: string | null
+          resource_url?: string | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string | null
+          comment_count?: number | null
+          content?: string
+          created_at?: string | null
+          heart_count?: number | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_removed?: boolean | null
+          media_url?: string | null
+          phase_tag?: string | null
+          post_type?: string | null
+          resource_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       community_profiles: {
         Row: {
@@ -776,6 +953,57 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_queue: {
+        Row: {
+          comment_id: string | null
+          created_at: string | null
+          id: string
+          post_id: string | null
+          reason: string | null
+          reporter_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          comment_id?: string | null
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          reason?: string | null
+          reporter_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          comment_id?: string | null
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          reason?: string | null
+          reporter_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_queue_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moderation_queue_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nps_responses: {
         Row: {
           comment: string | null
@@ -963,6 +1191,30 @@ export type Database = {
           referred_user_id?: string | null
           referrer_id?: string
           status?: string
+        }
+        Relationships: []
+      }
+      signal_announcements: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          phase_target: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          phase_target?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          phase_target?: string | null
         }
         Relationships: []
       }
