@@ -103,6 +103,17 @@ Deno.serve(async (req) => {
       "phase-002": "Your energy is rising. Set intention for this cycle with expanding light visualisation.",
       "phase-003": "Your heart meridian is most active at ovulation. A loving-kindness practice for peak energy.",
       "phase-004": "The luteal phase is your truth-teller. This practice holds you through it with RAIN and self-compassion.",
+      "quick-001": "The Half-Smile — 3 minutes of soft nervous system reset. A conscious lift at the corners of your mouth that signals ease.",
+      "quick-002": "The Pebble — imagine yourself sinking through clear water to the riverbed. 5 minutes of effortless settling.",
+      "quick-003": "Counting your breath from 1 to 10. Simple, powerful, and humbling. The losing count is the practice.",
+      "quick-004": "Breathing to Arrive — a mantra practice for transitions. 'I have arrived. I am home.'",
+      "quick-005": "Three questions to check in with what actually matters. A 5-minute values compass.",
+      "ground-001": "Mindful tea or coffee — a 7-minute everyday mindfulness practice. The cup is the whole meditation.",
+      "ground-002": "A 10-minute full body release. Surrender each body part to gravity. Excellent before sleep.",
+      "ground-003": "Hold something solid — a 5-minute somatic anchor for intense anxiety. The fastest way back is through the body.",
+      "presence-001": "A Day of Mindfulness — an invitation to slow everything down. One morning changes all the others.",
+      "presence-002": "Who Am I Right Now? — a gentle self-inquiry. Not your roles. What is most alive in you?",
+      "presence-003": "Making Room for What's Hard — move toward the feeling rather than away. This is what brave feels like.",
     };
 
     const explanation = (explanations[selectedId] || "This practice matches what you're describing.") + phaseContext + symptomContext;
