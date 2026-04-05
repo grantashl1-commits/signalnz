@@ -48,6 +48,8 @@ function detectIntent(input: string): string {
   if (lower.includes("short") || lower.includes("5 min") || lower.includes("quick")) return "short";
   if (lower.includes("morning")) return "morning";
   if (lower.includes("evening") || lower.includes("night") || lower.includes("wind down")) return "evening";
+  if (lower.includes("focus") || lower.includes("concentrate") || lower.includes("distracted")) return "focus";
+  if (lower.includes("transition") || lower.includes("between") || lower.includes("commute")) return "transition";
   if (lower.includes("inner child") || lower.includes("younger")) return "inner-child";
   if (lower.includes("self-care") || lower.includes("boundaries")) return "self-care";
   return "default";
