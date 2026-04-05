@@ -423,6 +423,17 @@ export default function JournalPage() {
 
   const streak = useMemo(() => calculateStreak(entries), [entries]);
 
+  // Android back button support — close internal views before leaving page
+  const handleAndroidBack = useCallback(() => {
+    if (view === "write" || view === "detail" || view === "mood-checkin" ||
+        view === "type-select" || view === "gratitude" || view === "one-line") {
+      setView("list");
+      return true;
+    }
+    return false;
+  }, [view]);
+  useAndroidBack(handleAndroidBack);
+
   // Start the write flow: show entry type selector
   const handleWrite = () => setView("type-select");
 
