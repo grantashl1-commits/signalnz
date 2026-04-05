@@ -85,6 +85,20 @@ export default function AccountPage() {
     fetchCredits();
   }, [user]);
 
+  // Fetch DOB
+  useEffect(() => {
+    if (!user) return;
+    const fetchDob = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("date_of_birth")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if ((data as any)?.date_of_birth) setDateOfBirth((data as any).date_of_birth);
+    };
+    fetchDob();
+  }, [user]);
+
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth");
