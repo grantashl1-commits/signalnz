@@ -408,7 +408,6 @@ export default function BreathworkPage() {
   const icons = {
     breathwork: "≈",
     somatic: "◎",
-    meditations: "♩",
   };
 
   return (
