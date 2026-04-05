@@ -480,6 +480,9 @@ export default function NervousSystemPage() {
           {/* Today's Practice */}
           <TodaySuggestion onSelect={handleSelect} />
 
+          {/* Right now I need... */}
+          <RightNowChips onSelect={handleSelect} />
+
           {/* Tabs */}
           <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
             <div className="flex bg-muted/60 rounded-2xl p-1 max-w-lg mx-auto">
