@@ -14,7 +14,7 @@ interface HormoneCard {
 const HORMONES: HormoneCard[] = [
   {
     name: "Oestrogen",
-    colour: "#4CAF50",
+    colour: "#5C4A9E",
     summary: "The builder. Supports muscle, bone, mood, memory, and heart health.",
     detail: "Rising in follicular, peaks at ovulation, drops in luteal and menopause. Oestrogen is the hormone most responsible for the 'good weeks' of your cycle — it boosts serotonin, supports collagen production, and sharpens cognitive function. Its decline in perimenopause and menopause is behind many of the symptoms women experience.",
     source: "Sims — Roar; Haver — The New Menopause",
