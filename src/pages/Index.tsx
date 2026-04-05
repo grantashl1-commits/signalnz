@@ -399,6 +399,8 @@ export default function HomePage() {
 
       {/* Bottom breathing room */}
       <div className="h-16 md:h-24" />
+
+      <GiveSignalPanel open={giveSignalOpen} onClose={() => setGiveSignalOpen(false)} />
     </div>
   );
 }
