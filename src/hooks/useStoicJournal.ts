@@ -188,6 +188,7 @@ export function useJournalEntries2() {
       content: entry.content,
       title: entry.title || entry.content.slice(0, 60),
       word_count: entry.word_count,
+      entry_type: entry.entry_type || "standard",
       mood: entry.mood,
       cycle_phase: entry.cycle_phase,
       cycle_day: entry.cycle_day,
