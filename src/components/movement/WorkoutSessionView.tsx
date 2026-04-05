@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Clock, Dumbbell, ChevronDown, ChevronUp, Target, Flame, MessageCircle, Check } from "lucide-react";
+import { ArrowLeft, Clock, Dumbbell, ChevronDown, ChevronUp, Target, Flame, MessageCircle, Check, BookOpen, Zap, Wind, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
@@ -10,6 +10,33 @@ interface Props {
   exercises: WorkoutExercise[];
   onBack: () => void;
   phaseName?: string;
+}
+
+// Stretch body section color coding per prompt spec
+const STRETCH_COLORS: Record<string, string> = {
+  "str-001": "#4A90D9", "str-002": "#4A90D9", "str-003": "#4A90D9", "str-004": "#4A90D9", "str-005": "#4A90D9", "str-006": "#4A90D9",
+  "str-007": "#8B5CF6", "str-008": "#8B5CF6", "str-009": "#8B5CF6", "str-010": "#8B5CF6", "str-011": "#8B5CF6", "str-012": "#8B5CF6",
+  "str-013": "#EC4899", "str-014": "#EC4899", "str-015": "#EC4899", "str-016": "#EC4899", "str-017": "#EC4899", "str-018": "#EC4899",
+  "str-019": "#10B981", "str-020": "#10B981", "str-021": "#10B981", "str-022": "#10B981", "str-023": "#10B981", "str-024": "#10B981",
+  "str-025": "#F97316", "str-026": "#F97316", "str-027": "#F97316", "str-028": "#F97316", "str-029": "#F97316", "str-030": "#F97316",
+  "str-031": "#EF4444", "str-032": "#EF4444", "str-033": "#EF4444", "str-034": "#EF4444", "str-035": "#EF4444", "str-036": "#EF4444",
+  "str-037": "#F59E0B", "str-038": "#F59E0B", "str-039": "#F59E0B", "str-040": "#F59E0B", "str-041": "#F59E0B", "str-042": "#F59E0B", "str-043": "#F59E0B", "str-044": "#F59E0B",
+  "str-045": "#14B8A6", "str-046": "#14B8A6", "str-047": "#14B8A6", "str-048": "#14B8A6", "str-049": "#14B8A6", "str-050": "#14B8A6", "str-051": "#14B8A6", "str-052": "#14B8A6",
+};
+
+const STRETCH_SECTION_NAMES: Record<string, string> = {
+  "#4A90D9": "Neck & Forearms",
+  "#8B5CF6": "Upper Back & Triceps",
+  "#EC4899": "Chest & Biceps",
+  "#10B981": "Spine & Lower Back",
+  "#F97316": "Lower Leg & Feet",
+  "#EF4444": "Glutes & Hammies",
+  "#F59E0B": "Inner Thighs & Lunges",
+  "#14B8A6": "Hip Flexors",
+};
+
+function formatMuscle(m: string): string {
+  return m.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export default function WorkoutSessionView({ template, exercises, onBack, phaseName }: Props) {
@@ -170,14 +197,24 @@ function ExerciseCard({
   const exercise = ex.exercise;
   if (!exercise) return null;
 
+  const isStretch = exercise.id?.startsWith("str-");
+  const stretchColor = isStretch ? STRETCH_COLORS[exercise.id] : null;
+  const sectionName = stretchColor ? STRETCH_SECTION_NAMES[stretchColor] : null;
+
   const instructions = exercise.instructions ? [exercise.instructions] : [];
   const cues = Array.isArray(exercise.cues) ? exercise.cues : [];
+  const primaryMuscles = Array.isArray(exercise.primary_muscles) ? exercise.primary_muscles : [];
+  const secondaryMuscles = exercise.secondary_muscles || [];
+  const equipment = Array.isArray(exercise.equipment) ? exercise.equipment : [];
 
   return (
-    <div className={cn(
-      "rounded-xl bg-card border transition-all",
-      completed ? "border-primary/30 bg-primary/3" : "border-border"
-    )}>
+    <div
+      className={cn(
+        "rounded-xl bg-card border transition-all",
+        completed ? "border-primary/30 bg-primary/3" : "border-border"
+      )}
+      style={stretchColor ? { borderLeftWidth: 3, borderLeftColor: stretchColor } : undefined}
+    >
       <button
         onClick={onToggleExpand}
         className="w-full p-3.5 text-left"
@@ -196,12 +233,27 @@ function ExerciseCard({
           </button>
 
           <div className="flex-1 min-w-0">
-            <h4 className={cn(
-              "font-display text-sm font-bold",
-              completed ? "text-primary" : "text-foreground"
-            )}>
-              {exercise.name}
-            </h4>
+            <div className="flex items-center gap-2">
+              <h4 className={cn(
+                "font-display text-sm font-bold",
+                completed ? "text-primary" : "text-foreground"
+              )}>
+                {exercise.name}
+              </h4>
+              {exercise.is_low_impact && (
+                <Shield className="h-3 w-3 text-emerald-500 shrink-0" title="Low impact" />
+              )}
+              {exercise.is_somatic && (
+                <Wind className="h-3 w-3 text-sky-500 shrink-0" title="Somatic" />
+              )}
+            </div>
+
+            {sectionName && (
+              <span className="font-body text-[10px] font-medium" style={{ color: stretchColor || undefined }}>
+                {sectionName}
+              </span>
+            )}
+
             <div className="flex flex-wrap gap-3 mt-1">
               {ex.sets && (
                 <span className="font-body text-xs text-muted-foreground">{ex.sets} sets</span>
@@ -267,12 +319,51 @@ function ExerciseCard({
                 </div>
               )}
 
+              {/* Muscles & equipment */}
+              {(primaryMuscles.length > 0 || equipment.length > 0) && (
+                <div className="flex flex-wrap gap-1.5">
+                  {primaryMuscles.map((m) => (
+                    <span key={m} className="rounded-full bg-primary/8 px-2 py-0.5 font-body text-[10px] text-primary font-medium">
+                      {formatMuscle(m)}
+                    </span>
+                  ))}
+                  {(secondaryMuscles as string[]).map((m) => (
+                    <span key={m} className="rounded-full bg-muted/30 px-2 py-0.5 font-body text-[10px] text-muted-foreground">
+                      {formatMuscle(m)}
+                    </span>
+                  ))}
+                  {equipment.map((eq) => (
+                    <span key={eq} className="rounded-full bg-muted/20 px-2 py-0.5 font-body text-[10px] text-muted-foreground italic">
+                      {eq.replace(/_/g, " ")}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Difficulty */}
+              {exercise.difficulty && exercise.difficulty > 1 && (
+                <div className="flex items-center gap-1">
+                  <Zap className="h-3 w-3 text-muted-foreground/50" />
+                  <span className="font-body text-[10px] text-muted-foreground">
+                    Difficulty {exercise.difficulty}/4
+                  </span>
+                </div>
+              )}
+
               {ex.progression_notes && (
                 <div className="flex items-start gap-2">
                   <Target className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
                   <p className="font-body text-[11px] text-muted-foreground italic leading-relaxed">
                     {ex.progression_notes}
                   </p>
+                </div>
+              )}
+
+              {/* Evidence source */}
+              {exercise.evidence_source && (
+                <div className="flex items-start gap-1.5 pt-1">
+                  <BookOpen className="h-3 w-3 text-muted-foreground/40 mt-0.5 shrink-0" />
+                  <p className="font-body text-[10px] text-muted-foreground/50 italic">{exercise.evidence_source}</p>
                 </div>
               )}
             </div>
