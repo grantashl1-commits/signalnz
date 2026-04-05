@@ -196,16 +196,178 @@ function DefaultIllustration() {
   );
 }
 
+function EggIllustration() {
+  return (
+    <g>
+      <ellipse cx="130" cy="105" rx="20" ry="25" fill="none" stroke={STROKE} strokeWidth="1" />
+      <ellipse cx="130" cy="110" rx="12" ry="8" fill="none" stroke={STROKE} strokeWidth="0.6" />
+      <ellipse cx="170" cy="110" rx="18" ry="22" fill="none" stroke={STROKE} strokeWidth="1" />
+      <ellipse cx="170" cy="115" rx="10" ry="6" fill="none" stroke={STROKE} strokeWidth="0.6" />
+      <path d="M140 130 Q150 145 160 130" fill="none" stroke={STROKE} strokeWidth="0.6" />
+    </g>
+  );
+}
+
+function PastaIllustration() {
+  return (
+    <g>
+      <ellipse cx="150" cy="120" rx="55" ry="18" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M95 120 Q95 158 150 163 Q205 158 205 120" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M120 105 Q115 85 125 70 Q135 90 130 105" fill="none" stroke={STROKE} strokeWidth="0.7" />
+      <path d="M145 100 Q140 80 150 65 Q160 85 155 100" fill="none" stroke={STROKE} strokeWidth="0.7" />
+      <path d="M170 105 Q165 85 175 70 Q185 90 180 105" fill="none" stroke={STROKE} strokeWidth="0.7" />
+    </g>
+  );
+}
+
+function ToastIllustration() {
+  return (
+    <g>
+      <rect x="110" y="80" width="80" height="65" rx="8" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M120 80 Q150 70 180 80" fill="none" stroke={STROKE} strokeWidth="0.8" />
+      <ellipse cx="140" cy="110" rx="12" ry="8" fill="none" stroke={STROKE} strokeWidth="0.6" />
+      <circle cx="165" cy="108" r="5" fill="none" stroke={STROKE} strokeWidth="0.6" />
+      <circle cx="155" cy="120" r="3" fill={STROKE} opacity="0.3" />
+    </g>
+  );
+}
+
+function BurgerIllustration() {
+  return (
+    <g>
+      <path d="M100 110 Q100 85 150 80 Q200 85 200 110" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <line x1="100" y1="115" x2="200" y2="115" stroke={STROKE} strokeWidth="0.8" />
+      <path d="M105 120 Q110 128 195 120" fill="none" stroke={STROKE} strokeWidth="0.7" />
+      <line x1="100" y1="125" x2="200" y2="125" stroke={STROKE} strokeWidth="0.8" />
+      <path d="M105 130 Q150 140 195 130" fill="none" stroke={STROKE} strokeWidth="1.2" />
+    </g>
+  );
+}
+
+function FishIllustration() {
+  return (
+    <g>
+      <ellipse cx="155" cy="105" rx="45" ry="22" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M200 105 L220 85 L220 125 Z" fill="none" stroke={STROKE} strokeWidth="0.8" />
+      <circle cx="130" cy="100" r="2.5" fill={STROKE} />
+      <path d="M140 108 Q155 115 170 108" fill="none" stroke={STROKE} strokeWidth="0.6" />
+      <line x1="110" y1="100" x2="115" y2="110" stroke={STROKE} strokeWidth="0.5" />
+      <line x1="115" y1="98" x2="120" y2="108" stroke={STROKE} strokeWidth="0.5" />
+    </g>
+  );
+}
+
+function ChickenIllustration() {
+  return (
+    <g>
+      <ellipse cx="150" cy="115" rx="50" ry="30" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M100 115 Q100 90 120 85" fill="none" stroke={STROKE} strokeWidth="0.8" />
+      <line x1="130" y1="100" x2="135" y2="115" stroke={STROKE} strokeWidth="0.5" />
+      <line x1="145" y1="98" x2="148" y2="112" stroke={STROKE} strokeWidth="0.5" />
+      <line x1="160" y1="100" x2="162" y2="115" stroke={STROKE} strokeWidth="0.5" />
+      <path d="M190 90 Q195 80 200 85" fill="none" stroke={STROKE} strokeWidth="0.7" />
+    </g>
+  );
+}
+
+function PancakeIllustration() {
+  return (
+    <g>
+      <ellipse cx="150" cy="130" rx="50" ry="12" fill="none" stroke={STROKE} strokeWidth="1" />
+      <ellipse cx="150" cy="120" rx="48" ry="11" fill="none" stroke={STROKE} strokeWidth="1" />
+      <ellipse cx="150" cy="110" rx="46" ry="10" fill="none" stroke={STROKE} strokeWidth="1" />
+      <path d="M140 95 Q135 80 145 75" fill="none" stroke={STROKE} strokeWidth="0.6" opacity="0.5" />
+      <path d="M160 92 Q155 78 165 73" fill="none" stroke={STROKE} strokeWidth="0.6" opacity="0.5" />
+      <circle cx="165" cy="105" r="3" fill="none" stroke={STROKE} strokeWidth="0.5" />
+    </g>
+  );
+}
+
+function BakingSweetIllustration() {
+  return (
+    <g>
+      <rect x="115" y="95" width="70" height="50" rx="6" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M115 95 Q150 80 185 95" fill="none" stroke={STROKE} strokeWidth="0.8" />
+      <circle cx="135" cy="115" r="3" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <circle cx="155" cy="120" r="2.5" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <circle cx="168" cy="112" r="3" fill="none" stroke={STROKE} strokeWidth="0.5" />
+    </g>
+  );
+}
+
+function DipIllustration() {
+  return (
+    <g>
+      <ellipse cx="150" cy="120" rx="45" ry="14" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <path d="M105 120 Q105 148 150 152 Q195 148 195 120" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <circle cx="140" cy="115" r="3" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <circle cx="160" cy="113" r="2.5" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <line x1="180" y1="80" x2="165" y2="110" stroke={STROKE} strokeWidth="0.8" />
+      <line x1="190" y1="78" x2="175" y2="108" stroke={STROKE} strokeWidth="0.8" />
+    </g>
+  );
+}
+
+function YoghurtIllustration() {
+  return (
+    <g>
+      <rect x="115" y="85" width="70" height="60" rx="10" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <ellipse cx="150" cy="100" rx="25" ry="8" fill="none" stroke={STROKE} strokeWidth="0.6" />
+      <circle cx="135" cy="105" r="3" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <circle cx="145" cy="100" r="2" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <circle cx="160" cy="103" r="2.5" fill="none" stroke={STROKE} strokeWidth="0.5" />
+      <path d="M170 88 Q175 78 180 82" fill="none" stroke={STROKE} strokeWidth="0.7" />
+    </g>
+  );
+}
+
+function RoastedVegIllustration() {
+  return (
+    <g>
+      <rect x="95" y="90" width="110" height="55" rx="4" fill="none" stroke={STROKE} strokeWidth="1.2" />
+      <ellipse cx="120" cy="115" rx="10" ry="12" fill="none" stroke={STROKE} strokeWidth="0.7" />
+      <circle cx="145" cy="112" r="8" fill="none" stroke={STROKE} strokeWidth="0.7" />
+      <ellipse cx="175" cy="115" rx="12" ry="10" fill="none" stroke={STROKE} strokeWidth="0.7" />
+      <path d="M130 92 Q128 82 135 78" fill="none" stroke={STROKE} strokeWidth="0.5" opacity="0.5" />
+      <path d="M160 90 Q158 80 165 76" fill="none" stroke={STROKE} strokeWidth="0.5" opacity="0.5" />
+    </g>
+  );
+}
+
 // Map meal names (lowercase keywords) to illustrations
 function getIllustration(mealName: string) {
   const name = mealName.toLowerCase();
-  if (name.includes("oat") || name.includes("porridge") || name.includes("muesli") || name.includes("granola") || name.includes("chia"))
+  // New categories first (more specific)
+  if (name.includes("egg") || name.includes("frittata") || name.includes("omelette") || name.includes("scrambled") || name.includes("poached") || name.includes("shakshuka"))
+    return <EggIllustration />;
+  if (name.includes("pancake") || name.includes("waffle") || name.includes("crepe") || name.includes("pikelet"))
+    return <PancakeIllustration />;
+  if (name.includes("pasta") || name.includes("spaghetti") || name.includes("penne") || name.includes("linguine") || name.includes("bolognese") || name.includes("lasagne"))
+    return <PastaIllustration />;
+  if (name.includes("toast") || name.includes("sandwich") || name.includes("bruschetta") || name.includes("sourdough"))
+    return <ToastIllustration />;
+  if (name.includes("burger") || name.includes("patty") || name.includes("patties") || name.includes("meatball") || name.includes("fritter"))
+    return <BurgerIllustration />;
+  if (name.includes("salmon") || name.includes("fish") || name.includes("prawn") || name.includes("tuna") || name.includes("seafood") || name.includes("mussel") || name.includes("cod"))
+    return <FishIllustration />;
+  if (name.includes("chicken") || name.includes("schnitzel") || name.includes("roast chicken") || name.includes("poached chicken"))
+    return <ChickenIllustration />;
+  if (name.includes("muffin") || name.includes("cookie") || name.includes("cake") || name.includes("brownie") || name.includes("slice") || name.includes("bliss ball") || name.includes("bar") || name.includes("biscuit"))
+    return <BakingSweetIllustration />;
+  if (name.includes("hummus") || name.includes("dip") || name.includes("guacamole") || name.includes("pesto") || name.includes("spread"))
+    return <DipIllustration />;
+  if (name.includes("yoghurt") || name.includes("parfait") || name.includes("overnight") || name.includes("bircher") || name.includes("muesli"))
+    return <YoghurtIllustration />;
+  if (name.includes("roasted") || name.includes("sheet pan") || name.includes("tray bake") || name.includes("cauliflower"))
+    return <RoastedVegIllustration />;
+  // Original categories
+  if (name.includes("oat") || name.includes("porridge") || name.includes("granola") || name.includes("chia"))
     return <OatsIllustration />;
   if (name.includes("lentil") || name.includes("dhal") || name.includes("dal"))
     return <LentilBowlIllustration />;
   if (name.includes("miso") || name.includes("tofu") || name.includes("soba") || name.includes("noodle") || name.includes("pad thai"))
     return <MisoIllustration />;
-  if (name.includes("nice cream") || name.includes("ice cream") || name.includes("banana") && name.includes("choc"))
+  if (name.includes("nice cream") || name.includes("ice cream") || (name.includes("banana") && name.includes("choc")))
     return <NiceCreamIllustration />;
   if (name.includes("sushi") || name.includes("rice paper") || name.includes("roll"))
     return <SushiIllustration />;
@@ -215,10 +377,14 @@ function getIllustration(mealName: string) {
     return <SoupIllustration />;
   if (name.includes("stir") || name.includes("wok"))
     return <StirFryIllustration />;
-  if (name.includes("smoothie") || name.includes("acai") || name.includes("bowl") && name.includes("rainbow"))
+  if (name.includes("smoothie") || name.includes("acai") || (name.includes("bowl") && name.includes("rainbow")))
     return <SmoothieBowlIllustration />;
   if (name.includes("salad") || name.includes("zucchini noodle") || name.includes("tabbouleh") || name.includes("wrap") || name.includes("taco"))
     return <SaladIllustration />;
+  if (name.includes("bowl") || name.includes("grain bowl") || name.includes("buddha") || name.includes("nourish") || name.includes("power bowl"))
+    return <SmoothieBowlIllustration />;
+  if (name.includes("beef") || name.includes("steak") || name.includes("lamb") || name.includes("mince") || name.includes("pork"))
+    return <ChickenIllustration />;
   return <DefaultIllustration />;
 }
 
