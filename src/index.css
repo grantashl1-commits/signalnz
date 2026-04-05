@@ -118,6 +118,7 @@
   html {
     overscroll-behavior: none;
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     background-color: hsl(var(--background));
     height: 100%;
   }
@@ -128,7 +129,12 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     overscroll-behavior-y: none;
+    height: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
     height: 100%;
     min-height: 100vh;
     min-height: -webkit-fill-available;

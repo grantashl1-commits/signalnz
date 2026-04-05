@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { captureReferralParam } from "@/hooks/useReferral";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 // Capture ?ref= on first load
 captureReferralParam();
@@ -35,56 +38,77 @@ import Coach from "./pages/Coach";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <CycleProvider>
-          <HeartRateProvider>
-          <SignalPanelProvider>
-            <Routes>
-              <Route path="/brand" element={<BrandGuidelines />} />
-              <Route path="/animation-poc" element={<AnimationPOC />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="*" element={
-                <Layout>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/cycle" element={<Cycle />} />
-                    <Route path="/nutrition" element={<Nutrition />} />
-                    <Route path="/movement" element={<Movement />} />
-                    <Route path="/breathwork" element={<Breathwork />} />
-                    <Route path="/nervous-system" element={<NervousSystem />} />
-                    <Route path="/mindfulness" element={<NervousSystem />} />
-                    <Route path="/journal" element={<Journal />} />
-                    <Route path="/modules" element={<Modules />} />
-                    <Route path="/membership" element={<Membership />} />
-                    <Route path="/my-practice" element={<Practice />} />
-                    <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
-                    <Route path="/recommendations" element={<Recommendations />} />
-                    <Route path="/community" element={<Community />} />
-                    <Route path="/account" element={<Account />} />
-                    <Route path="/settings" element={<Navigate to="/account" replace />} />
-                    <Route path="/profile" element={<Navigate to="/account" replace />} />
-                    <Route path="/home" element={<Navigate to="/" replace />} />
-                    <Route path="/feedback" element={<Feedback />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="/coach" element={<Coach />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Layout>
-              } />
-            </Routes>
-          </SignalPanelProvider>
-          </HeartRateProvider>
-          </CycleProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [appReady, setAppReady] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      setAppReady(true);
+    });
+    const timeout = setTimeout(() => setAppReady(true), 1500);
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <motion.div
+          animate={{ opacity: appReady ? 1 : 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="h-full"
+        >
+          <BrowserRouter>
+            <AuthProvider>
+              <CycleProvider>
+              <HeartRateProvider>
+              <SignalPanelProvider>
+                <Routes>
+                  <Route path="/brand" element={<BrandGuidelines />} />
+                  <Route path="/animation-poc" element={<AnimationPOC />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="*" element={
+                    <Layout>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/cycle" element={<Cycle />} />
+                        <Route path="/nutrition" element={<Nutrition />} />
+                        <Route path="/movement" element={<Movement />} />
+                        <Route path="/breathwork" element={<Breathwork />} />
+                        <Route path="/nervous-system" element={<NervousSystem />} />
+                        <Route path="/mindfulness" element={<NervousSystem />} />
+                        <Route path="/journal" element={<Journal />} />
+                        <Route path="/modules" element={<Modules />} />
+                        <Route path="/membership" element={<Membership />} />
+                        <Route path="/my-practice" element={<Practice />} />
+                        <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
+                        <Route path="/recommendations" element={<Recommendations />} />
+                        <Route path="/community" element={<Community />} />
+                        <Route path="/account" element={<Account />} />
+                        <Route path="/settings" element={<Navigate to="/account" replace />} />
+                        <Route path="/profile" element={<Navigate to="/account" replace />} />
+                        <Route path="/home" element={<Navigate to="/" replace />} />
+                        <Route path="/feedback" element={<Feedback />} />
+                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/coach" element={<Coach />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Layout>
+                  } />
+                </Routes>
+              </SignalPanelProvider>
+              </HeartRateProvider>
+              </CycleProvider>
+            </AuthProvider>
+          </BrowserRouter>
+        </motion.div>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
