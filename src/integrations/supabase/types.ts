@@ -626,6 +626,33 @@ export type Database = {
         }
         Relationships: []
       }
+      plant_diversity_log: {
+        Row: {
+          created_at: string
+          id: string
+          plants: string[] | null
+          updated_at: string
+          user_id: string
+          week_key: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plants?: string[] | null
+          updated_at?: string
+          user_id: string
+          week_key: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plants?: string[] | null
+          updated_at?: string
+          user_id?: string
+          week_key?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1036,6 +1063,27 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_saved_recipes: {
+        Row: {
+          id: string
+          recipe_id: string
+          saved_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          recipe_id: string
+          saved_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          recipe_id?: string
+          saved_at?: string
           user_id?: string
         }
         Relationships: []
