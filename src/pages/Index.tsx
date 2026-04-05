@@ -4,14 +4,11 @@ import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { Moon, Salad, Dumbbell, Wind, ArrowRight, Zap, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { WildStar, SeedGeometry } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
-import { getCheckin, setCheckin, getCheckinStreak, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { TODAY_MEALS } from "@/data/meal-plans";
-import { WORKOUTS } from "@/data/workouts";
-import { getTodayAssignment } from "@/lib/workout-rotation";
+import { getCheckin, setCheckin, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -74,16 +71,8 @@ export default function HomePage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [checkin, setCheckinState] = useState(getCheckin() || "");
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [giveSignalOpen, setGiveSignalOpen] = useState(false);
   const focus = FOCUS[info.phase];
-  const streak = getCheckinStreak();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 100);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
@@ -97,17 +86,10 @@ export default function HomePage() {
     refetch();
   };
 
-  const bodyGoals = (() => { try { const r = localStorage.getItem("signal_body_goals"); return r ? JSON.parse(r) : []; } catch { return []; } })();
-  const todayAssignment = getTodayAssignment(info.phase, bodyGoals, new Date().getDay());
-  const todayWorkout = WORKOUTS.find((w) => w.id === todayAssignment.workoutId);
-  const todayMeals = TODAY_MEALS[info.phase];
-  const lunchMeal = todayMeals?.find((m) => m.type === "Lunch");
-
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const hasSetCycle = !!useCycle().cycleStartDate;
 
-  // Extract first name from auth metadata, profile display name, or fallback
   const firstName = (() => {
     const meta = user?.user_metadata;
     if (displayName) return displayName.split(" ")[0];
@@ -138,7 +120,6 @@ export default function HomePage() {
             {greeting}, {firstName || "you"}.
           </motion.p>
 
-
           <motion.p
             {...fadeUp(0.35)}
             className="font-body text-base md:text-lg text-primary-foreground/80 leading-relaxed max-w-md mx-auto mb-4"
@@ -165,7 +146,6 @@ export default function HomePage() {
           )}
 
           <motion.div {...fadeUp(0.6)} className="relative">
-            {/* Expanding pulse rings */}
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
@@ -197,75 +177,34 @@ export default function HomePage() {
               Give me a signal
             </motion.button>
           </motion.div>
-
-          {/* Scroll hint arrow */}
-          <motion.div
-            {...fadeUp(0.8)}
-            className="mt-10 flex flex-col items-center gap-1"
-            style={{ opacity: scrolled ? 0 : 1, transition: "opacity 0.3s" }}
-          >
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <ChevronDown className="h-5 w-5" style={{ color: "#C9B8E8" }} />
-            </motion.div>
-            <span className="font-hand text-[10px] italic" style={{ color: "#C9B8E8" }}>your day at a glance</span>
-          </motion.div>
         </div>
       </AtmosphericHero>
 
       <PeriodDueReminder />
 
-      {/* ═══ SECTION 2 — TODAY'S FOCUS ═══ */}
+      {/* ═══ SECTION 2 — TODAY'S FOCUS (single compact card) ═══ */}
       <ContentSection className="px-5 md:px-8 py-16 md:py-24">
         <div className="max-w-2xl mx-auto">
-          <motion.p
-            {...fadeUp(0.1)}
-            className="font-body text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3 text-center"
-          >
-            What matters today
-          </motion.p>
-          <motion.h2
-            {...fadeUp(0.15)}
-            className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-12"
-          >
-            Today's focus
-          </motion.h2>
-
-          <div className="space-y-5">
+          <motion.div {...fadeUp(0.1)} className="card-warm p-5 space-y-3">
+            <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/40">today</p>
             {[
-              { icon: Salad, label: "Nutrition", text: focus.nutrition },
-              { icon: Dumbbell, label: "Movement", text: focus.movement },
-              { icon: Wind, label: "Nervous system", text: focus.nervous },
-              { icon: Moon, label: "Cycle insight", text: focus.cycle },
-            ].map((item, i) => (
-              <motion.div
-                key={item.label}
-                {...fadeUp(0.2 + i * 0.08)}
-                className="rounded-[22px] bg-card p-7 md:p-8 flex items-start gap-6 shadow-soft"
-              >
-                <div className="mt-1 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-background">
-                  <item.icon className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <span className="font-body text-[11px] uppercase tracking-[0.2em] text-primary font-medium">
-                    {item.label}
-                  </span>
-                  <p className="font-body text-[15px] text-foreground mt-2.5 leading-relaxed">
-                    {item.text}
-                  </p>
-                </div>
-              </motion.div>
+              { label: "eat", value: focus.nutrition },
+              { label: "move", value: focus.movement },
+              { label: "rest", value: focus.nervous },
+              { label: "cycle", value: focus.cycle },
+            ].map(({ label, value }) => (
+              <div key={label} className="flex gap-3 items-start">
+                <span className="font-mono text-[10px] text-muted-foreground/30 w-8 pt-0.5">{label}</span>
+                <p className="text-sm text-foreground/70 leading-snug flex-1">{value}</p>
+              </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </ContentSection>
 
-      {/* ═══ SECTIONS 3 & 4 — TWO-COLUMN ON DESKTOP ═══ */}
+      {/* ═══ SECTION 3 — CHECK-IN ═══ */}
       <ContentSection className="px-5 md:px-8 py-12 md:py-20">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-          {/* LEFT — Check-in */}
+        <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.1)}>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-8">
               How are you today?
@@ -326,78 +265,15 @@ export default function HomePage() {
                 <p className="font-display text-sm italic text-foreground/80">
                   {CHECKIN_STATES.find(s => s.label === checkin)?.response}
                 </p>
-                <div className="flex items-center gap-3">
-                  <span className="font-body text-xs text-primary">
-                    Logged: {checkin.toLowerCase()}
-                  </span>
-                  {streak > 1 && (
-                    <span className="flex items-center gap-1 font-body text-xs text-muted-foreground">
-                      <WildStar size={14} /> {streak}-day streak
-                    </span>
-                  )}
-                </div>
+                <span className="font-body text-xs text-primary">
+                  Logged: {checkin.toLowerCase()}
+                </span>
               </motion.div>
             )}
-          </motion.div>
-
-          {/* RIGHT — Your day at a glance */}
-          <motion.div {...fadeUp(0.2)}>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-8">
-              Your day at a glance
-            </h2>
-
-            <div className="space-y-4">
-              {[
-                {
-                  path: "/cycle",
-                  icon: Moon,
-                  label: "Cycle",
-                  title: `Day ${info.cycleDay} — ${PHASE_SHORT[info.phase]}`,
-                  desc: "Tap to explore your cycle insights.",
-                },
-                {
-                  path: "/movement",
-                  icon: Dumbbell,
-                  label: "Movement",
-                  title: todayWorkout?.name || "Today's workout",
-                  desc: `${todayWorkout?.duration || "35 min"} · ${todayWorkout?.equipment || "dumbbells"}`,
-                },
-                {
-                  path: "/nutrition",
-                  icon: Salad,
-                  label: "Nourish",
-                  title: lunchMeal?.name || "Today's meal",
-                  desc: "Tap to see your full meal plan.",
-                },
-              ].map((tile, i) => (
-                <motion.div key={tile.path} whileTap={{ scale: 0.98 }}>
-                  <Link
-                    to={tile.path}
-                    className="block rounded-[22px] bg-card p-6 md:p-7 group transition-all hover:shadow-medium hover:-translate-y-0.5 shadow-soft"
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="h-10 w-10 rounded-full bg-background flex items-center justify-center">
-                        <tile.icon className="h-[1.125rem] w-[1.125rem] text-primary" />
-                      </div>
-                      <span className="font-body text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
-                        {tile.label}
-                      </span>
-                    </div>
-                    <h3 className="font-display text-lg md:text-xl font-bold text-foreground leading-tight">
-                      {tile.title}
-                    </h3>
-                    <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">
-                      {tile.desc}
-                    </p>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </ContentSection>
 
-      {/* Bottom breathing room */}
       <div className="h-16 md:h-24" />
 
       <GiveSignalPanel open={giveSignalOpen} onClose={() => setGiveSignalOpen(false)} />

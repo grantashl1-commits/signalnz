@@ -1,8 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Headphones, BookOpen, Heart, Moon, Clock, Check, Loader2, Play, Sparkles, ExternalLink } from "lucide-react";
-import DailyStoicCard from "@/components/DailyStoicCard";
+import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
@@ -22,14 +21,13 @@ import {
   GROUNDING_PRACTICES,
   PRESENCE_PRACTICES,
   getMeditationById,
-  getMeditationsForPhase,
   formatMeditationDuration,
   type MeditationScript,
 } from "@/data/meditation-scripts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-// ── Convert MeditationScript → PracticeConfig for SomaticPlayer ──
+// ── Convert MeditationScript → PracticeConfig ──
 function toPracticeConfig(script: MeditationScript): PracticeConfig {
   return {
     id: script.id,
@@ -50,13 +48,6 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
   };
 }
 
-// ── Further Listening (curated external) ──
-const FURTHER_LISTENING = [
-  { title: "RAIN Meditation", teacher: "Tara Brach", platform: "Insight Timer", dur: "20 min", url: "https://insighttimer.com/tarabrach/guided-meditations/rain-meditation-25" },
-  { title: "MBSR Body Scan", teacher: "Jon Kabat-Zinn", platform: "YouTube", dur: "45 min", url: "https://www.youtube.com/watch?v=u4gZgnCy5ew" },
-  { title: "Loving-kindness", teacher: "Sharon Salzberg", platform: "Insight Timer", dur: "15 min", url: "https://insighttimer.com/sharonsalzberg/guided-meditations/lovingkindness-meditation" },
-];
-
 // ── AI Check-in chips ──
 const AI_CHIPS = [
   "I feel anxious and can't settle",
@@ -67,21 +58,12 @@ const AI_CHIPS = [
   "I need something short — 5 minutes",
 ];
 
-// ── Tabs ──
-type TabId = "meditate" | "read" | "inner-work" | "sleep";
+// ── Tabs: Practice and Sleep ──
+type TabId = "practice" | "sleep";
 const TABS: { id: TabId; label: string; icon: typeof Headphones }[] = [
-  { id: "meditate", label: "Meditate", icon: Headphones },
-  { id: "read", label: "Read & Reflect", icon: BookOpen },
-  { id: "inner-work", label: "Inner Work", icon: Heart },
+  { id: "practice", label: "Practice", icon: Headphones },
   { id: "sleep", label: "Sleep", icon: Moon },
 ];
-
-const CATEGORY_FILTERS: Record<TabId, string[]> = {
-  meditate: ["All", "Quick · Under 5 min", "Nervous System", "Self-Compassion", "Phase Practice"],
-  read: ["All", "Morning", "Evening", "Inner Work"],
-  "inner-work": ["All", "Inner Child", "Self-Care", "Parts Work"],
-  sleep: ["All", "10 min", "15 min", "30 min"],
-};
 
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
@@ -95,14 +77,12 @@ const cardVariant = {
 function useMindfulnessLogs() {
   const { user } = useAuth();
   const [completed, setCompleted] = useState<Set<string>>(new Set());
-  const [minutesThisWeek, setMinutesThisWeek] = useState(0);
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     const today = new Date().toISOString().split("T")[0];
     
-    // Fetch today's completions
     supabase
       .from("mindfulness_logs")
       .select("practice_id, duration_sec, log_date")
@@ -113,10 +93,7 @@ function useMindfulnessLogs() {
         if (!data) return;
         const todayDone = new Set(data.filter((d) => d.log_date === today).map((d) => d.practice_id));
         setCompleted(todayDone);
-        const totalSec = data.reduce((sum, d) => sum + (d.duration_sec || 0), 0);
-        setMinutesThisWeek(Math.round(totalSec / 60));
         
-        // Streak: count consecutive days with completions
         const days = new Set(data.map((d) => d.log_date));
         let s = 0;
         for (let i = 0; i < 30; i++) {
@@ -142,10 +119,9 @@ function useMindfulnessLogs() {
       cycle_phase: phase,
     });
     setCompleted((prev) => new Set([...prev, practiceId]));
-    setMinutesThisWeek((prev) => prev + Math.round(durationSec / 60));
   };
 
-  return { completed, minutesThisWeek, streak, logCompletion };
+  return { completed, streak, logCompletion };
 }
 
 // ── Practice Card ──
@@ -192,9 +168,6 @@ function PracticeCard({
         <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground flex items-center gap-1">
           <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
         </span>
-        {script.phase !== "all" && Array.isArray(script.phase) && script.phase.map((p) => (
-          <span key={p} className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{p}</span>
-        ))}
       </div>
       <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
       <button
@@ -207,51 +180,60 @@ function PracticeCard({
   );
 }
 
-// ── Today's Practice suggestion ──
-function TodaySuggestion({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
-  const { currentPhase, currentCycleDay } = useCycle();
+// ── "Right now I need..." contextual chips ──
+const CONTEXTUAL_CHIPS: Record<string, { label: string; practiceId: string }[]> = {
+  "morning-default": [
+    { label: "A 5-min reset", practiceId: "quick-001" },
+    { label: "Set my intention", practiceId: "quick-005" },
+    { label: "Arrive in my body", practiceId: "quick-004" },
+  ],
+  "midday-active": [
+    { label: "Focus", practiceId: "quick-003" },
+    { label: "Quick breath", practiceId: "quick-004" },
+    { label: "Values check-in", practiceId: "quick-005" },
+  ],
+  "evening-luteal": [
+    { label: "Let go of the day", practiceId: "ground-002" },
+    { label: "Make room for how I feel", practiceId: "presence-003" },
+    { label: "Wind down", practiceId: "sleep-003" },
+  ],
+  "menstrual": [
+    { label: "Pebble meditation", practiceId: "quick-002" },
+    { label: "Full body release", practiceId: "ground-002" },
+    { label: "Something short", practiceId: "quick-001" },
+  ],
+};
 
-  const suggestion = useMemo(() => {
-    const h = new Date().getHours();
-    // Evening → sleep practice
-    if (h >= 20) {
-      return SLEEP_SCRIPTS[2]; // Letting Go of the Day
-    }
-    // Phase-specific
-    const phaseMap: Record<string, string> = {
-      menstrual: "phase-001",
-      follicular: "read-001",
-      ovulatory: "phase-003",
-      luteal: "phase-004",
-    };
-    const id = phaseMap[currentPhase] || "med-004";
-    return getMeditationById(id) || MEDITATION_SCRIPTS[0];
-  }, [currentPhase]);
+function getContextualChips(phase: string): { label: string; practiceId: string }[] {
+  const h = new Date().getHours();
+  if (phase === "menstrual") return CONTEXTUAL_CHIPS["menstrual"];
+  if (h >= 18 && (phase === "luteal")) return CONTEXTUAL_CHIPS["evening-luteal"];
+  if (h >= 11 && h < 18 && (phase === "follicular" || phase === "ovulatory")) return CONTEXTUAL_CHIPS["midday-active"];
+  return CONTEXTUAL_CHIPS["morning-default"];
+}
 
-  if (!suggestion) return null;
+function RightNowChips({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
+  const { currentPhase } = useCycle();
+  const chips = getContextualChips(currentPhase);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="card-warm p-5 mb-6 border border-primary/20"
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <Sparkles className="h-4 w-4 text-primary" />
-        <span className="font-hand text-sm font-bold text-primary">Today's Practice</span>
-        <span className="font-mono text-[10px] text-muted-foreground ml-auto">
-          Day {currentCycleDay} · {currentPhase}
-        </span>
+    <div className="mb-5">
+      <p className="font-hand text-sm font-bold text-muted-foreground/60 mb-2 italic">Right now I need...</p>
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        {chips.map((chip) => (
+          <button
+            key={chip.practiceId}
+            onClick={() => {
+              const s = getMeditationById(chip.practiceId);
+              if (s) { haptic("medium"); onSelect(s); }
+            }}
+            className="whitespace-nowrap rounded-full border border-primary/20 bg-primary/5 px-4 py-2 font-body text-xs text-foreground hover:bg-primary/10 transition-colors"
+          >
+            {chip.label}
+          </button>
+        ))}
       </div>
-      <h3 className="font-display text-xl italic text-foreground mb-1">{suggestion.title}</h3>
-      <p className="font-body text-sm text-muted-foreground mb-3">{suggestion.subtitle} · {formatMeditationDuration(suggestion.durationSec)}</p>
-      <button
-        onClick={() => { haptic("medium"); onSelect(suggestion); }}
-        className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
-      >
-        <Play className="h-4 w-4" /> begin
-      </button>
-    </motion.div>
+    </div>
   );
 }
 
@@ -273,8 +255,7 @@ function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScrip
       });
       if (data) setResult(data);
     } catch {
-      // Fallback
-      setResult({ practiceId: "med-004", explanation: "Based on how you're feeling, the Relaxation Response may help — it's one of the most evidence-based stress-reduction techniques available." });
+      setResult({ practiceId: "med-004", explanation: "Based on how you're feeling, the Relaxation Response may help." });
     }
     setLoading(false);
   };
@@ -336,118 +317,43 @@ function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScrip
   );
 }
 
-// ── Tab Content ──
-function getScriptsForTab(tab: TabId): MeditationScript[] {
-  switch (tab) {
-    case "meditate": return [...MEDITATION_SCRIPTS, ...PHASE_SCRIPTS, ...QUICK_PRACTICES, ...GROUNDING_PRACTICES.filter(g => g.category === "meditation")];
-    case "read": return [...READING_SCRIPTS, ...PRESENCE_PRACTICES.filter(p => p.category === "reading")];
-    case "inner-work": return [...INNER_WORK_SCRIPTS, ...PRESENCE_PRACTICES.filter(p => p.category === "inner-work")];
-    case "sleep": return [...SLEEP_SCRIPTS, ...GROUNDING_PRACTICES.filter(g => g.category === "sleep")];
-  }
+// ── Get all practice scripts ──
+function getPracticeScripts(): MeditationScript[] {
+  return [
+    ...MEDITATION_SCRIPTS,
+    ...PHASE_SCRIPTS,
+    ...QUICK_PRACTICES,
+    ...GROUNDING_PRACTICES,
+    ...READING_SCRIPTS,
+    ...PRESENCE_PRACTICES,
+    ...INNER_WORK_SCRIPTS,
+  ];
 }
 
-function filterScripts(scripts: MeditationScript[], filter: string, tab: TabId): MeditationScript[] {
-  if (filter === "All") return scripts;
+// ── Duration sort filter ──
+type DurationFilter = "all" | "short" | "medium" | "longer";
 
-  if (filter === "Quick · Under 5 min") {
-    return scripts.filter((s) => s.tags.includes("quick") || s.durationSec <= 300);
-  }
-  
-  if (tab === "sleep") {
-    const minMap: Record<string, [number, number]> = {
-      "10 min": [0, 660],
-      "15 min": [660, 960],
-      "30 min": [960, 9999],
-    };
-    const range = minMap[filter];
-    if (range) return scripts.filter((s) => s.durationSec >= range[0] && s.durationSec < range[1]);
-  }
-
-  const tagMap: Record<string, string[]> = {
-    "Nervous System": ["nervous-system", "stress-reduction", "parasympathetic"],
-    "Self-Compassion": ["self-compassion", "warmth"],
-    "Phase Practice": ["menstrual", "follicular", "ovulatory", "luteal"],
-    "Morning": ["morning", "intention"],
-    "Evening": ["evening", "wind-down"],
-    "Inner Work": ["inner-work", "psychology"],
-    "Inner Child": ["inner-child", "reparenting"],
-    "Self-Care": ["self-care", "values", "boundaries"],
-    "Parts Work": ["parts-work", "inner-work"],
-  };
-  const tags = tagMap[filter];
-  if (tags) return scripts.filter((s) => s.tags.some((t) => tags.includes(t)));
-  return scripts;
-}
-
-// ── "Right now I need..." contextual chips ──
-const CONTEXTUAL_CHIPS: Record<string, { label: string; practiceId: string }[]> = {
-  "morning-default": [
-    { label: "A 5-min reset", practiceId: "quick-001" },
-    { label: "Set my intention", practiceId: "quick-005" },
-    { label: "Arrive in my body", practiceId: "quick-004" },
-  ],
-  "midday-active": [
-    { label: "Focus", practiceId: "quick-003" },
-    { label: "Quick breath", practiceId: "quick-004" },
-    { label: "Values check-in", practiceId: "quick-005" },
-  ],
-  "evening-luteal": [
-    { label: "Let go of the day", practiceId: "ground-002" },
-    { label: "Make room for how I feel", practiceId: "presence-003" },
-    { label: "Wind down", practiceId: "sleep-003" },
-  ],
-  "menstrual": [
-    { label: "Pebble meditation", practiceId: "quick-002" },
-    { label: "Full body release", practiceId: "ground-002" },
-    { label: "Something short", practiceId: "quick-001" },
-  ],
-};
-
-function getContextualChips(phase: string): { label: string; practiceId: string }[] {
-  const h = new Date().getHours();
-  if (phase === "menstrual") return CONTEXTUAL_CHIPS["menstrual"];
-  if (h >= 18 && (phase === "luteal")) return CONTEXTUAL_CHIPS["evening-luteal"];
-  if (h >= 11 && h < 18 && (phase === "follicular" || phase === "ovulatory")) return CONTEXTUAL_CHIPS["midday-active"];
-  return CONTEXTUAL_CHIPS["morning-default"];
-}
-
-function RightNowChips({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
-  const { currentPhase } = useCycle();
-  const chips = getContextualChips(currentPhase);
-
-  return (
-    <div className="mb-5">
-      <p className="font-hand text-sm font-bold text-muted-foreground/60 mb-2 italic">Right now I need...</p>
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {chips.map((chip) => (
-          <button
-            key={chip.practiceId}
-            onClick={() => {
-              const s = getMeditationById(chip.practiceId);
-              if (s) { haptic("medium"); onSelect(s); }
-            }}
-            className="whitespace-nowrap rounded-full border border-primary/20 bg-primary/5 px-4 py-2 font-body text-xs text-foreground hover:bg-primary/10 transition-colors"
-          >
-            {chip.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+function filterByDuration(scripts: MeditationScript[], filter: DurationFilter): MeditationScript[] {
+  if (filter === "all") return scripts;
+  if (filter === "short") return scripts.filter(s => s.durationSec <= 300);
+  if (filter === "medium") return scripts.filter(s => s.durationSec > 300 && s.durationSec <= 900);
+  return scripts.filter(s => s.durationSec > 900);
 }
 
 // ── MAIN PAGE ──
 export default function NervousSystemPage() {
   const [tab, setTab] = useState<TabId>(() => {
-    // Time-aware: default to Sleep after 8pm
-    return new Date().getHours() >= 20 ? "sleep" : "meditate";
+    return new Date().getHours() >= 20 ? "sleep" : "practice";
   });
-  const [filter, setFilter] = useState("All");
+  const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(null);
   const { currentPhase } = useCycle();
-  const { completed, minutesThisWeek, streak, logCompletion } = useMindfulnessLogs();
+  const { completed, streak, logCompletion } = useMindfulnessLogs();
 
-  const scripts = useMemo(() => filterScripts(getScriptsForTab(tab), filter, tab), [tab, filter]);
+  const scripts = useMemo(() => {
+    const base = tab === "sleep" ? SLEEP_SCRIPTS : getPracticeScripts();
+    return filterByDuration(base, durationFilter);
+  }, [tab, durationFilter]);
 
   const handleSelect = (script: MeditationScript) => {
     setActivePractice(toPracticeConfig(script));
@@ -470,28 +376,25 @@ export default function NervousSystemPage() {
             <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-2">
               Mindfulness & Inner Work
             </h1>
-            {minutesThisWeek > 0 && (
+            {streak > 1 && (
               <p className="font-mono text-xs text-primary-foreground/50">
-                {minutesThisWeek} min this week{streak > 1 ? ` · ${streak}-day streak` : ""}
+                {streak}-day streak
               </p>
             )}
           </div>
         </AtmosphericHero>
 
         <ContentSection className="px-5 md:px-4">
-          {/* Today's Practice */}
-          <TodaySuggestion onSelect={handleSelect} />
-
           {/* Right now I need... */}
           <RightNowChips onSelect={handleSelect} />
 
           {/* Tabs */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-lg mx-auto">
+            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-sm mx-auto">
               {TABS.map((t) => (
                 <button
                   key={t.id}
-                  onClick={() => { haptic("light"); setTab(t.id); setFilter("All"); }}
+                  onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
                   className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all ${
                     tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
                   }`}
@@ -502,41 +405,36 @@ export default function NervousSystemPage() {
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="flex gap-2 overflow-x-auto pb-3 -mx-1 px-1 scrollbar-hide">
-            {CATEGORY_FILTERS[tab].map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${
-                  filter === f
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-
-          {/* Inner Work content warning */}
-          {tab === "inner-work" && (
-            <div className="rounded-xl bg-phase-menstrual/5 border border-phase-menstrual/15 p-4 mb-4">
-              <p className="font-body text-sm text-muted-foreground leading-relaxed italic">
-                These practices invite deeper self-inquiry. Choose a time when you have space and quiet. You are always in control.
-              </p>
+          {/* Duration sort (Practice tab only) */}
+          {tab === "practice" && (
+            <div className="flex gap-2 pb-3">
+              {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setDurationFilter(f)}
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${
+                    durationFilter === f
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
+                </button>
+              ))}
             </div>
           )}
 
-          {/* Daily Stoic — featured in Read tab */}
-          {tab === "read" && (
-            <DailyStoicCard onPlayAudio={(config) => setActivePractice(config)} />
+          {/* Inner Work content warning */}
+          {tab === "practice" && (
+            <div className="rounded-xl bg-phase-menstrual/5 border border-phase-menstrual/15 p-4 mb-4 hidden">
+              {/* kept but hidden — inner work warning only shows contextually */}
+            </div>
           )}
 
           {/* Practice Cards */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={`${tab}-${filter}`}
+              key={`${tab}-${durationFilter}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
@@ -554,30 +452,6 @@ export default function NervousSystemPage() {
               ))}
             </motion.div>
           </AnimatePresence>
-
-          {/* Further Listening (bottom of Meditate tab) */}
-          {tab === "meditate" && (
-            <div className="mt-10 space-y-4">
-              <h3 className="font-hand text-sm font-bold text-muted-foreground/60">From the teachers who inspired us</h3>
-              <div className="space-y-3">
-                {FURTHER_LISTENING.map((fl) => (
-                  <a
-                    key={fl.title}
-                    href={fl.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="card-warm p-4 flex items-center justify-between group hover:shadow-md transition-shadow"
-                  >
-                    <div>
-                      <p className="font-display text-sm italic text-foreground">{fl.title}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground">{fl.teacher} · {fl.platform} · {fl.dur}</p>
-                    </div>
-                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Breathwork link */}
           <div className="mt-8 text-center">

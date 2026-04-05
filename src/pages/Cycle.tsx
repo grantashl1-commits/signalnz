@@ -18,7 +18,6 @@ import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodP
 import { haptic } from "@/hooks/use-mobile";
 import { useProfile } from "@/hooks/useProfile";
 
-// New components
 import CycleModeSelector, { CycleMode } from "@/components/cycle/CycleModeSelector";
 import PhaseProgressStrip from "@/components/cycle/PhaseProgressStrip";
 import PhaseDashboard from "@/components/cycle/PhaseDashboard";
@@ -35,19 +34,12 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-const POETRY: Record<Phase, string> = {
-  menstrual: "the signal goes quiet. this is not absence — this is integration.",
-  follicular: "your body is rising into its power phase.",
-  ovulatory: "you are transmitting at full signal.",
-  luteal: "the harvest is rich. honour the complexity.",
-};
-
 export default function CyclePage() {
   const navigate = useNavigate();
   const cycle = useCycle();
   const { cycleMode, updateCycleMode } = useProfile();
   const [lastPeriod, setLastPeriod] = useState(cycle.cycleStartDate || "");
-  const [activeTab, setActiveTab] = useState<"overview" | "calendar" | "insights" | "learn">("overview");
+  const [activeTab, setActiveTab] = useState<"today" | "calendar" | "learn">("today");
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showDateEdit, setShowDateEdit] = useState(false);
@@ -57,7 +49,6 @@ export default function CyclePage() {
   const [showModeSelector, setShowModeSelector] = useState(false);
   const [showSymptomTracker, setShowSymptomTracker] = useState(false);
 
-  // Check if user needs mode selection (first-time)
   const needsModeSelection = !localStorage.getItem("cycleModeSelected");
 
   const info = { phase: cycle.currentPhase, cycleDay: cycle.currentCycleDay };
@@ -113,20 +104,17 @@ export default function CyclePage() {
 
   const TABS = cycleMode === "post-menopause"
     ? [
-        { id: "overview" as const, label: "Overview" },
-        { id: "insights" as const, label: "Insights" },
-        { id: "learn" as const, label: "Hormones" },
+        { id: "today" as const, label: "Today" },
+        { id: "learn" as const, label: "Learn" },
       ]
     : [
-        { id: "overview" as const, label: "Overview" },
+        { id: "today" as const, label: "Today" },
         { id: "calendar" as const, label: "Calendar" },
-        { id: "insights" as const, label: "Insights" },
-        { id: "learn" as const, label: "Hormones" },
+        { id: "learn" as const, label: "Learn" },
       ];
 
   return (
     <div className="relative">
-      {/* Mode selector modal */}
       {(showModeSelector || needsModeSelection) && (
         <CycleModeSelector
           onSelect={handleModeSelect}
@@ -134,7 +122,6 @@ export default function CyclePage() {
         />
       )}
 
-      {/* Enhanced symptom tracker */}
       {showSymptomTracker && (
         <EnhancedSymptomTracker
           dateStr={todayStr}
@@ -144,7 +131,7 @@ export default function CyclePage() {
         />
       )}
 
-      {/* ═══ HERO ═══ */}
+      {/* ═══ HERO — factual, not poetic ═══ */}
       <AtmosphericHero size="md">
         <SignalPulse />
         <div className="text-center relative z-10">
@@ -152,19 +139,19 @@ export default function CyclePage() {
             {cycleMode === "perimenopause" ? "Perimenopause" : cycleMode === "post-menopause" ? "Post-menopause" : "Cycle tracker"}
           </p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Your Cycle</h1>
-          {cycleMode === "cycling" && (
-            <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-              {POETRY[info.phase]}
+          {cycleMode === "cycling" && hasDateSet && (
+            <p className="font-mono text-sm text-primary-foreground/60">
+              Day {info.cycleDay} of {PHASE_SHORT[info.phase].toLowerCase()} · {daysUntil} days remaining
             </p>
           )}
           {cycleMode === "perimenopause" && (
-            <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-              your body is navigating change. signal is here with you.
+            <p className="font-mono text-sm text-primary-foreground/60">
+              navigating change — signal is here with you
             </p>
           )}
           {cycleMode === "post-menopause" && (
-            <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-              strength, wisdom, and a new chapter of your signal.
+            <p className="font-mono text-sm text-primary-foreground/60">
+              strength, wisdom, and a new chapter
             </p>
           )}
         </div>
@@ -172,7 +159,7 @@ export default function CyclePage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-        {/* Mode switcher badge */}
+        {/* Mode switcher */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="font-hand text-xs text-muted-foreground">mode:</span>
@@ -186,7 +173,7 @@ export default function CyclePage() {
           </button>
         </div>
 
-        {/* Date picker — only shown if no date set yet AND cycling/peri mode */}
+        {/* Date picker */}
         {!hasDateSet && cycleMode !== "post-menopause" && (
           <div className="card-warm p-4 md:p-5">
             <label className="block font-hand text-sm font-bold text-primary mb-2">when did your last period start?</label>
@@ -200,7 +187,6 @@ export default function CyclePage() {
           </div>
         )}
 
-        {/* Date edit bottom sheet */}
         {showDateEdit && (
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-4 md:p-5">
             <label className="block font-hand text-sm font-bold text-primary mb-2">when did your last period start?</label>
@@ -212,22 +198,16 @@ export default function CyclePage() {
               style={{ fontSize: "16px" }}
             />
             <div className="flex gap-2 mt-3">
-              <button onClick={handleDateEditSave} className="touch-btn flex-1 rounded-xl bg-primary px-4 py-3 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90">
-                Save
-              </button>
-              <button onClick={() => setShowDateEdit(false)} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[44px] font-body text-sm text-muted-foreground active:opacity-90">
-                Cancel
-              </button>
+              <button onClick={handleDateEditSave} className="touch-btn flex-1 rounded-xl bg-primary px-4 py-3 min-h-[44px] font-body text-sm font-bold text-primary-foreground">Save</button>
+              <button onClick={() => setShowDateEdit(false)} className="touch-btn rounded-xl bg-secondary px-4 py-3 min-h-[44px] font-body text-sm text-muted-foreground">Cancel</button>
             </div>
           </motion.div>
         )}
 
-        {/* Phase hero — cycling & peri modes */}
+        {/* Phase hero */}
         {hasDateSet && cycleMode !== "post-menopause" && (
           <>
-            {/* Phase progress strip */}
             <PhaseProgressStrip cycleDay={info.cycleDay} currentPhase={info.phase} />
-
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-2">
                 <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground">
@@ -244,13 +224,12 @@ export default function CyclePage() {
                 {nextPhase} begins in ~{daysUntil} days
               </p>
             </div>
-
             <MoonPhaseRow width={200} className="mx-auto md:hidden" opacity={0.25} />
             <MoonPhaseRow width={240} className="mx-auto hidden md:block" opacity={0.25} />
           </>
         )}
 
-        {/* Daily check-in CTA */}
+        {/* Daily check-in */}
         <button
           onClick={() => { haptic("light"); setShowSymptomTracker(true); }}
           className="touch-btn w-full card-warm p-4 text-left flex items-center justify-between"
@@ -279,21 +258,32 @@ export default function CyclePage() {
           ))}
         </div>
 
-        {/* ═══ OVERVIEW TAB ═══ */}
-        {activeTab === "overview" && (
+        {/* ═══ TODAY TAB (merged Overview + Insights) ═══ */}
+        {activeTab === "today" && (
           <div className="space-y-8 md:space-y-10">
-            {/* Phase dashboard — cycling/peri modes */}
             {hasDateSet && cycleMode !== "post-menopause" && (
               <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
             )}
 
-            {/* Perimenopause-specific content */}
             {cycleMode === "perimenopause" && (
               <PerimenopauseMode onNavigateToTraining={() => navigate("/movement")} />
             )}
 
-            {/* Irregular period support — all modes */}
             <IrregularPeriodSupport onNavigateToTraining={() => navigate("/movement")} />
+
+            {/* Collapsible insights */}
+            {lastPeriod && (
+              <details className="group">
+                <summary className="cursor-pointer font-display text-sm italic text-muted-foreground flex items-center gap-2 py-2">
+                  <span className="group-open:rotate-90 transition-transform">▸</span>
+                  Cycle insights & patterns
+                </summary>
+                <div className="mt-4 space-y-6">
+                  <CycleInsights cycleStartDate={lastPeriod} />
+                  <InsightsTab />
+                </div>
+              </details>
+            )}
           </div>
         )}
 
@@ -391,17 +381,6 @@ export default function CyclePage() {
                 onCycleUpdate={handleCycleUpdate}
               />
             )}
-          </div>
-        )}
-
-        {/* ═══ INSIGHTS TAB ═══ */}
-        {activeTab === "insights" && (
-          <div className="space-y-8">
-            {/* Cycle pattern insights */}
-            {lastPeriod && <CycleInsights cycleStartDate={lastPeriod} />}
-            
-            {/* Existing insights tab (AI coach, symptom freq, energy chart) */}
-            <InsightsTab />
           </div>
         )}
 
