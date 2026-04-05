@@ -17,6 +17,7 @@ import Cycle from "./pages/Cycle";
 import Nutrition from "./pages/Nutrition";
 import Movement from "./pages/Movement";
 import Breathwork from "./pages/Breathwork";
+import NervousSystem from "./pages/NervousSystem";
 import Journal from "./pages/Journal";
 import Modules from "./pages/Modules";
 import Membership from "./pages/Membership";

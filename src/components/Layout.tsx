@@ -33,7 +33,7 @@ const mobileNavItems = [
 // "More" sheet items
 const moreMenuItems = [
   { path: "/my-practice", icon: Heart, label: "My Practice" },
-  { path: "/breathwork", icon: Wind, label: "Mindful" },
+  { path: "/mindfulness", icon: Wind, label: "Mindful" },
   { path: "/journal", icon: PenLine, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
   { path: "/account", icon: UserCircle, label: "Account" },
