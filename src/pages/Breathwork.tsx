@@ -430,7 +430,7 @@ export default function BreathworkPage() {
       
 
       {/* Sub-nav pill */}
-      <div className="sticky top-[52px] md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
+      <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-muted/60 rounded-2xl p-1 max-w-md mx-auto">
           {sections.map((s) => (
             <button
