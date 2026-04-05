@@ -49,29 +49,6 @@ export default function JournalInsights({ entries }: Props) {
 
   if (entries.length < 10) return null;
 
-  const stats = useMemo(() => {
-    const last28 = entries.slice(0, 28);
-    const phaseCounts: Record<string, number> = {};
-    const moodCounts: Record<string, number> = {};
-    let totalWords = 0;
-    let stoicCount = 0;
-    let standardCount = 0;
-
-    for (const e of last28) {
-      if (e.cycle_phase) phaseCounts[e.cycle_phase] = (phaseCounts[e.cycle_phase] || 0) + 1;
-      if (e.mood) moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1;
-      totalWords += e.word_count || 0;
-      if (e.stoic_lens) stoicCount++;
-      if (e.entry_type === "standard" || !e.entry_type) standardCount++;
-    }
-
-    const topPhase = Object.entries(phaseCounts).sort((a, b) => b[1] - a[1])[0];
-    const topMoods = Object.entries(moodCounts).sort((a, b) => b[1] - a[1]).slice(0, 2);
-    const avgWords = standardCount > 0 ? Math.round(totalWords / standardCount) : 0;
-
-    return { last28, topPhase, topMoods, avgWords, stoicCount, standardCount };
-  }, [entries]);
-
   const generateSummary = async () => {
     setLoading(true);
     haptic("medium");
