@@ -17,7 +17,7 @@ const navItems = [
   { path: "/nutrition", icon: Salad, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
-  { path: "/breathwork", icon: Wind, label: "Mindfulness" },
+  { path: "/mindfulness", icon: Wind, label: "Mindfulness" },
   { path: "/journal", icon: PenLine, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
 ];
@@ -33,7 +33,7 @@ const mobileNavItems = [
 // "More" sheet items
 const moreMenuItems = [
   { path: "/my-practice", icon: Heart, label: "My Practice" },
-  { path: "/breathwork", icon: Wind, label: "Mindful" },
+  { path: "/mindfulness", icon: Wind, label: "Mindful" },
   { path: "/journal", icon: PenLine, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
   { path: "/account", icon: UserCircle, label: "Account" },
