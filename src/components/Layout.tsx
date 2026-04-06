@@ -56,6 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const { creditsRemaining, tier } = useAICredits();
   const showCreditCounter = tier === "free";
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const previousPathRef = useRef(location.pathname);
   const previousPath = previousPathRef.current;
