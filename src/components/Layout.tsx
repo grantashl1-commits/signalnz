@@ -35,6 +35,7 @@ const MORE_ITEMS = [
   { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/my-practice", label: "Daily Habits", icon: Leaf },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
+  { path: "/breathwork", label: "Breathwork", icon: Zap },
   { path: "/community", label: "Community", icon: Users },
   { path: "/account", label: "Account", icon: User },
 ];
