@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Dumbbell, BookOpen, User, Zap, UserCircle } from "lucide-react";
+import { Home, Moon, Dumbbell, BookOpen, User, Zap, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
