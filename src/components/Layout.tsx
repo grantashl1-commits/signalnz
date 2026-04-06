@@ -28,7 +28,15 @@ const PRIMARY_TABS = [
   { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/movement", label: "Move", icon: Dumbbell },
-  { path: "/account", label: "You", icon: User },
+  { path: "more", label: "More", icon: MoreHorizontal },
+];
+
+const MORE_ITEMS = [
+  { path: "/nutrition", label: "Nourish", icon: Utensils },
+  { path: "/my-practice", label: "Daily Habits", icon: Leaf },
+  { path: "/mindfulness", label: "Mindfulness", icon: Brain },
+  { path: "/community", label: "Community", icon: Users },
+  { path: "/account", label: "Account", icon: User },
 ];
 
 const PHASE_BORDER: Record<string, string> = {
