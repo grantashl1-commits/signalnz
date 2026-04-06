@@ -191,12 +191,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           <div className="flex items-stretch max-w-lg mx-auto">
             {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {
-              const isActive = location.pathname === path ||
-                (path !== "/" && location.pathname.startsWith(path));
+              const isMore = path === "more";
+              const isActive = isMore
+                ? moreOpen || MORE_ITEMS.some(m => location.pathname === m.path || location.pathname.startsWith(m.path))
+                : location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
               return (
                 <button
                   key={path}
-                  onClick={() => { haptic("light"); navigate(path); }}
+                  onClick={() => {
+                    haptic("light");
+                    if (isMore) {
+                      setMoreOpen(v => !v);
+                    } else {
+                      setMoreOpen(false);
+                      navigate(path);
+                    }
+                  }}
                   className="flex-1 flex flex-col items-center justify-center gap-0.5 pt-2 pb-1 min-h-[56px] relative select-none"
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
@@ -231,6 +241,54 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
       )}
+
+      {/* More menu overlay */}
+      <AnimatePresence>
+        {moreOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMoreOpen(false)}
+            />
+            <motion.div
+              className="fixed bottom-0 left-0 right-0 z-30 md:hidden"
+              style={{ paddingBottom: "calc(56px + var(--safe-bottom))" }}
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 40, opacity: 0 }}
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+            >
+              <div className="mx-4 mb-2 bg-card rounded-2xl border border-border/20 shadow-2xl overflow-hidden">
+                {MORE_ITEMS.map(({ path, label, icon: Icon }) => {
+                  const active = location.pathname === path || location.pathname.startsWith(path);
+                  return (
+                    <button
+                      key={path}
+                      onClick={() => {
+                        haptic("light");
+                        setMoreOpen(false);
+                        navigate(path);
+                      }}
+                      className={`w-full flex items-center gap-3 px-5 py-3.5 transition-colors ${
+                        active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
+                      }`}
+                      style={{ WebkitTapHighlightColor: "transparent" }}
+                    >
+                      <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
+                      <span className="text-sm font-medium">{label}</span>
+                      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Give me a signal — floating CTA + panel */}
       <SignalFloatingCTA onClick={() => openSignal()} />
