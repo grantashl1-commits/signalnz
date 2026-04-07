@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { WildStar } from "@/components/BotanicalElements";
+import SignalLogo from "@/components/SignalLogo";
 import { setLastPeriodStart } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
