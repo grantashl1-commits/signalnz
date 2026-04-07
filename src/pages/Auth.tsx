@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import SignalLogo from "@/components/SignalLogo";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
