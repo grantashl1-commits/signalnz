@@ -10,6 +10,7 @@ import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
 import SignalAmbientRipple from "@/components/SignalAmbientRipple";
+import SignalLogo from "@/components/SignalLogo";
 import { useAICredits } from "@/hooks/useAICredits";
 import PageTransition from "@/components/PageTransition";
 
