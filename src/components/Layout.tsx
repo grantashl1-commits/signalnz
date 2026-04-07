@@ -139,7 +139,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 md:hidden" style={{ paddingTop: "var(--safe-top)" }}>
         <div className="flex items-center justify-between px-5 h-[52px]">
           <Link to="/" className="flex items-center gap-1.5">
-            <img src="/logos/Icon.png" alt="Signal" className="h-7 w-7 object-contain" />
+            <SignalLogo size={28} className="text-primary" />
             <span className="font-display text-sm font-extrabold text-primary tracking-wide uppercase">Signal</span>
           </Link>
           <div className="flex items-center gap-2">
