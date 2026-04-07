@@ -1,23 +1,27 @@
 import { motion } from "framer-motion";
 
 /**
- * Ambient "signal transmitting" effect — concentric rings pulsing outward
- * in the app's purple brand colour, creating a living, intentional feel.
+ * Ambient "signal transmitting" effect — dotted concentric rings pulsing outward,
+ * matching the brand's dotted-ring logo motif.
  */
 export default function SignalAmbientRipple() {
+  const ringConfigs = [
+    { dots: 16, dotR: 2.5 },
+    { dots: 24, dotR: 2 },
+    { dots: 32, dotR: 1.8 },
+    { dots: 40, dotR: 1.5 },
+    { dots: 48, dotR: 1.2 },
+    { dots: 56, dotR: 1 },
+  ];
+
   return (
     <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center opacity-50 md:opacity-40">
       <div className="relative w-[320px] h-[320px] md:w-[420px] md:h-[420px] flex items-center justify-center">
-        {/* Concentric signal rings — staggered outward pulse */}
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <motion.div
+        {ringConfigs.map((ring, i) => (
+          <motion.svg
             key={i}
-            className="absolute rounded-full"
-            style={{
-              width: "100%",
-              height: "100%",
-              border: `${1.5 - i * 0.15}px solid hsl(var(--primary) / ${0.18 - i * 0.02})`,
-            }}
+            viewBox="0 0 100 100"
+            className="absolute w-full h-full"
             initial={{ scale: 0.08, opacity: 0 }}
             animate={{
               scale: [0.08, 0.5, 1.2, 2],
@@ -29,7 +33,23 @@ export default function SignalAmbientRipple() {
               delay: i * 1.3,
               ease: "easeOut",
             }}
-          />
+          >
+            {Array.from({ length: ring.dots }, (_, di) => {
+              const angle = (2 * Math.PI * di) / ring.dots;
+              const cx = 50 + 42 * Math.cos(angle);
+              const cy = 50 + 42 * Math.sin(angle);
+              return (
+                <circle
+                  key={di}
+                  cx={cx}
+                  cy={cy}
+                  r={ring.dotR}
+                  fill="hsl(var(--primary))"
+                  opacity={0.6}
+                />
+              );
+            })}
+          </motion.svg>
         ))}
 
         {/* Centre core — soft glowing dot */}
