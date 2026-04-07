@@ -90,7 +90,7 @@ export default function AuthPage() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <img src="/logos/Icon__2_.png" alt="Signal" className="h-12 mx-auto mb-4" />
+          <SignalLogo size={48} className="text-primary mx-auto mb-4" />
           <h1 className="font-display text-2xl italic text-foreground">
             {signupComplete ? "check your email" : isLogin ? "Welcome back" : "Create account"}
           </h1>

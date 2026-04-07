@@ -150,7 +150,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {step === 0 && (
             <motion.div key="welcome" {...fade} className="text-center space-y-8">
               <div className="flex justify-center">
-                <img src="/logos/Icon.png" alt="Signal" className="h-16 w-16 object-contain" />
+                <SignalLogo size={64} className="text-white" />
               </div>
               <div className="space-y-4">
                 <h1 className="font-display text-4xl font-bold text-white tracking-wide uppercase">Signal</h1>
