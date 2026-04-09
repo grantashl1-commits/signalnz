@@ -340,13 +340,13 @@ export default function JournalActivities() {
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
         <button
           onClick={() => setFilterCategory("all")}
-          className={`font-mono text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+          className={`font-body text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
         >All</button>
         {CATEGORIES.map((c) => (
           <button
             key={c}
             onClick={() => { setFilterCategory(c); haptic("light"); }}
-            className={`font-mono text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === c ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+            className={`font-body text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === c ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
           >{c}</button>
         ))}
       </div>
