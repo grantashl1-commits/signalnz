@@ -161,7 +161,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Cooking Skill */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Cooking confidence</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Cooking confidence</p>
         <RadioCard selected={cookingSkill === "beginner"} label="Beginner — quick and simple recipes only" description="Under 5 ingredients, minimal techniques" onSelect={() => setCookingSkill("beginner")} />
         <RadioCard selected={cookingSkill === "confident"} label="Confident — I can follow most recipes" description="Happy with standard home cooking" onSelect={() => setCookingSkill("confident")} />
         <RadioCard selected={cookingSkill === "adventurous"} label="Adventurous — bring on the challenge" description="Fermenting, slow-cooking, global cuisines" onSelect={() => setCookingSkill("adventurous")} />
@@ -169,7 +169,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Available Time */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Max time per meal</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Max time per meal</p>
         <div className="flex flex-wrap gap-2">
           {([
             { value: "15" as AvailableTime, label: "15 min" },
@@ -179,9 +179,9 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
           ]).map(({ value, label }) => (
             <button key={value} onClick={() => { haptic("light"); setAvailableTime(value); }}
               className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                availableTime === value ? "text-white" : "bg-secondary text-muted-foreground"
+                availableTime === value ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
               }`}
-              style={availableTime === value ? { backgroundColor: phaseColor } : {}}>
+              >
               {label}
             </button>
           ))}
@@ -190,14 +190,14 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Kitchen Equipment */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Kitchen equipment</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Kitchen equipment</p>
         <div className="flex flex-wrap gap-2">
           {["Oven", "Stovetop", "Air fryer", "Slow cooker", "Blender", "Food processor", "Instant Pot"].map(item => (
             <button key={item} onClick={() => toggleEquipment(item.toLowerCase())}
               className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                equipment.includes(item.toLowerCase()) ? "text-white" : "bg-secondary text-muted-foreground"
+                equipment.includes(item.toLowerCase()) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
               }`}
-              style={equipment.includes(item.toLowerCase()) ? { backgroundColor: phaseColor } : {}}>
+              >
               {item}
             </button>
           ))}
@@ -206,7 +206,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Breakfast */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Breakfast</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Breakfast</p>
         <RadioCard selected={breakfast === "batch"} label="Same breakfast every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setBreakfast("batch")} />
         <RadioCard selected={breakfast === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setBreakfast("rotate")} />
         <RadioCard selected={breakfast === "variety"} label="A different recipe every day." onSelect={() => setBreakfast("variety")} />
@@ -214,7 +214,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Lunch */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Lunch</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Lunch</p>
         <RadioCard selected={lunch === "batch"} label="Same lunch every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setLunch("batch")} />
         <RadioCard selected={lunch === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setLunch("rotate")} />
         <RadioCard selected={lunch === "variety"} label="A different recipe every day." onSelect={() => setLunch("variety")} />
@@ -222,7 +222,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Dinner */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Dinner</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Dinner</p>
         <RadioCard selected={dinner === "double"} label="Same dinner every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setDinner("double")} />
         <RadioCard selected={dinner === "fresh"} label="2–3 options per week." description="Cook a double serve and reheat leftovers the next night." onSelect={() => setDinner("fresh")} />
         <RadioCard selected={dinner === "mix"} label="A different recipe every day." onSelect={() => setDinner("mix")} />
@@ -230,15 +230,15 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Prep day */}
       <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>When can you do your main prep?</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>When can you do your main prep?</p>
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>Bigger meals will be scheduled on your prep day(s) for advance cooking.</p>
         <div className="flex flex-wrap gap-2">
           {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "No set day"].map((day) => (
             <button key={day} onClick={() => togglePrepDay(day)}
               className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                prepDays.includes(day) ? "text-primary-foreground" : "bg-secondary text-muted-foreground"
+                prepDays.includes(day) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
               }`}
-              style={prepDays.includes(day) ? { backgroundColor: phaseColor, color: "white" } : {}}>
+              >
               {day}
             </button>
           ))}
@@ -247,18 +247,18 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Servings */}
       <div className="space-y-3">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Cooking for</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Cooking for</p>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="font-body text-xs text-foreground">Adults:</span>
             <button onClick={() => { haptic("light"); setAdults(Math.max(1, adults - 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Minus className="h-3 w-3" /></button>
-            <span className="font-mono text-sm font-bold" style={{ color: phaseColor }}>{adults}</span>
+            <span className="font-mono text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>{adults}</span>
             <button onClick={() => { haptic("light"); setAdults(Math.min(6, adults + 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Plus className="h-3 w-3" /></button>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-body text-xs text-foreground">Kids:</span>
             <button onClick={() => { haptic("light"); setKids(Math.max(0, kids - 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Minus className="h-3 w-3" /></button>
-            <span className="font-mono text-sm font-bold" style={{ color: phaseColor }}>{kids}</span>
+            <span className="font-mono text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>{kids}</span>
             <button onClick={() => { haptic("light"); setKids(Math.min(6, kids + 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Plus className="h-3 w-3" /></button>
           </div>
         </div>
@@ -271,7 +271,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Pantry Staples */}
       <div className="space-y-3 pt-2 border-t border-border">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Pantry staples I always have</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Pantry staples I always have</p>
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
           Items you mark will be excluded from the shopping list.
         </p>
@@ -281,9 +281,9 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             return (
               <button key={item} onClick={() => togglePantryStaple(item)}
                 className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all flex items-center gap-1.5 ${
-                  isSelected ? "text-white" : "bg-secondary text-muted-foreground"
+                  isSelected ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
                 }`}
-                style={isSelected ? { backgroundColor: phaseColor } : {}}>
+                >
                 {isSelected && <Check className="h-3 w-3" />}
                 {item}
               </button>
@@ -294,7 +294,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Dietary requirements */}
       <div className="space-y-3 pt-2 border-t border-border">
-        <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Dietary preferences</p>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Dietary preferences</p>
         
         <div className="space-y-2">
           <label className="font-body text-xs text-foreground">Diet type</label>
@@ -302,9 +302,9 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             {["No preference", "Vegetarian", "Vegan", "Pescatarian", "Gluten-free", "Dairy-free", "Keto", "Paleo"].map(dt => (
               <button key={dt} onClick={() => { haptic("light"); setDietType(dietType === dt ? "" : dt); }}
                 className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                  dietType === dt ? "text-white" : "bg-secondary text-muted-foreground"
+                  dietType === dt ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
                 }`}
-                style={dietType === dt ? { backgroundColor: phaseColor } : {}}>
+                >
                 {dt}
               </button>
             ))}
@@ -331,9 +331,9 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             {["No preference", "1400–1600", "1600–1800", "1800–2000", "2000–2200", "2200+"].map(cal => (
               <button key={cal} onClick={() => { haptic("light"); setCalorieTarget(calorieTarget === cal ? "" : cal); }}
                 className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                  calorieTarget === cal ? "text-white" : "bg-secondary text-muted-foreground"
+                  calorieTarget === cal ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
                 }`}
-                style={calorieTarget === cal ? { backgroundColor: phaseColor } : {}}>
+                >
                 {cal}
               </button>
             ))}
