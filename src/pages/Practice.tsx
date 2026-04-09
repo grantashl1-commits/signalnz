@@ -94,17 +94,37 @@ export default function PracticePage() {
 
   return (
     <GatedPage requiredTier="thriving">
-      <div className="max-w-2xl mx-auto px-5 md:px-8 py-8 md:py-12">
+      <div className="max-w-2xl mx-auto">
 
-        {/* ═══ PAGE HEADER ═══ */}
-        <motion.div {...fadeUp(0)} className="mb-8">
-          <h1 className="font-display text-4xl md:text-5xl font-extrabold text-foreground leading-tight">
+        {/* ═══ HERO BANNER ═══ */}
+        <motion.div
+          {...fadeUp(0)}
+          className="relative overflow-hidden rounded-b-[28px] bg-primary px-6 md:px-8 pt-10 pb-8 mb-8"
+        >
+          {/* Ambient dot motif */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.08]">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full bg-primary-foreground"
+                style={{
+                  width: `${8 + (i % 4) * 6}px`,
+                  height: `${8 + (i % 4) * 6}px`,
+                  top: `${10 + (i * 7) % 80}%`,
+                  left: `${5 + (i * 13) % 90}%`,
+                }}
+              />
+            ))}
+          </div>
+          <h1 className="font-display text-[32px] md:text-4xl font-extrabold text-primary-foreground leading-tight relative z-10">
             My Practice
           </h1>
-          <p className="font-body text-base md:text-lg text-muted-foreground mt-3 max-w-md">
+          <p className="font-body text-sm md:text-base text-primary-foreground/75 mt-2 max-w-md relative z-10">
             Build rituals that honour your cycle.
           </p>
         </motion.div>
+
+        <div className="px-5 md:px-8 pb-8 md:pb-12">
 
         {/* Sleep Card */}
         <motion.div {...fadeUp(0.05)} className="mb-6">
@@ -389,6 +409,7 @@ export default function PracticePage() {
           onClose={() => setShowLibraryPicker(false)}
           onAdded={refreshHabits}
         />
+        </div>
       </div>
     </GatedPage>
   );
