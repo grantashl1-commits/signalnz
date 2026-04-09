@@ -25,34 +25,37 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
         <div className="w-10 h-1 rounded-full bg-border mx-auto mb-6" />
 
         <div className="text-center mb-5">
-          <HandDrawnPin size={44} color="hsl(var(--primary))" className="mx-auto mb-3" />
+          <HandDrawnPin size={48} color="hsl(var(--primary))" className="mx-auto mb-3" />
           <h2 className="font-display text-2xl font-bold italic text-foreground mb-2">See who's nearby</h2>
-          <p className="font-display text-sm italic text-muted-foreground leading-relaxed">
+          <p className="font-body text-sm text-muted-foreground leading-relaxed">
             Discover neighbours using the app in your area. Your exact address is{" "}
-            <strong className="text-foreground">never shared</strong> — only your suburb is shown to others.
+            <strong className="text-primary font-semibold">never shared</strong> — only your suburb is shown to others.
           </p>
         </div>
 
-        <div className="card-warm p-4 mb-5">
-          <p className="font-body text-[11px] text-phase-follicular mb-2.5">What others will see</p>
+        <div className="rounded-2xl p-5 mb-5 border border-border/60" style={{ backgroundColor: "#FAF7F2" }}>
+          <p className="font-body text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">What others will see</p>
           {[
             { positive: true, text: "Your first name and profile" },
             { positive: true, text: "Your suburb (e.g. Ponsonby)" },
             { positive: true, text: "Your skills and what you offer" },
-            { positive: false, text: "Your street address — never shared" },
-            { positive: false, text: "Your exact GPS location — never shared" },
+            { positive: false, text: "Your street address", emphasis: "never shared" },
+            { positive: false, text: "Your exact GPS location", emphasis: "never shared" },
             { positive: false, text: "When you're at home specifically" },
           ].map((item, i) => (
-            <div key={i} className="flex gap-2.5 mb-2 items-start">
+            <div key={i} className="flex gap-3 mb-2.5 items-start">
               <span className="flex-shrink-0 mt-0.5">
                 {item.positive ? (
-                  <HandDrawnCheck size={14} color="hsl(var(--phase-follicular))" />
+                  <HandDrawnCheck size={16} color="#7A9E7E" />
                 ) : (
-                  <HandDrawnCross size={14} color="hsl(var(--phase-menstrual))" />
+                  <HandDrawnCross size={16} color="#C97B7B" />
                 )}
               </span>
-              <span className={`font-body text-xs leading-snug ${item.positive ? "text-foreground/70" : "text-muted-foreground"}`}>
+              <span className="font-body text-[15px] leading-snug text-foreground/80">
                 {item.text}
+                {(item as any).emphasis && (
+                  <> — <strong className="text-primary font-semibold">{(item as any).emphasis}</strong></>
+                )}
               </span>
             </div>
           ))}
