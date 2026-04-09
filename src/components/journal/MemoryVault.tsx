@@ -188,11 +188,13 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
       {VAULT_CATEGORIES.map((cat) => (
         <div key={cat.key} className="min-w-0">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <VaultDrawer label={cat.label} />
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${cat.color}18` }}>
+                <cat.icon className="h-3.5 w-3.5" style={{ color: cat.color }} />
+              </div>
               <div>
                 <h3 className="font-display text-[16px] italic text-foreground">{cat.label}</h3>
-                <p className="font-mono text-[10px] text-muted-foreground/60">{cat.desc}</p>
+                <p className="font-display text-[11px] italic text-muted-foreground/60">{cat.desc}</p>
               </div>
             </div>
             <button
