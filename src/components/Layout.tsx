@@ -9,7 +9,6 @@ import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
-import SignalAmbientRipple from "@/components/SignalAmbientRipple";
 import SignalLogo from "@/components/SignalLogo";
 import { useAICredits } from "@/hooks/useAICredits";
 import PageTransition from "@/components/PageTransition";
@@ -69,7 +68,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 flex flex-col bg-background overflow-hidden">
       <SignalAmbientDots />
-      <SignalAmbientRipple />
 
       {/* Desktop header — hidden on mobile */}
       <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
