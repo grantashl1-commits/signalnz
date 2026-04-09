@@ -203,11 +203,6 @@ export function ShoppingListPanel() {
             <ShoppingCart className="h-4 w-4" />
             Generate from my meal plan
           </button>
-            className="touch-btn inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-3 min-h-[44px] font-body text-sm font-bold transition-all active:scale-[0.97]"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            Generate from my meal plan
-          </button>
         </div>
 
         {/* Manual add */}
