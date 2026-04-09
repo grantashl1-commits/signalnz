@@ -167,12 +167,57 @@ export function ShoppingListPanel() {
   if (items.length === 0) {
     return (
       <div className="space-y-4">
-        <div className="card-warm p-6 text-center">
-          <ShoppingCart className="h-8 w-8 text-muted-foreground/40 mx-auto mb-3" />
-          <p className="font-display text-sm italic text-foreground">Your shopping list is empty</p>
-          <p className="font-body text-xs text-muted-foreground mt-1">
-            Add ingredients from AI Recipes or type them manually below.
-          </p>
+        <div className="card-warm p-8 text-center space-y-4">
+          {/* Ingredient outline illustration */}
+          <div className="flex justify-center gap-3 opacity-60">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="text-primary">
+              <circle cx="20" cy="14" r="8" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
+              <path d="M16 22c0 0 2 6 4 6s4-6 4-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <circle cx="20" cy="14" r="2" fill="currentColor" opacity="0.3" />
+            </svg>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="text-primary">
+              <ellipse cx="20" cy="20" rx="10" ry="7" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
+              <path d="M15 16c2-3 6-3 8 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <circle cx="20" cy="22" r="1.5" fill="currentColor" opacity="0.3" />
+            </svg>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="text-primary">
+              <rect x="12" y="10" width="16" height="20" rx="4" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
+              <line x1="16" y1="16" x2="24" y2="16" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+              <line x1="16" y1="20" x2="22" y2="20" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-display text-base font-bold italic text-foreground">Your cycle-synced shopping list</h3>
+            <p className="font-body text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              Tap Generate to build your week's list automatically.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              haptic("medium");
+              const weekPlan = localStorage.getItem("signal_weekly_meal_plan");
+              if (weekPlan) {
+                try {
+                  const plan = JSON.parse(weekPlan);
+                  const allIngredients: string[] = [];
+                  Object.values(plan).forEach((day: any) => {
+                    if (day?.meals) Object.values(day.meals).forEach((meal: any) => {
+                      if (meal?.ingredients) allIngredients.push(...meal.ingredients);
+                    });
+                  });
+                  if (allIngredients.length > 0) {
+                    allIngredients.forEach(ing => handleAddManual(ing));
+                    return;
+                  }
+                } catch {}
+              }
+              toast?.("Generate a meal plan first from the My Week tab");
+            }}
+            className="touch-btn inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-3 min-h-[44px] font-body text-sm font-bold transition-all active:scale-[0.97]"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Generate from my meal plan
+          </button>
         </div>
 
         {/* Manual add */}
