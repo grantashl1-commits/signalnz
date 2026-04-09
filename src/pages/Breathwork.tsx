@@ -27,6 +27,48 @@ const cardVariant = {
   }),
 };
 
+// ── Breathwork icon SVGs by practice ID ──
+const BreathworkIcon = ({ id }: { id: string }) => {
+  const cls = "text-primary/30";
+  const size = 36;
+  
+  if (id === "box-breathing") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <rect x="6" y="6" width="24" height="24" rx="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
+      <rect x="12" y="12" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+    </svg>
+  );
+  
+  if (id === "physiological-sigh") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <path d="M4 22c4-8 8 4 12-4s4 2 8-6 4 8 8 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M4 26c4-4 8 2 12-2s4 1 8-3 4 4 8 0" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+    </svg>
+  );
+  
+  if (id === "four-seven-eight") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <path d="M26 14a10 10 0 1 0-3.5 7.6A7 7 0 0 1 26 14Z" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="15" cy="20" r="1.5" fill="currentColor" opacity="0.3" />
+      <circle cx="20" cy="16" r="1" fill="currentColor" opacity="0.2" />
+    </svg>
+  );
+  
+  if (id === "coherent-breathing") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <path d="M3 20 l4-6 3 4 3-10 3 12 3-8 3 6 3-4 4 6 3-2 3 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="18" cy="18" r="3" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+    </svg>
+  );
+  
+  // Fallback
+  return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <circle cx="18" cy="18" r="10" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+    </svg>
+  );
+};
+
 // ── Breathwork Cards (no evidence badge, with show more) ──
 function BreathworkCards({
   onSelect,
