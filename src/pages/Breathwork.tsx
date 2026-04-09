@@ -243,6 +243,7 @@ function SomaticCards({
   onFasciaRelease: () => void;
 }) {
   const [showAll, setShowAll] = useState(false);
+  const [expandedSomatic, setExpandedSomatic] = useState<string | null>(null);
   const visible = showAll ? SOMATIC_PRACTICES : SOMATIC_PRACTICES.slice(0, 3);
 
   return (
