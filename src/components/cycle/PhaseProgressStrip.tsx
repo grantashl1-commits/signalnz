@@ -104,7 +104,7 @@ export default function PhaseProgressStrip({ cycleDay, currentPhase, onPhasePrev
         {segments.map(({ phase, startAngle, endAngle, color }) => {
           const isActive = phase === currentPhase;
           return (
-            <g key={phase} onClick={() => handleTap(phase)} style={{ cursor: "pointer" }}>
+            <g key={phase} onClick={() => handleTap(phase)} style={{ cursor: "pointer" }} className="touch-target">
               <motion.path
                 d={arcPath(startAngle, endAngle, radius)}
                 fill="none"

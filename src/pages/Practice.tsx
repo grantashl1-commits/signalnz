@@ -320,9 +320,9 @@ export default function PracticePage() {
 
                             <button
                               onClick={() => handleDelete(habit.id)}
-                              className="touch-btn p-1.5 rounded-full hover:bg-secondary"
+                              className="touch-btn p-2 rounded-full hover:bg-secondary"
                             >
-                              <Trash2 className="h-3.5 w-3.5 text-muted-foreground/40" />
+                              <Trash2 className="h-4 w-4 text-muted-foreground/40" />
                             </button>
                           </motion.div>
                         );
