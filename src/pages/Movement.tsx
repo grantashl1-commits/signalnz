@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, PenLine, Flame, Moon, Heart } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, Sparkles, ChevronDown, ChevronRight, PenLine, Flame, Moon, Heart } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
@@ -473,26 +473,33 @@ export default function MovementPage() {
             const suit = w.suitability[displayPhase];
             const expanded = expandedWorkout === w.id;
             return (
-              <motion.div key={w.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm overflow-hidden">
+              <motion.div key={w.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm overflow-hidden rounded-xl" style={{ borderLeft: `3px solid ${PHASE_HEX[displayPhase]}` }}>
                 <div className="p-4 cursor-pointer touch-card flex items-center gap-3 min-h-[64px]" onClick={() => { haptic("light"); setExpandedWorkout(expanded ? null : w.id); }}>
-                  <span className="font-mono text-base font-bold min-w-[50px]" style={{ color: PHASE_HEX[displayPhase] }}>{w.duration.replace(" min", ":00")}</span>
+                  <span className="font-mono text-lg font-bold min-w-[50px] text-primary">{w.duration.replace(" min", "'")}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <PhaseIndicator phase={displayPhase} size={14} />
                       <h3 className="font-display text-sm italic text-foreground truncate">{w.name}</h3>
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="font-display text-[9px] italic" style={{ color: PHASE_HEX[displayPhase], opacity: 0.7 }}>{PHASE_MOVEMENT_LABEL[displayPhase]}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      {/* Difficulty dots */}
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, d) => (
+                          <div
+                            key={d}
+                            className="h-1.5 w-1.5 rounded-full"
+                            style={{
+                              backgroundColor: d < (suit === "ideal" ? 4 : suit === "suitable" ? 3 : 2)
+                                ? PHASE_HEX[displayPhase]
+                                : "hsl(var(--border))",
+                            }}
+                          />
+                        ))}
+                      </div>
                       <span className="font-body text-[9px] text-muted-foreground">{w.equipment}</span>
+                      <span className="font-display text-[9px] italic" style={{ color: PHASE_HEX[displayPhase], opacity: 0.7 }}>{PHASE_MOVEMENT_LABEL[displayPhase]}</span>
                     </div>
                   </div>
-                  <div className={`h-4 w-4 rounded-full flex-shrink-0 ${suit === "ideal" ? "animate-node-pulse" : ""}`}
-                    style={{
-                      backgroundColor: suit === "ideal" ? PHASE_HEX[displayPhase] : suit === "suitable" ? "hsl(var(--border))" : "transparent",
-                      border: suit === "rest" ? "1px solid hsl(var(--border))" : "none",
-                      boxShadow: suit === "ideal" ? `0 0 8px ${PHASE_HEX[displayPhase]}60` : "none",
-                    }}
-                  />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
                 </div>
                 {expanded && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-4 border-t border-border pt-3 space-y-1.5">
