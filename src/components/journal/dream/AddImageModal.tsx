@@ -129,7 +129,7 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-3">
             <h3 className="font-display text-lg italic text-foreground">Add Image</h3>
-            <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={onClose} className="touch-btn p-2 text-muted-foreground hover:text-foreground transition-colors">
               <X className="h-5 w-5" />
             </button>
           </div>

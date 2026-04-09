@@ -41,7 +41,7 @@ export default function StoicJournalSeedCard({ reading, currentDay, listenedToda
           <BookOpen className="h-4 w-4 text-primary" />
           <span className="font-body text-[11px] uppercase tracking-wider text-primary">Today's Stoic Reading · Day {currentDay}</span>
         </div>
-        <button onClick={() => setCollapsed(true)} className="text-muted-foreground">
+        <button onClick={() => setCollapsed(true)} className="touch-btn text-muted-foreground">
           <ChevronUp className="h-4 w-4" />
         </button>
       </div>
