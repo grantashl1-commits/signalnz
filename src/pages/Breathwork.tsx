@@ -89,11 +89,17 @@ function BreathworkCards({
           initial="hidden"
           animate="visible"
           variants={cardVariant}
-          className={`card-warm p-5 cursor-pointer touch-card ${
+          className={`card-warm p-5 cursor-pointer touch-card relative ${
             expanded === p.id ? "ring-[1.5px] ring-primary" : ""
           }`}
           onClick={() => setExpanded(expanded === p.id ? null : p.id)}
         >
+          {/* Practice type icon */}
+          <div className="absolute top-4 left-4">
+            <BreathworkIcon id={p.id} />
+          </div>
+
+          <div className="pl-11">
           <h3 className="font-display text-lg italic text-foreground mb-1">
             {p.title}
           </h3>
