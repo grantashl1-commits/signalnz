@@ -1,20 +1,20 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, Plus, X, Sparkles, BookOpen, Lock } from "lucide-react";
+import { Trash2, Plus, X, Sparkles, BookOpen, Lock, Heart, Smile, Star, Zap, BookMarked, HeartHandshake, Flower2, Shuffle, Sun } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
 
 const VAULT_CATEGORIES = [
-  { key: "funny-moments", label: "Funny Moments", desc: "The things that made you laugh out loud", motif: "A soft curve like a smile" },
-  { key: "tiny-wins", label: "Tiny Wins", desc: "Small victories that deserve to be remembered", motif: "A tiny star" },
-  { key: "firsts", label: "Firsts", desc: "The first time you did something brave or new", motif: "A sprouting seed" },
-  { key: "hard-days", label: "Hard Things I Survived", desc: "Proof of your resilience", motif: "A mountain ridge" },
-  { key: "lessons", label: "Lessons", desc: "Wisdom earned through experience", motif: "An open book" },
-  { key: "love-notes", label: "Love Notes to Self", desc: "Words of kindness you wrote for yourself", motif: "A heart outline" },
-  { key: "remember", label: "Things I Want to Remember", desc: "Moments, feelings, and details worth keeping", motif: "A pressed flower" },
-  { key: "plot-twists", label: "Plot Twists", desc: "The unexpected turns that changed everything", motif: "A winding path" },
-  { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", motif: "A sun ray" },
+  { key: "funny-moments", label: "Funny Moments", desc: "The things that made you laugh out loud", color: "#C4876B", icon: Smile },
+  { key: "tiny-wins", label: "Tiny Wins", desc: "Small victories that deserve to be remembered", color: "#D4A84B", icon: Star },
+  { key: "firsts", label: "Firsts", desc: "The first time you did something brave or new", color: "#7F5B87", icon: Zap },
+  { key: "hard-days", label: "Hard Things I Survived", desc: "Proof of your resilience", color: "#C4526E", icon: HeartHandshake },
+  { key: "lessons", label: "Lessons", desc: "Wisdom earned through experience", color: "#5C4A9E", icon: BookMarked },
+  { key: "love-notes", label: "Love Notes to Self", desc: "Words of kindness you wrote for yourself", color: "#C47A8A", icon: Heart },
+  { key: "remember", label: "Things I Want to Remember", desc: "Moments, feelings, and details worth keeping", color: "#9B89B4", icon: Flower2 },
+  { key: "plot-twists", label: "Plot Twists", desc: "The unexpected turns that changed everything", color: "#6B8DA6", icon: Shuffle },
+  { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", color: "#D4A84B", icon: Sun },
 ];
 
 function VaultDrawer({ label }: { label: string }) {
@@ -111,10 +111,28 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
   return (
     <div className="space-y-6 pb-10">
       <div className="mb-2">
-        <p className="font-hand text-sm font-bold text-primary mb-1">Memory Vault</p>
-        <p className="font-body text-sm text-muted-foreground leading-relaxed">
-          A curated archive of the moments, lessons, and memories that matter most to you.
-        </p>
+        {/* Decorative dot motif + lock-heart icon */}
+        <div className="flex items-center gap-3 mb-2">
+          <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
+            {/* Dot ring motif */}
+            <svg viewBox="0 0 40 40" className="absolute inset-0 w-full h-full">
+              {Array.from({ length: 8 }, (_, i) => {
+                const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+                return <circle key={i} cx={20 + 15 * Math.cos(angle)} cy={20 + 15 * Math.sin(angle)} r={2} fill="hsl(284, 22%, 44%)" opacity={0.25} />;
+              })}
+            </svg>
+            <div className="relative flex items-center justify-center">
+              <Lock className="h-3.5 w-3.5 text-primary" style={{ marginRight: -2 }} />
+              <Heart className="h-3.5 w-3.5 text-primary" fill="hsl(284, 22%, 44%)" style={{ marginLeft: -2 }} />
+            </div>
+          </div>
+          <div>
+            <h2 className="font-display text-[24px] font-bold text-foreground leading-tight">Your Memory Vault</h2>
+            <p className="font-display text-sm italic text-muted-foreground">
+              A curated archive of the moments that matter most.
+            </p>
+          </div>
+        </div>
         {totalMemories > 0 && (
           <p className="font-mono text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
         )}
@@ -127,9 +145,20 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
       {totalMemories === 0 && (
         <div className="text-center pt-8 pb-4">
           <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-            <HandDrawnBook size={48} color="hsl(var(--primary))" className="mx-auto mb-4" />
+            <div className="relative w-12 h-12 mx-auto mb-4">
+              <svg viewBox="0 0 48 48" className="w-full h-full">
+                {Array.from({ length: 10 }, (_, i) => {
+                  const angle = (i / 10) * Math.PI * 2 - Math.PI / 2;
+                  return <circle key={i} cx={24 + 18 * Math.cos(angle)} cy={24 + 18 * Math.sin(angle)} r={2.5} fill="hsl(284, 22%, 44%)" opacity={0.3} />;
+                })}
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Lock className="h-4 w-4 text-primary" style={{ marginRight: -3 }} />
+                <Heart className="h-4 w-4 text-primary" fill="hsl(284, 22%, 44%)" style={{ marginLeft: -3 }} />
+              </div>
+            </div>
           </motion.div>
-          <h2 className="font-display text-xl italic text-foreground mb-2">Your Memory Vault</h2>
+          <h2 className="font-display text-[24px] font-bold text-foreground mb-2">Your Memory Vault</h2>
           <p className="font-display text-sm italic text-muted-foreground max-w-sm mx-auto">
             This is where your favourite pieces of your life can live. Save moments from your journal or add them directly.
           </p>
@@ -159,11 +188,13 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
       {VAULT_CATEGORIES.map((cat) => (
         <div key={cat.key} className="min-w-0">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <VaultDrawer label={cat.label} />
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${cat.color}18` }}>
+                <cat.icon className="h-3.5 w-3.5" style={{ color: cat.color }} />
+              </div>
               <div>
                 <h3 className="font-display text-[16px] italic text-foreground">{cat.label}</h3>
-                <p className="font-mono text-[10px] text-muted-foreground/60">{cat.desc}</p>
+                <p className="font-display text-[11px] italic text-muted-foreground/60">{cat.desc}</p>
               </div>
             </div>
             <button
