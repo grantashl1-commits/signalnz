@@ -307,7 +307,7 @@ export default function MembershipPage() {
 
                 <div className="mb-5 md:mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    {t.name === "Thriving" && <Crown className="h-5 w-5 text-phase-ovulatory" />}
+                    {t.name === "Thriving" && <Crown className="h-5 w-5 text-primary" />}
                     {t.name === "Rooted" && <Sprout className="h-5 w-5" style={{ color: "#C8647A" }} />}
                     <h3 className="font-display text-lg md:text-xl italic text-foreground">{t.name}</h3>
                   </div>

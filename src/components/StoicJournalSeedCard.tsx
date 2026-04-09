@@ -58,7 +58,7 @@ export default function StoicJournalSeedCard({ reading, currentDay, listenedToda
           onClick={() => { haptic("medium"); onListen(); }}
           className={`touch-btn flex-1 flex items-center justify-center gap-2 rounded-xl py-3 font-display text-sm italic transition-all ${
             listenedToday
-              ? "bg-phase-follicular/10 text-phase-follicular"
+              ? "bg-primary/10 text-primary"
               : "bg-primary text-primary-foreground active:scale-[0.97]"
           }`}
         >

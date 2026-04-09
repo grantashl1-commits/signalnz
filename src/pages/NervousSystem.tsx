@@ -157,10 +157,10 @@ function PracticeCard({
   const [expanded, setExpanded] = useState(false);
 
   const categoryColors: Record<string, string> = {
-    meditation: "bg-phase-follicular/10 text-phase-follicular",
-    reading: "bg-phase-ovulatory/10 text-phase-ovulatory",
-    "inner-work": "bg-phase-menstrual/10 text-phase-menstrual",
-    sleep: "bg-phase-luteal/10 text-phase-luteal",
+    meditation: "bg-primary/10 text-primary",
+    reading: "bg-primary/10 text-primary",
+    "inner-work": "bg-primary/10 text-primary",
+    sleep: "bg-primary/10 text-primary",
     "phase-practice": "bg-primary/10 text-primary",
   };
 

@@ -18,8 +18,8 @@ import {
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
-  nourished: "text-phase-follicular",
-  thriving: "text-phase-ovulatory",
+  nourished: "text-primary",
+  thriving: "text-primary",
 };
 
 const TIER_LABELS: Record<string, string> = {

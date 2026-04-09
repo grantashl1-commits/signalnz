@@ -62,7 +62,7 @@ function Pill({ label, variant = "sage" }: { label: string; variant?: "sage" | "
     ? "bg-primary/10 text-primary"
     : variant === "blue"
     ? "bg-accent/10 text-accent"
-    : "bg-phase-follicular/10 text-phase-follicular";
+    : "bg-primary/10 text-primary";
   return <span className={`font-body text-[11px] px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
 }
 
