@@ -572,6 +572,59 @@ export default function JournalPage() {
                     <Plus className="h-4 w-4" /> Start writing
                   </button>
 
+                  {/* Daily prompt + stats strip */}
+                  {(() => {
+                    const DAILY_PROMPTS = [
+                      "What is one thing you noticed about yourself today?",
+                      "Write about a moment that made you pause.",
+                      "What would you tell your younger self right now?",
+                      "Describe a feeling you haven't named yet.",
+                      "What are you learning to let go of?",
+                      "What does rest look like for you today?",
+                      "Name something beautiful you almost missed.",
+                      "What does your body need you to hear?",
+                      "Write about a conversation that stayed with you.",
+                      "What are you quietly building?",
+                      "What would today look like if you trusted yourself more?",
+                      "Describe the energy of this season of your life.",
+                      "What small thing brought you comfort recently?",
+                      "What pattern are you noticing in yourself?",
+                    ];
+                    const dayIndex = Math.floor(Date.now() / 86400000) % DAILY_PROMPTS.length;
+                    const prompt = DAILY_PROMPTS[dayIndex];
+                    const now = new Date();
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    const weekStartStr = weekStart.toISOString().split("T")[0];
+                    const thisWeekCount = entries.filter(e => e.date >= weekStartStr).length;
+                    const totalCount = entries.length;
+
+                    return (
+                      <div className="pt-4 space-y-4">
+                        {/* Daily writing prompt */}
+                        <div className="text-center px-4">
+                          <p
+                            className="font-display italic leading-relaxed"
+                            style={{ fontSize: 'var(--quote-size)', color: 'hsl(var(--muted-foreground))' }}
+                          >
+                            "{prompt}"
+                          </p>
+                        </div>
+
+                        {/* Stats strip */}
+                        <div className="flex items-center justify-center gap-1.5">
+                          <span className="font-mono" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
+                            {thisWeekCount} {thisWeekCount === 1 ? "entry" : "entries"} this week
+                          </span>
+                          <span style={{ color: 'hsl(var(--label-color))', fontSize: 'var(--label-size)' }}>·</span>
+                          <span className="font-mono" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
+                            {totalCount} total
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   {/* Post-save Stoic Lens prompt */}
                   {postSaveEntry && !postSaveEntry.stoic_lens && postSaveEntry.stoic_seq_day && (
                     <div className="mb-4">
