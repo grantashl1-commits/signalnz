@@ -230,7 +230,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                       onClick={() => toggleRSVP(m.id)}
                       className={`touch-btn font-display text-[13px] italic rounded-full px-4 py-2 transition-colors ${
                         rsvpd.has(m.id)
-                          ? "bg-phase-follicular text-primary-foreground"
+                          ? "bg-primary text-primary-foreground"
                           : "bg-primary text-primary-foreground"
                       }`}
                     >
@@ -255,9 +255,9 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           </p>
           <p className="font-display text-sm italic text-foreground leading-relaxed mb-2.5">{blocked.reflection}</p>
           {blocked.suggested_rewrite && (
-            <div className="bg-phase-follicular/10 rounded-[10px] p-2.5 mb-2.5">
-              <p className="font-body text-[10px] text-phase-follicular mb-0.5">Suggested response</p>
-              <p className="font-display text-[13px] italic text-phase-follicular leading-relaxed">{blocked.suggested_rewrite}</p>
+            <div className="bg-primary/10 rounded-[10px] p-2.5 mb-2.5">
+              <p className="font-body text-[10px] text-primary mb-0.5">Suggested response</p>
+              <p className="font-display text-[13px] italic text-primary leading-relaxed">{blocked.suggested_rewrite}</p>
             </div>
           )}
           <div className="flex gap-2 flex-wrap">
@@ -267,7 +267,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                   setMessages((m) => [...m, { id: Date.now().toString(), user: "You", avatar: "ME", time: now(), type: "text", text: blocked.suggested_rewrite! }]);
                   setInput(""); setBlocked(null);
                 }}
-                className="touch-btn font-display text-[13px] italic text-primary-foreground bg-phase-follicular rounded-full px-4 py-2"
+                className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2"
               >
                 Send this instead
               </button>

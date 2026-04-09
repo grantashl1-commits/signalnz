@@ -156,8 +156,8 @@ export default function DailyStoicCard({ onPlayAudio }: DailyStoicCardProps) {
       {/* Listened badge */}
       {isCurrentDay && listenedToday && (
         <div className="flex items-center gap-1.5 mb-3">
-          <Sparkles className="h-3.5 w-3.5 text-phase-follicular" />
-          <span className="font-body text-[10px] text-phase-follicular">Listened today</span>
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span className="font-body text-[10px] text-primary">Listened today</span>
         </div>
       )}
 

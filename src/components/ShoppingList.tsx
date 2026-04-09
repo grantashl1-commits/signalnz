@@ -36,7 +36,7 @@ export function RecipeShoppingButton({ recipeId, recipeName, ingredients }: Reci
       onClick={handleToggle}
       className={`touch-btn flex items-center gap-1.5 rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
         added
-          ? "bg-phase-follicular/20 text-phase-follicular"
+          ? "bg-primary/20 text-primary"
           : "bg-secondary text-muted-foreground active:bg-secondary/80"
       }`}
     >
@@ -66,7 +66,7 @@ export function IngredientSearchLinks({ ingredients }: IngredientSearchLinksProp
             href={getWoolworthsSearchUrl(ing)}
             target="_blank"
             rel="noopener noreferrer"
-            className="touch-btn flex-shrink-0 flex items-center gap-1 rounded-full bg-phase-follicular/10 px-2 py-1 min-h-[32px] font-body text-[9px] text-phase-follicular active:bg-phase-follicular/20 transition-all"
+            className="touch-btn flex-shrink-0 flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 min-h-[32px] font-body text-[9px] text-primary active:bg-primary/20 transition-all"
             onClick={() => haptic("light")}
           >
             <ExternalLink className="h-3 w-3" />

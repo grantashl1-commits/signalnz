@@ -140,7 +140,7 @@ export default function CommunityPage() {
             >
               {t.label}
               {t.id === "nearby" && locationEnabled && (
-                <span className="absolute top-1 right-1.5 w-[5px] h-[5px] rounded-full bg-phase-follicular" />
+                <span className="absolute top-1 right-1.5 w-[5px] h-[5px] rounded-full bg-primary" />
               )}
             </button>
           ))}

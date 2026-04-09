@@ -24,13 +24,13 @@ const DEFAULT_QUESTIONS = [
 function ChallengeItem({ text }: { text: string }) {
   const [done, setDone] = useState(false);
   return (
-    <div className={`card-warm p-3.5 mb-2 border-l-[3px] ${done ? "border-l-phase-follicular" : "border-l-primary"}`}>
+    <div className={`card-warm p-3.5 mb-2 border-l-[3px] ${done ? "border-l-primary" : "border-l-primary"}`}>
       <div className="flex justify-between items-start gap-2.5">
         <p className={`font-display text-sm italic leading-relaxed flex-1 ${done ? "text-muted-foreground" : "text-foreground"}`}>{text}</p>
         <button
           onClick={() => setDone((d) => !d)}
           className={`touch-btn font-body text-[11px] rounded-full px-3 py-1.5 flex-shrink-0 ${
-            done ? "text-phase-follicular bg-phase-follicular/10" : "text-primary bg-primary/10"
+            done ? "text-primary bg-primary/10" : "text-primary bg-primary/10"
           }`}
         >
           {done ? "Done" : "Mark done"}
