@@ -248,8 +248,8 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           <div className="h-40 rounded-2xl bg-card p-3">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={zoneChart} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" />
-                <YAxis tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={30} unit="m" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" />
+                <YAxis tick={{ fontSize: 9, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" width={30} unit="m" />
                 <Bar dataKey="minutes" radius={[6, 6, 0, 0]}>
                   {zoneChart.map((entry, idx) => (
                     <Cell
@@ -480,8 +480,8 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           <div className="h-36 rounded-2xl bg-card p-3">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={liveZoneChart} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" />
-                <YAxis tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={30} unit="m" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" />
+                <YAxis tick={{ fontSize: 9, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" width={30} unit="m" />
                 <Bar dataKey="minutes" radius={[6, 6, 0, 0]}>
                   {liveZoneChart.map((entry, idx) => (
                     <Cell

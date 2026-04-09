@@ -693,8 +693,8 @@ export default function MovementPage() {
                           <div className="h-32 rounded-xl bg-card p-2">
                             <ResponsiveContainer width="100%" height="100%">
                               <BarChart data={zoneChart} margin={{ top: 2, right: 2, bottom: 2, left: 0 }}>
-                                <XAxis dataKey="name" tick={{ fontSize: 9, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" />
-                                <YAxis tick={{ fontSize: 8, fontFamily: "Space Mono" }} stroke="hsl(var(--border))" width={25} unit="m" />
+                                <XAxis dataKey="name" tick={{ fontSize: 9, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" />
+                                <YAxis tick={{ fontSize: 8, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" width={25} unit="m" />
                                 <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
                                   {zoneChart.map((entry, idx) => (
                                     <Cell key={idx} fill={entry.color} />

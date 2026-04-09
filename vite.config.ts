@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
+const buildTimestamp = Date.now();
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -10,6 +12,15 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     hmr: {
       overlay: false,
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name]-[hash]-${buildTimestamp}.js`,
+        chunkFileNames: `assets/[name]-[hash]-${buildTimestamp}.js`,
+        assetFileNames: `assets/[name]-[hash]-${buildTimestamp}.[ext]`,
+      },
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
