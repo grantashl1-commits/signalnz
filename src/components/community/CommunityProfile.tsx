@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Eye, Lock } from "lucide-react";
 import { HandDrawnCamera, HandDrawnEye, HandDrawnLock } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
@@ -179,19 +180,15 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
 
       {/* Who sees this? explainer */}
       <div className="card-warm p-4 bg-secondary/50 border-primary/10">
-        <p className="font-body text-[11px] text-primary mb-2">Who sees your answers?</p>
-        <div className="flex gap-3 mb-2.5">
-          <div className="flex-1 bg-phase-follicular/10 rounded-[10px] p-2.5">
-            <p className="font-body text-[11px] text-phase-follicular mb-0.5">On profile</p>
-            <p className="font-display text-xs italic text-phase-follicular/80 leading-relaxed">
-              Visible to any community member who taps your name. You choose which fields to share.
-            </p>
+        <p className="font-body text-xs font-medium text-foreground mb-3">Who sees your answers?</p>
+        <div className="flex rounded-full bg-secondary p-1 mb-3">
+          <div className="flex-1 flex items-center justify-center gap-1.5 rounded-full bg-primary py-2.5 px-3">
+            <Eye className="h-3.5 w-3.5 text-primary-foreground" />
+            <span className="font-body text-xs font-semibold text-primary-foreground">On profile</span>
           </div>
-          <div className="flex-1 bg-secondary rounded-[10px] p-2.5">
-            <p className="font-body text-[11px] text-muted-foreground mb-0.5">Only me</p>
-            <p className="font-display text-xs italic text-muted-foreground leading-relaxed">
-              Stored privately. Helps us personalise your experience but never shown to others.
-            </p>
+          <div className="flex-1 flex items-center justify-center gap-1.5 rounded-full py-2.5 px-3">
+            <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="font-body text-xs font-medium text-muted-foreground">Only me</span>
           </div>
         </div>
         <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
