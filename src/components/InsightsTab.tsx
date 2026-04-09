@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, Sparkles } from "lucide-react";
 import { SeedGeometry, CymatiSketch } from "@/components/BotanicalElements";
 import { supabase } from "@/integrations/supabase/client";
 import { useCycle } from "@/contexts/CycleContext";
