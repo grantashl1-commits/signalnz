@@ -109,8 +109,8 @@ export default function PracticePage() {
                 key={i}
                 className="absolute rounded-full bg-primary-foreground"
                 style={{
-                  width: `${8 + (i % 4) * 6}px`,
-                  height: `${8 + (i % 4) * 6}px`,
+                  width: `${3 + (i % 3) * 1.5}px`,
+                  height: `${3 + (i % 3) * 1.5}px`,
                   top: `${10 + (i * 7) % 80}%`,
                   left: `${5 + (i * 13) % 90}%`,
                 }}
