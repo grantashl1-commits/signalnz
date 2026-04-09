@@ -220,65 +220,90 @@ export default function ProgressTab() {
         </div>
       )}
 
-      {/* Photo upload grid */}
-      {SECTIONS.map(section => (
-        <div key={section.key} className="space-y-2">
-          <h3 className="font-hand text-sm font-bold text-foreground">{section.label}</h3>
-          <div className="grid grid-cols-4 gap-2">
-            {VIEWS.map(view => {
-              const photo = photos[section.key]?.[view.key];
-              const isLoading = loading === `${section.key}:${view.key}`;
-              const is3D = view.key === "3d";
+      {/* Photo upload grid with timeline */}
+      <div className="relative">
+        {SECTIONS.map((section, sIdx) => {
+          const hasPhotos = hasAnyPhotos(section.key);
+          const isLast = sIdx === SECTIONS.length - 1;
 
-              return (
-                <div key={view.key} className="space-y-1">
-                  <div
-                    onClick={() => {
-                      if (photo) {
-                        haptic("light");
-                        setFullScreenImg(photo);
-                      } else {
-                        triggerUpload(section.key, view.key);
-                      }
-                    }}
-                    className={`aspect-[7/9] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center overflow-hidden relative cursor-pointer active:scale-[0.97] transition-transform ${
-                      is3D ? "border-primary/30 bg-primary/5" : "border-border/40 bg-secondary/30"
-                    }`}
-                  >
-                    {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    ) : photo ? (
-                      <>
-                        <img src={photo} alt={view.label} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-                          <Maximize2 className="h-4 w-4 text-white" />
-                        </div>
-                        {/* Re-upload button */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            triggerUpload(section.key, view.key);
+          return (
+            <div key={section.key} className="relative flex gap-3">
+              {/* Timeline connector */}
+              <div className="flex flex-col items-center shrink-0 w-3 pt-1">
+                <div className={`h-3 w-3 rounded-full border-2 shrink-0 ${
+                  hasPhotos ? "border-primary bg-primary" : "border-primary/30 bg-background"
+                }`} />
+                {!isLast && (
+                  <div className={`w-px flex-1 my-1 ${
+                    hasPhotos ? "bg-primary/40" : "bg-primary/15"
+                  }`} />
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 pb-5 space-y-2">
+                <h3 className={`${section.textClass} text-foreground`}>{section.label}</h3>
+                <div className="grid grid-cols-4 gap-2">
+                  {VIEWS.map(view => {
+                    const photo = photos[section.key]?.[view.key];
+                    const isLoading = loading === `${section.key}:${view.key}`;
+                    const is3D = view.key === "3d";
+
+                    return (
+                      <div key={view.key} className="space-y-1">
+                        <div
+                          onClick={() => {
+                            if (photo) {
+                              haptic("light");
+                              setFullScreenImg(photo);
+                            } else {
+                              triggerUpload(section.key, view.key);
+                            }
                           }}
-                          className="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-background/80 flex items-center justify-center"
+                          className={`aspect-[7/9] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center overflow-hidden relative cursor-pointer active:scale-[0.97] transition-transform ${
+                            photo
+                              ? "border-transparent"
+                              : is3D
+                                ? "border-primary/30 bg-primary/5"
+                                : "border-primary/20 bg-secondary/20"
+                          }`}
                         >
-                          <Camera className="h-3 w-3 text-muted-foreground" />
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <Camera className={`h-5 w-5 mb-1 ${is3D ? "text-primary/40" : "text-muted-foreground/40"}`} />
-                        <span className={`font-hand text-[10px] ${is3D ? "text-primary/60" : "text-muted-foreground"}`}>
-                          {view.label}
-                        </span>
-                      </>
-                    )}
-                  </div>
+                          {isLoading ? (
+                            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          ) : photo ? (
+                            <>
+                              <img src={photo} alt={view.label} className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+                                <Maximize2 className="h-4 w-4 text-white" />
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  triggerUpload(section.key, view.key);
+                                }}
+                                className="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-background/80 flex items-center justify-center"
+                              >
+                                <Camera className="h-3 w-3 text-muted-foreground" />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <Camera className={`h-5 w-5 mb-1 ${is3D ? "text-primary/40" : "text-primary/25"}`} />
+                              <span className={`font-hand text-[10px] ${is3D ? "text-primary/60" : "text-muted-foreground/60"}`}>
+                                {view.label}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       <p className="font-body text-[10px] italic text-muted-foreground text-center">
         Photos are stored securely in your account when signed in.
