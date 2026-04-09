@@ -145,26 +145,43 @@ export default function InsightsTab() {
 
   return (
     <div className="space-y-6">
-      {/* Cycle Coach — full width */}
+      {/* Cycle Coach — premium dark card */}
       <motion.div custom={0} initial="hidden" animate="visible" variants={cardVariant}
-        className="relative overflow-hidden card-warm"
-        style={{ backgroundColor: `${PHASE_HEX[info.phase]}10` }}
+        className="relative overflow-hidden"
+        style={{
+          backgroundColor: '#1A0F2E',
+          borderRadius: 'var(--radius-card)',
+          boxShadow: '0 4px 32px rgba(26, 15, 46, 0.25)',
+        }}
       >
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <SeedGeometry size={200} opacity={0.06} />
+          <SeedGeometry size={200} opacity={0.04} color="hsl(30 33% 98%)" />
         </div>
 
-        <div className="relative z-10 p-5">
-          <p className="font-display text-lg italic text-foreground mb-1">ask your cycle coach</p>
-          <p className="font-hand text-sm text-muted-foreground mb-4">what would you like to understand?</p>
+        <div className="relative z-10" style={{ padding: 'var(--card-padding)' }}>
+          {/* AI-powered label */}
+          <div className="flex items-center gap-1.5 mb-3">
+            <Sparkles className="h-3 w-3" style={{ color: 'hsl(var(--primary-glow))' }} />
+            <span className="font-body text-[10px] uppercase tracking-[0.15em] font-medium" style={{ color: 'hsl(var(--primary-glow))' }}>
+              AI-powered
+            </span>
+          </div>
+
+          <p className="font-display text-card-title italic mb-1" style={{ color: '#FDFCFB' }}>ask your cycle coach</p>
+          <p className="font-hand text-sm mb-5" style={{ color: 'rgba(253, 252, 251, 0.5)' }}>what would you like to understand?</p>
 
           {coachMessages.length === 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-5">
               {suggestedChips.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendCoachMessage(q)}
-                  className="touch-btn card-warm px-3 py-2.5 min-h-[40px] text-left font-body text-xs text-muted-foreground active:bg-secondary/80 transition-colors rounded-full"
+                  className="touch-btn px-3.5 py-2.5 min-h-[40px] text-left font-body text-xs transition-all rounded-full active:scale-95"
+                  style={{
+                    color: 'rgba(253, 252, 251, 0.7)',
+                    border: '1px solid hsl(var(--primary-soft) / 0.4)',
+                    backgroundColor: 'transparent',
+                  }}
                 >
                   {q}
                 </button>
@@ -178,27 +195,31 @@ export default function InsightsTab() {
                 <div key={i} className={`${msg.role === "user" ? "ml-8" : "mr-4"}`}>
                   <div className={`rounded-2xl px-4 py-3 ${
                     msg.role === "user"
-                      ? "bg-primary/10 ml-auto"
-                      : "bg-card border border-border"
-                  }`}>
+                      ? "ml-auto"
+                      : ""
+                  }`}
+                  style={{
+                    backgroundColor: msg.role === "user" ? 'rgba(127, 91, 135, 0.25)' : 'rgba(253, 252, 251, 0.08)',
+                    border: msg.role === "assistant" ? '1px solid rgba(253, 252, 251, 0.1)' : 'none',
+                  }}>
                     <p className={`font-body text-sm leading-relaxed ${
                       msg.role === "assistant" ? "font-display italic" : ""
-                    } text-foreground`}>
+                    }`} style={{ color: '#FDFCFB' }}>
                       {msg.content}
                     </p>
                   </div>
-                  <p className="font-mono text-[8px] text-muted-foreground mt-0.5 px-1">
+                  <p className="font-mono text-[8px] mt-0.5 px-1" style={{ color: 'rgba(253, 252, 251, 0.3)' }}>
                     {msg.role === "user" ? "you" : "cycle coach"}
                   </p>
                 </div>
               ))}
               {coachLoading && (
                 <div className="mr-4">
-                  <div className="rounded-2xl px-4 py-3 bg-card border border-border">
+                  <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: 'rgba(253, 252, 251, 0.08)', border: '1px solid rgba(253, 252, 251, 0.1)' }}>
                     <div className="flex gap-1">
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" />
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" style={{ animationDelay: "150ms" }} />
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" style={{ animationDelay: "300ms" }} />
+                      <div className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(253, 252, 251, 0.3)' }} />
+                      <div className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(253, 252, 251, 0.3)', animationDelay: '150ms' }} />
+                      <div className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(253, 252, 251, 0.3)', animationDelay: '300ms' }} />
                     </div>
                   </div>
                 </div>
@@ -213,17 +234,25 @@ export default function InsightsTab() {
               onChange={(e) => setCoachInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && !coachLoading && sendCoachMessage(coachInput)}
               placeholder="ask anything about your cycle..."
-              className="flex-1 rounded-xl border border-border bg-background px-4 py-3 min-h-[44px] font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-              style={{ fontSize: "16px" }}
+              className="flex-1 rounded-xl px-4 py-3 min-h-[44px] font-body text-sm placeholder:opacity-40 focus:outline-none transition-shadow"
+              style={{
+                fontSize: '16px',
+                backgroundColor: 'rgba(253, 252, 251, 0.08)',
+                border: '1px solid rgba(253, 252, 251, 0.15)',
+                color: '#FDFCFB',
+                boxShadow: 'none',
+              }}
+              onFocus={(e) => { e.currentTarget.style.boxShadow = '0 0 0 2px hsl(284 22% 44%), 0 0 16px rgba(127, 91, 135, 0.3)'; e.currentTarget.style.borderColor = 'hsl(284 22% 44%)'; }}
+              onBlur={(e) => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'rgba(253, 252, 251, 0.15)'; }}
               disabled={coachLoading}
             />
             <button
               onClick={() => sendCoachMessage(coachInput)}
               disabled={coachLoading || !coachInput.trim()}
               className="touch-btn rounded-xl px-4 py-3 min-w-[44px] min-h-[44px] flex items-center justify-center active:opacity-90 disabled:opacity-30"
-              style={{ backgroundColor: PHASE_HEX[info.phase] }}
+              style={{ backgroundColor: 'hsl(var(--primary))' }}
             >
-              <Send className="h-4 w-4 text-card" />
+              <Send className="h-4 w-4" style={{ color: '#FDFCFB' }} />
             </button>
           </div>
         </div>
