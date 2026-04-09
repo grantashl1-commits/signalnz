@@ -206,7 +206,7 @@ export default function HomePage() {
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.1)}>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-8">
+            <h2 className="font-display text-card-title font-bold text-foreground mb-8">
               How are you today?
             </h2>
 
