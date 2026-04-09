@@ -222,18 +222,27 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
       <p className="font-body text-[11px] text-foreground uppercase tracking-wider pt-1">Your profile</p>
 
       {/* Profile fields */}
-      {FIELDS.map((f) => {
+      {FIELDS.map((f, idx) => {
         const vis = visibility[f.key];
+        const ACCENT_COLORS = ["#B8A0C4", "#7AAFA0", "#D4A843", "#C49A9A"];
+        const accent = ACCENT_COLORS[idx % ACCENT_COLORS.length];
         return (
-          <div key={f.key} className="card-warm p-5">
+          <div
+            key={f.key}
+            className="card-warm p-5 border-l-[3px]"
+            style={{ borderLeftColor: accent }}
+          >
             <div className="flex justify-between items-start gap-2.5 mb-2.5">
               <label className="font-display text-base italic text-foreground leading-snug flex-1">{f.label}</label>
               <button
                 onClick={() => toggleVisibility(f.key)}
-                className={`touch-btn font-body text-[11px] rounded-full px-3 py-1.5 whitespace-nowrap flex-shrink-0 mt-0.5 ${
-                  vis ? "bg-phase-follicular/10 text-phase-follicular" : "bg-secondary text-muted-foreground"
+                className={`touch-btn flex items-center gap-1.5 rounded-full px-3 py-1.5 whitespace-nowrap flex-shrink-0 mt-0.5 text-[11px] font-body font-medium transition-colors ${
+                  vis
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground"
                 }`}
               >
+                {vis ? <Eye className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
                 {vis ? "On profile" : "Only me"}
               </button>
             </div>
@@ -250,8 +259,8 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
               autoComplete="off"
             />
             {f.hint && (
-              <p className="font-body text-[10px] text-muted-foreground mt-1.5 leading-snug flex items-center gap-1">
-                {vis ? <HandDrawnEye size={12} color="hsl(var(--muted-foreground))" /> : <HandDrawnLock size={12} color="hsl(var(--muted-foreground))" />}
+              <p className="font-display text-xs italic text-muted-foreground mt-1.5 leading-snug flex items-center gap-1">
+                {vis ? <Eye className="h-3 w-3 text-muted-foreground" /> : <Lock className="h-3 w-3 text-muted-foreground" />}
                 {f.hint}
               </p>
             )}
