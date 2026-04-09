@@ -29,34 +29,68 @@ function VaultDrawer({ label }: { label: string }) {
 // Coming Soon: Printed Journal Card
 function PrintedJournalCard() {
   return (
-    <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 via-accent/5 to-phase-follicular/5 p-6 relative overflow-hidden">
-      {/* Badge */}
-      <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-primary/10 rounded-full px-3 py-1">
-        <Lock className="h-3 w-3 text-primary" />
-        <span className="font-mono text-[10px] text-primary font-semibold uppercase tracking-wider">Coming Soon</span>
+    <div
+      className="rounded-2xl p-6 relative overflow-hidden"
+      style={{
+        backgroundColor: '#F2E8DC',
+        borderLeft: '3px solid #C4976B',
+        boxShadow: 'var(--shadow-soft)',
+      }}
+    >
+      {/* Corner ribbon */}
+      <div
+        className="absolute -right-[1px] -top-[1px] overflow-hidden"
+        style={{ width: 90, height: 90 }}
+      >
+        <div
+          className="absolute font-body text-[9px] font-semibold uppercase tracking-[0.14em] text-center"
+          style={{
+            width: 120,
+            backgroundColor: 'hsl(284, 22%, 44%)',
+            color: '#FDFCFB',
+            transform: 'rotate(45deg)',
+            top: 22,
+            right: -28,
+            padding: '4px 0',
+          }}
+        >
+          Coming Soon
+        </div>
       </div>
 
-      <div className="flex items-start gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center flex-shrink-0">
-          <BookOpen className="h-7 w-7 text-primary" />
+      <div className="flex items-start gap-4 pr-8">
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: 'rgba(196, 151, 107, 0.15)' }}
+        >
+          <BookOpen className="h-7 w-7" style={{ color: '#C4976B' }} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-display text-lg italic text-foreground mb-1">Your Printed Journal</h3>
+          <h3 className="font-display text-lg font-bold text-foreground mb-1">Your Printed Journal</h3>
           <p className="font-display text-sm italic text-muted-foreground leading-relaxed mb-3">
-            Turn your journal entries and memory vault into a beautifully printed book. 
+            Turn your journal entries and memory vault into a beautifully printed book.
             Download as a PDF or have a physical copy delivered to your door.
           </p>
           <div className="flex flex-wrap gap-2">
-            <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">PDF Download</span>
-            <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">Printed Hardcover</span>
-            <span className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">Custom Cover Design</span>
+            {["PDF Download", "Printed Hardcover", "Custom Cover Design"].map((tag) => (
+              <span
+                key={tag}
+                className="font-body text-[10px] font-medium px-3 py-1 rounded-full"
+                style={{
+                  backgroundColor: 'rgba(196, 151, 107, 0.12)',
+                  color: '#8B6B4A',
+                  border: '1px solid rgba(196, 151, 107, 0.2)',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Decorative elements */}
-      <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary/5 blur-2xl" />
-      <div className="absolute -top-8 -right-8 w-20 h-20 rounded-full bg-accent/5 blur-2xl" />
+      {/* Subtle warm glow */}
+      <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full blur-3xl" style={{ backgroundColor: 'rgba(196, 151, 107, 0.1)' }} />
     </div>
   );
 }
