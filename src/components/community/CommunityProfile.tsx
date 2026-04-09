@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Eye, Lock } from "lucide-react";
 import { HandDrawnCamera, HandDrawnEye, HandDrawnLock } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
