@@ -166,6 +166,57 @@ function BreathworkCards({
   );
 }
 
+// ── Somatic fallback icons ──
+const SomaticFallbackIcon = ({ id }: { id: string }) => {
+  const cls = "text-primary/30";
+  const s = 44;
+  const icons: Record<string, JSX.Element> = {
+    "butterfly-hug": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <path d="M22 14c-6-8-16-2-12 8 2 5 8 8 12 10 4-2 10-5 12-10 4-10-6-16-12-8Z" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    ),
+    "grounding-54321": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <circle cx="22" cy="22" r="14" stroke="currentColor" strokeWidth="1.5" />
+        {[0,1,2,3,4].map(i => <circle key={i} cx={22 + 10*Math.cos((i*72-90)*Math.PI/180)} cy={22 + 10*Math.sin((i*72-90)*Math.PI/180)} r="2" fill="currentColor" opacity="0.4" />)}
+      </svg>
+    ),
+    "somatic-orienting": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <circle cx="22" cy="22" r="6" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="22" cy="22" r="12" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+        <path d="M22 6v4M22 34v4M6 22h4M34 22h4" stroke="currentColor" strokeWidth="1" />
+      </svg>
+    ),
+    "havening-touch": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <path d="M16 30c-2-4 0-8 4-10s8-1 10 3 0 8-4 10-8 1-10-3Z" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M20 20c1-3 3-5 6-4" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+        <path d="M18 24c-1-3 0-6 3-7" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+      </svg>
+    ),
+    "neurogenic-tremoring": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <path d="M8 22c2-4 4 4 6-4s4 4 6-4 4 4 6-4 4 4 6-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M8 28c2-3 4 3 6-3s4 3 6-3 4 3 6-3 4 3 6-3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      </svg>
+    ),
+    "body-scan": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <ellipse cx="22" cy="14" rx="5" ry="6" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M17 20v14M27 20v14M14 28h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  };
+  return icons[id] || (
+    <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+      <circle cx="22" cy="22" r="14" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+      <path d="M22 14v16M14 22h16" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+    </svg>
+  );
+};
+
 // ── Somatic Cards (with show more) ──
 function SomaticCards({
   onSelect,
@@ -191,10 +242,10 @@ function SomaticCards({
           <img
             src={fasciaReleaseImg}
             alt="Morning Fascia Release"
-            className="w-[42px] h-[42px] object-contain flex-shrink-0 rounded-lg"
+            className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg"
             loading="lazy"
-            width={42}
-            height={42}
+            width={44}
+            height={44}
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-display text-lg italic text-foreground mb-1">
@@ -238,11 +289,9 @@ function SomaticCards({
         >
           <div className="flex gap-3 items-start mb-3">
             {p.illustrationUrl ? (
-              <img src={p.illustrationUrl} alt={p.title} className="w-[42px] h-[42px] object-contain flex-shrink-0 rounded-lg" />
+              <img src={p.illustrationUrl} alt={p.title} className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
             ) : (
-              <div className="w-[42px] h-[42px] rounded-lg bg-secondary/60 flex items-center justify-center flex-shrink-0">
-                <span className="font-display text-sm italic text-muted-foreground">✦</span>
-              </div>
+              <SomaticFallbackIcon id={p.id} />
             )}
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-lg italic text-foreground mb-1">
