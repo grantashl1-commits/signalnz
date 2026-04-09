@@ -263,17 +263,17 @@ export default function MovementPage() {
                   return (
                     <button key={assignment.dayIndex} onClick={() => { haptic("light"); setScheduleIdx(assignment.dayIndex); }}
                       className={`scroll-snap-item flex-shrink-0 rounded-xl p-2.5 text-left min-w-[80px] transition-all ${
-                        isToday
+                        isSelected
                           ? "bg-card border-l-[3px] border-l-primary shadow-md"
                           : "bg-secondary/40"
                       }`}
                     >
-                      <p className={`font-mono text-[9px] uppercase ${isToday ? "text-primary font-bold" : "text-muted-foreground"}`}>
+                      <p className={`font-mono text-[9px] uppercase ${isSelected ? "text-primary font-bold" : "text-muted-foreground"}`}>
                         {assignment.dayLabel} · {dateLabel}
                       </p>
                       <p className="font-hand text-[10px] font-bold text-foreground leading-tight mt-1">{workout?.name || "Rest"}</p>
                       <p className="font-mono text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
-                      {isToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[7px] text-primary font-bold">Today</span>}
+                      {isActualToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[7px] text-primary font-bold">Today</span>}
                     </button>
                   );
                 })}
