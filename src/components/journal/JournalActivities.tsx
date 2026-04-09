@@ -87,15 +87,15 @@ const ACTIVITIES: Activity[] = [
 
 const CATEGORIES: ActivityCategory[] = ["Self-Discovery", "Emotional Processing", "Confidence", "Playfulness", "Future Self", "Reflection", "Gratitude", "Goal Setting"];
 
-const CATEGORY_COLORS: Record<ActivityCategory, string> = {
-  "Self-Discovery": "bg-primary/10 text-primary",
-  "Emotional Processing": "bg-phase-menstrual/10 text-phase-menstrual",
-  "Confidence": "bg-phase-follicular/10 text-phase-follicular",
-  "Playfulness": "bg-accent/10 text-accent",
-  "Future Self": "bg-primary/10 text-primary",
-  "Reflection": "bg-phase-ovulatory/10 text-phase-ovulatory",
-  "Gratitude": "bg-phase-follicular/10 text-phase-follicular",
-  "Goal Setting": "bg-accent/10 text-accent",
+const CATEGORY_ACCENT: Record<ActivityCategory, string> = {
+  "Self-Discovery": "#9B89B4",
+  "Emotional Processing": "#C47A8A",
+  "Confidence": "#7F5B87",
+  "Playfulness": "#C4876B",
+  "Future Self": "#9B89B4",
+  "Reflection": "#C47A8A",
+  "Gratitude": "#7F5B87",
+  "Goal Setting": "#C4876B",
 };
 
 const cardVariant = {
@@ -229,7 +229,7 @@ function WriteActivity({ activity, onSave, onBack }: { activity: Activity; onSav
     <div className="pb-10">
       <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
       <div className="mb-4">
-        <span className={`font-mono text-[11px] px-2.5 py-0.5 rounded-full ${CATEGORY_COLORS[activity.category]}`}>{activity.category}</span>
+        <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full" style={{ backgroundColor: `${CATEGORY_ACCENT[activity.category]}18`, color: CATEGORY_ACCENT[activity.category] }}>{activity.category}</span>
         <h2 className="font-display text-2xl italic text-foreground mt-2 mb-1">{activity.title}</h2>
         <p className="font-mono text-xs text-muted-foreground flex items-center gap-1.5"><Clock className="h-3 w-3" /> {activity.time}</p>
       </div>
@@ -340,13 +340,13 @@ export default function JournalActivities() {
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
         <button
           onClick={() => setFilterCategory("all")}
-          className={`font-mono text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+          className={`font-body text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
         >All</button>
         {CATEGORIES.map((c) => (
           <button
             key={c}
             onClick={() => { setFilterCategory(c); haptic("light"); }}
-            className={`font-mono text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === c ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+            className={`font-body text-[11px] px-3 py-1.5 rounded-full whitespace-nowrap transition-all ${filterCategory === c ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
           >{c}</button>
         ))}
       </div>
@@ -354,21 +354,26 @@ export default function JournalActivities() {
       {/* Activity cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {filtered.map((a, i) => (
-          <motion.div key={a.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm p-5 group hover:shadow-md transition-shadow flex flex-col">
-            <div className="flex items-start justify-between gap-3 mb-2">
+          <motion.div
+            key={a.id} custom={i} initial="hidden" animate="visible" variants={cardVariant}
+            className="card-warm p-5 group hover:shadow-md transition-shadow flex flex-col relative overflow-hidden"
+          >
+            {/* Left accent border */}
+            <div className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-[20px]" style={{ backgroundColor: CATEGORY_ACCENT[a.category] }} />
+            <div className="flex items-start justify-between gap-3 mb-2 pl-1">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                   <h3 className="font-display text-[17px] italic text-foreground">{a.title}</h3>
                   {a.format && a.format !== "write" && (
-                    <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                    <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent">
                       {a.format === "finish-sentence" ? "Interactive" : a.format === "either-or" ? "Choose" : "Card game"}
                     </span>
                   )}
                 </div>
                 <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-2">{a.desc}</p>
                 <div className="flex gap-1.5 flex-wrap">
-                  <span className={`font-mono text-[11px] px-2.5 py-0.5 rounded-full ${CATEGORY_COLORS[a.category]}`}>{a.category}</span>
-                  <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-secondary text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" /> {a.time}</span>
+                  <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full" style={{ backgroundColor: `${CATEGORY_ACCENT[a.category]}18`, color: CATEGORY_ACCENT[a.category] }}>{a.category}</span>
+                  <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-secondary text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" /> {a.time}</span>
                 </div>
               </div>
             </div>
