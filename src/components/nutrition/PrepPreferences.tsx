@@ -292,28 +292,59 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </div>
       </div>
 
-      {/* Breakfast */}
+      {/* Meal variety grid */}
       <div ref={setSectionRef("meals")} data-section="meals" className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Breakfast</p>
-        <RadioCard selected={breakfast === "batch"} label="Same breakfast every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setBreakfast("batch")} />
-        <RadioCard selected={breakfast === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setBreakfast("rotate")} />
-        <RadioCard selected={breakfast === "variety"} label="A different recipe every day." onSelect={() => setBreakfast("variety")} />
-      </div>
+        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Meal variety preference</p>
+        <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
+          Tap a cell for each meal to set your preferred variety level.
+        </p>
 
-      {/* Lunch */}
-      <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Lunch</p>
-        <RadioCard selected={lunch === "batch"} label="Same lunch every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setLunch("batch")} />
-        <RadioCard selected={lunch === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setLunch("rotate")} />
-        <RadioCard selected={lunch === "variety"} label="A different recipe every day." onSelect={() => setLunch("variety")} />
-      </div>
+        <div className="rounded-xl border border-border bg-card overflow-hidden">
+          {/* Column headers */}
+          <div className="grid grid-cols-[72px_1fr_1fr_1fr] border-b border-border bg-secondary/40">
+            <div />
+            {["Same", "2–3 options", "Different"].map(col => (
+              <div key={col} className="py-2 px-1 text-center">
+                <span className="font-mono text-[9px] tracking-wider uppercase text-muted-foreground">{col}</span>
+              </div>
+            ))}
+          </div>
 
-      {/* Dinner */}
-      <div className="space-y-2">
-        <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Dinner</p>
-        <RadioCard selected={dinner === "double"} label="Same dinner every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setDinner("double")} />
-        <RadioCard selected={dinner === "fresh"} label="2–3 options per week." description="Cook a double serve and reheat leftovers the next night." onSelect={() => setDinner("fresh")} />
-        <RadioCard selected={dinner === "mix"} label="A different recipe every day." onSelect={() => setDinner("mix")} />
+          {/* Rows */}
+          {([
+            { meal: "Breakfast" as const, value: breakfast, options: ["batch", "rotate", "variety"] as BreakfastPref[], set: setBreakfast },
+            { meal: "Lunch" as const, value: lunch, options: ["batch", "rotate", "variety"] as LunchPref[], set: setLunch },
+            { meal: "Dinner" as const, value: dinner, options: ["double", "fresh", "mix"] as DinnerPref[], set: setDinner },
+          ] as const).map(({ meal, value, options, set }, rowIdx) => (
+            <div key={meal} className={`grid grid-cols-[72px_1fr_1fr_1fr] ${rowIdx < 2 ? "border-b border-border" : ""}`}>
+              <div className="flex items-center px-3 py-3">
+                <span className="font-body text-xs font-semibold text-foreground">{meal}</span>
+              </div>
+              {options.map((opt, colIdx) => {
+                const isSelected = value === opt;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => { haptic("light"); (set as (v: string) => void)(opt); }}
+                    className={`flex items-center justify-center py-3 transition-all ${
+                      colIdx < 2 ? "border-r border-border" : ""
+                    } ${isSelected ? "bg-primary/10" : "hover:bg-secondary/60"}`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "border-2 border-border bg-background"
+                      }`}
+                    >
+                      {isSelected && <Check className="h-3.5 w-3.5" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Prep day */}
