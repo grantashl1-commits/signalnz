@@ -290,18 +290,18 @@ export default function PracticePage() {
                               <span className={`h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
                                 done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
                               }`}>
-                            >
-                              <AnimatePresence>
-                                {done && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    exit={{ scale: 0 }}
-                                  >
-                                    <WildStar size={16} color="hsl(var(--primary))" />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
+                                <AnimatePresence>
+                                  {done && (
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      exit={{ scale: 0 }}
+                                    >
+                                      <WildStar size={16} color="hsl(var(--primary))" />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </span>
                             </button>
 
                             <div className="flex-1 min-w-0">
