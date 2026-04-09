@@ -183,9 +183,9 @@ export default function HomePage() {
       <PeriodDueReminder />
 
       {/* ═══ SECTION 2 — TODAY'S FOCUS (single compact card) ═══ */}
-      <ContentSection className="px-5 md:px-8 py-16 md:py-24">
-        <div className="max-w-2xl mx-auto">
-          <motion.div {...fadeUp(0.1)} className="card-warm p-5 space-y-3">
+      <ContentSection className="px-5 md:px-8">
+        <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+          <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
             <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/40">today</p>
             {[
               { label: "eat", value: focus.nutrition },
@@ -203,7 +203,7 @@ export default function HomePage() {
       </ContentSection>
 
       {/* ═══ SECTION 3 — CHECK-IN ═══ */}
-      <ContentSection className="px-5 md:px-8 py-12 md:py-20">
+      <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.1)}>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-8">
@@ -274,7 +274,7 @@ export default function HomePage() {
         </div>
       </ContentSection>
 
-      <div className="h-16 md:h-24" />
+      <div style={{ height: 'var(--section-gap)' }} />
 
       <GiveSignalPanel open={giveSignalOpen} onClose={() => setGiveSignalOpen(false)} />
     </div>
