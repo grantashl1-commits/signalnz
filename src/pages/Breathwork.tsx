@@ -122,8 +122,8 @@ function BreathworkCards({
 
           <div className="flex items-center gap-2 mb-2">
             {p.audio.enabled ? (
-              <span className="flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                <Volume2 className="h-3 w-3" /> guided audio
+              <span className="flex items-center gap-1.5 font-mono text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+                <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided audio
               </span>
             ) : (
               <span className="flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
