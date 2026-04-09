@@ -132,7 +132,7 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
                       <button
                         key={ritual.id}
                         onClick={() => toggleSelect(ritual.id)}
-                        className={`touch-btn flex flex-col items-center justify-center gap-1.5 rounded-[14px] p-2.5 text-center transition-all h-[96px] ${
+                        className={`touch-btn flex flex-col items-center justify-center gap-1.5 rounded-card p-2.5 text-center transition-all h-[96px] ${
                           isSelected
                             ? "bg-primary/15 border border-primary/40 shadow-md"
                             : "bg-card border border-transparent border-t-2 border-t-bloom/30 shadow-sm"
@@ -154,7 +154,7 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
           <div className="mt-4">
             <button
               onClick={handleCustom}
-              className="touch-btn w-full flex items-center justify-center gap-2 rounded-[14px] border-2 border-dashed border-muted-foreground/30 p-4 text-center"
+              className="touch-btn w-full flex items-center justify-center gap-2 rounded-card border-2 border-dashed border-muted-foreground/30 p-4 text-center"
             >
               <Plus className="h-4 w-4 text-muted-foreground" />
               <span className="font-hand text-sm text-muted-foreground">Something else...</span>
@@ -167,7 +167,7 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
           <div className="sticky bottom-0 px-5 py-4 bg-card border-t border-border pb-safe">
             <button
               onClick={handleAdd}
-              className="touch-btn w-full rounded-[14px] py-3 min-h-[52px] font-body text-sm font-bold text-card bg-bloom active:opacity-90 transition-opacity"
+              className="touch-btn w-full rounded-card py-3 min-h-[52px] font-body text-sm font-bold text-card bg-bloom active:opacity-90 transition-opacity"
             >
               Add {selected.size} ritual{selected.size > 1 ? "s" : ""} →
             </button>

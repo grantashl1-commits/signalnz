@@ -21,10 +21,10 @@
     --background: 30 33% 98%;          /* Pearl White  #FDFCFB */
     --foreground: 280 20% 25%;         /* Deep text on pearl */
 
-    --card: 24 33% 92%;                /* Petal Cream  #EBE1DA */
+    --card: 22 27% 94%;                /* Warm Stone  #F5F0EC */
     --card-foreground: 280 20% 25%;
 
-    --popover: 24 33% 92%;
+    --popover: 22 27% 94%;
     --popover-foreground: 280 20% 25%;
 
     --primary: 284 22% 44%;            /* Deep Violet  #7F5B87 */
@@ -33,7 +33,7 @@
     --primary-soft: 284 22% 53%;       /* Signal Purple #9974A1 */
     --primary-glow: 284 30% 64%;       /* Lavender      #AF92B6 */
 
-    --secondary: 24 33% 92%;           /* Petal Cream */
+    --secondary: 22 27% 94%;           /* Warm Stone */
     --secondary-foreground: 284 22% 44%;
 
     --muted: 25 25% 85%;              /* Warm Sand    #D9C6B9 */
@@ -54,10 +54,10 @@
     --radius-sm: 0.625rem;
     --radius-lg: 1.25rem;
     --radius-xl: 1.5rem;
-    --radius-card: 1.25rem;
+    --radius-card: 1.25rem;  /* 20px */
 
     /* ── Shadows — floating card effect ── */
-    --shadow-soft: 0 2px 16px rgba(91, 45, 114, 0.08);
+    --shadow-soft: 0 2px 16px rgba(91, 45, 114, 0.07);
     --shadow-medium: 0 4px 24px rgba(91, 45, 114, 0.10);
     --shadow-elevated: 0 8px 40px rgba(91, 45, 114, 0.12);
     --shadow-glow: 0 0 24px rgba(153, 116, 161, 0.2);

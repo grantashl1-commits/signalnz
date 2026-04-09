@@ -131,7 +131,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
                           notes: ritual.notesPlaceholder,
                         })}
                         disabled={added}
-                        className={`touch-btn flex flex-col items-center gap-1 rounded-[14px] p-2.5 text-center transition-all border-t-2 ${
+                        className={`touch-btn flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
                           added
                             ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
                             : "bg-card border-bloom/30 shadow-sm"
@@ -246,7 +246,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
                       notes: habit.description,
                     })}
                     disabled={added}
-                    className={`touch-btn w-full flex flex-col items-center gap-1 rounded-[14px] p-2.5 text-center transition-all border-t-2 ${
+                    className={`touch-btn w-full flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
                       added
                         ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
                         : "bg-card border-primary/30 shadow-sm"

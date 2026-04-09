@@ -296,7 +296,7 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
         ))
       )}
 
-      <button onClick={save} disabled={saving} className="touch-btn w-full rounded-[14px] bg-primary py-4 font-display text-[17px] italic text-primary-foreground active:opacity-90 disabled:opacity-50 transition-opacity">
+      <button onClick={save} disabled={saving} className="touch-btn w-full rounded-card bg-primary py-4 font-display text-[17px] italic text-primary-foreground active:opacity-90 disabled:opacity-50 transition-opacity">
         {saving ? "Saving..." : "Save entry"}
       </button>
     </div>

@@ -249,7 +249,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
       {/* Moderation block */}
       {blocked && (
-        <div className="bg-amber-50 border border-primary/20 rounded-[14px] p-4 mb-2.5 flex-shrink-0">
+        <div className="bg-amber-50 border border-primary/20 rounded-card p-4 mb-2.5 flex-shrink-0">
           <p className="font-body text-[11px] text-primary mb-1.5 flex items-center gap-1">
             <HandDrawnHand size={14} color="hsl(var(--primary))" /> Pause for a moment
           </p>

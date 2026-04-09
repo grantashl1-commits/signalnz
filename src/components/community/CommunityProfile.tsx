@@ -270,7 +270,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
 
       <button
         onClick={handleSave}
-        className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic active:scale-[0.97]"
+        className="touch-btn w-full py-4 rounded-card bg-primary text-primary-foreground font-display text-[17px] italic active:scale-[0.97]"
       >
         {saved ? "Saved ✓" : "Save profile"}
       </button>

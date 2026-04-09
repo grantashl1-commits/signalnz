@@ -129,7 +129,7 @@ function FinishSentenceGame({ activity, onSave, onBack }: { activity: Activity; 
           </div>
         ))}
       </div>
-      <button onClick={() => onSave(allText)} className="w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-4">Save to journal</button>
+      <button onClick={() => onSave(allText)} className="w-full rounded-card bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-4">Save to journal</button>
     </div>
   );
 }
@@ -158,7 +158,7 @@ function EitherOrGame({ activity, onSave, onBack }: { activity: Activity; onSave
         <p className="font-display text-[15px] italic text-foreground mb-2">What do your choices tell you?</p>
         <textarea value={reflection} onChange={(e) => setReflection(e.target.value)} rows={3} placeholder="Reflect on what you noticed..." className="w-full font-display text-sm italic text-foreground bg-secondary/30 border border-border rounded-xl px-3 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground/30" style={{ fontSize: "16px" }} />
       </div>
-      <button onClick={() => onSave(choiceText)} className="w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-4">Save to journal</button>
+      <button onClick={() => onSave(choiceText)} className="w-full rounded-card bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-4">Save to journal</button>
     </div>
   );
 }
@@ -211,8 +211,8 @@ function CardPickGame({ activity, onSave, onBack }: { activity: Activity; onSave
             <textarea value={response} onChange={(e) => setResponse(e.target.value)} rows={6} placeholder="Write your truth..." className="w-full font-display text-[15px] italic text-foreground bg-transparent resize-none focus:outline-none leading-[1.9] placeholder:text-muted-foreground/30" style={{ fontSize: "16px" }} autoFocus />
           </div>
           <div className="flex gap-3 mt-4">
-            <button onClick={() => setPicked(null)} className="flex-1 rounded-[14px] border border-border py-3.5 font-display text-sm italic text-muted-foreground">Pick another</button>
-            <button onClick={() => onSave(`Prompt: ${picked}\n\n${response}`)} className="flex-1 rounded-[14px] bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90">Save to journal</button>
+            <button onClick={() => setPicked(null)} className="flex-1 rounded-card border border-border py-3.5 font-display text-sm italic text-muted-foreground">Pick another</button>
+            <button onClick={() => onSave(`Prompt: ${picked}\n\n${response}`)} className="flex-1 rounded-card bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90">Save to journal</button>
           </div>
         </div>
       )}
@@ -237,8 +237,8 @@ function WriteActivity({ activity, onSave, onBack }: { activity: Activity; onSav
         <textarea value={text} onChange={(e) => setText(e.target.value)} rows={14} className="w-full font-display text-[15px] italic text-foreground bg-transparent resize-none focus:outline-none leading-[1.9] placeholder:text-muted-foreground/30" style={{ fontSize: "16px" }} autoFocus />
       </div>
       <div className="flex gap-3 mt-4">
-        <button onClick={onBack} className="flex-1 rounded-[14px] border border-border py-3.5 font-display text-sm italic text-muted-foreground active:opacity-70">Discard</button>
-        <button onClick={() => { onSave(text); setSaved(true); }} className="flex-1 rounded-[14px] bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90">{saved ? "Saved" : "Save to journal"}</button>
+        <button onClick={onBack} className="flex-1 rounded-card border border-border py-3.5 font-display text-sm italic text-muted-foreground active:opacity-70">Discard</button>
+        <button onClick={() => { onSave(text); setSaved(true); }} className="flex-1 rounded-card bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90">{saved ? "Saved" : "Save to journal"}</button>
       </div>
     </div>
   );
@@ -379,7 +379,7 @@ export default function JournalActivities() {
             </div>
             <button
               onClick={() => { setActive(a); haptic("medium"); }}
-              className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-auto pt-2"
+              className="touch-btn w-full rounded-card bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-auto pt-2"
             >
               Begin activity
             </button>
