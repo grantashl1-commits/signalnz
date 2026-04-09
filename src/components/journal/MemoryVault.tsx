@@ -1,20 +1,20 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, Plus, X, Sparkles, BookOpen, Lock } from "lucide-react";
+import { Trash2, Plus, X, Sparkles, BookOpen, Lock, Heart, Smile, Star, Zap, BookMarked, HeartHandshake, Flower2, Shuffle, Sun } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
 
 const VAULT_CATEGORIES = [
-  { key: "funny-moments", label: "Funny Moments", desc: "The things that made you laugh out loud", motif: "A soft curve like a smile" },
-  { key: "tiny-wins", label: "Tiny Wins", desc: "Small victories that deserve to be remembered", motif: "A tiny star" },
-  { key: "firsts", label: "Firsts", desc: "The first time you did something brave or new", motif: "A sprouting seed" },
-  { key: "hard-days", label: "Hard Things I Survived", desc: "Proof of your resilience", motif: "A mountain ridge" },
-  { key: "lessons", label: "Lessons", desc: "Wisdom earned through experience", motif: "An open book" },
-  { key: "love-notes", label: "Love Notes to Self", desc: "Words of kindness you wrote for yourself", motif: "A heart outline" },
-  { key: "remember", label: "Things I Want to Remember", desc: "Moments, feelings, and details worth keeping", motif: "A pressed flower" },
-  { key: "plot-twists", label: "Plot Twists", desc: "The unexpected turns that changed everything", motif: "A winding path" },
-  { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", motif: "A sun ray" },
+  { key: "funny-moments", label: "Funny Moments", desc: "The things that made you laugh out loud", color: "#C4876B", icon: Smile },
+  { key: "tiny-wins", label: "Tiny Wins", desc: "Small victories that deserve to be remembered", color: "#D4A84B", icon: Star },
+  { key: "firsts", label: "Firsts", desc: "The first time you did something brave or new", color: "#7F5B87", icon: Zap },
+  { key: "hard-days", label: "Hard Things I Survived", desc: "Proof of your resilience", color: "#C4526E", icon: HeartHandshake },
+  { key: "lessons", label: "Lessons", desc: "Wisdom earned through experience", color: "#5C4A9E", icon: BookMarked },
+  { key: "love-notes", label: "Love Notes to Self", desc: "Words of kindness you wrote for yourself", color: "#C47A8A", icon: Heart },
+  { key: "remember", label: "Things I Want to Remember", desc: "Moments, feelings, and details worth keeping", color: "#9B89B4", icon: Flower2 },
+  { key: "plot-twists", label: "Plot Twists", desc: "The unexpected turns that changed everything", color: "#6B8DA6", icon: Shuffle },
+  { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", color: "#D4A84B", icon: Sun },
 ];
 
 function VaultDrawer({ label }: { label: string }) {
