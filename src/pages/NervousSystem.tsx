@@ -188,7 +188,7 @@ function PracticeCard({
         >
           <path d="M48 36c0-11-9-20-20-20a20 20 0 0 0-4 .4A16 16 0 1 1 47.6 40a20 20 0 0 0 .4-4Z" fill="currentColor" />
         </svg>
-      )
+      )}
       {/* Corner type icon */}
       <CornerIcon
         className="absolute top-4 right-4 h-5 w-5 pointer-events-none"
