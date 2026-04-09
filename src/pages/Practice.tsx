@@ -111,50 +111,111 @@ export default function PracticePage() {
           <SleepCard phaseColor={phaseColor} />
         </motion.div>
 
-        {/* Progress Summary */}
-        <motion.div
-          {...fadeUp(0.1)}
-          className="rounded-[22px] bg-card p-6 shadow-soft mb-6"
-        >
-          <div className="flex items-baseline gap-2">
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={completedToday}
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="font-display text-4xl font-extrabold text-foreground"
-              >
-                {completedToday}
-              </motion.span>
-            </AnimatePresence>
-            <span className="font-body text-lg text-muted-foreground">/ {totalHabits} complete</span>
-          </div>
-          {completedToday > 0 && completedToday === totalHabits && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="font-body text-sm text-primary flex items-center gap-1.5 mt-2"
+        {/* Progress Summary / Empty State */}
+        {totalHabits === 0 ? (
+          <motion.div {...fadeUp(0.1)} className="rounded-[22px] bg-card p-8 shadow-soft mb-6 flex flex-col items-center text-center">
+            <div className="relative h-20 w-20 mb-5">
+              <svg viewBox="0 0 80 80" className="h-20 w-20">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--border))" strokeWidth="4" />
+                <circle
+                  cx="40" cy="40" r="34"
+                  fill="none"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeDasharray="0 213.6"
+                  transform="rotate(-90 40 40)"
+                  className="opacity-30"
+                />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center font-display text-lg font-bold text-muted-foreground/50">
+                0%
+              </span>
+            </div>
+            <h2 className="font-display text-xl font-bold text-foreground mb-1.5">
+              Start building your ritual stack
+            </h2>
+            <p className="font-body text-sm text-muted-foreground max-w-xs mb-5">
+              Consistent daily practices compound into transformation.
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setShowCategoryChooser(true)}
+              className="w-full rounded-full bg-primary py-3.5 flex items-center justify-center gap-2 text-primary-foreground shadow-soft"
             >
-              <WildStar size={14} /> All habits complete!
-            </motion.p>
-          )}
-        </motion.div>
+              <Sparkles className="h-4.5 w-4.5" />
+              <span className="font-display text-base font-semibold">Add a habit</span>
+            </motion.button>
+          </motion.div>
+        ) : (
+          <>
+            <motion.div
+              {...fadeUp(0.1)}
+              className="rounded-[22px] bg-card p-6 shadow-soft mb-6"
+            >
+              <div className="flex items-center gap-4">
+                <div className="relative h-14 w-14 flex-shrink-0">
+                  <svg viewBox="0 0 56 56" className="h-14 w-14">
+                    <circle cx="28" cy="28" r="24" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+                    <circle
+                      cx="28" cy="28" r="24"
+                      fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(completedToday / totalHabits) * 150.8} 150.8`}
+                      transform="rotate(-90 28 28)"
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center font-display text-sm font-bold text-foreground">
+                    {Math.round((completedToday / totalHabits) * 100)}%
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-1.5">
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={completedToday}
+                        initial={{ y: -16, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 16, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="font-display text-3xl font-extrabold text-foreground"
+                      >
+                        {completedToday}
+                      </motion.span>
+                    </AnimatePresence>
+                    <span className="font-body text-base text-muted-foreground">/ {totalHabits} complete</span>
+                  </div>
+                  {completedToday > 0 && completedToday === totalHabits && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="font-body text-sm text-primary flex items-center gap-1.5 mt-1"
+                    >
+                      <WildStar size={14} /> All habits complete!
+                    </motion.p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
 
-        {/* Add habit button */}
-        <motion.button
-          {...fadeUp(0.15)}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowCategoryChooser(true)}
-          className="w-full rounded-[18px] bg-card p-5 shadow-soft flex items-center justify-center gap-3 text-foreground hover:shadow-medium transition-all mb-6"
-        >
-          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
-            <Plus className="h-5 w-5 text-primary" />
-          </div>
-          <span className="font-display text-base font-semibold">Add a habit</span>
-        </motion.button>
+            {/* Add habit button */}
+            <motion.button
+              {...fadeUp(0.15)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowCategoryChooser(true)}
+              className="w-full rounded-[18px] bg-card p-5 shadow-soft flex items-center justify-center gap-3 text-foreground hover:shadow-medium transition-all mb-6"
+            >
+              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+                <Plus className="h-5 w-5 text-primary" />
+              </div>
+              <span className="font-display text-base font-semibold">Add a habit</span>
+            </motion.button>
+          </>
+        )}
 
         {/* ═══ HABITS BY TIME OF DAY ═══ */}
         <div className="space-y-6">
