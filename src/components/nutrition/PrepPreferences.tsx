@@ -70,6 +70,16 @@ function RadioCard({ selected, label, description, onSelect }: { selected: boole
   );
 }
 
+const FORM_SECTIONS = [
+  { id: "cooking", label: "Confidence" },
+  { id: "timing", label: "Timing" },
+  { id: "equipment", label: "Equipment" },
+  { id: "meals", label: "Meals" },
+  { id: "prep", label: "Prep Day" },
+  { id: "pantry", label: "Pantry" },
+  { id: "dietary", label: "Dietary" },
+] as const;
+
 export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenerating }: Props) {
   const [breakfast, setBreakfast] = useState<BreakfastPref>(initialPrefs.breakfast);
   const [lunch, setLunch] = useState<LunchPref>(initialPrefs.lunch);
@@ -88,6 +98,42 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const [showHiddenRecipes, setShowHiddenRecipes] = useState(false);
   const [dislikedRecipes, setDislikedRecipes] = useState<string[]>(getDislikedRecipes);
   const phaseColor = PHASE_HEX[phase];
+
+  // Progress tracking
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+
+  const setSectionRef = useCallback((id: string) => (el: HTMLDivElement | null) => {
+    sectionRefs.current[id] = el;
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setVisibleSections(prev => {
+          const next = new Set(prev);
+          entries.forEach(e => {
+            if (e.isIntersecting) next.add(e.target.getAttribute("data-section") || "");
+            else next.delete(e.target.getAttribute("data-section") || "");
+          });
+          return next;
+        });
+      },
+      { threshold: 0.3 }
+    );
+    Object.values(sectionRefs.current).forEach(el => { if (el) observer.observe(el); });
+    return () => observer.disconnect();
+  }, []);
+
+  const furthestVisibleIdx = useMemo(() => {
+    let max = -1;
+    FORM_SECTIONS.forEach((s, i) => { if (visibleSections.has(s.id)) max = i; });
+    return max;
+  }, [visibleSections]);
+
+  const progressPct = FORM_SECTIONS.length > 0
+    ? Math.min(100, Math.round(((furthestVisibleIdx + 1) / FORM_SECTIONS.length) * 100))
+    : 0;
 
   const bodyGoals = useMemo<string[]>(() => {
     try {
