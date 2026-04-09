@@ -188,8 +188,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom tab bar — 5 fixed tabs */}
       {!keyboardVisible && (
         <nav
-          className="flex-none bg-background/95 backdrop-blur-xl border-t border-border/10 z-40 md:hidden select-none"
-          style={{ paddingBottom: "var(--safe-bottom)" }}
+          className="flex-none z-40 md:hidden select-none"
+          style={{
+            paddingBottom: "var(--safe-bottom)",
+            backgroundColor: 'hsl(var(--background) / 0.72)',
+            backdropFilter: 'blur(12px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+            borderTop: '0.5px solid rgba(91, 45, 114, 0.1)',
+          }}
         >
           <div className="flex items-stretch max-w-lg mx-auto">
             {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {
@@ -212,28 +218,38 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   className="flex-1 flex flex-col items-center justify-center gap-0.5 pt-2 pb-1 min-h-[56px] relative select-none"
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
+                  {/* Active pill background */}
                   {isActive && (
                     <motion.div
-                      layoutId="tab-indicator"
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-primary"
+                      layoutId="tab-pill"
+                      className="absolute rounded-full"
+                      style={{
+                        width: 40,
+                        height: 28,
+                        top: 6,
+                        backgroundColor: 'hsl(var(--primary) / 0.15)',
+                      }}
                       transition={{ type: "spring", stiffness: 500, damping: 40 }}
                     />
                   )}
                   <motion.div
-                    animate={{ scale: isActive ? 1.1 : 1 }}
+                    animate={{ scale: isActive ? 1.05 : 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    className="relative z-10"
                   >
                     <Icon
-                      className={`w-5 h-5 transition-colors duration-200 ${
-                        isActive ? "text-primary" : "text-muted-foreground/40"
-                      }`}
+                      className="w-5 h-5 transition-colors duration-200"
+                      style={{
+                        color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.35)',
+                      }}
                       strokeWidth={isActive ? 2 : 1.5}
                     />
                   </motion.div>
                   <span
-                    className={`text-[10px] font-mono tracking-wide transition-colors duration-200 ${
-                      isActive ? "text-primary" : "text-muted-foreground/35"
-                    }`}
+                    className="text-[10px] font-mono tracking-wide transition-colors duration-200 relative z-10"
+                    style={{
+                      color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.35)',
+                    }}
                   >
                     {label}
                   </span>
