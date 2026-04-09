@@ -101,65 +101,120 @@ function SuburbMap({
   clusters,
   activeSuburb,
   onSuburbClick,
+  userSuburb,
 }: {
   clusters: SuburbCluster[];
   activeSuburb: string | null;
   onSuburbClick: (name: string) => void;
+  userSuburb: string | null;
 }) {
+  const RINGS = [
+    { r: 28, label: "your suburb", opacity: 0.18 },
+    { r: 52, label: "nearby", opacity: 0.10 },
+    { r: 76, label: "wider area", opacity: 0.06 },
+  ];
+
+  // Scatter dots for ambient effect
+  const dots = Array.from({ length: 18 }, (_, i) => {
+    const angle = (i / 18) * Math.PI * 2 + i * 0.3;
+    const dist = 20 + (i % 3) * 22 + Math.sin(i * 2.1) * 8;
+    return {
+      cx: 50 + Math.cos(angle) * dist * 0.45,
+      cy: 50 + Math.sin(angle) * dist * 0.45,
+      r: 1.5 + (i % 3) * 1,
+      delay: i * 0.15,
+    };
+  });
+
   return (
-    <div className="relative w-full h-40 rounded-xl overflow-hidden bg-secondary/50">
-      {/* Subtle dot grid background */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <pattern
-            id="dot-grid"
-            x="0"
-            y="0"
-            width="20"
-            height="20"
-            patternUnits="userSpaceOnUse"
+    <div className="relative w-full rounded-2xl overflow-hidden bg-secondary/30 border border-border/50" style={{ aspectRatio: "16/10" }}>
+      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
+        {/* Concentric rings */}
+        {RINGS.map((ring, i) => (
+          <circle
+            key={i}
+            cx="50" cy="50" r={ring.r}
+            fill="none"
+            stroke="hsl(var(--primary))"
+            strokeWidth={i === 0 ? 1.2 : 0.6}
+            strokeDasharray={i === 0 ? "none" : "2 2"}
+            opacity={ring.opacity + 0.08}
+          />
+        ))}
+
+        {/* Ring labels */}
+        {RINGS.map((ring, i) => (
+          <text
+            key={`label-${i}`}
+            x={50 + ring.r * 0.7}
+            y={50 - ring.r * 0.7}
+            fontSize="2.8"
+            fill="hsl(var(--muted-foreground))"
+            opacity={0.5}
+            fontFamily="var(--font-body, system-ui)"
           >
-            <circle cx="2" cy="2" r="1" className="fill-primary/60" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#dot-grid)" />
+            {ring.label}
+          </text>
+        ))}
+
+        {/* Ambient brand dots */}
+        {dots.map((d, i) => (
+          <circle
+            key={`dot-${i}`}
+            cx={d.cx} cy={d.cy} r={d.r}
+            fill="hsl(var(--primary))"
+            opacity={0.12 + (i % 3) * 0.05}
+          />
+        ))}
+
+        {/* Centre dot */}
+        <circle cx="50" cy="50" r="3.5" fill="hsl(var(--primary))" opacity={0.25} />
+        <circle cx="50" cy="50" r="2" fill="hsl(var(--primary))" />
+
+        {/* Cluster bubbles positioned around centre */}
+        {clusters.map((cluster, i) => {
+          const angle = (i / Math.max(clusters.length, 1)) * Math.PI * 2 - Math.PI / 2;
+          const dist = 18 + (i % 2) * 14;
+          const cx = 50 + Math.cos(angle) * dist;
+          const cy = 50 + Math.sin(angle) * dist;
+          const isActive = activeSuburb === cluster.name;
+          const size = Math.min(4 + cluster.count * 1.5, 8);
+
+          return (
+            <g key={cluster.name} onClick={() => onSuburbClick(cluster.name)} className="cursor-pointer">
+              <circle
+                cx={cx} cy={cy} r={size}
+                fill={isActive ? "hsl(var(--primary))" : "hsl(var(--primary))"}
+                opacity={isActive ? 0.35 : 0.15}
+              />
+              <circle
+                cx={cx} cy={cy} r={size * 0.55}
+                fill={isActive ? "hsl(var(--primary))" : "hsl(var(--primary))"}
+                opacity={isActive ? 0.9 : 0.5}
+              />
+              <text
+                x={cx} y={cy + size + 4}
+                textAnchor="middle"
+                fontSize="2.6"
+                fill={isActive ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
+                fontWeight={isActive ? "600" : "400"}
+                fontFamily="var(--font-body, system-ui)"
+              >
+                {cluster.name}
+              </text>
+            </g>
+          );
+        })}
       </svg>
 
-      {clusters.map((cluster) => {
-        const isActive = activeSuburb === cluster.name;
-        const size = Math.min(40 + cluster.count * 8, 64);
-        return (
-          <button
-            key={cluster.name}
-            onClick={() => onSuburbClick(cluster.name)}
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-0.5 transition-all duration-200"
-            style={{ left: `${cluster.x}%`, top: `${cluster.y}%` }}
-          >
-            <div
-              className={`rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-200 shadow-sm ${
-                isActive
-                  ? "bg-primary text-primary-foreground border-2 border-primary"
-                  : "bg-primary/25 text-primary border-2 border-primary/40"
-              }`}
-              style={{ width: size, height: size }}
-            >
-              {cluster.count}
-            </div>
-            <span
-              className={`text-[10px] font-medium whitespace-nowrap ${
-                isActive ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              {cluster.name}
-            </span>
-          </button>
-        );
-      })}
+      {/* Centre suburb label */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="flex flex-col items-center mt-4">
+          <span className="font-display text-sm font-bold text-foreground">{userSuburb || "You"}</span>
+        </div>
+      </div>
 
-      <p className="absolute bottom-2 left-0 right-0 text-center text-[10px] text-muted-foreground/60">
+      <p className="absolute bottom-2 left-0 right-0 text-center font-body text-[10px] text-muted-foreground/50">
         Tap a suburb to filter · zones are approximate
       </p>
     </div>
@@ -573,6 +628,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           onSuburbClick={(name) =>
             setActiveSuburb((prev) => (prev === name ? null : name))
           }
+          userSuburb={userSuburb}
         />
       )}
 
