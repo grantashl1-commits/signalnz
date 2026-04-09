@@ -132,25 +132,42 @@ function BreathworkCards({
             )}
           </div>
 
-          {expanded === p.id && (
-            <motion.p
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-2.5"
-            >
-              {p.benefit}
-            </motion.p>
+          {/* Compact: one-line benefit preview + ghost pill */}
+          {expanded !== p.id && (
+            <div className="flex items-end justify-between gap-3 mt-1">
+              <p className="font-display text-[12px] italic text-muted-foreground leading-relaxed line-clamp-1 flex-1 min-w-0">
+                {p.benefit}
+              </p>
+              <button
+                onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+                className="shrink-0 rounded-full border border-primary/25 px-3.5 h-9 font-display text-xs italic text-primary active:scale-[0.96] flex items-center gap-1.5 transition-transform hover:bg-primary/5"
+              >
+                Begin →
+              </button>
+            </div>
           )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              haptic("medium");
-              onSelect(p);
-            }}
-            className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] mt-1"
-          >
-            begin this practice →
-          </button>
+
+          {/* Expanded: full description + prominent CTA */}
+          {expanded === p.id && (
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3">
+                  {p.benefit}
+                </p>
+                <button
+                  onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+                  className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+                >
+                  begin this practice →
+                </button>
+              </motion.div>
+            </AnimatePresence>
+          )}
           </div>
         </motion.div>
       ))}
