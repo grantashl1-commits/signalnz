@@ -207,7 +207,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               const isMore = path === "more";
               const isActive = isMore
                 ? moreOpen || MORE_ITEMS.some(m => location.pathname === m.path || location.pathname.startsWith(m.path))
-                : location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+                : path === "/" ? location.pathname === "/" : (location.pathname === path || location.pathname.startsWith(path));
               return (
                 <button
                   key={path}
