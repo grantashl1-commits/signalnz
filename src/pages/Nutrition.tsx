@@ -47,7 +47,8 @@ export default function NutritionPage() {
         </div>
       </AtmosphericHero>
 
-      <ContentSection className="px-5 md:px-4 space-y-10 md:space-y-12 pb-24">
+      <ContentSection className="px-5 md:px-4 pb-24" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="space-y-card-gap">
         <PhaseBadge phase={currentPhase} cycleDay={currentCycleDay} />
 
         {/* Nudge if no body goals set */}
