@@ -29,7 +29,7 @@ function ChallengeItem({ text }: { text: string }) {
         <p className={`font-display text-sm italic leading-relaxed flex-1 ${done ? "text-muted-foreground" : "text-foreground"}`}>{text}</p>
         <button
           onClick={() => setDone((d) => !d)}
-          className={`touch-btn font-mono text-[11px] rounded-full px-3 py-1.5 flex-shrink-0 ${
+          className={`touch-btn font-body text-[11px] rounded-full px-3 py-1.5 flex-shrink-0 ${
             done ? "text-phase-follicular bg-phase-follicular/10" : "text-primary bg-primary/10"
           }`}
         >
@@ -86,7 +86,7 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
       <div className="text-center pt-16">
         <HandDrawnVillage size={40} color="hsl(var(--primary))" className="mx-auto mb-3" />
         <p className="font-display text-xl italic text-foreground mb-1.5">Join a community first.</p>
-        <p className="font-mono text-xs text-muted-foreground">Then your challenges will appear here.</p>
+        <p className="font-body text-xs text-muted-foreground">Then your challenges will appear here.</p>
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
           {g.challenges.map((c: string, i: number) => <ChallengeItem key={i} text={c} />)}
 
           <div className="mt-3">
-            <p className="font-mono text-[11px] text-muted-foreground mb-2">Community questions</p>
+            <p className="font-body text-[11px] text-muted-foreground mb-2">Community questions</p>
             {g.questions.map((q: string, i: number) => (
               <div key={i} className="card-warm p-3.5 mb-2">
                 <p className="font-display text-[15px] italic text-foreground mb-2">{q}</p>

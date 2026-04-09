@@ -150,7 +150,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
   if (loading) {
     return (
       <div className="text-center pt-16">
-        <p className="font-mono text-xs text-muted-foreground">Loading profile…</p>
+        <p className="font-body text-xs text-muted-foreground">Loading profile…</p>
       </div>
     );
   }
@@ -171,30 +171,30 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
             <HandDrawnCamera size={28} color="hsl(var(--primary))" />
           )}
         </div>
-        <p className="font-mono text-xs text-muted-foreground mb-1">
+        <p className="font-body text-xs text-muted-foreground mb-1">
           {photo ? "Tap to change photo" : "Tap to add a photo"}
         </p>
-        <p className="font-mono text-[11px] text-muted-foreground/60">Your photo is always shown on your profile</p>
+        <p className="font-body text-[11px] text-muted-foreground/60">Your photo is always shown on your profile</p>
       </div>
 
       {/* Who sees this? explainer */}
       <div className="card-warm p-4 bg-secondary/50 border-primary/10">
-        <p className="font-mono text-[11px] text-primary mb-2">Who sees your answers?</p>
+        <p className="font-body text-[11px] text-primary mb-2">Who sees your answers?</p>
         <div className="flex gap-3 mb-2.5">
           <div className="flex-1 bg-phase-follicular/10 rounded-[10px] p-2.5">
-            <p className="font-mono text-[11px] text-phase-follicular mb-0.5">On profile</p>
+            <p className="font-body text-[11px] text-phase-follicular mb-0.5">On profile</p>
             <p className="font-display text-xs italic text-phase-follicular/80 leading-relaxed">
               Visible to any community member who taps your name. You choose which fields to share.
             </p>
           </div>
           <div className="flex-1 bg-secondary rounded-[10px] p-2.5">
-            <p className="font-mono text-[11px] text-muted-foreground mb-0.5">Only me</p>
+            <p className="font-body text-[11px] text-muted-foreground mb-0.5">Only me</p>
             <p className="font-display text-xs italic text-muted-foreground leading-relaxed">
               Stored privately. Helps us personalise your experience but never shown to others.
             </p>
           </div>
         </div>
-        <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">
+        <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
           Toggle each field individually. You can change visibility at any time.
         </p>
       </div>
@@ -206,7 +206,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
             <p className="font-display text-[15px] italic text-foreground mb-0.5">
               {locationEnabled ? "Visible in Nearby" : "Hidden from Nearby"}
             </p>
-            <p className="font-mono text-[11px] text-muted-foreground">Suburb-level only · your address is never shared</p>
+            <p className="font-body text-[11px] text-muted-foreground">Suburb-level only · your address is never shared</p>
           </div>
           <button
             onClick={onToggleLocation}
@@ -222,7 +222,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
       </div>
 
       {/* Section label */}
-      <p className="font-mono text-[11px] text-foreground uppercase tracking-wider pt-1">Your profile</p>
+      <p className="font-body text-[11px] text-foreground uppercase tracking-wider pt-1">Your profile</p>
 
       {/* Profile fields */}
       {FIELDS.map((f) => {
@@ -233,7 +233,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
               <label className="font-display text-base italic text-foreground leading-snug flex-1">{f.label}</label>
               <button
                 onClick={() => toggleVisibility(f.key)}
-                className={`touch-btn font-mono text-[11px] rounded-full px-3 py-1.5 whitespace-nowrap flex-shrink-0 mt-0.5 ${
+                className={`touch-btn font-body text-[11px] rounded-full px-3 py-1.5 whitespace-nowrap flex-shrink-0 mt-0.5 ${
                   vis ? "bg-phase-follicular/10 text-phase-follicular" : "bg-secondary text-muted-foreground"
                 }`}
               >
@@ -253,7 +253,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
               autoComplete="off"
             />
             {f.hint && (
-              <p className="font-mono text-[10px] text-muted-foreground mt-1.5 leading-snug flex items-center gap-1">
+              <p className="font-body text-[10px] text-muted-foreground mt-1.5 leading-snug flex items-center gap-1">
                 {vis ? <HandDrawnEye size={12} color="hsl(var(--muted-foreground))" /> : <HandDrawnLock size={12} color="hsl(var(--muted-foreground))" />}
                 {f.hint}
               </p>

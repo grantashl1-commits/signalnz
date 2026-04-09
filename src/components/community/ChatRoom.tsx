@@ -9,7 +9,7 @@ const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfi
 function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
   return (
     <div className="rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0" style={{ width: size, height: size }}>
-      <span className="font-mono font-bold text-primary" style={{ fontSize: size * 0.33 }}>{initials}</span>
+      <span className="font-body font-bold text-primary" style={{ fontSize: size * 0.33 }}>{initials}</span>
     </div>
   );
 }
@@ -153,12 +153,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Header */}
       <div className="pb-3 border-b border-border mb-3 flex-shrink-0">
         <h3 className="font-display text-lg font-bold italic text-foreground">{group.suburb} Community</h3>
-        <p className="font-mono text-[11px] text-muted-foreground">{group.members_count || 0} neighbours · {group.city || group.suburb}</p>
+        <p className="font-body text-[11px] text-muted-foreground">{group.members_count || 0} neighbours · {group.city || group.suburb}</p>
       </div>
 
       {/* Challenge banner */}
       <div className="bg-amber-50 rounded-[10px] px-3 py-2 mb-3 flex-shrink-0">
-        <span className="font-mono text-[10px] text-primary mr-1.5">Challenge</span>
+        <span className="font-body text-[10px] text-primary mr-1.5">Challenge</span>
         <span className="font-display text-xs italic text-foreground/70">{group.challenges[0]}</span>
       </div>
 
@@ -171,7 +171,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
               {!isMe && <div className="cursor-pointer" onClick={() => setViewingMember({ userId: m.id, name: m.user })}><Avatar initials={m.avatar} /></div>}
               <div className={`max-w-[78%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                {!isMe && <span className="font-mono text-[10px] text-muted-foreground mb-0.5">{m.user} · {m.time}</span>}
+                {!isMe && <span className="font-body text-[10px] text-muted-foreground mb-0.5">{m.user} · {m.time}</span>}
 
                 {m.type === "text" && (
                   <div className={`px-3.5 py-2.5 shadow-sm ${isMe ? "bg-primary rounded-[14px_14px_4px_14px]" : "bg-card border border-border rounded-[14px_14px_14px_4px]"}`}>
@@ -188,7 +188,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "poll" && (
                   <div className="card-warm p-3.5 min-w-[210px] w-full">
-                    <p className="font-mono text-[10px] text-primary mb-1 flex items-center gap-1">
+                    <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
                       <HandDrawnChart size={12} color="hsl(var(--primary))" /> poll
                     </p>
                     <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
@@ -211,7 +211,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                         >
                           {hasVoted && <div className="absolute left-0 top-0 bottom-0 bg-primary/10 rounded-lg" style={{ width: `${pct}%` }} />}
                           <span className="font-display text-[13px] italic text-foreground flex-1 relative text-left">{opt}</span>
-                          {hasVoted && <span className="font-mono text-[11px] text-muted-foreground relative">{pct}%</span>}
+                          {hasVoted && <span className="font-body text-[11px] text-muted-foreground relative">{pct}%</span>}
                         </button>
                       );
                     })}
@@ -220,12 +220,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "event" && (
                   <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
-                    <p className="font-mono text-[10px] text-primary mb-1 flex items-center gap-1">
+                    <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
                       <HandDrawnCalendar size={12} color="hsl(var(--primary))" /> event
                     </p>
                     <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
-                    {m.date && <p className="font-mono text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
-                    {m.location && <p className="font-mono text-[11px] text-muted-foreground mb-2">{m.location}</p>}
+                    {m.date && <p className="font-body text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
+                    {m.location && <p className="font-body text-[11px] text-muted-foreground mb-2">{m.location}</p>}
                     <button
                       onClick={() => toggleRSVP(m.id)}
                       className={`touch-btn font-display text-[13px] italic rounded-full px-4 py-2 transition-colors ${
@@ -239,7 +239,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                   </div>
                 )}
 
-                {isMe && <span className="font-mono text-[10px] text-muted-foreground mt-0.5">{m.time}</span>}
+                {isMe && <span className="font-body text-[10px] text-muted-foreground mt-0.5">{m.time}</span>}
               </div>
             </div>
           );
@@ -250,13 +250,13 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Moderation block */}
       {blocked && (
         <div className="bg-amber-50 border border-primary/20 rounded-[14px] p-4 mb-2.5 flex-shrink-0">
-          <p className="font-mono text-[11px] text-primary mb-1.5 flex items-center gap-1">
+          <p className="font-body text-[11px] text-primary mb-1.5 flex items-center gap-1">
             <HandDrawnHand size={14} color="hsl(var(--primary))" /> Pause for a moment
           </p>
           <p className="font-display text-sm italic text-foreground leading-relaxed mb-2.5">{blocked.reflection}</p>
           {blocked.suggested_rewrite && (
             <div className="bg-phase-follicular/10 rounded-[10px] p-2.5 mb-2.5">
-              <p className="font-mono text-[10px] text-phase-follicular mb-0.5">Suggested response</p>
+              <p className="font-body text-[10px] text-phase-follicular mb-0.5">Suggested response</p>
               <p className="font-display text-[13px] italic text-phase-follicular leading-relaxed">{blocked.suggested_rewrite}</p>
             </div>
           )}
@@ -282,7 +282,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Poll builder */}
       {showPoll && (
         <div className="card-warm p-3.5 mb-2 flex-shrink-0">
-          <p className="font-mono text-[11px] text-primary mb-2">Create a poll</p>
+          <p className="font-body text-[11px] text-primary mb-2">Create a poll</p>
           <input value={pollQ} onChange={(e) => setPollQ(e.target.value)} placeholder="Your question…"
             className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
             inputMode="text" autoComplete="off" />
@@ -293,9 +293,9 @@ export default function ChatRoom({ group }: ChatRoomProps) {
               inputMode="text" autoComplete="off" />
           ))}
           <div className="flex gap-2 flex-wrap">
-            <button onClick={() => setPollOpts((o) => [...o, ""])} className="touch-btn font-mono text-[11px] text-muted-foreground border border-border rounded-full px-2.5 py-1.5">+ option</button>
+            <button onClick={() => setPollOpts((o) => [...o, ""])} className="touch-btn font-body text-[11px] text-muted-foreground border border-border rounded-full px-2.5 py-1.5">+ option</button>
             <button onClick={sendPoll} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">Send poll</button>
-            <button onClick={() => setShowPoll(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">Cancel</button>
+            <button onClick={() => setShowPoll(false)} className="touch-btn font-body text-[11px] text-muted-foreground py-1.5">Cancel</button>
           </div>
         </div>
       )}
@@ -303,7 +303,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       {/* Event builder */}
       {showEvent && (
         <div className="card-warm p-3.5 mb-2 flex-shrink-0">
-          <p className="font-mono text-[11px] text-primary mb-2">Create an event</p>
+          <p className="font-body text-[11px] text-primary mb-2">Create an event</p>
           <input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} placeholder="Event name…"
             className="w-full px-3 py-2.5 rounded-[10px] border border-border bg-secondary/30 font-display text-sm italic text-foreground mb-1.5 focus:outline-none focus:ring-2 focus:ring-primary/30" style={{ fontSize: "16px" }}
             inputMode="text" autoComplete="off" />
@@ -315,7 +315,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             inputMode="text" autoComplete="off" />
           <div className="flex gap-2 flex-wrap">
             <button onClick={sendEvent} className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2">Post event</button>
-            <button onClick={() => setShowEvent(false)} className="touch-btn font-mono text-[11px] text-muted-foreground py-1.5">Cancel</button>
+            <button onClick={() => setShowEvent(false)} className="touch-btn font-body text-[11px] text-muted-foreground py-1.5">Cancel</button>
           </div>
         </div>
       )}
@@ -329,7 +329,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             { icon: <HandDrawnImage size={13} color="hsl(var(--muted-foreground))" />, label: "image", action: handleImage },
             { icon: recording ? <Square size={13} color="hsl(var(--destructive))" /> : <HandDrawnMic size={13} color="hsl(var(--muted-foreground))" />, label: recording ? "stop" : "voice", action: handleVoice },
           ].map((b) => (
-            <button key={b.label} onClick={b.action} className={`touch-btn font-mono text-[11px] bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1 ${
+            <button key={b.label} onClick={b.action} className={`touch-btn font-body text-[11px] bg-secondary/50 border-none rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1 ${
               recording && b.label === "stop" ? "text-destructive" : "text-muted-foreground"
             }`}>
               {b.icon} {b.label}
@@ -356,13 +356,13 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             }`}
           >
             {checking ? (
-              <span className="font-mono text-[10px] text-muted-foreground">…</span>
+              <span className="font-body text-[10px] text-muted-foreground">…</span>
             ) : (
               <HandDrawnSend size={16} color={input.trim() ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))"} />
             )}
           </button>
         </div>
-        <p className="font-mono text-[10px] text-muted-foreground mt-1 text-center">Moderated for kindness, not censored for truth.</p>
+        <p className="font-body text-[10px] text-muted-foreground mt-1 text-center">Moderated for kindness, not censored for truth.</p>
       </div>
 
       {/* Member profile sheet */}
