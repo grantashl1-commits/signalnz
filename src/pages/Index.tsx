@@ -17,10 +17,10 @@ import { useProfile } from "@/hooks/useProfile";
 import NPSSurvey from "@/components/NPSSurvey";
 
 const CHECKIN_STATES = [
-  { label: "Radiant", phase: "ovulatory" as Phase, color: "#F4A63A", response: "Golden. Today's plan leans into your glow." },
-  { label: "Clear", phase: "follicular" as Phase, color: "#5B8DB8", response: "Clarity is power. Let's make the most of it." },
-  { label: "Muted", phase: "luteal" as Phase, color: "#9B8FA6", response: "Noted. Today's plan is gentle." },
-  { label: "Static", phase: "menstrual" as Phase, color: "#4A236E", response: "Quiet days matter. We'll keep things soft." },
+  { label: "Radiant", phase: "ovulatory" as Phase, color: "#E8A838", bg: "#FDF3E0", textDark: "#8B6914", response: "Golden. Today's plan leans into your glow." },
+  { label: "Clear", phase: "follicular" as Phase, color: "#5B8DB8", bg: "#E4EEF6", textDark: "#2E5A7A", response: "Clarity is power. Let's make the most of it." },
+  { label: "Muted", phase: "luteal" as Phase, color: "#9B8FA6", bg: "#EDE8F0", textDark: "#5E4F6B", response: "Noted. Today's plan is gentle." },
+  { label: "Static", phase: "menstrual" as Phase, color: "#1A0F2E", bg: "#E0DAE8", textDark: "#1A0F2E", response: "Quiet days matter. We'll keep things soft." },
 ];
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
@@ -210,7 +210,7 @@ export default function HomePage() {
               How are you today?
             </h2>
 
-            <div className="flex flex-wrap gap-4 justify-start">
+            <div className="flex flex-col gap-3">
               {CHECKIN_STATES.map((state) => {
                 const selected = checkin === state.label;
                 const unselectedFade = checkin && !selected;
@@ -218,39 +218,43 @@ export default function HomePage() {
                   <motion.button
                     key={state.label}
                     onClick={() => handleCheckin(state.label)}
-                    animate={selected ? { scale: 1.08 } : { scale: 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                    className={`touch-btn flex flex-col items-center gap-3 rounded-2xl p-4 w-[72px] transition-all duration-250 ${
-                      unselectedFade ? "opacity-50" : ""
-                    } ${
-                      selected
-                        ? "ring-2 shadow-medium"
-                        : "bg-card/60 hover:bg-card hover:shadow-soft"
-                    }`}
-                    style={selected ? {
-                      backgroundColor: state.color,
-                      boxShadow: `0 0 0 2px ${state.color}, 0 4px 20px ${state.color}40`,
-                    } : undefined}
+                    animate={selected ? { scale: 1.04 } : { scale: 1 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 22 }}
+                    className="touch-btn flex items-center gap-4 rounded-full min-h-[56px] px-5 py-3 transition-all duration-300 w-full text-left"
+                    style={{
+                      backgroundColor: selected ? state.color : state.bg,
+                      boxShadow: selected
+                        ? `0 4px 20px ${state.color}30, 0 0 0 2px ${state.color}`
+                        : '0 1px 4px rgba(0,0,0,0.04)',
+                      opacity: unselectedFade ? 0.5 : 1,
+                    }}
                   >
-                    <div
-                      className={`h-14 w-14 rounded-full flex items-center justify-center transition-all ${
-                        selected ? "shadow-soft" : "bg-background/80"
-                      }`}
-                      style={selected ? { backgroundColor: `${state.color}30` } : undefined}
-                    >
-                      <SeedGeometry
-                        size={44}
-                        opacity={selected ? 0.7 : 0.2}
-                        color={selected ? "white" : undefined}
-                      />
-                    </div>
+                    {/* Colour dot indicator */}
+                    <motion.div
+                      animate={selected ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{
+                        backgroundColor: selected ? 'rgba(255,255,255,0.9)' : state.color,
+                        boxShadow: selected ? `0 0 8px ${state.color}80` : 'none',
+                      }}
+                    />
                     <span
-                      className={`font-body text-xs font-medium transition-colors duration-250 ${
-                        selected ? "text-white" : "text-foreground"
-                      }`}
+                      className="font-display text-[15px] font-semibold flex-1 transition-colors duration-300"
+                      style={{ color: selected ? (state.label === 'Static' ? '#FDFCFB' : '#FDFCFB') : state.textDark }}
                     >
                       {state.label}
                     </span>
+                    {selected && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: 'rgba(255,255,255,0.25)' }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </motion.div>
+                    )}
                   </motion.button>
                 );
               })}
