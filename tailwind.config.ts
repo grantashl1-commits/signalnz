@@ -25,9 +25,12 @@ export default {
         "heading-lg": ["2rem", { lineHeight: "1.2", fontWeight: "700" }],
         "heading-md": ["1.5rem", { lineHeight: "1.3", fontWeight: "700" }],
         "heading-sm": ["1.125rem", { lineHeight: "1.4", fontWeight: "600" }],
-        "body-lg": ["1rem", { lineHeight: "1.6", fontWeight: "500" }],
+        "card-title": ["var(--card-title-size)", { lineHeight: "1.3", fontWeight: "700" }],
+        "body-lg": ["var(--body-size)", { lineHeight: "var(--body-line-height)", fontWeight: "500" }],
         "body-md": ["0.875rem", { lineHeight: "1.6", fontWeight: "500" }],
         "body-sm": ["0.75rem", { lineHeight: "1.5", fontWeight: "500" }],
+        "section-label": ["var(--label-size)", { lineHeight: "1.2", fontWeight: "600", letterSpacing: "var(--label-tracking)" }],
+        "quote": ["var(--quote-size)", { lineHeight: "1.6", fontWeight: "400" }],
       },
       colors: {
         border: "hsl(var(--border))",
