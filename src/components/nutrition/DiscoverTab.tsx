@@ -21,6 +21,13 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
+const PHASE_TINT: Record<Phase, string> = {
+  menstrual: "rgba(196, 82, 110, 0.06)",
+  follicular: "rgba(92, 74, 158, 0.05)",
+  ovulatory: "rgba(210, 170, 100, 0.07)",
+  luteal: "rgba(155, 137, 180, 0.06)",
+};
+
 const MEAL_TYPE_FILTERS = ["All", "Main", "Breakfast", "Baking", "Snack"] as const;
 const TAG_FILTERS = ["High Protein", "Gut Health", "Anti-Inflammatory", "Vegan", "Iron-Rich", "Magnesium"] as const;
 
@@ -292,12 +299,16 @@ function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, duration: 0.25 }}>
       <div className="relative">
-        <button onClick={onSelect} className="touch-card w-full text-left card-warm overflow-hidden">
-          <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} height={100} variant="card" />
-          <div className="p-3">
+        <button onClick={onSelect} className="touch-card w-full text-left card-warm overflow-hidden"
+          style={{ background: `linear-gradient(to bottom, ${PHASE_TINT[recipe.phase]} 40%, transparent 60%)` }}>
+          <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} height={75} variant="card" />
+          <div className="px-3 pb-3 pt-1.5">
             <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">{recipe.name}</h3>
-            <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-              <span className={`rounded-full px-2 py-0.5 font-hand text-[10px] font-bold phase-${recipe.phase}-light`}>{PHASE_SHORT[recipe.phase]}</span>
+            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+              <span className="rounded-full px-2 py-0.5 font-hand text-[10px] font-bold"
+                style={{ backgroundColor: `${PHASE_HEX[recipe.phase]}15`, color: PHASE_HEX[recipe.phase] }}>
+                {PHASE_SHORT[recipe.phase]}
+              </span>
               <span className="font-body text-[9px] text-muted-foreground">{recipe.prepTime}</span>
             </div>
           </div>
@@ -355,7 +366,8 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
         <div className="p-5 space-y-4">
           <div>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className={`rounded-full px-2.5 py-1 font-hand text-[11px] font-bold phase-${recipe.phase}-light`}>{PHASE_SHORT[recipe.phase]}</span>
+              <span className="rounded-full px-2.5 py-1 font-hand text-[11px] font-bold"
+                style={{ backgroundColor: `${PHASE_HEX[recipe.phase]}15`, color: PHASE_HEX[recipe.phase] }}>{PHASE_SHORT[recipe.phase]}</span>
               <span className="font-mono text-[10px] text-muted-foreground">{recipe.prepTime}</span>
             </div>
             <h2 className="font-display text-xl font-bold italic text-foreground">{recipe.name}</h2>
