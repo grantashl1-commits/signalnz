@@ -526,35 +526,38 @@ export default function JournalPage() {
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
                 <div className="space-y-4">
-                  {/* Inline mood row */}
-                  <div className="flex gap-2 flex-wrap">
-                    <p className="font-mono text-[10px] text-muted-foreground/25 self-center">feeling</p>
-                    {["grounded", "heavy", "clear", "unsettled", "open"].map((mood) => (
-                      <button
-                        key={mood}
-                        onClick={() => setCurrentMood(currentMood === mood ? null : mood)}
-                        className={`font-mono text-[9px] tracking-wide px-2.5 py-1 rounded-full border transition-all ${
-                          currentMood === mood
-                            ? "border-primary text-primary"
-                            : "border-border/30 text-muted-foreground/20"
-                        }`}
-                      >
-                        {mood}
-                      </button>
-                    ))}
+                  {/* Mood tags — scattered two-row layout */}
+                  <div className="space-y-2">
+                    <p className="font-mono text-[10px] text-muted-foreground/40">feeling</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["grounded", "heavy", "clear", "unsettled", "open"].map((mood, i) => (
+                        <button
+                          key={mood}
+                          onClick={() => setCurrentMood(currentMood === mood ? null : mood)}
+                          className="font-body text-xs tracking-wide px-3.5 py-1.5 rounded-full transition-all"
+                          style={{
+                            backgroundColor: currentMood === mood ? 'hsl(var(--primary))' : 'rgba(91, 45, 114, 0.08)',
+                            color: currentMood === mood ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))',
+                            marginLeft: i % 3 === 1 ? 8 : 0,
+                          }}
+                        >
+                          {mood}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* Inline entry type toggle */}
-                  <div className="flex gap-2">
+                  {/* Entry type tags — offset row */}
+                  <div className="flex flex-wrap gap-2 pl-3">
                     {(["reflect", "gratitude", "one line"] as EntryType[]).map((type) => (
                       <button
                         key={type}
                         onClick={() => setEntryType(type)}
-                        className={`font-mono text-[10px] tracking-wide px-3 py-1.5 rounded-full border transition-all ${
-                          entryType === type
-                            ? "border-primary text-primary"
-                            : "border-border/30 text-muted-foreground/30"
-                        }`}
+                        className="font-body text-xs tracking-wide px-3.5 py-1.5 rounded-full transition-all"
+                        style={{
+                          backgroundColor: entryType === type ? 'hsl(var(--primary))' : 'rgba(91, 45, 114, 0.08)',
+                          color: entryType === type ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))',
+                        }}
                       >
                         {type}
                       </button>
