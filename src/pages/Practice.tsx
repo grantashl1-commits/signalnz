@@ -99,7 +99,8 @@ export default function PracticePage() {
         {/* ═══ HERO BANNER ═══ */}
         <motion.div
           {...fadeUp(0)}
-          className="relative overflow-hidden rounded-b-[28px] bg-primary px-6 md:px-8 pt-10 pb-8 mb-8"
+          className="relative overflow-hidden rounded-b-[28px] bg-primary px-6 md:px-8 mb-8"
+          style={{ minHeight: '220px', paddingTop: '48px', paddingBottom: '32px', paddingLeft: '24px', paddingRight: '24px' }}
         >
           {/* Ambient dot motif */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.08]">
