@@ -181,6 +181,48 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
   return (
     <div className="space-y-5">
+      {/* Sticky progress bar */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-1 px-1 pt-1">
+        <div className="relative h-3 flex items-center">
+          {/* Track */}
+          <div className="absolute inset-x-0 h-[3px] rounded-full bg-border/40" />
+          {/* Fill */}
+          <div
+            className="absolute left-0 h-[3px] rounded-full bg-primary transition-all duration-500 ease-out"
+            style={{ width: `${progressPct}%` }}
+          />
+          {/* Section markers */}
+          {FORM_SECTIONS.map((s, i) => {
+            const left = ((i + 0.5) / FORM_SECTIONS.length) * 100;
+            const reached = i <= furthestVisibleIdx;
+            return (
+              <div
+                key={s.id}
+                className="absolute flex flex-col items-center"
+                style={{ left: `${left}%`, transform: "translateX(-50%)" }}
+              >
+                <div className={`h-3 w-3 rounded-full border-2 text-[6px] font-mono font-bold flex items-center justify-center transition-all ${
+                  reached
+                    ? "bg-primary border-primary text-primary-foreground"
+                    : "bg-background border-border text-muted-foreground"
+                }`}>
+                  {i + 1}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-between mt-1.5 px-0.5">
+          {FORM_SECTIONS.map((s, i) => (
+            <span key={s.id} className={`font-mono text-[7px] tracking-wide transition-colors ${
+              i <= furthestVisibleIdx ? "text-primary" : "text-muted-foreground/50"
+            }`}>
+              {s.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
       <div>
         <h2 className="font-display text-xl font-bold italic text-foreground">How does your week work?</h2>
         <p className="font-body text-sm text-muted-foreground mt-1 italic" style={{ fontWeight: 300 }}>
@@ -206,7 +248,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       )}
 
       {/* Cooking Skill */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("cooking")} data-section="cooking" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Cooking confidence</p>
         <RadioCard selected={cookingSkill === "beginner"} label="Beginner — quick and simple recipes only" description="Under 5 ingredients, minimal techniques" onSelect={() => setCookingSkill("beginner")} />
         <RadioCard selected={cookingSkill === "confident"} label="Confident — I can follow most recipes" description="Happy with standard home cooking" onSelect={() => setCookingSkill("confident")} />
@@ -214,7 +256,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Available Time */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("timing")} data-section="timing" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Max time per meal</p>
         <div className="flex flex-wrap gap-2">
           {([
