@@ -628,6 +628,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           onSuburbClick={(name) =>
             setActiveSuburb((prev) => (prev === name ? null : name))
           }
+          userSuburb={userSuburb}
         />
       )}
 
