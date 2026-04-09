@@ -285,9 +285,11 @@ export default function PracticePage() {
                           >
                             <button
                               onClick={() => handleToggle(habit.id)}
-                              className={`touch-btn flex-shrink-0 h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
+                              className="touch-btn flex-shrink-0"
+                            >
+                              <span className={`h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
                                 done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
-                              }`}
+                              }`}>
                             >
                               <AnimatePresence>
                                 {done && (

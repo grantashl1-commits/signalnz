@@ -294,11 +294,13 @@ export function ShoppingListPanel() {
                         <div key={globalIndex} className="flex items-center gap-2">
                           <button
                             onClick={() => handleToggle(globalIndex)}
-                            className={`touch-btn h-5 w-5 rounded-full border flex-shrink-0 flex items-center justify-center transition-all ${
-                              item.checked ? "bg-primary/30 border-primary/60" : "border-border"
-                            }`}
+                            className="touch-btn flex-shrink-0 transition-all"
                           >
-                            {item.checked && <Check className="h-3 w-3 text-primary" />}
+                            <span className={`h-5 w-5 rounded-full border flex items-center justify-center ${
+                              item.checked ? "bg-primary/30 border-primary/60" : "border-border"
+                            }`}>
+                              {item.checked && <Check className="h-3 w-3 text-primary" />}
+                            </span>
                           </button>
                           <div className="flex-1 min-w-0">
                             <span className={`font-body text-xs ${item.checked ? "line-through text-muted-foreground/50" : "text-foreground"}`}>
