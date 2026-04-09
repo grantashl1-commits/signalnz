@@ -134,7 +134,7 @@ const CARD_THEME: Record<string, {
   meditation:       { border: "hsl(var(--primary))",          bg: "hsl(var(--primary) / 0.04)",         Icon: CircleDot,  iconColor: "hsl(var(--primary) / 0.35)" },
   sleep:            { border: "hsl(220 40% 18%)",             bg: "hsl(220 30% 14% / 0.06)",           Icon: Moon,       iconColor: "hsl(220 30% 35% / 0.4)" },
   "inner-work":     { border: "hsl(30 60% 55%)",             bg: "hsl(30 60% 55% / 0.05)",            Icon: Wind,       iconColor: "hsl(30 50% 50% / 0.4)" },
-  reading:          { border: "hsl(var(--phase-follicular))", bg: "hsl(var(--phase-follicular) / 0.04)", Icon: BookOpen, iconColor: "hsl(var(--phase-follicular) / 0.35)" },
+  reading:          { border: "hsl(var(--primary))", bg: "hsl(var(--primary) / 0.04)", Icon: BookOpen, iconColor: "hsl(var(--primary) / 0.35)" },
   "phase-practice": { border: "hsl(var(--primary))",          bg: "hsl(var(--primary) / 0.04)",         Icon: Sparkles,   iconColor: "hsl(var(--primary) / 0.3)" },
 };
 
@@ -200,7 +200,7 @@ function PracticeCard({
         <div className="flex items-start justify-between gap-2 mb-1 pr-7">
           <h3 className="font-display text-[15px] italic text-foreground leading-snug">{script.title}</h3>
           {isDone && (
-            <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-body text-[10px] text-phase-follicular shrink-0">
+            <span className="flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 font-body text-[10px] text-primary shrink-0">
               <Check className="h-3 w-3" /> Done
             </span>
           )}
