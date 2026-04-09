@@ -64,19 +64,19 @@ export function AtmosphericHero({
   dotColor = "hsl(30 33% 98%)",
   dotOpacity = 0.06,
 }: AtmosphericHeroProps) {
-  const paddingStyle = {
-    sm: { paddingTop: '40px', paddingBottom: '36px' },
-    md: { paddingTop: '48px', paddingBottom: '40px' },
-    lg: { paddingTop: '56px', paddingBottom: '48px' },
-  }[size];
+  const heroStyle = {
+    minHeight: '220px',
+    paddingTop: '48px',
+    paddingBottom: '32px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 40%) 100%)",
+  };
 
   return (
     <section
-      className={`relative overflow-hidden -mx-5 md:-mx-4 px-5 md:px-4 ${className}`}
-      style={{
-        ...paddingStyle,
-        background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 40%) 100%)",
-      }}
+      className={`relative overflow-hidden -mx-5 md:-mx-4 ${className}`}
+      style={heroStyle}
     >
       {/* Drifting dot grid — brand motif texture */}
       <DotPattern color={dotColor} opacity={dotOpacity} animate />
