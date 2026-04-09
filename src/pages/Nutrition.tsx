@@ -39,9 +39,9 @@ export default function NutritionPage() {
       <AtmosphericHero size="md">
         <div className="absolute inset-0 z-0"><SignalPulse /></div>
         <div className="text-center relative z-10">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Nutrition</p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Nourish</h1>
-          <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
+          <p className="font-body text-section-label uppercase text-primary-foreground/40 mb-4">Nutrition</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5">Nourish</h1>
+          <p className="font-display text-quote italic text-primary-foreground/60 max-w-md mx-auto">
             Eat for your cycle, not against it.
           </p>
         </div>

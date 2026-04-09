@@ -115,21 +115,21 @@ export default function HomePage() {
         <div className="text-center max-w-xl mx-auto relative z-10">
           <motion.p
             {...fadeUp(0.1)}
-            className="font-body text-sm tracking-[0.2em] uppercase text-primary-foreground/80 mb-6"
+            className="font-body text-section-label uppercase text-primary-foreground/80 mb-8"
           >
             {greeting}, {firstName || "you"}.
           </motion.p>
 
           <motion.p
             {...fadeUp(0.35)}
-            className="font-body text-base md:text-lg text-primary-foreground/80 leading-relaxed max-w-md mx-auto mb-4"
+            className="font-body text-[1.75rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-6"
           >
             {PHASE_SUBTEXT[info.phase]}
           </motion.p>
 
           <motion.p
             {...fadeUp(0.45)}
-            className="font-body text-xs text-primary-foreground/60 uppercase tracking-[0.25em] mb-8"
+            className="font-body text-section-label text-primary-foreground/60 uppercase mb-10"
           >
             Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
           </motion.p>
@@ -186,7 +186,7 @@ export default function HomePage() {
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
           <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
-            <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground/40">today</p>
+            <p className="font-mono text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
             {[
               { label: "eat", value: focus.nutrition },
               { label: "move", value: focus.movement },
@@ -194,8 +194,8 @@ export default function HomePage() {
               { label: "cycle", value: focus.cycle },
             ].map(({ label, value }) => (
               <div key={label} className="flex gap-3 items-start">
-                <span className="font-mono text-[10px] text-muted-foreground/30 w-8 pt-0.5">{label}</span>
-                <p className="text-sm text-foreground/70 leading-snug flex-1">{value}</p>
+                <span className="font-mono text-section-label w-10 pt-0.5" style={{ color: 'hsl(var(--label-color))' }}>{label}</span>
+                <p className="text-body-lg text-foreground/70 leading-snug flex-1">{value}</p>
               </div>
             ))}
           </motion.div>
