@@ -26,6 +26,22 @@ interface Props {
 
 type Panel = "main" | "mood" | "symptoms" | "weight" | "notes";
 
+function PeriodToggleButton({ label, isActive, onTap }: { label: string; isActive: boolean; onTap: () => void }) {
+  return (
+    <button
+      onClick={onTap}
+      className="touch-btn rounded-2xl px-4 py-3 min-h-[52px] font-body text-sm font-bold border-2 active:opacity-90 transition-colors"
+      style={{
+        borderColor: "#C4526E",
+        color: isActive ? "#FDFCFB" : "#C4526E",
+        backgroundColor: isActive ? "#C4526E" : "transparent",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Props) {
   const [panel, setPanel] = useState<Panel>("main");
   const { cycleStartDate: lastPeriod } = useCycle();
@@ -110,7 +126,10 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
         style={{ maxHeight: "90vh", paddingBottom: "env(safe-area-inset-bottom)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-10 h-1 rounded-full bg-border mx-auto mt-3 mb-2" />
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="rounded-full" style={{ width: 36, height: 4, backgroundColor: 'hsl(var(--muted))' }} />
+        </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pb-3">
@@ -135,17 +154,21 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                 <p className="font-hand text-sm font-bold text-primary mb-3">period tracking</p>
                 <div className="grid grid-cols-2 gap-3">
                   {isPeriodDay && cycleDay ? (
-                    <div className="rounded-2xl px-4 py-3 min-h-[52px] flex items-center justify-center" style={{ backgroundColor: "#C4526E" }}>
+                    <div className="rounded-2xl px-4 py-3 min-h-[52px] flex items-center justify-center border-2" style={{ borderColor: "#C4526E", backgroundColor: "#C4526E" }}>
                       <span className="font-body text-sm font-bold text-card">PERIOD DAY {cycleDay}</span>
                     </div>
                   ) : (
-                    <button onClick={handleStartPeriod} className="touch-btn rounded-2xl px-4 py-3 min-h-[52px] font-body text-sm font-bold text-card active:opacity-90" style={{ backgroundColor: "#C4526E" }}>
-                      START PERIOD
-                    </button>
+                    <PeriodToggleButton
+                      label="START PERIOD"
+                      isActive={false}
+                      onTap={handleStartPeriod}
+                    />
                   )}
-                  <button onClick={handleEndPeriod} className="touch-btn rounded-2xl px-4 py-3 min-h-[52px] font-body text-sm font-bold border-2 active:opacity-90" style={{ borderColor: "#C4526E", color: "#C4526E", backgroundColor: "hsl(36, 47%, 96%)" }}>
-                    END PERIOD
-                  </button>
+                  <PeriodToggleButton
+                    label="END PERIOD"
+                    isActive={!!periodEnd}
+                    onTap={handleEndPeriod}
+                  />
                 </div>
                 {periodLength && (
                   <p className="font-hand text-sm text-muted-foreground mt-2 text-center">
@@ -159,20 +182,25 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
               {/* Tracking Tiles 2x2 */}
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { key: "weight" as const, label: "weight", Icon: ScaleIcon, hasData: getWeight(dateStr) !== null, preview: getWeight(dateStr) ? `${unit === "lbs" ? (getWeight(dateStr)! / 0.453592).toFixed(1) : getWeight(dateStr)!.toFixed(1)} ${unit}` : "" },
-                  { key: "mood" as const, label: "mood", Icon: MoodFaceIcon, hasData: getMoods(dateStr).length > 0, preview: getMoods(dateStr).slice(0, 2).join(", ") },
-                  { key: "symptoms" as const, label: "symptoms", Icon: SpiralSymptomIcon, hasData: getSymptomsNew(dateStr).length > 0, preview: getSymptomsNew(dateStr).slice(0, 2).join(", ") },
-                  { key: "notes" as const, label: "notes", Icon: QuillIcon, hasData: getNotes(dateStr).length > 0, preview: getNotes(dateStr).slice(0, 30) },
+                  { key: "weight" as const, label: "weight", Icon: ScaleIcon, tint: "#6B8DA6", hasData: getWeight(dateStr) !== null, preview: getWeight(dateStr) ? `${unit === "lbs" ? (getWeight(dateStr)! / 0.453592).toFixed(1) : getWeight(dateStr)!.toFixed(1)} ${unit}` : "" },
+                  { key: "mood" as const, label: "mood", Icon: MoodFaceIcon, tint: "#D4A84B", hasData: getMoods(dateStr).length > 0, preview: getMoods(dateStr).slice(0, 2).join(", ") },
+                  { key: "symptoms" as const, label: "symptoms", Icon: SpiralSymptomIcon, tint: "#C4526E", hasData: getSymptomsNew(dateStr).length > 0, preview: getSymptomsNew(dateStr).slice(0, 2).join(", ") },
+                  { key: "notes" as const, label: "notes", Icon: QuillIcon, tint: "#7F5B87", hasData: getNotes(dateStr).length > 0, preview: getNotes(dateStr).slice(0, 30) },
                 ].map((tile) => (
                   <button
                     key={tile.key}
                     onClick={() => { haptic("light"); setPanel(tile.key); }}
-                    className="touch-card card-warm p-4 text-left relative overflow-hidden"
+                    className="touch-card card-warm text-left relative overflow-hidden w-full"
+                    style={{ padding: 'var(--card-padding)' }}
                   >
-                    <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-[18px]" style={{ backgroundColor: phaseColor }} />
-                    <div className="pl-2">
-                      <tile.Icon size={24} color={phaseColor} />
-                      <p className="font-hand text-sm font-bold mt-2" style={{ color: phaseColor }}>{tile.label}</p>
+                    {/* Faint tinted icon background */}
+                    <div
+                      className="absolute right-2 top-2 rounded-full"
+                      style={{ width: 40, height: 40, backgroundColor: `${tile.tint}12` }}
+                    />
+                    <div className="relative z-10">
+                      <tile.Icon size={24} color={tile.tint} />
+                      <p className="font-hand text-sm font-bold mt-2" style={{ color: tile.tint }}>{tile.label}</p>
                       {tile.hasData && (
                         <p className="font-body text-[10px] text-muted-foreground mt-0.5 truncate">{tile.preview}</p>
                       )}
