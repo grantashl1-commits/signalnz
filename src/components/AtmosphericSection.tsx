@@ -62,7 +62,7 @@ export function AtmosphericHero({
   className = "",
   size = "md",
   dotColor = "hsl(30 33% 98%)",
-  dotOpacity = 0.06,
+  dotOpacity = 0.04,
 }: AtmosphericHeroProps) {
   const heroStyle = {
     minHeight: '220px',
@@ -86,7 +86,7 @@ export function AtmosphericHero({
         className="absolute inset-0 w-full h-full pointer-events-none"
         viewBox="0 0 400 400"
         preserveAspectRatio="xMidYMid slice"
-        style={{ opacity: 0.06 }}
+        style={{ opacity: 0.04 }}
         aria-hidden="true"
       >
         {[40, 70, 100, 130, 160].map((r, ri) => {
@@ -139,7 +139,7 @@ interface ContentSectionProps {
 export function ContentSection({ children, className = "", withDots = false }: ContentSectionProps) {
   return (
     <section className={`relative ${className}`} style={{ paddingTop: 'var(--section-gap)', paddingBottom: 'var(--section-gap)' }}>
-      {withDots && <DotPattern color="hsl(25 25% 75%)" opacity={0.06} />}
+      {withDots && <DotPattern color="hsl(25 25% 75%)" opacity={0.04} />}
       <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
     </section>
   );

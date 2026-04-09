@@ -103,14 +103,14 @@ export default function PracticePage() {
           style={{ minHeight: '220px', paddingTop: '48px', paddingBottom: '32px', paddingLeft: '24px', paddingRight: '24px' }}
         >
           {/* Ambient dot motif */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.08]">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
             {[...Array(12)].map((_, i) => (
               <div
                 key={i}
                 className="absolute rounded-full bg-primary-foreground"
                 style={{
-                  width: `${8 + (i % 4) * 6}px`,
-                  height: `${8 + (i % 4) * 6}px`,
+                  width: `${3 + (i % 3) * 1.5}px`,
+                  height: `${3 + (i % 3) * 1.5}px`,
                   top: `${10 + (i * 7) % 80}%`,
                   left: `${5 + (i * 13) % 90}%`,
                 }}

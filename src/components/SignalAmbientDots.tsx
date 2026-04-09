@@ -43,14 +43,14 @@ export default function SignalAmbientDots() {
 
     function initDots() {
       // Fewer dots on mobile for performance
-      const count = w < 768 ? 28 : 50;
+      const count = w < 768 ? 22 : 40;
       dotsRef.current = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        r: Math.random() * 2.5 + 1,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: (Math.random() - 0.5) * 0.12,
-        alpha: Math.random() * 0.3 + 0.05,
+        r: Math.random() * 1.5 + 1,          // max 2.5px radius → 5px diameter, never exceeds 6px
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.1,
+        alpha: Math.random() * 0.04 + 0.01,   // 1–5% base alpha → effective max ~4% after pulse
         pulseOffset: Math.random() * Math.PI * 2,
       }));
     }
@@ -89,13 +89,7 @@ export default function SignalAmbientDots() {
         ctx.fillStyle = `rgba(175, 146, 182, ${alpha})`;
         ctx.fill();
 
-        // Soft glow on larger dots
-        if (d.r > 2) {
-          ctx.beginPath();
-          ctx.arc(d.x, d.y, radius * 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(175, 146, 182, ${alpha * 0.08})`;
-          ctx.fill();
-        }
+        // Skip glow on all dots — keep it minimal
       }
 
       // Draw faint connection lines between nearby dots
@@ -106,7 +100,7 @@ export default function SignalAmbientDots() {
           const dist = Math.sqrt(dx * dx + dy * dy);
           const maxDist = w < 768 ? 100 : 140;
           if (dist < maxDist) {
-            const lineAlpha = (1 - dist / maxDist) * 0.04;
+            const lineAlpha = (1 - dist / maxDist) * 0.02;
             ctx.beginPath();
             ctx.moveTo(dots[i].x, dots[i].y);
             ctx.lineTo(dots[j].x, dots[j].y);
