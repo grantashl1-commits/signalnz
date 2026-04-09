@@ -194,11 +194,11 @@ function PracticeCard({
           )}
         </div>
         <p className="font-hand text-xs font-bold text-primary mb-1.5">{script.subtitle}</p>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <span className={`font-mono text-[10px] px-2.5 py-0.5 rounded-full font-medium ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
             {script.category.replace("-", " ")}
           </span>
-          <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground flex items-center gap-1">
+          <span className="font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1">
             <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
           </span>
         </div>
