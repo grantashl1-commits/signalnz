@@ -246,7 +246,7 @@ function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (
             </div>
           )}
           {user.is_online && (
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-phase-follicular border-2 border-card" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-card" />
           )}
         </div>
 
@@ -658,7 +658,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       {/* Active count */}
       {!isLoading && (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="w-2 h-2 rounded-full bg-phase-follicular inline-block" />
+          <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
           <span>
             {activeCount} active now · {nearbyUsers.length} total in view
           </span>
