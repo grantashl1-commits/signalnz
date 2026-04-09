@@ -111,10 +111,28 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
   return (
     <div className="space-y-6 pb-10">
       <div className="mb-2">
-        <p className="font-hand text-sm font-bold text-primary mb-1">Memory Vault</p>
-        <p className="font-body text-sm text-muted-foreground leading-relaxed">
-          A curated archive of the moments, lessons, and memories that matter most to you.
-        </p>
+        {/* Decorative dot motif + lock-heart icon */}
+        <div className="flex items-center gap-3 mb-2">
+          <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
+            {/* Dot ring motif */}
+            <svg viewBox="0 0 40 40" className="absolute inset-0 w-full h-full">
+              {Array.from({ length: 8 }, (_, i) => {
+                const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+                return <circle key={i} cx={20 + 15 * Math.cos(angle)} cy={20 + 15 * Math.sin(angle)} r={2} fill="hsl(284, 22%, 44%)" opacity={0.25} />;
+              })}
+            </svg>
+            <div className="relative flex items-center justify-center">
+              <Lock className="h-3.5 w-3.5 text-primary" style={{ marginRight: -2 }} />
+              <Heart className="h-3.5 w-3.5 text-primary" fill="hsl(284, 22%, 44%)" style={{ marginLeft: -2 }} />
+            </div>
+          </div>
+          <div>
+            <h2 className="font-display text-[24px] font-bold text-foreground leading-tight">Your Memory Vault</h2>
+            <p className="font-display text-sm italic text-muted-foreground">
+              A curated archive of the moments that matter most.
+            </p>
+          </div>
+        </div>
         {totalMemories > 0 && (
           <p className="font-mono text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
         )}
@@ -127,9 +145,20 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
       {totalMemories === 0 && (
         <div className="text-center pt-8 pb-4">
           <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-            <HandDrawnBook size={48} color="hsl(var(--primary))" className="mx-auto mb-4" />
+            <div className="relative w-12 h-12 mx-auto mb-4">
+              <svg viewBox="0 0 48 48" className="w-full h-full">
+                {Array.from({ length: 10 }, (_, i) => {
+                  const angle = (i / 10) * Math.PI * 2 - Math.PI / 2;
+                  return <circle key={i} cx={24 + 18 * Math.cos(angle)} cy={24 + 18 * Math.sin(angle)} r={2.5} fill="hsl(284, 22%, 44%)" opacity={0.3} />;
+                })}
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Lock className="h-4 w-4 text-primary" style={{ marginRight: -3 }} />
+                <Heart className="h-4 w-4 text-primary" fill="hsl(284, 22%, 44%)" style={{ marginLeft: -3 }} />
+              </div>
+            </div>
           </motion.div>
-          <h2 className="font-display text-xl italic text-foreground mb-2">Your Memory Vault</h2>
+          <h2 className="font-display text-[24px] font-bold text-foreground mb-2">Your Memory Vault</h2>
           <p className="font-display text-sm italic text-muted-foreground max-w-sm mx-auto">
             This is where your favourite pieces of your life can live. Save moments from your journal or add them directly.
           </p>
