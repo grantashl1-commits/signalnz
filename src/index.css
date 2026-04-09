@@ -257,6 +257,9 @@
     transition: transform var(--duration-fast) var(--ease-calm);
     min-width: 44px;
     min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .touch-btn:active {
     transform: scale(0.97);

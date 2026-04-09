@@ -285,21 +285,23 @@ export default function PracticePage() {
                           >
                             <button
                               onClick={() => handleToggle(habit.id)}
-                              className={`touch-btn flex-shrink-0 h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
-                                done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
-                              }`}
+                              className="touch-btn flex-shrink-0"
                             >
-                              <AnimatePresence>
-                                {done && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    exit={{ scale: 0 }}
-                                  >
-                                    <WildStar size={16} color="hsl(var(--primary))" />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
+                              <span className={`h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
+                                done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
+                              }`}>
+                                <AnimatePresence>
+                                  {done && (
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      exit={{ scale: 0 }}
+                                    >
+                                      <WildStar size={16} color="hsl(var(--primary))" />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </span>
                             </button>
 
                             <div className="flex-1 min-w-0">
@@ -318,9 +320,9 @@ export default function PracticePage() {
 
                             <button
                               onClick={() => handleDelete(habit.id)}
-                              className="touch-btn p-1.5 rounded-full hover:bg-secondary"
+                              className="touch-btn p-2 rounded-full hover:bg-secondary"
                             >
-                              <Trash2 className="h-3.5 w-3.5 text-muted-foreground/40" />
+                              <Trash2 className="h-4 w-4 text-muted-foreground/40" />
                             </button>
                           </motion.div>
                         );

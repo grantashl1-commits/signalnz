@@ -196,7 +196,7 @@ function SleepInput({
 
       <div className="mb-4">
         <label className="font-body text-xs text-muted-foreground block mb-2">Sleep quality</label>
-        <div className="flex gap-2.5">
+        <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map(i => {
             const filled = i <= quality;
             const GOLD = "#D4A843";
@@ -207,7 +207,7 @@ function SleepInput({
                 whileTap={{ scale: 1.35 }}
                 animate={filled ? { scale: [1, 1.25, 1] } : { scale: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="touch-btn p-0.5"
+                className="touch-btn"
               >
                 <Star
                   className="transition-colors duration-200"

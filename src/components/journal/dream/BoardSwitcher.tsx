@@ -52,7 +52,7 @@ export default function BoardSwitcher({ boards, activeBoardId, onSwitch, onCreat
             <LayoutGrid className="h-4 w-4 text-primary/60" />
             <p className="font-display text-lg italic text-foreground">My Boards</p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={onClose} className="touch-btn p-2 text-muted-foreground hover:text-foreground transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>

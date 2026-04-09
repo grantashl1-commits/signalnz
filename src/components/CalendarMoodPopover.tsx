@@ -78,7 +78,7 @@ export default function CalendarMoodPopover({ dateStr, cycleDay, type, onEdit, o
               </p>
             )}
           </div>
-          <button onClick={onClose} className="p-1.5"><X className="h-4 w-4 text-muted-foreground" /></button>
+          <button onClick={onClose} className="touch-btn p-2"><X className="h-4 w-4 text-muted-foreground" /></button>
         </div>
 
         <div className="px-4 pb-4 space-y-3">

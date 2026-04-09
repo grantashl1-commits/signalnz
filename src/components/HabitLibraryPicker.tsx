@@ -302,7 +302,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
                   <div className="rounded-xl bg-secondary/60 p-3 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <p className="font-body text-sm font-semibold text-foreground">{habit.name}</p>
-                      <button onClick={() => setExpandedInfo(null)} className="p-1">
+                      <button onClick={() => setExpandedInfo(null)} className="touch-btn p-2">
                         <X className="h-3 w-3 text-muted-foreground" />
                       </button>
                     </div>

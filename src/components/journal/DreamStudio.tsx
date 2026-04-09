@@ -144,7 +144,7 @@ function RitualsPanel({ onStartRitual, onStartFutureSelf, onClose }: { onStartRi
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="font-display text-lg italic text-foreground">Rituals</p>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="h-4 w-4" /></button>
+          <button onClick={onClose} className="touch-btn p-2 text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
         </div>
         <button onClick={onStartFutureSelf} className="w-full rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/15 p-4 text-left mb-4 hover:shadow-sm transition-shadow">
           <div className="flex items-center gap-2 mb-1.5">

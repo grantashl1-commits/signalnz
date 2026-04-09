@@ -248,7 +248,7 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
           <p className="font-hand text-sm font-bold text-primary">{typeConfig?.label || "New Entry"}</p>
           <p className="font-body text-xs text-muted-foreground">{today}</p>
         </div>
-        <button onClick={onCancel} className="text-muted-foreground active:text-foreground">
+        <button onClick={onCancel} className="touch-btn text-muted-foreground active:text-foreground">
           <X className="h-5 w-5" />
         </button>
       </div>
