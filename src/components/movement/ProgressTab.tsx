@@ -7,10 +7,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 type PhotoView = "front" | "side" | "back" | "3d";
 
 const SECTIONS = [
-  { key: "start", label: "Starting point" },
-  { key: "week4", label: "4 weeks" },
-  { key: "week8", label: "8 weeks" },
-  { key: "week12", label: "12 weeks" },
+  { key: "start", label: "Starting point", textClass: "font-display text-base font-bold" },
+  { key: "week4", label: "4 weeks", textClass: "font-display text-sm font-semibold" },
+  { key: "week8", label: "8 weeks", textClass: "font-display text-xs font-semibold" },
+  { key: "week12", label: "12 weeks", textClass: "font-display text-[11px] font-medium" },
 ] as const;
 
 type SectionKey = (typeof SECTIONS)[number]["key"];
