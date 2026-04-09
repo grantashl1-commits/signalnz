@@ -220,12 +220,54 @@ export default function CyclePage() {
               <HandUnderline width={120} className="mx-auto md:hidden" color={PHASE_HEX[info.phase]} />
               <HandUnderline width={160} className="mx-auto hidden md:block" color={PHASE_HEX[info.phase]} />
               <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} size="lg" />
-              <p className="font-hand text-sm text-muted-foreground">
-                {nextPhase} begins in ~{daysUntil} days
-              </p>
+
+              {/* Phase day dots */}
+              {(() => {
+                const currentPhaseData = [
+                  { phase: "menstrual" as Phase, start: 1, end: 5 },
+                  { phase: "follicular" as Phase, start: 6, end: 13 },
+                  { phase: "ovulatory" as Phase, start: 14, end: 17 },
+                  { phase: "luteal" as Phase, start: 18, end: 28 },
+                ].find(p => p.phase === info.phase);
+                if (!currentPhaseData) return null;
+                const totalPhaseDays = currentPhaseData.end - currentPhaseData.start + 1;
+                const dayInPhase = info.cycleDay - currentPhaseData.start + 1;
+                return (
+                  <div className="flex flex-col items-center gap-2 pt-1">
+                    <div className="flex items-center justify-center gap-[6px]">
+                      {Array.from({ length: totalPhaseDays }, (_, i) => {
+                        const filled = i < dayInPhase;
+                        return (
+                          <motion.div
+                            key={i}
+                            className="rounded-full"
+                            style={{
+                              width: 8,
+                              height: 8,
+                              backgroundColor: 'hsl(var(--primary))',
+                              opacity: filled ? 1 : 0.2,
+                            }}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: filled ? 1 : 0.2 }}
+                            transition={{ delay: 0.1 + i * 0.06, duration: 0.3, ease: "easeOut" }}
+                          />
+                        );
+                      })}
+                    </div>
+                    <p
+                      className="font-mono"
+                      style={{
+                        fontSize: 'var(--label-size)',
+                        letterSpacing: 'var(--label-tracking)',
+                        color: 'hsl(var(--label-color))',
+                      }}
+                    >
+                      Day {dayInPhase} of {totalPhaseDays} in {PHASE_SHORT[info.phase].toLowerCase()} phase
+                    </p>
+                  </div>
+                );
+              })()}
             </div>
-            <MoonPhaseRow width={200} className="mx-auto md:hidden" opacity={0.25} />
-            <MoonPhaseRow width={240} className="mx-auto hidden md:block" opacity={0.25} />
           </>
         )}
 
