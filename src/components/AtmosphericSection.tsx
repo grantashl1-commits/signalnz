@@ -64,21 +64,49 @@ export function AtmosphericHero({
   dotColor = "hsl(30 33% 98%)",
   dotOpacity = 0.06,
 }: AtmosphericHeroProps) {
-  const paddingClass = {
-    sm: "py-12 md:py-16",
-    md: "py-16 md:py-24",
-    lg: "py-24 md:py-32",
+  const paddingStyle = {
+    sm: { paddingTop: '40px', paddingBottom: '36px' },
+    md: { paddingTop: '48px', paddingBottom: '40px' },
+    lg: { paddingTop: '56px', paddingBottom: '48px' },
   }[size];
 
   return (
     <section
-      className={`relative overflow-hidden -mx-5 md:-mx-4 px-5 md:px-4 ${paddingClass} ${className}`}
+      className={`relative overflow-hidden -mx-5 md:-mx-4 px-5 md:px-4 ${className}`}
       style={{
+        ...paddingStyle,
         background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 40%) 100%)",
       }}
     >
-      {/* Drifting dot grid */}
+      {/* Drifting dot grid — brand motif texture */}
       <DotPattern color={dotColor} opacity={dotOpacity} animate />
+
+      {/* Radial dot cluster overlay — concentric brand motif for depth */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        viewBox="0 0 400 400"
+        preserveAspectRatio="xMidYMid slice"
+        style={{ opacity: 0.06 }}
+        aria-hidden="true"
+      >
+        {[40, 70, 100, 130, 160].map((r, ri) => {
+          const dotCount = 10 + ri * 8;
+          const dotR = 2.5 - ri * 0.3;
+          return Array.from({ length: dotCount }, (_, di) => {
+            const angle = (2 * Math.PI * di) / dotCount - Math.PI / 2;
+            return (
+              <circle
+                key={`${ri}-${di}`}
+                cx={200 + r * Math.cos(angle)}
+                cy={200 + r * Math.sin(angle)}
+                r={Math.max(dotR, 0.8)}
+                fill={dotColor}
+                opacity={0.8 - ri * 0.12}
+              />
+            );
+          });
+        })}
+      </svg>
 
       {/* Soft radial glow */}
       <div
@@ -90,11 +118,11 @@ export function AtmosphericHero({
 
       <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
 
-      {/* Soft gradient fade into background — dissolves the hard edge */}
+      {/* Bottom vignette — soft dissolve into page content */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-10"
+        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none z-10"
         style={{
-          background: "linear-gradient(to bottom, transparent, hsl(var(--background)))",
+          background: "linear-gradient(to bottom, transparent 0%, hsl(var(--background) / 0.15) 40%, hsl(var(--background) / 0.6) 70%, hsl(var(--background)) 100%)",
         }}
       />
     </section>
