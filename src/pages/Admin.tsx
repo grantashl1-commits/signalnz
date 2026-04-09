@@ -205,9 +205,9 @@ export default function AdminPage() {
               {/* Revenue stats */}
               <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider">Revenue</p>
               <div className="grid grid-cols-3 gap-3">
-                <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-phase-follicular" tooltip="Monthly Recurring Revenue — calculated from active subscription values. May differ from collected revenue if billing cycle falls outside this window." />
-                <StatCard icon={TrendingUp} label="Collected (30 Days)" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="Payments received in last 30 days" color="text-phase-follicular" />
-                <StatCard icon={BarChart3} label="Lifetime Revenue" value="$0" sub="Lifetime total" color="text-phase-follicular" />
+                <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-primary" tooltip="Monthly Recurring Revenue — calculated from active subscription values. May differ from collected revenue if billing cycle falls outside this window." />
+                <StatCard icon={TrendingUp} label="Collected (30 Days)" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="Payments received in last 30 days" color="text-primary" />
+                <StatCard icon={BarChart3} label="Lifetime Revenue" value="$0" sub="Lifetime total" color="text-primary" />
                 <StatCard icon={CreditCard} label="Active Subs" value={stats.stripe?.activeSubscriptions || 0} sub={`${stats.stripe?.tierCounts.nourished || 0} nourished · ${stats.stripe?.tierCounts.thriving || 0} thriving`} />
                 <StatCard icon={XCircle} label="Cancelled" value={stats.stripe?.canceledSubscriptions || 0} color="text-destructive" />
               </div>
@@ -312,7 +312,7 @@ export default function AdminPage() {
                 <div className="card-warm p-4 mb-4">
                   <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-3">Subscription Tiers</p>
                   <div className="space-y-2">
-                    <TierBar label="Nourished ($19/mo)" count={stats.stripe.tierCounts.nourished} total={stats.stripe.activeSubscriptions} color="bg-phase-follicular" />
+                    <TierBar label="Nourished ($19/mo)" count={stats.stripe.tierCounts.nourished} total={stats.stripe.activeSubscriptions} color="bg-primary" />
                     <TierBar label="Thriving ($39/mo)" count={stats.stripe.tierCounts.thriving} total={stats.stripe.activeSubscriptions} color="bg-primary" />
                     {stats.stripe.tierCounts.other > 0 && (
                       <TierBar label="Other" count={stats.stripe.tierCounts.other} total={stats.stripe.activeSubscriptions} color="bg-muted-foreground" />
