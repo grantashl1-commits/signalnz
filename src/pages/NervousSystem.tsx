@@ -146,11 +146,13 @@ function PracticeCard({
   index,
   isDone,
   onSelect,
+  isSleep,
 }: {
   script: MeditationScript;
   index: number;
   isDone: boolean;
   onSelect: (s: MeditationScript) => void;
+  isSleep?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -171,12 +173,22 @@ function PracticeCard({
       initial="hidden"
       animate="visible"
       variants={cardVariant}
-      className="card-warm relative overflow-hidden"
+      className="relative overflow-hidden rounded-2xl border border-border shadow-sm"
       style={{
         borderLeft: `3px solid ${theme.border}`,
-        backgroundColor: theme.bg,
+        backgroundColor: isSleep ? "#EDE8F0" : theme.bg,
       }}
     >
+      {/* Sleep moon watermark */}
+      {isSleep && (
+        <svg
+          className="absolute top-3 right-3 pointer-events-none"
+          width="64" height="64" viewBox="0 0 64 64" fill="none"
+          style={{ opacity: 0.06 }}
+        >
+          <path d="M48 36c0-11-9-20-20-20a20 20 0 0 0-4 .4A16 16 0 1 1 47.6 40a20 20 0 0 0 .4-4Z" fill="currentColor" />
+        </svg>
+      )}
       {/* Corner type icon */}
       <CornerIcon
         className="absolute top-4 right-4 h-5 w-5 pointer-events-none"
@@ -219,7 +231,11 @@ function PracticeCard({
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(script); }}
-              className="shrink-0 rounded-full bg-primary px-4 py-2 font-display text-xs italic text-primary-foreground active:scale-[0.96] flex items-center gap-1.5 transition-transform"
+              className={`shrink-0 rounded-full px-4 py-2 font-display text-xs italic active:scale-[0.96] flex items-center gap-1.5 transition-transform ${
+                isSleep
+                  ? "bg-primary/70 text-primary-foreground"
+                  : "bg-primary text-primary-foreground"
+              }`}
             >
               <Play className="h-3 w-3" /> Begin →
             </button>
@@ -247,7 +263,9 @@ function PracticeCard({
               <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
               <button
                 onClick={() => { haptic("medium"); onSelect(script); }}
-                className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+                className={`touch-btn w-full rounded-[14px] py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2 ${
+                  isSleep ? "bg-primary/70" : "bg-primary"
+                }`}
               >
                 <Play className="h-4 w-4" /> begin this practice
               </button>
@@ -504,17 +522,21 @@ export default function NervousSystemPage() {
           {/* Tabs */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
             <div className="flex bg-muted/60 rounded-2xl p-1 max-w-sm mx-auto">
-              {TABS.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
-                  className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all ${
-                    tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
+              {TABS.map((t) => {
+                const TabIcon = t.icon;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
+                    className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all flex items-center justify-center gap-1.5 ${
+                      tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
+                    }`}
+                  >
+                    <TabIcon className="h-3.5 w-3.5" />
+                    {t.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -561,6 +583,7 @@ export default function NervousSystemPage() {
                   index={i}
                   isDone={completed.has(s.id)}
                   onSelect={handleSelect}
+                  isSleep={tab === "sleep"}
                 />
               ))}
             </motion.div>
