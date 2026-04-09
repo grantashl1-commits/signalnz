@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Minus, Plus, Dumbbell, Eye, EyeOff, Check } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
 import {
@@ -70,6 +70,16 @@ function RadioCard({ selected, label, description, onSelect }: { selected: boole
   );
 }
 
+const FORM_SECTIONS = [
+  { id: "cooking", label: "Confidence" },
+  { id: "timing", label: "Timing" },
+  { id: "equipment", label: "Equipment" },
+  { id: "meals", label: "Meals" },
+  { id: "prep", label: "Prep Day" },
+  { id: "pantry", label: "Pantry" },
+  { id: "dietary", label: "Dietary" },
+] as const;
+
 export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenerating }: Props) {
   const [breakfast, setBreakfast] = useState<BreakfastPref>(initialPrefs.breakfast);
   const [lunch, setLunch] = useState<LunchPref>(initialPrefs.lunch);
@@ -88,6 +98,42 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const [showHiddenRecipes, setShowHiddenRecipes] = useState(false);
   const [dislikedRecipes, setDislikedRecipes] = useState<string[]>(getDislikedRecipes);
   const phaseColor = PHASE_HEX[phase];
+
+  // Progress tracking
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+
+  const setSectionRef = useCallback((id: string) => (el: HTMLDivElement | null) => {
+    sectionRefs.current[id] = el;
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setVisibleSections(prev => {
+          const next = new Set(prev);
+          entries.forEach(e => {
+            if (e.isIntersecting) next.add(e.target.getAttribute("data-section") || "");
+            else next.delete(e.target.getAttribute("data-section") || "");
+          });
+          return next;
+        });
+      },
+      { threshold: 0.3 }
+    );
+    Object.values(sectionRefs.current).forEach(el => { if (el) observer.observe(el); });
+    return () => observer.disconnect();
+  }, []);
+
+  const furthestVisibleIdx = useMemo(() => {
+    let max = -1;
+    FORM_SECTIONS.forEach((s, i) => { if (visibleSections.has(s.id)) max = i; });
+    return max;
+  }, [visibleSections]);
+
+  const progressPct = FORM_SECTIONS.length > 0
+    ? Math.min(100, Math.round(((furthestVisibleIdx + 1) / FORM_SECTIONS.length) * 100))
+    : 0;
 
   const bodyGoals = useMemo<string[]>(() => {
     try {
@@ -135,6 +181,48 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
   return (
     <div className="space-y-5">
+      {/* Sticky progress bar */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-1 px-1 pt-1">
+        <div className="relative h-3 flex items-center">
+          {/* Track */}
+          <div className="absolute inset-x-0 h-[3px] rounded-full bg-border/40" />
+          {/* Fill */}
+          <div
+            className="absolute left-0 h-[3px] rounded-full bg-primary transition-all duration-500 ease-out"
+            style={{ width: `${progressPct}%` }}
+          />
+          {/* Section markers */}
+          {FORM_SECTIONS.map((s, i) => {
+            const left = ((i + 0.5) / FORM_SECTIONS.length) * 100;
+            const reached = i <= furthestVisibleIdx;
+            return (
+              <div
+                key={s.id}
+                className="absolute flex flex-col items-center"
+                style={{ left: `${left}%`, transform: "translateX(-50%)" }}
+              >
+                <div className={`h-3 w-3 rounded-full border-2 text-[6px] font-mono font-bold flex items-center justify-center transition-all ${
+                  reached
+                    ? "bg-primary border-primary text-primary-foreground"
+                    : "bg-background border-border text-muted-foreground"
+                }`}>
+                  {i + 1}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-between mt-1.5 px-0.5">
+          {FORM_SECTIONS.map((s, i) => (
+            <span key={s.id} className={`font-mono text-[7px] tracking-wide transition-colors ${
+              i <= furthestVisibleIdx ? "text-primary" : "text-muted-foreground/50"
+            }`}>
+              {s.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
       <div>
         <h2 className="font-display text-xl font-bold italic text-foreground">How does your week work?</h2>
         <p className="font-body text-sm text-muted-foreground mt-1 italic" style={{ fontWeight: 300 }}>
@@ -160,7 +248,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       )}
 
       {/* Cooking Skill */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("cooking")} data-section="cooking" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Cooking confidence</p>
         <RadioCard selected={cookingSkill === "beginner"} label="Beginner — quick and simple recipes only" description="Under 5 ingredients, minimal techniques" onSelect={() => setCookingSkill("beginner")} />
         <RadioCard selected={cookingSkill === "confident"} label="Confident — I can follow most recipes" description="Happy with standard home cooking" onSelect={() => setCookingSkill("confident")} />
@@ -168,7 +256,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Available Time */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("timing")} data-section="timing" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Max time per meal</p>
         <div className="flex flex-wrap gap-2">
           {([
@@ -189,7 +277,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Kitchen Equipment */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("equipment")} data-section="equipment" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Kitchen equipment</p>
         <div className="flex flex-wrap gap-2">
           {["Oven", "Stovetop", "Air fryer", "Slow cooker", "Blender", "Food processor", "Instant Pot"].map(item => (
@@ -205,7 +293,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Breakfast */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("meals")} data-section="meals" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Breakfast</p>
         <RadioCard selected={breakfast === "batch"} label="Same breakfast every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setBreakfast("batch")} />
         <RadioCard selected={breakfast === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setBreakfast("rotate")} />
@@ -229,7 +317,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Prep day */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("prep")} data-section="prep" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>When can you do your main prep?</p>
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>Bigger meals will be scheduled on your prep day(s) for advance cooking.</p>
         <div className="flex flex-wrap gap-2">
@@ -270,7 +358,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Pantry Staples */}
-      <div className="space-y-3 pt-2 border-t border-border">
+      <div ref={setSectionRef("pantry")} data-section="pantry" className="space-y-3 pt-2 border-t border-border">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Pantry staples I always have</p>
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
           Items you mark will be excluded from the shopping list.
@@ -293,7 +381,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Dietary requirements */}
-      <div className="space-y-3 pt-2 border-t border-border">
+      <div ref={setSectionRef("dietary")} data-section="dietary" className="space-y-3 pt-2 border-t border-border">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Dietary preferences</p>
         
         <div className="space-y-2">
