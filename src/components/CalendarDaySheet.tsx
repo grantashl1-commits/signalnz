@@ -26,6 +26,22 @@ interface Props {
 
 type Panel = "main" | "mood" | "symptoms" | "weight" | "notes";
 
+function PeriodToggleButton({ label, isActive, onTap }: { label: string; isActive: boolean; onTap: () => void }) {
+  return (
+    <button
+      onClick={onTap}
+      className="touch-btn rounded-2xl px-4 py-3 min-h-[52px] font-body text-sm font-bold border-2 active:opacity-90 transition-colors"
+      style={{
+        borderColor: "#C4526E",
+        color: isActive ? "#FDFCFB" : "#C4526E",
+        backgroundColor: isActive ? "#C4526E" : "transparent",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Props) {
   const [panel, setPanel] = useState<Panel>("main");
   const { cycleStartDate: lastPeriod } = useCycle();
