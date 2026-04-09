@@ -320,22 +320,46 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
               <div key={g.id} className="card-warm p-5">
                 <div className="flex justify-between items-start mb-2 gap-2">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-display text-xl font-bold italic text-foreground mb-0.5">{g.name}</h3>
-                      {g.group_type === "interest" && (
+                    <h3 className="font-display text-xl font-bold italic text-foreground mb-1">{g.name}</h3>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                      <span className="font-body text-xs text-muted-foreground">{g.city || g.suburb}</span>
+                      <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                        {g.members_count || 0} {(g.members_count || 0) === 1 ? "member" : "members"}
+                      </span>
+                      {g.group_type === "interest" && parentName && (
                         <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">
-                          {parentName ? `${parentName}` : "Interest"}
+                          {parentName}
                         </span>
                       )}
                     </div>
-                    <p className="font-body text-xs text-muted-foreground">{g.city || g.suburb} · {g.members_count || 0} members</p>
+                    {/* Stacked avatar placeholders when members exist */}
+                    {(g.members_count || 0) > 0 && (
+                      <div className="flex -space-x-2 mt-2">
+                        {Array.from({ length: Math.min(g.members_count || 0, 4) }).map((_, ai) => (
+                          <div
+                            key={ai}
+                            className="w-7 h-7 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center"
+                          >
+                            <span className="font-body text-[9px] font-semibold text-primary">
+                              {String.fromCharCode(65 + ai)}
+                            </span>
+                          </div>
+                        ))}
+                        {(g.members_count || 0) > 4 && (
+                          <div className="w-7 h-7 rounded-full bg-secondary border-2 border-card flex items-center justify-center">
+                            <span className="font-body text-[9px] font-medium text-muted-foreground">+{(g.members_count || 0) - 4}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {isJoined ? (
-                    <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0">Joined</span>
+                    <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0 mt-1">Joined</span>
                   ) : (
                     <button
                       onClick={() => onJoin(g.id)}
-                      className="touch-btn font-display text-sm italic text-primary-foreground bg-primary rounded-full px-5 py-2 active:scale-[0.97] flex-shrink-0"
+                      className="touch-btn font-body text-sm font-medium text-primary border border-primary rounded-full px-5 h-9 active:scale-[0.97] flex-shrink-0 mt-1 hover:bg-primary/5 transition-colors"
                     >
                       Join
                     </button>
