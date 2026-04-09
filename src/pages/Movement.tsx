@@ -204,15 +204,21 @@ export default function MovementPage() {
         </div>
       )}
 
-      {/* Tab bar - scrollable */}
-      <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
-        {TABS.map(tab => (
-          <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
-            className={`scroll-snap-item touch-tab flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-              activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
-            }`}
-          >{tab.label}</button>
-        ))}
+      {/* Tab bar - scrollable with fade mask */}
+      <div className="relative -mx-1">
+        <div className="flex gap-1.5 overflow-x-auto no-scrollbar px-1 py-1">
+          {TABS.map(tab => (
+            <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
+              className={`touch-tab flex-shrink-0 rounded-full px-4 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-secondary text-muted-foreground active:text-foreground"
+              }`}
+            >{tab.label}</button>
+          ))}
+        </div>
+        {/* Right fade mask */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
       </div>
 
       {/* TODAY TAB */}
