@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles, Wind, BookOpen, CircleDot } from "lucide-react";
+import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles, Wind, BookOpen, CircleDot, ChevronDown } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
