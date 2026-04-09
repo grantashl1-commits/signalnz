@@ -137,15 +137,17 @@ export default function DiscoverTab() {
       {/* Fridge CTA card */}
       <button
         onClick={() => setShowFridge(!showFridge)}
-        className="w-full rounded-xl border border-dashed border-primary/30 bg-primary/5 p-4 flex items-center gap-3 text-left transition-all hover:bg-primary/10 active:scale-[0.99]"
+        className="w-full rounded-2xl border-2 border-dashed border-[#5B2D72]/30 p-5 flex items-center gap-4 text-left transition-all active:scale-[0.98]"
+        style={{ background: "linear-gradient(135deg, #1A0F2E 0%, #261540 100%)" }}
       >
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <Camera className="h-5 w-5 text-primary" />
+        <div className="w-12 h-12 rounded-xl bg-[#5B2D72]/30 flex items-center justify-center flex-shrink-0 relative">
+          <Camera className="h-5 w-5 text-[#5B2D72]" style={{ color: "#B794D0" }} />
+          <Zap className="h-3 w-3 absolute -top-1 -right-1" style={{ color: "#B794D0" }} />
         </div>
         <div className="flex-1">
-          <p className="font-body text-sm font-medium text-foreground">What's in your fridge?</p>
-          <p className="font-body text-[11px] text-muted-foreground mt-0.5">
-            Type ingredients or snap a photo — we'll create {PHASE_SHORT[currentPhase]}-phase recipes
+          <p className="font-display text-sm font-bold italic" style={{ color: "#FAF7F4" }}>What's in your fridge?</p>
+          <p className="font-body text-[11px] mt-1 leading-relaxed" style={{ color: "rgba(250,247,244,0.55)" }}>
+            Type ingredients or snap a photo — <span style={{ color: PHASE_HEX[currentPhase] }}>we'll create {PHASE_SHORT[currentPhase]}-phase recipes</span>
           </p>
         </div>
       </button>
