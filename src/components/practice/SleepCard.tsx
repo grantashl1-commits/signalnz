@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Moon, Star } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
+import TimeDrumPicker from "./TimeDrumPicker";
 
 interface SleepData {
   bedtime: string;
@@ -84,7 +85,6 @@ export default function SleepCard({ phaseColor }: Props) {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Arc visual */}
         <div className="relative h-14 w-14 flex-shrink-0">
           <svg viewBox="0 0 56 56" className="h-14 w-14">
             <circle cx="28" cy="28" r="24" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
@@ -146,6 +146,17 @@ function SleepInput({
   const [bedtime, setBedtime] = useState(initial?.bedtime || "22:00");
   const [wakeTime, setWakeTime] = useState(initial?.wakeTime || "06:30");
   const [quality, setQuality] = useState(initial?.quality || 0);
+  const [pickerOpen, setPickerOpen] = useState<"bedtime" | "wake" | null>(null);
+
+  const formatDisplay = (time: string) => {
+    const [h, m] = time.split(":").map(Number);
+    const suffix = h >= 12 ? "PM" : "AM";
+    const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return { time: `${h12}:${m.toString().padStart(2, "0")}`, suffix };
+  };
+
+  const bed = formatDisplay(bedtime);
+  const wake = formatDisplay(wakeTime);
 
   return (
     <motion.div
@@ -162,22 +173,24 @@ function SleepInput({
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
-          <label className="font-body text-xs text-muted-foreground block mb-1">Bedtime</label>
-          <input
-            type="time"
-            value={bedtime}
-            onChange={e => setBedtime(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 font-body text-sm text-foreground"
-          />
+          <label className="font-body text-xs text-muted-foreground block mb-1.5">Bedtime</label>
+          <button
+            onClick={() => setPickerOpen("bedtime")}
+            className="w-full rounded-full border border-border bg-secondary/50 px-4 py-3 flex items-center justify-center gap-1.5 hover:border-primary/30 transition-colors"
+          >
+            <span className="font-display text-xl font-bold text-foreground">{bed.time}</span>
+            <span className="font-body text-xs font-medium text-muted-foreground mt-0.5">{bed.suffix}</span>
+          </button>
         </div>
         <div>
-          <label className="font-body text-xs text-muted-foreground block mb-1">Wake time</label>
-          <input
-            type="time"
-            value={wakeTime}
-            onChange={e => setWakeTime(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 font-body text-sm text-foreground"
-          />
+          <label className="font-body text-xs text-muted-foreground block mb-1.5">Wake time</label>
+          <button
+            onClick={() => setPickerOpen("wake")}
+            className="w-full rounded-full border border-border bg-secondary/50 px-4 py-3 flex items-center justify-center gap-1.5 hover:border-primary/30 transition-colors"
+          >
+            <span className="font-display text-xl font-bold text-foreground">{wake.time}</span>
+            <span className="font-body text-xs font-medium text-muted-foreground mt-0.5">{wake.suffix}</span>
+          </button>
         </div>
       </div>
 
@@ -216,6 +229,15 @@ function SleepInput({
           </button>
         )}
       </div>
+
+      <TimeDrumPicker
+        value={pickerOpen === "bedtime" ? bedtime : wakeTime}
+        onChange={pickerOpen === "bedtime" ? setBedtime : setWakeTime}
+        open={pickerOpen !== null}
+        onClose={() => setPickerOpen(null)}
+        label={pickerOpen === "bedtime" ? "Bedtime" : "Wake time"}
+        accentColor={phaseColor}
+      />
     </motion.div>
   );
 }
