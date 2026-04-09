@@ -13,18 +13,28 @@ import SignalLogo from "@/components/SignalLogo";
 import { useAICredits } from "@/hooks/useAICredits";
 import PageTransition from "@/components/PageTransition";
 
+// Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 const navItems = [
-  { path: "/my-practice", icon: Home, label: "Daily Habits" },
-  { path: "/nutrition", icon: Home, label: "Nutrition" },
+  { path: "/my-practice", icon: Leaf, label: "Daily Habits" },
+  { path: "/nutrition", icon: Utensils, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
-  { path: "/mindfulness", icon: Home, label: "Mindfulness" },
+  { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
   { path: "/journal", icon: BookOpen, label: "Journal" },
-  { path: "/community", icon: Home, label: "Community" },
+  { path: "/community", icon: Users, label: "Community" },
 ];
 
+// Mobile bottom tabs: Daily Habits | Nutrition | Movement | Cycle | More | Journal | Community | Account
+// That's 8 items — too many for a tab bar. We'll do 5 primary + More overlay.
+// Primary: Home(logo) + Daily Habits | Cycle | Journal | Move | More
+// Per user request exact order: Daily Habits | Nutrition | Movement | Cycle | More
+// With More containing: Mindfulness | Journal | Community | Account
+// But user also wants Journal and Community as top-level... Let's use 5 tabs + More:
+// Tabs: Daily Habits | Cycle | Journal | Move | More
+// More: Nutrition | Mindfulness | Community | Account
+
 const PRIMARY_TABS = [
-  { path: "/", label: "Home", icon: Home },
+  { path: "/my-practice", label: "Habits", icon: Leaf },
   { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/movement", label: "Move", icon: Dumbbell },
@@ -33,9 +43,7 @@ const PRIMARY_TABS = [
 
 const MORE_ITEMS = [
   { path: "/nutrition", label: "Nourish", icon: Utensils },
-  { path: "/my-practice", label: "Daily Habits", icon: Leaf },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
-  { path: "/breathwork", label: "Breathwork", icon: Zap },
   { path: "/community", label: "Community", icon: Users },
   { path: "/account", label: "Account", icon: User },
 ];

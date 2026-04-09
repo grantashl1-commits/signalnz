@@ -78,7 +78,7 @@ const App = () => {
                         <Route path="/cycle" element={<Cycle />} />
                         <Route path="/nutrition" element={<Nutrition />} />
                         <Route path="/movement" element={<Movement />} />
-                        <Route path="/breathwork" element={<Breathwork />} />
+                        <Route path="/breathwork" element={<Navigate to="/mindfulness" replace />} />
                         <Route path="/nervous-system" element={<NervousSystem />} />
                         <Route path="/mindfulness" element={<NervousSystem />} />
                         <Route path="/journal" element={<Journal />} />
