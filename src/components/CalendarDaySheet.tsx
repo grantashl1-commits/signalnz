@@ -330,7 +330,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                 placeholder="How is your body feeling today? What do you want to remember about this day?"
                 rows={8}
                 className="w-full rounded-xl border border-border px-4 py-3 font-body text-sm text-foreground leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                style={{ backgroundColor: "#F5EDE0", fontSize: "16px" }}
+                style={{ backgroundColor: "hsl(var(--card))", fontSize: "16px" }}
               />
               <p className="font-body text-[9px] text-muted-foreground text-right">
                 {notesText.split(/\s+/).filter(Boolean).length} words

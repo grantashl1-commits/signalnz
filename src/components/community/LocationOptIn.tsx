@@ -67,7 +67,7 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
 
         <button
           onClick={onAccept}
-          className="touch-btn w-full py-4 rounded-[14px] bg-primary text-primary-foreground font-display text-[17px] italic mb-2.5 active:scale-[0.97]"
+          className="touch-btn w-full py-4 rounded-card bg-primary text-primary-foreground font-display text-[17px] italic mb-2.5 active:scale-[0.97]"
         >
           Yes, show me nearby people
         </button>

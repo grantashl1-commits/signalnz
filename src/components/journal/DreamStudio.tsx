@@ -89,11 +89,11 @@ function DreamRitualFlow({ ritual, onComplete, onBack }: { ritual: typeof DREAM_
           </motion.div>
         </AnimatePresence>
         <div className="flex gap-3 mt-4">
-          {step > 0 && <button onClick={() => setStep(step - 1)} className="flex-1 rounded-[14px] border border-border py-3.5 font-display text-sm italic text-muted-foreground">Back</button>}
+          {step > 0 && <button onClick={() => setStep(step - 1)} className="flex-1 rounded-card border border-border py-3.5 font-display text-sm italic text-muted-foreground">Back</button>}
           {isLast ? (
-            <button onClick={complete} className="flex-1 rounded-[14px] bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90 flex items-center justify-center gap-2"><Sparkles className="h-4 w-4" /> Add to board</button>
+            <button onClick={complete} className="flex-1 rounded-card bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90 flex items-center justify-center gap-2"><Sparkles className="h-4 w-4" /> Add to board</button>
           ) : (
-            <button onClick={() => setStep(step + 1)} className="flex-1 rounded-[14px] bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90 flex items-center justify-center gap-2">Next <ArrowRight className="h-4 w-4" /></button>
+            <button onClick={() => setStep(step + 1)} className="flex-1 rounded-card bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:opacity-90 flex items-center justify-center gap-2">Next <ArrowRight className="h-4 w-4" /></button>
           )}
         </div>
       </div>
@@ -131,7 +131,7 @@ function FutureSelfMode({ onComplete, onBack }: { onComplete: (elements: Omit<Dr
             </motion.div>
           ))}
         </div>
-        <button onClick={complete} className="w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-4 flex items-center justify-center gap-2"><Sparkles className="h-4 w-4" /> Add to board</button>
+        <button onClick={complete} className="w-full rounded-card bg-primary py-3.5 font-display text-base italic text-primary-foreground active:opacity-90 mt-4 flex items-center justify-center gap-2"><Sparkles className="h-4 w-4" /> Add to board</button>
       </div>
     </div>
   );

@@ -97,7 +97,7 @@ export default function DailySignalCard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="relative overflow-hidden rounded-[18px] border border-border"
-      style={{ backgroundColor: "#F5EDE0" }}
+      style={{ backgroundColor: "hsl(var(--card))" }}
     >
       {/* Left border */}
       <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-[18px]" style={{ backgroundColor: phaseColor }} />
@@ -153,7 +153,7 @@ export function PeriodDueReminder() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl px-4 py-3 text-center"
-      style={{ backgroundColor: "#F5EDE0" }}
+      style={{ backgroundColor: "hsl(var(--card))" }}
     >
       <p className="font-hand text-sm text-muted-foreground">
         <WildStar size={12} color="#8B6F5E" className="inline-block mr-1 -mt-0.5" />
