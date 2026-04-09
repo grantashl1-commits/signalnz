@@ -370,8 +370,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Build button */}
       <button onClick={handleBuild} disabled={isGenerating}
-        className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-white transition-all active:opacity-90 disabled:opacity-50"
-        style={{ backgroundColor: phaseColor }}>
+        className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary transition-all active:opacity-90 disabled:opacity-50">
         {isGenerating ? (
           <span className="flex items-center justify-center gap-2">
             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
