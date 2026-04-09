@@ -288,18 +288,32 @@ export default function PracticePage() {
                     </button>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    {[...HABIT_CATEGORIES, { id: "foundations" as HabitCategory, label: "Foundations", color: "hsl(var(--primary))" }].map(cat => (
-                      <button
-                        key={cat.id}
-                        onClick={() => {
-                          setShowCategoryChooser(false);
-                          openPicker(cat.id === ("foundations" as string) ? "self-care" : cat.id as HabitCategory);
-                        }}
-                        className="touch-btn rounded-[16px] p-5 text-center border border-border bg-card shadow-soft hover:shadow-medium hover:border-primary/20"
-                      >
-                        <span className="font-display text-base font-semibold text-foreground">{cat.label}</span>
-                      </button>
-                    ))}
+                    {(() => {
+                      const CATEGORY_META: Record<string, { icon: typeof Pill; tint: string; border: string }> = {
+                        supplements: { icon: Pill, tint: "bg-[hsl(284_30%_96%)]", border: "border-[hsl(284_40%_80%)]" },
+                        nutrition:   { icon: Salad, tint: "bg-[hsl(142_30%_95%)]", border: "border-[hsl(142_35%_78%)]" },
+                        movement:    { icon: Zap, tint: "bg-[hsl(35_40%_95%)]", border: "border-[hsl(35_45%_78%)]" },
+                        "self-care": { icon: Sparkles, tint: "bg-[hsl(330_30%_96%)]", border: "border-[hsl(330_35%_80%)]" },
+                        foundations: { icon: Landmark, tint: "bg-[hsl(260_25%_95%)]", border: "border-[hsl(260_30%_80%)]" },
+                      };
+                      return [...HABIT_CATEGORIES, { id: "foundations" as HabitCategory, label: "Foundations", color: "hsl(var(--primary))" }].map(cat => {
+                        const meta = CATEGORY_META[cat.id] || CATEGORY_META.foundations;
+                        const Icon = meta.icon;
+                        return (
+                          <button
+                            key={cat.id}
+                            onClick={() => {
+                              setShowCategoryChooser(false);
+                              openPicker(cat.id === ("foundations" as string) ? "self-care" : cat.id as HabitCategory);
+                            }}
+                            className={`touch-btn rounded-[16px] h-[88px] flex flex-col items-center justify-center gap-2 border shadow-soft hover:shadow-medium hover:border-primary/20 ${meta.tint} ${meta.border}`}
+                          >
+                            <Icon className="h-6 w-6 text-foreground/70" />
+                            <span className="font-display text-[13px] font-semibold text-foreground">{cat.label}</span>
+                          </button>
+                        );
+                      });
+                    })()}
                   </div>
                 </div>
               </motion.div>
