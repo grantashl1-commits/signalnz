@@ -399,25 +399,58 @@ export default function MovementPage() {
                       return (
                         <div key={ex.name}>
                           {showSection && ex.section && (
-                            <p className="font-hand text-xs font-bold text-primary mt-3 mb-1">{ex.section}</p>
+                            <div className="flex items-center gap-2 mt-5 mb-2">
+                              <div className="h-px flex-1 bg-border" />
+                              <p className="font-mono text-[11px] font-bold text-primary/70 uppercase tracking-[0.15em]">{ex.section}</p>
+                              <div className="h-px flex-1 bg-border" />
+                            </div>
                           )}
                           <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
-                            className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
+                            className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[56px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
                             whileTap={{ scale: 0.98 }}
                           >
-                            <div
-                              className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${done ? "bg-primary border-primary" : "border-muted-foreground/30"}`}
+                            {/* Animated checkmark */}
+                            <motion.div
+                              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border-2 transition-colors"
+                              style={{
+                                borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground) / 0.25)',
+                                backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
+                              }}
                               onClick={(e) => { e.stopPropagation(); toggleExercise(ex.name); }}
+                              whileTap={{ scale: 0.85 }}
                             >
-                              {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
-                            </div>
-                            {/* Mini animation preview */}
-                            <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}>
-                              <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                              <motion.svg
+                                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                                initial={false}
+                                animate={done ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+                              >
+                                <motion.path
+                                  d="M3 7.5L5.5 10L11 4"
+                                  stroke="hsl(var(--primary-foreground))"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  initial={{ pathLength: 0 }}
+                                  animate={{ pathLength: done ? 1 : 0 }}
+                                  transition={{ duration: 0.25, ease: "easeOut" }}
+                                />
+                              </motion.svg>
+                            </motion.div>
+                            {/* Circular thumbnail with brand ring */}
+                            <div
+                              className="flex-shrink-0 rounded-full overflow-hidden"
+                              style={{
+                                width: 44, height: 44,
+                                padding: 2,
+                                background: `linear-gradient(135deg, ${PHASE_HEX[info.phase]}40, ${PHASE_HEX[info.phase]}15)`,
+                              }}
+                              onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}
+                            >
+                              <ExerciseDemonstration exerciseName={ex.name} size={40} className="rounded-full" />
                             </div>
                             <div className="flex-1 min-w-0" onClick={() => { haptic("light"); setDrawerExercise(ex); }}>
-                              <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
-                              <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[info.phase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                              <p className={`font-body text-sm leading-tight ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
+                              <p className="font-body text-xs text-muted-foreground mt-0.5">{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
                             </div>
                             <p className="font-display text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{ex.formCue}</p>
                           </motion.div>
