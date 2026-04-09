@@ -30,7 +30,7 @@ type EntryType = "reflect" | "gratitude" | "one line";
 const TABS: { id: Tab; label: string }[] = [
   { id: "write", label: "Write" },
   { id: "entries", label: "Entries" },
-  { id: "insights", label: "Insights" },
+  { id: "insights", label: "Reflect" },
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {
@@ -481,7 +481,7 @@ export default function JournalPage() {
           <div className="text-center">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
             <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
-              {tab === "write" ? "My Journal" : tab === "entries" ? "Entries" : "Insights"}
+              {tab === "write" ? "My Journal" : tab === "entries" ? "Entries" : "Reflect"}
             </h1>
             <div className="flex items-center justify-center gap-3">
               <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md">
