@@ -14,8 +14,8 @@ import { useAICredits } from "@/hooks/useAICredits";
 import PageTransition from "@/components/PageTransition";
 
 // Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
+// Desktop nav: Home | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 const navItems = [
-  { path: "/my-practice", icon: Leaf, label: "Daily Habits" },
   { path: "/nutrition", icon: Utensils, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
@@ -34,7 +34,7 @@ const navItems = [
 // More: Nutrition | Mindfulness | Community | Account
 
 const PRIMARY_TABS = [
-  { path: "/my-practice", label: "Habits", icon: Leaf },
+  { path: "/", label: "Home", icon: Home },
   { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/movement", label: "Move", icon: Dumbbell },
