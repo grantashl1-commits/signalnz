@@ -361,7 +361,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                       return (
                         <div key={item.name} className="flex items-center gap-2">
                           <button onClick={() => toggleItem(key)}
-                            className={`touch-btn h-5 w-5 rounded-full border flex-shrink-0 flex items-center justify-center transition-all ${
+                            className={`touch-btn flex-shrink-0 flex items-center justify-center transition-all`}>
                               isChecked ? "border-transparent" : "border-border"
                             }`}
                             style={isChecked ? { backgroundColor: `${weekPhaseColor}30`, borderColor: `${weekPhaseColor}60` } : {}}>
