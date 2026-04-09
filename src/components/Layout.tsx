@@ -45,6 +45,7 @@ const MORE_ITEMS = [
   { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
   { path: "/community", label: "Community", icon: Users },
+  { path: "/my-practice", label: "Habit Setup", icon: Leaf },
   { path: "/account", label: "Account", icon: User },
 ];
 
@@ -312,8 +313,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* Give me a signal — floating CTA + panel */}
-      <SignalFloatingCTA onClick={() => openSignal()} />
+      {/* Give me a signal — panel only (no floating CTA) */}
       <SignalPanel
         open={signalOpen}
         onClose={closeSignal}
