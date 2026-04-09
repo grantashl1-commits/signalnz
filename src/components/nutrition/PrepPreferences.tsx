@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Minus, Plus, Dumbbell, Eye, EyeOff, Check } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
 import {
