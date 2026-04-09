@@ -94,7 +94,7 @@ export default function BoardSwitcher({ boards, activeBoardId, onSwitch, onCreat
               </div>
 
               {/* Meta */}
-              <p className="font-mono text-[9px] text-muted-foreground/40 mt-1.5 pl-6">
+              <p className="font-body text-[9px] text-muted-foreground/40 mt-1.5 pl-6">
                 {board.elements.length} elements · {board.connections.length} connections
               </p>
 

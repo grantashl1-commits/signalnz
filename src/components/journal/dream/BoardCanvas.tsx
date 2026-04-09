@@ -227,7 +227,7 @@ export default function BoardCanvas({
 
       {/* Connecting mode indicator */}
       {connectingFrom && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-primary text-primary-foreground font-mono text-[11px] shadow-lg animate-pulse">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-primary text-primary-foreground font-body text-[11px] shadow-lg animate-pulse">
           Click another element to connect · ESC to cancel
         </div>
       )}

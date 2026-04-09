@@ -111,7 +111,7 @@ function FinishSentenceGame({ activity, onSave, onBack }: { activity: Activity; 
 
   return (
     <div className="pb-10">
-      <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
+      <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
       <h2 className="font-display text-2xl italic text-foreground mb-1">{activity.title}</h2>
       <p className="font-body text-sm text-muted-foreground mb-5">{activity.desc}</p>
       <div className="space-y-4">
@@ -143,7 +143,7 @@ function EitherOrGame({ activity, onSave, onBack }: { activity: Activity; onSave
 
   return (
     <div className="pb-10">
-      <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
+      <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
       <h2 className="font-display text-2xl italic text-foreground mb-1">{activity.title}</h2>
       <p className="font-body text-sm text-muted-foreground mb-5">{activity.desc}</p>
       <div className="space-y-3">
@@ -180,7 +180,7 @@ function CardPickGame({ activity, onSave, onBack }: { activity: Activity; onSave
 
   return (
     <div className="pb-10">
-      <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
+      <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
       <h2 className="font-display text-2xl italic text-foreground mb-1">{activity.title}</h2>
       <p className="font-body text-sm text-muted-foreground mb-5">{activity.desc}</p>
 
@@ -196,11 +196,11 @@ function CardPickGame({ activity, onSave, onBack }: { activity: Activity; onSave
                 className={`aspect-[3/4] rounded-xl transition-all ${revealed.has(i) ? "bg-primary/10 border border-primary/20" : "bg-gradient-to-br from-primary/15 to-accent/10 border border-primary/20 hover:shadow-md"}`}
                 disabled={revealed.has(i)}
               >
-                {revealed.has(i) && <span className="font-mono text-[10px] text-primary">Revealed</span>}
+                {revealed.has(i) && <span className="font-body text-[10px] text-primary">Revealed</span>}
               </motion.button>
             ))}
           </div>
-          <button onClick={pickRandom} className="font-mono text-sm text-primary flex items-center gap-1.5 mx-auto active:opacity-70"><Shuffle className="h-4 w-4" /> Pick randomly</button>
+          <button onClick={pickRandom} className="font-body text-sm text-primary flex items-center gap-1.5 mx-auto active:opacity-70"><Shuffle className="h-4 w-4" /> Pick randomly</button>
         </div>
       ) : (
         <div>
@@ -227,11 +227,11 @@ function WriteActivity({ activity, onSave, onBack }: { activity: Activity; onSav
 
   return (
     <div className="pb-10">
-      <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
+      <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back</button>
       <div className="mb-4">
         <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full" style={{ backgroundColor: `${CATEGORY_ACCENT[activity.category]}18`, color: CATEGORY_ACCENT[activity.category] }}>{activity.category}</span>
         <h2 className="font-display text-2xl italic text-foreground mt-2 mb-1">{activity.title}</h2>
-        <p className="font-mono text-xs text-muted-foreground flex items-center gap-1.5"><Clock className="h-3 w-3" /> {activity.time}</p>
+        <p className="font-body text-xs text-muted-foreground flex items-center gap-1.5"><Clock className="h-3 w-3" /> {activity.time}</p>
       </div>
       <div className="card-warm p-6 min-h-[300px]">
         <textarea value={text} onChange={(e) => setText(e.target.value)} rows={14} className="w-full font-display text-[15px] italic text-foreground bg-transparent resize-none focus:outline-none leading-[1.9] placeholder:text-muted-foreground/30" style={{ fontSize: "16px" }} autoFocus />
@@ -269,14 +269,14 @@ function SpinPrompt({ onSelect }: { onSelect: (activity: Activity) => void }) {
         </div>
         <div>
           <h3 className="font-display text-[15px] italic text-foreground">Not sure what to write?</h3>
-          <p className="font-mono text-[11px] text-muted-foreground">Spin for a prompt and let the universe decide.</p>
+          <p className="font-body text-[11px] text-muted-foreground">Spin for a prompt and let the universe decide.</p>
         </div>
       </div>
       {result && !spinning ? (
         <div className="bg-primary/5 rounded-xl p-4 mb-3">
           <p className="font-display text-sm italic text-foreground mb-1">{result.title}</p>
-          <p className="font-mono text-[11px] text-muted-foreground mb-2">{result.desc}</p>
-          <button onClick={() => onSelect(result)} className="font-mono text-[11px] text-primary active:opacity-70">Begin this one</button>
+          <p className="font-body text-[11px] text-muted-foreground mb-2">{result.desc}</p>
+          <button onClick={() => onSelect(result)} className="font-body text-[11px] text-primary active:opacity-70">Begin this one</button>
         </div>
       ) : null}
       <button onClick={spin} disabled={spinning} className="w-full rounded-xl bg-secondary py-3 font-display text-sm italic text-foreground active:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2">

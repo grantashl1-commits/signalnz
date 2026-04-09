@@ -319,7 +319,7 @@ export default function MembershipPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.25 }}
-                        className="font-mono text-3xl md:text-4xl text-foreground"
+                        className="font-body text-3xl md:text-4xl text-foreground"
                       >
                         {displayPrice}
                       </motion.span>
@@ -425,7 +425,7 @@ export default function MembershipPage() {
           Need more signals? Add 50 AI credits instantly.
         </p>
         <div className="flex items-baseline justify-center gap-1 mb-4">
-          <span className="font-mono text-2xl text-foreground">$5</span>
+          <span className="font-body text-2xl text-foreground">$5</span>
           <span className="font-body text-sm text-muted-foreground">one-off</span>
         </div>
         <button

@@ -86,7 +86,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-[10px] text-primary uppercase tracking-[0.15em]">
+          <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
             {template.day_label || `Session ${template.session_number || ""}`} · {phaseName || ""}
           </p>
           <h2 className="font-display text-xl font-extrabold text-foreground truncate">
@@ -109,7 +109,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
       {/* Warmup */}
       {template.warmup_notes && (
         <div className="space-y-1.5">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Warm-up</p>
+          <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Warm-up</p>
           <div className="rounded-xl bg-card border border-border p-3.5">
             <p className="font-body text-sm text-muted-foreground leading-relaxed">{template.warmup_notes}</p>
           </div>
@@ -118,14 +118,14 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
 
       {/* Exercises */}
       <div className="space-y-2">
-        <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Exercises</p>
+        <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Exercises</p>
         
         {groupedExercises.map((item, idx) => {
           if (Array.isArray(item)) {
             return (
               <div key={`superset-${idx}`} className="rounded-xl border-2 border-primary/20 overflow-hidden">
                 <div className="bg-primary/5 px-3.5 py-1.5">
-                  <span className="font-mono text-[10px] text-primary uppercase tracking-wider">Superset</span>
+                  <span className="font-body text-[10px] text-primary uppercase tracking-wider">Superset</span>
                 </div>
                 {item.map((ex) => (
                   <ExerciseCard
@@ -156,7 +156,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
       {/* Cooldown */}
       {template.cooldown_notes && (
         <div className="space-y-1.5">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Cool-down</p>
+          <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Cool-down</p>
           <div className="rounded-xl bg-card border border-border p-3.5">
             <p className="font-body text-sm text-muted-foreground leading-relaxed">{template.cooldown_notes}</p>
           </div>
@@ -265,7 +265,7 @@ function ExerciseCard({
                 <span className="font-body text-xs text-muted-foreground">{ex.rest_seconds}s rest</span>
               )}
               {ex.rpe_target != null && (
-                <span className="font-mono text-[10px] text-primary uppercase">RPE {ex.rpe_target}</span>
+                <span className="font-body text-[10px] text-primary uppercase">RPE {ex.rpe_target}</span>
               )}
             </div>
           </div>
@@ -295,7 +295,7 @@ function ExerciseCard({
 
               {instructions.length > 0 && (
                 <div>
-                  <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-wider mb-1">How to</p>
+                  <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider mb-1">How to</p>
                   {instructions.map((inst: string, j: number) => (
                     <p key={j} className="font-body text-xs text-muted-foreground leading-relaxed">{inst}</p>
                   ))}
@@ -306,7 +306,7 @@ function ExerciseCard({
                 <div className="rounded-lg bg-primary/5 border border-primary/10 p-3">
                   <div className="flex items-center gap-1.5 mb-2">
                     <MessageCircle className="h-3 w-3 text-primary" />
-                    <p className="font-mono text-[9px] text-primary uppercase tracking-wider font-semibold">Coaching cues</p>
+                    <p className="font-body text-[9px] text-primary uppercase tracking-wider font-semibold">Coaching cues</p>
                   </div>
                   <ul className="space-y-1.5">
                     {cues.map((cue: string, j: number) => (

@@ -94,19 +94,19 @@ export default function StoicLensDisplay({
       >
         <div className="flex items-center gap-2">
           <span className="font-body text-base">🌿</span>
-          <span className="font-mono text-[11px] uppercase tracking-wider text-phase-follicular">The Stoic Lens · Day {lens.seq_day}</span>
+          <span className="font-body text-[11px] uppercase tracking-wider text-phase-follicular">The Stoic Lens · Day {lens.seq_day}</span>
         </div>
-        <p className="font-mono text-[11px] text-muted-foreground">{lens.stoic_title} — {reading?.author}</p>
+        <p className="font-body text-[11px] text-muted-foreground">{lens.stoic_title} — {reading?.author}</p>
 
         <p className="font-display text-base italic text-foreground leading-relaxed">{lens.bridge_metaphor}</p>
 
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">The principle</p>
+          <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground/60">The principle</p>
           <p className="font-body text-sm text-muted-foreground leading-relaxed">{lens.stoic_principle}</p>
         </div>
 
         <div className="space-y-1 pt-2 border-t border-border/30">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">Carry this forward</p>
+          <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground/60">Carry this forward</p>
           <p className="font-display text-sm italic text-foreground leading-relaxed">{lens.carry_forward}</p>
         </div>
       </motion.div>

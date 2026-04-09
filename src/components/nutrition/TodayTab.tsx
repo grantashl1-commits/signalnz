@@ -160,7 +160,7 @@ export default function TodayTab() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">Daily Protein Target</p>
-              <p className="font-mono text-2xl font-bold text-foreground mt-1">
+              <p className="font-body text-2xl font-bold text-foreground mt-1">
                 {nutritionTarget.dailyProteinMin}–{nutritionTarget.dailyProteinMax}g
               </p>
               <p className="font-body text-xs text-muted-foreground mt-0.5">{nutritionTarget.calorieNote}</p>
@@ -173,7 +173,7 @@ export default function TodayTab() {
                   strokeDasharray={`${28 * 2 * Math.PI * 0.65} ${28 * 2 * Math.PI}`}
                   strokeLinecap="round" transform="rotate(-90 32 32)" className="transition-all" />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center font-mono text-[10px] font-bold text-foreground">
+              <span className="absolute inset-0 flex items-center justify-center font-body text-[10px] font-bold text-foreground">
                 {nutritionTarget.proteinMin}g/kg
               </span>
             </div>
@@ -369,8 +369,8 @@ function MealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEaten, phas
         {/* Macro pills for AI meals */}
         {aiMeal && (aiMeal as any).calories && (
           <div className="flex gap-2 mt-2 flex-wrap">
-            {(aiMeal as any).protein && <span className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">Protein {(aiMeal as any).protein}</span>}
-            {(aiMeal as any).calories && <span className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">{(aiMeal as any).calories}</span>}
+            {(aiMeal as any).protein && <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">Protein {(aiMeal as any).protein}</span>}
+            {(aiMeal as any).calories && <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">{(aiMeal as any).calories}</span>}
           </div>
         )}
 
@@ -412,7 +412,7 @@ function MealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEaten, phas
                           <ol className="space-y-2 pt-2">
                             {method.map((step, idx) => (
                               <li key={idx} className="flex gap-3">
-                                <span className="font-mono text-sm font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>{idx + 1}.</span>
+                                <span className="font-body text-sm font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>{idx + 1}.</span>
                                 <p className="font-body text-sm text-muted-foreground leading-relaxed">{step}</p>
                               </li>
                             ))}

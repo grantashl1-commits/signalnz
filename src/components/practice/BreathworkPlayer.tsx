@@ -153,11 +153,11 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
 
         {/* Round + Time */}
         <div className="flex items-center gap-4 mb-6">
-          <span className="font-mono text-xs text-muted-foreground">
+          <span className="font-body text-xs text-muted-foreground">
             round {round + 1}{maxRounds < 999 ? ` / ${maxRounds}` : ""}
           </span>
           <span className="text-muted-foreground/30">·</span>
-          <span className="font-mono text-xs text-muted-foreground">
+          <span className="font-body text-xs text-muted-foreground">
             {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
           </span>
         </div>
@@ -188,7 +188,7 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
             <p className="font-display text-xl italic text-primary mb-1">
               {currentPhase.label}
             </p>
-            <p className="font-mono text-5xl text-foreground font-light">
+            <p className="font-body text-5xl text-foreground font-light">
               {remaining}
             </p>
           </div>
@@ -212,11 +212,11 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
         {/* Audio availability badge */}
         <div className="mb-6">
           {hasAudio ? (
-            <span className="font-mono text-[11px] px-3 py-1 rounded-full bg-primary/10 text-primary">
+            <span className="font-body text-[11px] px-3 py-1 rounded-full bg-primary/10 text-primary">
               guided audio available
             </span>
           ) : (
-            <span className="font-mono text-[11px] px-3 py-1 rounded-full bg-muted text-muted-foreground">
+            <span className="font-body text-[11px] px-3 py-1 rounded-full bg-muted text-muted-foreground">
               timer only
             </span>
           )}

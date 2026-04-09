@@ -63,7 +63,7 @@ function Pill({ label, variant = "sage" }: { label: string; variant?: "sage" | "
     : variant === "blue"
     ? "bg-accent/10 text-accent"
     : "bg-phase-follicular/10 text-phase-follicular";
-  return <span className={`font-mono text-[11px] px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
+  return <span className={`font-body text-[11px] px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
 }
 
 function HandDrawnHeadphones({ size = 20 }: { size?: number }) {
@@ -173,10 +173,10 @@ function EntryTypePicker({ onSelect, onCancel }: { onSelect: (type: string) => v
                 <div className="w-6 h-6 rounded-full bg-primary/8 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
                   <PenLine className="h-3 w-3 text-primary" />
                 </div>
-                {tone && <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded-full ${tone.color}`}>{tone.label}</span>}
+                {tone && <span className={`font-body text-[9px] px-1.5 py-0.5 rounded-full ${tone.color}`}>{tone.label}</span>}
               </div>
               <h3 className="font-display text-[15px] italic text-foreground mb-1">{t.label}</h3>
-              <p className="font-mono text-[11px] text-muted-foreground leading-snug">{t.desc}</p>
+              <p className="font-body text-[11px] text-muted-foreground leading-snug">{t.desc}</p>
             </motion.button>
           );
         })}
@@ -246,7 +246,7 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
       <div className="flex items-center justify-between mb-2">
         <div>
           <p className="font-hand text-sm font-bold text-primary">{typeConfig?.label || "New Entry"}</p>
-          <p className="font-mono text-xs text-muted-foreground">{today}</p>
+          <p className="font-body text-xs text-muted-foreground">{today}</p>
         </div>
         <button onClick={onCancel} className="text-muted-foreground active:text-foreground">
           <X className="h-5 w-5" />
@@ -261,7 +261,7 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
           return (
             <div key={f.key} className="mb-3.5">
               <div className="flex justify-between mb-1">
-                <span className="font-mono text-[13px] text-foreground/70 flex items-center gap-1.5">
+                <span className="font-body text-[13px] text-foreground/70 flex items-center gap-1.5">
                   {Icon && <Icon size={14} />} {f.label}
                 </span>
                 <span className="font-display text-lg italic text-primary">{tracking[f.key as keyof typeof tracking]}</span>
@@ -312,7 +312,7 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
       <div className="text-center pt-16">
         <HandDrawnLeaf size={40} color="hsl(var(--primary))" className="mx-auto mb-4" />
         <p className="font-display text-xl italic text-foreground mb-2">{isMilestone ? "Reflecting on your journey..." : "Reading your entry with care..."}</p>
-        <p className="font-mono text-xs text-muted-foreground">Your AI therapist is listening.</p>
+        <p className="font-body text-xs text-muted-foreground">Your AI therapist is listening.</p>
         <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mt-6" />
       </div>
     );
@@ -327,13 +327,13 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
 
   return (
     <div className="pb-10 max-w-3xl mx-auto">
-      <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back to entries</button>
+      <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><ArrowLeft className="h-3.5 w-3.5" /> Back to entries</button>
       <h2 className="font-display text-2xl font-bold italic text-foreground mb-0.5">{isMilestone ? ai.milestone_title || "Growth Reflection" : "Soul Analysis"}</h2>
-      <p className="font-mono text-xs text-muted-foreground mb-5">{entry.date}</p>
+      <p className="font-body text-xs text-muted-foreground mb-5">{entry.date}</p>
 
       {ai.summary && (
         <div className="rounded-2xl bg-primary/5 border border-primary/15 p-4 mb-3">
-          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">{isMilestone ? "Your journey so far" : "Today's signal"}</p>
+          <p className="font-body text-[11px] text-primary uppercase tracking-wider mb-2">{isMilestone ? "Your journey so far" : "Today's signal"}</p>
           <p className="font-display text-sm italic text-foreground/80 leading-relaxed">{ai.summary}</p>
         </div>
       )}
@@ -355,13 +355,13 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
           {ai.recommendations.map((r: any, i: number) => (
             <div key={i} className="flex gap-3 bg-secondary/30 rounded-xl p-3.5 mb-2">
               <div className="mt-0.5">{r.type === "book" ? <HandDrawnBook size={20} color="hsl(var(--primary))" /> : r.type === "podcast" ? <HandDrawnHeadphones size={20} /> : <HandDrawnLeaf size={20} color="hsl(var(--phase-follicular))" />}</div>
-              <div><p className="font-display text-sm italic text-foreground mb-0.5">{r.title}</p><p className="font-mono text-xs text-muted-foreground leading-snug mb-1.5">{r.reason}</p><Pill label={r.type} variant="primary" /></div>
+              <div><p className="font-display text-sm italic text-foreground mb-0.5">{r.title}</p><p className="font-body text-xs text-muted-foreground leading-snug mb-1.5">{r.reason}</p><Pill label={r.type} variant="primary" /></div>
             </div>
           ))}
         </Section>
       )}
 
-      {ai.next_steps?.length > 0 && <Section title="Your Next Steps">{ai.next_steps.map((s: string, i: number) => <div key={i} className="flex gap-2.5 mb-2.5"><span className="font-mono text-xs text-primary font-bold flex-shrink-0 mt-0.5">{i + 1}.</span><p className="font-display text-sm italic text-foreground/70 leading-relaxed">{s}</p></div>)}</Section>}
+      {ai.next_steps?.length > 0 && <Section title="Your Next Steps">{ai.next_steps.map((s: string, i: number) => <div key={i} className="flex gap-2.5 mb-2.5"><span className="font-body text-xs text-primary font-bold flex-shrink-0 mt-0.5">{i + 1}.</span><p className="font-display text-sm italic text-foreground/70 leading-relaxed">{s}</p></div>)}</Section>}
 
       {ai.affirmation && (
         <div className="rounded-2xl bg-gradient-to-br from-primary/5 to-secondary p-6 text-center mb-3 border border-primary/10">
@@ -403,12 +403,12 @@ function EntryCard({
         <div className="flex-1 min-w-0">
           <p className="font-display text-base italic text-foreground mb-1 truncate">{entry.title || entry.date}</p>
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">{getEntryTypeLabel(entry.entryType)}</span>
-            {tone && <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${tone.color}`}>{tone.label}</span>}
-            <span className="font-mono text-[10px] text-muted-foreground/60">{new Date(entry.timestamp).toLocaleDateString("en-NZ", { day: "numeric", month: "short" })}</span>
+            <span className="font-body text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">{getEntryTypeLabel(entry.entryType)}</span>
+            {tone && <span className={`font-body text-[10px] px-2 py-0.5 rounded-full ${tone.color}`}>{tone.label}</span>}
+            <span className="font-body text-[10px] text-muted-foreground/60">{new Date(entry.timestamp).toLocaleDateString("en-NZ", { day: "numeric", month: "short" })}</span>
           </div>
           {entry.tracking && (
-            <div className="flex gap-2.5 font-mono text-xs text-muted-foreground items-center">
+            <div className="flex gap-2.5 font-body text-xs text-muted-foreground items-center">
               <span className="flex items-center gap-1"><MoodIcon size={12} /> {entry.tracking.mood}/10</span>
               <span className="flex items-center gap-1"><EnergyIcon size={12} /> {entry.tracking.energy}/10</span>
             </div>
@@ -416,9 +416,9 @@ function EntryCard({
         </div>
         <div className="flex gap-1 flex-shrink-0 ml-2">
           {entry.ai ? (
-            <button onClick={() => onViewAnalysis(entry)} className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2.5 py-1 active:opacity-70">View analysis</button>
+            <button onClick={() => onViewAnalysis(entry)} className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2.5 py-1 active:opacity-70">View analysis</button>
           ) : (
-            <button onClick={() => onAnalyse(entry)} className="font-mono text-[10px] text-primary border border-primary/30 rounded-full px-2.5 py-1 active:opacity-70 flex items-center gap-1">
+            <button onClick={() => onAnalyse(entry)} className="font-body text-[10px] text-primary border border-primary/30 rounded-full px-2.5 py-1 active:opacity-70 flex items-center gap-1">
               <Sparkles className="h-3 w-3" /> Analyse
             </button>
           )}
@@ -434,13 +434,13 @@ function EntryCard({
       {/* Bottom actions */}
       <div className="flex gap-2 mt-2 pt-2 border-t border-border/50">
         {onSaveToVault && !entry.savedToVault && (
-          <button onClick={() => onSaveToVault(entry)} className="font-mono text-[10px] text-muted-foreground hover:text-primary transition-colors active:opacity-70">
+          <button onClick={() => onSaveToVault(entry)} className="font-body text-[10px] text-muted-foreground hover:text-primary transition-colors active:opacity-70">
             Save to vault
           </button>
         )}
-        {entry.savedToVault && <span className="font-mono text-[10px] text-primary/60">In vault</span>}
+        {entry.savedToVault && <span className="font-body text-[10px] text-primary/60">In vault</span>}
         {onPinToDreamStudio && (
-          <button onClick={() => onPinToDreamStudio(entry)} className="font-mono text-[10px] text-muted-foreground hover:text-primary transition-colors active:opacity-70">
+          <button onClick={() => onPinToDreamStudio(entry)} className="font-body text-[10px] text-muted-foreground hover:text-primary transition-colors active:opacity-70">
             Pin to Dream Studio
           </button>
         )}
@@ -577,7 +577,7 @@ export default function JournalEntries({
         </div>
         <div className="text-left">
           <p className="font-display text-[16px] italic text-foreground">New entry</p>
-          <p className="font-mono text-[11px] text-muted-foreground">Capture this before it fades.</p>
+          <p className="font-body text-[11px] text-muted-foreground">Capture this before it fades.</p>
         </div>
       </motion.button>
 
@@ -627,7 +627,7 @@ export default function JournalEntries({
           <div className="flex items-center gap-3 mb-3">
             <div>
               <p className="font-hand text-sm font-bold text-primary">{group.label}</p>
-              <p className="font-mono text-[10px] text-muted-foreground/60">{group.subtitle}</p>
+              <p className="font-body text-[10px] text-muted-foreground/60">{group.subtitle}</p>
             </div>
             <div className="flex-1 h-px bg-border/40" />
           </div>

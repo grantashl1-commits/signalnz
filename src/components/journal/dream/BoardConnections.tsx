@@ -82,7 +82,7 @@ export default function BoardConnections({ connections, elements, zoom, panX, pa
                   className="pointer-events-none"
                   style={{
                     fontSize: 10,
-                    fontFamily: "var(--font-mono)",
+                    fontFamily: "var(--font-body)",
                     fill: "hsl(284 22% 44% / 0.5)",
                   }}
                 >

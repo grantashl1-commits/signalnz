@@ -154,7 +154,7 @@ function WritingView({
         <div className="flex items-center gap-2">
           <h2 className="font-display text-lg italic text-foreground">New Entry</h2>
           {mood && (
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary capitalize">{mood}</span>
+            <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary capitalize">{mood}</span>
           )}
         </div>
         <button onClick={onClose} className="text-muted-foreground min-w-[44px] min-h-[44px] flex items-center justify-center">
@@ -168,7 +168,7 @@ function WritingView({
           <>
             <button
               onClick={() => setStoicOpen(!stoicOpen)}
-              className="flex items-center gap-2 text-muted-foreground/30 font-mono text-[10px] tracking-wide mb-3"
+              className="flex items-center gap-2 text-muted-foreground/30 font-body text-[10px] tracking-wide mb-3"
             >
               <span>{stoicOpen ? "▾" : "▸"}</span>
               <span>today's stoic</span>
@@ -195,7 +195,7 @@ function WritingView({
         />
 
         <div className="flex items-center justify-between gap-3 mt-4">
-          <span className="font-mono text-xs text-muted-foreground">{wordCount} words</span>
+          <span className="font-body text-xs text-muted-foreground">{wordCount} words</span>
           <button
             onClick={handleSave}
             disabled={!text.trim()}
@@ -246,22 +246,22 @@ function EntryDetailView({
         <button onClick={onBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
-        <span className="font-mono text-[11px] text-muted-foreground">{readTime}</span>
+        <span className="font-body text-[11px] text-muted-foreground">{readTime}</span>
       </div>
 
       <div>
-        <p className="font-mono text-xs text-muted-foreground mb-1">{dateLabel}, {timeLabel}</p>
+        <p className="font-body text-xs text-muted-foreground mb-1">{dateLabel}, {timeLabel}</p>
         <div className="flex items-center gap-2 mb-4">
           {entry.mood && (
             <span className="w-2 h-2 rounded-full" style={{
               backgroundColor: entry.mood === "heavy" ? "#C4526E" : entry.mood === "clear" ? "#5C4A9E" : entry.mood === "grounded" ? "#C47A8A" : entry.mood === "unsettled" ? "#9B89B4" : "#999",
             }} />
           )}
-          {entry.mood && <span className="font-mono text-[11px] text-muted-foreground capitalize">{entry.mood}</span>}
+          {entry.mood && <span className="font-body text-[11px] text-muted-foreground capitalize">{entry.mood}</span>}
           {entry.cycle_phase && (
-            <span className="font-mono text-[11px] text-muted-foreground">· {entry.cycle_phase} · Day {entry.cycle_day}</span>
+            <span className="font-body text-[11px] text-muted-foreground">· {entry.cycle_phase} · Day {entry.cycle_day}</span>
           )}
-          {typeBadge && <span className="font-mono text-[11px] text-muted-foreground">{typeBadge}</span>}
+          {typeBadge && <span className="font-body text-[11px] text-muted-foreground">{typeBadge}</span>}
         </div>
       </div>
 
@@ -324,8 +324,8 @@ function StoicEntryCard({ entry, onClick }: { entry: JournalEntryRow; onClick: (
       style={entry.cycle_phase ? { backgroundColor: `${PHASE_HEX[entry.cycle_phase] || "#999"}08` } : undefined}
     >
       <div className="flex items-center justify-between mb-1">
-        <span className="font-mono text-[11px] text-muted-foreground">{dateLabel} · {timeLabel}</span>
-        {readTime && <span className="font-mono text-[10px] text-muted-foreground/50">{readTime}</span>}
+        <span className="font-body text-[11px] text-muted-foreground">{dateLabel} · {timeLabel}</span>
+        {readTime && <span className="font-body text-[10px] text-muted-foreground/50">{readTime}</span>}
       </div>
 
       {typeBadge ? (
@@ -337,27 +337,27 @@ function StoicEntryCard({ entry, onClick }: { entry: JournalEntryRow; onClick: (
       {entry.mood && (
         <div className="flex items-center gap-1.5 mb-1">
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: MOOD_COLORS[entry.mood] || "#999" }} />
-          <span className="font-mono text-[10px] text-muted-foreground capitalize">{entry.mood}</span>
+          <span className="font-body text-[10px] text-muted-foreground capitalize">{entry.mood}</span>
         </div>
       )}
 
       {entry.stoic_seq_day && (
         <div className="flex items-center gap-2 mb-1">
           <BookOpen className="h-3 w-3 text-primary" />
-          <span className="font-mono text-[10px] text-muted-foreground">Day {entry.stoic_seq_day} · {entry.stoic_title}</span>
+          <span className="font-body text-[10px] text-muted-foreground">Day {entry.stoic_seq_day} · {entry.stoic_title}</span>
         </div>
       )}
       {entry.stoic_lens && (
         <div className="flex items-center gap-1.5">
           <span className="text-[10px]">🌿</span>
-          <span className="font-mono text-[10px] text-phase-follicular">Reflection saved</span>
+          <span className="font-body text-[10px] text-phase-follicular">Reflection saved</span>
         </div>
       )}
 
       {entry.cycle_phase && (
         <div className="flex items-center gap-1.5 mt-2">
           <span className={`w-1.5 h-1.5 rounded-full ${PHASE_COLORS[entry.cycle_phase] || "bg-muted"}`} />
-          <span className="font-mono text-[10px] text-muted-foreground">{entry.cycle_phase} · day {entry.cycle_day}</span>
+          <span className="font-body text-[10px] text-muted-foreground">{entry.cycle_phase} · day {entry.cycle_day}</span>
         </div>
       )}
     </motion.div>
@@ -488,7 +488,7 @@ export default function JournalPage() {
                 {TAB_SUBTITLES[tab]}
               </p>
               {streak > 0 && (
-                <span className="flex items-center gap-1 font-mono text-xs text-primary-foreground/50">
+                <span className="flex items-center gap-1 font-body text-xs text-primary-foreground/50">
                   <Flame className="h-3.5 w-3.5 text-orange-400" />
                   {streak} day{streak > 1 ? "s" : ""}
                 </span>
@@ -528,7 +528,7 @@ export default function JournalPage() {
                 <div className="space-y-4">
                   {/* Mood tags — scattered two-row layout */}
                   <div className="space-y-2">
-                    <p className="font-mono text-[10px] text-muted-foreground/40">feeling</p>
+                    <p className="font-body text-[10px] text-muted-foreground/40">feeling</p>
                     <div className="flex flex-wrap gap-2">
                       {["grounded", "heavy", "clear", "unsettled", "open"].map((mood, i) => (
                         <button
@@ -613,11 +613,11 @@ export default function JournalPage() {
 
                         {/* Stats strip */}
                         <div className="flex items-center justify-center gap-1.5">
-                          <span className="font-mono" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
+                          <span className="font-body" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
                             {thisWeekCount} {thisWeekCount === 1 ? "entry" : "entries"} this week
                           </span>
                           <span style={{ color: 'hsl(var(--label-color))', fontSize: 'var(--label-size)' }}>·</span>
-                          <span className="font-mono" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
+                          <span className="font-body" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
                             {totalCount} total
                           </span>
                         </div>
@@ -663,7 +663,7 @@ export default function JournalPage() {
 
                   <button
                     onClick={() => setFilterStoic(!filterStoic)}
-                    className={`rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${
+                    className={`rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
                       filterStoic ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground"
                     }`}
                   >

@@ -17,7 +17,7 @@ export default {
         display: ["Montserrat", "Playfair Display", "serif"],
         body: ["Montserrat", "Lato", "sans-serif"],
         hand: ["Caveat", "cursive"],
-        mono: ["Space Mono", "monospace"],
+        mono: ["Montserrat", "Lato", "sans-serif"],
       },
       fontSize: {
         "display-xl": ["3.5rem", { lineHeight: "1.1", fontWeight: "800", letterSpacing: "-0.02em" }],

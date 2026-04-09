@@ -46,7 +46,7 @@ export default function OrganClockCard() {
                       isCurrent ? "bg-primary/10" : ""
                     }`}
                   >
-                    <span className="font-mono text-xs text-muted-foreground w-16 flex-shrink-0 pt-0.5">
+                    <span className="font-body text-xs text-muted-foreground w-16 flex-shrink-0 pt-0.5">
                       {entry.time}
                     </span>
                     <div className="flex-1 min-w-0">

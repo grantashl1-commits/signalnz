@@ -160,7 +160,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-4 pb-3">
           <div className="flex-1 min-w-0">
-            <p className="font-mono text-[11px] text-primary uppercase tracking-wider">
+            <p className="font-body text-[11px] text-primary uppercase tracking-wider">
               {practice.category}
             </p>
             <h2 className="font-display text-xl md:text-2xl font-bold italic text-foreground truncate">
@@ -189,10 +189,10 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
             />
           </div>
           <div className="flex justify-between mt-1">
-            <span className="font-mono text-[10px] text-muted-foreground">
+            <span className="font-body text-[10px] text-muted-foreground">
               {formatDuration(elapsed)}
             </span>
-            <span className="font-mono text-[10px] text-muted-foreground">
+            <span className="font-body text-[10px] text-muted-foreground">
               {formatDuration(practice.durationSec)}
             </span>
           </div>
@@ -222,7 +222,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
               >
                 <div className="flex items-start gap-3">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-mono text-xs transition-colors ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-body text-xs transition-colors ${
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : isPast
@@ -260,7 +260,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
                             />
                           ))}
                         </div>
-                        <span className="font-mono text-[10px] text-primary">Speaking</span>
+                        <span className="font-body text-[10px] text-primary">Speaking</span>
                       </div>
                     )}
                   </div>

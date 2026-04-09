@@ -186,7 +186,7 @@ export default function HomePage() {
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
           <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
-            <p className="font-mono text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
+            <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
             {[
               { label: "eat", value: focus.nutrition },
               { label: "move", value: focus.movement },
@@ -194,7 +194,7 @@ export default function HomePage() {
               { label: "cycle", value: focus.cycle },
             ].map(({ label, value }) => (
               <div key={label} className="flex gap-3 items-start">
-                <span className="font-mono text-section-label w-10 pt-0.5" style={{ color: 'hsl(var(--label-color))' }}>{label}</span>
+                <span className="font-body text-section-label w-10 pt-0.5" style={{ color: 'hsl(var(--label-color))' }}>{label}</span>
                 <p className="text-body-lg text-foreground/70 leading-snug flex-1">{value}</p>
               </div>
             ))}

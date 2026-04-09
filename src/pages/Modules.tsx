@@ -59,7 +59,7 @@ export default function ModulesPage() {
                     {!m.unlocked && (
                       <div className="flex items-center gap-2">
                         <Lock className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">coming soon</span>
+                        <span className="font-body text-[10px] uppercase tracking-widest text-muted-foreground/50">coming soon</span>
                       </div>
                     )}
                   </div>
@@ -108,14 +108,14 @@ export default function ModulesPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-8 h-1 rounded-full bg-muted mx-auto mb-5" />
-              <p className="font-mono text-[10px] tracking-widest uppercase text-primary mb-2">coming soon</p>
+              <p className="font-body text-[10px] tracking-widest uppercase text-primary mb-2">coming soon</p>
               <h3 className="font-display text-2xl italic text-foreground/90 mb-3">Module in progress</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-5">
                 This module is being built. You'll receive an in-app notification when it's ready.
               </p>
               <button
                 onClick={() => setShowComingSoon(false)}
-                className="w-full py-3 rounded-xl border border-border text-muted-foreground font-mono text-xs tracking-wide"
+                className="w-full py-3 rounded-xl border border-border text-muted-foreground font-body text-xs tracking-wide"
               >
                 got it
               </button>

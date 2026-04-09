@@ -200,17 +200,17 @@ function PracticeCard({
         <div className="flex items-start justify-between gap-2 mb-1 pr-7">
           <h3 className="font-display text-[15px] italic text-foreground leading-snug">{script.title}</h3>
           {isDone && (
-            <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-mono text-[10px] text-phase-follicular shrink-0">
+            <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-body text-[10px] text-phase-follicular shrink-0">
               <Check className="h-3 w-3" /> Done
             </span>
           )}
         </div>
         <p className="font-hand text-xs font-bold text-primary mb-1.5">{script.subtitle}</p>
         <div className="flex items-center gap-2.5 flex-wrap">
-          <span className={`font-mono text-[10px] px-2.5 py-0.5 rounded-full font-medium ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
+          <span className={`font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
             {script.category.replace("-", " ")}
           </span>
-          <span className="font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1">
+          <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
             <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
           </span>
         </div>
@@ -225,7 +225,7 @@ function PracticeCard({
               <p className="font-body text-[12px] text-muted-foreground leading-relaxed line-clamp-1">
                 {script.description}
               </p>
-              <span className="inline-flex items-center gap-0.5 font-mono text-[10px] text-primary mt-0.5">
+              <span className="inline-flex items-center gap-0.5 font-body text-[10px] text-primary mt-0.5">
                 Read more <ChevronDown className="h-3 w-3" />
               </span>
             </button>
@@ -256,7 +256,7 @@ function PracticeCard({
             <div className="px-4 pb-4">
               <button
                 onClick={() => { haptic("light"); setExpanded(false); }}
-                className="inline-flex items-center gap-0.5 font-mono text-[10px] text-primary mb-2"
+                className="inline-flex items-center gap-0.5 font-body text-[10px] text-primary mb-2"
               >
                 Show less <ChevronDown className="h-3 w-3 rotate-180" />
               </button>
@@ -444,8 +444,8 @@ function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScrip
       {result && recommended && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-3">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">recommended</span>
-            <span className="font-mono text-[11px] text-muted-foreground">{formatMeditationDuration(recommended.durationSec)}</span>
+            <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">recommended</span>
+            <span className="font-body text-[11px] text-muted-foreground">{formatMeditationDuration(recommended.durationSec)}</span>
           </div>
           <h3 className="font-display text-lg italic text-foreground">{recommended.title}</h3>
           <p className="font-body text-sm text-muted-foreground leading-relaxed">{result.explanation}</p>
@@ -508,7 +508,7 @@ export default function NervousSystemPage() {
               Mindfulness &amp; Inner&nbsp;Work
             </h1>
             {streak > 1 && (
-              <p className="font-mono text-xs text-primary-foreground/50">
+              <p className="font-body text-xs text-primary-foreground/50">
                 {streak}-day streak
               </p>
             )}
@@ -547,7 +547,7 @@ export default function NervousSystemPage() {
                 <button
                   key={f}
                   onClick={() => setDurationFilter(f)}
-                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
                     durationFilter === f
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted/60 text-muted-foreground hover:bg-muted"

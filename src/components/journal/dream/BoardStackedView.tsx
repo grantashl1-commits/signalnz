@@ -102,9 +102,9 @@ export default function BoardStackedView({ elements, connections, onUpdate, onDe
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full" style={{ background: meta.color }} />
-                  <span className="font-mono text-[8px] uppercase tracking-[0.2em]" style={{ color: meta.color }}>{meta.label}</span>
+                  <span className="font-body text-[8px] uppercase tracking-[0.2em]" style={{ color: meta.color }}>{meta.label}</span>
                   {connCount > 0 && (
-                    <span className="flex items-center gap-0.5 font-mono text-[8px] text-muted-foreground/40">
+                    <span className="flex items-center gap-0.5 font-body text-[8px] text-muted-foreground/40">
                       <Link2 className="h-2.5 w-2.5" /> {connCount}
                     </span>
                   )}

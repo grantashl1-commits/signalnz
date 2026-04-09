@@ -95,28 +95,28 @@ export default function JournalInsights({ entries }: Props) {
             className="overflow-hidden"
           >
             <div className="card-warm p-5 mt-2 space-y-3">
-              <p className="font-mono text-[11px] text-muted-foreground">Across your last {stats.last28.length} entries:</p>
+              <p className="font-body text-[11px] text-muted-foreground">Across your last {stats.last28.length} entries:</p>
 
               {stats.topPhase && (
-                <div className="flex justify-between font-mono text-xs">
+                <div className="flex justify-between font-body text-xs">
                   <span className="text-muted-foreground">Most journaled phase</span>
                   <span className="text-foreground capitalize">{stats.topPhase[0]} ({stats.topPhase[1]} entries)</span>
                 </div>
               )}
 
               {stats.topMoods.length > 0 && (
-                <div className="flex justify-between font-mono text-xs">
+                <div className="flex justify-between font-body text-xs">
                   <span className="text-muted-foreground">Most common mood</span>
                   <span className="text-foreground capitalize">{stats.topMoods.map(([m, c]) => `${m} (${c}×)`).join(", ")}</span>
                 </div>
               )}
 
-              <div className="flex justify-between font-mono text-xs">
+              <div className="flex justify-between font-body text-xs">
                 <span className="text-muted-foreground">Average entry length</span>
                 <span className="text-foreground">{stats.avgWords} words</span>
               </div>
 
-              <div className="flex justify-between font-mono text-xs">
+              <div className="flex justify-between font-body text-xs">
                 <span className="text-muted-foreground">Stoic reflections saved</span>
                 <span className="text-foreground">{stats.stoicCount} of {stats.standardCount} standard entries</span>
               </div>
@@ -124,12 +124,12 @@ export default function JournalInsights({ entries }: Props) {
               <div className="border-t border-border/30 pt-3 mt-3">
                 {aiSummary ? (
                   <div>
-                    <p className="font-mono text-[10px] text-muted-foreground/60 mb-1">What your journal says about this cycle:</p>
+                    <p className="font-body text-[10px] text-muted-foreground/60 mb-1">What your journal says about this cycle:</p>
                     <p className="font-display text-sm italic text-foreground leading-relaxed">{aiSummary}</p>
                     <button
                       onClick={generateSummary}
                       disabled={loading}
-                      className="flex items-center gap-1.5 mt-2 font-mono text-[11px] text-primary hover:underline"
+                      className="flex items-center gap-1.5 mt-2 font-body text-[11px] text-primary hover:underline"
                     >
                       <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} /> Refresh
                     </button>

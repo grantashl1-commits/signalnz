@@ -168,7 +168,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
           </div>
         </div>
         {totalMemories > 0 && (
-          <p className="font-mono text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
+          <p className="font-body text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
         )}
       </div>
 
@@ -208,10 +208,10 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
           </div>
           {resurfacing.map((r, i) => (
             <div key={i} className="bg-card/50 rounded-xl p-4 mb-2 last:mb-0">
-              <p className="font-mono text-[10px] text-primary uppercase tracking-wider mb-1">{r.label}</p>
+              <p className="font-body text-[10px] text-primary uppercase tracking-wider mb-1">{r.label}</p>
               <p className="font-display text-sm italic text-foreground mb-0.5">{r.entry.title}</p>
               {r.entry.preview && <p className="font-body text-[13px] text-muted-foreground line-clamp-2">{r.entry.preview}</p>}
-              <p className="font-mono text-[10px] text-muted-foreground/50 mt-1">{r.entry.date}</p>
+              <p className="font-body text-[10px] text-muted-foreground/50 mt-1">{r.entry.date}</p>
             </div>
           ))}
         </div>
@@ -233,7 +233,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
             </div>
             <button
               onClick={() => { setAdding(adding === cat.key ? null : cat.key); setNewTitle(""); setNewPreview(""); }}
-              className="font-mono text-[11px] text-primary active:opacity-70 flex items-center gap-1"
+              className="font-body text-[11px] text-primary active:opacity-70 flex items-center gap-1"
             >
               {adding === cat.key ? <X className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
               {adding === cat.key ? "Cancel" : "Add"}
@@ -273,7 +273,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
                   <div className="flex-1 min-w-0">
                     <p className="font-display text-[15px] italic text-foreground mb-0.5">{e.title}</p>
                     {e.preview && <p className="font-body text-[13px] text-muted-foreground leading-relaxed line-clamp-2">{e.preview}</p>}
-                    <p className="font-mono text-[10px] text-muted-foreground/50 mt-1">{e.date}</p>
+                    <p className="font-body text-[10px] text-muted-foreground/50 mt-1">{e.date}</p>
                   </div>
                   <button onClick={() => remove(e.id)} className="text-muted-foreground/20 hover:text-destructive transition-colors flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100">
                     <Trash2 className="h-3.5 w-3.5" />

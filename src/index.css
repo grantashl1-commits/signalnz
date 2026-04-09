@@ -113,7 +113,7 @@
     --font-display: 'Montserrat', 'Playfair Display', serif;
     --font-body: 'Montserrat', 'Lato', sans-serif;
     --font-hand: 'Caveat', cursive;
-    --font-mono: 'Space Mono', monospace;
+    --font-mono: 'Montserrat', 'Lato', sans-serif;
 
     /* ── Type scale ── */
     --label-size: 0.6875rem;       /* 11px — section labels */
@@ -243,7 +243,7 @@
 
   /* ── Data readout ── */
   .data-readout {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
   }
 
   /* ── Phase section backgrounds ── */

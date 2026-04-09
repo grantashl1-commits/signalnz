@@ -55,7 +55,7 @@ export default function PhaseHeatMap({ entries, onTapDay }: Props) {
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <span className="font-mono text-[11px] text-muted-foreground">{rangeLabel}</span>
+        <span className="font-body text-[11px] text-muted-foreground">{rangeLabel}</span>
         <button
           onClick={() => setOffset((o) => Math.min(o + 1, 0))}
           disabled={offset >= 0}
@@ -89,7 +89,7 @@ export default function PhaseHeatMap({ entries, onTapDay }: Props) {
                 }}
               >
                 {hasEntry && (
-                  <span className="text-[9px] font-mono" style={{ color: color ? "#fff" : "hsl(var(--foreground))" }}>
+                  <span className="text-[9px] font-body" style={{ color: color ? "#fff" : "hsl(var(--foreground))" }}>
                     ✓
                   </span>
                 )}
@@ -97,7 +97,7 @@ export default function PhaseHeatMap({ entries, onTapDay }: Props) {
                   <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-phase-follicular border border-background" />
                 )}
               </div>
-              <span className="font-mono text-[8px] text-muted-foreground/60">{day.dayNum}</span>
+              <span className="font-body text-[8px] text-muted-foreground/60">{day.dayNum}</span>
             </motion.button>
           );
         })}

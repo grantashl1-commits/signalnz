@@ -201,7 +201,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
                 className="absolute flex flex-col items-center"
                 style={{ left: `${left}%`, transform: "translateX(-50%)" }}
               >
-                <div className={`h-3 w-3 rounded-full border-2 text-[6px] font-mono font-bold flex items-center justify-center transition-all ${
+                <div className={`h-3 w-3 rounded-full border-2 text-[6px] font-body font-bold flex items-center justify-center transition-all ${
                   reached
                     ? "bg-primary border-primary text-primary-foreground"
                     : "bg-background border-border text-muted-foreground"
@@ -214,7 +214,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </div>
         <div className="flex justify-between mt-1.5 px-0.5">
           {FORM_SECTIONS.map((s, i) => (
-            <span key={s.id} className={`font-mono text-[7px] tracking-wide transition-colors ${
+            <span key={s.id} className={`font-body text-[7px] tracking-wide transition-colors ${
               i <= furthestVisibleIdx ? "text-primary" : "text-muted-foreground/50"
             }`}>
               {s.label}
@@ -305,7 +305,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             <div />
             {["Same", "2–3 options", "Different"].map(col => (
               <div key={col} className="py-2 px-1 text-center">
-                <span className="font-mono text-[9px] tracking-wider uppercase text-muted-foreground">{col}</span>
+                <span className="font-body text-[9px] tracking-wider uppercase text-muted-foreground">{col}</span>
               </div>
             ))}
           </div>
@@ -371,13 +371,13 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
           <div className="flex items-center gap-2">
             <span className="font-body text-xs text-foreground">Adults:</span>
             <button onClick={() => { haptic("light"); setAdults(Math.max(1, adults - 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Minus className="h-3 w-3" /></button>
-            <span className="font-mono text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>{adults}</span>
+            <span className="font-body text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>{adults}</span>
             <button onClick={() => { haptic("light"); setAdults(Math.min(6, adults + 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Plus className="h-3 w-3" /></button>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-body text-xs text-foreground">Kids:</span>
             <button onClick={() => { haptic("light"); setKids(Math.max(0, kids - 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Minus className="h-3 w-3" /></button>
-            <span className="font-mono text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>{kids}</span>
+            <span className="font-body text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>{kids}</span>
             <button onClick={() => { haptic("light"); setKids(Math.min(6, kids + 1)); }} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center"><Plus className="h-3 w-3" /></button>
           </div>
         </div>

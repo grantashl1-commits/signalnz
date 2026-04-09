@@ -164,7 +164,7 @@ export default function PhaseProgressStrip({ cycleDay, currentPhase, onPhasePrev
           dominantBaseline="central"
           fill="hsl(284, 16%, 55%)"
           fontSize={10}
-          fontFamily="var(--font-mono)"
+          fontFamily="var(--font-body)"
           letterSpacing="0.08em"
         >
           DAY

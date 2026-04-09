@@ -151,14 +151,14 @@ function MeasurementsForm({ onSaved }: { onSaved: () => void }) {
         <div className="space-y-1">
           <div className="flex items-center justify-between">
             <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Weight</label>
-            <button onClick={toggleWeightUnit} className="font-mono text-[9px] text-primary underline">{units.weight}</button>
+            <button onClick={toggleWeightUnit} className="font-body text-[9px] text-primary underline">{units.weight}</button>
           </div>
           <Input type="text" inputMode="decimal" value={weight} onChange={e => setWeight(numericOnly(e.target.value))} placeholder={units.weight === "kg" ? "62" : "137"} className="h-10 text-base rounded-xl bg-background border-border" />
         </div>
         <div className="space-y-1">
           <div className="flex items-center justify-between">
             <label className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">Height</label>
-            <button onClick={toggleLengthUnit} className="font-mono text-[9px] text-primary underline">{units.length}</button>
+            <button onClick={toggleLengthUnit} className="font-body text-[9px] text-primary underline">{units.length}</button>
           </div>
           <Input type="text" inputMode="decimal" value={height} onChange={e => setHeight(numericOnly(e.target.value))} placeholder={units.length === "cm" ? "165" : "65"} className="h-10 text-base rounded-xl bg-background border-border" />
         </div>
@@ -191,7 +191,7 @@ function MeasurementsForm({ onSaved }: { onSaved: () => void }) {
             <button
               key={level}
               onClick={() => { haptic("light"); setEnergyLevel(level); }}
-              className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[40px] font-mono text-sm font-bold transition-all ${
+              className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[40px] font-body text-sm font-bold transition-all ${
                 energyLevel === level ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
               }`}
             >
@@ -263,7 +263,7 @@ function ComparisonCard({ history }: { history: MeasurementEntry[] }) {
         {changes.map(c => (
           <div key={c.label} className="rounded-xl bg-background p-3">
             <p className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">{c.label}</p>
-            <p className={`font-mono text-sm font-bold ${c.positive ? "text-accent" : "text-foreground"}`}>{c.diff}</p>
+            <p className={`font-body text-sm font-bold ${c.positive ? "text-accent" : "text-foreground"}`}>{c.diff}</p>
           </div>
         ))}
       </div>
@@ -339,7 +339,7 @@ function HistoryTimeline({ history }: { history: MeasurementEntry[] }) {
                   <span className="font-body text-xs font-medium text-foreground">
                     {new Date(entry.date).toLocaleDateString("en-NZ", { weekday: "short", day: "numeric", month: "short" })}
                   </span>
-                  <span className="font-mono text-[9px] text-muted-foreground">
+                  <span className="font-body text-[9px] text-muted-foreground">
                     Day {entry.cycleDay} · {PHASE_LABEL[entry.phase]}
                   </span>
                 </div>
@@ -348,10 +348,10 @@ function HistoryTimeline({ history }: { history: MeasurementEntry[] }) {
 
               {/* Summary row */}
               <div className="flex gap-3 mt-1.5">
-                {entry.weight && <span className="font-mono text-[10px] text-muted-foreground">{entry.weight} {entry.weightUnit}</span>}
-                {entry.waist && <span className="font-mono text-[10px] text-muted-foreground">W: {entry.waist}</span>}
-                {entry.hips && <span className="font-mono text-[10px] text-muted-foreground">H: {entry.hips}</span>}
-                <span className="font-mono text-[10px] text-muted-foreground">E {entry.energyLevel}/5</span>
+                {entry.weight && <span className="font-body text-[10px] text-muted-foreground">{entry.weight} {entry.weightUnit}</span>}
+                {entry.waist && <span className="font-body text-[10px] text-muted-foreground">W: {entry.waist}</span>}
+                {entry.hips && <span className="font-body text-[10px] text-muted-foreground">H: {entry.hips}</span>}
+                <span className="font-body text-[10px] text-muted-foreground">E {entry.energyLevel}/5</span>
               </div>
 
               {/* Expanded detail */}
@@ -359,12 +359,12 @@ function HistoryTimeline({ history }: { history: MeasurementEntry[] }) {
                 {isOpen && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                     <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border">
-                      {entry.chest && <div><p className="font-body text-[9px] text-muted-foreground">Chest</p><p className="font-mono text-xs text-foreground">{entry.chest} {entry.lengthUnit}</p></div>}
-                      {entry.waist && <div><p className="font-body text-[9px] text-muted-foreground">Waist</p><p className="font-mono text-xs text-foreground">{entry.waist} {entry.lengthUnit}</p></div>}
-                      {entry.hips && <div><p className="font-body text-[9px] text-muted-foreground">Hips</p><p className="font-mono text-xs text-foreground">{entry.hips} {entry.lengthUnit}</p></div>}
-                      {entry.thighs && <div><p className="font-body text-[9px] text-muted-foreground">Thighs</p><p className="font-mono text-xs text-foreground">{entry.thighs} {entry.lengthUnit}</p></div>}
-                      {entry.arms && <div><p className="font-body text-[9px] text-muted-foreground">Arms</p><p className="font-mono text-xs text-foreground">{entry.arms} {entry.lengthUnit}</p></div>}
-                      {entry.bodyFat && <div><p className="font-body text-[9px] text-muted-foreground">Body fat</p><p className="font-mono text-xs text-foreground">{entry.bodyFat}%</p></div>}
+                      {entry.chest && <div><p className="font-body text-[9px] text-muted-foreground">Chest</p><p className="font-body text-xs text-foreground">{entry.chest} {entry.lengthUnit}</p></div>}
+                      {entry.waist && <div><p className="font-body text-[9px] text-muted-foreground">Waist</p><p className="font-body text-xs text-foreground">{entry.waist} {entry.lengthUnit}</p></div>}
+                      {entry.hips && <div><p className="font-body text-[9px] text-muted-foreground">Hips</p><p className="font-body text-xs text-foreground">{entry.hips} {entry.lengthUnit}</p></div>}
+                      {entry.thighs && <div><p className="font-body text-[9px] text-muted-foreground">Thighs</p><p className="font-body text-xs text-foreground">{entry.thighs} {entry.lengthUnit}</p></div>}
+                      {entry.arms && <div><p className="font-body text-[9px] text-muted-foreground">Arms</p><p className="font-body text-xs text-foreground">{entry.arms} {entry.lengthUnit}</p></div>}
+                      {entry.bodyFat && <div><p className="font-body text-[9px] text-muted-foreground">Body fat</p><p className="font-body text-xs text-foreground">{entry.bodyFat}%</p></div>}
                     </div>
                     {entry.notes && (
                       <p className="font-body text-[11px] text-muted-foreground mt-2 italic">"{entry.notes}"</p>

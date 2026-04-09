@@ -109,7 +109,7 @@ export default function AuthPage() {
           >
             <button
               onClick={() => { setSignupComplete(false); setIsLogin(true); }}
-              className="font-mono text-xs text-muted-foreground border border-border rounded-full px-4 py-2 hover:text-foreground transition-colors"
+              className="font-body text-xs text-muted-foreground border border-border rounded-full px-4 py-2 hover:text-foreground transition-colors"
             >
               back to sign in
             </button>
@@ -160,7 +160,7 @@ export default function AuthPage() {
                   <button
                     type="button"
                     onClick={handleForgotPassword}
-                    className="text-[11px] font-mono text-muted-foreground/50 hover:text-muted-foreground transition-colors self-end mt-1.5"
+                    className="text-[11px] font-body text-muted-foreground/50 hover:text-muted-foreground transition-colors self-end mt-1.5"
                   >
                     forgot password?
                   </button>

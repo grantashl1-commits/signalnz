@@ -160,7 +160,7 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
               >
                 <ImageIcon className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
                 <p className="font-display text-sm italic text-foreground mb-1">Drop an image here</p>
-                <p className="font-mono text-[11px] text-muted-foreground">or click to browse your device</p>
+                <p className="font-body text-[11px] text-muted-foreground">or click to browse your device</p>
                 <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
               </div>
             )}
@@ -169,7 +169,7 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
               <div className="space-y-4">
                 {/* Prompt */}
                 <div>
-                  <label className="font-mono text-[11px] text-muted-foreground block mb-1.5">Describe your dream image</label>
+                  <label className="font-body text-[11px] text-muted-foreground block mb-1.5">Describe your dream image</label>
                   <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
@@ -186,7 +186,7 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
                     <button
                       key={p}
                       onClick={() => setPrompt(p)}
-                      className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                      className="font-body text-[10px] px-2.5 py-1 rounded-full bg-secondary text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                     >
                       {p}
                     </button>
@@ -195,13 +195,13 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
 
                 {/* Style */}
                 <div>
-                  <label className="font-mono text-[11px] text-muted-foreground block mb-1.5">Style</label>
+                  <label className="font-body text-[11px] text-muted-foreground block mb-1.5">Style</label>
                   <div className="grid grid-cols-2 gap-1.5">
                     {STYLE_OPTIONS.map((s) => (
                       <button
                         key={s.id}
                         onClick={() => setStyle(s.id)}
-                        className={`font-mono text-[11px] px-3 py-2 rounded-xl border transition-all text-left ${style === s.id ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+                        className={`font-body text-[11px] px-3 py-2 rounded-xl border transition-all text-left ${style === s.id ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
                       >
                         {s.label}
                       </button>
@@ -217,7 +217,7 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
                 )}
 
                 {error && (
-                  <p className="font-mono text-[11px] text-destructive">{error}</p>
+                  <p className="font-body text-[11px] text-destructive">{error}</p>
                 )}
 
                 {/* Actions */}

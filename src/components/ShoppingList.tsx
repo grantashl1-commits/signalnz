@@ -58,15 +58,15 @@ export function IngredientSearchLinks({ ingredients }: IngredientSearchLinksProp
       {parsed.map((ing, i) => (
         <div key={i} className="flex items-center justify-between gap-2">
           <span className="font-body text-xs text-muted-foreground flex-1">
-            • {ing.quantity && <span className="font-mono text-[10px]">{ing.quantity} </span>}
-            {ing.unit && <span className="font-mono text-[10px]">{ing.unit} </span>}
+            • {ing.quantity && <span className="font-body text-[10px]">{ing.quantity} </span>}
+            {ing.unit && <span className="font-body text-[10px]">{ing.unit} </span>}
             {ing.name}
           </span>
           <a
             href={getWoolworthsSearchUrl(ing)}
             target="_blank"
             rel="noopener noreferrer"
-            className="touch-btn flex-shrink-0 flex items-center gap-1 rounded-full bg-phase-follicular/10 px-2 py-1 min-h-[32px] font-mono text-[9px] text-phase-follicular active:bg-phase-follicular/20 transition-all"
+            className="touch-btn flex-shrink-0 flex items-center gap-1 rounded-full bg-phase-follicular/10 px-2 py-1 min-h-[32px] font-body text-[9px] text-phase-follicular active:bg-phase-follicular/20 transition-all"
             onClick={() => haptic("light")}
           >
             <ExternalLink className="h-3 w-3" />
@@ -234,7 +234,7 @@ export function ShoppingListPanel() {
         <div className="flex items-center gap-2">
           <ShoppingCart className="h-4 w-4 text-primary" />
           <span className="font-display text-sm italic text-foreground">Shopping List</span>
-          <span className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+          <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
             {checkedCount}/{items.length}
           </span>
         </div>
@@ -255,7 +255,7 @@ export function ShoppingListPanel() {
             style={{ width: `${items.length > 0 ? (checkedCount / items.length) * 100 : 0}%` }}
           />
         </div>
-        <span className="font-mono text-[10px] text-muted-foreground">{checkedCount}/{items.length}</span>
+        <span className="font-body text-[10px] text-muted-foreground">{checkedCount}/{items.length}</span>
       </div>
 
       {/* Categories */}
@@ -271,7 +271,7 @@ export function ShoppingListPanel() {
             >
               <div className="flex items-center gap-2">
                 <span className="font-body text-xs font-bold text-foreground">{CATEGORY_LABELS[cat]}</span>
-                <span className="font-mono text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                <span className="font-body text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
                   {catItems.filter(i => i.checked).length}/{catItems.length}
                 </span>
               </div>
@@ -302,8 +302,8 @@ export function ShoppingListPanel() {
                           </button>
                           <div className="flex-1 min-w-0">
                             <span className={`font-body text-xs ${item.checked ? "line-through text-muted-foreground/50" : "text-foreground"}`}>
-                              {item.quantity && <span className="font-mono text-[10px]">{item.quantity} </span>}
-                              {item.unit && <span className="font-mono text-[10px]">{item.unit} </span>}
+                              {item.quantity && <span className="font-body text-[10px]">{item.quantity} </span>}
+                              {item.unit && <span className="font-body text-[10px]">{item.unit} </span>}
                               {item.name}
                             </span>
                             {item.recipeName && item.recipeName !== "Manual" && (

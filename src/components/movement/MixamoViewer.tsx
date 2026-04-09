@@ -194,20 +194,20 @@ export default function MixamoViewer({ exerciseName, fbxPath, height = 360 }: Mi
       <div className="flex items-center justify-center gap-2">
         <button
           onClick={() => setPlaying(!playing)}
-          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-secondary text-muted-foreground font-mono text-[10px] transition-colors hover:bg-secondary/80"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-secondary text-muted-foreground font-body text-[10px] transition-colors hover:bg-secondary/80"
         >
           {playing ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
           {playing ? "pause" : "play"}
         </button>
         <button
           onClick={handleScreenshot}
-          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] transition-colors hover:bg-primary/15"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-body text-[10px] transition-colors hover:bg-primary/15"
         >
           <Camera className="h-3 w-3" />
           save image
         </button>
       </div>
-      <p className="text-center font-mono text-[9px] text-muted-foreground">{exerciseName} · Mixamo 3D</p>
+      <p className="text-center font-body text-[9px] text-muted-foreground">{exerciseName} · Mixamo 3D</p>
     </div>
   );
 }

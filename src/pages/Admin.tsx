@@ -46,7 +46,7 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary", toolt
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1">
-            <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+            <p className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
             {tooltip && (
               <TooltipProvider>
                 <Tooltip>
@@ -61,7 +61,7 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary", toolt
             )}
           </div>
           <p className="font-display text-2xl font-bold text-foreground">{value}</p>
-          {sub && <p className="font-mono text-[10px] text-muted-foreground">{sub}</p>}
+          {sub && <p className="font-body text-[10px] text-muted-foreground">{sub}</p>}
         </div>
       </div>
     </div>
@@ -203,7 +203,7 @@ export default function AdminPage() {
           {activeTab === "overview" && (
             <div className="space-y-4">
               {/* Revenue stats */}
-              <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">Revenue</p>
+              <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider">Revenue</p>
               <div className="grid grid-cols-3 gap-3">
                 <StatCard icon={DollarSign} label="MRR" value={`$${stats.stripe?.mrr?.toFixed(0) || 0}`} sub="Monthly recurring" color="text-phase-follicular" tooltip="Monthly Recurring Revenue — calculated from active subscription values. May differ from collected revenue if billing cycle falls outside this window." />
                 <StatCard icon={TrendingUp} label="Collected (30 Days)" value={`$${stats.stripe?.monthlyRevenue?.toFixed(0) || 0}`} sub="Payments received in last 30 days" color="text-phase-follicular" />
@@ -213,7 +213,7 @@ export default function AdminPage() {
               </div>
 
               {/* Platform stats */}
-              <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-6">Platform</p>
+              <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mt-6">Platform</p>
               <div className="grid grid-cols-2 gap-3">
                 <StatCard icon={Users} label="Users" value={stats.users.totalProfiles} />
                 <StatCard icon={MapPin} label="Communities" value={approvedGroups.length} sub={`${pendingGroups.length} pending`} />
@@ -224,13 +224,13 @@ export default function AdminPage() {
               {/* Pending approvals quick view */}
               {pendingGroups.length > 0 && (
                 <div className="mt-6">
-                  <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Pending Approvals</p>
+                  <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Pending Approvals</p>
                   {pendingGroups.slice(0, 3).map(g => (
                     <div key={g.id} className="card-warm p-4 mb-2 flex items-center gap-3">
                       <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-display text-sm font-bold italic text-foreground">{g.name}</p>
-                        <p className="font-mono text-[10px] text-muted-foreground">{g.suburb} · {g.group_type}</p>
+                        <p className="font-body text-[10px] text-muted-foreground">{g.suburb} · {g.group_type}</p>
                       </div>
                       <div className="flex gap-1.5">
                         <button
@@ -251,7 +251,7 @@ export default function AdminPage() {
                     </div>
                   ))}
                   {pendingGroups.length > 3 && (
-                    <button onClick={() => setActiveTab("groups")} className="font-mono text-[11px] text-primary">
+                    <button onClick={() => setActiveTab("groups")} className="font-body text-[11px] text-primary">
                       View all {pendingGroups.length} pending →
                     </button>
                   )}
@@ -265,7 +265,7 @@ export default function AdminPage() {
             <div className="space-y-6">
               {/* Pending */}
               <div>
-                <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
                   Pending ({pendingGroups.length})
                 </p>
                 {pendingGroups.length === 0 ? (
@@ -277,7 +277,7 @@ export default function AdminPage() {
 
               {/* Approved */}
               <div>
-                <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
                   Active ({approvedGroups.length})
                 </p>
                 {approvedGroups.map(g => (
@@ -288,7 +288,7 @@ export default function AdminPage() {
               {/* Rejected */}
               {rejectedGroups.length > 0 && (
                 <div>
-                  <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
+                  <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
                     Rejected ({rejectedGroups.length})
                   </p>
                   {rejectedGroups.map(g => (
@@ -310,7 +310,7 @@ export default function AdminPage() {
               {/* Tier breakdown */}
               {stats.stripe && (
                 <div className="card-warm p-4 mb-4">
-                  <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-3">Subscription Tiers</p>
+                  <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-3">Subscription Tiers</p>
                   <div className="space-y-2">
                     <TierBar label="Nourished ($19/mo)" count={stats.stripe.tierCounts.nourished} total={stats.stripe.activeSubscriptions} color="bg-phase-follicular" />
                     <TierBar label="Thriving ($39/mo)" count={stats.stripe.tierCounts.thriving} total={stats.stripe.activeSubscriptions} color="bg-primary" />
@@ -324,14 +324,14 @@ export default function AdminPage() {
               {/* Recent cancellations */}
               {stats.stripe?.recentCancellations && stats.stripe.recentCancellations.length > 0 && (
                 <div>
-                  <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent Cancellations</p>
+                  <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent Cancellations</p>
                   {stats.stripe.recentCancellations.map((c, i) => (
                     <div key={i} className="card-warm p-3 mb-2 flex items-center gap-3">
                       <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="font-mono text-xs text-foreground truncate">{c.email}</p>
+                        <p className="font-body text-xs text-foreground truncate">{c.email}</p>
                         {c.canceledAt && (
-                          <p className="font-mono text-[10px] text-muted-foreground">
+                          <p className="font-body text-[10px] text-muted-foreground">
                             {new Date(c.canceledAt).toLocaleDateString()}
                           </p>
                         )}
@@ -343,7 +343,7 @@ export default function AdminPage() {
 
               {/* User profiles list */}
               <div>
-                <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
                   All Profiles ({stats.users.totalProfiles})
                 </p>
                 {stats.users.profiles.map((p: any) => (
@@ -351,7 +351,7 @@ export default function AdminPage() {
                     <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="font-display text-sm italic text-foreground">{p.display_name || "Unnamed"}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground">
+                      <p className="font-body text-[10px] text-muted-foreground">
                         {p.suburb || "No suburb"} · Joined {new Date(p.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -369,14 +369,14 @@ export default function AdminPage() {
               ) : stats.feedback.map((f: any) => (
                 <div key={f.id} className="card-warm p-4">
                   <div className="flex items-start gap-2 mb-1">
-                    <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
+                    <span className={`font-body text-[10px] px-2 py-0.5 rounded-full ${
                       f.status === "open" ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground"
                     }`}>{f.status}</span>
-                    <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{f.category}</span>
+                    <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{f.category}</span>
                   </div>
                   <p className="font-display text-sm font-bold italic text-foreground mt-2">{f.subject}</p>
                   <p className="font-display text-[13px] italic text-muted-foreground mt-1">{f.description}</p>
-                  <p className="font-mono text-[10px] text-muted-foreground mt-2">
+                  <p className="font-body text-[10px] text-muted-foreground mt-2">
                     {f.user_email || "Anonymous"} · {new Date(f.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -393,13 +393,13 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent AI Requests</p>
+                <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent AI Requests</p>
                 {stats.ai.recentUsage.map((u: any) => (
                   <div key={u.id} className="card-warm p-3 mb-2 flex items-center gap-3">
                     <Activity className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono text-xs text-foreground">{u.function_name}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground">
+                      <p className="font-body text-xs text-foreground">{u.function_name}</p>
+                      <p className="font-body text-[10px] text-muted-foreground">
                         {u.tokens_used || 0} tokens · {new Date(u.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -432,11 +432,11 @@ function GroupCard({ group, onAction, onDelete, onArchive, updating, showActions
         <div className="flex-1 min-w-0" onClick={() => setExpanded(!expanded)} role="button">
           <div className="flex items-center gap-2">
             <p className="font-display text-sm font-bold italic text-foreground">{group.name}</p>
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+            <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
               {group.group_type}
             </span>
           </div>
-          <p className="font-mono text-[10px] text-muted-foreground">
+          <p className="font-body text-[10px] text-muted-foreground">
             {group.suburb} · {group.members_count || 0} members · {new Date(group.created_at).toLocaleDateString()}
           </p>
         </div>
@@ -462,7 +462,7 @@ function GroupCard({ group, onAction, onDelete, onArchive, updating, showActions
         )}
         {showReapprove && (
           <div className="flex gap-1.5">
-            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="font-mono text-[11px] text-primary">
+            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="font-body text-[11px] text-primary">
               Re-approve
             </button>
             <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
@@ -488,8 +488,8 @@ function TierBar({ label, count, total, color }: { label: string; count: number;
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
-        <span className="font-mono text-[11px] text-foreground">{label}</span>
-        <span className="font-mono text-[11px] text-muted-foreground">{count}</span>
+        <span className="font-body text-[11px] text-foreground">{label}</span>
+        <span className="font-body text-[11px] text-muted-foreground">{count}</span>
       </div>
       <div className="h-2 rounded-full bg-secondary overflow-hidden">
         <div className={`h-full rounded-full ${color} transition-all`} style={{ width: `${pct}%` }} />
@@ -535,14 +535,14 @@ function NPSTab() {
       </div>
 
       <div>
-        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent Responses</p>
+        <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Recent Responses</p>
         {responses.length === 0 && (
           <p className="font-body text-sm text-muted-foreground text-center py-8">No NPS responses yet.</p>
         )}
         {responses.map((r: any) => (
           <div key={r.id} className="card-warm p-3 mb-2">
             <div className="flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-sm font-bold ${
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-bold ${
                 r.score >= 9 ? "bg-phase-follicular/20 text-phase-follicular" :
                 r.score >= 7 ? "bg-phase-ovulatory/20 text-phase-ovulatory" :
                 "bg-destructive/15 text-destructive"
@@ -551,7 +551,7 @@ function NPSTab() {
               </div>
               <div className="flex-1 min-w-0">
                 {r.comment && <p className="font-body text-xs text-foreground">{r.comment}</p>}
-                <p className="font-mono text-[10px] text-muted-foreground">
+                <p className="font-body text-[10px] text-muted-foreground">
                   {new Date(r.created_at).toLocaleDateString()} · {r.user_id.slice(0, 8)}…
                 </p>
               </div>
