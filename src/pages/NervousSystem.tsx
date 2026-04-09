@@ -342,6 +342,107 @@ function RightNowChips({ onSelect }: { onSelect: (s: MeditationScript) => void }
   );
 }
 
+// ── Get all practice scripts ──
+function getPracticeScripts(): MeditationScript[] {
+  return [
+    ...MEDITATION_SCRIPTS,
+    ...PHASE_SCRIPTS,
+    ...QUICK_PRACTICES,
+    ...GROUNDING_PRACTICES,
+    ...READING_SCRIPTS,
+    ...PRESENCE_PRACTICES,
+    ...INNER_WORK_SCRIPTS,
+  ];
+}
+
+// ── AI Check-in ──
+function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScript) => void }) {
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ practiceId: string; explanation: string } | null>(null);
+  const { currentPhase, currentCycleDay } = useCycle();
+
+  const handleSubmit = async (text: string) => {
+    if (!text.trim()) return;
+    setInput(text);
+    setLoading(true);
+    setResult(null);
+    try {
+      const { data } = await supabase.functions.invoke("mindfulness-ai", {
+        body: { input: text, currentPhase, currentCycleDay },
+      });
+      if (data) setResult(data);
+    } catch {
+      setResult({ practiceId: "med-004", explanation: "Based on how you're feeling, the Relaxation Response may help." });
+    }
+    setLoading(false);
+  };
+
+  const recommended = result ? getMeditationById(result.practiceId) : null;
+  const AI_CHIPS_LOCAL = [
+    "I feel anxious and can't settle",
+    "I'm really tired but can't sleep",
+    "I feel emotionally heavy today",
+    "I need to reset — I've been in my head all day",
+    "I'm in my luteal phase and struggling",
+    "I need something short — 5 minutes",
+  ];
+
+  return (
+    <div className="card-warm p-6 space-y-4">
+      <h2 className="font-display text-xl italic text-foreground">How are you feeling right now?</h2>
+      <div className="flex flex-wrap gap-2">
+        {AI_CHIPS_LOCAL.map((chip) => (
+          <button
+            key={chip}
+            onClick={() => handleSubmit(chip)}
+            className="rounded-full border border-border px-3 py-1.5 font-body text-xs text-muted-foreground hover:bg-secondary/60 transition-colors"
+          >
+            {chip}
+          </button>
+        ))}
+      </div>
+      <textarea
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Or describe how you feel in your own words..."
+        className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-20"
+      />
+      <button
+        onClick={() => handleSubmit(input)}
+        disabled={loading || !input.trim()}
+        className="rounded-xl bg-primary px-6 py-3 font-body text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+      >
+        Get a Recommendation
+      </button>
+
+      {loading && (
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="font-hand text-sm animate-pulse">finding what your body needs...</span>
+        </div>
+      )}
+
+      {result && recommended && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">recommended</span>
+            <span className="font-mono text-[11px] text-muted-foreground">{formatMeditationDuration(recommended.durationSec)}</span>
+          </div>
+          <h3 className="font-display text-lg italic text-foreground">{recommended.title}</h3>
+          <p className="font-body text-sm text-muted-foreground leading-relaxed">{result.explanation}</p>
+          <button
+            onClick={() => { haptic("medium"); onSelectPractice(recommended); }}
+            className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+          >
+            <Play className="h-4 w-4" /> start practice →
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 // ── Duration sort filter ──
 type DurationFilter = "all" | "short" | "medium" | "longer";
 
