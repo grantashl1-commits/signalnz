@@ -34,7 +34,7 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
         </div>
 
         <div className="card-warm p-4 mb-5">
-          <p className="font-mono text-[11px] text-phase-follicular mb-2.5">What others will see</p>
+          <p className="font-body text-[11px] text-phase-follicular mb-2.5">What others will see</p>
           {[
             { positive: true, text: "Your first name and profile" },
             { positive: true, text: "Your suburb (e.g. Ponsonby)" },
@@ -51,14 +51,14 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
                   <HandDrawnCross size={14} color="hsl(var(--phase-menstrual))" />
                 )}
               </span>
-              <span className={`font-mono text-xs leading-snug ${item.positive ? "text-foreground/70" : "text-muted-foreground"}`}>
+              <span className={`font-body text-xs leading-snug ${item.positive ? "text-foreground/70" : "text-muted-foreground"}`}>
                 {item.text}
               </span>
             </div>
           ))}
         </div>
 
-        <p className="font-mono text-[11px] text-muted-foreground text-center mb-4 leading-relaxed">
+        <p className="font-body text-[11px] text-muted-foreground text-center mb-4 leading-relaxed">
           You can turn this off at any time in your profile settings.
         </p>
 

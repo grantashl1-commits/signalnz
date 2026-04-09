@@ -202,7 +202,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
       {/* Vision card */}
       {(approvedGroups.length > 0 || selectedSuburb) && (
       <div className="card-warm p-5">
-        <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-1.5">The vision</p>
+        <p className="font-body text-[11px] text-primary uppercase tracking-wider mb-1.5">The vision</p>
         <p className="font-display text-sm italic text-foreground leading-relaxed">
           As technology reshapes work, the most valuable thing we'll have is each other. Find your neighbours.
           Share your skills. Trade what you know. Build the village that's been there all along.
@@ -247,13 +247,13 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
       {/* Pending requests */}
       {myPending.length > 0 && (
         <div className="space-y-2">
-          <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">Pending approval</p>
+          <p className="font-body text-[11px] text-muted-foreground uppercase tracking-wider">Pending approval</p>
           {myPending.map(g => (
             <div key={g.id} className="card-warm p-4 opacity-70">
               <div className="flex items-center gap-2 mb-1">
                 <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                 <h3 className="font-display text-base font-bold italic text-foreground">{g.name}</h3>
-                <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground ml-auto">
+                <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground ml-auto">
                   {g.group_type === "interest" ? "Interest group" : "Suburb group"}
                 </span>
               </div>
@@ -276,7 +276,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
           >
             {submitting ? "Submitting…" : `Request ${selectedSuburb} group`}
           </button>
-          <p className="font-mono text-[10px] text-muted-foreground">Groups require admin approval before going live</p>
+          <p className="font-body text-[10px] text-muted-foreground">Groups require admin approval before going live</p>
         </div>
       )}
 
@@ -323,15 +323,15 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-display text-xl font-bold italic text-foreground mb-0.5">{g.name}</h3>
                       {g.group_type === "interest" && (
-                        <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">
+                        <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">
                           {parentName ? `${parentName}` : "Interest"}
                         </span>
                       )}
                     </div>
-                    <p className="font-mono text-xs text-muted-foreground">{g.city || g.suburb} · {g.members_count || 0} members</p>
+                    <p className="font-body text-xs text-muted-foreground">{g.city || g.suburb} · {g.members_count || 0} members</p>
                   </div>
                   {isJoined ? (
-                    <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0">Joined</span>
+                    <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0">Joined</span>
                   ) : (
                     <button
                       onClick={() => onJoin(g.id)}
@@ -346,7 +346,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
                 {g.challenges.length > 0 && (
                   <div className="bg-secondary/50 rounded-xl p-3.5 mb-2.5">
-                    <p className="font-mono text-[11px] text-primary mb-1.5">Active challenges</p>
+                    <p className="font-body text-[11px] text-primary mb-1.5">Active challenges</p>
                     {g.challenges.slice(0, 2).map((c: string, i: number) => (
                       <p key={i} className="font-display text-[13px] italic text-foreground/70 leading-relaxed mb-1">{c}</p>
                     ))}
@@ -356,7 +356,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
                 {g.questions.slice(0, 2).map((q: string, i: number) => (
                   <div key={i} className="flex gap-1.5 items-start mb-1">
                     <span className="text-primary text-xs flex-shrink-0 mt-0.5">·</span>
-                    <span className="font-mono text-[11px] text-muted-foreground leading-relaxed">{q}</span>
+                    <span className="font-body text-[11px] text-muted-foreground leading-relaxed">{q}</span>
                   </div>
                 ))}
               </div>
@@ -376,7 +376,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <div>
-              <label className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-1 block">Parent suburb</label>
+              <label className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-1 block">Parent suburb</label>
               <select
                 value={interestParent || ""}
                 onChange={e => setInterestParent(e.target.value || null)}
@@ -389,7 +389,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
               </select>
             </div>
             <div>
-              <label className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-1 block">Group name</label>
+              <label className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-1 block">Group name</label>
               <input
                 value={interestName}
                 onChange={e => setInterestName(e.target.value)}
@@ -399,7 +399,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
               />
             </div>
             <div>
-              <label className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mb-1 block">Description (optional)</label>
+              <label className="font-body text-[11px] text-muted-foreground uppercase tracking-wider mb-1 block">Description (optional)</label>
               <textarea
                 value={interestDesc}
                 onChange={e => setInterestDesc(e.target.value)}
@@ -415,7 +415,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
             >
               {submitting ? "Submitting…" : "Submit for approval"}
             </button>
-            <p className="font-mono text-[10px] text-muted-foreground text-center">Groups require admin approval before going live</p>
+            <p className="font-body text-[10px] text-muted-foreground text-center">Groups require admin approval before going live</p>
           </div>
         </DialogContent>
       </Dialog>

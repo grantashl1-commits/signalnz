@@ -56,7 +56,7 @@ export default function MemberProfileSheet({ userId, displayName, onClose }: Mem
         <div className="flex items-center justify-between p-5 border-b border-border">
           <div>
             <h2 className="font-display text-lg italic font-bold text-foreground">{displayName}</h2>
-            <p className="font-mono text-[10px] text-muted-foreground">Community member</p>
+            <p className="font-body text-[10px] text-muted-foreground">Community member</p>
           </div>
           <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
             <X className="h-4 w-4 text-muted-foreground" />
@@ -75,7 +75,7 @@ export default function MemberProfileSheet({ userId, displayName, onClose }: Mem
           ) : (
             fields.map(f => (
               <div key={f.key}>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{f.label}</p>
+                <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{f.label}</p>
                 <p className="font-display text-sm italic text-foreground">{f.value}</p>
               </div>
             ))
