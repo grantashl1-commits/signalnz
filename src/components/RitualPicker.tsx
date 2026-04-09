@@ -1,9 +1,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Search, Plus } from "lucide-react";
+import { X, Search, Plus, Sun, Snowflake, Hand, Bath, Sparkles, Heart, Gem } from "lucide-react";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, type Habit } from "@/data/self-care-rituals";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
 import { haptic } from "@/hooks/use-mobile";
+
+const CATEGORY_ICONS: Record<string, typeof Sun> = {
+  "Light & Energy Therapy": Sun,
+  "Cold Therapy": Snowflake,
+  "Bodywork & Recovery": Hand,
+  "Bathing & Soaking": Bath,
+  "Facial & Skin": Sparkles,
+  "Mindful Movement & Restoration": Heart,
+  "Wellness Experiences": Gem,
+};
 
 interface RitualPickerProps {
   open: boolean;
@@ -59,7 +69,6 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
 
   const handleCustom = () => {
     onClose();
-    // Parent handles opening the custom form with self-care pre-selected
   };
 
   if (!open) return null;
@@ -107,34 +116,39 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
         </div>
 
         <div className="overflow-y-auto px-5 pb-6" style={{ maxHeight: "55vh" }}>
-          {grouped.map(group => (
-            <div key={group.category} className="mt-4">
-              <p className="font-hand text-xs font-bold text-muted-foreground mb-2">{group.category}</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {group.rituals.map(ritual => {
-                  const IconComponent = RITUAL_ICONS[ritual.icon] || SelfCareHandIcon;
-                  const isSelected = selected.has(ritual.id);
-                  return (
-                    <button
-                      key={ritual.id}
-                      onClick={() => toggleSelect(ritual.id)}
-                      className={`touch-btn flex flex-col items-center gap-1 rounded-[14px] p-2.5 text-center transition-all border-t-2 ${
-                        isSelected
-                          ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md"
-                          : "bg-card border-bloom/30 shadow-sm"
-                      }`}
-                      style={{ minHeight: 90 }}
-                    >
-                      <IconComponent size={28} color={isSelected ? "#F2A7C3" : "#8B6F5E"} />
-                      <span className="font-hand text-[11px] font-bold text-foreground leading-tight line-clamp-2">
-                        {ritual.name}
-                      </span>
-                    </button>
-                  );
-                })}
+          {grouped.map(group => {
+            const CatIcon = CATEGORY_ICONS[group.category] || Sparkles;
+            return (
+              <div key={group.category} className="mt-4">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <CatIcon className="h-4 w-4 text-primary/50" strokeWidth={1.5} />
+                  <p className="font-hand text-[13px] font-bold text-muted-foreground">{group.category}</p>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {group.rituals.map(ritual => {
+                    const IconComponent = RITUAL_ICONS[ritual.icon] || SelfCareHandIcon;
+                    const isSelected = selected.has(ritual.id);
+                    return (
+                      <button
+                        key={ritual.id}
+                        onClick={() => toggleSelect(ritual.id)}
+                        className={`touch-btn flex flex-col items-center justify-center gap-1.5 rounded-[14px] p-2.5 text-center transition-all h-[96px] ${
+                          isSelected
+                            ? "bg-primary/15 border border-primary/40 shadow-md"
+                            : "bg-card border border-transparent border-t-2 border-t-bloom/30 shadow-sm"
+                        }`}
+                      >
+                        <IconComponent size={28} color={isSelected ? "hsl(var(--primary))" : "#8B6F5E"} />
+                        <span className="font-hand text-[13px] font-bold text-foreground leading-tight line-clamp-2">
+                          {ritual.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Custom option */}
           <div className="mt-4">
