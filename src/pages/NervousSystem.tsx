@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles } from "lucide-react";
+import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles, Wind, BookOpen, CircleDot } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
@@ -124,6 +124,22 @@ function useMindfulnessLogs() {
   return { completed, streak, logCompletion };
 }
 
+// ── Practice Card styling by category ──
+const CARD_THEME: Record<string, {
+  border: string;       // left border color
+  bg: string;           // subtle bg tint
+  Icon: typeof Moon;    // corner icon
+  iconColor: string;
+}> = {
+  meditation:       { border: "hsl(var(--primary))",          bg: "hsl(var(--primary) / 0.04)",         Icon: CircleDot,  iconColor: "hsl(var(--primary) / 0.35)" },
+  sleep:            { border: "hsl(220 40% 18%)",             bg: "hsl(220 30% 14% / 0.06)",           Icon: Moon,       iconColor: "hsl(220 30% 35% / 0.4)" },
+  "inner-work":     { border: "hsl(30 60% 55%)",             bg: "hsl(30 60% 55% / 0.05)",            Icon: Wind,       iconColor: "hsl(30 50% 50% / 0.4)" },
+  reading:          { border: "hsl(var(--phase-follicular))", bg: "hsl(var(--phase-follicular) / 0.04)", Icon: BookOpen, iconColor: "hsl(var(--phase-follicular) / 0.35)" },
+  "phase-practice": { border: "hsl(var(--primary))",          bg: "hsl(var(--primary) / 0.04)",         Icon: Sparkles,   iconColor: "hsl(var(--primary) / 0.3)" },
+};
+
+const DEFAULT_THEME = CARD_THEME.meditation;
+
 // ── Practice Card ──
 function PracticeCard({
   script,
@@ -144,15 +160,29 @@ function PracticeCard({
     "phase-practice": "bg-primary/10 text-primary",
   };
 
+  const theme = CARD_THEME[script.category] || DEFAULT_THEME;
+  const CornerIcon = theme.Icon;
+
   return (
     <motion.div
       custom={index}
       initial="hidden"
       animate="visible"
       variants={cardVariant}
-      className="card-warm p-5"
+      className="card-warm p-5 relative overflow-hidden"
+      style={{
+        borderLeft: `3px solid ${theme.border}`,
+        backgroundColor: theme.bg,
+      }}
     >
-      <div className="flex items-start justify-between gap-2 mb-1">
+      {/* Corner type icon */}
+      <CornerIcon
+        className="absolute top-4 right-4 h-5 w-5 pointer-events-none"
+        style={{ color: theme.iconColor }}
+        strokeWidth={1.5}
+      />
+
+      <div className="flex items-start justify-between gap-2 mb-1 pr-7">
         <h3 className="font-display text-lg italic text-foreground leading-snug">{script.title}</h3>
         {isDone && (
           <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-mono text-[10px] text-phase-follicular shrink-0">
