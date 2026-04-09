@@ -151,6 +151,7 @@ function BreathworkCards({
           >
             begin this practice →
           </button>
+          </div>
         </motion.div>
       ))}
       {!showAll && BREATHWORK_PRACTICES.length > 4 && (
