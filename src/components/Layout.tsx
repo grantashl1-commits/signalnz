@@ -68,7 +68,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 flex flex-col bg-background overflow-hidden">
       <SignalAmbientDots />
-      <SignalAmbientRipple />
 
       {/* Desktop header — hidden on mobile */}
       <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
