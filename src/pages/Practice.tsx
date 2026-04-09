@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf } from "lucide-react";
+import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Landmark } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
