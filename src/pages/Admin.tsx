@@ -236,7 +236,7 @@ export default function AdminPage() {
                         <button
                           onClick={() => handleGroupAction(g.id, "approved")}
                           disabled={updatingGroup === g.id}
-                          className="p-1.5 rounded-lg bg-phase-follicular/10 text-phase-follicular hover:bg-phase-follicular/20 transition-colors"
+                          className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                         >
                           <CheckCircle className="h-4 w-4" />
                         </button>
@@ -442,7 +442,7 @@ function GroupCard({ group, onAction, onDelete, onArchive, updating, showActions
         </div>
         {showActions && (
           <div className="flex gap-1.5">
-            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="p-1.5 rounded-lg bg-phase-follicular/10 text-phase-follicular hover:bg-phase-follicular/20 transition-colors">
+            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
               <CheckCircle className="h-4 w-4" />
             </button>
             <button onClick={() => onAction(group.id, "rejected")} disabled={updating} className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
@@ -543,8 +543,8 @@ function NPSTab() {
           <div key={r.id} className="card-warm p-3 mb-2">
             <div className="flex items-center gap-3">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-bold ${
-                r.score >= 9 ? "bg-phase-follicular/20 text-phase-follicular" :
-                r.score >= 7 ? "bg-phase-ovulatory/20 text-phase-ovulatory" :
+                r.score >= 9 ? "bg-primary/20 text-primary" :
+                r.score >= 7 ? "bg-primary/10 text-primary" :
                 "bg-destructive/15 text-destructive"
               }`}>
                 {r.score}
