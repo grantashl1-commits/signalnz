@@ -30,11 +30,7 @@ export default function SeedCyclingCard({ cycleDay, phase }: SeedCyclingCardProp
 
   return (
     <div
-      className="rounded-[14px] p-4 space-y-3"
-      style={{
-        backgroundColor: "#F5EDE0",
-        boxShadow: "0 2px 12px rgba(139, 111, 94, 0.1)",
-      }}
+      className="card-warm space-y-3"
     >
       <div className="flex items-center gap-3">
         {/* Seed SVG */}

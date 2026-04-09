@@ -21,7 +21,7 @@
     --background: 30 33% 98%;          /* Pearl White  #FDFCFB */
     --foreground: 280 20% 25%;         /* Deep text on pearl */
 
-    --card: 24 33% 92%;                /* Petal Cream  #EBE1DA */
+    --card: 22 27% 94%;                /* Warm Stone  #F5F0EC */
     --card-foreground: 280 20% 25%;
 
     --popover: 24 33% 92%;
@@ -54,10 +54,10 @@
     --radius-sm: 0.625rem;
     --radius-lg: 1.25rem;
     --radius-xl: 1.5rem;
-    --radius-card: 1.25rem;
+    --radius-card: 1.25rem;  /* 20px */
 
     /* ── Shadows — floating card effect ── */
-    --shadow-soft: 0 2px 16px rgba(91, 45, 114, 0.08);
+    --shadow-soft: 0 2px 16px rgba(91, 45, 114, 0.07);
     --shadow-medium: 0 4px 24px rgba(91, 45, 114, 0.10);
     --shadow-elevated: 0 8px 40px rgba(91, 45, 114, 0.12);
     --shadow-glow: 0 0 24px rgba(153, 116, 161, 0.2);
