@@ -252,7 +252,8 @@ export default function MovementPage() {
               <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 overflow-x-auto">
                 {weeklyRotation.map((assignment) => {
                   const workout = allWorkoutsFlat.find(w => w.id === assignment.workoutId) || phaseWorkouts.find(w => w.id === assignment.workoutId);
-                  const isToday = assignment.dayIndex === scheduleIdx;
+                  const isSelected = assignment.dayIndex === scheduleIdx;
+                  const isActualToday = assignment.dayIndex === defaultScheduleIdx;
                   const today = new Date();
                   const mondayOff = today.getDay() === 0 ? -6 : 1 - today.getDay();
                   const dayDate = new Date(today);
