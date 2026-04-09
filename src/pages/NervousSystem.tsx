@@ -173,12 +173,22 @@ function PracticeCard({
       initial="hidden"
       animate="visible"
       variants={cardVariant}
-      className="card-warm relative overflow-hidden"
+      className="relative overflow-hidden rounded-2xl border border-border shadow-sm"
       style={{
         borderLeft: `3px solid ${theme.border}`,
-        backgroundColor: theme.bg,
+        backgroundColor: isSleep ? "#EDE8F0" : theme.bg,
       }}
     >
+      {/* Sleep moon watermark */}
+      {isSleep && (
+        <svg
+          className="absolute top-3 right-3 pointer-events-none"
+          width="64" height="64" viewBox="0 0 64 64" fill="none"
+          style={{ opacity: 0.06 }}
+        >
+          <path d="M48 36c0-11-9-20-20-20a20 20 0 0 0-4 .4A16 16 0 1 1 47.6 40a20 20 0 0 0 .4-4Z" fill="currentColor" />
+        </svg>
+      )
       {/* Corner type icon */}
       <CornerIcon
         className="absolute top-4 right-4 h-5 w-5 pointer-events-none"
