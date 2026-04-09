@@ -488,12 +488,36 @@ function BodyGoalsSection() {
         {BODY_GOALS.map(g => {
           const active = goals.includes(g.id);
           return (
-            <button key={g.id} onClick={() => toggleGoal(g.id)}
-              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border flex items-center gap-2 ${active ? "border-primary bg-primary/5" : "border-border bg-card"}`}
+            <motion.button
+              key={g.id}
+              onClick={() => toggleGoal(g.id)}
+              animate={active ? { scale: [1, 1.03, 1] } : {}}
+              transition={{ duration: 0.25 }}
+              className={`touch-btn rounded-xl p-3 min-h-[48px] text-left transition-all border flex items-center gap-2 relative ${
+                active
+                  ? "border-primary bg-primary/15 shadow-sm"
+                  : "border-border bg-card opacity-60"
+              }`}
             >
-              <g.icon className={`h-4 w-4 flex-shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
-              <span className="font-body text-xs font-medium text-foreground">{g.label}</span>
-            </button>
+              <div className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                active ? "bg-primary" : "bg-muted/30"
+              }`}>
+                <g.icon className={`h-3.5 w-3.5 ${active ? "text-primary-foreground" : "text-muted-foreground"}`} />
+              </div>
+              <span className={`font-body text-xs font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>{g.label}</span>
+              <AnimatePresence>
+                {active && (
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-primary flex items-center justify-center"
+                  >
+                    <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
           );
         })}
       </div>
@@ -515,11 +539,15 @@ function BodyGoalsSection() {
         </div>
       )}
 
-      <button onClick={handleSave} disabled={generating || goals.length === 0}
+      <motion.button
+        onClick={handleSave}
+        disabled={generating || goals.length === 0}
+        animate={!generating && !saved && goals.length > 0 ? { scale: [1, 1.02, 1] } : {}}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         className="touch-btn w-full rounded-xl py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
       >
         {generating ? (<><Loader2 className="h-4 w-4 animate-spin" />Generating your plan...</>) : saved ? ("✓ Saved & plan generated!") : (<><Sparkles className="h-4 w-4" />Save goals & generate plan</>)}
-      </button>
+      </motion.button>
 
       {planSummary && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-primary/5 border border-primary/10">
