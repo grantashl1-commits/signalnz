@@ -89,6 +89,14 @@ export function AtmosphericHero({
       />
 
       <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
+
+      {/* Soft gradient fade into background — dissolves the hard edge */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-10"
+        style={{
+          background: "linear-gradient(to bottom, transparent, hsl(var(--background)))",
+        }}
+      />
     </section>
   );
 }
@@ -102,7 +110,7 @@ interface ContentSectionProps {
 
 export function ContentSection({ children, className = "", withDots = false }: ContentSectionProps) {
   return (
-    <section className={`relative px-0 py-10 md:py-14 ${className}`}>
+    <section className={`relative ${className}`} style={{ paddingTop: 'var(--section-gap)', paddingBottom: 'var(--section-gap)' }}>
       {withDots && <DotPattern color="hsl(25 25% 75%)" opacity={0.06} />}
       <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
     </section>
