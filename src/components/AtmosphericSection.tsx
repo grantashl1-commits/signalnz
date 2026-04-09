@@ -74,9 +74,6 @@ export function AtmosphericHero({
       className={`relative overflow-hidden -mx-5 md:-mx-4 ${className}`}
       style={heroStyle}
     >
-      {/* Drifting dot grid — brand motif texture */}
-      <DotPattern color={dotColor} opacity={dotOpacity} animate />
-
       {/* Radial dot cluster overlay — concentric brand motif for depth */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
@@ -96,7 +93,7 @@ export function AtmosphericHero({
                 cx={200 + r * Math.cos(angle)}
                 cy={200 + r * Math.sin(angle)}
                 r={Math.max(dotR, 0.8)}
-                fill={dotColor}
+                fill="hsl(30 33% 98%)"
                 opacity={0.8 - ri * 0.12}
               />
             );
@@ -132,11 +129,11 @@ interface ContentSectionProps {
   withDots?: boolean;
 }
 
-export function ContentSection({ children, className = "", withDots = false }: ContentSectionProps) {
+export function ContentSection({ children, className = "" }: ContentSectionProps) {
   return (
     <section className={`relative ${className}`} style={{ paddingTop: 'var(--section-gap)', paddingBottom: 'var(--section-gap)' }}>
-      {withDots && <DotPattern color="hsl(25 25% 75%)" opacity={0.04} />}
       <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
+    </section>
     </section>
   );
 }
