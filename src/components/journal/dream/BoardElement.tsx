@@ -451,7 +451,7 @@ export default function BoardElement({
           className="absolute -top-11 left-1/2 flex items-center gap-0.5 bg-card/95 backdrop-blur-md border border-border rounded-xl shadow-lg px-1.5 py-1 z-50"
           style={{ transform: `translate(-50%, 0) scale(${1 / zoom})`, transformOrigin: "bottom center" }}
         >
-          <button onClick={(e) => { e.stopPropagation(); onStartConnect(); }} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary/50 hover:text-primary transition-colors" title="Connect">
+          <button onClick={(e) => { e.stopPropagation(); onStartConnect(); }} className="touch-btn p-2 rounded-lg hover:bg-primary/10 text-primary/50 hover:text-primary transition-colors" title="Connect">
             <Link2 className="h-3.5 w-3.5" />
           </button>
           <div className="relative">
@@ -478,17 +478,17 @@ export default function BoardElement({
               </div>
             )}
           </div>
-          <button onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Duplicate">
+          <button onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="touch-btn p-2 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Duplicate">
             <Copy className="h-3.5 w-3.5" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); onBringForward(); }} className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Forward">
+          <button onClick={(e) => { e.stopPropagation(); onBringForward(); }} className="touch-btn p-2 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Forward">
             <ArrowUp className="h-3.5 w-3.5" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); onSendBackward(); }} className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Backward">
+          <button onClick={(e) => { e.stopPropagation(); onSendBackward(); }} className="touch-btn p-2 rounded-lg hover:bg-secondary text-muted-foreground/60 hover:text-foreground transition-colors" title="Backward">
             <ArrowDown className="h-3.5 w-3.5" />
           </button>
           <div className="w-px h-4 bg-border/50 mx-0.5" />
-          <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive transition-colors" title="Delete">
+          <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="touch-btn p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive transition-colors" title="Delete">
             <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>

@@ -236,14 +236,14 @@ export default function AdminPage() {
                         <button
                           onClick={() => handleGroupAction(g.id, "approved")}
                           disabled={updatingGroup === g.id}
-                          className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                          className="touch-btn p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                         >
                           <CheckCircle className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleGroupAction(g.id, "rejected")}
                           disabled={updatingGroup === g.id}
-                          className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                          className="touch-btn p-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
                         >
                           <XCircle className="h-4 w-4" />
                         </button>
@@ -442,20 +442,20 @@ function GroupCard({ group, onAction, onDelete, onArchive, updating, showActions
         </div>
         {showActions && (
           <div className="flex gap-1.5">
-            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+            <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="touch-btn p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
               <CheckCircle className="h-4 w-4" />
             </button>
-            <button onClick={() => onAction(group.id, "rejected")} disabled={updating} className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
+            <button onClick={() => onAction(group.id, "rejected")} disabled={updating} className="touch-btn p-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
               <XCircle className="h-4 w-4" />
             </button>
           </div>
         )}
         {showManage && (
           <div className="flex gap-1.5">
-            <button onClick={() => onArchive?.(group.id)} disabled={updating} title="Archive" className="p-1.5 rounded-lg bg-secondary hover:bg-muted-foreground/10 text-muted-foreground transition-colors">
+            <button onClick={() => onArchive?.(group.id)} disabled={updating} title="Archive" className="touch-btn p-2 rounded-lg bg-secondary hover:bg-muted-foreground/10 text-muted-foreground transition-colors">
               <Archive className="h-4 w-4" />
             </button>
-            <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
+            <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="touch-btn p-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -465,7 +465,7 @@ function GroupCard({ group, onAction, onDelete, onArchive, updating, showActions
             <button onClick={() => onAction(group.id, "approved")} disabled={updating} className="font-body text-[11px] text-primary">
               Re-approve
             </button>
-            <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
+            <button onClick={() => onDelete?.(group.id)} disabled={updating} title="Delete permanently" className="touch-btn p-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </div>

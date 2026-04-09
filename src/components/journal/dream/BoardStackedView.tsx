@@ -110,10 +110,10 @@ export default function BoardStackedView({ elements, connections, onUpdate, onDe
                   )}
                 </div>
                 <div className="flex gap-1 opacity-60">
-                  <button onClick={(e) => { e.stopPropagation(); onDuplicate(el.id); }} className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground transition-colors">
+                  <button onClick={(e) => { e.stopPropagation(); onDuplicate(el.id); }} className="touch-btn p-2 rounded-lg hover:bg-secondary text-muted-foreground transition-colors">
                     <Copy className="h-3 w-3" />
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); onDelete(el.id); }} className="p-1.5 rounded-lg hover:bg-destructive/8 text-muted-foreground hover:text-destructive transition-colors">
+                  <button onClick={(e) => { e.stopPropagation(); onDelete(el.id); }} className="touch-btn p-2 rounded-lg hover:bg-destructive/8 text-muted-foreground hover:text-destructive transition-colors">
                     <Trash2 className="h-3 w-3" />
                   </button>
                 </div>
