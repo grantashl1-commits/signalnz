@@ -52,13 +52,23 @@ function BreathworkCards({
           }`}
           onClick={() => setExpanded(expanded === p.id ? null : p.id)}
         >
-          <h3 className="font-display text-lg italic text-foreground mb-0.5">
+          <h3 className="font-display text-lg italic text-foreground mb-1">
             {p.title}
           </h3>
-          <p className="font-mono text-[13px] text-muted-foreground mb-1">
-            {p.phases?.map((ph) => ph.seconds).join("-")}
-          </p>
-          <p className="font-body text-[15px] text-foreground/70 mb-1">
+          {p.phases && p.phases.length > 0 && (
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="font-mono text-[28px] font-bold text-primary leading-none">
+                {p.phases.map((ph) => ph.seconds).join("-")}
+              </span>
+              <motion.div
+                className="w-4 h-4 rounded-full border-2 border-primary/50"
+                animate={{ scale: [1, 1.6, 1], opacity: [0.4, 0.8, 0.4] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                style={{ backgroundColor: "hsl(var(--primary) / 0.15)" }}
+              />
+            </div>
+          )}
+          <p className="font-body text-[14px] text-foreground/70 mb-1">
             {p.subtitle}
           </p>
 
