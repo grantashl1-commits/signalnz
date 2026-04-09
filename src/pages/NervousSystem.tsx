@@ -263,7 +263,9 @@ function PracticeCard({
               <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
               <button
                 onClick={() => { haptic("medium"); onSelect(script); }}
-                className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+                className={`touch-btn w-full rounded-[14px] py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2 ${
+                  isSleep ? "bg-primary/70" : "bg-primary"
+                }`}
               >
                 <Play className="h-4 w-4" /> begin this practice
               </button>
