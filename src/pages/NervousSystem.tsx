@@ -516,17 +516,21 @@ export default function NervousSystemPage() {
           {/* Tabs */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
             <div className="flex bg-muted/60 rounded-2xl p-1 max-w-sm mx-auto">
-              {TABS.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
-                  className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all ${
-                    tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
+              {TABS.map((t) => {
+                const TabIcon = t.icon;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
+                    className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all flex items-center justify-center gap-1.5 ${
+                      tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
+                    }`}
+                  >
+                    <TabIcon className="h-3.5 w-3.5" />
+                    {t.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
