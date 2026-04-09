@@ -103,7 +103,7 @@ export default function PracticePage() {
           style={{ minHeight: '220px', paddingTop: '48px', paddingBottom: '32px', paddingLeft: '24px', paddingRight: '24px' }}
         >
           {/* Ambient dot motif */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.08]">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
             {[...Array(12)].map((_, i) => (
               <div
                 key={i}
