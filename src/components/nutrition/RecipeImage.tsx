@@ -24,9 +24,15 @@ export default function RecipeImage({
   const src = recipeImage || getCategoryIllustration(recipeName);
 
   const sizeClasses = {
-    card: "h-[90px] w-auto",
-    detail: "h-[160px] w-auto",
+    card: "h-[72px] w-auto max-w-[72px]",
+    detail: "h-[128px] w-auto max-w-[128px]",
     thumb: "h-12 w-12",
+  };
+
+  const containerHeight = {
+    card: Math.round(height * 0.8),
+    detail: Math.round(height * 0.8),
+    thumb: height,
   };
 
   if (variant === "thumb") {
@@ -42,10 +48,13 @@ export default function RecipeImage({
 
   return (
     <div
-      className={`w-full flex items-center justify-center bg-secondary/30 ${
+      className={`w-full flex items-center justify-center ${
         variant === "detail" ? "rounded-t-[20px]" : "rounded-t-[16px]"
       } ${className}`}
-      style={{ height }}
+      style={{
+        height: containerHeight[variant],
+        background: 'linear-gradient(180deg, #F5EFE8 0%, #EDE4DC 100%)',
+      }}
     >
       <img
         src={src}
