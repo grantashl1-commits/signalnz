@@ -238,11 +238,9 @@ function SomaticCards({
         >
           <div className="flex gap-3 items-start mb-3">
             {p.illustrationUrl ? (
-              <img src={p.illustrationUrl} alt={p.title} className="w-[42px] h-[42px] object-contain flex-shrink-0 rounded-lg" />
+              <img src={p.illustrationUrl} alt={p.title} className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
             ) : (
-              <div className="w-[42px] h-[42px] rounded-lg bg-secondary/60 flex items-center justify-center flex-shrink-0">
-                <span className="font-display text-sm italic text-muted-foreground">✦</span>
-              </div>
+              <SomaticFallbackIcon id={p.id} />
             )}
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-lg italic text-foreground mb-1">
