@@ -265,21 +265,29 @@ const CONTEXTUAL_CHIPS: Record<string, { label: string; practiceId: string }[]> 
     { label: "A 5-min reset", practiceId: "quick-001" },
     { label: "Set my intention", practiceId: "quick-005" },
     { label: "Arrive in my body", practiceId: "quick-004" },
+    { label: "Clear my head", practiceId: "quick-003" },
+    { label: "Ground myself", practiceId: "ground-002" },
   ],
   "midday-active": [
     { label: "Focus", practiceId: "quick-003" },
     { label: "Quick breath", practiceId: "quick-004" },
     { label: "Values check-in", practiceId: "quick-005" },
+    { label: "Clear my head", practiceId: "quick-001" },
+    { label: "Ground myself", practiceId: "ground-002" },
   ],
   "evening-luteal": [
     { label: "Let go of the day", practiceId: "ground-002" },
     { label: "Make room for how I feel", practiceId: "presence-003" },
     { label: "Wind down", practiceId: "sleep-003" },
+    { label: "Clear my head", practiceId: "quick-003" },
+    { label: "Ground myself", practiceId: "quick-004" },
   ],
   "menstrual": [
     { label: "Pebble meditation", practiceId: "quick-002" },
     { label: "Full body release", practiceId: "ground-002" },
     { label: "Something short", practiceId: "quick-001" },
+    { label: "Wind down", practiceId: "sleep-003" },
+    { label: "Ground myself", practiceId: "quick-004" },
   ],
 };
 
@@ -294,119 +302,44 @@ function getContextualChips(phase: string): { label: string; practiceId: string 
 function RightNowChips({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
   const { currentPhase } = useCycle();
   const chips = getContextualChips(currentPhase);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   return (
-    <div className="mb-5">
-      <p className="font-hand text-sm font-bold text-muted-foreground/60 mb-2 italic">Right now I need...</p>
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {chips.map((chip) => (
-          <button
-            key={chip.practiceId}
-            onClick={() => {
-              const s = getMeditationById(chip.practiceId);
-              if (s) { haptic("medium"); onSelect(s); }
-            }}
-            className="whitespace-nowrap rounded-full border border-primary/20 bg-primary/5 px-4 py-2 font-body text-xs text-foreground hover:bg-primary/10 transition-colors"
-          >
-            {chip.label}
-          </button>
-        ))}
+    <div className="mb-6">
+      <h2 className="font-display text-lg italic text-foreground mb-1">Right now I need…</h2>
+      <p className="font-body text-[11px] text-muted-foreground mb-3 italic" style={{ fontWeight: 300 }}>
+        Tap what feels right — we'll take you straight there.
+      </p>
+      <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
+        {chips.map((chip) => {
+          const isActive = activeId === chip.practiceId;
+          return (
+            <motion.button
+              key={chip.practiceId}
+              onClick={() => {
+                const s = getMeditationById(chip.practiceId);
+                if (s) {
+                  haptic("medium");
+                  setActiveId(chip.practiceId);
+                  onSelect(s);
+                }
+              }}
+              animate={isActive ? { scale: [1, 0.96, 1] } : {}}
+              transition={{ duration: 0.3 }}
+              className={`whitespace-nowrap rounded-full border min-h-[44px] px-4 py-2.5 font-body text-xs flex items-center gap-2 transition-all ${
+                isActive
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-primary/25 bg-primary/5 text-foreground hover:bg-primary/10"
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5 shrink-0" style={{ opacity: isActive ? 1 : 0.45 }} />
+              {chip.label}
+            </motion.button>
+          );
+        })}
       </div>
     </div>
   );
-}
-
-// ── AI Check-in ──
-function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScript) => void }) {
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ practiceId: string; explanation: string } | null>(null);
-  const { currentPhase, currentCycleDay } = useCycle();
-
-  const handleSubmit = async (text: string) => {
-    if (!text.trim()) return;
-    setInput(text);
-    setLoading(true);
-    setResult(null);
-    try {
-      const { data } = await supabase.functions.invoke("mindfulness-ai", {
-        body: { input: text, currentPhase, currentCycleDay },
-      });
-      if (data) setResult(data);
-    } catch {
-      setResult({ practiceId: "med-004", explanation: "Based on how you're feeling, the Relaxation Response may help." });
-    }
-    setLoading(false);
-  };
-
-  const recommended = result ? getMeditationById(result.practiceId) : null;
-
-  return (
-    <div className="card-warm p-6 space-y-4">
-      <h2 className="font-display text-xl italic text-foreground">How are you feeling right now?</h2>
-      <div className="flex flex-wrap gap-2">
-        {AI_CHIPS.map((chip) => (
-          <button
-            key={chip}
-            onClick={() => handleSubmit(chip)}
-            className="rounded-full border border-border px-3 py-1.5 font-body text-xs text-muted-foreground hover:bg-secondary/60 transition-colors"
-          >
-            {chip}
-          </button>
-        ))}
-      </div>
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Or describe how you feel in your own words..."
-        className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-20"
-      />
-      <button
-        onClick={() => handleSubmit(input)}
-        disabled={loading || !input.trim()}
-        className="rounded-xl bg-primary px-6 py-3 font-body text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
-      >
-        Get a Recommendation
-      </button>
-
-      {loading && (
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <Loader2 className="h-5 w-5 animate-spin" />
-          <span className="font-hand text-sm animate-pulse">finding what your body needs...</span>
-        </div>
-      )}
-
-      {result && recommended && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">recommended</span>
-            <span className="font-mono text-[11px] text-muted-foreground">{formatMeditationDuration(recommended.durationSec)}</span>
-          </div>
-          <h3 className="font-display text-lg italic text-foreground">{recommended.title}</h3>
-          <p className="font-body text-sm text-muted-foreground leading-relaxed">{result.explanation}</p>
-          <button
-            onClick={() => { haptic("medium"); onSelectPractice(recommended); }}
-            className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
-          >
-            <Play className="h-4 w-4" /> start practice →
-          </button>
-        </motion.div>
-      )}
-    </div>
-  );
-}
-
-// ── Get all practice scripts ──
-function getPracticeScripts(): MeditationScript[] {
-  return [
-    ...MEDITATION_SCRIPTS,
-    ...PHASE_SCRIPTS,
-    ...QUICK_PRACTICES,
-    ...GROUNDING_PRACTICES,
-    ...READING_SCRIPTS,
-    ...PRESENCE_PRACTICES,
-    ...INNER_WORK_SCRIPTS,
-  ];
 }
 
 // ── Duration sort filter ──
