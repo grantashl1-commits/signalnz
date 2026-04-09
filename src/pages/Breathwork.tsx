@@ -191,10 +191,10 @@ function SomaticCards({
           <img
             src={fasciaReleaseImg}
             alt="Morning Fascia Release"
-            className="w-[42px] h-[42px] object-contain flex-shrink-0 rounded-lg"
+            className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg"
             loading="lazy"
-            width={42}
-            height={42}
+            width={44}
+            height={44}
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-display text-lg italic text-foreground mb-1">
