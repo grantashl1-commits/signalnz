@@ -41,10 +41,10 @@ function InkParticles() {
 function MoodIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" style={{ opacity: 0.7 }}>
-      <circle cx={8} cy={8} r={6.5} fill="none" stroke="hsl(var(--phase-follicular))" strokeWidth={0.9} />
-      <circle cx={6} cy={6.5} r={0.7} fill="hsl(var(--phase-follicular))" opacity={0.6} />
-      <circle cx={10} cy={6.5} r={0.7} fill="hsl(var(--phase-follicular))" opacity={0.6} />
-      <path d="M 5.5 9.5 Q 8 12 10.5 9.5" fill="none" stroke="hsl(var(--phase-follicular))" strokeWidth={0.7} strokeLinecap="round" />
+      <circle cx={8} cy={8} r={6.5} fill="none" stroke="hsl(var(--primary))" strokeWidth={0.9} />
+      <circle cx={6} cy={6.5} r={0.7} fill="hsl(var(--primary))" opacity={0.6} />
+      <circle cx={10} cy={6.5} r={0.7} fill="hsl(var(--primary))" opacity={0.6} />
+      <path d="M 5.5 9.5 Q 8 12 10.5 9.5" fill="none" stroke="hsl(var(--primary))" strokeWidth={0.7} strokeLinecap="round" />
     </svg>
   );
 }
@@ -62,7 +62,7 @@ function Pill({ label, variant = "sage" }: { label: string; variant?: "sage" | "
     ? "bg-primary/10 text-primary"
     : variant === "blue"
     ? "bg-accent/10 text-accent"
-    : "bg-phase-follicular/10 text-phase-follicular";
+    : "bg-primary/10 text-primary";
   return <span className={`font-body text-[11px] px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
 }
 
@@ -338,7 +338,7 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
         </div>
       )}
 
-      {ai.growth_arc && <Section title="Your Growth Arc" accent="hsl(var(--phase-follicular))"><p className="font-display text-sm italic text-foreground/70 leading-relaxed">{ai.growth_arc}</p></Section>}
+      {ai.growth_arc && <Section title="Your Growth Arc" accent="hsl(var(--primary))"><p className="font-display text-sm italic text-foreground/70 leading-relaxed">{ai.growth_arc}</p></Section>}
 
       {(ai.themes?.length > 0 || ai.emotions?.length > 0) && (
         <Section title="Themes & Emotions"><div className="flex flex-wrap gap-1.5">{ai.themes?.map((t: string) => <Pill key={t} label={t} variant="primary" />)}{ai.emotions?.map((e: string) => <Pill key={e} label={e} />)}</div></Section>
@@ -354,7 +354,7 @@ function AnalysisView({ entry, onBack, isMilestone }: { entry: JournalEntry; onB
         <Section title="Recommendations For You">
           {ai.recommendations.map((r: any, i: number) => (
             <div key={i} className="flex gap-3 bg-secondary/30 rounded-xl p-3.5 mb-2">
-              <div className="mt-0.5">{r.type === "book" ? <HandDrawnBook size={20} color="hsl(var(--primary))" /> : r.type === "podcast" ? <HandDrawnHeadphones size={20} /> : <HandDrawnLeaf size={20} color="hsl(var(--phase-follicular))" />}</div>
+              <div className="mt-0.5">{r.type === "book" ? <HandDrawnBook size={20} color="hsl(var(--primary))" /> : r.type === "podcast" ? <HandDrawnHeadphones size={20} /> : <HandDrawnLeaf size={20} color="hsl(var(--primary))" />}</div>
               <div><p className="font-display text-sm italic text-foreground mb-0.5">{r.title}</p><p className="font-body text-xs text-muted-foreground leading-snug mb-1.5">{r.reason}</p><Pill label={r.type} variant="primary" /></div>
             </div>
           ))}
@@ -583,7 +583,7 @@ export default function JournalEntries({
 
       {/* Milestone banner */}
       {nextMilestone && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl bg-gradient-to-br from-primary/8 to-phase-follicular/8 border border-primary/15 p-5">
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl bg-gradient-to-br from-primary/8 to-primary/8 border border-primary/15 p-5">
           <div className="flex items-center gap-2 mb-2"><WildStar size={22} /><h3 className="font-display text-lg italic text-foreground">{nextMilestone.label}</h3></div>
           <p className="font-display text-sm italic text-muted-foreground mb-3">You've reached {nextMilestone.count} entries. Ready for a deep reflection?</p>
           <button onClick={handleMilestoneAnalyse} disabled={milestoneLoading} className="rounded-xl bg-primary px-5 py-2.5 font-display text-sm italic text-primary-foreground active:opacity-90 disabled:opacity-50 flex items-center gap-2">

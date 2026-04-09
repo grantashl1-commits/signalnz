@@ -55,7 +55,7 @@ export default function ModulesPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <BookOpen className="h-5 w-5 text-phase-follicular" />
+                    <BookOpen className="h-5 w-5 text-primary" />
                     {!m.unlocked && (
                       <div className="flex items-center gap-2">
                         <Lock className="h-3.5 w-3.5 text-muted-foreground" />

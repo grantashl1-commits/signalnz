@@ -68,7 +68,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
   if (alreadyDone) {
     return (
       <div className="card-warm p-5 text-center">
-        <Check className="h-6 w-6 text-phase-follicular mx-auto mb-2" />
+        <Check className="h-6 w-6 text-primary mx-auto mb-2" />
         <p className="font-display text-sm italic text-foreground/70">This week's check-in complete</p>
       </div>
     );
@@ -589,7 +589,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
           disabled={!!generating}
           className="card-warm p-5 text-left hover:shadow-md transition-shadow disabled:opacity-50"
         >
-          <Salad className="h-6 w-6 text-phase-follicular mb-3" />
+          <Salad className="h-6 w-6 text-primary mb-3" />
           <p className="font-display text-sm font-bold italic text-foreground">Nutrition Plan</p>
           <p className="font-body text-[10px] text-muted-foreground mt-1">Meals matched to your load</p>
           {generating === "nutrition" && <Loader2 className="h-4 w-4 animate-spin text-primary mt-2" />}
@@ -618,7 +618,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
               <div className="flex items-center gap-2">
                 {plan.type === "training"
                   ? <Dumbbell className="h-4 w-4 text-primary" />
-                  : <Salad className="h-4 w-4 text-phase-follicular" />}
+                  : <Salad className="h-4 w-4 text-primary" />}
                 <span className="font-display text-sm font-bold italic text-foreground capitalize">
                   {plan.type} Plan
                 </span>
@@ -661,7 +661,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
                     className="w-full text-left card-warm p-3 hover:shadow-sm transition-shadow"
                   >
                     <div className="flex items-center gap-2">
-                      {h.plan_type === "training" ? <Dumbbell className="h-3 w-3 text-primary" /> : <Salad className="h-3 w-3 text-phase-follicular" />}
+                      {h.plan_type === "training" ? <Dumbbell className="h-3 w-3 text-primary" /> : <Salad className="h-3 w-3 text-primary" />}
                       <span className="font-display text-xs italic text-foreground capitalize">{h.plan_type} plan</span>
                       <span className="font-body text-[10px] text-muted-foreground ml-auto">{new Date(h.generated_at).toLocaleDateString()}</span>
                     </div>

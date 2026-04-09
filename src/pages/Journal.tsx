@@ -350,7 +350,7 @@ function StoicEntryCard({ entry, onClick }: { entry: JournalEntryRow; onClick: (
       {entry.stoic_lens && (
         <div className="flex items-center gap-1.5">
           <span className="text-[10px]">🌿</span>
-          <span className="font-body text-[10px] text-phase-follicular">Reflection saved</span>
+          <span className="font-body text-[10px] text-primary">Reflection saved</span>
         </div>
       )}
 

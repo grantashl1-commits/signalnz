@@ -90,11 +90,11 @@ export default function StoicLensDisplay({
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-phase-follicular/20 bg-phase-follicular/[0.03] p-5 space-y-4"
+        className="rounded-2xl border border-primary/20 bg-primary/[0.03] p-5 space-y-4"
       >
         <div className="flex items-center gap-2">
           <span className="font-body text-base">🌿</span>
-          <span className="font-body text-[11px] uppercase tracking-wider text-phase-follicular">The Stoic Lens · Day {lens.seq_day}</span>
+          <span className="font-body text-[11px] uppercase tracking-wider text-primary">The Stoic Lens · Day {lens.seq_day}</span>
         </div>
         <p className="font-body text-[11px] text-muted-foreground">{lens.stoic_title} — {reading?.author}</p>
 
@@ -143,7 +143,7 @@ export default function StoicLensDisplay({
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-phase-follicular/15 bg-phase-follicular/[0.03] p-5 space-y-3"
+      className="rounded-2xl border border-primary/15 bg-primary/[0.03] p-5 space-y-3"
     >
       <div className="flex items-center gap-2">
         <span className="font-body text-base">🌿</span>

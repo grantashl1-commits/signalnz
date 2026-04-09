@@ -372,7 +372,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
                     )}
                   </div>
                   {isJoined ? (
-                    <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular flex-shrink-0 mt-1">Joined</span>
+                    <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary flex-shrink-0 mt-1">Joined</span>
                   ) : (
                     <button
                       onClick={() => onJoin(g.id)}

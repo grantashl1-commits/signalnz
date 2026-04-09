@@ -18,8 +18,8 @@ import {
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
-  nourished: "text-phase-follicular",
-  thriving: "text-phase-ovulatory",
+  nourished: "text-primary",
+  thriving: "text-primary",
 };
 
 const TIER_LABELS: Record<string, string> = {
@@ -364,7 +364,7 @@ export default function AccountPage() {
               {TIER_LABELS[subscription.tier]}
             </span>
             {subscription.subscribed && (
-              <span className="rounded-full bg-phase-follicular/15 px-2.5 py-0.5 font-body text-[11px] font-semibold text-phase-follicular">Active</span>
+              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 font-body text-[11px] font-semibold text-primary">Active</span>
             )}
           </div>
 

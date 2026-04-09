@@ -271,7 +271,7 @@ function SomaticCards({
               Morning Fascia Release
             </h3>
             <div className="flex gap-1.5 mb-1.5 flex-wrap">
-              <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
+              <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">
                 full body
               </span>
               <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
@@ -338,7 +338,7 @@ function SomaticCards({
                 {p.title}
               </h3>
               <div className="flex gap-1.5 mb-1.5 flex-wrap items-center">
-                <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
+                <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">
                   {p.subtitle}
                 </span>
                 <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
