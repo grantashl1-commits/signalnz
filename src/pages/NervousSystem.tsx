@@ -146,11 +146,13 @@ function PracticeCard({
   index,
   isDone,
   onSelect,
+  isSleep,
 }: {
   script: MeditationScript;
   index: number;
   isDone: boolean;
   onSelect: (s: MeditationScript) => void;
+  isSleep?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
 
