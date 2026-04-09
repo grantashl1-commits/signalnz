@@ -371,10 +371,10 @@ export default function NervousSystemPage() {
       <div className="relative">
         <AtmosphericHero size="md">
           <SignalPulse />
-          <div className="text-center relative z-10">
+          <div className="text-center relative z-10 px-6">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-2">
-              Mindfulness & Inner Work
+            <h1 className="font-display text-[clamp(2rem,8vw,4rem)] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.05] mb-2 break-words">
+              Mindfulness &amp; Inner&nbsp;Work
             </h1>
             {streak > 1 && (
               <p className="font-mono text-xs text-primary-foreground/50">
