@@ -366,7 +366,8 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
         <div className="p-5 space-y-4">
           <div>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className={`rounded-full px-2.5 py-1 font-hand text-[11px] font-bold phase-${recipe.phase}-light`}>{PHASE_SHORT[recipe.phase]}</span>
+              <span className="rounded-full px-2.5 py-1 font-hand text-[11px] font-bold"
+                style={{ backgroundColor: `${PHASE_HEX[recipe.phase]}15`, color: PHASE_HEX[recipe.phase] }}>{PHASE_SHORT[recipe.phase]}</span>
               <span className="font-mono text-[10px] text-muted-foreground">{recipe.prepTime}</span>
             </div>
             <h2 className="font-display text-xl font-bold italic text-foreground">{recipe.name}</h2>
