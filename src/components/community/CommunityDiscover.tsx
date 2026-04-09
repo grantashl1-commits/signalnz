@@ -201,9 +201,26 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
       {/* Vision card */}
       {(approvedGroups.length > 0 || selectedSuburb) && (
-      <div className="card-warm p-5">
-        <p className="font-body text-[11px] text-primary uppercase tracking-wider mb-1.5">The vision</p>
-        <p className="font-display text-sm italic text-foreground leading-relaxed">
+      <div className="relative rounded-2xl p-6 overflow-hidden" style={{ backgroundColor: "#1A0F2E" }}>
+        {/* Radial dot motif */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.05]" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice">
+          {Array.from({ length: 40 }).map((_, i) => {
+            const angle = (i / 40) * Math.PI * 2;
+            const ring = Math.floor(i / 10);
+            const dist = 15 + ring * 18;
+            return (
+              <circle
+                key={i}
+                cx={100 + Math.cos(angle) * dist}
+                cy={60 + Math.sin(angle) * dist}
+                r={2 + (ring % 2)}
+                fill="white"
+              />
+            );
+          })}
+        </svg>
+        <p className="font-body text-[11px] text-primary uppercase tracking-[0.2em] mb-2.5 relative z-10">The Vision</p>
+        <p className="font-display text-[15px] italic leading-relaxed relative z-10" style={{ color: "#FAF7F2" }}>
           As technology reshapes work, the most valuable thing we'll have is each other. Find your neighbours.
           Share your skills. Trade what you know. Build the village that's been there all along.
         </p>
