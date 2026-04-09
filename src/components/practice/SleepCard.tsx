@@ -196,21 +196,41 @@ function SleepInput({
 
       <div className="mb-4">
         <label className="font-body text-xs text-muted-foreground block mb-2">Sleep quality</label>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map(i => (
-            <button
-              key={i}
-              onClick={() => setQuality(i)}
-              className="touch-btn p-1"
-            >
-              <Star
-                className="h-6 w-6 transition-colors"
-                fill={i <= quality ? phaseColor : "transparent"}
-                stroke={i <= quality ? phaseColor : "hsl(var(--border))"}
-              />
-            </button>
-          ))}
+        <div className="flex gap-2.5">
+          {[1, 2, 3, 4, 5].map(i => {
+            const filled = i <= quality;
+            const GOLD = "#D4A843";
+            return (
+              <motion.button
+                key={i}
+                onClick={() => setQuality(i)}
+                whileTap={{ scale: 1.35 }}
+                animate={filled ? { scale: [1, 1.25, 1] } : { scale: 1 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="touch-btn p-0.5"
+              >
+                <Star
+                  className="transition-colors duration-200"
+                  style={{ width: 32, height: 32 }}
+                  fill={filled ? GOLD : "hsl(var(--primary) / 0.25)"}
+                  stroke={filled ? GOLD : "hsl(var(--primary) / 0.25)"}
+                  strokeWidth={1.5}
+                />
+              </motion.button>
+            );
+          })}
         </div>
+        {quality > 0 && (
+          <motion.p
+            key={quality}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-body text-xs font-medium mt-2"
+            style={{ color: "#D4A843" }}
+          >
+            {quality <= 2 ? "Restless" : quality === 3 ? "Okay" : quality === 4 ? "Good" : "Deeply rested"}
+          </motion.p>
+        )}
       </div>
 
       <div className="flex gap-2">
