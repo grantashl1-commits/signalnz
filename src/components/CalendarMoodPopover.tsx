@@ -115,7 +115,7 @@ export default function CalendarMoodPopover({ dateStr, cycleDay, type, onEdit, o
             <>
               <p className="font-hand text-xs font-bold text-primary">weight</p>
               {displayWeight ? (
-                <p className="font-mono text-2xl text-foreground">{displayWeight}</p>
+                <p className="font-body text-2xl text-foreground">{displayWeight}</p>
               ) : (
                 <p className="font-body text-xs text-muted-foreground">No weight logged</p>
               )}

@@ -77,7 +77,7 @@ export default function GiveSignalPanel({ open, onClose }: Props) {
 
           <div className="space-y-6">
             {/* Header */}
-            <p className="font-mono text-[11px] tracking-[0.3em] uppercase text-white/40">
+            <p className="font-body text-[11px] tracking-[0.3em] uppercase text-white/40">
               ✦ your signal
             </p>
 
@@ -93,7 +93,7 @@ export default function GiveSignalPanel({ open, onClose }: Props) {
                     transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.22 }}
                   />
                 ))}
-                <span className="text-white/30 text-[11px] font-mono ml-3 tracking-wide">
+                <span className="text-white/30 text-[11px] font-body ml-3 tracking-wide">
                   reading the current...
                 </span>
               </motion.div>
@@ -102,10 +102,10 @@ export default function GiveSignalPanel({ open, onClose }: Props) {
             {/* Error state */}
             {error && !loading && (
               <div className="py-8 text-center">
-                <p className="text-red-400/80 text-sm font-mono mb-3">{error}</p>
+                <p className="text-red-400/80 text-sm font-body mb-3">{error}</p>
                 <button
                   onClick={handleAnother}
-                  className="text-white/40 text-[11px] font-mono underline underline-offset-4 hover:text-white/60 transition-colors"
+                  className="text-white/40 text-[11px] font-body underline underline-offset-4 hover:text-white/60 transition-colors"
                 >
                   try again
                 </button>
@@ -129,17 +129,17 @@ export default function GiveSignalPanel({ open, onClose }: Props) {
 
                 {/* Meta line */}
                 <div className="space-y-1">
-                  <p className="font-mono text-[10px] text-white/40">
+                  <p className="font-body text-[10px] text-white/40">
                     {MOON_GLYPHS[response.moonPhase] || "🌙"} {response.moonPhase}
                   </p>
                   {response.sunSign && (
-                    <p className="font-mono text-[10px] text-white/40">
+                    <p className="font-body text-[10px] text-white/40">
                       {response.sunSign}
                     </p>
                   )}
                   <button
                     onClick={() => setShowAttribution(!showAttribution)}
-                    className="font-mono text-[10px] text-white/40 hover:text-white/60 transition-colors"
+                    className="font-body text-[10px] text-white/40 hover:text-white/60 transition-colors"
                   >
                     from the dao in action
                   </button>
@@ -147,7 +147,7 @@ export default function GiveSignalPanel({ open, onClose }: Props) {
                     <motion.p
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
-                      className="font-mono text-[10px] text-white/25 italic"
+                      className="font-body text-[10px] text-white/25 italic"
                     >
                       "{response.fableTitle}" · {response.daoChapter}
                     </motion.p>
@@ -162,7 +162,7 @@ export default function GiveSignalPanel({ open, onClose }: Props) {
                   <button
                     onClick={handleAnother}
                     disabled={loading}
-                    className="text-white/35 text-[11px] font-mono border border-white/[0.08] rounded-full px-4 py-2 hover:border-[#C4526E]/30 hover:text-white/55 transition-all disabled:opacity-20"
+                    className="text-white/35 text-[11px] font-body border border-white/[0.08] rounded-full px-4 py-2 hover:border-[#C4526E]/30 hover:text-white/55 transition-all disabled:opacity-20"
                   >
                     receive another signal
                   </button>

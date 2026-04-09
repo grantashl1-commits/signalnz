@@ -220,7 +220,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
               <div className="flex gap-2 mb-3">
                 {(["kg", "lbs"] as const).map((u) => (
                   <button key={u} onClick={() => { haptic("light"); setUnit(u); }}
-                    className={`touch-btn rounded-full px-4 py-2 min-h-[40px] font-mono text-xs ${unit === u ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}
+                    className={`touch-btn rounded-full px-4 py-2 min-h-[40px] font-body text-xs ${unit === u ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}
                   >{u}</button>
                 ))}
               </div>
@@ -231,7 +231,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                 value={weightValue}
                 onChange={(e) => setWeightValue(e.target.value)}
                 placeholder={`Enter weight in ${unit}`}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-mono text-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-body text-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 style={{ fontSize: "18px" }}
               />
 
@@ -242,7 +242,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                       <Line type="monotone" dataKey="value" stroke={phaseColor} strokeWidth={2} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
-                  <p className="font-mono text-[9px] text-muted-foreground text-center">7-day trend</p>
+                  <p className="font-body text-[9px] text-muted-foreground text-center">7-day trend</p>
                 </div>
               )}
 
@@ -332,7 +332,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                 className="w-full rounded-xl border border-border px-4 py-3 font-body text-sm text-foreground leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
                 style={{ backgroundColor: "#F5EDE0", fontSize: "16px" }}
               />
-              <p className="font-mono text-[9px] text-muted-foreground text-right">
+              <p className="font-body text-[9px] text-muted-foreground text-right">
                 {notesText.split(/\s+/).filter(Boolean).length} words
               </p>
 

@@ -15,7 +15,7 @@ export default function LazyImage({ src, alt, className = "" }: Props) {
   if (error) {
     return (
       <div className={`bg-secondary/30 flex items-center justify-center ${className}`}>
-        <span className="text-muted-foreground/40 text-xs font-mono">{alt[0]}</span>
+        <span className="text-muted-foreground/40 text-xs font-body">{alt[0]}</span>
       </div>
     );
   }

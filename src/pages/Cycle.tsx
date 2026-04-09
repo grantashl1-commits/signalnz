@@ -140,17 +140,17 @@ export default function CyclePage() {
           </p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Your Cycle</h1>
           {cycleMode === "cycling" && hasDateSet && (
-            <p className="font-mono text-sm text-primary-foreground/60">
+            <p className="font-body text-sm text-primary-foreground/60">
               Day {info.cycleDay} of {PHASE_SHORT[info.phase].toLowerCase()} · {daysUntil} days remaining
             </p>
           )}
           {cycleMode === "perimenopause" && (
-            <p className="font-mono text-sm text-primary-foreground/60">
+            <p className="font-body text-sm text-primary-foreground/60">
               navigating change — signal is here with you
             </p>
           )}
           {cycleMode === "post-menopause" && (
-            <p className="font-mono text-sm text-primary-foreground/60">
+            <p className="font-body text-sm text-primary-foreground/60">
               strength, wisdom, and a new chapter
             </p>
           )}
@@ -181,7 +181,7 @@ export default function CyclePage() {
               type="date"
               value={lastPeriod}
               onChange={handleDateChange}
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               style={{ fontSize: "16px" }}
             />
           </div>
@@ -194,7 +194,7 @@ export default function CyclePage() {
               type="date"
               value={dateEditValue}
               onChange={(e) => setDateEditValue(e.target.value)}
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 min-h-[52px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               style={{ fontSize: "16px" }}
             />
             <div className="flex gap-2 mt-3">
@@ -255,7 +255,7 @@ export default function CyclePage() {
                       })}
                     </div>
                     <p
-                      className="font-mono"
+                      className="font-body"
                       style={{
                         fontSize: 'var(--label-size)',
                         letterSpacing: 'var(--label-tracking)',
@@ -353,7 +353,7 @@ export default function CyclePage() {
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-1.5">
                   <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: item.color }} />
-                  <span className="font-mono" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
+                  <span className="font-body" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
                     {item.label}
                   </span>
                 </div>
@@ -397,7 +397,7 @@ export default function CyclePage() {
                     {isToday && (
                       <div className="absolute left-1/2 -translate-x-1/2 rounded-full" style={{ top: 3, width: 4, height: 4, backgroundColor: 'hsl(284, 22%, 44%)' }} />
                     )}
-                    <span className="font-mono text-xs text-foreground">{date.getDate()}</span>
+                    <span className="font-body text-xs text-foreground">{date.getDate()}</span>
                     <div className="flex justify-center gap-[3px] mt-0.5 flex-wrap">
                       {/* Period dot — red */}
                       {indicators.isPeriodDay && (
@@ -414,7 +414,7 @@ export default function CyclePage() {
                     </div>
                     {shortWeight && (
                       <div className="mt-[1px]" onClick={(e) => { e.stopPropagation(); haptic("light"); setPopover({ dateStr, cycleDay, type: "weight" }); }}>
-                        <span className="font-mono text-muted-foreground leading-none" style={{ fontSize: "9px" }}>{shortWeight}</span>
+                        <span className="font-body text-muted-foreground leading-none" style={{ fontSize: "9px" }}>{shortWeight}</span>
                       </div>
                     )}
                   </button>

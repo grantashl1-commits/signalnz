@@ -71,7 +71,7 @@ export default function HormoneEducationHub() {
           <div key={h.name} className="flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full" style={{ backgroundColor: h.colour }} />
             <span
-              className="font-mono uppercase"
+              className="font-body uppercase"
               style={{
                 fontSize: 'var(--label-size)',
                 letterSpacing: 'var(--label-tracking)',

@@ -252,7 +252,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
 
         {/* Progress indicator */}
         {phase !== "complete" && (
-          <p className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
+          <p className="font-body text-xs text-muted-foreground uppercase tracking-wider">
             Exercise {exerciseIdx + 1} of {totalExercises}
           </p>
         )}
@@ -302,7 +302,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
               className="flex flex-col items-center text-center gap-8"
             >
               <div>
-                <p className="font-mono text-xs text-primary uppercase tracking-[0.2em] mb-3">
+                <p className="font-body text-xs text-primary uppercase tracking-[0.2em] mb-3">
                   Morning Fascia Release
                 </p>
                 <h1 className="font-display text-3xl md:text-4xl font-extrabold text-foreground leading-tight">

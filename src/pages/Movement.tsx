@@ -274,12 +274,12 @@ export default function MovementPage() {
                           : "bg-secondary/40"
                       }`}
                     >
-                      <p className={`font-mono text-[9px] uppercase ${isSelected ? "text-primary font-bold" : "text-muted-foreground"}`}>
+                      <p className={`font-body text-[9px] uppercase ${isSelected ? "text-primary font-bold" : "text-muted-foreground"}`}>
                         {assignment.dayLabel} · {dateLabel}
                       </p>
                       <p className="font-hand text-[10px] font-bold text-foreground leading-tight mt-1">{workout?.name || "Rest"}</p>
-                      <p className="font-mono text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
-                      {isActualToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[7px] text-primary font-bold">Today</span>}
+                      <p className="font-body text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
+                      {isActualToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-body text-[7px] text-primary font-bold">Today</span>}
                     </button>
                   );
                 })}
@@ -313,7 +313,7 @@ export default function MovementPage() {
           className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
         >
           <Heart className="h-4 w-4 text-primary-foreground" />
-          <span className="font-mono text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
+          <span className="font-body text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
           <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
         </button>
       )}
@@ -365,7 +365,7 @@ export default function MovementPage() {
                   </div>
                   <p className="font-body text-[9px] italic text-muted-foreground mt-0.5">{PHASE_MOVEMENT_LABEL[info.phase]}</p>
                   <div className="flex gap-2 mt-1 flex-wrap">
-                    <span className="font-mono text-[10px]" style={{ color: PHASE_HEX[info.phase] }}>{todayWorkoutData.duration}</span>
+                    <span className="font-body text-[10px]" style={{ color: PHASE_HEX[info.phase] }}>{todayWorkoutData.duration}</span>
                     <span className="font-body text-[10px] text-muted-foreground">{todayWorkoutData.equipment}</span>
                   </div>
                   <p className="font-body text-xs text-muted-foreground mt-1">{todayWorkoutData.description}</p>
@@ -382,7 +382,7 @@ export default function MovementPage() {
                     <div key={opt.id} className="bg-secondary/50 rounded-xl p-3">
                       <div className="flex items-center justify-between">
                         <h4 className="font-display text-sm italic text-foreground">{opt.name}</h4>
-                        <span className="font-mono text-[9px] text-muted-foreground">{opt.duration}</span>
+                        <span className="font-body text-[9px] text-muted-foreground">{opt.duration}</span>
                       </div>
                       <p className="font-body text-xs text-muted-foreground mt-1">{opt.description}</p>
                     </div>
@@ -396,7 +396,7 @@ export default function MovementPage() {
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
                     <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / todayWorkoutData.exercises.length) * 100}%` }} />
                   </div>
-                  <p className="font-mono text-[10px] text-muted-foreground">{completedExercises.size}/{todayWorkoutData.exercises.length}</p>
+                  <p className="font-body text-[10px] text-muted-foreground">{completedExercises.size}/{todayWorkoutData.exercises.length}</p>
 
                   <div className="space-y-1.5">
                     {todayWorkoutData.exercises.map((ex, i) => {
@@ -407,7 +407,7 @@ export default function MovementPage() {
                           {showSection && ex.section && (
                             <div className="flex items-center gap-2 mt-5 mb-2">
                               <div className="h-px flex-1 bg-border" />
-                              <p className="font-mono text-[11px] font-bold text-primary/70 uppercase tracking-[0.15em]">{ex.section}</p>
+                              <p className="font-body text-[11px] font-bold text-primary/70 uppercase tracking-[0.15em]">{ex.section}</p>
                               <div className="h-px flex-1 bg-border" />
                             </div>
                           )}
@@ -505,7 +505,7 @@ export default function MovementPage() {
             </div>
           </div>
 
-          <p className="font-mono text-[10px] text-muted-foreground">{filteredWorkouts.length} workouts{activePhase ? ` \u00b7 ${PHASE_MOVEMENT_LABEL[activePhase]}` : ""}.</p>
+          <p className="font-body text-[10px] text-muted-foreground">{filteredWorkouts.length} workouts{activePhase ? ` \u00b7 ${PHASE_MOVEMENT_LABEL[activePhase]}` : ""}.</p>
 
           {filteredWorkouts.map((w, i) => {
             const displayPhase = activePhase || getWorkoutPhase(w.id) || info.phase;
@@ -514,7 +514,7 @@ export default function MovementPage() {
             return (
               <motion.div key={w.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm overflow-hidden rounded-xl" style={{ borderLeft: `3px solid ${PHASE_HEX[displayPhase]}` }}>
                 <div className="p-4 cursor-pointer touch-card flex items-center gap-3 min-h-[64px]" onClick={() => { haptic("light"); setExpandedWorkout(expanded ? null : w.id); }}>
-                  <span className="font-mono text-lg font-bold min-w-[50px] text-primary">{w.duration.replace(" min", "'")}</span>
+                  <span className="font-body text-lg font-bold min-w-[50px] text-primary">{w.duration.replace(" min", "'")}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
                       <h3 className="font-display text-sm italic text-foreground truncate">{w.name}</h3>
@@ -560,7 +560,7 @@ export default function MovementPage() {
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="font-body text-sm text-foreground">{ex.name}</p>
-                            <p className="font-mono text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
+                            <p className="font-body text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
                           </div>
                           <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
                         </div>
@@ -597,7 +597,7 @@ export default function MovementPage() {
           <div className="grid grid-cols-3 gap-2">
             {[{ val: totalCompleted, label: "Workouts" }, { val: totalMinutes, label: "Minutes" }, { val: totalCompleted > 0 ? Math.round((totalCompleted / 7) * 100) + "%" : "0%", label: "Consistency" }].map(({ val, label }) => (
               <div key={label} className="card-warm p-3 text-center">
-                <p className="font-mono text-xl text-foreground">{val}</p>
+                <p className="font-body text-xl text-foreground">{val}</p>
                 <p className="font-body text-[9px] text-muted-foreground">{label}</p>
               </div>
             ))}
@@ -652,17 +652,17 @@ export default function MovementPage() {
                       >
                         <div className="flex-1 min-w-0">
                           <p className="font-body text-sm font-medium text-foreground">{s.workoutName}</p>
-                          <p className="font-mono text-[9px] text-muted-foreground">
+                          <p className="font-body text-[9px] text-muted-foreground">
                             {s.date} &middot; {durationMin} min &middot; Avg {s.avgHR} bpm
                           </p>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
-                            <p className="font-mono text-sm text-foreground">{s.zone2PlusPercent}%</p>
+                            <p className="font-body text-sm text-foreground">{s.zone2PlusPercent}%</p>
                             {s.caloriesBurnt ? (
                               <div className="flex items-center gap-0.5 justify-end">
                                 <Flame className="h-2.5 w-2.5 text-coral-flame" />
-                                <p className="font-mono text-[9px] text-coral-flame">{s.caloriesBurnt}</p>
+                                <p className="font-body text-[9px] text-coral-flame">{s.caloriesBurnt}</p>
                               </div>
                             ) : (
                               <p className="font-hand text-[9px] text-petal-gold">Zone 2+</p>
@@ -683,7 +683,7 @@ export default function MovementPage() {
                               { val: s.caloriesBurnt || "—", label: "Calories" },
                             ].map(({ val, label }) => (
                               <div key={label} className="text-center">
-                                <p className="font-mono text-sm text-foreground">{val}</p>
+                                <p className="font-body text-sm text-foreground">{val}</p>
                                 <p className="font-body text-[9px] text-muted-foreground">{label}</p>
                               </div>
                             ))}
@@ -709,7 +709,7 @@ export default function MovementPage() {
                             {zoneChart.map(z => z.minutes > 0 && (
                               <div key={z.name} className="flex items-center gap-1 rounded-full px-2 py-0.5" style={{ backgroundColor: z.color + "18" }}>
                                 <div className="h-2 w-2 rounded-full" style={{ backgroundColor: z.color }} />
-                                <span className="font-mono text-[9px] text-foreground">{z.name} {z.minutes}m</span>
+                                <span className="font-body text-[9px] text-foreground">{z.name} {z.minutes}m</span>
                               </div>
                             ))}
                           </div>

@@ -214,8 +214,8 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                     <span className={`rounded-full px-2.5 py-1 font-hand text-[11px] font-bold phase-${selectedRecipe.phase}-light`}>
                       {PHASE_SHORT[selectedRecipe.phase]}
                     </span>
-                    <span className="font-mono text-[10px] text-muted-foreground">{selectedRecipe.prepTime}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">Serves {selectedRecipe.serves}</span>
+                    <span className="font-body text-[10px] text-muted-foreground">{selectedRecipe.prepTime}</span>
+                    <span className="font-body text-[10px] text-muted-foreground">Serves {selectedRecipe.serves}</span>
                     {selectedRecipe.category === "baking" && (
                       <span className="rounded-full px-2 py-0.5 font-hand text-[11px] font-bold bg-amber-100 text-amber-700 flex items-center gap-1">
                         <CakeSlice className="h-3 w-3" /> Baking

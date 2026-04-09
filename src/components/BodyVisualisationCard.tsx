@@ -276,7 +276,7 @@ export default function BodyVisualisationCard() {
               <span className="font-body text-xs text-muted-foreground">
                 {new Date(row.recorded_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}
               </span>
-              <div className="flex gap-3 font-mono text-xs text-foreground">
+              <div className="flex gap-3 font-body text-xs text-foreground">
                 {row.weight && <span>{row.weight}</span>}
                 {row.waist && <span>W: {row.waist}</span>}
                 {row.body_fat && <span>BF: {row.body_fat}</span>}

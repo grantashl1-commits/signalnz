@@ -20,7 +20,7 @@ export default function WordCountBar({ wordCount, phaseColor = "#C4526E" }: Prop
         className="flex items-center gap-3 mt-2"
       >
         {done ? (
-          <span className="font-mono text-[11px] text-muted-foreground/40">✓</span>
+          <span className="font-body text-[11px] text-muted-foreground/40">✓</span>
         ) : (
           <>
             <div className="flex-1 h-1.5 rounded-full bg-muted/40 overflow-hidden">
@@ -32,7 +32,7 @@ export default function WordCountBar({ wordCount, phaseColor = "#C4526E" }: Prop
                 transition={{ duration: 0.3 }}
               />
             </div>
-            <span className="font-mono text-[11px] text-muted-foreground/50 whitespace-nowrap">
+            <span className="font-body text-[11px] text-muted-foreground/50 whitespace-nowrap">
               {wordCount} words · keep going
             </span>
           </>

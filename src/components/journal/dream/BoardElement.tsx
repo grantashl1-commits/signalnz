@@ -296,7 +296,7 @@ export default function BoardElement({
           )}
           <div className="flex items-center gap-2 mt-3 pt-2 border-t" style={{ borderColor: theme.border }}>
             <div className="w-4 h-[2px] rounded-full" style={{ background: theme.accent, opacity: 0.3 }} />
-            <span className="font-mono text-[8px] uppercase tracking-[0.2em] select-none" style={{ color: theme.label }}>Quote</span>
+            <span className="font-body text-[8px] uppercase tracking-[0.2em] select-none" style={{ color: theme.label }}>Quote</span>
           </div>
         </div>
       );
@@ -335,11 +335,11 @@ export default function BoardElement({
           </div>
           {/* Footer */}
           <div className="flex items-center justify-between mt-2 pt-2 border-t" style={{ borderColor: theme.border }}>
-            <span className="font-mono text-[8px] uppercase tracking-[0.2em] select-none" style={{ color: theme.label }}>
+            <span className="font-body text-[8px] uppercase tracking-[0.2em] select-none" style={{ color: theme.label }}>
               {isDone ? "Complete" : "Goal"}
             </span>
             {element.targetDate && (
-              <span className="font-mono text-[8px] text-muted-foreground/35 select-none">{element.targetDate}</span>
+              <span className="font-body text-[8px] text-muted-foreground/35 select-none">{element.targetDate}</span>
             )}
           </div>
         </div>
@@ -354,7 +354,7 @@ export default function BoardElement({
           <p className="font-display text-[15px] italic leading-[1.75]" style={{ color: theme.label }}>
             {element.content || "What does your next chapter feel like?"}
           </p>
-          <span className="font-mono text-[8px] uppercase tracking-[0.2em] mt-3 select-none" style={{ color: theme.label, opacity: 0.5 }}>Prompt</span>
+          <span className="font-body text-[8px] uppercase tracking-[0.2em] mt-3 select-none" style={{ color: theme.label, opacity: 0.5 }}>Prompt</span>
         </div>
       );
     }
@@ -377,7 +377,7 @@ export default function BoardElement({
               {element.content || "I am..."}
             </p>
           )}
-          <span className="font-mono text-[8px] uppercase tracking-[0.2em] mt-3 select-none" style={{ color: theme.label }}>Affirmation</span>
+          <span className="font-body text-[8px] uppercase tracking-[0.2em] mt-3 select-none" style={{ color: theme.label }}>Affirmation</span>
         </div>
       );
     }
@@ -405,7 +405,7 @@ export default function BoardElement({
             {element.content || "Double-click to write..."}
           </p>
         )}
-        <span className="font-mono text-[8px] uppercase tracking-[0.2em] mt-2 select-none" style={{ color: theme.label }}>Note</span>
+        <span className="font-body text-[8px] uppercase tracking-[0.2em] mt-2 select-none" style={{ color: theme.label }}>Note</span>
       </div>
     );
   };

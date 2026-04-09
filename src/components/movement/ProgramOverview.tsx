@@ -21,7 +21,7 @@ export default function ProgramOverview({ program, phases, onStartProgram, onCha
       {/* Program hero */}
       <div className="rounded-2xl bg-primary/5 border border-primary/10 p-6 space-y-4">
         <div className="space-y-2">
-          <p className="font-mono text-xs text-primary uppercase tracking-[0.15em]">Your program</p>
+          <p className="font-body text-xs text-primary uppercase tracking-[0.15em]">Your program</p>
           <h2 className="font-display text-2xl font-extrabold text-foreground leading-tight">
             {program.title}
           </h2>

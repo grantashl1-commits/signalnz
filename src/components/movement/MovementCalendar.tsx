@@ -117,9 +117,9 @@ export default function MovementCalendar() {
     <div className="space-y-4">
       {/* Month nav */}
       <div className="flex items-center justify-between">
-        <button onClick={prevMonth} className="touch-btn font-mono text-sm text-muted-foreground px-3 py-1">←</button>
+        <button onClick={prevMonth} className="touch-btn font-body text-sm text-muted-foreground px-3 py-1">←</button>
         <h3 className="font-display text-base italic text-foreground">{monthName}</h3>
-        <button onClick={nextMonth} className="touch-btn font-mono text-sm text-muted-foreground px-3 py-1">→</button>
+        <button onClick={nextMonth} className="touch-btn font-body text-sm text-muted-foreground px-3 py-1">→</button>
       </div>
 
       {/* Summary */}
@@ -163,7 +163,7 @@ export default function MovementCalendar() {
               }
             >
               <span
-                className={`font-mono text-[10px] ${
+                className={`font-body text-[10px] ${
                   cell.hasWorkout && !cell.isRest
                     ? "text-primary-foreground font-bold"
                     : cell.isRest
@@ -199,10 +199,10 @@ export default function MovementCalendar() {
         <div className="grid grid-cols-7 gap-1">
           {weekDays.map(wd => (
             <div key={wd.dateStr} className="flex flex-col items-center gap-1">
-              <span className={`font-mono text-[9px] ${wd.isToday ? "text-primary font-bold" : "text-muted-foreground"}`}>
+              <span className={`font-body text-[9px] ${wd.isToday ? "text-primary font-bold" : "text-muted-foreground"}`}>
                 {wd.date.toLocaleDateString("en-NZ", { weekday: "narrow" })}
               </span>
-              <span className={`font-mono text-[10px] ${wd.isToday ? "text-foreground font-bold" : "text-muted-foreground"}`}>
+              <span className={`font-body text-[10px] ${wd.isToday ? "text-foreground font-bold" : "text-muted-foreground"}`}>
                 {wd.date.getDate()}
               </span>
               {wd.hasWorkout && (

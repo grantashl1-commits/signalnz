@@ -13,7 +13,7 @@ export default function AnimationPOC() {
         <h1 className="font-display text-2xl md:text-3xl font-bold italic text-foreground mb-1">
           Exercise Animation Library
         </h1>
-        <p className="font-mono text-xs text-muted-foreground mb-8">
+        <p className="font-body text-xs text-muted-foreground mb-8">
           SVG skeletal rig · {ANIMATION_REGISTRY.length} exercises · pose-driven keyframes
         </p>
 
@@ -49,10 +49,10 @@ export default function AnimationPOC() {
 
           <p className="mt-2 font-display text-lg italic text-foreground">{animation.name}</p>
           <div className="flex gap-2 mt-1">
-            <span className="rounded-full px-2 py-0.5 bg-secondary font-mono text-[9px] text-muted-foreground">{animation.movementType}</span>
-            <span className="rounded-full px-2 py-0.5 bg-secondary font-mono text-[9px] text-muted-foreground">{animation.orientation}</span>
-            {animation.unilateral && <span className="rounded-full px-2 py-0.5 bg-primary/10 font-mono text-[9px] text-primary">unilateral</span>}
-            {animation.holdable && <span className="rounded-full px-2 py-0.5 bg-primary/10 font-mono text-[9px] text-primary">holdable</span>}
+            <span className="rounded-full px-2 py-0.5 bg-secondary font-body text-[9px] text-muted-foreground">{animation.movementType}</span>
+            <span className="rounded-full px-2 py-0.5 bg-secondary font-body text-[9px] text-muted-foreground">{animation.orientation}</span>
+            {animation.unilateral && <span className="rounded-full px-2 py-0.5 bg-primary/10 font-body text-[9px] text-primary">unilateral</span>}
+            {animation.holdable && <span className="rounded-full px-2 py-0.5 bg-primary/10 font-body text-[9px] text-primary">holdable</span>}
           </div>
         </div>
 

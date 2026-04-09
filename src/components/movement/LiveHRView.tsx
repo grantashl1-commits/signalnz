@@ -240,7 +240,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           </div>
 
           <div className="text-center">
-            <p className="font-mono text-4xl text-foreground">{summary.zone2PlusPercent}%</p>
+            <p className="font-body text-4xl text-foreground">{summary.zone2PlusPercent}%</p>
             <p className="font-hand text-sm text-petal-gold mt-1">Above Zone 2 is where fitness is built.</p>
           </div>
 
@@ -270,7 +270,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               <div key={z.name} className="flex items-center gap-1">
                 <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: z.color }} />
                 <span className="font-body text-[10px] text-muted-foreground">{z.name} {z.label}</span>
-                <span className="font-mono text-[10px] text-foreground">{z.labelMinutes}m</span>
+                <span className="font-body text-[10px] text-foreground">{z.labelMinutes}m</span>
               </div>
             ))}
           </div>
@@ -283,7 +283,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               { val: formatTime(summary.duration), label: "Total Time" },
             ].map(({ val, label }) => (
               <div key={label} className="card-warm p-3 text-center">
-                <p className="font-mono text-lg text-foreground">{val}</p>
+                <p className="font-body text-lg text-foreground">{val}</p>
                 <p className="font-hand text-[10px] text-muted-foreground">{label}</p>
               </div>
             ))}
@@ -355,20 +355,20 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               <div>
                 <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">Age</p>
                 <div className="flex items-center gap-4 justify-center">
-                  <button onClick={() => setAge(a => Math.max(16, a - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
-                  <span className="font-mono text-3xl text-foreground w-12 text-center">{age}</span>
-                  <button onClick={() => setAge(a => Math.min(80, a + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+                  <button onClick={() => setAge(a => Math.max(16, a - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-body text-lg">−</button>
+                  <span className="font-body text-3xl text-foreground w-12 text-center">{age}</span>
+                  <button onClick={() => setAge(a => Math.min(80, a + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-body text-lg">+</button>
                 </div>
-                <p className="font-mono text-[10px] text-muted-foreground text-center mt-1">Max HR: {maxHR} bpm</p>
+                <p className="font-body text-[10px] text-muted-foreground text-center mt-1">Max HR: {maxHR} bpm</p>
               </div>
               <div>
                 <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-2">Weight (kg)</p>
                 <div className="flex items-center gap-4 justify-center">
-                  <button onClick={() => setWeight(w => Math.max(30, w - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">−</button>
-                  <span className="font-mono text-3xl text-foreground w-12 text-center">{weight}</span>
-                  <button onClick={() => setWeight(w => Math.min(200, w + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-mono text-lg">+</button>
+                  <button onClick={() => setWeight(w => Math.max(30, w - 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-body text-lg">−</button>
+                  <span className="font-body text-3xl text-foreground w-12 text-center">{weight}</span>
+                  <button onClick={() => setWeight(w => Math.min(200, w + 1))} className="touch-btn h-10 w-10 rounded-full bg-secondary font-body text-lg">+</button>
                 </div>
-                <p className="font-mono text-[10px] text-muted-foreground text-center mt-1">Used for calorie calculation</p>
+                <p className="font-body text-[10px] text-muted-foreground text-center mt-1">Used for calorie calculation</p>
               </div>
               <button onClick={handleSetAge} className="touch-btn w-full rounded-[14px] py-3 min-h-[48px] font-body text-sm font-bold text-primary-foreground bg-primary">
                 Save & continue →
@@ -428,7 +428,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           style={{ backgroundColor: currentZone.color + "18" }}
         >
           <motion.p
-            className="font-mono text-[5rem] leading-none font-bold"
+            className="font-body text-[5rem] leading-none font-bold"
             style={{ color: currentZone.color }}
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
@@ -455,7 +455,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-mono text-sm font-bold text-foreground">
+              <span className="font-body text-sm font-bold text-foreground">
                 {Math.round(zone2PlusMins)}<span className="text-muted-foreground">/{zone2Goal}</span>
               </span>
               <span className="font-body text-[9px] text-muted-foreground">min Z2+</span>
@@ -463,7 +463,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           </div>
 
           <div className="text-center">
-            <p className="font-mono text-3xl text-foreground">{formatTime(elapsed)}</p>
+            <p className="font-body text-3xl text-foreground">{formatTime(elapsed)}</p>
             <p className="font-body text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">elapsed</p>
           </div>
         </div>

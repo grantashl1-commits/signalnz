@@ -23,7 +23,7 @@ export default function StoicJournalSeedCard({ reading, currentDay, listenedToda
         className="w-full flex items-center gap-2 rounded-xl bg-secondary/40 px-4 py-2.5 mb-4"
       >
         <BookOpen className="h-4 w-4 text-primary" />
-        <span className="font-mono text-[11px] text-muted-foreground">Day {currentDay}</span>
+        <span className="font-body text-[11px] text-muted-foreground">Day {currentDay}</span>
         <span className="font-display text-sm italic text-foreground truncate flex-1 text-left">{reading.title}</span>
         <ChevronDown className="h-4 w-4 text-muted-foreground" />
       </button>
@@ -39,7 +39,7 @@ export default function StoicJournalSeedCard({ reading, currentDay, listenedToda
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookOpen className="h-4 w-4 text-primary" />
-          <span className="font-mono text-[11px] uppercase tracking-wider text-primary">Today's Stoic Reading · Day {currentDay}</span>
+          <span className="font-body text-[11px] uppercase tracking-wider text-primary">Today's Stoic Reading · Day {currentDay}</span>
         </div>
         <button onClick={() => setCollapsed(true)} className="text-muted-foreground">
           <ChevronUp className="h-4 w-4" />
@@ -50,7 +50,7 @@ export default function StoicJournalSeedCard({ reading, currentDay, listenedToda
 
       <blockquote className="font-display text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
         "{reading.quote}"
-        <footer className="font-mono text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
+        <footer className="font-body text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
       </blockquote>
 
       <div className="flex gap-3">

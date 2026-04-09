@@ -316,7 +316,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           <div className="h-full rounded-full transition-all"
             style={{ width: `${totalItems > 0 ? (checkedCount / totalItems) * 100 : 0}%`, backgroundColor: weekPhaseColor }} />
         </div>
-        <span className="font-mono text-[10px] text-muted-foreground">{checkedCount}/{totalItems}</span>
+        <span className="font-body text-[10px] text-muted-foreground">{checkedCount}/{totalItems}</span>
       </div>
 
       {/* Categories */}
@@ -335,7 +335,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: weekPhaseColor }} />
                 <span className="font-body text-xs font-bold text-foreground">{CATEGORY_META[cat]}</span>
-                <span className="font-mono text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                <span className="font-body text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
                   {catChecked}/{items.length}
                 </span>
               </div>

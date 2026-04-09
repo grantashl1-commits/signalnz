@@ -51,7 +51,7 @@ export default function BoardToolbar({ zoom, onZoomIn, onZoomOut, onFit, onAddEl
         <span className="font-display text-[13px] italic text-foreground/75 group-hover:text-foreground transition-colors block leading-tight">
           {tool.label}
         </span>
-        <span className="font-mono text-[9px] text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors leading-tight">
+        <span className="font-body text-[9px] text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors leading-tight">
           {tool.hint}
         </span>
       </div>
@@ -80,7 +80,7 @@ export default function BoardToolbar({ zoom, onZoomIn, onZoomOut, onFit, onAddEl
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-[0_8px_40px_-8px_hsl(25_20%_50%/0.2)] p-2 min-w-[220px]"
             >
-              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/45 px-3 pt-2 pb-1.5 select-none">
+              <p className="font-body text-[9px] uppercase tracking-[0.15em] text-muted-foreground/45 px-3 pt-2 pb-1.5 select-none">
                 Add to board
               </p>
               <div className="space-y-0.5">
@@ -88,7 +88,7 @@ export default function BoardToolbar({ zoom, onZoomIn, onZoomOut, onFit, onAddEl
               </div>
               {/* Divider */}
               <div className="h-px bg-border/40 mx-3 my-2" />
-              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/35 px-3 pb-1 select-none">
+              <p className="font-body text-[9px] uppercase tracking-[0.15em] text-muted-foreground/35 px-3 pb-1 select-none">
                 More
               </p>
               <div className="space-y-0.5">
@@ -104,7 +104,7 @@ export default function BoardToolbar({ zoom, onZoomIn, onZoomOut, onFit, onAddEl
         <button onClick={onZoomOut} className="p-2 rounded-xl hover:bg-primary/[0.06] text-muted-foreground/55 hover:text-foreground transition-colors">
           <ZoomOut className="h-3.5 w-3.5" />
         </button>
-        <span className="font-mono text-[10px] text-muted-foreground/45 w-10 text-center select-none">
+        <span className="font-body text-[10px] text-muted-foreground/45 w-10 text-center select-none">
           {Math.round(zoom * 100)}%
         </span>
         <button onClick={onZoomIn} className="p-2 rounded-xl hover:bg-primary/[0.06] text-muted-foreground/55 hover:text-foreground transition-colors">

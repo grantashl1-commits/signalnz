@@ -27,12 +27,12 @@ function SaveIndicator({ status }: { status: SaveStatus }) {
         {status === "saving" ? (
           <>
             <Loader2 className="h-3 w-3 text-muted-foreground animate-spin" />
-            <span className="font-mono text-[10px] text-muted-foreground">Saving…</span>
+            <span className="font-body text-[10px] text-muted-foreground">Saving…</span>
           </>
         ) : (
           <>
             <Check className="h-3 w-3 text-primary/60" />
-            <span className="font-mono text-[10px] text-muted-foreground/60">Saved</span>
+            <span className="font-body text-[10px] text-muted-foreground/60">Saved</span>
           </>
         )}
       </motion.div>
@@ -73,9 +73,9 @@ function DreamRitualFlow({ ritual, onComplete, onBack }: { ritual: typeof DREAM_
   return (
     <div className="fixed inset-0 z-[150] bg-background flex items-center justify-center p-4" style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="w-full max-w-lg">
-        <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><X className="h-3.5 w-3.5" /> Exit ritual</button>
+        <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><X className="h-3.5 w-3.5" /> Exit ritual</button>
         <div className="text-center mb-6">
-          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">Dream Ritual</p>
+          <p className="font-body text-[11px] text-primary uppercase tracking-wider mb-2">Dream Ritual</p>
           <h2 className="font-display text-2xl italic text-foreground mb-1">{ritual.title}</h2>
           <p className="font-body text-sm text-muted-foreground">{ritual.desc}</p>
           <div className="flex gap-1 justify-center mt-3">
@@ -116,10 +116,10 @@ function FutureSelfMode({ onComplete, onBack }: { onComplete: (elements: Omit<Dr
   return (
     <div className="fixed inset-0 z-[150] bg-background overflow-y-auto p-4" style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="max-w-lg mx-auto pb-10">
-        <button onClick={onBack} className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground mb-4 active:opacity-70"><X className="h-3.5 w-3.5" /> Exit</button>
+        <button onClick={onBack} className="flex items-center gap-1.5 font-body text-xs text-muted-foreground mb-4 active:opacity-70"><X className="h-3.5 w-3.5" /> Exit</button>
         <div className="text-center mb-6">
           <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 3, repeat: Infinity }}><WildStar size={36} className="mx-auto mb-3" /></motion.div>
-          <p className="font-mono text-[11px] text-primary uppercase tracking-wider mb-2">Future Self Mode</p>
+          <p className="font-body text-[11px] text-primary uppercase tracking-wider mb-2">Future Self Mode</p>
           <h2 className="font-display text-2xl italic text-foreground mb-1">Who are you becoming?</h2>
           <p className="font-body text-sm text-muted-foreground">Build your vision from identity, not just aesthetics.</p>
         </div>
@@ -149,7 +149,7 @@ function RitualsPanel({ onStartRitual, onStartFutureSelf, onClose }: { onStartRi
         <button onClick={onStartFutureSelf} className="w-full rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/15 p-4 text-left mb-4 hover:shadow-sm transition-shadow">
           <div className="flex items-center gap-2 mb-1.5">
             <HandDrawnSparkle size={16} color="hsl(var(--primary))" />
-            <p className="font-mono text-[10px] text-primary uppercase tracking-wider">Featured</p>
+            <p className="font-body text-[10px] text-primary uppercase tracking-wider">Featured</p>
           </div>
           <h3 className="font-display text-[15px] italic text-foreground mb-0.5">Future Self Mode</h3>
           <p className="font-body text-[12px] text-muted-foreground leading-relaxed">Build your vision from identity.</p>
@@ -158,7 +158,7 @@ function RitualsPanel({ onStartRitual, onStartFutureSelf, onClose }: { onStartRi
           {DREAM_RITUALS.map((r) => (
             <button key={r.id} onClick={() => onStartRitual(r)} className="w-full card-warm p-4 text-left hover:shadow-sm transition-shadow">
               <p className="font-display text-[14px] italic text-foreground mb-0.5">{r.title}</p>
-              <p className="font-mono text-[10px] text-muted-foreground">{r.prompts.length} steps</p>
+              <p className="font-body text-[10px] text-muted-foreground">{r.prompts.length} steps</p>
             </button>
           ))}
         </div>
@@ -315,7 +315,7 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
           </button>
 
           {board.elements.length > 0 && (
-            <div className="absolute bottom-3 right-3 z-50 font-mono text-[10px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-2.5 py-1 backdrop-blur-sm">
+            <div className="absolute bottom-3 right-3 z-50 font-body text-[10px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-2.5 py-1 backdrop-blur-sm">
               {board.elements.length} elements
             </div>
           )}
@@ -408,7 +408,7 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
         </button>
 
         {board.elements.length > 0 && (
-          <div className="absolute bottom-4 right-4 z-50 font-mono text-[11px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-3 py-1.5 backdrop-blur-sm">
+          <div className="absolute bottom-4 right-4 z-50 font-body text-[11px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-3 py-1.5 backdrop-blur-sm">
             {board.elements.length} elements · {board.connections.length} connections
           </div>
         )}

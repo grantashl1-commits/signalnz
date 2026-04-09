@@ -64,7 +64,7 @@ export default function EntryTypeSelector({ onSelect, onCancel }: Props) {
             </div>
             <div>
               <h3 className="font-display text-base italic text-foreground">{t.label}</h3>
-              <p className="font-mono text-[11px] text-muted-foreground">{t.desc}</p>
+              <p className="font-body text-[11px] text-muted-foreground">{t.desc}</p>
             </div>
           </motion.button>
         ))}

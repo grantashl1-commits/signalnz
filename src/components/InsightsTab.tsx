@@ -208,7 +208,7 @@ export default function InsightsTab() {
                       {msg.content}
                     </p>
                   </div>
-                  <p className="font-mono text-[8px] mt-0.5 px-1" style={{ color: 'rgba(253, 252, 251, 0.3)' }}>
+                  <p className="font-body text-[8px] mt-0.5 px-1" style={{ color: 'rgba(253, 252, 251, 0.3)' }}>
                     {msg.role === "user" ? "you" : "cycle coach"}
                   </p>
                 </div>
@@ -283,7 +283,7 @@ export default function InsightsTab() {
                       }}
                     />
                   </div>
-                  <span className="font-mono text-[9px] text-muted-foreground w-4">{d.count}</span>
+                  <span className="font-body text-[9px] text-muted-foreground w-4">{d.count}</span>
                 </div>
               ))}
             </div>
@@ -299,8 +299,8 @@ export default function InsightsTab() {
 
           <div className="flex gap-2">
             <div className="flex flex-col justify-between py-1 shrink-0">
-              <span className="font-mono text-[8px] text-muted-foreground">High</span>
-              <span className="font-mono text-[8px] text-muted-foreground">Low</span>
+              <span className="font-body text-[8px] text-muted-foreground">High</span>
+              <span className="font-body text-[8px] text-muted-foreground">Low</span>
             </div>
             <div className="flex-1">
               <div className="flex items-end gap-[2px] h-24">
@@ -323,10 +323,10 @@ export default function InsightsTab() {
                   );
                 })}
               </div>
-              <div className="flex justify-between font-mono text-[9px] text-muted-foreground mt-1">
+              <div className="flex justify-between font-body text-[9px] text-muted-foreground mt-1">
                 <span>Day 1</span><span>Day 14</span><span>Day 28</span>
               </div>
-              <p className="font-mono text-[8px] text-muted-foreground text-center mt-0.5">Day of cycle</p>
+              <p className="font-body text-[8px] text-muted-foreground text-center mt-0.5">Day of cycle</p>
             </div>
           </div>
 

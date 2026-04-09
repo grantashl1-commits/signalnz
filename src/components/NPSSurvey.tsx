@@ -101,7 +101,7 @@ export default function NPSSurvey() {
                         <button
                           key={i}
                           onClick={() => handleScore(i)}
-                          className={`w-9 h-9 rounded-full font-mono text-sm font-bold transition-all ${
+                          className={`w-9 h-9 rounded-full font-body text-sm font-bold transition-all ${
                             score === i
                               ? "bg-primary text-primary-foreground scale-110"
                               : "bg-secondary text-foreground hover:bg-primary/20"

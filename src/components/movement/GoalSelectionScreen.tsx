@@ -190,7 +190,7 @@ export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, v
                           <div className="flex items-center gap-2 shrink-0">
                             <IntensityBar min={goal.intensity_min} max={goal.intensity_max} />
                             <span className={cn(
-                              "font-mono text-[10px] uppercase tracking-wider",
+                              "font-body text-[10px] uppercase tracking-wider",
                               isOnboarding
                                 ? selected ? "text-primary/60" : "text-white/40"
                                 : "text-muted-foreground"

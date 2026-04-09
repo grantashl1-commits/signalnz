@@ -94,20 +94,20 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
             <div className="flex gap-3 flex-wrap">
               {exercise.sets && (
                 <div className="bg-secondary/50 rounded-xl px-4 py-2.5">
-                  <p className="font-mono text-[9px] text-muted-foreground">sets</p>
-                  <p className="font-mono text-sm text-foreground">{exercise.sets}</p>
+                  <p className="font-body text-[9px] text-muted-foreground">sets</p>
+                  <p className="font-body text-sm text-foreground">{exercise.sets}</p>
                 </div>
               )}
               {exercise.reps && (
                 <div className="bg-secondary/50 rounded-xl px-4 py-2.5">
-                  <p className="font-mono text-[9px] text-muted-foreground">reps</p>
-                  <p className="font-mono text-sm text-foreground">{exercise.reps}</p>
+                  <p className="font-body text-[9px] text-muted-foreground">reps</p>
+                  <p className="font-body text-sm text-foreground">{exercise.reps}</p>
                 </div>
               )}
               {exercise.duration && (
                 <div className="bg-secondary/50 rounded-xl px-4 py-2.5">
-                  <p className="font-mono text-[9px] text-muted-foreground">duration</p>
-                  <p className="font-mono text-sm text-foreground">{exercise.duration}</p>
+                  <p className="font-body text-[9px] text-muted-foreground">duration</p>
+                  <p className="font-body text-sm text-foreground">{exercise.duration}</p>
                 </div>
               )}
             </div>
@@ -121,17 +121,17 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   {dbData?.target && (
-                    <span className="rounded-full px-3 py-1 text-[10px] font-mono font-bold" style={{ backgroundColor: `${phaseColor}20`, color: phaseColor }}>
+                    <span className="rounded-full px-3 py-1 text-[10px] font-body font-bold" style={{ backgroundColor: `${phaseColor}20`, color: phaseColor }}>
                       {dbData.target}
                     </span>
                   )}
                   {secondaryMuscles.map((m) => (
-                    <span key={m} className="rounded-full px-3 py-1 bg-secondary font-mono text-[9px] text-muted-foreground">
+                    <span key={m} className="rounded-full px-3 py-1 bg-secondary font-body text-[9px] text-muted-foreground">
                       {m}
                     </span>
                   ))}
                   {dbData?.equipment && (
-                    <span className="rounded-full px-3 py-1 bg-accent font-mono text-[9px] text-muted-foreground">
+                    <span className="rounded-full px-3 py-1 bg-accent font-body text-[9px] text-muted-foreground">
                       {dbData.equipment}
                     </span>
                   )}
@@ -154,7 +154,7 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 <ol className="space-y-1.5">
                   {instructions.map((step, i) => (
                     <li key={i} className="flex gap-2">
-                      <span className="font-mono text-[10px] text-primary font-bold mt-0.5">{i + 1}</span>
+                      <span className="font-body text-[10px] text-primary font-bold mt-0.5">{i + 1}</span>
                       <p className="font-body text-xs text-muted-foreground leading-relaxed">{step}</p>
                     </li>
                   ))}

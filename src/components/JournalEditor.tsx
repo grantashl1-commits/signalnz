@@ -76,7 +76,7 @@ export default function JournalEditor({ type, onClose }: Props) {
         />
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4">
-          <span className="font-mono text-xs text-muted-foreground">{wordCount} words</span>
+          <span className="font-body text-xs text-muted-foreground">{wordCount} words</span>
           <div className="flex gap-3">
             {config.prompts.length > 1 && promptIdx < config.prompts.length - 1 && (
               <button onClick={handleNext} className="touch-btn flex-1 sm:flex-none rounded-xl bg-secondary px-5 py-3 min-h-[52px] font-body text-sm font-medium text-foreground active:bg-secondary/80 transition-colors">

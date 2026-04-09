@@ -390,7 +390,7 @@ export default function AccountPage() {
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="text-center">
               <Brain className="h-4 w-4 text-primary mx-auto mb-1" />
-              <p className="font-mono text-lg text-foreground">{credits ?? "—"}</p>
+              <p className="font-body text-lg text-foreground">{credits ?? "—"}</p>
               <p className="font-body text-[10px] text-muted-foreground">{subscription.tier === "free" ? "of 5 signals left" : "AI credits"}</p>
             </div>
             <div className="text-center">
@@ -405,7 +405,7 @@ export default function AccountPage() {
             <div className="pt-3 border-t border-border/30">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">refer a friend</p>
+                  <p className="font-body text-[10px] text-muted-foreground/40 uppercase tracking-widest">refer a friend</p>
                   <p className="text-sm text-foreground/70 mt-0.5">{referralCode}</p>
                 </div>
                 <button
@@ -414,7 +414,7 @@ export default function AccountPage() {
                     haptic("light");
                     toast.success("Link copied!");
                   }}
-                  className="font-mono text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground"
+                  className="font-body text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground"
                 >
                   copy
                 </button>

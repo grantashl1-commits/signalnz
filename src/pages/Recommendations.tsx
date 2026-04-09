@@ -25,7 +25,7 @@ export default function RecommendationsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
             >
-              <p className="font-mono text-[10px] tracking-widest uppercase text-primary mb-3">
+              <p className="font-body text-[10px] tracking-widest uppercase text-primary mb-3">
                 curating now
               </p>
               <h2 className="font-display text-3xl italic text-foreground/90 mb-4">

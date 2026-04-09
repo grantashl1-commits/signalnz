@@ -46,7 +46,7 @@ export default function OneLineEditor({ onSave, onClose }: Props) {
           autoFocus
           style={{ fontSize: "18px" }}
         />
-        <p className="font-mono text-[11px] text-muted-foreground/50 mt-2">{text.length} / 140</p>
+        <p className="font-body text-[11px] text-muted-foreground/50 mt-2">{text.length} / 140</p>
       </div>
 
       <div className="px-5 pb-6 pt-3">

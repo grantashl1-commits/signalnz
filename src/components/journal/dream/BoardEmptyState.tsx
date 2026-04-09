@@ -127,7 +127,7 @@ export default function BoardEmptyState({ onAddNote, onAddImage, onStartRitual }
 
         {/* Starter rituals */}
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 mb-4">Or start with a ritual</p>
+          <p className="font-body text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 mb-4">Or start with a ritual</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
             {STARTER_RITUALS.map((r, i) => (
               <motion.button

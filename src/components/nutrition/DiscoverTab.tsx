@@ -370,7 +370,7 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span className="rounded-full px-2.5 py-1 font-hand text-[11px] font-bold"
                 style={{ backgroundColor: `${PHASE_HEX[recipe.phase]}15`, color: PHASE_HEX[recipe.phase] }}>{PHASE_SHORT[recipe.phase]}</span>
-              <span className="font-mono text-[10px] text-muted-foreground">{recipe.prepTime}</span>
+              <span className="font-body text-[10px] text-muted-foreground">{recipe.prepTime}</span>
             </div>
             <h2 className="font-display text-xl font-bold italic text-foreground">{recipe.name}</h2>
             
@@ -378,12 +378,12 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
             {(recipe as any).nutrition && (
               <div className="flex gap-2 mt-2">
                 {["protein", "carbs", "fat"].map(k => (
-                  <span key={k} className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                  <span key={k} className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
                     {k.charAt(0).toUpperCase() + k.slice(1)} {(recipe as any).nutrition[k]}g
                   </span>
                 ))}
                 {(recipe as any).nutrition.calories && (
-                  <span className="font-mono text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+                  <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
                     {(recipe as any).nutrition.calories} cal
                   </span>
                 )}
@@ -395,7 +395,7 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
           <div className="flex items-center gap-3">
             <span className="font-body text-sm text-muted-foreground">Serves</span>
             <button onClick={() => setServings(Math.max(1, servings - 1))} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground font-bold">−</button>
-            <span className="font-mono text-sm font-bold text-foreground w-6 text-center">{servings}</span>
+            <span className="font-body text-sm font-bold text-foreground w-6 text-center">{servings}</span>
             <button onClick={() => setServings(servings + 1)} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground font-bold">+</button>
           </div>
 

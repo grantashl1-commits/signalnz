@@ -117,7 +117,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5"
               >
                 <Zap className="h-3.5 w-3.5 text-primary" />
-                <span className="font-mono text-xs font-bold text-primary">{creditsRemaining} left</span>
+                <span className="font-body text-xs font-bold text-primary">{creditsRemaining} left</span>
               </Link>
             )}
             <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
@@ -149,7 +149,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2 py-1"
               >
                 <Zap className="h-3 w-3 text-primary" />
-                <span className="font-mono text-[10px] font-bold text-primary">{creditsRemaining}</span>
+                <span className="font-body text-[10px] font-bold text-primary">{creditsRemaining}</span>
               </Link>
             )}
             <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
@@ -246,7 +246,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     />
                   </motion.div>
                   <span
-                    className="text-[10px] font-mono tracking-wide transition-colors duration-200 relative z-10"
+                    className="text-[10px] font-body tracking-wide transition-colors duration-200 relative z-10"
                     style={{
                       color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.35)',
                     }}

@@ -176,7 +176,7 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                     >
                       <span className="font-body text-[11px] text-foreground leading-tight">{symptom}</span>
                       {severity > 0 && (
-                        <span className="font-mono text-[9px] shrink-0 ml-1" style={{ color }}>
+                        <span className="font-body text-[9px] shrink-0 ml-1" style={{ color }}>
                           {SEVERITY_LABELS[severity]}
                         </span>
                       )}
@@ -198,7 +198,7 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                     <button
                       key={n}
                       onClick={() => { haptic("light"); setSleepQuality(n); }}
-                      className={`touch-btn h-10 w-10 rounded-full font-mono text-sm ${
+                      className={`touch-btn h-10 w-10 rounded-full font-body text-sm ${
                         sleepQuality === n ? "text-card font-bold" : "bg-secondary text-muted-foreground"
                       }`}
                       style={sleepQuality === n ? { backgroundColor: color } : {}}

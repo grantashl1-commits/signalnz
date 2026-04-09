@@ -24,7 +24,7 @@ export default function PhaseBadge({ phase, cycleDay, size = "md" }: PhaseBadgeP
     <span className={`inline-flex items-center rounded-full font-hand font-bold ${PHASE_BG[phase]} ${sizeClasses[size]}`}>
       <span>{PHASE_SHORT[phase].toLowerCase()}</span>
       {cycleDay !== undefined && (
-        <span className="font-mono opacity-70 text-[0.85em]">D{cycleDay}</span>
+        <span className="font-body opacity-70 text-[0.85em]">D{cycleDay}</span>
       )}
     </span>
   );

@@ -105,7 +105,7 @@ function BreathworkCards({
           </h3>
           {p.phases && p.phases.length > 0 && (
             <div className="flex items-center gap-2.5 mb-2">
-              <span className="font-mono text-[28px] font-bold text-primary leading-none">
+              <span className="font-body text-[28px] font-bold text-primary leading-none">
                 {p.phases.map((ph) => ph.seconds).join("-")}
               </span>
               <motion.div
@@ -122,11 +122,11 @@ function BreathworkCards({
 
           <div className="flex items-center gap-2 mb-2">
             {p.audio.enabled ? (
-              <span className="flex items-center gap-1.5 font-mono text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+              <span className="flex items-center gap-1.5 font-body text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
                 <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided audio
               </span>
             ) : (
-              <span className="flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+              <span className="flex items-center gap-1 font-body text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                 <Clock className="h-3 w-3" /> timer only
               </span>
             )}
@@ -174,7 +174,7 @@ function BreathworkCards({
       {!showAll && BREATHWORK_PRACTICES.length > 4 && (
         <button
           onClick={() => setShowAll(true)}
-          className="w-full text-center font-mono text-xs text-primary py-2"
+          className="w-full text-center font-body text-xs text-primary py-2"
         >
           + show more
         </button>
@@ -271,13 +271,13 @@ function SomaticCards({
               Morning Fascia Release
             </h3>
             <div className="flex gap-1.5 mb-1.5 flex-wrap">
-              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
+              <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
                 full body
               </span>
-              <span className="font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1">
+              <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
                 <Clock className="h-3 w-3" /> 7 min
               </span>
-              <span className="flex items-center gap-1.5 font-mono text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+              <span className="flex items-center gap-1.5 font-body text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
                 <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided
               </span>
             </div>
@@ -338,14 +338,14 @@ function SomaticCards({
                 {p.title}
               </h3>
               <div className="flex gap-1.5 mb-1.5 flex-wrap items-center">
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
+                <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
                   {p.subtitle}
                 </span>
-                <span className="font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1">
+                <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
                   <Clock className="h-3 w-3" /> {formatDuration(p.durationSec)}
                 </span>
                 {p.audio.enabled && (
-                  <span className="flex items-center gap-1.5 font-mono text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+                  <span className="flex items-center gap-1.5 font-body text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
                     <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided
                   </span>
                 )}
@@ -391,7 +391,7 @@ function SomaticCards({
       {!showAll && SOMATIC_PRACTICES.length > 3 && (
         <button
           onClick={() => setShowAll(true)}
-          className="w-full text-center font-mono text-xs text-primary py-2"
+          className="w-full text-center font-body text-xs text-primary py-2"
         >
           + show more
         </button>

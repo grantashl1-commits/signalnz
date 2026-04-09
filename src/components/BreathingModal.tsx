@@ -101,7 +101,7 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
         </button>
 
         <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground mb-1 text-center">{technique.name}</h2>
-        <p className="font-mono text-xs text-muted-foreground mb-8 md:mb-12">cycle {cycles + 1}</p>
+        <p className="font-body text-xs text-muted-foreground mb-8 md:mb-12">cycle {cycles + 1}</p>
 
         {/* Sacred spiral breathing animation */}
         <motion.div
@@ -113,13 +113,13 @@ export default function BreathingModal({ techniqueId, onClose }: Props) {
           <div className="sketch-rotate-fast" style={{ willChange: "transform" }}>
             <SacredSpiral size={200} opacity={isInhale ? 0.5 : isExhale ? 0.15 : 0.3} color={phaseColor} />
           </div>
-          <span className="absolute font-mono text-3xl text-foreground">
+          <span className="absolute font-body text-3xl text-foreground">
             {currentPhase.duration - timer}
           </span>
         </motion.div>
 
         <p className="mt-8 md:mt-10 font-hand text-2xl md:text-3xl text-foreground" style={{ color: phaseColor }}>{currentPhase.label}</p>
-        <p className="mt-2 font-mono text-xs text-muted-foreground">
+        <p className="mt-2 font-body text-xs text-muted-foreground">
           {timer + 1} of {currentPhase.duration}s
         </p>
       </motion.div>

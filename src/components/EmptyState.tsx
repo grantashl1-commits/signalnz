@@ -28,7 +28,7 @@ export default function EmptyState({ icon, title, message, action }: Props) {
       {action && (
         <button
           onClick={action.onClick}
-          className="font-mono text-xs text-muted-foreground border border-border rounded-full px-4 py-2 hover:border-foreground/25 transition-all"
+          className="font-body text-xs text-muted-foreground border border-border rounded-full px-4 py-2 hover:border-foreground/25 transition-all"
         >
           {action.label}
         </button>

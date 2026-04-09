@@ -80,35 +80,35 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
 
       {/* Energy */}
       <div>
-        <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
+        <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
           Energy this week
         </label>
         <input
           type="range" min={1} max={10} value={energy} onChange={(e) => setEnergy(+e.target.value)}
           className="w-full accent-primary"
         />
-        <div className="flex justify-between font-mono text-[9px] text-muted-foreground/50">
+        <div className="flex justify-between font-body text-[9px] text-muted-foreground/50">
           <span>Low</span><span>{energy}/10</span><span>High</span>
         </div>
       </div>
 
       {/* Sleep */}
       <div>
-        <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
+        <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
           Sleep quality
         </label>
         <input
           type="range" min={1} max={10} value={sleep} onChange={(e) => setSleep(+e.target.value)}
           className="w-full accent-primary"
         />
-        <div className="flex justify-between font-mono text-[9px] text-muted-foreground/50">
+        <div className="flex justify-between font-body text-[9px] text-muted-foreground/50">
           <span>Poor</span><span>{sleep}/10</span><span>Great</span>
         </div>
       </div>
 
       {/* Soreness */}
       <div>
-        <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
+        <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
           Muscle soreness
         </label>
         <div className="flex gap-2">
@@ -130,7 +130,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
 
       {/* Notes */}
       <div>
-        <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
+        <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
           Anything else to tell your coach? (optional)
         </label>
         <textarea
@@ -141,7 +141,7 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
           placeholder="E.g. feeling stressed, tried a new class..."
           className="w-full bg-secondary/30 border border-border rounded-xl px-3 py-2 font-display text-sm italic text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary/30 resize-none"
         />
-        <p className="font-mono text-[9px] text-muted-foreground/40 text-right">{notes.length}/200</p>
+        <p className="font-body text-[9px] text-muted-foreground/40 text-right">{notes.length}/200</p>
       </div>
 
       <button
@@ -260,12 +260,12 @@ function GoalTracker({ userId }: { userId: string }) {
               />
             )}
             <div>
-              <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Target date (optional)</label>
+              <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Target date (optional)</label>
               <input
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="w-full bg-secondary/30 border border-border rounded-xl px-3 py-2 font-mono text-xs text-foreground focus:outline-none"
+                className="w-full bg-secondary/30 border border-border rounded-xl px-3 py-2 font-body text-xs text-foreground focus:outline-none"
               />
             </div>
             <button onClick={handleCreateGoal} className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-display text-sm italic">
@@ -300,8 +300,8 @@ function GoalTracker({ userId }: { userId: string }) {
       {totalWeeks && (
         <div>
           <div className="flex justify-between mb-1">
-            <span className="font-mono text-[10px] text-muted-foreground">{pct}% complete</span>
-            <span className="font-mono text-[10px] text-muted-foreground">{weeksToGoal} weeks to go</span>
+            <span className="font-body text-[10px] text-muted-foreground">{pct}% complete</span>
+            <span className="font-body text-[10px] text-muted-foreground">{weeksToGoal} weeks to go</span>
           </div>
           <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
             <motion.div
@@ -341,7 +341,7 @@ function GoalTracker({ userId }: { userId: string }) {
           value={logValue}
           onChange={(e) => setLogValue(e.target.value)}
           placeholder="Value"
-          className="flex-1 bg-secondary/30 border border-border rounded-xl px-3 py-2 font-mono text-xs text-foreground placeholder:text-muted-foreground/30 focus:outline-none"
+          className="flex-1 bg-secondary/30 border border-border rounded-xl px-3 py-2 font-body text-xs text-foreground placeholder:text-muted-foreground/30 focus:outline-none"
         />
         <input
           value={logNote}
@@ -362,7 +362,7 @@ function GoalTracker({ userId }: { userId: string }) {
       {progress.length > 0 && (
         <div className="space-y-1">
           {progress.slice(-3).reverse().map((p) => (
-            <div key={p.id} className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+            <div key={p.id} className="flex items-center gap-2 font-body text-[10px] text-muted-foreground">
               <TrendingUp className="h-3 w-3" />
               <span>{p.value}</span>
               {p.note && <span className="italic">— {p.note}</span>}
@@ -421,16 +421,16 @@ function LogWorkout({ userId, onLogged }: { userId: string; onLogged: () => void
 
       <div className="flex gap-3">
         <div className="flex-1">
-          <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Minutes</label>
+          <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Minutes</label>
           <input
             type="number"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            className="w-full bg-secondary/30 border border-border rounded-xl px-3 py-2 font-mono text-sm text-foreground focus:outline-none"
+            className="w-full bg-secondary/30 border border-border rounded-xl px-3 py-2 font-body text-sm text-foreground focus:outline-none"
           />
         </div>
         <div className="flex-1">
-          <label className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Intensity</label>
+          <label className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-1 block">Intensity</label>
           <div className="flex gap-1">
             {INTENSITIES.map((i) => (
               <button
@@ -496,7 +496,7 @@ function CommunityStats({ userId }: { userId: string }) {
       <div className="card-warm p-5 text-center">
         <Activity className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
         <p className="font-display text-sm italic text-muted-foreground/50">No community activity this week yet</p>
-        <p className="font-mono text-[10px] text-muted-foreground/30 mt-1">Log a workout to get started</p>
+        <p className="font-body text-[10px] text-muted-foreground/30 mt-1">Log a workout to get started</p>
       </div>
     );
   }
@@ -507,22 +507,22 @@ function CommunityStats({ userId }: { userId: string }) {
       <div className="grid grid-cols-3 gap-2">
         <div className="text-center">
           <p className="font-display text-xl font-bold text-foreground">{stats.avgSessions}</p>
-          <p className="font-mono text-[9px] text-muted-foreground uppercase">Avg sessions</p>
+          <p className="font-body text-[9px] text-muted-foreground uppercase">Avg sessions</p>
         </div>
         <div className="text-center">
           <p className="font-display text-xl font-bold text-foreground capitalize">{stats.topType}</p>
-          <p className="font-mono text-[9px] text-muted-foreground uppercase">Top workout</p>
+          <p className="font-body text-[9px] text-muted-foreground uppercase">Top workout</p>
         </div>
         <div className="text-center">
           <p className="font-display text-xl font-bold text-primary">#{stats.userRank}</p>
-          <p className="font-mono text-[9px] text-muted-foreground uppercase">Your rank</p>
+          <p className="font-body text-[9px] text-muted-foreground uppercase">Your rank</p>
         </div>
       </div>
       {stats.top5.length > 0 && (
         <div className="pt-2 border-t border-border space-y-1">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">Leaderboard</p>
+          <p className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Leaderboard</p>
           {stats.top5.map(([uid, count]: [string, number], i: number) => (
-            <div key={uid} className={`flex items-center gap-2 font-mono text-[11px] ${uid === userId ? "text-primary font-bold" : "text-muted-foreground"}`}>
+            <div key={uid} className={`flex items-center gap-2 font-body text-[11px] ${uid === userId ? "text-primary font-bold" : "text-muted-foreground"}`}>
               <span className="w-4 text-right">{i + 1}.</span>
               <span className="flex-1">{uid === userId ? "You" : `Member ${i + 1}`}</span>
               <span>{count} sessions</span>
@@ -581,7 +581,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
         >
           <Dumbbell className="h-6 w-6 text-primary mb-3" />
           <p className="font-display text-sm font-bold italic text-foreground">Training Plan</p>
-          <p className="font-mono text-[10px] text-muted-foreground mt-1">Personalised weekly workout</p>
+          <p className="font-body text-[10px] text-muted-foreground mt-1">Personalised weekly workout</p>
           {generating === "training" && <Loader2 className="h-4 w-4 animate-spin text-primary mt-2" />}
         </button>
         <button
@@ -591,7 +591,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
         >
           <Salad className="h-6 w-6 text-phase-follicular mb-3" />
           <p className="font-display text-sm font-bold italic text-foreground">Nutrition Plan</p>
-          <p className="font-mono text-[10px] text-muted-foreground mt-1">Meals matched to your load</p>
+          <p className="font-body text-[10px] text-muted-foreground mt-1">Meals matched to your load</p>
           {generating === "nutrition" && <Loader2 className="h-4 w-4 animate-spin text-primary mt-2" />}
         </button>
       </div>
@@ -622,7 +622,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
                 <span className="font-display text-sm font-bold italic text-foreground capitalize">
                   {plan.type} Plan
                 </span>
-                <span className="font-mono text-[10px] text-muted-foreground">{plan.date}</span>
+                <span className="font-body text-[10px] text-muted-foreground">{plan.date}</span>
               </div>
               <button
                 onClick={() => generate(plan.type as "training" | "nutrition")}
@@ -645,7 +645,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
         <div>
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 font-body text-[11px] text-muted-foreground hover:text-foreground transition-colors"
           >
             <Calendar className="h-3 w-3" />
             Previous plans ({history.length})
@@ -663,7 +663,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
                     <div className="flex items-center gap-2">
                       {h.plan_type === "training" ? <Dumbbell className="h-3 w-3 text-primary" /> : <Salad className="h-3 w-3 text-phase-follicular" />}
                       <span className="font-display text-xs italic text-foreground capitalize">{h.plan_type} plan</span>
-                      <span className="font-mono text-[10px] text-muted-foreground ml-auto">{new Date(h.generated_at).toLocaleDateString()}</span>
+                      <span className="font-body text-[10px] text-muted-foreground ml-auto">{new Date(h.generated_at).toLocaleDateString()}</span>
                     </div>
                   </button>
                 ))}
@@ -688,7 +688,7 @@ export default function CoachPage() {
   return (
     <>
       <AtmosphericHero>
-        <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/60 mb-3">MY COACH</p>
+        <p className="font-body text-[11px] uppercase tracking-[0.25em] text-white/60 mb-3">MY COACH</p>
         <h1 className="font-display text-4xl md:text-5xl font-bold italic text-white mb-3">Your Plan</h1>
         <p className="font-display text-base italic text-white/70 max-w-md">
           Check in, set goals, and get AI-powered training and nutrition plans.

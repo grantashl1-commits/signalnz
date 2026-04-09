@@ -74,10 +74,10 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
       <div className="flex-1 min-w-0">
         <span className="font-body text-xs text-foreground">{item.name}</span>
         {stretchData?.target_muscle && (
-          <p className="font-mono text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
+          <p className="font-body text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
         )}
       </div>
-      <span className="font-mono text-[10px] text-muted-foreground flex-shrink-0">
+      <span className="font-body text-[10px] text-muted-foreground flex-shrink-0">
         {stretchData?.hold_duration || item.duration || item.hold_duration || ""}
       </span>
     </div>
@@ -113,12 +113,12 @@ export default function AISessionCard({
           AI Plan · Week {trainingWeek} · {weekTheme || session.phase_label}
         </p>
         <div className="flex gap-2 mt-1.5 flex-wrap">
-          <span className="flex items-center gap-1 font-mono text-[10px]" style={{ color: phaseColor }}>
+          <span className="flex items-center gap-1 font-body text-[10px]" style={{ color: phaseColor }}>
             <Clock className="h-3 w-3" /> {session.durationMin || session.duration_minutes} min
           </span>
           <span className="font-body text-[10px] text-muted-foreground capitalize">{session.category || session.type}</span>
           {session.intensity && (
-            <span className={`font-mono text-[10px] capitalize ${INTENSITY_COLORS[session.intensity] || "text-muted-foreground"}`}>
+            <span className={`font-body text-[10px] capitalize ${INTENSITY_COLORS[session.intensity] || "text-muted-foreground"}`}>
               {session.intensity}
             </span>
           )}
@@ -131,7 +131,7 @@ export default function AISessionCard({
           <div className="h-2 bg-secondary rounded-full overflow-hidden">
             <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedCount / totalExercises) * 100}%` }} />
           </div>
-          <p className="font-mono text-[10px] text-muted-foreground">{completedCount}/{totalExercises} exercises</p>
+          <p className="font-body text-[10px] text-muted-foreground">{completedCount}/{totalExercises} exercises</p>
         </div>
       )}
 
@@ -145,7 +145,7 @@ export default function AISessionCard({
             <div className="flex items-center gap-2">
               <Flame className="h-3.5 w-3.5 text-primary" />
               <span className="font-body text-xs font-semibold text-foreground">Warm-Up</span>
-              <span className="font-mono text-[10px] text-muted-foreground">{session.warm_up.length} movements</span>
+              <span className="font-body text-[10px] text-muted-foreground">{session.warm_up.length} movements</span>
             </div>
             {showWarmUp ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
           </button>
@@ -171,7 +171,7 @@ export default function AISessionCard({
             className="touch-btn flex items-center gap-2 w-full"
           >
             <span className="font-display text-xs font-bold italic" style={{ color: phaseColor }}>{block.section_label}</span>
-            <span className="font-mono text-[10px] text-muted-foreground">{block.exercises?.length || 0}</span>
+            <span className="font-body text-[10px] text-muted-foreground">{block.exercises?.length || 0}</span>
             <div className="flex-1" />
             {expandedSection === block.section_label
               ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
@@ -198,9 +198,9 @@ export default function AISessionCard({
                 <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
                   <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
                   <div className="flex gap-2 flex-wrap mt-0.5">
-                    {ex.sets && <span className="font-mono text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {ex.reps_or_duration}</span>}
-                    {ex.rest && <span className="font-mono text-[9px] text-muted-foreground">Rest {ex.rest}</span>}
-                    {ex.tempo && <span className="font-mono text-[9px] text-muted-foreground">Tempo {ex.tempo}</span>}
+                    {ex.sets && <span className="font-body text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {ex.reps_or_duration}</span>}
+                    {ex.rest && <span className="font-body text-[9px] text-muted-foreground">Rest {ex.rest}</span>}
+                    {ex.tempo && <span className="font-body text-[9px] text-muted-foreground">Tempo {ex.tempo}</span>}
                   </div>
                 </div>
                 <p className="font-body text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block leading-tight">{ex.form_cue}</p>
@@ -237,7 +237,7 @@ export default function AISessionCard({
                   </div>
                   <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
                     <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
-                    <p className="font-mono text-[9px]" style={{ color: phaseColor }}>
+                    <p className="font-body text-[9px]" style={{ color: phaseColor }}>
                       {ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}
                     </p>
                   </div>
@@ -259,7 +259,7 @@ export default function AISessionCard({
             <div className="flex items-center gap-2">
               <Snowflake className="h-3.5 w-3.5 text-primary" />
               <span className="font-body text-xs font-semibold text-foreground">Cool-Down</span>
-              <span className="font-mono text-[10px] text-muted-foreground">{session.cool_down.length} stretches</span>
+              <span className="font-body text-[10px] text-muted-foreground">{session.cool_down.length} stretches</span>
             </div>
             {showCoolDown ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
           </button>
