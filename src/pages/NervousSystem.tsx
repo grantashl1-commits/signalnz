@@ -577,6 +577,7 @@ export default function NervousSystemPage() {
                   index={i}
                   isDone={completed.has(s.id)}
                   onSelect={handleSelect}
+                  isSleep={tab === "sleep"}
                 />
               ))}
             </motion.div>
