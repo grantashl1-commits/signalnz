@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, ExternalLink, Copy, Check, Trash2, Plus, ChevronDown, ChevronUp, X } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
@@ -195,24 +196,13 @@ export function ShoppingListPanel() {
           <button
             onClick={() => {
               haptic("medium");
-              const weekPlan = localStorage.getItem("signal_weekly_meal_plan");
-              if (weekPlan) {
-                try {
-                  const plan = JSON.parse(weekPlan);
-                  const allIngredients: string[] = [];
-                  Object.values(plan).forEach((day: any) => {
-                    if (day?.meals) Object.values(day.meals).forEach((meal: any) => {
-                      if (meal?.ingredients) allIngredients.push(...meal.ingredients);
-                    });
-                  });
-                  if (allIngredients.length > 0) {
-                    allIngredients.forEach(ing => handleAddManual(ing));
-                    return;
-                  }
-                } catch {}
-              }
-              toast?.("Generate a meal plan first from the My Week tab");
+              toast("Generate a meal plan first from the My Week tab");
             }}
+            className="touch-btn inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-3 min-h-[44px] font-body text-sm font-bold transition-all active:scale-[0.97]"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Generate from my meal plan
+          </button>
             className="touch-btn inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-3 min-h-[44px] font-body text-sm font-bold transition-all active:scale-[0.97]"
           >
             <ShoppingCart className="h-4 w-4" />
