@@ -344,6 +344,22 @@ export default function CyclePage() {
               <button onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))} className="touch-btn p-2 active:bg-secondary rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"><ChevronRight className="h-5 w-5 text-muted-foreground" /></button>
             </div>
 
+            {/* Colour legend */}
+            <div className="flex items-center justify-center gap-4 pb-1">
+              {[
+                { color: "#C4526E", label: "Period" },
+                { color: "#7F5B87", label: "Mood logged" },
+                { color: "#9B89B4", label: "Phase" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-1.5">
+                  <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: item.color }} />
+                  <span className="font-mono" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-7 gap-1 text-center">
               {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
                 <div key={`${d}-${i}`} className="font-body text-[10px] text-muted-foreground py-1">{d}</div>
@@ -371,36 +387,36 @@ export default function CyclePage() {
                   <button
                     key={dateStr}
                     onClick={() => { haptic("light"); setSelectedDate(dateStr); }}
-                    className={`touch-btn relative rounded-xl p-1 md:p-2 text-center transition-all active:bg-secondary min-h-[44px] ${isToday ? "ring-1 ring-primary" : ""}`}
+                    className="touch-btn relative rounded-xl p-1 md:p-2 text-center transition-all active:bg-secondary min-h-[44px]"
+                    style={isToday ? {
+                      outline: '2px solid hsl(284, 22%, 44%)',
+                      outlineOffset: -2,
+                    } : undefined}
                   >
-                    <span className="font-mono text-xs text-foreground">{date.getDate()}</span>
-                    <div className="flex justify-center gap-[2px] mt-0.5">
-                      {phase && <div className="h-2 w-2 rounded-full" style={{ backgroundColor: PHASE_HEX[phase] }} />}
-                    </div>
-                    {moods.length > 0 && (
-                      <div
-                        className="flex justify-center gap-[2px] mt-[1px]"
-                        onClick={(e) => { e.stopPropagation(); haptic("light"); setPopover({ dateStr, cycleDay, type: "mood" }); }}
-                      >
-                        {moods.slice(0, 2).map((mood, mi) => (
-                          <div key={mi} className="h-[5px] w-[5px] rounded-full" style={{ backgroundColor: getMoodDotColor(mood) }} />
-                        ))}
-                      </div>
+                    {/* Today center dot */}
+                    {isToday && (
+                      <div className="absolute left-1/2 -translate-x-1/2 rounded-full" style={{ top: 3, width: 4, height: 4, backgroundColor: 'hsl(284, 22%, 44%)' }} />
                     )}
+                    <span className="font-mono text-xs text-foreground">{date.getDate()}</span>
+                    <div className="flex justify-center gap-[3px] mt-0.5 flex-wrap">
+                      {/* Period dot — red */}
+                      {indicators.isPeriodDay && (
+                        <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#C4526E" }} />
+                      )}
+                      {/* Mood dot — brand purple */}
+                      {moods.length > 0 && (
+                        <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#7F5B87" }} />
+                      )}
+                      {/* Phase dot — mauve */}
+                      {phase && !indicators.isPeriodDay && (
+                        <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#9B89B4" }} />
+                      )}
+                    </div>
                     {shortWeight && (
-                      <div
-                        className="mt-[1px]"
-                        onClick={(e) => { e.stopPropagation(); haptic("light"); setPopover({ dateStr, cycleDay, type: "weight" }); }}
-                      >
+                      <div className="mt-[1px]" onClick={(e) => { e.stopPropagation(); haptic("light"); setPopover({ dateStr, cycleDay, type: "weight" }); }}>
                         <span className="font-mono text-muted-foreground leading-none" style={{ fontSize: "9px" }}>{shortWeight}</span>
                       </div>
                     )}
-                    <div className="flex justify-center gap-[2px] mt-[1px]">
-                      {indicators.isPeriodDay && <span className="text-[8px] leading-none" style={{ color: "#C4526E" }}>●</span>}
-                      {indicators.hasSymptoms && <span className="text-[8px] leading-none" style={{ color: phase ? PHASE_HEX[phase] : undefined, opacity: 0.7 }}>◆</span>}
-                      {indicators.hasNotes && <span className="text-[8px] leading-none text-foreground/40">✎</span>}
-                      {indicators.hasSeeds && <span className="text-[8px] leading-none" style={{ color: "#9B89B4" }}>✿</span>}
-                    </div>
                   </button>
                 );
               })}
