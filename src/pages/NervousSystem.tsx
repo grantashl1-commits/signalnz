@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles, Wind, BookOpen, CircleDot } from "lucide-react";
+import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles, Wind, BookOpen, CircleDot, ChevronDown } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
@@ -152,6 +152,8 @@ function PracticeCard({
   isDone: boolean;
   onSelect: (s: MeditationScript) => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+
   const categoryColors: Record<string, string> = {
     meditation: "bg-phase-follicular/10 text-phase-follicular",
     reading: "bg-phase-ovulatory/10 text-phase-ovulatory",
@@ -169,7 +171,7 @@ function PracticeCard({
       initial="hidden"
       animate="visible"
       variants={cardVariant}
-      className="card-warm p-5 relative overflow-hidden"
+      className="card-warm relative overflow-hidden"
       style={{
         borderLeft: `3px solid ${theme.border}`,
         backgroundColor: theme.bg,
@@ -182,30 +184,77 @@ function PracticeCard({
         strokeWidth={1.5}
       />
 
-      <div className="flex items-start justify-between gap-2 mb-1 pr-7">
-        <h3 className="font-display text-lg italic text-foreground leading-snug">{script.title}</h3>
-        {isDone && (
-          <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-mono text-[10px] text-phase-follicular shrink-0">
-            <Check className="h-3 w-3" /> Done
+      <div className="p-4 pb-3">
+        <div className="flex items-start justify-between gap-2 mb-1 pr-7">
+          <h3 className="font-display text-[15px] italic text-foreground leading-snug">{script.title}</h3>
+          {isDone && (
+            <span className="flex items-center gap-1 rounded-full bg-phase-follicular/15 px-2 py-0.5 font-mono text-[10px] text-phase-follicular shrink-0">
+              <Check className="h-3 w-3" /> Done
+            </span>
+          )}
+        </div>
+        <p className="font-hand text-xs font-bold text-primary mb-1.5">{script.subtitle}</p>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
+            {script.category.replace("-", " ")}
           </span>
+          <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground flex items-center gap-1">
+            <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
+          </span>
+        </div>
+
+        {/* Collapsed: one-line preview + Begin pill */}
+        {!expanded && (
+          <div className="mt-2 flex items-end justify-between gap-3">
+            <button
+              onClick={() => { haptic("light"); setExpanded(true); }}
+              className="flex-1 min-w-0 text-left group"
+            >
+              <p className="font-body text-[12px] text-muted-foreground leading-relaxed line-clamp-1">
+                {script.description}
+              </p>
+              <span className="inline-flex items-center gap-0.5 font-mono text-[10px] text-primary mt-0.5">
+                Read more <ChevronDown className="h-3 w-3" />
+              </span>
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(script); }}
+              className="shrink-0 rounded-full bg-primary px-4 py-2 font-display text-xs italic text-primary-foreground active:scale-[0.96] flex items-center gap-1.5 transition-transform"
+            >
+              <Play className="h-3 w-3" /> Begin →
+            </button>
+          </div>
         )}
       </div>
-      <p className="font-hand text-sm font-bold text-primary mb-1">{script.subtitle}</p>
-      <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
-          {script.category.replace("-", " ")}
-        </span>
-        <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground flex items-center gap-1">
-          <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
-        </span>
-      </div>
-      <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
-      <button
-        onClick={() => { haptic("medium"); onSelect(script); }}
-        className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
-      >
-        <Play className="h-4 w-4" /> begin this practice
-      </button>
+
+      {/* Expanded: full description + prominent CTA */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4">
+              <button
+                onClick={() => { haptic("light"); setExpanded(false); }}
+                className="inline-flex items-center gap-0.5 font-mono text-[10px] text-primary mb-2"
+              >
+                Show less <ChevronDown className="h-3 w-3 rotate-180" />
+              </button>
+              <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
+              <button
+                onClick={() => { haptic("medium"); onSelect(script); }}
+                className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
+              >
+                <Play className="h-4 w-4" /> begin this practice
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
