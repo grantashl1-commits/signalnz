@@ -147,8 +147,8 @@ export default function TodayTab() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="font-display text-2xl md:text-3xl font-bold italic text-foreground">Today's Nourishment</h2>
-        <p className="font-body text-sm text-muted-foreground mt-1">
+        <h2 className="font-display text-card-title font-bold italic text-foreground">Today's Nourishment</h2>
+        <p className="font-body text-body-lg text-muted-foreground mt-1">
           {PHASE_SHORT[currentPhase]} phase · Day {currentCycleDay}
           {aiToday && <span className="text-primary ml-2">· AI plan</span>}
         </p>
@@ -263,7 +263,7 @@ export default function TodayTab() {
 
       {/* Snacks */}
       <div className="space-y-3">
-        <h3 className="font-display text-lg font-bold text-foreground">Snacks</h3>
+        <h3 className="font-display text-card-title font-bold text-foreground">Snacks</h3>
         <SnackCard label="Morning Snack" name={snacks.morning.name} benefit={snacks.morning.benefit} slot="morning-snack" isEaten={!!eaten["morning-snack"]} phaseColor={phaseColor} onMarkEaten={() => markEaten("morning-snack")} />
         <SnackCard label="Afternoon Snack" name={snacks.afternoon.name} benefit={snacks.afternoon.benefit} slot="afternoon-snack" isEaten={!!eaten["afternoon-snack"]} phaseColor={phaseColor} onMarkEaten={() => markEaten("afternoon-snack")} />
       </div>
@@ -276,7 +276,7 @@ export default function TodayTab() {
         <div className="rounded-[18px] bg-card shadow-soft overflow-hidden">
           <button onClick={() => { haptic("light"); setShowSupplements(!showSupplements); }} className="touch-card w-full text-left p-4 flex items-center justify-between">
             <div>
-              <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">Phase Supports</p>
+              <p className="font-body text-section-label uppercase font-medium" style={{ color: 'hsl(var(--label-color))' }}>Phase Supports</p>
               <p className="font-body text-xs text-foreground mt-0.5">{supplements.length} suggested supplements</p>
             </div>
             {showSupplements ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
@@ -315,9 +315,9 @@ function SnackCard({ label, name, benefit, slot, isEaten, phaseColor, onMarkEate
   return (
     <div className="rounded-[18px] bg-card p-5 shadow-soft space-y-3">
       <div className="min-w-0">
-        <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium mb-1">{label}</p>
-        <p className="font-display text-base font-semibold text-foreground leading-tight">{name}</p>
-        <p className="font-body text-xs text-muted-foreground mt-1 leading-relaxed">{benefit}</p>
+        <p className="font-body text-section-label uppercase font-medium mb-1" style={{ color: 'hsl(var(--label-color))' }}>{label}</p>
+        <p className="font-display text-card-title font-semibold text-foreground leading-tight">{name}</p>
+        <p className="font-body text-body-lg text-muted-foreground mt-1 leading-relaxed">{benefit}</p>
       </div>
       <button onClick={() => !isEaten && onMarkEaten()} disabled={isEaten}
         className="touch-btn rounded-full py-2 px-5 min-h-[36px] font-body text-xs font-bold transition-all flex items-center justify-center gap-1.5"
@@ -363,8 +363,8 @@ function MealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEaten, phas
       </div>
 
       <div className="p-6 md:p-7">
-        <p className="font-body text-[11px] uppercase tracking-[0.2em] font-medium mb-2" style={{ color: phaseColor }}>{label}</p>
-        <h3 className="font-display text-xl md:text-2xl font-bold text-foreground leading-tight">{name}</h3>
+        <p className="font-body text-section-label uppercase font-medium mb-2" style={{ color: phaseColor }}>{label}</p>
+        <h3 className="font-display text-card-title font-bold text-foreground leading-tight">{name}</h3>
 
         {/* Macro pills for AI meals */}
         {aiMeal && (aiMeal as any).calories && (
@@ -374,7 +374,7 @@ function MealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEaten, phas
           </div>
         )}
 
-        {benefit && <p className="font-body text-sm text-muted-foreground mt-2 leading-relaxed">{benefit.split(".")[0]}.</p>}
+        {benefit && <p className="font-body text-body-lg text-muted-foreground mt-2 leading-relaxed">{benefit.split(".")[0]}.</p>}
 
         <button onClick={onToggleExpand} className="touch-btn flex items-center gap-1.5 mt-4 font-body text-sm font-medium" style={{ color: phaseColor }}>
           {isExpanded ? "Hide details" : "View recipe"}
@@ -387,7 +387,7 @@ function MealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEaten, phas
               <div className="pt-4 space-y-4 border-t border-border mt-4">
                 {ingredients.length > 0 ? (
                   <div>
-                    <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold mb-2" style={{ color: phaseColor }}>Ingredients</p>
+                    <p className="font-body text-section-label uppercase font-semibold mb-2" style={{ color: phaseColor }}>Ingredients</p>
                     <ul className="space-y-1">
                       {ingredients.map((ing, idx) => (
                         <li key={idx} className="font-body text-sm text-muted-foreground flex items-start gap-2">
