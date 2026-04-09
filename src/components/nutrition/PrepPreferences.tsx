@@ -277,7 +277,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Kitchen Equipment */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("equipment")} data-section="equipment" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Kitchen equipment</p>
         <div className="flex flex-wrap gap-2">
           {["Oven", "Stovetop", "Air fryer", "Slow cooker", "Blender", "Food processor", "Instant Pot"].map(item => (
@@ -293,7 +293,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Breakfast */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("meals")} data-section="meals" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Breakfast</p>
         <RadioCard selected={breakfast === "batch"} label="Same breakfast every day." description="One recipe, batch-prepped for the whole week." onSelect={() => setBreakfast("batch")} />
         <RadioCard selected={breakfast === "rotate"} label="2–3 options per week." description="Cook a double serve and save half for another day." onSelect={() => setBreakfast("rotate")} />
@@ -317,7 +317,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Prep day */}
-      <div className="space-y-2">
+      <div ref={setSectionRef("prep")} data-section="prep" className="space-y-2">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>When can you do your main prep?</p>
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>Bigger meals will be scheduled on your prep day(s) for advance cooking.</p>
         <div className="flex flex-wrap gap-2">
@@ -358,7 +358,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Pantry Staples */}
-      <div className="space-y-3 pt-2 border-t border-border">
+      <div ref={setSectionRef("pantry")} data-section="pantry" className="space-y-3 pt-2 border-t border-border">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Pantry staples I always have</p>
         <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
           Items you mark will be excluded from the shopping list.
@@ -381,7 +381,7 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       </div>
 
       {/* Dietary requirements */}
-      <div className="space-y-3 pt-2 border-t border-border">
+      <div ref={setSectionRef("dietary")} data-section="dietary" className="space-y-3 pt-2 border-t border-border">
         <p className="font-hand text-sm font-bold" style={{ color: "hsl(var(--primary))" }}>Dietary preferences</p>
         
         <div className="space-y-2">
