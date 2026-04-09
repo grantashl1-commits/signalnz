@@ -53,16 +53,12 @@ interface AtmosphericHeroProps {
   children: React.ReactNode;
   className?: string;
   size?: "sm" | "md" | "lg";
-  dotColor?: string;
-  dotOpacity?: number;
 }
 
 export function AtmosphericHero({
   children,
   className = "",
   size = "md",
-  dotColor = "hsl(30 33% 98%)",
-  dotOpacity = 0.04,
 }: AtmosphericHeroProps) {
   const heroStyle = {
     minHeight: '220px',
