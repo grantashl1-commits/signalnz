@@ -47,45 +47,48 @@ export default function NutritionPage() {
         </div>
       </AtmosphericHero>
 
-      <ContentSection className="px-5 md:px-4 space-y-10 md:space-y-12 pb-24">
-        <PhaseBadge phase={currentPhase} cycleDay={currentCycleDay} />
+      <ContentSection className="px-5 md:px-4 pb-24">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+          <PhaseBadge phase={currentPhase} cycleDay={currentCycleDay} />
 
-        {/* Nudge if no body goals set */}
-        {bodyGoals.length === 0 && (
-          <button
-            onClick={() => navigate("/movement")}
-            className="w-full rounded-xl border border-border bg-card p-3 flex items-center gap-3 text-left transition-all active:bg-secondary/50"
-          >
-            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-              <Dumbbell className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <div className="flex-1">
-              <p className="font-body text-xs font-medium text-foreground">Want your meals to fuel your workouts?</p>
-              <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your body goals in Movement first →</p>
-            </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          </button>
-        )}
-
-        {/* Tabs */}
-        <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
-          {TABS.map((tab) => (
+          {/* Nudge if no body goals set */}
+          {bodyGoals.length === 0 && (
             <button
-              key={tab.id}
-              onClick={() => { haptic("light"); setActiveTab(tab.id); }}
-              className={`touch-tab scroll-snap-item flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
-              }`}
+              onClick={() => navigate("/movement")}
+              className="w-full bg-card p-3 flex items-center gap-3 text-left transition-all active:bg-secondary/50"
+              style={{ borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-soft)' }}
             >
-              {tab.label}
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                <Dumbbell className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-body text-xs font-medium text-foreground">Want your meals to fuel your workouts?</p>
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your body goals in Movement first →</p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </button>
-          ))}
-        </div>
+          )}
 
-        {activeTab === "today" && <TodayTab />}
-        {activeTab === "myweek" && <MyWeekTab />}
-        {activeTab === "discover" && <DiscoverTab />}
-        {activeTab === "shop" && <ShoppingListPanel />}
+          {/* Tabs */}
+          <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { haptic("light"); setActiveTab(tab.id); }}
+                className={`touch-tab scroll-snap-item flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === "today" && <TodayTab />}
+          {activeTab === "myweek" && <MyWeekTab />}
+          {activeTab === "discover" && <DiscoverTab />}
+          {activeTab === "shop" && <ShoppingListPanel />}
+        </div>
       </ContentSection>
     </div>
     </GatedPage>

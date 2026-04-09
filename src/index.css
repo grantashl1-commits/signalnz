@@ -50,25 +50,31 @@
     --ring: 284 22% 53%;
 
     /* ── Radius ── */
-    --radius: 1.125rem;
+    --radius: 1.25rem;
     --radius-sm: 0.625rem;
-    --radius-lg: 1.5rem;
-    --radius-xl: 2rem;
+    --radius-lg: 1.25rem;
+    --radius-xl: 1.5rem;
+    --radius-card: 1.25rem;
 
-    /* ── Shadows — softer, more atmospheric ── */
-    --shadow-soft: 0 2px 16px rgba(139, 111, 94, 0.06);
-    --shadow-medium: 0 4px 24px rgba(139, 111, 94, 0.09);
-    --shadow-elevated: 0 8px 40px rgba(127, 91, 135, 0.1);
+    /* ── Shadows — floating card effect ── */
+    --shadow-soft: 0 2px 16px rgba(91, 45, 114, 0.08);
+    --shadow-medium: 0 4px 24px rgba(91, 45, 114, 0.10);
+    --shadow-elevated: 0 8px 40px rgba(91, 45, 114, 0.12);
     --shadow-glow: 0 0 24px rgba(153, 116, 161, 0.2);
 
-    /* ── Spacing scale ── */
-    --space-xs: 0.25rem;
-    --space-sm: 0.5rem;
-    --space-md: 1rem;
-    --space-lg: 1.5rem;
-    --space-xl: 2.5rem;
-    --space-2xl: 4rem;
-    --space-3xl: 6rem;
+    /* ── Spacing scale (8pt grid) ── */
+    --space-xs: 0.25rem;   /* 4px */
+    --space-sm: 0.5rem;    /* 8px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 1.5rem;    /* 24px */
+    --space-xl: 2rem;      /* 32px — section gap */
+    --space-2xl: 3rem;     /* 48px */
+    --space-3xl: 4rem;     /* 64px */
+
+    /* ── Strict 8pt tokens ── */
+    --card-padding: 1.25rem;   /* 20px */
+    --card-gap: 0.75rem;       /* 12px */
+    --section-gap: 2rem;       /* 32px */
 
     /* ── Animation timing ── */
     --ease-calm: cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -179,10 +185,12 @@
   .phase-ovulatory-light { background-color: hsl(var(--phase-ovulatory) / 0.12); color: hsl(var(--phase-ovulatory)); }
   .phase-luteal-light { background-color: hsl(var(--phase-luteal) / 0.12); color: hsl(var(--phase-luteal)); }
 
-  /* ── Card system — borderless premium feel ── */
+  /* ── Card system — floating premium feel ── */
   .card-warm {
-    @apply bg-card rounded-[--radius-lg];
+    @apply bg-card;
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-soft);
+    padding: var(--card-padding);
   }
 
   .card-warm-hover {
@@ -206,7 +214,8 @@
 
   /* ── Frequency panel ── */
   .frequency-panel {
-    @apply relative overflow-hidden rounded-[--radius-lg] bg-card;
+    @apply relative overflow-hidden bg-card;
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-soft);
   }
   .frequency-panel::before {

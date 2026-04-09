@@ -105,6 +105,9 @@ export default {
         "space-xl": "var(--space-xl)",
         "space-2xl": "var(--space-2xl)",
         "space-3xl": "var(--space-3xl)",
+        "card-pad": "var(--card-padding)",
+        "card-gap": "var(--card-gap)",
+        "section-gap": "var(--section-gap)",
         "safe-top": "env(safe-area-inset-top, 0px)",
         "safe-bottom": "env(safe-area-inset-bottom, 0px)",
         "safe-left": "env(safe-area-inset-left, 0px)",
@@ -121,6 +124,7 @@ export default {
         sm: "var(--radius-sm)",
         xl: "var(--radius-lg)",
         "2xl": "var(--radius-xl)",
+        card: "var(--radius-card)",
       },
       boxShadow: {
         soft: "var(--shadow-soft)",
