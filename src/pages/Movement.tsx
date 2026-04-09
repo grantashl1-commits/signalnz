@@ -61,7 +61,8 @@ export default function MovementPage() {
 
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
-  const scheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
 
   // ── Body goals from BodyVisualiser ──
   const bodyGoals = useMemo<string[]>(() => {
@@ -247,29 +248,41 @@ export default function MovementPage() {
             <p className="font-hand text-xs font-bold text-primary mb-2">
               This week's rotation
             </p>
-            <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-              {weeklyRotation.map((assignment) => {
-                const workout = allWorkoutsFlat.find(w => w.id === assignment.workoutId) || phaseWorkouts.find(w => w.id === assignment.workoutId);
-                const isToday = assignment.dayIndex === scheduleIdx;
-                const today = new Date();
-                const mondayOff = today.getDay() === 0 ? -6 : 1 - today.getDay();
-                const dayDate = new Date(today);
-                dayDate.setDate(today.getDate() + mondayOff + assignment.dayIndex);
-                const dateLabel = dayDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short" });
+            <div className="relative">
+              <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 overflow-x-auto">
+                {weeklyRotation.map((assignment) => {
+                  const workout = allWorkoutsFlat.find(w => w.id === assignment.workoutId) || phaseWorkouts.find(w => w.id === assignment.workoutId);
+                  const isSelected = assignment.dayIndex === scheduleIdx;
+                  const isActualToday = assignment.dayIndex === defaultScheduleIdx;
+                  const today = new Date();
+                  const mondayOff = today.getDay() === 0 ? -6 : 1 - today.getDay();
+                  const dayDate = new Date(today);
+                  dayDate.setDate(today.getDate() + mondayOff + assignment.dayIndex);
+                  const dateLabel = dayDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short" });
 
-                return (
-                  <button key={assignment.dayIndex} onClick={() => { haptic("light"); }}
-                    className={`scroll-snap-item flex-shrink-0 rounded-xl p-2.5 text-center min-w-[80px] transition-all ${isToday ? "bg-card ring-2 ring-primary shadow-sm" : "bg-secondary/40"}`}
-                  >
-                    <p className={`font-mono text-[9px] uppercase ${isToday ? "text-primary font-bold" : "text-muted-foreground"}`}>
-                      {assignment.dayLabel} · {dateLabel}
-                    </p>
-                    <p className="font-hand text-[10px] font-bold text-foreground leading-tight mt-1">{workout?.name || "Rest"}</p>
-                    <p className="font-mono text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
-                    {isToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[7px] text-primary font-bold">Today</span>}
-                  </button>
-                );
-              })}
+                  return (
+                    <button key={assignment.dayIndex} onClick={() => { haptic("light"); setScheduleIdx(assignment.dayIndex); }}
+                      className={`scroll-snap-item flex-shrink-0 rounded-xl p-2.5 text-left min-w-[80px] transition-all ${
+                        isSelected
+                          ? "bg-card border-l-[3px] border-l-primary shadow-md"
+                          : "bg-secondary/40"
+                      }`}
+                    >
+                      <p className={`font-mono text-[9px] uppercase ${isSelected ? "text-primary font-bold" : "text-muted-foreground"}`}>
+                        {assignment.dayLabel} · {dateLabel}
+                      </p>
+                      <p className="font-hand text-[10px] font-bold text-foreground leading-tight mt-1">{workout?.name || "Rest"}</p>
+                      <p className="font-mono text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
+                      {isActualToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[7px] text-primary font-bold">Today</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              {/* Right fade gradient to indicate scrollability */}
+              <div
+                className="absolute top-0 right-0 bottom-1 w-10 pointer-events-none rounded-r-xl"
+                style={{ background: 'linear-gradient(to right, transparent 0%, hsl(var(--card-warm, var(--card))) 100%)' }}
+              />
             </div>
           </div>
 
