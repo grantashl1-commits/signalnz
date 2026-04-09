@@ -61,7 +61,8 @@ export default function MovementPage() {
 
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
-  const scheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
 
   // ── Body goals from BodyVisualiser ──
   const bodyGoals = useMemo<string[]>(() => {
