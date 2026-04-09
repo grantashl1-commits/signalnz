@@ -102,21 +102,7 @@ export default function PracticePage() {
           className="relative overflow-hidden rounded-b-[28px] bg-primary px-6 md:px-8 mb-8"
           style={{ minHeight: '220px', paddingTop: '48px', paddingBottom: '32px', paddingLeft: '24px', paddingRight: '24px' }}
         >
-          {/* Ambient dot motif */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute rounded-full bg-primary-foreground"
-                style={{
-                  width: `${3 + (i % 3) * 1.5}px`,
-                  height: `${3 + (i % 3) * 1.5}px`,
-                  top: `${10 + (i * 7) % 80}%`,
-                  left: `${5 + (i * 13) % 90}%`,
-                }}
-              />
-            ))}
-          </div>
+          {/* Dots handled by global SignalAmbientDots layer */}
           <h1 className="font-display text-[32px] md:text-4xl font-extrabold text-primary-foreground leading-tight relative z-10">
             My Practice
           </h1>
