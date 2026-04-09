@@ -324,9 +324,10 @@ function SomaticCards({
           initial="hidden"
           animate="visible"
           variants={cardVariant}
-          className="card-warm p-5"
+          className="card-warm p-5 cursor-pointer touch-card"
+          onClick={() => setExpandedSomatic(expandedSomatic === p.id ? null : p.id)}
         >
-          <div className="flex gap-3 items-start mb-3">
+          <div className="flex gap-3 items-start">
             {p.illustrationUrl ? (
               <img src={p.illustrationUrl} alt={p.title} className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
             ) : (
@@ -336,33 +337,55 @@ function SomaticCards({
               <h3 className="font-display text-lg italic text-foreground mb-1">
                 {p.title}
               </h3>
-              <div className="flex gap-1.5 mb-1.5 flex-wrap">
+              <div className="flex gap-1.5 mb-1.5 flex-wrap items-center">
                 <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-phase-follicular/10 text-phase-follicular">
                   {p.subtitle}
                 </span>
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">
-                  {formatDuration(p.durationSec)}
+                <span className="font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1">
+                  <Clock className="h-3 w-3" /> {formatDuration(p.durationSec)}
                 </span>
                 {p.audio.enabled && (
-                  <span className="flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                    <Volume2 className="h-3 w-3" /> guided
+                  <span className="flex items-center gap-1.5 font-mono text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+                    <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided
                   </span>
                 )}
               </div>
-              <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed">
-                {p.benefit}
-              </p>
+
+              {/* Compact state */}
+              {expandedSomatic !== p.id && (
+                <div className="flex items-end justify-between gap-3 mt-1">
+                  <p className="font-display text-[12px] italic text-muted-foreground leading-relaxed line-clamp-1 flex-1 min-w-0">
+                    {p.benefit}
+                  </p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+                    className="shrink-0 rounded-full border border-primary/25 px-3.5 h-9 font-display text-xs italic text-primary active:scale-[0.96] flex items-center gap-1.5 transition-transform hover:bg-primary/5"
+                  >
+                    Begin →
+                  </button>
+                </div>
+              )}
+
+              {/* Expanded state */}
+              {expandedSomatic === p.id && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                >
+                  <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3">
+                    {p.benefit}
+                  </p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+                    className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+                  >
+                    begin this practice →
+                  </button>
+                </motion.div>
+              )}
             </div>
           </div>
-          <button
-            onClick={() => {
-              haptic("medium");
-              onSelect(p);
-            }}
-            className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
-          >
-            begin this practice →
-          </button>
         </motion.div>
       ))}
       {!showAll && SOMATIC_PRACTICES.length > 3 && (
