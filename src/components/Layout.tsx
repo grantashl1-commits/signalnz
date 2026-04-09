@@ -14,8 +14,8 @@ import { useAICredits } from "@/hooks/useAICredits";
 import PageTransition from "@/components/PageTransition";
 
 // Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
+// Desktop nav: Home | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 const navItems = [
-  { path: "/my-practice", icon: Leaf, label: "Daily Habits" },
   { path: "/nutrition", icon: Utensils, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
@@ -34,7 +34,7 @@ const navItems = [
 // More: Nutrition | Mindfulness | Community | Account
 
 const PRIMARY_TABS = [
-  { path: "/my-practice", label: "Habits", icon: Leaf },
+  { path: "/", label: "Home", icon: Home },
   { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/movement", label: "Move", icon: Dumbbell },
@@ -45,6 +45,7 @@ const MORE_ITEMS = [
   { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
   { path: "/community", label: "Community", icon: Users },
+  { path: "/my-practice", label: "Habit Setup", icon: Leaf },
   { path: "/account", label: "Account", icon: User },
 ];
 
@@ -206,7 +207,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               const isMore = path === "more";
               const isActive = isMore
                 ? moreOpen || MORE_ITEMS.some(m => location.pathname === m.path || location.pathname.startsWith(m.path))
-                : location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+                : path === "/" ? location.pathname === "/" : (location.pathname === path || location.pathname.startsWith(path));
               return (
                 <button
                   key={path}
@@ -312,8 +313,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* Give me a signal — floating CTA + panel */}
-      <SignalFloatingCTA onClick={() => openSignal()} />
+      {/* Give me a signal — panel only (no floating CTA) */}
       <SignalPanel
         open={signalOpen}
         onClose={closeSignal}
