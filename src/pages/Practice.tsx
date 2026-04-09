@@ -409,6 +409,7 @@ export default function PracticePage() {
           onClose={() => setShowLibraryPicker(false)}
           onAdded={refreshHabits}
         />
+        </div>
       </div>
     </GatedPage>
   );
