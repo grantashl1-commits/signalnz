@@ -251,6 +251,31 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       });
     });
 
+    // Add seed cycling ingredients for the week
+    const firstHalfDays = weekDays.filter(d => d.cycleDay <= 14).length;
+    const secondHalfDays = weekDays.filter(d => d.cycleDay > 14).length;
+    const seedItems: { name: string; unit: string; qty: number }[] = [];
+    if (firstHalfDays > 0) {
+      seedItems.push({ name: "Pumpkin seeds", unit: "tbsp", qty: firstHalfDays });
+      seedItems.push({ name: "Flaxseeds", unit: "tbsp", qty: firstHalfDays });
+    }
+    if (secondHalfDays > 0) {
+      seedItems.push({ name: "Sunflower seeds", unit: "tbsp", qty: secondHalfDays });
+      seedItems.push({ name: "Sesame seeds", unit: "tbsp", qty: secondHalfDays });
+    }
+    seedItems.forEach(seed => {
+      const mapKey = seed.name.toLowerCase();
+      if (ingredientMap[mapKey]) {
+        ingredientMap[mapKey].totalQty += seed.qty;
+      } else {
+        ingredientMap[mapKey] = {
+          name: seed.name, totalQty: seed.qty, unit: seed.unit,
+          category: "pantry", searchTerm: seed.name.toLowerCase(),
+          isPantryStaple: false,
+        };
+      }
+    });
+
     // Add custom items
     customItems.forEach(item => {
       const cat = item.category || categoriseItem(item.name);
