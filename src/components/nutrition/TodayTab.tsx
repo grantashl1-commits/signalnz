@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Sparkles, Leaf } from "lucide-react";
+import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
@@ -246,7 +246,7 @@ export default function TodayTab() {
   return (
     <div className="relative">
       {/* Plant vine on right side */}
-      <PlantVine mealsLoggedToday={mealsLoggedToday} plantCount={plantCount} dayOfWeek={adjustedDow} />
+      <PlantVine mealsLoggedToday={mealsLoggedToday} plantCount={plantCount} dayOfWeek={adjustedDow} plants={plants} />
 
       <div className="space-y-6 relative z-10">
         {/* Header — no phase/day subtitle */}
@@ -413,41 +413,7 @@ export default function TodayTab() {
         {/* Macro summary ring */}
         <MacroRing consumed={dailyMacros} targets={macroTargets} phaseColor={phaseColor} />
 
-        {/* Plant diversity tracker — auto-calculated, no manual input */}
-        <div className="rounded-[18px] bg-card p-4 shadow-soft space-y-3">
-          <div className="flex items-center gap-2">
-            <Leaf className="h-4 w-4" style={{ color: "#4CAF50" }} />
-            <span className="font-body text-sm font-medium text-foreground">{plantCount} / 30 plants this week</span>
-          </div>
-          <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-            <motion.div
-              className="h-full rounded-full"
-              style={{ backgroundColor: "#4CAF50" }}
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min(100, (plantCount / 30) * 100)}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            />
-          </div>
-          {plantCount >= 30 ? (
-            <p className="font-body text-[11px] text-foreground italic">
-              Amazing! You've hit 30+ plants this week — your gut microbiome is thriving.
-            </p>
-          ) : (
-            <p className="font-body text-[11px] text-muted-foreground italic">
-              Aiming for 30 different plants a week supports gut microbiome diversity — Dr Will Bulsiewicz
-            </p>
-          )}
-          {plants.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {plants.slice(-12).map(p => (
-                <span key={p} className="rounded-full px-2 py-0.5 font-body text-[9px] bg-secondary text-muted-foreground capitalize">{p}</span>
-              ))}
-              {plants.length > 12 && (
-                <span className="rounded-full px-2 py-0.5 font-body text-[9px] bg-secondary text-muted-foreground">+{plants.length - 12} more</span>
-              )}
-            </div>
-          )}
-        </div>
+        {/* Plant vine tracker is rendered as side decoration + summary card at week end */}
       </div>
     </div>
   );
