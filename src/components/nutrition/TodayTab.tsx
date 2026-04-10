@@ -246,7 +246,7 @@ export default function TodayTab() {
   return (
     <div className="relative">
       {/* Plant vine on right side */}
-      <PlantVine mealsLoggedToday={mealsLoggedToday} plantCount={plantCount} dayOfWeek={adjustedDow} />
+      <PlantVine mealsLoggedToday={mealsLoggedToday} plantCount={plantCount} dayOfWeek={adjustedDow} plants={plants} />
 
       <div className="space-y-6 relative z-10">
         {/* Header — no phase/day subtitle */}
