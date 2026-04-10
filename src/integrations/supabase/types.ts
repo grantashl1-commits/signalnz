@@ -743,6 +743,30 @@ export type Database = {
           },
         ]
       }
+      habit_completions: {
+        Row: {
+          completed_at: string
+          completed_date: string
+          habit_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          completed_date: string
+          habit_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          completed_date?: string
+          habit_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       habit_logs: {
         Row: {
           completed_count: number
@@ -1287,6 +1311,36 @@ export type Database = {
           referred_user_id?: string | null
           referrer_id?: string
           status?: string
+        }
+        Relationships: []
+      }
+      shopping_lists: {
+        Row: {
+          checked_items: Json
+          created_at: string
+          custom_items: Json
+          id: string
+          updated_at: string
+          user_id: string
+          week_key: string
+        }
+        Insert: {
+          checked_items?: Json
+          created_at?: string
+          custom_items?: Json
+          id?: string
+          updated_at?: string
+          user_id: string
+          week_key: string
+        }
+        Update: {
+          checked_items?: Json
+          created_at?: string
+          custom_items?: Json
+          id?: string
+          updated_at?: string
+          user_id?: string
+          week_key?: string
         }
         Relationships: []
       }
