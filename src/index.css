@@ -110,8 +110,9 @@
     --sidebar-ring: 284 22% 53%;
 
     /* ── Typography ── */
-    --font-display: 'Montserrat', 'Playfair Display', serif;
+    --font-display: 'Montserrat', sans-serif;
     --font-body: 'Montserrat', 'Lato', sans-serif;
+    --font-editorial: 'Cormorant Garamond', serif;
     --font-hand: 'Caveat', cursive;
     --font-mono: 'Montserrat', 'Lato', sans-serif;
 
