@@ -279,7 +279,7 @@ export const MEAT_MEAL_PLANS: Record<Phase, { theme: string; days: DayPlan[] }> 
   },
 };
 
-export type RecipeCategory = "meal" | "baking";
+export type RecipeCategory = "meal" | "baking" | "snack" | "breakfast";
 
 export interface NutritionInfo {
   calories: number;
