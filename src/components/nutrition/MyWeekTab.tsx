@@ -225,7 +225,7 @@ export default function MyWeekTab() {
       setAiPlan(plan);
       saveAIMealPlan(plan);
       setStep("plan");
-      toast.success("Your personalised 28-day plan is ready!");
+      toast.success("Your personalised 4-week plan is ready!");
 
       // Phase 4B: persist to Supabase in background
       savePlanToSupabase(plan);
@@ -381,11 +381,13 @@ export default function MyWeekTab() {
           </button>
 
           <div className="text-center">
-            <h2 className="font-display text-2xl font-bold italic text-foreground">{headerLabel}</h2>
+      <h2 className="font-display text-2xl font-bold italic text-foreground">{headerLabel}</h2>
             <p className="font-body text-sm mt-0.5" style={{ color: phaseColor }}>{dateRangeLabel}</p>
             <p className="font-body text-xs text-muted-foreground mt-0.5">{PHASE_FOCUS[dominantPhase]}</p>
             {aiPlan && (
-              <p className="font-body text-[10px] text-muted-foreground mt-0.5">AI-personalised plan</p>
+              <p className="font-body text-[10px] text-muted-foreground mt-0.5">
+                AI plan · Week {Math.min(4, Math.max(1, weekOffset + Math.ceil(currentCycleDay / 7)))} of 4
+              </p>
             )}
           </div>
 
@@ -398,7 +400,28 @@ export default function MyWeekTab() {
         </div>
 
         <div className="flex items-center justify-center gap-2 mt-1">
-          {weekOffset !== 0 && (
+          {/* Week quick-nav for AI plans */}
+          {aiPlan && (
+            <div className="flex items-center gap-1">
+              {[0, 1, 2, 3].map(w => {
+                const currentWeekNum = Math.ceil(currentCycleDay / 7) - 1;
+                const isActive = weekOffset === (w - currentWeekNum);
+                return (
+                  <button
+                    key={w}
+                    onClick={() => { haptic("light"); setWeekOffset(w - (Math.ceil(currentCycleDay / 7) - 1)); setExpandedDay(null); }}
+                    className={`font-body text-[10px] font-medium rounded-full px-2.5 py-1 transition-all ${
+                      isActive ? "text-white" : "bg-secondary text-muted-foreground"
+                    }`}
+                    style={isActive ? { backgroundColor: phaseColor } : {}}
+                  >
+                    Wk {w + 1}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {weekOffset !== 0 && !aiPlan && (
             <button
               onClick={() => { haptic("light"); setWeekOffset(0); setExpandedDay(null); }}
               className="font-body text-xs text-muted-foreground underline"

@@ -180,7 +180,14 @@ These are evidence-based targets calculated for this specific woman's body compo
 Every meal plan MUST hit these macros across the day.`;
     }
 
-    let systemPrompt = `You are a registered dietitian (NZ Dietitians Board) and sports nutritionist creating personalised, evidence-based meal plans for women. You have an MSc in Human Nutrition and specialise in female hormonal health, cycle-syncing nutrition, and sports performance nutrition.
+    let systemPrompt = `You are a registered dietitian creating personalised, evidence-based meal plans for women inside Signal, a New Zealand wellness app. MSc in Human Nutrition, specialist in female hormonal health and cycle-syncing nutrition.
+
+SIGNAL RECIPE BANK — USE THESE WHERE POSSIBLE (reduces cost, ensures consistency):
+MENSTRUAL: Signal Sunrise Bowl, Signal Garden Frittata, Signal Mediterranean Pork Pasta, Signal Hearty Beef Bolognese, Signal Comfort Shepherd's Pie, Signal Hearty Lamb & Tomato Stew, Signal Creamy Spinach & Hummus Wrap
+FOLLICULAR: Signal Reset Chia Pudding, Signal Golden Cinnamon Toast, Signal Berry Bliss Smoothie, Signal Vitality Green Smoothie, Signal Mediterranean Halloumi Pasta, Signal Shrimp Pesto Spaghetti, Signal Zesty Chicken & Broccoli Rice, Signal Sweet & Sour Chicken Delight, Signal Lemon Dill Salmon Skewers, Signal Mango Magic Breakfast Bowl
+OVULATORY: Signal Forest Mushroom Pesto Pasta, Signal Emerald Salmon Pasta, Signal Spring Onion Risotto, Signal Ocean Zest Risotto, Signal Sesame Ginger Chicken Stir-fry, Signal Crispy Herb Pork Belly, Signal Spicy Shrimp Tacos
+LUTEAL: Signal Berry Bircher, Signal Savoury Egg Bites, Signal Zen Matcha Chia Pudding, Signal Autumn Berry Crumble, Signal Golden Pumpkin Risotto, Signal Creamy Coconut Chicken, Signal Golden Thai Green Curry, Signal Avocado Chocolate Mousse, Signal Creamy Wilted Spinach
+At least 60% of meals should come from this bank. You may create variations or new meals as needed.
 
 USER PROFILE:
 - Diet type: ${prefs.dietType || "No preference"} — STRICTLY adhere to this. ${prefs.dietType && prefs.dietType !== "No preference" ? `NEVER include foods outside of ${prefs.dietType} diet.` : ""}
@@ -345,7 +352,7 @@ CRITICAL REMINDERS:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
