@@ -94,7 +94,9 @@ serve(async (req) => {
   try {
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
       exerciseGoal, exerciseGoalLabel, proteinTargetMin, proteinTargetMax,
-      carbEmphasis, cycleMode, weightKg, dislikedRecipeIds, startCycleDay, endCycleDay } = await req.json();
+      carbEmphasis, cycleMode, weightKg, dislikedRecipeIds, startCycleDay, endCycleDay,
+      // Phase 4: user profile targets from onboarding
+      userCalorieTarget, userProteinTargetG, userCarbTargetG, userFatTargetG, userDietaryDislikes } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -147,13 +149,35 @@ MACRO TARGETS (calculate based on TDEE and goal):
 
     const prepDayInstructions = prefs.prepDays.includes("No set day") ? "No fixed prep day — all meals should be cookable day-of within the time limit." : `Prep day(s): ${prefs.prepDays.join(", ")}. Schedule bigger, batch-friendly meals on these days. These are the days the user will do advance cooking — plan larger quantities, stews, marinated proteins, grain bowls, etc. that can be portioned and stored.`;
 
-    // Auto-set calorie guidance from body goals
-    let calorieGuidance = prefs.calorieTarget || "Not specified";
-    if (!prefs.calorieTarget || prefs.calorieTarget === "" || prefs.calorieTarget === "No preference") {
+    // Phase 4: merge profile dislikes with prefs dislikes
+    const profileDislikesStr = (userDietaryDislikes as string[] | undefined)?.length
+      ? (userDietaryDislikes as string[]).join(", ")
+      : null;
+    const allDislikes = [prefs.dislikes, profileDislikesStr].filter(Boolean).join(", ") || "None";
+
+    // Auto-set calorie guidance — prioritise profile targets from onboarding over preferences input
+    let calorieGuidance = "";
+    if (userCalorieTarget) {
+      calorieGuidance = `${userCalorieTarget} kcal/day (personalised target from your onboarding — DO NOT deviate more than ±100 kcal/day from this)`;
+    } else if (prefs.calorieTarget && prefs.calorieTarget !== "" && prefs.calorieTarget !== "No preference") {
+      calorieGuidance = prefs.calorieTarget;
+    } else {
       if (goals.includes("lose-weight")) calorieGuidance = "CALORIE DEFICIT required — 300-500 cal below TDEE. Low-calorie, high-satiety meals. Target 1400-1800 kcal depending on TDEE.";
       else if (goals.includes("gain-muscle")) calorieGuidance = "CALORIE SURPLUS required — 200-300 cal above TDEE. Higher protein and carbs. Target 2000-2400 kcal depending on TDEE.";
       else if (goals.includes("tone-up")) calorieGuidance = "Maintenance or slight deficit (-200 cal). Target 1600-2000 kcal depending on TDEE.";
       else calorieGuidance = "Calculate from TDEE — balanced intake for maintenance.";
+    }
+
+    // Build personalised macro section if profile targets exist
+    let profileMacroSection = "";
+    if (userProteinTargetG || userCarbTargetG || userFatTargetG) {
+      profileMacroSection = `
+PERSONALISED MACRO TARGETS (from onboarding — follow these precisely):
+${userProteinTargetG ? `- Protein: ${userProteinTargetG}g/day — MINIMUM. Distribute across all 5 meals.` : ""}
+${userCarbTargetG ? `- Carbohydrates: ${userCarbTargetG}g/day target` : ""}
+${userFatTargetG ? `- Fat: ${userFatTargetG}g/day target` : ""}
+These are evidence-based targets calculated for this specific woman's body composition and goals.
+Every meal plan MUST hit these macros across the day.`;
     }
 
     let systemPrompt = `You are a registered dietitian (NZ Dietitians Board) and sports nutritionist creating personalised, evidence-based meal plans for women. You have an MSc in Human Nutrition and specialise in female hormonal health, cycle-syncing nutrition, and sports performance nutrition.
@@ -161,8 +185,9 @@ MACRO TARGETS (calculate based on TDEE and goal):
 USER PROFILE:
 - Diet type: ${prefs.dietType || "No preference"} — STRICTLY adhere to this. ${prefs.dietType && prefs.dietType !== "No preference" ? `NEVER include foods outside of ${prefs.dietType} diet.` : ""}
 - Allergies/intolerances: ${prefs.allergies || "None"} — NEVER include these ingredients, including hidden sources.
-- Food dislikes: ${prefs.dislikes || "None"} — NEVER include these foods.
+- Food dislikes: ${allDislikes} — NEVER include these foods in any meal, including as minor ingredients.
 - Daily calorie target: ${calorieGuidance}
+${profileMacroSection}
 - Cooking skill: ${cookingSkillDesc}
   IMPORTANT: Recipe complexity MUST match the cooking skill level. Beginner = simple. Confident = moderate. Adventurous = complex.
 - Available cooking time: ${prefs.availableTime || "30"} minutes per meal — recipes must be completable within this time.

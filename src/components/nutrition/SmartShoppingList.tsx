@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronDown, ChevronUp, Copy, Search, ShoppingCart, ExternalLink, Plus, X } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
@@ -12,6 +12,8 @@ import { parseIngredient, ParsedIngredient, getWoolworthsSearchUrl } from "@/lib
 import { haptic } from "@/hooks/use-mobile";
 import { getSupermarket, getPantryStaples } from "@/lib/fitness-profile";
 import { getISOWeek } from "@/lib/weekly-planner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -119,6 +121,7 @@ interface Props {
 
 export default function SmartShoppingList({ plan, weekNumber }: Props) {
   const { currentPhase } = useCycle();
+  const { user } = useAuth();
   const phaseColor = PHASE_HEX[currentPhase];
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
@@ -128,10 +131,68 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
   const [customInput, setCustomInput] = useState("");
   const supermarket = getSupermarket();
   const pantryStaples = useMemo(() => getPantryStaples(), []);
+  const weekKey = getWeekKey();
+  const supabaseLoaded = useRef(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Persist checked state
-  useEffect(() => { saveCheckedState(checkedItems); }, [checkedItems]);
-  useEffect(() => { saveCustomItems(customItems); }, [customItems]);
+  // Phase 4C: load from Supabase on mount (falls back to localStorage which is already set)
+  useEffect(() => {
+    if (!user || supabaseLoaded.current) return;
+    supabaseLoaded.current = true;
+    (async () => {
+      try {
+        const { data } = await (supabase as any)
+          .from("shopping_lists")
+          .select("checked_items, custom_items")
+          .eq("user_id", user.id)
+          .eq("week_key", weekKey)
+          .maybeSingle();
+        if (data) {
+          const checked = (data.checked_items as Record<string, boolean>) || {};
+          const custom = (data.custom_items as AggregatedItem[]) || [];
+          setCheckedItems(checked);
+          setCustomItems(custom);
+          saveCheckedState(checked);
+          saveCustomItems(custom);
+        }
+      } catch (e) {
+        console.error("Failed to load shopping list from Supabase:", e);
+      }
+    })();
+  }, [user, weekKey]);
+
+  // Phase 4C: debounced save to Supabase (500ms after last change)
+  const syncToSupabase = useCallback((checked: Record<string, boolean>, custom: AggregatedItem[]) => {
+    if (!user) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      try {
+        await (supabase as any)
+          .from("shopping_lists")
+          .upsert({
+            user_id: user.id,
+            week_key: weekKey,
+            checked_items: checked,
+            custom_items: custom,
+          }, { onConflict: "user_id,week_key" });
+      } catch (e) {
+        console.error("Failed to sync shopping list to Supabase:", e);
+      }
+    }, 500);
+  }, [user, weekKey]);
+
+  // Persist to localStorage + queue Supabase sync
+  useEffect(() => {
+    saveCheckedState(checkedItems);
+    syncToSupabase(checkedItems, customItems);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedItems]);
+
+  useEffect(() => {
+    saveCustomItems(customItems);
+    syncToSupabase(checkedItems, customItems);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customItems]);
 
   const monday = useMemo(() => {
     const d = new Date();

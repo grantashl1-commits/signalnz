@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShoppingBag } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -54,10 +54,18 @@ const fadeUp = (delay: number) => ({
   transition: { delay, duration: 0.5, ease: "easeOut" as const },
 });
 
+// Helper: is today the user's meal prep day?
+function isTodayPrepDay(mealPrepDay: string | null): boolean {
+  if (!mealPrepDay || mealPrepDay === "No set day") return false;
+  const today = new Date().toLocaleDateString("en-NZ", { weekday: "long" }); // e.g. "Saturday"
+  return today.toLowerCase() === mealPrepDay.toLowerCase();
+}
+
 export default function HomePage() {
   const { user } = useAuth();
-  const { displayName, onboardingComplete, loading: profileLoading, refetch } = useProfile();
+  const { displayName, onboardingComplete, loading: profileLoading, refetch, mealPrepDay } = useProfile();
   const { currentPhase, currentCycleDay } = useCycle();
+  const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
   const focus = FOCUS[info.phase];
@@ -130,6 +138,36 @@ export default function HomePage() {
       </AtmosphericHero>
 
       <PeriodDueReminder />
+
+      {/* ═══ PREP DAY REMINDER ═══ */}
+      {todayIsPrepDay && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.4 }}
+          className="px-5 md:px-8 pt-4"
+        >
+          <div className="max-w-2xl mx-auto">
+            <Link
+              to="/nutrition"
+              className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 bg-primary/10 border border-primary/20 hover:bg-primary/15 transition-colors"
+            >
+              <span className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
+                <ShoppingBag className="h-4 w-4 text-primary" />
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="font-body text-sm font-semibold text-foreground leading-tight">
+                  Today is your meal prep day 🥗
+                </p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">
+                  Your shopping list and weekly plan are ready — tap to view.
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-primary flex-shrink-0" />
+            </Link>
+          </div>
+        </motion.div>
+      )}
 
       {/* ═══ SECTION 2 — TODAY'S FOCUS ═══ */}
       <ContentSection className="px-5 md:px-8">

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,6 +23,8 @@ import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -99,6 +101,8 @@ type Step = "prep" | "plan" | "shop";
 
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
+  const { user } = useAuth();
+  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes } = useProfile();
   const [weekOffset, setWeekOffset] = useState(0);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [aiPlan, setAiPlan] = useState<AIMealPlan | null>(getAIMealPlan);
@@ -106,6 +110,33 @@ export default function MyWeekTab() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [regeneratingKey, setRegeneratingKey] = useState<string | null>(null);
   const [step, setStep] = useState<Step>(aiPlan ? "plan" : "prep");
+  const supabasePlanLoaded = useRef(false);
+
+  // Phase 4B: try to restore latest nutrition plan from Supabase on mount
+  useEffect(() => {
+    if (!user || supabasePlanLoaded.current || aiPlan) return;
+    supabasePlanLoaded.current = true;
+    (async () => {
+      try {
+        const { data } = await (supabase as any)
+          .from("user_plans")
+          .select("plan_data, generated_at")
+          .eq("user_id", user.id)
+          .eq("plan_type", "nutrition")
+          .order("generated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (data?.plan_data) {
+          const restoredPlan = data.plan_data as AIMealPlan;
+          setAiPlan(restoredPlan);
+          saveAIMealPlan(restoredPlan);
+          setStep("plan");
+        }
+      } catch (e) {
+        console.error("Failed to restore plan from Supabase:", e);
+      }
+    })();
+  }, [user, aiPlan]);
 
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -119,6 +150,25 @@ export default function MyWeekTab() {
     setAiPlan(updated);
     saveAIMealPlan(updated);
   }, [aiPlan]);
+
+  // Phase 4B: save plan to Supabase user_plans table
+  const savePlanToSupabase = useCallback(async (plan: AIMealPlan) => {
+    if (!user) return;
+    try {
+      await (supabase as any)
+        .from("user_plans")
+        .insert({
+          user_id: user.id,
+          plan_type: "nutrition",
+          week_number: Math.ceil(currentCycleDay / 7),
+          cycle_week: Math.ceil(currentCycleDay / 7),
+          plan_data: plan as any,
+          cycle_phase_at_generation: currentPhase,
+        });
+    } catch (e) {
+      console.error("Failed to save plan to Supabase:", e);
+    }
+  }, [user, currentCycleDay, currentPhase]);
 
   // Generate full plan via AI
   const handleBuildPlan = useCallback(async (preferences: PrepPrefsType) => {
@@ -137,6 +187,15 @@ export default function MyWeekTab() {
 
       let allDays: AIPlannedDay[] = [];
 
+      // Phase 4A: pass user profile macro targets to Edge Function
+      const profileExtras = {
+        userCalorieTarget: calorieTarget ?? undefined,
+        userProteinTargetG: proteinTargetG ?? undefined,
+        userCarbTargetG: carbTargetG ?? undefined,
+        userFatTargetG: fatTargetG ?? undefined,
+        userDietaryDislikes: dietaryDislikes?.length ? dietaryDislikes : undefined,
+      };
+
       for (const batch of batches) {
         const { data, error } = await supabase.functions.invoke("meal-plan-ai", {
           body: {
@@ -145,6 +204,7 @@ export default function MyWeekTab() {
             lockedMeals: {},
             startCycleDay: batch.start,
             endCycleDay: batch.end,
+            ...profileExtras,
           },
         });
 
@@ -166,13 +226,16 @@ export default function MyWeekTab() {
       saveAIMealPlan(plan);
       setStep("plan");
       toast.success("Your personalised 28-day plan is ready!");
+
+      // Phase 4B: persist to Supabase in background
+      savePlanToSupabase(plan);
     } catch (e: any) {
       console.error("AI plan generation failed:", e);
       toast.error(e.message || "Failed to generate plan. Please try again.");
     } finally {
       setIsGenerating(false);
     }
-  }, []);
+  }, [calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, savePlanToSupabase]);
 
   // Regenerate single meal
   const handleRegenerateMeal = useCallback(async (cycleDay: number, mealType: string) => {
