@@ -80,9 +80,9 @@ function SequentialRipple({ size, color, className }: Omit<Props, "variant">) {
             scale:   [0, 1, 1, 0],
           }}
           transition={{
-            duration: 2.8,
+            duration: 2.4,
             repeat: Infinity,
-            delay: i * 0.08,
+            delay: i * 0.075,
             ease: "easeInOut",
             times: [0, 0.15, 0.72, 1],
           }}
@@ -123,9 +123,9 @@ function BreathingPulse({ size, color, className }: Omit<Props, "variant">) {
               scale:   [0.75, 1.1, 0.75],
             }}
             transition={{
-              duration: 2.6,
+              duration: 2,
               repeat: Infinity,
-              delay,
+              delay: i * 0.15,
               ease: "easeInOut",
             }}
             style={{ transformOrigin: `${dot.x}px ${dot.y}px` }}
@@ -152,7 +152,7 @@ function OrbitSpin({ size, color, className }: Omit<Props, "variant">) {
       <motion.g
         animate={{ rotate: 360 }}
         transition={{
-          duration: 4,
+          duration: 3,
           repeat: Infinity,
           ease: "linear",
         }}
