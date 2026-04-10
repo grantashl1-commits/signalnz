@@ -56,6 +56,21 @@ export default function DiscoverTab() {
   const [generating, setGenerating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Snack-like keywords for auto-tagging
+  const SNACK_KEYWORDS = ["bliss ball", "bark", "nice cream", "energy ball", "slice", "mousse", "fudge", "custard", "rocher", "crumble ball"];
+  const BREAKFAST_KEYWORDS = ["overnight oat", "smoothie", "pancake", "porridge", "granola", "breakfast", "oatmeal"];
+  const BAKING_KEYWORDS = ["cookie", "cake", "brownie", "muffin", "biscuit", "loaf", "pancake", "slice", "fudge"];
+
+  // Derive effective category for a recipe
+  const getEffectiveCategory = (r: Recipe): string => {
+    if (r.category) return r.category;
+    const lower = r.name.toLowerCase();
+    if (SNACK_KEYWORDS.some(k => lower.includes(k))) return "snack";
+    if (BREAKFAST_KEYWORDS.some(k => lower.includes(k))) return "breakfast";
+    if (BAKING_KEYWORDS.some(k => lower.includes(k))) return "baking";
+    return "meal";
+  };
+
   // Combine all recipes
   const allRecipes = useMemo(() => {
     const combined = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES];
@@ -72,11 +87,11 @@ export default function DiscoverTab() {
     return allRecipes.filter(r => {
       if (phaseFilter !== "all" && r.phase !== phaseFilter) return false;
       if (mealType !== "All") {
-        const cat = (r.category || "main").toLowerCase();
+        const cat = getEffectiveCategory(r);
         if (mealType === "Baking" && cat !== "baking") return false;
-        if (mealType === "Breakfast" && cat !== "breakfast" && !r.name.toLowerCase().includes("breakfast") && !r.name.toLowerCase().includes("oat") && !r.name.toLowerCase().includes("smoothie")) return false;
-        if (mealType === "Snack" && cat !== "snack") return false;
-        if (mealType === "Main" && (cat === "baking" || cat === "snack")) return false;
+        if (mealType === "Breakfast" && cat !== "breakfast") return false;
+        if (mealType === "Snacks" && cat !== "snack") return false;
+        if (mealType === "Lunch/Dinner" && cat !== "meal") return false;
       }
       if (search) {
         const q = search.toLowerCase();
