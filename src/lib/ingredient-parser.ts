@@ -90,6 +90,21 @@ export interface ShoppingItem extends ParsedIngredient {
   checked: boolean;
 }
 
+/** Merged item for display — groups same ingredient across recipes */
+export interface MergedShoppingItem {
+  key: string;            // normalised ingredient name
+  name: string;           // display name
+  totalQuantity: string;  // combined quantity string
+  unit: string;
+  recipes: string[];      // recipe names that use this ingredient
+  recipeIds: string[];
+  checked: boolean;
+  searchTerm: string;
+  raw: string;
+  /** Original indices in the flat list (for toggling) */
+  sourceIndices: number[];
+}
+
 const STORAGE_KEY = "mindcast-shopping-list";
 
 export function getShoppingList(): ShoppingItem[] {
@@ -128,6 +143,15 @@ export function toggleShoppingItem(index: number): ShoppingItem[] {
   return items;
 }
 
+export function toggleMergedItem(indices: number[]): ShoppingItem[] {
+  const items = getShoppingList();
+  // If all are checked, uncheck all; otherwise check all
+  const allChecked = indices.every(i => items[i]?.checked);
+  indices.forEach(i => { if (items[i]) items[i].checked = !allChecked; });
+  saveShoppingList(items);
+  return items;
+}
+
 export function clearShoppingList(): ShoppingItem[] {
   saveShoppingList([]);
   return [];
@@ -153,7 +177,131 @@ export function removeItem(index: number): ShoppingItem[] {
   return items;
 }
 
+export function removeMergedItem(indices: number[]): ShoppingItem[] {
+  const items = getShoppingList();
+  // Remove from highest index first to avoid shifting
+  const sorted = [...indices].sort((a, b) => b - a);
+  sorted.forEach(i => items.splice(i, 1));
+  saveShoppingList(items);
+  return items;
+}
+
+/* ── Quantity parsing & merging helpers ── */
+
+/** Convert fraction chars to decimal */
+function fracToNum(s: string): number {
+  const FRACS: Record<string, number> = { "½": 0.5, "⅓": 0.333, "⅔": 0.667, "¼": 0.25, "¾": 0.75, "⅛": 0.125 };
+  let val = 0;
+  let rest = s.trim();
+  // handle "1 ½" style
+  const parts = rest.split(/\s+/);
+  for (const p of parts) {
+    if (FRACS[p]) { val += FRACS[p]; }
+    else if (p.includes("/")) {
+      const [n, d] = p.split("/").map(Number);
+      if (d) val += n / d;
+    } else {
+      const n = parseFloat(p);
+      if (!isNaN(n)) val += n;
+    }
+  }
+  return val;
+}
+
+function numToDisplay(n: number): string {
+  if (n === 0) return "";
+  if (n % 1 === 0) return String(n);
+  // common fractions
+  const frac = n % 1;
+  const whole = Math.floor(n);
+  const CLOSE = (a: number, b: number) => Math.abs(a - b) < 0.05;
+  let fracStr = "";
+  if (CLOSE(frac, 0.25)) fracStr = "¼";
+  else if (CLOSE(frac, 0.333)) fracStr = "⅓";
+  else if (CLOSE(frac, 0.5)) fracStr = "½";
+  else if (CLOSE(frac, 0.667)) fracStr = "⅔";
+  else if (CLOSE(frac, 0.75)) fracStr = "¾";
+  else return n.toFixed(1);
+  return whole > 0 ? `${whole} ${fracStr}` : fracStr;
+}
+
+/** Normalise unit to canonical form for comparison */
+function normUnit(u: string): string {
+  const s = u.toLowerCase().replace(/s$/, "");
+  const MAP: Record<string, string> = {
+    tbsp: "tbsp", tablespoon: "tbsp",
+    tsp: "tsp", teaspoon: "tsp",
+    cup: "cup", g: "g", gram: "g", kg: "kg", kilogram: "kg",
+    ml: "ml", millilitre: "ml", l: "l", litre: "l",
+    can: "can", bunch: "bunch", handful: "handful",
+    clove: "clove", slice: "slice", piece: "piece",
+    pinch: "pinch", dash: "dash", sprig: "sprig", head: "head",
+  };
+  return MAP[s] || s;
+}
+
+/** Normalise ingredient name for grouping */
+function normName(name: string): string {
+  return name.toLowerCase()
+    .replace(/\s*\(.*?\)\s*/g, "")
+    .replace(/[''`\-–—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Merge flat shopping items into grouped display items */
+export function mergeShoppingItems(items: ShoppingItem[]): MergedShoppingItem[] {
+  const groups = new Map<string, { indices: number[]; items: ShoppingItem[] }>();
+
+  items.forEach((item, idx) => {
+    const key = `${normName(item.name)}::${normUnit(item.unit)}`;
+    if (!groups.has(key)) groups.set(key, { indices: [], items: [] });
+    groups.get(key)!.indices.push(idx);
+    groups.get(key)!.items.push(item);
+  });
+
+  const result: MergedShoppingItem[] = [];
+  groups.forEach((group, key) => {
+    const first = group.items[0];
+    // Sum quantities
+    let total = 0;
+    let allHaveQty = true;
+    for (const it of group.items) {
+      if (it.quantity) {
+        total += fracToNum(it.quantity);
+      } else {
+        allHaveQty = false;
+      }
+    }
+    const totalStr = allHaveQty && total > 0 ? numToDisplay(total) : (group.items.length > 1 ? `×${group.items.length}` : first.quantity);
+
+    const recipes = [...new Set(group.items.filter(i => i.recipeName !== "Manual").map(i => i.recipeName))];
+    const recipeIds = [...new Set(group.items.map(i => i.recipeId))];
+    const allChecked = group.items.every(i => i.checked);
+
+    result.push({
+      key,
+      name: first.name,
+      totalQuantity: totalStr,
+      unit: first.unit,
+      recipes,
+      recipeIds,
+      checked: allChecked,
+      searchTerm: first.searchTerm,
+      raw: first.raw,
+      sourceIndices: group.indices,
+    });
+  });
+
+  return result;
+}
+
 export function formatShoppingListText(items: ShoppingItem[]): string {
-  const lines = items.map((i) => `${i.checked ? "✓" : "☐"} ${i.quantity ? i.quantity + " " : ""}${i.unit ? i.unit + " " : ""}${i.name}`);
+  const merged = mergeShoppingItems(items);
+  const lines = merged.map(m => {
+    const qty = m.totalQuantity ? `${m.totalQuantity} ` : "";
+    const unit = m.unit ? `${m.unit} ` : "";
+    return `${m.checked ? "✓" : "☐"} ${qty}${unit}${m.name}${m.recipes.length ? ` (${m.recipes.join(", ")})` : ""}`;
+  });
   return `Shopping List\n${"—".repeat(20)}\n${lines.join("\n")}`;
 }
