@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { GatedPage } from "@/components/FeatureGate";
-import PhaseBadge from "@/components/PhaseBadge";
 import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
@@ -49,9 +48,22 @@ export default function NutritionPage() {
 
       <ContentSection className="px-5 md:px-4 pb-24">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
-          <PhaseBadge phase={currentPhase} cycleDay={currentCycleDay} />
+          {/* Tabs - first item */}
+          <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { haptic("light"); setActiveTab(tab.id); }}
+                className={`touch-tab scroll-snap-item flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-          {/* Nudge if no body goals set */}
+          {/* Nudge if no body goals set - below tabs */}
           {bodyGoals.length === 0 && (
             <button
               onClick={() => navigate("/movement")}
@@ -68,21 +80,6 @@ export default function NutritionPage() {
               <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </button>
           )}
-
-          {/* Tabs */}
-          <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => { haptic("light"); setActiveTab(tab.id); }}
-                className={`touch-tab scroll-snap-item flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                  activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
 
           {activeTab === "today" && <TodayTab />}
           {activeTab === "myweek" && <MyWeekTab />}

@@ -191,16 +191,7 @@ export default function DiscoverTab() {
             <button onClick={() => setAiRecipes([])} className="touch-btn p-2 rounded-lg bg-secondary text-muted-foreground"><X className="h-4 w-4" /></button>
           </div>
           {aiRecipes.map((recipe, i) => (
-            <div key={i} className="card-warm p-4 space-y-2">
-              <h4 className="font-display text-sm italic text-foreground">{recipe.name}</h4>
-              <div className="flex gap-2 font-body text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{recipe.prepTime}</span>
-                <span className="flex items-center gap-1"><Users className="h-3 w-3" />Serves {recipe.serves}</span>
-              </div>
-              <div className="flex flex-wrap gap-1">{recipe.keyNutrients?.slice(0, 3).map(n => (
-                <span key={n} className="rounded-full px-2 py-0.5 font-body text-[9px] font-bold uppercase bg-primary/10 text-primary">{n}</span>
-              ))}</div>
-            </div>
+            <AIRecipeCard key={i} recipe={recipe} phaseColor={PHASE_HEX[currentPhase]} />
           ))}
         </div>
       )}
@@ -289,6 +280,60 @@ export default function DiscoverTab() {
       <AnimatePresence>
         {selectedRecipe && (
           <RecipeDetailSheet recipe={selectedRecipe} isSaved={isSaved(selectedRecipe.id)} onToggleSave={() => toggleSave(selectedRecipe.id)} onClose={() => setSelectedRecipe(null)} />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── AI Recipe Card with expandable details ── */
+function AIRecipeCard({ recipe, phaseColor }: { recipe: AIGeneratedRecipe; phaseColor: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="card-warm overflow-hidden">
+      <button onClick={() => { haptic("light"); setExpanded(!expanded); }} className="w-full text-left p-4 space-y-2">
+        <h4 className="font-display text-sm italic text-foreground">{recipe.name}</h4>
+        <div className="flex gap-2 font-body text-[10px] text-muted-foreground">
+          <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{recipe.prepTime}</span>
+          <span className="flex items-center gap-1"><Users className="h-3 w-3" />Serves {recipe.serves}</span>
+        </div>
+        <div className="flex flex-wrap gap-1">{recipe.keyNutrients?.slice(0, 3).map(n => (
+          <span key={n} className="rounded-full px-2 py-0.5 font-body text-[9px] font-bold uppercase bg-primary/10 text-primary">{n}</span>
+        ))}</div>
+        <p className="font-body text-[10px] text-primary font-medium">{expanded ? "Hide details ▲" : "View recipe ▼"}</p>
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+            <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
+              {recipe.ingredients?.length > 0 && (
+                <div>
+                  <p className="font-body text-xs font-semibold text-foreground mb-1" style={{ color: phaseColor }}>Ingredients</p>
+                  <ul className="space-y-0.5">
+                    {recipe.ingredients.map((ing, idx) => (
+                      <li key={idx} className="font-body text-xs text-muted-foreground">• {ing}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {recipe.method?.length > 0 && (
+                <div>
+                  <p className="font-body text-xs font-semibold text-foreground mb-1" style={{ color: phaseColor }}>Method</p>
+                  <ol className="space-y-1">
+                    {recipe.method.map((step, idx) => (
+                      <li key={idx} className="font-body text-xs text-muted-foreground">
+                        <span className="font-semibold text-foreground">{idx + 1}.</span> {step}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {recipe.nutritionalNote && (
+                <p className="font-body text-xs italic text-muted-foreground">{recipe.nutritionalNote}</p>
+              )}
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
