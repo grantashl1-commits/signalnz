@@ -508,6 +508,11 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {copied ? "Copied!" : "Copy list"}
         </button>
+        <button onClick={handlePrint}
+          className="touch-btn flex-1 flex items-center justify-center gap-1.5 rounded-[14px] py-3 min-h-[44px] font-body text-xs font-medium bg-primary/10 text-primary active:bg-primary/20 transition-all">
+          <Printer className="h-3.5 w-3.5" />
+          Print list
+        </button>
       </div>
 
       {/* Supermarket link */}
