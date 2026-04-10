@@ -42,8 +42,8 @@ export default function SeedCyclingCard({ cycleDay, phase }: SeedCyclingCardProp
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <p className="font-hand text-xs font-bold" style={{ color: phaseColor }}>
-            Seed cycling
+          <p className="font-display text-sm font-bold italic" style={{ color: phaseColor }}>
+            Seed Cycling
           </p>
           <p className="font-body text-[11px] text-foreground truncate">
             {isFirstHalf
