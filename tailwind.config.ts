@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Montserrat", "Playfair Display", "serif"],
+        display: ["Montserrat", "sans-serif"],
         body: ["Montserrat", "Lato", "sans-serif"],
+        editorial: ["Cormorant Garamond", "serif"],
         hand: ["Caveat", "cursive"],
         mono: ["Montserrat", "Lato", "sans-serif"],
       },

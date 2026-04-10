@@ -3,20 +3,25 @@
   "short_name": "Signal",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#5B2D72",
-  "theme_color": "#5B2D72",
+  "background_color": "#9B7BB0",
+  "theme_color": "#9B7BB0",
   "icons": [
     {
-      "src": "/logos/pwa-icon-512.png?v=3",
+      "src": "/logos/pwa-icon-512.png?v=4",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logos/apple-touch-icon.png?v=3",
+      "src": "/logos/apple-touch-icon.png?v=4",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.png?v=4",
+      "sizes": "32x32",
+      "type": "image/png"
     }
   ]
 }

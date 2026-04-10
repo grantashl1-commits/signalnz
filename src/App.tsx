@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { captureReferralParam } from "@/hooks/useReferral";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
 import { supabase } from "@/integrations/supabase/client";
 
 // Capture ?ref= on first load
@@ -57,6 +58,29 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        {/* Branded loading splash */}
+        <AnimatePresence>
+          {!appReady && (
+            <motion.div
+              key="splash"
+              className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+              style={{ backgroundColor: "hsl(284 22% 44%)" }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <SignalRingAnimation variant="ripple" size={80} color="#F5EFE8" />
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="mt-6 text-sm tracking-[0.2em] uppercase"
+                style={{ color: "#F5EFE8", fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
+              >
+                Signal
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <motion.div
           animate={{ opacity: appReady ? 1 : 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}

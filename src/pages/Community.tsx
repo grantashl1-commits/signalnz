@@ -116,7 +116,7 @@ export default function CommunityPage() {
         <div className="text-center">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Community</p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Community</h1>
-          <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
+          <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
             Find your neighbours. Share your gifts. Build the village.
           </p>
         </div>
