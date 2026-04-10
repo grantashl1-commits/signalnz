@@ -484,7 +484,7 @@ export default function JournalPage() {
               {tab === "write" ? "My Journal" : tab === "entries" ? "Entries" : "Reflect"}
             </h1>
             <div className="flex items-center justify-center gap-3">
-              <p className="font-display text-base md:text-lg italic text-primary-foreground/60 max-w-md">
+              <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md">
                 {TAB_SUBTITLES[tab]}
               </p>
               {streak > 0 && (
