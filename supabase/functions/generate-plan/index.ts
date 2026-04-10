@@ -269,6 +269,49 @@ Each training day must include ALL of these sections:
 - Tone: warm, knowledgeable, like a coach who respects their body and understands female physiology`;
 }
 
+function getStoredRecipeSummary(): string {
+  // Curated recipe bank from reference PDFs - reduces token usage vs web search
+  return `
+SIGNAL RECIPE BANK (use these as meal suggestions where appropriate):
+
+MENSTRUAL PHASE MEALS:
+- Signal Sunrise Bowl (340cal, P12, C42, F15) - oats, berries, peanut butter, chia
+- Signal Berry Dawn Oats (266cal, P7, C42, F9) - overnight oats, chia, blueberries
+- Signal Iron Restore Bowl (380cal, P20, C44, F14) - lentils, spinach, beetroot, orange
+- Signal Golden Immunity Soup (360cal, P14, C46, F14) - kumara, red lentils, turmeric, coconut
+- Signal Warming Miso Ramen (440cal, P22, C52, F16) - miso, tofu, bok choy, noodles
+- Signal Omega-3 Breakfast Bowl (420cal, P14, C52, F18) - oats, chia, hemp, walnuts
+- Signal Anti-Inflammatory Curry (420cal, P16, C46, F18) - chickpea, cauliflower, turmeric
+
+FOLLICULAR PHASE MEALS:
+- Signal Garden Frittata (243cal, P18, C3, F18) - eggs, spinach, bacon, herbs
+- Signal Spring Grain Bowl (460cal, P20, C48, F22) - quinoa, kimchi, avocado, edamame
+- Signal Citrus Tempeh Salad (420cal, P24, C34, F20) - tempeh, orange, tahini
+- Signal Herbed Chickpea Flatbread (380cal, P16, C36, F18) - chickpea flour, hummus, rocket
+- Signal Pesto Garden Pasta (260cal, P5, C27, F14) - mushrooms, pesto, GF pasta
+- Signal Hormone Balance Smoothie (340cal, P14, C40, F14) - berries, flaxseed, soy milk
+
+OVULATORY PHASE MEALS:
+- Signal Rainbow Nourish Plate (420cal, P14, C48, F20) - quinoa, mango, avocado, pumpkin seeds
+- Signal Green Goddess Wrap (360cal, P14, C34, F20) - avocado, sprouts, hemp seeds
+- Signal Mango Cashew Sushi Bowl (440cal, P14, C58, F18) - sushi rice, mango, cashews
+- Signal Halloumi Summer Pasta (320cal, P9, C30, F15) - halloumi, tomatoes, peppers
+- Signal Protein Recovery Bowl (460cal, P22, C44, F20) - quinoa, edamame, tahini
+
+LUTEAL PHASE MEALS:
+- Signal Magnesium Power Bowl (480cal, P18, C58, F20) - brown rice, kumara, kale, tahini
+- Signal Comfort Dhal (400cal, P18, C42, F18) - yellow lentils, coconut, spinach
+- Signal PMS Ease Stew (340cal, P16, C48, F6) - pumpkin, black beans, tomatoes
+- Signal Pumpkin Harvest Risotto (490cal, P14, C72, F18) - pumpkin, pecans, goat cheese
+- Signal Adaptogen Hot Cacao (180cal, P4, C28, F6) - oat milk, cacao, maca
+- Signal Tahini Banana Energy Bars (160cal, P4, C20, F8) - oats, tahini, dark choc
+
+SNACKS (ALL PHASES):
+- Signal Date Cacao Bliss Balls (120cal, P2, C14, F6)
+- Signal Carrot Cake Bliss Balls (110cal, P2, C16, F4)
+- Signal Seed Cycling Granola (220cal, P6, C24, F12)`;
+}
+
 function buildNutritionPrompt(ctx: any) {
   const weight = ctx.biometrics.weight !== "Not recorded" ? parseFloat(ctx.biometrics.weight) : null;
   const height = ctx.biometrics.height !== "Not recorded" ? parseFloat(ctx.biometrics.height) : null;
@@ -284,6 +327,8 @@ ESTIMATED TDEE (Mifflin-St Jeor, assuming age ~30):
 - Estimated TDEE: ~${tdee} kcal/day
 - Adjust for goal: fat loss = TDEE - 300-500, maintenance = TDEE ± 100, muscle gain = TDEE + 200-300`;
   }
+
+  const recipeSummary = getStoredRecipeSummary();
 
   return `You are a registered nutritionist/dietitian (ANZ-qualified) generating a personalised weekly nutrition guide inside Signal, a New Zealand wellness app. Never diagnose or treat medical conditions.
 
@@ -316,6 +361,11 @@ WEEKLY CHECK-IN:
 GOAL TRACKING:
 - ${ctx.goalProgress.goalDescription} — ${ctx.goalProgress.progressPercent}% complete
 
+${recipeSummary}
+
+═══ IMPORTANT: USE THE SIGNAL RECIPE BANK ABOVE ═══
+Prioritise meals from the Signal Recipe Bank. You may suggest variations or additional meals, but at least 60% of recommendations should come from the bank above. This ensures consistency with in-app recipes the user can find and cook.
+
 ═══ MANDATORY NUTRITION FRAMEWORK ═══
 
 1. MACRO SPLIT: Start with recommended daily macros (protein/carbs/fat in grams) and explain WHY:
@@ -333,29 +383,22 @@ GOAL TRACKING:
    - Add 500ml per hour of exercise
    - Electrolyte notes for luteal phase
 
-4. SPECIFIC MEALS (NOT GENERIC):
-   - Name exact foods with portions (e.g., "150g grilled chicken thigh, 1 cup brown rice, 1 cup steamed broccoli")
-   - Never write "protein + carbs + vegetables"
-   - All ingredients available at NZ supermarkets (Countdown, New World, Pak'nSave)
-   - 3 main meals + 2 snacks per day
-   - Include approximate calories and protein per meal
+4. SPECIFIC MEALS: Use Signal Recipe Bank names with portions where possible.
 
 5. DEFICIENCY RISK FLAGS:
-   - All female users: Flag iron (especially menstrual phase), recommend iron-rich foods + vitamin C pairing
+   - All female users: Flag iron (especially menstrual phase)
    - High training volume: Flag magnesium, zinc, B-vitamins
    - Low energy reported: Suggest B12 and iron screening
-   - Vegetarian/vegan: Flag B12, iron, zinc, omega-3 DHA supplementation
-   - Dairy-free: Flag calcium and vitamin D
 
 6. PHASE-SPECIFIC:
-   - Menstrual: Anti-inflammatory, iron-rich, warming, slightly higher calories
+   - Menstrual: Anti-inflammatory, iron-rich, warming
    - Follicular: Fresh, fermented, higher carb tolerance
    - Ovulatory: Antioxidant-rich, lighter portions
-   - Luteal: Complex carbs for serotonin, magnesium-rich, manage cravings with nutrient-dense alternatives
+   - Luteal: Complex carbs for serotonin, magnesium-rich
 
 ═══ OUTPUT FORMAT ═══
 - Open with: TDEE estimate, macro split recommendation, hydration target
-- Day-by-day meals (Mon-Sun) with specific foods and portions
+- Day-by-day meals (Mon-Sun) with specific Signal Recipe Bank meals
 - Pre/post workout nutrition notes
 - Deficiency risk flags based on profile
 - End with ONE actionable focus for the week
