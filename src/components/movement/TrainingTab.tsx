@@ -1,15 +1,46 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, Zap, Moon, Sprout, Sun } from "lucide-react";
 import GoalSelectionScreen from "./GoalSelectionScreen";
 import ProgramOverview from "./ProgramOverview";
 import WorkoutSessionView from "./WorkoutSessionView";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
 import { haptic } from "@/hooks/use-mobile";
+import { useCycle } from "@/contexts/CycleContext";
+import { cn } from "@/lib/utils";
+
+// Cycle-phase training guidance
+const PHASE_TRAINING_GUIDANCE: Record<string, { icon: React.ComponentType<{ className?: string }>; label: string; color: string; note: string }> = {
+  menstrual: {
+    icon: Moon,
+    label: "Week 1 — Rest & Restore",
+    color: "text-rose-400",
+    note: "Lower intensity this week. Yoga, walking, gentle strength. Prioritise rest and shorter sessions.",
+  },
+  follicular: {
+    icon: Sprout,
+    label: "Week 2 — Build & Explore",
+    color: "text-violet-400",
+    note: "Energy is rising. Great week to try new movements, heavier lifting, and start HIIT.",
+  },
+  ovulatory: {
+    icon: Zap,
+    label: "Week 3 — Peak Performance",
+    color: "text-amber-400",
+    note: "You're at peak strength and energy. Best week for personal bests and high-intensity cardio.",
+  },
+  luteal: {
+    icon: Sun,
+    label: "Week 4 — Maintain & Wind Down",
+    color: "text-indigo-400",
+    note: "Energy drops this week. Maintain strength, reduce cardio intensity, and add extra rest days.",
+  },
+};
 
 type View = "goal-select" | "program" | "phase-workouts" | "session";
 
 export default function TrainingTab() {
+  const { currentPhase, currentWeekNumber } = useCycle();
   const {
     goals,
     goalCategoryId,
@@ -83,8 +114,35 @@ export default function TrainingTab() {
     );
   }
 
+  const phaseGuidance = PHASE_TRAINING_GUIDANCE[currentPhase];
+  const PhaseIcon = phaseGuidance?.icon;
+
   return (
-    <div className="pb-8">
+    <div className="pb-8 space-y-4">
+      {/* Cycle phase training context banner */}
+      {phaseGuidance && view !== "session" && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl bg-card border border-border p-3.5 flex items-start gap-3"
+        >
+          {PhaseIcon && (
+            <div className="shrink-0 mt-0.5 h-8 w-8 rounded-full bg-muted/40 flex items-center justify-center">
+              <PhaseIcon className={cn("h-4 w-4", phaseGuidance.color)} />
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className={cn("font-body text-[10px] uppercase tracking-[0.15em] font-semibold", phaseGuidance.color)}>
+                {phaseGuidance.label}
+              </p>
+              <span className="font-body text-[10px] text-muted-foreground">· Day {currentWeekNumber ? (currentWeekNumber - 1) * 7 + 1 : "—"}</span>
+            </div>
+            <p className="font-body text-xs text-muted-foreground leading-relaxed mt-0.5">{phaseGuidance.note}</p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Goal selection */}
       {view === "goal-select" && (
         <GoalSelectionScreen
