@@ -544,7 +544,7 @@ export default function MyWeekTab() {
                                 )}
                                 <div className="min-w-0 flex-1">
                                   <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: dayPhaseColor }}>{label}</p>
-                                  <p className="font-body text-sm text-foreground mt-0.5">{mealName}</p>
+                                  <p className="font-body text-sm text-foreground mt-0.5">{mealName.replace(/^Signal\s+/i, "")}</p>
                                   {aiMeal && (
                                     <p className="font-body text-xs text-muted-foreground mt-0.5">
                                       {aiMeal.prepTime} · Serves {aiMeal.serves}
