@@ -53,7 +53,7 @@ export default function RecipeImage({
       } ${className}`}
       style={{
         height: containerHeight[variant],
-        background: 'linear-gradient(180deg, #F5EFE8 0%, #EDE4DC 100%)',
+        background: 'transparent',
       }}
     >
       <img
