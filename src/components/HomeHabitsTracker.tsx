@@ -15,6 +15,9 @@ import { HABIT_LIBRARY, getLibraryHabitsForCategory, type LibraryHabit } from "@
 import { haptic } from "@/hooks/use-mobile";
 import SleepCard from "@/components/practice/SleepCard";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
+import { SUPPLEMENT_GUIDE } from "@/data/nutrition-insights";
+import { useCycle } from "@/contexts/CycleContext";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "#C4526E",
@@ -396,6 +399,60 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
 
       {/* ── Sleep tracker ── */}
       <SleepCard phaseColor={phaseColor} />
+
+      {/* ── Phase Supports (supplements) ── */}
+      <PhaseSupplementsCard phase={phase} phaseColor={phaseColor} />
+    </div>
+  );
+}
+
+/* ── Phase Supplements Card ── */
+function PhaseSupplementsCard({ phase, phaseColor }: { phase: string; phaseColor: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const supplements = SUPPLEMENT_GUIDE[phase] || SUPPLEMENT_GUIDE.follicular;
+
+  if (!supplements || supplements.length === 0) return null;
+
+  return (
+    <div className="card-warm">
+      <button
+        onClick={() => { haptic("light"); setExpanded(!expanded); }}
+        className="w-full flex items-center justify-between min-h-[44px]"
+      >
+        <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
+          phase supports
+        </p>
+        {expanded
+          ? <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          : <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        }
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-2 pt-3">
+              {supplements.map((s) => (
+                <div key={s.name} className="flex items-start gap-3 rounded-xl px-3 py-2.5" style={{ backgroundColor: `${phaseColor}08` }}>
+                  <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: phaseColor }} />
+                  <div className="min-w-0">
+                    <p className="font-body text-sm font-medium text-foreground">{s.name}</p>
+                    <p className="font-body text-xs text-muted-foreground mt-0.5">{s.reason}</p>
+                  </div>
+                </div>
+              ))}
+              <p className="font-body text-[10px] text-muted-foreground/50 px-1 pt-1">
+                Always consult your GP before starting supplements.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
