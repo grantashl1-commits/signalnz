@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Landmark } from "lucide-react";
+import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Landmark, Copy, Check } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
@@ -8,7 +8,6 @@ import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import SleepCard from "@/components/practice/SleepCard";
 import {
   getHabits, addHabit, removeHabit,
-  getHabitLog, toggleHabitForDate,
   HABIT_CATEGORIES,
   SELF_CARE_RITUALS,
   type Habit, type HabitCategory,
@@ -16,6 +15,7 @@ import {
 import { HABIT_LIBRARY, type HabitTiming } from "@/data/habit-library";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "#C4526E",
@@ -23,6 +23,178 @@ const PHASE_COLORS: Record<string, string> = {
   ovulatory: "#C47A8A",
   luteal: "#9B89B4",
 };
+
+// ── Phase 5C: 4-week heatmap helpers ────────────────────────────────────────
+
+function getLast28Days(): string[] {
+  return Array.from({ length: 28 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (27 - i));
+    return d.toISOString().split("T")[0];
+  });
+}
+
+function generateSummaryText(
+  habits: { id: string; name: string }[],
+  history: Record<string, Set<string>>
+): string {
+  const days = getLast28Days();
+  const lines: string[] = ["My 4-Week Habit Summary\n" + "─".repeat(30)];
+  habits.forEach((habit) => {
+    const count = days.filter((d) => history[d]?.has(habit.id)).length;
+    const pct = Math.round((count / 28) * 100);
+    if (count >= 21) {
+      lines.push(`✅ ${habit.name}: ${count}/28 days (${pct}%) — consistently strong`);
+    } else if (count < 8) {
+      lines.push(`🌱 ${habit.name}: ${count}/28 days (${pct}%) — still building`);
+    } else {
+      lines.push(`📈 ${habit.name}: ${count}/28 days (${pct}%)`);
+    }
+  });
+  return lines.join("\n");
+}
+
+interface HeatmapProps {
+  habits: { id: string; name: string }[];
+  history: Record<string, Set<string>>;
+  loading: boolean;
+  phaseColor: string;
+  copiedSummary: boolean;
+  onCopy: () => void;
+}
+
+function HabitHeatmap({ habits, history, loading, phaseColor, copiedSummary, onCopy }: HeatmapProps) {
+  const days = useMemo(() => getLast28Days(), []);
+
+  const habitStats = useMemo(() =>
+    habits.map((h) => {
+      const count = days.filter((d) => history[d]?.has(h.id)).length;
+      return { ...h, count, pct: Math.round((count / 28) * 100) };
+    }),
+    [habits, history, days]
+  );
+
+  const sorted = [...habitStats].sort((a, b) => b.count - a.count);
+  const strongest = sorted.slice(0, 3);
+  const stillBuilding = sorted.slice(-3).reverse().filter(h => h.count < 21);
+
+  // Day-of-week labels (7 across top)
+  const dayLabels = ["M", "T", "W", "T", "F", "S", "S"];
+  const firstDayIdx = (new Date(days[0]).getDay() + 6) % 7; // Monday=0
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="mt-8 rounded-[22px] bg-card shadow-soft p-6"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-display text-lg font-bold text-foreground">My Consistency</h3>
+        <span className="font-body text-xs text-muted-foreground">Last 28 days</span>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-8">
+          <div className="h-5 w-5 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+        </div>
+      ) : (
+        <>
+          {/* Heatmap grid — habits as rows, days as columns */}
+          <div className="overflow-x-auto pb-2">
+            <div className="min-w-[320px]">
+              {/* Day-of-week header */}
+              <div className="flex gap-[3px] mb-1 ml-[72px]">
+                {days.map((day, i) => {
+                  const dow = (new Date(day).getDay() + 6) % 7;
+                  const showLabel = i === 0 || dow === 0;
+                  return (
+                    <div key={day} className="w-[14px] flex-shrink-0 text-center">
+                      {showLabel ? (
+                        <span className="font-body text-[8px] text-muted-foreground/60">
+                          {dayLabels[dow]}
+                        </span>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Habit rows */}
+              {habitStats.map((habit) => (
+                <div key={habit.id} className="flex items-center gap-2 mb-[3px]">
+                  <span className="font-body text-[10px] text-muted-foreground w-[68px] truncate text-right pr-1 flex-shrink-0">
+                    {habit.name.split(" ").slice(0, 2).join(" ")}
+                  </span>
+                  {days.map((day) => {
+                    const done = history[day]?.has(habit.id);
+                    return (
+                      <div
+                        key={day}
+                        className="w-[14px] h-[14px] rounded-[3px] flex-shrink-0 transition-colors"
+                        style={{
+                          backgroundColor: done
+                            ? `${phaseColor}CC`
+                            : "hsl(var(--border))",
+                        }}
+                        title={`${habit.name} — ${day}`}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Insights */}
+          {habitStats.length > 0 && (
+            <div className="mt-5 space-y-3">
+              {strongest.length > 0 && (
+                <div>
+                  <p className="font-body text-xs font-semibold text-foreground mb-1.5">
+                    Your strongest habits
+                  </p>
+                  {strongest.map((h) => (
+                    <div key={h.id} className="flex items-center gap-2 mb-1">
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: phaseColor }} />
+                      <span className="font-body text-xs text-foreground flex-1">{h.name}</span>
+                      <span className="font-body text-xs font-semibold" style={{ color: phaseColor }}>
+                        {h.pct}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {stillBuilding.length > 0 && (
+                <div>
+                  <p className="font-body text-xs font-semibold text-muted-foreground mb-1.5">
+                    Still building
+                  </p>
+                  {stillBuilding.map((h) => (
+                    <div key={h.id} className="flex items-center gap-2 mb-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 flex-shrink-0" />
+                      <span className="font-body text-xs text-muted-foreground flex-1">{h.name}</span>
+                      <span className="font-body text-xs text-muted-foreground">{h.pct}%</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Copy summary */}
+          <button
+            onClick={onCopy}
+            className="mt-4 w-full flex items-center justify-center gap-2 rounded-[14px] py-3 min-h-[44px] font-body text-xs font-medium bg-primary/8 text-primary active:bg-primary/15 transition-all"
+          >
+            {copiedSummary ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {copiedSummary ? "Copied!" : "Copy my 4-week summary"}
+          </button>
+        </>
+      )}
+    </motion.div>
+  );
+}
 
 const TIMING_SECTIONS: { key: HabitTiming; label: string; icon: typeof Sun }[] = [
   { key: "morning", label: "Morning", icon: Sun },
@@ -43,21 +215,22 @@ export default function PracticePage() {
   const phaseColor = PHASE_COLORS[currentPhase] || PHASE_COLORS.follicular;
 
   const [habits, setHabits] = useState(getHabits());
-  const [todayLog, setTodayLog] = useState(getHabitLog(todayStr));
   const [showLibraryPicker, setShowLibraryPicker] = useState(false);
   const [showCategoryChooser, setShowCategoryChooser] = useState(false);
   const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("self-care");
   const [collapsedTiming, setCollapsedTiming] = useState<Set<HabitTiming>>(new Set());
+  const [copiedSummary, setCopiedSummary] = useState(false);
+
+  // Phase 5B — Supabase-backed completions
+  const { completedIds, toggle: toggleHabit, history, historyLoading } = useHabitCompletions();
 
   const refreshHabits = useCallback(() => {
     setHabits(getHabits());
-    setTodayLog(getHabitLog(todayStr));
-  }, [todayStr]);
+  }, []);
 
   const handleToggle = (habitId: string) => {
     haptic("light");
-    toggleHabitForDate(todayStr, habitId);
-    setTodayLog(prev => ({ ...prev, [habitId]: !prev[habitId] }));
+    toggleHabit(habitId);
   };
 
   const handleDelete = (habitId: string) => {
@@ -89,7 +262,7 @@ export default function PracticePage() {
     return "anytime";
   };
 
-  const completedToday = Object.values(todayLog).filter(Boolean).length;
+  const completedCount = completedIds.size;
   const totalHabits = habits.length;
 
   return (
@@ -130,7 +303,7 @@ export default function PracticePage() {
                   stroke="hsl(var(--primary))"
                   strokeWidth="4"
                   strokeLinecap="round"
-                  strokeDasharray="0 213.6"
+                  strokeDasharray="0 213.628"
                   transform="rotate(-90 40 40)"
                   className="opacity-30"
                 />
@@ -171,31 +344,31 @@ export default function PracticePage() {
                       stroke="hsl(var(--primary))"
                       strokeWidth="3"
                       strokeLinecap="round"
-                      strokeDasharray={`${(completedToday / totalHabits) * 150.8} 150.8`}
+                      strokeDasharray={`${(completedCount / totalHabits) * 150.8} 150.8`}
                       transform="rotate(-90 28 28)"
                     />
                   </svg>
                   <span className="absolute inset-0 flex items-center justify-center font-display text-sm font-bold text-foreground">
-                    {Math.round((completedToday / totalHabits) * 100)}%
+                    {Math.round((completedCount / totalHabits) * 100)}%
                   </span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-baseline gap-1.5">
                     <AnimatePresence mode="wait">
                       <motion.span
-                        key={completedToday}
+                        key={completedCount}
                         initial={{ y: -16, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 16, opacity: 0 }}
                         transition={{ duration: 0.25 }}
                         className="font-display text-3xl font-extrabold text-foreground"
                       >
-                        {completedToday}
+                        {completedCount}
                       </motion.span>
                     </AnimatePresence>
                     <span className="font-body text-base text-muted-foreground">/ {totalHabits} complete</span>
                   </div>
-                  {completedToday > 0 && completedToday === totalHabits && (
+                  {completedCount > 0 && completedCount === totalHabits && (
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -254,7 +427,7 @@ export default function PracticePage() {
                       className="space-y-2 overflow-hidden"
                     >
                       {sectionHabits.map(habit => {
-                        const done = todayLog[habit.id] || false;
+                        const done = completedIds.has(habit.id);
                         const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category) ||
                           HABIT_CATEGORIES.find(c => c.id === "self-care");
 
@@ -330,6 +503,24 @@ export default function PracticePage() {
             </div>
           )}
         </div>
+
+        {/* ═══ 4-WEEK CONSISTENCY HEATMAP (5C) ═══ */}
+        {habits.length > 0 && (
+          <HabitHeatmap
+            habits={habits}
+            history={history}
+            loading={historyLoading}
+            phaseColor={phaseColor}
+            copiedSummary={copiedSummary}
+            onCopy={async () => {
+              haptic("medium");
+              const lines = generateSummaryText(habits, history);
+              await navigator.clipboard.writeText(lines);
+              setCopiedSummary(true);
+              setTimeout(() => setCopiedSummary(false), 2500);
+            }}
+          />
+        )}
 
         {/* ═══ CATEGORY CHOOSER SHEET ═══ */}
         <AnimatePresence>

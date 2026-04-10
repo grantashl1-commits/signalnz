@@ -1,10 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Trash2, X, Search } from "lucide-react";
+import { Plus, Check, Trash2, X, Search, Zap } from "lucide-react";
 import {
   getHabits,
-  getHabitLog,
-  toggleHabitForDate,
   addHabit,
   removeHabit,
   CATEGORY_DOT_CLASSES,
@@ -13,9 +11,10 @@ import {
   type Habit,
   type HabitCategory,
 } from "@/data/self-care-rituals";
-import { getLibraryHabitsForCategory, type LibraryHabit } from "@/data/habit-library";
+import { HABIT_LIBRARY, getLibraryHabitsForCategory, type LibraryHabit } from "@/data/habit-library";
 import { haptic } from "@/hooks/use-mobile";
 import SleepCard from "@/components/practice/SleepCard";
+import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "#C4526E",
@@ -24,11 +23,46 @@ const PHASE_COLORS: Record<string, string> = {
   luteal: "#9B89B4",
 };
 
+// ── Phase 5D: Smart habit nudges ────────────────────────────────────────────
+const PHASE_NUDGE_IDS: Record<string, string[]> = {
+  menstrual:  ["lib-herbal-tea", "lib-stretching", "lib-warm-lemon-water", "lib-magnesium", "lib-morning-journal"],
+  follicular: ["lib-morning-sunlight", "lib-cold-exposure", "lib-protein-breakfast", "lib-fermented-food", "lib-movement-snack"],
+  ovulatory:  ["lib-movement-snack", "lib-water-2l", "lib-protein-lunch", "lib-midday-walk", "lib-morning-sunlight"],
+  luteal:     ["lib-magnesium", "lib-screen-break-20-20-20", "lib-stretching", "lib-herbal-tea", "lib-consistent-sleep-time"],
+};
+
+function getSmartNudges(
+  phase: string,
+  completedIds: Set<string>,
+  userHabitIds: Set<string>
+): { id: string; name: string; timing: string; category: string }[] {
+  const hour = new Date().getHours();
+  const timingPref = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+
+  // Preferred IDs for this phase — filter out already-done and already-added habits
+  const phaseIds = PHASE_NUDGE_IDS[phase] || PHASE_NUDGE_IDS.follicular;
+  const candidates = HABIT_LIBRARY.filter(
+    h => phaseIds.includes(h.id) && !completedIds.has(h.id) && !userHabitIds.has(h.id)
+  );
+
+  // Sort: matching timing first
+  const sorted = [
+    ...candidates.filter(h => h.timing === timingPref),
+    ...candidates.filter(h => h.timing !== timingPref),
+  ];
+
+  return sorted.slice(0, 3).map(h => ({
+    id: h.id, name: h.name, timing: h.timing, category: h.category,
+  }));
+}
+
 export default function HomeHabitsTracker({ phase }: { phase: string }) {
   const todayStr = new Date().toISOString().split("T")[0];
   const [habits, setHabits] = useState<Habit[]>(getHabits());
-  const [todayLog, setTodayLog] = useState<Record<string, boolean>>(getHabitLog(todayStr));
   const phaseColor = PHASE_COLORS[phase] || PHASE_COLORS.follicular;
+
+  // Phase 5B — Supabase-backed completions
+  const { completedIds, toggle: toggleHabit } = useHabitCompletions();
 
   // Add-habit panel state
   const [showAddPanel, setShowAddPanel] = useState(false);
@@ -39,14 +73,12 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
 
   const refreshHabits = useCallback(() => {
     setHabits(getHabits());
-    setTodayLog(getHabitLog(todayStr));
-  }, [todayStr]);
+  }, []);
 
   const handleToggle = useCallback((habitId: string) => {
     haptic("light");
-    toggleHabitForDate(todayStr, habitId);
-    setTodayLog(prev => ({ ...prev, [habitId]: !prev[habitId] }));
-  }, [todayStr]);
+    toggleHabit(habitId);
+  }, [toggleHabit]);
 
   const handleDelete = (habitId: string) => {
     haptic("medium");
@@ -82,7 +114,14 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
     refreshHabits();
   };
 
-  const completedCount = habits.filter(h => todayLog[h.id]).length;
+  const completedCount = habits.filter(h => completedIds.has(h.id)).length;
+
+  // Phase 5D: smart nudges (shown when user has habits but none are nudge-worthy, or has no habits)
+  const userHabitIds = useMemo(() => new Set(habits.map(h => h.id)), [habits]);
+  const smartNudges = useMemo(
+    () => getSmartNudges(phase, completedIds, userHabitIds),
+    [phase, completedIds, userHabitIds]
+  );
 
   // Get library items for selected category
   const getLibraryItems = (): { id: string; name: string }[] => {
@@ -143,7 +182,7 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
             {/* Habit list */}
             <div className="space-y-1">
               {habits.map((habit) => {
-                const done = !!todayLog[habit.id];
+                const done = completedIds.has(habit.id);
                 const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
                 return (
                   <div key={habit.id} className="flex items-center gap-1">
@@ -197,29 +236,74 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
             )}
           </>
         )}
+      </div>
 
-        {/* ── Inline add panel ── */}
-        <AnimatePresence>
-          {showAddPanel && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden"
-            >
-              <div className="border-t border-border/20 mt-4 pt-4">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="font-body text-xs font-semibold text-foreground/70 uppercase tracking-wide">
-                    {selectedCategory ? "Choose habits" : "Pick a category"}
-                  </p>
-                  <button
-                    onClick={() => { setShowAddPanel(false); setSelectedCategory(null); setSearch(""); }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
+      {/* Phase 5D — Smart habit nudges (3 phase+time-aware suggestions) */}
+      {smartNudges.length > 0 && !showAddPanel && (
+        <div className="card-warm">
+          <div className="flex items-center gap-1.5 mb-3">
+            <Zap className="h-3.5 w-3.5" style={{ color: phaseColor }} />
+            <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
+              suggested today
+            </p>
+          </div>
+          <div className="space-y-1">
+            {smartNudges.map((nudge) => {
+              const isDone = completedIds.has(nudge.id);
+              return (
+                <motion.button
+                  key={nudge.id}
+                  onClick={() => { haptic("light"); toggleHabit(nudge.id); }}
+                  className="flex-1 w-full flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div
+                    className="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                    style={{
+                      borderColor: isDone ? phaseColor : 'hsl(var(--border))',
+                      backgroundColor: isDone ? `${phaseColor}20` : 'transparent',
+                    }}
                   >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
+                    {isDone && <Check className="w-3.5 h-3.5" style={{ color: phaseColor }} strokeWidth={3} />}
+                  </div>
+                  <span className={`font-body text-sm flex-1 transition-all duration-200 ${isDone ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
+                    {nudge.name}
+                  </span>
+                  <span className="font-body text-[9px] uppercase tracking-wider text-muted-foreground/50 flex-shrink-0">
+                    {nudge.timing}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
+          <p className="font-body text-[10px] text-muted-foreground/50 mt-2 px-1">
+            Based on your {phase} phase — tap to complete without opening My Practice
+          </p>
+        </div>
+      )}
+
+      {/* ── Inline add panel ── */}
+      <AnimatePresence>
+        {showAddPanel && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden"
+          >
+            <div className="card-warm">
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-body text-xs font-semibold text-foreground/70 uppercase tracking-wide">
+                  {selectedCategory ? "Choose habits" : "Pick a category"}
+                </p>
+                <button
+                  onClick={() => { setShowAddPanel(false); setSelectedCategory(null); setSearch(""); }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
                 {!selectedCategory ? (
                   /* Category grid */
@@ -305,11 +389,10 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                     </div>
                   </div>
                 )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Sleep tracker ── */}
       <SleepCard phaseColor={phaseColor} />

@@ -525,6 +525,77 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
       ayurveda: "Pranayama (breath control) is central to all Ayurvedic practice. Anulom Vilom (alternate nostril breathing) is the prescribed morning practice.",
     },
   },
+
+  // ── Phase 5: Evidence-based habit additions ──────────────────────────────
+
+  // MORNING
+  { id: "lib-dry-brushing", name: "Dry Brushing",
+    description: "Brush skin in long strokes toward the heart for 2–5 minutes before showering.",
+    frequency: "Daily", evidenceNote: "Stimulates lymphatic drainage and skin cell turnover. Improves circulation and skin texture.", icon: "capsule", category: "self-care", timing: "morning",
+    education: { modern: "Dry brushing stimulates the lymphatic system, which has no pump of its own — movement and pressure are required for lymph flow.", tcm: "Wei Qi (defensive energy) circulates at the skin surface. Brushing activates this protective layer.", ayurveda: "Garshana (dry brushing with raw silk gloves) is a Dinacharya practice to remove Kapha accumulation and invigorate Prana.", beingHuman: "Body brushing rituals appear in ancient Egyptian, Japanese, and Greek hygiene practices." } },
+
+  { id: "lib-morning-journal", name: "Morning Journal (5 min)",
+    description: "Write freely for 5 minutes — thoughts, intentions, gratitude. No structure needed.",
+    frequency: "Daily", evidenceNote: "Morning pages (Julia Cameron) clear mental clutter and reduce rumination. Writing activates the prefrontal cortex.", icon: "capsule", category: "self-care", timing: "morning",
+    education: { modern: "Expressive writing reduces cortisol and improves working memory. Five minutes of unstructured writing clears the 'default mode network' overactivity associated with anxiety.", tcm: "Morning is Wood element time — the energy of vision and planning. Writing externalises mental Qi, clearing space for the day.", ayurveda: "Svadhyaya (self-study) is a Niyama. Morning journalling aligns with Vata-dominant early morning for creative, expansive thought.", beingHuman: "Humans have recorded their inner lives since cave paintings. Externalising thought is a uniquely human practice." } },
+
+  { id: "lib-movement-snack", name: "Movement Snack (10 min)",
+    description: "10 minutes of intentional movement: brisk walk, stretching, body weight exercises, or dance.",
+    frequency: "Daily", evidenceNote: "Short movement breaks throughout the day provide metabolic and cognitive benefits comparable to longer sessions.", icon: "morningWalk", category: "movement", timing: "morning",
+    education: { modern: "Research from University of Texas shows 10-minute movement snacks improve insulin sensitivity and working memory equivalently to continuous exercise. 'Exercise snacking' 3× per day reduces all-cause mortality.", tcm: "Movement distributes Qi through the meridians. Short, frequent movement is preferable to sitting all day.", ayurveda: "Laghu vyayama (light exercise) is prescribed after meals to support digestion and prevent Ama accumulation.", beingHuman: "Our ancestors moved continuously — hunting, gathering, foraging. Extended sitting is a modern invention." } },
+
+  // AFTERNOON
+  { id: "lib-midday-walk", name: "Midday Walk (15 min)",
+    description: "Step outside for 15 minutes at midday — sunlight exposure, movement, and mental reset.",
+    frequency: "Daily", evidenceNote: "Post-lunch walking reduces blood glucose spike by up to 30% and improves afternoon cognitive performance.", icon: "morningWalk", category: "movement", timing: "afternoon",
+    education: { modern: "Stanford research shows 15 minutes of outdoor walking boosts creative thinking by 81%. Midday sun exposure regulates cortisol and supports afternoon energy without caffeine.", tcm: "The Stomach and Spleen meridians are active 7–11am; Heart meridian peaks at noon. Walking after lunch supports Stomach Qi descending.", ayurveda: "Madhyahna (noon) is Pitta time — the peak of digestive fire. A gentle walk aids digestion without overstimulating Pitta.", beingHuman: "Postprandial walking is universal across cultures. 'A walk after dinner' was standard medical advice until the 20th century." } },
+
+  { id: "lib-screen-break-20-20-20", name: "Screen Break (20-20-20 Rule)",
+    description: "Every 20 minutes, look at something 20 feet away for 20 seconds. Stand and stretch every hour.",
+    frequency: "Hourly at desk", evidenceNote: "The 20-20-20 rule reduces digital eye strain by up to 67%. Hourly breaks reduce musculoskeletal pain and fatigue.", icon: "capsule", category: "self-care", timing: "afternoon",
+    education: { modern: "Computer Vision Syndrome affects 90% of screen users. The 20-20-20 rule relaxes the ciliary muscle and reduces eye fatigue. Screen time is correlated with cortisol elevation and disrupted sleep.", tcm: "Eyes are the sense organ of the Liver. Prolonged screen use depletes Liver Blood — the cause of evening headaches and dry eyes in TCM.", ayurveda: "Netra Tarpana (eye nourishment) — resting the eyes is prescribed in Dinacharya. Tratak (focused gazing) at a candle is the traditional alternative.", beingHuman: "Human eyes evolved for long-distance scanning — reading at arm's length is one of the most unnatural things we do." } },
+
+  { id: "lib-protein-lunch", name: "Protein-Rich Lunch",
+    description: "Ensure lunch includes at least 25–35g of protein to support afternoon energy and reduce cravings.",
+    frequency: "Daily", evidenceNote: "High-protein lunches reduce afternoon cortisol, improve satiety, and prevent the 3pm energy crash.", icon: "proteinPlate", category: "nutrition", timing: "afternoon",
+    education: { modern: "Protein at lunch stabilises postprandial blood glucose and prevents insulin spiking. 30g of protein at each meal maximises muscle protein synthesis (leucine threshold).", tcm: "Spleen and Stomach time (7–11am) requires adequate nourishment. A protein-rich lunch supports the body through its most energetically demanding afternoon.", ayurveda: "Lunch (Madhyahna bhojana) should be the largest meal of the day. Include all six tastes and prioritise easily digestible proteins during Pitta time.", beingHuman: "Hunter-gatherers ate opportunistically throughout the day, with protein central to every significant meal." } },
+
+  { id: "lib-desk-stretch", name: "5-Minute Desk Stretch",
+    description: "Neck rolls, shoulder rolls, chest opener, hip flexor stretch, spinal twist — done at your desk.",
+    frequency: "Daily", evidenceNote: "Regular desk stretching reduces upper back and neck pain by 54% in office workers (Journal of Occupational Health).", icon: "stretch", category: "movement", timing: "afternoon",
+    education: { modern: "Sitting shortens the hip flexors and tightens the thoracic spine. Five minutes of targeted stretching reverses postural compensation patterns that lead to chronic pain.", tcm: "The Liver and Gallbladder meridians run through the hips and sides of the body — tight hip flexors indicate stuck Liver Qi.", ayurveda: "Sukshma Vyayama (gentle joint movements) are prescribed multiple times per day. The joints are the site of Vata accumulation.", beingHuman: "No ancestral human spent 8 hours seated. Desk work is a 60-year-old experiment in human ergonomics that we're still recovering from." } },
+
+  // EVENING
+  { id: "lib-herbal-tea", name: "Herbal Tea (Chamomile or Valerian)",
+    description: "One cup of chamomile or valerian root tea 30–60 minutes before bed.",
+    frequency: "Daily", evidenceNote: "Chamomile contains apigenin (binds GABA-A receptors). Valerian increases GABA availability. Both reduce sleep onset time.", icon: "waterGlass", category: "nutrition", timing: "evening",
+    education: { modern: "Chamomile's apigenin is a partial agonist at GABA-A receptors — the same receptor targeted by benzodiazepines. RCTs show chamomile reduces anxiety scores and improves sleep quality in postpartum women.", tcm: "Evening is Kidney and Heart time. Chamomile is cooling and calms Heart Fire — the cause of racing thoughts at bedtime in TCM.", ayurveda: "Warm drinks before sleep are deeply Vata-pacifying. Ashwagandha in warm milk (Golden Milk) is the traditional equivalent.", beingHuman: "Herbal teas have served as sleep aids across every traditional culture. Winding down with a warm drink is an ancestral signal for sleep." } },
+
+  { id: "lib-consistent-sleep-time", name: "Consistent Sleep & Wake Time",
+    description: "Aim to be in bed and wake at the same time every day — even on weekends, within ±30 minutes.",
+    frequency: "Daily", evidenceNote: "Sleep timing consistency is more predictive of health outcomes than total sleep duration (Walker, Why We Sleep).", icon: "capsule", category: "foundations", timing: "evening",
+    education: { modern: "Circadian rhythm irregularity is independently associated with depression, metabolic syndrome, and cognitive decline. The 'social jetlag' from inconsistent weekend sleep suppresses immune function.", tcm: "Each organ has a 2-hour peak window (the Organ Clock). Consistent sleep preserves these windows — irregular sleep disrupts Kidney and Liver regeneration (11pm–3am).", ayurveda: "Ratricharya (night routine) in Ayurveda specifies 10pm as the ideal sleep time — Kapha time, naturally heavy and grounding.", beingHuman: "Before artificial light, sleep timing was governed by sunset. Consistent sleep timing resets us to this ancestral pattern." } },
+
+  { id: "lib-evening-journal", name: "Evening Reflection (5 min)",
+    description: "Write 3–5 sentences about your day: what went well, what you're letting go of, one intention for tomorrow.",
+    frequency: "Daily", evidenceNote: "Evening reflective writing reduces rumination and improves sleep onset. Regular journalling correlates with lower cortisol the following morning.", icon: "capsule", category: "self-care", timing: "evening",
+    education: { modern: "Writing about the day creates psychological closure — completing the 'open loops' that keep the prefrontal cortex active at night. Pennebaker's expressive writing research shows lasting reductions in cortisol.", tcm: "Evening is Heart time. Writing processes emotional experiences, supporting the Heart's role in housing the Shen (spirit).", ayurveda: "Evening is Kapha time — naturally reflective and heavy. Writing during this window honours the introspective nature of the evening.", beingHuman: "Storytelling around the fire — making meaning of the day — was an ancestral evening ritual in every culture." } },
+
+  { id: "lib-no-food-before-sleep", name: "No Food 2 Hours Before Sleep",
+    description: "Stop eating at least 2 hours before your usual bedtime.",
+    frequency: "Daily", evidenceNote: "Late eating disrupts circadian rhythms, impairs growth hormone secretion, and reduces deep sleep quality.", icon: "capsule", category: "nutrition", timing: "evening",
+    education: { modern: "The liver and digestive system require 2–3 hours post-meal to complete the cephalic digestive phase. Eating close to sleep elevates core body temperature (preventing the 1°C drop required for sleep onset) and disrupts GH release.", tcm: "The Stomach needs to be 'quiet' before sleep. Eating late keeps Stomach Qi active when it should descend and rest.", ayurveda: "Supper should be light and consumed 2–3 hours before sleep. Incompatible food combinations at night create Ama (digestive toxins).", beingHuman: "Our digestive system is governed by the same circadian clock as our sleep. Late eating is a mismatch signal that confuses the body about the time of day." } },
+
+  // ANYTIME
+  { id: "lib-connect-loved-one", name: "Connect with Someone You Love",
+    description: "A real conversation, a hug, a phone call — not a text. 10+ minutes of genuine connection.",
+    frequency: "Daily", evidenceNote: "Social connection is the strongest predictor of longevity in the Harvard Study of Adult Development (75 years of data).", icon: "capsule", category: "self-care", timing: "anytime",
+    education: { modern: "Oxytocin release from social bonding reduces cortisol, lowers blood pressure, and strengthens immune function. Loneliness is as damaging as smoking 15 cigarettes per day (Holt-Lunstad, 2015).", tcm: "The Heart governs love, connection, and Shen. Loving connection nourishes Heart Qi directly.", ayurveda: "Satsang (company of the wise and loving) is prescribed as medicine. Human warmth is Kapha-nourishing and Vata-pacifying.", beingHuman: "We evolved in tribes of 50–150 people. Genuine connection is our biological baseline — isolation is the deviation." } },
+
+  { id: "lib-read-book", name: "Read (Not on Phone)",
+    description: "Read a physical book or e-reader (not phone) for at least 15–20 minutes.",
+    frequency: "Daily", evidenceNote: "Reading reduces stress by 68% in 6 minutes (University of Sussex). Long-form reading improves empathy and sustained attention.", icon: "capsule", category: "self-care", timing: "anytime",
+    education: { modern: "Deep reading activates the default mode network differently from screen-based consumption, supporting empathy and narrative comprehension. Physical books eliminate blue light and notification interruption.", tcm: "Reading is a Yin activity — receptive, inward, nourishing. Used as medicine in TCM to cultivate Shen.", ayurveda: "Svadhyaya (self-study) includes the study of uplifting texts. Evening reading is Kapha-appropriate — grounding and calming.", beingHuman: "Story is the oldest form of human meaning-making. Reading is the modern continuation of 200,000 years of oral storytelling." } },
 ];
 
 export function getLibraryHabitsForCategory(category: HabitCategory | "foundations"): LibraryHabit[] {
