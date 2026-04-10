@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Sparkles, Leaf } from "lucide-react";
+import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
