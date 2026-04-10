@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Check, ChevronDown, ChevronUp, Copy, Search, ShoppingCart, ExternalLink, Plus, X, Printer } from "lucide-react";
 import { Check, ChevronDown, ChevronUp, Copy, Search, ShoppingCart, ExternalLink, Plus, X } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { BotanicalSprig } from "@/components/BotanicalElements";
