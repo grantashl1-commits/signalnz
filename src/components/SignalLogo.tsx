@@ -1,26 +1,69 @@
 import { motion } from "framer-motion";
 
 /**
- * Inline SVG brand logo — dotted concentric rings with a solid centre dot.
- * Matches the favicon / PWA icon aesthetic.
+ * Inline SVG brand logo — precisely matches the SIGNAL ring icon.
+ * Ring of circles with dramatically varying sizes (large, medium, small, tiny)
+ * arranged at a single orbit radius. No centre dot. No concentric rings.
+ *
+ * Dot positions and sizes reverse-engineered from public/logos/Icon.png.
  */
+
+// Each entry: [clockwise degrees from 12 o'clock, orbit radius, dot radius]
+// All in a 100×100 viewBox (centre = 50,50)
+const RAW_DOTS: [number, number, number][] = [
+  [348, 37, 1.5],  // tiny  — just before 12
+  [7,   35, 2.8],  // small — just after 12
+  [27,  34, 4.2],  // medium
+  [43,  37, 1.5],  // tiny
+  [57,  30, 8.5],  // LARGE  ~2 o'clock
+  [77,  36, 2.5],  // small
+  [92,  37, 1.5],  // tiny
+  [107, 30, 8.0],  // LARGE  ~3 o'clock
+  [128, 35, 3.0],  // medium-small
+  [147, 37, 1.5],  // tiny
+  [163, 34, 4.0],  // medium
+  [184, 30, 7.5],  // LARGE  ~5 o'clock
+  [208, 28, 9.5],  // LARGEST ~6 o'clock
+  [232, 32, 5.5],  // medium-large
+  [250, 36, 2.5],  // small
+  [262, 37, 1.5],  // tiny
+  [279, 30, 8.5],  // LARGE  ~9 o'clock
+  [297, 34, 3.5],  // medium
+  [310, 37, 1.8],  // tiny
+  [324, 35, 2.8],  // small
+  [338, 30, 7.5],  // LARGE  ~11 o'clock
+];
+
+function degToXY(deg: number, r: number) {
+  const rad = (deg - 90) * (Math.PI / 180);
+  return { x: 50 + r * Math.cos(rad), y: 50 + r * Math.sin(rad) };
+}
+
+const DOTS = RAW_DOTS.map(([deg, r, dotR]) => ({ ...degToXY(deg, r), dotR }));
+
 export default function SignalLogo({
   size = 32,
   animated = false,
   className = "",
+  color = "currentColor",
 }: {
   size?: number;
   animated?: boolean;
   className?: string;
+  color?: string;
 }) {
-  const cx = 50;
-  const cy = 50;
-  const rings = [
-    { r: 12, dots: 12, dotR: 2.8 },
-    { r: 22, dots: 20, dotR: 2.2 },
-    { r: 32, dots: 28, dotR: 1.8 },
-    { r: 42, dots: 36, dotR: 1.4 },
-  ];
+  const Wrapper = animated ? motion.g : "g";
+  const motionProps = animated
+    ? {
+        animate: { rotate: [0, 360] },
+        transition: {
+          duration: 80,
+          repeat: Infinity,
+          ease: "linear" as const,
+        },
+        style: { transformOrigin: "50px 50px" },
+      }
+    : {};
 
   return (
     <svg
@@ -29,48 +72,20 @@ export default function SignalLogo({
       height={size}
       className={className}
       aria-label="Signal logo"
+      fill="none"
     >
-      {/* Centre dot */}
-      <circle cx={cx} cy={cy} r={5} fill="currentColor" opacity={0.9} />
-
-      {/* Dotted rings */}
-      {rings.map((ring, ri) => {
-        const dots = Array.from({ length: ring.dots }, (_, i) => {
-          const angle = (2 * Math.PI * i) / ring.dots - Math.PI / 2;
-          return {
-            x: cx + ring.r * Math.cos(angle),
-            y: cy + ring.r * Math.sin(angle),
-          };
-        });
-
-        const Wrapper = animated ? motion.g : "g";
-        const animProps = animated
-          ? {
-              animate: { rotate: [0, ri % 2 === 0 ? 360 : -360] },
-              transition: {
-                duration: 60 + ri * 20,
-                repeat: Infinity,
-                ease: "linear" as const,
-              },
-              style: { transformOrigin: "50px 50px" },
-            }
-          : {};
-
-        return (
-          <Wrapper key={ri} {...animProps}>
-            {dots.map((d, di) => (
-              <circle
-                key={di}
-                cx={d.x}
-                cy={d.y}
-                r={ring.dotR}
-                fill="currentColor"
-                opacity={0.7 - ri * 0.1}
-              />
-            ))}
-          </Wrapper>
-        );
-      })}
+      {/* @ts-expect-error — Wrapper is either motion.g or "g" */}
+      <Wrapper {...motionProps}>
+        {DOTS.map((dot, i) => (
+          <circle
+            key={i}
+            cx={dot.x}
+            cy={dot.y}
+            r={dot.dotR}
+            fill={color}
+          />
+        ))}
+      </Wrapper>
     </svg>
   );
 }
