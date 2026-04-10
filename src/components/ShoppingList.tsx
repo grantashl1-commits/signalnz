@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, ExternalLink, Copy, Check, Trash2, Plus, ChevronDown, ChevronUp, X } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import {
-  ShoppingItem, getShoppingList, addRecipeToShoppingList, removeRecipeFromShoppingList,
-  toggleShoppingItem, clearShoppingList, formatShoppingListText, getWoolworthsSearchUrl, parseIngredient,
-  addManualItem, removeItem,
+  ShoppingItem, MergedShoppingItem, getShoppingList, addRecipeToShoppingList, removeRecipeFromShoppingList,
+  toggleMergedItem, clearShoppingList, formatShoppingListText, getWoolworthsSearchUrl, parseIngredient,
+  addManualItem, removeMergedItem, mergeShoppingItems,
 } from "@/lib/ingredient-parser";
 import { haptic } from "@/hooks/use-mobile";
 import { getSupermarket } from "@/lib/fitness-profile";
@@ -70,7 +70,7 @@ export function IngredientSearchLinks({ ingredients }: IngredientSearchLinksProp
             onClick={() => haptic("light")}
           >
             <ExternalLink className="h-3 w-3" />
-            <span className="hidden sm:inline">Woolworths</span>
+            <span className="hidden sm:inline">Shop</span>
           </a>
         </div>
       ))}
@@ -111,9 +111,9 @@ export function ShoppingListPanel() {
   const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
   const supermarket = getSupermarket();
 
-  const handleToggle = (index: number) => {
+  const handleToggleMerged = (indices: number[]) => {
     haptic("light");
-    setItems(toggleShoppingItem(index));
+    setItems(toggleMergedItem(indices));
   };
 
   const handleCopy = async () => {
@@ -133,9 +133,9 @@ export function ShoppingListPanel() {
     setItems(removeRecipeFromShoppingList(recipeId));
   };
 
-  const handleRemoveItem = (index: number) => {
+  const handleRemoveMerged = (indices: number[]) => {
     haptic("light");
-    setItems(removeItem(index));
+    setItems(removeMergedItem(indices));
   };
 
   const handleAddManual = () => {
@@ -150,26 +150,26 @@ export function ShoppingListPanel() {
     setExpandedCats(prev => ({ ...prev, [cat]: prev[cat] === false ? true : false }));
   };
 
-  // Group items by category
+  // Merge duplicates then group by category
+  const merged = useMemo(() => mergeShoppingItems(items), [items]);
+
   const grouped = useMemo(() => {
-    const cats: Record<string, { items: ShoppingItem[]; indices: number[] }> = {};
-    items.forEach((item, index) => {
+    const cats: Record<string, MergedShoppingItem[]> = {};
+    merged.forEach(item => {
       const cat = categoriseItem(item.name);
-      if (!cats[cat]) cats[cat] = { items: [], indices: [] };
-      cats[cat].items.push(item);
-      cats[cat].indices.push(index);
+      if (!cats[cat]) cats[cat] = [];
+      cats[cat].push(item);
     });
     return cats;
-  }, [items]);
+  }, [merged]);
 
-  const checkedCount = items.filter(i => i.checked).length;
+  const checkedCount = merged.filter(m => m.checked).length;
   const categoryOrder = ["produce", "protein", "dairy", "pantry", "frozen", "other"];
 
   if (items.length === 0) {
     return (
       <div className="space-y-4">
         <div className="card-warm p-8 text-center space-y-4">
-          {/* Ingredient outline illustration */}
           <div className="flex justify-center gap-3 opacity-60">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="text-primary">
               <circle cx="20" cy="14" r="8" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
@@ -235,7 +235,7 @@ export function ShoppingListPanel() {
           <ShoppingCart className="h-4 w-4 text-primary" />
           <span className="font-display text-sm italic text-foreground">Shopping List</span>
           <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
-            {checkedCount}/{items.length}
+            {checkedCount}/{merged.length}
           </span>
         </div>
         <button
@@ -252,16 +252,17 @@ export function ShoppingListPanel() {
         <div className="flex-1 h-1.5 rounded-full bg-secondary overflow-hidden">
           <div
             className="h-full rounded-full bg-primary transition-all"
-            style={{ width: `${items.length > 0 ? (checkedCount / items.length) * 100 : 0}%` }}
+            style={{ width: `${merged.length > 0 ? (checkedCount / merged.length) * 100 : 0}%` }}
           />
         </div>
-        <span className="font-body text-[10px] text-muted-foreground">{checkedCount}/{items.length}</span>
+        <span className="font-body text-[10px] text-muted-foreground">{checkedCount}/{merged.length}</span>
       </div>
 
       {/* Categories */}
       {categoryOrder.filter(cat => grouped[cat]).map(cat => {
-        const { items: catItems, indices } = grouped[cat];
+        const catItems = grouped[cat];
         const isExpanded = expandedCats[cat] !== false;
+        const catChecked = catItems.filter(m => m.checked).length;
 
         return (
           <div key={cat} className="card-warm overflow-hidden">
@@ -272,7 +273,7 @@ export function ShoppingListPanel() {
               <div className="flex items-center gap-2">
                 <span className="font-body text-xs font-bold text-foreground">{CATEGORY_LABELS[cat]}</span>
                 <span className="font-body text-[9px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
-                  {catItems.filter(i => i.checked).length}/{catItems.length}
+                  {catChecked}/{catItems.length}
                 </span>
               </div>
               {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -288,50 +289,49 @@ export function ShoppingListPanel() {
                   className="overflow-hidden"
                 >
                   <div className="px-3 pb-3 space-y-1.5">
-                    {catItems.map((item, ci) => {
-                      const globalIndex = indices[ci];
-                      return (
-                        <div key={globalIndex} className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleToggle(globalIndex)}
-                            className="touch-btn flex-shrink-0 transition-all"
-                          >
-                            <span className={`h-5 w-5 rounded-full border flex items-center justify-center ${
-                              item.checked ? "bg-primary/30 border-primary/60" : "border-border"
-                            }`}>
-                              {item.checked && <Check className="h-3 w-3 text-primary" />}
-                            </span>
-                          </button>
-                          <div className="flex-1 min-w-0">
-                            <span className={`font-body text-xs ${item.checked ? "line-through text-muted-foreground/50" : "text-foreground"}`}>
-                              {item.quantity && <span className="font-body text-[10px]">{item.quantity} </span>}
-                              {item.unit && <span className="font-body text-[10px]">{item.unit} </span>}
-                              {item.name}
-                            </span>
-                            {item.recipeName && item.recipeName !== "Manual" && (
-                              <p className="font-body text-[9px] text-muted-foreground/60 mt-0.5">{item.recipeName}</p>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            <a
-                              href={getWoolworthsSearchUrl(item)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={() => haptic("light")}
-                              className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-primary/50 active:text-primary"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
-                            <button
-                              onClick={() => handleRemoveItem(globalIndex)}
-                              className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-muted-foreground/40 active:text-destructive"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </div>
+                    {catItems.map((item) => (
+                      <div key={item.key} className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleToggleMerged(item.sourceIndices)}
+                          className="touch-btn flex-shrink-0 transition-all"
+                        >
+                          <span className={`h-5 w-5 rounded-full border flex items-center justify-center ${
+                            item.checked ? "bg-primary/30 border-primary/60" : "border-border"
+                          }`}>
+                            {item.checked && <Check className="h-3 w-3 text-primary" />}
+                          </span>
+                        </button>
+                        <div className="flex-1 min-w-0">
+                          <span className={`font-body text-xs ${item.checked ? "line-through text-muted-foreground/50" : "text-foreground"}`}>
+                            {item.totalQuantity && <span className="font-semibold text-[10px]">{item.totalQuantity} </span>}
+                            {item.unit && <span className="text-[10px]">{item.unit} </span>}
+                            {item.name}
+                          </span>
+                          {item.recipes.length > 0 && (
+                            <p className="font-body text-[9px] text-muted-foreground/60 mt-0.5">
+                              {item.recipes.join(" · ")}
+                            </p>
+                          )}
                         </div>
-                      );
-                    })}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <a
+                            href={getWoolworthsSearchUrl({ searchTerm: item.searchTerm } as any)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => haptic("light")}
+                            className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-primary/50 active:text-primary"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                          <button
+                            onClick={() => handleRemoveMerged(item.sourceIndices)}
+                            className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-muted-foreground/40 active:text-destructive"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               )}
@@ -387,7 +387,7 @@ export function ShoppingListPanel() {
       <div className="flex items-start gap-2 bg-primary/5 rounded-xl p-3">
         <WildStar size={14} color="hsl(var(--primary))" />
         <p className="font-body text-[10px] text-muted-foreground leading-relaxed">
-          This list is for individual recipes you've saved. Your weekly meal plan shopping list is in My Week → Shop.
+          Duplicate ingredients are grouped and quantities combined automatically.
         </p>
       </div>
     </div>
