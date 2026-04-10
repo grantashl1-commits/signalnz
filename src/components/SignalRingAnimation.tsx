@@ -108,9 +108,6 @@ function BreathingPulse({ size, color, className }: Omit<Props, "variant">) {
       aria-label="Thinking"
     >
       {DOTS.map((dot, i) => {
-        // Large dots (dotR > 6) lead; small ones trail slightly
-        const isLarge = dot.dotR > 6;
-        const delay = isLarge ? (i / DOTS.length) * 0.6 : (i / DOTS.length) * 0.9 + 0.1;
         return (
           <motion.circle
             key={i}
