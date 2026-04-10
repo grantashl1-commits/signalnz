@@ -773,6 +773,60 @@ export type Database = {
         }
         Relationships: []
       }
+      hr_sessions: {
+        Row: {
+          avg_bpm: number | null
+          bpm_trace: Json
+          calories: number | null
+          created_at: string
+          cycle_day: number | null
+          cycle_phase: string | null
+          duration_minutes: number | null
+          id: string
+          max_bpm: number | null
+          notes: string | null
+          session_date: string
+          user_id: string
+          workout_name: string | null
+          zone2_plus_percent: number | null
+          zones_summary: Json
+        }
+        Insert: {
+          avg_bpm?: number | null
+          bpm_trace?: Json
+          calories?: number | null
+          created_at?: string
+          cycle_day?: number | null
+          cycle_phase?: string | null
+          duration_minutes?: number | null
+          id?: string
+          max_bpm?: number | null
+          notes?: string | null
+          session_date?: string
+          user_id: string
+          workout_name?: string | null
+          zone2_plus_percent?: number | null
+          zones_summary?: Json
+        }
+        Update: {
+          avg_bpm?: number | null
+          bpm_trace?: Json
+          calories?: number | null
+          created_at?: string
+          cycle_day?: number | null
+          cycle_phase?: string | null
+          duration_minutes?: number | null
+          id?: string
+          max_bpm?: number | null
+          notes?: string | null
+          session_date?: string
+          user_id?: string
+          workout_name?: string | null
+          zone2_plus_percent?: number | null
+          zones_summary?: Json
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           ai: Json | null
@@ -1058,60 +1112,99 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          calorie_target: number | null
+          carb_target_g: number | null
           created_at: string
           cycle_length: number | null
           cycle_mode: string
+          cycle_status: string | null
           date_of_birth: string | null
+          dietary_dislikes: string[] | null
+          dietary_preferences: string[] | null
           display_name: string | null
+          fat_target_g: number | null
           fitness_level: string | null
           goal_category_id: string | null
+          goal_weight_kg: number | null
+          height_cm: number | null
           id: string
           is_nearby_visible: boolean | null
+          last_period_date: string | null
+          meal_prep_day: string | null
+          movement_goals: string[] | null
           onboarding_complete: boolean
           primary_goal: string | null
           profession: string | null
+          protein_target_g: number | null
           referral_code: string | null
           suburb: string | null
           updated_at: string
           user_id: string
+          weight_kg: number | null
         }
         Insert: {
           avatar_url?: string | null
+          calorie_target?: number | null
+          carb_target_g?: number | null
           created_at?: string
           cycle_length?: number | null
           cycle_mode?: string
+          cycle_status?: string | null
           date_of_birth?: string | null
+          dietary_dislikes?: string[] | null
+          dietary_preferences?: string[] | null
           display_name?: string | null
+          fat_target_g?: number | null
           fitness_level?: string | null
           goal_category_id?: string | null
+          goal_weight_kg?: number | null
+          height_cm?: number | null
           id?: string
           is_nearby_visible?: boolean | null
+          last_period_date?: string | null
+          meal_prep_day?: string | null
+          movement_goals?: string[] | null
           onboarding_complete?: boolean
           primary_goal?: string | null
           profession?: string | null
+          protein_target_g?: number | null
           referral_code?: string | null
           suburb?: string | null
           updated_at?: string
           user_id: string
+          weight_kg?: number | null
         }
         Update: {
           avatar_url?: string | null
+          calorie_target?: number | null
+          carb_target_g?: number | null
           created_at?: string
           cycle_length?: number | null
           cycle_mode?: string
+          cycle_status?: string | null
           date_of_birth?: string | null
+          dietary_dislikes?: string[] | null
+          dietary_preferences?: string[] | null
           display_name?: string | null
+          fat_target_g?: number | null
           fitness_level?: string | null
           goal_category_id?: string | null
+          goal_weight_kg?: number | null
+          height_cm?: number | null
           id?: string
           is_nearby_visible?: boolean | null
+          last_period_date?: string | null
+          meal_prep_day?: string | null
+          movement_goals?: string[] | null
           onboarding_complete?: boolean
           primary_goal?: string | null
           profession?: string | null
+          protein_target_g?: number | null
           referral_code?: string | null
           suburb?: string | null
           updated_at?: string
           user_id?: string
+          weight_kg?: number | null
         }
         Relationships: [
           {
@@ -1550,6 +1643,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_plans: {
+        Row: {
+          cycle_phase_at_generation: string | null
+          cycle_week: number | null
+          generated_at: string
+          id: string
+          plan_data: Json
+          plan_type: string
+          user_id: string
+          week_number: number | null
+        }
+        Insert: {
+          cycle_phase_at_generation?: string | null
+          cycle_week?: number | null
+          generated_at?: string
+          id?: string
+          plan_data?: Json
+          plan_type: string
+          user_id: string
+          week_number?: number | null
+        }
+        Update: {
+          cycle_phase_at_generation?: string | null
+          cycle_week?: number | null
+          generated_at?: string
+          id?: string
+          plan_data?: Json
+          plan_type?: string
+          user_id?: string
+          week_number?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -1720,6 +1846,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      workout_logs: {
+        Row: {
+          completed: boolean
+          created_at: string
+          cycle_phase: string | null
+          duration_minutes: number | null
+          exercises: Json
+          hr_session_id: string | null
+          id: string
+          notes: string | null
+          session_date: string
+          user_id: string
+          workout_template_id: string | null
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          cycle_phase?: string | null
+          duration_minutes?: number | null
+          exercises?: Json
+          hr_session_id?: string | null
+          id?: string
+          notes?: string | null
+          session_date?: string
+          user_id: string
+          workout_template_id?: string | null
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          cycle_phase?: string | null
+          duration_minutes?: number | null
+          exercises?: Json
+          hr_session_id?: string | null
+          id?: string
+          notes?: string | null
+          session_date?: string
+          user_id?: string
+          workout_template_id?: string | null
+        }
+        Relationships: []
       }
       workout_sessions: {
         Row: {
