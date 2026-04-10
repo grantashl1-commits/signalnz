@@ -1,5 +1,14 @@
 import { useState, useMemo, useCallback } from "react";
 import { Minus, Plus, Dumbbell, Eye, EyeOff, Check } from "lucide-react";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
+
+function SignalLoadingRing() {
+  return (
+    <div className="w-8 h-8">
+      <SignalRingAnimation variant="ripple" size={32} color="rgba(255,255,255,0.8)" />
+    </div>
+  );
+}
 import { Phase } from "@/lib/cycle-utils";
 import {
   PrepPreferences as PrepPrefsType,
@@ -237,19 +246,12 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary" />
         </div>
 
-        <div className="space-y-1.5">
-          <label className="font-body text-xs text-foreground">Daily calorie target</label>
-          <div className="flex flex-wrap gap-2">
-            {["No preference", "1400–1600", "1600–1800", "1800–2000", "2000–2200", "2200+"].map(cal => (
-              <button key={cal} onClick={() => { haptic("light"); setCalorieTarget(calorieTarget === cal ? "" : cal); }}
-                className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                  calorieTarget === cal ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-                }`}>
-                {cal}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Calorie target removed — auto-calculated from movement goals */}
+        {bodyGoals.length > 0 && (
+          <p className="font-body text-[10px] text-primary italic">
+            Calories are auto-calculated based on your movement goals.
+          </p>
+        )}
       </div>
 
       {/* Hidden recipes */}
@@ -283,10 +285,10 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       <button onClick={handleBuild} disabled={isGenerating}
         className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary transition-all active:opacity-90 disabled:opacity-50">
         {isGenerating ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            Generating your plan...
-          </span>
+          <div className="flex flex-col items-center justify-center gap-3 py-2">
+            <SignalLoadingRing />
+            <span className="font-body text-xs text-primary-foreground/80">Generating your plan...</span>
+          </div>
         ) : (
           "Build my AI plan →"
         )}

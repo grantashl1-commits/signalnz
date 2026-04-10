@@ -365,8 +365,10 @@ export default function MyWeekTab() {
   const headerLabel = `${dominantPhase.charAt(0).toUpperCase() + dominantPhase.slice(1)} Week`;
   const dateRangeLabel = `${formatDateShort(monday)} – ${formatDateShort(sunday)}`;
 
-  const getMealName = (meal: string | AIMeal): string =>
-    typeof meal === "string" ? meal : meal.name;
+  const getMealName = (meal: string | AIMeal): string => {
+    const raw = typeof meal === "string" ? meal : meal.name;
+    return raw.replace(/^Signal\s+/i, "");
+  };
 
   return (
     <div className="space-y-5">
@@ -542,7 +544,7 @@ export default function MyWeekTab() {
                                 )}
                                 <div className="min-w-0 flex-1">
                                   <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: dayPhaseColor }}>{label}</p>
-                                  <p className="font-body text-sm text-foreground mt-0.5">{mealName}</p>
+                                  <p className="font-body text-sm text-foreground mt-0.5">{mealName.replace(/^Signal\s+/i, "")}</p>
                                   {aiMeal && (
                                     <p className="font-body text-xs text-muted-foreground mt-0.5">
                                       {aiMeal.prepTime} · Serves {aiMeal.serves}
@@ -611,10 +613,11 @@ export default function MyWeekTab() {
                                 </div>
                                 <div>
                                   <p className="font-body text-xs font-semibold text-foreground mb-1">Method</p>
-                                  <ol className="space-y-1">
+                                  <ol className="space-y-1 list-none">
                                     {aiMeal.method.map((step, idx) => (
-                                      <li key={idx} className="font-body text-xs text-muted-foreground">
-                                        <span className="font-semibold text-foreground">{idx + 1}.</span> {step}
+                                      <li key={idx} className="font-body text-xs text-muted-foreground flex gap-2">
+                                        <span className="font-semibold text-foreground flex-shrink-0">{idx + 1}.</span>
+                                        <span>{step.replace(/^\d+\.\s*/, "")}</span>
                                       </li>
                                     ))}
                                   </ol>
@@ -647,10 +650,11 @@ export default function MyWeekTab() {
                                 </div>
                                 <div>
                                   <p className="font-body text-xs font-semibold text-foreground mb-1">Method</p>
-                                  <ol className="space-y-1">
+                                  <ol className="space-y-1 list-none">
                                     {staticRecipe.method.map((step, idx) => (
-                                      <li key={idx} className="font-body text-xs text-muted-foreground">
-                                        <span className="font-semibold text-foreground">{idx + 1}.</span> {step}
+                                      <li key={idx} className="font-body text-xs text-muted-foreground flex gap-2">
+                                        <span className="font-semibold text-foreground flex-shrink-0">{idx + 1}.</span>
+                                        <span>{step.replace(/^\d+\.\s*/, "")}</span>
                                       </li>
                                     ))}
                                   </ol>

@@ -64,7 +64,23 @@ export function parseIngredient(raw: string): ParsedIngredient {
   return { raw, quantity, unit, name: name || cleaned, searchTerm: searchTerm || name || cleaned };
 }
 
+const SUPERMARKET_SEARCH_URLS: Record<string, string> = {
+  "Woolworths NZ": "https://www.woolworths.co.nz/shop/searchproducts?search=",
+  "New World": "https://www.newworld.co.nz/shop/search?q=",
+  "Pak'nSave": "https://www.paknsave.co.nz/shop/search?q=",
+  "Four Square": "https://www.foursquare.co.nz/shop/search?q=",
+};
+
 export function getWoolworthsSearchUrl(ingredient: ParsedIngredient): string {
+  // Legacy name kept for backward compat — actually reads user's preferred supermarket
+  try {
+    const raw = localStorage.getItem("signal_supermarket");
+    if (raw) {
+      const pref = JSON.parse(raw);
+      const base = SUPERMARKET_SEARCH_URLS[pref.name];
+      if (base) return `${base}${encodeURIComponent(ingredient.searchTerm)}`;
+    }
+  } catch {}
   return `https://www.woolworths.co.nz/shop/searchproducts?search=${encodeURIComponent(ingredient.searchTerm)}`;
 }
 

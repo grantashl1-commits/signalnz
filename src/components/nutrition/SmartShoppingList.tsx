@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronDown, ChevronUp, Copy, Search, ShoppingCart, ExternalLink, Plus, X } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Copy, Search, ShoppingCart, ExternalLink, Plus, X, Printer } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
@@ -251,6 +251,31 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       });
     });
 
+    // Add seed cycling ingredients for the week
+    const firstHalfDays = weekDays.filter(d => d.cycleDay <= 14).length;
+    const secondHalfDays = weekDays.filter(d => d.cycleDay > 14).length;
+    const seedItems: { name: string; unit: string; qty: number }[] = [];
+    if (firstHalfDays > 0) {
+      seedItems.push({ name: "Pumpkin seeds", unit: "tbsp", qty: firstHalfDays });
+      seedItems.push({ name: "Flaxseeds", unit: "tbsp", qty: firstHalfDays });
+    }
+    if (secondHalfDays > 0) {
+      seedItems.push({ name: "Sunflower seeds", unit: "tbsp", qty: secondHalfDays });
+      seedItems.push({ name: "Sesame seeds", unit: "tbsp", qty: secondHalfDays });
+    }
+    seedItems.forEach(seed => {
+      const mapKey = seed.name.toLowerCase();
+      if (ingredientMap[mapKey]) {
+        ingredientMap[mapKey].totalQty += seed.qty;
+      } else {
+        ingredientMap[mapKey] = {
+          name: seed.name, totalQty: seed.qty, unit: seed.unit,
+          category: "pantry", searchTerm: seed.name.toLowerCase(),
+          isPantryStaple: false,
+        };
+      }
+    });
+
     // Add custom items
     customItems.forEach(item => {
       const cat = item.category || categoriseItem(item.name);
@@ -321,6 +346,26 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     await navigator.clipboard.writeText(`Shopping List — Week ${weekNumber}\n${"—".repeat(30)}\n\n${text}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handlePrint = () => {
+    haptic("medium");
+    const catOrder = categoryOrder.filter(cat => categories[cat]?.length);
+    const tableHtml = catOrder.map(cat => {
+      const items = categories[cat];
+      const rows = items.map(i => {
+        const qty = i.totalQty < 1 ? `${Math.round(i.totalQty * 10) / 10}` :
+          i.totalQty > 10 ? `${Math.round(i.totalQty)}` : `${Math.round(i.totalQty * 10) / 10}`;
+        const checked = checkedItems[`${cat}:${i.name}`] ? "✓" : "☐";
+        return `<tr><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;width:20px;">${checked}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;">${i.name}${i.isPantryStaple ? ' <span style="color:#999;font-size:9px;">(pantry)</span>' : ""}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;text-align:right;white-space:nowrap;">${qty} ${i.unit}</td></tr>`;
+      }).join("");
+      return `<div style="break-inside:avoid;margin-bottom:12px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th colspan="3" style="background:#5B2D72;color:white;padding:5px 8px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.5px;">${CATEGORY_META[cat]}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }).join("");
+    const printWin = window.open("", "_blank");
+    if (!printWin) return;
+    printWin.document.write(`<!DOCTYPE html><html><head><title>Shopping List</title><style>@page{size:A4;margin:12mm}body{font-family:'Montserrat',Arial,sans-serif;color:#1a1a1a;margin:0;padding:16px}h1{font-size:16px;font-weight:700;color:#5B2D72;margin-bottom:2px}.sub{font-size:10px;color:#666;margin-bottom:14px}.grid{column-count:3;column-gap:14px}@media print{.grid{column-count:3}body{padding:0}}</style></head><body><h1>Signal Shopping List</h1><p class="sub">Week ${weekNumber} &middot; ${formatDateShort(monday)} &ndash; ${formatDateShort(sunday)}</p><div class="grid">${tableHtml}</div><p style="margin-top:14px;font-size:8px;color:#aaa;text-align:center">signalnz.lovable.app</p></body></html>`);
+    printWin.document.close();
+    printWin.print();
   };
 
   const startDay = (weekNumber - 1) * 7 + 1;
@@ -482,6 +527,11 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           className="touch-btn flex-1 flex items-center justify-center gap-1.5 rounded-[14px] py-3 min-h-[44px] font-body text-xs font-medium bg-primary/10 text-primary active:bg-primary/20 transition-all">
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {copied ? "Copied!" : "Copy list"}
+        </button>
+        <button onClick={handlePrint}
+          className="touch-btn flex-1 flex items-center justify-center gap-1.5 rounded-[14px] py-3 min-h-[44px] font-body text-xs font-medium bg-primary/10 text-primary active:bg-primary/20 transition-all">
+          <Printer className="h-3.5 w-3.5" />
+          Print list
         </button>
       </div>
 
