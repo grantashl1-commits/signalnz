@@ -74,8 +74,7 @@ export default function SignalLogo({
       aria-label="Signal logo"
       fill="none"
     >
-      {/* @ts-expect-error — Wrapper is either motion.g or "g" */}
-      <Wrapper {...motionProps}>
+      <Wrapper {...(motionProps as any)}>
         {DOTS.map((dot, i) => (
           <circle
             key={i}
