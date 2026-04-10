@@ -191,16 +191,7 @@ export default function DiscoverTab() {
             <button onClick={() => setAiRecipes([])} className="touch-btn p-2 rounded-lg bg-secondary text-muted-foreground"><X className="h-4 w-4" /></button>
           </div>
           {aiRecipes.map((recipe, i) => (
-            <div key={i} className="card-warm p-4 space-y-2">
-              <h4 className="font-display text-sm italic text-foreground">{recipe.name}</h4>
-              <div className="flex gap-2 font-body text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{recipe.prepTime}</span>
-                <span className="flex items-center gap-1"><Users className="h-3 w-3" />Serves {recipe.serves}</span>
-              </div>
-              <div className="flex flex-wrap gap-1">{recipe.keyNutrients?.slice(0, 3).map(n => (
-                <span key={n} className="rounded-full px-2 py-0.5 font-body text-[9px] font-bold uppercase bg-primary/10 text-primary">{n}</span>
-              ))}</div>
-            </div>
+            <AIRecipeCard key={i} recipe={recipe} phaseColor={PHASE_HEX[currentPhase]} />
           ))}
         </div>
       )}
