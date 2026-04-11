@@ -13,8 +13,8 @@ serve(async (req) => {
   }
 
   try {
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -32,10 +32,10 @@ serve(async (req) => {
     // Credit check: journal insights costs 1 credit
     const cost = 1;
     const { data: credits } = await supabase.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-    if (credits && credits.tier !== "unlimited" && (credits.credits_remaining || 0) < cost) {
+    if (credits && (credits.credits_remaining || 0) < cost) {
       return new Response(JSON.stringify({ error: `You need ${cost} AI credit for journal insights. Top up or upgrade.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    if (credits && credits.tier !== "unlimited") {
+    if (credits) {
       await supabase.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
     } else if (!credits) {
       await supabase.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
@@ -99,14 +99,14 @@ ${analysis ? `AI analysis of this entry: ${JSON.stringify(analysis)}` : ""}
 
 Extract insights and merge with existing profile.`;
 
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gemini-2.0-flash",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
