@@ -1,287 +1,286 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are an evidence-based exercise programming specialist with CSEP and NSCA certifications, specialising in female physiology and menstrual cycle periodisation. Generate comprehensive, professional-grade training programs.
+// ═══ PHASE INTENSITY MODIFIERS ═══
+const PHASE_CONFIG: Record<string, { rpeMax: number; maxStrength: number; note: string; volumeMod: number }> = {
+  Menstrual: { rpeMax: 6, maxStrength: 1, note: "Gentle movement, honour the slowdown. Yoga, walking, light mobility.", volumeMod: 0.7 },
+  Follicular: { rpeMax: 8, maxStrength: 4, note: "Energy rising — progressive overload window. Push intensity.", volumeMod: 1.0 },
+  Ovulatory: { rpeMax: 9, maxStrength: 4, note: "Peak performance. Power and speed work. Attempt PRs.", volumeMod: 1.0 },
+  Luteal: { rpeMax: 7, maxStrength: 3, note: "Moderate steady-state. Reduce HIIT, prioritise recovery.", volumeMod: 0.8 },
+};
 
-GOALS AVAILABLE (user may select multiple):
-- Lose weight
-- Build muscle
-- Tone & define
-- Improve flexibility
-- Build endurance
-- Stress relief
-- Fix posture
-- More energy
+const WEEK_THEMES = [
+  { theme: "Foundation", rpeRange: "RPE 6-7", volumeMod: 1.0, sets: 3 },
+  { theme: "Build", rpeRange: "RPE 7-8", volumeMod: 1.15, sets: 4 },
+  { theme: "Peak", rpeRange: "RPE 8-9", volumeMod: 1.2, sets: 4 },
+  { theme: "Deload", rpeRange: "RPE 5-6", volumeMod: 0.6, sets: 2 },
+];
 
-═══ PERIODISATION MODEL (NON-NEGOTIABLE) ═══
+// ═══ PRE-BUILT SESSION TEMPLATES ═══
+interface SessionTemplate {
+  name: string;
+  category: string;
+  durationMin: number;
+  intensity: string;
+  bodyFocus: string[];
+  warm_up: { name: string; duration: string }[];
+  cool_down: { name: string; duration: string; target: string }[];
+  sections: { label: string; exerciseQuery: { body_part?: string; category?: string; limit: number } }[];
+}
 
-Apply a 4-week undulating periodisation block:
-- Week 1 (Foundation): Establish movement patterns. RPE 6-7. Base volume (3 sets). Focus on form mastery and motor learning. HIIT work:rest = 30:30.
-- Week 2 (Build): Add 1 set to compound lifts, increase reps by 1-2, or add 2.5-5kg. RPE 7-8. Introduce supersets. HIIT work:rest = 40:20.
-- Week 3 (Peak): Highest intensity. RPE 8-9. Introduce tempo reps (3s eccentric on compound lifts). Add drop sets or mechanical drop sets to final set. HIIT work:rest = 45:15. Peak volume.
-- Week 4 (Deload): Reduce all working sets to 2. Drop load by 40%. Replace HIIT with Zone 2 cardio (brisk walk, light cycle). Nothing above RPE 6. Active recovery focus. Supercompensation window (Kiely, 2012).
+const SESSION_TEMPLATES: SessionTemplate[] = [
+  {
+    name: "Lower Body Strength",
+    category: "strength",
+    durationMin: 45,
+    intensity: "high",
+    bodyFocus: ["quadriceps", "hamstrings", "glutes", "calves"],
+    warm_up: [
+      { name: "Leg swings", duration: "10 each side" },
+      { name: "Hip circles", duration: "10 each direction" },
+      { name: "Banded clamshells", duration: "15 reps" },
+      { name: "Bodyweight squats", duration: "10 reps" },
+      { name: "Walking lunges", duration: "8 each leg" },
+    ],
+    cool_down: [
+      { name: "Pigeon stretch", duration: "45s each side", target: "hip flexors/glutes" },
+      { name: "Standing quad stretch", duration: "30s each side", target: "quadriceps" },
+      { name: "Supine hamstring stretch", duration: "45s each side", target: "hamstrings" },
+      { name: "Calf stretch against wall", duration: "30s each side", target: "calves" },
+    ],
+    sections: [
+      { label: "Strength A — Compound Lifts", exerciseQuery: { body_part: "quadriceps", limit: 3 } },
+      { label: "Accessory Work — Posterior Chain", exerciseQuery: { body_part: "hamstrings", limit: 3 } },
+      { label: "Conditioning Finisher", exerciseQuery: { body_part: "glutes", limit: 2 } },
+    ],
+  },
+  {
+    name: "Upper Body Strength",
+    category: "strength",
+    durationMin: 45,
+    intensity: "high",
+    bodyFocus: ["chest", "shoulders", "triceps", "biceps", "lats"],
+    warm_up: [
+      { name: "Arm circles", duration: "10 each direction" },
+      { name: "Band pull-aparts", duration: "15 reps" },
+      { name: "Cat-cow", duration: "10 reps" },
+      { name: "Thoracic rotations", duration: "8 each side" },
+      { name: "Scapular push-ups", duration: "10 reps" },
+    ],
+    cool_down: [
+      { name: "Doorway pec stretch", duration: "30s each side", target: "pectorals" },
+      { name: "Cross-body shoulder stretch", duration: "30s each side", target: "posterior deltoid" },
+      { name: "Tricep overhead stretch", duration: "30s each side", target: "triceps" },
+      { name: "Child's pose with lateral reach", duration: "30s each side", target: "lats/obliques" },
+    ],
+    sections: [
+      { label: "Strength A — Push", exerciseQuery: { body_part: "chest", limit: 3 } },
+      { label: "Strength B — Pull", exerciseQuery: { body_part: "lats", limit: 3 } },
+      { label: "Accessory — Arms", exerciseQuery: { body_part: "biceps", limit: 2 } },
+    ],
+  },
+  {
+    name: "Full Body Circuit",
+    category: "circuit",
+    durationMin: 40,
+    intensity: "moderate",
+    bodyFocus: ["quadriceps", "chest", "abdominals", "shoulders"],
+    warm_up: [
+      { name: "Inchworms", duration: "5 reps" },
+      { name: "World's greatest stretch", duration: "5 each side" },
+      { name: "Hip 90/90 transitions", duration: "8 each side" },
+      { name: "Jumping jacks", duration: "20 reps" },
+      { name: "Bear crawl", duration: "10m" },
+    ],
+    cool_down: [
+      { name: "Pigeon stretch", duration: "45s each side", target: "hip flexors/glutes" },
+      { name: "Doorway pec stretch", duration: "30s each side", target: "pectorals" },
+      { name: "Supine twist", duration: "30s each side", target: "lower back/obliques" },
+      { name: "Child's pose", duration: "60s", target: "full body relaxation" },
+    ],
+    sections: [
+      { label: "Circuit A — Compound", exerciseQuery: { body_part: "quadriceps", limit: 3 } },
+      { label: "Circuit B — Upper/Core", exerciseQuery: { body_part: "abdominals", limit: 3 } },
+    ],
+  },
+  {
+    name: "Active Recovery & Mobility",
+    category: "active-recovery",
+    durationMin: 30,
+    intensity: "low",
+    bodyFocus: [],
+    warm_up: [
+      { name: "Gentle walking", duration: "5 minutes" },
+      { name: "Neck circles", duration: "10 each direction" },
+      { name: "Shoulder rolls", duration: "10 each direction" },
+    ],
+    cool_down: [
+      { name: "Forward fold", duration: "60s", target: "hamstrings/lower back" },
+      { name: "Butterfly stretch", duration: "60s", target: "inner thighs" },
+      { name: "Supine twist", duration: "45s each side", target: "spine/obliques" },
+      { name: "Savasana", duration: "3 minutes", target: "full body relaxation" },
+    ],
+    sections: [
+      { label: "Mobility Flow", exerciseQuery: { category: "stretch", limit: 6 } },
+    ],
+  },
+  {
+    name: "HIIT Conditioning",
+    category: "hiit",
+    durationMin: 30,
+    intensity: "very-high",
+    bodyFocus: ["quadriceps", "abdominals", "glutes"],
+    warm_up: [
+      { name: "High knees", duration: "30 seconds" },
+      { name: "Butt kicks", duration: "30 seconds" },
+      { name: "Arm circles", duration: "10 each direction" },
+      { name: "Bodyweight squats", duration: "10 reps" },
+      { name: "Mountain climbers", duration: "20 seconds" },
+    ],
+    cool_down: [
+      { name: "Standing quad stretch", duration: "30s each side", target: "quadriceps" },
+      { name: "Pigeon stretch", duration: "45s each side", target: "hip flexors" },
+      { name: "Standing forward fold", duration: "45s", target: "hamstrings" },
+      { name: "Deep breathing", duration: "2 minutes", target: "nervous system recovery" },
+    ],
+    sections: [
+      { label: "HIIT Circuit", exerciseQuery: { body_part: "quadriceps", limit: 4 } },
+      { label: "Core Finisher", exerciseQuery: { body_part: "abdominals", limit: 3 } },
+    ],
+  },
+];
 
-═══ WEEKLY STRUCTURE ═══
+// Weekly schedule patterns by goal
+const WEEKLY_PATTERNS: Record<string, number[]> = {
+  // index into SESSION_TEMPLATES: 0=Lower, 1=Upper, 2=FullBody, 3=Recovery, 4=HIIT
+  "Lose weight": [0, 4, 1, 3, 2, 4, -1],
+  "Build muscle": [0, 1, 3, 0, 1, 2, -1],
+  "Tone & define": [2, 4, 0, 3, 1, 4, -1],
+  "Improve flexibility": [3, 2, 3, 0, 3, 2, -1],
+  "Build endurance": [4, 2, 4, 3, 2, 4, -1],
+  "Stress relief": [3, 2, 3, 0, 3, 2, -1],
+  "Fix posture": [1, 3, 2, 3, 1, 3, -1],
+  "More energy": [2, 4, 3, 2, 4, 3, -1],
+  default: [0, 1, 3, 2, 4, 3, -1],
+};
 
-Every week must include:
-- 3-4 resistance/strength sessions (compound-focused)
-- 2-3 cardio/conditioning sessions (mix of HIIT and Zone 2)
-- 1-2 active recovery/mobility sessions (yoga flow, foam rolling, walking)
-- At least 1 full rest day
-- Never 3 consecutive high-intensity days
-
-═══ SESSION STRUCTURE (EVERY SESSION MUST FOLLOW) ═══
-
-### WARM-UP (7-12 minutes, 5-7 exercises)
-List specific dynamic movements with exact reps/duration. Must be specific to session type:
-- Lower body day: leg swings × 10 each, hip circles × 10 each, banded clamshells × 15, bodyweight squats × 10, walking lunges × 8 each, ankle circles × 10 each
-- Upper body day: arm circles × 10 each direction, band pull-aparts × 15, cat-cow × 10, thoracic rotations × 8 each, scapular push-ups × 10, wrist circles × 10 each
-- Full body: inchworms × 5, world's greatest stretch × 5 each, hip 90/90 transitions × 8 each, jumping jacks × 20, bear crawl × 10m
-- NEVER write "5 min warm-up" or "general warm-up"
-
-### MAIN BLOCK (25-45 minutes, 6-10 exercises)
-Organised into labelled sections:
-- "Strength A" (compound movements, 3-4 exercises)
-- "Strength B / Accessory Work" (isolation/assistance, 3-4 exercises)
-- "Conditioning Finisher" (optional, 1-2 exercises or circuit)
-
-Each exercise MUST include ALL of:
-- Exercise name
-- Sets × reps (or duration for time-based)
-- Rest period (60-90s hypertrophy, 90-120s strength, 20-30s circuits)
-- Tempo notation where applicable (e.g., "3-1-1" = 3s eccentric, 1s pause, 1s concentric)
-- RPE target for that specific exercise
-- One specific biomechanical coaching cue (not generic)
-
-Example format:
-"Barbell Romanian Deadlift — 3×12 @ RPE 7 | Rest: 90s | Tempo: 3-1-1 | Cue: Hinge at hips with soft knees, bar tracks along thighs, feel the stretch through hamstrings before driving hips forward"
-
-### COOL-DOWN (5-10 minutes, 4-6 stretches)
-List specific named stretches with:
-- Hold time (30-60s)
-- Target muscle group
-- Bilateral notation (per side where applicable)
-
-Examples:
-- "Pigeon stretch — 45s each side (hip flexors, glutes)"
-- "Doorway pec stretch — 30s each side (pectorals, anterior deltoid)"
-- "Standing figure-4 — 30s each side (piriformis, external rotators)"
-- "Supine hamstring stretch with strap — 45s each side (hamstrings)"
-- NEVER write "cool down stretch" or "full body static stretch"
-
-═══ GOAL PRIORITY WEIGHTING ═══
-
-When multiple goals are selected, blend programming:
-- Lose weight + Build muscle → 3 full-body strength + 2 HIIT/metabolic conditioning + 1 Zone 2 + 1 active recovery
-- Lose weight + Tone & define → 3 circuit-style strength + 2 HIIT + 1 steady-state + 1 mobility
-- Build muscle + More energy → 4 hypertrophy (Push/Pull/Legs/Full Body) + 2 low-intensity cardio + 1 mobility
-- Build endurance + Lose weight → 3 progressive run/cycle + 2 strength + 1 HIIT + 1 rest
-- Fix posture + any goal → Add 15-min corrective block to every session: wall angels × 10, face pulls × 15, dead bugs × 10 each, hip flexor stretch × 30s each, thoracic extension over roller × 10, chin tucks × 15
-- Stress relief + any goal → Replace 1 HIIT with yoga flow; all sessions end with 5-min diaphragmatic breathing
-- Improve flexibility + any goal → All warm-ups use dynamic mobility; add 15-min post-session PNF stretching
-- More energy + any goal → Prioritise morning sessions, Zone 2 cardio, no sessions over 50 min
-
-═══ CYCLE PHASE INTENSITY MODIFIERS ═══
-
-- Menstrual (days 1-5): Cap at RPE 6. Max 1 strength session. Prioritise yoga, walking, gentle mobility. Reduce volume 30%.
-- Follicular (days 6-13): Full intensity. RPE 7-8. Progressive overload window. 3-4 strength sessions.
-- Ovulatory (days 14-16): Peak performance. RPE 8-9. Power and speed work. Attempt PRs.
-- Luteal early (days 17-22): RPE 7. Moderate volume. Steady-state preferred over HIIT.
-- Luteal late (days 23-28): RPE 5-6. Reduce volume 20%. Swap HIIT for walking. Prioritise recovery.
-
-═══ EVIDENCE REFERENCES (weave naturally into coaching notes) ═══
-- Progressive overload: Schoenfeld et al. (2017) meta-analysis
-- Combination training for fat loss: Willis et al. (2012)
-- EPOC and HIIT: Børsheim & Bahr (2003)
-- Glute activation: Contreras et al. (2015) EMG data
-- Deload and supercompensation: Kiely (2012)
-- Zone 2 and mitochondrial biogenesis: Holloszy (1967), Seiler (2010)
-- Female-specific periodisation: Wikström-Frisén et al. (2017)
-
-═══ AI PLAN SUMMARY ═══
-- Mention selected goals by name
-- Explain the 4-week arc (what changes week to week)
-- Reference one specific evidence-based principle
-- Under 90 words
-- End with: "Your first session is ready in the Today tab."
-
-═══ TEXT QUALITY (CRITICAL) ═══
-- NEVER repeat filler words or phrases. No "point!", "finish", "block", or any word repeated more than once in a row.
-- Exercise names must be clean and concise: "Barbell Romanian Deadlift", NOT "Barbell Romanian Deadlift lower body hinge exercise point! point!"
-- Coaching cues must be specific and professional. One clear sentence.
-- Section labels must be clean: "Strength A — Posterior Chain", NOT "Strength A — Posterior Chain Maximal Hypertrophy and Strength Phase point! point!"
-- Warm-up names: "Banded Clamshells", NOT "Banded Clamshells (Dynamic) lateral hip activation and mobility warm up move point!"
-- Keep all names SHORT. Maximum 4-5 words for exercise names.`;
+function getCyclePhase(cycleDay: number): string {
+  if (cycleDay <= 5) return "Menstrual";
+  if (cycleDay <= 13) return "Follicular";
+  if (cycleDay <= 16) return "Ovulatory";
+  return "Luteal";
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { goals, phase, cycleDay, fitnessLevel, equipment, injuries, sessionTime } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const goalsList = (goals as string[]).join(", ");
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-    const userPrompt = `Create a 4-week workout plan for a woman with these goals: ${goalsList}.
-She is currently in her ${phase} phase (cycle day ${cycleDay}).
-${fitnessLevel ? `Fitness level: ${fitnessLevel}` : "Fitness level: intermediate"}
-${equipment ? `Available equipment: ${equipment}` : "Available equipment: dumbbells, resistance bands, bodyweight"}
-${injuries ? `Injuries/limitations: ${injuries}` : "No known injuries"}
-${sessionTime ? `Preferred session duration: ${sessionTime} minutes` : "Preferred session duration: 45-60 minutes"}
+    // Fetch exercises from DB
+    const { data: exercises } = await supabase
+      .from("exercises")
+      .select("id, name, body_part, category, primary_muscles, equipment, cues, difficulty")
+      .limit(500);
 
-Generate all 28 sessions (7 days × 4 weeks) following ALL programming principles, progressive overload rules, and session structure requirements.
-
-CRITICAL REQUIREMENTS:
-- Every session warm_up must list 5-7 specific dynamic exercises with reps/duration
-- Every main_block must have 6-10 exercises across labelled sections (Strength A, Accessory Work, Conditioning Finisher)
-- Every exercise must include sets, reps_or_duration, rest period, tempo, RPE, and a specific biomechanical coaching cue
-- Every cool_down must list 4-6 specific named stretches with hold times and target muscles
-- Apply cycle phase intensity modifiers to the current phase
-- Apply progressive overload across weeks (Foundation → Build → Peak → Deload)
-
-Return the complete plan using the create_workout_plan function.`;
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: userPrompt },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "create_workout_plan",
-            description: "Create a structured 4-week evidence-based workout plan with comprehensive session details including specific warm-ups, multi-section main blocks, and targeted cool-downs",
-            parameters: {
-              type: "object",
-              properties: {
-                summary: {
-                  type: "string",
-                  description: "3-5 sentence plan summary mentioning goals, 4-week arc, and evidence-based principle. End with: Your first session is ready in the Today tab."
-                },
-                weeks: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      week: { type: "number" },
-                      theme: { type: "string", enum: ["Foundation", "Build", "Peak", "Deload"] },
-                      days: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            day: { type: "number", description: "1-7 (Mon-Sun)" },
-                            name: { type: "string", description: "e.g. Lower Body Strength (Foundation)" },
-                            category: { type: "string", enum: ["strength", "cardio", "hiit", "yoga", "mobility", "circuit", "active-recovery", "rest"] },
-                            durationMin: { type: "number" },
-                            intensity: { type: "string", enum: ["low", "moderate", "high", "very-high"] },
-                            rpe_range: { type: "string", description: "e.g. RPE 6-7, RPE 8-9" },
-                            warm_up: {
-                              type: "array",
-                              description: "5-7 specific dynamic movements with reps/duration, specific to session type",
-                              items: {
-                                type: "object",
-                                properties: {
-                                  name: { type: "string", description: "Specific exercise name e.g. Leg swings, Banded clamshells" },
-                                  duration: { type: "string", description: "e.g. 10 each side, 15 reps, 30 sec, 10m" }
-                                },
-                                required: ["name", "duration"]
-                              }
-                            },
-                            main_block: {
-                              type: "array",
-                              description: "2-3 sections (Strength A, Accessory Work, Conditioning Finisher) with 6-10 total exercises",
-                              items: {
-                                type: "object",
-                                properties: {
-                                  section_label: { type: "string", description: "e.g. Strength A — Compound Lifts, Accessory Work — Posterior Chain, Conditioning Finisher" },
-                                  exercises: {
-                                    type: "array",
-                                    items: {
-                                      type: "object",
-                                      properties: {
-                                        name: { type: "string" },
-                                        sets: { type: "number" },
-                                        reps_or_duration: { type: "string", description: "e.g. 12, 10 per side, 40 sec, 30 sec hold" },
-                                        rest: { type: "string", description: "e.g. 60 sec, 90 sec, 20 sec" },
-                                        tempo: { type: "string", description: "e.g. 3-1-1, 2-0-1, controlled, explosive" },
-                                        rpe: { type: "string", description: "e.g. RPE 7, RPE 8-9" },
-                                        form_cue: { type: "string", description: "Specific biomechanical coaching cue for this exercise" }
-                                      },
-                                      required: ["name", "sets", "reps_or_duration", "rest", "form_cue"]
-                                    }
-                                  }
-                                },
-                                required: ["section_label", "exercises"]
-                              }
-                            },
-                            cool_down: {
-                              type: "array",
-                              description: "4-6 specific named stretches with hold times and target muscle groups",
-                              items: {
-                                type: "object",
-                                properties: {
-                                  name: { type: "string", description: "Specific stretch name e.g. Pigeon stretch, Doorway pec stretch" },
-                                  duration: { type: "string", description: "e.g. 45s each side, 30s hold, 60s" },
-                                  target: { type: "string", description: "Target muscle group e.g. hip flexors/glutes, hamstrings" }
-                                },
-                                required: ["name", "duration", "target"]
-                              }
-                            },
-                            coaching_note: { type: "string", description: "Evidence-based coaching insight for this session, referencing relevant research" }
-                          },
-                          required: ["day", "name", "category", "durationMin", "intensity", "warm_up", "main_block", "cool_down", "coaching_note"]
-                        }
-                      }
-                    },
-                    required: ["week", "theme", "days"]
-                  }
-                }
-              },
-              required: ["summary", "weeks"],
-              additionalProperties: false
-            }
-          }
-        }],
-        tool_choice: { type: "function", function: { name: "create_workout_plan" } },
-      }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited — please try again in a moment." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+    const exercisesByPart: Record<string, any[]> = {};
+    const exercisesByCat: Record<string, any[]> = {};
+    for (const ex of (exercises || [])) {
+      if (ex.body_part) {
+        if (!exercisesByPart[ex.body_part]) exercisesByPart[ex.body_part] = [];
+        exercisesByPart[ex.body_part].push(ex);
       }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+      if (ex.category) {
+        if (!exercisesByCat[ex.category]) exercisesByCat[ex.category] = [];
+        exercisesByCat[ex.category].push(ex);
       }
-      const t = await response.text();
-      console.error("AI error:", response.status, t);
-      throw new Error("AI gateway error");
     }
 
-    const data = await response.json();
-    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    if (!toolCall) throw new Error("No tool call in response");
+    const goalsList = (goals as string[]) || ["Tone & define"];
+    const primaryGoal = goalsList[0] || "default";
+    const pattern = WEEKLY_PATTERNS[primaryGoal] || WEEKLY_PATTERNS.default;
+    const currentPhase = getCyclePhase(cycleDay || 14);
+    const phaseConfig = PHASE_CONFIG[currentPhase] || PHASE_CONFIG.Follicular;
 
-    const plan = JSON.parse(toolCall.function.arguments);
+    const summary = `Your 4-week ${goalsList.join(" & ")} program adapts to your ${currentPhase.toLowerCase()} phase. ${phaseConfig.note} Progressive overload builds across Foundation → Build → Peak → Deload weeks. Your first session is ready in the Today tab.`;
 
-    return new Response(JSON.stringify(plan), {
+    const weeks = WEEK_THEMES.map((weekTheme, wi) => {
+      const days = pattern.map((templateIdx, di) => {
+        const dayNum = di + 1;
+        if (templateIdx === -1) {
+          return {
+            day: dayNum,
+            name: "Rest Day",
+            category: "rest",
+            durationMin: 0,
+            intensity: "none",
+            rpe_range: "N/A",
+            warm_up: [],
+            main_block: [],
+            cool_down: [],
+            coaching_note: "Full rest. Hydrate, stretch gently if desired. Your body grows stronger during recovery.",
+          };
+        }
+
+        const template = SESSION_TEMPLATES[templateIdx];
+        const weekName = `${template.name} (${weekTheme.theme})`;
+        const effectiveRpe = Math.min(
+          parseInt(weekTheme.rpeRange.replace(/\D/g, "").slice(-1)) || 7,
+          phaseConfig.rpeMax
+        );
+
+        // Build main block from DB exercises
+        const mainBlock = template.sections.map(section => {
+          const pool = section.exerciseQuery.body_part
+            ? (exercisesByPart[section.exerciseQuery.body_part] || [])
+            : (exercisesByCat[section.exerciseQuery.category || "strength"] || []);
+
+          // Deterministic selection using week + day as seed
+          const offset = (wi * 7 + di) * 3;
+          const selected = pool.slice(offset % Math.max(1, pool.length - section.exerciseQuery.limit), offset % Math.max(1, pool.length - section.exerciseQuery.limit) + section.exerciseQuery.limit);
+          if (selected.length === 0 && pool.length > 0) {
+            selected.push(...pool.slice(0, section.exerciseQuery.limit));
+          }
+
+          return {
+            section_label: section.label,
+            exercises: selected.map(ex => ({
+              name: ex.name,
+              sets: weekTheme.sets,
+              reps_or_duration: template.category === "hiit" ? "40 sec" : "12",
+              rest: template.category === "hiit" ? "20 sec" : "90 sec",
+              tempo: "2-1-1",
+              rpe: `RPE ${effectiveRpe}`,
+              form_cue: ex.cues?.[0] || "Control the movement through full range of motion.",
+            })),
+          };
+        });
+
+        return {
+          day: dayNum,
+          name: weekName,
+          category: template.category,
+          durationMin: template.durationMin,
+          intensity: template.intensity,
+          rpe_range: `RPE ${Math.max(5, effectiveRpe - 1)}-${effectiveRpe}`,
+          warm_up: template.warm_up,
+          main_block: mainBlock,
+          cool_down: template.cool_down,
+          coaching_note: `${weekTheme.theme} week: ${phaseConfig.note}`,
+        };
+      });
+
+      return { week: wi + 1, theme: weekTheme.theme, days };
+    });
+
+    return new Response(JSON.stringify({ summary, weeks }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e: any) {

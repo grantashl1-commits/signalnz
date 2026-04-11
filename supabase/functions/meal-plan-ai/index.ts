@@ -6,88 +6,159 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const PHASE_GUIDANCE: Record<string, string> = {
-  menstrual: `Days 1-5 MENSTRUAL phase:
-- Iron-rich foods CRITICAL: lentils, leafy greens (spinach, silverbeet), red meat, beetroot, tofu
-- Pair iron sources with vitamin C (capsicum, kiwifruit, citrus) for absorption — avoid tea/coffee with iron-rich meals
-- Magnesium: dark chocolate (70%+), pumpkin seeds, almonds, cashews
-- Anti-inflammatory: turmeric golden milk, ginger tea, salmon, walnuts
-- Warming, easy-to-digest: bone broth soups, slow-cooked stews, porridge with nut butter
-- Omega-3 for prostaglandin balance: salmon, sardines, chia seeds, flaxseed
-- REDUCE: caffeine (increases cramping), alcohol, processed sugar, excess salt
-- Calorie needs are slightly elevated — do NOT restrict. Honour hunger signals.
-- Hydration: warm water with lemon, herbal teas (raspberry leaf, chamomile)`,
+// ═══ COMPLETE RECIPE BANK (from reference PDFs) ═══
+interface Recipe {
+  name: string;
+  phase: string[];
+  mealType: string[];
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  prepTime: string;
+  serves: number;
+  ingredients: string[];
+  method: string[];
+  keyNutrients: string[];
+  nutritionalNote: string;
+  tags: string[];
+}
 
-  follicular: `Days 6-13 FOLLICULAR phase:
-- Rising oestrogen supports muscle protein synthesis — ideal time for higher protein intake
-- Light, fresh, energising meals — appetite naturally lower
-- High fibre: whole grains, legumes, cruciferous vegetables (broccoli, cauliflower)
-- Fermented foods for oestrogen metabolism: kimchi, miso, natural yoghurt, sauerkraut, kefir
-- Zinc (supports rising FSH): oysters, pumpkin seeds, chickpeas, red meat
-- B vitamins for energy metabolism: eggs, leafy greens, whole grains
-- Higher carb tolerance — use this window for complex carbs to fuel training
-- Phytoestrogens: flaxseed, sesame seeds, tempeh
-- Experiment with new recipes — cognitive function and creativity peak`,
+const RECIPE_BANK: Recipe[] = [
+  // ── MENSTRUAL PHASE ──
+  { name: "Signal Sunrise Bowl", phase: ["menstrual"], mealType: ["breakfast"], calories: 340, protein: 12, carbs: 42, fat: 15, prepTime: "10 min", serves: 1, ingredients: ["½ cup rolled oats","¼ cup mixed berries","1 tbsp peanut butter","1 tbsp chia seeds","1 cup oat milk","1 tsp honey"], method: ["1. Cook oats with oat milk for 5 minutes","2. Top with berries, peanut butter, and chia seeds","3. Drizzle with honey"], keyNutrients: ["Iron","Fibre","Magnesium"], nutritionalNote: "Warming oats with iron-supporting chia and magnesium from peanut butter — ideal for early menstrual phase.", tags: ["vegetarian","quick"] },
+  { name: "Signal Iron Restore Bowl", phase: ["menstrual"], mealType: ["lunch"], calories: 380, protein: 20, carbs: 44, fat: 14, prepTime: "20 min", serves: 1, ingredients: ["1 cup cooked lentils","2 cups baby spinach","½ beetroot, roasted","1 orange, segmented","1 tbsp tahini","1 tsp lemon juice"], method: ["1. Arrange spinach as base","2. Top with warm lentils and roasted beetroot","3. Add orange segments","4. Drizzle with tahini and lemon juice"], keyNutrients: ["Iron","Vitamin C","Folate","Protein 20g"], nutritionalNote: "Iron-rich lentils and spinach paired with vitamin C from orange for maximum absorption.", tags: ["vegan","iron-rich"] },
+  { name: "Signal Golden Immunity Soup", phase: ["menstrual"], mealType: ["dinner"], calories: 360, protein: 14, carbs: 46, fat: 14, prepTime: "30 min", serves: 2, ingredients: ["1 large kumara, cubed","1 cup red lentils","1 can coconut milk","2 tsp turmeric","1 tsp ginger, grated","4 cups vegetable stock","1 tbsp olive oil"], method: ["1. Sauté ginger in olive oil for 1 minute","2. Add kumara and cook 3 minutes","3. Add lentils, stock, turmeric, and coconut milk","4. Simmer 20 minutes until tender","5. Blend until smooth"], keyNutrients: ["Turmeric","Iron","Vitamin A","Protein 14g"], nutritionalNote: "Anti-inflammatory turmeric and warming kumara support comfort during menstruation.", tags: ["vegan","warming","anti-inflammatory"] },
+  { name: "Signal Warming Miso Ramen", phase: ["menstrual"], mealType: ["dinner"], calories: 440, protein: 22, carbs: 52, fat: 16, prepTime: "25 min", serves: 1, ingredients: ["200g ramen noodles","150g firm tofu, cubed","2 cups bok choy","2 tbsp miso paste","4 cups dashi or veg stock","1 tbsp sesame oil","1 spring onion, sliced"], method: ["1. Dissolve miso in warm stock","2. Cook noodles per package instructions","3. Pan-fry tofu in sesame oil until golden","4. Blanch bok choy in broth","5. Assemble bowl: noodles, broth, tofu, bok choy, spring onion"], keyNutrients: ["Iron","Protein 22g","Magnesium","B12"], nutritionalNote: "Warming miso broth with plant protein — comforting and easily digestible during menstrual phase.", tags: ["vegetarian","warming"] },
+  { name: "Signal Anti-Inflammatory Curry", phase: ["menstrual"], mealType: ["dinner"], calories: 420, protein: 16, carbs: 46, fat: 18, prepTime: "35 min", serves: 2, ingredients: ["1 can chickpeas","1 small cauliflower, florets","1 can coconut milk","2 tbsp curry paste","2 tsp turmeric","1 cup brown rice","1 tbsp coconut oil"], method: ["1. Sauté curry paste and turmeric in coconut oil","2. Add cauliflower and cook 5 minutes","3. Add chickpeas and coconut milk","4. Simmer 20 minutes","5. Serve over brown rice"], keyNutrients: ["Turmeric","Iron","Fibre","Protein 16g"], nutritionalNote: "Turmeric and chickpeas provide anti-inflammatory and iron support.", tags: ["vegan","anti-inflammatory"] },
+  { name: "Signal Omega-3 Breakfast Bowl", phase: ["menstrual"], mealType: ["breakfast"], calories: 420, protein: 14, carbs: 52, fat: 18, prepTime: "5 min (overnight)", serves: 1, ingredients: ["½ cup rolled oats","1 tbsp chia seeds","1 tbsp hemp hearts","2 tbsp walnuts, crushed","1 cup almond milk","1 tbsp maple syrup","¼ cup blueberries"], method: ["1. Combine oats, chia, hemp, walnuts, and milk in jar","2. Refrigerate overnight","3. Top with blueberries and maple syrup"], keyNutrients: ["Omega-3","Magnesium","Iron","Fibre"], nutritionalNote: "Triple omega-3 sources support prostaglandin balance during menstruation.", tags: ["vegan","overnight","omega-3"] },
+  { name: "Signal Date Cacao Bliss Balls", phase: ["menstrual","follicular","ovulatory","luteal"], mealType: ["snack"], calories: 120, protein: 2, carbs: 14, fat: 6, prepTime: "15 min", serves: 10, ingredients: ["1 cup medjool dates, pitted","½ cup almonds","2 tbsp cacao powder","1 tbsp coconut oil","pinch sea salt"], method: ["1. Blend all ingredients in food processor","2. Roll into 10 balls","3. Refrigerate 30 minutes"], keyNutrients: ["Magnesium","Iron","Antioxidants"], nutritionalNote: "Magnesium-rich cacao and natural sugars from dates for a quick energy boost.", tags: ["vegan","batch-prep","snack"] },
+  { name: "Signal Carrot Cake Bliss Balls", phase: ["menstrual","follicular","ovulatory","luteal"], mealType: ["snack"], calories: 110, protein: 2, carbs: 16, fat: 4, prepTime: "15 min", serves: 10, ingredients: ["1 cup oats","½ cup grated carrot","¼ cup dates","2 tbsp coconut","1 tsp cinnamon","1 tbsp maple syrup"], method: ["1. Pulse oats in blender until flour-like","2. Mix all ingredients","3. Roll into 10 balls","4. Refrigerate"], keyNutrients: ["Vitamin A","Fibre","Cinnamon"], nutritionalNote: "Naturally sweet with fibre and beta-carotene from carrots.", tags: ["vegan","batch-prep","snack"] },
 
-  ovulatory: `Days 14-16 OVULATORY phase:
-- Anti-inflammatory, antioxidant-rich foods to support ovulation
-- Raw or lightly cooked vegetables — digestive capacity is strong
-- Cruciferous vegetables support oestrogen detoxification: broccoli sprouts, kale, Brussels sprouts
-- Seeds: sunflower seeds, sesame seeds (lignans support progesterone)
-- Citrus, berries, dark leafy greens for antioxidants
-- Light and fresh — appetite naturally at its lowest
-- Fibre is key for excess oestrogen clearance: 30g+ daily target
-- Avoid inflammatory triggers: refined sugar, alcohol, processed oils
-- Glutathione supporters: asparagus, avocado, garlic`,
+  // ── FOLLICULAR PHASE ──
+  { name: "Signal Garden Frittata", phase: ["follicular"], mealType: ["breakfast"], calories: 243, protein: 18, carbs: 3, fat: 18, prepTime: "20 min", serves: 2, ingredients: ["4 large eggs","2 cups baby spinach","4 rashers streaky bacon, chopped","½ cup cherry tomatoes","¼ cup feta cheese","1 tbsp olive oil","salt and pepper"], method: ["1. Preheat oven to 180°C","2. Sauté bacon in olive oil until crisp","3. Add spinach and cook until wilted","4. Pour beaten eggs over, add tomatoes and feta","5. Bake 12-15 minutes until set"], keyNutrients: ["Protein 18g","B12","Iron","Zinc"], nutritionalNote: "High-protein start with zinc and B12 to match rising energy in follicular phase.", tags: ["high-protein","keto-friendly"] },
+  { name: "Signal Spring Grain Bowl", phase: ["follicular"], mealType: ["lunch"], calories: 460, protein: 20, carbs: 48, fat: 22, prepTime: "25 min", serves: 1, ingredients: ["1 cup cooked quinoa","½ cup edamame","½ avocado, sliced","2 tbsp kimchi","1 tbsp sesame seeds","1 tbsp soy sauce","1 tsp sesame oil"], method: ["1. Arrange quinoa as base","2. Top with edamame, avocado, kimchi","3. Sprinkle sesame seeds","4. Drizzle soy sauce and sesame oil"], keyNutrients: ["Protein 20g","Probiotics","Omega-3","Zinc"], nutritionalNote: "Fermented kimchi supports oestrogen metabolism, quinoa provides complete protein.", tags: ["vegetarian","fermented"] },
+  { name: "Signal Citrus Tempeh Salad", phase: ["follicular"], mealType: ["lunch"], calories: 420, protein: 24, carbs: 34, fat: 20, prepTime: "20 min", serves: 1, ingredients: ["200g tempeh, sliced","1 orange, segmented","2 cups mixed greens","2 tbsp tahini","1 tbsp lemon juice","1 tsp maple syrup","1 tbsp olive oil"], method: ["1. Pan-fry tempeh in olive oil until golden","2. Arrange greens with orange segments","3. Top with warm tempeh","4. Whisk tahini, lemon, maple for dressing","5. Drizzle over salad"], keyNutrients: ["Protein 24g","Phytoestrogens","Vitamin C","Iron"], nutritionalNote: "Tempeh provides phytoestrogens supporting the follicular phase, vitamin C aids iron absorption.", tags: ["vegan","phytoestrogen"] },
+  { name: "Signal Herbed Chickpea Flatbread", phase: ["follicular"], mealType: ["lunch","dinner"], calories: 380, protein: 16, carbs: 36, fat: 18, prepTime: "25 min", serves: 2, ingredients: ["1 cup chickpea flour","1 cup water","2 tbsp olive oil","¼ cup hummus","1 cup rocket","½ cup cherry tomatoes","salt, herbs"], method: ["1. Whisk chickpea flour, water, 1 tbsp oil, salt","2. Rest batter 15 minutes","3. Cook in oiled pan like a pancake, 3 min each side","4. Top with hummus, rocket, tomatoes"], keyNutrients: ["Protein 16g","Iron","Fibre","Folate"], nutritionalNote: "Chickpea flour provides plant protein and iron for the energising follicular phase.", tags: ["vegan","high-fibre"] },
+  { name: "Signal Hormone Balance Smoothie", phase: ["follicular"], mealType: ["breakfast","snack"], calories: 340, protein: 14, carbs: 40, fat: 14, prepTime: "5 min", serves: 1, ingredients: ["1 cup frozen berries","1 tbsp ground flaxseed","1 cup soy milk","1 banana","1 tbsp almond butter","1 tsp maca powder"], method: ["1. Blend all ingredients until smooth","2. Pour into glass and serve immediately"], keyNutrients: ["Phytoestrogens","Omega-3","Fibre","Protein 14g"], nutritionalNote: "Flaxseed and soy provide phytoestrogens to support rising oestrogen in follicular phase.", tags: ["vegan","quick","smoothie"] },
+  { name: "Signal Seed Cycling Granola", phase: ["follicular","ovulatory","luteal","menstrual"], mealType: ["snack","breakfast"], calories: 220, protein: 6, carbs: 24, fat: 12, prepTime: "30 min", serves: 8, ingredients: ["2 cups rolled oats","¼ cup pumpkin seeds","¼ cup sunflower seeds","¼ cup flaxseed","2 tbsp honey","2 tbsp coconut oil","1 tsp cinnamon"], method: ["1. Mix oats, seeds, cinnamon","2. Melt coconut oil with honey","3. Combine and spread on baking tray","4. Bake at 160°C for 20 minutes, stirring halfway","5. Cool completely before storing"], keyNutrients: ["Zinc","Selenium","Omega-3","Fibre"], nutritionalNote: "Seed cycling granola with phase-supporting seeds for hormonal balance.", tags: ["vegan","batch-prep"] },
 
-  luteal: `Days 17-28 LUTEAL phase:
-- Progesterone rises → higher basal metabolic rate (~100-300 cal/day increase)
-- Magnesium and B6 to ease PMS: banana, avocado, turkey, lentils, sunflower seeds
-- Complex carbs to stabilise blood sugar and support serotonin: sweet potato, oats, brown rice, quinoa
-- Calcium (1000mg target): dairy, fortified plant milks, tahini, sardines with bones
-- Healthy fats to support progesterone: avocado, olive oil, nuts, fatty fish
-- REDUCE: salt (reduces bloating), refined sugar, alcohol, caffeine
-- Warming, sustaining, comforting meals — soups, curries, roasted vegetables
-- Higher calorie needs are NORMAL — do not restrict. Add an extra snack if needed.
-- Cravings are physiological — redirect to nutrient-dense alternatives (dark chocolate not milk chocolate, roasted chickpeas not chips)
-- Late luteal: increase anti-inflammatory foods as prostaglandin production ramps up`,
-};
+  // ── OVULATORY PHASE ──
+  { name: "Signal Rainbow Nourish Plate", phase: ["ovulatory"], mealType: ["lunch"], calories: 420, protein: 14, carbs: 48, fat: 20, prepTime: "20 min", serves: 1, ingredients: ["1 cup cooked quinoa","½ mango, diced","½ avocado, sliced","2 tbsp pumpkin seeds","1 cup mixed salad greens","1 tbsp lime juice","1 tbsp olive oil"], method: ["1. Arrange quinoa on plate","2. Top with greens, mango, avocado","3. Sprinkle pumpkin seeds","4. Dress with lime juice and olive oil"], keyNutrients: ["Vitamin C","Vitamin E","Antioxidants","Protein 14g"], nutritionalNote: "Antioxidant-rich plate supporting ovulation with vitamin E from pumpkin seeds.", tags: ["vegan","raw-friendly"] },
+  { name: "Signal Green Goddess Wrap", phase: ["ovulatory"], mealType: ["lunch"], calories: 360, protein: 14, carbs: 34, fat: 20, prepTime: "10 min", serves: 1, ingredients: ["1 large wholemeal wrap","½ avocado, mashed","1 cup sprouts","2 tbsp hemp seeds","½ cup grated carrot","1 tbsp lemon juice","pinch salt"], method: ["1. Spread mashed avocado on wrap","2. Layer sprouts, carrot, hemp seeds","3. Squeeze lemon juice, season","4. Roll tightly and slice"], keyNutrients: ["Omega-3","Fibre","Folate","Protein 14g"], nutritionalNote: "Light and raw-leaning wrap perfect for peak digestive capacity during ovulation.", tags: ["vegan","quick","raw-friendly"] },
+  { name: "Signal Protein Recovery Bowl", phase: ["ovulatory"], mealType: ["dinner"], calories: 460, protein: 22, carbs: 44, fat: 20, prepTime: "25 min", serves: 1, ingredients: ["1 cup cooked quinoa","½ cup edamame","100g grilled chicken breast","½ cup roasted capsicum","2 tbsp tahini","1 tbsp soy sauce","1 cup baby spinach"], method: ["1. Arrange quinoa as base","2. Top with spinach, chicken, edamame, capsicum","3. Drizzle tahini and soy sauce"], keyNutrients: ["Protein 22g","Iron","Zinc","Complete amino acids"], nutritionalNote: "High-protein recovery bowl to support peak training during ovulatory phase.", tags: ["high-protein","post-workout"] },
+  { name: "Signal Mango Cashew Sushi Bowl", phase: ["ovulatory"], mealType: ["lunch","dinner"], calories: 440, protein: 14, carbs: 58, fat: 18, prepTime: "20 min", serves: 1, ingredients: ["1 cup sushi rice, cooked","½ mango, sliced","¼ cup cashews","½ avocado","1 tbsp rice vinegar","1 sheet nori, shredded","1 tbsp soy sauce"], method: ["1. Season rice with rice vinegar","2. Arrange rice in bowl","3. Top with mango, avocado, cashews, nori","4. Drizzle soy sauce"], keyNutrients: ["Vitamin C","Vitamin E","Healthy fats","Manganese"], nutritionalNote: "Light, antioxidant-rich bowl for ovulatory phase when appetite is naturally lower.", tags: ["vegan","light"] },
 
-const GOAL_GUIDANCE: Record<string, string> = {
-  "lose-weight": `WEIGHT LOSS PROTOCOL:
-- Moderate deficit: 300-500 cal below TDEE (never below BMR)
-- Protein priority: 1.6-2.0g/kg to preserve lean mass during deficit (Phillips, 2014)
-- High-satiety strategy: 30g+ fibre/day, protein at every meal, volume eating with vegetables
-- Meal timing: front-load calories (larger breakfast/lunch, lighter dinner)
-- Do NOT restrict during menstrual phase — the deficit creates itself through the cycle`,
+  // ── LUTEAL PHASE ──
+  { name: "Signal Magnesium Power Bowl", phase: ["luteal"], mealType: ["lunch","dinner"], calories: 480, protein: 18, carbs: 58, fat: 20, prepTime: "30 min", serves: 1, ingredients: ["1 cup cooked brown rice","1 medium kumara, roasted","2 cups kale, massaged","2 tbsp tahini","1 tbsp lemon juice","1 tbsp pumpkin seeds","pinch sea salt"], method: ["1. Roast kumara at 200°C for 25 minutes","2. Massage kale with lemon juice and salt","3. Arrange rice, kale, kumara in bowl","4. Drizzle tahini, sprinkle pumpkin seeds"], keyNutrients: ["Magnesium","Vitamin A","Iron","Protein 18g"], nutritionalNote: "Magnesium-rich tahini and pumpkin seeds help ease PMS symptoms in the luteal phase.", tags: ["vegan","magnesium-rich"] },
+  { name: "Signal Comfort Dhal", phase: ["luteal"], mealType: ["dinner"], calories: 400, protein: 18, carbs: 42, fat: 18, prepTime: "30 min", serves: 2, ingredients: ["1 cup yellow lentils","1 can coconut milk","2 cups baby spinach","2 tsp cumin","1 tsp turmeric","1 onion, diced","2 cloves garlic","1 tbsp coconut oil"], method: ["1. Sauté onion and garlic in coconut oil","2. Add cumin and turmeric, cook 1 minute","3. Add lentils and coconut milk with 2 cups water","4. Simmer 20 minutes until lentils soft","5. Stir in spinach until wilted","6. Season with salt"], keyNutrients: ["Protein 18g","Iron","Magnesium","B6"], nutritionalNote: "Warming, sustaining dhal with magnesium and B6 to support progesterone and ease PMS.", tags: ["vegan","warming","batch-friendly"] },
+  { name: "Signal PMS Ease Stew", phase: ["luteal"], mealType: ["dinner"], calories: 340, protein: 16, carbs: 48, fat: 6, prepTime: "35 min", serves: 2, ingredients: ["1 small pumpkin, cubed","1 can black beans","1 can diced tomatoes","1 tsp cumin","1 tsp smoked paprika","1 onion, diced","2 cups vegetable stock"], method: ["1. Sauté onion with spices","2. Add pumpkin, beans, tomatoes, stock","3. Simmer 25 minutes until pumpkin tender","4. Season and serve"], keyNutrients: ["Magnesium","Fibre","Vitamin A","Iron"], nutritionalNote: "Low-fat, high-fibre stew with magnesium-rich pumpkin and iron from black beans.", tags: ["vegan","low-fat","batch-friendly"] },
+  { name: "Signal Adaptogen Hot Cacao", phase: ["luteal"], mealType: ["snack"], calories: 180, protein: 4, carbs: 28, fat: 6, prepTime: "5 min", serves: 1, ingredients: ["1 cup oat milk","2 tbsp raw cacao powder","1 tsp maca powder","1 tsp honey","pinch cinnamon"], method: ["1. Heat oat milk gently","2. Whisk in cacao, maca, cinnamon","3. Sweeten with honey","4. Pour and enjoy warm"], keyNutrients: ["Magnesium","Antioxidants","Adaptogens","Iron"], nutritionalNote: "Warming cacao with maca adaptogen helps manage luteal phase stress and cravings.", tags: ["vegan","warming","quick"] },
+  { name: "Signal Berry Bircher", phase: ["luteal"], mealType: ["breakfast"], calories: 380, protein: 12, carbs: 52, fat: 14, prepTime: "5 min (overnight)", serves: 1, ingredients: ["½ cup rolled oats","½ cup Greek yoghurt","½ cup almond milk","¼ cup mixed berries","1 tbsp chia seeds","1 tbsp maple syrup","1 tbsp sliced almonds"], method: ["1. Combine oats, yoghurt, milk, chia in jar","2. Refrigerate overnight","3. Top with berries, almonds, maple syrup"], keyNutrients: ["Calcium","Magnesium","Protein 12g","Fibre"], nutritionalNote: "Calcium and magnesium support luteal phase, complex carbs stabilise blood sugar.", tags: ["vegetarian","overnight"] },
+  { name: "Signal Savoury Egg Bites", phase: ["luteal"], mealType: ["breakfast","snack"], calories: 280, protein: 20, carbs: 8, fat: 18, prepTime: "25 min", serves: 6, ingredients: ["6 large eggs","½ cup diced capsicum","¼ cup feta cheese","¼ cup chopped spinach","1 tbsp olive oil","salt and pepper"], method: ["1. Preheat oven to 180°C","2. Grease muffin tin with olive oil","3. Whisk eggs, fold in vegetables and feta","4. Pour into 6 muffin cups","5. Bake 15-18 minutes until set"], keyNutrients: ["Protein 20g","B12","Vitamin D","Choline"], nutritionalNote: "High-protein egg bites provide sustained energy and choline for luteal phase brain fog.", tags: ["high-protein","batch-prep","keto-friendly"] },
+];
 
-  "gain-muscle": `MUSCLE GAIN PROTOCOL:
-- Calorie surplus: 200-300 cal above TDEE (lean gain approach)
-- Protein: 1.8-2.2g/kg distributed across 4 meals for optimal MPS (Schoenfeld & Aragon, 2018)
-- Leucine threshold: 2.5-3g per meal (eggs, chicken, Greek yoghurt, whey)
-- Carbohydrate: 4-6g/kg for training fuel and glycogen replenishment
-- Post-workout: 30-40g protein + 1g/kg carbs within 60 minutes
-- Creatine consideration: 3-5g/day (supports female muscle gain without water retention concerns)`,
+// ═══ DETERMINISTIC PLAN BUILDER ═══
 
-  "tone-up": `BODY RECOMPOSITION PROTOCOL:
-- Maintenance calories or slight deficit (-200 cal)
-- Protein: 1.6-2.0g/kg — non-negotiable for recomp
-- Balanced macros: 30% protein, 35% carbs, 35% fat
-- Nutrient timing: carbs concentrated around training window
-- Anti-inflammatory foods to reduce water retention and improve muscle definition`,
+function getPhaseForDay(cycleDay: number): string {
+  if (cycleDay <= 5) return "menstrual";
+  if (cycleDay <= 13) return "follicular";
+  if (cycleDay <= 16) return "ovulatory";
+  return "luteal";
+}
 
-  flexibility: "Anti-inflammatory foods (turmeric, ginger, omega-3), magnesium-rich meals for muscle relaxation, collagen-supporting foods (citrus, berries, bone broth), adequate hydration for fascia health.",
-  endurance: "Complex carbs for sustained energy (4-7g/kg), iron-rich foods for oxygen transport, adequate hydration with electrolytes, moderate protein (1.4-1.6g/kg) for recovery, beetroot juice for nitric oxide.",
-  "stress-relief": "Magnesium-rich foods, B vitamins, omega-3 for brain health, tryptophan-rich foods (turkey, pumpkin seeds) for serotonin, adaptogens (ashwagandha, turmeric), limit caffeine after 12pm, complex carbs for stable mood.",
-  posture: "Anti-inflammatory support, calcium (1000mg/day) and vitamin D (600-1000 IU) for bone health, collagen-supporting foods, magnesium for muscle tension relief.",
-  energy: "B-vitamin rich foods (whole grains, eggs, nutritional yeast), iron (red meat, lentils, spinach — test if persistent fatigue), CoQ10 sources (sardines, organ meats), complex carbs for sustained energy, reduce refined sugar crashes.",
-  "Build muscle": "See gain-muscle protocol above.",
-  "Lose weight": "See lose-weight protocol above.",
-  "Tone & define": "See tone-up protocol above.",
-  strength: "Higher protein (1.8-2.2g/kg), complex carbs for energy, adequate calories to support training recovery, creatine 3-5g/day.",
-  "weight-loss": "See lose-weight protocol above.",
-  general: "Balanced, phase-focused nutrition: protein 1.2-1.6g/kg, carbs 3-5g/kg, fat 25-35% calories. Prioritise whole foods, 5+ servings vegetables/day.",
-};
+function filterRecipes(phase: string, mealType: string, dislikes: string[], dietType: string, exclude: string[]): Recipe[] {
+  return RECIPE_BANK.filter(r => {
+    if (!r.phase.includes(phase) && !r.phase.includes("menstrual") && !r.phase.includes("follicular") && !r.phase.includes("ovulatory") && !r.phase.includes("luteal")) return false;
+    // Prefer phase-specific, but allow universal snacks
+    const phaseMatch = r.phase.includes(phase) || r.phase.length === 4;
+    if (!phaseMatch) return false;
+    if (!r.mealType.includes(mealType)) return false;
+    if (exclude.includes(r.name)) return false;
+    // Filter dislikes
+    const nameLower = r.name.toLowerCase();
+    const ingredientsLower = r.ingredients.join(" ").toLowerCase();
+    for (const d of dislikes) {
+      const dl = d.toLowerCase().trim();
+      if (dl && (nameLower.includes(dl) || ingredientsLower.includes(dl))) return false;
+    }
+    // Filter diet type
+    if (dietType) {
+      const dt = dietType.toLowerCase();
+      if (dt.includes("vegan") && !r.tags.includes("vegan")) return false;
+      if (dt.includes("vegetarian") && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
+      if (dt.includes("keto") && !r.tags.includes("keto-friendly") && r.carbs > 20) return false;
+    }
+    return true;
+  });
+}
+
+function pickRecipe(phase: string, mealType: string, dislikes: string[], dietType: string, used: string[], seed: number): Recipe | null {
+  const candidates = filterRecipes(phase, mealType, dislikes, dietType, used);
+  if (candidates.length === 0) {
+    // Fallback: try any phase
+    const fallback = RECIPE_BANK.filter(r => r.mealType.includes(mealType) && !used.includes(r.name));
+    if (fallback.length === 0) return null;
+    return fallback[seed % fallback.length];
+  }
+  return candidates[seed % candidates.length];
+}
+
+function buildDayPlan(cycleDay: number, prefs: any, usedNames: string[], daySeed: number) {
+  const phase = getPhaseForDay(cycleDay);
+  const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
+  const dietType = prefs.dietType || "";
+
+  const meals: Record<string, any> = {};
+  const mealTypes = ["breakfast", "snack", "lunch", "snack", "dinner"];
+  const mealKeys = ["breakfast", "morningSnack", "lunch", "afternoonSnack", "dinner"];
+
+  for (let i = 0; i < mealTypes.length; i++) {
+    const recipe = pickRecipe(phase, mealTypes[i], dislikes, dietType, usedNames, daySeed + i * 7);
+    if (recipe) {
+      usedNames.push(recipe.name);
+      meals[mealKeys[i]] = {
+        name: recipe.name,
+        phase,
+        mealType: mealKeys[i],
+        prepTime: recipe.prepTime,
+        serves: recipe.serves,
+        calories: `~${recipe.calories} kcal`,
+        protein: `~${recipe.protein}g`,
+        ingredients: recipe.ingredients,
+        method: recipe.method,
+        nutritionalNote: recipe.nutritionalNote,
+        keyNutrients: recipe.keyNutrients,
+      };
+    }
+  }
+
+  const totalCal = Object.values(meals).reduce((sum: number, m: any) => {
+    const cal = parseInt(String(m?.calories || "0").replace(/\D/g, "")) || 0;
+    return sum + cal;
+  }, 0);
+  const totalProtein = Object.values(meals).reduce((sum: number, m: any) => {
+    const p = parseInt(String(m?.protein || "0").replace(/\D/g, "")) || 0;
+    return sum + p;
+  }, 0);
+
+  const deficiencyFlags: string[] = [];
+  if (phase === "menstrual") deficiencyFlags.push("Iron — pair with vitamin C sources", "Magnesium for cramp relief");
+  if (phase === "luteal") deficiencyFlags.push("Magnesium for PMS", "B6 for mood support", "Calcium 1000mg target");
+  if (phase === "follicular") deficiencyFlags.push("Zinc for rising FSH", "B vitamins for energy");
+
+  return {
+    cycleDay,
+    phase,
+    dailyCalories: `~${totalCal} kcal`,
+    dailyProtein: `~${totalProtein}g`,
+    hydrationTarget: "2.0-2.5L",
+    deficiencyFlags,
+    preWorkoutNote: "If training: eat 1.5 hours before. Include 30g carbs + 15g protein.",
+    postWorkoutNote: "Within 60 min post-workout: 30g protein + 40g carbs.",
+    ...meals,
+  };
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -95,345 +166,60 @@ serve(async (req) => {
   try {
     const body = await req.json();
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
-      exerciseGoal, exerciseGoalLabel, proteinTargetMin, proteinTargetMax,
-      carbEmphasis, cycleMode, weightKg, dislikedRecipeIds, startCycleDay, endCycleDay,
-      userCalorieTarget, userProteinTargetG, userCarbTargetG, userFatTargetG, userDietaryDislikes } = body;
+      startCycleDay, endCycleDay, userDietaryDislikes } = body;
 
-    // Credit check: meal plan costs 3 credits
+    // Credit check: deterministic plan costs 1 credit (down from 3)
     const userIdentifier = body.userIdentifier;
     if (userIdentifier) {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
       const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-      const cost = 3;
+      const cost = 1;
       if (credits && (credits.credits_remaining || 0) < cost) {
-        return new Response(JSON.stringify({ error: `You need ${cost} AI credits for meal plan generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: `You need ${cost} credit for meal plan generation.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (credits) {
         await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
-      } else if (!credits) {
+      } else {
         await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
       }
       await sb.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "meal-plan-ai", tokens_used: cost });
     }
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const prefs = preferences as {
-      breakfast: string; lunch: string; dinner: string;
-      prepDays: string[]; adults: number; kids: number;
-      dietType?: string; allergies?: string; dislikes?: string;
-      calorieTarget?: string; cookingSkill?: string; availableTime?: string;
-      equipment?: string[]; bodyGoal?: string; bodyGoals?: string[];
-      weight?: string; height?: string; age?: string;
+    const prefs = {
+      ...(preferences || {}),
+      userDietaryDislikes: userDietaryDislikes || [],
     };
 
-    const dislikedIds: string[] = dislikedRecipeIds || [];
-
-    const goals = prefs.bodyGoals?.length ? prefs.bodyGoals : (prefs.bodyGoal ? [prefs.bodyGoal] : ["general"]);
-    const goalAdvice = goals.map(g => GOAL_GUIDANCE[g] || GOAL_GUIDANCE.general).join("\n\n");
-
-    // Calculate TDEE if weight/height available
-    let tdeeSection = "";
-    const weight = prefs.weight ? parseFloat(prefs.weight) : null;
-    const height = prefs.height ? parseFloat(prefs.height) : null;
-    const age = prefs.age ? parseInt(prefs.age) : 30;
-    if (weight && height) {
-      const bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-      const tdee = Math.round(bmr * 1.55); // moderate activity default
-      tdeeSection = `
-ESTIMATED TDEE (Mifflin-St Jeor):
-- BMR: ~${Math.round(bmr)} kcal
-- Estimated TDEE (moderate activity): ~${tdee} kcal/day
-- Weight: ${weight}kg, Height: ${height}cm, Est. age: ${age}
-- Use this as baseline for all caloric calculations below.
-- For fat loss: target ${tdee - 400} kcal/day
-- For maintenance: target ${tdee} kcal/day
-- For muscle gain: target ${tdee + 250} kcal/day
-
-MACRO TARGETS (calculate based on TDEE and goal):
-- Protein: ${Math.round(weight * 1.6)}-${Math.round(weight * 2.0)}g/day (${Math.round(weight * 1.6 * 4)}-${Math.round(weight * 2.0 * 4)} kcal)
-- Remaining calories split between carbs (45-55%) and fats (25-35%)
-- Hydration target: ${(weight * 35 / 1000).toFixed(1)}L/day minimum`;
-    }
-
-    // Map dinner pref: "double" = same every day, "fresh" = 2-3 rotate with double serves, "mix" = different every day
-    const breakfastDesc = prefs.breakfast === "batch" ? "SAME breakfast every day — one recipe batch-prepped for the week" : prefs.breakfast === "rotate" ? "2-3 breakfast options per week — cook a double serve and save half for another day" : "A different breakfast recipe every day — all unique";
-    const lunchDesc = prefs.lunch === "batch" ? "SAME lunch every day — one recipe batch-prepped for the week" : prefs.lunch === "rotate" ? "2-3 lunch options per week — cook a double serve and save half for another day" : "A different lunch recipe every day — all unique";
-    const dinnerDesc = prefs.dinner === "double" ? "SAME dinner every day — one recipe batch-prepped for the week" : prefs.dinner === "fresh" ? "2-3 dinner options per week — cook a double serve and reheat leftovers the next night. Mark leftover days with isLeftover: true." : "A different dinner recipe every day — all unique";
-
-    const cookingSkillDesc = prefs.cookingSkill === "beginner" ? "BEGINNER — only simple recipes with under 5 ingredients, minimal techniques, no complex methods. Maximum 15-20 minutes active cooking." : prefs.cookingSkill === "confident" ? "CONFIDENT — standard home cooking techniques. Happy with stir-fries, roasting, basic sauces, marinades. Up to 30-45 minutes active cooking." : "ADVENTUROUS — bring on the challenge. Fermenting, slow-cooking, global cuisines, multi-step recipes welcome.";
-
-    const equipmentPriority = prefs.equipment?.length ? `PRIORITISE recipes that use: ${prefs.equipment.join(", ")}. Design meals around this equipment. If they have an air fryer, prefer air fryer recipes. If they have a slow cooker, schedule slow cooker meals on busy days. If they have a blender, include smoothies and blended soups.` : "Standard oven and stovetop only.";
-
-    const prepDayInstructions = prefs.prepDays.includes("No set day") ? "No fixed prep day — all meals should be cookable day-of within the time limit." : `Prep day(s): ${prefs.prepDays.join(", ")}. Schedule bigger, batch-friendly meals on these days. These are the days the user will do advance cooking — plan larger quantities, stews, marinated proteins, grain bowls, etc. that can be portioned and stored.`;
-
-    // Phase 4: merge profile dislikes with prefs dislikes
-    const profileDislikesStr = (userDietaryDislikes as string[] | undefined)?.length
-      ? (userDietaryDislikes as string[]).join(", ")
-      : null;
-    const allDislikes = [prefs.dislikes, profileDislikesStr].filter(Boolean).join(", ") || "None";
-
-    // Auto-set calorie guidance — prioritise profile targets from onboarding over preferences input
-    let calorieGuidance = "";
-    if (userCalorieTarget) {
-      calorieGuidance = `${userCalorieTarget} kcal/day (personalised target from your onboarding — DO NOT deviate more than ±100 kcal/day from this)`;
-    } else if (prefs.calorieTarget && prefs.calorieTarget !== "" && prefs.calorieTarget !== "No preference") {
-      calorieGuidance = prefs.calorieTarget;
-    } else {
-      if (goals.includes("lose-weight")) calorieGuidance = "CALORIE DEFICIT required — 300-500 cal below TDEE. Low-calorie, high-satiety meals. Target 1400-1800 kcal depending on TDEE.";
-      else if (goals.includes("gain-muscle")) calorieGuidance = "CALORIE SURPLUS required — 200-300 cal above TDEE. Higher protein and carbs. Target 2000-2400 kcal depending on TDEE.";
-      else if (goals.includes("tone-up")) calorieGuidance = "Maintenance or slight deficit (-200 cal). Target 1600-2000 kcal depending on TDEE.";
-      else calorieGuidance = "Calculate from TDEE — balanced intake for maintenance.";
-    }
-
-    // Build personalised macro section if profile targets exist
-    let profileMacroSection = "";
-    if (userProteinTargetG || userCarbTargetG || userFatTargetG) {
-      profileMacroSection = `
-PERSONALISED MACRO TARGETS (from onboarding — follow these precisely):
-${userProteinTargetG ? `- Protein: ${userProteinTargetG}g/day — MINIMUM. Distribute across all 5 meals.` : ""}
-${userCarbTargetG ? `- Carbohydrates: ${userCarbTargetG}g/day target` : ""}
-${userFatTargetG ? `- Fat: ${userFatTargetG}g/day target` : ""}
-These are evidence-based targets calculated for this specific woman's body composition and goals.
-Every meal plan MUST hit these macros across the day.`;
-    }
-
-    let systemPrompt = `You are a registered dietitian creating personalised, evidence-based meal plans for women inside Signal, a New Zealand wellness app. MSc in Human Nutrition, specialist in female hormonal health and cycle-syncing nutrition.
-
-SIGNAL RECIPE BANK — USE THESE EXCLUSIVELY (do NOT search the web for recipes):
-MENSTRUAL (Iron-rich, warming, anti-inflammatory):
-Signal Sunrise Bowl, Signal Garden Frittata, Signal Mediterranean Pork Pasta, Signal Hearty Beef Bolognese, Signal Comfort Shepherd's Pie, Signal Hearty Lamb Stew, Signal Creamy Spinach Hummus Wrap, Signal Iron Restore Bowl, Signal Golden Immunity Soup, Signal Warming Miso Ramen, Signal Omega-3 Breakfast Bowl, Signal Anti-Inflammatory Curry, Signal Steak & Kumara Mash, Signal Keto Egg Cups, Signal AIP Healing Bowl, Signal Bone Building Bowl, Signal Polyphenol Power Bowl, Signal Energy-Dense Granola, Signal Low-FODMAP Pumpkin Soup, Signal Turmeric Fish Tray Bake
-
-FOLLICULAR (Light, energising, fermented):
-Signal Reset Chia Pudding, Signal Golden Cinnamon Toast, Signal Berry Bliss Smoothie, Signal Vitality Green Smoothie, Signal Mediterranean Halloumi Pasta, Signal Shrimp Pesto Spaghetti, Signal Zesty Chicken Rice, Signal Sweet & Sour Delight, Signal Lemon Dill Salmon, Signal Mango Magic Bowl, Signal Spring Grain Bowl, Signal Herbed Chickpea Flatbread, Signal Citrus Tempeh Salad, Signal Hormone Balance Smoothie, Signal Seed Cycling Granola, Signal Stuffed Capsicum, Signal AIP Sweet Potato Hash, Signal Pre-Workout Power Toast, Signal Gut-Hormone Repair Plate, Signal 30-Plant Stir-Fry, Signal Nourish Pasta, Signal Cinnamon Protein Pancakes
-
-OVULATORY (Light, raw, antioxidant-rich):
-Signal Forest Pesto Pasta, Signal Emerald Salmon Pasta, Signal Spring Risotto, Signal Ocean Risotto, Signal Sesame Ginger Chicken, Signal Crispy Pork Belly, Signal Spicy Shrimp Tacos, Signal Rainbow Nourish Plate, Signal Green Goddess Wrap, Signal Mango Cashew Sushi Bowl, Signal Protein Recovery Bowl, Signal Cauliflower Steak with Chimichurri, Signal Protein Power Plate, Signal Post-Workout Recovery Smoothie, Signal Fermented Feast Bowl, Signal Balanced Gourmet Burger
-
-LUTEAL (Warming, sustaining, magnesium-rich):
-Signal Berry Bircher, Signal Savoury Egg Bites, Signal Zen Chia Pudding, Signal Autumn Crumble, Signal Golden Pumpkin Risotto, Signal Creamy Coconut Chicken, Signal Golden Thai Curry, Signal Avocado Chocolate Mousse, Signal Creamy Greens, Signal Magnesium Power Bowl, Signal Comfort Dhal, Signal PMS Ease Stew, Signal Adaptogen Hot Cacao, Signal Keto-Green Power Bowl, Signal Volume Veggie Soup, Signal Keto Salmon Plate, Signal Fibre-30 Rainbow Salad, Signal Dark Chocolate Seed Bark, Signal Blood Sugar Balance Bowl, Signal Low-FODMAP Chicken Bowl, Signal Anti-Inflam Golden Latte
-
-ALL meals MUST come from this bank. Do NOT invent new recipes or search the web. You may adjust portion sizes to hit macro targets.
-
-USER PROFILE:
-- Diet type: ${prefs.dietType || "No preference"} — STRICTLY adhere to this. ${prefs.dietType && prefs.dietType !== "No preference" ? `NEVER include foods outside of ${prefs.dietType} diet.` : ""}
-- Allergies/intolerances: ${prefs.allergies || "None"} — NEVER include these ingredients, including hidden sources.
-- Food dislikes: ${allDislikes} — NEVER include these foods in any meal, including as minor ingredients.
-- Daily calorie target: ${calorieGuidance}
-${profileMacroSection}
-- Cooking skill: ${cookingSkillDesc}
-  IMPORTANT: Recipe complexity MUST match the cooking skill level. Beginner = simple. Confident = moderate. Adventurous = complex.
-- Available cooking time: ${prefs.availableTime || "30"} minutes per meal — recipes must be completable within this time.
-- Kitchen equipment: ${equipmentPriority}
-- Cooking for: ${prefs.adults} adult(s)${prefs.kids > 0 ? ` and ${prefs.kids} kid(s)` : ""}
-- Body/fitness goals: ${goals.join(", ")}
-${tdeeSection}
-
-═══ GOAL-SPECIFIC NUTRITIONAL PROTOCOLS ═══
-${goalAdvice}
-
-═══ PREP STYLE CONFIGURATION ═══
-- Breakfast: ${breakfastDesc}
-- Lunch: ${lunchDesc}
-- Dinner: ${dinnerDesc}
-- ${prepDayInstructions}
-- For "2-3 options" mode: cook a DOUBLE SERVE each time. Label the repeat day with isLeftover: true and leftoverFrom pointing to the original day.
-
-═══ PHASE-SPECIFIC NUTRITION PROTOCOLS ═══
-${Object.values(PHASE_GUIDANCE).join("\n\n")}
-
-═══ MANDATORY REQUIREMENTS ═══
-
-1. EVERY MEAL MUST INCLUDE:
-   - Specific food names with exact quantities (e.g., "150g chicken breast", "1 cup cooked brown rice", "2 cups mixed salad greens")
-   - Step-by-step numbered method (3-8 steps)
-   - Nutritional note explaining why this meal suits the phase and goal
-   - Key nutrients as an array (e.g., ["Iron", "Vitamin C", "Protein 35g"])
-   - Approximate calories and protein grams
-   - NEVER write generic descriptions like "protein + carbs + vegetables"
-
-2. PRE/POST WORKOUT NUTRITION:
-   - On training days, breakfast or morning snack should include pre-workout guidance
-   - Post-workout meals/snacks should include protein (20-40g) + carbs within 60 minutes
-   - Note this in the nutritional note
-
-3. HYDRATION:
-   - Include daily hydration target${weight ? ` (${(weight * 35 / 1000).toFixed(1)}L baseline)` : ""}
-   - Suggest specific hydration timing (e.g., "500ml upon waking", "500ml during training")
-   - Electrolyte notes during luteal phase
-
-4. DEFICIENCY FLAGS:
-   - Iron: Flag during menstrual phase. Recommend iron-rich meals + vitamin C pairing. Note: tea/coffee inhibit absorption.
-   ${prefs.dietType?.toLowerCase().includes("veg") ? "- B12: CRITICAL for vegetarian/vegan — recommend supplementation (methylcobalamin 1000mcg)\n   - Omega-3 DHA: Recommend algae-based supplement\n   - Zinc: Emphasise pumpkin seeds, chickpeas, lentils, fortified cereals" : ""}
-   ${prefs.allergies?.toLowerCase().includes("dairy") || prefs.dietType?.toLowerCase().includes("dairy") ? "- Calcium: Flag — recommend fortified plant milk, tahini, sardines with bones, broccoli (target 1000mg/day)\n   - Vitamin D: Recommend supplement 600-1000 IU/day" : ""}
-   - Magnesium: Flag if high training volume or poor sleep reported
-   - If persistent low energy: suggest GP blood test for iron, B12, thyroid
-
-5. NZ SUPERMARKET AVAILABILITY:
-   - All ingredients must be available at Countdown, New World, or Pak'nSave
-   - No specialist ingredients without suggesting accessible alternatives
-   - Consider seasonal NZ availability
-
-6. ALLERGEN SAFETY:
-   - NEVER include foods the user is allergic to or has listed as dislikes
-   - Double-check hidden allergens in sauces and processed ingredients`;
-
-    let userPrompt: string;
+    const dayStart = startCycleDay || 1;
+    const dayEnd = endCycleDay || Math.min(dayStart + 6, 28);
 
     if (mode === "regenerate_meal" && regenerateDay && regenerateMeal && existingPlan) {
-      userPrompt = `Regenerate ONLY the ${regenerateMeal} for cycle day ${regenerateDay}.
-Current meal: ${JSON.stringify(existingPlan.days?.find((d: any) => d.cycleDay === regenerateDay)?.[regenerateMeal])}
-
-Generate a DIFFERENT meal that fits the same phase requirements. Include specific foods with exact quantities, step-by-step method, approximate calories and protein, and nutritional note.
-
-Return ONLY this single meal as JSON:
-{
-  "name": "...",
-  "phase": "...",
-  "mealType": "${regenerateMeal}",
-  "prepTime": "...",
-  "serves": ...,
-  "calories": "...",
-  "protein": "...",
-  "ingredients": ["150g chicken breast", "1 cup brown rice", ...],
-  "method": ["1. ...", "2. ...", ...],
-  "nutritionalNote": "...",
-  "keyNutrients": ["Iron", "Protein 32g", "Fibre 8g"]
-}`;
-    } else if (mode === "regenerate_day" && regenerateDay && existingPlan) {
-      const lockedForDay = lockedMeals ? Object.entries(lockedMeals)
-        .filter(([k, v]) => k.startsWith(`${regenerateDay}-`) && v)
-        .map(([k]) => k.split("-")[1]) : [];
-
-      userPrompt = `Regenerate meals for cycle day ${regenerateDay} ONLY.
-${lockedForDay.length > 0 ? `Keep these meals locked (do not change): ${lockedForDay.join(", ")}` : "Regenerate all meals for this day."}
-
-Return the full day as JSON matching the AIPlannedDay format below. Include specific foods with exact quantities, calories, and protein per meal.`;
-    } else {
-      const dayStart = startCycleDay || 1;
-      const dayEnd = endCycleDay || Math.min(dayStart + 6, 28);
-      const numDays = dayEnd - dayStart + 1;
-
-      // Build phase info for the requested range
-      const phaseForDay = (d: number) => {
-        if (d <= 5) return "menstrual";
-        if (d <= 13) return "follicular";
-        if (d === 14) return "ovulatory";
-        return "luteal";
-      };
-
-      userPrompt = `Generate a ${numDays}-day meal plan for cycle days ${dayStart} to ${dayEnd}. Each day must include breakfast, morningSnack, lunch, afternoonSnack, and dinner.
-
-${lockedMeals && Object.keys(lockedMeals).length > 0 ? `LOCKED MEALS (do not change these):\n${JSON.stringify(lockedMeals)}` : ""}
-
-Return as JSON array of ${numDays} days:
-[
-  {
-    "cycleDay": ${dayStart},
-    "phase": "${phaseForDay(dayStart)}",
-    "dailyCalories": "~1800 kcal",
-    "dailyProtein": "~120g",
-    "hydrationTarget": "2.5L",
-    "deficiencyFlags": ["Iron — include vitamin C pairing", "Magnesium"],
-    "preWorkoutNote": "If training today: eat breakfast 1.5 hours before. Include 30g carbs + 15g protein.",
-    "postWorkoutNote": "Within 60 min: 30g protein + 40g carbs (e.g., Greek yoghurt with banana and honey)",
-    "breakfast": {
-      "name": "Iron-Rich Spinach & Mushroom Omelette with Sourdough",
-      "phase": "${phaseForDay(dayStart)}",
-      "mealType": "breakfast",
-      "prepTime": "15 min",
-      "serves": 1,
-      "calories": "~450 kcal",
-      "protein": "~28g",
-      "ingredients": ["3 large eggs", "2 cups baby spinach", "100g sliced mushrooms", "1 slice sourdough bread", "1 tsp butter", "pinch sea salt and pepper"],
-      "method": ["1. Heat butter in a non-stick pan over medium heat", "2. Sauté mushrooms for 3 minutes until golden", "3. Add spinach and cook until wilted, about 1 minute", "4. Pour beaten eggs over vegetables", "5. Cook for 2-3 minutes until edges set, fold in half", "6. Toast sourdough and serve alongside"],
-      "nutritionalNote": "Iron-rich spinach paired with eggs...",
-      "keyNutrients": ["Iron", "B12", "Protein 28g", "Selenium"]
-    },
-    "morningSnack": { ... },
-    "lunch": { ... },
-    "afternoonSnack": { ... },
-    "dinner": { ... }
-  },
-  ...
-]
-
-CRITICAL REMINDERS:
-- Days 1-5: menstrual (iron focus, anti-inflammatory, warming)
-- Days 6-13: follicular (fresh, fermented, higher carbs, rising energy)
-- Day 14: ovulatory (antioxidants, light, raw vegetables)
-- Days 15-28: luteal (complex carbs, magnesium, manage cravings, slightly higher calories)
-- If dinner prep is "double", make day N+1 dinner a leftover: set isLeftover: true and leftoverFrom: N
-- Snacks: simple, phase-appropriate, 2-3 ingredients max, include protein
-- Include dailyCalories, dailyProtein, hydrationTarget, and deficiencyFlags for each day
-- Every single ingredient must have a specific quantity
-- All food must be available at NZ supermarkets
-- Return ONLY valid JSON, no markdown code fences`;
-    }
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited — please try again in a moment." }), {
-          status: 429,
+      const phase = getPhaseForDay(regenerateDay);
+      const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
+      const currentName = existingPlan.days?.find((d: any) => d.cycleDay === regenerateDay)?.[regenerateMeal]?.name || "";
+      const recipe = pickRecipe(phase, regenerateMeal === "morningSnack" || regenerateMeal === "afternoonSnack" ? "snack" : regenerateMeal, dislikes, prefs.dietType || "", [currentName], Date.now());
+      if (recipe) {
+        return new Response(JSON.stringify({ name: recipe.name, phase, mealType: regenerateMeal, prepTime: recipe.prepTime, serves: recipe.serves, calories: `~${recipe.calories} kcal`, protein: `~${recipe.protein}g`, ingredients: recipe.ingredients, method: recipe.method, nutritionalNote: recipe.nutritionalNote, keyNutrients: recipe.keyNutrients }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds in Settings → Workspace → Usage." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const text = await response.text();
-      console.error("AI gateway error:", response.status, text);
-      return new Response(JSON.stringify({ error: "Failed to generate meal plan" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
     }
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "";
+    const plan: any[] = [];
+    const usedNames: string[] = [];
+    const baseSeed = Date.now();
 
-    let parsed;
-    try {
-      const jsonMatch = content.match(/\[[\s\S]*\]/) || content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsed = JSON.parse(jsonMatch[0]);
-      } else {
-        parsed = JSON.parse(content);
-      }
-    } catch (e) {
-      console.error("Failed to parse AI response:", content.substring(0, 500));
-      return new Response(JSON.stringify({ error: "Failed to parse meal plan response", raw: content.substring(0, 200) }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    for (let d = dayStart; d <= dayEnd; d++) {
+      plan.push(buildDayPlan(d, prefs, usedNames, baseSeed + d * 13));
     }
 
-    return new Response(JSON.stringify({ plan: parsed, mode }), {
+    return new Response(JSON.stringify({ plan, mode }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("meal-plan-ai error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
