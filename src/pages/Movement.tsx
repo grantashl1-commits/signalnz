@@ -280,33 +280,7 @@ export default function MovementPage() {
       {/* TODAY TAB */}
       {activeTab === "today" && (
         <div className="space-y-4 md:space-y-6">
-          {/* Onboarding nudges */}
-          {!useCycle().cycleStartDate && (
-            <div className="rounded-xl border border-border bg-card p-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                <Moon className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <div className="flex-1">
-                <p className="font-body text-xs font-medium text-foreground">Set your cycle start date first</p>
-                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Your workouts will adapt to your cycle phase.</p>
-              </div>
-              <Link to="/cycle" className="font-body text-xs font-semibold text-primary">Set up →</Link>
-            </div>
-          )}
-          {bodyGoals.length === 0 && (
-            <div className="rounded-xl border border-border bg-card p-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                <Flame className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <div className="flex-1">
-                <p className="font-body text-xs font-medium text-foreground">Set your body goals</p>
-                <p className="font-body text-[10px] text-muted-foreground mt-0.5">We'll personalise your workout rotation and nutrition.</p>
-              </div>
-              <button onClick={() => { haptic("light"); setActiveTab("body"); }} className="font-body text-xs font-semibold text-primary">Set goals →</button>
-            </div>
-          )}
-
-          {/* Phase + training week — moved to second position */}
+          {/* Phase + training week context */}
           <div className="card-warm p-4 md:p-5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
               <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
@@ -319,31 +293,14 @@ export default function MovementPage() {
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
-          {/* If user has a training program, show it */}
-          {goalCategoryId && (
-            <div
-              onClick={() => { haptic("light"); setActiveTab("training"); }}
-              className="card-warm p-4 flex items-center justify-between cursor-pointer active:bg-secondary/50 transition-colors"
-            >
-              <div>
-                <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">Your programme</p>
-                <p className="font-display text-base font-bold text-foreground mt-0.5">View today's session →</p>
-              </div>
-              <Dumbbell className="h-5 w-5 text-primary shrink-0" />
-            </div>
-          )}      {/* Floating HR indicator when connected but modal closed */}
-      {!showHR && globalHR.connected && (
-        <button
-          onClick={() => setShowHR(true)}
-          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
-        >
-          <Heart className="h-4 w-4 text-primary-foreground" />
-          <span className="font-body text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
-          <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
-        </button>
-      )}
+          {/* Today's session from training program */}
+          <TodaySession
+            onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
+            onOpenHR={() => setShowHR(true)}
+            onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
+          />
 
-          {/* AI-Generated Today's Workout */}
+          {/* AI-Generated Today's Workout (if they generated one) */}
           {aiTodayWorkout && (
             <AISessionCard
               session={aiTodayWorkout}
@@ -365,133 +322,19 @@ export default function MovementPage() {
               }}
             />
           )}
-
-          {/* Default Today's workout (when no AI plan or as fallback) */}
-          {!aiTodayWorkout && todayWorkoutData && (
-            <div className="card-warm p-4 space-y-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <PhaseIndicator phase={info.phase} size={16} />
-                    <h3 className="font-display text-lg italic text-foreground">{todayWorkoutData.name}</h3>
-                  </div>
-                  <p className="font-body text-[9px] italic text-muted-foreground mt-0.5">{PHASE_MOVEMENT_LABEL[info.phase]}</p>
-                  <div className="flex gap-2 mt-1 flex-wrap">
-                    <span className="font-body text-[10px]" style={{ color: PHASE_HEX[info.phase] }}>{todayWorkoutData.duration}</span>
-                    <span className="font-body text-[10px] text-muted-foreground">{todayWorkoutData.equipment}</span>
-                  </div>
-                  <p className="font-body text-xs text-muted-foreground mt-1">{todayWorkoutData.description}</p>
-                </div>
-                <span className={`flex-shrink-0 rounded-full px-3 py-1 font-hand text-[11px] font-bold ${SUIT_COLORS[todayWorkoutData.suitability[info.phase]].bg} ${SUIT_COLORS[todayWorkoutData.suitability[info.phase]].text}`}>
-                  {SUIT_COLORS[todayWorkoutData.suitability[info.phase]].label}
-                </span>
-              </div>
-
-              {/* Rest options */}
-              {todayWorkoutData.restOptions && todayWorkoutData.restOptions.length > 0 && (
-                <div className="space-y-2">
-                  {todayWorkoutData.restOptions.map(opt => (
-                    <div key={opt.id} className="bg-secondary/50 rounded-xl p-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-display text-sm italic text-foreground">{opt.name}</h4>
-                        <span className="font-body text-[9px] text-muted-foreground">{opt.duration}</span>
-                      </div>
-                      <p className="font-body text-xs text-muted-foreground mt-1">{opt.description}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Exercise list */}
-              {todayWorkoutData.exercises.length > 0 && (
-                <>
-                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / todayWorkoutData.exercises.length) * 100}%` }} />
-                  </div>
-                  <p className="font-body text-[10px] text-muted-foreground">{completedExercises.size}/{todayWorkoutData.exercises.length}</p>
-
-                  <div className="space-y-1.5">
-                    {todayWorkoutData.exercises.map((ex, i) => {
-                      const done = completedExercises.has(ex.name);
-                      const showSection = i === 0 || ex.section !== todayWorkoutData.exercises[i - 1]?.section;
-                      return (
-                        <div key={ex.name}>
-                          {showSection && ex.section && (
-                            <div className="flex items-center gap-2 mt-5 mb-2">
-                              <div className="h-px flex-1 bg-border" />
-                              <p className="font-body text-[11px] font-bold text-primary/70 uppercase tracking-[0.15em]">{ex.section}</p>
-                              <div className="h-px flex-1 bg-border" />
-                            </div>
-                          )}
-                          <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
-                            className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[56px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            {/* Animated checkmark */}
-                            <motion.div
-                              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border-2 transition-colors"
-                              style={{
-                                borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground) / 0.25)',
-                                backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
-                              }}
-                              onClick={(e) => { e.stopPropagation(); toggleExercise(ex.name); }}
-                              whileTap={{ scale: 0.85 }}
-                            >
-                              <motion.svg
-                                width="14" height="14" viewBox="0 0 14 14" fill="none"
-                                initial={false}
-                                animate={done ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
-                              >
-                                <motion.path
-                                  d="M3 7.5L5.5 10L11 4"
-                                  stroke="hsl(var(--primary-foreground))"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  initial={{ pathLength: 0 }}
-                                  animate={{ pathLength: done ? 1 : 0 }}
-                                  transition={{ duration: 0.25, ease: "easeOut" }}
-                                />
-                              </motion.svg>
-                            </motion.div>
-                            {/* Circular thumbnail with brand ring */}
-                            <div
-                              className="flex-shrink-0 rounded-full overflow-hidden"
-                              style={{
-                                width: 44, height: 44,
-                                padding: 2,
-                                background: `linear-gradient(135deg, ${PHASE_HEX[info.phase]}40, ${PHASE_HEX[info.phase]}15)`,
-                              }}
-                              onClick={(e) => { e.stopPropagation(); haptic("light"); setDrawerExercise(ex); }}
-                            >
-                              <ExerciseDemonstration exerciseName={ex.name} size={40} className="rounded-full" />
-                            </div>
-                            <div className="flex-1 min-w-0" onClick={() => { haptic("light"); setDrawerExercise(ex); }}>
-                              <p className={`font-body text-sm leading-tight ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
-                              <p className="font-body text-xs text-muted-foreground mt-0.5">{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
-                            </div>
-                            <p className="font-display text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{ex.formCue}</p>
-                          </motion.div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {workoutComplete && (
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6 bg-primary/5 rounded-xl">
-                      <div className="flex items-center justify-center gap-2">
-                        <PhaseIndicator phase={info.phase} size={24} />
-                        <p className="font-display text-xl italic text-foreground">Workout complete</p>
-                        <PhaseIndicator phase={info.phase} size={24} />
-                      </div>
-                      <p className="font-hand text-sm text-muted-foreground mt-1">Saved to your log.</p>
-                    </motion.div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
         </div>
+      )}
+
+      {/* Floating HR indicator when connected but modal closed */}
+      {!showHR && globalHR.connected && (
+        <button
+          onClick={() => setShowHR(true)}
+          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
+        >
+          <Heart className="h-4 w-4 text-primary-foreground" />
+          <span className="font-body text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
+          <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
+        </button>
       )}
 
       {/* LIBRARY TAB */}
