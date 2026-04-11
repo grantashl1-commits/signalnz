@@ -93,11 +93,28 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const body = await req.json();
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
       exerciseGoal, exerciseGoalLabel, proteinTargetMin, proteinTargetMax,
       carbEmphasis, cycleMode, weightKg, dislikedRecipeIds, startCycleDay, endCycleDay,
-      // Phase 4: user profile targets from onboarding
-      userCalorieTarget, userProteinTargetG, userCarbTargetG, userFatTargetG, userDietaryDislikes } = await req.json();
+      userCalorieTarget, userProteinTargetG, userCarbTargetG, userFatTargetG, userDietaryDislikes } = body;
+
+    // Credit check: meal plan costs 3 credits
+    const userIdentifier = body.userIdentifier;
+    if (userIdentifier) {
+      const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
+      const cost = 3;
+      if (credits && credits.tier !== "unlimited" && (credits.credits_remaining || 0) < cost) {
+        return new Response(JSON.stringify({ error: `You need ${cost} AI credits for meal plan generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      if (credits && credits.tier !== "unlimited") {
+        await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
+      } else if (!credits) {
+        await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
+      }
+      await sb.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "meal-plan-ai", tokens_used: cost });
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
