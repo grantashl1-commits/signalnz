@@ -1,3 +1,4 @@
+import kidsChickenStrips from "./kids-chicken-strips.jpg";
 import kidsChickenFriedRice from "./kids-chicken-fried-rice.jpg";
 import kidsChickenQuesadilla from "./kids-chicken-quesadilla.jpg";
 import kidsChickenNuggetBowl from "./kids-chicken-nugget-bowl.jpg";
