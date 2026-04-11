@@ -525,7 +525,7 @@ export default function JournalPage() {
             >
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
-                <div className="space-y-4">
+                <div className="space-y-8 md:space-y-10">
                   {/* Mood tags — scattered two-row layout */}
                   <div className="space-y-2">
                     <p className="font-body text-[10px] text-muted-foreground/40">feeling</p>
@@ -647,7 +647,7 @@ export default function JournalPage() {
 
               {/* ═══ ENTRIES TAB ═══ */}
               {tab === "entries" && view === "list" && (
-                <div className="space-y-4">
+                <div className="space-y-8 md:space-y-10">
                   {/* Search */}
                   <div className="flex gap-3">
                     <div className="flex-1 relative">
