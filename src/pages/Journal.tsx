@@ -18,8 +18,7 @@ import OneLineEditor from "@/components/journal/OneLineEditor";
 import JournalInsights from "@/components/journal/JournalInsights";
 import { useJournalSync } from "@/hooks/useJournalSync";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
-import SomaticPlayer from "@/components/practice/SomaticPlayer";
-import type { PracticeConfig } from "@/data/practices";
+import StoicAudioPlayer from "@/components/StoicAudioPlayer";
 
 type Tab = "write" | "entries" | "insights";
 type View = "list" | "write" | "detail" | "gratitude" | "one-line";
@@ -77,17 +76,8 @@ function getPlaceholder(phase: string, mood: string | null): string {
   return (mood && phasePrompts[mood]) || phasePrompts.default || "Start writing...";
 }
 
-function stoicToPracticeConfig(reading: { title: string; tts_script: string | null; duration_sec: number | null; seq_day: number }): PracticeConfig {
-  return {
-    id: `stoic-day-${reading.seq_day}`,
-    title: reading.title,
-    subtitle: `Day ${reading.seq_day} of 366`,
-    category: "somatic",
-    mode: "narrated-sequence",
-    durationSec: reading.duration_sec || 240,
-    audio: { enabled: true, audioUrl: `/audio/stoic-${reading.seq_day}.mp3`, durationSec: reading.duration_sec || 240, voiceName: "SIGNAL Calm", provider: "elevenlabs" },
-    steps: [{ id: "s1", title: "Reading", body: reading.tts_script || "", startTimeSec: 0, endTimeSec: reading.duration_sec || 240 }],
-  };
+function buildStoicReadingText(reading: { seq_day: number; title: string; quote: string; source: string; reflection: string }): string {
+  return `Day ${reading.seq_day}.\n\n${reading.title}.\n\n"${reading.quote}"\n\n— ${reading.source}\n\n${reading.reflection}`;
 }
 
 // ── Writing View (with inline mood + type + collapsible stoic) ──
@@ -189,7 +179,7 @@ function WritingView({
       </div>
 
       {showPlayer && reading && (
-        <SomaticPlayer practice={stoicToPracticeConfig(reading)} onClose={() => setShowPlayer(false)} />
+        <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
       )}
     </motion.div>
   );
@@ -275,7 +265,7 @@ function EntryDetailView({
       )}
 
       {showPlayer && reading && (
-        <SomaticPlayer practice={stoicToPracticeConfig(reading)} onClose={() => setShowPlayer(false)} />
+        <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
       )}
     </motion.div>
   );
@@ -697,7 +687,7 @@ export default function JournalPage() {
 
         {/* Stoic TTS Player */}
         {showPlayer && reading && (
-          <SomaticPlayer practice={stoicToPracticeConfig(reading)} onClose={() => setShowPlayer(false)} />
+          <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
         )}
       </div>
     </GatedPage>
