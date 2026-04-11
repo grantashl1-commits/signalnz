@@ -46,4 +46,5 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-frittata": kidsFrittata,
   "kids-mac-cheese": kidsMacCheese,
   "kids-pork-stir-fry": kidsPorkStirFry,
+  "kids-shrimp-pasta": kidsShrimpPasta,
 };
