@@ -13,42 +13,39 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 async function generateIllustration(exerciseName: string, targetMuscle: string, primaryMuscles: string[]): Promise<Uint8Array | null> {
   const muscleList = primaryMuscles?.length ? primaryMuscles.join(", ") : targetMuscle || "full body";
   
-  const prompt = `Generate an image: A clean anatomical illustration of the exercise "${exerciseName}". Show a human figure performing the exercise with the working muscles (${muscleList}) highlighted in warm red/coral color. Professional medical/anatomical diagram style with clean line art on a white background. The figure should be in neutral gray/charcoal with only the target muscles colored. Simple, clean, minimal. No text overlay.`;
+  const prompt = `A clean anatomical illustration of the exercise "${exerciseName}". Show a human figure performing the exercise with the working muscles (${muscleList}) highlighted in warm red/coral color. Professional medical/anatomical diagram style with clean line art on a white background. The figure should be in neutral gray/charcoal with only the target muscles colored. Simple, clean, minimal. No text overlay.`;
 
+  // Use Imagen 3 for image generation
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseModalities: ["IMAGE", "TEXT"],
-          responseMimeType: "text/plain",
+        instances: [{ prompt }],
+        parameters: {
+          sampleCount: 1,
+          aspectRatio: "1:1",
+          safetyFilterLevel: "BLOCK_ONLY_HIGH",
         },
       }),
     }
   );
 
   if (!response.ok) {
-    console.error("Gemini generation failed:", response.status, await response.text());
+    const errText = await response.text();
+    console.error("Imagen generation failed:", response.status, errText);
     return null;
   }
 
   const data = await response.json();
-  const candidates = data.candidates || [];
+  const predictions = data.predictions || [];
   
-  for (const candidate of candidates) {
-    const parts = candidate.content?.parts || [];
-    for (const part of parts) {
-      if (part.inlineData?.data) {
-        const bytes = Uint8Array.from(atob(part.inlineData.data), c => c.charCodeAt(0));
-        return bytes;
-      }
-    }
+  if (predictions.length > 0 && predictions[0].bytesBase64Encoded) {
+    return Uint8Array.from(atob(predictions[0].bytesBase64Encoded), c => c.charCodeAt(0));
   }
 
-  console.error("No image data found in Gemini response");
+  console.error("No image data found in Imagen response");
   return null;
 }
 
