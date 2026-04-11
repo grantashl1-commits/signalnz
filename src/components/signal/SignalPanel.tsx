@@ -1,10 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, RotateCcw, ChevronRight, Zap } from "lucide-react";
+import { X, ArrowRight, RotateCcw, ChevronRight, Zap, MessageCircleQuestion } from "lucide-react";
 import { useSignalContext, SIGNAL_MODES, PROMPT_CHIPS, type SignalMode } from "@/hooks/useSignalContext";
 import { useSignalAI } from "@/hooks/useSignalAI";
+import { useAMASignal } from "@/hooks/useAMASignal";
 import { useAICredits } from "@/hooks/useAICredits";
 import SignalResponseCard from "./SignalResponseCard";
+import AMAResponseCard from "./AMAResponseCard";
 import SignalListeningState from "./SignalListeningState";
 import { WildStar, BotanicalSprig } from "@/components/BotanicalElements";
 import { DotPattern } from "@/components/AtmosphericSection";
@@ -19,18 +21,34 @@ interface Props {
 }
 
 type Stage = "invitation" | "listening" | "signal";
+type PanelMode = "signal" | "ama";
+
+const AMA_CHIPS = [
+  "My urine always smells — what should I do?",
+  "Am I getting enough protein?",
+  "What supplements am I missing?",
+  "Why am I so tired in the afternoon?",
+  "What should I eat during this phase?",
+  "How can I improve my sleep?",
+];
 
 export default function SignalPanel({ open, onClose, initialPrompt, pageContext }: Props) {
   const [mode, setMode] = useState<SignalMode>("today");
+  const [panelMode, setPanelMode] = useState<PanelMode>("signal");
   const [input, setInput] = useState("");
   const [stage, setStage] = useState<Stage>("invitation");
   const [currentPrompt, setCurrentPrompt] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showUpgradeGate, setShowUpgradeGate] = useState(false);
   const context = useSignalContext();
-  const { response, loading, error, generate, reset, rawText } = useSignalAI();
+  const { response: signalResponse, loading: signalLoading, error: signalError, generate, reset: signalReset, rawText: signalRawText } = useSignalAI();
+  const { response: amaResponse, loading: amaLoading, error: amaError, ask, reset: amaReset, rawText: amaRawText } = useAMASignal();
   const { creditsRemaining, tier, refresh: refreshCredits } = useAICredits();
   const navigate = useNavigate();
+
+  const loading = panelMode === "ama" ? amaLoading : signalLoading;
+  const error = panelMode === "ama" ? amaError : signalError;
+  const response = panelMode === "ama" ? amaResponse : signalResponse;
 
   // When response arrives, move to signal stage
   useEffect(() => {
@@ -63,16 +81,21 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
       haptic("medium");
       setCurrentPrompt(prompt);
       setStage("listening");
-      generate(prompt, mode, context);
+      if (panelMode === "ama") {
+        ask(prompt, context);
+      } else {
+        generate(prompt, mode, context);
+      }
       setInput("");
       setShowCustomInput(false);
     },
-    [generate, mode, context, tier, creditsRemaining]
+    [generate, ask, mode, context, tier, creditsRemaining, panelMode]
   );
 
   const handleReset = () => {
     haptic("light");
-    reset();
+    signalReset();
+    amaReset();
     setStage("invitation");
     setCurrentPrompt("");
     setShowCustomInput(false);
@@ -82,12 +105,19 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
     onClose();
     // Reset after animation completes
     setTimeout(() => {
-      reset();
+      signalReset();
+      amaReset();
       setStage("invitation");
       setCurrentPrompt("");
       setShowCustomInput(false);
       setShowUpgradeGate(false);
     }, 400);
+  };
+
+  const togglePanelMode = () => {
+    haptic("light");
+    handleReset();
+    setPanelMode(prev => prev === "signal" ? "ama" : "signal");
   };
 
   // Refresh credits after a signal is generated
@@ -97,7 +127,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
     }
   }, [response, loading, refreshCredits]);
 
-  const chips = PROMPT_CHIPS[pageContext || "general"] || PROMPT_CHIPS.general;
+  const chips = panelMode === "ama" ? AMA_CHIPS : (PROMPT_CHIPS[pageContext || "general"] || PROMPT_CHIPS.general);
 
   const hour = new Date().getHours();
   const timeGreeting =
@@ -172,7 +202,9 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
           onClick={(e) => e.stopPropagation()}
           className="relative w-full max-w-2xl max-h-[85vh] mx-4 rounded-[28px] overflow-hidden flex flex-col"
           style={{
-            background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 38%) 100%)",
+            background: panelMode === "ama"
+              ? "linear-gradient(180deg, hsl(200 30% 28%) 0%, hsl(220 25% 22%) 100%)"
+              : "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 38%) 100%)",
           }}
         >
           {/* Atmospheric background */}
@@ -204,38 +236,44 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                 animate={{ rotate: [0, 15, -15, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <WildStar size={18} color="hsl(30 33% 98%)" />
+                {panelMode === "ama" ? (
+                  <MessageCircleQuestion size={18} color="hsl(30 33% 98%)" />
+                ) : (
+                  <WildStar size={18} color="hsl(30 33% 98%)" />
+                )}
               </motion.div>
               <span className="font-body text-[10px] uppercase tracking-[0.2em] text-primary-foreground/50 font-medium">
-                Signal
+                {panelMode === "ama" ? "Ask me anything" : "Signal"}
               </span>
             </div>
 
             {stage === "invitation" && (
               <>
                 <h2 className="font-display text-[2.5rem] md:text-[3rem] font-extrabold text-primary-foreground leading-tight">
-                  Give me a signal
+                  {panelMode === "ama" ? "Ask me anything" : "Give me a signal"}
                 </h2>
                 <p className="font-body text-sm text-primary-foreground/60 mt-3 leading-relaxed max-w-md">
-                  A gentle read on where you are {timeGreeting}, what may be shaping this moment, and what might support you next.
+                  {panelMode === "ama"
+                    ? "I've read your journal, tracked your habits, and know your cycle. Ask me anything about your health — I'll answer specifically for you."
+                    : `A gentle read on where you are ${timeGreeting}, what may be shaping this moment, and what might support you next.`}
                 </p>
               </>
             )}
 
             {stage === "listening" && (
               <h2 className="font-display text-2xl font-extrabold text-primary-foreground">
-                Your signal
+                {panelMode === "ama" ? "Thinking..." : "Your signal"}
               </h2>
             )}
 
             {stage === "signal" && (
               <h2 className="font-display text-2xl font-extrabold text-primary-foreground">
-                Your signal
+                {panelMode === "ama" ? "Here's what I found" : "Your signal"}
               </h2>
             )}
 
-            {/* Mode tabs — show on invitation */}
-            {stage === "invitation" && (
+            {/* Mode tabs — show on invitation for signal mode */}
+            {stage === "invitation" && panelMode === "signal" && (
               <div className="flex gap-1.5 mt-6 overflow-x-auto pb-1 -mx-1 px-1">
                 {SIGNAL_MODES.map((m) => (
                   <button
@@ -250,6 +288,28 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                     {m.label}
                   </button>
                 ))}
+              </div>
+            )}
+
+            {/* AMA/Signal toggle — show on invitation */}
+            {stage === "invitation" && (
+              <div className="mt-4">
+                <button
+                  onClick={togglePanelMode}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 text-primary-foreground/70 hover:bg-primary-foreground/15 hover:text-primary-foreground font-body text-xs font-medium transition-all"
+                >
+                  {panelMode === "ama" ? (
+                    <>
+                      <WildStar size={14} color="currentColor" />
+                      <span>Switch to Signal mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <MessageCircleQuestion className="h-3.5 w-3.5" />
+                      <span>Ask me anything instead</span>
+                    </>
+                  )}
+                </button>
               </div>
             )}
           </div>
@@ -275,66 +335,118 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                     transition={{ duration: 0.3 }}
                     className="space-y-6 py-2"
                   >
-                    <div>
-                      <p className="font-body text-[10px] uppercase tracking-[0.15em] text-primary mb-3 font-medium">
-                        Choose a prompt, or ask your own
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {chips.map((chip, i) => (
-                          <motion.button
-                            key={chip}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.05 + i * 0.06, duration: 0.35 }}
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.97 }}
-                            onClick={() => handleGenerate(chip)}
-                            className="group flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-secondary border border-border text-foreground font-body text-xs leading-tight hover:border-primary/30 hover:bg-primary/5 transition-all"
+                    {/* AMA mode: show input first */}
+                    {panelMode === "ama" ? (
+                      <>
+                        <div className="flex gap-2">
+                          <input
+                            autoFocus
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && input.trim()) handleGenerate(input.trim());
+                            }}
+                            placeholder="Ask anything about your health..."
+                            className="flex-1 px-4 py-3 rounded-full bg-secondary border border-border text-foreground font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                            style={{ fontSize: "16px" }}
+                          />
+                          <button
+                            onClick={() => input.trim() && handleGenerate(input.trim())}
+                            disabled={!input.trim()}
+                            className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 transition-opacity"
                           >
-                            <span>{chip}</span>
-                            <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </motion.button>
-                        ))}
-                      </div>
-                    </div>
+                            <ArrowRight className="h-4 w-4" />
+                          </button>
+                        </div>
 
-                    {/* "Or ask your own" */}
-                    {!showCustomInput ? (
-                      <motion.button
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        onClick={() => { setShowCustomInput(true); haptic("light"); }}
-                        className="font-body text-xs text-primary/70 underline underline-offset-4 hover:text-primary transition-colors"
-                      >
-                        Or ask your own question
-                      </motion.button>
+                        <div>
+                          <p className="font-body text-[10px] uppercase tracking-[0.15em] text-primary mb-3 font-medium">
+                            Or try one of these
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {chips.map((chip, i) => (
+                              <motion.button
+                                key={chip}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.05 + i * 0.06, duration: 0.35 }}
+                                whileTap={{ scale: 0.97 }}
+                                onClick={() => handleGenerate(chip)}
+                                className="group flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-secondary border border-border text-foreground font-body text-xs leading-tight hover:border-primary/30 hover:bg-primary/5 transition-all"
+                              >
+                                <span>{chip}</span>
+                                <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </motion.button>
+                            ))}
+                          </div>
+                        </div>
+                      </>
                     ) : (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="flex gap-2"
-                      >
-                        <input
-                          autoFocus
-                          type="text"
-                          value={input}
-                          onChange={(e) => setInput(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && input.trim()) handleGenerate(input.trim());
-                          }}
-                          placeholder="What would you like to know?"
-                          className="flex-1 px-4 py-2.5 rounded-full bg-secondary border border-border text-foreground font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                          style={{ fontSize: "16px" }}
-                        />
-                        <button
-                          onClick={() => input.trim() && handleGenerate(input.trim())}
-                          disabled={!input.trim()}
-                          className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 transition-opacity"
-                        >
-                          <ArrowRight className="h-4 w-4" />
-                        </button>
-                      </motion.div>
+                      /* Signal mode chips */
+                      <>
+                        <div>
+                          <p className="font-body text-[10px] uppercase tracking-[0.15em] text-primary mb-3 font-medium">
+                            Choose a prompt, or ask your own
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {chips.map((chip, i) => (
+                              <motion.button
+                                key={chip}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.05 + i * 0.06, duration: 0.35 }}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                                onClick={() => handleGenerate(chip)}
+                                className="group flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-secondary border border-border text-foreground font-body text-xs leading-tight hover:border-primary/30 hover:bg-primary/5 transition-all"
+                              >
+                                <span>{chip}</span>
+                                <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </motion.button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* "Or ask your own" */}
+                        {!showCustomInput ? (
+                          <motion.button
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            onClick={() => { setShowCustomInput(true); haptic("light"); }}
+                            className="font-body text-xs text-primary/70 underline underline-offset-4 hover:text-primary transition-colors"
+                          >
+                            Or ask your own question
+                          </motion.button>
+                        ) : (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="flex gap-2"
+                          >
+                            <input
+                              autoFocus
+                              type="text"
+                              value={input}
+                              onChange={(e) => setInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && input.trim()) handleGenerate(input.trim());
+                              }}
+                              placeholder="What would you like to know?"
+                              className="flex-1 px-4 py-2.5 rounded-full bg-secondary border border-border text-foreground font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                              style={{ fontSize: "16px" }}
+                            />
+                            <button
+                              onClick={() => input.trim() && handleGenerate(input.trim())}
+                              disabled={!input.trim()}
+                              className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 transition-opacity"
+                            >
+                              <ArrowRight className="h-4 w-4" />
+                            </button>
+                          </motion.div>
+                        )}
+                      </>
                     )}
 
                     {/* Context summary */}
@@ -359,6 +471,11 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                             {context.habitsCompleted}/{context.habitsTotal} habits
                           </span>
                         )}
+                        {panelMode === "ama" && (
+                          <span className="px-2.5 py-1 rounded-full bg-primary/10 text-xs font-body text-primary">
+                            + journal · habits · supplements
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -373,8 +490,8 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                   <SignalListeningState key="listening" prompt={currentPrompt} />
                 )}
 
-                {/* === SIGNAL STAGE === */}
-                {stage === "signal" && response && (
+                {/* === SIGNAL/AMA RESPONSE STAGE === */}
+                {stage === "signal" && panelMode === "signal" && signalResponse && (
                   <motion.div
                     key="signal"
                     initial={{ opacity: 0 }}
@@ -382,11 +499,19 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                     transition={{ duration: 0.5 }}
                   >
                     <SignalResponseCard
-                      response={response}
+                      response={signalResponse}
                       onFollowUp={handleGenerate}
                       phase={context.phaseFull}
                     />
                   </motion.div>
+                )}
+
+                {stage === "signal" && panelMode === "ama" && amaResponse && (
+                  <AMAResponseCard
+                    key="ama"
+                    response={amaResponse}
+                    onFollowUp={handleGenerate}
+                  />
                 )}
               </AnimatePresence>
 
@@ -399,7 +524,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                 >
                   <p className="font-body text-sm text-destructive mb-3">{error}</p>
                   <button
-                    onClick={() => handleGenerate("Give me a signal for today")}
+                    onClick={() => handleGenerate(panelMode === "ama" ? "What supplements should I take?" : "Give me a signal for today")}
                     className="font-body text-sm text-primary underline underline-offset-4"
                   >
                     Try again
@@ -409,7 +534,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
             </div>
           </div>
 
-          {/* Follow-up input — only after signal is shown */}
+          {/* Follow-up input — only after response is shown */}
           {stage === "signal" && (
             <div className="relative z-10 flex-shrink-0 px-8 pb-8 pt-3">
               <div className="flex gap-2">
@@ -421,7 +546,7 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && input.trim()) handleGenerate(input.trim());
                     }}
-                    placeholder="Go deeper..."
+                    placeholder={panelMode === "ama" ? "Ask a follow-up..." : "Go deeper..."}
                     className="w-full px-5 py-3 rounded-full bg-primary-foreground/10 border border-primary-foreground/15 text-primary-foreground font-body text-sm placeholder:text-primary-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 transition-all"
                     style={{ fontSize: "16px" }}
                   />

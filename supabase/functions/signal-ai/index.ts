@@ -20,7 +20,7 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { prompt, mode, context, userIdentifier, insightProfile, recentSignals } = await req.json();
+    const { prompt, mode, context, userIdentifier, insightProfile, recentSignals, isAMA, userData } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -61,12 +61,81 @@ serve(async (req) => {
 
       await supabase.from("ai_usage").insert({
         user_identifier: userIdentifier,
-        function_name: "signal-ai",
+        function_name: isAMA ? "signal-ama" : "signal-ai",
         tokens_used: 0,
       });
     }
 
-    let systemPrompt = `You are the inner voice of Signal — a calm, emotionally intelligent, cycle-aware wellness companion for women. You generate what we call "signals": gentle, observant, poetic-but-useful guidance.
+    let systemPrompt: string;
+
+    if (isAMA) {
+      // ── AMA (Ask Me Anything) Mode ──
+      systemPrompt = `You are the personal health intelligence behind Signal — a cycle-aware wellness app for women in New Zealand.
+
+The user is asking you a specific health question. You have access to their COMPLETE personal data history below. Use it to give an answer that is UNCANNILY specific to them — not generic health advice.
+
+YOUR APPROACH:
+- Answer their exact question directly and specifically
+- Reference their actual data (cycle phase, habits, journal entries, supplements, diet) where relevant
+- Suggest concrete next steps they can take within the app (add a habit, try a recipe, adjust supplements)
+- Be warm, clear, and practical — not preachy or clinical
+- If the question is medical, remind them to consult their GP but still provide evidence-based guidance
+- Use NZ-specific references where relevant (NZ brands, NZ foods, local availability)
+
+RESPONSE FORMAT:
+Return valid JSON with this structure:
+{
+  "answer": "Your direct, specific answer to their question — 3-6 sentences, clear and actionable",
+  "insights": ["2-3 short bullet points connecting their data to the answer"],
+  "recommendations": [
+    { "type": "habit|supplement|recipe|practice", "name": "Name", "reason": "Why this specifically for them" }
+  ],
+  "followUps": ["2-3 natural follow-up questions they might want to ask"]
+}`;
+
+      // Append user data context
+      if (userData) {
+        systemPrompt += `\n\nUSER DATA:\n`;
+        if (userData.profile) {
+          systemPrompt += `- Age: ${userData.profile.age || "unknown"}\n`;
+          systemPrompt += `- Cycle mode: ${userData.profile.cycleMode || "cycling"}\n`;
+          systemPrompt += `- Fitness level: ${userData.profile.fitnessLevel || "unknown"}\n`;
+          systemPrompt += `- Dietary preferences: ${JSON.stringify(userData.profile.dietaryPreferences || [])}\n`;
+          systemPrompt += `- Dietary dislikes: ${JSON.stringify(userData.profile.dietaryDislikes || [])}\n`;
+          systemPrompt += `- Weight: ${userData.profile.weightKg || "unknown"}kg\n`;
+          systemPrompt += `- Height: ${userData.profile.heightCm || "unknown"}cm\n`;
+          systemPrompt += `- Movement goals: ${JSON.stringify(userData.profile.movementGoals || [])}\n`;
+        }
+        if (userData.cycleContext) {
+          systemPrompt += `- Current cycle day: ${userData.cycleContext.cycleDay}\n`;
+          systemPrompt += `- Current phase: ${userData.cycleContext.phase}\n`;
+          if (userData.cycleContext.mood) systemPrompt += `- Current mood: ${userData.cycleContext.mood}\n`;
+          if (userData.cycleContext.symptoms) systemPrompt += `- Recent symptoms: ${userData.cycleContext.symptoms}\n`;
+        }
+        if (userData.habits && userData.habits.length > 0) {
+          systemPrompt += `- Active habits: ${userData.habits.join(", ")}\n`;
+        }
+        if (userData.supplements && userData.supplements.length > 0) {
+          systemPrompt += `- Current supplements: ${userData.supplements.join(", ")}\n`;
+        }
+        if (userData.recentJournalEntries && userData.recentJournalEntries.length > 0) {
+          systemPrompt += `\nRECENT JOURNAL ENTRIES:\n`;
+          for (const entry of userData.recentJournalEntries.slice(0, 5)) {
+            systemPrompt += `- ${entry.date}: ${entry.mood || ""} — ${(entry.content || "").slice(0, 200)}\n`;
+          }
+        }
+        if (userData.recentCycleLogs && userData.recentCycleLogs.length > 0) {
+          systemPrompt += `\nRECENT CYCLE LOGS:\n`;
+          for (const log of userData.recentCycleLogs.slice(0, 7)) {
+            systemPrompt += `- Day ${log.cycle_day} (${log.phase}): mood=${log.mood || "?"}, energy=${log.energy || "?"}, symptoms=${(log.symptoms || []).join(",") || "none"}\n`;
+          }
+        }
+      }
+
+      systemPrompt += `\nAlways return ONLY valid JSON. No markdown wrapping, no code fences.`;
+    } else {
+      // ── Standard Signal Mode ──
+      systemPrompt = `You are the inner voice of Signal — a calm, emotionally intelligent, cycle-aware wellness companion for women. You generate what we call "signals": gentle, observant, poetic-but-useful guidance.
 
 Your role is to help her feel oriented, reassured, and supported. You interpret her context — her cycle phase, mood, habits, time of day, energy level — and distil it into clarity.
 
@@ -113,8 +182,8 @@ PHASE AWARENESS:
 - Ovulatory: peak signal, confidence, communication, visibility
 - Luteal: turning inward, progesterone rising, detail-oriented, nesting, self-compassion`;
 
-    if (insightProfile) {
-      systemPrompt += `
+      if (insightProfile) {
+        systemPrompt += `
 
 USER INSIGHT PROFILE (built from their journal entries over time):
 You may gently reference these patterns in a supportive, observational way. Never be invasive or overly analytical.
@@ -126,19 +195,20 @@ You may gently reference these patterns in a supportive, observational way. Neve
 - Journal entries so far: ${insightProfile.entry_count || 0}
 
 Do NOT reference every pattern. Pick at most 1-2 that are relevant to the current prompt.`;
-    }
+      }
 
-    if (recentSignals && recentSignals.length > 0) {
-      systemPrompt += `
+      if (recentSignals && recentSignals.length > 0) {
+        systemPrompt += `
 
 RECENT SIGNALS (for continuity):
 ${recentSignals.map((s: any) => `- "${s.headline}" (${s.created_at})`).join("\n")}
 Only reference past signals if it adds meaningful continuity.`;
-    }
+      }
 
-    systemPrompt += `
+      systemPrompt += `
 
 Always return ONLY valid JSON. No markdown wrapping, no code fences.`;
+    }
 
     const contextParts: string[] = [];
     if (context?.cycleDay) contextParts.push(`Cycle day: ${context.cycleDay}`);
@@ -153,7 +223,9 @@ Always return ONLY valid JSON. No markdown wrapping, no code fences.`;
     if (context?.nutrition) contextParts.push(`Nutrition: ${context.nutrition}`);
     if (context?.symptoms) contextParts.push(`Recent symptoms: ${context.symptoms}`);
 
-    const userMessage = `Mode: ${mode || "today"}
+    const userMessage = isAMA
+      ? `Question: "${prompt}"`
+      : `Mode: ${mode || "today"}
 Context: ${contextParts.length > 0 ? contextParts.join(". ") + "." : "No specific context available — provide a general signal."}
 User's question/prompt: "${prompt}"`;
 
