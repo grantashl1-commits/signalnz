@@ -104,31 +104,28 @@ function pickRecipe(phase: string, mealType: string, dislikes: string[], dietTyp
   return candidates[seed % candidates.length];
 }
 
-function buildDayPlan(cycleDay: number, prefs: any, usedNames: string[], daySeed: number) {
+function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number) {
   const phase = getPhaseForDay(cycleDay);
-  const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
-  const dietType = prefs.dietType || "";
 
   const meals: Record<string, any> = {};
-  const mealTypes = ["breakfast", "snack", "lunch", "snack", "dinner"];
   const mealKeys = ["breakfast", "morningSnack", "lunch", "afternoonSnack", "dinner"];
 
-  for (let i = 0; i < mealTypes.length; i++) {
-    const recipe = pickRecipe(phase, mealTypes[i], dislikes, dietType, usedNames, daySeed + i * 7);
-    if (recipe) {
-      usedNames.push(recipe.name);
-      meals[mealKeys[i]] = {
-        name: recipe.name,
+  for (const key of mealKeys) {
+    const assigned = mealAssignments[`${cycleDay}-${key}`];
+    if (assigned) {
+      meals[key] = {
+        name: assigned.name,
         phase,
-        mealType: mealKeys[i],
-        prepTime: recipe.prepTime,
-        serves: recipe.serves,
-        calories: `~${recipe.calories} kcal`,
-        protein: `~${recipe.protein}g`,
-        ingredients: recipe.ingredients,
-        method: recipe.method,
-        nutritionalNote: recipe.nutritionalNote,
-        keyNutrients: recipe.keyNutrients,
+        mealType: key,
+        prepTime: assigned.prepTime,
+        serves: assigned.serves,
+        calories: `~${assigned.calories} kcal`,
+        protein: `~${assigned.protein}g`,
+        ingredients: assigned.ingredients,
+        method: assigned.method,
+        nutritionalNote: assigned.nutritionalNote,
+        keyNutrients: assigned.keyNutrients,
+        isLeftover: assigned.isLeftover || false,
       };
     }
   }
@@ -160,6 +157,113 @@ function buildDayPlan(cycleDay: number, prefs: any, usedNames: string[], daySeed
   };
 }
 
+// Pre-assign meals for all days based on variety preferences
+function assignMealsForWeek(dayStart: number, dayEnd: number, prefs: any, baseSeed: number): Record<string, any> {
+  const assignments: Record<string, any> = {};
+  const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
+  const dietType = prefs.dietType || "";
+  const totalDays = dayEnd - dayStart + 1;
+
+  // Helper: pick N unique recipes for a meal type across phase changes
+  function pickNUnique(mealType: string, count: number, seed: number): Recipe[] {
+    const results: Recipe[] = [];
+    const usedNames: string[] = [];
+    for (let i = 0; i < count; i++) {
+      // Try each day's phase to get phase-appropriate recipes
+      const phase = getPhaseForDay(dayStart + (i % totalDays));
+      const recipe = pickRecipe(phase, mealType, dislikes, dietType, usedNames, seed + i * 17);
+      if (recipe) {
+        results.push(recipe);
+        usedNames.push(recipe.name);
+      }
+    }
+    return results;
+  }
+
+  // ── BREAKFAST ──
+  const breakfastPref = prefs.breakfast || "batch";
+  if (breakfastPref === "batch") {
+    // Same breakfast every day
+    const picks = pickNUnique("breakfast", 1, baseSeed);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      if (picks[0]) assignments[`${d}-breakfast`] = picks[0];
+    }
+  } else if (breakfastPref === "rotate") {
+    // 2-3 options rotated
+    const picks = pickNUnique("breakfast", 3, baseSeed);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      const idx = (d - dayStart) % Math.max(picks.length, 1);
+      if (picks[idx]) assignments[`${d}-breakfast`] = picks[idx];
+    }
+  } else {
+    // variety: different every day
+    const picks = pickNUnique("breakfast", totalDays, baseSeed);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      const idx = (d - dayStart) % Math.max(picks.length, 1);
+      if (picks[idx]) assignments[`${d}-breakfast`] = picks[idx];
+    }
+  }
+
+  // ── LUNCH ──
+  const lunchPref = prefs.lunch || "batch";
+  if (lunchPref === "batch") {
+    const picks = pickNUnique("lunch", 1, baseSeed + 100);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      if (picks[0]) assignments[`${d}-lunch`] = picks[0];
+    }
+  } else if (lunchPref === "rotate") {
+    const picks = pickNUnique("lunch", 3, baseSeed + 100);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      const idx = (d - dayStart) % Math.max(picks.length, 1);
+      if (picks[idx]) assignments[`${d}-lunch`] = picks[idx];
+    }
+  } else {
+    const picks = pickNUnique("lunch", totalDays, baseSeed + 100);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      const idx = (d - dayStart) % Math.max(picks.length, 1);
+      if (picks[idx]) assignments[`${d}-lunch`] = picks[idx];
+    }
+  }
+
+  // ── DINNER ──
+  // double = same every day, fresh = different every day, mix = 2-3 rotated
+  const dinnerPref = prefs.dinner || "double";
+  if (dinnerPref === "double") {
+    const picks = pickNUnique("dinner", 1, baseSeed + 200);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      if (picks[0]) assignments[`${d}-dinner`] = picks[0];
+    }
+  } else if (dinnerPref === "mix") {
+    // mix = 2-3 options rotated (some leftovers)
+    const picks = pickNUnique("dinner", 3, baseSeed + 200);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      const idx = (d - dayStart) % Math.max(picks.length, 1);
+      if (picks[idx]) {
+        const isLeftover = (d - dayStart) > 0 && ((d - dayStart) % picks.length) === 0;
+        assignments[`${d}-dinner`] = { ...picks[idx], isLeftover };
+      }
+    }
+  } else {
+    // fresh = different every day
+    const picks = pickNUnique("dinner", totalDays, baseSeed + 200);
+    for (let d = dayStart; d <= dayEnd; d++) {
+      const idx = (d - dayStart) % Math.max(picks.length, 1);
+      if (picks[idx]) assignments[`${d}-dinner`] = picks[idx];
+    }
+  }
+
+  // ── SNACKS (always rotate) ──
+  const snackPicks = pickNUnique("snack", 3, baseSeed + 300);
+  for (let d = dayStart; d <= dayEnd; d++) {
+    if (snackPicks.length > 0) {
+      assignments[`${d}-morningSnack`] = snackPicks[(d - dayStart) % snackPicks.length];
+      assignments[`${d}-afternoonSnack`] = snackPicks[((d - dayStart) + 1) % snackPicks.length];
+    }
+  }
+
+  return assignments;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -168,7 +272,7 @@ serve(async (req) => {
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
       startCycleDay, endCycleDay, userDietaryDislikes } = body;
 
-    // Credit check: deterministic plan costs 1 credit (down from 3)
+    // Credit check: deterministic plan costs 1 credit
     const userIdentifier = body.userIdentifier;
     if (userIdentifier) {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
@@ -205,12 +309,13 @@ serve(async (req) => {
       }
     }
 
-    const plan: any[] = [];
-    const usedNames: string[] = [];
+    // Pre-assign all meals respecting variety preferences
     const baseSeed = Date.now();
+    const mealAssignments = assignMealsForWeek(dayStart, dayEnd, prefs, baseSeed);
 
+    const plan: any[] = [];
     for (let d = dayStart; d <= dayEnd; d++) {
-      plan.push(buildDayPlan(d, prefs, usedNames, baseSeed + d * 13));
+      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13));
     }
 
     return new Response(JSON.stringify({ plan, mode }), {
