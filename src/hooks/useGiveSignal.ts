@@ -28,7 +28,7 @@ export function useGiveSignal() {
   const [response, setResponse] = useState<SignalFableResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { currentPhase } = useCycle();
+  const { currentPhase, currentCycleDay } = useCycle();
   const { user } = useAuth();
 
   const generate = useCallback(async () => {
@@ -52,6 +52,7 @@ export function useGiveSignal() {
         body: {
           dob,
           cyclePhase: currentPhase || "follicular",
+          cycleDay: currentCycleDay || null,
           userId: user?.id || null,
         },
       });
