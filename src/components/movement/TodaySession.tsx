@@ -117,6 +117,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       setSessionLogged(true);
       haptic("success");
       toast.success("Session logged! 🎉");
+      onSessionLogged?.();
     }
   };
 
