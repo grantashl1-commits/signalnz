@@ -432,38 +432,8 @@ export default function MovementPage() {
       {/* MY LOG TAB */}
       {activeTab === "log" && (
         <div className="space-y-4 md:space-y-6">
-          {/* Monthly calendar at the top */}
+          {/* Monthly calendar with stats (workouts, minutes, zone 2+, consistency) */}
           <MovementCalendar />
-
-          {/* Empty state when no workouts logged */}
-          {totalCompleted === 0 && sessions.length === 0 && (
-            <div className="card-warm p-8 text-center space-y-4">
-              <Dumbbell className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <h3 className="font-display text-lg font-bold italic text-foreground">Your movement history will appear here.</h3>
-              <p className="font-body text-sm text-muted-foreground">Complete your first workout to start tracking.</p>
-              <button
-                onClick={() => { haptic("light"); setActiveTab("today"); }}
-                className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3 font-display text-sm font-semibold active:scale-[0.97] transition-transform"
-              >
-                Today's workout →
-              </button>
-            </div>
-          )}
-
-
-          {/* Heart rate section */}
-          <div className="card-warm p-5" style={{ backgroundColor: "hsl(36 47% 94%)" }}>
-            <h3 className="font-display text-base italic text-foreground">Heart rate monitor.</h3>
-            <p className="font-body text-xs italic text-muted-foreground mt-1">
-              Connect a Bluetooth chest strap to track your zones in real time.
-            </p>
-            <p className="font-hand text-[10px] text-muted-foreground mt-1">
-              Works with Polar H10, H9, Garmin chest strap, Wahoo TICKR via Bluetooth.
-            </p>
-            <button onClick={() => setShowHR(true)} className="touch-btn w-full mt-3 rounded-[14px] py-3 min-h-[48px] font-body text-sm font-bold text-primary-foreground bg-primary flex items-center justify-center gap-2">
-              <Bluetooth className="h-4 w-4" /> Connect monitor
-            </button>
-          </div>
 
           {/* Manual log */}
           {showManualLog ? (
@@ -530,16 +500,20 @@ export default function MovementPage() {
           ) : (
             <button
               onClick={() => setShowManualLog(true)}
-              className="card-warm p-4 w-full text-left"
+              className="card-warm p-4 w-full text-left flex items-center gap-3"
             >
-              <p className="font-hand text-sm text-muted-foreground">+ Log a workout manually</p>
-              <p className="font-body text-xs text-muted-foreground mt-1">No monitor? Add any session to your log.</p>
+              <Plus className="h-5 w-5 text-primary" />
+              <div>
+                <p className="font-body text-sm font-medium text-foreground">Log a workout manually</p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">Add any session to your log.</p>
+              </div>
             </button>
           )}
 
+          {/* Workout history from Supabase */}
           {supabaseLogs.length > 0 && (
             <div>
-              <p className="font-hand text-sm font-bold text-primary mb-2">Training sessions</p>
+              <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em] mb-2">Workout history</p>
               <div className="space-y-2">
                 {supabaseLogs.map(log => (
                   <div key={log.id} className="card-warm p-3">
@@ -565,24 +539,20 @@ export default function MovementPage() {
             </div>
           )}
 
-          {/* Session history */}
+          {/* HR session history from localStorage */}
           {sessions.length > 0 && (
             <div>
-              <p className="font-hand text-sm font-bold text-primary mb-2">Past sessions</p>
+              <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em] mb-2">HR sessions</p>
               <div className="space-y-2">
                 {sessions.slice(0, 10).map(s => {
                   const isExpanded = expandedSession === s.id;
                   const durationMin = Math.round(s.duration / 60);
-                  const userAge = getUserAge() || 30;
-                  const mhr = getMaxHR(userAge);
                   const zoneChart = HR_ZONES.map((z, i) => ({
                     name: `Z${z.zone}`,
                     minutes: s.zoneMins[i] || 0,
                     color: z.color,
                     label: z.label,
                   }));
-                  const noteKey = s.id;
-                  const currentNote = sessionNotes[noteKey] ?? s.notes ?? "";
 
                   return (
                     <div key={s.id} className="card-warm overflow-hidden">
@@ -601,11 +571,11 @@ export default function MovementPage() {
                             <p className="font-body text-sm text-foreground">{s.zone2PlusPercent}%</p>
                             {s.caloriesBurnt ? (
                               <div className="flex items-center gap-0.5 justify-end">
-                                <Flame className="h-2.5 w-2.5 text-coral-flame" />
-                                <p className="font-body text-[9px] text-coral-flame">{s.caloriesBurnt}</p>
+                                <Flame className="h-2.5 w-2.5 text-destructive" />
+                                <p className="font-body text-[9px] text-destructive">{s.caloriesBurnt}</p>
                               </div>
                             ) : (
-                              <p className="font-hand text-[9px] text-petal-gold">Zone 2+</p>
+                              <p className="font-body text-[9px] text-primary">Zone 2+</p>
                             )}
                           </div>
                           <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`} />
@@ -614,7 +584,6 @@ export default function MovementPage() {
 
                       {isExpanded && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-3 pb-4 border-t border-border pt-3 space-y-3">
-                          {/* Stats row */}
                           <div className="grid grid-cols-4 gap-2">
                             {[
                               { val: formatTime(s.duration), label: "Duration" },
@@ -629,7 +598,6 @@ export default function MovementPage() {
                             ))}
                           </div>
 
-                          {/* Zone bar chart */}
                           <div className="h-32 rounded-xl bg-card p-2">
                             <ResponsiveContainer width="100%" height="100%">
                               <BarChart data={zoneChart} margin={{ top: 2, right: 2, bottom: 2, left: 0 }}>
@@ -644,7 +612,6 @@ export default function MovementPage() {
                             </ResponsiveContainer>
                           </div>
 
-                          {/* Zone legend */}
                           <div className="flex flex-wrap gap-1.5">
                             {zoneChart.map(z => z.minutes > 0 && (
                               <div key={z.name} className="flex items-center gap-1 rounded-full px-2 py-0.5" style={{ backgroundColor: z.color + "18" }}>
@@ -653,35 +620,21 @@ export default function MovementPage() {
                               </div>
                             ))}
                           </div>
-
-                          {/* Notes */}
-                          <div className="space-y-1.5">
-                            <div className="flex items-center gap-1.5">
-                              <PenLine className="h-3.5 w-3.5 text-muted-foreground" />
-                              <p className="font-body text-xs font-medium text-foreground">Add notes</p>
-                            </div>
-                            <textarea
-                              value={currentNote}
-                              onChange={(e) => setSessionNotes(prev => ({ ...prev, [noteKey]: e.target.value }))}
-                              onBlur={() => {
-                                // Save note to session
-                                const full = getWorkoutSession(s.id);
-                                if (full) {
-                                  full.notes = currentNote;
-                                  saveWorkoutSession(full);
-                                }
-                              }}
-                              placeholder="How did this session feel? Any observations..."
-                              rows={2}
-                              className="w-full rounded-xl border border-border bg-card px-3 py-2 font-body text-xs text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                            />
-                          </div>
                         </motion.div>
                       )}
                     </div>
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {supabaseLogs.length === 0 && sessions.length === 0 && (
+            <div className="card-warm p-8 text-center space-y-3">
+              <Dumbbell className="h-8 w-8 text-muted-foreground/30 mx-auto" />
+              <p className="font-display text-base font-bold text-foreground">No workouts logged yet</p>
+              <p className="font-body text-xs text-muted-foreground">Complete a session or log one manually.</p>
             </div>
           )}
         </div>
