@@ -230,7 +230,7 @@ export default function AISessionCard({
             return (
               <div key={ex.name + i}>
                 {showSection && ex.section && (
-                  <p className="font-display text-xs font-bold italic mt-3 mb-1" style={{ color: phaseColor }}>{ex.section}</p>
+                  <p className="font-display text-xs font-bold italic mt-3 mb-1" style={{ color: phaseColor }}>{sanitizeText(ex.section)}</p>
                 )}
                 <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
                   className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
@@ -242,17 +242,16 @@ export default function AISessionCard({
                   >
                     {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                   </div>
-                  {/* GIF thumbnail */}
                   <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
-                    <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                    <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" />
                   </div>
                   <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
-                    <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
+                    <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{sanitizeText(ex.name)}</p>
                     <p className="font-body text-[9px]" style={{ color: phaseColor }}>
-                      {ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}
+                      {ex.sets && `${ex.sets}×`}{sanitizeText(ex.reps)}{ex.duration && ` ${sanitizeText(ex.duration)}`}
                     </p>
                   </div>
-                  <p className="font-body text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{ex.formCue || ex.form_cue}</p>
+                  <p className="font-body text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{sanitizeText(ex.formCue || ex.form_cue)}</p>
                 </motion.div>
               </div>
             );
@@ -300,7 +299,7 @@ export default function AISessionCard({
       {session.coaching_note && (
         <div className="flex items-start gap-2 rounded-xl bg-primary/5 border border-primary/10 p-3">
           <MessageCircle className="h-3.5 w-3.5 text-primary mt-0.5 flex-shrink-0" />
-          <p className="font-body text-xs text-muted-foreground leading-relaxed italic">{session.coaching_note}</p>
+          <p className="font-body text-xs text-muted-foreground leading-relaxed italic">{sanitizeText(session.coaching_note)}</p>
         </div>
       )}
     </div>
