@@ -206,19 +206,20 @@ export default function AISessionCard({
                 >
                   {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                 </div>
-                {/* GIF thumbnail */}
+                {/* Anatomy illustration */}
                 <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
-                  <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" />
+                  <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" showLabel />
                 </div>
                 <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
                   <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{sanitizeText(ex.name)}</p>
                   <div className="flex gap-2 flex-wrap mt-0.5">
                     {ex.sets && <span className="font-body text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {sanitizeText(ex.reps_or_duration)}</span>}
                     {ex.rest && <span className="font-body text-[9px] text-muted-foreground">Rest {sanitizeText(ex.rest)}</span>}
-                    {ex.tempo && <span className="font-body text-[9px] text-muted-foreground">Tempo {sanitizeText(ex.tempo)}</span>}
                   </div>
+                  {ex.form_cue && (
+                    <p className="font-body text-[9px] italic text-muted-foreground mt-0.5 leading-tight">{sanitizeText(ex.form_cue)}</p>
+                  )}
                 </div>
-                <p className="font-body text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block leading-tight">{sanitizeText(ex.form_cue)}</p>
               </motion.div>
             );
           })}
@@ -247,15 +248,17 @@ export default function AISessionCard({
                     {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                   </div>
                   <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
-                    <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" />
+                    <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" showLabel />
                   </div>
                   <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
                     <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{sanitizeText(ex.name)}</p>
                     <p className="font-body text-[9px]" style={{ color: phaseColor }}>
                       {ex.sets && `${ex.sets}×`}{sanitizeText(ex.reps)}{ex.duration && ` ${sanitizeText(ex.duration)}`}
                     </p>
+                    {(ex.formCue || ex.form_cue) && (
+                      <p className="font-body text-[9px] italic text-muted-foreground mt-0.5">{sanitizeText(ex.formCue || ex.form_cue)}</p>
+                    )}
                   </div>
-                  <p className="font-body text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{sanitizeText(ex.formCue || ex.form_cue)}</p>
                 </motion.div>
               </div>
             );

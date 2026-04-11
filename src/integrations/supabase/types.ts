@@ -556,6 +556,7 @@ export type Database = {
           evidence_source: string | null
           gif_url: string | null
           id: string
+          illustration_url: string | null
           instructions: string | null
           is_low_impact: boolean | null
           is_somatic: boolean | null
@@ -574,6 +575,7 @@ export type Database = {
           evidence_source?: string | null
           gif_url?: string | null
           id: string
+          illustration_url?: string | null
           instructions?: string | null
           is_low_impact?: boolean | null
           is_somatic?: boolean | null
@@ -592,6 +594,7 @@ export type Database = {
           evidence_source?: string | null
           gif_url?: string | null
           id?: string
+          illustration_url?: string | null
           instructions?: string | null
           is_low_impact?: boolean | null
           is_somatic?: boolean | null
