@@ -165,7 +165,6 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
               </div>
             </div>
           </motion.div>
-          <h2 className="font-display text-[24px] font-bold text-foreground mb-2">Your Memory Vault</h2>
           <p className="font-display text-sm italic text-muted-foreground max-w-sm mx-auto">
             This is where your favourite pieces of your life can live. Save moments from your journal or add them directly.
           </p>
