@@ -279,7 +279,7 @@ export default function MovementPage() {
 
       {/* TODAY TAB */}
       {activeTab === "today" && (
-        <div className="space-y-4 md:space-y-6">
+        <div className="space-y-8 md:space-y-10">
           {/* Phase + training week context */}
           <div className="card-warm p-4 md:p-5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
@@ -339,7 +339,7 @@ export default function MovementPage() {
 
       {/* LIBRARY TAB */}
       {activeTab === "library" && (
-        <div className="space-y-4">
+        <div className="space-y-8 md:space-y-10">
           <div className="space-y-2">
             <div className="scroll-snap-x flex gap-1.5 pb-1 -mx-1 px-1 sm:flex-wrap">
               <button onClick={() => setCategoryFilter("all")} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${categoryFilter === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>All</button>
@@ -431,7 +431,7 @@ export default function MovementPage() {
 
       {/* MY LOG TAB */}
       {activeTab === "log" && (
-        <div className="space-y-4 md:space-y-6">
+        <div className="space-y-8 md:space-y-10">
           {/* Monthly calendar with stats (workouts, minutes, zone 2+, consistency) */}
           <MovementCalendar />
 
@@ -643,7 +643,7 @@ export default function MovementPage() {
 
       {/* BODY TAB */}
       {activeTab === "body" && (
-        <div className="space-y-6">
+        <div className="space-y-8 md:space-y-10">
           <BodyVisualiser />
         </div>
       )}
