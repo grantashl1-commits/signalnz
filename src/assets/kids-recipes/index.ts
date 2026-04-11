@@ -21,7 +21,10 @@ import kidsFrittata from "./kids-frittata.jpg";
 import kidsMacCheese from "./kids-mac-cheese.jpg";
 import kidsPorkStirFry from "./kids-pork-stir-fry.jpg";
 
+import kidsShrimpPasta from "./kids-shrimp-pasta.jpg";
+
 export const KIDS_RECIPE_IMAGES: Record<string, string> = {
+  "kids-chicken-strips": kidsChickenStrips,
   "kids-chicken-fried-rice": kidsChickenFriedRice,
   "kids-chicken-quesadilla": kidsChickenQuesadilla,
   "kids-chicken-nugget-bowl": kidsChickenNuggetBowl,
