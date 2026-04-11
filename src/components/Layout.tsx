@@ -82,7 +82,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
         <div className="container mx-auto flex items-center justify-between px-4 h-[52px]">
           <Link to="/" className="flex items-center flex-shrink-0 mr-6">
-            <img src="/logos/Signal_Logo_Header.png" alt="Signal" className="h-8" />
+            <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-8" />
           </Link>
 
           <nav className="flex items-center gap-1 flex-1 justify-center">
@@ -145,7 +145,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 md:hidden" style={{ paddingTop: "var(--safe-top)" }}>
         <div className="flex items-center justify-between px-5 h-[52px]">
           <Link to="/" className="flex items-center">
-            <img src="/logos/Signal_Logo_Header.png" alt="Signal" className="h-7" />
+            <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-7" />
           </Link>
           <div className="flex items-center gap-2">
             {showCreditCounter && (
