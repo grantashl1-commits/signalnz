@@ -55,6 +55,11 @@ export function useElevenLabsTTS({
         return;
       }
 
+      // Get user identifier for credit tracking
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: { user } } = await supabase.auth.getUser();
+      const user_identifier = user?.id || user?.email || "anonymous";
+
       // Call edge function to generate + store
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-generate`,
@@ -68,6 +73,7 @@ export function useElevenLabsTTS({
           body: JSON.stringify({
             text: ttsScript,
             practiceId,
+            user_identifier,
           }),
         }
       );
