@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { ChevronLeft, ChevronRight, Pencil, Settings } from "lucide-react";
-import PhaseBadge from "@/components/PhaseBadge";
+
 import { CymatiSketch, MoonPhaseRow, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
 import InsightsTab from "@/components/InsightsTab";
