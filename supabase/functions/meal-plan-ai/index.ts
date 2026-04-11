@@ -428,7 +428,7 @@ serve(async (req) => {
 
     const plan: any[] = [];
     for (let d = dayStart; d <= dayEnd; d++) {
-      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13));
+      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13, kidsCount, kidsDietType, kidsAllergies));
     }
 
     return new Response(JSON.stringify({ plan, mode }), {
