@@ -64,8 +64,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const keyboardVisible = useKeyboardVisible();
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
   const navigate = useNavigate();
-  const { creditsRemaining, tier } = useAICredits();
-  const showCreditCounter = tier === "free";
   const [moreOpen, setMoreOpen] = useState(false);
 
   const previousPathRef = useRef(location.pathname);
