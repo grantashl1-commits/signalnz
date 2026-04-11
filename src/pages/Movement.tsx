@@ -23,7 +23,7 @@ import ExerciseRig from "@/components/movement/ExerciseRig";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
-import AISessionCard from "@/components/movement/AISessionCard";
+import AISessionLog from "@/components/movement/AISessionLog";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
@@ -303,7 +303,7 @@ export default function MovementPage() {
 
           {/* AI-Generated Today's Workout (if they generated one) */}
           {aiTodayWorkout && (
-            <AISessionCard
+            <AISessionLog
               session={aiTodayWorkout}
               trainingWeek={trainingWeek}
               weekTheme={aiPlan?.weeks?.[trainingWeek - 1]?.theme}
@@ -321,6 +321,9 @@ export default function MovementPage() {
                   section: "",
                 });
               }}
+              onOpenHR={() => setShowHR(true)}
+              onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
+              onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
             />
           )}
         </div>
