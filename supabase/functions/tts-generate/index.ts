@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     const DEFAULT_VOICE_ID =
-      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "pFZP5JQG7iQjIQuC4Bku"; // Lily — soft, calm, gentle
+      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "pFZP5JQG7iQjIQuC4Bku";
 
     if (!ELEVENLABS_API_KEY) {
       return new Response(
@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { text, voiceId, practiceId } = await req.json();
+    const { text, voiceId, practiceId, user_identifier } = await req.json();
 
     if (!text || !practiceId) {
       return new Response(
@@ -35,9 +35,43 @@ Deno.serve(async (req) => {
       );
     }
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // --- CREDIT CHECK ---
+    if (user_identifier) {
+      const { data: credit } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_identifier", user_identifier)
+        .maybeSingle();
+
+      if (credit && credit.credits_remaining !== null && credit.credits_remaining <= 0) {
+        return new Response(
+          JSON.stringify({ error: "You've used all your credits for this month. Upgrade your plan for more." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Deduct 2 credits for practice TTS (longer content)
+      if (credit) {
+        await supabase
+          .from("ai_credits")
+          .update({ credits_remaining: Math.max(0, (credit.credits_remaining || 0) - 2) })
+          .eq("user_identifier", user_identifier);
+      }
+
+      await supabase.from("ai_usage").insert({
+        user_identifier,
+        function_name: "tts-generate",
+        tokens_used: text.length,
+      });
+    }
+
     const voice = voiceId || DEFAULT_VOICE_ID;
 
-    // Generate speech via ElevenLabs
     const ttsResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`,
       {
@@ -70,12 +104,6 @@ Deno.serve(async (req) => {
     }
 
     const audioBuffer = await ttsResponse.arrayBuffer();
-
-    // Upload to Supabase storage
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
 
     const filePath = `practices/${practiceId}.mp3`;
     const { error: uploadError } = await supabase.storage
