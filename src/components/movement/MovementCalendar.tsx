@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const REST_IDS = new Set(["rest-walk-restore", "mobility-flow"]);
 
-export default function MovementCalendar() {
+export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: number }) {
   const today = new Date();
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -29,7 +29,7 @@ export default function MovementCalendar() {
           }
         });
     });
-  }, [viewYear, viewMonth]);
+  }, [viewYear, viewMonth, refreshKey]);
 
   const sessions = useMemo(() => getAllSessions(), []);
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PenLine, Save, Check, Activity, Dumbbell, Plus } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -19,12 +19,13 @@ interface AISessionLogProps {
   onOpenHR: () => void;
   onOpenTraining: () => void;
   onOpenManualLog: () => void;
+  onSessionLogged?: () => void;
 }
 
 export default function AISessionLog({
   session, trainingWeek, weekTheme, phase,
   completedExercises, onToggleExercise, onOpenExercise,
-  onOpenHR, onOpenTraining, onOpenManualLog,
+  onOpenHR, onOpenTraining, onOpenManualLog, onSessionLogged,
 }: AISessionLogProps) {
   const { user } = useAuth();
   const { currentPhase } = useCycle();
@@ -34,6 +35,23 @@ export default function AISessionLog({
   const [sessionLogging, setSessionLogging] = useState(false);
 
   const todayStr = new Date().toISOString().split("T")[0];
+  const sessionKey = `ai-session-${session.name}-${todayStr}`;
+
+  // Check if today's AI session was already logged
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("workout_logs")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("session_date", todayStr)
+      .eq("completed", true)
+      .ilike("notes", `%AI plan: ${session.name}%`)
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) setSessionLogged(true);
+      });
+  }, [user, todayStr, session.name]);
 
   const allExercises = session.main_block
     ? session.main_block.flatMap((b: any) => b.exercises || [])
@@ -50,6 +68,10 @@ export default function AISessionLog({
       completed: completedExercises.has(ex.name),
     }));
 
+    const notesText = sessionNotes.trim()
+      ? `${sessionNotes.trim()} | AI plan: ${session.name}`
+      : `AI plan: ${session.name}`;
+
     const { error } = await (supabase as any)
       .from("workout_logs")
       .insert({
@@ -57,7 +79,7 @@ export default function AISessionLog({
         workout_template_id: null,
         exercises: exercisesPayload,
         duration_minutes: session.durationMin || session.duration_minutes || null,
-        notes: sessionNotes.trim() || `AI plan: ${session.name}`,
+        notes: notesText,
         completed: true,
         cycle_phase: currentPhase,
         session_date: todayStr,
@@ -70,6 +92,7 @@ export default function AISessionLog({
       setSessionLogged(true);
       haptic("success");
       toast.success("AI session logged! 🎉");
+      onSessionLogged?.();
     }
   };
 

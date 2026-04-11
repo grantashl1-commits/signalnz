@@ -84,6 +84,7 @@ export default function MovementPage() {
   const [showManualLog, setShowManualLog] = useState(false);
   const [manualLogging, setManualLogging] = useState(false);
   const [manualLog, setManualLog] = useState({ date: todayStr, type: "Strength", duration: 45, notes: "" });
+  const [logRefreshKey, setLogRefreshKey] = useState(0);
   const dayOfWeek = new Date().getDay();
   const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
@@ -216,7 +217,7 @@ export default function MovementPage() {
           if (data) setSupabaseLogs(data as any);
         });
     });
-  }, [activeTab]);
+  }, [activeTab, logRefreshKey]);
 
   const handleManualLog = async () => {
     if (manualLogging) return;
@@ -299,6 +300,7 @@ export default function MovementPage() {
             onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
             onOpenHR={() => setShowHR(true)}
             onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
+            onSessionLogged={() => setLogRefreshKey(k => k + 1)}
           />
 
           {/* AI-Generated Today's Workout (if they generated one) */}
@@ -324,6 +326,7 @@ export default function MovementPage() {
               onOpenHR={() => setShowHR(true)}
               onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
               onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
+              onSessionLogged={() => setLogRefreshKey(k => k + 1)}
             />
           )}
         </div>
@@ -348,7 +351,7 @@ export default function MovementPage() {
       {activeTab === "log" && (
         <div className="space-y-8 md:space-y-10">
           {/* Monthly calendar with stats (workouts, minutes, zone 2+, consistency) */}
-          <MovementCalendar />
+          <MovementCalendar refreshKey={logRefreshKey} />
 
           {/* Manual log */}
           {showManualLog ? (
