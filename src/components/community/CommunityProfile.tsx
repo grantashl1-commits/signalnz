@@ -42,9 +42,9 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
     visibility: { ...DEFAULT_VISIBILITY },
   });
   const { photo, form, visibility } = profileData;
+  const displayPhoto = avatarUrl || photo;
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
-  const fileRef = useRef<HTMLInputElement>(null);
 
   // Load from database on mount
   useEffect(() => {
