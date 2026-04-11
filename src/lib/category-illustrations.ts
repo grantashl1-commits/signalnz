@@ -185,7 +185,16 @@ const DEFAULT_ILLUSTRATION = "/images/recipes/meals/nourish-buddha-bowl.png";
  * Given a meal/recipe name, return the path to the best matching
  * category-level hand-drawn illustration.
  */
-export function getCategoryIllustration(name: string): string {
+/**
+ * Given a meal/recipe name (or id), return the path to the best matching illustration.
+ * TCM/Ayurveda recipes have dedicated illustrations; others use keyword matching.
+ */
+export function getCategoryIllustration(name: string, id?: string): string {
+  // Check for dedicated TCM/Ayurveda illustration by recipe id
+  if (id && TCM_AYURVEDA_ILLUSTRATIONS[id]) {
+    return TCM_AYURVEDA_ILLUSTRATIONS[id];
+  }
+
   const lower = name.toLowerCase();
 
   // Try more-specific multi-word matches first, then single-word
