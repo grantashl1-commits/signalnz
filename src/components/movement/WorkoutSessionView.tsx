@@ -624,7 +624,7 @@ function ExerciseCard({
                 {ex.load_guidance && (
                   <div className="flex items-start gap-2">
                     <Dumbbell className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
-                    <p className="font-body text-xs text-foreground leading-relaxed">{ex.load_guidance}</p>
+                    <p className="font-body text-xs text-foreground leading-relaxed">{sanitizeText(ex.load_guidance)}</p>
                   </div>
                 )}
 
@@ -632,7 +632,7 @@ function ExerciseCard({
                   <div>
                     <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider mb-1">How to</p>
                     {instructions.map((inst: string, j: number) => (
-                      <p key={j} className="font-body text-xs text-muted-foreground leading-relaxed">{inst}</p>
+                      <p key={j} className="font-body text-xs text-muted-foreground leading-relaxed">{sanitizeText(inst)}</p>
                     ))}
                   </div>
                 )}
@@ -647,7 +647,9 @@ function ExerciseCard({
                       {cues.map((cue: string, j: number) => (
                         <li key={j} className="font-body text-xs text-foreground leading-relaxed flex gap-2">
                           <span className="text-primary shrink-0">·</span>
-                          {cue}
+                          {sanitizeText(cue)}
+                        </li>
+                      ))}
                         </li>
                       ))}
                     </ul>
