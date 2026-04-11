@@ -434,6 +434,24 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         </div>
       )}
 
+      {/* Workout-level interval timer for alternating time-based exercises (e.g. run/walk) */}
+      {(() => {
+        const timeExercises = localExercises.filter(e => e.exercise && isTimeBased(e.reps));
+        if (timeExercises.length >= 2) {
+          return (
+            <WorkoutIntervalButton
+              exercises={timeExercises.map(e => ({
+                name: e.exercise?.name || "",
+                reps: e.reps,
+                sets: e.sets,
+                restSeconds: e.rest_seconds,
+              }))}
+            />
+          );
+        }
+        return null;
+      })()}
+
       {/* Exercises */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
