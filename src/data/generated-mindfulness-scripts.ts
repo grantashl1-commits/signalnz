@@ -11,6 +11,7 @@ import {
   letterNeverSent,
   reclaimingPower,
 } from "./addiction-inner-work-scripts";
+import { BOOK_SOURCED_SCRIPTS } from "./book-sourced-scripts";
 
 // ═══════════════════════════════════════════════════════════
 // MEDITATIONS — PDF-sourced guided practices
@@ -769,4 +770,5 @@ export const ALL_GENERATED_SCRIPTS: MeditationScript[] = [
   ...GEN_MEDITATION_SCRIPTS,
   ...GEN_SLEEP_SCRIPTS,
   ...GEN_INNER_WORK_SCRIPTS,
+  ...BOOK_SOURCED_SCRIPTS,
 ];
