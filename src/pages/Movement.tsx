@@ -76,12 +76,12 @@ export default function MovementPage() {
     exercises: any[];
   }>>([]);
 
+  const todayStr = new Date().toISOString().split("T")[0];
+
   // Manual log form
   const [showManualLog, setShowManualLog] = useState(false);
   const [manualLogging, setManualLogging] = useState(false);
   const [manualLog, setManualLog] = useState({ date: todayStr, type: "Strength", duration: 45, notes: "" });
-
-  const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
   const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
