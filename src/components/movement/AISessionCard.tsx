@@ -86,7 +86,10 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
       <div className="flex-1 min-w-0">
         <span className="font-body text-xs text-foreground">{sanitizeText(item.name)}</span>
         {stretchData?.target_muscle && (
-          <p className="font-body text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <MuscleIllustration targetMuscle={stretchData.target_muscle} size={20} />
+            <p className="font-body text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
+          </div>
         )}
       </div>
       <span className="font-body text-[10px] text-muted-foreground flex-shrink-0">
