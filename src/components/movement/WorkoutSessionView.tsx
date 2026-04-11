@@ -650,8 +650,6 @@ function ExerciseCard({
                           {sanitizeText(cue)}
                         </li>
                       ))}
-                        </li>
-                      ))}
                     </ul>
                   </div>
                 )}
