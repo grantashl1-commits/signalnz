@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Target, Zap, Heart, Flame, TrendingUp, Calendar, Clock } from "lucide-react";
+import { ChevronDown, ChevronUp, Target, Zap, Heart, Flame, TrendingUp, Calendar, Clock, Home, Dumbbell, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,31 +25,65 @@ const GOAL_ICONS: Record<string, typeof Target> = {
   muscle_building: TrendingUp,
   strength_power: Zap,
   hormonal_support: Heart,
+  yoga_flexibility: Heart,
+  pilates_core: Target,
+  running_endurance: TrendingUp,
 };
 
 const TIERS: { label: string; description: string; slugs: string[] }[] = [
   {
     label: "Start here",
     description: "Lower intensity · Restorative & foundational",
-    slugs: ["nervous_system", "gentle_movement", "walk_to_run", "hormonal_support"],
+    slugs: ["nervous_system", "gentle_movement", "walk_to_run", "hormonal_support", "yoga_flexibility"],
   },
   {
     label: "Build",
     description: "Moderate intensity · Strength & conditioning",
-    slugs: ["functional_fitness", "fat_loss_cardio", "body_recomposition", "glute_foundation"],
+    slugs: ["functional_fitness", "fat_loss_cardio", "body_recomposition", "glute_foundation", "pilates_core"],
   },
   {
     label: "Push",
     description: "Higher intensity · Performance & hypertrophy",
-    slugs: ["hiit_performance", "muscle_building", "strength_power"],
+    slugs: ["hiit_performance", "muscle_building", "strength_power", "running_endurance"],
   },
 ];
+
+// Equipment filter categories
+type EquipmentFilter = "all" | "home-none" | "home-some" | "gym";
+
+const EQUIPMENT_FILTERS: { id: EquipmentFilter; label: string; icon: typeof Home; description: string }[] = [
+  { id: "all", label: "All", icon: Target, description: "Show all programs" },
+  { id: "home-none", label: "At Home — No Equipment", icon: Home, description: "Bodyweight only" },
+  { id: "home-some", label: "At Home — Some Equipment", icon: Dumbbell, description: "Dumbbells, bands, mat, reformer" },
+  { id: "gym", label: "Gym", icon: Building2, description: "Full gym access" },
+];
+
+const GYM_EQUIPMENT = new Set(["barbell", "cable_machine", "cable machine", "bench", "squat_rack", "squat rack", "leg_press_machine", "leg press machine", "hip_abduction_machine", "hip abduction machine"]);
+const HOME_SOME_EQUIPMENT = new Set(["dumbbells", "resistance_bands", "resistance bands", "resistance_band", "resistance band", "mat", "foam_roller", "foam roller", "reformer", "jump_rope", "jump rope"]);
+
+function categorizeEquipment(equipment: string[] | null): EquipmentFilter[] {
+  if (!equipment || equipment.length === 0) return ["home-none"];
+  const eqSet = new Set(equipment.map(e => e.toLowerCase()));
+  
+  if (eqSet.has("none") || (eqSet.size === 0)) return ["home-none"];
+  
+  const hasGym = [...eqSet].some(e => GYM_EQUIPMENT.has(e));
+  if (hasGym) return ["gym"];
+  
+  const hasHome = [...eqSet].some(e => HOME_SOME_EQUIPMENT.has(e));
+  if (hasHome) return ["home-some"];
+  
+  // Bodyweight, supportive footwear, etc
+  return ["home-none"];
+}
 
 interface ProgramSummary {
   goal_category_id: string;
   duration_weeks: number;
   sessions_per_week: number;
   who_its_for: string | null;
+  equipment_needed: string[] | null;
+  title: string;
 }
 
 function IntensityBar({ min, max }: { min: number; max: number }) {
@@ -88,16 +122,30 @@ const INTENSITY_LABELS: Record<string, string> = {
 export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, variant = "page" }: Props) {
   const [expandedHormonal, setExpandedHormonal] = useState<string | null>(null);
   const [programSummaries, setProgramSummaries] = useState<ProgramSummary[]>([]);
+  const [equipmentFilter, setEquipmentFilter] = useState<EquipmentFilter>("all");
   const isOnboarding = variant === "onboarding";
 
   useEffect(() => {
     supabase
       .from("training_programs")
-      .select("goal_category_id, duration_weeks, sessions_per_week, who_its_for")
+      .select("goal_category_id, duration_weeks, sessions_per_week, who_its_for, equipment_needed, title")
       .then(({ data }) => {
         if (data) setProgramSummaries(data as ProgramSummary[]);
       });
   }, []);
+
+  // Filter goals based on equipment availability of their programs
+  const filteredGoalIds = useMemo(() => {
+    if (equipmentFilter === "all") return null; // show all
+    const matchingGoalIds = new Set<string>();
+    programSummaries.forEach(p => {
+      const categories = categorizeEquipment(p.equipment_needed);
+      if (categories.includes(equipmentFilter)) {
+        matchingGoalIds.add(p.goal_category_id);
+      }
+    });
+    return matchingGoalIds;
+  }, [equipmentFilter, programSummaries]);
 
   const goalsBySlug = new Map(goals.map((g) => [g.slug, g]));
 
@@ -112,9 +160,40 @@ export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, v
         </div>
       )}
 
+      {/* Equipment filter */}
+      {!isOnboarding && (
+        <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+          {EQUIPMENT_FILTERS.map(f => {
+            const Icon = f.icon;
+            const active = equipmentFilter === f.id;
+            return (
+              <button
+                key={f.id}
+                onClick={() => { haptic("light"); setEquipmentFilter(f.id); }}
+                className={cn(
+                  "shrink-0 rounded-full px-3.5 py-2 font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap flex items-center gap-1.5",
+                  active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                )}
+              >
+                <Icon className="h-3 w-3" />
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {TIERS.map((tier) => {
-        const tierGoals = tier.slugs.map((s) => goalsBySlug.get(s)).filter(Boolean) as GoalCategory[];
-        if (tierGoals.length === 0) return null;
+        const tierGoals = tier.slugs
+          .map((s) => goalsBySlug.get(s))
+          .filter(Boolean) as GoalCategory[];
+        
+        // Filter by equipment if active
+        const visibleGoals = filteredGoalIds
+          ? tierGoals.filter(g => filteredGoalIds.has(g.id))
+          : tierGoals;
+        
+        if (visibleGoals.length === 0) return null;
 
         return (
           <div key={tier.label} className="space-y-2.5">
@@ -134,12 +213,13 @@ export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, v
             </div>
 
             <div className="grid gap-2.5">
-              {tierGoals.map((goal, i) => {
+              {visibleGoals.map((goal, i) => {
                 const selected = selectedGoalId === goal.id;
                 const Icon = GOAL_ICONS[goal.slug] || Target;
                 const intensityKey = `${goal.intensity_min}-${goal.intensity_max}`;
                 const hormonalExpanded = expandedHormonal === goal.id;
-                const progSummary = programSummaries.find((p) => p.goal_category_id === goal.id);
+                const goalPrograms = programSummaries.filter((p) => p.goal_category_id === goal.id);
+                const progSummary = goalPrograms[0];
 
                 return (
                   <motion.button
@@ -211,22 +291,50 @@ export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, v
                           </p>
                         )}
 
-                        {/* Program stats */}
-                        {progSummary && (
+                        {/* Program count + stats */}
+                        {goalPrograms.length > 0 && (
                           <div className={cn(
                             "flex flex-wrap gap-3 mt-2",
                             isOnboarding
                               ? selected ? "text-primary/50" : "text-white/30"
                               : "text-muted-foreground/70"
                           )}>
-                            <span className="inline-flex items-center gap-1 font-body text-xs">
-                              <Calendar className="h-3 w-3" />
-                              {progSummary.duration_weeks} weeks
-                            </span>
-                            <span className="inline-flex items-center gap-1 font-body text-xs">
-                              <Clock className="h-3 w-3" />
-                              {progSummary.sessions_per_week} days/week
-                            </span>
+                            {goalPrograms.length > 1 && (
+                              <span className="font-body text-xs font-medium">
+                                {goalPrograms.length} programs
+                              </span>
+                            )}
+                            {progSummary && (
+                              <>
+                                <span className="inline-flex items-center gap-1 font-body text-xs">
+                                  <Calendar className="h-3 w-3" />
+                                  {progSummary.duration_weeks} weeks
+                                </span>
+                                <span className="inline-flex items-center gap-1 font-body text-xs">
+                                  <Clock className="h-3 w-3" />
+                                  {progSummary.sessions_per_week} days/week
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Equipment badges */}
+                        {progSummary?.equipment_needed && progSummary.equipment_needed.length > 0 && progSummary.equipment_needed[0] !== "none" && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {progSummary.equipment_needed.slice(0, 4).map(eq => (
+                              <span
+                                key={eq}
+                                className={cn(
+                                  "inline-block rounded-full px-2 py-0.5 font-body text-[9px] uppercase tracking-wider",
+                                  isOnboarding
+                                    ? selected ? "bg-primary/10 text-primary/60" : "bg-white/10 text-white/40"
+                                    : "bg-secondary text-muted-foreground"
+                                )}
+                              >
+                                {eq.replace(/_/g, " ")}
+                              </span>
+                            ))}
                           </div>
                         )}
 
@@ -289,6 +397,19 @@ export default function GoalSelectionScreen({ goals, selectedGoalId, onSelect, v
           </div>
         );
       })}
+
+      {/* No results */}
+      {filteredGoalIds && filteredGoalIds.size === 0 && (
+        <div className="text-center py-8">
+          <p className="font-body text-sm text-muted-foreground">No programs match this equipment filter.</p>
+          <button
+            onClick={() => setEquipmentFilter("all")}
+            className="mt-2 font-body text-sm text-primary font-medium"
+          >
+            Show all programs
+          </button>
+        </div>
+      )}
     </div>
   );
 }
