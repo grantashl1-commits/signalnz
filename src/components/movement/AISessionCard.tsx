@@ -10,6 +10,17 @@ const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
 };
 
+/** Strip AI-generated filler text like "point! point!" from exercise names/descriptions */
+function sanitizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/\b(point!\s*)+/gi, "")
+    .replace(/\b(finish|move|pull|phase|block|sets)\b(?=\s+(point|finish|move))/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/[,\s]+$/, "")
+    .trim();
+}
+
 const INTENSITY_COLORS: Record<string, string> = {
   low: "text-green-600", moderate: "text-amber-500", high: "text-red-500", "very-high": "text-red-600",
 };
