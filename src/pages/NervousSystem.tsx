@@ -452,6 +452,7 @@ export default function NervousSystemPage() {
   const [showFasciaRelease, setShowFasciaRelease] = useState(false);
   const { currentPhase } = useCycle();
   const { completed, streak, logCompletion } = useMindfulnessLogs();
+  const sleepMusic = useSleepMusic();
 
   // Meditation scripts for the meditations tab
   const meditationScripts = useMemo(() => {
