@@ -36,6 +36,7 @@ const TAB_SUBTITLES: Record<Tab, string> = {
   write: "Your story, one chapter at a time.",
   entries: "Everything you've written.",
   insights: "Patterns, reflections, and memories.",
+  vision: "Visualise the life you're creating.",
 };
 
 const PHASE_COLORS: Record<string, string> = {
