@@ -26,6 +26,8 @@ export interface PrepPreferences {
   equipment?: string[];
   bodyGoal?: string;
   bodyGoals?: string[];
+  kidsDietType?: string;
+  kidsAllergies?: string;
 }
 
 export interface AIMeal {

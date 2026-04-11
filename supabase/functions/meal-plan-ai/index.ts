@@ -293,10 +293,12 @@ serve(async (req) => {
       ...(preferences || {}),
       userDietaryDislikes: userDietaryDislikes || [],
     };
+    const kidsCount = prefs.kids || 0;
+    const kidsDietType = prefs.kidsDietType || "";
+    const kidsAllergies = (prefs.kidsAllergies || "").split(",").map((s: string) => s.trim()).filter(Boolean);
 
     const dayStart = startCycleDay || 1;
     const dayEnd = endCycleDay || Math.min(dayStart + 6, 28);
-
     if (mode === "regenerate_meal" && regenerateDay && regenerateMeal && existingPlan) {
       const phase = getPhaseForDay(regenerateDay);
       const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
