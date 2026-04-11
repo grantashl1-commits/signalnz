@@ -303,7 +303,7 @@ export default function MovementPage() {
 
           {/* AI-Generated Today's Workout (if they generated one) */}
           {aiTodayWorkout && (
-            <AISessionCard
+            <AISessionLog
               session={aiTodayWorkout}
               trainingWeek={trainingWeek}
               weekTheme={aiPlan?.weeks?.[trainingWeek - 1]?.theme}
@@ -321,6 +321,9 @@ export default function MovementPage() {
                   section: "",
                 });
               }}
+              onOpenHR={() => setShowHR(true)}
+              onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
+              onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
             />
           )}
         </div>
