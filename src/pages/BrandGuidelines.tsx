@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, memo } from "react";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
-/* ── brand tokens (updated) ── */
+/* ── brand tokens ── */
 const C = {
   brandPurple: "#5B2D72",
   deepNavy: "#1A0F2E",
@@ -20,6 +20,7 @@ const SECTIONS = [
   { id: "colours", label: "Colours" },
   { id: "typography", label: "Type" },
   { id: "motion", label: "Motion" },
+  { id: "illustrations", label: "Illustrations" },
   { id: "voice", label: "Voice" },
   { id: "applications", label: "Apps" },
   { id: "download", label: "Download" },
@@ -35,13 +36,16 @@ const PALETTE = [
 ];
 
 const LOGOS = [
-  { file: "Signal_Logo_Header.png", label: "App Header", desc: "Ring icon + SIGNAL wordmark, no tagline" },
-  { file: "Landscape_Logo_-_Signal.png", label: "Landscape Light", desc: "Purple logo on cream" },
-  { file: "Landscape_Logo_-_Signal__2_.png", label: "Landscape Dark", desc: "Cream logo on purple" },
-  { file: "Square_Logo_-_Signal.png", label: "Square Light", desc: "Purple logo on cream" },
-  { file: "Square_Logo_-_Signal__2_.png", label: "Square Dark", desc: "Cream logo on purple" },
-  { file: "Icon_1.png", label: "Icon Purple", desc: "Brand purple ring mark" },
-  { file: "Icon_2.png", label: "Icon Cream", desc: "Cream ring mark" },
+  { file: "Signal_Logo_Purple_Text.png", label: "Full Logo Purple", desc: "Purple wordmark with ring icon" },
+  { file: "Signal_Logo_cream_Text.png", label: "Full Logo Cream", desc: "Cream wordmark with ring icon" },
+  { file: "Signal-purple-no-tagline.png", label: "Logo Purple (No Tagline)", desc: "Purple logo without tagline" },
+  { file: "Signal-cream-no-tagline.png", label: "Logo Cream (No Tagline)", desc: "Cream logo without tagline" },
+  { file: "signal-purple-cream-shadow.png", label: "Square Purple", desc: "Purple logo on cream with shadow" },
+  { file: "signal-cream-purple-shadow.png", label: "Square Cream", desc: "Cream logo on purple with shadow" },
+  { file: "Icon_purple.png", label: "Icon Purple", desc: "Brand purple ring mark" },
+  { file: "Icon_cream.png", label: "Icon Cream", desc: "Cream ring mark" },
+  { file: "pwa-icon-512-purple.png", label: "PWA Icon", desc: "App icon – 512×512" },
+  { file: "apple-touch-icon.png", label: "Apple Touch Icon", desc: "iOS home screen icon" },
 ];
 
 /* ── dot pattern SVG ── */
@@ -143,8 +147,7 @@ export default function BrandGuidelines() {
         <DotPattern color={C.pearl} opacity={0.05} />
         <div className="relative z-10 flex flex-col items-center text-center gap-6 md:gap-8 w-full max-w-lg md:max-w-xl">
           <div className="w-[240px] sm:w-[320px] md:w-[480px] lg:w-[560px]">
-            <img src="/logos/Signal_Logo_cream.png" alt="Signal — Landscape Dark Logo" className="w-full h-auto" width={560} height={200} loading="eager"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+            <img src="/logos/Signal-cream-no-tagline.png" alt="Signal Logo" className="w-full h-auto" width={560} height={200} loading="eager" />
           </div>
           <p className="text-[11px] md:text-xs uppercase tracking-[0.25em]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontStyle: "italic", color: C.warmIvory, fontSize: 14 }}>
             Tune into your inner self
@@ -197,7 +200,7 @@ export default function BrandGuidelines() {
               Ring Icon + SIGNAL wordmark only, no tagline. Used in the app header across all screens.
             </p>
             <div className="flex items-center gap-4 p-4 rounded-lg" style={{ backgroundColor: C.pearl }}>
-              <img src="/logos/Icon_1.png" alt="Signal ring icon" className="w-10 h-10 object-contain" />
+              <img src="/logos/Icon_purple.png" alt="Signal ring icon" className="w-10 h-10 object-contain" />
               <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple, letterSpacing: "0.1em" }}>SIGNAL</span>
             </div>
           </div>
@@ -205,7 +208,7 @@ export default function BrandGuidelines() {
           {/* Logo grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-10">
             {LOGOS.map((logo) => {
-              const isDark = logo.label.includes("Dark") || logo.label.includes("Cream");
+              const isDark = logo.label.includes("Cream") || logo.file.includes("cream");
               return (
                 <div key={logo.file} className="flex flex-col gap-1.5">
                   <div className="rounded-xl overflow-hidden flex items-center justify-center p-4 md:p-8 aspect-[4/3]"
@@ -253,9 +256,11 @@ export default function BrandGuidelines() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
             {PALETTE.map((c) => {
               const isLight = ["#F5EFE8", "#FDFCFB"].includes(c.hex);
+              const logoSrc = isLight ? "/logos/Icon_purple.png" : "/logos/Icon_cream.png";
               return (
                 <div key={c.hex} className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.lavender}33` }}>
-                  <div className="h-20 md:h-36 flex items-end p-3 md:p-4" style={{ backgroundColor: c.hex }}>
+                  <div className="h-20 md:h-36 flex items-end p-3 md:p-4 relative" style={{ backgroundColor: c.hex }}>
+                    <img src={logoSrc} alt="" className="absolute top-3 right-3 w-6 h-6 md:w-8 md:h-8 object-contain opacity-40" loading="lazy" />
                     <span className="text-[10px] md:text-xs uppercase tracking-[0.12em]" style={{ fontWeight: 800, color: isLight ? C.brandPurple : C.warmIvory }}>
                       {c.name}
                     </span>
@@ -356,14 +361,11 @@ export default function BrandGuidelines() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* A — Sequential Ripple */}
             <div className="rounded-xl p-6 flex flex-col items-center text-center gap-4" style={{ backgroundColor: `${C.warmIvory}08`, border: `1px solid ${C.warmIvory}15` }}>
               <SignalRingAnimation variant="ripple" size={100} color={C.lavender} />
               <div>
                 <p style={{ fontWeight: 800, fontSize: 14, color: C.warmIvory, marginBottom: 4 }}>A — Sequential Ripple</p>
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender, lineHeight: 1.6 }}>
-                  Dots reveal clockwise with 75ms stagger. 2.4s loop, ease-in-out.
-                </p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender, lineHeight: 1.6 }}>Dots reveal clockwise with 75ms stagger. 2.4s loop, ease-in-out.</p>
                 <div className="flex flex-wrap gap-1.5 justify-center mt-3">
                   {["App launch", "Page load", "Fetch"].map(t => (
                     <span key={t} className="rounded-full px-2 py-0.5 text-[10px]" style={{ backgroundColor: `${C.brandPurple}40`, color: C.warmIvory, fontWeight: 600 }}>{t}</span>
@@ -372,14 +374,11 @@ export default function BrandGuidelines() {
               </div>
             </div>
 
-            {/* B — Breathing Pulse */}
             <div className="rounded-xl p-6 flex flex-col items-center text-center gap-4" style={{ backgroundColor: `${C.warmIvory}08`, border: `1px solid ${C.warmIvory}15` }}>
               <SignalRingAnimation variant="pulse" size={100} color={C.lavender} />
               <div>
                 <p style={{ fontWeight: 800, fontSize: 14, color: C.warmIvory, marginBottom: 4 }}>B — Breathing Pulse</p>
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender, lineHeight: 1.6 }}>
-                  Whole ring inhales/exhales with 0.15s stagger. 2s loop, ease-in-out.
-                </p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender, lineHeight: 1.6 }}>Whole ring inhales/exhales with 0.15s stagger. 2s loop, ease-in-out.</p>
                 <div className="flex flex-wrap gap-1.5 justify-center mt-3">
                   {["Idle", "Thinking", "Mic active"].map(t => (
                     <span key={t} className="rounded-full px-2 py-0.5 text-[10px]" style={{ backgroundColor: `${C.brandPurple}40`, color: C.warmIvory, fontWeight: 600 }}>{t}</span>
@@ -388,14 +387,11 @@ export default function BrandGuidelines() {
               </div>
             </div>
 
-            {/* C — Orbit Spin */}
             <div className="rounded-xl p-6 flex flex-col items-center text-center gap-4" style={{ backgroundColor: `${C.warmIvory}08`, border: `1px solid ${C.warmIvory}15` }}>
               <SignalRingAnimation variant="orbit" size={100} color={C.lavender} />
               <div>
                 <p style={{ fontWeight: 800, fontSize: 14, color: C.warmIvory, marginBottom: 4 }}>C — Orbit Spin</p>
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender, lineHeight: 1.6 }}>
-                  Entire ring rotates continuously. 3s loop, linear easing.
-                </p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender, lineHeight: 1.6 }}>Entire ring rotates continuously. 3s loop, linear easing.</p>
                 <div className="flex flex-wrap gap-1.5 justify-center mt-3">
                   {["Processing", "Syncing", "Background"].map(t => (
                     <span key={t} className="rounded-full px-2 py-0.5 text-[10px]" style={{ backgroundColor: `${C.brandPurple}40`, color: C.warmIvory, fontWeight: 600 }}>{t}</span>
@@ -407,10 +403,79 @@ export default function BrandGuidelines() {
         </div>
       </Section>
 
-      {/* ═══════════  7. VOICE & TONE  ═══════════ */}
-      <Section id="voice" bg={C.warmIvory}>
+      {/* ═══════════  7. ILLUSTRATION GUIDELINES  ═══════════ */}
+      <Section id="illustrations" bg={C.warmIvory}>
+        <div className="max-w-4xl mx-auto w-full">
+          <SectionLabel>06 — Illustration Style</SectionLabel>
+          <SectionTitle>Recipe & Food Illustrations</SectionTitle>
+          <Divider />
+
+          <p style={{ fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.8, marginBottom: 24 }}>
+            All recipe and food imagery follows a minimalist hand-drawn watercolour sketch style. Consistency across every illustration is critical to the Signal aesthetic.
+          </p>
+
+          {/* Core characteristics */}
+          <div className="rounded-xl p-5 md:p-8 mb-6" style={{ backgroundColor: C.pearl }}>
+            <p style={{ fontWeight: 800, fontSize: 14, color: C.brandPurple, marginBottom: 12 }}>Core Characteristics</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { label: "Line work", desc: "Thin, hand-drawn pen outlines in warm brown/sienna tone" },
+                { label: "Fill", desc: "Mostly white/empty with subtle watercolour washes" },
+                { label: "Colour", desc: "One or two pops of colour per illustration (warm orange, muted green, soft red)" },
+                { label: "Background", desc: "Clean white, no background elements" },
+                { label: "Composition", desc: "Centred, simple, single subject (bowl, plate, glass, wrap)" },
+                { label: "Texture", desc: "Slight hand-drawn imperfection, organic feel" },
+                { label: "Detail level", desc: "Minimal — suggest ingredients rather than photorealistic rendering" },
+              ].map((item) => (
+                <div key={item.label} className="flex gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: C.brandPurple }} />
+                  <div>
+                    <p style={{ fontWeight: 700, fontSize: 12, color: C.brandPurple }}>{item.label}</p>
+                    <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.6 }}>{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Prompt template */}
+          <div className="rounded-xl p-5 md:p-8 mb-6" style={{ backgroundColor: C.pearl }}>
+            <p style={{ fontWeight: 800, fontSize: 14, color: C.brandPurple, marginBottom: 12 }}>AI Prompt Template</p>
+            <div className="rounded-lg p-4" style={{ backgroundColor: C.warmIvory, border: `1px solid ${C.lavender}33` }}>
+              <p style={{ fontFamily: "monospace", fontSize: 13, color: C.body, lineHeight: 1.7 }}>
+                Hand-drawn minimalist watercolour sketch of <span style={{ color: C.brandPurple, fontWeight: 700 }}>[DISH DESCRIPTION]</span> on a clean white background. Thin brown pen outlines with subtle <span style={{ color: C.brandPurple, fontWeight: 700 }}>[COLOUR]</span> watercolour accents. Simple, elegant food illustration style with organic hand-drawn quality. No text, no labels, no background elements.
+              </p>
+            </div>
+          </div>
+
+          {/* Phase colour palette */}
+          <div className="rounded-xl p-5 md:p-8" style={{ backgroundColor: C.pearl }}>
+            <p style={{ fontWeight: 800, fontSize: 14, color: C.brandPurple, marginBottom: 12 }}>Colour Palette by Cycle Phase</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { phase: "Menstrual", colours: "Warm reds, deep orange", note: "Iron-rich warmth", hex: "#C9A0A0" },
+                { phase: "Follicular", colours: "Fresh greens, light yellow", note: "Spring energy", hex: "#8BAF7B" },
+                { phase: "Ovulatory", colours: "Bright orange, mango yellow", note: "Peak vitality", hex: "#E8A84C" },
+                { phase: "Luteal", colours: "Deep amber, warm brown", note: "Grounding comfort", hex: "#B8863A" },
+              ].map((p) => (
+                <div key={p.phase} className="flex items-center gap-3 rounded-lg p-3" style={{ backgroundColor: C.warmIvory }}>
+                  <div className="w-8 h-8 rounded-full shrink-0" style={{ backgroundColor: p.hex }} />
+                  <div>
+                    <p style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{p.phase}</p>
+                    <p style={{ fontWeight: 500, fontSize: 11, color: C.body }}>{p.colours}</p>
+                    <p style={{ fontWeight: 500, fontSize: 10, color: C.lavender, fontStyle: "italic" }}>{p.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ═══════════  8. VOICE & TONE  ═══════════ */}
+      <Section id="voice" bg={C.pearl}>
         <div className="max-w-3xl mx-auto w-full">
-          <SectionLabel>06 — Voice & Tone</SectionLabel>
+          <SectionLabel>07 — Voice & Tone</SectionLabel>
           <SectionTitle>How Signal Speaks</SectionTitle>
           <Divider />
 
@@ -432,7 +497,7 @@ export default function BrandGuidelines() {
               { label: "Error Message", text: "\"Something interrupted us. Take a moment, and we'll try again together when you're ready.\"" },
               { label: "Push Notification", text: "\"Your evening check-in is waiting — just three minutes for yourself.\"" },
             ].map((example) => (
-              <div key={example.label} className="rounded-xl p-5 md:p-6" style={{ backgroundColor: C.pearl, borderLeft: `3px solid ${C.brandPurple}` }}>
+              <div key={example.label} className="rounded-xl p-5 md:p-6" style={{ backgroundColor: C.warmIvory, borderLeft: `3px solid ${C.brandPurple}` }}>
                 <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
                   {example.label}
                 </p>
@@ -445,15 +510,14 @@ export default function BrandGuidelines() {
         </div>
       </Section>
 
-      {/* ═══════════  8. BRAND APPLICATIONS  ═══════════ */}
-      <Section id="applications" bg={C.pearl}>
+      {/* ═══════════  9. BRAND APPLICATIONS  ═══════════ */}
+      <Section id="applications" bg={C.warmIvory}>
         <div className="max-w-5xl mx-auto w-full">
-          <SectionLabel>07 — Applications</SectionLabel>
+          <SectionLabel>08 — Applications</SectionLabel>
           <SectionTitle>Brand Applications</SectionTitle>
           <Divider />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
-            {/* Business Card */}
             <div className="space-y-3">
               <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Business Card</p>
               <div className="rounded-xl aspect-[1.6/1] p-5 md:p-6 flex flex-col justify-between" style={{ backgroundColor: C.deepNavy }}>
@@ -468,7 +532,6 @@ export default function BrandGuidelines() {
               </div>
             </div>
 
-            {/* Social Media Post */}
             <div className="space-y-3">
               <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Social Media Post</p>
               <div className="rounded-xl aspect-square p-6 md:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden" style={{ backgroundColor: C.brandPurple }}>
@@ -485,7 +548,6 @@ export default function BrandGuidelines() {
               </div>
             </div>
 
-            {/* Email Header */}
             <div className="space-y-3">
               <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Email Header</p>
               <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.lavender}33` }}>
@@ -505,11 +567,11 @@ export default function BrandGuidelines() {
         </div>
       </Section>
 
-      {/* ═══════════  9. DOWNLOAD  ═══════════ */}
-      <Section id="download" bg={C.warmIvory}>
+      {/* ═══════════  10. DOWNLOAD  ═══════════ */}
+      <Section id="download" bg={C.pearl}>
         <DotPattern color={C.lavender} opacity={0.06} />
         <div className="relative z-10 max-w-3xl mx-auto w-full text-center">
-          <SectionLabel>08 — Assets</SectionLabel>
+          <SectionLabel>09 — Assets</SectionLabel>
           <SectionTitle>Download</SectionTitle>
           <Divider />
           <p style={{ fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.8, marginBottom: 24 }}>
@@ -517,23 +579,31 @@ export default function BrandGuidelines() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {LOGOS.map((logo) => (
-              <a key={logo.file} href={`/logos/${logo.file}`} download={logo.file}
-                className="rounded-xl p-3.5 flex items-center gap-3 transition-all duration-200 active:scale-[0.97] min-h-[56px]"
-                style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}33` }}>
-                <div className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: logo.label.includes("Dark") || logo.label.includes("Cream") ? C.deepNavy : C.warmIvory }}>
-                  <span style={{ fontWeight: 800, fontSize: 10, color: logo.label.includes("Dark") || logo.label.includes("Cream") ? C.warmIvory : C.brandPurple }}>S</span>
-                </div>
-                <div className="text-left min-w-0">
-                  <p className="truncate" style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{logo.label}</p>
-                  <p className="truncate" style={{ fontWeight: 500, fontSize: 10, color: C.lavender }}>{logo.file}</p>
-                </div>
-              </a>
-            ))}
+            {LOGOS.map((logo) => {
+              const isDark = logo.label.includes("Cream") || logo.file.includes("cream");
+              return (
+                <a key={logo.file} href={`/logos/${logo.file}`} download={logo.file}
+                  className="rounded-xl p-3.5 flex items-center gap-3 transition-all duration-200 active:scale-[0.97] min-h-[56px]"
+                  style={{ backgroundColor: C.warmIvory, border: `1px solid ${C.lavender}33` }}>
+                  <div className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+                    style={{ backgroundColor: isDark ? C.deepNavy : C.pearl }}>
+                    <img src={`/logos/${logo.file}`} alt="" className="w-8 h-8 object-contain" loading="lazy" />
+                  </div>
+                  <div className="text-left min-w-0">
+                    <p className="truncate" style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{logo.label}</p>
+                    <p className="truncate" style={{ fontWeight: 500, fontSize: 10, color: C.lavender }}>{logo.file}</p>
+                  </div>
+                </a>
+              );
+            })}
           </div>
 
           <div className="mt-12 pt-6" style={{ borderTop: `1px solid ${C.lavender}33` }}>
+            <img src="/logos/pwa-icon-512-purple.png" alt="Signal favicon" className="w-16 h-16 mx-auto rounded-xl mb-4" />
+            <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 4 }}>Favicon & PWA Icon</p>
+            <p style={{ fontWeight: 500, fontSize: 13, color: C.body, marginBottom: 16 }}>
+              pwa-icon-512-purple.png — used as the website favicon and PWA app icon.
+            </p>
             <p style={{ fontWeight: 800, fontSize: 24, color: C.brandPurple, letterSpacing: "0.1em" }}>SIGNAL</p>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontWeight: 400, fontSize: 13, color: C.lavender, marginTop: 6 }}>
               Tune into your inner self
