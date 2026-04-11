@@ -51,6 +51,16 @@ function formatMuscle(m: string): string {
   return m.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+/** Strip AI filler text */
+function sanitizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/\b(point!\s*)+/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/[,\s]+$/, "")
+    .trim();
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface SwapExercise {
