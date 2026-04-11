@@ -18,9 +18,10 @@ import OneLineEditor from "@/components/journal/OneLineEditor";
 import JournalInsights from "@/components/journal/JournalInsights";
 import { useJournalSync } from "@/hooks/useJournalSync";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
+import DreamStudio from "@/components/journal/DreamStudio";
 import StoicAudioPlayer from "@/components/StoicAudioPlayer";
 
-type Tab = "write" | "entries" | "insights";
+type Tab = "write" | "entries" | "insights" | "vision";
 type View = "list" | "write" | "detail" | "gratitude" | "one-line";
 type EntryType = "reflect" | "gratitude" | "one line";
 
@@ -28,6 +29,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "write", label: "Write" },
   { id: "entries", label: "Journal Entries" },
   { id: "insights", label: "Memories" },
+  { id: "vision", label: "Vision Board" },
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {
@@ -639,6 +641,13 @@ export default function JournalPage() {
                     onSaveVaultEntry={journalSync.saveVaultEntry}
                     onRemoveVaultEntry={journalSync.removeVaultEntry}
                   />
+                </div>
+              )}
+
+              {/* ═══ VISION BOARD TAB ═══ */}
+              {tab === "vision" && (
+                <div className="space-y-4">
+                  <DreamStudio pinnedEntry={null} />
                 </div>
               )}
 
