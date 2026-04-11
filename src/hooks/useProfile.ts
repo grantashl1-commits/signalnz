@@ -8,6 +8,9 @@ export interface ProfileData {
   onboardingComplete: boolean | null;
   referralCode: string | null;
   cycleMode: CycleMode;
+  avatarUrl: string | null;
+  suburb: string | null;
+  fitnessLevel: string | null;
   // Extended onboarding fields
   dateOfBirth: string | null;
   weightKg: number | null;
@@ -31,6 +34,9 @@ export function useProfile() {
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [cycleMode, setCycleModeState] = useState<CycleMode>("cycling");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [suburb, setSuburb] = useState<string | null>(null);
+  const [fitnessLevel, setFitnessLevel] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Extended fields
