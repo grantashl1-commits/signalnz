@@ -331,7 +331,7 @@ export default function CyclePage() {
 
         {/* ═══ CALENDAR TAB ═══ */}
         {activeTab === "calendar" && (
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-8 md:space-y-10">
             <p className="font-body text-xs text-muted-foreground font-light text-center">
               {calendarMonth.toLocaleDateString("en-US", { month: "long" })}: {monthSummary.periodDays} period days · {monthSummary.symptomsLogged} symptoms logged · {monthSummary.moodsLogged} moods recorded
             </p>
