@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { Dumbbell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const gifCache = new Map<string, string | null>();
+interface ExerciseResult {
+  illustration_url: string | null;
+  gif_url: string | null;
+  target: string | null;
+  name: string;
+}
+
+const exerciseCache = new Map<string, ExerciseResult | null>();
 
 const STRIP_WORDS = ["tempo", "slow", "fast", "heavy", "paused", "weighted", "reverse", "modified", "with", "4-sec", "hold", "pulse", "sumo", "goblet"];
 
@@ -26,26 +33,27 @@ function getSearchVariants(name: string): string[] {
   return [...new Set(variants.filter(Boolean))];
 }
 
-async function lookupGif(exerciseName: string): Promise<string | null> {
-  if (gifCache.has(exerciseName)) return gifCache.get(exerciseName) ?? null;
+async function lookupExercise(exerciseName: string): Promise<ExerciseResult | null> {
+  if (exerciseCache.has(exerciseName)) return exerciseCache.get(exerciseName) ?? null;
 
   const variants = getSearchVariants(exerciseName);
 
   for (const query of variants) {
     const { data } = await supabase
       .from("exercises")
-      .select("gif_url")
+      .select("illustration_url, gif_url, target, name")
       .ilike("name", `%${query}%`)
       .limit(1)
       .maybeSingle();
 
-    if (data?.gif_url) {
-      gifCache.set(exerciseName, data.gif_url);
-      return data.gif_url;
+    if (data) {
+      const result = data as unknown as ExerciseResult;
+      exerciseCache.set(exerciseName, result);
+      return result;
     }
   }
 
-  gifCache.set(exerciseName, null);
+  exerciseCache.set(exerciseName, null);
   return null;
 }
 
@@ -53,23 +61,25 @@ interface Props {
   exerciseName: string;
   size?: number;
   className?: string;
+  showLabel?: boolean;
 }
 
-export default function ExerciseDemonstration({ exerciseName, size = 96, className = "" }: Props) {
-  const [gifUrl, setGifUrl] = useState<string | null>(gifCache.get(exerciseName) ?? null);
-  const [loading, setLoading] = useState(!gifCache.has(exerciseName));
+export default function ExerciseDemonstration({ exerciseName, size = 96, className = "", showLabel = false }: Props) {
+  const [exercise, setExercise] = useState<ExerciseResult | null>(exerciseCache.get(exerciseName) ?? null);
+  const [loading, setLoading] = useState(!exerciseCache.has(exerciseName));
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
-    if (gifCache.has(exerciseName)) {
-      setGifUrl(gifCache.get(exerciseName) ?? null);
+    if (exerciseCache.has(exerciseName)) {
+      setExercise(exerciseCache.get(exerciseName) ?? null);
       setLoading(false);
       return;
     }
     let cancelled = false;
     setLoading(true);
-    lookupGif(exerciseName).then((url) => {
+    lookupExercise(exerciseName).then((result) => {
       if (!cancelled) {
-        setGifUrl(url);
+        setExercise(result);
         setLoading(false);
       }
     });
@@ -85,11 +95,14 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
     );
   }
 
-  if (!gifUrl) {
+  // Prefer illustration_url (anatomy style), fall back to gif_url
+  const imageUrl = (!imgError && exercise?.illustration_url) || exercise?.gif_url;
+
+  if (!imageUrl) {
     return (
       <div
         className={`flex flex-col items-center justify-center rounded-xl gap-1 ${className}`}
-        style={{ width: size, height: size, backgroundColor: "#EDE4F5" }}
+        style={{ width: size, height: size, backgroundColor: "hsl(var(--accent))" }}
       >
         <Dumbbell className="text-primary/50" style={{ width: size * 0.28, height: size * 0.28 }} />
         {size >= 64 && (
@@ -100,12 +113,24 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
   }
 
   return (
-    <img
-      src={gifUrl}
-      alt={exerciseName}
-      loading="lazy"
-      className={`w-full h-full object-cover rounded-xl ${className}`}
-      style={{ width: size, height: size }}
-    />
+    <div className="relative" style={{ width: size, height: size }}>
+      <img
+        src={imageUrl}
+        alt={exerciseName}
+        loading="lazy"
+        className={`w-full h-full object-cover rounded-xl ${className}`}
+        style={{ width: size, height: size }}
+        onError={() => {
+          if (!imgError && exercise?.illustration_url) {
+            setImgError(true);
+          }
+        }}
+      />
+      {showLabel && size >= 64 && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent rounded-b-xl px-1 py-0.5">
+          <span className="text-[8px] text-white font-medium leading-tight line-clamp-1">{exerciseName}</span>
+        </div>
+      )}
+    </div>
   );
 }
