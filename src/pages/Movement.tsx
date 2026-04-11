@@ -300,9 +300,8 @@ export default function MovementPage() {
             onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
             onOpenHR={() => setShowHR(true)}
             onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
+            onSessionLogged={() => setLogRefreshKey(k => k + 1)}
           />
-
-          {/* AI-Generated Today's Workout (if they generated one) */}
           {aiTodayWorkout && (
             <AISessionCard
               session={aiTodayWorkout}
