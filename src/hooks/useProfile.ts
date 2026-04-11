@@ -150,6 +150,9 @@ export function useProfile() {
     onboardingComplete,
     referralCode,
     cycleMode,
+    avatarUrl,
+    suburb,
+    fitnessLevel,
     loading,
     // Extended fields
     dateOfBirth,
