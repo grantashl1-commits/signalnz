@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin } from "lucide-react";
+import { useState as useStateLocal } from "react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
