@@ -181,7 +181,7 @@ export default function AISessionCard({
             onClick={() => { haptic("light"); setExpandedSection(expandedSection === block.section_label ? null : block.section_label); }}
             className="touch-btn flex items-center gap-2 w-full"
           >
-            <span className="font-display text-xs font-bold italic" style={{ color: phaseColor }}>{block.section_label}</span>
+            <span className="font-display text-xs font-bold italic" style={{ color: phaseColor }}>{sanitizeText(block.section_label)}</span>
             <span className="font-body text-[10px] text-muted-foreground">{block.exercises?.length || 0}</span>
             <div className="flex-1" />
             {expandedSection === block.section_label
@@ -204,17 +204,17 @@ export default function AISessionCard({
                 </div>
                 {/* GIF thumbnail */}
                 <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
-                  <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                  <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" />
                 </div>
                 <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
-                  <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
+                  <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{sanitizeText(ex.name)}</p>
                   <div className="flex gap-2 flex-wrap mt-0.5">
-                    {ex.sets && <span className="font-body text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {ex.reps_or_duration}</span>}
-                    {ex.rest && <span className="font-body text-[9px] text-muted-foreground">Rest {ex.rest}</span>}
-                    {ex.tempo && <span className="font-body text-[9px] text-muted-foreground">Tempo {ex.tempo}</span>}
+                    {ex.sets && <span className="font-body text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {sanitizeText(ex.reps_or_duration)}</span>}
+                    {ex.rest && <span className="font-body text-[9px] text-muted-foreground">Rest {sanitizeText(ex.rest)}</span>}
+                    {ex.tempo && <span className="font-body text-[9px] text-muted-foreground">Tempo {sanitizeText(ex.tempo)}</span>}
                   </div>
                 </div>
-                <p className="font-body text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block leading-tight">{ex.form_cue}</p>
+                <p className="font-body text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block leading-tight">{sanitizeText(ex.form_cue)}</p>
               </motion.div>
             );
           })}
