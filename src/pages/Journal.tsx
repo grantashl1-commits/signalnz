@@ -538,13 +538,6 @@ export default function JournalPage() {
                       "What would happen if you let go of needing to know the outcome?",
                     ];
 
-                    const [promptIdx, setPromptIdx] = useState(0);
-                    useEffect(() => {
-                      const interval = setInterval(() => {
-                        setPromptIdx((prev) => (prev + 1) % MYTH_PROMPTS.length);
-                      }, 5000);
-                      return () => clearInterval(interval);
-                    }, []);
 
                     const prompt = MYTH_PROMPTS[promptIdx];
                     const now = new Date();
