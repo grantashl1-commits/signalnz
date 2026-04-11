@@ -4,6 +4,13 @@
 // Voice: ElevenLabs Lily (pFZP5JQG7iQjIQuC4Bku) at 0.75 speed
 
 import type { MeditationScript } from "./meditation-scripts";
+import {
+  childhoodBlueprint,
+  shameInventory,
+  emotionalLandscape,
+  letterNeverSent,
+  reclaimingPower,
+} from "./addiction-inner-work-scripts";
 
 // ═══════════════════════════════════════════════════════════
 // MEDITATIONS — PDF-sourced guided practices
@@ -725,13 +732,8 @@ When you're ready, gently open your eyes, carrying this expanded capacity for no
   ],
 };
 
-import {
-  childhoodBlueprint,
-  shameInventory,
-  emotionalLandscape,
-  letterNeverSent,
-  reclaimingPower,
-} from "./addiction-inner-work-scripts";
+
+
 
 // ═══════════════════════════════════════════════════════════
 // Exports
