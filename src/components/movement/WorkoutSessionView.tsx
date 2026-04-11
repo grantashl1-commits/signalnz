@@ -15,6 +15,7 @@ import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { TimerButton, WorkoutIntervalButton, isTimeBased } from "@/components/movement/IntervalTimer";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
 
 interface Props {
