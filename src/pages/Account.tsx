@@ -37,7 +37,7 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const { currentPhase, currentCycleDay } = useCycle();
   const habits = useMemo(() => getHabits(), []);
-  const { history, loading: historyLoading } = useHabitCompletions(habits);
+  const { history, historyLoading } = useHabitCompletions();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [nameInput, setNameInput] = useState("");
