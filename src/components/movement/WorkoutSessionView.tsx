@@ -746,4 +746,21 @@ function ExerciseCard({
                 )}
 
                 {/* Difficulty */}
-                {exercise.difficulty && e
+                {exercise.difficulty && exercise.difficulty > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-body text-[10px] text-muted-foreground">Difficulty:</span>
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className={`w-2 h-2 rounded-full ${i < exercise.difficulty! ? 'bg-primary' : 'bg-muted/30'}`} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
