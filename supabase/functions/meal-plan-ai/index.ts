@@ -108,7 +108,7 @@ serve(async (req) => {
       if (credits && (credits.credits_remaining || 0) < cost) {
         return new Response(JSON.stringify({ error: `You need ${cost} AI credits for meal plan generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-      if (credits && credits.tier !== "unlimited") {
+      if (credits) {
         await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
       } else if (!credits) {
         await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });

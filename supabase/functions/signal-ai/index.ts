@@ -46,7 +46,7 @@ serve(async (req) => {
             { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
           );
         }
-        if (credits.tier !== "unlimited") {
+        if (true) {
           await supabase
             .from("ai_credits")
             .update({ credits_remaining: (credits.credits_remaining || 0) - creditCost, updated_at: new Date().toISOString() })
