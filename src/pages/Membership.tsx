@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles, Sprout } from "lucide-react";
+import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles, Sprout, Brain, Utensils, Dumbbell, BookOpen, Users, Leaf, Heart, Moon } from "lucide-react";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,12 +8,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useAICredits } from "@/hooks/useAICredits";
 
 const STRIPE_TIERS = {
   rooted: {
     priceId: "price_1TElEOEAvaJHDMD4nbJ489js",
     productId: "prod_UDBbsFCvpYtvUN",
-    annualPriceId: "price_annual_rooted", // placeholder
+    annualPriceId: "price_annual_rooted",
   },
   nourished: {
     priceId: "price_1TB71HEAvaJHDMD49yoKtzpf",
@@ -31,6 +32,18 @@ const STRIPE_TIERS = {
   },
 };
 
+/* ─── AI credit cost reference (shown to users) ─── */
+const CREDIT_COSTS = [
+  { feature: "Daily Signal", credits: 1, icon: <Zap className="h-3.5 w-3.5" /> },
+  { feature: "Ask Me Anything", credits: 2, icon: <Brain className="h-3.5 w-3.5" /> },
+  { feature: "Journal Insights", credits: 1, icon: <BookOpen className="h-3.5 w-3.5" /> },
+  { feature: "Cycle Intelligence", credits: 1, icon: <Heart className="h-3.5 w-3.5" /> },
+  { feature: "AI Meal Plan", credits: 3, icon: <Utensils className="h-3.5 w-3.5" /> },
+  { feature: "Fridge → Recipe", credits: 2, icon: <Leaf className="h-3.5 w-3.5" /> },
+  { feature: "Dream Board Image", credits: 3, icon: <Moon className="h-3.5 w-3.5" /> },
+  { feature: "Give a Signal", credits: 1, icon: <Sparkles className="h-3.5 w-3.5" /> },
+];
+
 const TIERS = [
   {
     name: "Free",
@@ -43,11 +56,20 @@ const TIERS = [
     key: "free" as const,
     annualSavings: "",
     accent: undefined,
-    features: [
-      "Cycle tracker",
-      "Daily check-in",
-      "Basic phase guidance",
-      "5 AI signals per month",
+    creditLabel: "5 AI credits/mo",
+    sections: [
+      {
+        title: "Cycle",
+        features: ["Basic cycle tracking", "Phase awareness"],
+      },
+      {
+        title: "Home",
+        features: ["Daily check-in", "Phase guidance summary"],
+      },
+      {
+        title: "AI",
+        features: ["5 Signal credits per month"],
+      },
     ],
   },
   {
@@ -61,13 +83,24 @@ const TIERS = [
     key: "rooted" as const,
     annualSavings: "$36/yr",
     accent: "#C8647A",
-    features: [
-      "Full cycle tracker",
-      "Daily check-in",
-      "Full phase guidance",
-      "Today's meal plan (view only)",
-      "Basic movement plan",
-      "30 AI signals per month",
+    creditLabel: "30 AI credits/mo",
+    sections: [
+      {
+        title: "Cycle",
+        features: ["Full symptom tracker", "Phase dashboard & insights", "Irregular period support"],
+      },
+      {
+        title: "Nutrition",
+        features: ["Today's meal plan (view)", "Seed cycling guide", "Supplement recommendations"],
+      },
+      {
+        title: "Movement",
+        features: ["Basic training programs", "Exercise demonstrations"],
+      },
+      {
+        title: "AI",
+        features: ["30 credits/month", "Daily Signal + Cycle AI"],
+      },
     ],
   },
   {
@@ -81,13 +114,28 @@ const TIERS = [
     key: "nourished" as const,
     annualSavings: "$76/yr",
     accent: undefined,
-    features: [
-      "AI meal ideas for your phase",
-      "Full movement library",
-      "Breathwork guides",
-      "Journaling tools",
-      "150 AI signals per month",
-      "Journal intelligence",
+    creditLabel: "150 AI credits/mo",
+    sections: [
+      {
+        title: "Everything in Rooted, plus",
+        features: [],
+      },
+      {
+        title: "Nutrition",
+        features: ["AI meal plans for your phase", "Fridge → Recipe (photo AI)", "TCM & Ayurveda recipes", "Weekly meal prep planner"],
+      },
+      {
+        title: "Movement",
+        features: ["Full program library", "Periodised training phases", "Body composition tracking"],
+      },
+      {
+        title: "Mind & Body",
+        features: ["Breathwork & somatic guides", "Journal with AI insights", "Dream Studio vision boards", "Nervous system check-in"],
+      },
+      {
+        title: "AI",
+        features: ["150 credits/month", "AMA mode (ask anything)", "Journal intelligence"],
+      },
     ],
   },
   {
@@ -101,15 +149,24 @@ const TIERS = [
     key: "thriving" as const,
     annualSavings: "$156/yr",
     accent: undefined,
-    features: [
-      "Full community access",
-      "Full module library",
-      "AI nervous system check-in",
-      "Weekly phase reports",
-      "Priority features",
-      "Unlimited AI signals",
-      "Full journal intelligence",
-      "Signal memory and patterns",
+    creditLabel: "Unlimited AI",
+    sections: [
+      {
+        title: "Everything in Nourished, plus",
+        features: [],
+      },
+      {
+        title: "Community",
+        features: ["Local suburb groups", "Group chat rooms", "Community challenges", "Nearby members map"],
+      },
+      {
+        title: "Practice",
+        features: ["Daily habits with illustrations", "Self-care rituals", "TCM organ clock", "Dosha quiz & Ayurveda tools"],
+      },
+      {
+        title: "AI",
+        features: ["Unlimited AI credits", "Signal memory & patterns", "Full AMA with data context", "Priority feature access"],
+      },
     ],
   },
 ];
@@ -124,6 +181,7 @@ export default function MembershipPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isAnnual, setIsAnnual] = useState(false);
+  const { creditsRemaining, tier: creditTier } = useAICredits();
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
@@ -190,7 +248,7 @@ export default function MembershipPage() {
       <div className="text-center">
         <p className="font-hand text-base md:text-lg text-primary mb-2">join the journey</p>
         <h1 className="font-display text-[1.75rem] md:text-5xl font-bold italic text-foreground">Membership</h1>
-        <p className="font-body text-sm text-muted-foreground mt-2 max-w-md mx-auto">Choose the level of support that feels right</p>
+        <p className="font-body text-sm text-muted-foreground mt-2 max-w-md mx-auto">Choose the level of support that feels right for your season</p>
       </div>
 
       {/* Auth status */}
@@ -221,10 +279,16 @@ export default function MembershipPage() {
             </span>
           </div>
           <p className="font-body text-xs text-muted-foreground">{user.email}</p>
+          <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1">
+            <Sparkles className="h-3 w-3 text-primary" />
+            <span className="font-body text-xs font-semibold text-foreground">
+              {creditTier === "unlimited" ? "Unlimited" : creditsRemaining} AI credits remaining
+            </span>
+          </div>
           {subscription.subscribed && (
             <button
               onClick={handleManage}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1.5 font-body text-xs font-semibold text-foreground"
+              className="mt-3 block mx-auto inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1.5 font-body text-xs font-semibold text-foreground"
             >
               <Settings className="h-3.5 w-3.5" /> Manage subscription
             </button>
@@ -262,7 +326,7 @@ export default function MembershipPage() {
         </button>
       </div>
 
-      {/* Tier cards — horizontally scrollable on mobile */}
+      {/* Tier cards */}
       <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
         <div className="flex gap-4 md:gap-5 md:grid md:grid-cols-4 min-w-max md:min-w-0">
           {TIERS.map((t, i) => {
@@ -285,9 +349,10 @@ export default function MembershipPage() {
               >
                 {isCurrent && (
                   <span
-                    className="absolute top-3 left-3 rounded-full px-2.5 py-0.5 font-hand text-[11px] font-bold"
+                    className={`absolute top-3 left-3 rounded-full px-2.5 py-0.5 font-hand text-[11px] font-bold ${
+                      isRooted ? "" : "bg-primary/10 text-primary"
+                    }`}
                     style={isRooted ? { backgroundColor: "#C8647A20", color: "#C8647A" } : undefined}
-                    {...(!isRooted && { className: "absolute top-3 left-3 rounded-full bg-primary/10 px-2.5 py-0.5 font-hand text-[11px] text-primary font-bold" })}
                   >
                     Your plan
                   </span>
@@ -305,7 +370,7 @@ export default function MembershipPage() {
                   <CymatiSketch phase={phaseForIndex(i)} size={64} opacity={1} />
                 </div>
 
-                <div className="mb-5 md:mb-6">
+                <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
                     {t.name === "Thriving" && <Crown className="h-5 w-5 text-primary" />}
                     {t.name === "Rooted" && <Sprout className="h-5 w-5" style={{ color: "#C8647A" }} />}
@@ -341,39 +406,44 @@ export default function MembershipPage() {
                     <motion.p
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
-                      className="font-body text-xs mt-1"
+                      className={`font-body text-xs mt-1 ${isRooted ? "" : "text-primary"}`}
                       style={isRooted ? { color: "#C8647A" } : undefined}
-                      {...(!isRooted && { className: "font-body text-xs text-primary mt-1" })}
                     >
                       {t.annualSub}
                     </motion.p>
                   )}
+                  {/* Credit badge */}
+                  <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary/60 px-2.5 py-0.5">
+                    <Sparkles className="h-3 w-3 text-primary" />
+                    <span className="font-body text-[11px] font-semibold text-foreground">{t.creditLabel}</span>
+                  </div>
                 </div>
 
-                <ul className="space-y-3 flex-1">
-                  {t.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 font-body text-sm text-foreground/80">
-                      <Check
-                        className="h-4 w-4 mt-0.5 flex-shrink-0"
-                        style={isRooted ? { color: "#C8647A" } : undefined}
-                        {...(!isRooted && { className: "h-4 w-4 text-primary mt-0.5 flex-shrink-0" })}
-                      />
-                      <span>{f}</span>
-                    </li>
+                {/* Feature sections */}
+                <div className="space-y-3 flex-1">
+                  {t.sections.map((section) => (
+                    <div key={section.title}>
+                      {section.features.length > 0 ? (
+                        <>
+                          <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">{section.title}</p>
+                          <ul className="space-y-1.5">
+                            {section.features.map((f) => (
+                              <li key={f} className="flex items-start gap-2 font-body text-[13px] text-foreground/80">
+                                <Check
+                                  className={`h-3.5 w-3.5 mt-0.5 flex-shrink-0 ${isRooted ? "" : "text-primary"}`}
+                                  style={isRooted ? { color: "#C8647A" } : undefined}
+                                />
+                                <span>{f}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      ) : (
+                        <p className="font-body text-[11px] font-semibold text-primary italic">{section.title}</p>
+                      )}
+                    </div>
                   ))}
-                </ul>
-
-                {/* Annual upsell for Thriving when on monthly */}
-                {t.key === "thriving" && isCurrent && !isAnnual && (
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    onClick={() => { haptic("light"); setIsAnnual(true); }}
-                    className="mt-3 font-body text-xs text-primary hover:underline text-left"
-                  >
-                    Switch to annual and save $156/yr →
-                  </motion.button>
-                )}
+                </div>
 
                 <button
                   onClick={() => {
@@ -389,7 +459,7 @@ export default function MembershipPage() {
                     handleCheckout(getPriceId(t.key));
                   }}
                   disabled={isCurrent}
-                  className={`touch-btn mt-5 md:mt-6 w-full rounded-xl px-4 py-3 min-h-[52px] font-body text-sm font-bold transition-opacity disabled:opacity-50 ${
+                  className={`touch-btn mt-5 w-full rounded-xl px-4 py-3 min-h-[52px] font-body text-sm font-bold transition-opacity disabled:opacity-50 ${
                     t.popular
                       ? "bg-primary text-primary-foreground active:opacity-90"
                       : isRooted
@@ -410,6 +480,33 @@ export default function MembershipPage() {
         </div>
       </div>
 
+      {/* AI Credit Cost Breakdown */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="card-warm p-5 md:p-6 max-w-lg mx-auto"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Brain className="h-4 w-4 text-primary" />
+          <h3 className="font-display text-lg italic text-foreground">AI Credit Usage</h3>
+        </div>
+        <p className="font-body text-xs text-muted-foreground mb-4">
+          Each AI-powered feature uses a specific number of credits. Here's what each call costs:
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {CREDIT_COSTS.map((item) => (
+            <div key={item.feature} className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2">
+              <span className="text-primary">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <span className="font-body text-xs text-foreground truncate block">{item.feature}</span>
+              </div>
+              <span className="font-body text-xs font-bold text-foreground">{item.credits}×</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Top-up card */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -422,7 +519,7 @@ export default function MembershipPage() {
           <h3 className="font-display text-lg italic text-foreground">Top up credits</h3>
         </div>
         <p className="font-body text-sm text-muted-foreground mb-4">
-          Need more signals? Add 50 AI credits instantly.
+          Need more AI power? Add 50 credits instantly — works on any plan.
         </p>
         <div className="flex items-baseline justify-center gap-1 mb-4">
           <span className="font-body text-2xl text-foreground">$5</span>
