@@ -16,13 +16,13 @@ import PageTransition from "@/components/PageTransition";
 // Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 // Desktop nav: Home | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 const navItems = [
+  { path: "/my-practice", icon: Leaf, label: "My Practice" },
   { path: "/nutrition", icon: Utensils, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
   { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
   { path: "/journal", icon: BookOpen, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
-  { path: "/feed", icon: Newspaper, label: "Feed" },
 ];
 
 // Mobile bottom tabs: Daily Habits | Nutrition | Movement | Cycle | More | Journal | Community | Account
@@ -38,15 +38,15 @@ const PRIMARY_TABS = [
   { path: "/", label: "Home", icon: Home },
   { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/movement", label: "Move", icon: Dumbbell },
-  { path: "/feed", label: "Feed", icon: Newspaper },
+  { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "more", label: "More", icon: MoreHorizontal },
 ];
 
 const MORE_ITEMS = [
+  { path: "/my-practice", label: "My Practice", icon: Leaf },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/community", label: "Community", icon: Users },
-  { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "/account", label: "Account", icon: User },
 ];
 
