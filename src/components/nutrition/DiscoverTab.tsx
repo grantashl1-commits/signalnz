@@ -369,7 +369,7 @@ function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
       <div className="relative">
         <button onClick={onSelect} className="touch-card w-full text-left card-warm overflow-hidden"
           style={{ background: `linear-gradient(to bottom, ${PHASE_TINT[recipe.phase]} 40%, transparent 60%)` }}>
-          <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} height={75} variant="card" />
+          <RecipeImage recipeName={recipe.name} recipeId={recipe.id} recipeImage={recipe.image} height={75} variant="card" />
           <div className="px-3 pb-3 pt-1.5">
             <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">{recipe.name}</h3>
             <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -429,7 +429,7 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
           </button>
         </div>
 
-        <RecipeImage recipeName={recipe.name} recipeImage={recipe.image} height={180} variant="detail" />
+        <RecipeImage recipeName={recipe.name} recipeId={recipe.id} recipeImage={recipe.image} height={180} variant="detail" />
 
         <div className="p-5 space-y-4">
           <div>

@@ -151,6 +151,33 @@ const CATEGORY_ILLUSTRATIONS: { keywords: string[]; image: string }[] = [
   },
 ];
 
+// TCM & Ayurveda recipe-specific illustrations
+const TCM_AYURVEDA_ILLUSTRATIONS: Record<string, string> = {
+  "tcm-ginger-congee": "/images/recipes/meals/warming-ginger-congee.png",
+  "tcm-beetroot-carrot-soup": "/images/recipes/meals/beetroot-carrot-soup.png",
+  "tcm-chicken-mushroom-stirfry": "/images/recipes/meals/chicken-mushroom-stirfry.png",
+  "tcm-salmon-greens-with-goji": "/images/recipes/meals/salmon-greens-goji.png",
+  "tcm-pumpkin-ginger-millet": "/images/recipes/meals/pumpkin-ginger-millet.png",
+  "tcm-black-bean-kumara-salad": "/images/recipes/meals/black-bean-kumara-salad.png",
+  "tcm-tofu-veggie-broth": "/images/recipes/meals/tofu-veggie-broth.png",
+  "tcm-egg-spinach-omelette": "/images/recipes/meals/egg-spinach-omelette.png",
+  "tcm-mung-bean-apple-dessert": "/images/recipes/meals/mung-bean-apple-dessert.png",
+  "tcm-five-spice-lamb-stirfry": "/images/recipes/meals/five-spice-lamb-stirfry.png",
+  "ayurveda-ginger-turmeric-oats": "/images/recipes/meals/ginger-turmeric-oats.png",
+  "ayurveda-kitchari-follicular": "/images/recipes/meals/tridoshic-kitchari.png",
+  "ayurveda-pitta-balancing-salad": "/images/recipes/meals/pitta-balancing-salad.png",
+  "ayurveda-vata-pacifying-soup": "/images/recipes/meals/kumara-coconut-soup.png",
+  "ayurveda-golden-milk": "/images/recipes/meals/golden-milk.png",
+  "ayurveda-lentil-dahl-spinach": "/images/recipes/meals/lentil-dahl-spinach.png",
+  "ayurveda-mint-coriander-chutney": "/images/recipes/meals/mint-coriander-chutney.png",
+  "ayurveda-gourd-sabzi": "/images/recipes/meals/courgette-mung-sabzi.png",
+  "ayurveda-cinnamon-apple-digestive": "/images/recipes/meals/cinnamon-apple-bake.png",
+  "ayurveda-broccoli-ginger-stirfry": "/images/recipes/meals/broccoli-ginger-stirfry.png",
+  "ayurveda-cucumber-raita": "/images/recipes/meals/cucumber-raita.png",
+  "ayurveda-masoor-dal-soup": "/images/recipes/meals/masoor-dal-soup.png",
+  "ayurveda-pumpkin-semolina-porridge": "/images/recipes/meals/pumpkin-semolina-porridge.png",
+};
+
 // Default fallback
 const DEFAULT_ILLUSTRATION = "/images/recipes/meals/nourish-buddha-bowl.png";
 
@@ -158,7 +185,16 @@ const DEFAULT_ILLUSTRATION = "/images/recipes/meals/nourish-buddha-bowl.png";
  * Given a meal/recipe name, return the path to the best matching
  * category-level hand-drawn illustration.
  */
-export function getCategoryIllustration(name: string): string {
+/**
+ * Given a meal/recipe name (or id), return the path to the best matching illustration.
+ * TCM/Ayurveda recipes have dedicated illustrations; others use keyword matching.
+ */
+export function getCategoryIllustration(name: string, id?: string): string {
+  // Check for dedicated TCM/Ayurveda illustration by recipe id
+  if (id && TCM_AYURVEDA_ILLUSTRATIONS[id]) {
+    return TCM_AYURVEDA_ILLUSTRATIONS[id];
+  }
+
   const lower = name.toLowerCase();
 
   // Try more-specific multi-word matches first, then single-word

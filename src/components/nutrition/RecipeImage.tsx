@@ -7,6 +7,7 @@ import { getCategoryIllustration } from "@/lib/category-illustrations";
 
 interface RecipeImageProps {
   recipeName: string;
+  recipeId?: string;
   recipeImage?: string;
   height?: number;
   className?: string;
@@ -16,12 +17,13 @@ interface RecipeImageProps {
 
 export default function RecipeImage({
   recipeName,
+  recipeId,
   recipeImage,
   height = 100,
   className = "",
   variant = "card",
 }: RecipeImageProps) {
-  const src = recipeImage || getCategoryIllustration(recipeName);
+  const src = recipeImage || getCategoryIllustration(recipeName, recipeId);
 
   const sizeClasses = {
     card: "h-[72px] w-auto max-w-[72px]",
