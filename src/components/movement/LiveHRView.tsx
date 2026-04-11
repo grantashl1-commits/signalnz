@@ -346,6 +346,25 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
       .select("id")
       .single();
 
+    // Also create a workout_log entry so it shows on calendar & My Log
+    let hrSessionId: string | null = null;
+    if (!error && data) {
+      hrSessionId = data.id;
+      await (supabase as any)
+        .from("workout_logs")
+        .insert({
+          user_id: user.id,
+          session_date: summary.date,
+          workout_template_id: null,
+          exercises: [],
+          duration_minutes: Math.round(summary.duration / 60),
+          notes: notes.trim() || null,
+          completed: true,
+          cycle_phase: summary.phase,
+          hr_session_id: hrSessionId,
+        });
+    }
+
     setSaving(false);
     if (!error && data) {
       setSaved(true);
