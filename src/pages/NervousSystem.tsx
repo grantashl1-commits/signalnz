@@ -1,7 +1,6 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Headphones, Moon, Clock, Check, Loader2, Play, Sparkles, Wind, BookOpen, CircleDot, ChevronDown } from "lucide-react";
+import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
@@ -9,9 +8,16 @@ import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
+import BreathworkPlayer from "@/components/practice/BreathworkPlayer";
+import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
+import fasciaReleaseImg from "@/assets/somatic/morning-fascia-release.png";
 import type { PracticeConfig } from "@/data/practices";
 import {
-  ALL_MEDITATION_SCRIPTS,
+  BREATHWORK_PRACTICES,
+  SOMATIC_PRACTICES,
+  formatDuration,
+} from "@/data/practices";
+import {
   MEDITATION_SCRIPTS,
   READING_SCRIPTS,
   INNER_WORK_SCRIPTS,
@@ -24,6 +30,11 @@ import {
   formatMeditationDuration,
   type MeditationScript,
 } from "@/data/meditation-scripts";
+import {
+  GEN_MEDITATION_SCRIPTS,
+  GEN_SLEEP_SCRIPTS,
+  GEN_INNER_WORK_SCRIPTS,
+} from "@/data/generated-mindfulness-scripts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -48,20 +59,12 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
   };
 }
 
-// ── AI Check-in chips ──
-const AI_CHIPS = [
-  "I feel anxious and can't settle",
-  "I'm really tired but can't sleep",
-  "I feel emotionally heavy today",
-  "I need to reset — I've been in my head all day",
-  "I'm in my luteal phase and struggling",
-  "I need something short — 5 minutes",
-];
-
-// ── Tabs: Practice and Sleep ──
-type TabId = "practice" | "sleep";
+// ── Tabs ──
+type TabId = "meditations" | "breathwork" | "somatic" | "sleep";
 const TABS: { id: TabId; label: string; icon: typeof Headphones }[] = [
-  { id: "practice", label: "Practice", icon: Headphones },
+  { id: "meditations", label: "Meditations", icon: CircleDot },
+  { id: "breathwork", label: "Breathwork", icon: Wind },
+  { id: "somatic", label: "Somatic", icon: Brain },
   { id: "sleep", label: "Sleep", icon: Moon },
 ];
 
@@ -73,6 +76,16 @@ const cardVariant = {
   }),
 };
 
+// ── Duration filter ──
+type DurationFilter = "all" | "short" | "medium" | "longer";
+
+function filterByDuration<T extends { durationSec: number }>(items: T[], filter: DurationFilter): T[] {
+  if (filter === "all") return items;
+  if (filter === "short") return items.filter(s => s.durationSec <= 300);
+  if (filter === "medium") return items.filter(s => s.durationSec > 300 && s.durationSec <= 900);
+  return items.filter(s => s.durationSec > 900);
+}
+
 // ── Completion tracking hook ──
 function useMindfulnessLogs() {
   const { user } = useAuth();
@@ -82,7 +95,6 @@ function useMindfulnessLogs() {
   useEffect(() => {
     if (!user) return;
     const today = new Date().toISOString().split("T")[0];
-    
     supabase
       .from("mindfulness_logs")
       .select("practice_id, duration_sec, log_date")
@@ -93,7 +105,6 @@ function useMindfulnessLogs() {
         if (!data) return;
         const todayDone = new Set(data.filter((d) => d.log_date === today).map((d) => d.practice_id));
         setCompleted(todayDone);
-        
         const days = new Set(data.map((d) => d.log_date));
         let s = 0;
         for (let i = 0; i < 30; i++) {
@@ -124,77 +135,41 @@ function useMindfulnessLogs() {
   return { completed, streak, logCompletion };
 }
 
-// ── Practice Card styling by category ──
+// ── Card themes ──
 const CARD_THEME: Record<string, {
-  border: string;       // left border color
-  bg: string;           // subtle bg tint
-  Icon: typeof Moon;    // corner icon
-  iconColor: string;
+  border: string; bg: string; Icon: typeof Moon; iconColor: string;
 }> = {
-  meditation:       { border: "hsl(var(--primary))",          bg: "hsl(var(--primary) / 0.04)",         Icon: CircleDot,  iconColor: "hsl(var(--primary) / 0.35)" },
-  sleep:            { border: "hsl(220 40% 18%)",             bg: "hsl(220 30% 14% / 0.06)",           Icon: Moon,       iconColor: "hsl(220 30% 35% / 0.4)" },
-  "inner-work":     { border: "hsl(30 60% 55%)",             bg: "hsl(30 60% 55% / 0.05)",            Icon: Wind,       iconColor: "hsl(30 50% 50% / 0.4)" },
-  reading:          { border: "hsl(var(--primary))", bg: "hsl(var(--primary) / 0.04)", Icon: BookOpen, iconColor: "hsl(var(--primary) / 0.35)" },
-  "phase-practice": { border: "hsl(var(--primary))",          bg: "hsl(var(--primary) / 0.04)",         Icon: Sparkles,   iconColor: "hsl(var(--primary) / 0.3)" },
+  meditation:       { border: "hsl(var(--primary))",   bg: "hsl(var(--primary) / 0.04)",   Icon: CircleDot,  iconColor: "hsl(var(--primary) / 0.35)" },
+  sleep:            { border: "hsl(220 40% 18%)",      bg: "hsl(220 30% 14% / 0.06)",      Icon: Moon,       iconColor: "hsl(220 30% 35% / 0.4)" },
+  "inner-work":     { border: "hsl(30 60% 55%)",       bg: "hsl(30 60% 55% / 0.05)",       Icon: Wind,       iconColor: "hsl(30 50% 50% / 0.4)" },
+  reading:          { border: "hsl(var(--primary))",    bg: "hsl(var(--primary) / 0.04)",    Icon: BookOpen,   iconColor: "hsl(var(--primary) / 0.35)" },
+  "phase-practice": { border: "hsl(var(--primary))",    bg: "hsl(var(--primary) / 0.04)",    Icon: CircleDot,  iconColor: "hsl(var(--primary) / 0.3)" },
 };
-
 const DEFAULT_THEME = CARD_THEME.meditation;
 
-// ── Practice Card ──
-function PracticeCard({
-  script,
-  index,
-  isDone,
-  onSelect,
-  isSleep,
+// ── Meditation Practice Card ──
+function MeditationCard({
+  script, index, isDone, onSelect, isSleep,
 }: {
-  script: MeditationScript;
-  index: number;
-  isDone: boolean;
-  onSelect: (s: MeditationScript) => void;
-  isSleep?: boolean;
+  script: MeditationScript; index: number; isDone: boolean;
+  onSelect: (s: MeditationScript) => void; isSleep?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
-
-  const categoryColors: Record<string, string> = {
-    meditation: "bg-primary/10 text-primary",
-    reading: "bg-primary/10 text-primary",
-    "inner-work": "bg-primary/10 text-primary",
-    sleep: "bg-primary/10 text-primary",
-    "phase-practice": "bg-primary/10 text-primary",
-  };
-
   const theme = CARD_THEME[script.category] || DEFAULT_THEME;
   const CornerIcon = theme.Icon;
 
   return (
     <motion.div
-      custom={index}
-      initial="hidden"
-      animate="visible"
-      variants={cardVariant}
+      custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className="relative overflow-hidden rounded-2xl border border-border shadow-sm"
-      style={{
-        borderLeft: `3px solid ${theme.border}`,
-        backgroundColor: isSleep ? "#EDE8F0" : theme.bg,
-      }}
+      style={{ borderLeft: `3px solid ${theme.border}`, backgroundColor: isSleep ? "#EDE8F0" : theme.bg }}
     >
-      {/* Sleep moon watermark */}
       {isSleep && (
-        <svg
-          className="absolute top-3 right-3 pointer-events-none"
-          width="64" height="64" viewBox="0 0 64 64" fill="none"
-          style={{ opacity: 0.06 }}
-        >
+        <svg className="absolute top-3 right-3 pointer-events-none" width="64" height="64" viewBox="0 0 64 64" fill="none" style={{ opacity: 0.06 }}>
           <path d="M48 36c0-11-9-20-20-20a20 20 0 0 0-4 .4A16 16 0 1 1 47.6 40a20 20 0 0 0 .4-4Z" fill="currentColor" />
         </svg>
       )}
-      {/* Corner type icon */}
-      <CornerIcon
-        className="absolute top-4 right-4 h-5 w-5 pointer-events-none"
-        style={{ color: theme.iconColor }}
-        strokeWidth={1.5}
-      />
+      <CornerIcon className="absolute top-4 right-4 h-5 w-5 pointer-events-none" style={{ color: theme.iconColor }} strokeWidth={1.5} />
 
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between gap-2 mb-1 pr-7">
@@ -207,7 +182,7 @@ function PracticeCard({
         </div>
         <p className="font-hand text-xs font-bold text-primary mb-1.5">{script.subtitle}</p>
         <div className="flex items-center gap-2.5 flex-wrap">
-          <span className={`font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium ${categoryColors[script.category] || "bg-muted text-muted-foreground"}`}>
+          <span className="font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium bg-primary/10 text-primary">
             {script.category.replace("-", " ")}
           </span>
           <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
@@ -215,16 +190,10 @@ function PracticeCard({
           </span>
         </div>
 
-        {/* Collapsed: one-line preview + Begin pill */}
         {!expanded && (
           <div className="mt-2 flex items-end justify-between gap-3">
-            <button
-              onClick={() => { haptic("light"); setExpanded(true); }}
-              className="flex-1 min-w-0 text-left group"
-            >
-              <p className="font-body text-[12px] text-muted-foreground leading-relaxed line-clamp-1">
-                {script.description}
-              </p>
+            <button onClick={() => { haptic("light"); setExpanded(true); }} className="flex-1 min-w-0 text-left group">
+              <p className="font-body text-[12px] text-muted-foreground leading-relaxed line-clamp-1">{script.description}</p>
               <span className="inline-flex items-center gap-0.5 font-body text-[10px] text-primary mt-0.5">
                 Read more <ChevronDown className="h-3 w-3" />
               </span>
@@ -232,9 +201,7 @@ function PracticeCard({
             <button
               onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(script); }}
               className={`shrink-0 rounded-full px-4 py-2 font-display text-xs italic active:scale-[0.96] flex items-center gap-1.5 transition-transform ${
-                isSleep
-                  ? "bg-primary/70 text-primary-foreground"
-                  : "bg-primary text-primary-foreground"
+                isSleep ? "bg-primary/70 text-primary-foreground" : "bg-primary text-primary-foreground"
               }`}
             >
               <Play className="h-3 w-3" /> Begin →
@@ -243,21 +210,11 @@ function PracticeCard({
         )}
       </div>
 
-      {/* Expanded: full description + prominent CTA */}
       <AnimatePresence>
         {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="overflow-hidden"
-          >
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeOut" }} className="overflow-hidden">
             <div className="px-4 pb-4">
-              <button
-                onClick={() => { haptic("light"); setExpanded(false); }}
-                className="inline-flex items-center gap-0.5 font-body text-[10px] text-primary mb-2"
-              >
+              <button onClick={() => { haptic("light"); setExpanded(false); }} className="inline-flex items-center gap-0.5 font-body text-[10px] text-primary mb-2">
                 Show less <ChevronDown className="h-3 w-3 rotate-180" />
               </button>
               <p className="font-body text-[13px] text-muted-foreground leading-relaxed mb-3">{script.description}</p>
@@ -277,216 +234,256 @@ function PracticeCard({
   );
 }
 
-// ── "Right now I need..." contextual chips ──
-const CONTEXTUAL_CHIPS: Record<string, { label: string; practiceId: string }[]> = {
-  "morning-default": [
-    { label: "A 5-min reset", practiceId: "quick-001" },
-    { label: "Set my intention", practiceId: "quick-005" },
-    { label: "Arrive in my body", practiceId: "quick-004" },
-    { label: "Clear my head", practiceId: "quick-003" },
-    { label: "Ground myself", practiceId: "ground-002" },
-  ],
-  "midday-active": [
-    { label: "Focus", practiceId: "quick-003" },
-    { label: "Quick breath", practiceId: "quick-004" },
-    { label: "Values check-in", practiceId: "quick-005" },
-    { label: "Clear my head", practiceId: "quick-001" },
-    { label: "Ground myself", practiceId: "ground-002" },
-  ],
-  "evening-luteal": [
-    { label: "Let go of the day", practiceId: "ground-002" },
-    { label: "Make room for how I feel", practiceId: "presence-003" },
-    { label: "Wind down", practiceId: "sleep-003" },
-    { label: "Clear my head", practiceId: "quick-003" },
-    { label: "Ground myself", practiceId: "quick-004" },
-  ],
-  "menstrual": [
-    { label: "Pebble meditation", practiceId: "quick-002" },
-    { label: "Full body release", practiceId: "ground-002" },
-    { label: "Something short", practiceId: "quick-001" },
-    { label: "Wind down", practiceId: "sleep-003" },
-    { label: "Ground myself", practiceId: "quick-004" },
-  ],
+// ── Breathwork icon SVGs ──
+const BreathworkIcon = ({ id }: { id: string }) => {
+  const cls = "text-primary/30";
+  const size = 36;
+  if (id === "box-breathing") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <rect x="6" y="6" width="24" height="24" rx="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
+      <rect x="12" y="12" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+    </svg>
+  );
+  if (id === "physiological-sigh") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <path d="M4 22c4-8 8 4 12-4s4 2 8-6 4 8 8 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M4 26c4-4 8 2 12-2s4 1 8-3 4 4 8 0" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+    </svg>
+  );
+  if (id === "four-seven-eight") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <path d="M26 14a10 10 0 1 0-3.5 7.6A7 7 0 0 1 26 14Z" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="15" cy="20" r="1.5" fill="currentColor" opacity="0.3" />
+      <circle cx="20" cy="16" r="1" fill="currentColor" opacity="0.2" />
+    </svg>
+  );
+  if (id === "coherent-breathing") return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <path d="M3 20 l4-6 3 4 3-10 3 12 3-8 3 6 3-4 4 6 3-2 3 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="18" cy="18" r="3" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+    </svg>
+  );
+  return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" className={cls}>
+      <circle cx="18" cy="18" r="10" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+    </svg>
+  );
 };
 
-function getContextualChips(phase: string): { label: string; practiceId: string }[] {
-  const h = new Date().getHours();
-  if (phase === "menstrual") return CONTEXTUAL_CHIPS["menstrual"];
-  if (h >= 18 && (phase === "luteal")) return CONTEXTUAL_CHIPS["evening-luteal"];
-  if (h >= 11 && h < 18 && (phase === "follicular" || phase === "ovulatory")) return CONTEXTUAL_CHIPS["midday-active"];
-  return CONTEXTUAL_CHIPS["morning-default"];
-}
-
-function RightNowChips({ onSelect }: { onSelect: (s: MeditationScript) => void }) {
-  const { currentPhase } = useCycle();
-  const chips = getContextualChips(currentPhase);
-  const [activeId, setActiveId] = useState<string | null>(null);
-
+// ── Breathwork Card ──
+function BreathworkCard({ p, index, onSelect }: { p: PracticeConfig; index: number; onSelect: (p: PracticeConfig) => void }) {
+  const [expanded, setExpanded] = useState(false);
   return (
-    <div className="mb-6">
-      <h2 className="font-display text-lg italic text-foreground mb-1">Right now I need…</h2>
-      <p className="font-body text-[11px] text-muted-foreground mb-3 italic" style={{ fontWeight: 300 }}>
-        Tap what feels right — we'll take you straight there.
-      </p>
-      <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
-        {chips.map((chip) => {
-          const isActive = activeId === chip.practiceId;
-          return (
-            <motion.button
-              key={chip.practiceId}
-              onClick={() => {
-                const s = getMeditationById(chip.practiceId);
-                if (s) {
-                  haptic("medium");
-                  setActiveId(chip.practiceId);
-                  onSelect(s);
-                }
-              }}
-              animate={isActive ? { scale: [1, 0.96, 1] } : {}}
-              transition={{ duration: 0.3 }}
-              className={`whitespace-nowrap rounded-full border min-h-[44px] px-4 py-2.5 font-body text-xs flex items-center gap-2 transition-all ${
-                isActive
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-primary/25 bg-primary/5 text-foreground hover:bg-primary/10"
-              }`}
-            >
-              <Sparkles className="h-3.5 w-3.5 shrink-0" style={{ opacity: isActive ? 1 : 0.45 }} />
-              {chip.label}
-            </motion.button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ── Get all practice scripts ──
-function getPracticeScripts(): MeditationScript[] {
-  return [
-    ...MEDITATION_SCRIPTS,
-    ...PHASE_SCRIPTS,
-    ...QUICK_PRACTICES,
-    ...GROUNDING_PRACTICES,
-    ...READING_SCRIPTS,
-    ...PRESENCE_PRACTICES,
-    ...INNER_WORK_SCRIPTS,
-  ];
-}
-
-// ── AI Check-in ──
-function AICheckin({ onSelectPractice }: { onSelectPractice: (s: MeditationScript) => void }) {
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ practiceId: string; explanation: string } | null>(null);
-  const { currentPhase, currentCycleDay } = useCycle();
-
-  const handleSubmit = async (text: string) => {
-    if (!text.trim()) return;
-    setInput(text);
-    setLoading(true);
-    setResult(null);
-    try {
-      const { data } = await supabase.functions.invoke("mindfulness-ai", {
-        body: { input: text, currentPhase, currentCycleDay },
-      });
-      if (data) setResult(data);
-    } catch {
-      setResult({ practiceId: "med-004", explanation: "Based on how you're feeling, the Relaxation Response may help." });
-    }
-    setLoading(false);
-  };
-
-  const recommended = result ? getMeditationById(result.practiceId) : null;
-  const AI_CHIPS_LOCAL = [
-    "I feel anxious and can't settle",
-    "I'm really tired but can't sleep",
-    "I feel emotionally heavy today",
-    "I need to reset — I've been in my head all day",
-    "I'm in my luteal phase and struggling",
-    "I need something short — 5 minutes",
-  ];
-
-  return (
-    <div className="card-warm p-6 space-y-4">
-      <h2 className="font-display text-xl italic text-foreground">How are you feeling right now?</h2>
-      <div className="flex flex-wrap gap-2">
-        {AI_CHIPS_LOCAL.map((chip) => (
-          <button
-            key={chip}
-            onClick={() => handleSubmit(chip)}
-            className="rounded-full border border-border px-3 py-1.5 font-body text-xs text-muted-foreground hover:bg-secondary/60 transition-colors"
-          >
-            {chip}
-          </button>
-        ))}
-      </div>
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Or describe how you feel in your own words..."
-        className="w-full rounded-xl border border-border bg-background p-4 font-body text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none h-20"
-      />
-      <button
-        onClick={() => handleSubmit(input)}
-        disabled={loading || !input.trim()}
-        className="rounded-xl bg-primary px-6 py-3 font-body text-sm font-bold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
-      >
-        Get a Recommendation
-      </button>
-
-      {loading && (
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <Loader2 className="h-5 w-5 animate-spin" />
-          <span className="font-hand text-sm animate-pulse">finding what your body needs...</span>
-        </div>
-      )}
-
-      {result && recommended && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">recommended</span>
-            <span className="font-body text-[11px] text-muted-foreground">{formatMeditationDuration(recommended.durationSec)}</span>
+    <motion.div
+      key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
+      className={`card-warm p-5 cursor-pointer touch-card relative ${expanded ? "ring-[1.5px] ring-primary" : ""}`}
+      onClick={() => setExpanded(!expanded)}
+    >
+      <div className="absolute top-4 left-4"><BreathworkIcon id={p.id} /></div>
+      <div className="pl-11">
+        <h3 className="font-display text-lg italic text-foreground mb-1">{p.title}</h3>
+        {p.phases && p.phases.length > 0 && (
+          <div className="flex items-center gap-2.5 mb-2">
+            <span className="font-body text-[28px] font-bold text-primary leading-none">
+              {p.phases.map((ph) => ph.seconds).join("-")}
+            </span>
+            <motion.div
+              className="w-4 h-4 rounded-full border-2 border-primary/50"
+              animate={{ scale: [1, 1.6, 1], opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              style={{ backgroundColor: "hsl(var(--primary) / 0.15)" }}
+            />
           </div>
-          <h3 className="font-display text-lg italic text-foreground">{recommended.title}</h3>
-          <p className="font-body text-sm text-muted-foreground leading-relaxed">{result.explanation}</p>
-          <button
-            onClick={() => { haptic("medium"); onSelectPractice(recommended); }}
-            className="touch-btn w-full rounded-[14px] bg-primary py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97] flex items-center justify-center gap-2"
-          >
-            <Play className="h-4 w-4" /> start practice →
-          </button>
-        </motion.div>
-      )}
-    </div>
+        )}
+        <p className="font-body text-[14px] text-foreground/70 mb-1">{p.subtitle}</p>
+        <div className="flex items-center gap-2 mb-2">
+          {p.audio.enabled && (
+            <span className="flex items-center gap-1.5 font-body text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+              <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided audio
+            </span>
+          )}
+          <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
+            <Clock className="h-3 w-3" /> {formatDuration(p.durationSec)}
+          </span>
+        </div>
+
+        {!expanded && (
+          <div className="flex items-end justify-between gap-3 mt-1">
+            <p className="font-display text-[12px] italic text-muted-foreground leading-relaxed line-clamp-1 flex-1 min-w-0">{p.benefit}</p>
+            <button
+              onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+              className="shrink-0 rounded-full border border-primary/25 px-3.5 h-9 font-display text-xs italic text-primary active:scale-[0.96] flex items-center gap-1.5 transition-transform hover:bg-primary/5"
+            >
+              Begin →
+            </button>
+          </div>
+        )}
+        {expanded && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} transition={{ duration: 0.25, ease: "easeOut" }}>
+            <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3">{p.benefit}</p>
+            <button
+              onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+              className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+            >
+              begin this practice →
+            </button>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
-// ── Duration sort filter ──
-type DurationFilter = "all" | "short" | "medium" | "longer";
+// ── Somatic fallback icons ──
+const SomaticFallbackIcon = ({ id }: { id: string }) => {
+  const cls = "text-primary/30";
+  const s = 44;
+  const icons: Record<string, JSX.Element> = {
+    "butterfly-hug": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <path d="M22 14c-6-8-16-2-12 8 2 5 8 8 12 10 4-2 10-5 12-10 4-10-6-16-12-8Z" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    ),
+    "grounding-54321": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <circle cx="22" cy="22" r="14" stroke="currentColor" strokeWidth="1.5" />
+        {[0,1,2,3,4].map(i => <circle key={i} cx={22 + 10*Math.cos((i*72-90)*Math.PI/180)} cy={22 + 10*Math.sin((i*72-90)*Math.PI/180)} r="2" fill="currentColor" opacity="0.4" />)}
+      </svg>
+    ),
+    "somatic-orienting": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <circle cx="22" cy="22" r="6" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="22" cy="22" r="12" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+        <path d="M22 6v4M22 34v4M6 22h4M34 22h4" stroke="currentColor" strokeWidth="1" />
+      </svg>
+    ),
+    "havening-touch": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <path d="M16 30c-2-4 0-8 4-10s8-1 10 3 0 8-4 10-8 1-10-3Z" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M20 20c1-3 3-5 6-4" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+        <path d="M18 24c-1-3 0-6 3-7" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+      </svg>
+    ),
+    "neurogenic-tremoring": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <path d="M8 22c2-4 4 4 6-4s4 4 6-4 4 4 6-4 4 4 6-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M8 28c2-3 4 3 6-3s4 3 6-3 4 3 6-3 4 3 6-3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      </svg>
+    ),
+    "body-scan": (
+      <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+        <ellipse cx="22" cy="14" rx="5" ry="6" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M17 20v14M27 20v14M14 28h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  };
+  return icons[id] || (
+    <svg width={s} height={s} viewBox="0 0 44 44" fill="none" className={cls}>
+      <circle cx="22" cy="22" r="14" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+    </svg>
+  );
+};
 
-function filterByDuration(scripts: MeditationScript[], filter: DurationFilter): MeditationScript[] {
-  if (filter === "all") return scripts;
-  if (filter === "short") return scripts.filter(s => s.durationSec <= 300);
-  if (filter === "medium") return scripts.filter(s => s.durationSec > 300 && s.durationSec <= 900);
-  return scripts.filter(s => s.durationSec > 900);
+// ── Somatic Card ──
+function SomaticCard({ p, index, onSelect }: { p: PracticeConfig; index: number; onSelect: (p: PracticeConfig) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <motion.div
+      key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
+      className="card-warm p-5 cursor-pointer touch-card"
+      onClick={() => setExpanded(!expanded)}
+    >
+      <div className="flex gap-3 items-start">
+        {p.illustrationUrl ? (
+          <img src={p.illustrationUrl} alt={p.title} className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
+        ) : (
+          <SomaticFallbackIcon id={p.id} />
+        )}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-display text-lg italic text-foreground mb-1">{p.title}</h3>
+          <div className="flex gap-1.5 mb-1.5 flex-wrap items-center">
+            <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">{p.subtitle}</span>
+            <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
+              <Clock className="h-3 w-3" /> {formatDuration(p.durationSec)}
+            </span>
+            {p.audio.enabled && (
+              <span className="flex items-center gap-1.5 font-body text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+                <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided
+              </span>
+            )}
+          </div>
+          {!expanded && (
+            <div className="flex items-end justify-between gap-3 mt-1">
+              <p className="font-display text-[12px] italic text-muted-foreground leading-relaxed line-clamp-1 flex-1 min-w-0">{p.benefit}</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+                className="shrink-0 rounded-full border border-primary/25 px-3.5 h-9 font-display text-xs italic text-primary active:scale-[0.96] flex items-center gap-1.5 transition-transform hover:bg-primary/5"
+              >
+                Begin →
+              </button>
+            </div>
+          )}
+          {expanded && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} transition={{ duration: 0.25, ease: "easeOut" }}>
+              <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3">{p.benefit}</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(p); }}
+                className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+              >
+                begin this practice →
+              </button>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 // ── MAIN PAGE ──
 export default function NervousSystemPage() {
   const [tab, setTab] = useState<TabId>(() => {
-    return new Date().getHours() >= 20 ? "sleep" : "practice";
+    return new Date().getHours() >= 20 ? "sleep" : "meditations";
   });
   const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(null);
+  const [showFasciaRelease, setShowFasciaRelease] = useState(false);
   const { currentPhase } = useCycle();
   const { completed, streak, logCompletion } = useMindfulnessLogs();
 
-  const scripts = useMemo(() => {
-    const base = tab === "sleep" ? SLEEP_SCRIPTS : getPracticeScripts();
-    return filterByDuration(base, durationFilter);
-  }, [tab, durationFilter]);
+  // Meditation scripts for the meditations tab
+  const meditationScripts = useMemo(() => {
+    const all = [
+      ...MEDITATION_SCRIPTS,
+      ...GEN_MEDITATION_SCRIPTS,
+      ...READING_SCRIPTS,
+      ...INNER_WORK_SCRIPTS,
+      ...GEN_INNER_WORK_SCRIPTS,
+      ...PHASE_SCRIPTS,
+      ...QUICK_PRACTICES,
+      ...GROUNDING_PRACTICES,
+      ...PRESENCE_PRACTICES,
+    ];
+    return filterByDuration(all, durationFilter);
+  }, [durationFilter]);
 
-  const handleSelect = (script: MeditationScript) => {
+  // Sleep scripts
+  const sleepScripts = useMemo(() => {
+    const all = [...SLEEP_SCRIPTS, ...GEN_SLEEP_SCRIPTS];
+    return filterByDuration(all, durationFilter);
+  }, [durationFilter]);
+
+  // Breathwork practices
+  const breathworkPractices = useMemo(() => {
+    return filterByDuration(BREATHWORK_PRACTICES, durationFilter);
+  }, [durationFilter]);
+
+  // Somatic practices
+  const somaticPractices = useMemo(() => {
+    return filterByDuration(SOMATIC_PRACTICES, durationFilter);
+  }, [durationFilter]);
+
+  const handleSelectMeditation = (script: MeditationScript) => {
     setActivePractice(toPracticeConfig(script));
   };
 
@@ -497,6 +494,13 @@ export default function NervousSystemPage() {
     setActivePractice(null);
   };
 
+  const TAB_TITLES: Record<TabId, string> = {
+    meditations: "Meditations & Inner Work",
+    breathwork: "Breathwork & Regulation",
+    somatic: "Somatic Exercises",
+    sleep: "Sleep & Rest",
+  };
+
   return (
     <GatedPage requiredTier="nourished">
       <div className="relative">
@@ -504,69 +508,55 @@ export default function NervousSystemPage() {
           <SignalPulse />
           <div className="text-center relative z-10 px-6">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
-            <h1 className="font-display text-[clamp(2rem,8vw,4rem)] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.05] mb-2 break-words">
-              Mindfulness &amp; Inner&nbsp;Work
+            <h1 className="font-display text-[clamp(2rem,8vw,3.5rem)] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.05] mb-2 break-words">
+              {TAB_TITLES[tab]}
             </h1>
             {streak > 1 && (
-              <p className="font-body text-xs text-primary-foreground/50">
-                {streak}-day streak
-              </p>
+              <p className="font-body text-xs text-primary-foreground/50">{streak}-day streak</p>
             )}
           </div>
         </AtmosphericHero>
 
         <ContentSection className="px-5 md:px-4">
-          {/* Right now I need... */}
-          <RightNowChips onSelect={handleSelect} />
-
-          {/* Tabs */}
+          {/* 4-tab nav */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-sm mx-auto">
+            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-lg mx-auto overflow-x-auto scrollbar-hide">
               {TABS.map((t) => {
                 const TabIcon = t.icon;
                 return (
                   <button
                     key={t.id}
                     onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
-                    className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-sm transition-all flex items-center justify-center gap-1.5 ${
+                    className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[13px] transition-all flex items-center justify-center gap-1 whitespace-nowrap min-w-0 px-2 ${
                       tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
                     }`}
                   >
-                    <TabIcon className="h-3.5 w-3.5" />
-                    {t.label}
+                    <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{t.label}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Duration sort (Practice tab only) */}
-          {tab === "practice" && (
-            <div className="flex gap-2 pb-3">
-              {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setDurationFilter(f)}
-                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
-                    durationFilter === f
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted/60 text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
-                </button>
-              ))}
-            </div>
-          )}
+          {/* Duration filter */}
+          <div className="flex gap-2 pb-3 overflow-x-auto scrollbar-hide">
+            {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
+              <button
+                key={f}
+                onClick={() => setDurationFilter(f)}
+                className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                  durationFilter === f
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
+              </button>
+            ))}
+          </div>
 
-          {/* Inner Work content warning */}
-          {tab === "practice" && (
-            <div className="rounded-xl bg-phase-menstrual/5 border border-phase-menstrual/15 p-4 mb-4 hidden">
-              {/* kept but hidden — inner work warning only shows contextually */}
-            </div>
-          )}
-
-          {/* Practice Cards */}
+          {/* Content */}
           <AnimatePresence mode="wait">
             <motion.div
               key={`${tab}-${durationFilter}`}
@@ -576,41 +566,102 @@ export default function NervousSystemPage() {
               transition={{ duration: 0.15 }}
               className="space-y-8 md:space-y-10"
             >
-              {scripts.map((s, i) => (
-                <PracticeCard
-                  key={s.id}
-                  script={s}
-                  index={i}
-                  isDone={completed.has(s.id)}
-                  onSelect={handleSelect}
-                  isSleep={tab === "sleep"}
-                />
+              {/* Meditations tab */}
+              {tab === "meditations" && meditationScripts.map((s, i) => (
+                <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} />
+              ))}
+
+              {/* Breathwork tab */}
+              {tab === "breathwork" && breathworkPractices.map((p, i) => (
+                <BreathworkCard key={p.id} p={p} index={i} onSelect={setActivePractice} />
+              ))}
+
+              {/* Somatic tab */}
+              {tab === "somatic" && (
+                <>
+                  {/* Fascia Release special card */}
+                  <FasciaReleaseCard index={0} onSelect={() => setShowFasciaRelease(true)} />
+                  {somaticPractices.map((p, i) => (
+                    <SomaticCard key={p.id} p={p} index={i + 1} onSelect={setActivePractice} />
+                  ))}
+                </>
+              )}
+
+              {/* Sleep tab */}
+              {tab === "sleep" && sleepScripts.map((s, i) => (
+                <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} isSleep />
               ))}
             </motion.div>
           </AnimatePresence>
 
-          {/* Breathwork link */}
-          <div className="mt-8 text-center">
-            <Link to="/breathwork" className="font-body text-sm text-primary hover:underline">
-              For breathwork and body-based practices → Breathwork
-            </Link>
-          </div>
-
           <BotanicalSprig width={160} className="mx-auto mt-8" />
-
-          {/* AI Check-in */}
-          <div className="mt-8">
-            <AICheckin onSelectPractice={handleSelect} />
-          </div>
-
-          <BotanicalSprig width={180} className="mx-auto mt-8 hidden md:block" />
         </ContentSection>
 
-        {/* Player */}
-        {activePractice && (
+        {/* Players */}
+        {activePractice?.mode === "timed-breath" && (
+          <BreathworkPlayer practice={activePractice} onClose={() => { handleClose(); }} />
+        )}
+        {activePractice?.mode === "narrated-sequence" && (
           <SomaticPlayer practice={activePractice} onClose={handleClose} />
+        )}
+        {showFasciaRelease && (
+          <FasciaReleasePlayer onClose={() => setShowFasciaRelease(false)} />
         )}
       </div>
     </GatedPage>
+  );
+}
+
+// ── Fascia Release special card ──
+function FasciaReleaseCard({ index, onSelect }: { index: number; onSelect: () => void }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <motion.div
+      custom={index} initial="hidden" animate="visible" variants={cardVariant}
+      className="card-warm p-5 cursor-pointer touch-card"
+      onClick={() => setExpanded(!expanded)}
+    >
+      <div className="flex gap-3 items-start">
+        <img src={fasciaReleaseImg} alt="Morning Fascia Release" className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
+        <div className="flex-1 min-w-0">
+          <h3 className="font-display text-lg italic text-foreground mb-1">Morning Fascia Release</h3>
+          <div className="flex gap-1.5 mb-1.5 flex-wrap">
+            <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">full body</span>
+            <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
+              <Clock className="h-3 w-3" /> 7 min
+            </span>
+            <span className="flex items-center gap-1.5 font-body text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FAF7F4] text-primary border border-primary/15 shadow-sm">
+              <Volume2 className="h-3.5 w-3.5 text-primary" /> Guided
+            </span>
+          </div>
+          {!expanded && (
+            <div className="flex items-end justify-between gap-3 mt-1">
+              <p className="font-display text-[12px] italic text-muted-foreground leading-relaxed line-clamp-1 flex-1 min-w-0">
+                A 7-move morning sequence to wake up the fascia, move the lymph, and reset your nervous system.
+              </p>
+              <button
+                onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(); }}
+                className="shrink-0 rounded-full border border-primary/25 px-3.5 h-9 font-display text-xs italic text-primary active:scale-[0.96] flex items-center gap-1.5 transition-transform hover:bg-primary/5"
+              >
+                Begin →
+              </button>
+            </div>
+          )}
+          {expanded && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} transition={{ duration: 0.25, ease: "easeOut" }}>
+              <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3">
+                A 7-move morning sequence to wake up the fascia, move the lymph, and reset your nervous system.
+              </p>
+              <button
+                onClick={(e) => { e.stopPropagation(); haptic("medium"); onSelect(); }}
+                className="touch-btn w-full rounded-[14px] bg-primary py-3.5 font-display text-base italic text-primary-foreground active:scale-[0.97]"
+              >
+                begin this practice →
+              </button>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 }
