@@ -725,6 +725,14 @@ When you're ready, gently open your eyes, carrying this expanded capacity for no
   ],
 };
 
+import {
+  childhoodBlueprint,
+  shameInventory,
+  emotionalLandscape,
+  letterNeverSent,
+  reclaimingPower,
+} from "./addiction-inner-work-scripts";
+
 // ═══════════════════════════════════════════════════════════
 // Exports
 // ═══════════════════════════════════════════════════════════
@@ -748,6 +756,11 @@ export const GEN_INNER_WORK_SCRIPTS: MeditationScript[] = [
   understandingPatterns,
   rootBeneathRoot,
   releasingWithoutReplacing,
+  childhoodBlueprint,
+  shameInventory,
+  emotionalLandscape,
+  letterNeverSent,
+  reclaimingPower,
 ];
 
 export const ALL_GENERATED_SCRIPTS: MeditationScript[] = [
