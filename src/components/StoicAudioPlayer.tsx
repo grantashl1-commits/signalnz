@@ -51,10 +51,15 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
     );
   }, []);
 
-  // Play via ElevenLabs TTS (fallback)
+  // Play via ElevenLabs TTS (fallback) — now uses cached URL response
   const playViaTTS = useCallback(async () => {
     setLoading(true);
     try {
+      // Get user identifier for credit tracking
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: { user } } = await supabase.auth.getUser();
+      const user_identifier = user?.id || user?.email || "anonymous";
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-generate-inline`,
         {
@@ -64,13 +69,14 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, user_identifier }),
         }
       );
       if (!response.ok) throw new Error("TTS failed");
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
+      const data = await response.json();
+      const audioSrc = data.audioUrl;
+      if (!audioSrc) throw new Error("No audio URL returned");
+      const audio = new Audio(audioSrc);
       audioRef.current = audio;
 
       audio.onended = () => {
