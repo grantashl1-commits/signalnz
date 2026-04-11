@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.workout-plan]
 verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
