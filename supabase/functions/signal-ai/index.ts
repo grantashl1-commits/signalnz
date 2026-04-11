@@ -40,7 +40,7 @@ serve(async (req) => {
         .maybeSingle();
 
       if (credits) {
-        if (credits.tier !== "unlimited" && (credits.credits_remaining || 0) < creditCost) {
+        if ((credits.credits_remaining || 0) < creditCost) {
           return new Response(
             JSON.stringify({ error: `You need ${creditCost} AI credits for this feature. Top up or upgrade your plan to continue.` }),
             { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }

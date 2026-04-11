@@ -32,7 +32,7 @@ serve(async (req) => {
     // Credit check: journal insights costs 1 credit
     const cost = 1;
     const { data: credits } = await supabase.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-    if (credits && credits.tier !== "unlimited" && (credits.credits_remaining || 0) < cost) {
+    if (credits && (credits.credits_remaining || 0) < cost) {
       return new Response(JSON.stringify({ error: `You need ${cost} AI credit for journal insights. Top up or upgrade.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (credits && credits.tier !== "unlimited") {

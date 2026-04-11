@@ -35,7 +35,7 @@ serve(async (req) => {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
       const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
       const cost = 3;
-      if (credits && credits.tier !== "unlimited" && (credits.credits_remaining || 0) < cost) {
+      if (credits && (credits.credits_remaining || 0) < cost) {
         return new Response(JSON.stringify({ error: `You need ${cost} AI credits for image generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (credits && credits.tier !== "unlimited") {
