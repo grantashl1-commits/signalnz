@@ -144,36 +144,9 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
 
   return (
     <div className="space-y-6 pb-10">
-      <div className="mb-2">
-        {/* Decorative dot motif + lock-heart icon */}
-        <div className="flex items-center gap-3 mb-2">
-          <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
-            {/* Dot ring motif */}
-            <svg viewBox="0 0 40 40" className="absolute inset-0 w-full h-full">
-              {Array.from({ length: 8 }, (_, i) => {
-                const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
-                return <circle key={i} cx={20 + 15 * Math.cos(angle)} cy={20 + 15 * Math.sin(angle)} r={2} fill="hsl(284, 22%, 44%)" opacity={0.25} />;
-              })}
-            </svg>
-            <div className="relative flex items-center justify-center">
-              <Lock className="h-3.5 w-3.5 text-primary" style={{ marginRight: -2 }} />
-              <Heart className="h-3.5 w-3.5 text-primary" fill="hsl(284, 22%, 44%)" style={{ marginLeft: -2 }} />
-            </div>
-          </div>
-          <div>
-            <h2 className="font-display text-[24px] font-bold text-foreground leading-tight">Your Memory Vault</h2>
-            <p className="font-display text-sm italic text-muted-foreground">
-              A curated archive of the moments that matter most.
-            </p>
-          </div>
-        </div>
-        {totalMemories > 0 && (
-          <p className="font-body text-[11px] text-muted-foreground/60 mt-1">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
-        )}
-      </div>
-
-      {/* Coming Soon: Printed Journal */}
-      <PrintedJournalCard />
+      {totalMemories > 0 && (
+        <p className="font-body text-[11px] text-muted-foreground/60">{totalMemories} {totalMemories === 1 ? "memory" : "memories"} saved · Synced to cloud</p>
+      )}
 
       {/* Empty state */}
       {totalMemories === 0 && (
