@@ -465,11 +465,23 @@ export default function AccountPage() {
           )}
         </motion.div>
 
-        {/* Feedback */}
-        <button onClick={() => navigate("/feedback")} className="flex items-center justify-between w-full py-3 border-b border-border/10">
-          <span className="text-sm text-muted-foreground">Share feedback</span>
+        <button onClick={() => setFeedbackOpen(true)} className="flex items-center justify-between w-full py-3 border-b border-border/10">
+          <span className="text-sm text-muted-foreground flex items-center gap-2">
+            <MessageSquarePlus className="h-4 w-4" />
+            Share feedback
+          </span>
           <ChevronRight className="w-4 h-4 text-muted-foreground/25" />
         </button>
+
+        <Sheet open={feedbackOpen} onOpenChange={setFeedbackOpen}>
+          <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
+            <SheetHeader className="pb-2">
+              <SheetTitle className="font-display text-lg">Share Feedback</SheetTitle>
+              <p className="text-xs text-muted-foreground">Report a bug, suggest a feature, or tell us what you think.</p>
+            </SheetHeader>
+            <FeedbackForm onSubmitted={() => setFeedbackOpen(false)} />
+          </SheetContent>
+        </Sheet>
 
         {/* Sign out */}
         <button onClick={handleSignOut} className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors">
