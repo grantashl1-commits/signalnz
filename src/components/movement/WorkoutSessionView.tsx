@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
 
@@ -48,6 +49,16 @@ const STRETCH_SECTION_NAMES: Record<string, string> = {
 
 function formatMuscle(m: string): string {
   return m.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Strip AI filler text */
+function sanitizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/\b(point!\s*)+/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/[,\s]+$/, "")
+    .trim();
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -539,7 +550,7 @@ function ExerciseCard({
                 "font-display text-sm font-bold",
                 completed ? "text-primary" : "text-foreground"
               )}>
-                {exercise.name}
+                {sanitizeText(exercise.name)}
               </h4>
               {exercise.is_low_impact && (
                 <Shield className="h-3 w-3 text-emerald-500 shrink-0" />
@@ -548,6 +559,13 @@ function ExerciseCard({
                 <Wind className="h-3 w-3 text-sky-500 shrink-0" />
               )}
             </div>
+
+            {/* Muscle illustration */}
+            {primaryMuscles.length > 0 && (
+              <div className="flex items-center gap-1 mt-0.5">
+                <MuscleIllustration targetMuscle={primaryMuscles[0]} size={18} />
+              </div>
+            )}
 
             {sectionName && (
               <span className="font-body text-[10px] font-medium" style={{ color: stretchColor || undefined }}>
@@ -606,7 +624,7 @@ function ExerciseCard({
                 {ex.load_guidance && (
                   <div className="flex items-start gap-2">
                     <Dumbbell className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
-                    <p className="font-body text-xs text-foreground leading-relaxed">{ex.load_guidance}</p>
+                    <p className="font-body text-xs text-foreground leading-relaxed">{sanitizeText(ex.load_guidance)}</p>
                   </div>
                 )}
 
@@ -614,7 +632,7 @@ function ExerciseCard({
                   <div>
                     <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider mb-1">How to</p>
                     {instructions.map((inst: string, j: number) => (
-                      <p key={j} className="font-body text-xs text-muted-foreground leading-relaxed">{inst}</p>
+                      <p key={j} className="font-body text-xs text-muted-foreground leading-relaxed">{sanitizeText(inst)}</p>
                     ))}
                   </div>
                 )}
@@ -629,7 +647,7 @@ function ExerciseCard({
                       {cues.map((cue: string, j: number) => (
                         <li key={j} className="font-body text-xs text-foreground leading-relaxed flex gap-2">
                           <span className="text-primary shrink-0">·</span>
-                          {cue}
+                          {sanitizeText(cue)}
                         </li>
                       ))}
                     </ul>

@@ -107,7 +107,15 @@ When multiple goals are selected, blend programming:
 - Explain the 4-week arc (what changes week to week)
 - Reference one specific evidence-based principle
 - Under 90 words
-- End with: "Your first session is ready in the Today tab."`;
+- End with: "Your first session is ready in the Today tab."
+
+═══ TEXT QUALITY (CRITICAL) ═══
+- NEVER repeat filler words or phrases. No "point!", "finish", "block", or any word repeated more than once in a row.
+- Exercise names must be clean and concise: "Barbell Romanian Deadlift", NOT "Barbell Romanian Deadlift lower body hinge exercise point! point!"
+- Coaching cues must be specific and professional. One clear sentence.
+- Section labels must be clean: "Strength A — Posterior Chain", NOT "Strength A — Posterior Chain Maximal Hypertrophy and Strength Phase point! point!"
+- Warm-up names: "Banded Clamshells", NOT "Banded Clamshells (Dynamic) lateral hip activation and mobility warm up move point!"
+- Keep all names SHORT. Maximum 4-5 words for exercise names.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

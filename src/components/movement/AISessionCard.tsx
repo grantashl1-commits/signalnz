@@ -4,11 +4,23 @@ import { Check, Sparkles, Clock, Flame, Snowflake, MessageCircle, ChevronDown, C
 import { Phase } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { supabase } from "@/integrations/supabase/client";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
 };
+
+/** Strip AI-generated filler text like "point! point!" from exercise names/descriptions */
+function sanitizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/\b(point!\s*)+/gi, "")
+    .replace(/\b(finish|move|pull|phase|block|sets)\b(?=\s+(point|finish|move))/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/[,\s]+$/, "")
+    .trim();
+}
 
 const INTENSITY_COLORS: Record<string, string> = {
   low: "text-green-600", moderate: "text-amber-500", high: "text-red-500", "very-high": "text-red-600",
@@ -65,16 +77,19 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
       {showGif && (
         <div className="flex-shrink-0">
           {stretchData?.gif_url ? (
-            <img src={stretchData.gif_url} alt={item.name} className="w-9 h-9 rounded-lg object-cover" loading="lazy" />
+            <img src={stretchData.gif_url} alt={sanitizeText(item.name)} className="w-9 h-9 rounded-lg object-cover" loading="lazy" />
           ) : (
-            <ExerciseDemonstration exerciseName={item.name} size={36} className="rounded-lg" />
+            <ExerciseDemonstration exerciseName={sanitizeText(item.name)} size={36} className="rounded-lg" />
           )}
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <span className="font-body text-xs text-foreground">{item.name}</span>
+        <span className="font-body text-xs text-foreground">{sanitizeText(item.name)}</span>
         {stretchData?.target_muscle && (
-          <p className="font-body text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <MuscleIllustration targetMuscle={stretchData.target_muscle} size={20} />
+            <p className="font-body text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
+          </div>
         )}
       </div>
       <span className="font-body text-[10px] text-muted-foreground flex-shrink-0">
@@ -107,10 +122,10 @@ export default function AISessionCard({
       <div>
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <h3 className="font-display text-lg italic text-foreground">{session.name}</h3>
+          <h3 className="font-display text-lg italic text-foreground">{sanitizeText(session.name)}</h3>
         </div>
         <p className="font-body text-[9px] italic text-primary mt-0.5">
-          AI Plan · Week {trainingWeek} · {weekTheme || session.phase_label}
+          Week {trainingWeek} · {weekTheme || session.phase_label}
         </p>
         <div className="flex gap-2 mt-1.5 flex-wrap">
           <span className="flex items-center gap-1 font-body text-[10px]" style={{ color: phaseColor }}>
@@ -170,7 +185,7 @@ export default function AISessionCard({
             onClick={() => { haptic("light"); setExpandedSection(expandedSection === block.section_label ? null : block.section_label); }}
             className="touch-btn flex items-center gap-2 w-full"
           >
-            <span className="font-display text-xs font-bold italic" style={{ color: phaseColor }}>{block.section_label}</span>
+            <span className="font-display text-xs font-bold italic" style={{ color: phaseColor }}>{sanitizeText(block.section_label)}</span>
             <span className="font-body text-[10px] text-muted-foreground">{block.exercises?.length || 0}</span>
             <div className="flex-1" />
             {expandedSection === block.section_label
@@ -193,17 +208,17 @@ export default function AISessionCard({
                 </div>
                 {/* GIF thumbnail */}
                 <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
-                  <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                  <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" />
                 </div>
                 <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
-                  <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
+                  <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{sanitizeText(ex.name)}</p>
                   <div className="flex gap-2 flex-wrap mt-0.5">
-                    {ex.sets && <span className="font-body text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {ex.reps_or_duration}</span>}
-                    {ex.rest && <span className="font-body text-[9px] text-muted-foreground">Rest {ex.rest}</span>}
-                    {ex.tempo && <span className="font-body text-[9px] text-muted-foreground">Tempo {ex.tempo}</span>}
+                    {ex.sets && <span className="font-body text-[9px]" style={{ color: phaseColor }}>{ex.sets} × {sanitizeText(ex.reps_or_duration)}</span>}
+                    {ex.rest && <span className="font-body text-[9px] text-muted-foreground">Rest {sanitizeText(ex.rest)}</span>}
+                    {ex.tempo && <span className="font-body text-[9px] text-muted-foreground">Tempo {sanitizeText(ex.tempo)}</span>}
                   </div>
                 </div>
-                <p className="font-body text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block leading-tight">{ex.form_cue}</p>
+                <p className="font-body text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block leading-tight">{sanitizeText(ex.form_cue)}</p>
               </motion.div>
             );
           })}
@@ -219,7 +234,7 @@ export default function AISessionCard({
             return (
               <div key={ex.name + i}>
                 {showSection && ex.section && (
-                  <p className="font-display text-xs font-bold italic mt-3 mb-1" style={{ color: phaseColor }}>{ex.section}</p>
+                  <p className="font-display text-xs font-bold italic mt-3 mb-1" style={{ color: phaseColor }}>{sanitizeText(ex.section)}</p>
                 )}
                 <motion.div custom={i} initial="hidden" animate="visible" variants={cardVariant}
                   className={`touch-card flex items-center gap-3 rounded-xl p-3 cursor-pointer transition-all min-h-[52px] ${done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"}`}
@@ -231,17 +246,16 @@ export default function AISessionCard({
                   >
                     {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                   </div>
-                  {/* GIF thumbnail */}
                   <div className="flex-shrink-0" onClick={(e) => { e.stopPropagation(); onOpenExercise(ex); }}>
-                    <ExerciseDemonstration exerciseName={ex.name} size={42} className="rounded-lg" />
+                    <ExerciseDemonstration exerciseName={sanitizeText(ex.name)} size={42} className="rounded-lg" />
                   </div>
                   <div className="flex-1 min-w-0" onClick={() => onOpenExercise(ex)}>
-                    <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{ex.name}</p>
+                    <p className={`font-body text-sm ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>{sanitizeText(ex.name)}</p>
                     <p className="font-body text-[9px]" style={{ color: phaseColor }}>
-                      {ex.sets && `${ex.sets}×`}{ex.reps}{ex.duration && ` ${ex.duration}`}
+                      {ex.sets && `${ex.sets}×`}{sanitizeText(ex.reps)}{ex.duration && ` ${sanitizeText(ex.duration)}`}
                     </p>
                   </div>
-                  <p className="font-body text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{ex.formCue || ex.form_cue}</p>
+                  <p className="font-body text-[9px] italic text-muted-foreground max-w-[90px] text-right hidden sm:block">{sanitizeText(ex.formCue || ex.form_cue)}</p>
                 </motion.div>
               </div>
             );
@@ -289,7 +303,7 @@ export default function AISessionCard({
       {session.coaching_note && (
         <div className="flex items-start gap-2 rounded-xl bg-primary/5 border border-primary/10 p-3">
           <MessageCircle className="h-3.5 w-3.5 text-primary mt-0.5 flex-shrink-0" />
-          <p className="font-body text-xs text-muted-foreground leading-relaxed italic">{session.coaching_note}</p>
+          <p className="font-body text-xs text-muted-foreground leading-relaxed italic">{sanitizeText(session.coaching_note)}</p>
         </div>
       )}
     </div>
