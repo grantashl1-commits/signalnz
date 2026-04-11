@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowLeft, Search, Check, BookOpen, X } from "lucide-react";
@@ -349,6 +349,7 @@ export default function JournalPage() {
   const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
   const [currentMood, setCurrentMood] = useState<string | null>(null);
   const [entryType, setEntryType] = useState<EntryType>("reflect");
+  const [promptIdx, setPromptIdx] = useState(0);
 
   const { currentDay, reading, listenedToday, markListened, advanceDay } = useDailyStoic();
   const { entries, loading, saveEntry, updateStoicLens } = useJournalEntries2();
@@ -356,6 +357,14 @@ export default function JournalPage() {
 
   const [showPlayer, setShowPlayer] = useState(false);
   const [postSaveEntry, setPostSaveEntry] = useState<JournalEntryRow | null>(null);
+
+  const MYTH_PROMPTS_COUNT = 25;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPromptIdx((prev) => (prev + 1) % MYTH_PROMPTS_COUNT);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAndroidBack = useCallback(() => {
     if (view === "write" || view === "detail" || view === "gratitude" || view === "one-line") {
@@ -490,22 +499,6 @@ export default function JournalPage() {
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
                 <div className="space-y-8 md:space-y-10">
-                  {/* Entry type tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {(["reflect", "gratitude", "one line"] as EntryType[]).map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => setEntryType(type)}
-                        className="font-body text-xs tracking-wide px-3.5 py-1.5 rounded-full transition-all"
-                        style={{
-                          backgroundColor: entryType === type ? 'hsl(var(--primary))' : 'rgba(91, 45, 114, 0.08)',
-                          color: entryType === type ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))',
-                        }}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
 
                   {/* Write button */}
                   <button
@@ -517,24 +510,36 @@ export default function JournalPage() {
 
                   {/* Daily prompt + stats strip */}
                   {(() => {
-                    const DAILY_PROMPTS = [
-                      "What is one thing you noticed about yourself today?",
-                      "Write about a moment that made you pause.",
-                      "What would you tell your younger self right now?",
-                      "Describe a feeling you haven't named yet.",
-                      "What are you learning to let go of?",
-                      "What does rest look like for you today?",
-                      "Name something beautiful you almost missed.",
-                      "What does your body need you to hear?",
-                      "Write about a conversation that stayed with you.",
-                      "What are you quietly building?",
-                      "What would today look like if you trusted yourself more?",
-                      "Describe the energy of this season of your life.",
-                      "What small thing brought you comfort recently?",
-                      "What pattern are you noticing in yourself?",
+                    const MYTH_PROMPTS = [
+                      "What stories have you been telling yourself about who you are?",
+                      "What would be possible if you rewrote your most limiting belief?",
+                      "Where in your life are you refusing the call to adventure?",
+                      "What part of yourself have you been hiding from the world?",
+                      "Who have been the mentors in your life, and what wisdom did they offer?",
+                      "What fears are you carrying that no longer serve you?",
+                      "What does your inner hero look like when you let them speak?",
+                      "What moment in your life marked a crossing of the threshold?",
+                      "What would it mean to yield to what life is asking of you right now?",
+                      "What shadow are you avoiding that might hold your greatest gift?",
+                      "When did your plans fall apart — and what grew from the wreckage?",
+                      "What does the unknown feel like in your body right now?",
+                      "What belief did you inherit that you're ready to let go of?",
+                      "What is your personal myth — the story you tell about who you are?",
+                      "What challenge transformed you into who you are becoming?",
+                      "What would your life look like if you trusted the process?",
+                      "What are you being called toward that you keep resisting?",
+                      "What does it mean to come home to yourself?",
+                      "What old identity are you clinging to that no longer fits?",
+                      "What would your most authentic self do differently today?",
+                      "What have you been afraid to face with compassion?",
+                      "What new chapter are you ready to begin writing?",
+                      "How might your greatest wound become your greatest teacher?",
+                      "What does courage look like for you in this season of life?",
+                      "What would happen if you let go of needing to know the outcome?",
                     ];
-                    const dayIndex = Math.floor(Date.now() / 86400000) % DAILY_PROMPTS.length;
-                    const prompt = DAILY_PROMPTS[dayIndex];
+
+
+                    const prompt = MYTH_PROMPTS[promptIdx];
                     const now = new Date();
                     const weekStart = new Date(now);
                     weekStart.setDate(now.getDate() - now.getDay());
@@ -544,14 +549,20 @@ export default function JournalPage() {
 
                     return (
                       <div className="pt-4 space-y-4">
-                        {/* Daily writing prompt */}
-                        <div className="text-center px-4">
-                          <p
-                            className="font-display italic leading-relaxed"
-                            style={{ fontSize: 'var(--quote-size)', color: 'hsl(var(--muted-foreground))' }}
-                          >
-                            "{prompt}"
-                          </p>
+                        <div className="text-center px-4 min-h-[60px] flex items-center justify-center">
+                          <AnimatePresence mode="wait">
+                            <motion.p
+                              key={promptIdx}
+                              initial={{ opacity: 0, y: 8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -8 }}
+                              transition={{ duration: 0.4 }}
+                              className="font-display italic leading-relaxed"
+                              style={{ fontSize: 'var(--quote-size)', color: 'hsl(var(--muted-foreground))' }}
+                            >
+                              "{prompt}"
+                            </motion.p>
+                          </AnimatePresence>
                         </div>
 
                         {/* Stats strip */}
