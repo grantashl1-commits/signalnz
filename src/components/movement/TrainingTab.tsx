@@ -40,7 +40,7 @@ const PHASE_TRAINING_GUIDANCE: Record<string, { icon: React.ComponentType<{ clas
 type View = "goal-select" | "program" | "phase-workouts" | "session";
 
 export default function TrainingTab() {
-  const { currentPhase, currentWeekNumber } = useCycle();
+  const { currentPhase, currentWeekNumber, currentCycleDay } = useCycle();
   const {
     goals,
     goalCategoryId,
