@@ -83,6 +83,8 @@ export interface WorkoutExercise {
     is_low_impact: boolean | null;
     is_somatic: boolean | null;
     evidence_source: string | null;
+    illustration_url: string | null;
+    gif_url: string | null;
   };
 }
 
