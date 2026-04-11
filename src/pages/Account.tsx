@@ -1,37 +1,36 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, MessageSquareText, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
-import { useEffect, useState } from "react";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import { useEffect, useState, useMemo } from "react";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { useProfile } from "@/hooks/useProfile";
 import { useReferralStats } from "@/hooks/useReferral";
+import { useCycle } from "@/contexts/CycleContext";
+import { PHASE_SHORT } from "@/lib/cycle-utils";
 import {
-  FitnessGoal, FitnessLevel, Equipment, FitnessProfile,
+  FitnessGoal, FitnessLevel, Equipment,
   GOAL_LABELS, LEVEL_LABELS, EQUIPMENT_LABELS,
   getFitnessProfile, saveFitnessProfile,
   getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
 } from "@/lib/fitness-profile";
 
-const TIER_COLORS: Record<string, string> = {
-  free: "text-muted-foreground",
-  nourished: "text-primary",
-  thriving: "text-primary",
-};
-
-const TIER_LABELS: Record<string, string> = {
-  free: "Free",
-  nourished: "Nourished",
-  thriving: "Thriving",
-};
+const TIER_COLORS: Record<string, string> = { free: "text-muted-foreground", nourished: "text-primary", thriving: "text-primary" };
+const TIER_LABELS: Record<string, string> = { free: "Free", nourished: "Nourished", thriving: "Thriving" };
 
 export default function AccountPage() {
   const { user, session, subscription, refreshSubscription, loading } = useAuth();
-  const { displayName, updateDisplayName, referralCode } = useProfile();
+  const profile = useProfile();
+  const { displayName, avatarUrl, suburb, updateDisplayName, referralCode,
+    dateOfBirth: profileDob, weightKg, heightCm, lastPeriodDate,
+    dietaryPreferences, dietaryDislikes, calorieTarget, proteinTargetG, carbTargetG, fatTargetG, mealPrepDay,
+    cycleMode,
+  } = profile;
   const navigate = useNavigate();
+  const { currentPhase, currentCycleDay } = useCycle();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -39,7 +38,7 @@ export default function AccountPage() {
   const [nameEditing, setNameEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Fitness profile
+  // Fitness profile (localStorage)
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("general");
   const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>("beginner");
   const [fitnessEquipment, setFitnessEquipment] = useState<Equipment[]>(["none"]);
@@ -49,51 +48,41 @@ export default function AccountPage() {
   // Supermarket
   const [supermarket, setSupermarket] = useState<SupermarketPreference>(getSupermarket());
 
-  // Date of birth
+  // DOB editable
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [dobSaving, setDobSaving] = useState(false);
 
+  // Cycle editable
+  const [periodDate, setPeriodDate] = useState("");
+  const [periodSaving, setPeriodSaving] = useState(false);
+
   useEffect(() => {
     const fp = getFitnessProfile();
-    if (fp) {
-      setFitnessGoal(fp.goal);
-      setFitnessLevel(fp.level);
-      setFitnessEquipment(fp.equipment);
-      setFitnessInjuries(fp.injuries);
-    }
+    if (fp) { setFitnessGoal(fp.goal); setFitnessLevel(fp.level); setFitnessEquipment(fp.equipment); setFitnessInjuries(fp.injuries); }
   }, []);
 
-  useEffect(() => {
-    if (!user) return;
-    const fetchCredits = async () => {
-      const { data } = await supabase
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_identifier", user.id)
-        .maybeSingle();
-      if (data) setCredits(data.credits_remaining);
-    };
-    fetchCredits();
-  }, [user]);
+  useEffect(() => { if (profileDob) setDateOfBirth(profileDob); }, [profileDob]);
+  useEffect(() => { if (lastPeriodDate) setPeriodDate(lastPeriodDate); }, [lastPeriodDate]);
 
   useEffect(() => {
     if (!user) return;
-    const fetchDob = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("date_of_birth")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if ((data as any)?.date_of_birth) setDateOfBirth((data as any).date_of_birth);
-    };
-    fetchDob();
+    supabase.from("ai_credits").select("credits_remaining").eq("user_identifier", user.id).maybeSingle()
+      .then(({ data }) => { if (data) setCredits(data.credits_remaining); });
   }, [user]);
 
+  useEffect(() => { if (!loading && !user) navigate("/auth"); }, [user, loading, navigate]);
+
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
-  }, [user, loading, navigate]);
+    if (!user) return;
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+
+  const age = useMemo(() => {
+    if (!dateOfBirth) return null;
+    const diff = Date.now() - new Date(dateOfBirth).getTime();
+    return Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
+  }, [dateOfBirth]);
 
   const handleManage = async () => {
     if (!session) return;
@@ -104,57 +93,61 @@ export default function AccountPage() {
       });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
-    } catch (err: any) {
-      toast.error(err.message || "Could not open portal");
-    }
+    } catch (err: any) { toast.error(err.message || "Could not open portal"); }
   };
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await refreshSubscription();
-    setRefreshing(false);
-    toast.success("Subscription refreshed");
+  const handleRefresh = async () => { setRefreshing(true); await refreshSubscription(); setRefreshing(false); toast.success("Subscription refreshed"); };
+  const handleSignOut = async () => { await supabase.auth.signOut(); toast.success("Signed out"); navigate("/"); };
+
+  const saveDob = async () => {
+    if (!user || !dateOfBirth) return;
+    setDobSaving(true);
+    await supabase.from("profiles").upsert({ user_id: user.id, date_of_birth: dateOfBirth } as any, { onConflict: "user_id" });
+    setDobSaving(false); toast.success("Saved"); haptic("medium");
   };
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast.success("Signed out");
-    navigate("/");
+  const savePeriod = async () => {
+    if (!user || !periodDate) return;
+    setPeriodSaving(true);
+    await supabase.from("profiles").upsert({ user_id: user.id, last_period_date: periodDate } as any, { onConflict: "user_id" });
+    setPeriodSaving(false); toast.success("Saved"); haptic("medium");
   };
-
-  useEffect(() => {
-    if (!user) return;
-    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
-      .then(({ data }) => setIsAdmin(!!data));
-  }, [user]);
 
   if (loading || !user) return null;
 
   const memberSince = user.created_at ? new Date(user.created_at).toLocaleDateString("en-NZ", { month: "long", year: "numeric" }) : "—";
+  const locationLabel = suburb || null;
 
   return (
     <div className="relative">
-      <AtmosphericHero size="sm">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
-            <User className="h-7 w-7 text-primary-foreground/70" />
+      {/* ═══ PURPLE HEADER ═══ */}
+      <div className="bg-primary pt-[max(env(safe-area-inset-top),12px)] pb-8 px-5">
+        <div className="max-w-2xl mx-auto flex flex-col items-center text-center pt-6">
+          {/* Avatar */}
+          <div className="w-20 h-20 rounded-full bg-primary-foreground/15 flex items-center justify-center mb-3 overflow-hidden border-2 border-primary-foreground/20">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <User className="h-8 w-8 text-primary-foreground/60" />
+            )}
           </div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold italic text-primary-foreground">
+          <h1 className="font-display text-xl font-bold italic text-primary-foreground">
             {displayName || "My Account"}
           </h1>
-          <p className="font-body text-sm text-primary-foreground/60 mt-1">{user.email}</p>
+          {locationLabel && (
+            <p className="font-body text-sm text-primary-foreground/60 mt-0.5 flex items-center gap-1">
+              <MapPin className="h-3 w-3" /> {locationLabel}
+            </p>
+          )}
         </div>
-      </AtmosphericHero>
+      </div>
 
-      <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-5">
-        {/* Admin Button */}
+      <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-6 -mt-4">
+        {/* Admin */}
         {isAdmin && (
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+          <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             onClick={() => { haptic("light"); navigate("/admin"); }}
-            className="w-full card-warm p-4 flex items-center gap-3 text-left"
-          >
+            className="w-full card-warm p-4 flex items-center gap-3 text-left">
             <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
               <ShieldCheck className="h-5 w-5 text-primary" />
             </div>
@@ -166,101 +159,90 @@ export default function AccountPage() {
           </motion.button>
         )}
 
-        {/* ═══ SECTION 1: YOU ═══ */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-5 space-y-4">
+        {/* ═══ SECTION: PERSONAL DETAILS ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-warm p-5 space-y-5">
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
-            <User className="h-[1.125rem] w-[1.125rem] text-primary" /> You
+            <User className="h-[1.125rem] w-[1.125rem] text-primary" /> Personal Details
           </h2>
 
-          {/* Display Name */}
+          {/* Name */}
           <div>
-            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Display name</p>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Display Name</p>
             {nameEditing ? (
               <div className="flex items-center gap-2">
-                <input
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  placeholder="Enter your name..."
-                  maxLength={50}
-                  className="flex-1 rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      (async () => {
-                        setNameSaving(true);
-                        await updateDisplayName(nameInput);
-                        setNameEditing(false);
-                        setNameSaving(false);
-                        toast.success("Name updated");
-                      })();
-                    }
-                  }}
-                />
-                <button
-                  onClick={async () => {
-                    setNameSaving(true);
-                    await updateDisplayName(nameInput);
-                    setNameEditing(false);
-                    setNameSaving(false);
-                    toast.success("Name updated");
-                  }}
-                  disabled={nameSaving}
-                  className="inline-flex items-center gap-1 rounded-xl bg-primary px-3.5 py-2.5 font-body text-sm font-semibold text-primary-foreground active:opacity-90 transition-opacity"
-                >
+                <input value={nameInput} onChange={(e) => setNameInput(e.target.value)} placeholder="Enter your name..." maxLength={50}
+                  className="flex-1 rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30" autoFocus
+                  onKeyDown={(e) => { if (e.key === "Enter") { (async () => { setNameSaving(true); await updateDisplayName(nameInput); setNameEditing(false); setNameSaving(false); toast.success("Name updated"); })(); } }} />
+                <button onClick={async () => { setNameSaving(true); await updateDisplayName(nameInput); setNameEditing(false); setNameSaving(false); toast.success("Name updated"); }}
+                  disabled={nameSaving} className="inline-flex items-center gap-1 rounded-xl bg-primary px-3.5 py-2.5 font-body text-sm font-semibold text-primary-foreground">
                   <Check className="h-3.5 w-3.5" /> {nameSaving ? "..." : "Save"}
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => { setNameInput(displayName || ""); setNameEditing(true); }}
-                className="font-body text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
-              >
+              <button onClick={() => { setNameInput(displayName || ""); setNameEditing(true); }}
+                className="font-body text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1.5">
                 {displayName || "Set your name"} <PenLine className="h-3 w-3 text-muted-foreground" />
               </button>
             )}
           </div>
 
-          {/* Date of Birth */}
+          {/* DOB + Age */}
           <div>
-            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Date of birth</p>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Date of Birth {age !== null && <span className="text-foreground font-medium">({age} years old)</span>}</p>
             <div className="flex items-center gap-2">
-              <input
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                className="flex-1 bg-secondary border border-border rounded-lg px-3 py-2 text-foreground font-body text-sm"
-              />
-              <button
-                disabled={dobSaving || !dateOfBirth}
-                onClick={async () => {
-                  if (!user || !dateOfBirth) return;
-                  setDobSaving(true);
-                  await supabase
-                    .from("profiles")
-                    .upsert({ user_id: user.id, date_of_birth: dateOfBirth } as any, { onConflict: "user_id" });
-                  setDobSaving(false);
-                  toast.success("Saved");
-                  haptic("medium");
-                }}
-                className="inline-flex items-center gap-1 rounded-xl bg-primary px-3 py-2 font-body text-xs font-semibold text-primary-foreground disabled:opacity-40"
-              >
+              <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)}
+                className="flex-1 bg-secondary border border-border rounded-lg px-3 py-2 text-foreground font-body text-sm" />
+              <button disabled={dobSaving || !dateOfBirth} onClick={saveDob}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-3 py-2 font-body text-xs font-semibold text-primary-foreground disabled:opacity-40">
                 <Check className="h-3 w-3" /> {dobSaving ? "..." : "Save"}
               </button>
             </div>
           </div>
 
-          {/* Email (read only) */}
+          {/* Email */}
           <div>
             <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Email</p>
-            <p className="font-body text-sm text-foreground">{user.email}</p>
+            <p className="font-body text-sm text-foreground flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-muted-foreground" /> {user.email}</p>
+          </div>
+
+          {/* Location */}
+          <div>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Location</p>
+            <p className="font-body text-sm text-foreground flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-muted-foreground" /> {suburb || <span className="text-muted-foreground">Set in Community tab</span>}
+            </p>
           </div>
         </motion.div>
 
-        {/* ═══ SECTION 2: YOUR BODY ═══ */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="card-warm p-5 space-y-4">
+        {/* ═══ SECTION: YOUR BODY ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="card-warm p-5 space-y-4">
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
             <Dumbbell className="h-[1.125rem] w-[1.125rem] text-primary" /> Your Body
           </h2>
+
+          {/* Stats row */}
+          {(weightKg || heightCm) && (
+            <div className="flex gap-3">
+              {weightKg && (
+                <div className="rounded-xl bg-secondary/50 px-3 py-2">
+                  <p className="font-body text-[10px] text-muted-foreground uppercase">Weight</p>
+                  <p className="font-body text-sm font-semibold text-foreground">{weightKg} kg</p>
+                </div>
+              )}
+              {heightCm && (
+                <div className="rounded-xl bg-secondary/50 px-3 py-2">
+                  <p className="font-body text-[10px] text-muted-foreground uppercase">Height</p>
+                  <p className="font-body text-sm font-semibold text-foreground">{heightCm} cm</p>
+                </div>
+              )}
+              {age !== null && (
+                <div className="rounded-xl bg-secondary/50 px-3 py-2">
+                  <p className="font-body text-[10px] text-muted-foreground uppercase">Age</p>
+                  <p className="font-body text-sm font-semibold text-foreground">{age}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {!fitnessEditing && getFitnessProfile() ? (
             <div className="space-y-2">
@@ -300,56 +282,120 @@ export default function AccountPage() {
                   {(Object.keys(EQUIPMENT_LABELS) as Equipment[]).map(eq => {
                     const active = fitnessEquipment.includes(eq);
                     return (
-                      <button key={eq} onClick={() => setFitnessEquipment(prev => active ? prev.filter(x => x !== eq) : [...prev, eq])} className={`rounded-xl px-3 py-2.5 font-body text-xs font-medium transition-all ${active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                      <button key={eq} onClick={() => setFitnessEquipment(prev => active ? prev.filter(x => x !== eq) : [...prev, eq])}
+                        className={`rounded-xl px-3 py-2.5 font-body text-xs font-medium transition-all ${active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
                         {EQUIPMENT_LABELS[eq]}
                       </button>
                     );
                   })}
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  saveFitnessProfile({ goal: fitnessGoal, level: fitnessLevel, equipment: fitnessEquipment, injuries: fitnessInjuries });
-                  setFitnessEditing(false);
-                  toast.success("Fitness profile saved");
-                  haptic("medium");
-                }}
-                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground"
-              >
+              <button onClick={() => { saveFitnessProfile({ goal: fitnessGoal, level: fitnessLevel, equipment: fitnessEquipment, injuries: fitnessInjuries }); setFitnessEditing(false); toast.success("Fitness profile saved"); haptic("medium"); }}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-semibold text-primary-foreground">
                 <Check className="h-3.5 w-3.5" /> Save Profile
               </button>
             </div>
           )}
+        </motion.div>
 
-          {/* Supermarket */}
-          <div className="pt-3 border-t border-border/30">
-            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-2">Linked Supermarket</p>
-            <div className="space-y-1">
-              {SUPERMARKET_OPTIONS.map(s => (
-                <button
-                  key={s.name}
-                  onClick={() => {
-                    setSupermarket(s);
-                    saveSupermarket(s);
-                    toast.success(`Set to ${s.name}`);
-                    haptic("light");
-                  }}
-                  className={`w-full flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-body transition-all ${
-                    supermarket.name === s.name
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "bg-secondary/30 text-foreground hover:bg-secondary/50"
-                  }`}
-                >
-                  <span>{s.name}</span>
-                  {supermarket.name === s.name && <Check className="h-4 w-4" />}
-                </button>
-              ))}
+        {/* ═══ SECTION: YOUR FOOD ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card-warm p-5 space-y-4">
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+            <Utensils className="h-[1.125rem] w-[1.125rem] text-primary" /> Your Food
+          </h2>
+
+          {/* Dietary preferences */}
+          {dietaryPreferences.length > 0 && (
+            <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Dietary Preferences</p>
+              <div className="flex flex-wrap gap-1.5">
+                {dietaryPreferences.map(p => (
+                  <span key={p} className="rounded-full bg-primary/10 px-2.5 py-1 font-body text-xs text-primary">{p}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {dietaryDislikes.length > 0 && (
+            <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Dislikes</p>
+              <div className="flex flex-wrap gap-1.5">
+                {dietaryDislikes.map(d => (
+                  <span key={d} className="rounded-full bg-destructive/10 px-2.5 py-1 font-body text-xs text-destructive">{d}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Macro targets */}
+          {calorieTarget && (
+            <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Daily Targets</p>
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-xl bg-secondary/50 px-3 py-1.5 font-body text-xs"><span className="font-semibold text-foreground">{calorieTarget}</span> <span className="text-muted-foreground">kcal</span></span>
+                {proteinTargetG && <span className="rounded-xl bg-secondary/50 px-3 py-1.5 font-body text-xs"><span className="font-semibold text-foreground">{proteinTargetG}g</span> <span className="text-muted-foreground">protein</span></span>}
+                {carbTargetG && <span className="rounded-xl bg-secondary/50 px-3 py-1.5 font-body text-xs"><span className="font-semibold text-foreground">{carbTargetG}g</span> <span className="text-muted-foreground">carbs</span></span>}
+                {fatTargetG && <span className="rounded-xl bg-secondary/50 px-3 py-1.5 font-body text-xs"><span className="font-semibold text-foreground">{fatTargetG}g</span> <span className="text-muted-foreground">fat</span></span>}
+              </div>
+            </div>
+          )}
+
+          {mealPrepDay && (
+            <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Meal Prep Day</p>
+              <p className="font-body text-sm text-foreground capitalize">{mealPrepDay}</p>
+            </div>
+          )}
+
+          {!dietaryPreferences.length && !calorieTarget && (
+            <p className="font-body text-sm text-muted-foreground">Set up your dietary preferences in the Nutrition tab.</p>
+          )}
+        </motion.div>
+
+        {/* ═══ SECTION: YOUR CYCLE ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="card-warm p-5 space-y-4">
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+            <Moon className="h-[1.125rem] w-[1.125rem] text-primary" /> Your Cycle
+          </h2>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full bg-primary/10 px-3 py-1 font-body text-xs font-medium text-primary capitalize">{cycleMode}</span>
+            <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs font-medium text-foreground">
+              Day {currentCycleDay} · {PHASE_SHORT[currentPhase]}
+            </span>
+          </div>
+
+          <div>
+            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">First Day of Last Period</p>
+            <div className="flex items-center gap-2">
+              <input type="date" value={periodDate} onChange={(e) => setPeriodDate(e.target.value)}
+                className="flex-1 bg-secondary border border-border rounded-lg px-3 py-2 text-foreground font-body text-sm" />
+              <button disabled={periodSaving || !periodDate} onClick={savePeriod}
+                className="inline-flex items-center gap-1 rounded-xl bg-primary px-3 py-2 font-body text-xs font-semibold text-primary-foreground disabled:opacity-40">
+                <Check className="h-3 w-3" /> {periodSaving ? "..." : "Save"}
+              </button>
             </div>
           </div>
         </motion.div>
 
-        {/* ═══ SECTION 3: MEMBERSHIP ═══ */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }} className="card-warm p-5 space-y-4">
+        {/* ═══ SECTION: LINKED SUPERMARKET ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card-warm p-5 space-y-3">
+          <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+            <ShoppingCart className="h-[1.125rem] w-[1.125rem] text-primary" /> Linked Supermarket
+          </h2>
+          <div className="space-y-1">
+            {SUPERMARKET_OPTIONS.map(s => (
+              <button key={s.name} onClick={() => { setSupermarket(s); saveSupermarket(s); toast.success(`Set to ${s.name}`); haptic("light"); }}
+                className={`w-full flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-body transition-all ${supermarket.name === s.name ? "bg-primary/10 text-primary font-semibold" : "bg-secondary/30 text-foreground hover:bg-secondary/50"}`}>
+                <span>{s.name}</span>
+                {supermarket.name === s.name && <Check className="h-4 w-4" />}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ═══ SECTION: MEMBERSHIP ═══ */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="card-warm p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
               <Crown className="h-[1.125rem] w-[1.125rem] text-primary" /> Membership
@@ -400,7 +446,7 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* Referral — single row */}
+          {/* Referral */}
           {referralCode && (
             <div className="pt-3 border-t border-border/30">
               <div className="flex items-center justify-between">
@@ -408,32 +454,21 @@ export default function AccountPage() {
                   <p className="font-body text-[10px] text-muted-foreground/40 uppercase tracking-widest">refer a friend</p>
                   <p className="text-sm text-foreground/70 mt-0.5">{referralCode}</p>
                 </div>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(`https://signalnz.lovable.app?ref=${referralCode}`);
-                    haptic("light");
-                    toast.success("Link copied!");
-                  }}
-                  className="font-body text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground"
-                >
-                  copy
-                </button>
+                <button onClick={() => { navigator.clipboard.writeText(`https://signalnz.lovable.app?ref=${referralCode}`); haptic("light"); toast.success("Link copied!"); }}
+                  className="font-body text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground">copy</button>
               </div>
             </div>
           )}
         </motion.div>
 
-        {/* Share feedback link */}
+        {/* Feedback */}
         <button onClick={() => navigate("/feedback")} className="flex items-center justify-between w-full py-3 border-b border-border/10">
           <span className="text-sm text-muted-foreground">Share feedback</span>
           <ChevronRight className="w-4 h-4 text-muted-foreground/25" />
         </button>
 
         {/* Sign out */}
-        <button
-          onClick={handleSignOut}
-          className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors"
-        >
+        <button onClick={handleSignOut} className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors">
           <LogOut className="h-5 w-5 text-destructive flex-shrink-0" />
           <p className="font-display text-sm italic text-destructive">Sign out</p>
         </button>

@@ -8,6 +8,9 @@ export interface ProfileData {
   onboardingComplete: boolean | null;
   referralCode: string | null;
   cycleMode: CycleMode;
+  avatarUrl: string | null;
+  suburb: string | null;
+  fitnessLevel: string | null;
   // Extended onboarding fields
   dateOfBirth: string | null;
   weightKg: number | null;
@@ -31,6 +34,9 @@ export function useProfile() {
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [cycleMode, setCycleModeState] = useState<CycleMode>("cycling");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [suburb, setSuburb] = useState<string | null>(null);
+  const [fitnessLevel, setFitnessLevel] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Extended fields
@@ -62,6 +68,7 @@ export function useProfile() {
       .from("profiles")
       .select(`
         display_name, onboarding_complete, referral_code, cycle_mode,
+        avatar_url, suburb, fitness_level,
         date_of_birth, weight_kg, height_cm, goal_weight_kg,
         movement_goals, dietary_preferences, dietary_dislikes,
         calorie_target, protein_target_g, carb_target_g, fat_target_g,
@@ -75,6 +82,9 @@ export function useProfile() {
     setOnboardingComplete(d?.onboarding_complete ?? false);
     setReferralCode(d?.referral_code ?? null);
     setCycleModeState((d?.cycle_mode as CycleMode) ?? "cycling");
+    setAvatarUrl(d?.avatar_url ?? null);
+    setSuburb(d?.suburb ?? null);
+    setFitnessLevel(d?.fitness_level ?? null);
 
     setDateOfBirth(d?.date_of_birth ?? null);
     setWeightKg(d?.weight_kg ?? null);
@@ -140,6 +150,9 @@ export function useProfile() {
     onboardingComplete,
     referralCode,
     cycleMode,
+    avatarUrl,
+    suburb,
+    fitnessLevel,
     loading,
     // Extended fields
     dateOfBirth,
