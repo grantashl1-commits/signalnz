@@ -6,47 +6,63 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.98.0";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") || "";
+const RAPIDAPI_KEY = Deno.env.get("RAPIDAPI_KEY") || "";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-async function generateIllustration(exerciseName: string, targetMuscle: string, primaryMuscles: string[]): Promise<Uint8Array | null> {
-  const muscleList = primaryMuscles?.length ? primaryMuscles.join(", ") : targetMuscle || "full body";
+// Fetch ExerciseDB exercises and match by name
+async function findExerciseDBId(exerciseName: string): Promise<string | null> {
+  const searchName = exerciseName.toLowerCase().trim();
   
-  const prompt = `A clean anatomical illustration of the exercise "${exerciseName}". Show a human figure performing the exercise with the working muscles (${muscleList}) highlighted in warm red/coral color. Professional medical/anatomical diagram style with clean line art on a white background. The figure should be in neutral gray/charcoal with only the target muscles colored. Simple, clean, minimal. No text overlay.`;
-
-  // Use Imagen 3 for image generation
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`,
+  const resp = await fetch(
+    `https://exercisedb.p.rapidapi.com/exercises/name/${encodeURIComponent(searchName)}?limit=1&offset=0`,
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        instances: [{ prompt }],
-        parameters: {
-          sampleCount: 1,
-          aspectRatio: "1:1",
-          safetyFilterLevel: "BLOCK_ONLY_HIGH",
-        },
-      }),
+      headers: {
+        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-host": "exercisedb.p.rapidapi.com",
+      },
     }
   );
+  
+  if (!resp.ok) return null;
+  const results = await resp.json();
+  if (Array.isArray(results) && results.length > 0) {
+    return results[0].id;
+  }
+  return null;
+}
 
-  if (!response.ok) {
-    const errText = await response.text();
-    console.error("Imagen generation failed:", response.status, errText);
+async function fetchAndUploadGif(exerciseId: string, edbId: string): Promise<string | null> {
+  const resp = await fetch(
+    `https://exercisedb.p.rapidapi.com/image?exerciseId=${edbId}&resolution=360`,
+    {
+      headers: {
+        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-host": "exercisedb.p.rapidapi.com",
+      },
+    }
+  );
+  
+  if (!resp.ok) return null;
+  
+  const gifData = new Uint8Array(await resp.arrayBuffer());
+  if (gifData.length < 1000) return null;
+  
+  const filename = `${exerciseId}.gif`;
+  const { error: uploadError } = await supabase.storage
+    .from("exercise-illustrations")
+    .upload(filename, gifData, { contentType: "image/gif", upsert: true });
+  
+  if (uploadError) {
+    console.error("Upload error:", uploadError.message);
     return null;
   }
-
-  const data = await response.json();
-  const predictions = data.predictions || [];
   
-  if (predictions.length > 0 && predictions[0].bytesBase64Encoded) {
-    return Uint8Array.from(atob(predictions[0].bytesBase64Encoded), c => c.charCodeAt(0));
-  }
-
-  console.error("No image data found in Imagen response");
-  return null;
+  const { data: urlData } = supabase.storage
+    .from("exercise-illustrations")
+    .getPublicUrl(filename);
+  
+  return urlData.publicUrl;
 }
 
 Deno.serve(async (req) => {
@@ -56,15 +72,14 @@ Deno.serve(async (req) => {
 
   try {
     const { exercise_id, batch_ids } = await req.json();
-    
     const ids = batch_ids || (exercise_id ? [exercise_id] : []);
+    
     if (!ids.length) {
-      return new Response(JSON.stringify({ error: "No exercise IDs provided" }), {
+      return new Response(JSON.stringify({ error: "No exercise IDs" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Fetch exercises
     const { data: exercises, error } = await supabase
       .from("exercises")
       .select("id, name, target, body_part, primary_muscles")
@@ -73,7 +88,7 @@ Deno.serve(async (req) => {
 
     if (error) throw error;
     if (!exercises?.length) {
-      return new Response(JSON.stringify({ message: "All exercises already have illustrations", generated: 0 }), {
+      return new Response(JSON.stringify({ message: "All done", generated: 0 }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -82,51 +97,29 @@ Deno.serve(async (req) => {
 
     for (const ex of exercises) {
       try {
-        const imageData = await generateIllustration(
-          ex.name,
-          ex.target || ex.body_part || "",
-          ex.primary_muscles || []
-        );
-
-        if (!imageData) {
-          results.push({ id: ex.id, url: null, error: "Generation failed" });
+        const edbId = await findExerciseDBId(ex.name);
+        if (!edbId) {
+          results.push({ id: ex.id, url: null, error: "No ExerciseDB match" });
           continue;
         }
 
-        const filename = `${ex.id}.png`;
-        const { error: uploadError } = await supabase.storage
-          .from("exercise-illustrations")
-          .upload(filename, imageData, {
-            contentType: "image/png",
-            upsert: true,
-          });
-
-        if (uploadError) {
-          results.push({ id: ex.id, url: null, error: uploadError.message });
+        const publicUrl = await fetchAndUploadGif(ex.id, edbId);
+        if (!publicUrl) {
+          results.push({ id: ex.id, url: null, error: "GIF fetch/upload failed" });
           continue;
         }
 
-        const { data: urlData } = supabase.storage
-          .from("exercise-illustrations")
-          .getPublicUrl(filename);
-
-        const publicUrl = urlData.publicUrl;
-
-        await supabase
-          .from("exercises")
-          .update({ illustration_url: publicUrl })
-          .eq("id", ex.id);
-
+        await supabase.from("exercises").update({ illustration_url: publicUrl }).eq("id", ex.id);
         results.push({ id: ex.id, url: publicUrl });
       } catch (e) {
         results.push({ id: ex.id, url: null, error: String(e) });
       }
     }
 
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       generated: results.filter(r => r.url).length,
       total: exercises.length,
-      results 
+      results,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
