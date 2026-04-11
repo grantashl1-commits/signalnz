@@ -20,6 +20,8 @@ import {
   getFitnessProfile, saveFitnessProfile,
   getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
 } from "@/lib/fitness-profile";
+import { getHabits, getHabitLog } from "@/data/self-care-rituals";
+import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 
 const TIER_COLORS: Record<string, string> = { free: "text-muted-foreground", nourished: "text-primary", thriving: "text-primary" };
 const TIER_LABELS: Record<string, string> = { free: "Free", nourished: "Nourished", thriving: "Thriving" };
