@@ -550,7 +550,7 @@ function ExerciseCard({
                 "font-display text-sm font-bold",
                 completed ? "text-primary" : "text-foreground"
               )}>
-                {exercise.name}
+                {sanitizeText(exercise.name)}
               </h4>
               {exercise.is_low_impact && (
                 <Shield className="h-3 w-3 text-emerald-500 shrink-0" />
@@ -559,6 +559,13 @@ function ExerciseCard({
                 <Wind className="h-3 w-3 text-sky-500 shrink-0" />
               )}
             </div>
+
+            {/* Muscle illustration */}
+            {primaryMuscles.length > 0 && (
+              <div className="flex items-center gap-1 mt-0.5">
+                <MuscleIllustration targetMuscle={primaryMuscles[0]} size={18} />
+              </div>
+            )}
 
             {sectionName && (
               <span className="font-body text-[10px] font-medium" style={{ color: stretchColor || undefined }}>
