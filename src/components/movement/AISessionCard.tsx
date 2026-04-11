@@ -4,6 +4,7 @@ import { Check, Sparkles, Clock, Flame, Snowflake, MessageCircle, ChevronDown, C
 import { Phase } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { supabase } from "@/integrations/supabase/client";
 
 const PHASE_HEX: Record<Phase, string> = {
