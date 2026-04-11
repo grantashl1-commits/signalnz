@@ -351,7 +351,7 @@ export default function MovementPage() {
       {activeTab === "log" && (
         <div className="space-y-8 md:space-y-10">
           {/* Monthly calendar with stats (workouts, minutes, zone 2+, consistency) */}
-          <MovementCalendar />
+          <MovementCalendar refreshKey={logRefreshKey} />
 
           {/* Manual log */}
           {showManualLog ? (
