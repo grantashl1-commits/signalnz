@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import SignalLogo from "@/components/SignalLogo";
+import signalIcon from "@/assets/pwa-icon-512-purple.png";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -90,7 +90,7 @@ export default function AuthPage() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <SignalLogo size={48} className="text-primary mx-auto mb-4" />
+          <img src={signalIcon} alt="Signal" className="h-20 w-20 mx-auto mb-4" />
           <h1 className="font-display text-2xl italic text-foreground">
             {signupComplete ? "check your email" : isLogin ? "Welcome back" : "Create account"}
           </h1>
