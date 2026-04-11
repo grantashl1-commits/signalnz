@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { ChevronLeft, ChevronRight, Pencil, Settings } from "lucide-react";
-import PhaseBadge from "@/components/PhaseBadge";
+
 import { CymatiSketch, MoonPhaseRow, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
 import InsightsTab from "@/components/InsightsTab";
@@ -219,71 +219,10 @@ export default function CyclePage() {
               </div>
               <HandUnderline width={120} className="mx-auto md:hidden" color={PHASE_HEX[info.phase]} />
               <HandUnderline width={160} className="mx-auto hidden md:block" color={PHASE_HEX[info.phase]} />
-              <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} size="lg" />
-
-              {/* Phase day dots */}
-              {(() => {
-                const currentPhaseData = [
-                  { phase: "menstrual" as Phase, start: 1, end: 5 },
-                  { phase: "follicular" as Phase, start: 6, end: 13 },
-                  { phase: "ovulatory" as Phase, start: 14, end: 17 },
-                  { phase: "luteal" as Phase, start: 18, end: 28 },
-                ].find(p => p.phase === info.phase);
-                if (!currentPhaseData) return null;
-                const totalPhaseDays = currentPhaseData.end - currentPhaseData.start + 1;
-                const dayInPhase = info.cycleDay - currentPhaseData.start + 1;
-                return (
-                  <div className="flex flex-col items-center gap-2 pt-1">
-                    <div className="flex items-center justify-center gap-[6px]">
-                      {Array.from({ length: totalPhaseDays }, (_, i) => {
-                        const filled = i < dayInPhase;
-                        return (
-                          <motion.div
-                            key={i}
-                            className="rounded-full"
-                            style={{
-                              width: 8,
-                              height: 8,
-                              backgroundColor: 'hsl(var(--primary))',
-                              opacity: filled ? 1 : 0.2,
-                            }}
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: filled ? 1 : 0.2 }}
-                            transition={{ delay: 0.1 + i * 0.06, duration: 0.3, ease: "easeOut" }}
-                          />
-                        );
-                      })}
-                    </div>
-                    <p
-                      className="font-body"
-                      style={{
-                        fontSize: 'var(--label-size)',
-                        letterSpacing: 'var(--label-tracking)',
-                        color: 'hsl(var(--label-color))',
-                      }}
-                    >
-                      Day {dayInPhase} of {totalPhaseDays} in {PHASE_SHORT[info.phase].toLowerCase()} phase
-                    </p>
-                  </div>
-                );
-              })()}
             </div>
           </>
         )}
 
-        {/* Daily check-in */}
-        <button
-          onClick={() => { haptic("light"); setShowSymptomTracker(true); }}
-          className="touch-btn w-full card-warm p-4 text-left flex items-center justify-between"
-        >
-          <div>
-            <p className="font-display text-sm italic text-foreground">how are you feeling today?</p>
-            <p className="font-body text-xs text-muted-foreground">tap to log symptoms, mood, and sleep</p>
-          </div>
-          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="font-hand text-xs text-primary">+</span>
-          </div>
-        </button>
 
         {/* Tabs */}
         <div className="flex gap-1 rounded-full bg-secondary p-1">
@@ -332,10 +271,6 @@ export default function CyclePage() {
         {/* ═══ CALENDAR TAB ═══ */}
         {activeTab === "calendar" && (
           <div className="space-y-8 md:space-y-10">
-            <p className="font-body text-xs text-muted-foreground font-light text-center">
-              {calendarMonth.toLocaleDateString("en-US", { month: "long" })}: {monthSummary.periodDays} period days · {monthSummary.symptomsLogged} symptoms logged · {monthSummary.moodsLogged} moods recorded
-            </p>
-
             <div className="flex items-center justify-between">
               <button onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))} className="touch-btn p-2 active:bg-secondary rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"><ChevronLeft className="h-5 w-5 text-muted-foreground" /></button>
               <h3 className="font-display text-base md:text-lg italic text-foreground">
@@ -344,21 +279,6 @@ export default function CyclePage() {
               <button onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))} className="touch-btn p-2 active:bg-secondary rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"><ChevronRight className="h-5 w-5 text-muted-foreground" /></button>
             </div>
 
-            {/* Colour legend */}
-            <div className="flex items-center justify-center gap-4 pb-1">
-              {[
-                { color: "#C4526E", label: "Period" },
-                { color: "#7F5B87", label: "Mood logged" },
-                { color: "#9B89B4", label: "Phase" },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-1.5">
-                  <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: item.color }} />
-                  <span className="font-body" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
-                    {item.label}
-                  </span>
-                </div>
-              ))}
-            </div>
 
             <div className="grid grid-cols-7 gap-1 text-center">
               {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d, i) => (
@@ -403,9 +323,16 @@ export default function CyclePage() {
                       {indicators.isPeriodDay && (
                         <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#C4526E" }} />
                       )}
-                      {/* Mood dot — brand purple */}
+                      {/* Mood flower icon */}
                       {moods.length > 0 && (
-                        <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#7F5B87" }} />
+                        <svg width="8" height="8" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="8" cy="4" r="2.5" fill="#7F5B87" opacity="0.7" />
+                          <circle cx="12" cy="8" r="2.5" fill="#7F5B87" opacity="0.7" />
+                          <circle cx="4" cy="8" r="2.5" fill="#7F5B87" opacity="0.7" />
+                          <circle cx="6" cy="12" r="2.5" fill="#7F5B87" opacity="0.7" />
+                          <circle cx="10" cy="12" r="2.5" fill="#7F5B87" opacity="0.7" />
+                          <circle cx="8" cy="8" r="2" fill="#9B89B4" />
+                        </svg>
                       )}
                       {/* Phase dot — mauve */}
                       {phase && !indicators.isPeriodDay && (
@@ -431,6 +358,25 @@ export default function CyclePage() {
                 onClose={() => setPopover(null)}
               />
             )}
+
+            {/* Month summary — below calendar */}
+            <p className="font-body text-xs text-muted-foreground font-light text-center">
+              {calendarMonth.toLocaleDateString("en-US", { month: "long" })}: {monthSummary.periodDays} period days · {monthSummary.symptomsLogged} symptoms logged · {monthSummary.moodsLogged} moods recorded
+            </p>
+
+            {/* Daily check-in — accessible from calendar */}
+            <button
+              onClick={() => { haptic("light"); setShowSymptomTracker(true); }}
+              className="touch-btn w-full card-warm p-4 text-left flex items-center justify-between"
+            >
+              <div>
+                <p className="font-display text-sm italic text-foreground">how are you feeling today?</p>
+                <p className="font-body text-xs text-muted-foreground">tap to log symptoms, mood, and sleep</p>
+              </div>
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="font-hand text-xs text-primary">+</span>
+              </div>
+            </button>
 
             {selectedDate && (
               <CalendarDaySheet
