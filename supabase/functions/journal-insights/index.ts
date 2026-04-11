@@ -29,6 +29,19 @@ serve(async (req) => {
       );
     }
 
+    // Credit check: journal insights costs 1 credit
+    const cost = 1;
+    const { data: credits } = await supabase.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
+    if (credits && credits.tier !== "unlimited" && (credits.credits_remaining || 0) < cost) {
+      return new Response(JSON.stringify({ error: `You need ${cost} AI credit for journal insights. Top up or upgrade.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (credits && credits.tier !== "unlimited") {
+      await supabase.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
+    } else if (!credits) {
+      await supabase.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
+    }
+    await supabase.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "journal-insights", tokens_used: cost });
+
     // Fetch existing profile
     const { data: existingProfile } = await supabase
       .from("user_insight_profiles")
