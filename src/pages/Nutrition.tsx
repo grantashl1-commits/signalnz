@@ -11,7 +11,9 @@ import { ShoppingListPanel } from "@/components/ShoppingList";
 import { Dumbbell, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type TabId = "today" | "myweek" | "discover" | "shop";
+import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
+
+type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
