@@ -84,6 +84,7 @@ export default function MovementPage() {
   const [showManualLog, setShowManualLog] = useState(false);
   const [manualLogging, setManualLogging] = useState(false);
   const [manualLog, setManualLog] = useState({ date: todayStr, type: "Strength", duration: 45, notes: "" });
+  const [logRefreshKey, setLogRefreshKey] = useState(0);
   const dayOfWeek = new Date().getDay();
   const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
