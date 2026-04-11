@@ -15,6 +15,7 @@ import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { TimerButton, WorkoutIntervalButton, isTimeBased } from "@/components/movement/IntervalTimer";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
 
 interface Props {
@@ -433,6 +434,24 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         </div>
       )}
 
+      {/* Workout-level interval timer for alternating time-based exercises (e.g. run/walk) */}
+      {(() => {
+        const timeExercises = localExercises.filter(e => e.exercise && isTimeBased(e.reps));
+        if (timeExercises.length >= 2) {
+          return (
+            <WorkoutIntervalButton
+              exercises={timeExercises.map(e => ({
+                name: e.exercise?.name || "",
+                reps: e.reps,
+                sets: e.sets,
+                restSeconds: e.rest_seconds,
+              }))}
+            />
+          );
+        }
+        return null;
+      })()}
+
       {/* Exercises */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -643,7 +662,7 @@ function ExerciseCard({
               </span>
             )}
 
-            <div className="flex flex-wrap gap-3 mt-1">
+            <div className="flex flex-wrap gap-3 mt-1 items-center">
               {ex.sets && (
                 <span className="font-body text-xs text-muted-foreground">{ex.sets} sets</span>
               )}
@@ -657,6 +676,19 @@ function ExerciseCard({
                 <span className="font-body text-[10px] text-primary uppercase">RPE {ex.rpe_target}</span>
               )}
             </div>
+
+            {/* Timer button for time-based exercises */}
+            {isTimeBased(ex.reps) && (
+              <div className="mt-2">
+                <TimerButton
+                  exerciseName={exercise.name}
+                  reps={ex.reps}
+                  sets={ex.sets}
+                  restSeconds={ex.rest_seconds}
+                  onComplete={() => onToggleComplete()}
+                />
+              </div>
+            )}
           </div>
 
           {/* Swap + expand icons */}
