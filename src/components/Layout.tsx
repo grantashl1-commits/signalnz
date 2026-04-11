@@ -115,15 +115,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-3 flex-shrink-0 ml-6">
-            {showCreditCounter && (
-              <Link
-                to="/membership"
-                className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5"
-              >
-                <Zap className="h-3.5 w-3.5 text-primary" />
-                <span className="font-body text-xs font-bold text-primary">{creditsRemaining} left</span>
-              </Link>
-            )}
             <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
                 day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
@@ -146,15 +137,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-7" />
           </Link>
           <div className="flex items-center gap-2">
-            {showCreditCounter && (
-              <Link
-                to="/membership"
-                className="flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2 py-1"
-              >
-                <Zap className="h-3 w-3 text-primary" />
-                <span className="font-body text-[10px] font-bold text-primary">{creditsRemaining}</span>
-              </Link>
-            )}
             <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
                 D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
