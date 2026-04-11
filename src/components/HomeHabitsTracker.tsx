@@ -397,11 +397,11 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
         )}
       </AnimatePresence>
 
-      {/* ── Sleep tracker ── */}
-      <SleepCard phaseColor={phaseColor} />
-
       {/* ── Phase Supports (supplements) ── */}
       <PhaseSupplementsCard phase={phase} phaseColor={phaseColor} />
+
+      {/* ── Sleep tracker ── */}
+      <SleepCard phaseColor={phaseColor} />
     </div>
   );
 }
