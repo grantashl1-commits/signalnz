@@ -574,7 +574,7 @@ export default function NervousSystemPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.15 }}
-              className="space-y-4"
+              className="space-y-8 md:space-y-10"
             >
               {scripts.map((s, i) => (
                 <PracticeCard

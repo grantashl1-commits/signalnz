@@ -571,7 +571,7 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8 md:space-y-10">
       {/* Generate buttons */}
       <div className="grid grid-cols-2 gap-3">
         <button
