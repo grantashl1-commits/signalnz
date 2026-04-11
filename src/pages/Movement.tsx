@@ -23,7 +23,7 @@ import ExerciseRig from "@/components/movement/ExerciseRig";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
-import AISessionCard from "@/components/movement/AISessionCard";
+import AISessionLog from "@/components/movement/AISessionLog";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
