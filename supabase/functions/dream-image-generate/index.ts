@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,12 +21,29 @@ serve(async (req) => {
       );
     }
 
-    const { prompt } = await req.json();
+    const body = await req.json();
+    const { prompt, userIdentifier } = body;
     if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
       return new Response(
         JSON.stringify({ error: "Your prompt couldn't be processed. Try a shorter or simpler description." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Credit check: dream image costs 3 credits
+    if (userIdentifier) {
+      const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
+      const cost = 3;
+      if (credits && credits.tier !== "unlimited" && (credits.credits_remaining || 0) < cost) {
+        return new Response(JSON.stringify({ error: `You need ${cost} AI credits for image generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      if (credits && credits.tier !== "unlimited") {
+        await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
+      } else if (!credits) {
+        await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
+      }
+      await sb.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "dream-image-generate", tokens_used: cost });
     }
 
     console.log("Generating image with prompt:", prompt.slice(0, 120));

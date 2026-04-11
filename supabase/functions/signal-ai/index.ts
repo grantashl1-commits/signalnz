@@ -29,7 +29,9 @@ serve(async (req) => {
       );
     }
 
-    // Credit check
+    // Tiered credit cost: AMA=2, Signal=1
+    const creditCost = isAMA ? 2 : 1;
+
     if (userIdentifier) {
       const { data: credits } = await supabase
         .from("ai_credits")
@@ -38,23 +40,23 @@ serve(async (req) => {
         .maybeSingle();
 
       if (credits) {
-        if (credits.tier !== "unlimited" && credits.credits_remaining <= 0) {
+        if (credits.tier !== "unlimited" && (credits.credits_remaining || 0) < creditCost) {
           return new Response(
-            JSON.stringify({ error: "You've used all your AI credits. Top up or upgrade your plan to continue." }),
+            JSON.stringify({ error: `You need ${creditCost} AI credits for this feature. Top up or upgrade your plan to continue.` }),
             { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
           );
         }
         if (credits.tier !== "unlimited") {
           await supabase
             .from("ai_credits")
-            .update({ credits_remaining: credits.credits_remaining - 1, updated_at: new Date().toISOString() })
+            .update({ credits_remaining: (credits.credits_remaining || 0) - creditCost, updated_at: new Date().toISOString() })
             .eq("user_identifier", userIdentifier);
         }
       }
       if (!credits) {
         await supabase.from("ai_credits").insert({
           user_identifier: userIdentifier,
-          credits_remaining: 4,
+          credits_remaining: 5 - creditCost,
           tier: "free",
         });
       }
@@ -62,7 +64,7 @@ serve(async (req) => {
       await supabase.from("ai_usage").insert({
         user_identifier: userIdentifier,
         function_name: isAMA ? "signal-ama" : "signal-ai",
-        tokens_used: 0,
+        tokens_used: creditCost,
       });
     }
 
