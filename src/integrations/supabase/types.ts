@@ -606,6 +606,39 @@ export type Database = {
         }
         Relationships: []
       }
+      feed_posts: {
+        Row: {
+          been_published: boolean
+          book_title_author: string
+          created_at: string
+          id: string
+          post_number: number
+          post_title_description: string
+          publish_date: string | null
+          themes: string[]
+        }
+        Insert: {
+          been_published?: boolean
+          book_title_author: string
+          created_at?: string
+          id?: string
+          post_number: number
+          post_title_description: string
+          publish_date?: string | null
+          themes?: string[]
+        }
+        Update: {
+          been_published?: boolean
+          book_title_author?: string
+          created_at?: string
+          id?: string
+          post_number?: number
+          post_title_description?: string
+          publish_date?: string | null
+          themes?: string[]
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           admin_notes: string | null

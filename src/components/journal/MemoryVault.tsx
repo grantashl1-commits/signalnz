@@ -15,6 +15,7 @@ const VAULT_CATEGORIES = [
   { key: "remember", label: "Things I Want to Remember", desc: "Moments, feelings, and details worth keeping", color: "#9B89B4", icon: Flower2 },
   { key: "plot-twists", label: "Plot Twists", desc: "The unexpected turns that changed everything", color: "#6B8DA6", icon: Shuffle },
   { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", color: "#D4A84B", icon: Sun },
+  { key: "knowledge-hub", label: "Knowledge Hub", desc: "Insights from the feed you want to reflect on", color: "#5B7F87", icon: BookOpen },
 ];
 
 function VaultDrawer({ label }: { label: string }) {
