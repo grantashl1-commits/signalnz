@@ -31,6 +31,7 @@ export default function NutritionPage() {
     { id: "today", label: "Today" },
     { id: "myweek", label: "My Week" },
     { id: "discover", label: "Discover" },
+    { id: "supplements", label: "Supplements" },
     { id: "shop", label: "Shop" },
   ];
 
@@ -86,6 +87,7 @@ export default function NutritionPage() {
           {activeTab === "today" && <TodayTab />}
           {activeTab === "myweek" && <MyWeekTab />}
           {activeTab === "discover" && <DiscoverTab />}
+          {activeTab === "supplements" && <SupplementRecommender />}
           {activeTab === "shop" && <ShoppingListPanel />}
         </div>
       </ContentSection>
