@@ -4,6 +4,7 @@ import { HandDrawnCamera, HandDrawnEye, HandDrawnLock } from "@/components/Botan
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
 interface CommunityProfileProps {
@@ -34,6 +35,7 @@ interface ProfileData {
 
 export default function CommunityProfile({ locationEnabled, onToggleLocation }: CommunityProfileProps) {
   const { user } = useAuth();
+  const { avatarUrl } = useProfile();
   const [profileData, setProfileData] = useState<ProfileData>({
     photo: null,
     form: {},
@@ -160,22 +162,19 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
     <div className="pb-10 space-y-3">
       {/* Photo + name header */}
       <div className="card-warm p-5 text-center">
-        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhoto} />
         <div
-          onClick={() => fileRef.current?.click()}
-          className="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-dashed flex items-center justify-center cursor-pointer overflow-hidden"
-          style={{ borderColor: photo ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.3)", background: photo ? "transparent" : "hsl(var(--primary) / 0.05)" }}
+          className="w-20 h-20 rounded-full mx-auto mb-3 border-2 flex items-center justify-center overflow-hidden"
+          style={{ borderColor: displayPhoto ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.3)", background: displayPhoto ? "transparent" : "hsl(var(--primary) / 0.05)" }}
         >
-          {photo ? (
-            <img src={photo} alt="Profile" className="w-full h-full object-cover" width={80} height={80} loading="lazy" />
+          {displayPhoto ? (
+            <img src={displayPhoto} alt="Profile" className="w-full h-full object-cover" width={80} height={80} loading="lazy" />
           ) : (
             <HandDrawnCamera size={28} color="hsl(var(--primary))" />
           )}
         </div>
         <p className="font-body text-xs text-muted-foreground mb-1">
-          {photo ? "Tap to change photo" : "Tap to add a photo"}
+          {displayPhoto ? "Photo from your account" : "Add a photo in Account settings"}
         </p>
-        <p className="font-body text-[11px] text-muted-foreground/60">Your photo is always shown on your profile</p>
       </div>
 
       {/* Who sees this? explainer */}
