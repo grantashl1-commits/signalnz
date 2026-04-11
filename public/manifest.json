@@ -3,8 +3,8 @@
   "short_name": "Signal",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#9B7BB0",
-  "theme_color": "#9B7BB0",
+  "background_color": "#F5F0EC",
+  "theme_color": "#F5F0EC",
   "icons": [
     {
       "src": "/logos/pwa-icon-512.png?v=4",
