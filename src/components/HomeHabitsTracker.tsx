@@ -400,7 +400,7 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
       {/* ── Phase Supports (supplements) ── */}
       <PhaseSupplementsCard phase={phase} phaseColor={phaseColor} />
 
-      {/* ── Sleep tracker ── */}
+      {/* ── Sleep tracker (bottom of page) ── */}
       <SleepCard phaseColor={phaseColor} />
     </div>
   );
