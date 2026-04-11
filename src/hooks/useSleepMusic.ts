@@ -36,6 +36,11 @@ export function useSleepMusic() {
     try {
       const prompt = MUSIC_PROMPTS[Math.floor(Math.random() * MUSIC_PROMPTS.length)];
 
+      // Get user identifier for credit tracking
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: { user } } = await supabase.auth.getUser();
+      const user_identifier = user?.id || user?.email || "anonymous";
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sleep-music`,
         {
@@ -45,7 +50,7 @@ export function useSleepMusic() {
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ prompt, duration: 120 }),
+          body: JSON.stringify({ prompt, duration: 120, user_identifier }),
         }
       );
 
