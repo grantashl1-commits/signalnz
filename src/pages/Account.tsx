@@ -40,6 +40,7 @@ export default function AccountPage() {
   const [nameSaving, setNameSaving] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useStateLocal(false);
 
   // Fitness profile (localStorage)
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("general");
