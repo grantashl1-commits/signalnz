@@ -149,7 +149,7 @@ const TIERS = [
     key: "thriving" as const,
     annualSavings: "$156/yr",
     accent: undefined,
-    creditLabel: "Unlimited AI",
+    creditLabel: "500 AI credits/mo",
     sections: [
       {
         title: "Everything in Nourished, plus",
@@ -165,7 +165,7 @@ const TIERS = [
       },
       {
         title: "AI",
-        features: ["Unlimited AI credits", "Signal memory & patterns", "Full AMA with data context", "Priority feature access"],
+        features: ["500 credits/month", "Signal memory & patterns", "Full AMA with data context", "Priority feature access"],
       },
     ],
   },

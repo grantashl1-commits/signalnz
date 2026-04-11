@@ -20,7 +20,7 @@ const TOPUP_CREDITS = 50;
 const PRODUCT_TIER_MAP: Record<string, { tier: string; credits: number }> = {
   "prod_UDBbsFCvpYtvUN": { tier: "rooted", credits: 30 },
   "prod_U9Pqh2vkb2wrNR": { tier: "nourished", credits: 150 },
-  "prod_U9Pr8k3iP6Bler": { tier: "thriving", credits: -1 }, // unlimited
+  "prod_U9Pr8k3iP6Bler": { tier: "thriving", credits: 500 },
 };
 
 serve(async (req) => {
@@ -128,8 +128,8 @@ serve(async (req) => {
 
         logStep("Setting subscription tier", tierInfo);
 
-        const creditValue = tierInfo.credits === -1 ? 9999 : tierInfo.credits;
-        const tierValue = tierInfo.credits === -1 ? "unlimited" : tierInfo.tier;
+        const creditValue = tierInfo.credits;
+        const tierValue = tierInfo.tier;
 
         const { data: existing } = await supabase
           .from("ai_credits")
