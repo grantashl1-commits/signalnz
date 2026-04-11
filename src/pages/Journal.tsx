@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowLeft, Search, Check, BookOpen, X } from "lucide-react";
@@ -490,22 +490,6 @@ export default function JournalPage() {
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
                 <div className="space-y-8 md:space-y-10">
-                  {/* Entry type tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {(["reflect", "gratitude", "one line"] as EntryType[]).map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => setEntryType(type)}
-                        className="font-body text-xs tracking-wide px-3.5 py-1.5 rounded-full transition-all"
-                        style={{
-                          backgroundColor: entryType === type ? 'hsl(var(--primary))' : 'rgba(91, 45, 114, 0.08)',
-                          color: entryType === type ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))',
-                        }}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
 
                   {/* Write button */}
                   <button
