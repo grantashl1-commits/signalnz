@@ -36,6 +36,7 @@ import BrandGuidelines from "./pages/BrandGuidelines";
 import AnimationPOC from "./pages/AnimationPOC";
 import Admin from "./pages/Admin";
 import Coach from "./pages/Coach";
+import Feed from "./pages/Feed";
 
 
 const queryClient = new QueryClient();
@@ -120,6 +121,7 @@ const App = () => {
                         <Route path="/feedback" element={<Feedback />} />
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/coach" element={<Coach />} />
+                        <Route path="/feed" element={<Feed />} />
                         <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
