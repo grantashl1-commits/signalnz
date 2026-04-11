@@ -217,7 +217,7 @@ export default function MovementPage() {
           if (data) setSupabaseLogs(data as any);
         });
     });
-  }, [activeTab]);
+  }, [activeTab, logRefreshKey]);
 
   const handleManualLog = async () => {
     if (manualLogging) return;
