@@ -26,6 +26,7 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import AISessionCard from "@/components/movement/AISessionCard";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
+import LibraryTab from "@/components/movement/LibraryTab";
 import TodaySession from "@/components/movement/TodaySession";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
@@ -338,96 +339,7 @@ export default function MovementPage() {
       )}
 
       {/* LIBRARY TAB */}
-      {activeTab === "library" && (
-        <div className="space-y-8 md:space-y-10">
-          <div className="space-y-2">
-            <div className="scroll-snap-x flex gap-1.5 pb-1 -mx-1 px-1 sm:flex-wrap">
-              <button onClick={() => setCategoryFilter("all")} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${categoryFilter === "all" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>All</button>
-              {(Object.keys(CATEGORY_LABELS) as WorkoutCategory[]).map(cat => (
-                <button key={cat} onClick={() => setCategoryFilter(cat)} className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${categoryFilter === cat ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>{CATEGORY_LABELS[cat]}</button>
-              ))}
-            </div>
-            <div className="scroll-snap-x flex gap-1.5 pb-1 -mx-1 px-1 sm:flex-wrap">
-              {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(phase => (
-                <button key={phase} onClick={() => { haptic("light"); setPhaseFilter(phaseFilter === phase ? "all" : phase); }}
-                  className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-[10px] font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${phaseFilter === phase ? `phase-${phase}` : `phase-${phase}-light`}`}
-                >
-                  <PhaseIndicator phase={phase} size={14} />
-                  <span>{PHASE_SHORT[phase]}</span>
-                  <span className="font-display text-[8px] italic opacity-70">{PHASE_MOVEMENT_LABEL[phase]}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <p className="font-body text-[10px] text-muted-foreground">{filteredWorkouts.length} workouts{activePhase ? ` \u00b7 ${PHASE_MOVEMENT_LABEL[activePhase]}` : ""}.</p>
-
-          {filteredWorkouts.map((w, i) => {
-            const displayPhase = activePhase || getWorkoutPhase(w.id) || info.phase;
-            const suit = w.suitability[displayPhase];
-            const expanded = expandedWorkout === w.id;
-            return (
-              <motion.div key={w.id} custom={i} initial="hidden" animate="visible" variants={cardVariant} className="card-warm overflow-hidden rounded-xl" style={{ borderLeft: `3px solid ${PHASE_HEX[displayPhase]}` }}>
-                <div className="p-4 cursor-pointer touch-card flex items-center gap-3 min-h-[64px]" onClick={() => { haptic("light"); setExpandedWorkout(expanded ? null : w.id); }}>
-                  <span className="font-body text-lg font-bold min-w-[50px] text-primary">{w.duration.replace(" min", "'")}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-display text-sm italic text-foreground truncate">{w.name}</h3>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      {/* Difficulty dots */}
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: 5 }).map((_, d) => (
-                          <div
-                            key={d}
-                            className="h-1.5 w-1.5 rounded-full"
-                            style={{
-                              backgroundColor: d < (suit === "ideal" ? 4 : suit === "suitable" ? 3 : 2)
-                                ? PHASE_HEX[displayPhase]
-                                : "hsl(var(--border))",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <span className="font-body text-[9px] text-muted-foreground">{w.equipment}</span>
-                      <span className="font-display text-[9px] italic" style={{ color: PHASE_HEX[displayPhase], opacity: 0.7 }}>{PHASE_MOVEMENT_LABEL[displayPhase]}</span>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
-                </div>
-                {expanded && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-4 pb-4 border-t border-border pt-3 space-y-1.5">
-                    <p className="font-body text-xs text-muted-foreground mb-2">{w.description}</p>
-                    {w.restOptions && w.restOptions.map(opt => (
-                      <div key={opt.id} className="bg-secondary/50 rounded-xl p-2.5">
-                        <h4 className="font-display text-sm italic text-foreground">{opt.name} \u00b7 {opt.duration}</h4>
-                        <p className="font-body text-xs text-muted-foreground mt-0.5">{opt.description}</p>
-                      </div>
-                    ))}
-                    {w.exercises.map((ex, j) => {
-                      return (
-                        <div key={j}
-                          className="flex items-center justify-between bg-secondary/50 rounded-xl p-2.5 gap-2 cursor-pointer active:bg-secondary"
-                          onClick={() => { haptic("light"); setDrawerExercise(ex); }}
-                        >
-                          <div className="flex-shrink-0">
-                            <ExerciseDemonstration exerciseName={ex.name} size={36} className="rounded-lg" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="font-body text-sm text-foreground">{ex.name}</p>
-                            <p className="font-body text-[9px]" style={{ color: PHASE_HEX[displayPhase] }}>{ex.sets && `${ex.sets}\u00d7`}{ex.reps}{ex.duration && ` ${ex.duration}`}</p>
-                          </div>
-                          <p className="font-display text-[9px] italic text-muted-foreground max-w-[100px] text-right hidden sm:block">{ex.formCue}</p>
-                        </div>
-                      );
-                    })}
-                  </motion.div>
-                )}
-              </motion.div>
-            );
-          })}
-        </div>
-      )}
+      {activeTab === "library" && <LibraryTab />}
 
       {/* MY LOG TAB */}
       {activeTab === "log" && (

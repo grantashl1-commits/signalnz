@@ -13,34 +13,34 @@ import { cn } from "@/lib/utils";
 const PHASE_TRAINING_GUIDANCE: Record<string, { icon: React.ComponentType<{ className?: string }>; label: string; color: string; note: string }> = {
   menstrual: {
     icon: Moon,
-    label: "Week 1 — Rest & Restore",
+    label: "Menstrual — Rest & Restore",
     color: "text-rose-400",
-    note: "Lower intensity this week. Yoga, walking, gentle strength. Prioritise rest and shorter sessions.",
+    note: "Lower intensity right now. Yoga, walking, gentle strength. Prioritise rest and shorter sessions.",
   },
   follicular: {
     icon: Sprout,
-    label: "Week 2 — Build & Explore",
+    label: "Follicular — Build & Explore",
     color: "text-violet-400",
-    note: "Energy is rising. Great week to try new movements, heavier lifting, and start HIIT.",
+    note: "Energy is rising. Great time to try new movements, heavier lifting, and start HIIT.",
   },
   ovulatory: {
     icon: Zap,
-    label: "Week 3 — Peak Performance",
+    label: "Ovulatory — Peak Performance",
     color: "text-amber-400",
-    note: "You're at peak strength and energy. Best week for personal bests and high-intensity cardio.",
+    note: "You're at peak strength and energy. Best time for personal bests and high-intensity cardio.",
   },
   luteal: {
     icon: Sun,
-    label: "Week 4 — Maintain & Wind Down",
+    label: "Luteal — Maintain & Wind Down",
     color: "text-indigo-400",
-    note: "Energy drops this week. Maintain strength, reduce cardio intensity, and add extra rest days.",
+    note: "Energy drops during this phase. Maintain strength, reduce cardio intensity, and add extra rest days.",
   },
 };
 
 type View = "goal-select" | "program" | "phase-workouts" | "session";
 
 export default function TrainingTab() {
-  const { currentPhase, currentWeekNumber } = useCycle();
+  const { currentPhase, currentWeekNumber, currentCycleDay } = useCycle();
   const {
     goals,
     goalCategoryId,
@@ -136,7 +136,7 @@ export default function TrainingTab() {
               <p className={cn("font-body text-[10px] uppercase tracking-[0.15em] font-semibold", phaseGuidance.color)}>
                 {phaseGuidance.label}
               </p>
-              <span className="font-body text-[10px] text-muted-foreground">· Day {currentWeekNumber ? (currentWeekNumber - 1) * 7 + 1 : "—"}</span>
+              <span className="font-body text-[10px] text-muted-foreground">· Cycle Day {currentCycleDay || "—"}</span>
             </div>
             <p className="font-body text-xs text-muted-foreground leading-relaxed mt-0.5">{phaseGuidance.note}</p>
           </div>
