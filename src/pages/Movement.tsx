@@ -1,10 +1,10 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+import { useState, useMemo, lazy, Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { Check, Dumbbell, Bluetooth, Activity, ChevronDown, ChevronRight, PenLine, Flame, Moon, Heart } from "lucide-react";
+import { Check, Dumbbell, Bluetooth, Activity, ChevronDown, ChevronRight, PenLine, Flame, Moon, Heart, Save, X } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
@@ -30,6 +30,9 @@ import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useTrainingProgram } from "@/hooks/useTrainingProgram";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -58,6 +61,25 @@ export default function MovementPage() {
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [sessionNotes, setSessionNotes] = useState<Record<string, string>>({});
+
+  // Training program context
+  const { goalCategoryId } = useTrainingProgram();
+
+  // Supabase workout logs
+  const [supabaseLogs, setSupabaseLogs] = useState<Array<{
+    id: string;
+    session_date: string;
+    workout_template_id: string | null;
+    duration_minutes: number | null;
+    notes: string | null;
+    completed: boolean;
+    exercises: any[];
+  }>>([]);
+
+  // Manual log form
+  const [showManualLog, setShowManualLog] = useState(false);
+  const [manualLogging, setManualLogging] = useState(false);
+  const [manualLog, setManualLog] = useState({ date: todayStr, type: "Strength", duration: 45, notes: "" });
 
   const todayStr = new Date().toISOString().split("T")[0];
   const dayOfWeek = new Date().getDay();
@@ -176,6 +198,49 @@ export default function MovementPage() {
     return null;
   };
 
+  // Load Supabase workout logs when My Log tab is active
+  useEffect(() => {
+    if (activeTab !== "log") return;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("workout_logs")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("completed", true)
+        .order("session_date", { ascending: false })
+        .limit(20)
+        .then(({ data }) => {
+          if (data) setSupabaseLogs(data as any);
+        });
+    });
+  }, [activeTab]);
+
+  const handleManualLog = async () => {
+    if (manualLogging) return;
+    setManualLogging(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setManualLogging(false); return; }
+    const { error } = await (supabase as any).from("workout_logs").insert({
+      user_id: user.id,
+      session_date: manualLog.date,
+      workout_template_id: null,
+      exercises: [{ exercise_name: manualLog.type, completed: true }],
+      duration_minutes: manualLog.duration,
+      notes: manualLog.notes.trim() || null,
+      completed: true,
+    });
+    setManualLogging(false);
+    if (!error) {
+      setShowManualLog(false);
+      setManualLog({ date: todayStr, type: "Strength", duration: 45, notes: "" });
+      // Refresh supabase logs
+      setActiveTab("today");
+      setTimeout(() => setActiveTab("log"), 50);
+      toast.success("Workout logged!");
+    }
+  };
+
   return (
     <GatedPage requiredTier="nourished">
     <div className="relative">
@@ -253,49 +318,19 @@ export default function MovementPage() {
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
-          {/* Weekly rotation carousel */}
-          <div className="card-warm p-4 space-y-2">
-            <p className="font-hand text-xs font-bold text-primary mb-2">
-              This week's rotation
-            </p>
-            <div className="relative">
-              <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 overflow-x-auto">
-                {weeklyRotation.map((assignment) => {
-                  const workout = allWorkoutsFlat.find(w => w.id === assignment.workoutId) || phaseWorkouts.find(w => w.id === assignment.workoutId);
-                  const isSelected = assignment.dayIndex === scheduleIdx;
-                  const isActualToday = assignment.dayIndex === defaultScheduleIdx;
-                  const today = new Date();
-                  const mondayOff = today.getDay() === 0 ? -6 : 1 - today.getDay();
-                  const dayDate = new Date(today);
-                  dayDate.setDate(today.getDate() + mondayOff + assignment.dayIndex);
-                  const dateLabel = dayDate.toLocaleDateString("en-NZ", { day: "numeric", month: "short" });
-
-                  return (
-                    <button key={assignment.dayIndex} onClick={() => { haptic("light"); setScheduleIdx(assignment.dayIndex); }}
-                      className={`scroll-snap-item flex-shrink-0 rounded-xl p-2.5 text-left min-w-[80px] transition-all ${
-                        isSelected
-                          ? "bg-card border-l-[3px] border-l-primary shadow-md"
-                          : "bg-secondary/40"
-                      }`}
-                    >
-                      <p className={`font-body text-[9px] uppercase ${isSelected ? "text-primary font-bold" : "text-muted-foreground"}`}>
-                        {assignment.dayLabel} · {dateLabel}
-                      </p>
-                      <p className="font-hand text-[10px] font-bold text-foreground leading-tight mt-1">{workout?.name || "Rest"}</p>
-                      <p className="font-body text-[8px] text-muted-foreground mt-0.5">{workout?.duration || "—"}</p>
-                      {isActualToday && <span className="inline-block mt-1 rounded-full bg-primary/15 px-2 py-0.5 font-body text-[7px] text-primary font-bold">Today</span>}
-                    </button>
-                  );
-                })}
+          {/* If user has a training program, show it */}
+          {goalCategoryId && (
+            <div
+              onClick={() => { haptic("light"); setActiveTab("training"); }}
+              className="card-warm p-4 flex items-center justify-between cursor-pointer active:bg-secondary/50 transition-colors"
+            >
+              <div>
+                <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">Your programme</p>
+                <p className="font-display text-base font-bold text-foreground mt-0.5">View today's session →</p>
               </div>
-              <div
-                className="absolute top-0 right-0 bottom-1 w-10 pointer-events-none rounded-r-xl"
-                style={{ background: 'linear-gradient(to right, transparent 0%, hsl(var(--card-warm, var(--card))) 100%)' }}
-              />
+              <Dumbbell className="h-5 w-5 text-primary shrink-0" />
             </div>
-          </div>
-
-      {/* Floating HR indicator when connected but modal closed */}
+          )}      {/* Floating HR indicator when connected but modal closed */}
       {!showHR && globalHR.connected && (
         <button
           onClick={() => setShowHR(true)}
@@ -570,14 +605,7 @@ export default function MovementPage() {
               </button>
             </div>
           )}
-          <div className="grid grid-cols-3 gap-2">
-            {[{ val: totalCompleted, label: "Workouts" }, { val: totalMinutes, label: "Minutes" }, { val: totalCompleted > 0 ? Math.round((totalCompleted / 7) * 100) + "%" : "0%", label: "Consistency" }].map(({ val, label }) => (
-              <div key={label} className="card-warm p-3 text-center">
-                <p className="font-body text-xl text-foreground">{val}</p>
-                <p className="font-body text-[9px] text-muted-foreground">{label}</p>
-              </div>
-            ))}
-          </div>
+
 
           {/* Heart rate section */}
           <div className="card-warm p-5" style={{ backgroundColor: "hsl(36 47% 94%)" }}>
@@ -594,12 +622,104 @@ export default function MovementPage() {
           </div>
 
           {/* Manual log */}
-          <div className="card-warm p-4">
-            <p className="font-hand text-sm text-muted-foreground">Log manually</p>
-            <p className="font-body text-xs text-muted-foreground mt-1">
-              No heart rate monitor? Log your workout effort manually.
-            </p>
-          </div>
+          {showManualLog ? (
+            <div className="card-warm p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="font-hand text-sm font-bold text-primary">Log a workout</p>
+                <button onClick={() => setShowManualLog(false)} className="text-muted-foreground">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <label className="font-body text-xs text-muted-foreground">Date</label>
+                  <input
+                    type="date"
+                    value={manualLog.date}
+                    onChange={e => setManualLog(prev => ({ ...prev, date: e.target.value }))}
+                    max={todayStr}
+                    className="w-full mt-1 rounded-xl border border-border bg-background px-3 py-2 font-body text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
+                  />
+                </div>
+                <div>
+                  <label className="font-body text-xs text-muted-foreground">Activity type</label>
+                  <select
+                    value={manualLog.type}
+                    onChange={e => setManualLog(prev => ({ ...prev, type: e.target.value }))}
+                    className="w-full mt-1 rounded-xl border border-border bg-background px-3 py-2 font-body text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
+                  >
+                    {["Strength", "Cardio", "Yoga", "Pilates", "Run", "Walk", "Swim", "Cycling", "HIIT", "Other"].map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="font-body text-xs text-muted-foreground">Duration (minutes)</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={300}
+                    value={manualLog.duration}
+                    onChange={e => setManualLog(prev => ({ ...prev, duration: Number(e.target.value) }))}
+                    className="w-full mt-1 rounded-xl border border-border bg-background px-3 py-2 font-body text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
+                  />
+                </div>
+                <div>
+                  <label className="font-body text-xs text-muted-foreground">Notes (optional)</label>
+                  <textarea
+                    value={manualLog.notes}
+                    onChange={e => setManualLog(prev => ({ ...prev, notes: e.target.value }))}
+                    rows={2}
+                    placeholder="How did it feel?"
+                    className="w-full mt-1 rounded-xl border border-border bg-background px-3 py-2 font-body text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
+                  />
+                </div>
+                <button
+                  onClick={handleManualLog}
+                  disabled={manualLogging}
+                  className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {manualLogging ? <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" /> : "Save workout"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowManualLog(true)}
+              className="card-warm p-4 w-full text-left"
+            >
+              <p className="font-hand text-sm text-muted-foreground">+ Log a workout manually</p>
+              <p className="font-body text-xs text-muted-foreground mt-1">No monitor? Add any session to your log.</p>
+            </button>
+          )}
+
+          {supabaseLogs.length > 0 && (
+            <div>
+              <p className="font-hand text-sm font-bold text-primary mb-2">Training sessions</p>
+              <div className="space-y-2">
+                {supabaseLogs.map(log => (
+                  <div key={log.id} className="card-warm p-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-body text-sm font-medium text-foreground">
+                          {log.workout_template_id ? "Training session" : "Logged workout"}
+                        </p>
+                        <p className="font-body text-[9px] text-muted-foreground">
+                          {log.session_date} · {log.duration_minutes ? `${log.duration_minutes} min` : ""}
+                        </p>
+                      </div>
+                      <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Check className="h-3 w-3 text-primary" />
+                      </div>
+                    </div>
+                    {log.notes && (
+                      <p className="font-body text-xs text-muted-foreground mt-1.5 italic">"{log.notes}"</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Session history */}
           {sessions.length > 0 && (
@@ -759,3 +879,4 @@ export default function MovementPage() {
     </GatedPage>
   );
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               

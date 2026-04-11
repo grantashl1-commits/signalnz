@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Clock, Dumbbell, ChevronDown, ChevronUp, Target, Flame,
   MessageCircle, Check, BookOpen, Zap, Wind, Shield, ArrowLeftRight,
-  X, PenLine, Save
+  X, PenLine, Save, Heart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
+import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
@@ -190,6 +191,10 @@ function ExerciseSwapSheet({
 export default function WorkoutSessionView({ template, exercises, onBack, phaseName }: Props) {
   const { user } = useAuth();
   const { currentPhase } = useCycle();
+  const { connected: hrConnected, deviceName: hrDevice, connect: connectHR } = useGlobalHeartRate();
+
+  // Session started state
+  const [sessionStarted, setSessionStarted] = useState(false);
 
   // Local exercises — can be modified by swaps
   const [localExercises, setLocalExercises] = useState<WorkoutExercise[]>(exercises);
@@ -319,6 +324,74 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
     }
   }
 
+  // Pre-session screen
+  if (!sessionStarted) {
+    return (
+      <div className="space-y-5">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => { haptic("light"); onBack(); }}
+            className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
+              {template.day_label || `Session ${template.session_number || ""}`} · {phaseName || ""}
+            </p>
+            <h2 className="font-display text-xl font-extrabold text-foreground truncate">{template.title}</h2>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="font-body text-xs text-muted-foreground">{template.estimated_duration_mins} min</span>
+          </div>
+        </div>
+
+        {template.session_notes && (
+          <div className="rounded-xl bg-primary/5 border border-primary/10 p-3.5">
+            <p className="font-body text-sm text-foreground leading-relaxed">{template.session_notes}</p>
+          </div>
+        )}
+
+        <div className="rounded-xl bg-card border border-border p-4 space-y-2">
+          <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em]">This session</p>
+          <p className="font-display text-2xl font-bold text-foreground">{localExercises.length} exercises</p>
+          <p className="font-body text-xs text-muted-foreground">{template.estimated_duration_mins} min · {template.session_type || "Strength"}</p>
+        </div>
+
+        {hrConnected ? (
+          <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3.5">
+            <Heart className="h-4 w-4 text-emerald-600 shrink-0" />
+            <div>
+              <p className="font-body text-sm font-medium text-emerald-700">{hrDevice || "Heart rate monitor"} connected</p>
+              <p className="font-body text-xs text-emerald-600/70">Your zones will be tracked automatically</p>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-xl bg-card border border-border p-3.5 flex items-center justify-between gap-3">
+            <div>
+              <p className="font-body text-sm font-medium text-foreground">Heart rate monitor</p>
+              <p className="font-body text-xs text-muted-foreground">Connect a Bluetooth HR monitor (optional)</p>
+            </div>
+            <button
+              onClick={() => { haptic("light"); connectHR(); }}
+              className="shrink-0 rounded-full bg-secondary px-3 py-1.5 font-body text-xs text-primary font-medium"
+            >
+              Connect
+            </button>
+          </div>
+        )}
+
+        <button
+          onClick={() => { haptic("medium"); setSessionStarted(true); }}
+          className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+        >
+          Start session
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -414,66 +487,63 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         </div>
       )}
 
-      {/* Session completion */}
+      {/* Session completion celebration */}
       {allComplete && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl bg-primary/5 border border-primary/20 p-5 space-y-4"
+          className="rounded-2xl bg-primary/5 border border-primary/20 p-4 text-center space-y-1"
         >
-          <div className="text-center space-y-2">
-            <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Flame className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="font-display text-lg font-bold text-foreground">Session complete</h3>
-            <p className="font-body text-sm text-muted-foreground">Great work. Your body is adapting.</p>
+          <div className="mx-auto h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <Flame className="h-5 w-5 text-primary" />
           </div>
-
-          {/* Log to Supabase */}
-          {!sessionLogged ? (
-            <div className="space-y-3">
-              {showNotesInput ? (
-                <textarea
-                  value={sessionNotes}
-                  onChange={(e) => setSessionNotes(e.target.value)}
-                  placeholder="How did it feel? Any notes..."
-                  rows={2}
-                  className="w-full rounded-xl bg-background border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
-                />
-              ) : (
-                <button
-                  onClick={() => setShowNotesInput(true)}
-                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors w-full justify-center"
-                >
-                  <PenLine className="h-3.5 w-3.5" />
-                  <span className="font-body text-xs">Add a note</span>
-                </button>
-              )}
-
-              <button
-                onClick={handleLogSession}
-                disabled={sessionLogging}
-                className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 disabled:opacity-60 transition-colors"
-              >
-                {sessionLogging ? (
-                  <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <Save className="h-4 w-4" />
-                    Log this session
-                  </>
-                )}
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-2 py-1">
-              <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <Check className="h-3 w-3 text-emerald-600" />
-              </div>
-              <span className="font-body text-sm text-emerald-600 font-medium">Session logged</span>
-            </div>
-          )}
+          <h3 className="font-display text-base font-bold text-foreground">All exercises complete!</h3>
+          <p className="font-body text-xs text-muted-foreground">Great work. Log your session below.</p>
         </motion.div>
+      )}
+
+      {/* Always-visible session log */}
+      {!sessionLogged ? (
+        <div className="rounded-2xl bg-card border border-border p-4 space-y-3">
+          {showNotesInput ? (
+            <textarea
+              value={sessionNotes}
+              onChange={(e) => setSessionNotes(e.target.value)}
+              placeholder="How did it feel? Any notes..."
+              rows={2}
+              className="w-full rounded-xl bg-background border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
+            />
+          ) : (
+            <button
+              onClick={() => setShowNotesInput(true)}
+              className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors w-full"
+            >
+              <PenLine className="h-3.5 w-3.5" />
+              <span className="font-body text-xs">Add a note (optional)</span>
+            </button>
+          )}
+          <button
+            onClick={handleLogSession}
+            disabled={sessionLogging}
+            className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 disabled:opacity-60 transition-colors"
+          >
+            {sessionLogging ? (
+              <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                Log this session
+              </>
+            )}
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+          <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+            <Check className="h-3 w-3 text-emerald-600" />
+          </div>
+          <span className="font-body text-sm text-emerald-600 font-medium">Session logged</span>
+        </div>
       )}
 
       {/* Swap sheet */}
@@ -676,36 +746,4 @@ function ExerciseCard({
                 )}
 
                 {/* Difficulty */}
-                {exercise.difficulty && exercise.difficulty > 1 && (
-                  <div className="flex items-center gap-1">
-                    <Zap className="h-3 w-3 text-muted-foreground/50" />
-                    <span className="font-body text-[10px] text-muted-foreground">
-                      Difficulty {exercise.difficulty}/4
-                    </span>
-                  </div>
-                )}
-
-                {ex.progression_notes && (
-                  <div className="flex items-start gap-2">
-                    <Target className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
-                    <p className="font-body text-[11px] text-muted-foreground italic leading-relaxed">
-                      {ex.progression_notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* Evidence source */}
-                {exercise.evidence_source && (
-                  <div className="flex items-start gap-1.5 pt-1">
-                    <BookOpen className="h-3 w-3 text-muted-foreground/40 mt-0.5 shrink-0" />
-                    <p className="font-body text-[10px] text-muted-foreground/50 italic">{exercise.evidence_source}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+                {exercise.difficulty && e

@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useCycle } from "@/contexts/CycleContext";
 import { getLoggedWorkouts } from "@/lib/cycle-utils";
 import { getAllSessions, WORKOUTS } from "@/data/workouts";
 import { WildStar } from "@/components/BotanicalElements";
+import { supabase } from "@/integrations/supabase/client";
 
 const REST_IDS = new Set(["rest-walk-restore", "mobility-flow"]);
 
@@ -11,6 +12,24 @@ export default function MovementCalendar() {
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const todayStr = today.toISOString().split("T")[0];
+
+  const [supabaseDates, setSupabaseDates] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("workout_logs")
+        .select("session_date")
+        .eq("user_id", user.id)
+        .eq("completed", true)
+        .then(({ data }) => {
+          if (data) {
+            setSupabaseDates(new Set(data.map((r: any) => r.session_date)));
+          }
+        });
+    });
+  }, [viewYear, viewMonth]);
 
   const sessions = useMemo(() => getAllSessions(), []);
 
@@ -36,7 +55,7 @@ export default function MovementCalendar() {
 
       const logged = getLoggedWorkouts(dateStr);
       const session = sessions.find(s => s.date === dateStr);
-      const hasWorkout = logged.length > 0 || !!session;
+      const hasWorkout = logged.length > 0 || !!session || supabaseDates.has(dateStr);
 
       // Is it a rest/recovery workout?
       const isRestWorkout = logged.length > 0 && logged.every(id => REST_IDS.has(id));
@@ -90,19 +109,6 @@ export default function MovementCalendar() {
     }
     return s;
   }, [sessions]);
-
-  // Current week strip
-  const dayOfWeek = today.getDay();
-  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-  const weekDays = useMemo(() =>
-    Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(today);
-      d.setDate(today.getDate() + mondayOffset + i);
-      const dateStr = d.toISOString().split("T")[0];
-      const logged = getLoggedWorkouts(dateStr);
-      const session = sessions.find(s => s.date === dateStr);
-      return { date: d, dateStr, hasWorkout: logged.length > 0 || !!session, isToday: dateStr === todayStr };
-    }), [sessions, mondayOffset]);
 
   const prevMonth = () => {
     if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
@@ -193,26 +199,6 @@ export default function MovementCalendar() {
         ))}
       </div>
 
-      {/* Week strip */}
-      <div className="card-warm p-3">
-        <p className="font-body text-[10px] text-muted-foreground uppercase tracking-wider mb-2">This week</p>
-        <div className="grid grid-cols-7 gap-1">
-          {weekDays.map(wd => (
-            <div key={wd.dateStr} className="flex flex-col items-center gap-1">
-              <span className={`font-body text-[9px] ${wd.isToday ? "text-primary font-bold" : "text-muted-foreground"}`}>
-                {wd.date.toLocaleDateString("en-NZ", { weekday: "narrow" })}
-              </span>
-              <span className={`font-body text-[10px] ${wd.isToday ? "text-foreground font-bold" : "text-muted-foreground"}`}>
-                {wd.date.getDate()}
-              </span>
-              {wd.hasWorkout && (
-                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              )}
-              {!wd.hasWorkout && <div className="w-1.5 h-1.5" />}
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
