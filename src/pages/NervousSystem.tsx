@@ -591,9 +591,19 @@ export default function NervousSystemPage() {
               )}
 
               {/* Sleep tab */}
-              {tab === "sleep" && sleepScripts.map((s, i) => (
-                <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} isSleep />
-              ))}
+              {tab === "sleep" && (
+                <>
+                  <SleepTimer
+                    onTimerEnd={sleepMusic.stop}
+                    musicPlaying={sleepMusic.playing}
+                    onToggleMusic={sleepMusic.toggle}
+                    musicLoading={sleepMusic.loading}
+                  />
+                  {sleepScripts.map((s, i) => (
+                    <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} isSleep />
+                  ))}
+                </>
+              )}
             </motion.div>
           </AnimatePresence>
 
