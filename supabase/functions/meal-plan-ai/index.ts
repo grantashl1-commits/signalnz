@@ -58,6 +58,98 @@ const RECIPE_BANK: Recipe[] = [
   { name: "Signal Savoury Egg Bites", phase: ["luteal"], mealType: ["breakfast","snack"], calories: 280, protein: 20, carbs: 8, fat: 18, prepTime: "25 min", serves: 6, ingredients: ["6 large eggs","½ cup diced capsicum","¼ cup feta cheese","¼ cup chopped spinach","1 tbsp olive oil","salt and pepper"], method: ["1. Preheat oven to 180°C","2. Grease muffin tin with olive oil","3. Whisk eggs, fold in vegetables and feta","4. Pour into 6 muffin cups","5. Bake 15-18 minutes until set"], keyNutrients: ["Protein 20g","B12","Vitamin D","Choline"], nutritionalNote: "High-protein egg bites provide sustained energy and choline for luteal phase brain fog.", tags: ["high-protein","batch-prep","keto-friendly"] },
 ];
 
+// ═══ KIDS RECIPE BANK ═══
+interface KidsRecipe {
+  id: string;
+  name: string;
+  mealType: string[];
+  protein: string;
+  prepTime: string;
+  serves: number;
+  ingredients: string[];
+  method: string[];
+  tags: string[];
+}
+
+const KIDS_RECIPE_BANK: KidsRecipe[] = [
+  { id: "kids-chicken-strips", name: "Crispy Chicken Strips", mealType: ["lunch","dinner"], protein: "chicken", prepTime: "25 min", serves: 4, ingredients: ["500g chicken breast, sliced","1 cup breadcrumbs","½ cup flour","1 egg","1 tsp paprika"], method: ["Coat in flour, egg, breadcrumbs","Bake 200°C 15-18 min"], tags: ["nut-free"] },
+  { id: "kids-chicken-fried-rice", name: "Chicken Fried Rice", mealType: ["lunch","dinner"], protein: "chicken", prepTime: "20 min", serves: 4, ingredients: ["2 cups rice","200g chicken","1 cup peas/corn","2 eggs","2 tbsp soy sauce"], method: ["Cook chicken, scramble eggs, add rice and veg"], tags: ["nut-free","dairy-free"] },
+  { id: "kids-chicken-quesadilla", name: "Chicken & Cheese Quesadilla", mealType: ["lunch","dinner"], protein: "chicken", prepTime: "15 min", serves: 2, ingredients: ["2 tortillas","1 cup chicken","½ cup cheese","¼ cup corn"], method: ["Fill, fold, pan-fry 2-3 min each side"], tags: ["nut-free","egg-free"] },
+  { id: "kids-chicken-nugget-bowl", name: "Chicken Nugget Rice Bowl", mealType: ["dinner"], protein: "chicken", prepTime: "25 min", serves: 4, ingredients: ["400g chicken thigh","1 cup breadcrumbs","1 egg","rice","broccoli"], method: ["Coat and bake chicken, serve over rice"], tags: ["nut-free","dairy-free"] },
+  { id: "kids-chicken-pasta", name: "Creamy Chicken Pasta", mealType: ["dinner"], protein: "chicken", prepTime: "20 min", serves: 4, ingredients: ["300g pasta","200g chicken","½ cup cream cheese","¼ cup milk","peas"], method: ["Cook pasta, cook chicken, mix with cream sauce"], tags: ["nut-free","egg-free"] },
+  { id: "kids-beef-meatballs", name: "Mini Beef Meatballs", mealType: ["lunch","dinner"], protein: "beef", prepTime: "30 min", serves: 4, ingredients: ["500g beef mince","breadcrumbs","1 egg","1 zucchini","passata"], method: ["Mix, roll, brown, simmer in sauce 15 min"], tags: ["nut-free","dairy-free"] },
+  { id: "kids-beef-tacos", name: "Mild Beef Tacos", mealType: ["dinner"], protein: "beef", prepTime: "20 min", serves: 4, ingredients: ["400g mince","cumin","taco shells","lettuce","cheese"], method: ["Brown mince with spices, build tacos"], tags: ["nut-free","egg-free"] },
+  { id: "kids-beef-bolognese", name: "Hidden Veggie Bolognese", mealType: ["dinner"], protein: "beef", prepTime: "30 min", serves: 4, ingredients: ["400g mince","carrot","zucchini","passata","spaghetti"], method: ["Brown mince, add grated veg and sauce, simmer"], tags: ["nut-free","egg-free"] },
+  { id: "kids-beef-rice-bowl", name: "Teriyaki Beef Rice Bowl", mealType: ["dinner"], protein: "beef", prepTime: "20 min", serves: 4, ingredients: ["300g beef strips","soy sauce","honey","ginger","rice","edamame"], method: ["Stir-fry beef, add sauce, serve over rice"], tags: ["nut-free","dairy-free","egg-free"] },
+  { id: "kids-fish-fingers", name: "Homemade Fish Fingers", mealType: ["lunch","dinner"], protein: "fish", prepTime: "25 min", serves: 4, ingredients: ["400g white fish","breadcrumbs","flour","1 egg","paprika"], method: ["Coat and bake 200°C 12-15 min"], tags: ["nut-free","dairy-free"] },
+  { id: "kids-salmon-pasta", name: "Salmon Pasta Bake", mealType: ["dinner"], protein: "fish", prepTime: "30 min", serves: 4, ingredients: ["300g pasta","200g canned salmon","peas","cheese","milk","butter","flour"], method: ["Make white sauce, fold in salmon, bake with cheese"], tags: ["nut-free","egg-free"] },
+  { id: "kids-tuna-rice", name: "Tuna & Rice Bowl", mealType: ["lunch"], protein: "fish", prepTime: "15 min", serves: 2, ingredients: ["1 can tuna","1 cup rice","corn","mayo","lemon"], method: ["Mix and serve"], tags: ["nut-free","egg-free","dairy-free","gluten-free"] },
+  { id: "kids-tofu-nuggets", name: "Crispy Tofu Nuggets", mealType: ["lunch","dinner"], protein: "tofu", prepTime: "25 min", serves: 4, ingredients: ["400g firm tofu","breadcrumbs","soy sauce","maple syrup","garlic powder"], method: ["Coat and bake 200°C 20 min"], tags: ["vegan","nut-free","dairy-free","egg-free"] },
+  { id: "kids-tofu-stir-fry", name: "Sweet Tofu Stir Fry", mealType: ["dinner"], protein: "tofu", prepTime: "20 min", serves: 4, ingredients: ["300g tofu","broccoli","carrot","soy sauce","honey","rice"], method: ["Fry tofu, add veg and sauce, serve over rice"], tags: ["vegetarian","nut-free","dairy-free","egg-free"] },
+  { id: "kids-bean-quesadilla", name: "Black Bean & Cheese Quesadilla", mealType: ["lunch","dinner"], protein: "beans", prepTime: "10 min", serves: 2, ingredients: ["2 tortillas","black beans","cheese","corn","cumin"], method: ["Fill, fold, pan-fry"], tags: ["vegetarian","nut-free","egg-free"] },
+  { id: "kids-lentil-pasta", name: "Lentil Bolognese", mealType: ["dinner"], protein: "lentils", prepTime: "25 min", serves: 4, ingredients: ["1 cup red lentils","passata","carrot","zucchini","pasta"], method: ["Simmer lentils in sauce 20 min, serve over pasta"], tags: ["vegan","nut-free","dairy-free","egg-free","gluten-free"] },
+  { id: "kids-chickpea-curry", name: "Mild Coconut Chickpea Curry", mealType: ["dinner"], protein: "beans", prepTime: "20 min", serves: 4, ingredients: ["chickpeas","coconut milk","curry powder","turmeric","rice","spinach"], method: ["Simmer chickpeas in coconut milk, serve over rice"], tags: ["vegan","nut-free","dairy-free","egg-free","gluten-free"] },
+  { id: "kids-bean-nachos", name: "Bean & Cheese Nachos", mealType: ["dinner"], protein: "beans", prepTime: "15 min", serves: 4, ingredients: ["corn chips","beans","cheese","corn","sour cream"], method: ["Top chips with beans and cheese, bake 8-10 min"], tags: ["vegetarian","nut-free","egg-free","gluten-free"] },
+  { id: "kids-egg-fried-rice", name: "Egg Fried Rice", mealType: ["lunch","dinner"], protein: "eggs", prepTime: "15 min", serves: 4, ingredients: ["2 cups rice","3 eggs","peas/corn","soy sauce","sesame oil"], method: ["Scramble eggs, add rice and veg, toss with sauce"], tags: ["vegetarian","nut-free","dairy-free"] },
+  { id: "kids-frittata", name: "Veggie Mini Frittatas", mealType: ["lunch"], protein: "eggs", prepTime: "25 min", serves: 6, ingredients: ["6 eggs","cheese","capsicum","corn","milk"], method: ["Whisk eggs, pour into muffin tin, bake 15-18 min"], tags: ["vegetarian","nut-free","gluten-free"] },
+  { id: "kids-mac-cheese", name: "Classic Mac & Cheese", mealType: ["lunch","dinner"], protein: "cheese", prepTime: "20 min", serves: 4, ingredients: ["300g macaroni","cheese","milk","butter","flour"], method: ["Make cheese sauce, combine with pasta"], tags: ["vegetarian","nut-free","egg-free"] },
+  { id: "kids-pork-stir-fry", name: "Sweet & Sour Pork with Rice", mealType: ["dinner"], protein: "pork", prepTime: "20 min", serves: 4, ingredients: ["300g pork","capsicum","pineapple","tomato sauce","soy sauce","rice"], method: ["Stir-fry pork, add veg and sauce, serve over rice"], tags: ["nut-free","dairy-free","egg-free","gluten-free"] },
+  { id: "kids-shrimp-pasta", name: "Garlic Butter Shrimp Pasta", mealType: ["dinner"], protein: "shrimp", prepTime: "20 min", serves: 4, ingredients: ["300g pasta","200g shrimp","butter","garlic","parmesan","spinach"], method: ["Cook pasta, sauté shrimp in garlic butter, combine"], tags: ["nut-free","egg-free"] },
+];
+
+const PROTEIN_ALIASES: Record<string, string[]> = {
+  chicken: ["chicken"],
+  beef: ["beef", "steak", "mince"],
+  fish: ["fish", "salmon", "tuna", "cod", "snapper"],
+  tofu: ["tofu", "tempeh"],
+  beans: ["bean", "chickpea", "lentil"],
+  lentils: ["lentil"],
+  eggs: ["egg", "frittata"],
+  cheese: ["cheese", "mac"],
+  pork: ["pork", "bacon", "ham", "sausage"],
+  shrimp: ["shrimp", "prawn"],
+  none: ["vegan", "plant"],
+};
+
+function findKidsRecipe(adultRecipeName: string, mealType: string, kidsAllergies: string[], kidsDietType: string, exclude: string[], seed: number): KidsRecipe | null {
+  const lower = adultRecipeName.toLowerCase();
+  let detectedProtein = "";
+  for (const [protein, aliases] of Object.entries(PROTEIN_ALIASES)) {
+    if (aliases.some(a => lower.includes(a))) { detectedProtein = protein; break; }
+  }
+
+  let candidates = KIDS_RECIPE_BANK.filter(r => {
+    if (!r.mealType.includes(mealType === "lunch" ? "lunch" : "dinner")) return false;
+    if (exclude.includes(r.id)) return false;
+    for (const allergy of kidsAllergies) {
+      const al = allergy.toLowerCase().trim();
+      if (!al) continue;
+      const tagMap: Record<string, string> = { dairy: "dairy-free", gluten: "gluten-free", nut: "nut-free", peanut: "nut-free", egg: "egg-free", nuts: "nut-free" };
+      const requiredTag = tagMap[al] || `${al}-free`;
+      if (!r.tags.includes(requiredTag)) {
+        if (r.ingredients.join(" ").toLowerCase().includes(al)) return false;
+      }
+    }
+    if (kidsDietType) {
+      const dt = kidsDietType.toLowerCase();
+      if (dt.includes("vegan") && !r.tags.includes("vegan")) return false;
+      if (dt.includes("vegetarian") && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
+      if (dt.includes("dairy-free") && !r.tags.includes("dairy-free")) return false;
+      if (dt.includes("gluten-free") && !r.tags.includes("gluten-free")) return false;
+      if (dt.includes("nut-free") && !r.tags.includes("nut-free")) return false;
+      if (dt.includes("egg-free") && !r.tags.includes("egg-free")) return false;
+    }
+    return true;
+  });
+
+  if (detectedProtein) {
+    const proteinMatches = candidates.filter(r => r.protein === detectedProtein);
+    if (proteinMatches.length > 0) candidates = proteinMatches;
+  }
+  if (candidates.length === 0) return null;
+  return candidates[seed % candidates.length];
+}
+
 // ═══ DETERMINISTIC PLAN BUILDER ═══
 
 function getPhaseForDay(cycleDay: number): string {
@@ -104,11 +196,12 @@ function pickRecipe(phase: string, mealType: string, dislikes: string[], dietTyp
   return candidates[seed % candidates.length];
 }
 
-function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number) {
+function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number, kidsCount: number, kidsDietType: string, kidsAllergies: string[]) {
   const phase = getPhaseForDay(cycleDay);
 
   const meals: Record<string, any> = {};
   const mealKeys = ["breakfast", "morningSnack", "lunch", "afternoonSnack", "dinner"];
+  const usedKidsIds: string[] = [];
 
   for (const key of mealKeys) {
     const assigned = mealAssignments[`${cycleDay}-${key}`];
@@ -127,6 +220,24 @@ function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<stri
         keyNutrients: assigned.keyNutrients,
         isLeftover: assigned.isLeftover || false,
       };
+
+      // Add kids substitute for lunch and dinner
+      if (kidsCount > 0 && (key === "lunch" || key === "dinner")) {
+        const kidsRecipe = findKidsRecipe(assigned.name, key, kidsAllergies, kidsDietType, usedKidsIds, daySeed + cycleDay);
+        if (kidsRecipe) {
+          usedKidsIds.push(kidsRecipe.id);
+          meals[`kids${key.charAt(0).toUpperCase() + key.slice(1)}`] = {
+            name: kidsRecipe.name,
+            recipeId: kidsRecipe.id,
+            prepTime: kidsRecipe.prepTime,
+            serves: kidsRecipe.serves,
+            ingredients: kidsRecipe.ingredients,
+            method: kidsRecipe.method,
+            proteinMatch: kidsRecipe.protein,
+            isKidsMeal: true,
+          };
+        }
+      }
     }
   }
 
@@ -293,10 +404,12 @@ serve(async (req) => {
       ...(preferences || {}),
       userDietaryDislikes: userDietaryDislikes || [],
     };
+    const kidsCount = prefs.kids || 0;
+    const kidsDietType = prefs.kidsDietType || "";
+    const kidsAllergies = (prefs.kidsAllergies || "").split(",").map((s: string) => s.trim()).filter(Boolean);
 
     const dayStart = startCycleDay || 1;
     const dayEnd = endCycleDay || Math.min(dayStart + 6, 28);
-
     if (mode === "regenerate_meal" && regenerateDay && regenerateMeal && existingPlan) {
       const phase = getPhaseForDay(regenerateDay);
       const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
@@ -315,7 +428,7 @@ serve(async (req) => {
 
     const plan: any[] = [];
     for (let d = dayStart; d <= dayEnd; d++) {
-      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13));
+      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13, kidsCount, kidsDietType, kidsAllergies));
     }
 
     return new Response(JSON.stringify({ plan, mode }), {
