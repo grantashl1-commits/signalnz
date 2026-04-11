@@ -358,6 +358,14 @@ export default function JournalPage() {
   const [showPlayer, setShowPlayer] = useState(false);
   const [postSaveEntry, setPostSaveEntry] = useState<JournalEntryRow | null>(null);
 
+  const MYTH_PROMPTS_COUNT = 25;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPromptIdx((prev) => (prev + 1) % MYTH_PROMPTS_COUNT);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleAndroidBack = useCallback(() => {
     if (view === "write" || view === "detail" || view === "gratitude" || view === "one-line") {
       setView("list");
