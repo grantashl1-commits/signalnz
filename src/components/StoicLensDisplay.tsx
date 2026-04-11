@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Loader2, BookOpen, Play } from "lucide-react";
+import { Sparkles, Loader2, BookOpen, Play, ChevronDown, ChevronUp } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import type { StoicLens, StoicReading } from "@/hooks/useStoicJournal";
@@ -32,6 +32,7 @@ export default function StoicLensDisplay({
   const [loadingIdx, setLoadingIdx] = useState(0);
   const [lens, setLens] = useState<StoicLens | null>(existingLens);
   const [error, setError] = useState<string | null>(null);
+  const [showPassage, setShowPassage] = useState(false);
 
   const generateLens = async () => {
     if (!reading) return;
@@ -39,7 +40,6 @@ export default function StoicLensDisplay({
     setLoadingIdx(0);
     setError(null);
 
-    // Progress messages
     const interval = setInterval(() => {
       setLoadingIdx((prev) => Math.min(prev + 1, LOADING_MESSAGES.length - 1));
     }, 2000);
@@ -109,6 +109,29 @@ export default function StoicLensDisplay({
           <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground/60">Carry this forward</p>
           <p className="font-display text-sm italic text-foreground leading-relaxed">{lens.carry_forward}</p>
         </div>
+
+        {/* Written passage toggle */}
+        {reading?.reflection && (
+          <div className="pt-2 border-t border-border/30">
+            <button
+              onClick={() => setShowPassage(!showPassage)}
+              className="flex items-center gap-2 font-body text-[11px] text-primary hover:underline"
+            >
+              <BookOpen className="h-3 w-3" />
+              {showPassage ? "Hide today's passage" : "Read today's passage"}
+              {showPassage ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            </button>
+            {showPassage && (
+              <div className="mt-3 space-y-2">
+                <blockquote className="font-display text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
+                  "{reading.quote}"
+                  <footer className="font-body text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
+                </blockquote>
+                <p className="font-body text-sm text-foreground/80 leading-relaxed">{reading.reflection}</p>
+              </div>
+            )}
+          </div>
+        )}
       </motion.div>
     );
   }
@@ -162,6 +185,29 @@ export default function StoicLensDisplay({
             >
               <Play className="h-4 w-4" /> Listen · Day {reading.seq_day}
             </button>
+          )}
+
+          {/* Written passage fallback */}
+          {reading.reflection && (
+            <div className="pt-2">
+              <button
+                onClick={() => setShowPassage(!showPassage)}
+                className="flex items-center gap-2 font-body text-[11px] text-primary hover:underline"
+              >
+                <BookOpen className="h-3 w-3" />
+                {showPassage ? "Hide passage" : "Or read instead"}
+                {showPassage ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              </button>
+              {showPassage && (
+                <div className="mt-3 space-y-2">
+                  <blockquote className="font-display text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
+                    "{reading.quote}"
+                    <footer className="font-body text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
+                  </blockquote>
+                  <p className="font-body text-sm text-foreground/80 leading-relaxed">{reading.reflection}</p>
+                </div>
+              )}
+            </div>
           )}
         </>
       ) : (

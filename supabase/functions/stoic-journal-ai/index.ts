@@ -3,7 +3,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const SYSTEM_PROMPT = `You are Signal's reflective guide. A member has written a personal journal entry and listened to today's Daily Stoic reading. Your only task is to generate a short, deeply personal response that bridges exactly what they wrote in their journal to the Stoic principle from today's reading — anchored in their real life right now.
@@ -41,6 +41,9 @@ Deno.serve(async (req) => {
       cycle_mode,
     } = await req.json();
 
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
     const userMessage = `Member's journal entry:
 "${journal_content}"
 
@@ -52,12 +55,11 @@ Reflection: ${stoic_reflection}
 
 Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode}).`;
 
-    // Use Lovable AI proxy
-    const response = await fetch("https://hwcgbcfqxzzhvivcdroh.supabase.co/functions/v1/ai-proxy", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
@@ -71,16 +73,26 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
     });
 
     if (!response.ok) {
-      throw new Error(`AI proxy error: ${response.status}`);
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up in Settings." }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const t = await response.text();
+      console.error("AI gateway error:", response.status, t);
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const aiData = await response.json();
     const content = aiData.choices?.[0]?.message?.content || "";
 
-    // Parse JSON from response
     let parsed;
     try {
-      // Try to extract JSON from potential markdown code blocks
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       parsed = JSON.parse(jsonMatch ? jsonMatch[0] : content);
     } catch {
@@ -94,7 +106,6 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
       );
     }
 
-    // Save to journal entry
     if (journal_entry_id) {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -118,6 +129,7 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
+    console.error("stoic-journal-ai error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
