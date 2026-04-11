@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles } from "lucide-react";
+import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles, Newspaper } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -22,6 +22,7 @@ const navItems = [
   { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
   { path: "/journal", icon: BookOpen, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
+  { path: "/feed", icon: Newspaper, label: "Feed" },
 ];
 
 // Mobile bottom tabs: Daily Habits | Nutrition | Movement | Cycle | More | Journal | Community | Account
@@ -35,18 +36,17 @@ const navItems = [
 
 const PRIMARY_TABS = [
   { path: "/", label: "Home", icon: Home },
-  { path: "/cycle", label: "Cycle", icon: Moon },
-  { path: "/journal", label: "Journal", icon: BookOpen },
+  { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/movement", label: "Move", icon: Dumbbell },
+  { path: "/feed", label: "Feed", icon: Newspaper },
   { path: "more", label: "More", icon: MoreHorizontal },
 ];
 
 const MORE_ITEMS = [
-  { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
-  
+  { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/community", label: "Community", icon: Users },
-  { path: "/my-practice", label: "Habit Setup", icon: Leaf },
+  { path: "/cycle", label: "Cycle", icon: Moon },
   { path: "/account", label: "Account", icon: User },
 ];
 
