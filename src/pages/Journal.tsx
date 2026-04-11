@@ -349,6 +349,7 @@ export default function JournalPage() {
   const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
   const [currentMood, setCurrentMood] = useState<string | null>(null);
   const [entryType, setEntryType] = useState<EntryType>("reflect");
+  const [promptIdx, setPromptIdx] = useState(0);
 
   const { currentDay, reading, listenedToday, markListened, advanceDay } = useDailyStoic();
   const { entries, loading, saveEntry, updateStoicLens } = useJournalEntries2();
