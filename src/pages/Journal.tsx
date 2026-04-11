@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ArrowLeft, Search, Check, BookOpen, X, Flame } from "lucide-react";
+import { Plus, ArrowLeft, Search, Check, BookOpen, X } from "lucide-react";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -13,10 +13,8 @@ import StoicLensDisplay from "@/components/StoicLensDisplay";
 import JournalEntries from "@/components/journal/JournalEntries";
 import JournalActivities from "@/components/journal/JournalActivities";
 import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
-import DreamStudio from "@/components/journal/DreamStudio";
 import GratitudeEditor from "@/components/journal/GratitudeEditor";
 import OneLineEditor from "@/components/journal/OneLineEditor";
-import PhaseHeatMap from "@/components/journal/PhaseHeatMap";
 import JournalInsights from "@/components/journal/JournalInsights";
 import { useJournalSync } from "@/hooks/useJournalSync";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
@@ -29,8 +27,8 @@ type EntryType = "reflect" | "gratitude" | "one line";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "write", label: "Write" },
-  { id: "entries", label: "Entries" },
-  { id: "insights", label: "Reflect" },
+  { id: "entries", label: "Journal Entries" },
+  { id: "insights", label: "Memories" },
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {
@@ -90,23 +88,6 @@ function stoicToPracticeConfig(reading: { title: string; tts_script: string | nu
     audio: { enabled: true, audioUrl: `/audio/stoic-${reading.seq_day}.mp3`, durationSec: reading.duration_sec || 240, voiceName: "SIGNAL Calm", provider: "elevenlabs" },
     steps: [{ id: "s1", title: "Reading", body: reading.tts_script || "", startTimeSec: 0, endTimeSec: reading.duration_sec || 240 }],
   };
-}
-
-function calculateStreak(entries: JournalEntryRow[]): number {
-  if (entries.length === 0) return 0;
-  const dates = [...new Set(entries.map((e) => e.date || e.created_at?.split("T")[0]))].sort().reverse();
-  const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-  if (dates[0] !== today && dates[0] !== yesterday) return 0;
-  let streak = 1;
-  for (let i = 1; i < dates.length; i++) {
-    const prev = new Date(dates[i - 1]);
-    const curr = new Date(dates[i]);
-    const diff = (prev.getTime() - curr.getTime()) / 86400000;
-    if (Math.round(diff) === 1) streak++;
-    else break;
-  }
-  return streak;
 }
 
 // ── Writing View (with inline mood + type + collapsible stoic) ──
@@ -383,8 +364,6 @@ export default function JournalPage() {
   const [showPlayer, setShowPlayer] = useState(false);
   const [postSaveEntry, setPostSaveEntry] = useState<JournalEntryRow | null>(null);
 
-  const streak = useMemo(() => calculateStreak(entries), [entries]);
-
   const handleAndroidBack = useCallback(() => {
     if (view === "write" || view === "detail" || view === "gratitude" || view === "one-line") {
       setView("list");
@@ -481,19 +460,11 @@ export default function JournalPage() {
           <div className="text-center">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
             <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
-              {tab === "write" ? "My Journal" : tab === "entries" ? "Entries" : "Reflect"}
+              {tab === "write" ? "My Journal" : tab === "entries" ? "Journal Entries" : "Memories"}
             </h1>
-            <div className="flex items-center justify-center gap-3">
-              <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md">
-                {TAB_SUBTITLES[tab]}
-              </p>
-              {streak > 0 && (
-                <span className="flex items-center gap-1 font-body text-xs text-primary-foreground/50">
-                  <Flame className="h-3.5 w-3.5 text-orange-400" />
-                  {streak} day{streak > 1 ? "s" : ""}
-                </span>
-              )}
-            </div>
+            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md">
+              {TAB_SUBTITLES[tab]}
+            </p>
           </div>
         </AtmosphericHero>
 
@@ -526,29 +497,8 @@ export default function JournalPage() {
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
                 <div className="space-y-8 md:space-y-10">
-                  {/* Mood tags — scattered two-row layout */}
-                  <div className="space-y-2">
-                    <p className="font-body text-[10px] text-muted-foreground/40">feeling</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["grounded", "heavy", "clear", "unsettled", "open"].map((mood, i) => (
-                        <button
-                          key={mood}
-                          onClick={() => setCurrentMood(currentMood === mood ? null : mood)}
-                          className="font-body text-xs tracking-wide px-3.5 py-1.5 rounded-full transition-all"
-                          style={{
-                            backgroundColor: currentMood === mood ? 'hsl(var(--primary))' : 'rgba(91, 45, 114, 0.08)',
-                            color: currentMood === mood ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))',
-                            marginLeft: i % 3 === 1 ? 8 : 0,
-                          }}
-                        >
-                          {mood}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Entry type tags — offset row */}
-                  <div className="flex flex-wrap gap-2 pl-3">
+                  {/* Entry type tags */}
+                  <div className="flex flex-wrap gap-2">
                     {(["reflect", "gratitude", "one line"] as EntryType[]).map((type) => (
                       <button
                         key={type}
@@ -690,17 +640,15 @@ export default function JournalPage() {
                 </div>
               )}
 
-              {/* ═══ INSIGHTS TAB ═══ */}
+              {/* ═══ MEMORIES TAB ═══ */}
               {tab === "insights" && (
                 <div className="space-y-6">
-                  <PhaseHeatMap entries={entries} onTapDay={handleHeatMapTap} />
                   <JournalInsights entries={entries} />
                   <MemoryVault
                     vault={journalSync.vault}
                     onSaveVaultEntry={journalSync.saveVaultEntry}
                     onRemoveVaultEntry={journalSync.removeVaultEntry}
                   />
-                  <DreamStudio pinnedEntry={pinnedEntry} />
                 </div>
               )}
 
