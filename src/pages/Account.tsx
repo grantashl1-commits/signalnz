@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin } from "lucide-react";
+import { useState as useStateLocal } from "react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +40,7 @@ export default function AccountPage() {
   const [nameSaving, setNameSaving] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useStateLocal(false);
 
   // Fitness profile (localStorage)
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("general");
@@ -461,11 +465,23 @@ export default function AccountPage() {
           )}
         </motion.div>
 
-        {/* Feedback */}
-        <button onClick={() => navigate("/feedback")} className="flex items-center justify-between w-full py-3 border-b border-border/10">
-          <span className="text-sm text-muted-foreground">Share feedback</span>
+        <button onClick={() => setFeedbackOpen(true)} className="flex items-center justify-between w-full py-3 border-b border-border/10">
+          <span className="text-sm text-muted-foreground flex items-center gap-2">
+            <MessageSquarePlus className="h-4 w-4" />
+            Share feedback
+          </span>
           <ChevronRight className="w-4 h-4 text-muted-foreground/25" />
         </button>
+
+        <Sheet open={feedbackOpen} onOpenChange={setFeedbackOpen}>
+          <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
+            <SheetHeader className="pb-2">
+              <SheetTitle className="font-display text-lg">Share Feedback</SheetTitle>
+              <p className="text-xs text-muted-foreground">Report a bug, suggest a feature, or tell us what you think.</p>
+            </SheetHeader>
+            <FeedbackForm onSubmitted={() => setFeedbackOpen(false)} />
+          </SheetContent>
+        </Sheet>
 
         {/* Sign out */}
         <button onClick={handleSignOut} className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors">
