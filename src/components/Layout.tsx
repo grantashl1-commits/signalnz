@@ -44,7 +44,7 @@ const PRIMARY_TABS = [
 const MORE_ITEMS = [
   { path: "/nutrition", label: "Nourish", icon: Utensils },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
-  { path: "/vision-board", label: "Vision Board", icon: Sparkles },
+  
   { path: "/community", label: "Community", icon: Users },
   { path: "/my-practice", label: "Habit Setup", icon: Leaf },
   { path: "/account", label: "Account", icon: User },
