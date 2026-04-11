@@ -504,23 +504,6 @@ export default function PracticePage() {
           )}
         </div>
 
-        {/* ═══ 4-WEEK CONSISTENCY HEATMAP (5C) ═══ */}
-        {habits.length > 0 && (
-          <HabitHeatmap
-            habits={habits}
-            history={history}
-            loading={historyLoading}
-            phaseColor={phaseColor}
-            copiedSummary={copiedSummary}
-            onCopy={async () => {
-              haptic("medium");
-              const lines = generateSummaryText(habits, history);
-              await navigator.clipboard.writeText(lines);
-              setCopiedSummary(true);
-              setTimeout(() => setCopiedSummary(false), 2500);
-            }}
-          />
-        )}
 
         {/* ═══ CATEGORY CHOOSER SHEET ═══ */}
         <AnimatePresence>

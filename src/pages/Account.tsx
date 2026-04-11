@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState as useStateLocal } from "react";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus, Flame } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,6 +20,8 @@ import {
   getFitnessProfile, saveFitnessProfile,
   getSupermarket, saveSupermarket, SUPERMARKET_OPTIONS, SupermarketPreference,
 } from "@/lib/fitness-profile";
+import { getHabits, getHabitLog } from "@/data/self-care-rituals";
+import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 
 const TIER_COLORS: Record<string, string> = { free: "text-muted-foreground", nourished: "text-primary", thriving: "text-primary" };
 const TIER_LABELS: Record<string, string> = { free: "Free", nourished: "Nourished", thriving: "Thriving" };
@@ -34,6 +36,8 @@ export default function AccountPage() {
   } = profile;
   const navigate = useNavigate();
   const { currentPhase, currentCycleDay } = useCycle();
+  const habits = useMemo(() => getHabits(), []);
+  const { history, historyLoading } = useHabitCompletions();
   const [credits, setCredits] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -382,7 +386,95 @@ export default function AccountPage() {
           </div>
         </motion.div>
 
-        {/* ═══ SECTION: LINKED SUPERMARKET ═══ */}
+        {/* ═══ SECTION: WEEKLY CONSISTENCY ═══ */}
+        {habits.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }} className="card-warm p-5 space-y-4">
+            <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
+              <Flame className="h-[1.125rem] w-[1.125rem] text-orange-500" /> Weekly Consistency
+            </h2>
+
+            {historyLoading ? (
+              <div className="flex items-center justify-center py-6">
+                <div className="h-5 w-5 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+              </div>
+            ) : (() => {
+              const last7: string[] = [];
+              for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                last7.push(d.toISOString().split("T")[0]);
+              }
+              const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+
+              const habitStats = habits.map(h => {
+                const count = last7.filter(d => history[d]?.has(h.id)).length;
+                return { ...h, count };
+              });
+              const totalPossible = habits.length * 7;
+              const totalDone = habitStats.reduce((sum, h) => sum + h.count, 0);
+              const overallPct = totalPossible > 0 ? Math.round((totalDone / totalPossible) * 100) : 0;
+
+              // Daily completion rates
+              const dailyPcts = last7.map(d => {
+                const done = habits.filter(h => history[d]?.has(h.id)).length;
+                return { date: d, pct: habits.length > 0 ? Math.round((done / habits.length) * 100) : 0 };
+              });
+
+              const phaseColor = currentPhase === "menstrual" ? "#C4526E" : currentPhase === "follicular" ? "#5C4A9E" : currentPhase === "ovulatory" ? "#C47A8A" : "#9B89B4";
+
+              return (
+                <>
+                  {/* Overall stat */}
+                  <div className="flex items-center justify-between">
+                    <span className="font-body text-2xl font-bold text-foreground">{overallPct}%</span>
+                    <span className="font-body text-xs text-muted-foreground">{totalDone}/{totalPossible} completed</span>
+                  </div>
+
+                  {/* Day circles */}
+                  <div className="flex items-center gap-2 justify-between">
+                    {dailyPcts.map((d, i) => {
+                      const isToday = i === dailyPcts.length - 1;
+                      const dow = new Date(d.date + "T12:00:00").getDay();
+                      return (
+                        <div key={d.date} className="flex flex-col items-center gap-1.5">
+                          <div
+                            className="h-8 w-8 rounded-full flex items-center justify-center border-2 transition-all"
+                            style={{
+                              borderColor: d.pct === 0 ? "hsl(var(--border))" : phaseColor,
+                              backgroundColor: d.pct >= 80 ? phaseColor : d.pct > 0 ? `${phaseColor}66` : "transparent",
+                              boxShadow: isToday ? `0 0 0 2px ${phaseColor}33` : undefined,
+                            }}
+                          >
+                            {d.pct >= 80 && <Check className="h-3 w-3 text-white" />}
+                          </div>
+                          <span className={`font-body text-[10px] ${isToday ? "font-bold text-foreground" : "text-muted-foreground"}`}>
+                            {dayLabels[dow]}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Top habits */}
+                  <div className="space-y-1.5 pt-2 border-t border-border/30">
+                    {habitStats.sort((a, b) => b.count - a.count).slice(0, 5).map(h => (
+                      <div key={h.id} className="flex items-center justify-between">
+                        <span className="font-body text-xs text-foreground truncate max-w-[180px]">{h.name}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 h-1.5 rounded-full bg-border overflow-hidden">
+                            <div className="h-full rounded-full transition-all" style={{ width: `${(h.count / 7) * 100}%`, backgroundColor: phaseColor }} />
+                          </div>
+                          <span className="font-body text-[10px] text-muted-foreground w-8 text-right">{h.count}/7</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+          </motion.div>
+        )}
+
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card-warm p-5 space-y-3">
           <h2 className="font-display text-lg italic text-foreground flex items-center gap-2">
             <ShoppingCart className="h-[1.125rem] w-[1.125rem] text-primary" /> Linked Supermarket
