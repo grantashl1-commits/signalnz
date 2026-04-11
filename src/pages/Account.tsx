@@ -142,7 +142,7 @@ export default function AccountPage() {
         </div>
       </div>
 
-      <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-10 -mt-4">
+      <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-[4.5rem] -mt-4">
         {/* Admin */}
         {isAdmin && (
           <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
