@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Minus, Plus, Dumbbell, Eye, EyeOff, Check } from "lucide-react";
+import { Minus, Plus, Dumbbell, Eye, EyeOff, Check, Baby } from "lucide-react";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
 function SignalLoadingRing() {
@@ -39,6 +39,16 @@ const BODY_GOAL_LABELS: Record<string, string> = {
   energy: "More energy",
 };
 
+const KIDS_DIET_OPTIONS = [
+  "No restrictions",
+  "Dairy-free",
+  "Gluten-free",
+  "Nut-free",
+  "Egg-free",
+  "Vegetarian",
+  "Vegan",
+];
+
 interface Props {
   initialPrefs: PrepPrefsType;
   phase: Phase;
@@ -59,6 +69,11 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const [calorieTarget, setCalorieTarget] = useState(initialPrefs.calorieTarget || "");
   const [showHiddenRecipes, setShowHiddenRecipes] = useState(false);
   const [dislikedRecipes, setDislikedRecipes] = useState<string[]>(getDislikedRecipes);
+  
+  // Kids dietary preferences
+  const [kidsDietType, setKidsDietType] = useState(initialPrefs.kidsDietType || "");
+  const [kidsAllergies, setKidsAllergies] = useState(initialPrefs.kidsAllergies || "");
+  
   const phaseColor = PHASE_HEX[phase];
 
   const bodyGoals = useMemo<string[]>(() => {
@@ -88,6 +103,8 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       equipment: ["oven", "stovetop"],
       bodyGoal: bodyGoals[0] || "",
       bodyGoals,
+      kidsDietType: kids > 0 ? kidsDietType : "",
+      kidsAllergies: kids > 0 ? kidsAllergies : "",
     };
     savePreferences(prefs);
     onBuild(prefs);
@@ -209,10 +226,46 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </div>
         {kids > 0 && (
           <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
-            Kids portions auto-calculate as 0.6× adult.
+            Kids meals will be generated as separate recipes matched to the same protein.
           </p>
         )}
       </div>
+
+      {/* Kids Dietary Preferences — conditional on kids > 0 */}
+      {kids > 0 && (
+        <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <div className="flex items-center gap-2">
+            <Baby className="h-4 w-4 text-primary" />
+            <p className="font-display text-sm font-bold italic" style={{ color: "hsl(var(--primary))" }}>
+              Kids' Dietary Needs
+            </p>
+          </div>
+          <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
+            We'll tailor kids' meals based on these preferences.
+          </p>
+
+          <div className="space-y-2">
+            <label className="font-body text-xs text-foreground">Diet type</label>
+            <div className="flex flex-wrap gap-2">
+              {KIDS_DIET_OPTIONS.map(dt => (
+                <button key={dt} onClick={() => { haptic("light"); setKidsDietType(kidsDietType === dt ? "" : dt); }}
+                  className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
+                    kidsDietType === dt ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                  }`}>
+                  {dt}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="font-body text-xs text-foreground">Allergies or intolerances</label>
+            <input type="text" value={kidsAllergies} onChange={e => setKidsAllergies(e.target.value)}
+              placeholder="e.g. dairy, nuts, eggs..."
+              className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary" />
+          </div>
+        </div>
+      )}
 
       {/* Dietary requirements */}
       <div className="space-y-3 pt-2 border-t border-border">
