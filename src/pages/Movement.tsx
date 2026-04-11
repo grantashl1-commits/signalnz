@@ -193,32 +193,22 @@ export default function MovementPage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-      
-
-      <PhaseBadge phase={info.phase} cycleDay={info.cycleDay} />
-
-      {fitnessProfile && (
-        <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 w-fit">
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          <span className="font-body text-xs font-medium text-primary">Personalised for you</span>
+      {/* Tab bar - sticky at top */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm -mx-5 px-5 py-2 md:-mx-4 md:px-4">
+        <div className="relative">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+            {TABS.map(tab => (
+              <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
+                className={`touch-tab flex-shrink-0 rounded-full px-4 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-secondary text-muted-foreground active:text-foreground"
+                }`}
+              >{tab.label}</button>
+            ))}
+          </div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
         </div>
-      )}
-
-      {/* Tab bar - scrollable with fade mask */}
-      <div className="relative -mx-1">
-        <div className="flex gap-1.5 overflow-x-auto no-scrollbar px-1 py-1">
-          {TABS.map(tab => (
-            <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
-              className={`touch-tab flex-shrink-0 rounded-full px-4 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "bg-secondary text-muted-foreground active:text-foreground"
-              }`}
-            >{tab.label}</button>
-          ))}
-        </div>
-        {/* Right fade mask */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
       </div>
 
       {/* TODAY TAB */}
@@ -249,7 +239,21 @@ export default function MovementPage() {
               <button onClick={() => { haptic("light"); setActiveTab("body"); }} className="font-body text-xs font-semibold text-primary">Set goals →</button>
             </div>
           )}
-          {/* Weekly rotation carousel — top of Today */}
+
+          {/* Phase + training week — moved to second position */}
+          <div className="card-warm p-4 md:p-5 relative overflow-hidden">
+            <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
+              <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
+            </div>
+            <div className="flex items-center gap-2 mb-1">
+              <PhaseIndicator phase={info.phase} size={18} />
+              <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
+            </div>
+            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
+            <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
+          </div>
+
+          {/* Weekly rotation carousel */}
           <div className="card-warm p-4 space-y-2">
             <p className="font-hand text-xs font-bold text-primary mb-2">
               This week's rotation
@@ -284,26 +288,11 @@ export default function MovementPage() {
                   );
                 })}
               </div>
-              {/* Right fade gradient to indicate scrollability */}
               <div
                 className="absolute top-0 right-0 bottom-1 w-10 pointer-events-none rounded-r-xl"
                 style={{ background: 'linear-gradient(to right, transparent 0%, hsl(var(--card-warm, var(--card))) 100%)' }}
               />
             </div>
-          </div>
-
-          {/* Phase + training week combined */}
-          <div className="card-warm p-4 md:p-5 relative overflow-hidden">
-            <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
-              <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
-            </div>
-            <div className="flex items-center gap-2 mb-1">
-              <PhaseIndicator phase={info.phase} size={18} />
-              <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
-            </div>
-            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
-            <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
-            <p className="font-body text-xs text-muted-foreground/70 italic mt-1">{WEEK_PHASE_NOTES[trainingWeek]}</p>
           </div>
 
       {/* Floating HR indicator when connected but modal closed */}
@@ -317,19 +306,6 @@ export default function MovementPage() {
           <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
         </button>
       )}
-
-          {/* How do you feel */}
-          <div className="card-warm p-4 space-y-3">
-            <p className="font-display text-base italic text-foreground">How does your body feel right now?</p>
-            <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1 sm:flex-wrap">
-              {FEELINGS.map(f => (
-                <button key={f} onClick={() => { haptic("light"); setFeeling(f); }}
-                  className={`touch-btn scroll-snap-item rounded-full px-4 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${feeling === f ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                >{f}</button>
-              ))}
-            </div>
-            {feeling && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="font-body text-sm text-foreground/80 bg-primary/5 rounded-xl p-3">{FEELING_REC[feeling]}</motion.p>}
-          </div>
 
           {/* AI-Generated Today's Workout */}
           {aiTodayWorkout && (
