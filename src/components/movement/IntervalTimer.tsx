@@ -199,7 +199,7 @@ export default function IntervalTimer({ intervals, onClose, onComplete, accentCo
             setRunning(false);
             setFinished(true);
             if (!muted) playFinishBeep();
-            haptic("heavy");
+            haptic("medium");
             onComplete?.();
             return 0;
           }
