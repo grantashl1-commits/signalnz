@@ -15,9 +15,10 @@ interface Props {
   onOpenTraining: () => void;
   onOpenHR: () => void;
   onOpenManualLog: () => void;
+  onSessionLogged?: () => void;
 }
 
-export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog }: Props) {
+export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog, onSessionLogged }: Props) {
   const { user } = useAuth();
   const { currentPhase } = useCycle();
   const hr = useGlobalHeartRate();
