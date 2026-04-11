@@ -76,14 +76,14 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
       {showGif && (
         <div className="flex-shrink-0">
           {stretchData?.gif_url ? (
-            <img src={stretchData.gif_url} alt={item.name} className="w-9 h-9 rounded-lg object-cover" loading="lazy" />
+            <img src={stretchData.gif_url} alt={sanitizeText(item.name)} className="w-9 h-9 rounded-lg object-cover" loading="lazy" />
           ) : (
-            <ExerciseDemonstration exerciseName={item.name} size={36} className="rounded-lg" />
+            <ExerciseDemonstration exerciseName={sanitizeText(item.name)} size={36} className="rounded-lg" />
           )}
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <span className="font-body text-xs text-foreground">{item.name}</span>
+        <span className="font-body text-xs text-foreground">{sanitizeText(item.name)}</span>
         {stretchData?.target_muscle && (
           <p className="font-body text-[9px] text-muted-foreground">{stretchData.target_muscle}</p>
         )}
@@ -118,10 +118,10 @@ export default function AISessionCard({
       <div>
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <h3 className="font-display text-lg italic text-foreground">{session.name}</h3>
+          <h3 className="font-display text-lg italic text-foreground">{sanitizeText(session.name)}</h3>
         </div>
         <p className="font-body text-[9px] italic text-primary mt-0.5">
-          AI Plan · Week {trainingWeek} · {weekTheme || session.phase_label}
+          Week {trainingWeek} · {weekTheme || session.phase_label}
         </p>
         <div className="flex gap-2 mt-1.5 flex-wrap">
           <span className="flex items-center gap-1 font-body text-[10px]" style={{ color: phaseColor }}>
