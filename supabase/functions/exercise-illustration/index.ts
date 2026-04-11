@@ -16,7 +16,7 @@ async function generateIllustration(exerciseName: string, targetMuscle: string, 
   const prompt = `Generate an image: A clean anatomical illustration of the exercise "${exerciseName}". Show a human figure performing the exercise with the working muscles (${muscleList}) highlighted in warm red/coral color. Professional medical/anatomical diagram style with clean line art on a white background. The figure should be in neutral gray/charcoal with only the target muscles colored. Simple, clean, minimal. No text overlay.`;
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
