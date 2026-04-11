@@ -196,11 +196,12 @@ function pickRecipe(phase: string, mealType: string, dislikes: string[], dietTyp
   return candidates[seed % candidates.length];
 }
 
-function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number) {
+function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number, kidsCount: number, kidsDietType: string, kidsAllergies: string[]) {
   const phase = getPhaseForDay(cycleDay);
 
   const meals: Record<string, any> = {};
   const mealKeys = ["breakfast", "morningSnack", "lunch", "afternoonSnack", "dinner"];
+  const usedKidsIds: string[] = [];
 
   for (const key of mealKeys) {
     const assigned = mealAssignments[`${cycleDay}-${key}`];
@@ -219,6 +220,24 @@ function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<stri
         keyNutrients: assigned.keyNutrients,
         isLeftover: assigned.isLeftover || false,
       };
+
+      // Add kids substitute for lunch and dinner
+      if (kidsCount > 0 && (key === "lunch" || key === "dinner")) {
+        const kidsRecipe = findKidsRecipe(assigned.name, key, kidsAllergies, kidsDietType, usedKidsIds, daySeed + cycleDay);
+        if (kidsRecipe) {
+          usedKidsIds.push(kidsRecipe.id);
+          meals[`kids${key.charAt(0).toUpperCase() + key.slice(1)}`] = {
+            name: kidsRecipe.name,
+            recipeId: kidsRecipe.id,
+            prepTime: kidsRecipe.prepTime,
+            serves: kidsRecipe.serves,
+            ingredients: kidsRecipe.ingredients,
+            method: kidsRecipe.method,
+            proteinMatch: kidsRecipe.protein,
+            isKidsMeal: true,
+          };
+        }
+      }
     }
   }
 
