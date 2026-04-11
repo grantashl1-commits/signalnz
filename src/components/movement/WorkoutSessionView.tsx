@@ -662,7 +662,7 @@ function ExerciseCard({
               </span>
             )}
 
-            <div className="flex flex-wrap gap-3 mt-1">
+            <div className="flex flex-wrap gap-3 mt-1 items-center">
               {ex.sets && (
                 <span className="font-body text-xs text-muted-foreground">{ex.sets} sets</span>
               )}
@@ -676,6 +676,19 @@ function ExerciseCard({
                 <span className="font-body text-[10px] text-primary uppercase">RPE {ex.rpe_target}</span>
               )}
             </div>
+
+            {/* Timer button for time-based exercises */}
+            {isTimeBased(ex.reps) && (
+              <div className="mt-2">
+                <TimerButton
+                  exerciseName={exercise.name}
+                  reps={ex.reps}
+                  sets={ex.sets}
+                  restSeconds={ex.rest_seconds}
+                  onComplete={() => onToggleComplete()}
+                />
+              </div>
+            )}
           </div>
 
           {/* Swap + expand icons */}
