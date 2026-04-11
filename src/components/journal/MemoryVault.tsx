@@ -291,6 +291,9 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
         </div>
       ))}
       </div>
+
+      {/* Printed Journal — bottom */}
+      <PrintedJournalCard />
     </div>
   );
 }
