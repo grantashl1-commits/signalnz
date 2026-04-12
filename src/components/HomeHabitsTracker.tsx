@@ -10,8 +10,9 @@ import {
   SELF_CARE_RITUALS,
   type Habit,
   type HabitCategory,
+  type HabitFrequencyType,
 } from "@/data/self-care-rituals";
-import { HABIT_LIBRARY, getLibraryHabitsForCategory, type LibraryHabit } from "@/data/habit-library";
+import { HABIT_LIBRARY, getLibraryHabitsForCategory, parseFrequencyType, type LibraryHabit } from "@/data/habit-library";
 import { haptic } from "@/hooks/use-mobile";
 import SleepCard from "@/components/practice/SleepCard";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
