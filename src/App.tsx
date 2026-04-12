@@ -135,6 +135,7 @@ const App = () => {
         >
           <BrowserRouter>
             <AuthProvider>
+              <PushRegistrar />
               <CycleProvider>
               <HeartRateProvider>
               <SignalPanelProvider>
