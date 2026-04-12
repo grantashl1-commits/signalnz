@@ -44,6 +44,35 @@ import kidsPaleoCurriedPork from "./kids-paleo-curried-pork.jpg";
 import kidsPaleoZucchiniFries from "./kids-paleo-zucchini-fries.jpg";
 import kidsPaleoCauliflowerBites from "./kids-paleo-cauliflower-bites.jpg";
 
+// New England-inspired kids recipes
+import kidsNeGranolaClusters from "./kids-ne-granola-clusters.jpg";
+import kidsNeBlueberryMuffins from "./kids-ne-blueberry-muffins.jpg";
+import kidsNeCornbreadBites from "./kids-ne-cornbread-bites.jpg";
+import kidsNeAppleOatPancakes from "./kids-ne-apple-oat-pancakes.jpg";
+import kidsNeFishCakes from "./kids-ne-fish-cakes.jpg";
+import kidsNeClamChowderPasta from "./kids-ne-clam-chowder-pasta.jpg";
+import kidsNeTurkeyMeatballSoup from "./kids-ne-turkey-meatball-soup.jpg";
+import kidsNeSalmonBites from "./kids-ne-salmon-bites.jpg";
+import kidsNePumpkinMac from "./kids-ne-pumpkin-mac.jpg";
+import kidsNeCranberryChicken from "./kids-ne-cranberry-chicken.jpg";
+import kidsNeBeefPotPie from "./kids-ne-beef-pot-pie.jpg";
+
+// Healthy Parents / Healthy Kids-inspired recipes
+import kidsHpBircherCups from "./kids-hp-bircher-cups.jpg";
+import kidsHpZucchiniFritters from "./kids-hp-zucchini-fritters.jpg";
+import kidsHpBananaPikelets from "./kids-hp-banana-pikelets.jpg";
+import kidsHpChickenSchnitzel from "./kids-hp-chicken-schnitzel.jpg";
+import kidsHpLambKofta from "./kids-hp-lamb-kofta.jpg";
+import kidsHpVeggieFriedRice from "./kids-hp-veggie-fried-rice.jpg";
+import kidsHpTunaPatties from "./kids-hp-tuna-patties.jpg";
+import kidsHpPorkSanChoyBau from "./kids-hp-pork-san-choy-bau.jpg";
+import kidsHpChickenNoodleSoup from "./kids-hp-chicken-noodle-soup.jpg";
+import kidsHpBeefRissoles from "./kids-hp-beef-rissoles.jpg";
+import kidsHpFishTacos from "./kids-hp-fish-tacos.jpg";
+import kidsHpChickenStirFry from "./kids-hp-chicken-stir-fry.jpg";
+import kidsHpVeggiePastaBake from "./kids-hp-veggie-pasta-bake.jpg";
+import kidsHpSausageTrayBake from "./kids-hp-sausage-tray-bake.jpg";
+
 export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-chicken-strips": kidsChickenStrips,
   "kids-chicken-fried-rice": kidsChickenFriedRice,
@@ -89,4 +118,31 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-paleo-curried-pork": kidsPaleoCurriedPork,
   "kids-paleo-zucchini-fries": kidsPaleoZucchiniFries,
   "kids-paleo-cauliflower-bites": kidsPaleoCauliflowerBites,
+  // New England-inspired
+  "kids-ne-granola-clusters": kidsNeGranolaClusters,
+  "kids-ne-blueberry-muffins": kidsNeBlueberryMuffins,
+  "kids-ne-cornbread-bites": kidsNeCornbreadBites,
+  "kids-ne-apple-oat-pancakes": kidsNeAppleOatPancakes,
+  "kids-ne-fish-cakes": kidsNeFishCakes,
+  "kids-ne-clam-chowder-pasta": kidsNeClamChowderPasta,
+  "kids-ne-turkey-meatball-soup": kidsNeTurkeyMeatballSoup,
+  "kids-ne-salmon-bites": kidsNeSalmonBites,
+  "kids-ne-pumpkin-mac": kidsNePumpkinMac,
+  "kids-ne-cranberry-chicken": kidsNeCranberryChicken,
+  "kids-ne-beef-pot-pie": kidsNeBeefPotPie,
+  // Healthy Parents / Healthy Kids-inspired
+  "kids-hp-bircher-cups": kidsHpBircherCups,
+  "kids-hp-zucchini-fritters": kidsHpZucchiniFritters,
+  "kids-hp-banana-pikelets": kidsHpBananaPikelets,
+  "kids-hp-chicken-schnitzel": kidsHpChickenSchnitzel,
+  "kids-hp-lamb-kofta": kidsHpLambKofta,
+  "kids-hp-veggie-fried-rice": kidsHpVeggieFriedRice,
+  "kids-hp-tuna-patties": kidsHpTunaPatties,
+  "kids-hp-pork-san-choy-bau": kidsHpPorkSanChoyBau,
+  "kids-hp-chicken-noodle-soup": kidsHpChickenNoodleSoup,
+  "kids-hp-beef-rissoles": kidsHpBeefRissoles,
+  "kids-hp-fish-tacos": kidsHpFishTacos,
+  "kids-hp-chicken-stir-fry": kidsHpChickenStirFry,
+  "kids-hp-veggie-pasta-bake": kidsHpVeggiePastaBake,
+  "kids-hp-sausage-tray-bake": kidsHpSausageTrayBake,
 };
