@@ -8,6 +8,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import SleepCard from "@/components/practice/SleepCard";
+import HabitCarousel from "@/components/HabitCarousel";
 import {
   getHabits, addHabit, removeHabit,
   HABIT_CATEGORIES,
@@ -275,8 +276,8 @@ export default function PracticePage() {
         <AtmosphericHero size="md">
           <SignalPulse />
           <div className="text-center relative z-10">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Practice</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Ritual</h1>
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Daily</p>
+            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Habits</h1>
             <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
               Build rituals that honour your cycle.
             </p>
@@ -284,11 +285,6 @@ export default function PracticePage() {
         </AtmosphericHero>
 
         <div className="px-5 md:px-8 pb-8 md:pb-12">
-
-        {/* Sleep Card */}
-        <motion.div {...fadeUp(0.05)} className="mb-6">
-          <SleepCard phaseColor={phaseColor} />
-        </motion.div>
 
         {/* Progress Summary / Empty State */}
         {totalHabits === 0 ? (
@@ -503,6 +499,16 @@ export default function PracticePage() {
           )}
         </div>
 
+        {/* ═══ HABIT WISDOM CAROUSEL ═══ */}
+        <HabitCarousel />
+
+        {/* ═══ SLEEP LOG ═══ */}
+        <motion.div {...fadeUp(0.3)} className="mt-6 mb-2">
+          <SleepCard phaseColor={phaseColor} />
+          <p className="font-body text-[10px] text-muted-foreground/50 text-center mt-2 italic">
+            Smart device integration coming soon — Terra API for real-time sleep data.
+          </p>
+        </motion.div>
 
         {/* ═══ CATEGORY CHOOSER SHEET ═══ */}
         <AnimatePresence>

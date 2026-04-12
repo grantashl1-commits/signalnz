@@ -20,6 +20,16 @@ export interface HabitEducation {
   beingHuman?: string;
 }
 
+export type SupplementSubcategory = 
+  | "bone-muscle" | "energy-mood" | "gut-microbiome" | "immune-thyroid" 
+  | "skin-hair-nails" | "hormonal-balance" | "brain-cognition" | "anti-inflammatory";
+
+export type HabitSubcategory =
+  | "cardio" | "strength" | "flexibility" | "daily-movement" | "recovery"
+  | "morning-ritual" | "evening-ritual" | "stress-management" | "connection" | "creativity"
+  | "hydration" | "whole-foods" | "gut-health" | "blood-sugar" | "anti-inflammatory"
+  | "circadian" | "breathwork" | "ayurvedic" | "cold-heat" | "mindset";
+
 export interface LibraryHabit {
   id: string;
   name: string;
@@ -28,12 +38,16 @@ export interface LibraryHabit {
   evidenceNote: string;
   icon: string;
   category: HabitCategory | "foundations";
+  subcategory?: SupplementSubcategory | HabitSubcategory;
   timing?: HabitTiming;
   womenBadge?: boolean;
   note?: string;
   nzBrands?: string;
+  nzBrandUrl?: string;
   rdi?: SupplementRDI;
   education?: HabitEducation;
+  sourceBook?: string;
+  sourceAuthor?: string;
 }
 
 export const SUPPLEMENT_DISCLAIMER = "Always consult your doctor or pharmacist before starting supplements.";
@@ -44,9 +58,10 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-magnesium", name: "Magnesium Glycinate",
     description: "200–300mg elemental magnesium in the evening for sleep, PMS, muscle tension, and mood.",
     frequency: "Evening", evidenceNote: "Magnesium supports sleep quality, muscle relaxation, and menstrual symptom relief.",
-    icon: "capsule", category: "supplements", timing: "evening", womenBadge: true,
+    icon: "capsule", category: "supplements", subcategory: "bone-muscle", timing: "evening",
     note: "Check label for \"elemental magnesium\" — not compound weight.",
     nzBrands: "Ethical Nutrients Mega Magnesium, Good Health Magnesium Sleep, Clinicians Magnesium",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=magnesium+glycinate",
     rdi: {
       amount: "310–320mg", unit: "mg", nzRdi: "310–320mg/day women; 350–400mg/day perimenopause",
       upperLimit: "350mg/day from supplements", timing: "Evening — supports sleep and muscle recovery",
@@ -69,8 +84,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-vitamin-d3", name: "Vitamin D3 + K2",
     description: "1000–2000 IU with food for immune function, bone density, and mood.",
     frequency: "Daily with food", evidenceNote: "~32% of NZ adults are deficient.",
-    icon: "sunVitamin", category: "supplements", timing: "morning",
+    icon: "sunVitamin", category: "supplements", subcategory: "immune-thyroid", timing: "morning",
     nzBrands: "Clinicians Vitamin D3 + K2, Thompson's Vitamin D, Nutra-Life D3",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=vitamin+d3+k2",
     rdi: {
       amount: "600 IU", unit: "IU", nzRdi: "600 IU/day; therapeutic 2000–4000 IU",
       upperLimit: "4000 IU/day without GP monitoring", timing: "Morning with fat-containing meal",
@@ -91,6 +107,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     icon: "droplet", category: "supplements", timing: "morning",
     note: "Check label for EPA+DHA mg — not total fish oil weight.",
     nzBrands: "Blackmores Fish Oil, Nutra-Life Omega 3, Good Health Wild Fish Oil",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=omega+3+fish+oil",
     rdi: {
       amount: "1000–2000mg EPA+DHA", unit: "mg", nzRdi: "1.1g ALA/day; therapeutic 1000–2000mg EPA+DHA",
       upperLimit: "3g/day EPA+DHA", timing: "With meals to reduce fishy reflux",
@@ -111,9 +128,10 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-iron", name: "Iron",
     description: "For energy and red blood cell production, especially during menstruation.",
     frequency: "As directed", evidenceNote: "Only supplement if blood test confirms deficiency.",
-    icon: "capsule", category: "supplements", timing: "morning", womenBadge: true,
+    icon: "capsule", category: "supplements", subcategory: "energy-mood", timing: "morning",
     note: "Iron deficiency is the most common nutritional deficiency in NZ women. Have ferritin tested, not just haemoglobin — ferritin below 50μg/L affects energy and cognitive function.",
     nzBrands: "Clinicians Iron + C, Floradix (liquid — gentler), Spatone",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=iron+supplement",
     rdi: {
       amount: "18mg", unit: "mg", nzRdi: "18mg/day premenopausal; 8mg/day postmenopausal",
       upperLimit: "45mg/day", timing: "Morning on empty stomach with vitamin C; away from calcium and coffee",
@@ -134,9 +152,10 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-folate", name: "Folate (Methylfolate)",
     description: "Essential for cell division, DNA synthesis, and neural tube protection.",
     frequency: "Daily", evidenceNote: "Critical for women trying to conceive.",
-    icon: "capsule", category: "supplements", timing: "morning", womenBadge: true,
+    icon: "capsule", category: "supplements", subcategory: "hormonal-balance", timing: "morning",
     note: "Choose methylfolate (5-MTHF) over synthetic folic acid — up to 40% of women have the MTHFR gene variant that reduces folic acid conversion.",
     nzBrands: "Clinicians Methyl B12 + Folate, Solgar Folate",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=methylfolate",
     rdi: {
       amount: "400μg", unit: "μg", nzRdi: "400μg/day; 600μg/day if pregnant",
       timing: "Morning with food",
@@ -152,8 +171,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-b-complex", name: "B Complex (methylated)",
     description: "Energy, brain function, mood, and PMS support.",
     frequency: "Daily", evidenceNote: "B vitamins are essential co-factors for energy metabolism.",
-    icon: "pillBottle", category: "supplements", timing: "morning", womenBadge: true,
+    icon: "pillBottle", category: "supplements", subcategory: "energy-mood", timing: "morning",
     nzBrands: "Clinicians B Complex, Thompson's B100",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=b+complex+methylated",
     rdi: {
       amount: "B12 2.4μg; B6 1.3mg", unit: "mg", nzRdi: "B12 2.4μg/day; B6 1.3mg/day",
       timing: "Morning — B vitamins are energising",
@@ -172,8 +192,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-zinc", name: "Zinc 15–25mg",
     description: "Immune defence, hormone regulation, skin, and thyroid support.",
     frequency: "Daily", evidenceNote: "Zinc supports over 300 enzymatic reactions.",
-    icon: "capsule", category: "supplements", timing: "evening",
+    icon: "capsule", category: "supplements", subcategory: "immune-thyroid", timing: "evening",
     nzBrands: "Ethical Nutrients Zinc Fix, Thompson's Zinc",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=zinc+supplement",
     rdi: {
       amount: "8mg", unit: "mg", nzRdi: "8mg/day women",
       upperLimit: "40mg/day", timing: "Evening with food (can cause nausea on empty stomach)",
@@ -192,8 +213,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-vitamin-c", name: "Vitamin C",
     description: "Immune support, collagen production, and iron absorption.",
     frequency: "Daily", evidenceNote: "Potent antioxidant that enhances iron uptake.",
-    icon: "pillBottle", category: "supplements", timing: "morning",
+    icon: "pillBottle", category: "supplements", subcategory: "immune-thyroid", timing: "morning",
     nzBrands: "Clinicians Vitamin C, Nutra-Life Vitamin C",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=vitamin+c",
     note: "Two kiwifruit = your full daily RDI. NZ grows the best kiwifruit in the world — this is an easy one to get from food.",
     rdi: {
       amount: "75mg", unit: "mg", nzRdi: "75mg/day; therapeutic 500–1000mg",
@@ -210,8 +232,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-probiotics", name: "Probiotics",
     description: "Gut microbiome, immunity, and mood via gut-brain axis.",
     frequency: "Daily", evidenceNote: "Broad-spectrum probiotics support digestive and vaginal health.",
-    icon: "capsule", category: "supplements", timing: "morning", womenBadge: true,
+    icon: "capsule", category: "supplements", subcategory: "gut-microbiome", timing: "morning",
     nzBrands: "Inner Health Plus, Ethical Nutrients Inner Health, Clinicians Flora Restore",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=probiotic",
     rdi: {
       amount: "1–10 billion CFU", unit: "CFU", nzRdi: "No formal RDI — evidence supports 1–10 billion CFU/day",
       timing: "Morning on empty stomach OR with food depending on strain",
@@ -231,9 +254,10 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-ashwagandha", name: "Ashwagandha (KSM-66)",
     description: "Stress adaptation, cortisol regulation, adrenal support, and energy.",
     frequency: "Daily", evidenceNote: "Choose KSM-66 or Shoden extract for clinical-grade quality.",
-    icon: "capsule", category: "supplements", timing: "evening",
+    icon: "capsule", category: "supplements", subcategory: "energy-mood", timing: "evening",
     note: "Choose products specifying KSM-66 or Shoden extract.",
     nzBrands: "Good Health Ashwagandha, Nutra-Life KSM-66 Ashwagandha",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=ashwagandha",
     rdi: {
       amount: "300–600mg KSM-66", unit: "mg", nzRdi: "No formal RDI — evidence base: 300–600mg KSM-66 daily",
       timing: "Evening — adaptogenic, reduces cortisol over time",
@@ -254,8 +278,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-collagen", name: "Collagen Peptides",
     description: "Skin elasticity, joint health, and gut lining support.",
     frequency: "Daily", evidenceNote: "Look for VERISOL or hydrolysed collagen peptides.",
-    icon: "powderScoop", category: "supplements", timing: "morning", womenBadge: true,
+    icon: "powderScoop", category: "supplements", subcategory: "skin-hair-nails", timing: "morning",
     nzBrands: "Great Lakes Collagen, Nutra-Life Collagen",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=collagen+peptides",
     rdi: {
       amount: "10–15g", unit: "g", nzRdi: "No formal RDI — evidence base: 10–15g/day",
       timing: "Morning with vitamin C (C is required for collagen synthesis)",
@@ -275,8 +300,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-coq10", name: "CoQ10 / Ubiquinol",
     description: "Cellular energy (ATP), heart health, and antioxidant support.",
     frequency: "Daily with fat", evidenceNote: "Ubiquinone if under 40, ubiquinol if 40+.",
-    icon: "capsule", category: "supplements", timing: "morning",
+    icon: "capsule", category: "supplements", subcategory: "brain-cognition", timing: "morning",
     nzBrands: "Clinicians CoQ10, Thompson's CoQ10 Ubiquinol",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=coq10+ubiquinol",
     rdi: {
       amount: "100–200mg", unit: "mg", nzRdi: "No formal RDI — evidence base: 100–200mg/day",
       timing: "Morning with fat-containing meal",
@@ -293,8 +319,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-iodine", name: "Iodine 150mcg",
     description: "Thyroid function and metabolism. NZ soils are iodine-poor.",
     frequency: "Daily", evidenceNote: "NZ soils are naturally low in iodine.",
-    icon: "droplet", category: "supplements", timing: "morning",
+    icon: "droplet", category: "supplements", subcategory: "immune-thyroid", timing: "morning",
     nzBrands: "Clinicians Iodine, Most multivitamins include iodine",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=iodine+supplement",
     note: "New Zealand soils are iodine-depleted. NZ has mandatory iodine fortification in bread, but many women remain deficient — especially those avoiding bread or dairy.",
     rdi: {
       amount: "150μg", unit: "μg", nzRdi: "150μg/day women; 220μg pregnancy",
@@ -311,8 +338,9 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-creatine", name: "Creatine 3–5g",
     description: "Muscle strength, recovery, and brain function. Strong evidence for women.",
     frequency: "Daily", evidenceNote: "Not just for men — strong evidence for women, especially perimenopause.",
-    icon: "powderScoop", category: "supplements", timing: "anytime", womenBadge: true,
+    icon: "powderScoop", category: "supplements", subcategory: "bone-muscle", timing: "anytime",
     nzBrands: "Optimum Nutrition Creatine, Bulk Nutrients Creatine Monohydrate",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=creatine+monohydrate",
     rdi: {
       amount: "3–5g", unit: "g", nzRdi: "No formal RDI — evidence base: 3–5g/day",
       timing: "Any time — consistency more important than timing",
@@ -330,9 +358,10 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-greens-powder", name: "Greens Powder",
     description: "Fills micronutrient gaps. Not a replacement for vegetables.",
     frequency: "Daily", evidenceNote: "Concentrated phytonutrients and alkalising support.",
-    icon: "powderScoop", category: "supplements", timing: "morning",
+    icon: "powderScoop", category: "supplements", subcategory: "gut-microbiome", timing: "morning",
     note: "NZ picks: Nuzest Good Green Vitality (best value), AG1 (NSF certified, made in NZ), Lifestream Greens (organic).",
     nzBrands: "Nuzest, Vital All-In-One, AG1, Lifestream (HealthPost, supplements.co.nz)",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=greens+powder",
     education: {
       modern: "Greens powders provide concentrated polyphenols, prebiotic fibre, and alkalising minerals that support gut and immune health.",
       ayurveda: "Green plant concentrates are Sattvic — pure, light, and supportive of clarity and Ojas.",
@@ -340,53 +369,53 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   },
 
   // ── Nutrition ──
-  { id: "lib-30-plants", name: "30 Plant Foods This Week", description: "Aim for 30 different plant foods across the week.", frequency: "Weekly", evidenceNote: "Gut microbiome diversity benchmark from the American Gut Project.", icon: "plantBasket", category: "nutrition", timing: "anytime",
+  { id: "lib-30-plants", name: "30 Plant Foods This Week", description: "Aim for 30 different plant foods across the week.", frequency: "Weekly", evidenceNote: "Gut microbiome diversity benchmark from the American Gut Project.", icon: "plantBasket", category: "nutrition", subcategory: "gut-health", timing: "anytime",
     education: { modern: "The American Gut Project found that people eating 30+ plant species per week had significantly more diverse gut microbiomes.", tcm: "Five-colour eating (red, yellow, green, white, black) ensures all Five Elements and organs are nourished.", ayurveda: "Variety in food is Sattvic — supporting all seven Dhatus (tissue layers).", beingHuman: "Hunter-gatherers consumed 200–300 plant species per year. We average fewer than 20." } },
-  { id: "lib-fermented-food", name: "Fermented Food Daily", description: "Include yoghurt, kefir, kimchi, or sauerkraut.", frequency: "Daily", evidenceNote: "Supports microbiome diversity and inflammation reduction.", icon: "fermentedJar", category: "nutrition", timing: "anytime",
+  { id: "lib-fermented-food", name: "Fermented Food Daily", description: "Include yoghurt, kefir, kimchi, or sauerkraut.", frequency: "Daily", evidenceNote: "Supports microbiome diversity and inflammation reduction.", icon: "fermentedJar", category: "nutrition", subcategory: "gut-health", timing: "anytime",
     education: { modern: "Stanford study: 6 servings/week of fermented foods reduced inflammatory markers and increased microbiome diversity.", tcm: "Fermented foods support Spleen Qi — the foundation of digestion and nutrient transformation.", ayurveda: "Fermented foods kindle Agni (digestive fire) — essential for preventing Ama (toxic accumulation)." } },
-  { id: "lib-oily-fish", name: "Oily Fish 2x This Week", description: "Salmon, sardines, or mackerel for omega-3, vitamin D, and protein.", frequency: "2x weekly", evidenceNote: "Rich source of omega-3 fatty acids linked to cardiovascular health.", icon: "fish", category: "nutrition", timing: "anytime" },
-  { id: "lib-seed-cycle", name: "Seed Cycle Daily", description: "Days 1–14: pumpkin + flax seeds. Days 15–28: sunflower + sesame seeds.", frequency: "Daily", evidenceNote: "Supports hormonal balance through phytoestrogen and lignan intake.", icon: "seed", category: "nutrition", timing: "anytime", womenBadge: true },
-  { id: "lib-cruciferous", name: "Cruciferous Vegs 3x", description: "Broccoli, cauliflower, or kale for oestrogen detoxification via DIM.", frequency: "3x weekly", evidenceNote: "DIM supports healthy oestrogen metabolism.", icon: "broccoli", category: "nutrition", timing: "anytime" },
-  { id: "lib-protein-breakfast", name: "Protein at Breakfast", description: "20–30g protein to stabilise blood sugar, reduce cravings, and support lean muscle.", frequency: "Daily", evidenceNote: "Morning protein supports satiety and blood sugar stability.", icon: "proteinPlate", category: "nutrition", timing: "morning",
+  { id: "lib-oily-fish", name: "Oily Fish 2x This Week", description: "Salmon, sardines, or mackerel for omega-3, vitamin D, and protein.", frequency: "2x weekly", evidenceNote: "Rich source of omega-3 fatty acids linked to cardiovascular health.", icon: "fish", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-seed-cycle", name: "Seed Cycle Daily", description: "Days 1–14: pumpkin + flax seeds. Days 15–28: sunflower + sesame seeds.", frequency: "Daily", evidenceNote: "Supports hormonal balance through phytoestrogen and lignan intake.", icon: "seed", category: "nutrition", subcategory: "whole-foods", timing: "anytime", womenBadge: true },
+  { id: "lib-cruciferous", name: "Cruciferous Vegs 3x", description: "Broccoli, cauliflower, or kale for oestrogen detoxification via DIM.", frequency: "3x weekly", evidenceNote: "DIM supports healthy oestrogen metabolism.", icon: "broccoli", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-protein-breakfast", name: "Protein at Breakfast", description: "20–30g protein to stabilise blood sugar, reduce cravings, and support lean muscle.", frequency: "Daily", evidenceNote: "Morning protein supports satiety and blood sugar stability.", icon: "proteinPlate", category: "nutrition", subcategory: "blood-sugar", timing: "morning",
     education: { modern: "Protein at breakfast increases satiety hormones (PYY, GLP-1) and reduces ghrelin-driven cravings throughout the day.", tcm: "The Stomach meridian is most active 7–9am — this is the optimal window for nourishing food.", ayurveda: "Agni (digestive fire) is strongest in the morning — heavy, protein-rich food is best digested now.", beingHuman: "Our ancestors broke their overnight fast with the most nutrient-dense food available. Cereal and toast are a 20th-century invention." } },
-  { id: "lib-no-processed", name: "No Ultra-Processed Foods", description: "Eliminate ultra-processed foods today.", frequency: "Daily", evidenceNote: "Ultra-processed food consumption is linked to increased disease risk.", icon: "noProcessed", category: "nutrition", timing: "anytime" },
-  { id: "lib-water-2l", name: "Drink 2L Water", description: "Drink 2 litres of water throughout the day.", frequency: "Daily", evidenceNote: "Adequate hydration supports digestion, energy, and cognitive function.", icon: "waterGlass", category: "nutrition", timing: "anytime",
+  { id: "lib-no-processed", name: "No Ultra-Processed Foods", description: "Eliminate ultra-processed foods today.", frequency: "Daily", evidenceNote: "Ultra-processed food consumption is linked to increased disease risk.", icon: "noProcessed", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-water-2l", name: "Drink 2L Water", description: "Drink 2 litres of water throughout the day.", frequency: "Daily", evidenceNote: "Adequate hydration supports digestion, energy, and cognitive function.", icon: "waterGlass", category: "nutrition", subcategory: "hydration", timing: "anytime",
     education: { modern: "Even mild dehydration (1–2%) impairs cognitive function, mood, and exercise performance.", tcm: "Water is the foundation of Kidney Yin — the basis of all body fluids, hormones, and tissue lubrication.", ayurveda: "Warm water throughout the day kindles Agni and prevents Ama. Cold water dampens digestive fire.", beingHuman: "Access to clean, abundant water is humanity's most basic health requirement. Our ancestors prioritised water sources above all else." } },
-  { id: "lib-leafy-greens", name: "Leafy Greens at Meals", description: "Eat a handful of leafy greens at lunch and dinner.", frequency: "Daily", evidenceNote: "Greens provide fiber, folate, and polyphenols.", icon: "leaf", category: "nutrition", timing: "anytime" },
-  { id: "lib-reduce-sugar", name: "Reduce Refined Sugar", description: "Minimise refined sugar intake today.", frequency: "Daily", evidenceNote: "Excess sugar is linked to inflammation and metabolic dysfunction.", icon: "noSugar", category: "nutrition", timing: "anytime" },
-  { id: "lib-meal-prep", name: "Meal Prep 3 Days", description: "Prep meals for the next 3 days.", frequency: "2x weekly", evidenceNote: "Meal prep reduces reliance on convenience food.", icon: "mealPrep", category: "nutrition", timing: "anytime" },
-  { id: "lib-new-recipe", name: "New Whole Food Recipe", description: "Cook one new whole food recipe this week.", frequency: "Weekly", evidenceNote: "Variety in cooking supports nutrient diversity.", icon: "recipeBook", category: "nutrition", timing: "anytime" },
-  { id: "lib-healthy-fat", name: "Healthy Fat Every Meal", description: "Include avocado, olive oil, nuts, or seeds — supports fat-soluble vitamin absorption.", frequency: "Daily", evidenceNote: "Healthy fats aid absorption of vitamins A, D, E, and K.", icon: "avocado", category: "nutrition", timing: "anytime" },
-  { id: "lib-no-alcohol", name: "No Alcohol This Week", description: "Abstain from alcohol for the full week.", frequency: "Weekly", evidenceNote: "Even moderate alcohol impacts sleep quality and hormonal balance.", icon: "noAlcohol", category: "nutrition", timing: "anytime" },
-  { id: "lib-mindful-eating", name: "Mindful Eating", description: "No screens during meals today.", frequency: "Daily", evidenceNote: "Mindful eating improves digestion and satiety awareness.", icon: "mindfulPlate", category: "nutrition", timing: "anytime" },
+  { id: "lib-leafy-greens", name: "Leafy Greens at Meals", description: "Eat a handful of leafy greens at lunch and dinner.", frequency: "Daily", evidenceNote: "Greens provide fiber, folate, and polyphenols.", icon: "leaf", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-reduce-sugar", name: "Reduce Refined Sugar", description: "Minimise refined sugar intake today.", frequency: "Daily", evidenceNote: "Excess sugar is linked to inflammation and metabolic dysfunction.", icon: "noSugar", category: "nutrition", subcategory: "blood-sugar", timing: "anytime" },
+  { id: "lib-meal-prep", name: "Meal Prep 3 Days", description: "Prep meals for the next 3 days.", frequency: "2x weekly", evidenceNote: "Meal prep reduces reliance on convenience food.", icon: "mealPrep", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-new-recipe", name: "New Whole Food Recipe", description: "Cook one new whole food recipe this week.", frequency: "Weekly", evidenceNote: "Variety in cooking supports nutrient diversity.", icon: "recipeBook", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-healthy-fat", name: "Healthy Fat Every Meal", description: "Include avocado, olive oil, nuts, or seeds — supports fat-soluble vitamin absorption.", frequency: "Daily", evidenceNote: "Healthy fats aid absorption of vitamins A, D, E, and K.", icon: "avocado", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-no-alcohol", name: "No Alcohol This Week", description: "Abstain from alcohol for the full week.", frequency: "Weekly", evidenceNote: "Even moderate alcohol impacts sleep quality and hormonal balance.", icon: "noAlcohol", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
+  { id: "lib-mindful-eating", name: "Mindful Eating", description: "No screens during meals today.", frequency: "Daily", evidenceNote: "Mindful eating improves digestion and satiety awareness.", icon: "mindfulPlate", category: "nutrition", subcategory: "whole-foods", timing: "anytime" },
   { id: "lib-warm-lemon-water", name: "Warm Lemon Water", description: "First drink of the day — warm water with the juice of half a lemon before food or coffee.", frequency: "Daily", evidenceNote: "Stimulates gastric secretion; mild alkalising effect; provides vitamin C; supports bile flow.", icon: "waterGlass", category: "nutrition", timing: "morning",
     education: { modern: "Warm lemon water stimulates gastric secretion and bile flow, supporting digestion and liver function.", tcm: "Warm water activates the Stomach and Spleen meridians (7–9am is their peak time). Lemon is sour flavour which tonifies the Liver.", ayurveda: "Ushapan — warm water first thing is the most basic Dinacharya practice. Wakes the digestive fire (Agni) gently.", beingHuman: "Our ancestors drank water at ambient temperature first thing. Hot beverages and cold water on waking are both modern inventions." } },
 
   // ── Movement ──
-  { id: "lib-10k-steps", name: "10,000 Steps Today", description: "Hit 10,000 steps throughout the day.", frequency: "Daily", evidenceNote: "Higher step counts are linked with lower mortality risk.", icon: "steps", category: "movement", timing: "anytime" },
-  { id: "lib-morning-walk", name: "Morning Walk", description: "20–30 minute morning walk to start the day.", frequency: "Daily", evidenceNote: "Morning light exposure regulates circadian rhythm and cortisol.", icon: "morningWalk", category: "movement", timing: "morning",
+  { id: "lib-10k-steps", name: "10,000 Steps Today", description: "Hit 10,000 steps throughout the day.", frequency: "Daily", evidenceNote: "Higher step counts are linked with lower mortality risk.", icon: "steps", category: "movement", subcategory: "daily-movement", timing: "anytime" },
+  { id: "lib-morning-walk", name: "Morning Walk", description: "20–30 minute morning walk to start the day.", frequency: "Daily", evidenceNote: "Morning light exposure regulates circadian rhythm and cortisol.", icon: "morningWalk", category: "movement", subcategory: "daily-movement", timing: "morning",
     education: { modern: "Morning walking combines circadian light exposure, gentle movement, and grounding — three independent health interventions in one.", tcm: "The Large Intestine meridian is active 5–7am — morning movement supports the body's natural elimination cycle.", ayurveda: "Morning walking is prescribed in Dinacharya — it activates Prana and sets the metabolic tone for the day.", beingHuman: "Walking at dawn was the default human morning for 200,000 years. We are the first generation to skip it." } },
-  { id: "lib-strength", name: "Strength Training", description: "Resistance training for muscle and bone health.", frequency: "2–3x weekly", evidenceNote: "Especially important in follicular and ovulatory phases.", icon: "dumbbell", category: "movement", timing: "anytime", womenBadge: true },
-  { id: "lib-hiit", name: "HIIT Session", description: "20–30 minutes of high intensity interval training.", frequency: "1–2x weekly", evidenceNote: "HIIT improves cardiovascular fitness and insulin sensitivity.", icon: "hiit", category: "movement", timing: "anytime" },
-  { id: "lib-yoga", name: "Yoga or Pilates", description: "Mindful movement and breath coordination, any length.", frequency: "Weekly", evidenceNote: "Improves flexibility, stress reduction, and core strength.", icon: "yogaPose", category: "movement", timing: "anytime" },
-  { id: "lib-stretching", name: "Stretching / Mobility", description: "10 minutes of gentle stretching for joints and muscles.", frequency: "Daily", evidenceNote: "Improves flexibility and reduces injury risk.", icon: "stretch", category: "movement", timing: "evening" },
-  { id: "lib-swimming", name: "Swimming", description: "Low-impact full-body cardiovascular exercise.", frequency: "Weekly", evidenceNote: "Swimming is joint-friendly and builds aerobic endurance.", icon: "swim", category: "movement", timing: "anytime" },
-  { id: "lib-cycling", name: "Cycling", description: "Indoor or outdoor cycling for cardio and leg strength.", frequency: "Weekly", evidenceNote: "Cycling is low-impact and improves cardiovascular health.", icon: "cycle", category: "movement", timing: "anytime" },
-  { id: "lib-dance", name: "Dance or Free Movement", description: "Dance class or intuitive free movement.", frequency: "Weekly", evidenceNote: "Dance improves coordination, mood, and cardiovascular fitness.", icon: "dance", category: "movement", timing: "anytime" },
-  { id: "lib-rest-day", name: "Rest Day", description: "Active recovery only — walk, gentle stretch, nothing intense.", frequency: "1–2x weekly", evidenceNote: "Recovery is essential for adaptation and injury prevention.", icon: "restDay", category: "movement", timing: "anytime" },
-  { id: "lib-movement-break", name: "Movement Break Hourly", description: "Stand or walk briefly every hour.", frequency: "Hourly", evidenceNote: "Breaking up sedentary time improves metabolic health.", icon: "clockBreak", category: "movement", timing: "anytime" },
-  { id: "lib-lunch-walk", name: "Lunchtime Walk", description: "Even 15 minutes counts — get outside at lunch.", frequency: "Daily", evidenceNote: "Midday movement improves afternoon focus and energy.", icon: "lunchWalk", category: "movement", timing: "afternoon" },
-  { id: "lib-two-strength", name: "Two Strength Sessions", description: "Complete two strength training sessions this week.", frequency: "Weekly", evidenceNote: "Minimum effective dose for strength and bone density.", icon: "twoStrength", category: "movement", timing: "anytime" },
-  { id: "lib-zone2", name: "Zone 2 Cardio", description: "30+ minutes at conversational pace for metabolic health, fat oxidation, and longevity.", frequency: "2–3x weekly", evidenceNote: "Best for mitochondrial function and metabolic fitness.", icon: "heartPulse", category: "movement", timing: "anytime" },
+  { id: "lib-strength", name: "Strength Training", description: "Resistance training for muscle and bone health.", frequency: "2–3x weekly", evidenceNote: "Especially important in follicular and ovulatory phases.", icon: "dumbbell", category: "movement", subcategory: "strength", timing: "anytime", womenBadge: true },
+  { id: "lib-hiit", name: "HIIT Session", description: "20–30 minutes of high intensity interval training.", frequency: "1–2x weekly", evidenceNote: "HIIT improves cardiovascular fitness and insulin sensitivity.", icon: "hiit", category: "movement", subcategory: "cardio", timing: "anytime" },
+  { id: "lib-yoga", name: "Yoga or Pilates", description: "Mindful movement and breath coordination, any length.", frequency: "Weekly", evidenceNote: "Improves flexibility, stress reduction, and core strength.", icon: "yogaPose", category: "movement", subcategory: "flexibility", timing: "anytime" },
+  { id: "lib-stretching", name: "Stretching / Mobility", description: "10 minutes of gentle stretching for joints and muscles.", frequency: "Daily", evidenceNote: "Improves flexibility and reduces injury risk.", icon: "stretch", category: "movement", subcategory: "flexibility", timing: "evening" },
+  { id: "lib-swimming", name: "Swimming", description: "Low-impact full-body cardiovascular exercise.", frequency: "Weekly", evidenceNote: "Swimming is joint-friendly and builds aerobic endurance.", icon: "swim", category: "movement", subcategory: "cardio", timing: "anytime" },
+  { id: "lib-cycling", name: "Cycling", description: "Indoor or outdoor cycling for cardio and leg strength.", frequency: "Weekly", evidenceNote: "Cycling is low-impact and improves cardiovascular health.", icon: "cycle", category: "movement", subcategory: "cardio", timing: "anytime" },
+  { id: "lib-dance", name: "Dance or Free Movement", description: "Dance class or intuitive free movement.", frequency: "Weekly", evidenceNote: "Dance improves coordination, mood, and cardiovascular fitness.", icon: "dance", category: "movement", subcategory: "cardio", timing: "anytime" },
+  { id: "lib-rest-day", name: "Rest Day", description: "Active recovery only — walk, gentle stretch, nothing intense.", frequency: "1–2x weekly", evidenceNote: "Recovery is essential for adaptation and injury prevention.", icon: "restDay", category: "movement", subcategory: "recovery", timing: "anytime" },
+  { id: "lib-movement-break", name: "Movement Break Hourly", description: "Stand or walk briefly every hour.", frequency: "Hourly", evidenceNote: "Breaking up sedentary time improves metabolic health.", icon: "clockBreak", category: "movement", subcategory: "daily-movement", timing: "anytime" },
+  { id: "lib-lunch-walk", name: "Lunchtime Walk", description: "Even 15 minutes counts — get outside at lunch.", frequency: "Daily", evidenceNote: "Midday movement improves afternoon focus and energy.", icon: "lunchWalk", category: "movement", subcategory: "daily-movement", timing: "afternoon" },
+  { id: "lib-two-strength", name: "Two Strength Sessions", description: "Complete two strength training sessions this week.", frequency: "Weekly", evidenceNote: "Minimum effective dose for strength and bone density.", icon: "twoStrength", category: "movement", subcategory: "strength", timing: "anytime" },
+  { id: "lib-zone2", name: "Zone 2 Cardio", description: "30+ minutes at conversational pace for metabolic health, fat oxidation, and longevity.", frequency: "2–3x weekly", evidenceNote: "Best for mitochondrial function and metabolic fitness.", icon: "heartPulse", category: "movement", subcategory: "cardio", timing: "anytime" },
 
   // ── Self Care ──
-  { id: "lib-morning-meditation", name: "Morning Meditation", description: "10 minutes of quiet breathing or mindfulness to calm the nervous system.", frequency: "Daily", evidenceNote: "Meditation is supported by strong research for stress reduction.", icon: "yogaPose", category: "self-care", timing: "morning",
+  { id: "lib-morning-meditation", name: "Morning Meditation", description: "10 minutes of quiet breathing or mindfulness to calm the nervous system.", frequency: "Daily", evidenceNote: "Meditation is supported by strong research for stress reduction.", icon: "yogaPose", category: "self-care", subcategory: "morning-ritual", timing: "morning",
     education: { modern: "Meditation reduces amygdala reactivity and cortisol levels. 8 weeks of practice physically thickens the prefrontal cortex.", tcm: "Meditation cultivates Shen (spirit/consciousness) — the most refined expression of Qi.", ayurveda: "Dhyana (meditation) is one of the eight limbs of yoga — the practice of stilling the fluctuations of the mind.", beingHuman: "Quiet contemplation was a daily practice for most of human history. Constant stimulation is the anomaly." } },
-  { id: "lib-evening-breathwork", name: "Evening Breathwork", description: "Slow breathing (4-7-8 or box breathing) to activate the parasympathetic nervous system.", frequency: "Nightly", evidenceNote: "Slow breathing lowers heart rate and improves sleep quality.", icon: "restDay", category: "self-care", timing: "evening" },
-  { id: "lib-gratitude-practice", name: "Gratitude Practice", description: "Write three things you are grateful for today.", frequency: "Daily", evidenceNote: "Gratitude journaling is associated with improved mood.", icon: "recipeBook", category: "self-care", timing: "evening",
+  { id: "lib-evening-breathwork", name: "Evening Breathwork", description: "Slow breathing (4-7-8 or box breathing) to activate the parasympathetic nervous system.", frequency: "Nightly", evidenceNote: "Slow breathing lowers heart rate and improves sleep quality.", icon: "restDay", category: "self-care", subcategory: "evening-ritual", timing: "evening" },
+  { id: "lib-gratitude-practice", name: "Gratitude Practice", description: "Write three things you are grateful for today.", frequency: "Daily", evidenceNote: "Gratitude journaling is associated with improved mood.", icon: "recipeBook", category: "self-care", subcategory: "evening-ritual", timing: "evening",
     education: { modern: "Gratitude journaling increases serotonin and dopamine production. Pennebaker's research shows expressive writing reduces stress hormones.", tcm: "Gratitude opens the Heart meridian and calms Shen — reducing anxiety and supporting restful sleep.", ayurveda: "Santosha (contentment) is one of the Niyamas — cultivating gratitude is a foundational yogic practice.", beingHuman: "Communal gratitude rituals — sharing food, giving thanks — were universal across ancestral cultures." } },
   { id: "lib-time-in-nature", name: "Time in Nature", description: "Spend time outdoors in green space.", frequency: "Daily or weekly", evidenceNote: "Nature exposure reduces cortisol and improves mood.", icon: "leaf", category: "self-care", timing: "anytime" },
-  { id: "lib-digital-sunset", name: "Digital Sunset", description: "No screens 60 minutes before sleep.", frequency: "Nightly", evidenceNote: "Reducing evening blue light supports melatonin production.", icon: "restDay", category: "self-care", timing: "evening",
+  { id: "lib-digital-sunset", name: "Digital Sunset", description: "No screens 60 minutes before sleep.", frequency: "Nightly", evidenceNote: "Reducing evening blue light supports melatonin production.", icon: "restDay", category: "self-care", subcategory: "evening-ritual", timing: "evening",
     education: { modern: "Blue light after sunset suppresses melatonin by up to 50%. Even dim screen light delays sleep onset by 30+ minutes.", tcm: "The Triple Burner meridian is active 9–11pm — this is the wind-down window. Screens overstimulate Yang energy.", ayurveda: "Evening is Kapha time — heavy, slow, grounding. Screens introduce Vata (stimulation) when the body needs stillness.", beingHuman: "For 200,000 years, the only light after sunset was firelight. We are the first generation to bathe in blue light at night." } },
   { id: "lib-sauna-session", name: "Sauna Session", description: "15–20 minutes of heat exposure.", frequency: "3–4x weekly", evidenceNote: "Associated with cardiovascular and longevity benefits.", icon: "heartPulse", category: "self-care", timing: "anytime" },
   { id: "lib-cold-shower", name: "Cold Shower", description: "Finish shower with 30–60 seconds of cold water.", frequency: "Optional daily", evidenceNote: "Cold exposure increases alertness and norepinephrine.", icon: "droplet", category: "self-care", timing: "morning" },
@@ -601,6 +630,57 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
 export function getLibraryHabitsForCategory(category: HabitCategory | "foundations"): LibraryHabit[] {
   return HABIT_LIBRARY.filter(h => h.category === category);
 }
+
+export const SUPPLEMENT_SUBCATEGORY_LABELS: Record<string, string> = {
+  "bone-muscle": "Bone & Muscle",
+  "energy-mood": "Energy & Mood",
+  "gut-microbiome": "Gut Microbiome",
+  "immune-thyroid": "Immune & Thyroid",
+  "skin-hair-nails": "Skin, Hair & Nails",
+  "hormonal-balance": "Hormonal Balance",
+  "brain-cognition": "Brain & Cognition",
+  "anti-inflammatory": "Anti-Inflammatory",
+};
+
+export const MOVEMENT_SUBCATEGORY_LABELS: Record<string, string> = {
+  "cardio": "Cardio",
+  "strength": "Strength",
+  "flexibility": "Flexibility & Mobility",
+  "daily-movement": "Daily Movement",
+  "recovery": "Recovery",
+};
+
+export const NUTRITION_SUBCATEGORY_LABELS: Record<string, string> = {
+  "hydration": "Hydration",
+  "whole-foods": "Whole Foods",
+  "gut-health": "Gut Health",
+  "blood-sugar": "Blood Sugar",
+  "anti-inflammatory": "Anti-Inflammatory",
+};
+
+export const SELFCARE_SUBCATEGORY_LABELS: Record<string, string> = {
+  "morning-ritual": "Morning Rituals",
+  "evening-ritual": "Evening Rituals",
+  "stress-management": "Stress Management",
+  "connection": "Connection",
+  "creativity": "Creativity",
+};
+
+export const FOUNDATIONS_SUBCATEGORY_LABELS: Record<string, string> = {
+  "circadian": "Circadian Rhythm",
+  "breathwork": "Breathwork",
+  "ayurvedic": "Ayurvedic",
+  "cold-heat": "Cold & Heat Therapy",
+  "mindset": "Mindset",
+};
+
+export const SUBCATEGORY_LABELS_BY_CATEGORY: Record<string, Record<string, string>> = {
+  supplements: SUPPLEMENT_SUBCATEGORY_LABELS,
+  movement: MOVEMENT_SUBCATEGORY_LABELS,
+  nutrition: NUTRITION_SUBCATEGORY_LABELS,
+  "self-care": SELFCARE_SUBCATEGORY_LABELS,
+  foundations: FOUNDATIONS_SUBCATEGORY_LABELS,
+};
 
 // ── Starter Packs ──
 export interface StarterPack {

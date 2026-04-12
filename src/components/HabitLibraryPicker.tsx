@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, HelpCircle, Search, Plus } from "lucide-react";
-import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, type LibraryHabit } from "@/data/habit-library";
+import { X, Check, HelpCircle, Search, Plus, ExternalLink } from "lucide-react";
+import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, getHabits, type Habit, type HabitCategory } from "@/data/self-care-rituals";
@@ -32,9 +32,6 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
     existingHabits.some(h => h.name === name);
 
   const isJustAdded = (id: string) => justAdded.has(id);
-
-  // For self-care, use the SELF_CARE_RITUALS with RitualPicker-style grid
-  // For other categories, use the habit library with the same grid style
 
   const handleInstantAdd = (name: string, id: string, extraData?: Partial<Habit>) => {
     if (isAlreadyAdded(name) || isJustAdded(id)) return;
@@ -180,11 +177,76 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
     );
   }
 
-  // All other categories: grid layout with hand-drawn icons
+  // All other categories: grouped by subcategory
   const libraryHabits = getLibraryHabitsForCategory(category);
   const filteredHabits = libraryHabits.filter(h =>
     h.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const subcatLabels = SUBCATEGORY_LABELS_BY_CATEGORY[category] || {};
+  const subcatKeys = Object.keys(subcatLabels);
+  
+  // Group by subcategory
+  const grouped = subcatKeys
+    .map(key => ({
+      key,
+      label: subcatLabels[key],
+      habits: filteredHabits.filter(h => h.subcategory === key),
+    }))
+    .filter(g => g.habits.length > 0);
+  
+  // Uncategorized
+  const uncategorized = filteredHabits.filter(h => !h.subcategory || !subcatKeys.includes(h.subcategory as string));
+  if (uncategorized.length > 0) {
+    grouped.push({ key: "other", label: "Other", habits: uncategorized });
+  }
+
+  const renderHabitCard = (habit: LibraryHabit) => {
+    const IconComponent = HABIT_ICONS[habit.icon] || CapsuleIcon;
+    const added = isAlreadyAdded(habit.name) || isJustAdded(habit.id);
+    const hasInfo = !!(habit.nzBrands || habit.note || habit.description);
+
+    return (
+      <div key={habit.id} className="relative">
+        <button
+          onClick={() => handleInstantAdd(habit.name, habit.id, {
+            duration: habit.frequency,
+            notes: habit.description,
+          })}
+          disabled={added}
+          className={`touch-btn w-full flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
+            added
+              ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
+              : "bg-card border-primary/30 shadow-sm"
+          }`}
+          style={{ minHeight: 90 }}
+        >
+          <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+          <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
+            {habit.name}
+          </span>
+          {added && (
+            <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="font-hand text-[9px] text-bloom">
+              added
+            </motion.span>
+          )}
+        </button>
+
+        {/* Info bubble */}
+        {hasInfo && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpandedInfo(expandedInfo === habit.id ? null : habit.id);
+            }}
+            className="absolute top-1 right-1 h-5 w-5 rounded-full bg-secondary/80 flex items-center justify-center z-10"
+          >
+            <HelpCircle className="h-3 w-3 text-muted-foreground" />
+          </button>
+        )}
+      </div>
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -232,59 +294,17 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
             </p>
           )}
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3">
-            {filteredHabits.map(habit => {
-              const IconComponent = HABIT_ICONS[habit.icon] || CapsuleIcon;
-              const added = isAlreadyAdded(habit.name) || isJustAdded(habit.id);
-              const hasInfo = !!(habit.nzBrands || habit.note);
-
-              return (
-                <div key={habit.id} className="relative">
-                  <button
-                    onClick={() => handleInstantAdd(habit.name, habit.id, {
-                      duration: habit.frequency,
-                      notes: habit.description,
-                    })}
-                    disabled={added}
-                    className={`touch-btn w-full flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
-                      added
-                        ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
-                        : "bg-card border-primary/30 shadow-sm"
-                    }`}
-                    style={{ minHeight: 90 }}
-                  >
-                    <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
-                    <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
-                      {habit.name}
-                    </span>
-                    {habit.womenBadge && !added && (
-                      <span className="inline-flex items-center rounded-full bg-sage-mist/20 px-1.5 py-0 font-hand text-[8px] font-bold text-sage-mist">
-                        women
-                      </span>
-                    )}
-                    {added && (
-                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="font-hand text-[9px] text-bloom">
-                        added
-                      </motion.span>
-                    )}
-                  </button>
-
-                  {/* Info bubble for supplements */}
-                  {hasInfo && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setExpandedInfo(expandedInfo === habit.id ? null : habit.id);
-                      }}
-                      className="absolute top-1 right-1 h-5 w-5 rounded-full bg-secondary/80 flex items-center justify-center z-10"
-                    >
-                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          {/* Grouped by subcategory */}
+          {grouped.map(group => (
+            <div key={group.key} className="mt-4">
+              <p className="font-hand text-xs font-bold text-primary/80 mb-2 uppercase tracking-wider">
+                {group.label}
+              </p>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {group.habits.map(renderHabitCard)}
+              </div>
+            </div>
+          ))}
 
           {/* Expanded info overlay */}
           <AnimatePresence>
@@ -306,17 +326,44 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
                         <X className="h-3 w-3 text-muted-foreground" />
                       </button>
                     </div>
+
+                    {/* Description with book reference */}
+                    <p className="font-display text-[11px] italic text-foreground/70">
+                      {habit.description}
+                    </p>
+
                     {habit.note && (
                       <p className="font-display text-[11px] italic text-muted-foreground">{habit.note}</p>
                     )}
+                    
+                    {/* NZ Brands with link */}
                     {habit.nzBrands && (
                       <div>
                         <p className="font-hand text-[10px] font-bold text-primary mb-0.5">NZ brands</p>
-                        <p className="font-body text-[11px] text-muted-foreground leading-relaxed">{habit.nzBrands}</p>
+                        {habit.nzBrandUrl ? (
+                          <a
+                            href={habit.nzBrandUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-body text-[11px] text-primary underline leading-relaxed inline-flex items-center gap-1"
+                          >
+                            {habit.nzBrands}
+                            <ExternalLink className="h-2.5 w-2.5 flex-shrink-0" />
+                          </a>
+                        ) : (
+                          <p className="font-body text-[11px] text-muted-foreground leading-relaxed">{habit.nzBrands}</p>
+                        )}
                       </div>
                     )}
+
                     {habit.evidenceNote && (
                       <p className="font-display text-[10px] italic text-muted-foreground/60">{habit.evidenceNote}</p>
+                    )}
+
+                    {habit.sourceBook && (
+                      <p className="font-display text-[9px] text-muted-foreground/50">
+                        Source: {habit.sourceBook} — {habit.sourceAuthor}
+                      </p>
                     )}
                   </div>
                 </motion.div>

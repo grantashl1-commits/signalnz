@@ -16,7 +16,7 @@ import PageTransition from "@/components/PageTransition";
 // Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 // Desktop nav: Home | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
 const navItems = [
-  { path: "/my-practice", icon: Leaf, label: "My Practice" },
+  { path: "/my-practice", icon: Leaf, label: "Habits" },
   { path: "/nutrition", icon: Utensils, label: "Nutrition" },
   { path: "/movement", icon: Dumbbell, label: "Movement" },
   { path: "/cycle", icon: Moon, label: "Cycle" },
@@ -43,7 +43,7 @@ const PRIMARY_TABS = [
 ];
 
 const MORE_ITEMS = [
-  { path: "/my-practice", label: "My Practice", icon: Leaf },
+  { path: "/my-practice", label: "Habits", icon: Leaf },
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/community", label: "Community", icon: Users },
