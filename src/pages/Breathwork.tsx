@@ -4,7 +4,7 @@ import { Volume2, Clock } from "lucide-react";
 import fasciaReleaseImg from "@/assets/somatic/morning-fascia-release.png";
 import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
 import { BotanicalSprig } from "@/components/BotanicalElements";
-import { GatedPage } from "@/components/FeatureGate";
+import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { useCycle } from "@/contexts/CycleContext";
@@ -417,7 +417,7 @@ export default function BreathworkPage() {
   };
 
   return (
-    <GatedPage requiredTier="nourished">
+    <div className="relative">
     <div className="relative">
       <AtmosphericHero size="md">
         <SignalPulse />
@@ -491,6 +491,6 @@ export default function BreathworkPage() {
       )}
       </ContentSection>
     </div>
-    </GatedPage>
+    </div>
   );
 }

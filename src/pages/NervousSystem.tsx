@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain } from "lucide-react";
 import SleepTimer from "@/components/practice/SleepTimer";
 import { useSleepMusic } from "@/hooks/useSleepMusic";
-import { GatedPage } from "@/components/FeatureGate";
+import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { BotanicalSprig } from "@/components/BotanicalElements";
@@ -505,7 +505,7 @@ export default function NervousSystemPage() {
   };
 
   return (
-    <GatedPage requiredTier="nourished">
+    <div>
       <div className="relative">
         <AtmosphericHero size="md">
           <SignalPulse />
@@ -619,7 +619,7 @@ export default function NervousSystemPage() {
           <FasciaReleasePlayer onClose={() => setShowFasciaRelease(false)} />
         )}
       </div>
-    </GatedPage>
+    </div>
   );
 }
 
