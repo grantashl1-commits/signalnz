@@ -249,7 +249,6 @@ export default function MovementPage() {
 
     return (
     <div className="relative">
-    <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <SignalPulse />
