@@ -2,6 +2,7 @@ import type { HabitCategory } from "@/data/self-care-rituals";
 import type { Phase } from "@/lib/cycle-utils";
 
 export type HabitTiming = "morning" | "afternoon" | "evening" | "anytime";
+export type HabitFrequencyType = "daily" | "weekly" | "monthly";
 
 export interface SupplementRDI {
   amount: string;
