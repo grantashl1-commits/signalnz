@@ -612,7 +612,7 @@ export default function AccountPage() {
 
           <button
             onClick={() => {
-              haptic("heavy");
+              haptic("medium");
               const confirmed = window.confirm(
                 "This will permanently delete your account and ALL your data. This action cannot be undone.\n\nAre you sure?"
               );
