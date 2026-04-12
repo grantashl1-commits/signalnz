@@ -12,39 +12,7 @@ import PostCard, { type FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
-/**
- * Deterministic seeded shuffle — same seed always produces the same order.
- * Uses a simple LCG (Linear Congruential Generator).
- */
-function seededShuffle<T>(arr: T[], seed: number): T[] {
-  const copy = [...arr];
-  let s = seed;
-  for (let i = copy.length - 1; i > 0; i--) {
-    s = (s * 1664525 + 1013904223) & 0x7fffffff;
-    const j = s % (i + 1);
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-/** Pick 10 posts for a given date-seed, no duplicate books */
-function pickDailyPosts(allPosts: FeedPost[], dateSeed: string): FeedPost[] {
-  const seedNum = parseInt(dateSeed.replace(/-/g, ""), 10);
-  const shuffled = seededShuffle(allPosts, seedNum);
-
-  const picked: FeedPost[] = [];
-  const usedBooks = new Set<string>();
-
-  for (const p of shuffled) {
-    if (picked.length >= 10) break;
-    const bookKey = p.book_title_author.toLowerCase().trim();
-    if (!usedBooks.has(bookKey)) {
-      usedBooks.add(bookKey);
-      picked.push(p);
-    }
-  }
-  return picked;
-}
+import { pickDailyPosts } from "@/lib/feed-utils";
 
 export default function Feed() {
   const navigate = useNavigate();

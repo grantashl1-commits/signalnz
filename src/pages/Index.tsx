@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { ArrowRight, ShoppingBag, BookOpen, Rss } from "lucide-react";
+import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -13,12 +13,13 @@ import SignalPulse from "@/components/SignalPulse";
 import { useProfile } from "@/hooks/useProfile";
 import NPSSurvey from "@/components/NPSSurvey";
 import DaySection from "@/components/feed/DaySection";
-import PostCard, { type FeedPost } from "@/components/feed/PostCard";
+import { type FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { toast } from "sonner";
+import { pickDailyPosts } from "@/lib/feed-utils";
 
 const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
   follicular: {
@@ -142,35 +143,50 @@ export default function HomePage() {
     } catch { return new Set(); }
   });
 
-  const { data: feedPosts, isLoading: feedLoading } = useQuery({
-    queryKey: ["feed-posts", format(new Date(), "yyyy-MM-dd")],
+  const [showFeedHistory, setShowFeedHistory] = useState(false);
+  const [historyDays, setHistoryDays] = useState(7);
+
+  const { data: allFeedPosts, isLoading: feedLoading } = useQuery({
+    queryKey: ["feed-posts-all"],
     queryFn: async () => {
-      const today = format(new Date(), "yyyy-MM-dd");
-      const { data: todayPosts, error } = await supabase
-        .from("feed_posts").select("*").eq("publish_date", today).order("post_number").limit(5);
-      if (error) throw error;
-      if (todayPosts && todayPosts.length > 0) return todayPosts as FeedPost[];
-
-      const { count } = await supabase.from("feed_posts").select("*", { count: "exact", head: true });
-      if (!count || count === 0) return MOCK_POSTS;
-
-      const seed = today.split("-").join("");
-      const seedNum = parseInt(seed) % count;
-      const offsets = Array.from({ length: 5 }, (_, i) => (seedNum + Math.floor((i * count) / 5)) % count);
       const results: FeedPost[] = [];
-      for (const offset of offsets) {
-        const { data } = await supabase.from("feed_posts").select("*").order("post_number").range(offset, offset);
-        if (data?.[0]) results.push(data[0] as FeedPost);
+      let from = 0;
+      const pageSize = 1000;
+
+      while (true) {
+        const { data, error } = await supabase
+          .from("feed_posts")
+          .select("*")
+          .order("post_number")
+          .range(from, from + pageSize - 1);
+
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+
+        results.push(...(data as FeedPost[]));
+        if (data.length < pageSize) break;
+        from += pageSize;
       }
-      const seen = new Set<string>();
-      const deduped: FeedPost[] = [];
-      for (const p of results) {
-        if (!seen.has(p.book_title_author)) { seen.add(p.book_title_author); deduped.push(p); }
-      }
-      return deduped.length >= 3 ? deduped : results.slice(0, 5);
+
+      return results.length > 0 ? results : MOCK_POSTS;
     },
-    staleTime: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 60 * 4,
   });
+
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const displayPosts = allFeedPosts ? pickDailyPosts(allFeedPosts, todayStr) : MOCK_POSTS;
+
+  const historySections: { date: Date; posts: FeedPost[] }[] = [];
+  if (showFeedHistory && allFeedPosts) {
+    for (let d = 1; d <= historyDays; d++) {
+      const pastDate = subDays(new Date(), d);
+      const pastStr = format(pastDate, "yyyy-MM-dd");
+      const pastPosts = pickDailyPosts(allFeedPosts, pastStr);
+      if (pastPosts.length > 0) {
+        historySections.push({ date: pastDate, posts: pastPosts });
+      }
+    }
+  }
 
   const handleLike = useCallback((postId: string) => {
     setLikedPosts((prev) => {
@@ -196,8 +212,6 @@ export default function HomePage() {
       action: { label: "Go to Journal", onClick: () => navigate("/journal") },
     });
   }, [user, navigate]);
-
-  const displayPosts = feedPosts || MOCK_POSTS;
 
   if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 
@@ -271,12 +285,15 @@ export default function HomePage() {
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.15)}>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2">
               <Rss className="h-4 w-4 text-primary" />
               <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
                 knowledge incoming
               </p>
             </div>
+            <p className="font-body text-sm text-muted-foreground mb-4">
+              10 insights a day — sourced from books that matter
+            </p>
             {feedLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
@@ -291,19 +308,59 @@ export default function HomePage() {
                 ))}
               </div>
             ) : (
-              <DaySection
-                date={new Date()}
-                posts={displayPosts}
-                onLike={handleLike}
-                onJournal={handleJournal}
-                likedPosts={likedPosts}
-              />
+              <>
+                <DaySection
+                  date={new Date()}
+                  posts={displayPosts}
+                  onLike={handleLike}
+                  onJournal={handleJournal}
+                  likedPosts={likedPosts}
+                />
+
+                {!showFeedHistory ? (
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    onClick={() => setShowFeedHistory(true)}
+                    className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-card text-muted-foreground hover:text-foreground hover:bg-card/80 transition-all font-body text-sm"
+                    style={{ boxShadow: "var(--shadow-soft)" }}
+                  >
+                    <History className="h-4 w-4" />
+                    <span>View past insights</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </motion.button>
+                ) : (
+                  <>
+                    <div className="mt-6 space-y-6">
+                      {historySections.map((section) => (
+                        <DaySection
+                          key={format(section.date, "yyyy-MM-dd")}
+                          date={section.date}
+                          posts={section.posts}
+                          onLike={handleLike}
+                          onJournal={handleJournal}
+                          likedPosts={likedPosts}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setHistoryDays((d) => d + 7)}
+                      className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
+                    >
+                      <ChevronDown className="h-3.5 w-3.5" />
+                      <span>Load more days</span>
+                    </button>
+                  </>
+                )}
+
+                <div className="text-center py-4">
+                  <p className="font-body text-xs text-muted-foreground/50">
+                    New insights every day at midnight
+                  </p>
+                </div>
+              </>
             )}
-            <div className="text-center py-4">
-              <p className="font-body text-xs text-muted-foreground/50">
-                New insights every day at midnight
-              </p>
-            </div>
           </motion.div>
         </div>
       </ContentSection>
