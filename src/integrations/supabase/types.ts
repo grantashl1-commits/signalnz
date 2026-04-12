@@ -2534,6 +2534,14 @@ export type Database = {
         Returns: boolean
       }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      lookup_connection_by_code: {
+        Args: { _code: string }
+        Returns: {
+          id: string
+          partner_name: string
+          status: string
+        }[]
+      }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
