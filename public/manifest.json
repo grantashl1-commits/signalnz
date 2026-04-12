@@ -4,6 +4,7 @@
   "id": "/",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["standalone"],
   "orientation": "portrait",
   "dir": "ltr",
   "lang": "en-NZ",
@@ -12,6 +13,46 @@
   "background_color": "#F5F0EC",
   "theme_color": "#F5F0EC",
   "categories": ["health", "fitness", "lifestyle", "food"],
+  "iarc_rating_id": "",
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "shortcuts": [
+    {
+      "name": "Journal",
+      "short_name": "Journal",
+      "url": "/journal",
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=6", "sizes": "512x512" }]
+    },
+    {
+      "name": "Nutrition",
+      "short_name": "Nutrition",
+      "url": "/nutrition",
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=6", "sizes": "512x512" }]
+    },
+    {
+      "name": "Movement",
+      "short_name": "Movement",
+      "url": "/movement",
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=6", "sizes": "512x512" }]
+    },
+    {
+      "name": "Cycle",
+      "short_name": "Cycle",
+      "url": "/cycle",
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=6", "sizes": "512x512" }]
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "icons": [
     {
       "src": "/logos/pwa-icon-512.png?v=6",
