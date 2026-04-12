@@ -95,8 +95,8 @@ export default function ExerciseDemonstration({ exerciseName, size = 96, classNa
     );
   }
 
-  // Prefer illustration_url (anatomy style), fall back to gif_url
-  const imageUrl = (!imgError && exercise?.illustration_url) || exercise?.gif_url;
+  // Prefer gif_url (animated anatomy), fall back to illustration_url
+  const imageUrl = (!imgError && exercise?.gif_url) || exercise?.illustration_url;
 
   if (!imageUrl) {
     return (
