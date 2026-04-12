@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Clock, Dumbbell, ChevronDown, ChevronUp, Target, Flame,
   MessageCircle, Check, BookOpen, Zap, Wind, Shield, ArrowLeftRight,
-  X, PenLine, Save, Heart
+  X, PenLine, Save, Heart, Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -12,11 +12,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { useProfile } from "@/hooks/useProfile";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { TimerButton, WorkoutIntervalButton, isTimeBased } from "@/components/movement/IntervalTimer";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
+import {
+  HR_ZONES, getZoneForBPM, getMaxHR, estimateCalories,
+} from "@/data/workouts";
+import {
+  ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
+  ReferenceArea, ReferenceLine,
+} from "recharts";
 
 interface Props {
   template: WorkoutTemplate;
