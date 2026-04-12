@@ -425,12 +425,55 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   };
 
   // Load AI plan session from localStorage
+  // Load AI plan session — either from explicit "Start this session" or auto-detect from DB plan
   useEffect(() => {
     const stored = localStorage.getItem("signal_ai_active_session");
     if (stored) {
       try { setAiSession(JSON.parse(stored)); } catch {}
+      return;
     }
-  }, []);
+
+    // Auto-detect today's session from saved AI plan
+    async function loadTodayFromAIPlan() {
+      if (!user) return;
+      const { data } = await supabase
+        .from("user_plans")
+        .select("plan_data")
+        .eq("user_id", user.id)
+        .eq("plan_type", "ai_training")
+        .order("generated_at", { ascending: false })
+        .limit(1);
+
+      if (!data || data.length === 0) return;
+
+      const plan = data[0].plan_data as any;
+      if (!plan?.weeks?.length) return;
+
+      // Find today's day in the current week
+      const dayOfWeek = new Date().getDay(); // 0=Sun
+      const sessionIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+      // Use first week's days as the template (weeks rotate)
+      const currentWeek = plan.weeks[0];
+      const days = currentWeek?.days || [];
+      
+      if (days.length === 0) return;
+
+      // Find the session for today (skip rest days)
+      const trainingDays = days.filter((d: any) => 
+        d.session_type !== "rest" && !d.title?.toLowerCase().includes("rest")
+      );
+
+      if (trainingDays.length === 0) return;
+
+      const todayDay = trainingDays[sessionIdx % trainingDays.length];
+      if (todayDay && todayDay.exercises?.length > 0) {
+        setAiSession(todayDay);
+      }
+    }
+
+    loadTodayFromAIPlan();
+  }, [user]);
 
   // No training program AND no AI session
   if (!goalCategoryId && !program && !aiSession) {
@@ -461,8 +504,8 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     );
   }
 
-  // AI session mode
-  if (aiSession && !goalCategoryId) {
+  // AI session mode — ALWAYS takes priority when active
+  if (aiSession) {
     const aiExercises = aiSession.exercises || [];
     const aiAllComplete = aiExercises.length > 0 && completedExercises.size === aiExercises.length;
 
