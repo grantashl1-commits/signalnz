@@ -32,7 +32,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const [sessionLogging, setSessionLogging] = useState(false);
   const [sessionNotes, setSessionNotes] = useState("");
   const [showNotes, setShowNotes] = useState(false);
-
+  const [aiSession, setAiSession] = useState<any>(null);
   const todayStr = new Date().toISOString().split("T")[0];
 
   // Check how many sessions already logged today (to advance to next)
@@ -131,8 +131,16 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     }
   };
 
-  // No training program selected
-  if (!goalCategoryId || !program) {
+  // Load AI plan session from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("signal_ai_active_session");
+    if (stored) {
+      try { setAiSession(JSON.parse(stored)); } catch {}
+    }
+  }, []);
+
+  // No training program AND no AI session
+  if (!goalCategoryId && !program && !aiSession) {
     return (
       <div className="space-y-3">
         <div
@@ -142,7 +150,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           <Dumbbell className="h-8 w-8 text-muted-foreground/30 mx-auto" />
           <div>
             <p className="font-display text-base font-bold text-foreground">Choose a training plan</p>
-            <p className="font-body text-xs text-muted-foreground mt-1">Select a goal and we'll build your programme.</p>
+            <p className="font-body text-xs text-muted-foreground mt-1">Select a goal or generate an AI plan.</p>
           </div>
           <span className="inline-block font-body text-sm font-semibold text-primary">Browse plans →</span>
         </div>
@@ -161,6 +169,105 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           >
             <Plus className="h-4 w-4 text-primary" />
             <span className="font-body text-xs font-medium text-foreground">Log workout</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // AI session mode — show the day from the AI plan
+  if (aiSession && !goalCategoryId) {
+    const aiExercises = aiSession.exercises || [];
+    const aiAllComplete = aiExercises.length > 0 && completedExercises.size === aiExercises.length;
+
+    return (
+      <div className="space-y-4">
+        <div className="card-warm p-4 space-y-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">AI Training Plan</p>
+              <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{aiSession.title || "Session"}</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <Clock className="h-3 w-3 text-muted-foreground" />
+                <span className="font-body text-xs text-muted-foreground">{aiSession.duration_minutes || 45} min</span>
+                {aiSession.session_type && <span className="font-body text-xs text-muted-foreground">· {aiSession.session_type}</span>}
+              </div>
+            </div>
+            <Dumbbell className="h-5 w-5 text-primary shrink-0" />
+          </div>
+
+          {/* HR monitor */}
+          {hr.connected ? (
+            <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
+              <Heart className="h-3.5 w-3.5 text-emerald-600" />
+              <span className="font-body text-xs text-emerald-600 font-medium">{hr.deviceName} · {hr.bpm || "—"} bpm</span>
+            </div>
+          ) : (
+            <button onClick={() => { haptic("light"); hr.connect(); }} className="w-full flex items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2">
+              <Bluetooth className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="font-body text-xs text-muted-foreground">Connect HR monitor (optional)</span>
+            </button>
+          )}
+
+          {/* AI exercise checklist */}
+          {aiExercises.length > 0 && (
+            <div className="space-y-1.5">
+              <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / aiExercises.length) * 100}%` }} />
+              </div>
+              <p className="font-body text-[10px] text-muted-foreground">{completedExercises.size}/{aiExercises.length} exercises</p>
+              <div className="space-y-1">
+                {aiExercises.map((ex: any, idx: number) => {
+                  const exKey = `ai-${idx}`;
+                  const done = completedExercises.has(exKey);
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => toggleComplete(exKey)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-xl p-2.5 cursor-pointer transition-all",
+                        done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"
+                      )}
+                    >
+                      <div className={cn(
+                        "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
+                        done ? "bg-primary border-primary" : "border-muted-foreground/25"
+                      )}>
+                        {done && <Check className="h-3 w-3 text-primary-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className={cn("font-body text-sm", done ? "text-muted-foreground line-through" : "text-foreground")}>{ex.name}</p>
+                        <p className="font-body text-[10px] text-muted-foreground">{ex.sets}×{ex.reps_or_duration}{ex.rpe ? ` · RPE ${ex.rpe}` : ""}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {aiAllComplete && !sessionLogged && (
+            <div className="text-center py-3 rounded-xl bg-primary/5">
+              <p className="font-display text-sm font-bold text-foreground">All exercises done! 🔥</p>
+            </div>
+          )}
+
+          <button
+            onClick={() => { localStorage.removeItem("signal_ai_active_session"); setAiSession(null); toast.success("Session complete!"); }}
+            className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2"
+          >
+            <Save className="h-4 w-4" /> Finish session
+          </button>
+        </div>
+
+        <div className="flex gap-2">
+          <button onClick={() => { haptic("light"); onOpenHR(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
+            <Activity className="h-4 w-4 text-primary" />
+            <span className="font-body text-xs font-medium text-foreground">HR Monitor</span>
+          </button>
+          <button onClick={() => { haptic("light"); onOpenManualLog(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
+            <Plus className="h-4 w-4 text-primary" />
+            <span className="font-body text-xs font-medium text-foreground">Log extra</span>
           </button>
         </div>
       </div>
