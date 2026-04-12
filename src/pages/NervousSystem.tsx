@@ -282,7 +282,7 @@ function BreathworkCard({ p, index, onSelect }: { p: PracticeConfig; index: numb
     <motion.div
       key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className={`card-warm p-5 cursor-pointer touch-card relative ${expanded ? "ring-[1.5px] ring-primary" : ""}`}
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => { if (guardExpand()) setExpanded(!expanded); }}
     >
       <div className="absolute top-4 left-4"><BreathworkIcon id={p.id} /></div>
       <div className="pl-11">
@@ -392,6 +392,7 @@ const SomaticFallbackIcon = ({ id }: { id: string }) => {
 // ── Somatic Card ──
 function SomaticCard({ p, index, onSelect }: { p: PracticeConfig; index: number; onSelect: (p: PracticeConfig) => void }) {
   const [expanded, setExpanded] = useState(false);
+  const { guard: guardExpand } = useGatedExpand("nervous_browse");
   return (
     <motion.div
       key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
@@ -629,6 +630,7 @@ export default function NervousSystemPage() {
 // ── Fascia Release special card ──
 function FasciaReleaseCard({ index, onSelect }: { index: number; onSelect: () => void }) {
   const [expanded, setExpanded] = useState(false);
+  const { guard: guardExpand } = useGatedExpand("nervous_browse");
   return (
     <motion.div
       custom={index} initial="hidden" animate="visible" variants={cardVariant}
