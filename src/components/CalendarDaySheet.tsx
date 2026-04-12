@@ -13,6 +13,8 @@ import {
   PHASE_SHORT,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
+import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
+import { supabase } from "@/integrations/supabase/client";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
