@@ -66,7 +66,7 @@ const RouteFallback = () => (
 );
 
 /** Registers device for push notifications (no-op on web) */
-function PushRegistrar() { usePushNotifications(); return null; }
+const PushRegistrar = () => { usePushNotifications(); return null; };
 
 const App = () => {
   const [appReady, setAppReady] = useState(false);
