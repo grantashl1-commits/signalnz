@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { GatedFeature } from "@/components/FeatureGate";
-import { useNavigate } from "react-router-dom";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { ChevronLeft, ChevronRight, Pencil, Settings } from "lucide-react";

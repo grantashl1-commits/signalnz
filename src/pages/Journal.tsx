@@ -464,7 +464,7 @@ export default function JournalPage() {
   }, [journalSync]);
 
   return (
-    <GatedPage requiredTier="nourished">
+    <GatedFeature featureKey="journal_write">
       <div className="relative">
         <AtmosphericHero size="md">
           <div className="text-center">
@@ -717,6 +717,6 @@ export default function JournalPage() {
           <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
         )}
       </div>
-    </GatedPage>
+    </GatedFeature>
   );
 }
