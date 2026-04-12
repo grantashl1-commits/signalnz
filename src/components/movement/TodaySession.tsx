@@ -32,7 +32,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const [sessionLogging, setSessionLogging] = useState(false);
   const [sessionNotes, setSessionNotes] = useState("");
   const [showNotes, setShowNotes] = useState(false);
-
+  const [aiSession, setAiSession] = useState<any>(null);
   const todayStr = new Date().toISOString().split("T")[0];
 
   // Check how many sessions already logged today (to advance to next)
