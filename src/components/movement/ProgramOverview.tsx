@@ -8,9 +8,10 @@ interface Props {
   phases: ProgramPhase[];
   onStartProgram: () => void;
   onChangeGoal: () => void;
+  onSelectPhase?: (idx: number) => void;
 }
 
-export default function ProgramOverview({ program, phases, onStartProgram, onChangeGoal }: Props) {
+export default function ProgramOverview({ program, phases, onStartProgram, onChangeGoal, onSelectPhase }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -87,12 +88,13 @@ export default function ProgramOverview({ program, phases, onStartProgram, onCha
                 ? `Weeks ${phase.week_start}–${phase.week_end}`
                 : null;
               return (
-                <motion.div
+                <motion.button
                   key={phase.id}
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  className="rounded-xl bg-card border border-border p-4"
+                  onClick={() => onSelectPhase?.(i)}
+                  className="w-full rounded-xl bg-card border border-border p-4 text-left hover:bg-card/80 transition-colors cursor-pointer active:scale-[0.98]"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -114,7 +116,7 @@ export default function ProgramOverview({ program, phases, onStartProgram, onCha
                       {phase.phase_goal}
                     </p>
                   )}
-                </motion.div>
+                </motion.button>
               );
             })}
           </div>
