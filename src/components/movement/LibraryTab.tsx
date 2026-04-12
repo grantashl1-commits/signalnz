@@ -4,6 +4,7 @@ import { Search, Dumbbell, ChevronRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
+import { useGatedExpand } from "@/hooks/useGatedExpand";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
@@ -65,6 +66,7 @@ export default function LibraryTab() {
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
+  const { guard: guardExpand } = useGatedExpand("movement_browse");
 
   // Fetch exercises from DB
   useEffect(() => {
@@ -132,6 +134,7 @@ export default function LibraryTab() {
 
   const handleExpandWorkout = async (workout: QuickWorkout) => {
     haptic("light");
+    if (!guardExpand()) return;
     if (expandedWorkout === workout.id) {
       setExpandedWorkout(null);
       return;

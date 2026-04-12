@@ -9,6 +9,7 @@ import { RecipeShoppingButton, IngredientSearchLinks, ShoppingListPanel } from "
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "@/hooks/use-toast";
+import { useGatedExpand } from "@/hooks/useGatedExpand";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -28,6 +29,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [search, setSearch] = useState("");
   const { isSupported, isActive, toggle } = useWakeLock();
+  const { guard: guardExpand } = useGatedExpand("nutrition_browse");
 
   const filtered = recipes.filter((r) => {
     const matchesPhase = phaseFilter === "all" || r.phase === phaseFilter;
@@ -112,7 +114,7 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
             <button
               onClick={() => {
                 haptic("light");
-                setSelectedRecipe(recipe);
+                if (guardExpand()) setSelectedRecipe(recipe);
               }}
               className="touch-card w-full text-left card-warm overflow-hidden"
             >

@@ -13,6 +13,7 @@ import { useSavedRecipes } from "@/hooks/useSavedRecipes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useCycle } from "@/contexts/CycleContext";
+import { useGatedExpand } from "@/hooks/useGatedExpand";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -46,6 +47,7 @@ interface AIGeneratedRecipe {
 export default function DiscoverTab() {
   const { currentPhase, currentCycleDay } = useCycle();
   const { toggleSave, isSaved } = useSavedRecipes();
+  const { guard: guardExpand, canExpand } = useGatedExpand("nutrition_browse");
   const [search, setSearch] = useState("");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
   const [mealType, setMealType] = useState<string>("All");
