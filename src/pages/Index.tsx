@@ -174,7 +174,13 @@ export default function HomePage() {
   });
 
   const todayStr = format(new Date(), "yyyy-MM-dd");
-  const displayPosts = allFeedPosts ? pickDailyPosts(allFeedPosts, todayStr) : MOCK_POSTS;
+  const displayPosts = allFeedPosts ? (() => {
+    const pinned = allFeedPosts.filter(p => [2, 3, 4].includes(p.post_number));
+    const picked = pickDailyPosts(allFeedPosts, todayStr);
+    const pinnedIds = new Set(pinned.map(p => p.id));
+    const rest = picked.filter(p => !pinnedIds.has(p.id));
+    return [...pinned, ...rest].slice(0, 10);
+  })() : MOCK_POSTS;
 
   const historySections: { date: Date; posts: FeedPost[] }[] = [];
   if (showFeedHistory && allFeedPosts) {
