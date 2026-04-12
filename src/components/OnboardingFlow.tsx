@@ -209,8 +209,20 @@ export default function OnboardingFlow({ onComplete }: Props) {
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const next = () => { haptic("light"); setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1)); };
-  const back = () => { haptic("light"); setStep((s) => Math.max(s - 1, 0)); };
+  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "generating"];
+
+  const next = () => {
+    haptic("light");
+    const nextStep = Math.min(step + 1, TOTAL_STEPS - 1);
+    trackEvent("onboarding_step_completed", { step: step, step_name: STEP_NAMES[step] });
+    trackEvent("onboarding_step_viewed", { step: nextStep, step_name: STEP_NAMES[nextStep] });
+    setStep(nextStep);
+  };
+  const back = () => {
+    haptic("light");
+    trackEvent("onboarding_step_back", { from_step: step, from_step_name: STEP_NAMES[step] });
+    setStep((s) => Math.max(s - 1, 0));
+  };
 
   // Derived macros (calculated once for display in step 4)
   const macros = weightKg && heightCm
