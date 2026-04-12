@@ -35,7 +35,9 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
   const todayStr = new Date().toISOString().split("T")[0];
 
-  // Check if today's session already logged
+  // Check how many sessions already logged today (to advance to next)
+  const [todayLogCount, setTodayLogCount] = useState(0);
+
   useEffect(() => {
     if (!user) return;
     supabase
@@ -44,34 +46,34 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       .eq("user_id", user.id)
       .eq("session_date", todayStr)
       .eq("completed", true)
-      .limit(1)
       .then(({ data }) => {
-        if (data && data.length > 0) setSessionLogged(true);
+        const count = data?.length || 0;
+        setTodayLogCount(count);
+        if (count > 0) setSessionLogged(true);
       });
   }, [user, todayStr]);
 
-  // Load today's workout from training program
+  // Load today's workout from training program — advance past logged sessions
   useEffect(() => {
     if (!goalCategoryId || !program || phases.length === 0) return;
     
     setLoading(true);
-    // Determine which phase/session to show based on day of week
-    const dayOfWeek = new Date().getDay(); // 0=Sun, 1=Mon...
-    const sessionIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Mon=0...Sun=6
+    const dayOfWeek = new Date().getDay();
+    const sessionIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-    // Get first phase's workouts
-    const currentPhaseObj = phases[0]; // TODO: track user's current phase
+    const currentPhaseObj = phases[0];
     fetchWorkouts(currentPhaseObj.id).then(async (wts) => {
       if (wts.length === 0) { setLoading(false); return; }
-      // Pick today's session (cycle through available sessions)
-      const todayWt = wts[sessionIndex % wts.length];
+      // Advance past already-logged sessions for today
+      const nextIdx = (sessionIndex + todayLogCount) % wts.length;
+      const todayWt = wts[nextIdx];
       setTodayWorkout(todayWt);
       
       const exs = await fetchWorkoutExercises(todayWt.id);
       setTodayExercises(exs);
       setLoading(false);
     });
-  }, [goalCategoryId, program, phases, fetchWorkouts, fetchWorkoutExercises]);
+  }, [goalCategoryId, program, phases, fetchWorkouts, fetchWorkoutExercises, todayLogCount]);
 
   const toggleComplete = (id: string) => {
     haptic("light");
@@ -118,6 +120,14 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       haptic("success");
       toast.success("Session logged! 🎉");
       onSessionLogged?.();
+      // After a short delay, advance to the next session
+      setTimeout(() => {
+        setTodayLogCount(c => c + 1);
+        setSessionLogged(false);
+        setCompletedExercises(new Set());
+        setSessionNotes("");
+        setShowNotes(false);
+      }, 2000);
     }
   };
 

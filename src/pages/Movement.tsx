@@ -303,8 +303,8 @@ export default function MovementPage() {
             onSessionLogged={() => setLogRefreshKey(k => k + 1)}
           />
 
-          {/* AI-Generated Today's Workout (if they generated one) */}
-          {aiTodayWorkout && (
+          {/* AI-Generated Today's Workout — only show if user has NO training program */}
+          {!goalCategoryId && aiTodayWorkout && (
             <AISessionLog
               session={aiTodayWorkout}
               trainingWeek={trainingWeek}
