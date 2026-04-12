@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState as useStateLocal } from "react";
-import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus, Flame } from "lucide-react";
+import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus, Flame, Download, Trash2, AlertTriangle } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
@@ -574,6 +574,79 @@ export default function AccountPage() {
             <FeedbackForm onSubmitted={() => setFeedbackOpen(false)} />
           </SheetContent>
         </Sheet>
+
+        {/* Data & Privacy (GDPR) */}
+        <div className="py-3 border-b border-border/10 space-y-3">
+          <p className="font-body text-[10px] text-muted-foreground/40 uppercase tracking-widest">Data & Privacy</p>
+          
+          <button
+            onClick={async () => {
+              if (!session) return;
+              haptic("light");
+              toast.loading("Preparing your data export…", { id: "export" });
+              try {
+                const { data, error } = await supabase.functions.invoke("gdpr-export", {
+                  headers: { Authorization: `Bearer ${session.access_token}` },
+                });
+                if (error) throw error;
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `signal-data-export-${new Date().toISOString().split("T")[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success("Data exported!", { id: "export" });
+              } catch {
+                toast.error("Export failed. Please try again.", { id: "export" });
+              }
+            }}
+            className="flex items-center justify-between w-full py-2"
+          >
+            <span className="text-sm text-muted-foreground flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Download my data
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground/25" />
+          </button>
+
+          <button
+            onClick={() => {
+              haptic("medium");
+              const confirmed = window.confirm(
+                "This will permanently delete your account and ALL your data. This action cannot be undone.\n\nAre you sure?"
+              );
+              if (!confirmed || !session) return;
+              const doubleConfirm = window.prompt(
+                'Type "DELETE" to permanently delete your account:'
+              );
+              if (doubleConfirm !== "DELETE") {
+                toast.info("Account deletion cancelled.");
+                return;
+              }
+              toast.loading("Deleting your account…", { id: "delete-account" });
+              supabase.functions.invoke("gdpr-delete", {
+                headers: { Authorization: `Bearer ${session.access_token}` },
+                body: { confirm: "DELETE_MY_ACCOUNT" },
+              }).then(({ error }) => {
+                if (error) {
+                  toast.error("Deletion failed. Please contact support.", { id: "delete-account" });
+                  return;
+                }
+                toast.success("Account deleted.", { id: "delete-account" });
+                supabase.auth.signOut();
+                navigate("/");
+              });
+            }}
+            className="flex items-center justify-between w-full py-2"
+          >
+            <span className="text-sm text-destructive flex items-center gap-2">
+              <Trash2 className="h-4 w-4" />
+              Delete my account
+            </span>
+            <AlertTriangle className="w-4 h-4 text-destructive/40" />
+          </button>
+        </div>
 
         {/* Legal & support links */}
         <div className="flex flex-wrap gap-x-4 gap-y-1 py-3 border-b border-border/10">
