@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { linkReferral } from "@/hooks/useReferral";
+import { identifyUser, resetUser } from "@/lib/analytics";
+import { setSentryUser, clearSentryUser } from "@/lib/error-monitoring";
 import type { User, Session } from "@supabase/supabase-js";
 
 interface SubscriptionInfo {
@@ -79,9 +81,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setLoading(false);
-        // Link referral on first sign-up
+
         if (event === "SIGNED_IN" && newSession?.user) {
           linkReferral(newSession.user.id);
+          // Identify user in analytics & error monitoring
+          identifyUser(newSession.user.id, { email: newSession.user.email });
+          setSentryUser(newSession.user.id, newSession.user.email);
+        }
+        if (event === "SIGNED_OUT") {
+          resetUser();
+          clearSentryUser();
         }
       }
     );
