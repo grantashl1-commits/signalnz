@@ -7,6 +7,7 @@ import { captureReferralParam } from "@/hooks/useReferral";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
+import SignalLogo from "@/components/SignalLogo";
 import { supabase } from "@/integrations/supabase/client";
 
 // Capture ?ref= on first load
