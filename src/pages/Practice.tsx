@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Landmark, Copy, Check } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { GatedPage } from "@/components/FeatureGate";
+import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import SleepCard from "@/components/practice/SleepCard";
@@ -270,20 +272,16 @@ export default function PracticePage() {
       <div className="max-w-2xl mx-auto">
 
         {/* ═══ HERO BANNER ═══ */}
-        <motion.div
-          {...fadeUp(0)}
-          className="relative overflow-hidden rounded-b-[28px] bg-primary px-6 md:px-8 mb-8"
-          style={{ minHeight: '220px', paddingTop: '48px', paddingBottom: '32px', paddingLeft: '24px', paddingRight: '24px' }}
-        >
-          {/* Dots handled by global SignalAmbientDots layer */}
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4 relative z-10">Practice</p>
-          <h1 className="font-display text-[32px] md:text-4xl font-extrabold text-primary-foreground leading-tight relative z-10">
-            Ritual
-          </h1>
-          <p className="font-body text-sm md:text-base text-primary-foreground/75 mt-2 max-w-md relative z-10">
-            Build rituals that honour your cycle.
-          </p>
-        </motion.div>
+        <AtmosphericHero size="md">
+          <SignalPulse />
+          <div className="text-center relative z-10">
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Practice</p>
+            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Ritual</h1>
+            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
+              Build rituals that honour your cycle.
+            </p>
+          </div>
+        </AtmosphericHero>
 
         <div className="px-5 md:px-8 pb-8 md:pb-12">
 
