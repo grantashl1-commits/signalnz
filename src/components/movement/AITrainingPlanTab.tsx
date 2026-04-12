@@ -170,8 +170,6 @@ export default function AITrainingPlanTab() {
 
       const resp = await supabase.functions.invoke("generate-plan", {
         body: {
-          planType: "ai_training",
-          userId: user.id,
           cyclePhase: currentPhase,
           answers: {
             height: answers.height,
@@ -187,14 +185,36 @@ export default function AITrainingPlanTab() {
         },
       });
 
-      if (resp.error) throw resp.error;
+      // Handle credit/limit errors
+      if (resp.error) {
+        const errData = typeof resp.error === 'object' ? resp.error : {};
+        if (errData.message?.includes?.("insufficient_credits") || resp.data?.error === "insufficient_credits") {
+          toast.error("You've used your free plan this month. Extra plans cost 3 credits — top up in your account.");
+          setStep("equipment");
+          setGenerating(false);
+          return;
+        }
+        throw resp.error;
+      }
+
+      if (resp.data?.error === "insufficient_credits") {
+        toast.error(resp.data.message || "Insufficient credits for extra plan generation.");
+        setStep("equipment");
+        setGenerating(false);
+        return;
+      }
 
       const plan = resp.data?.plan || resp.data;
       setExistingPlan(plan);
       localStorage.setItem("signal_ai_workout_plan", JSON.stringify(plan));
       setCanGenerate(false);
       setLastGeneratedAt(new Date().toISOString());
-      toast.success("Your AI training plan is ready!");
+
+      if (resp.data?.is_first_free) {
+        toast.success("Your free AI training plan is ready! 🎉");
+      } else {
+        toast.success(`Plan generated! (${resp.data?.credits_used || 3} credits used)`);
+      }
     } catch (err: any) {
       console.error("Plan generation failed:", err);
       toast.error("Failed to generate plan. Please try again.");
