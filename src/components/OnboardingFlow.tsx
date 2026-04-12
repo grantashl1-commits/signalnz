@@ -399,6 +399,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
       } catch { /* ignore */ }
 
       localStorage.setItem("signal_onboarding_complete", "true");
+      trackEvent("onboarding_completed", {
+        goals_count: movementGoals.length,
+        cycle_status: cycleStatus,
+        fitness_level: fitnessLevel,
+        has_dietary_prefs: dietaryPrefs.length > 0,
+      });
     } catch (e) {
       console.error("Onboarding save error:", e);
     }
