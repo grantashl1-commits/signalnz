@@ -37,6 +37,10 @@ import AnimationPOC from "./pages/AnimationPOC";
 import Admin from "./pages/Admin";
 import Coach from "./pages/Coach";
 import Feed from "./pages/Feed";
+import Terms from "./pages/Terms";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+import Contact from "./pages/Contact";
 
 
 const queryClient = new QueryClient();
