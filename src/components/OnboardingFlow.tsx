@@ -14,6 +14,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format, differenceInYears } from "date-fns";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 
