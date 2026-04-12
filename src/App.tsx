@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { captureReferralParam } from "@/hooks/useReferral";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
 import SignalLogo from "@/components/SignalLogo";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -53,15 +54,7 @@ const queryClient = new QueryClient();
 // Minimal loading fallback for lazy routes
 const RouteFallback = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="relative" style={{ width: 60, height: 60 }}>
-      <motion.div
-        className="absolute inset-0"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-      >
-        <SignalLogo size={60} color="hsl(var(--primary))" />
-      </motion.div>
-    </div>
+    <SignalRingAnimation variant="pulse" size={64} color="hsl(var(--primary))" />
   </div>
 );
 
