@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles, Sprout, Brain, Utensils, Dumbbell, BookOpen, Users, Leaf, Heart, Moon } from "lucide-react";
+import TierComparisonTable from "@/components/TierComparisonTable";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,16 +60,14 @@ const TIERS = [
     creditLabel: "5 AI credits/mo",
     sections: [
       {
-        title: "Cycle",
-        features: ["Basic cycle tracking", "Phase awareness"],
-      },
-      {
-        title: "Home",
-        features: ["Daily check-in", "Phase guidance summary"],
-      },
-      {
-        title: "AI",
-        features: ["5 Signal credits per month"],
+        title: "Included",
+        features: [
+          "Cycle phase graph & log period",
+          "Browse recipes & exercises (titles only)",
+          "Journal writing (nothing saves)",
+          "Habit tracking",
+          "Browse community groups",
+        ],
       },
     ],
   },
@@ -86,20 +85,18 @@ const TIERS = [
     creditLabel: "30 AI credits/mo",
     sections: [
       {
-        title: "Cycle",
-        features: ["Full symptom tracker", "Phase dashboard & insights", "Irregular period support"],
+        title: "Everything in Free, plus",
+        features: [],
       },
       {
-        title: "Nutrition",
-        features: ["Today's meal plan (view)", "Seed cycling guide", "Supplement recommendations"],
-      },
-      {
-        title: "Movement",
-        features: ["Basic training programs", "Exercise demonstrations"],
-      },
-      {
-        title: "AI",
-        features: ["30 credits/month", "Daily Signal + Cycle AI"],
+        title: "Unlocked",
+        features: [
+          "5 knowledge posts per day",
+          "Full cycle logging & phase guidance",
+          "AI Signal, AMA & Give",
+          "Stoic daily readings",
+          "Save to Knowledge Hub",
+        ],
       },
     ],
   },
@@ -121,20 +118,15 @@ const TIERS = [
         features: [],
       },
       {
-        title: "Nutrition",
-        features: ["AI meal plans for your phase", "Fridge → Recipe (photo AI)", "TCM & Ayurveda recipes", "Weekly meal prep planner"],
-      },
-      {
-        title: "Movement",
-        features: ["Full program library", "Periodised training phases", "Body composition tracking"],
-      },
-      {
-        title: "Mind & Body",
-        features: ["Breathwork & somatic guides", "Journal with AI insights", "Dream Studio vision boards", "Nervous system check-in"],
-      },
-      {
-        title: "AI",
-        features: ["150 credits/month", "AMA mode (ask anything)", "Journal intelligence"],
+        title: "Unlocked",
+        features: [
+          "Full recipes, meal plans & shopping list",
+          "AI training plans & workout sessions",
+          "Fridge-to-recipe & plant tracker",
+          "Journal with AI insights & Dream Studio",
+          "Breathwork & nervous system players",
+          "Body visualiser",
+        ],
       },
     ],
   },
@@ -156,16 +148,14 @@ const TIERS = [
         features: [],
       },
       {
-        title: "Community",
-        features: ["Local suburb groups", "Group chat rooms", "Community challenges", "Nearby members map"],
-      },
-      {
-        title: "Practice",
-        features: ["Daily habits with illustrations", "Self-care rituals", "TCM organ clock", "Dosha quiz & Ayurveda tools"],
-      },
-      {
-        title: "AI",
-        features: ["500 credits/month", "Signal memory & patterns", "Full AMA with data context", "Priority feature access"],
+        title: "Unlocked",
+        features: [
+          "Community groups, chat & challenges",
+          "Nearby members map",
+          "Full mindfulness with audio",
+          "Sleep tracking",
+          "Personalised recommendations",
+        ],
       },
     ],
   },
@@ -479,6 +469,9 @@ export default function MembershipPage() {
           })}
         </div>
       </div>
+
+      {/* Tier Comparison Table */}
+      <TierComparisonTable />
 
       {/* AI Credit Cost Breakdown */}
       <motion.div

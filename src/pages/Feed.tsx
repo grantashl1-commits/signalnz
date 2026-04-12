@@ -1,14 +1,16 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Rss, BookOpen, ChevronDown, History } from "lucide-react";
-import { format, subDays } from "date-fns";
+import { format, subDays, differenceInDays } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import DaySection from "@/components/feed/DaySection";
-import PostCard, { type FeedPost } from "@/components/feed/PostCard";
+import FeedTeaserCards from "@/components/feed/FeedTeaserCards";
+import type { FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
@@ -17,8 +19,12 @@ import { pickDailyPosts } from "@/lib/feed-utils";
 export default function Feed() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { getFeatureAccess } = useFeatureGate();
+  const feedAccess = getFeatureAccess("feed_access");
+  const canSave = getFeatureAccess("feed_save") === "full";
+
   const [showHistory, setShowHistory] = useState(false);
-  const [historyDays, setHistoryDays] = useState(7); // load 7 more days at a time
+  const [historyDays, setHistoryDays] = useState(7);
 
   const [likedPosts, setLikedPosts] = useState<Set<string>>(() => {
     try {
@@ -51,25 +57,41 @@ export default function Feed() {
 
       return results;
     },
-    staleTime: 1000 * 60 * 60 * 4, // 4 hours
+    staleTime: 1000 * 60 * 60 * 4,
+    enabled: feedAccess === "full", // Only fetch if user has access
   });
 
-  // Compute today's 10 + history
-  const todayStr = format(new Date(), "yyyy-MM-dd");
-  const todayPosts = allPosts ? (() => {
-    // Pin rewritten showcase posts at the top so we can review them
-    return pickDailyPosts(allPosts, todayStr);
-  })() : [];
+  // Use signup date as feed anchor (deterministic timeline)
+  const userCreatedAt = user?.created_at;
+  const feedAnchor = useMemo(() => {
+    if (!userCreatedAt) return new Date();
+    return new Date(userCreatedAt);
+  }, [userCreatedAt]);
 
-  // Build history sections (past days)
-  const historySections: { date: Date; posts: FeedPost[] }[] = [];
+  // Compute today's feed day number (days since signup)
+  const todayDayNum = useMemo(() => {
+    return differenceInDays(new Date(), feedAnchor) + 1; // Day 1 = signup day
+  }, [feedAnchor]);
+
+  // Generate a date seed based on user's feed day
+  const getDaySeed = useCallback((dayOffset: number) => {
+    const dayNum = todayDayNum - dayOffset;
+    // Use a stable seed: combine user creation date + day number
+    const anchorStr = format(feedAnchor, "yyyyMMdd");
+    return `${anchorStr}-${dayNum}`;
+  }, [todayDayNum, feedAnchor]);
+
+  const todayPosts = allPosts ? pickDailyPosts(allPosts, getDaySeed(0)) : [];
+
+  // Build history sections
+  const historySections: { date: Date; posts: FeedPost[]; dayNum: number }[] = [];
   if (showHistory && allPosts) {
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
-      const pastStr = format(pastDate, "yyyy-MM-dd");
-      const pastPosts = pickDailyPosts(allPosts, pastStr);
-      if (pastPosts.length > 0) {
-        historySections.push({ date: pastDate, posts: pastPosts });
+      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d));
+      const dayNum = todayDayNum - d;
+      if (pastPosts.length > 0 && dayNum >= 1) {
+        historySections.push({ date: pastDate, posts: pastPosts, dayNum });
       }
     }
   }
@@ -85,6 +107,11 @@ export default function Feed() {
   }, []);
 
   const handleJournal = useCallback((post: FeedPost) => {
+    if (!canSave) {
+      toast.error("Upgrade to save posts to your Knowledge Hub");
+      navigate("/membership");
+      return;
+    }
     if (!user) {
       toast.error("Sign in to save to your journal");
       return;
@@ -109,7 +136,7 @@ export default function Feed() {
         onClick: () => navigate("/journal"),
       },
     });
-  }, [user, navigate]);
+  }, [user, navigate, canSave]);
 
   return (
     <div className="pb-28">
@@ -122,14 +149,19 @@ export default function Feed() {
             Knowledge Incoming
           </h1>
           <p className="font-body text-sm text-muted-foreground">
-            5 insights a day — sourced from books that matter
+            {feedAccess === "full"
+              ? "5 insights a day — sourced from books that matter"
+              : "Daily insights sourced from books that matter"}
           </p>
         </div>
       </AtmosphericHero>
 
       <ContentSection>
         <div className="max-w-lg mx-auto space-y-6">
-          {isLoading ? (
+          {/* Teaser for non-subscribers */}
+          {feedAccess !== "full" ? (
+            <FeedTeaserCards />
+          ) : isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="bg-card rounded-2xl p-5 space-y-3" style={{ boxShadow: "var(--shadow-soft)" }}>
@@ -181,13 +213,15 @@ export default function Feed() {
                   ))}
 
                   {/* Load more */}
-                  <button
-                    onClick={() => setHistoryDays((d) => d + 7)}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
-                  >
-                    <ChevronDown className="h-3.5 w-3.5" />
-                    <span>Load more days</span>
-                  </button>
+                  {todayDayNum > historyDays && (
+                    <button
+                      onClick={() => setHistoryDays((d) => d + 7)}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
+                    >
+                      <ChevronDown className="h-3.5 w-3.5" />
+                      <span>Load more days</span>
+                    </button>
+                  )}
                 </>
               )}
             </>

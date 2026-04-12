@@ -1031,6 +1031,60 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_features: {
+        Row: {
+          category: string
+          category_sort: number
+          created_at: string
+          feature_key: string
+          feature_label: string
+          feature_sort: number
+          free_access: string
+          free_note: string | null
+          id: string
+          nourished_access: string
+          nourished_note: string | null
+          rooted_access: string
+          rooted_note: string | null
+          thriving_access: string
+          thriving_note: string | null
+        }
+        Insert: {
+          category: string
+          category_sort?: number
+          created_at?: string
+          feature_key: string
+          feature_label: string
+          feature_sort?: number
+          free_access?: string
+          free_note?: string | null
+          id?: string
+          nourished_access?: string
+          nourished_note?: string | null
+          rooted_access?: string
+          rooted_note?: string | null
+          thriving_access?: string
+          thriving_note?: string | null
+        }
+        Update: {
+          category?: string
+          category_sort?: number
+          created_at?: string
+          feature_key?: string
+          feature_label?: string
+          feature_sort?: number
+          free_access?: string
+          free_note?: string | null
+          id?: string
+          nourished_access?: string
+          nourished_note?: string | null
+          rooted_access?: string
+          rooted_note?: string | null
+          thriving_access?: string
+          thriving_note?: string | null
+        }
+        Relationships: []
+      }
       mindfulness_logs: {
         Row: {
           completed: boolean
