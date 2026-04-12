@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Loader2, Trash2, Sparkles, Calendar, Clock } from "lucide-react";
+import { ChevronLeft, ChevronDown, ChevronRight, Loader2, Trash2, Sparkles, Calendar, Clock, Play, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,39 @@ import goalWeightLossIcon from "@/assets/icons/goal-weight-loss.png";
 import equipHomeNoneIcon from "@/assets/icons/equip-home-none.png";
 import equipHomeSomeIcon from "@/assets/icons/equip-home-some.png";
 import equipGymIcon from "@/assets/icons/equip-gym.png";
+import equipDumbbellIcon from "@/assets/icons/equip-dumbbell.png";
+import equipBarbellIcon from "@/assets/icons/equip-barbell.png";
+import equipBandIcon from "@/assets/icons/equip-band.png";
+import equipKettlebellIcon from "@/assets/icons/equip-kettlebell.png";
+import equipBenchIcon from "@/assets/icons/equip-bench.png";
+import equipCableIcon from "@/assets/icons/equip-cable.png";
+import equipMatIcon from "@/assets/icons/equip-mat.png";
+import equipPullUpBarIcon from "@/assets/icons/equip-pull-up-bar.png";
+import equipSquatRackIcon from "@/assets/icons/equip-squat-rack.png";
+import equipFoamRollerIcon from "@/assets/icons/equip-foam-roller.png";
+
+const EQUIP_ICON_MAP: Record<string, string> = {
+  dumbbell: equipDumbbellIcon, dumbbells: equipDumbbellIcon,
+  barbell: equipBarbellIcon,
+  band: equipBandIcon, "resistance band": equipBandIcon, bands: equipBandIcon,
+  kettlebell: equipKettlebellIcon,
+  bench: equipBenchIcon,
+  cable: equipCableIcon, "cable machine": equipCableIcon,
+  mat: equipMatIcon, "yoga mat": equipMatIcon,
+  "pull-up bar": equipPullUpBarIcon, "pull up bar": equipPullUpBarIcon,
+  "squat rack": equipSquatRackIcon, rack: equipSquatRackIcon,
+  "foam roller": equipFoamRollerIcon,
+  bodyweight: equipHomeNoneIcon, none: equipHomeNoneIcon,
+};
+
+function getEquipmentIcon(exerciseName: string, loadGuidance?: string): string | null {
+  const text = `${exerciseName} ${loadGuidance || ""}`.toLowerCase();
+  for (const [key, icon] of Object.entries(EQUIP_ICON_MAP)) {
+    if (text.includes(key)) return icon;
+  }
+  if (text.includes("press") || text.includes("curl") || text.includes("row") || text.includes("fly")) return equipDumbbellIcon;
+  return null;
+}
 
 type Step = "height" | "weight" | "age" | "goal" | "weight-target" | "days" | "last-workout" | "equipment" | "generating";
 
