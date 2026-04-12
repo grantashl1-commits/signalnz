@@ -308,12 +308,6 @@ Adapt the intensity and exercise selection to match the user's cycle phase each 
         plan_type: "ai_training",
         month_key: monthKey,
       }),
-      // Log AI usage
-      supabase.from("ai_usage").insert({
-        user_identifier: user.id,
-        function_name: "generate-plan",
-        tokens_used: 5000,
-      }),
     ]);
 
     return new Response(
