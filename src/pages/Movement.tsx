@@ -27,6 +27,7 @@ import AISessionLog from "@/components/movement/AISessionLog";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
+import AITrainingPlanTab from "@/components/movement/AITrainingPlanTab";
 import TodaySession from "@/components/movement/TodaySession";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
@@ -51,7 +52,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress" | "body">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "ai-plan" | "training" | "library" | "log" | "progress">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -88,6 +89,24 @@ export default function MovementPage() {
   const dayOfWeek = new Date().getDay();
   const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
+
+  // Load Supabase workout logs when My Log tab is active
+  useEffect(() => {
+    if (activeTab !== "log") return;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("workout_logs")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("completed", true)
+        .order("session_date", { ascending: false })
+        .limit(20)
+        .then(({ data }) => {
+          if (data) setSupabaseLogs(data as any);
+        });
+    });
+  }, [activeTab, logRefreshKey]);
 
   // ── Body goals from BodyVisualiser ──
   const bodyGoals = useMemo<string[]>(() => {
@@ -182,10 +201,10 @@ export default function MovementPage() {
 
   const TABS = [
     { id: "today" as const, label: "Today" },
+    { id: "ai-plan" as const, label: "AI Training Plan" },
     { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
-    { id: "body" as const, label: "Body" },
     { id: "progress" as const, label: "Progress" },
   ];
 
@@ -201,23 +220,6 @@ export default function MovementPage() {
     return null;
   };
 
-  // Load Supabase workout logs when My Log tab is active
-  useEffect(() => {
-    if (activeTab !== "log") return;
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase
-        .from("workout_logs")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("completed", true)
-        .order("session_date", { ascending: false })
-        .limit(20)
-        .then(({ data }) => {
-          if (data) setSupabaseLogs(data as any);
-        });
-    });
-  }, [activeTab, logRefreshKey]);
 
   const handleManualLog = async () => {
     if (manualLogging) return;
@@ -559,12 +561,8 @@ export default function MovementPage() {
       )}
 
 
-      {/* BODY TAB */}
-      {activeTab === "body" && (
-        <div className="space-y-8 md:space-y-10">
-          <BodyVisualiser />
-        </div>
-      )}
+      {/* AI TRAINING PLAN TAB */}
+      {activeTab === "ai-plan" && <AITrainingPlanTab />}
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}

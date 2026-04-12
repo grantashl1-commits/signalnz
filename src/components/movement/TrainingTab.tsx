@@ -159,6 +159,7 @@ export default function TrainingTab() {
           phases={phases}
           onStartProgram={handleStartProgram}
           onChangeGoal={() => setView("goal-select")}
+          onSelectPhase={handleSelectPhase}
         />
       )}
 
