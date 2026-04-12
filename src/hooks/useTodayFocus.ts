@@ -128,7 +128,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
     }
     if (!eat) {
       // Personalise fallback with dietary preferences
-      const prefs = profile?.dietary_preferences;
+      const prefs = dietaryPreferences;
       if (prefs?.length) {
         eat = `${fallback.eat} Your ${prefs[0].toLowerCase()} preferences are factored in.`;
         hasPersonalisation = true;
@@ -153,7 +153,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
       }
       if (!move) {
         // Personalise with fitness level
-        const level = profile?.fitness_level;
+        const level = fitnessLevel;
         if (level) {
           move = `${fallback.move} Tailored for your ${level} fitness level.`;
           hasPersonalisation = true;
@@ -188,7 +188,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
     }
 
     return { eat, move, rest, cycle, personalised: hasPersonalisation };
-  }, [user, plans, todayWorkout, todayMindfulness, currentPhase, currentCycleDay, cycleStartDate, profile, dayOfWeek]);
+  }, [user, plans, todayWorkout, todayMindfulness, currentPhase, currentCycleDay, cycleStartDate, dietaryPreferences, fitnessLevel, dayOfWeek]);
 
   return {
     focus,
