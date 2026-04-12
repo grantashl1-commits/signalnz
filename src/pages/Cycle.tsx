@@ -138,7 +138,7 @@ export default function CyclePage() {
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">
             {cycleMode === "perimenopause" ? "Perimenopause" : cycleMode === "post-menopause" ? "Post-menopause" : "Cycle"}
           </p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Your Cycle</h1>
+          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Cycle</h1>
           {cycleMode === "cycling" && hasDateSet && (
             <p className="font-body text-sm text-primary-foreground/60">
               Day {info.cycleDay} of {PHASE_SHORT[info.phase].toLowerCase()} · {daysUntil} days remaining
