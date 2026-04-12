@@ -631,6 +631,57 @@ export function getLibraryHabitsForCategory(category: HabitCategory | "foundatio
   return HABIT_LIBRARY.filter(h => h.category === category);
 }
 
+export const SUPPLEMENT_SUBCATEGORY_LABELS: Record<string, string> = {
+  "bone-muscle": "Bone & Muscle",
+  "energy-mood": "Energy & Mood",
+  "gut-microbiome": "Gut Microbiome",
+  "immune-thyroid": "Immune & Thyroid",
+  "skin-hair-nails": "Skin, Hair & Nails",
+  "hormonal-balance": "Hormonal Balance",
+  "brain-cognition": "Brain & Cognition",
+  "anti-inflammatory": "Anti-Inflammatory",
+};
+
+export const MOVEMENT_SUBCATEGORY_LABELS: Record<string, string> = {
+  "cardio": "Cardio",
+  "strength": "Strength",
+  "flexibility": "Flexibility & Mobility",
+  "daily-movement": "Daily Movement",
+  "recovery": "Recovery",
+};
+
+export const NUTRITION_SUBCATEGORY_LABELS: Record<string, string> = {
+  "hydration": "Hydration",
+  "whole-foods": "Whole Foods",
+  "gut-health": "Gut Health",
+  "blood-sugar": "Blood Sugar",
+  "anti-inflammatory": "Anti-Inflammatory",
+};
+
+export const SELFCARE_SUBCATEGORY_LABELS: Record<string, string> = {
+  "morning-ritual": "Morning Rituals",
+  "evening-ritual": "Evening Rituals",
+  "stress-management": "Stress Management",
+  "connection": "Connection",
+  "creativity": "Creativity",
+};
+
+export const FOUNDATIONS_SUBCATEGORY_LABELS: Record<string, string> = {
+  "circadian": "Circadian Rhythm",
+  "breathwork": "Breathwork",
+  "ayurvedic": "Ayurvedic",
+  "cold-heat": "Cold & Heat Therapy",
+  "mindset": "Mindset",
+};
+
+export const SUBCATEGORY_LABELS_BY_CATEGORY: Record<string, Record<string, string>> = {
+  supplements: SUPPLEMENT_SUBCATEGORY_LABELS,
+  movement: MOVEMENT_SUBCATEGORY_LABELS,
+  nutrition: NUTRITION_SUBCATEGORY_LABELS,
+  "self-care": SELFCARE_SUBCATEGORY_LABELS,
+  foundations: FOUNDATIONS_SUBCATEGORY_LABELS,
+};
+
 // ── Starter Packs ──
 export interface StarterPack {
   id: string;
