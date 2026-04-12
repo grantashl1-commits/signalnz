@@ -225,6 +225,13 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
           <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
             {habit.name}
           </span>
+          {habit.frequencyType && habit.frequencyType !== "daily" && (
+            <span className={`font-hand text-[9px] px-1.5 py-0.5 rounded-full ${
+              habit.frequencyType === "weekly" ? "bg-accent/20 text-accent-foreground/70" : "bg-secondary text-muted-foreground"
+            }`}>
+              {habit.frequencyType === "weekly" ? "Weekly" : "Monthly"}
+            </span>
+          )}
           {added && (
             <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="font-hand text-[9px] text-bloom">
               added
