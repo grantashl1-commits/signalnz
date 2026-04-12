@@ -139,12 +139,14 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
   );
 
   // Get library items for selected category
-  const getLibraryItems = (): { id: string; name: string }[] => {
+  const getLibraryItems = (): { id: string; name: string; freqType: HabitFrequencyType }[] => {
     if (!selectedCategory) return [];
     if (selectedCategory === "self-care") {
-      return SELF_CARE_RITUALS.map(r => ({ id: r.id, name: r.name }));
+      return SELF_CARE_RITUALS.map(r => ({ id: r.id, name: r.name, freqType: "monthly" as const }));
     }
-    return getLibraryHabitsForCategory(selectedCategory).map(h => ({ id: h.id, name: h.name }));
+    return getLibraryHabitsForCategory(selectedCategory).map(h => ({
+      id: h.id, name: h.name, freqType: h.frequencyType || parseFrequencyType(h.frequency),
+    }));
   };
 
   const libraryItems = getLibraryItems().filter(item =>
