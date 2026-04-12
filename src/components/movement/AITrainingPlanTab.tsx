@@ -59,8 +59,8 @@ const EQUIPMENT_OPTIONS = [
 ];
 
 export default function AITrainingPlanTab() {
-  const { currentPhase } = useCycle();
-  const { profile } = useProfile();
+  const profileData = useProfile();
+  const { heightCm, weightKg } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -69,9 +69,9 @@ export default function AITrainingPlanTab() {
 
   const [step, setStep] = useState<Step>("height");
   const [answers, setAnswers] = useState<PlanAnswers>({
-    height: profile?.height_cm || 165,
+    height: heightCm || 165,
     heightUnit: "cm",
-    weight: profile?.weight_kg || 70,
+    weight: weightKg || 70,
     age: 30,
     goal: "stronger",
     daysPerWeek: 4,
