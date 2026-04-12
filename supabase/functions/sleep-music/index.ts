@@ -61,10 +61,7 @@ Deno.serve(async (req) => {
 
     const durationSeconds = Math.min(duration || 120, 300);
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // (supabase client already created above)
 
     // --- CACHE CHECK ---
     const cacheKey = await hashText(`${musicPrompt}::${durationSeconds}`);
