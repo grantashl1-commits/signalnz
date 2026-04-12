@@ -16,6 +16,7 @@ import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CycleProvider } from "@/contexts/CycleContext";
 import { HeartRateProvider } from "@/contexts/HeartRateContext";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 // Eagerly load the home page (critical path)
 import Index from "./pages/Index";
@@ -63,6 +64,9 @@ const RouteFallback = () => (
     </div>
   </div>
 );
+
+/** Registers device for push notifications (no-op on web) */
+function PushRegistrar() { usePushNotifications(); return null; }
 
 const App = () => {
   const [appReady, setAppReady] = useState(false);
@@ -134,6 +138,7 @@ const App = () => {
         >
           <BrowserRouter>
             <AuthProvider>
+              <PushRegistrar />
               <CycleProvider>
               <HeartRateProvider>
               <SignalPanelProvider>
