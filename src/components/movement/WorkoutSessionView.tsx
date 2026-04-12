@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Clock, Dumbbell, ChevronDown, ChevronUp, Target, Flame,
   MessageCircle, Check, BookOpen, Zap, Wind, Shield, ArrowLeftRight,
-  X, PenLine, Save, Heart
+  X, PenLine, Save, Heart, Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -12,11 +12,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { useProfile } from "@/hooks/useProfile";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { TimerButton, WorkoutIntervalButton, isTimeBased } from "@/components/movement/IntervalTimer";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
+import {
+  HR_ZONES, getZoneForBPM, getMaxHR, estimateCalories,
+} from "@/data/workouts";
+import {
+  ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
+  ReferenceArea, ReferenceLine,
+} from "recharts";
 
 interface Props {
   template: WorkoutTemplate;
@@ -192,10 +200,83 @@ function ExerciseSwapSheet({
 export default function WorkoutSessionView({ template, exercises, onBack, phaseName }: Props) {
   const { user } = useAuth();
   const { currentPhase } = useCycle();
-  const { connected: hrConnected, deviceName: hrDevice, connect: connectHR } = useGlobalHeartRate();
+  const hr = useGlobalHeartRate();
+  const profile = useProfile();
 
+  // Derive age from profile
+  const profileAge = useMemo(() => {
+    if (profile.dateOfBirth) {
+      const dob = new Date(profile.dateOfBirth);
+      const today = new Date();
+      let a = today.getFullYear() - dob.getFullYear();
+      if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) a--;
+      return a;
+    }
+    return null;
+  }, [profile.dateOfBirth]);
+  const userAge = profileAge || 30;
+  const userWeight = profile.weightKg || 65;
+  const maxHR = getMaxHR(userAge);
+  const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
   // Session started state
   const [sessionStarted, setSessionStarted] = useState(false);
+
+  // ── Inline HR tracking ──
+  const [hrRunning, setHrRunning] = useState(false);
+  const [hrElapsed, setHrElapsed] = useState(0);
+  const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
+  const hrStartRef = useRef<number>(0);
+  const hrIntervalRef = useRef<number | null>(null);
+  const hrSampleRef = useRef<number | null>(null);
+  const hrElapsedRef = useRef(0);
+  const bpmRef = useRef(0);
+
+  useEffect(() => { hrElapsedRef.current = hrElapsed; }, [hrElapsed]);
+  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
+
+  // Auto-start HR tracking when session starts and HR connected
+  useEffect(() => {
+    if (sessionStarted && hr.connected && !hrRunning) {
+      setHrRunning(true);
+      hrStartRef.current = Date.now();
+    }
+  }, [sessionStarted, hr.connected]);
+
+  // Timer
+  useEffect(() => {
+    if (!hrRunning) return;
+    hrStartRef.current = Date.now() - hrElapsedRef.current * 1000;
+    hrIntervalRef.current = window.setInterval(() => {
+      setHrElapsed(Math.floor((Date.now() - hrStartRef.current) / 1000));
+    }, 1000);
+    return () => { if (hrIntervalRef.current) clearInterval(hrIntervalRef.current); };
+  }, [hrRunning]);
+
+  // HR sampling every 2s
+  useEffect(() => {
+    if (!hrRunning) { if (hrSampleRef.current) clearInterval(hrSampleRef.current); return; }
+    const sample = () => {
+      const b = bpmRef.current;
+      if (b <= 0) return;
+      const t = hrStartRef.current > 0 ? Math.floor((Date.now() - hrStartRef.current) / 1000) : hrElapsedRef.current;
+      setHrData(prev => [...prev, { time: t, bpm: b }]);
+    };
+    sample();
+    hrSampleRef.current = window.setInterval(sample, 2000);
+    return () => { if (hrSampleRef.current) clearInterval(hrSampleRef.current); };
+  }, [hrRunning]);
+
+  // Derived HR stats
+  const zone2PlusMins = hrData.filter(d => getZoneForBPM(d.bpm, maxHR).zone >= 2).length * 2 / 60;
+  const zone2Goal = 21;
+  const avgBPM = hrData.length > 0 ? Math.round(hrData.reduce((s, d) => s + d.bpm, 0) / hrData.length) : 0;
+  const liveCals = estimateCalories(avgBPM, hrElapsed / 60, userWeight, userAge);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
 
   // Local exercises — can be modified by swaps
   const [localExercises, setLocalExercises] = useState<WorkoutExercise[]>(exercises);
@@ -360,11 +441,11 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
           <p className="font-body text-xs text-muted-foreground">{template.estimated_duration_mins} min · {template.session_type || "Strength"}</p>
         </div>
 
-        {hrConnected ? (
+        {hr.connected ? (
           <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3.5">
             <Heart className="h-4 w-4 text-emerald-600 shrink-0" />
             <div>
-              <p className="font-body text-sm font-medium text-emerald-700">{hrDevice || "Heart rate monitor"} connected</p>
+              <p className="font-body text-sm font-medium text-emerald-700">{hr.deviceName || "Heart rate monitor"} connected</p>
               <p className="font-body text-xs text-emerald-600/70">Your zones will be tracked automatically</p>
             </div>
           </div>
@@ -375,7 +456,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
               <p className="font-body text-xs text-muted-foreground">Connect a Bluetooth HR monitor (optional)</p>
             </div>
             <button
-              onClick={() => { haptic("light"); connectHR(); }}
+              onClick={() => { haptic("light"); hr.connect(); }}
               className="shrink-0 rounded-full bg-secondary px-3 py-1.5 font-body text-xs text-primary font-medium"
             >
               Connect
@@ -434,7 +515,109 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         </div>
       )}
 
-      {/* Workout-level interval timer for alternating time-based exercises (e.g. run/walk) */}
+      {/* ── Inline HR Stats Panel ── */}
+      {hr.connected && (
+        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+          {/* BPM + Zone + Timer row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <motion.div
+                className="rounded-2xl px-4 py-2 text-center transition-colors duration-500"
+                style={{ backgroundColor: currentZone.color + "18" }}
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <p className="font-body text-3xl font-bold leading-none" style={{ color: currentZone.color }}>
+                  {hr.bpm || "—"}
+                </p>
+                <p className="font-body text-[9px] uppercase tracking-wider mt-0.5" style={{ color: currentZone.color }}>bpm</p>
+              </motion.div>
+              <div>
+                <div
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
+                  style={{ backgroundColor: currentZone.color }}
+                >
+                  <span className="font-body text-[10px] font-bold text-white">
+                    Z{currentZone.zone} · {currentZone.label}
+                  </span>
+                </div>
+                <p className="font-body text-xs text-muted-foreground mt-1">
+                  {liveCals > 0 && <><Flame className="h-3 w-3 inline mr-1" />{liveCals} cal</>}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="font-body text-2xl text-foreground tabular-nums">{formatTime(hrElapsed)}</p>
+              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">elapsed</p>
+            </div>
+          </div>
+
+          {/* Zone 2+ ring */}
+          {(() => {
+            const ringSize = 64;
+            const strokeW = 6;
+            const radius = (ringSize - strokeW) / 2;
+            const circ = 2 * Math.PI * radius;
+            const progress = Math.min(zone2PlusMins / zone2Goal, 1);
+            return (
+              <div className="flex items-center gap-3">
+                <div className="relative shrink-0" style={{ width: ringSize, height: ringSize }}>
+                  <svg width={ringSize} height={ringSize} className="-rotate-90">
+                    <circle cx={ringSize/2} cy={ringSize/2} r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={strokeW} />
+                    <circle cx={ringSize/2} cy={ringSize/2} r={radius} fill="none" stroke={currentZone.color} strokeWidth={strokeW}
+                      strokeDasharray={circ} strokeDashoffset={circ - circ * progress} strokeLinecap="round"
+                      className="transition-all duration-1000" />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="font-body text-[10px] font-bold text-foreground">{Math.round(zone2PlusMins)}</span>
+                    <span className="font-body text-[8px] text-muted-foreground">/{zone2Goal}m</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="font-body text-xs text-foreground">Zone 2+ progress</p>
+                  <div className="flex gap-1 mt-1">
+                    {HR_ZONES.map(z => {
+                      const count = hrData.filter(d => getZoneForBPM(d.bpm, maxHR).zone === z.zone).length;
+                      const mins = Math.round(count * 2 / 60 * 10) / 10;
+                      return mins > 0 ? (
+                        <span key={z.zone} className="rounded-full px-1.5 py-0.5 font-body text-[9px] text-white font-medium" style={{ backgroundColor: z.color }}>
+                          Z{z.zone} {mins}m
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                  {avgBPM > 0 && (
+                    <p className="font-body text-[10px] text-muted-foreground mt-1">Avg {avgBPM} bpm</p>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Mini HR graph */}
+          {hrData.length >= 4 && (
+            <div className="h-24 rounded-xl overflow-hidden">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={hrData.filter((_, i) => i % 3 === 0 || i === hrData.length - 1).map(d => ({
+                  mins: parseFloat((d.time / 60).toFixed(2)), bpm: d.bpm
+                }))} margin={{ top: 2, right: 4, bottom: 0, left: 0 }}>
+                  {/* Zone bands */}
+                  <ReferenceArea y1={40} y2={Math.round(maxHR * 0.6)} fill={HR_ZONES[0].color} fillOpacity={0.08} ifOverflow="extendDomain" />
+                  <ReferenceArea y1={Math.round(maxHR * 0.6)} y2={Math.round(maxHR * 0.7)} fill={HR_ZONES[1].color} fillOpacity={0.1} ifOverflow="extendDomain" />
+                  <ReferenceArea y1={Math.round(maxHR * 0.7)} y2={Math.round(maxHR * 0.8)} fill={HR_ZONES[2].color} fillOpacity={0.1} ifOverflow="extendDomain" />
+                  <ReferenceArea y1={Math.round(maxHR * 0.8)} y2={maxHR + 10} fill={HR_ZONES[3].color} fillOpacity={0.1} ifOverflow="extendDomain" />
+                  <XAxis dataKey="mins" type="number" domain={["dataMin", "dataMax"]} hide />
+                  <YAxis domain={["dataMin - 10", maxHR + 10]} hide />
+                  <ReferenceLine y={Math.round(maxHR * 0.6)} stroke={HR_ZONES[1].color} strokeDasharray="3 3" strokeWidth={0.5} />
+                  <ReferenceLine y={Math.round(maxHR * 0.7)} stroke={HR_ZONES[2].color} strokeDasharray="3 3" strokeWidth={0.5} />
+                  <Line type="monotone" dataKey="bpm" stroke="hsl(var(--primary))" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+      )}
+
       {(() => {
         const timeExercises = localExercises.filter(e => e.exercise && isTimeBased(e.reps));
         if (timeExercises.length >= 2) {

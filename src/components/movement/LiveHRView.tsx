@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Bluetooth, Activity, PenLine, Save, Check } from "lucide-react";
 import {
@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import { WildStar } from "@/components/BotanicalElements";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { useProfile } from "@/hooks/useProfile";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   getUserAge, setUserAge, getUserWeight, setUserWeight, getMaxHR, getZoneForBPM, HR_ZONES,
@@ -180,12 +181,37 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const hr = useGlobalHeartRate();
   const { currentPhase: cyclePhase, currentCycleDay } = useCycle();
   const { user } = useAuth();
+  const profile = useProfile();
   const wakeLock = useWakeLock();
   const releaseWakeLock = wakeLock.release;
 
-  const [age, setAge] = useState(getUserAge() || 30);
-  const [weight, setWeight] = useState(getUserWeight() || 65);
-  const [ageSet, setAgeSet] = useState(!!getUserAge());
+  // Derive age from profile date_of_birth
+  const profileAge = useMemo(() => {
+    if (profile.dateOfBirth) {
+      const dob = new Date(profile.dateOfBirth);
+      const today = new Date();
+      let a = today.getFullYear() - dob.getFullYear();
+      if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) a--;
+      return a;
+    }
+    return null;
+  }, [profile.dateOfBirth]);
+
+  const profileWeight = profile.weightKg;
+
+  // Use profile data first, then localStorage, then defaults
+  const [age, setAge] = useState(profileAge || getUserAge() || 30);
+  const [weight, setWeight] = useState(profileWeight || getUserWeight() || 65);
+  const hasProfileData = !!(profileAge && profileWeight);
+  const [ageSet, setAgeSet] = useState(hasProfileData || !!getUserAge());
+
+  // Update when profile loads
+  useEffect(() => {
+    if (profileAge) { setAge(profileAge); setUserAge(profileAge); }
+    if (profileWeight) { setWeight(profileWeight); setUserWeight(profileWeight); }
+    if (profileAge && profileWeight) setAgeSet(true);
+  }, [profileAge, profileWeight]);
+
   const [running, setRunning] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
