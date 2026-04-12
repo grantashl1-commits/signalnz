@@ -269,10 +269,13 @@ export const CATEGORY_DOT_CLASSES: Record<string, string> = {
   custom: "bg-sketch",
 };
 
+export type HabitFrequencyType = "daily" | "weekly" | "monthly";
+
 export interface Habit {
   id: string;
   name: string;
   category: HabitCategory | string;
+  frequencyType?: HabitFrequencyType;
   duration?: string;
   timing?: string;
   notes?: string;
