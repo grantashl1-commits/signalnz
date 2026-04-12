@@ -170,6 +170,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
   const { updateDisplayName } = useProfile();
   const { setCycleStartDate } = useCycle();
 
+  // Track onboarding start
+  useEffect(() => {
+    trackEvent("onboarding_started");
+    trackEvent("onboarding_step_viewed", { step: 0, step_name: "welcome" });
+  }, []);
+
   // Navigation
   const [step, setStep] = useState(0);
 
