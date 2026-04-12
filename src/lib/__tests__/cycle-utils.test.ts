@@ -113,11 +113,11 @@ describe("getDaysUntilNextPhase", () => {
 });
 
 describe("getPeriodLength", () => {
-  it("calculates days between two dates", () => {
-    expect(getPeriodLength("2025-01-01", "2025-01-05")).toBe(4);
+  it("calculates days between two dates (inclusive)", () => {
+    expect(getPeriodLength("2025-01-01", "2025-01-05")).toBe(5);
   });
 
-  it("returns 0 for same date", () => {
-    expect(getPeriodLength("2025-01-01", "2025-01-01")).toBe(0);
+  it("returns 1 for same date (inclusive)", () => {
+    expect(getPeriodLength("2025-01-01", "2025-01-01")).toBe(1);
   });
 });
