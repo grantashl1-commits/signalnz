@@ -17,6 +17,17 @@ serve(async (req) => {
     const userIdentifier = body.userIdentifier;
     if (userIdentifier) {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+      // Rate limiting: 5 per minute (expensive operation)
+      const { data: rl } = await sb.rpc("check_rate_limit", {
+        _user_id: userIdentifier, _function_name: "fridge-recipe", _max_per_minute: 5,
+      });
+      if (rl && !rl.allowed) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
       const { error: creditError } = await sb.rpc("deduct_ai_credits", {
         p_user_identifier: userIdentifier,
         p_cost: 2,

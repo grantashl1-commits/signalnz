@@ -29,6 +29,18 @@ serve(async (req) => {
       );
     }
 
+    // Rate limiting: 10 requests per minute per user
+    if (userIdentifier) {
+      const { data: rl } = await supabase.rpc("check_rate_limit", {
+        _user_id: userIdentifier, _function_name: "signal-ai", _max_per_minute: 10,
+      });
+      if (rl && !rl.allowed) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     // Tiered credit cost: AMA=2, Signal=1
     const creditCost = isAMA ? 2 : 1;
 

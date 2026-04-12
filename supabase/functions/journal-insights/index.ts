@@ -29,6 +29,16 @@ serve(async (req) => {
       );
     }
 
+    // Rate limiting: 10 per minute
+    const { data: rl } = await supabase.rpc("check_rate_limit", {
+      _user_id: userIdentifier, _function_name: "journal-insights", _max_per_minute: 10,
+    });
+    if (rl && !rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Credit check: journal insights costs 1 credit (atomic)
     const { error: creditError } = await supabase.rpc("deduct_ai_credits", {
       p_user_identifier: userIdentifier,
