@@ -397,7 +397,7 @@ function SomaticCard({ p, index, onSelect }: { p: PracticeConfig; index: number;
     <motion.div
       key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className="card-warm p-5 cursor-pointer touch-card"
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => { if (guardExpand()) setExpanded(!expanded); }}
     >
       <div className="flex gap-3 items-start">
         {p.illustrationUrl ? (
@@ -635,7 +635,7 @@ function FasciaReleaseCard({ index, onSelect }: { index: number; onSelect: () =>
     <motion.div
       custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className="card-warm p-5 cursor-pointer touch-card"
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => { if (guardExpand()) setExpanded(!expanded); }}
     >
       <div className="flex gap-3 items-start">
         <img src={fasciaReleaseImg} alt="Morning Fascia Release" className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
