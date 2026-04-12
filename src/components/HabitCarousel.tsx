@@ -106,9 +106,9 @@ export default function HabitCarousel() {
             {/* Close button */}
             <button
               onClick={closeRitual}
-              className="absolute top-[calc(var(--safe-top)+12px)] right-4 h-10 w-10 rounded-full bg-white/10 flex items-center justify-center z-10"
+              className="absolute top-[calc(var(--safe-top)+16px)] right-4 h-11 w-11 rounded-full bg-white/15 border border-white/20 flex items-center justify-center z-10 active:bg-white/25 transition-colors"
             >
-              <X className="h-5 w-5 text-white/60" />
+              <X className="h-5 w-5 text-white/80" />
             </button>
 
             {selectedIndex === null ? (
