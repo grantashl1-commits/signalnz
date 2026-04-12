@@ -58,9 +58,10 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     id: "lib-magnesium", name: "Magnesium Glycinate",
     description: "200–300mg elemental magnesium in the evening for sleep, PMS, muscle tension, and mood.",
     frequency: "Evening", evidenceNote: "Magnesium supports sleep quality, muscle relaxation, and menstrual symptom relief.",
-    icon: "capsule", category: "supplements", timing: "evening", womenBadge: true,
+    icon: "capsule", category: "supplements", subcategory: "bone-muscle", timing: "evening", womenBadge: true,
     note: "Check label for \"elemental magnesium\" — not compound weight.",
     nzBrands: "Ethical Nutrients Mega Magnesium, Good Health Magnesium Sleep, Clinicians Magnesium",
+    nzBrandUrl: "https://www.chemistwarehouse.co.nz/search?searchtext=magnesium+glycinate",
     rdi: {
       amount: "310–320mg", unit: "mg", nzRdi: "310–320mg/day women; 350–400mg/day perimenopause",
       upperLimit: "350mg/day from supplements", timing: "Evening — supports sleep and muscle recovery",
