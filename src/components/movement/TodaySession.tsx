@@ -476,7 +476,11 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   }, [user]);
 
   // No training program AND no AI session
-  if (!goalCategoryId && !program && !aiSession) {
+  const hasManualProgram = !!(goalCategoryId && program && todayWorkout);
+  const hasAiSession = !!aiSession;
+  const hasNothing = !hasManualProgram && !hasAiSession && !loading;
+
+  if (hasNothing) {
     return (
       <div className="space-y-3">
         <div
@@ -504,13 +508,24 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     );
   }
 
-  // AI session mode — ALWAYS takes priority when active
-  if (aiSession) {
-    const aiExercises = aiSession.exercises || [];
-    const aiAllComplete = aiExercises.length > 0 && completedExercises.size === aiExercises.length;
-
+  if (loading && !hasAiSession) {
     return (
-      <div className="space-y-4">
+      <div className="card-warm p-8 flex items-center justify-center">
+        <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  /* ── Render AI + Manual side-by-side ── */
+  const aiExercises = aiSession?.exercises || [];
+  const aiAllComplete = aiExercises.length > 0 && completedExercises.size >= aiExercises.length;
+  // For the manual program, count only non-AI completed keys
+  const manualCompletedCount = todayExercises.filter(ex => completedExercises.has(ex.id)).length;
+
+  return (
+    <div className="space-y-4">
+      {/* AI Session card */}
+      {hasAiSession && (
         <div className="card-warm p-4 space-y-4">
           <div className="flex items-start justify-between">
             <div>
@@ -540,28 +555,22 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           {aiExercises.length > 0 && (
             <div className="space-y-1.5">
               <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / aiExercises.length) * 100}%` }} />
+                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(aiExercises.filter((_: any, i: number) => completedExercises.has(`ai-${i}`)).length / aiExercises.length) * 100}%` }} />
               </div>
-              <p className="font-body text-[10px] text-muted-foreground">{completedExercises.size}/{aiExercises.length} exercises</p>
+              <p className="font-body text-[10px] text-muted-foreground">{aiExercises.filter((_: any, i: number) => completedExercises.has(`ai-${i}`)).length}/{aiExercises.length} exercises</p>
               <div className="space-y-1">
                 {aiExercises.map((ex: any, idx: number) => {
                   const exKey = `ai-${idx}`;
                   const done = completedExercises.has(exKey);
                   return (
-                    <AIExerciseRow
-                      key={idx}
-                      ex={ex}
-                      exKey={exKey}
-                      done={done}
-                      onToggle={() => toggleComplete(exKey)}
-                    />
+                    <AIExerciseRow key={idx} ex={ex} exKey={exKey} done={done} onToggle={() => toggleComplete(exKey)} />
                   );
                 })}
               </div>
             </div>
           )}
 
-          {aiAllComplete && !sessionLogged && (
+          {aiAllComplete && (
             <div className="text-center py-3 rounded-xl bg-primary/5">
               <p className="font-display text-sm font-bold text-foreground">All exercises done! 🔥</p>
             </div>
@@ -574,161 +583,128 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             <Save className="h-4 w-4" /> Finish session
           </button>
         </div>
+      )}
 
-        <div className="flex gap-2">
-          <button onClick={() => { haptic("light"); onOpenHR(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
-            <Activity className="h-4 w-4 text-primary" />
-            <span className="font-body text-xs font-medium text-foreground">HR Monitor</span>
-          </button>
-          <button onClick={() => { haptic("light"); onOpenManualLog(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
-            <Plus className="h-4 w-4 text-primary" />
-            <span className="font-body text-xs font-medium text-foreground">Log extra</span>
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="card-warm p-8 flex items-center justify-center">
-        <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!todayWorkout) {
-    return (
-      <div className="card-warm p-5 text-center space-y-2">
-        <p className="font-display text-base font-bold text-foreground">Rest day</p>
-        <p className="font-body text-xs text-muted-foreground">No session scheduled. Enjoy your recovery!</p>
-        <div className="flex gap-2 pt-2">
-          <button onClick={() => { haptic("light"); onOpenHR(); }} className="flex-1 rounded-full bg-secondary px-3 py-2 font-body text-xs text-muted-foreground">
-            <Activity className="h-3.5 w-3.5 inline mr-1" />HR Monitor
-          </button>
-          <button onClick={() => { haptic("light"); onOpenManualLog(); }} className="flex-1 rounded-full bg-secondary px-3 py-2 font-body text-xs text-muted-foreground">
-            <Plus className="h-3.5 w-3.5 inline mr-1" />Log workout
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="card-warm p-4 space-y-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
-              {program?.title} · {todayWorkout.day_label}
-            </p>
-            <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{todayWorkout.title}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <Clock className="h-3 w-3 text-muted-foreground" />
-              <span className="font-body text-xs text-muted-foreground">{todayWorkout.estimated_duration_mins} min</span>
-              {todayWorkout.session_type && (
-                <span className="font-body text-xs text-muted-foreground">· {todayWorkout.session_type}</span>
-              )}
+      {/* Manual program card */}
+      {hasManualProgram && todayWorkout && (
+        <div className="card-warm p-4 space-y-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
+                {program?.title} · {todayWorkout.day_label}
+              </p>
+              <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{todayWorkout.title}</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <Clock className="h-3 w-3 text-muted-foreground" />
+                <span className="font-body text-xs text-muted-foreground">{todayWorkout.estimated_duration_mins} min</span>
+                {todayWorkout.session_type && (
+                  <span className="font-body text-xs text-muted-foreground">· {todayWorkout.session_type}</span>
+                )}
+              </div>
             </div>
+            <Dumbbell className="h-5 w-5 text-primary shrink-0" />
           </div>
-          <Dumbbell className="h-5 w-5 text-primary shrink-0" />
-        </div>
 
-        {todayWorkout.session_notes && (
-          <p className="font-body text-xs text-muted-foreground leading-relaxed">{todayWorkout.session_notes}</p>
-        )}
+          {todayWorkout.session_notes && (
+            <p className="font-body text-xs text-muted-foreground leading-relaxed">{todayWorkout.session_notes}</p>
+          )}
 
-        {hr.connected ? (
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
-            <Heart className="h-3.5 w-3.5 text-emerald-600" />
-            <span className="font-body text-xs text-emerald-600 font-medium">{hr.deviceName} · {hr.bpm || "—"} bpm</span>
-          </div>
-        ) : (
-          <button
-            onClick={() => { haptic("light"); hr.connect(); }}
-            className="w-full flex items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2"
-          >
-            <Bluetooth className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="font-body text-xs text-muted-foreground">Connect HR monitor (optional)</span>
-          </button>
-        )}
-
-        {todayExercises.length > 0 && (
-          <div className="space-y-1.5">
-            <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(completedExercises.size / todayExercises.length) * 100}%` }} />
-            </div>
-            <p className="font-body text-[10px] text-muted-foreground">{completedExercises.size}/{todayExercises.length} exercises</p>
-
-            <div className="space-y-1">
-              {todayExercises.map(ex => {
-                const done = completedExercises.has(ex.id);
-                return (
-                  <ExerciseRow
-                    key={ex.id}
-                    exercise={ex.exercise}
-                    exId={ex.id}
-                    done={done}
-                    onToggle={() => toggleComplete(ex.id)}
-                    sets={ex.sets}
-                    reps={ex.reps}
-                    restSeconds={ex.rest_seconds}
-                    rpeTarget={ex.rpe_target}
-                    loadGuidance={ex.load_guidance}
-                    progressionNotes={ex.progression_notes}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {allComplete && !sessionLogged && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-3 rounded-xl bg-primary/5"
-          >
-            <p className="font-display text-sm font-bold text-foreground">All exercises done! 🔥</p>
-          </motion.div>
-        )}
-
-        {!sessionLogged ? (
-          <div className="space-y-2">
-            {showNotes ? (
-              <textarea
-                value={sessionNotes}
-                onChange={e => setSessionNotes(e.target.value)}
-                placeholder="How did it feel?"
-                rows={2}
-                className="w-full rounded-xl bg-background border border-border px-3 py-2 font-body text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
-              />
+          {/* Only show HR in manual card if AI card isn't already showing it */}
+          {!hasAiSession && (
+            hr.connected ? (
+              <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
+                <Heart className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="font-body text-xs text-emerald-600 font-medium">{hr.deviceName} · {hr.bpm || "—"} bpm</span>
+              </div>
             ) : (
-              <button onClick={() => setShowNotes(true)} className="flex items-center gap-1.5 text-muted-foreground">
-                <PenLine className="h-3 w-3" />
-                <span className="font-body text-xs">Add a note</span>
+              <button onClick={() => { haptic("light"); hr.connect(); }} className="w-full flex items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2">
+                <Bluetooth className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="font-body text-xs text-muted-foreground">Connect HR monitor (optional)</span>
               </button>
-            )}
-            <button
-              onClick={handleLogSession}
-              disabled={sessionLogging}
-              className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
-            >
-              {sessionLogging ? (
-                <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <><Save className="h-4 w-4" /> Log this session</>
-              )}
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center gap-2 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-            <Check className="h-4 w-4 text-emerald-600" />
-            <span className="font-body text-sm text-emerald-600 font-medium">Session logged ✓</span>
-          </div>
-        )}
-      </div>
+            )
+          )}
 
+          {todayExercises.length > 0 && (
+            <div className="space-y-1.5">
+              <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(manualCompletedCount / todayExercises.length) * 100}%` }} />
+              </div>
+              <p className="font-body text-[10px] text-muted-foreground">{manualCompletedCount}/{todayExercises.length} exercises</p>
+              <div className="space-y-1">
+                {todayExercises.map(ex => {
+                  const done = completedExercises.has(ex.id);
+                  return (
+                    <ExerciseRow
+                      key={ex.id}
+                      exercise={ex.exercise}
+                      exId={ex.id}
+                      done={done}
+                      onToggle={() => toggleComplete(ex.id)}
+                      sets={ex.sets}
+                      reps={ex.reps}
+                      restSeconds={ex.rest_seconds}
+                      rpeTarget={ex.rpe_target}
+                      loadGuidance={ex.load_guidance}
+                      progressionNotes={ex.progression_notes}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {allComplete && !sessionLogged && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-center py-3 rounded-xl bg-primary/5">
+              <p className="font-display text-sm font-bold text-foreground">All exercises done! 🔥</p>
+            </motion.div>
+          )}
+
+          {!sessionLogged ? (
+            <div className="space-y-2">
+              {showNotes ? (
+                <textarea
+                  value={sessionNotes}
+                  onChange={e => setSessionNotes(e.target.value)}
+                  placeholder="How did it feel?"
+                  rows={2}
+                  className="w-full rounded-xl bg-background border border-border px-3 py-2 font-body text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
+                />
+              ) : (
+                <button onClick={() => setShowNotes(true)} className="flex items-center gap-1.5 text-muted-foreground">
+                  <PenLine className="h-3 w-3" />
+                  <span className="font-body text-xs">Add a note</span>
+                </button>
+              )}
+              <button
+                onClick={handleLogSession}
+                disabled={sessionLogging}
+                className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
+              >
+                {sessionLogging ? (
+                  <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <><Save className="h-4 w-4" /> Log this session</>
+                )}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-2 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+              <Check className="h-4 w-4 text-emerald-600" />
+              <span className="font-body text-sm text-emerald-600 font-medium">Session logged ✓</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Rest day — only show when manual program exists but no workout today AND no AI session */}
+      {!hasManualProgram && !hasAiSession && !loading && (
+        <div className="card-warm p-5 text-center space-y-2">
+          <p className="font-display text-base font-bold text-foreground">Rest day</p>
+          <p className="font-body text-xs text-muted-foreground">No session scheduled. Enjoy your recovery!</p>
+        </div>
+      )}
+
+      {/* Bottom action bar */}
       <div className="flex gap-2">
         <button onClick={() => { haptic("light"); onOpenTraining(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
           <Dumbbell className="h-4 w-4 text-primary" />
