@@ -41,6 +41,7 @@ import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
+import Connect from "./pages/Connect";
 
 
 const queryClient = new QueryClient();
