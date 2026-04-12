@@ -243,6 +243,41 @@ export const HABIT_CAROUSEL_CARDS: HabitCarouselCard[] = [
     vision: "…your body receives the blueprint for vitality instead of inflammation.",
     book: "Food Fix", author: "Dr Mark Hyman", category: "science",
   },
+  {
+    id: "card-34", arcana: "The Monk", numeral: "XXXIV", motif: "sun",
+    title: "Own Your Morning",
+    wisdom: "If you dedicate the first hour of your day to mindful intention…",
+    vision: "…you'll stop reacting to life and start designing it with calm authority.",
+    book: "Think Like a Monk", author: "Jay Shetty", category: "mindset",
+  },
+  {
+    id: "card-35", arcana: "The Lotus", numeral: "XXXV", motif: "flower",
+    title: "Reframe Your Fear",
+    wisdom: "If you treat fear as a compass pointing toward growth instead of danger…",
+    vision: "…you'll walk through doors others never even notice are open.",
+    book: "Think Like a Monk", author: "Jay Shetty", category: "mindset",
+  },
+  {
+    id: "card-36", arcana: "The Vessel", numeral: "XXXVI", motif: "wave",
+    title: "Protect Your Energy",
+    wisdom: "If you become intentional about who and what you give your energy to…",
+    vision: "…you'll have the reserves to pour into the things that truly light you up.",
+    book: "Think Like a Monk", author: "Jay Shetty", category: "self-care",
+  },
+  {
+    id: "card-37", arcana: "The Anchor", numeral: "XXXVII", motif: "crystal",
+    title: "Detach from Outcome",
+    wisdom: "If you fall in love with the process and release attachment to results…",
+    vision: "…you'll find peace in effort itself, and success will follow as a side effect.",
+    book: "Think Like a Monk", author: "Jay Shetty", category: "foundations",
+  },
+  {
+    id: "card-38", arcana: "The Bell", numeral: "XXXVIII", motif: "star",
+    title: "Serve to Grow",
+    wisdom: "If you measure each day by what you gave rather than what you gained…",
+    vision: "…your sense of purpose will deepen into something unshakeable.",
+    book: "Think Like a Monk", author: "Jay Shetty", category: "motivation",
+  },
 ];
 
 export const CATEGORY_COLORS: Record<string, string> = {
