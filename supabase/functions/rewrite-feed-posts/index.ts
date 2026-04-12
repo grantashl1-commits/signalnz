@@ -16,18 +16,33 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { batch_size = 20, offset = 0 } = await req.json().catch(() => ({}));
+    const { batch_size = 30, mode = "bad_quality" } = await req.json().catch(() => ({}));
 
-    // Fetch a batch of posts to rewrite
-    const { data: posts, error } = await supabase
-      .from("feed_posts")
-      .select("*")
-      .order("post_number")
-      .range(offset, offset + batch_size - 1);
+    let posts;
+    if (mode === "bad_quality") {
+      // Find posts that don't use second person — likely raw OCR
+      const { data, error } = await supabase
+        .from("feed_posts")
+        .select("*")
+        .not("post_title_description", "ilike", "%you %")
+        .not("post_title_description", "ilike", "%your %")
+        .order("post_number")
+        .limit(batch_size);
+      if (error) throw error;
+      posts = data;
+    } else {
+      const { offset = 0 } = await req.json().catch(() => ({}));
+      const { data, error } = await supabase
+        .from("feed_posts")
+        .select("*")
+        .order("post_number")
+        .range(offset, offset + batch_size - 1);
+      if (error) throw error;
+      posts = data;
+    }
 
-    if (error) throw error;
     if (!posts || posts.length === 0) {
-      return new Response(JSON.stringify({ message: "No more posts", processed: 0 }), {
+      return new Response(JSON.stringify({ message: "No more posts to process", processed: 0 }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -35,14 +50,11 @@ Deno.serve(async (req) => {
     let processed = 0;
     const errors: string[] = [];
 
-    // Process each post with AI
     for (const post of posts) {
       try {
         const bookTitle = post.book_title_author || "Unknown Book";
         const themes = (post.themes || []).join(", ");
         const rawContent = post.post_title_description || "";
-
-        // Extract any usable context from the raw OCR content
         const contentPreview = rawContent.substring(0, 500);
 
         const prompt = `You are a health & wellness content curator for a women's wellness app called Signal.
@@ -92,14 +104,19 @@ IMPORTANT RULES:
         }
 
         const aiData = await response.json();
-        const rewritten = aiData.choices?.[0]?.message?.content?.trim();
+        let rewritten = aiData.choices?.[0]?.message?.content?.trim();
 
         if (!rewritten || rewritten.length < 100) {
           errors.push(`Post ${post.post_number}: Response too short`);
           continue;
         }
 
-        // Update the post
+        // Strip any AI preamble before the markdown title
+        const boldIdx = rewritten.indexOf("**");
+        if (boldIdx > 0 && boldIdx < 100) {
+          rewritten = rewritten.substring(boldIdx);
+        }
+
         const { error: updateError } = await supabase
           .from("feed_posts")
           .update({ post_title_description: rewritten })
@@ -111,18 +128,24 @@ IMPORTANT RULES:
           processed++;
         }
 
-        // Small delay to avoid rate limiting
-        await new Promise((r) => setTimeout(r, 300));
+        await new Promise((r) => setTimeout(r, 200));
       } catch (e) {
         errors.push(`Post ${post.post_number}: ${e.message}`);
       }
     }
 
+    // Check remaining
+    const { count } = await supabase
+      .from("feed_posts")
+      .select("id", { count: "exact", head: true })
+      .not("post_title_description", "ilike", "%you %")
+      .not("post_title_description", "ilike", "%your %");
+
     return new Response(
       JSON.stringify({
         processed,
         total_in_batch: posts.length,
-        next_offset: offset + batch_size,
+        remaining: count || 0,
         errors: errors.length > 0 ? errors : undefined,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
