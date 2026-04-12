@@ -136,7 +136,7 @@ export default function CyclePage() {
         <SignalPulse />
         <div className="text-center relative z-10">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">
-            {cycleMode === "perimenopause" ? "Perimenopause" : cycleMode === "post-menopause" ? "Post-menopause" : "Cycle tracker"}
+            {cycleMode === "perimenopause" ? "Perimenopause" : cycleMode === "post-menopause" ? "Post-menopause" : "Cycle"}
           </p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Your Cycle</h1>
           {cycleMode === "cycling" && hasDateSet && (

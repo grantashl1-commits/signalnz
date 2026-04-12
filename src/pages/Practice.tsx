@@ -276,8 +276,9 @@ export default function PracticePage() {
           style={{ minHeight: '220px', paddingTop: '48px', paddingBottom: '32px', paddingLeft: '24px', paddingRight: '24px' }}
         >
           {/* Dots handled by global SignalAmbientDots layer */}
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4 relative z-10">Practice</p>
           <h1 className="font-display text-[32px] md:text-4xl font-extrabold text-primary-foreground leading-tight relative z-10">
-            My Practice
+            Ritual
           </h1>
           <p className="font-body text-sm md:text-base text-primary-foreground/75 mt-2 max-w-md relative z-10">
             Build rituals that honour your cycle.
