@@ -9,6 +9,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import { useGatedExpand } from "@/hooks/useGatedExpand";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
 import BreathworkPlayer from "@/components/practice/BreathworkPlayer";
 import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
@@ -158,6 +159,7 @@ function MeditationCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const theme = CARD_THEME[script.category] || DEFAULT_THEME;
+  const { guard: guardExpand } = useGatedExpand("nervous_browse");
   const CornerIcon = theme.Icon;
 
   return (
@@ -194,8 +196,8 @@ function MeditationCard({
 
         {!expanded && (
           <div className="mt-2 flex items-end justify-between gap-3">
-            <button onClick={() => { haptic("light"); setExpanded(true); }} className="flex-1 min-w-0 text-left group">
-              <p className="font-body text-[12px] text-muted-foreground leading-relaxed line-clamp-1">{script.description}</p>
+              <button onClick={() => { haptic("light"); if (guardExpand()) setExpanded(true); }} className="flex-1 min-w-0 text-left group">
+                <p className="font-body text-[12px] text-muted-foreground leading-relaxed line-clamp-1">{script.description}</p>
               <span className="inline-flex items-center gap-0.5 font-body text-[10px] text-primary mt-0.5">
                 Read more <ChevronDown className="h-3 w-3" />
               </span>
@@ -275,11 +277,12 @@ const BreathworkIcon = ({ id }: { id: string }) => {
 // ── Breathwork Card ──
 function BreathworkCard({ p, index, onSelect }: { p: PracticeConfig; index: number; onSelect: (p: PracticeConfig) => void }) {
   const [expanded, setExpanded] = useState(false);
+  const { guard: guardExpand } = useGatedExpand("nervous_browse");
   return (
     <motion.div
       key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className={`card-warm p-5 cursor-pointer touch-card relative ${expanded ? "ring-[1.5px] ring-primary" : ""}`}
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => { if (guardExpand()) setExpanded(!expanded); }}
     >
       <div className="absolute top-4 left-4"><BreathworkIcon id={p.id} /></div>
       <div className="pl-11">
@@ -389,11 +392,12 @@ const SomaticFallbackIcon = ({ id }: { id: string }) => {
 // ── Somatic Card ──
 function SomaticCard({ p, index, onSelect }: { p: PracticeConfig; index: number; onSelect: (p: PracticeConfig) => void }) {
   const [expanded, setExpanded] = useState(false);
+  const { guard: guardExpand } = useGatedExpand("nervous_browse");
   return (
     <motion.div
       key={p.id} custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className="card-warm p-5 cursor-pointer touch-card"
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => { if (guardExpand()) setExpanded(!expanded); }}
     >
       <div className="flex gap-3 items-start">
         {p.illustrationUrl ? (
@@ -626,11 +630,12 @@ export default function NervousSystemPage() {
 // ── Fascia Release special card ──
 function FasciaReleaseCard({ index, onSelect }: { index: number; onSelect: () => void }) {
   const [expanded, setExpanded] = useState(false);
+  const { guard: guardExpand } = useGatedExpand("nervous_browse");
   return (
     <motion.div
       custom={index} initial="hidden" animate="visible" variants={cardVariant}
       className="card-warm p-5 cursor-pointer touch-card"
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => { if (guardExpand()) setExpanded(!expanded); }}
     >
       <div className="flex gap-3 items-start">
         <img src={fasciaReleaseImg} alt="Morning Fascia Release" className="w-[44px] h-[44px] object-contain flex-shrink-0 rounded-lg" loading="lazy" width={44} height={44} />
