@@ -24,32 +24,6 @@ import { useTodayFocus } from "@/hooks/useTodayFocus";
 
 
 
-const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
-  follicular: {
-    nutrition: "Embrace fermented foods and complex carbs as estrogen rises.",
-    movement: "This is your strength window — lift heavy, push harder.",
-    nervous: "Coherent breathing — 5 breaths per minute for 5 minutes.",
-    cycle: "Estrogen is climbing — energy and clarity are your superpowers right now.",
-  },
-  menstrual: {
-    nutrition: "Focus on iron-rich foods with vitamin C to support your body.",
-    movement: "Rest is productive. Gentle yoga and walking only.",
-    nervous: "Physiological sigh — instant calm when you need it.",
-    cycle: "Honour your need for rest. This is your inner winter.",
-  },
-  ovulatory: {
-    nutrition: "Antioxidants, folate, and zinc for peak hormonal output.",
-    movement: "Peak energy — go for high intensity and group workouts.",
-    nervous: "You're naturally more social — lean into connection.",
-    cycle: "You're at your communicative peak — use this window wisely.",
-  },
-  luteal: {
-    nutrition: "Higher calorie needs are normal. Eat nutrient-dense complex carbs.",
-    movement: "Intuitive movement. Pilates, moderate strength, walk when in doubt.",
-    nervous: "4-7-8 breathing before bed for deeper sleep.",
-    cycle: "Progesterone is rising — turn inward and prioritise rest.",
-  },
-};
 
 const PHASE_SUBTEXT: Record<Phase, string> = {
   menstrual: "Your body is in its Menstrual phase — rest and restoration are your focus.",
