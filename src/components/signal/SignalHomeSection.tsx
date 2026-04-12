@@ -23,7 +23,7 @@ export default function SignalHomeSection({ onOpenSignal }: Props) {
       const seen = localStorage.getItem("signal_unlock_seen");
       if (!seen) {
         localStorage.setItem("signal_unlock_seen", "true");
-        haptic("heavy");
+        haptic("medium");
       }
       setHasEverSeen(true);
     }
@@ -170,7 +170,7 @@ export default function SignalHomeSection({ onOpenSignal }: Props) {
               </div>
 
               <p className="font-body text-[10px] text-muted-foreground/40 mt-3">
-                {signalCount}/{UNLOCK_THRESHOLD} needed to unlock
+                {signalCount}/2 needed to unlock
               </p>
             </>
           )}
