@@ -11,6 +11,16 @@ serve(async (req) => {
   try {
     const body = await req.json();
 
+    // Rate limiting using userIdentifier if provided
+    const uid = body.userIdentifier || body.entryId || "anon";
+    const allowed = await checkRateLimit(uid);
+    if (!allowed) {
+      return new Response(JSON.stringify({
+        summary: "Too many requests — please wait a moment.",
+        themes: [], emotions: [], recommendations: [], next_steps: [], tags: [],
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 });
+    }
+
     if (body.milestoneType) {
       return handleMilestoneAnalysis(body);
     }
