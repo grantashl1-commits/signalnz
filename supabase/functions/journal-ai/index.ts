@@ -28,6 +28,17 @@ serve(async (req) => {
   }
 });
 
+async function checkRateLimit(userId: string): Promise<boolean> {
+  try {
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: rl } = await sb.rpc("check_rate_limit", {
+      _user_id: userId, _function_name: "journal-ai", _max_per_minute: 10,
+    });
+    return rl?.allowed !== false;
+  } catch { return true; }
+}
+
 async function callAI(prompt: string, maxTokens = 800) {
   const apiKey = Deno.env.get("LOVABLE_API_KEY");
   if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
