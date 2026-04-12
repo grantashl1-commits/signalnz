@@ -54,9 +54,16 @@ export default function Feed() {
     staleTime: 1000 * 60 * 60 * 4, // 4 hours
   });
 
-  // Compute today's 5 + history
+  // Compute today's 10 + history
   const todayStr = format(new Date(), "yyyy-MM-dd");
-  const todayPosts = allPosts ? pickDailyPosts(allPosts, todayStr) : [];
+  const todayPosts = allPosts ? (() => {
+    // Pin rewritten showcase posts at the top so we can review them
+    const pinned = allPosts.filter(p => [2, 3, 4].includes(p.post_number));
+    const picked = pickDailyPosts(allPosts, todayStr);
+    const pinnedIds = new Set(pinned.map(p => p.id));
+    const rest = picked.filter(p => !pinnedIds.has(p.id));
+    return [...pinned, ...rest].slice(0, 10);
+  })() : [];
 
   // Build history sections (past days)
   const historySections: { date: Date; posts: FeedPost[] }[] = [];
