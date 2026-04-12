@@ -411,9 +411,9 @@ export default function BreathworkPage() {
     { id: "somatic" as const, label: "Somatic" },
   ];
 
-  const titles = {
-    breathwork: "Breathwork & Regulation",
-    somatic: "Somatic Practices",
+  const subtitles = {
+    breathwork: "Breathwork & regulation.",
+    somatic: "Somatic practices.",
   };
 
   return (
@@ -423,9 +423,10 @@ export default function BreathworkPage() {
         <SignalPulse />
         <div className="text-center relative z-10">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
-            {titles[section]}
-          </h1>
+          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Still</h1>
+          <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
+            {subtitles[section]}
+          </p>
         </div>
       </AtmosphericHero>
 

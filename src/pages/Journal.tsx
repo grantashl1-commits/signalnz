@@ -39,6 +39,13 @@ const TAB_SUBTITLES: Record<Tab, string> = {
   vision: "Visualise the life you're creating.",
 };
 
+const TAB_TITLES: Record<Tab, string> = {
+  write: "Reflect",
+  entries: "Reflect",
+  insights: "Reflect",
+  vision: "Reflect",
+};
+
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "bg-phase-menstrual",
   follicular: "bg-phase-follicular",
@@ -461,10 +468,8 @@ export default function JournalPage() {
         <AtmosphericHero size="md">
           <div className="text-center">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
-              {tab === "write" ? "My Journal" : tab === "entries" ? "Journal Entries" : "Memories"}
-            </h1>
-            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md">
+            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Reflect</h1>
+            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
               {TAB_SUBTITLES[tab]}
             </p>
           </div>
