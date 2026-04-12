@@ -117,7 +117,7 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
         {/* Book source */}
         <div className="flex items-center gap-2 text-muted-foreground">
           <BookOpen className="h-3.5 w-3.5 flex-shrink-0" />
-          <span className="font-body text-[11px] tracking-wide uppercase truncate">
+          <span className="font-body text-[11px] tracking-wide uppercase leading-snug">
             {post.book_title_author}
           </span>
         </div>
