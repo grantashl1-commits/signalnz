@@ -47,7 +47,7 @@ export interface TodayFocus {
 export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
   const { user } = useAuth();
   const { currentPhase, currentCycleDay, cycleStartDate } = useCycle();
-  const { profile } = useProfile();
+  const profileData = useProfile();
   const today = format(new Date(), "yyyy-MM-dd");
   const dayOfWeek = new Date().toLocaleDateString("en-NZ", { weekday: "long" });
 
