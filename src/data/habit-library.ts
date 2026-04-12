@@ -36,9 +36,10 @@ export interface LibraryHabit {
   name: string;
   description: string;
   frequency: string;
+  frequencyType?: HabitFrequencyType;
   evidenceNote: string;
   icon: string;
-  category: HabitCategory | "foundations";
+  category: HabitCategory;
   subcategory?: SupplementSubcategory | HabitSubcategory;
   timing?: HabitTiming;
   womenBadge?: boolean;
