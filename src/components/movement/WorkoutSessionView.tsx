@@ -441,11 +441,11 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
           <p className="font-body text-xs text-muted-foreground">{template.estimated_duration_mins} min · {template.session_type || "Strength"}</p>
         </div>
 
-        {hrConnected ? (
+        {hr.connected ? (
           <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3.5">
             <Heart className="h-4 w-4 text-emerald-600 shrink-0" />
             <div>
-              <p className="font-body text-sm font-medium text-emerald-700">{hrDevice || "Heart rate monitor"} connected</p>
+              <p className="font-body text-sm font-medium text-emerald-700">{hr.deviceName || "Heart rate monitor"} connected</p>
               <p className="font-body text-xs text-emerald-600/70">Your zones will be tracked automatically</p>
             </div>
           </div>
@@ -456,7 +456,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
               <p className="font-body text-xs text-muted-foreground">Connect a Bluetooth HR monitor (optional)</p>
             </div>
             <button
-              onClick={() => { haptic("light"); connectHR(); }}
+              onClick={() => { haptic("light"); hr.connect(); }}
               className="shrink-0 rounded-full bg-secondary px-3 py-1.5 font-body text-xs text-primary font-medium"
             >
               Connect
