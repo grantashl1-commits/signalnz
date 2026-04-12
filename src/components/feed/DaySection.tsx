@@ -18,7 +18,7 @@ export default function DaySection({ date, posts, onLike, onJournal, likedPosts 
       <div className="flex items-center gap-3 px-1">
         <div className="h-px flex-1 bg-border/40" />
         <span className="font-display text-sm italic text-muted-foreground">
-          {label} — {format(date, "EEEE d MMMM")}
+          {isToday ? `Today — ${format(date, "EEEE d MMMM")}` : label}
         </span>
         <div className="h-px flex-1 bg-border/40" />
       </div>
