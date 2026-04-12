@@ -27,7 +27,7 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
   return copy;
 }
 
-/** Pick 5 posts for a given date-seed, no duplicate books */
+/** Pick 10 posts for a given date-seed, no duplicate books */
 function pickDailyPosts(allPosts: FeedPost[], dateSeed: string): FeedPost[] {
   const seedNum = parseInt(dateSeed.replace(/-/g, ""), 10);
   const shuffled = seededShuffle(allPosts, seedNum);
@@ -36,7 +36,7 @@ function pickDailyPosts(allPosts: FeedPost[], dateSeed: string): FeedPost[] {
   const usedBooks = new Set<string>();
 
   for (const p of shuffled) {
-    if (picked.length >= 5) break;
+    if (picked.length >= 10) break;
     const bookKey = p.book_title_author.toLowerCase().trim();
     if (!usedBooks.has(bookKey)) {
       usedBooks.add(bookKey);
@@ -151,7 +151,7 @@ export default function Feed() {
             Knowledge Incoming
           </h1>
           <p className="font-body text-sm text-muted-foreground">
-            5 insights a day — sourced from books that matter
+            10 insights a day — sourced from books that matter
           </p>
         </div>
       </AtmosphericHero>
@@ -160,7 +160,7 @@ export default function Feed() {
         <div className="max-w-lg mx-auto space-y-6">
           {isLoading ? (
             <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="bg-card rounded-2xl p-5 space-y-3" style={{ boxShadow: "var(--shadow-soft)" }}>
                   <Skeleton className="h-3 w-2/3" />
                   <div className="flex gap-1.5">
