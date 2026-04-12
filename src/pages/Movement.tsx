@@ -562,7 +562,16 @@ export default function MovementPage() {
 
 
       {/* AI TRAINING PLAN TAB */}
-      {activeTab === "ai-plan" && <AITrainingPlanTab />}
+      {activeTab === "ai-plan" && (
+        <AITrainingPlanTab
+          onStartSession={(dayData) => {
+            // Store the AI session day data for the Today tab to pick up
+            localStorage.setItem("signal_ai_active_session", JSON.stringify(dayData));
+            setActiveTab("today");
+            toast.success(`Starting: ${dayData.title || "Session"}`);
+          }}
+        />
+      )}
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
