@@ -3174,6 +3174,14 @@ export type Database = {
         }
         Returns: string
       }
+      verify_partner_pin: {
+        Args: { _code: string; _pin_hash: string }
+        Returns: {
+          connection_id: string
+          connection_status: string
+          partner_name: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
