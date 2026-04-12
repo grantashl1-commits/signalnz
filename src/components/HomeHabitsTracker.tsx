@@ -91,13 +91,14 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
     if (getHabits().length === 0) setEditMode(false);
   };
 
-  const handleAddFromLibrary = (name: string, id: string, category: HabitCategory) => {
+  const handleAddFromLibrary = (name: string, id: string, category: HabitCategory, freqType?: HabitFrequencyType) => {
     if (habits.some(h => h.name === name)) return;
     haptic("medium");
     const habit: Habit = {
       id: `${category}-${id}-${Date.now()}`,
       name,
       category,
+      frequencyType: freqType || "daily",
       createdAt: new Date().toISOString(),
     };
     addHabit(habit);
