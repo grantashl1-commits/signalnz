@@ -33,39 +33,20 @@ serve(async (req) => {
     const creditCost = isAMA ? 2 : 1;
 
     if (userIdentifier) {
-      const { data: credits } = await supabase
-        .from("ai_credits")
-        .select("*")
-        .eq("user_identifier", userIdentifier)
-        .maybeSingle();
-
-      if (credits) {
-        if ((credits.credits_remaining || 0) < creditCost) {
+      const { data: remaining, error: creditError } = await supabase.rpc("deduct_ai_credits", {
+        p_user_identifier: userIdentifier,
+        p_cost: creditCost,
+        p_function_name: isAMA ? "signal-ama" : "signal-ai",
+      });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
           return new Response(
             JSON.stringify({ error: `You need ${creditCost} AI credits for this feature. Top up or upgrade your plan to continue.` }),
             { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
           );
         }
-        if (true) {
-          await supabase
-            .from("ai_credits")
-            .update({ credits_remaining: (credits.credits_remaining || 0) - creditCost, updated_at: new Date().toISOString() })
-            .eq("user_identifier", userIdentifier);
-        }
+        console.error("Credit deduction error:", creditError);
       }
-      if (!credits) {
-        await supabase.from("ai_credits").insert({
-          user_identifier: userIdentifier,
-          credits_remaining: 5 - creditCost,
-          tier: "free",
-        });
-      }
-
-      await supabase.from("ai_usage").insert({
-        user_identifier: userIdentifier,
-        function_name: isAMA ? "signal-ama" : "signal-ai",
-        tokens_used: creditCost,
-      });
     }
 
     let systemPrompt: string;

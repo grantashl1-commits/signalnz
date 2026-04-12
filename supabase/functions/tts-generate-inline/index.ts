@@ -81,35 +81,22 @@ Deno.serve(async (req) => {
       }
     }
 
-    // --- CREDIT CHECK ---
+    // --- CREDIT CHECK (atomic) ---
     if (user_identifier) {
-      const { data: credit } = await supabase
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_identifier", user_identifier)
-        .maybeSingle();
-
-      if (credit && credit.credits_remaining !== null && credit.credits_remaining <= 0) {
-        return new Response(
-          JSON.stringify({ error: "You've used all your credits for this month. Upgrade your plan for more." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      // Deduct 1 credit for TTS generation
-      if (credit) {
-        await supabase
-          .from("ai_credits")
-          .update({ credits_remaining: Math.max(0, (credit.credits_remaining || 0) - 1) })
-          .eq("user_identifier", user_identifier);
-      }
-
-      // Log usage
-      await supabase.from("ai_usage").insert({
-        user_identifier,
-        function_name: "tts-generate-inline",
-        tokens_used: text.length,
+      const { error: creditError } = await supabase.rpc("deduct_ai_credits", {
+        p_user_identifier: user_identifier,
+        p_cost: 1,
+        p_function_name: "tts-generate-inline",
       });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
+          return new Response(
+            JSON.stringify({ error: "You've used all your credits for this month. Upgrade your plan for more." }),
+            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.error("Credit deduction error:", creditError);
+      }
     }
 
     // --- GENERATE ---

@@ -29,18 +29,18 @@ serve(async (req) => {
       );
     }
 
-    // Credit check: journal insights costs 1 credit
-    const cost = 1;
-    const { data: credits } = await supabase.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-    if (credits && (credits.credits_remaining || 0) < cost) {
-      return new Response(JSON.stringify({ error: `You need ${cost} AI credit for journal insights. Top up or upgrade.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // Credit check: journal insights costs 1 credit (atomic)
+    const { error: creditError } = await supabase.rpc("deduct_ai_credits", {
+      p_user_identifier: userIdentifier,
+      p_cost: 1,
+      p_function_name: "journal-insights",
+    });
+    if (creditError) {
+      if (creditError.message?.includes("insufficient_credits")) {
+        return new Response(JSON.stringify({ error: "You need 1 AI credit for journal insights. Top up or upgrade." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      console.error("Credit deduction error:", creditError);
     }
-    if (credits) {
-      await supabase.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
-    } else if (!credits) {
-      await supabase.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
-    }
-    await supabase.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "journal-insights", tokens_used: cost });
 
     // Fetch existing profile
     const { data: existingProfile } = await supabase

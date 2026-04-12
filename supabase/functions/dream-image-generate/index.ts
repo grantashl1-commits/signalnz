@@ -30,20 +30,20 @@ serve(async (req) => {
       );
     }
 
-    // Credit check: dream image costs 3 credits
+    // Credit check: dream image costs 3 credits (atomic)
     if (userIdentifier) {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-      const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-      const cost = 3;
-      if (credits && (credits.credits_remaining || 0) < cost) {
-        return new Response(JSON.stringify({ error: `You need ${cost} AI credits for image generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const { error: creditError } = await sb.rpc("deduct_ai_credits", {
+        p_user_identifier: userIdentifier,
+        p_cost: 3,
+        p_function_name: "dream-image-generate",
+      });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
+          return new Response(JSON.stringify({ error: "You need 3 AI credits for image generation. Top up or upgrade your plan." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        console.error("Credit deduction error:", creditError);
       }
-      if (credits) {
-        await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
-      } else if (!credits) {
-        await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
-      }
-      await sb.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "dream-image-generate", tokens_used: cost });
     }
 
     console.log("Generating image with prompt:", prompt.slice(0, 120));
