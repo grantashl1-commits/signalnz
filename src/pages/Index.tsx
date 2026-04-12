@@ -20,33 +20,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, subDays } from "date-fns";
 import { toast } from "sonner";
 import { pickDailyPosts } from "@/lib/feed-utils";
+import { useTodayFocus } from "@/hooks/useTodayFocus";
 
-const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
-  follicular: {
-    nutrition: "Embrace fermented foods and complex carbs as estrogen rises.",
-    movement: "This is your strength window — lift heavy, push harder.",
-    nervous: "Coherent breathing — 5 breaths per minute for 5 minutes.",
-    cycle: "Estrogen is climbing — energy and clarity are your superpowers right now.",
-  },
-  menstrual: {
-    nutrition: "Focus on iron-rich foods with vitamin C to support your body.",
-    movement: "Rest is productive. Gentle yoga and walking only.",
-    nervous: "Physiological sigh — instant calm when you need it.",
-    cycle: "Honour your need for rest. This is your inner winter.",
-  },
-  ovulatory: {
-    nutrition: "Antioxidants, folate, and zinc for peak hormonal output.",
-    movement: "Peak energy — go for high intensity and group workouts.",
-    nervous: "You're naturally more social — lean into connection.",
-    cycle: "You're at your communicative peak — use this window wisely.",
-  },
-  luteal: {
-    nutrition: "Higher calorie needs are normal. Eat nutrient-dense complex carbs.",
-    movement: "Intuitive movement. Pilates, moderate strength, walk when in doubt.",
-    nervous: "4-7-8 breathing before bed for deeper sleep.",
-    cycle: "Progesterone is rising — turn inward and prioritise rest.",
-  },
-};
+
+
 
 const PHASE_SUBTEXT: Record<Phase, string> = {
   menstrual: "Your body is in its Menstrual phase — rest and restoration are your focus.",
@@ -109,7 +86,7 @@ export default function HomePage() {
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const focus = FOCUS[info.phase];
+  const { focus } = useTodayFocus();
 
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
@@ -273,15 +250,16 @@ export default function HomePage() {
           <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
             <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
             {[
-              { label: "eat", value: focus.nutrition },
-              { label: "move", value: focus.movement },
-              { label: "rest", value: focus.nervous },
-              { label: "cycle", value: focus.cycle },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex gap-3 items-start">
+              { label: "eat", value: focus.eat, href: "/nutrition" },
+              { label: "move", value: focus.move, href: "/movement" },
+              { label: "rest", value: focus.rest, href: "/practice" },
+              { label: "cycle", value: focus.cycle, href: "/cycle" },
+            ].map(({ label, value, href }) => (
+              <Link key={label} to={href} className="flex gap-3 items-start group hover:bg-foreground/[0.03] -mx-2 px-2 py-1 rounded-lg transition-colors">
                 <span className="font-body text-section-label w-10 pt-0.5" style={{ color: 'hsl(var(--label-color))' }}>{label}</span>
-                <p className="text-body-lg text-foreground/70 leading-snug flex-1">{value}</p>
-              </div>
+                <p className="text-body-lg text-foreground/70 leading-snug flex-1 group-hover:text-foreground transition-colors">{value}</p>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all mt-1 flex-shrink-0" />
+              </Link>
             ))}
           </motion.div>
         </div>
