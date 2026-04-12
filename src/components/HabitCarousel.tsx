@@ -66,9 +66,6 @@ export default function HabitCarousel() {
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-4 w-4 text-primary" />
         <h3 className="font-display text-sm font-bold text-foreground">Inner Wisdom</h3>
-        <span className="font-body text-[10px] text-muted-foreground ml-auto">
-          {availableDeck.length} cards in deck
-        </span>
       </div>
 
       {/* Draw button or today's card */}
@@ -321,50 +318,120 @@ function RevealedCard({
   card: typeof HABIT_CAROUSEL_CARDS[0];
   onDrawAgain?: () => void;
 }) {
+  const [zoomed, setZoomed] = useState(false);
+
   return (
-    <div
-      className="rounded-[20px] overflow-hidden p-6 flex flex-col items-center"
-      style={{
-        background: "linear-gradient(180deg, hsl(30,33%,97%), hsl(25,25%,93%))",
-        border: "1px solid hsl(25,20%,88%)",
-        boxShadow: "var(--shadow-soft)",
-      }}
-    >
-      <CardMotif motif={card.motif} className="w-14 h-14 text-[hsl(284,20%,55%)] opacity-40" />
+    <>
+      <div
+        onClick={() => setZoomed(true)}
+        className="rounded-[20px] overflow-hidden p-6 flex flex-col items-center cursor-pointer active:scale-[0.98] transition-transform"
+        style={{
+          background: "linear-gradient(180deg, hsl(30,33%,97%), hsl(25,25%,93%))",
+          border: "1px solid hsl(25,20%,88%)",
+          boxShadow: "var(--shadow-soft)",
+        }}
+      >
+        <CardMotif motif={card.motif} className="w-14 h-14 text-[hsl(284,20%,55%)] opacity-40" />
 
-      <span className="font-body text-[9px] uppercase tracking-[0.3em] text-muted-foreground/50 mt-2">
-        {card.numeral} · {card.arcana}
-      </span>
+        <span className="font-body text-[9px] uppercase tracking-[0.3em] text-muted-foreground/50 mt-2">
+          {card.numeral} · {card.arcana}
+        </span>
 
-      <h4 className="font-display text-base font-bold text-foreground text-center mt-2 leading-snug">
-        {card.title}
-      </h4>
+        <h4 className="font-display text-base font-bold text-foreground text-center mt-2 leading-snug">
+          {card.title}
+        </h4>
 
-      <div className="flex items-center gap-1 my-2.5">
-        {[...Array(7)].map((_, i) => (
-          <span key={i} className="w-0.5 h-0.5 rounded-full bg-muted-foreground/20" />
-        ))}
+        <div className="flex items-center gap-1 my-2.5">
+          {[...Array(7)].map((_, i) => (
+            <span key={i} className="w-0.5 h-0.5 rounded-full bg-muted-foreground/20" />
+          ))}
+        </div>
+
+        <p className="font-body text-xs text-foreground/70 leading-relaxed text-center italic">
+          {card.wisdom}
+        </p>
+        <p className="font-body text-xs text-foreground font-medium leading-relaxed text-center mt-2">
+          {card.vision}
+        </p>
+
+        <p className="font-body text-[9px] text-muted-foreground/40 italic mt-4">
+          {card.book} — {card.author}
+        </p>
+
+        <span className="font-body text-[9px] text-muted-foreground/30 mt-2">tap to expand</span>
+
+        {onDrawAgain && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onDrawAgain(); }}
+            className="mt-3 font-body text-[11px] text-primary underline underline-offset-2"
+          >
+            Draw another card
+          </button>
+        )}
       </div>
 
-      <p className="font-body text-xs text-foreground/70 leading-relaxed text-center italic">
-        {card.wisdom}
-      </p>
-      <p className="font-body text-xs text-foreground font-medium leading-relaxed text-center mt-2">
-        {card.vision}
-      </p>
+      {/* Zoomed overlay for mobile reading */}
+      <AnimatePresence>
+        {zoomed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setZoomed(false)}
+            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-[340px] rounded-2xl overflow-hidden p-7 flex flex-col items-center relative"
+              style={{
+                background: "linear-gradient(180deg, hsl(30,33%,97%), hsl(25,25%,93%))",
+                border: "1px solid hsl(25,20%,88%)",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+              }}
+            >
+              <button
+                onClick={() => setZoomed(false)}
+                className="absolute top-3 right-3 h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
 
-      <p className="font-body text-[9px] text-muted-foreground/40 italic mt-4">
-        {card.book} — {card.author}
-      </p>
+              <CardMotif motif={card.motif} className="w-20 h-20 text-[hsl(284,20%,55%)] opacity-50" />
 
-      {onDrawAgain && (
-        <button
-          onClick={onDrawAgain}
-          className="mt-4 font-body text-[11px] text-primary underline underline-offset-2"
-        >
-          Draw another card
-        </button>
-      )}
-    </div>
+              <span className="font-body text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 mt-3">
+                {card.numeral} · {card.arcana}
+              </span>
+
+              <h3 className="font-display text-xl font-bold text-foreground text-center mt-3 leading-snug">
+                {card.title}
+              </h3>
+
+              <div className="flex items-center gap-1 my-3">
+                {[...Array(9)].map((_, i) => (
+                  <span key={i} className="w-0.5 h-0.5 rounded-full bg-muted-foreground/20" />
+                ))}
+              </div>
+
+              <p className="font-body text-[15px] text-foreground/70 leading-relaxed text-center italic">
+                {card.wisdom}
+              </p>
+              <p className="font-body text-[15px] text-foreground font-medium leading-relaxed text-center mt-3">
+                {card.vision}
+              </p>
+
+              <div className="mt-5 pt-3 border-t border-border/50 w-full text-center">
+                <p className="font-body text-[10px] text-muted-foreground/40 italic">
+                  {card.book} — {card.author}
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
