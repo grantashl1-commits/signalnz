@@ -116,7 +116,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
       const vaultEntry: VaultEntry = {
         id: `cycle-note-${dateStr}`,
         entryId: "",
-        category: "remember",
+        category: "body-whispers",
         title: `Cycle note — ${dateLabel}${phaseLabel ? ` (${phaseLabel})` : ""}`,
         preview: notesText.trim().slice(0, 150),
         date: dateLabel,
