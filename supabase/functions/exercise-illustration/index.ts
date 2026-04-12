@@ -7,98 +7,22 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const RAPIDAPI_KEY = Deno.env.get("RAPIDAPI_KEY") || "";
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-// Normalize name for fuzzy matching
+// Use the static GymX-Fitness dataset (ExerciseDB mirror) — no API key needed
+const GYMX_URL = "https://raw.githubusercontent.com/mauryashiva/GymX-Fitness/main/src/data/exercises.json";
+
 function norm(s: string): string {
-  return s.toLowerCase()
-    .replace(/[^a-z0-9 ]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  return s.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
 }
 
-// Calculate similarity score (word overlap ratio)
-function similarity(a: string, b: string): number {
-  const wa = new Set(norm(a).split(" "));
-  const wb = new Set(norm(b).split(" "));
-  let overlap = 0;
-  for (const w of wa) if (wb.has(w)) overlap++;
-  const maxLen = Math.max(wa.size, wb.size);
-  return maxLen === 0 ? 0 : overlap / maxLen;
-}
-
-// Fetch ALL exercises from ExerciseDB
-async function fetchAllExerciseDB(): Promise<Array<{ id: string; name: string; gifUrl: string; target: string; bodyPart: string }>> {
-  const all: any[] = [];
-  const limit = 100;
-  let offset = 0;
-  
-  while (true) {
-    const resp = await fetch(
-      `https://exercisedb.p.rapidapi.com/exercises?limit=${limit}&offset=${offset}`,
-      {
-        headers: {
-          "x-rapidapi-key": RAPIDAPI_KEY,
-          "x-rapidapi-host": "exercisedb.p.rapidapi.com",
-        },
-      }
-    );
-    
-    if (!resp.ok) {
-      console.error(`ExerciseDB fetch failed at offset ${offset}: ${resp.status}`);
-      break;
-    }
-    
-    const batch = await resp.json();
-    if (!Array.isArray(batch) || batch.length === 0) break;
-    
-    all.push(...batch);
-    offset += limit;
-    
-    if (batch.length < limit) break;
-    
-    // Small delay to avoid rate limits
-    await new Promise(r => setTimeout(r, 200));
-  }
-  
-  return all;
-}
-
-// Find best match for an exercise name among ExerciseDB entries
-function findBestMatch(
-  name: string,
-  edbExercises: Array<{ id: string; name: string; gifUrl: string; target: string; bodyPart: string }>,
-  target?: string | null,
-  bodyPart?: string | null
-): { id: string; gifUrl: string; score: number } | null {
-  const normalized = norm(name);
-  
-  let bestScore = 0;
-  let bestMatch: { id: string; gifUrl: string; score: number } | null = null;
-  
-  for (const edb of edbExercises) {
-    let score = similarity(name, edb.name);
-    
-    // Exact normalized match is perfect
-    if (norm(edb.name) === normalized) {
-      return { id: edb.id, gifUrl: edb.gifUrl, score: 1.0 };
-    }
-    
-    // Bonus for matching target muscle or body part
-    if (target && norm(edb.target) === norm(target)) score += 0.1;
-    if (bodyPart && norm(edb.bodyPart) === norm(bodyPart)) score += 0.05;
-    
-    if (score > bestScore) {
-      bestScore = score;
-      bestMatch = { id: edb.id, gifUrl: edb.gifUrl, score };
-    }
-  }
-  
-  // Minimum threshold to accept a match
-  return bestMatch && bestMatch.score >= 0.5 ? bestMatch : null;
-}
+// Manual curated mappings for exercises that don't fuzzy-match
+const MANUAL: Record<string, string> = {
+  "cat-cow": "https://static.exercisedb.dev/media/vu1p9la.gif",
+  "catcow": "https://static.exercisedb.dev/media/vu1p9la.gif",
+  "barbell hip thrust": "https://static.exercisedb.dev/media/HrkUxqY.gif",
+  "clamshell with band": "https://static.exercisedb.dev/media/uxH2kQv.gif",
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -106,86 +30,106 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const body = await req.json().catch(() => ({}));
-    const mode = body.mode || "bulk"; // "bulk" = match all, "batch" = specific IDs
-    const minScore = body.min_score || 0.5;
-    
-    // Step 1: Fetch all ExerciseDB exercises
-    console.log("Fetching all ExerciseDB exercises...");
-    const edbExercises = await fetchAllExerciseDB();
-    console.log(`Fetched ${edbExercises.length} exercises from ExerciseDB`);
-    
-    if (edbExercises.length === 0) {
-      return new Response(JSON.stringify({ error: "Failed to fetch ExerciseDB data" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // Step 1: Fetch static exercise database from GitHub
+    console.log("Fetching GymX exercise data from GitHub...");
+    const resp = await fetch(GYMX_URL);
+    if (!resp.ok) throw new Error(`GitHub fetch failed: ${resp.status}`);
+    const gymxData: Array<{ exerciseId: string; name: string; gifUrl: string; targetMuscles: string[]; bodyParts: string[] }> = await resp.json();
+    console.log(`Fetched ${gymxData.length} exercises from GymX dataset`);
+
+    // Build normalized lookup
+    const gymxNorm = new Map<string, typeof gymxData[0]>();
+    for (const e of gymxData) {
+      gymxNorm.set(norm(e.name), e);
     }
 
-    // Step 2: Get our exercises that need illustrations
-    let query = supabase
+    // Step 2: Get our exercises missing gif_url
+    const { data: exercises, error } = await supabase
       .from("exercises")
       .select("id, name, target, body_part")
-      .is("illustration_url", null);
+      .is("gif_url", null);
     
-    if (mode === "batch" && body.batch_ids?.length) {
-      query = supabase
-        .from("exercises")
-        .select("id, name, target, body_part")
-        .in("id", body.batch_ids);
-    }
-    
-    const { data: exercises, error } = await query;
     if (error) throw error;
-    
     if (!exercises?.length) {
-      return new Response(JSON.stringify({ message: "All exercises already have illustrations", matched: 0 }), {
+      return new Response(JSON.stringify({ message: "All exercises have GIFs", matched: 0 }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    console.log(`Matching ${exercises.length} exercises...`);
-    
-    const results: Array<{ id: string; name: string; matched_to?: string; gif_url?: string; score?: number; error?: string }> = [];
-    let matchCount = 0;
+    console.log(`Matching ${exercises.length} exercises without GIFs...`);
 
-    // Step 3: Match each exercise and update
+    let matchCount = 0;
+    const results: Array<{ id: string; name: string; matched_to?: string; gif_url?: string; error?: string }> = [];
+
     for (const ex of exercises) {
-      const match = findBestMatch(ex.name, edbExercises, ex.target, ex.body_part);
-      
-      if (match && match.score >= minScore) {
-        // Update the exercise with the ExerciseDB GIF URL as illustration_url
-        const { error: updateError } = await supabase
-          .from("exercises")
-          .update({ illustration_url: match.gifUrl })
-          .eq("id", ex.id);
-        
-        if (updateError) {
-          results.push({ id: ex.id, name: ex.name, error: updateError.message });
-        } else {
-          matchCount++;
-          results.push({
-            id: ex.id,
-            name: ex.name,
-            matched_to: edbExercises.find(e => e.id === match.id)?.name,
-            gif_url: match.gifUrl,
-            score: Math.round(match.score * 100) / 100,
-          });
+      const n = norm(ex.name);
+
+      // 1. Manual override
+      if (MANUAL[n]) {
+        const { error: ue } = await supabase.from("exercises").update({ gif_url: MANUAL[n] }).eq("id", ex.id);
+        if (!ue) matchCount++;
+        results.push({ id: ex.id, name: ex.name, matched_to: "manual", gif_url: MANUAL[n], error: ue?.message });
+        continue;
+      }
+
+      // 2. Exact normalized match
+      if (gymxNorm.has(n)) {
+        const match = gymxNorm.get(n)!;
+        const { error: ue } = await supabase.from("exercises").update({ gif_url: match.gifUrl }).eq("id", ex.id);
+        if (!ue) matchCount++;
+        results.push({ id: ex.id, name: ex.name, matched_to: match.name, gif_url: match.gifUrl, error: ue?.message });
+        continue;
+      }
+
+      // 3. Substring containment (our name appears in gymx name, prefer shortest)
+      let candidates: Array<[number, typeof gymxData[0]]> = [];
+      for (const [gn, e] of gymxNorm.entries()) {
+        if (gn.includes(n) || n.includes(gn)) {
+          candidates.push([gn.length, e]);
         }
+      }
+      if (candidates.length > 0) {
+        candidates.sort((a, b) => a[0] - b[0]);
+        const match = candidates[0][1];
+        const { error: ue } = await supabase.from("exercises").update({ gif_url: match.gifUrl }).eq("id", ex.id);
+        if (!ue) matchCount++;
+        results.push({ id: ex.id, name: ex.name, matched_to: match.name, gif_url: match.gifUrl, error: ue?.message });
+        continue;
+      }
+
+      // 4. Word overlap (≥50%)
+      const nameWords = new Set(n.split(" "));
+      let bestScore = 0;
+      let bestMatch: typeof gymxData[0] | null = null;
+      for (const e of gymxData) {
+        const eWords = new Set(norm(e.name).split(" "));
+        let overlap = 0;
+        for (const w of nameWords) if (eWords.has(w)) overlap++;
+        let score = overlap / Math.max(nameWords.size, eWords.size);
+        // Bonus if all our words exist in target
+        let allMatch = true;
+        for (const w of nameWords) if (!eWords.has(w)) { allMatch = false; break; }
+        if (allMatch && nameWords.size > 0) score = Math.max(score, 0.8);
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = e;
+        }
+      }
+
+      if (bestMatch && bestScore >= 0.5) {
+        const { error: ue } = await supabase.from("exercises").update({ gif_url: bestMatch.gifUrl }).eq("id", ex.id);
+        if (!ue) matchCount++;
+        results.push({ id: ex.id, name: ex.name, matched_to: bestMatch.name, gif_url: bestMatch.gifUrl, error: ue?.message });
       } else {
-        results.push({
-          id: ex.id,
-          name: ex.name,
-          score: match ? Math.round(match.score * 100) / 100 : 0,
-          error: "No match above threshold",
-        });
+        results.push({ id: ex.id, name: ex.name, error: `No match (best: ${bestScore.toFixed(2)})` });
       }
     }
 
     return new Response(JSON.stringify({
-      total_exercises: exercises.length,
+      total_missing: exercises.length,
       matched: matchCount,
       unmatched: exercises.length - matchCount,
-      edb_library_size: edbExercises.length,
+      gymx_library_size: gymxData.length,
       results,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
