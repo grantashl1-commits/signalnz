@@ -8,6 +8,8 @@ import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import SleepCard from "@/components/practice/SleepCard";
+import HabitCarousel from "@/components/HabitCarousel";
+import SleepCard from "@/components/practice/SleepCard";
 import {
   getHabits, addHabit, removeHabit,
   HABIT_CATEGORIES,
