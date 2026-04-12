@@ -7,15 +7,6 @@ interface AICredits {
   loading: boolean;
 }
 
-function getUserIdentifier(): string {
-  let id = localStorage.getItem("signal_user_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("signal_user_id", id);
-  }
-  return id;
-}
-
 export function useAICredits(): AICredits & { refresh: () => void } {
   const [creditsRemaining, setCreditsRemaining] = useState(5);
   const [tier, setTier] = useState("free");
@@ -23,16 +14,23 @@ export function useAICredits(): AICredits & { refresh: () => void } {
 
   const fetchCredits = useCallback(async () => {
     try {
-      const userId = getUserIdentifier();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setCreditsRemaining(5);
+        setTier("free");
+        setLoading(false);
+        return;
+      }
+
       const { data } = await supabase
         .from("ai_credits")
         .select("credits_remaining, tier")
-        .eq("user_identifier", userId)
+        .eq("user_identifier", user.id)
         .maybeSingle();
 
       if (data) {
-        setCreditsRemaining(data.credits_remaining);
-        setTier(data.tier);
+        setCreditsRemaining(data.credits_remaining ?? 0);
+        setTier(data.tier ?? "free");
       } else {
         setCreditsRemaining(5);
         setTier("free");

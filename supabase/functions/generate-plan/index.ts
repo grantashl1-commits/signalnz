@@ -221,30 +221,24 @@ serve(async (req) => {
     const isFirstFree = (genCount || 0) === 0;
 
     if (!isFirstFree) {
-      // Check credits — cost 3 credits for extra plan generation
-      const { data: creditRow } = await supabase
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_identifier", user.id)
-        .maybeSingle();
-
-      const credits = creditRow?.credits_remaining ?? 0;
-      if (credits < 3) {
-        return new Response(
-          JSON.stringify({
-            error: "insufficient_credits",
-            message: "You've used your free plan this month. Extra plans cost 3 credits.",
-            credits_remaining: credits,
-          }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
+      // Atomic credit deduction — 3 credits for extra plan generation
+      const { error: creditError } = await supabase.rpc("deduct_ai_credits", {
+        p_user_identifier: user.id,
+        p_cost: 3,
+        p_function_name: "generate-plan",
+      });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
+          return new Response(
+            JSON.stringify({
+              error: "insufficient_credits",
+              message: "You've used your free plan this month. Extra plans cost 3 credits.",
+            }),
+            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          );
+        }
+        console.error("Credit deduction error:", creditError);
       }
-
-      // Deduct credits
-      await supabase
-        .from("ai_credits")
-        .update({ credits_remaining: credits - 3 })
-        .eq("user_identifier", user.id);
     }
 
     // ─── Gather context ─────────────────────────
@@ -313,12 +307,6 @@ Adapt the intensity and exercise selection to match the user's cycle phase each 
         user_id: user.id,
         plan_type: "ai_training",
         month_key: monthKey,
-      }),
-      // Log AI usage
-      supabase.from("ai_usage").insert({
-        user_identifier: user.id,
-        function_name: "generate-plan",
-        tokens_used: 5000,
       }),
     ]);
 

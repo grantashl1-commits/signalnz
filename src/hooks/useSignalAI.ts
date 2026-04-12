@@ -12,13 +12,9 @@ interface UseSignalAIReturn {
   rawText: string;
 }
 
-function getUserIdentifier(): string {
-  let id = localStorage.getItem("signal_user_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("signal_user_id", id);
-  }
-  return id;
+async function getAuthUserId(): Promise<string | null> {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
 }
 
 async function fetchInsightProfile(userId: string) {
@@ -89,7 +85,12 @@ export function useSignalAI(): UseSignalAIReturn {
     setResponse(null);
     setRawText("");
 
-    const userId = getUserIdentifier();
+    const userId = await getAuthUserId();
+    if (!userId) {
+      setError("Please sign in to use Signal AI.");
+      setLoading(false);
+      return;
+    }
 
     try {
       // Fetch profile + recent signals + AI call in parallel, with min 1.8s delay

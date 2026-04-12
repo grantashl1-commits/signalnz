@@ -431,21 +431,21 @@ serve(async (req) => {
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
       startCycleDay, endCycleDay, userDietaryDislikes } = body;
 
-    // Credit check: deterministic plan costs 1 credit
+    // Credit check: deterministic plan costs 1 credit (atomic)
     const userIdentifier = body.userIdentifier;
     if (userIdentifier) {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-      const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-      const cost = 1;
-      if (credits && (credits.credits_remaining || 0) < cost) {
-        return new Response(JSON.stringify({ error: `You need ${cost} credit for meal plan generation.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const { error: creditError } = await sb.rpc("deduct_ai_credits", {
+        p_user_identifier: userIdentifier,
+        p_cost: 1,
+        p_function_name: "meal-plan-ai",
+      });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
+          return new Response(JSON.stringify({ error: "You need 1 credit for meal plan generation." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        console.error("Credit deduction error:", creditError);
       }
-      if (credits) {
-        await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
-      } else {
-        await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
-      }
-      await sb.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "meal-plan-ai", tokens_used: cost });
     }
 
     const prefs = {
