@@ -9,6 +9,7 @@ import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection
 import SignalPulse from "@/components/SignalPulse";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import { useGatedExpand } from "@/hooks/useGatedExpand";
 import {
   BREATHWORK_PRACTICES,
   SOMATIC_PRACTICES,
@@ -77,6 +78,7 @@ function BreathworkCards({
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const { guard: guardExpand } = useGatedExpand("breathwork_browse");
 
   const visible = showAll ? BREATHWORK_PRACTICES : BREATHWORK_PRACTICES.slice(0, 4);
 
@@ -92,7 +94,7 @@ function BreathworkCards({
           className={`card-warm p-5 cursor-pointer touch-card relative ${
             expanded === p.id ? "ring-[1.5px] ring-primary" : ""
           }`}
-          onClick={() => setExpanded(expanded === p.id ? null : p.id)}
+          onClick={() => { if (guardExpand()) setExpanded(expanded === p.id ? null : p.id); }}
         >
           {/* Practice type icon */}
           <div className="absolute top-4 left-4">
@@ -244,6 +246,7 @@ function SomaticCards({
 }) {
   const [showAll, setShowAll] = useState(false);
   const [expandedSomatic, setExpandedSomatic] = useState<string | null>(null);
+  const { guard: guardExpand } = useGatedExpand("breathwork_browse");
   const visible = showAll ? SOMATIC_PRACTICES : SOMATIC_PRACTICES.slice(0, 3);
 
   return (
@@ -255,7 +258,7 @@ function SomaticCards({
         animate="visible"
         variants={cardVariant}
         className="card-warm p-5 cursor-pointer touch-card"
-        onClick={() => setExpandedSomatic(expandedSomatic === "fascia" ? null : "fascia")}
+        onClick={() => { if (guardExpand()) setExpandedSomatic(expandedSomatic === "fascia" ? null : "fascia"); }}
       >
         <div className="flex gap-3 items-start mb-3">
           <img
@@ -325,7 +328,7 @@ function SomaticCards({
           animate="visible"
           variants={cardVariant}
           className="card-warm p-5 cursor-pointer touch-card"
-          onClick={() => setExpandedSomatic(expandedSomatic === p.id ? null : p.id)}
+          onClick={() => { if (guardExpand()) setExpandedSomatic(expandedSomatic === p.id ? null : p.id); }}
         >
           <div className="flex gap-3 items-start">
             {p.illustrationUrl ? (

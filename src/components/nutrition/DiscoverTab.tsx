@@ -287,7 +287,7 @@ export default function DiscoverTab() {
             recipe={recipe}
             isSaved={isSaved(recipe.id)}
             onToggleSave={() => toggleSave(recipe.id)}
-            onSelect={() => setSelectedRecipe(recipe)}
+            onSelect={() => { if (guardExpand()) setSelectedRecipe(recipe); }}
             index={i}
           />
         ))}
