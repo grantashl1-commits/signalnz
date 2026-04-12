@@ -86,7 +86,7 @@ export default function HomePage() {
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const focus = FOCUS[info.phase];
+  const { focus } = useTodayFocus();
 
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
