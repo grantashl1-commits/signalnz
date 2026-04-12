@@ -276,6 +276,7 @@ const BreathworkIcon = ({ id }: { id: string }) => {
 
 // ── Breathwork Card ──
 function BreathworkCard({ p, index, onSelect }: { p: PracticeConfig; index: number; onSelect: (p: PracticeConfig) => void }) {
+  const [expanded, setExpanded] = useState(false);
   const { guard: guardExpand } = useGatedExpand("nervous_browse");
   return (
     <motion.div
