@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles, Sprout, Brain, Utensils, Dumbbell, BookOpen, Users, Leaf, Heart, Moon } from "lucide-react";
+import TierComparisonTable from "@/components/TierComparisonTable";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -479,6 +480,9 @@ export default function MembershipPage() {
           })}
         </div>
       </div>
+
+      {/* Tier Comparison Table */}
+      <TierComparisonTable />
 
       {/* AI Credit Cost Breakdown */}
       <motion.div
