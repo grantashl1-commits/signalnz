@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Clock, Dumbbell, Check, Save, PenLine, Heart, Activity, Bluetooth, Plus } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Clock, Dumbbell, Check, Save, PenLine, Heart, Activity, Bluetooth, Plus, ChevronDown, Lightbulb, TrendingUp, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -11,6 +11,305 @@ import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 
+/* ── Evidence-based technique tips by keyword ── */
+const TECHNIQUE_TIPS: Record<string, { cue: string; why: string }[]> = {
+  squat: [
+    { cue: "Brace core before descent — breathe into your belly", why: "Intra-abdominal pressure protects the spine (McGill, 2010)" },
+    { cue: "Drive knees outward in line with toes", why: "Reduces valgus stress on the knee (Schoenfeld, 2010)" },
+    { cue: "Maintain neutral spine — avoid excessive forward lean", why: "Distributes load evenly across the posterior chain" },
+  ],
+  deadlift: [
+    { cue: "Hinge at the hips — push them back first", why: "Maximises posterior-chain engagement (Contreras, 2014)" },
+    { cue: "Keep bar / weight close to your body", why: "Reduces lumbar shear force by shortening the moment arm" },
+    { cue: "Pack your shoulders — lats tight", why: "Prevents thoracic rounding under load" },
+  ],
+  "hip thrust": [
+    { cue: "Tuck chin — look forward, not up", why: "Promotes posterior pelvic tilt for peak glute contraction" },
+    { cue: "Drive through heels, squeeze glutes at the top", why: "Maximises gluteus maximus activation (Contreras, 2015)" },
+    { cue: "Pause 1–2 sec at lockout", why: "Time under tension at peak contraction improves hypertrophy" },
+  ],
+  bench: [
+    { cue: "Retract and depress scapulae", why: "Creates a stable base and protects shoulders" },
+    { cue: "Grip width ~1.5× shoulder width", why: "Optimises pec activation and shoulder health" },
+    { cue: "Control the eccentric — 2-3 sec down", why: "Eccentric control builds strength and reduces injury risk" },
+  ],
+  press: [
+    { cue: "Brace core tight — avoid arching lower back", why: "Prevents lumbar hyperextension under overhead load" },
+    { cue: "Full lockout overhead — stack joints", why: "Ensures deltoid and tricep complete the range of motion" },
+  ],
+  row: [
+    { cue: "Initiate with scapular retraction", why: "Prioritises mid-back over biceps (Lehman, 2004)" },
+    { cue: "Keep torso stable — minimise swinging", why: "Isolates the target musculature for better stimulus" },
+  ],
+  lunge: [
+    { cue: "Step far enough to keep front knee behind toes", why: "Reduces patellofemoral stress (Escamilla, 2001)" },
+    { cue: "Push through the heel of the front foot", why: "Increases glute and hamstring contribution" },
+  ],
+  curl: [
+    { cue: "Keep elbows pinned to your sides", why: "Isolates biceps by preventing shoulder flexion compensation" },
+    { cue: "Control the lowering phase — no swinging", why: "Eccentric loading is key for bicep growth" },
+  ],
+  plank: [
+    { cue: "Create a straight line from head to heels", why: "Ensures full core engagement (McGill, 2010)" },
+    { cue: "Actively push the floor away", why: "Engages serratus anterior for shoulder stability" },
+  ],
+  pullup: [
+    { cue: "Initiate by depressing and retracting scapulae", why: "Engages lats before biceps for optimal pulling mechanics" },
+    { cue: "Full extension at the bottom — no half reps", why: "Complete ROM increases lat stretch and growth stimulus" },
+  ],
+  "hip abduction": [
+    { cue: "Control the movement — don't let the weight snap back", why: "Eccentric control is vital for gluteus medius development" },
+    { cue: "Sit upright with neutral spine", why: "Reduces compensatory hip flexor engagement" },
+  ],
+};
+
+function getTechniqueTips(exerciseName: string): { cue: string; why: string }[] {
+  const lower = exerciseName.toLowerCase();
+  for (const [keyword, tips] of Object.entries(TECHNIQUE_TIPS)) {
+    if (lower.includes(keyword)) return tips;
+  }
+  // Generic fallback
+  return [
+    { cue: "Focus on controlled tempo — 2 sec up, 2 sec down", why: "Time under tension drives hypertrophy and reduces injury risk" },
+    { cue: "Breathe out on exertion, in on the eccentric", why: "Proper breathing pattern stabilises the core" },
+  ];
+}
+
+/* ── Expandable exercise row ── */
+function ExerciseRow({
+  exercise,
+  exId,
+  done,
+  onToggle,
+  sets,
+  reps,
+  restSeconds,
+  rpeTarget,
+  loadGuidance,
+  progressionNotes,
+}: {
+  exercise: WorkoutExercise["exercise"];
+  exId: string;
+  done: boolean;
+  onToggle: () => void;
+  sets?: number | null;
+  reps?: string | null;
+  restSeconds?: number | null;
+  rpeTarget?: number | null;
+  loadGuidance?: string | null;
+  progressionNotes?: string | null;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const name = exercise?.name || "Exercise";
+  const tips = getTechniqueTips(name);
+
+  return (
+    <div className={cn("rounded-xl transition-all", done ? "bg-primary/5" : "bg-secondary/50")}>
+      {/* Main row */}
+      <div
+        className="flex items-center gap-3 p-2.5 cursor-pointer active:bg-secondary"
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+      >
+        <div className={cn(
+          "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
+          done ? "bg-primary border-primary" : "border-muted-foreground/25"
+        )}>
+          {done && <Check className="h-3 w-3 text-primary-foreground" />}
+        </div>
+        <div className="flex-shrink-0">
+          <ExerciseDemonstration exerciseName={name} size={36} className="rounded-lg" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={cn("font-body text-sm", done ? "text-muted-foreground line-through" : "text-foreground")}>
+            {name}
+          </p>
+          <p className="font-body text-[10px] text-muted-foreground">
+            {sets && `${sets}×`}{reps}
+            {rpeTarget ? ` · RPE ${rpeTarget}` : ""}
+            {restSeconds ? ` · ${restSeconds}s rest` : ""}
+          </p>
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); haptic("light"); }}
+          className="p-1.5 rounded-full hover:bg-secondary/80 transition-colors"
+        >
+          <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", expanded && "rotate-180")} />
+        </button>
+      </div>
+
+      {/* Expanded detail panel */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-3 pt-1 space-y-2.5 border-t border-border/30 mx-2.5">
+              {/* Bigger demo image */}
+              <div className="flex justify-center py-2">
+                <ExerciseDemonstration exerciseName={name} size={120} className="rounded-xl" showLabel />
+              </div>
+
+              {/* Load guidance */}
+              {loadGuidance && (
+                <div className="flex items-start gap-2 rounded-lg bg-accent/50 px-2.5 py-2">
+                  <Target className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                  <p className="font-body text-xs text-foreground">{loadGuidance}</p>
+                </div>
+              )}
+
+              {/* Target muscles */}
+              {exercise?.target && (
+                <div className="flex items-center gap-2">
+                  <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Target</span>
+                  <span className="font-body text-xs text-foreground capitalize">{exercise.target}</span>
+                </div>
+              )}
+
+              {/* Technique tips */}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                  <span className="font-display text-xs font-semibold text-foreground">Technique tips</span>
+                </div>
+                {tips.map((tip, i) => (
+                  <div key={i} className="pl-5 space-y-0.5">
+                    <p className="font-body text-xs text-foreground">• {tip.cue}</p>
+                    <p className="font-body text-[10px] text-muted-foreground italic">{tip.why}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Cues from DB */}
+              {exercise?.cues && exercise.cues.length > 0 && (
+                <div className="space-y-1">
+                  <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Coaching cues</span>
+                  {exercise.cues.map((c, i) => (
+                    <p key={i} className="font-body text-xs text-foreground pl-2">→ {c}</p>
+                  ))}
+                </div>
+              )}
+
+              {/* Instructions */}
+              {exercise?.instructions && (
+                <div className="space-y-1">
+                  <span className="font-body text-[10px] text-muted-foreground uppercase tracking-wider">Instructions</span>
+                  <p className="font-body text-xs text-muted-foreground leading-relaxed">{exercise.instructions}</p>
+                </div>
+              )}
+
+              {/* Progression notes */}
+              {progressionNotes && (
+                <div className="flex items-start gap-2 rounded-lg bg-primary/5 px-2.5 py-2">
+                  <TrendingUp className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                  <p className="font-body text-xs text-foreground">{progressionNotes}</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── AI session exercise row (simpler, no DB data) ── */
+function AIExerciseRow({
+  ex,
+  exKey,
+  done,
+  onToggle,
+}: {
+  ex: any;
+  exKey: string;
+  done: boolean;
+  onToggle: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const tips = getTechniqueTips(ex.name || "");
+
+  return (
+    <div className={cn("rounded-xl transition-all", done ? "bg-primary/5" : "bg-secondary/50")}>
+      <div
+        className="flex items-center gap-3 p-2.5 cursor-pointer active:bg-secondary"
+        onClick={onToggle}
+      >
+        <div className={cn(
+          "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
+          done ? "bg-primary border-primary" : "border-muted-foreground/25"
+        )}>
+          {done && <Check className="h-3 w-3 text-primary-foreground" />}
+        </div>
+        <div className="flex-shrink-0">
+          <ExerciseDemonstration exerciseName={ex.name || ""} size={36} className="rounded-lg" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={cn("font-body text-sm", done ? "text-muted-foreground line-through" : "text-foreground")}>{ex.name}</p>
+          <p className="font-body text-[10px] text-muted-foreground">{ex.sets}×{ex.reps_or_duration}{ex.rpe ? ` · RPE ${ex.rpe}` : ""}</p>
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); haptic("light"); }}
+          className="p-1.5 rounded-full hover:bg-secondary/80 transition-colors"
+        >
+          <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", expanded && "rotate-180")} />
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-3 pt-1 space-y-2.5 border-t border-border/30 mx-2.5">
+              <div className="flex justify-center py-2">
+                <ExerciseDemonstration exerciseName={ex.name || ""} size={120} className="rounded-xl" showLabel />
+              </div>
+
+              {ex.form_cue && (
+                <div className="flex items-start gap-2 rounded-lg bg-accent/50 px-2.5 py-2">
+                  <Target className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                  <p className="font-body text-xs text-foreground">{ex.form_cue}</p>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+                  <span className="font-display text-xs font-semibold text-foreground">Technique tips</span>
+                </div>
+                {tips.map((tip, i) => (
+                  <div key={i} className="pl-5 space-y-0.5">
+                    <p className="font-body text-xs text-foreground">• {tip.cue}</p>
+                    <p className="font-body text-[10px] text-muted-foreground italic">{tip.why}</p>
+                  </div>
+                ))}
+              </div>
+
+              {ex.progression && (
+                <div className="flex items-start gap-2 rounded-lg bg-primary/5 px-2.5 py-2">
+                  <TrendingUp className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                  <p className="font-body text-xs text-foreground">{ex.progression}</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Main component ── */
 interface Props {
   onOpenTraining: () => void;
   onOpenHR: () => void;
@@ -35,7 +334,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const [aiSession, setAiSession] = useState<any>(null);
   const todayStr = new Date().toISOString().split("T")[0];
 
-  // Check how many sessions already logged today (to advance to next)
   const [todayLogCount, setTodayLogCount] = useState(0);
 
   useEffect(() => {
@@ -53,10 +351,8 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       });
   }, [user, todayStr]);
 
-  // Load today's workout from training program — advance past logged sessions
   useEffect(() => {
     if (!goalCategoryId || !program || phases.length === 0) return;
-    
     setLoading(true);
     const dayOfWeek = new Date().getDay();
     const sessionIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
@@ -64,11 +360,9 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     const currentPhaseObj = phases[0];
     fetchWorkouts(currentPhaseObj.id).then(async (wts) => {
       if (wts.length === 0) { setLoading(false); return; }
-      // Advance past already-logged sessions for today
       const nextIdx = (sessionIndex + todayLogCount) % wts.length;
       const todayWt = wts[nextIdx];
       setTodayWorkout(todayWt);
-      
       const exs = await fetchWorkoutExercises(todayWt.id);
       setTodayExercises(exs);
       setLoading(false);
@@ -120,7 +414,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       haptic("success");
       toast.success("Session logged! 🎉");
       onSessionLogged?.();
-      // After a short delay, advance to the next session
       setTimeout(() => {
         setTodayLogCount(c => c + 1);
         setSessionLogged(false);
@@ -154,19 +447,12 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           </div>
           <span className="inline-block font-body text-sm font-semibold text-primary">Browse plans →</span>
         </div>
-        
         <div className="flex gap-2">
-          <button
-            onClick={() => { haptic("light"); onOpenHR(); }}
-            className="flex-1 card-warm p-3 flex items-center justify-center gap-2"
-          >
+          <button onClick={() => { haptic("light"); onOpenHR(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
             <Activity className="h-4 w-4 text-primary" />
             <span className="font-body text-xs font-medium text-foreground">HR Monitor</span>
           </button>
-          <button
-            onClick={() => { haptic("light"); onOpenManualLog(); }}
-            className="flex-1 card-warm p-3 flex items-center justify-center gap-2"
-          >
+          <button onClick={() => { haptic("light"); onOpenManualLog(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
             <Plus className="h-4 w-4 text-primary" />
             <span className="font-body text-xs font-medium text-foreground">Log workout</span>
           </button>
@@ -175,7 +461,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     );
   }
 
-  // AI session mode — show the day from the AI plan
+  // AI session mode
   if (aiSession && !goalCategoryId) {
     const aiExercises = aiSession.exercises || [];
     const aiAllComplete = aiExercises.length > 0 && completedExercises.size === aiExercises.length;
@@ -196,7 +482,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             <Dumbbell className="h-5 w-5 text-primary shrink-0" />
           </div>
 
-          {/* HR monitor */}
           {hr.connected ? (
             <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
               <Heart className="h-3.5 w-3.5 text-emerald-600" />
@@ -209,7 +494,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             </button>
           )}
 
-          {/* AI exercise checklist */}
           {aiExercises.length > 0 && (
             <div className="space-y-1.5">
               <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -221,25 +505,13 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
                   const exKey = `ai-${idx}`;
                   const done = completedExercises.has(exKey);
                   return (
-                    <div
+                    <AIExerciseRow
                       key={idx}
-                      onClick={() => toggleComplete(exKey)}
-                      className={cn(
-                        "flex items-center gap-3 rounded-xl p-2.5 cursor-pointer transition-all",
-                        done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"
-                      )}
-                    >
-                      <div className={cn(
-                        "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
-                        done ? "bg-primary border-primary" : "border-muted-foreground/25"
-                      )}>
-                        {done && <Check className="h-3 w-3 text-primary-foreground" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={cn("font-body text-sm", done ? "text-muted-foreground line-through" : "text-foreground")}>{ex.name}</p>
-                        <p className="font-body text-[10px] text-muted-foreground">{ex.sets}×{ex.reps_or_duration}{ex.rpe ? ` · RPE ${ex.rpe}` : ""}</p>
-                      </div>
-                    </div>
+                      ex={ex}
+                      exKey={exKey}
+                      done={done}
+                      onToggle={() => toggleComplete(exKey)}
+                    />
                   );
                 })}
               </div>
@@ -301,12 +573,11 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
   return (
     <div className="space-y-4">
-      {/* Today's session card */}
       <div className="card-warm p-4 space-y-4">
         <div className="flex items-start justify-between">
           <div>
             <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
-              {program.title} · {todayWorkout.day_label}
+              {program?.title} · {todayWorkout.day_label}
             </p>
             <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{todayWorkout.title}</h3>
             <div className="flex items-center gap-2 mt-1">
@@ -324,7 +595,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           <p className="font-body text-xs text-muted-foreground leading-relaxed">{todayWorkout.session_notes}</p>
         )}
 
-        {/* HR monitor connection */}
         {hr.connected ? (
           <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2">
             <Heart className="h-3.5 w-3.5 text-emerald-600" />
@@ -340,7 +610,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           </button>
         )}
 
-        {/* Exercise checklist */}
         {todayExercises.length > 0 && (
           <div className="space-y-1.5">
             <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -352,39 +621,25 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
               {todayExercises.map(ex => {
                 const done = completedExercises.has(ex.id);
                 return (
-                  <div
+                  <ExerciseRow
                     key={ex.id}
-                    onClick={() => toggleComplete(ex.id)}
-                    className={cn(
-                      "flex items-center gap-3 rounded-xl p-2.5 cursor-pointer transition-all",
-                      done ? "bg-primary/5" : "bg-secondary/50 active:bg-secondary"
-                    )}
-                  >
-                    <div className={cn(
-                      "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
-                      done ? "bg-primary border-primary" : "border-muted-foreground/25"
-                    )}>
-                      {done && <Check className="h-3 w-3 text-primary-foreground" />}
-                    </div>
-                    <div className="flex-shrink-0">
-                      <ExerciseDemonstration exerciseName={ex.exercise?.name || ""} size={32} className="rounded-lg" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className={cn("font-body text-sm", done ? "text-muted-foreground line-through" : "text-foreground")}>
-                        {ex.exercise?.name}
-                      </p>
-                      <p className="font-body text-[10px] text-muted-foreground">
-                        {ex.sets && `${ex.sets}×`}{ex.reps}
-                      </p>
-                    </div>
-                  </div>
+                    exercise={ex.exercise}
+                    exId={ex.id}
+                    done={done}
+                    onToggle={() => toggleComplete(ex.id)}
+                    sets={ex.sets}
+                    reps={ex.reps}
+                    restSeconds={ex.rest_seconds}
+                    rpeTarget={ex.rpe_target}
+                    loadGuidance={ex.load_guidance}
+                    progressionNotes={ex.progression_notes}
+                  />
                 );
               })}
             </div>
           </div>
         )}
 
-        {/* All complete celebration */}
         {allComplete && !sessionLogged && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -395,7 +650,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           </motion.div>
         )}
 
-        {/* Log session */}
         {!sessionLogged ? (
           <div className="space-y-2">
             {showNotes ? (
@@ -432,26 +686,16 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
         )}
       </div>
 
-      {/* Quick actions */}
       <div className="flex gap-2">
-        <button
-          onClick={() => { haptic("light"); onOpenTraining(); }}
-          className="flex-1 card-warm p-3 flex items-center justify-center gap-2"
-        >
+        <button onClick={() => { haptic("light"); onOpenTraining(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
           <Dumbbell className="h-4 w-4 text-primary" />
           <span className="font-body text-xs font-medium text-foreground">Full programme</span>
         </button>
-        <button
-          onClick={() => { haptic("light"); onOpenHR(); }}
-          className="flex-1 card-warm p-3 flex items-center justify-center gap-2"
-        >
+        <button onClick={() => { haptic("light"); onOpenHR(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
           <Activity className="h-4 w-4 text-primary" />
           <span className="font-body text-xs font-medium text-foreground">HR Monitor</span>
         </button>
-        <button
-          onClick={() => { haptic("light"); onOpenManualLog(); }}
-          className="flex-1 card-warm p-3 flex items-center justify-center gap-2"
-        >
+        <button onClick={() => { haptic("light"); onOpenManualLog(); }} className="flex-1 card-warm p-3 flex items-center justify-center gap-2">
           <Plus className="h-4 w-4 text-primary" />
           <span className="font-body text-xs font-medium text-foreground">Log extra</span>
         </button>

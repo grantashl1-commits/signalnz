@@ -96,11 +96,12 @@ Deno.serve(async (req) => {
   try {
     const { batch = 0, batchSize = 10 } = await req.json().catch(() => ({}));
     
-    // Fetch exercises needing illustrations
+    // Fetch exercises needing custom illustrations:
+    // Those with gif_url null AND illustration_url not pointing to our custom bucket
     const { data: exercises, error } = await supabase
       .from("exercises")
       .select("id, name, category, body_part, target")
-      .is("illustration_url", null)
+      .is("gif_url", null)
       .order("name")
       .range(batch * batchSize, (batch + 1) * batchSize - 1);
 
