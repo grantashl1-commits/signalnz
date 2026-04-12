@@ -2,6 +2,7 @@ import type { HabitCategory } from "@/data/self-care-rituals";
 import type { Phase } from "@/lib/cycle-utils";
 
 export type HabitTiming = "morning" | "afternoon" | "evening" | "anytime";
+export type HabitFrequencyType = "daily" | "weekly" | "monthly";
 
 export interface SupplementRDI {
   amount: string;
@@ -35,9 +36,10 @@ export interface LibraryHabit {
   name: string;
   description: string;
   frequency: string;
+  frequencyType?: HabitFrequencyType;
   evidenceNote: string;
   icon: string;
-  category: HabitCategory | "foundations";
+  category: HabitCategory;
   subcategory?: SupplementSubcategory | HabitSubcategory;
   timing?: HabitTiming;
   womenBadge?: boolean;
@@ -424,7 +426,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-morning-sunlight", name: "Morning Sunlight (10–30 min)",
     description: "Stand or sit outside in natural light within 1 hour of waking — no sunglasses for the first 10 minutes. Overcast still counts.",
     frequency: "Daily", evidenceNote: "Sets circadian rhythm; improves sleep quality by 1.7 hours on average.",
-    icon: "sunVitamin", category: "foundations", timing: "morning",
+    icon: "sunVitamin", category: "self-care", timing: "morning",
     education: {
       modern: "Morning light exposure via the suprachiasmatic nucleus sets your 24-hour cortisol rhythm. This single habit improves sleep quality more than any sleep supplement.",
       tcm: "The Large Intestine and Stomach meridians are active at sunrise — morning light aligns your body's Qi circulation with the natural Yang energy of the day.",
@@ -435,7 +437,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-grounding", name: "Grounding / Earthing",
     description: "Bare feet on grass, soil, sand, or any natural earth surface for a minimum of 10 minutes.",
     frequency: "Daily", evidenceNote: "Electron transfer reduces free radical burden; studies show cortisol normalisation and improved sleep.",
-    icon: "leaf", category: "foundations", timing: "anytime",
+    icon: "leaf", category: "self-care", timing: "anytime",
     education: {
       modern: "Grounding reduces free radicals via electron transfer. Published research shows cortisol normalisation, improved sleep, and reduced inflammation.",
       tcm: "Earth element (Spleen/Stomach) is the centre of all five elements. Physical contact with earth grounds and tonifies this system.",
@@ -446,7 +448,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-screen-free-morning", name: "Screen-Free Morning (30 min)",
     description: "No phone, no social media, no email for the first 30 minutes after waking.",
     frequency: "Daily", evidenceNote: "Morning cortisol spike is meant for alertness — checking a phone hijacks this and creates anxiety patterns.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     education: {
       modern: "The Cortisol Awakening Response (CAR) primes alertness in the first 30 minutes. Phone checking immediately hijacks this with external stress.",
       tcm: "The Lung and Large Intestine meridians are active 3–7am — this window benefits from quiet, internal attention, not external stimulation.",
@@ -457,7 +459,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-nature-time", name: "Nature Time (20+ min)",
     description: "Walk, sit, or move in a park, bush, beach, or garden — not just walking on footpaths.",
     frequency: "Daily", evidenceNote: "Forest bathing research: reduces cortisol, blood pressure; 20 minutes is the threshold for measurable benefit.",
-    icon: "leaf", category: "foundations", timing: "anytime",
+    icon: "leaf", category: "self-care", timing: "anytime",
     education: {
       modern: "Forest bathing (Shinrin-yoku) research: reduces cortisol, blood pressure, and adrenaline. NK cell activity increases. 20 minutes is the threshold.",
       tcm: "Wood element (Liver/Gallbladder) resonates with nature, wind, and trees — nature exposure directly tonifies Liver Qi and reduces stagnation.",
@@ -468,7 +470,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-intentional-rest", name: "Intentional Rest (NSDR)",
     description: "10–20 minutes of eyes-closed stillness, yoga nidra, or simply lying down — not sleeping.",
     frequency: "Daily", evidenceNote: "Non-Sleep Deep Rest produces the same neurological restoration as equivalent sleep time.",
-    icon: "restDay", category: "foundations", timing: "afternoon",
+    icon: "restDay", category: "self-care", timing: "afternoon",
     education: {
       modern: "NSDR produces the same neurological restoration as equivalent sleep time. It accelerates skill learning and reduces cortisol.",
       tcm: "The 1–3pm Small Intestine window — rest here supports the body's natural assimilation and renewal cycle.",
@@ -479,7 +481,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-cold-exposure", name: "Cold Exposure (graduated)",
     description: "Cold shower (finish last 30–60 seconds cold) or cold plunge. Start with 15 seconds, build to 2–3 minutes.",
     frequency: "Daily", evidenceNote: "Dopamine increase up to 250%; noradrenaline increase 300%; sustained for hours post-exposure.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     note: "Avoid cold plunges on days 1–3 of menstruation — cold contracts blood vessels and worsens cramping. Build this habit in your follicular and ovulatory phases.",
     education: {
       modern: "Cold exposure increases dopamine by 250% and noradrenaline by 300%, sustained for hours. It reduces inflammation and improves mood and resilience.",
@@ -491,7 +493,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-fasting-window", name: "12–14 Hour Overnight Fast",
     description: "Stop eating 2–3 hours before bed. The overnight fast of 12–14 hours is the baseline human metabolic rhythm.",
     frequency: "Daily", evidenceNote: "12-hour fasting aligns with circadian insulin sensitivity; supports mitochondrial repair.",
-    icon: "clockBreak", category: "foundations", timing: "evening",
+    icon: "clockBreak", category: "self-care", timing: "evening",
     note: "Avoid extended fasting in the luteal phase — progesterone increases insulin resistance and cortisol sensitivity. Stick to 12-hour windows, not 16+.",
     education: {
       modern: "12-hour overnight fasting aligns with circadian insulin sensitivity, supports mitochondrial repair, and reduces overnight cortisol.",
@@ -505,7 +507,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-tongue-scraping", name: "Tongue Scraping",
     description: "Scrape the tongue from back to front 7–14 times with a copper scraper before anything else in the morning.",
     frequency: "Daily", evidenceNote: "Removes bacteria and biofilm; reduces oral bacteria linked to gut dysbiosis.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     education: {
       modern: "Tongue scraping removes overnight bacterial biofilm and reduces Streptococcus mutans. Emerging research links oral bacteria to gut dysbiosis.",
       tcm: "The tongue maps to internal organ health in TCM — scraping removes Ama and allows tongue diagnosis.",
@@ -516,7 +518,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-oil-pulling", name: "Oil Pulling",
     description: "Swish 1 tablespoon of cold-pressed sesame or coconut oil around the mouth for 5–20 minutes, then spit into a bin.",
     frequency: "Daily", evidenceNote: "Reduces Streptococcus mutans and oral bacteria; emerging gut microbiome connection.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     education: {
       modern: "Oil pulling reduces oral pathogens and improves gum health. Research shows reduction in plaque index comparable to chlorhexidine mouthwash.",
       tcm: "The mouth is the gateway of the Spleen and Stomach meridians — oral health directly impacts digestive Qi.",
@@ -526,7 +528,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-abhyanga", name: "Abhyanga (Self-Massage with Oil)",
     description: "Warm sesame oil and massage the entire body — long strokes on limbs, circular on joints. 5–15 minutes before shower.",
     frequency: "Daily", evidenceNote: "Activates parasympathetic nervous system; reduces cortisol; improves lymphatic flow.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     education: {
       modern: "Self-massage activates the parasympathetic nervous system, reduces cortisol, improves lymphatic flow, and supports skin barrier function.",
       tcm: "Activates Wei Qi (defensive energy at the skin surface) and stimulates all meridian pathways.",
@@ -537,7 +539,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-nasya", name: "Nasya (Nasal Oil Application)",
     description: "Apply 2–3 drops of warm sesame or Nasya oil to each nostril, then sniff gently. 30 seconds total.",
     frequency: "Daily", evidenceNote: "The olfactory nerve is the only cranial nerve with direct CNS access; nasal oil reduces pathogen entry.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     education: {
       modern: "Nasal passages are the direct pathway to the brain. Nasal oil application reduces airborne pathogen entry and supports the nasal microbiome.",
       tcm: "Lung meridian opens into the nose — nasal health directly reflects Lung Qi. Nasal breathing is fundamental in TCM energy cultivation.",
@@ -547,7 +549,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
   { id: "lib-nasal-breathing", name: "Nasal Breathing Practice",
     description: "5 minutes of intentional nasal-only breathing upon waking — can be combined with sun exposure.",
     frequency: "Daily", evidenceNote: "Nasal breathing produces nitric oxide, increasing oxygen delivery by 18%.",
-    icon: "capsule", category: "foundations", timing: "morning",
+    icon: "capsule", category: "self-care", timing: "morning",
     education: {
       modern: "Nasal breathing produces nitric oxide (increases oxygen delivery by 18%), filters air, and activates the parasympathetic nervous system.",
       tcm: "Lung meridian is most active 3–5am. Morning breath practice cultivates Lung Qi.",
@@ -602,7 +604,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
 
   { id: "lib-consistent-sleep-time", name: "Consistent Sleep & Wake Time",
     description: "Aim to be in bed and wake at the same time every day — even on weekends, within ±30 minutes.",
-    frequency: "Daily", evidenceNote: "Sleep timing consistency is more predictive of health outcomes than total sleep duration (Walker, Why We Sleep).", icon: "capsule", category: "foundations", timing: "evening",
+    frequency: "Daily", evidenceNote: "Sleep timing consistency is more predictive of health outcomes than total sleep duration (Walker, Why We Sleep).", icon: "capsule", category: "self-care", timing: "evening",
     education: { modern: "Circadian rhythm irregularity is independently associated with depression, metabolic syndrome, and cognitive decline. The 'social jetlag' from inconsistent weekend sleep suppresses immune function.", tcm: "Each organ has a 2-hour peak window (the Organ Clock). Consistent sleep preserves these windows — irregular sleep disrupts Kidney and Liver regeneration (11pm–3am).", ayurveda: "Ratricharya (night routine) in Ayurveda specifies 10pm as the ideal sleep time — Kapha time, naturally heavy and grounding.", beingHuman: "Before artificial light, sleep timing was governed by sunset. Consistent sleep timing resets us to this ancestral pattern." } },
 
   { id: "lib-evening-journal", name: "Evening Reflection (5 min)",
@@ -627,7 +629,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     education: { modern: "Deep reading activates the default mode network differently from screen-based consumption, supporting empathy and narrative comprehension. Physical books eliminate blue light and notification interruption.", tcm: "Reading is a Yin activity — receptive, inward, nourishing. Used as medicine in TCM to cultivate Shen.", ayurveda: "Svadhyaya (self-study) includes the study of uplifting texts. Evening reading is Kapha-appropriate — grounding and calming.", beingHuman: "Story is the oldest form of human meaning-making. Reading is the modern continuation of 200,000 years of oral storytelling." } },
 ];
 
-export function getLibraryHabitsForCategory(category: HabitCategory | "foundations"): LibraryHabit[] {
+export function getLibraryHabitsForCategory(category: HabitCategory): LibraryHabit[] {
   return HABIT_LIBRARY.filter(h => h.category === category);
 }
 
@@ -666,21 +668,20 @@ export const SELFCARE_SUBCATEGORY_LABELS: Record<string, string> = {
   "creativity": "Creativity",
 };
 
-export const FOUNDATIONS_SUBCATEGORY_LABELS: Record<string, string> = {
-  "circadian": "Circadian Rhythm",
-  "breathwork": "Breathwork",
-  "ayurvedic": "Ayurvedic",
-  "cold-heat": "Cold & Heat Therapy",
-  "mindset": "Mindset",
-};
-
 export const SUBCATEGORY_LABELS_BY_CATEGORY: Record<string, Record<string, string>> = {
   supplements: SUPPLEMENT_SUBCATEGORY_LABELS,
   movement: MOVEMENT_SUBCATEGORY_LABELS,
   nutrition: NUTRITION_SUBCATEGORY_LABELS,
   "self-care": SELFCARE_SUBCATEGORY_LABELS,
-  foundations: FOUNDATIONS_SUBCATEGORY_LABELS,
 };
+
+/** Parse a free-text frequency string into a frequency type bucket */
+export function parseFrequencyType(freq: string): HabitFrequencyType {
+  const f = freq.toLowerCase();
+  if (f.includes("month") || f.includes("as scheduled") || f.includes("as booked")) return "monthly";
+  if (f.includes("week") || f.includes("2x") || f.includes("3x") || f.includes("1–2x") || f.includes("2–3x") || f.includes("3–4x")) return "weekly";
+  return "daily";
+}
 
 // ── Starter Packs ──
 export interface StarterPack {
