@@ -96,11 +96,12 @@ Deno.serve(async (req) => {
   try {
     const { batch = 0, batchSize = 10 } = await req.json().catch(() => ({}));
     
-    // Fetch exercises needing illustrations
+    // Fetch exercises needing custom illustrations:
+    // Either illustration_url is null, or it still points to the old GitHub source
     const { data: exercises, error } = await supabase
       .from("exercises")
       .select("id, name, category, body_part, target")
-      .is("illustration_url", null)
+      .or("illustration_url.is.null,illustration_url.not.like.%exercise-assets%")
       .order("name")
       .range(batch * batchSize, (batch + 1) * batchSize - 1);
 
