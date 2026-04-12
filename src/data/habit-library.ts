@@ -668,21 +668,20 @@ export const SELFCARE_SUBCATEGORY_LABELS: Record<string, string> = {
   "creativity": "Creativity",
 };
 
-export const FOUNDATIONS_SUBCATEGORY_LABELS: Record<string, string> = {
-  "circadian": "Circadian Rhythm",
-  "breathwork": "Breathwork",
-  "ayurvedic": "Ayurvedic",
-  "cold-heat": "Cold & Heat Therapy",
-  "mindset": "Mindset",
-};
-
 export const SUBCATEGORY_LABELS_BY_CATEGORY: Record<string, Record<string, string>> = {
   supplements: SUPPLEMENT_SUBCATEGORY_LABELS,
   movement: MOVEMENT_SUBCATEGORY_LABELS,
   nutrition: NUTRITION_SUBCATEGORY_LABELS,
   "self-care": SELFCARE_SUBCATEGORY_LABELS,
-  foundations: FOUNDATIONS_SUBCATEGORY_LABELS,
 };
+
+/** Parse a free-text frequency string into a frequency type bucket */
+export function parseFrequencyType(freq: string): HabitFrequencyType {
+  const f = freq.toLowerCase();
+  if (f.includes("month") || f.includes("as scheduled") || f.includes("as booked")) return "monthly";
+  if (f.includes("week") || f.includes("2x") || f.includes("3x") || f.includes("1–2x") || f.includes("2–3x") || f.includes("3–4x")) return "weekly";
+  return "daily";
+}
 
 // ── Starter Packs ──
 export interface StarterPack {
