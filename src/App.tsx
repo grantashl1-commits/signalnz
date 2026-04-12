@@ -16,6 +16,7 @@ import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CycleProvider } from "@/contexts/CycleContext";
 import { HeartRateProvider } from "@/contexts/HeartRateContext";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 // Eagerly load the home page (critical path)
 import Index from "./pages/Index";
