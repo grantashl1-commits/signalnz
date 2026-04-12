@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Crown, Sparkles, Users } from "lucide-react";
+import { Lock, Crown, Sparkles, Eye, PenOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useFeatureGate, type FeatureTier } from "@/hooks/useFeatureGate";
+import { useFeatureGate, type FeatureTier, type FeatureAccess } from "@/hooks/useFeatureGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -132,5 +132,80 @@ export function GatedAction({
         </span>
       </div>
     </div>
+  );
+}
+
+/**
+ * Feature-level gate. Uses feature keys instead of tiers.
+ * Shows different UX based on access level: view_only shows content
+ * with a lock overlay on expand, write_no_save allows interaction
+ * but blocks save, locked shows upgrade prompt.
+ */
+export function GatedFeature({
+  featureKey,
+  children,
+  viewOnlyChildren,
+  className = "",
+}: {
+  featureKey: string;
+  children: React.ReactNode;
+  viewOnlyChildren?: React.ReactNode;
+  className?: string;
+}) {
+  const { getFeatureAccess, getMinTierForFeature, isLoggedIn } = useFeatureGate();
+  const navigate = useNavigate();
+  const access = getFeatureAccess(featureKey);
+  const minTier = getMinTierForFeature(featureKey);
+
+  if (access === "full") return <>{children}</>;
+
+  // view_only: show tiles/titles but block expansion
+  if (access === "view_only" && viewOnlyChildren) {
+    return (
+      <div className={`relative ${className}`}>
+        {viewOnlyChildren}
+        <div
+          className="absolute inset-0 flex items-end justify-center pb-4 cursor-pointer"
+          onClick={() => {
+            haptic("medium");
+            navigate(isLoggedIn ? "/membership" : "/auth");
+          }}
+        >
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground/80 backdrop-blur-sm px-3 py-1.5 font-body text-xs font-bold text-background shadow-lg">
+            <Lock className="h-3 w-3" />
+            Upgrade to {TIER_LABELS[minTier]}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // write_no_save: allow writing but show save-blocked notice
+  if (access === "write_no_save") {
+    return (
+      <div className={className}>
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-2.5 mb-4 flex items-center gap-2">
+          <PenOff className="h-4 w-4 text-amber-600 flex-shrink-0" />
+          <p className="font-body text-xs text-amber-700 dark:text-amber-400">
+            You can write here, but entries won't save.{" "}
+            <button
+              onClick={() => navigate(isLoggedIn ? "/membership" : "/auth")}
+              className="underline font-semibold"
+            >
+              Upgrade to {TIER_LABELS[minTier]}
+            </button>{" "}
+            to keep your work.
+          </p>
+        </div>
+        {children}
+      </div>
+    );
+  }
+
+  // locked or teaser: full block
+  return (
+    <GatedAction requiredTier={minTier} className={className}>
+      {children}
+    </GatedAction>
   );
 }
