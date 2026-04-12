@@ -105,9 +105,45 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
     setPanel("main");
   };
 
-  const saveNotes = () => {
+  const saveNotes = async () => {
     haptic("success");
     setNotes(dateStr, notesText);
+
+    // Also save to Memory Vault under "remember" category if there's content
+    if (notesText.trim()) {
+      const dateLabel = date.toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" });
+      const phaseLabel = cycleDay ? `Day ${cycleDay} · ${PHASE_SHORT[phase]}` : "";
+      const vaultEntry: VaultEntry = {
+        id: `cycle-note-${dateStr}`,
+        entryId: "",
+        category: "remember",
+        title: `Cycle note — ${dateLabel}${phaseLabel ? ` (${phaseLabel})` : ""}`,
+        preview: notesText.trim().slice(0, 150),
+        date: dateLabel,
+        timestamp: Date.now(),
+      };
+
+      // Save to localStorage vault
+      const vault = loadVault();
+      const filtered = vault.filter(v => v.id !== vaultEntry.id);
+      saveVault([vaultEntry, ...filtered]);
+
+      // Save to cloud if authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("vault_entries").upsert({
+          id: vaultEntry.id,
+          user_id: user.id,
+          entry_id: vaultEntry.entryId || null,
+          category: vaultEntry.category,
+          title: vaultEntry.title,
+          preview: vaultEntry.preview,
+          date: vaultEntry.date,
+          timestamp: vaultEntry.timestamp,
+        });
+      }
+    }
+
     setPanel("main");
   };
 
