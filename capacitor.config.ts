@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.signalnz',
+  appId: 'nz.co.mindcast.signal',
   appName: 'Signal',
   webDir: 'dist',
   server: {
