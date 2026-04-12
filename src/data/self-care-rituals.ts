@@ -264,7 +264,6 @@ export const CATEGORY_DOT_CLASSES: Record<string, string> = {
   nutrition: "bg-petal-gold",
   movement: "bg-coral",
   "self-care": "bg-bloom",
-  foundations: "bg-primary",
   wellness: "bg-bloom",
   mindset: "bg-bloom",
   custom: "bg-sketch",
