@@ -24,7 +24,7 @@ export default function StarterPacksPanel({ onAdded }: Props) {
       const habit: Habit = {
         id: `${libHabit.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
         name: libHabit.name,
-        category: libHabit.category === "foundations" ? "self-care" : libHabit.category,
+        category: libHabit.category,
         duration: libHabit.frequency,
         timing: libHabit.timing || "anytime",
         notes: libHabit.description,
