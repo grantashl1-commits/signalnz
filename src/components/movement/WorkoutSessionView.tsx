@@ -221,6 +221,63 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
   // Session started state
   const [sessionStarted, setSessionStarted] = useState(false);
 
+  // ── Inline HR tracking ──
+  const [hrRunning, setHrRunning] = useState(false);
+  const [hrElapsed, setHrElapsed] = useState(0);
+  const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
+  const hrStartRef = useRef<number>(0);
+  const hrIntervalRef = useRef<number | null>(null);
+  const hrSampleRef = useRef<number | null>(null);
+  const hrElapsedRef = useRef(0);
+  const bpmRef = useRef(0);
+
+  useEffect(() => { hrElapsedRef.current = hrElapsed; }, [hrElapsed]);
+  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
+
+  // Auto-start HR tracking when session starts and HR connected
+  useEffect(() => {
+    if (sessionStarted && hr.connected && !hrRunning) {
+      setHrRunning(true);
+      hrStartRef.current = Date.now();
+    }
+  }, [sessionStarted, hr.connected]);
+
+  // Timer
+  useEffect(() => {
+    if (!hrRunning) return;
+    hrStartRef.current = Date.now() - hrElapsedRef.current * 1000;
+    hrIntervalRef.current = window.setInterval(() => {
+      setHrElapsed(Math.floor((Date.now() - hrStartRef.current) / 1000));
+    }, 1000);
+    return () => { if (hrIntervalRef.current) clearInterval(hrIntervalRef.current); };
+  }, [hrRunning]);
+
+  // HR sampling every 2s
+  useEffect(() => {
+    if (!hrRunning) { if (hrSampleRef.current) clearInterval(hrSampleRef.current); return; }
+    const sample = () => {
+      const b = bpmRef.current;
+      if (b <= 0) return;
+      const t = hrStartRef.current > 0 ? Math.floor((Date.now() - hrStartRef.current) / 1000) : hrElapsedRef.current;
+      setHrData(prev => [...prev, { time: t, bpm: b }]);
+    };
+    sample();
+    hrSampleRef.current = window.setInterval(sample, 2000);
+    return () => { if (hrSampleRef.current) clearInterval(hrSampleRef.current); };
+  }, [hrRunning]);
+
+  // Derived HR stats
+  const zone2PlusMins = hrData.filter(d => getZoneForBPM(d.bpm, maxHR).zone >= 2).length * 2 / 60;
+  const zone2Goal = 21;
+  const avgBPM = hrData.length > 0 ? Math.round(hrData.reduce((s, d) => s + d.bpm, 0) / hrData.length) : 0;
+  const liveCals = estimateCalories(avgBPM, hrElapsed / 60, userWeight, userAge);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
   // Local exercises — can be modified by swaps
   const [localExercises, setLocalExercises] = useState<WorkoutExercise[]>(exercises);
   useEffect(() => { setLocalExercises(exercises); }, [exercises]);
