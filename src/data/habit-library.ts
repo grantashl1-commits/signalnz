@@ -629,7 +629,7 @@ export const HABIT_LIBRARY: LibraryHabit[] = [
     education: { modern: "Deep reading activates the default mode network differently from screen-based consumption, supporting empathy and narrative comprehension. Physical books eliminate blue light and notification interruption.", tcm: "Reading is a Yin activity — receptive, inward, nourishing. Used as medicine in TCM to cultivate Shen.", ayurveda: "Svadhyaya (self-study) includes the study of uplifting texts. Evening reading is Kapha-appropriate — grounding and calming.", beingHuman: "Story is the oldest form of human meaning-making. Reading is the modern continuation of 200,000 years of oral storytelling." } },
 ];
 
-export function getLibraryHabitsForCategory(category: HabitCategory | "foundations"): LibraryHabit[] {
+export function getLibraryHabitsForCategory(category: HabitCategory): LibraryHabit[] {
   return HABIT_LIBRARY.filter(h => h.category === category);
 }
 
