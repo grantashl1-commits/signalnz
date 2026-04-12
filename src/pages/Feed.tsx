@@ -160,7 +160,7 @@ export default function Feed() {
         <div className="max-w-lg mx-auto space-y-6">
           {isLoading ? (
             <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="bg-card rounded-2xl p-5 space-y-3" style={{ boxShadow: "var(--shadow-soft)" }}>
                   <Skeleton className="h-3 w-2/3" />
                   <div className="flex gap-1.5">
