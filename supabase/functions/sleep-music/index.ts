@@ -37,6 +37,23 @@ Deno.serve(async (req) => {
 
     const { prompt, duration, user_identifier } = await req.json();
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Rate limiting: 3 per minute (expensive audio generation)
+    if (user_identifier) {
+      const { data: rl } = await supabase.rpc("check_rate_limit", {
+        _user_id: user_identifier, _function_name: "sleep-music", _max_per_minute: 3,
+      });
+      if (rl && !rl.allowed) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     const musicPrompt = prompt || 
       "Gentle, ambient sleep music with soft piano notes, warm pad synths, and subtle nature sounds. " +
       "Very slow tempo, calming and peaceful. No percussion, no sudden changes. " +
@@ -44,10 +61,7 @@ Deno.serve(async (req) => {
 
     const durationSeconds = Math.min(duration || 120, 300);
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // (supabase client already created above)
 
     // --- CACHE CHECK ---
     const cacheKey = await hashText(`${musicPrompt}::${durationSeconds}`);

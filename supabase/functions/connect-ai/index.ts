@@ -54,6 +54,19 @@ serve(async (req) => {
       });
     }
 
+    // Rate limiting: 10 per minute
+    if (connection_id) {
+      const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const { data: rl } = await sb.rpc("check_rate_limit", {
+        _user_id: connection_id, _function_name: "connect-ai", _max_per_minute: 10,
+      });
+      if (rl && !rl.allowed) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     // Try to load reference material from Connect folder
     let referenceContext = "";
     try {

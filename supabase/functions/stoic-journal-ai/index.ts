@@ -41,6 +41,18 @@ Deno.serve(async (req) => {
       cycle_mode,
     } = await req.json();
 
+    // Rate limiting: 10 per minute
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const userId = journal_entry_id || "anon";
+    const { data: rl } = await sb.rpc("check_rate_limit", {
+      _user_id: userId, _function_name: "stoic-journal-ai", _max_per_minute: 10,
+    });
+    if (rl && !rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
