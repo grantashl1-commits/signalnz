@@ -575,6 +575,20 @@ export default function AccountPage() {
           </SheetContent>
         </Sheet>
 
+        {/* Legal & support links */}
+        <div className="flex flex-wrap gap-x-4 gap-y-1 py-3 border-b border-border/10">
+          {[
+            { label: "Terms", path: "/terms" },
+            { label: "Privacy", path: "/privacy-policy" },
+            { label: "Refunds", path: "/refund-policy" },
+            { label: "Contact", path: "/contact" },
+          ].map((l) => (
+            <button key={l.path} onClick={() => navigate(l.path)} className="text-xs text-muted-foreground/60 hover:text-primary transition-colors">
+              {l.label}
+            </button>
+          ))}
+        </div>
+
         {/* Sign out */}
         <button onClick={handleSignOut} className="w-full card-warm p-4 flex items-center gap-3 text-left active:bg-destructive/10 transition-colors">
           <LogOut className="h-5 w-5 text-destructive flex-shrink-0" />
