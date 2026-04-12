@@ -103,6 +103,8 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
     },
   });
 
+  const { dietaryPreferences, fitnessLevel, ...restProfile } = profileData;
+
   const focus = useMemo<TodayFocus>(() => {
     const fallback = GENERIC[currentPhase];
     if (!user) return { ...fallback, personalised: false };
