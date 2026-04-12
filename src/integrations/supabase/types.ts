@@ -423,6 +423,41 @@ export type Database = {
         }
         Relationships: []
       }
+      connect_messages: {
+        Row: {
+          connection_id: string
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          sender_role: string
+        }
+        Insert: {
+          connection_id: string
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          sender_role?: string
+        }
+        Update: {
+          connection_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          sender_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_messages_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cycle_logs: {
         Row: {
           created_at: string
@@ -1193,6 +1228,45 @@ export type Database = {
           id?: string
           score?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      partner_connections: {
+        Row: {
+          created_at: string
+          id: string
+          join_code: string
+          member_user_id: string
+          partner_name: string | null
+          partner_pin_hash: string
+          partner_user_id: string | null
+          shared_preferences: Json | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          join_code: string
+          member_user_id: string
+          partner_name?: string | null
+          partner_pin_hash: string
+          partner_user_id?: string | null
+          shared_preferences?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          join_code?: string
+          member_user_id?: string
+          partner_name?: string | null
+          partner_pin_hash?: string
+          partner_user_id?: string | null
+          shared_preferences?: Json | null
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
