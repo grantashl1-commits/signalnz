@@ -515,11 +515,12 @@ export default function JournalEntries({
       }
 
       // Fire journal-insights in background to build user profile
-      const userId = localStorage.getItem("signal_user_id") || crypto.randomUUID();
-      if (!localStorage.getItem("signal_user_id")) localStorage.setItem("signal_user_id", userId);
-      supabase.functions.invoke("journal-insights", {
-        body: { entry, analysis: data, userIdentifier: userId },
-      }).catch(() => {});
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        supabase.functions.invoke("journal-insights", {
+          body: { entry, analysis: data, userIdentifier: authUser.id },
+        }).catch(() => {});
+      }
     } catch {
       setActiveEntry({ ...entry, ai: { summary: "Unable to analyse right now. Please try again.", themes: [], recommendations: [], next_steps: [], tags: [] } });
     }
