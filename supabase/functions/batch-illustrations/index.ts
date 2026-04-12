@@ -101,7 +101,6 @@ Deno.serve(async (req) => {
       .from("exercises")
       .select("id, name, category, body_part, target")
       .is("illustration_url", null)
-      .is("gif_url", null)
       .order("name")
       .range(batch * batchSize, (batch + 1) * batchSize - 1);
 
