@@ -131,8 +131,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     }
   };
 
-  // Check for AI plan session passed from AI Training Plan tab
-  const [aiSession, setAiSession] = useState<any>(null);
+  // Load AI plan session from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("signal_ai_active_session");
     if (stored) {
