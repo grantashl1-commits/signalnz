@@ -378,10 +378,11 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                     <div className="max-h-[240px] overflow-y-auto space-y-0.5 -mx-1 px-1">
                       {libraryItems.map(item => {
                         const alreadyAdded = existingNames.has(item.name);
+                        const freqLabel = item.freqType === "monthly" ? "Monthly" : item.freqType === "weekly" ? "Weekly" : "Daily";
                         return (
                           <button
                             key={item.id}
-                            onClick={() => !alreadyAdded && handleAddFromLibrary(item.name, item.id, selectedCategory)}
+                            onClick={() => !alreadyAdded && handleAddFromLibrary(item.name, item.id, selectedCategory, item.freqType)}
                             disabled={alreadyAdded}
                             className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-left transition-colors ${
                               alreadyAdded
@@ -394,7 +395,10 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                             ) : (
                               <Plus className="w-4 h-4 text-primary flex-shrink-0" />
                             )}
-                            <span className="font-body text-sm text-foreground">{item.name}</span>
+                            <span className="font-body text-sm text-foreground flex-1">{item.name}</span>
+                            <span className="font-body text-[9px] uppercase tracking-wider text-muted-foreground/50 flex-shrink-0">
+                              {freqLabel}
+                            </span>
                           </button>
                         );
                       })}
