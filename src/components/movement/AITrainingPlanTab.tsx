@@ -323,29 +323,139 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         {existingPlan.weeks?.map((week: any, wIdx: number) => (
           <div key={wIdx} className="space-y-2">
             <h4 className="font-display text-sm font-bold text-foreground uppercase tracking-wider">
-              Week {wIdx + 1} {week.theme && `— ${week.theme}`}
+              Week {week.week_number || wIdx + 1} {week.theme && `— ${week.theme}`}
             </h4>
+            {week.phase_note && (
+              <p className="font-body text-xs text-primary/80 italic">{week.phase_note}</p>
+            )}
             <div className="grid gap-2">
-              {week.days?.map((day: any, dIdx: number) => (
-                <div key={dIdx} className="rounded-xl bg-card border border-border p-3">
-                  <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
-                    Day {day.day}
-                  </p>
-                  <h5 className="font-display text-sm font-bold text-foreground mt-0.5">
-                    {day.title || day.name || "Session"}
-                  </h5>
-                  {day.exercises && (
-                    <div className="mt-2 space-y-1">
-                      {day.exercises.map((ex: any, eIdx: number) => (
-                        <p key={eIdx} className="font-body text-xs text-muted-foreground">
-                          • {ex.name} — {ex.sets}×{ex.reps_or_duration}
-                          {ex.form_cue && <span className="italic text-muted-foreground/60"> ({ex.form_cue})</span>}
+              {week.days?.map((day: any, dIdx: number) => {
+                const dayKey = `w${wIdx}-d${dIdx}`;
+                const isExpanded = expandedDays.has(dayKey);
+                const isRest = day.session_type === "rest" || day.title?.toLowerCase().includes("rest");
+                const exerciseCount = day.exercises?.length || 0;
+
+                return (
+                  <div key={dIdx} className="rounded-xl bg-card border border-border overflow-hidden">
+                    {/* Clickable header */}
+                    <button
+                      onClick={() => {
+                        haptic("light");
+                        setExpandedDays(prev => {
+                          const next = new Set(prev);
+                          if (next.has(dayKey)) next.delete(dayKey);
+                          else next.add(dayKey);
+                          return next;
+                        });
+                      }}
+                      className="w-full flex items-center gap-3 p-3 text-left active:bg-secondary/30 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
+                          Day {day.day}
                         </p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+                        <h5 className="font-display text-sm font-bold text-foreground mt-0.5">
+                          {day.title || day.name || "Session"}
+                        </h5>
+                        {!isRest && (
+                          <p className="font-body text-[10px] text-muted-foreground mt-0.5">
+                            {exerciseCount} exercises
+                            {day.duration_minutes && ` · ${day.duration_minutes} min`}
+                            {day.session_type && ` · ${day.session_type}`}
+                          </p>
+                        )}
+                      </div>
+                      {!isRest && (
+                        <ChevronDown className={cn(
+                          "h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200",
+                          isExpanded && "rotate-180"
+                        )} />
+                      )}
+                    </button>
+
+                    {/* Expanded exercise detail */}
+                    <AnimatePresence>
+                      {isExpanded && !isRest && day.exercises && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="border-t border-border px-3 pb-3 pt-2 space-y-2">
+                            {day.warmup && (
+                              <div className="rounded-lg bg-secondary/50 p-2">
+                                <p className="font-body text-[10px] text-primary uppercase tracking-wider font-semibold">Warm-up</p>
+                                <p className="font-body text-xs text-muted-foreground mt-0.5">{day.warmup}</p>
+                              </div>
+                            )}
+
+                            {day.exercises.map((ex: any, eIdx: number) => {
+                              const equipIcon = getEquipmentIcon(ex.name, ex.load_guidance);
+                              return (
+                                <div key={eIdx} className="flex gap-2.5 py-1.5">
+                                  {equipIcon && (
+                                    <img src={equipIcon} alt="" className="h-6 w-6 object-contain shrink-0 mt-0.5 opacity-70" loading="lazy" />
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-display text-sm font-semibold text-foreground">{ex.name}</p>
+                                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                                      <span className="font-body text-xs text-primary font-medium">
+                                        {ex.sets}×{ex.reps_or_duration}
+                                      </span>
+                                      {ex.rest_seconds && (
+                                        <span className="font-body text-xs text-muted-foreground">
+                                          Rest: {ex.rest_seconds}s
+                                        </span>
+                                      )}
+                                      {ex.rpe && (
+                                        <span className="font-body text-xs text-muted-foreground">
+                                          RPE {ex.rpe}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {ex.load_guidance && (
+                                      <p className="font-body text-[10px] text-muted-foreground/70 mt-0.5">{ex.load_guidance}</p>
+                                    )}
+                                    {ex.form_cue && (
+                                      <p className="font-body text-[10px] text-primary/60 italic mt-0.5">💡 {ex.form_cue}</p>
+                                    )}
+                                    {ex.progression && (
+                                      <p className="font-body text-[10px] text-muted-foreground/60 mt-0.5">↗ {ex.progression}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                            {day.cooldown && (
+                              <div className="rounded-lg bg-secondary/50 p-2">
+                                <p className="font-body text-[10px] text-primary uppercase tracking-wider font-semibold">Cool-down</p>
+                                <p className="font-body text-xs text-muted-foreground mt-0.5">{day.cooldown}</p>
+                              </div>
+                            )}
+
+                            {/* Start session button */}
+                            {onStartSession && (
+                              <button
+                                onClick={() => {
+                                  haptic("medium");
+                                  onStartSession(day);
+                                }}
+                                className="w-full mt-2 h-10 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+                              >
+                                <Play className="h-3.5 w-3.5" />
+                                Start this session
+                              </button>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
