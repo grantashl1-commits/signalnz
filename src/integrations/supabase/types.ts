@@ -456,6 +456,13 @@ export type Database = {
             referencedRelation: "partner_connections"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "connect_messages_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       cycle_logs: {
@@ -2265,6 +2272,42 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_connections_safe: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          join_code: string | null
+          member_user_id: string | null
+          partner_name: string | null
+          partner_user_id: string | null
+          shared_preferences: Json | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          join_code?: string | null
+          member_user_id?: string | null
+          partner_name?: string | null
+          partner_user_id?: string | null
+          shared_preferences?: Json | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          join_code?: string | null
+          member_user_id?: string | null
+          partner_name?: string | null
+          partner_user_id?: string | null
+          shared_preferences?: Json | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       _postgis_deprecate: {
@@ -3174,14 +3217,16 @@ export type Database = {
         }
         Returns: string
       }
-      verify_partner_pin: {
-        Args: { _code: string; _pin_hash: string }
-        Returns: {
-          connection_id: string
-          connection_status: string
-          partner_name: string
-        }[]
-      }
+      verify_partner_pin:
+        | {
+            Args: { _code: string; _pin_hash: string }
+            Returns: {
+              connection_id: string
+              connection_status: string
+              partner_name: string
+            }[]
+          }
+        | { Args: { _connection_id: string; _pin: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
