@@ -275,9 +275,6 @@ export default function HomePage() {
                 knowledge incoming
               </p>
             </div>
-            <p className="font-body text-sm text-muted-foreground mb-4">
-              10 insights a day — sourced from books that matter
-            </p>
             {feedLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
