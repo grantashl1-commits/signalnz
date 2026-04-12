@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { GatedPage } from "@/components/FeatureGate";
+import { GatedFeature } from "@/components/FeatureGate";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
@@ -36,7 +37,7 @@ export default function NutritionPage() {
   ];
 
   return (
-    <GatedPage requiredTier="nourished">
+    <div className="relative">
     <div className="relative">
       <AtmosphericHero size="md">
         <div className="absolute inset-0 z-0"><SignalPulse /></div>
@@ -92,6 +93,6 @@ export default function NutritionPage() {
         </div>
       </ContentSection>
     </div>
-    </GatedPage>
+    </div>
   );
 }

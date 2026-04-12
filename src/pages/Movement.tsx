@@ -1,7 +1,8 @@
 import { useState, useMemo, lazy, Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { GatedPage } from "@/components/FeatureGate";
+import { GatedFeature } from "@/components/FeatureGate";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { Check, Dumbbell, Bluetooth, Activity, ChevronDown, ChevronRight, PenLine, Flame, Moon, Heart, Save, X, Plus } from "lucide-react";
@@ -246,8 +247,8 @@ export default function MovementPage() {
     }
   };
 
-  return (
-    <GatedPage requiredTier="nourished">
+    return (
+    <div className="relative">
     <div className="relative">
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
