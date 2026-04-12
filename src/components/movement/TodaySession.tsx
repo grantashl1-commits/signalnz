@@ -120,6 +120,14 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       haptic("success");
       toast.success("Session logged! 🎉");
       onSessionLogged?.();
+      // After a short delay, advance to the next session
+      setTimeout(() => {
+        setTodayLogCount(c => c + 1);
+        setSessionLogged(false);
+        setCompletedExercises(new Set());
+        setSessionNotes("");
+        setShowNotes(false);
+      }, 2000);
     }
   };
 
