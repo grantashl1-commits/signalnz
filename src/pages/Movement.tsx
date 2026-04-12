@@ -219,23 +219,6 @@ export default function MovementPage() {
     return null;
   };
 
-  // Load Supabase workout logs when My Log tab is active
-  useEffect(() => {
-    if (activeTab !== "log") return;
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase
-        .from("workout_logs")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("completed", true)
-        .order("session_date", { ascending: false })
-        .limit(20)
-        .then(({ data }) => {
-          if (data) setSupabaseLogs(data as any);
-        });
-    });
-  }, [activeTab, logRefreshKey]);
 
   const handleManualLog = async () => {
     if (manualLogging) return;
