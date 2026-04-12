@@ -497,11 +497,11 @@ export default function NervousSystemPage() {
     setActivePractice(null);
   };
 
-  const TAB_TITLES: Record<TabId, string> = {
-    meditations: "Meditations & Inner Work",
-    breathwork: "Breathwork & Regulation",
-    somatic: "Somatic Exercises",
-    sleep: "Sleep & Rest",
+  const TAB_SUBTITLES: Record<TabId, string> = {
+    meditations: "Meditations & inner work.",
+    breathwork: "Breathwork & regulation.",
+    somatic: "Somatic exercises.",
+    sleep: "Sleep & rest.",
   };
 
   return (
@@ -511,12 +511,10 @@ export default function NervousSystemPage() {
           <SignalPulse />
           <div className="text-center relative z-10 px-6">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
-            <h1 className="font-display text-[clamp(2rem,8vw,3.5rem)] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.05] mb-2 break-words">
-              {TAB_TITLES[tab]}
-            </h1>
-            {streak > 1 && (
-              <p className="font-body text-xs text-primary-foreground/50">{streak}-day streak</p>
-            )}
+            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Still</h1>
+            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
+              {TAB_SUBTITLES[tab]}
+            </p>
           </div>
         </AtmosphericHero>
 
