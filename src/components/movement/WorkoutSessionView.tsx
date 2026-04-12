@@ -515,7 +515,109 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
         </div>
       )}
 
-      {/* Workout-level interval timer for alternating time-based exercises (e.g. run/walk) */}
+      {/* ── Inline HR Stats Panel ── */}
+      {hr.connected && (
+        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+          {/* BPM + Zone + Timer row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <motion.div
+                className="rounded-2xl px-4 py-2 text-center transition-colors duration-500"
+                style={{ backgroundColor: currentZone.color + "18" }}
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <p className="font-body text-3xl font-bold leading-none" style={{ color: currentZone.color }}>
+                  {hr.bpm || "—"}
+                </p>
+                <p className="font-body text-[9px] uppercase tracking-wider mt-0.5" style={{ color: currentZone.color }}>bpm</p>
+              </motion.div>
+              <div>
+                <div
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
+                  style={{ backgroundColor: currentZone.color }}
+                >
+                  <span className="font-body text-[10px] font-bold text-white">
+                    Z{currentZone.zone} · {currentZone.label}
+                  </span>
+                </div>
+                <p className="font-body text-xs text-muted-foreground mt-1">
+                  {liveCals > 0 && <><Flame className="h-3 w-3 inline mr-1" />{liveCals} cal</>}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="font-body text-2xl text-foreground tabular-nums">{formatTime(hrElapsed)}</p>
+              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">elapsed</p>
+            </div>
+          </div>
+
+          {/* Zone 2+ ring */}
+          {(() => {
+            const ringSize = 64;
+            const strokeW = 6;
+            const radius = (ringSize - strokeW) / 2;
+            const circ = 2 * Math.PI * radius;
+            const progress = Math.min(zone2PlusMins / zone2Goal, 1);
+            return (
+              <div className="flex items-center gap-3">
+                <div className="relative shrink-0" style={{ width: ringSize, height: ringSize }}>
+                  <svg width={ringSize} height={ringSize} className="-rotate-90">
+                    <circle cx={ringSize/2} cy={ringSize/2} r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={strokeW} />
+                    <circle cx={ringSize/2} cy={ringSize/2} r={radius} fill="none" stroke={currentZone.color} strokeWidth={strokeW}
+                      strokeDasharray={circ} strokeDashoffset={circ - circ * progress} strokeLinecap="round"
+                      className="transition-all duration-1000" />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="font-body text-[10px] font-bold text-foreground">{Math.round(zone2PlusMins)}</span>
+                    <span className="font-body text-[8px] text-muted-foreground">/{zone2Goal}m</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="font-body text-xs text-foreground">Zone 2+ progress</p>
+                  <div className="flex gap-1 mt-1">
+                    {HR_ZONES.map(z => {
+                      const count = hrData.filter(d => getZoneForBPM(d.bpm, maxHR).zone === z.zone).length;
+                      const mins = Math.round(count * 2 / 60 * 10) / 10;
+                      return mins > 0 ? (
+                        <span key={z.zone} className="rounded-full px-1.5 py-0.5 font-body text-[9px] text-white font-medium" style={{ backgroundColor: z.color }}>
+                          Z{z.zone} {mins}m
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                  {avgBPM > 0 && (
+                    <p className="font-body text-[10px] text-muted-foreground mt-1">Avg {avgBPM} bpm</p>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Mini HR graph */}
+          {hrData.length >= 4 && (
+            <div className="h-24 rounded-xl overflow-hidden">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={hrData.filter((_, i) => i % 3 === 0 || i === hrData.length - 1).map(d => ({
+                  mins: parseFloat((d.time / 60).toFixed(2)), bpm: d.bpm
+                }))} margin={{ top: 2, right: 4, bottom: 0, left: 0 }}>
+                  {/* Zone bands */}
+                  <ReferenceArea y1={40} y2={Math.round(maxHR * 0.6)} fill={HR_ZONES[0].color} fillOpacity={0.08} ifOverflow="extendDomain" />
+                  <ReferenceArea y1={Math.round(maxHR * 0.6)} y2={Math.round(maxHR * 0.7)} fill={HR_ZONES[1].color} fillOpacity={0.1} ifOverflow="extendDomain" />
+                  <ReferenceArea y1={Math.round(maxHR * 0.7)} y2={Math.round(maxHR * 0.8)} fill={HR_ZONES[2].color} fillOpacity={0.1} ifOverflow="extendDomain" />
+                  <ReferenceArea y1={Math.round(maxHR * 0.8)} y2={maxHR + 10} fill={HR_ZONES[3].color} fillOpacity={0.1} ifOverflow="extendDomain" />
+                  <XAxis dataKey="mins" type="number" domain={["dataMin", "dataMax"]} hide />
+                  <YAxis domain={["dataMin - 10", maxHR + 10]} hide />
+                  <ReferenceLine y={Math.round(maxHR * 0.6)} stroke={HR_ZONES[1].color} strokeDasharray="3 3" strokeWidth={0.5} />
+                  <ReferenceLine y={Math.round(maxHR * 0.7)} stroke={HR_ZONES[2].color} strokeDasharray="3 3" strokeWidth={0.5} />
+                  <Line type="monotone" dataKey="bpm" stroke="hsl(var(--primary))" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+      )}
+
       {(() => {
         const timeExercises = localExercises.filter(e => e.exercise && isTimeBased(e.reps));
         if (timeExercises.length >= 2) {
