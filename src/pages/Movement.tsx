@@ -89,6 +89,24 @@ export default function MovementPage() {
   const defaultScheduleIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const [scheduleIdx, setScheduleIdx] = useState(defaultScheduleIdx);
 
+  // Load Supabase workout logs when My Log tab is active
+  useEffect(() => {
+    if (activeTab !== "log") return;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("workout_logs")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("completed", true)
+        .order("session_date", { ascending: false })
+        .limit(20)
+        .then(({ data }) => {
+          if (data) setSupabaseLogs(data as any);
+        });
+    });
+  }, [activeTab, logRefreshKey]);
+
   // ── Body goals from BodyVisualiser ──
   const bodyGoals = useMemo<string[]>(() => {
     try {
