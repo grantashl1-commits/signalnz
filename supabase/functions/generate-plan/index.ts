@@ -7,182 +7,187 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-function getWeekStart(): string {
+function getMonthKey(): string {
   const d = new Date();
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const mon = new Date(d.getFullYear(), d.getMonth(), diff);
-  return mon.toISOString().split("T")[0];
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-function getCyclePhase(cycleDay: number): { phase: string; guidance: string } {
-  if (cycleDay <= 5) return { phase: "Menstrual", guidance: "Gentle movement: yoga, stretching, walks. Iron-rich foods. Prioritise warmth and rest." };
-  if (cycleDay <= 13) return { phase: "Follicular", guidance: "Energy rising — strength training, progressive overload. Fresh, fermented foods, complex carbs." };
-  if (cycleDay <= 16) return { phase: "Ovulatory", guidance: "Peak performance — push for PRs, high-intensity. Antioxidant-rich, lighter meals." };
-  return { phase: "Luteal", guidance: "Moderate steady-state. Complex carbs for serotonin, magnesium-rich foods, manage cravings." };
+function getCyclePhaseGuidance(phase: string): string {
+  const map: Record<string, string> = {
+    menstrual: "Prioritise gentle movement, yoga, stretching, walks. Lower intensity (RPE 3-5). Focus on iron-rich recovery.",
+    follicular: "Energy rising — progressive overload, heavier lifts welcome. Fresh fermented foods, complex carbs.",
+    ovulatory: "Peak performance window — push for PRs, HIIT, high-intensity circuits. Antioxidant-rich lighter meals.",
+    luteal: "Moderate steady-state. Complex carbs for serotonin, magnesium-rich foods. Reduce volume 10-20%.",
+  };
+  return map[phase?.toLowerCase()] || map.follicular;
 }
 
-// ═══ TRAINING TEMPLATE (deterministic, phase-aware) ═══
-function buildTrainingPlan(ctx: any): string {
-  const { phase, guidance } = ctx.cycle;
-  const lines: string[] = [];
+// Fetch and summarise key PDF names from reference-pdfs/movement bucket
+async function getEvidenceContext(supabase: any): Promise<string> {
+  const { data: files } = await supabase.storage
+    .from("reference-pdfs")
+    .list("movement", { limit: 50 });
 
-  lines.push(`# Weekly Training Plan — ${phase} Phase`);
-  lines.push("");
-  lines.push(`> ${guidance}`);
-  lines.push("");
+  if (!files || files.length === 0) return "No reference materials available.";
 
-  // Adjust plan based on check-in data
-  let intensityNote = "";
-  if (ctx.checkin.energyRating !== "Not submitted") {
-    const energy = parseInt(ctx.checkin.energyRating);
-    if (energy < 5) intensityNote = "⚡ Energy is low — reduce intensity by 1-2 RPE, swap HIIT for Zone 2 walks.";
-    else if (energy >= 8) intensityNote = "🔥 Energy is high — push intensity, add a set, or attempt a PR.";
-  }
-  if (ctx.checkin.sorenessLevel === "High" || ctx.checkin.sorenessLevel === "Very high") {
-    intensityNote = "🧊 Soreness is elevated — active recovery, foam rolling, and mobility only today.";
-  }
-  if (intensityNote) {
-    lines.push(`**Readiness adjustment:** ${intensityNote}`);
-    lines.push("");
-  }
+  // Extract book titles from filenames for the AI prompt context
+  const books = files
+    .filter((f: any) => f.name.endsWith(".pdf"))
+    .map((f: any) => {
+      const clean = f.name
+        .replace(/_OceanofPDF\.com_/g, "")
+        .replace(/\.pdf$/, "")
+        .replace(/_/g, " ")
+        .replace(/ - /g, " by ");
+      return clean;
+    });
 
-  const isLow = phase === "Menstrual" || (ctx.checkin.energyRating !== "Not submitted" && parseInt(ctx.checkin.energyRating) < 5);
+  // Fetch first 3 PDFs as base64 for deep analysis
+  const pdfContents: { name: string; base64: string }[] = [];
+  const priorityBooks = [
+    "Essentials_of_strength_training",
+    "High-Performance_Training",
+    "Science_and_Development_of_Muscle_Hypertrophy",
+    "The_female_body_bible",
+    "In_the_flo",
+    "Beginners_Guide_to_Weight_Lifting",
+    "The_Forever_Strong_Playbook",
+    "Overcoming_gravity",
+    "Total_Heart_Rate_Training",
+  ];
 
-  const schedule = isLow
-    ? [
-        { day: "Monday", session: "Gentle Yoga Flow", duration: "30 min", rpe: "3-4" },
-        { day: "Tuesday", session: "Light Walk + Mobility", duration: "30 min", rpe: "3-4" },
-        { day: "Wednesday", session: "Rest", duration: "-", rpe: "-" },
-        { day: "Thursday", session: "Light Full Body Strength", duration: "30 min", rpe: "5-6" },
-        { day: "Friday", session: "Gentle Walk", duration: "25 min", rpe: "3" },
-        { day: "Saturday", session: "Restorative Stretch", duration: "20 min", rpe: "2-3" },
-        { day: "Sunday", session: "Rest", duration: "-", rpe: "-" },
-      ]
-    : [
-        { day: "Monday", session: "Lower Body Strength", duration: "45 min", rpe: "7-8" },
-        { day: "Tuesday", session: "HIIT Conditioning", duration: "30 min", rpe: "7-8" },
-        { day: "Wednesday", session: "Upper Body Strength", duration: "45 min", rpe: "7-8" },
-        { day: "Thursday", session: "Active Recovery & Mobility", duration: "30 min", rpe: "3-4" },
-        { day: "Friday", session: "Full Body Circuit", duration: "40 min", rpe: "7" },
-        { day: "Saturday", session: "Zone 2 Cardio + Core", duration: "35 min", rpe: "5-6" },
-        { day: "Sunday", session: "Rest", duration: "-", rpe: "-" },
-      ];
-
-  for (const s of schedule) {
-    lines.push(`### ${s.day}: ${s.session}`);
-    if (s.duration !== "-") {
-      lines.push(`- Duration: ${s.duration} | RPE: ${s.rpe}`);
+  for (const book of priorityBooks.slice(0, 3)) {
+    const match = files.find((f: any) => f.name.includes(book));
+    if (match) {
+      try {
+        const { data: blob } = await supabase.storage
+          .from("reference-pdfs")
+          .download(`movement/${match.name}`);
+        if (blob) {
+          const arrayBuf = await blob.arrayBuffer();
+          const bytes = new Uint8Array(arrayBuf);
+          // Only take first 500KB to stay within token limits
+          const truncated = bytes.slice(0, 500_000);
+          const base64 = btoa(String.fromCharCode(...truncated));
+          pdfContents.push({ name: match.name, base64 });
+        }
+      } catch (e) {
+        console.log(`Skipping PDF ${match.name}: ${e}`);
+      }
     }
-    lines.push("");
   }
 
-  if (ctx.goalProgress.goalDescription !== "No goal set") {
-    lines.push(`**Goal focus:** ${ctx.goalProgress.goalDescription} — ${ctx.goalProgress.progressPercent}% progress. ${ctx.goalProgress.weeksToGoal !== "No target date" ? `${ctx.goalProgress.weeksToGoal} weeks remaining.` : ""}`);
-  }
+  return `EVIDENCE BASE (${books.length} reference books in our library):
+${books.join("\n")}
 
-  return lines.join("\n");
+${pdfContents.length > 0 ? `\nDeep analysis available from: ${pdfContents.map(p => p.name).join(", ")}` : ""}`;
 }
 
-// ═══ NUTRITION TEMPLATE (deterministic, phase-aware) ═══
-function buildNutritionPlan(ctx: any): string {
-  const { phase, guidance } = ctx.cycle;
-  const lines: string[] = [];
+async function generateWithAI(
+  systemPrompt: string,
+  userPrompt: string,
+): Promise<any> {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-  lines.push(`# Weekly Nutrition Guide — ${phase} Phase`);
-  lines.push("");
-  lines.push(`> ${guidance}`);
-  lines.push("");
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-pro",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "training_plan",
+            description: "Return a structured multi-week training plan",
+            parameters: {
+              type: "object",
+              properties: {
+                title: { type: "string", description: "Plan title e.g. 'Stronger Foundation — 8 Week Program'" },
+                overview: { type: "string", description: "2-3 sentence overview of the program approach" },
+                duration_weeks: { type: "number" },
+                days_per_week: { type: "number" },
+                equipment_level: { type: "string" },
+                phase_awareness: { type: "string", description: "How the plan adapts to menstrual cycle phases" },
+                weeks: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      week_number: { type: "number" },
+                      theme: { type: "string", description: "e.g. 'Foundation & Technique'" },
+                      phase_note: { type: "string", description: "Cycle phase adaptation note" },
+                      days: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            day: { type: "number" },
+                            title: { type: "string" },
+                            session_type: { type: "string", description: "e.g. 'strength', 'hiit', 'active-recovery', 'rest'" },
+                            duration_minutes: { type: "number" },
+                            warmup: { type: "string" },
+                            exercises: {
+                              type: "array",
+                              items: {
+                                type: "object",
+                                properties: {
+                                  name: { type: "string" },
+                                  sets: { type: "number" },
+                                  reps_or_duration: { type: "string" },
+                                  rest_seconds: { type: "number" },
+                                  rpe: { type: "string" },
+                                  load_guidance: { type: "string", description: "e.g. 'moderate — aim for 60-70% 1RM'" },
+                                  form_cue: { type: "string" },
+                                  progression: { type: "string", description: "How to progress week-over-week" },
+                                },
+                                required: ["name", "sets", "reps_or_duration"],
+                                additionalProperties: false,
+                              },
+                            },
+                            cooldown: { type: "string" },
+                          },
+                          required: ["day", "title", "exercises"],
+                          additionalProperties: false,
+                        },
+                      },
+                    },
+                    required: ["week_number", "theme", "days"],
+                    additionalProperties: false,
+                  },
+                },
+              },
+              required: ["title", "overview", "duration_weeks", "days_per_week", "weeks"],
+              additionalProperties: false,
+            },
+          },
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "training_plan" } },
+    }),
+  });
 
-  // TDEE estimate
-  const weight = ctx.biometrics.weight !== "Not recorded" ? parseFloat(ctx.biometrics.weight) : null;
-  const height = ctx.biometrics.height !== "Not recorded" ? parseFloat(ctx.biometrics.height) : null;
-  if (weight && height) {
-    const bmr = 10 * weight + 6.25 * height - 5 * 30 - 161;
-    const mult = ctx.biometrics.sessionsThisWeek >= 5 ? 1.725 : ctx.biometrics.sessionsThisWeek >= 3 ? 1.55 : 1.375;
-    const tdee = Math.round(bmr * mult);
-    lines.push(`**Estimated TDEE:** ~${tdee} kcal/day`);
-    lines.push(`**Protein target:** ${Math.round(weight * 1.6)}-${Math.round(weight * 2.0)}g/day`);
-    lines.push(`**Hydration:** ${(weight * 35 / 1000).toFixed(1)}L/day + 500ml per hour exercise`);
-    lines.push("");
+  if (!response.ok) {
+    const t = await response.text();
+    console.error("AI gateway error:", response.status, t);
+    if (response.status === 429) throw new Error("Rate limited — please try again in a moment");
+    if (response.status === 402) throw new Error("AI credits exhausted — please top up in Settings");
+    throw new Error(`AI generation failed: ${response.status}`);
   }
 
-  // Phase-specific meal suggestions from recipe bank
-  const phaseRecipes: Record<string, { breakfast: string; lunch: string; dinner: string; snack: string }> = {
-    Menstrual: { breakfast: "Signal Sunrise Bowl or Signal Omega-3 Breakfast Bowl", lunch: "Signal Iron Restore Bowl", dinner: "Signal Golden Immunity Soup or Signal Anti-Inflammatory Curry", snack: "Signal Date Cacao Bliss Balls" },
-    Follicular: { breakfast: "Signal Garden Frittata or Signal Hormone Balance Smoothie", lunch: "Signal Spring Grain Bowl or Signal Citrus Tempeh Salad", dinner: "Signal Herbed Chickpea Flatbread", snack: "Signal Seed Cycling Granola" },
-    Ovulatory: { breakfast: "Signal Hormone Balance Smoothie", lunch: "Signal Rainbow Nourish Plate or Signal Green Goddess Wrap", dinner: "Signal Protein Recovery Bowl", snack: "Signal Carrot Cake Bliss Balls" },
-    Luteal: { breakfast: "Signal Berry Bircher or Signal Savoury Egg Bites", lunch: "Signal Magnesium Power Bowl", dinner: "Signal Comfort Dhal or Signal PMS Ease Stew", snack: "Signal Adaptogen Hot Cacao" },
-  };
-  const recs = phaseRecipes[phase] || phaseRecipes.Follicular;
+  const data = await response.json();
+  const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+  if (!toolCall) throw new Error("AI did not return structured plan");
 
-  lines.push("## This Week's Meal Focus");
-  lines.push(`- **Breakfast:** ${recs.breakfast}`);
-  lines.push(`- **Lunch:** ${recs.lunch}`);
-  lines.push(`- **Dinner:** ${recs.dinner}`);
-  lines.push(`- **Snack:** ${recs.snack}`);
-  lines.push("");
-
-  // Deficiency flags
-  lines.push("## Nutrient Watch");
-  if (phase === "Menstrual") {
-    lines.push("- ⚠️ **Iron** — pair iron-rich foods with vitamin C. Avoid tea/coffee with meals.");
-    lines.push("- **Magnesium** — dark chocolate, pumpkin seeds, almonds for cramp relief.");
-    lines.push("- **Omega-3** — salmon, chia seeds, walnuts for prostaglandin balance.");
-  } else if (phase === "Luteal") {
-    lines.push("- **Magnesium & B6** — banana, avocado, lentils to ease PMS.");
-    lines.push("- **Calcium** — target 1000mg/day. Yoghurt, fortified plant milk, tahini.");
-    lines.push("- **Complex carbs** — sweet potato, oats for serotonin support. Cravings are normal.");
-  } else if (phase === "Follicular") {
-    lines.push("- **Zinc** — pumpkin seeds, chickpeas for rising FSH support.");
-    lines.push("- **Fermented foods** — kimchi, miso, yoghurt for oestrogen metabolism.");
-  } else {
-    lines.push("- **Antioxidants** — berries, leafy greens for ovulation support.");
-    lines.push("- **Fibre** — 30g+ daily for oestrogen clearance.");
-  }
-
-  return lines.join("\n");
-}
-
-async function getUserContext(supabase: any, userId: string) {
-  const weekStart = getWeekStart();
-
-  const [profileRes, measureRes, checkinRes, goalsRes] = await Promise.all([
-    supabase.from("profiles").select("display_name, suburb, profession, weight_kg, height_cm").eq("user_id", userId).maybeSingle(),
-    supabase.from("body_measurements").select("*").eq("user_id", userId).order("recorded_at", { ascending: false }).limit(1).maybeSingle(),
-    supabase.from("weekly_checkins").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(1).maybeSingle(),
-    supabase.from("user_goals").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(1),
-  ]);
-
-  const profile = profileRes.data;
-  const measurements = measureRes.data;
-  const checkin = checkinRes.data;
-  const activeGoal = goalsRes.data?.[0] || null;
-
-  const cycleDay = ((Math.floor(Date.now() / (24 * 60 * 60 * 1000))) % 28) + 1;
-
-  return {
-    user: { firstName: profile?.display_name?.split(" ")[0] || "Friend" },
-    biometrics: {
-      weight: measurements?.weight || profile?.weight_kg || "Not recorded",
-      height: measurements?.height || profile?.height_cm || "Not recorded",
-      bodyFat: measurements?.body_fat || "Not recorded",
-      sessionsThisWeek: 0,
-      activeMinutes: 0,
-    },
-    checkin: {
-      energyRating: checkin?.energy || "Not submitted",
-      sleepRating: checkin?.sleep_quality || "Not submitted",
-      sorenessLevel: checkin?.soreness || "Not submitted",
-      userNotes: checkin?.notes || "None",
-    },
-    goalProgress: {
-      goalDescription: activeGoal?.goal_description || "No goal set",
-      progressPercent: 0,
-      weeksToGoal: "No target date",
-    },
-    cycle: getCyclePhase(cycleDay),
-  };
+  return JSON.parse(toolCall.function.arguments);
 }
 
 serve(async (req) => {
@@ -194,36 +199,145 @@ serve(async (req) => {
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Unauthorized");
 
-    const { planType } = await req.json();
-    if (!planType || !["training", "nutrition"].includes(planType)) {
-      throw new Error("planType must be 'training' or 'nutrition'");
+    const body = await req.json();
+    const { answers, cyclePhase } = body;
+
+    // ─── Monthly limit check ─────────────────────────
+    const monthKey = getMonthKey();
+    const { count: genCount } = await supabase
+      .from("plan_generations")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("month_key", monthKey)
+      .eq("plan_type", "ai_training");
+
+    const isFirstFree = (genCount || 0) === 0;
+
+    if (!isFirstFree) {
+      // Check credits — cost 3 credits for extra plan generation
+      const { data: creditRow } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_identifier", user.id)
+        .maybeSingle();
+
+      const credits = creditRow?.credits_remaining ?? 0;
+      if (credits < 3) {
+        return new Response(
+          JSON.stringify({
+            error: "insufficient_credits",
+            message: "You've used your free plan this month. Extra plans cost 3 credits.",
+            credits_remaining: credits,
+          }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      // Deduct credits
+      await supabase
+        .from("ai_credits")
+        .update({ credits_remaining: credits - 3 })
+        .eq("user_identifier", user.id);
     }
 
-    const ctx = await getUserContext(supabase, user.id);
-    const planContent = planType === "training" ? buildTrainingPlan(ctx) : buildNutritionPlan(ctx);
+    // ─── Gather context ─────────────────────────
+    const [profileRes, evidenceContext] = await Promise.all([
+      supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
+      getEvidenceContext(supabase),
+    ]);
 
-    const weekStart = getWeekStart();
-    await supabase.from("generated_plans").insert({
-      user_id: user.id,
-      plan_type: planType,
-      plan_content: planContent,
-      week_start_date: weekStart,
-    });
+    const profile = profileRes.data;
+    const phaseGuidance = getCyclePhaseGuidance(cyclePhase || "follicular");
 
-    return new Response(JSON.stringify({ plan: planContent, context: ctx }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    // ─── Build AI prompt ─────────────────────────
+    const systemPrompt = `You are Signal's AI Training Coach — an evidence-based, female-focused fitness program designer. You create personalised training plans informed by exercise science research.
+
+CORE PRINCIPLES:
+- Every plan must be cycle-phase aware (menstrual, follicular, ovulatory, luteal)
+- Progressive overload is fundamental — increase volume, load, or intensity week over week
+- Include RPE targets for every exercise
+- Include form cues and load guidance
+- Sessions should include warmup and cooldown
+- Rest days are part of the program
+
+EQUIPMENT MAPPING:
+- "home-none": Bodyweight only — push-ups, squats, lunges, planks, burpees, mountain climbers, glute bridges
+- "home-some": Dumbbells, resistance bands, kettlebells, yoga mat — goblet squats, DB rows, banded walks
+- "gym": Full equipment — barbell, cables, machines, squat rack, bench press
+
+EXPERIENCE MAPPING:
+- "this-week": Intermediate-advanced, can handle complex movements
+- "this-month": Intermediate, familiar with most exercises
+- "six-months": Beginner-intermediate, focus on technique first
+- "never": True beginner, bodyweight focus weeks 1-2, then introduce load
+
+${evidenceContext}`;
+
+    const userPrompt = `Create a personalised training plan with these parameters:
+
+USER PROFILE:
+- Height: ${answers?.height || profile?.height_cm || 165}cm
+- Weight: ${answers?.weight || profile?.weight_kg || 70}kg
+- Age: ${answers?.age || 30}
+- Goal: ${answers?.goal || "stronger"} ${answers?.goal === "lose-weight" ? `(target: ${answers?.goalWeight}kg over ${answers?.weeksPlan || 8} weeks)` : ""}
+- Days per week: ${answers?.daysPerWeek || 4}
+- Last workout: ${answers?.lastWorkout || "this-month"}
+- Equipment access: ${answers?.equipment || "home-some"}
+- Current cycle phase: ${cyclePhase || "follicular"}
+
+CYCLE PHASE GUIDANCE: ${phaseGuidance}
+
+Generate a ${answers?.weeksPlan || 8}-week plan with ${answers?.daysPerWeek || 4} training days per week.
+Each week should progressively build on the previous. Include specific exercises from our exercise database where possible.
+Adapt the intensity and exercise selection to match the user's cycle phase each week.`;
+
+    const plan = await generateWithAI(systemPrompt, userPrompt);
+
+    // ─── Save to DB ─────────────────────────
+    await Promise.all([
+      supabase.from("user_plans").insert({
+        user_id: user.id,
+        plan_type: "ai_training",
+        plan_data: plan,
+        cycle_phase_at_generation: cyclePhase || "follicular",
+        week_number: 1,
+      }),
+      supabase.from("plan_generations").insert({
+        user_id: user.id,
+        plan_type: "ai_training",
+        month_key: monthKey,
+      }),
+      // Log AI usage
+      supabase.from("ai_usage").insert({
+        user_identifier: user.id,
+        function_name: "generate-plan",
+        tokens_used: 5000,
+      }),
+    ]);
+
+    return new Response(
+      JSON.stringify({
+        plan,
+        is_first_free: isFirstFree,
+        credits_used: isFirstFree ? 0 : 3,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   } catch (e: any) {
     console.error("generate-plan error:", e);
-    return new Response(JSON.stringify({ error: e.message || "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    const status = e.message?.includes("insufficient_credits") ? 402
+      : e.message?.includes("Rate limited") ? 429
+      : 500;
+    return new Response(
+      JSON.stringify({ error: e.message || "Unknown error" }),
+      { status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   }
 });

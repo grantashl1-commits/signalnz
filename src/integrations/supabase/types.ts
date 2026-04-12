@@ -1142,6 +1142,30 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_generations: {
+        Row: {
+          created_at: string
+          id: string
+          month_key: string
+          plan_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month_key: string
+          plan_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month_key?: string
+          plan_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       plant_diversity_log: {
         Row: {
           created_at: string
