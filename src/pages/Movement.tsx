@@ -559,8 +559,8 @@ export default function MovementPage() {
       )}
 
 
-      {/* BODY TAB */}
-      {activeTab === "body" && (
+      {/* AI TRAINING PLAN TAB */}
+      {activeTab === "ai-plan" && (
         <div className="space-y-8 md:space-y-10">
           <BodyVisualiser />
         </div>
