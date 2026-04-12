@@ -27,6 +27,7 @@ import AISessionLog from "@/components/movement/AISessionLog";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
+import AITrainingPlanTab from "@/components/movement/AITrainingPlanTab";
 import TodaySession from "@/components/movement/TodaySession";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
@@ -561,11 +562,7 @@ export default function MovementPage() {
 
 
       {/* AI TRAINING PLAN TAB */}
-      {activeTab === "ai-plan" && (
-        <div className="space-y-8 md:space-y-10">
-          <BodyVisualiser />
-        </div>
-      )}
+      {activeTab === "ai-plan" && <AITrainingPlanTab />}
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}
