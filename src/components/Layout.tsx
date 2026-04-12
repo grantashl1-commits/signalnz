@@ -47,6 +47,7 @@ const MORE_ITEMS = [
   { path: "/mindfulness", label: "Mindfulness", icon: Brain },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/community", label: "Community", icon: Users },
+  { path: "/connect", label: "Connect", icon: Heart },
   { path: "/account", label: "Account", icon: User },
 ];
 
