@@ -98,10 +98,12 @@ Deno.serve(async (req) => {
     
     // Fetch exercises needing custom illustrations:
     // Those with gif_url null AND illustration_url not pointing to our custom bucket
+    // Target exercises missing custom illustrations (our bucket)
+    // This catches both NULL illustration_url AND old external URLs
     const { data: exercises, error } = await supabase
       .from("exercises")
-      .select("id, name, category, body_part, target")
-      .is("gif_url", null)
+      .select("id, name, category, body_part, target, illustration_url")
+      .not("illustration_url", "like", "%exercise-assets%")
       .order("name")
       .range(batch * batchSize, (batch + 1) * batchSize - 1);
 
