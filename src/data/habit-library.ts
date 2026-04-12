@@ -20,6 +20,16 @@ export interface HabitEducation {
   beingHuman?: string;
 }
 
+export type SupplementSubcategory = 
+  | "bone-muscle" | "energy-mood" | "gut-microbiome" | "immune-thyroid" 
+  | "skin-hair-nails" | "hormonal-balance" | "brain-cognition" | "anti-inflammatory";
+
+export type HabitSubcategory =
+  | "cardio" | "strength" | "flexibility" | "daily-movement" | "recovery"
+  | "morning-ritual" | "evening-ritual" | "stress-management" | "connection" | "creativity"
+  | "hydration" | "whole-foods" | "gut-health" | "blood-sugar" | "anti-inflammatory"
+  | "circadian" | "breathwork" | "ayurvedic" | "cold-heat" | "mindset";
+
 export interface LibraryHabit {
   id: string;
   name: string;
@@ -28,12 +38,16 @@ export interface LibraryHabit {
   evidenceNote: string;
   icon: string;
   category: HabitCategory | "foundations";
+  subcategory?: SupplementSubcategory | HabitSubcategory;
   timing?: HabitTiming;
   womenBadge?: boolean;
   note?: string;
   nzBrands?: string;
+  nzBrandUrl?: string;
   rdi?: SupplementRDI;
   education?: HabitEducation;
+  sourceBook?: string;
+  sourceAuthor?: string;
 }
 
 export const SUPPLEMENT_DISCLAIMER = "Always consult your doctor or pharmacist before starting supplements.";
