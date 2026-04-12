@@ -2437,6 +2437,14 @@ export type Database = {
             }
             Returns: string
           }
+      deduct_ai_credits: {
+        Args: {
+          p_cost: number
+          p_function_name?: string
+          p_user_identifier: string
+        }
+        Returns: number
+      }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {
