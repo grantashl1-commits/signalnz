@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, RotateCcw, VolumeX, Volume2, X } from "lucide-react";
+import { Play, Pause, RotateCcw, VolumeX, Volume2, X, Loader2 } from "lucide-react";
 import type { PracticeConfig } from "@/data/practices";
 import { useAudioGuide } from "./AudioGuide";
+import { useElevenLabsTTS } from "@/hooks/useElevenLabsTTS";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
@@ -26,14 +27,38 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
   const [lastCue, setLastCue] = useState("");
   const cueTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { hasAudio } = useAudioGuide({
-    audioUrl: practice.audio.audioUrl,
-    enabled: practice.audio.enabled,
+  // ElevenLabs TTS for full narration (Lily voice)
+  const hasTtsScript = !!practice.ttsScript;
+  const {
+    audioUrl: ttsAudioUrl,
+    loading: ttsLoading,
+    error: ttsError,
+    generate: generateTts,
+  } = useElevenLabsTTS({
+    practiceId: practice.id,
+    ttsScript: practice.ttsScript || "",
+    enabled: hasTtsScript,
+  });
+
+  // Determine the best audio source: TTS narration > pre-uploaded file
+  const effectiveAudioUrl = ttsAudioUrl || practice.audio.audioUrl;
+
+  const { hasAudio, restart: restartAudio } = useAudioGuide({
+    audioUrl: effectiveAudioUrl,
+    enabled: practice.audio.enabled || !!ttsAudioUrl,
     muted,
     playing,
   });
 
-  // Speak cue using SpeechSynthesis as fallback when no audio file
+  // Auto-generate TTS on mount if script exists but no cached audio
+  useEffect(() => {
+    if (hasTtsScript && !ttsAudioUrl && !ttsLoading && !ttsError) {
+      generateTts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Speak cue using SpeechSynthesis ONLY when no audio guide is playing
   const speakCue = useCallback(
     (text: string) => {
       if (muted || !text) return;
@@ -41,8 +66,8 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
       if (cueTimeoutRef.current) clearTimeout(cueTimeoutRef.current);
       cueTimeoutRef.current = setTimeout(() => setLastCue(""), 2000);
 
-      // Use Web Speech API for phase cues (lightweight, no server needed)
-      if ("speechSynthesis" in window) {
+      // Only use Web Speech API if no audio narration is playing
+      if (!hasAudio && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
         u.rate = 0.85;
@@ -51,7 +76,7 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
         window.speechSynthesis.speak(u);
       }
     },
-    [muted]
+    [muted, hasAudio]
   );
 
   // Timer loop
@@ -63,11 +88,9 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
       setTick((t) => {
         const currentPhase = phases[phaseIdx];
         if (t + 1 >= currentPhase.seconds) {
-          // Move to next phase
           setPhaseIdx((i) => {
             const next = (i + 1) % phases.length;
             if (next === 0) setRound((r) => r + 1);
-            // Speak the next cue
             const nextPhase = phases[next];
             if (nextPhase.cue) speakCue(nextPhase.cue);
             return next;
@@ -98,6 +121,7 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
     setRound(0);
     setElapsed(0);
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    if (restartAudio) restartAudio();
   };
 
   const handleClose = () => {
@@ -209,11 +233,20 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
         </AnimatePresence>
         {!lastCue && <div className="h-7 mb-4" />}
 
-        {/* Audio availability badge */}
+        {/* Audio status badge */}
         <div className="mb-6">
-          {hasAudio ? (
+          {ttsLoading ? (
+            <span className="font-body text-[11px] px-3 py-1 rounded-full bg-primary/10 text-primary inline-flex items-center gap-1.5">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              preparing Lily's voice…
+            </span>
+          ) : hasAudio ? (
             <span className="font-body text-[11px] px-3 py-1 rounded-full bg-primary/10 text-primary">
-              guided audio available
+              guided by Lily
+            </span>
+          ) : ttsError ? (
+            <span className="font-body text-[11px] px-3 py-1 rounded-full bg-muted text-muted-foreground">
+              voice cues active
             </span>
           ) : (
             <span className="font-body text-[11px] px-3 py-1 rounded-full bg-muted text-muted-foreground">
@@ -255,9 +288,9 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
         </div>
 
         {/* Fallback message */}
-        {!hasAudio && practice.audio.enabled && (
+        {!hasAudio && !ttsLoading && practice.audio.enabled && (
           <p className="font-body text-xs text-muted-foreground/60 mt-6 text-center max-w-xs">
-            Audio guidance is unavailable right now. You can still follow the on-screen practice.
+            Audio guidance is loading. Follow the on-screen breathing circle in the meantime.
           </p>
         )}
       </motion.div>
