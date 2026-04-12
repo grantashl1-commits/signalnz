@@ -58,11 +58,7 @@ export default function Feed() {
   const todayStr = format(new Date(), "yyyy-MM-dd");
   const todayPosts = allPosts ? (() => {
     // Pin rewritten showcase posts at the top so we can review them
-    const pinned = allPosts.filter(p => [2, 3, 4].includes(p.post_number));
-    const picked = pickDailyPosts(allPosts, todayStr);
-    const pinnedIds = new Set(pinned.map(p => p.id));
-    const rest = picked.filter(p => !pinnedIds.has(p.id));
-    return [...pinned, ...rest].slice(0, 10);
+    return pickDailyPosts(allPosts, todayStr);
   })() : [];
 
   // Build history sections (past days)
@@ -126,7 +122,7 @@ export default function Feed() {
             Knowledge Incoming
           </h1>
           <p className="font-body text-sm text-muted-foreground">
-            10 insights a day — sourced from books that matter
+            5 insights a day — sourced from books that matter
           </p>
         </div>
       </AtmosphericHero>

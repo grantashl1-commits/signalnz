@@ -2,7 +2,7 @@ export interface FeedPostSource {
   book_title_author: string;
 }
 
-export const DEFAULT_DAILY_FEED_COUNT = 10;
+export const DEFAULT_DAILY_FEED_COUNT = 5;
 
 function seededShuffle<T>(arr: T[], seed: number): T[] {
   const copy = [...arr];
