@@ -1482,6 +1482,33 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          created_at: string
+          function_name: string
+          id: string
+          request_count: number
+          user_identifier: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          function_name: string
+          id?: string
+          request_count?: number
+          user_identifier: string
+          window_start: string
+        }
+        Update: {
+          created_at?: string
+          function_name?: string
+          id?: string
+          request_count?: number
+          user_identifier?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           converted_at: string | null
@@ -2437,6 +2464,14 @@ export type Database = {
             }
             Returns: string
           }
+      check_rate_limit: {
+        Args: {
+          _function_name: string
+          _max_per_minute?: number
+          _user_id: string
+        }
+        Returns: Json
+      }
       deduct_ai_credits: {
         Args: {
           p_cost: number
