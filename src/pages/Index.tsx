@@ -213,8 +213,6 @@ export default function HomePage() {
     });
   }, [user, navigate]);
 
-  const displayPosts = feedPosts || MOCK_POSTS;
-
   if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 
   return (
@@ -287,12 +285,15 @@ export default function HomePage() {
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.15)}>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2">
               <Rss className="h-4 w-4 text-primary" />
               <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
                 knowledge incoming
               </p>
             </div>
+            <p className="font-body text-sm text-muted-foreground mb-4">
+              10 insights a day — sourced from books that matter
+            </p>
             {feedLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
