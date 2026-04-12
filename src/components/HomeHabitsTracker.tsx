@@ -194,46 +194,60 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
           </div>
         ) : (
           <>
-            {/* Habit list */}
-            <div className="space-y-1">
-              {habits.map((habit) => {
-                const done = completedIds.has(habit.id);
-                const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
+            {/* Habit list grouped by frequency */}
+            <div className="space-y-3">
+              {(["daily", "weekly", "monthly"] as const).map(freqType => {
+                const groupHabits = habitsByFreq[freqType];
+                if (groupHabits.length === 0) return null;
+                const label = freqType === "daily" ? "Daily" : freqType === "weekly" ? "This Week" : "This Month";
                 return (
-                  <div key={habit.id} className="flex items-center gap-1">
-                    {editMode && (
-                      <motion.button
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        onClick={() => handleDelete(habit.id)}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-destructive/70 hover:text-destructive hover:bg-destructive/10 flex-shrink-0 min-w-[44px] min-h-[44px]"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </motion.button>
-                    )}
-                    <motion.button
-                      onClick={() => !editMode && handleToggle(habit.id)}
-                      className="flex-1 flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
-                      whileTap={editMode ? {} : { scale: 0.98 }}
-                    >
-                      <div
-                        className="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
-                        style={{
-                          borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--border))',
-                          backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
-                        }}
-                      >
-                        {done && <Check className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={3} />}
-                      </div>
-                      <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotClass}`} />
-                      <span
-                        className={`font-body text-sm flex-1 transition-all duration-200 ${
-                          done ? "line-through text-muted-foreground/60" : "text-foreground"
-                        }`}
-                      >
-                        {habit.name}
-                      </span>
-                    </motion.button>
+                  <div key={freqType}>
+                    <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">
+                      {label}
+                    </p>
+                    <div className="space-y-0.5">
+                      {groupHabits.map((habit) => {
+                        const done = completedIds.has(habit.id);
+                        const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
+                        return (
+                          <div key={habit.id} className="flex items-center gap-1">
+                            {editMode && (
+                              <motion.button
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                onClick={() => handleDelete(habit.id)}
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-destructive/70 hover:text-destructive hover:bg-destructive/10 flex-shrink-0 min-w-[44px] min-h-[44px]"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </motion.button>
+                            )}
+                            <motion.button
+                              onClick={() => !editMode && handleToggle(habit.id)}
+                              className="flex-1 flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
+                              whileTap={editMode ? {} : { scale: 0.98 }}
+                            >
+                              <div
+                                className="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                                style={{
+                                  borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                                  backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
+                                }}
+                              >
+                                {done && <Check className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={3} />}
+                              </div>
+                              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotClass}`} />
+                              <span
+                                className={`font-body text-sm flex-1 transition-all duration-200 ${
+                                  done ? "line-through text-muted-foreground/60" : "text-foreground"
+                                }`}
+                              >
+                                {habit.name}
+                              </span>
+                            </motion.button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 );
               })}
