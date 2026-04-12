@@ -121,6 +121,16 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
 
   const completedCount = habits.filter(h => completedIds.has(h.id)).length;
 
+  // Group habits by frequency type
+  const habitsByFreq = useMemo(() => {
+    const groups: Record<HabitFrequencyType, Habit[]> = { daily: [], weekly: [], monthly: [] };
+    habits.forEach(h => {
+      const ft = h.frequencyType || "daily";
+      groups[ft].push(h);
+    });
+    return groups;
+  }, [habits]);
+
   // Phase 5D: smart nudges (shown when user has habits but none are nudge-worthy, or has no habits)
   const userHabitIds = useMemo(() => new Set(habits.map(h => h.id)), [habits]);
   const smartNudges = useMemo(
