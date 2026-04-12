@@ -59,6 +59,7 @@ const EQUIPMENT_OPTIONS = [
 ];
 
 export default function AITrainingPlanTab() {
+  const { currentPhase } = useCycle();
   const profileData = useProfile();
   const { heightCm, weightKg } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
