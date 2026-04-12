@@ -96,16 +96,37 @@ Deno.serve(async (req) => {
   try {
     const { batch = 0, batchSize = 10 } = await req.json().catch(() => ({}));
     
-    // Fetch exercises needing custom illustrations:
-    // Those with gif_url null AND illustration_url not pointing to our custom bucket
-    // Target exercises missing custom illustrations (our bucket)
-    // This catches both NULL illustration_url AND old external URLs
-    const { data: exercises, error } = await supabase
+    // Prioritize exercises used in training programs, then do the rest
+    // First: get IDs of exercises actively used in workout_exercises
+    const { data: programExIds } = await supabase
+      .from("workout_exercises")
+      .select("exercise_id");
+    const usedIds = new Set((programExIds || []).map((r: any) => r.exercise_id));
+
+    // Fetch exercises needing custom illustrations
+    const { data: allCandidates, error } = await supabase
       .from("exercises")
       .select("id, name, category, body_part, target, illustration_url")
       .not("illustration_url", "like", "%exercise-assets%")
       .order("name")
-      .range(batch * batchSize, (batch + 1) * batchSize - 1);
+      .range(0, 999); // fetch up to 1000 candidates
+
+    if (error) throw error;
+    if (!allCandidates?.length) {
+      return new Response(JSON.stringify({ message: "No more exercises to process", batch }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Sort: program exercises first, then alphabetical
+    const sorted = allCandidates.sort((a: any, b: any) => {
+      const aUsed = usedIds.has(a.id) ? 0 : 1;
+      const bUsed = usedIds.has(b.id) ? 0 : 1;
+      if (aUsed !== bUsed) return aUsed - bUsed;
+      return a.name.localeCompare(b.name);
+    });
+
+    const exercises = sorted.slice(batch * batchSize, (batch + 1) * batchSize);
 
     if (error) throw error;
     if (!exercises?.length) {
