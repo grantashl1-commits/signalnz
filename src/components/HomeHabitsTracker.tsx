@@ -161,7 +161,7 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
       <div className="card-warm">
         <div className="flex items-center justify-between mb-4">
           <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
-            today's habits
+            my habits
           </p>
           <div className="flex items-center gap-2">
             {habits.length > 0 && (
