@@ -91,13 +91,18 @@ const EQUIPMENT_OPTIONS = [
   { id: "gym" as const, label: "Gym", desc: "Full gym access", icon: equipGymIcon },
 ];
 
-export default function AITrainingPlanTab() {
+interface AITrainingPlanTabProps {
+  onStartSession?: (dayData: any) => void;
+}
+
+export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabProps = {}) {
   const { currentPhase } = useCycle();
   const profileData = useProfile();
   const { heightCm, weightKg } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
   const [canGenerate, setCanGenerate] = useState(true);
   const [lastGeneratedAt, setLastGeneratedAt] = useState<string | null>(null);
 
