@@ -65,21 +65,42 @@ const App = () => {
           {!appReady && (
             <motion.div
               key="splash"
-              className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-              style={{ backgroundColor: "hsl(284 22% 44%)" }}
+              className="fixed inset-0 z-[9999] flex items-center justify-center"
+              style={{ backgroundColor: "#F5F0EC" }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <SignalRingAnimation variant="ripple" size={80} color="#F5EFE8" />
-              <motion.p
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="mt-6 text-sm tracking-[0.2em] uppercase"
-                style={{ color: "#F5EFE8", fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
-              >
-                Signal
-              </motion.p>
+              <div className="relative" style={{ width: 260, height: 260 }}>
+                {/* Spinning ring */}
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                >
+                  <SignalLogo size={260} color="#9B7BB0" />
+                </motion.div>
+                {/* Centre text */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                    className="text-2xl tracking-[0.15em] uppercase"
+                    style={{ color: "#9B7BB0", fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+                  >
+                    Signal
+                  </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    className="text-[9px] tracking-[0.25em] uppercase mt-0.5"
+                    style={{ color: "#9B7BB0", fontFamily: "Montserrat, sans-serif", fontWeight: 500 }}
+                  >
+                    Tune into your inner self
+                  </motion.p>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
