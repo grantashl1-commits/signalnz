@@ -139,8 +139,7 @@ Deno.serve(async (req) => {
     const { count } = await supabase
       .from("exercises")
       .select("id", { count: "exact", head: true })
-      .is("illustration_url", null)
-      .is("gif_url", null);
+      .is("illustration_url", null);
 
     return new Response(JSON.stringify({
       batch,
