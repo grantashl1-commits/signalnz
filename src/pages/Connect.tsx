@@ -184,33 +184,31 @@ export default function Connect() {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
-      .from("partner_connections")
-      .select("*")
-      .eq("join_code", joinCode.toUpperCase())
-      .maybeSingle();
 
-    if (error || !data) {
-      toast.error("Code not found — check with your partner");
+    // Use secure RPC to verify PIN without exposing hash
+    const { data, error } = await supabase.rpc("verify_partner_pin", {
+      _code: joinCode.toUpperCase(),
+      _pin_hash: hashPin(fullPin),
+    });
+
+    if (error || !data || data.length === 0) {
+      toast.error(error ? "Code not found — check with your partner" : "PIN doesn't match — try again");
       setLoading(false);
       return;
     }
-    if (data.partner_pin_hash !== hashPin(fullPin)) {
-      toast.error("PIN doesn't match — try again");
-      setLoading(false);
-      return;
-    }
+
+    const match = data[0];
 
     // Link the connection
-    if (data.status === "pending") {
+    if (match.connection_status === "pending") {
       await supabase
         .from("partner_connections")
         .update({ status: "linked", partner_user_id: user?.id || null })
-        .eq("id", data.id);
+        .eq("id", match.connection_id);
     }
 
-    setConnectionId(data.id);
-    setPartnerDisplayName(data.partner_name || "Partner");
+    setConnectionId(match.connection_id);
+    setPartnerDisplayName(match.partner_name || "Partner");
     setIsPartnerSession(true);
     setView("space");
     setLoading(false);
