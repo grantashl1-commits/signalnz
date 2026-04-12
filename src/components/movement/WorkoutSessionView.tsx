@@ -200,8 +200,24 @@ function ExerciseSwapSheet({
 export default function WorkoutSessionView({ template, exercises, onBack, phaseName }: Props) {
   const { user } = useAuth();
   const { currentPhase } = useCycle();
-  const { connected: hrConnected, deviceName: hrDevice, connect: connectHR } = useGlobalHeartRate();
+  const hr = useGlobalHeartRate();
+  const profile = useProfile();
 
+  // Derive age from profile
+  const profileAge = useMemo(() => {
+    if (profile.dateOfBirth) {
+      const dob = new Date(profile.dateOfBirth);
+      const today = new Date();
+      let a = today.getFullYear() - dob.getFullYear();
+      if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) a--;
+      return a;
+    }
+    return null;
+  }, [profile.dateOfBirth]);
+  const userAge = profileAge || 30;
+  const userWeight = profile.weightKg || 65;
+  const maxHR = getMaxHR(userAge);
+  const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
   // Session started state
   const [sessionStarted, setSessionStarted] = useState(false);
 
