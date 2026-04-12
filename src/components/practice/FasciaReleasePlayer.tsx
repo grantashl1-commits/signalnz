@@ -45,9 +45,9 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
           }
         );
         if (!response.ok) return null;
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
+        const data = await response.json();
+        if (!data?.audioUrl) return null;
+        const audio = new Audio(data.audioUrl);
         return audio;
       } catch {
         return null;
