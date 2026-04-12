@@ -3,7 +3,8 @@ import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowLeft, Search, Check, BookOpen, X } from "lucide-react";
 import { BotanicalSprig } from "@/components/BotanicalElements";
-import { GatedPage } from "@/components/FeatureGate";
+import { GatedFeature } from "@/components/FeatureGate";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
@@ -463,7 +464,7 @@ export default function JournalPage() {
   }, [journalSync]);
 
   return (
-    <GatedPage requiredTier="nourished">
+    <GatedFeature featureKey="journal_write">
       <div className="relative">
         <AtmosphericHero size="md">
           <div className="text-center">
@@ -716,6 +717,6 @@ export default function JournalPage() {
           <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
         )}
       </div>
-    </GatedPage>
+    </GatedFeature>
   );
 }
