@@ -4,6 +4,15 @@ export interface FeedPostSource {
 
 export const DEFAULT_DAILY_FEED_COUNT = 5;
 
+function hashSeed(str: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
 function seededShuffle<T>(arr: T[], seed: number): T[] {
   const copy = [...arr];
   let s = seed;
@@ -21,8 +30,9 @@ export function pickDailyPosts<T extends FeedPostSource>(
   allPosts: T[],
   dateSeed: string,
   targetCount = DEFAULT_DAILY_FEED_COUNT,
+  excludeIds?: Set<string>,
 ): T[] {
-  const seedNum = parseInt(dateSeed.replace(/-/g, ""), 10);
+  const seedNum = hashSeed(dateSeed);
   const shuffled = seededShuffle(allPosts, seedNum);
   const picked: T[] = [];
   const usedBooks = new Set<string>();
