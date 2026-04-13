@@ -636,7 +636,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
           {/* ───── Step 2: Your Cycle ───── */}
           {step === 2 && (
-            <motion.div key="cycle" {...slide} className="space-y-6 pt-8">
+            <motion.div key="cycle" {...slide} className="space-y-6 pt-8 pb-8">
               <StepHeading title="Your cycle" sub="This shapes your training and nutrition recommendations each week." />
 
               <div className="space-y-3">
