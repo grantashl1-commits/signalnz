@@ -2069,4 +2069,363 @@ export const CONNECT_COURSE: CourseModule[] = [
       }
     ]
   }
+  ,
+  {
+    "id": "module-11",
+    "title": "Module 11: The Dance of Anger — Boundaries, People-Pleasing & Saying No",
+    "subtitle": "Reclaiming your voice, setting limits, and transforming anger into clarity.",
+    "description": "Based on Harriet Lerner's groundbreaking work, this module helps women who struggle with people-pleasing, difficulty saying no, and porous boundaries. You'll learn to recognise your anger patterns, communicate with clarity instead of reactivity, and set boundaries that protect your wellbeing without destroying your relationships.",
+    "icon": "lucide-flame",
+    "estimatedMinutes": 75,
+    "sources": ["The Dance of Anger — Harriet Lerner, Ph.D."],
+    "lessons": [
+      {
+        "id": "module-11-lesson-1",
+        "title": "Anger Is a Signal, Not a Problem",
+        "description": "Understand why anger deserves your respect and attention — and why suppressing it keeps you stuck.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m11-l1-a1",
+            "type": "carousel",
+            "title": "The Two Sides of the Coin",
+            "instruction": "Swipe through to understand the two common patterns women fall into when dealing with anger.",
+            "content": {
+              "cards": [
+                {
+                  "title": "The 'Nice Lady'",
+                  "body": "Stays silent to avoid conflict. Puts others' comfort first. Feels guilty for having needs. Accumulates resentment beneath the surface until she either shuts down or explodes.",
+                  "icon": "lucide-smile"
+                },
+                {
+                  "title": "The 'Bitchy' Woman",
+                  "body": "Expresses anger freely but ineffectively — through complaining, blaming, or fighting that never resolves the real issues. Others dismiss her, confirming her powerlessness.",
+                  "icon": "lucide-zap"
+                },
+                {
+                  "title": "The Truth",
+                  "body": "Both patterns are two sides of the same coin. Neither leads to real change. Both leave you feeling helpless and powerless. The goal is a third way: clarity, calm assertion, and self-definition.",
+                  "icon": "lucide-lightbulb"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l1-a2",
+            "type": "single_choice",
+            "title": "Which Pattern Do You Recognise?",
+            "instruction": "Be honest with yourself — there's no wrong answer. Most women move between both patterns depending on the relationship.",
+            "content": {
+              "question": "When something bothers you in a close relationship, what do you tend to do?",
+              "options": [
+                "I stay quiet, swallow my feelings, and try to keep the peace — even when I'm seething inside.",
+                "I speak up, but it often comes out as complaining, nagging, or fighting that goes nowhere.",
+                "It depends on who I'm with — I'm a 'nice lady' with some people and more reactive with others.",
+                "I tend to shut down completely, withdrawing emotionally rather than addressing the issue."
+              ],
+              "correctIndex": null,
+              "explanation": "Recognising your default pattern is the first step. As Lerner writes: 'Anger is a signal, and one worth listening to.' The goal isn't to eliminate anger but to use it as information."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l1-a3",
+            "type": "open_response",
+            "title": "Your Anger Autobiography",
+            "instruction": "Reflect on your relationship with anger. What messages did you receive growing up about women and anger? How has that shaped how you express (or suppress) anger today?",
+            "content": {
+              "prompt": "Think about: What happened when your mother got angry? What were you told about 'nice girls'? When was the last time you felt truly angry but said nothing?",
+              "placeholder": "Growing up, I learned that...",
+              "minWords": 30
+            },
+            "tip": "Lerner: 'The taboos against women feeling and expressing anger are so powerful that even knowing when we are angry is not a simple matter.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-11-lesson-2",
+        "title": "The People-Pleasing Trap",
+        "description": "Explore how 'de-selfing' — sacrificing your needs to maintain harmony — erodes your identity and fuels resentment.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m11-l2-a1",
+            "type": "carousel",
+            "title": "The Cost of De-Selfing",
+            "instruction": "Swipe through to understand what happens when you chronically put others first.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Loss of Self",
+                  "body": "When you constantly 'read' other people's reactions and adjust yourself accordingly, you lose touch with your own thoughts, feelings, and desires. You become an expert on others but a stranger to yourself.",
+                  "icon": "lucide-ghost"
+                },
+                {
+                  "title": "The Guilt Trap",
+                  "body": "Guilt and anger are incompatible. If you feel guilty for not giving enough, you'll never feel entitled to be angry about not receiving enough. Society cultivates guilt in women so effectively that many still feel guilty for being anything less than an emotional service station.",
+                  "icon": "lucide-heart-crack"
+                },
+                {
+                  "title": "The Explosion Cycle",
+                  "body": "The more you give in and go along, the more anger builds. The more you repress, the more you fear an eruption. When you finally blow, it 'confirms' your anger is irrational — and the cycle starts again.",
+                  "icon": "lucide-bomb"
+                },
+                {
+                  "title": "Breaking Free",
+                  "body": "Real change means learning to tolerate the discomfort of others' disapproval. It means staying connected to people while also staying connected to yourself. This is the hardest — and most rewarding — work.",
+                  "icon": "lucide-key"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l2-a2",
+            "type": "true_false",
+            "title": "People-Pleasing Reality Check",
+            "instruction": "Answer honestly for each statement.",
+            "content": {
+              "statements": [
+                { "text": "I often say 'yes' when I want to say 'no' because I'm afraid of disappointing someone.", "answer": null },
+                { "text": "I frequently apologise for things that aren't my fault.", "answer": null },
+                { "text": "I feel responsible for other people's emotions and reactions.", "answer": null },
+                { "text": "I avoid sharing my real opinion if I think it might create tension.", "answer": null },
+                { "text": "I often feel resentful but can't pinpoint exactly why.", "answer": null },
+                { "text": "I put more energy into reading others than understanding myself.", "answer": null }
+              ],
+              "explanation": "Each 'true' highlights an area where you may be sacrificing your authentic self to maintain peace. Awareness is the first step toward change."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l2-a3",
+            "type": "open_response",
+            "title": "Where Do You De-Self?",
+            "instruction": "Identify one relationship where you consistently silence yourself, go along, or take on responsibility that isn't yours. What would change if you stopped?",
+            "content": {
+              "prompt": "Name the relationship and describe what you typically do to keep the peace. What are you afraid would happen if you stopped?",
+              "placeholder": "With my [person], I tend to...",
+              "minWords": 30
+            },
+            "tip": "Lerner: 'We behave as if having a relationship is more important than having a self.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-11-lesson-3",
+        "title": "The Art of Saying No with Clarity",
+        "description": "Learn to communicate your position without attacking, defending, or over-explaining — using 'I' statements and clear boundaries.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m11-l3-a1",
+            "type": "carousel",
+            "title": "From Reactivity to Clarity",
+            "instruction": "Learn the key principles of clear communication from The Dance of Anger.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Use 'I' Language",
+                  "body": "Say 'I think…', 'I feel…', 'I want…' instead of 'You always…' or 'You never…'. The goal is to share your experience, not diagnose the other person's problem.",
+                  "icon": "lucide-user"
+                },
+                {
+                  "title": "Don't Prescribe",
+                  "body": "State your position without telling the other person what they should feel, think, or do. You can only change your own steps in the dance — not your partner's.",
+                  "icon": "lucide-ban"
+                },
+                {
+                  "title": "Expect Countermoves",
+                  "body": "When you change your pattern, others will push back. They'll test whether you really mean it. This is normal. The key is to hold your position calmly, without escalating or backing down.",
+                  "icon": "lucide-shield"
+                },
+                {
+                  "title": "Short & Clear",
+                  "body": "Over-explaining is a form of anxiety. A clear 'no' doesn't need a paragraph of justification. 'I'm not comfortable with that' is a complete sentence.",
+                  "icon": "lucide-check"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l3-a2",
+            "type": "comparison",
+            "title": "Reactive vs. Clear Communication",
+            "instruction": "Compare these two approaches to the same situation. Notice the difference in clarity and emotional tone.",
+            "content": {
+              "pairs": [
+                {
+                  "left": { "label": "Reactive", "text": "'You never help around the house! You're so lazy and selfish!'" },
+                  "right": { "label": "Clear", "text": "'I feel overwhelmed managing the household alone. I need us to divide chores more evenly. Here's what I'm proposing…'" }
+                },
+                {
+                  "left": { "label": "Reactive", "text": "'Fine, I'll just do it myself like I always do.'" },
+                  "right": { "label": "Clear", "text": "'I'm not willing to take this on alone. I need to know if you can commit to handling [specific task] by [specific time].'" }
+                },
+                {
+                  "left": { "label": "Reactive", "text": "'You don't even care about my feelings!'" },
+                  "right": { "label": "Clear", "text": "'When I share something important and get a distracted response, I feel dismissed. I need to know you're really listening.'" }
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l3-a3",
+            "type": "open_response",
+            "title": "Rewrite Your Script",
+            "instruction": "Think of a recent situation where you either stayed silent or reacted poorly. Rewrite what you wish you had said — using 'I' language, clarity, and calm assertion.",
+            "content": {
+              "prompt": "Describe the situation briefly, then write your 'clear' version of what you want to communicate.",
+              "placeholder": "The situation was… What I wish I'd said is…",
+              "minWords": 25
+            },
+            "tip": "Remember: You don't need to convince the other person. You only need to clearly state your position.",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-11-lesson-4",
+        "title": "Countermoves & Standing Your Ground",
+        "description": "Understand why people resist your changes — and how to hold your new position without caving or escalating.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m11-l4-a1",
+            "type": "carousel",
+            "title": "The Countermove Pattern",
+            "instruction": "When you change your steps in a relationship dance, the other person will always push back. Here's what to expect.",
+            "content": {
+              "cards": [
+                {
+                  "title": "What Is a Countermove?",
+                  "body": "When you set a boundary or change a pattern, the other person will try to restore the old dynamic. They may guilt-trip, withdraw, get angry, or tell you you've changed. This is a countermove.",
+                  "icon": "lucide-refresh-cw"
+                },
+                {
+                  "title": "Why It Happens",
+                  "body": "Change creates anxiety in a relationship system. The other person isn't necessarily trying to hurt you — they're trying to restore the familiar equilibrium, even if it was unhealthy.",
+                  "icon": "lucide-brain"
+                },
+                {
+                  "title": "The Critical Moment",
+                  "body": "This is where most people cave. The discomfort of the countermove feels worse than the original problem. But if you go back to your old pattern, you confirm that boundaries don't stick.",
+                  "icon": "lucide-alert-triangle"
+                },
+                {
+                  "title": "Hold Your Position",
+                  "body": "Stay calm. Don't attack, defend, or over-explain. Simply restate your position: 'I understand this is hard. And this is what I need.' Then give the relationship time to adjust.",
+                  "icon": "lucide-anchor"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l4-a2",
+            "type": "sort",
+            "title": "Countermove or Genuine Concern?",
+            "instruction": "Drag each response into the correct category. Is it a countermove designed to restore the old pattern, or genuine concern?",
+            "content": {
+              "categories": ["Countermove", "Genuine Concern"],
+              "items": [
+                { "text": "'You've changed. I don't even recognise you anymore.'", "correctCategory": "Countermove" },
+                { "text": "'I'm worried this new distance between us means something is wrong.'", "correctCategory": "Genuine Concern" },
+                { "text": "'Fine. Do whatever you want. I don't care anymore.'", "correctCategory": "Countermove" },
+                { "text": "'I want to understand your needs. Can we talk about this more?'", "correctCategory": "Genuine Concern" },
+                { "text": "'You're being selfish. You only think about yourself now.'", "correctCategory": "Countermove" },
+                { "text": "'I feel hurt and I'd like to work through this together.'", "correctCategory": "Genuine Concern" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l4-a3",
+            "type": "open_response",
+            "title": "Your Countermove Plan",
+            "instruction": "Think about a boundary you want to set (or have recently set). What countermove do you expect? How will you respond without caving or attacking?",
+            "content": {
+              "prompt": "Describe the boundary, the likely countermove, and your calm response.",
+              "placeholder": "The boundary I want to set is… I expect they'll respond by… My plan is to…",
+              "minWords": 30
+            },
+            "tip": "Lerner: 'Countermoves are the other person's unconscious attempt to reinstate the status quo. They are not evidence that you are wrong.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-11-lesson-5",
+        "title": "Who's Responsible for What?",
+        "description": "Untangle over-responsibility from under-responsibility — and learn to stay in your own lane.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m11-l5-a1",
+            "type": "carousel",
+            "title": "The Responsibility Tangle",
+            "instruction": "Understand how women often take on too much emotional responsibility — and how this blocks real change.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Over-Functioning",
+                  "body": "You do too much: managing, reminding, worrying, fixing. You carry the emotional load for the relationship. The more you do, the less the other person has to — creating a cycle of resentment.",
+                  "icon": "lucide-loader"
+                },
+                {
+                  "title": "Under-Functioning",
+                  "body": "The counterpart to over-functioning. The more one person takes over, the more the other pulls back. Neither person is showing their full self — both are stuck in a polarised pattern.",
+                  "icon": "lucide-moon"
+                },
+                {
+                  "title": "Staying in Your Lane",
+                  "body": "You are responsible for your own thoughts, feelings, and behaviour. You are NOT responsible for another adult's feelings, reactions, or choices. This distinction is the foundation of healthy boundaries.",
+                  "icon": "lucide-milestone"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l5-a2",
+            "type": "sort",
+            "title": "My Responsibility or Theirs?",
+            "instruction": "Drag each item into the correct lane.",
+            "content": {
+              "categories": ["My Responsibility", "Not My Responsibility"],
+              "items": [
+                { "text": "How I communicate my needs", "correctCategory": "My Responsibility" },
+                { "text": "Whether they feel hurt by my boundary", "correctCategory": "Not My Responsibility" },
+                { "text": "Following through on my commitments", "correctCategory": "My Responsibility" },
+                { "text": "Managing their emotional reaction", "correctCategory": "Not My Responsibility" },
+                { "text": "Being honest about what I feel", "correctCategory": "My Responsibility" },
+                { "text": "Making them happy", "correctCategory": "Not My Responsibility" },
+                { "text": "Choosing how I respond to conflict", "correctCategory": "My Responsibility" },
+                { "text": "Fixing their problems for them", "correctCategory": "Not My Responsibility" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m11-l5-a3",
+            "type": "open_response",
+            "title": "Your Over-Functioning Audit",
+            "instruction": "Identify one area where you chronically over-function. What would it look like to step back — not in anger, but with clarity and compassion?",
+            "content": {
+              "prompt": "Where do you over-function? What are you afraid would happen if you stopped? What would 'staying in your lane' look like here?",
+              "placeholder": "I tend to over-function when it comes to…",
+              "minWords": 30
+            },
+            "tip": "Lerner: 'We cannot make another person change his or her steps to an old dance, but if we change our own steps, the dance no longer can continue in the same predictable pattern.'",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  }
 ];
