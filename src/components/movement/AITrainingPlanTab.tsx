@@ -535,9 +535,8 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
             <span className="bg-secondary rounded-full px-3 py-1 capitalize">{(equipmentPreference || "home-some").replace(/-/g, " ")}</span>
           </div>
           <button
-            onClick={async () => {
-              // Use profile data directly
-              setAnswers({
+            onClick={() => {
+              handleGenerate({
                 height: heightCm || 165,
                 heightUnit: "cm",
                 weight: weightKg || 70,
@@ -548,8 +547,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
                 lastWorkout: mapLastWorkout(),
                 equipment: (equipmentPreference as PlanAnswers["equipment"]) || "home-some",
               });
-              handleGenerate();
-            }}
+            }
             disabled={generating}
             className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-base font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
           >
