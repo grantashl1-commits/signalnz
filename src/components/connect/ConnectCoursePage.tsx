@@ -8,7 +8,9 @@ import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection
 import SignalPulse from "@/components/SignalPulse";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { supabase } from "@/integrations/supabase/client";
+import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
 
 const MODULE_COLORS = [
   "from-rose-500/20 to-pink-400/10",
