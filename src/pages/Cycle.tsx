@@ -53,7 +53,7 @@ export default function CyclePage() {
   const [showModeSelector, setShowModeSelector] = useState(false);
   const [showSymptomTracker, setShowSymptomTracker] = useState(false);
 
-  const needsModeSelection = !localStorage.getItem("cycleModeSelected");
+  const needsModeSelection = !localStorage.getItem("cycleModeSelected") && !cycleMode;
 
   const info = { phase: cycle.currentPhase, cycleDay: cycle.currentCycleDay };
   const daysUntil = getDaysUntilNextPhase(info.cycleDay, info.phase);

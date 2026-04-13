@@ -120,7 +120,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3 flex-shrink-0 ml-6">
             <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-                day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+                {PHASE_SHORT[info.phase].toLowerCase()} · day {info.cycleDay}
               </span>
             </div>
             <Link
@@ -142,7 +142,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-                D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+                {PHASE_SHORT[info.phase].toLowerCase()} · day {info.cycleDay}
               </span>
             </div>
           </div>
