@@ -60,6 +60,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
   const [sleepQuality, setSleepQuality] = useState<number>(3);
   const [nightWaking, setNightWaking] = useState(false);
   const [sleepHours, setSleepHours] = useState("");
+  const [bedtime, setBedtime] = useState("");
+  const [wakeTime, setWakeTime] = useState("");
   const [bbt, setBbt] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -73,6 +75,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
       setSleepQuality(existing.sleepQuality ?? 3);
       setNightWaking(existing.nightWaking ?? false);
       setSleepHours(existing.sleepHours ?? "");
+      setBedtime(existing.bedtime ?? "");
+      setWakeTime(existing.wakeTime ?? "");
       setBbt(existing.bbt ?? "");
       setNotes(existing.notes ?? "");
     }
@@ -103,6 +107,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
       sleepQuality,
       nightWaking,
       sleepHours: sleepHours || undefined,
+      bedtime: bedtime || undefined,
+      wakeTime: wakeTime || undefined,
       bbt: bbt || undefined,
       notes: notes || undefined,
     });
@@ -206,6 +212,28 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                       {n}
                     </button>
                   ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="font-body text-xs text-muted-foreground mb-1">bedtime</p>
+                  <input
+                    type="time"
+                    value={bedtime}
+                    onChange={(e) => setBedtime(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 min-h-[44px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    style={{ fontSize: "16px" }}
+                  />
+                </div>
+                <div>
+                  <p className="font-body text-xs text-muted-foreground mb-1">wake time</p>
+                  <input
+                    type="time"
+                    value={wakeTime}
+                    onChange={(e) => setWakeTime(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 min-h-[44px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    style={{ fontSize: "16px" }}
+                  />
                 </div>
               </div>
               <button
