@@ -1,0 +1,61 @@
+import { lazy, Suspense } from "react";
+import type { CourseActivity } from "@/data/connect-course";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
+
+const SingleChoice = lazy(() => import("./activities/SingleChoice"));
+const MultipleChoice = lazy(() => import("./activities/MultipleChoice"));
+const TrueFalse = lazy(() => import("./activities/TrueFalse"));
+const SortActivity = lazy(() => import("./activities/SortActivity"));
+const FillBlanks = lazy(() => import("./activities/FillBlanks"));
+const OpenResponse = lazy(() => import("./activities/OpenResponse"));
+const ShortAnswer = lazy(() => import("./activities/ShortAnswer"));
+const CarouselActivity = lazy(() => import("./activities/CarouselActivity"));
+const DecisionPoint = lazy(() => import("./activities/DecisionPoint"));
+const ComparisonActivity = lazy(() => import("./activities/ComparisonActivity"));
+const SurveyActivity = lazy(() => import("./activities/SurveyActivity"));
+const FindPairActivity = lazy(() => import("./activities/FindPairActivity"));
+const MediaUpload = lazy(() => import("./activities/MediaUpload"));
+
+const Loader = () => (
+  <div className="flex justify-center py-8">
+    <SignalRingAnimation variant="pulse" size={32} color="hsl(var(--primary))" />
+  </div>
+);
+
+interface Props {
+  activity: CourseActivity;
+  onComplete: (activityId: string, response: any) => void;
+}
+
+export default function ActivityRenderer({ activity, onComplete }: Props) {
+  const handle = (response: any) => onComplete(activity.id, response);
+
+  return (
+    <Suspense fallback={<Loader />}>
+      {(() => {
+        switch (activity.type) {
+          case "single_choice": return <SingleChoice content={activity.content} onComplete={handle} />;
+          case "multiple_choice": return <MultipleChoice content={activity.content} onComplete={handle} />;
+          case "true_false": return <TrueFalse content={activity.content} onComplete={handle} />;
+          case "sort": return <SortActivity content={activity.content} onComplete={handle} />;
+          case "fill_blanks": return <FillBlanks content={activity.content} onComplete={handle} />;
+          case "open_response": return <OpenResponse content={activity.content} onComplete={handle} />;
+          case "short_answer": return <ShortAnswer content={activity.content} onComplete={handle} />;
+          case "carousel": return <CarouselActivity content={activity.content} onComplete={handle} />;
+          case "decision_point": return <DecisionPoint content={activity.content} onComplete={handle} />;
+          case "comparison": return <ComparisonActivity content={activity.content} onComplete={handle} />;
+          case "survey": return <SurveyActivity content={activity.content} onComplete={handle} />;
+          case "find_the_pair": return <FindPairActivity content={activity.content} onComplete={handle} />;
+          case "image_upload": return <MediaUpload type="image_upload" content={activity.content} onComplete={handle} />;
+          case "video_upload": return <MediaUpload type="video_upload" content={activity.content} onComplete={handle} />;
+          default:
+            return (
+              <div className="p-4 rounded-xl bg-secondary text-center">
+                <p className="font-body text-sm text-muted-foreground">Activity type "{activity.type}" coming soon</p>
+              </div>
+            );
+        }
+      })()}
+    </Suspense>
+  );
+}
