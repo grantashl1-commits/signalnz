@@ -229,7 +229,7 @@ export default function CyclePage() {
 
 
         {/* Tabs */}
-        <div className="flex gap-1 rounded-full bg-secondary p-1 mt-4">
+        <div className="flex gap-1 rounded-full bg-secondary p-1 mt-8 md:mt-10">
           {TABS.map((tab) => (
             <button
               key={tab.id}
