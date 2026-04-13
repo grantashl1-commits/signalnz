@@ -588,8 +588,11 @@ export default function NervousSystemPage() {
     return new Date().getHours() >= 20 ? "sleep" : "meditations";
   });
   const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [intensityFilter, setIntensityFilter] = useState<IntensityFilter>("all");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(null);
   const [showFasciaRelease, setShowFasciaRelease] = useState(false);
+  const activeFilterCount = (durationFilter !== "all" ? 1 : 0) + (categoryFilter !== "all" ? 1 : 0) + (intensityFilter !== "all" ? 1 : 0);
   const { currentPhase } = useCycle();
   const { completed, streak, logCompletion } = useMindfulnessLogs();
   const sleepMusic = useSleepMusic();
