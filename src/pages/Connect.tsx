@@ -257,6 +257,11 @@ export default function Connect() {
     setAiLoading(false);
   };
 
+  // ═══ ATTACHMENT QUIZ ═══
+  if (showQuiz) {
+    return <AttachmentQuiz onBack={() => setShowQuiz(false)} />;
+  }
+
   // ═══ PARTNER ENTRY (no account needed) ═══
   if (!user) {
     return (
