@@ -395,6 +395,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
             cycle_status: cycleStatus ?? "cycling",
             meal_prep_day: mealPrepDay,
             cycle_mode: cycleStatus ?? "cycling",
+            equipment_preference: equipmentPref,
           } as any, { onConflict: "user_id" });
 
         // ── Auto-generate first training plan in background ──
@@ -428,7 +429,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               weeksPlan: 4,
               daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
               lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
-              equipment: "home-some",
+              equipment: equipmentPref,
             },
           },
         }).then((resp) => {
