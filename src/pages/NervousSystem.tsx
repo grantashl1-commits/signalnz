@@ -89,6 +89,142 @@ function filterByDuration<T extends { durationSec: number }>(items: T[], filter:
   return items.filter(s => s.durationSec > 900);
 }
 
+// ── Category filter ──
+type CategoryFilter = "all" | "meditation" | "inner-work" | "reading" | "phase-practice";
+const CATEGORY_OPTIONS: { value: CategoryFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "meditation", label: "Meditation" },
+  { value: "inner-work", label: "Inner Work" },
+  { value: "reading", label: "Reading" },
+  { value: "phase-practice", label: "Phase Practice" },
+];
+
+// ── Intensity filter ──
+type IntensityFilter = "all" | "beginner" | "intermediate" | "advanced";
+const INTENSITY_OPTIONS: { value: IntensityFilter; label: string; desc: string }[] = [
+  { value: "all", label: "All levels", desc: "" },
+  { value: "beginner", label: "Beginner", desc: "Body scans, gratitude, breath awareness" },
+  { value: "intermediate", label: "Intermediate", desc: "Self-compassion, inner child, somatic" },
+  { value: "advanced", label: "Advanced", desc: "Parts work, IFS, shadow, deep inner work" },
+];
+
+// Tags that indicate advanced practices
+const ADVANCED_TAGS = ["parts-work", "inner-child", "shadow", "deep-work", "ifs", "reparenting", "psychology"];
+const INTERMEDIATE_TAGS = ["self-compassion", "inner-work", "emotional-processing", "somatic", "healing", "boundaries"];
+
+function getIntensity(script: MeditationScript): IntensityFilter {
+  const tags = script.tags;
+  if (tags.some(t => ADVANCED_TAGS.includes(t))) return "advanced";
+  if (script.category === "inner-work" || tags.some(t => INTERMEDIATE_TAGS.includes(t))) return "intermediate";
+  return "beginner";
+}
+
+// ── Expandable Filter Panel ──
+function FilterPanel({
+  durationFilter, setDurationFilter,
+  categoryFilter, setCategoryFilter,
+  intensityFilter, setIntensityFilter,
+  activeCount,
+}: {
+  durationFilter: DurationFilter; setDurationFilter: (f: DurationFilter) => void;
+  categoryFilter: CategoryFilter; setCategoryFilter: (f: CategoryFilter) => void;
+  intensityFilter: IntensityFilter; setIntensityFilter: (f: IntensityFilter) => void;
+  activeCount: number;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const clearAll = () => {
+    setDurationFilter("all");
+    setCategoryFilter("all");
+    setIntensityFilter("all");
+  };
+
+  return (
+    <div className="pb-3">
+      <button onClick={() => { haptic("light"); setOpen(!open); }}
+        className="flex items-center gap-2 font-body text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <SlidersHorizontal className="h-3.5 w-3.5" />
+        <span>Filters</span>
+        {activeCount > 0 && (
+          <span className="flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold">{activeCount}</span>
+        )}
+        {open ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className="pt-3 space-y-4">
+              {/* Duration */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-body text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Duration</p>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
+                    <button key={f} onClick={() => { haptic("light"); setDurationFilter(f); }}
+                      className={`rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                        durationFilter === f ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      }`}>
+                      {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category */}
+              <div>
+                <p className="font-body text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Category</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {CATEGORY_OPTIONS.map((opt) => (
+                    <button key={opt.value} onClick={() => { haptic("light"); setCategoryFilter(opt.value); }}
+                      className={`rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                        categoryFilter === opt.value ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      }`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Intensity */}
+              <div>
+                <p className="font-body text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Intensity</p>
+                <div className="space-y-1.5">
+                  {INTENSITY_OPTIONS.map((opt) => (
+                    <button key={opt.value} onClick={() => { haptic("light"); setIntensityFilter(opt.value); }}
+                      className={`w-full text-left rounded-xl px-3 py-2 font-body text-[11px] transition-colors flex items-center justify-between ${
+                        intensityFilter === opt.value ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      }`}>
+                      <div>
+                        <span className="font-medium">{opt.label}</span>
+                        {opt.desc && <span className={`block text-[10px] mt-0.5 ${intensityFilter === opt.value ? "text-primary-foreground/70" : "text-muted-foreground/60"}`}>{opt.desc}</span>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {activeCount > 0 && (
+                <button onClick={() => { haptic("light"); clearAll(); }}
+                  className="flex items-center gap-1 font-body text-[11px] text-primary hover:text-primary/80 transition-colors">
+                  <X className="h-3 w-3" /> Clear all filters
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ── Completion tracking hook ──
 function useMindfulnessLogs() {
   const { user } = useAuth();
