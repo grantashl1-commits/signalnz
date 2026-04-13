@@ -144,13 +144,13 @@ export default function LoveLanguagesQuiz({ onClose }: { onClose: () => void }) 
     const res = computeResult();
     setResult(res);
 
-    await supabase.from("attachment_quiz_results").insert({
+    await supabase.from("attachment_quiz_results").insert([{
       user_id: user.id,
       answers: answers as unknown as Record<string, unknown>,
       attachment_style: `love_language_${res.primary}`,
-      style_scores: { _quiz_type: "love_languages", scores: res.scores, primary: res.primary, secondary: res.secondary },
+      style_scores: { _quiz_type: "love_languages", scores: res.scores, primary: res.primary, secondary: res.secondary } as unknown as Record<string, unknown>,
       self_esteem_score: null,
-    });
+    }]);
 
     setSaving(false);
     toast.success("Love Languages result saved!");
