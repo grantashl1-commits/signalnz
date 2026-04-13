@@ -599,7 +599,7 @@ export default function NervousSystemPage() {
 
   // Meditation scripts for the meditations tab
   const meditationScripts = useMemo(() => {
-    const all = [
+    let all: MeditationScript[] = [
       ...MEDITATION_SCRIPTS,
       ...GEN_MEDITATION_SCRIPTS,
       ...READING_SCRIPTS,
@@ -610,8 +610,16 @@ export default function NervousSystemPage() {
       ...GROUNDING_PRACTICES,
       ...PRESENCE_PRACTICES,
     ];
+    // Category filter
+    if (categoryFilter !== "all") {
+      all = all.filter(s => s.category === categoryFilter);
+    }
+    // Intensity filter
+    if (intensityFilter !== "all") {
+      all = all.filter(s => getIntensity(s) === intensityFilter);
+    }
     return filterByDuration(all, durationFilter);
-  }, [durationFilter]);
+  }, [durationFilter, categoryFilter, intensityFilter]);
 
   // Sleep scripts
   const sleepScripts = useMemo(() => {
