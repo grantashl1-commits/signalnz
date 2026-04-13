@@ -431,6 +431,53 @@ export default function OnboardingFlow({ onComplete }: Props) {
         }).catch((err) => {
           console.warn("Auto training plan generation failed:", err);
         });
+
+        // ── Auto-generate first nutrition plan in background ──
+        const cycleDay = 1; // default start
+        const dietPrefMap: Record<string, string> = {
+          omnivore: "", vegetarian: "Vegetarian", vegan: "Vegan",
+          gluten_free: "Gluten-free", dairy_free: "Dairy-free",
+          pescatarian: "Pescatarian", low_carb: "Keto", mediterranean: "",
+        };
+        const nutritionPrefs = {
+          breakfast: "rotate",
+          lunch: "rotate",
+          dinner: "mix",
+          prepDays: [mealPrepDay || "Sunday"],
+          adults: 1,
+          kids: 0,
+          dietType: dietPrefMap[dietaryPrefs[0]] || "",
+          dislikes: dietaryDislikes.join(", "),
+          calorieTarget: String(m.calories),
+        };
+
+        supabase.functions.invoke("meal-plan-ai", {
+          body: {
+            preferences: nutritionPrefs,
+            startCycleDay: cycleDay,
+            endCycleDay: cycleDay + 6,
+            userDietaryDislikes: dietaryDislikes,
+          },
+        }).then(async (resp) => {
+          if (resp.error) {
+            console.warn("Auto nutrition plan generation failed:", resp.error);
+          } else {
+            console.log("Auto nutrition plan generated successfully");
+            // Save to localStorage for the nutrition module to pick up
+            try {
+              const planData = resp.data;
+              if (planData?.plan) {
+                localStorage.setItem("signal_meal_plan", JSON.stringify({
+                  plan: planData.plan,
+                  generatedAt: new Date().toISOString(),
+                  cycleDay,
+                }));
+              }
+            } catch { /* ignore */ }
+          }
+        }).catch((err) => {
+          console.warn("Auto nutrition plan generation failed:", err);
+        });
       }
 
       // Keep localStorage fallbacks for existing consumers
