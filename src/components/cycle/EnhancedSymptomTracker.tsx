@@ -60,6 +60,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
   const [sleepQuality, setSleepQuality] = useState<number>(3);
   const [nightWaking, setNightWaking] = useState(false);
   const [sleepHours, setSleepHours] = useState("");
+  const [bedtime, setBedtime] = useState("");
+  const [wakeTime, setWakeTime] = useState("");
   const [bbt, setBbt] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -73,6 +75,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
       setSleepQuality(existing.sleepQuality ?? 3);
       setNightWaking(existing.nightWaking ?? false);
       setSleepHours(existing.sleepHours ?? "");
+      setBedtime(existing.bedtime ?? "");
+      setWakeTime(existing.wakeTime ?? "");
       setBbt(existing.bbt ?? "");
       setNotes(existing.notes ?? "");
     }
@@ -103,6 +107,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
       sleepQuality,
       nightWaking,
       sleepHours: sleepHours || undefined,
+      bedtime: bedtime || undefined,
+      wakeTime: wakeTime || undefined,
       bbt: bbt || undefined,
       notes: notes || undefined,
     });
