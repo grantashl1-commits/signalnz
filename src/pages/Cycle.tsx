@@ -41,7 +41,7 @@ export default function CyclePage() {
   const navigate = useNavigate();
   const cycle = useCycle();
   const { getFeatureAccess } = useFeatureGate();
-  const { cycleMode, updateCycleMode } = useProfile();
+  const { cycleMode, updateCycleMode, onboardingComplete, cycleStatus } = useProfile();
   const [lastPeriod, setLastPeriod] = useState(cycle.cycleStartDate || "");
   const [activeTab, setActiveTab] = useState<"today" | "calendar" | "learn">("today");
   const [calendarMonth, setCalendarMonth] = useState(new Date());
@@ -53,7 +53,8 @@ export default function CyclePage() {
   const [showModeSelector, setShowModeSelector] = useState(false);
   const [showSymptomTracker, setShowSymptomTracker] = useState(false);
 
-  const needsModeSelection = !localStorage.getItem("cycleModeSelected") && !cycleMode && !lastPeriod;
+  // Only show mode selector if user hasn't completed onboarding AND hasn't manually selected
+  const needsModeSelection = !localStorage.getItem("cycleModeSelected") && !onboardingComplete && !cycleStatus;
 
   const info = { phase: cycle.currentPhase, cycleDay: cycle.currentCycleDay };
   const daysUntil = getDaysUntilNextPhase(info.cycleDay, info.phase);
