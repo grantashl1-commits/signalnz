@@ -387,6 +387,50 @@ export default function OnboardingFlow({ onComplete }: Props) {
             meal_prep_day: mealPrepDay,
             cycle_mode: cycleStatus ?? "cycling",
           } as any, { onConflict: "user_id" });
+
+        // ── Auto-generate first training plan in background ──
+        const lastWorkoutMap: Record<string, string> = {
+          beginner: "never",
+          intermediate: "this-month",
+          advanced: "this-week",
+        };
+        const goalMap: Record<string, string> = {
+          strength: "stronger",
+          fat_loss: "lose-weight",
+          cardio: "lean",
+          stress: "lean",
+          consistency: "stronger",
+          mobility: "lean",
+          event: "stronger",
+          recovery: "lean",
+        };
+
+        supabase.functions.invoke("generate-plan", {
+          body: {
+            cyclePhase: cycleStatus === "cycling" && lastPeriodDate
+              ? undefined // let the edge function determine from profile
+              : "follicular",
+            answers: {
+              height: heightCm || 165,
+              weight: weightKg || 65,
+              age: dob ? calcAge(dob) : 30,
+              goal: goalMap[movementGoals[0]] || "stronger",
+              goalWeight: goalWeightKg,
+              weeksPlan: 4,
+              daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
+              lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
+              equipment: "home-some",
+            },
+          },
+        }).then((resp) => {
+          if (resp.error) {
+            console.warn("Auto training plan generation failed:", resp.error);
+          } else {
+            console.log("Auto training plan generated successfully");
+          }
+        }).catch((err) => {
+          console.warn("Auto training plan generation failed:", err);
+        });
       }
 
       // Keep localStorage fallbacks for existing consumers
