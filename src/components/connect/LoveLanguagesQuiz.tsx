@@ -146,9 +146,9 @@ export default function LoveLanguagesQuiz({ onClose }: { onClose: () => void }) 
 
     await supabase.from("attachment_quiz_results").insert([{
       user_id: user.id,
-      answers: answers as unknown as Record<string, unknown>,
+      answers: JSON.parse(JSON.stringify(answers)),
       attachment_style: `love_language_${res.primary}`,
-      style_scores: { _quiz_type: "love_languages", scores: res.scores, primary: res.primary, secondary: res.secondary } as unknown as Record<string, unknown>,
+      style_scores: JSON.parse(JSON.stringify({ _quiz_type: "love_languages", scores: res.scores, primary: res.primary, secondary: res.secondary })),
       self_esteem_score: null,
     }]);
 
