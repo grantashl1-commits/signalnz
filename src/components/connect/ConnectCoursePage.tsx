@@ -36,9 +36,9 @@ export default function ConnectCoursePage() {
   // Load progress from DB
   useEffect(() => {
     if (!user) return;
-    supabase.from("connect_course_progress").select("activity_id, lesson_id, completed")
-      .eq("user_id", user.id).eq("completed", true)
-      .then(({ data }) => {
+    (supabase.from("connect_course_progress" as any).select("activity_id, lesson_id, completed")
+      .eq("user_id", user.id).eq("completed", true) as any)
+      .then(({ data }: { data: any[] | null }) => {
         if (data) {
           setCompletedActivities(new Set(data.map(r => r.activity_id)));
           // Derive completed lessons
