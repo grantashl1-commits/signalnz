@@ -216,37 +216,55 @@ export default function HomePage() {
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
-        {/* Phase illustration */}
+        {/* Phase illustration (signed in) or welcome illustration (signed out) */}
         <motion.div
-          key={info.phase}
+          key={user ? info.phase : "welcome"}
           initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 0.18, scale: 1 }}
+          animate={{ opacity: user ? 0.18 : 0.25, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
           className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
         >
           <img
-            src={PHASE_HERO_IMAGE[info.phase]}
+            src={user ? PHASE_HERO_IMAGE[info.phase] : welcomeHero}
             alt=""
-            className="w-[80%] max-w-md h-auto object-contain"
+            className="w-[70%] max-w-sm md:w-[80%] md:max-w-md h-auto object-contain"
           />
         </motion.div>
 
-        <div className="text-center max-w-xl mx-auto relative z-10">
-          <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-8">
-            {greeting}, {firstName || "you"}.
-          </motion.p>
-          <motion.p {...fadeUp(0.35)} className="font-body text-[1.75rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-6">
-            {PHASE_SUBTEXT[info.phase]}
-          </motion.p>
-          <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-10">
-            Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
-          </motion.p>
-          {!hasSetCycle && (
-            <motion.div {...fadeUp(0.5)} className="mb-8">
-              <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                Set up your cycle <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
+        <div className="text-center max-w-xl mx-auto relative z-10 px-4">
+          {user ? (
+            <>
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-6 md:mb-8">
+                {greeting}, {firstName || "you"}.
+              </motion.p>
+              <motion.p {...fadeUp(0.35)} className="font-body text-[1.5rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-4 md:mb-6">
+                {PHASE_SUBTEXT[info.phase]}
+              </motion.p>
+              <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-8 md:mb-10">
+                Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
+              </motion.p>
+              {!hasSetCycle && (
+                <motion.div {...fadeUp(0.5)} className="mb-6 md:mb-8">
+                  <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
+                    Set up your cycle <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </motion.div>
+              )}
+            </>
+          ) : (
+            <>
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-6">
+                {greeting}.
+              </motion.p>
+              <motion.p {...fadeUp(0.35)} className="font-body text-[1.5rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-4">
+                Your year of coming home — to your body, your cycle, yourself.
+              </motion.p>
+              <motion.div {...fadeUp(0.5)} className="mb-6">
+                <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
+                  Get started <ArrowRight className="h-4 w-4" />
+                </Link>
+              </motion.div>
+            </>
           )}
         </div>
       </AtmosphericHero>
