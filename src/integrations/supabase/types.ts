@@ -65,6 +65,39 @@ export type Database = {
         }
         Relationships: []
       }
+      attachment_quiz_results: {
+        Row: {
+          answers: Json
+          attachment_style: string | null
+          created_at: string
+          id: string
+          self_esteem_score: number | null
+          style_scores: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          attachment_style?: string | null
+          created_at?: string
+          id?: string
+          self_esteem_score?: number | null
+          style_scores?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          attachment_style?: string | null
+          created_at?: string
+          id?: string
+          self_esteem_score?: number | null
+          style_scores?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       body_measurements: {
         Row: {
           arms: string | null
