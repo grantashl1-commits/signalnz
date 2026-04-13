@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain } from "lucide-react";
+import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain, SlidersHorizontal, ChevronUp, X } from "lucide-react";
 import SleepTimer from "@/components/practice/SleepTimer";
 import { useSleepMusic } from "@/hooks/useSleepMusic";
 import { GatedFeature } from "@/components/FeatureGate";
