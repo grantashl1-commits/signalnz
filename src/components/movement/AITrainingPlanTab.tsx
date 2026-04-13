@@ -830,7 +830,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
                 </p>
               )}
               <button
-                onClick={handleGenerate}
+                onClick={() => handleGenerate()}
                 className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-base font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
               >
                 <Sparkles className="h-4 w-4" />
