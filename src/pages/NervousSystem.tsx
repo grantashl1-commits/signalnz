@@ -720,7 +720,7 @@ export default function NervousSystemPage() {
           {/* Content */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={`${tab}-${durationFilter}`}
+              key={`${tab}-${durationFilter}-${categoryFilter}-${intensityFilter}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
