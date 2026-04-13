@@ -83,15 +83,17 @@ export default function Feed() {
 
   const todayPosts = allPosts ? pickDailyPosts(allPosts, getDaySeed(0)) : [];
 
-  // Build history sections
+  // Build history sections, excluding already-shown posts
   const historySections: { date: Date; posts: FeedPost[]; dayNum: number }[] = [];
   if (showHistory && allPosts) {
+    const shownIds = new Set(todayPosts.map(p => p.id));
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
-      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d));
+      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d), 5, shownIds);
       const dayNum = todayDayNum - d;
       if (pastPosts.length > 0 && dayNum >= 1) {
         historySections.push({ date: pastDate, posts: pastPosts, dayNum });
+        pastPosts.forEach(p => shownIds.add(p.id));
       }
     }
   }
