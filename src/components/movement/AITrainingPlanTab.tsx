@@ -229,7 +229,8 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   const weeksForTarget = answers.weeksPlan || 8;
   const kgPerWeek = weightDiff > 0 ? (weightDiff / weeksForTarget).toFixed(1) : "0";
 
-  async function handleGenerate() {
+  async function handleGenerate(overrideAnswers?: PlanAnswers) {
+    const a = overrideAnswers || answers;
     setStep("generating");
     setGenerating(true);
 
@@ -246,15 +247,15 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         body: {
           cyclePhase: currentPhase,
           answers: {
-            height: answers.height,
-            weight: answers.weight,
-            age: answers.age,
-            goal: answers.goal,
-            goalWeight: answers.goalWeight,
-            weeksPlan: answers.weeksPlan,
-            daysPerWeek: answers.daysPerWeek,
-            lastWorkout: answers.lastWorkout,
-            equipment: answers.equipment,
+            height: a.height,
+            weight: a.weight,
+            age: a.age,
+            goal: a.goal,
+            goalWeight: a.goalWeight,
+            weeksPlan: a.weeksPlan,
+            daysPerWeek: a.daysPerWeek,
+            lastWorkout: a.lastWorkout,
+            equipment: a.equipment,
           },
         },
       });
