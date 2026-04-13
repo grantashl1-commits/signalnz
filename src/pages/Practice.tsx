@@ -7,7 +7,7 @@ import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection
 import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
-import SleepCard from "@/components/practice/SleepCard";
+
 import HabitCarousel from "@/components/HabitCarousel";
 import {
   getHabits, addHabit, removeHabit,
