@@ -33,18 +33,6 @@ const PHASE_HERO_IMAGE: Record<Phase, string> = {
   ovulatory: ovulatoryHero,
   luteal: lutealHero,
 };
-import { useProfile } from "@/hooks/useProfile";
-import NPSSurvey from "@/components/NPSSurvey";
-import DaySection from "@/components/feed/DaySection";
-import { type FeedPost } from "@/components/feed/PostCard";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { format, subDays } from "date-fns";
-import { toast } from "sonner";
-import { pickDailyPosts } from "@/lib/feed-utils";
-import { useTodayFocus } from "@/hooks/useTodayFocus";
-
 
 
 
