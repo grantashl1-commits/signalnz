@@ -22,6 +22,29 @@ import { toast } from "sonner";
 import { pickDailyPosts } from "@/lib/feed-utils";
 import { useTodayFocus } from "@/hooks/useTodayFocus";
 
+import menstrualHero from "@/assets/phases/menstrual-hero.png";
+import follicularHero from "@/assets/phases/follicular-hero.png";
+import ovulatoryHero from "@/assets/phases/ovulatory-hero.png";
+import lutealHero from "@/assets/phases/luteal-hero.png";
+
+const PHASE_HERO_IMAGE: Record<Phase, string> = {
+  menstrual: menstrualHero,
+  follicular: follicularHero,
+  ovulatory: ovulatoryHero,
+  luteal: lutealHero,
+};
+import { useProfile } from "@/hooks/useProfile";
+import NPSSurvey from "@/components/NPSSurvey";
+import DaySection from "@/components/feed/DaySection";
+import { type FeedPost } from "@/components/feed/PostCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { format, subDays } from "date-fns";
+import { toast } from "sonner";
+import { pickDailyPosts } from "@/lib/feed-utils";
+import { useTodayFocus } from "@/hooks/useTodayFocus";
+
 
 
 
