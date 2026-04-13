@@ -216,20 +216,22 @@ export default function HomePage() {
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
-        {/* Phase illustration (signed in) or welcome illustration (signed out) */}
-        <motion.div
-          key={user ? info.phase : "welcome"}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: user ? 0.18 : 0.25, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
-        >
-          <img
-            src={user ? PHASE_HERO_IMAGE[info.phase] : welcomeHero}
-            alt=""
-            className="w-[70%] max-w-sm md:w-[80%] md:max-w-md h-auto object-contain"
-          />
-        </motion.div>
+        {/* Phase illustration (signed in only — faded background) */}
+        {user && (
+          <motion.div
+            key={info.phase}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 0.18, scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
+          >
+            <img
+              src={PHASE_HERO_IMAGE[info.phase]}
+              alt=""
+              className="w-[70%] max-w-sm md:w-[80%] md:max-w-md h-auto object-contain"
+            />
+          </motion.div>
+        )}
 
         <div className="text-center max-w-xl mx-auto relative z-10 px-4">
           {user ? (
@@ -253,13 +255,25 @@ export default function HomePage() {
             </>
           ) : (
             <>
-              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-6">
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
                 {greeting}.
               </motion.p>
-              <motion.p {...fadeUp(0.35)} className="font-body text-[1.5rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                className="mx-auto mb-5 w-[55%] max-w-[220px] md:w-[50%] md:max-w-[280px]"
+              >
+                <img
+                  src={welcomeHero}
+                  alt="A year of coming home"
+                  className="w-full h-auto object-contain drop-shadow-md"
+                />
+              </motion.div>
+              <motion.p {...fadeUp(0.4)} className="font-body text-[1.35rem] md:text-[1.75rem] font-bold text-primary-foreground leading-tight max-w-sm mx-auto mb-5">
                 Your year of coming home — to your body, your cycle, yourself.
               </motion.p>
-              <motion.div {...fadeUp(0.5)} className="mb-6">
+              <motion.div {...fadeUp(0.55)} className="mb-6">
                 <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
                   Get started <ArrowRight className="h-4 w-4" />
                 </Link>
