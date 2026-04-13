@@ -216,33 +216,29 @@ export default function HomePage() {
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
-        {/* Phase illustration (signed in only — faded background) */}
-        {user && (
-          <motion.div
-            key={info.phase}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 0.18, scale: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
-          >
-            <img
-              src={PHASE_HERO_IMAGE[info.phase]}
-              alt=""
-              className="w-[70%] max-w-sm md:w-[80%] md:max-w-md h-auto object-contain"
-            />
-          </motion.div>
-        )}
-
         <div className="text-center max-w-xl mx-auto relative z-10 px-4">
           {user ? (
             <>
-              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-6 md:mb-8">
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
                 {greeting}, {firstName || "you"}.
               </motion.p>
-              <motion.p {...fadeUp(0.35)} className="font-body text-[1.5rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-4 md:mb-6">
+              <motion.div
+                key={info.phase}
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
+              >
+                <img
+                  src={PHASE_HERO_IMAGE[info.phase]}
+                  alt={`${PHASE_SHORT[info.phase]} phase illustration`}
+                  className="w-full h-auto object-contain drop-shadow-md"
+                />
+              </motion.div>
+              <motion.p {...fadeUp(0.35)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-3" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
                 {PHASE_SUBTEXT[info.phase]}
               </motion.p>
-              <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-8 md:mb-10">
+              <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-6 md:mb-8">
                 Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
               </motion.p>
               {!hasSetCycle && (
