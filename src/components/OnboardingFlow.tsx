@@ -522,10 +522,11 @@ export default function OnboardingFlow({ onComplete }: Props) {
     if (step === 3) return movementGoals.length > 0;
     if (step === 4) return true;
     if (step === 5) return !!fitnessLevel;
+    if (step === 6) return !!equipmentPref;
     return true;
   };
 
-  const showProgress = step >= 1 && step <= 5;
+  const showProgress = step >= 1 && step <= 6;
 
   return (
     <div
