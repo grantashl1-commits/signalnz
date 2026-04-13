@@ -98,7 +98,7 @@ interface AITrainingPlanTabProps {
 export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabProps = {}) {
   const { currentPhase } = useCycle();
   const profileData = useProfile();
-  const { heightCm, weightKg } = profileData;
+  const { heightCm, weightKg, dateOfBirth, fitnessLevel: profileFitnessLevel, movementGoals, goalWeightKg, equipmentPreference } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -106,16 +106,52 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   const [canGenerate, setCanGenerate] = useState(true);
   const [lastGeneratedAt, setLastGeneratedAt] = useState<string | null>(null);
 
+  // Determine if we have enough profile data to skip questionnaire
+  const hasProfileData = !!(heightCm && weightKg && dateOfBirth && profileFitnessLevel);
+
+  // Map movement goals to AI training goal
+  const mapGoalFromProfile = (): "stronger" | "lean" | "lose-weight" => {
+    if (!movementGoals || movementGoals.length === 0) return "stronger";
+    if (movementGoals.includes("fat_loss")) return "lose-weight";
+    if (movementGoals.includes("cardio") || movementGoals.includes("stress") || movementGoals.includes("mobility")) return "lean";
+    return "stronger";
+  };
+
+  // Calculate age from DOB
+  const calcAgeFromDOB = (): number => {
+    if (!dateOfBirth) return 30;
+    const dob = new Date(dateOfBirth);
+    const now = new Date();
+    let age = now.getFullYear() - dob.getFullYear();
+    const m = now.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+    return age;
+  };
+
+  // Map fitness level to "last workout" approximation
+  const mapLastWorkout = (): string => {
+    if (profileFitnessLevel === "advanced") return "this-week";
+    if (profileFitnessLevel === "intermediate") return "this-month";
+    return "never";
+  };
+
+  const mapDaysPerWeek = (): number => {
+    if (profileFitnessLevel === "advanced") return 5;
+    if (profileFitnessLevel === "intermediate") return 4;
+    return 3;
+  };
+
   const [step, setStep] = useState<Step>("height");
   const [answers, setAnswers] = useState<PlanAnswers>({
     height: heightCm || 165,
     heightUnit: "cm",
     weight: weightKg || 70,
-    age: 30,
-    goal: "stronger",
-    daysPerWeek: 4,
-    lastWorkout: "this-month",
-    equipment: "home-some",
+    age: calcAgeFromDOB(),
+    goal: mapGoalFromProfile(),
+    goalWeight: goalWeightKg || undefined,
+    daysPerWeek: mapDaysPerWeek(),
+    lastWorkout: mapLastWorkout(),
+    equipment: (equipmentPreference as PlanAnswers["equipment"]) || "home-some",
   });
 
   // Load existing AI plan
