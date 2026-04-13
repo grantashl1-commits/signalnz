@@ -10,28 +10,19 @@ interface Props {
 }
 
 /**
- * Lightweight Stoic reading player using Web Speech API.
- * Creates SpeechSynthesisUtterance synchronously in gesture context
- * to satisfy mobile autoplay policies.
- *
- * Falls back to ElevenLabs tts-generate-inline if SpeechSynthesis
- * is unavailable.
+ * Stoic reading player — ElevenLabs Lily voice first (via tts-generate-inline),
+ * falls back to Web Speech API only if ElevenLabs is unavailable.
  */
 export default function StoicAudioPlayer({ title, text, onClose }: Props) {
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [useTTS, setUseTTS] = useState(false);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const hasSpeechSynth = typeof window !== "undefined" && "speechSynthesis" in window;
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (hasSpeechSynth) window.speechSynthesis.cancel();
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = "";
@@ -40,22 +31,10 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
     };
   }, []);
 
-  const pickVoice = useCallback(() => {
-    if (!hasSpeechSynth) return undefined;
-    const voices = window.speechSynthesis.getVoices();
-    return (
-      voices.find((v) => v.lang.startsWith("en") && /samantha|karen|moira|zira/i.test(v.name)) ||
-      voices.find((v) => v.lang.startsWith("en") && /female/i.test(v.name)) ||
-      voices.find((v) => v.lang.startsWith("en-") && !/google/i.test(v.name)) ||
-      voices.find((v) => v.lang.startsWith("en"))
-    );
-  }, []);
-
-  // Play via ElevenLabs TTS (fallback) — now uses cached URL response
+  // Play via ElevenLabs TTS (primary) — uses cached URL response
   const playViaTTS = useCallback(async () => {
     setLoading(true);
     try {
-      // Get user identifier for credit tracking
       const { supabase } = await import("@/integrations/supabase/client");
       const { data: { user } } = await supabase.auth.getUser();
       const user_identifier = user?.id || user?.email || "anonymous";
@@ -76,6 +55,7 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
       const data = await response.json();
       const audioSrc = data.audioUrl;
       if (!audioSrc) throw new Error("No audio URL returned");
+
       const audio = new Audio(audioSrc);
       audioRef.current = audio;
 
@@ -97,8 +77,49 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
       }, 500);
     } catch {
       setLoading(false);
-      // Silently fail — user can read the text instead
+      // Fall back to Web Speech API
+      playViaSpeechSynth();
     }
+  }, [text]);
+
+  // Web Speech API fallback
+  const playViaSpeechSynth = useCallback(() => {
+    if (!("speechSynthesis" in window)) return;
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.85;
+    utterance.pitch = 1.0;
+
+    // Try to pick a soft voice
+    const voices = window.speechSynthesis.getVoices();
+    const voice =
+      voices.find((v) => v.lang.startsWith("en") && /samantha|karen|moira|zira/i.test(v.name)) ||
+      voices.find((v) => v.lang.startsWith("en") && /female/i.test(v.name)) ||
+      voices.find((v) => v.lang.startsWith("en-") && !/google/i.test(v.name)) ||
+      voices.find((v) => v.lang.startsWith("en"));
+    if (voice) utterance.voice = voice;
+
+    const wordCount = text.split(/\s+/).length;
+    const estimatedDurationSec = wordCount / (150 * 0.85 / 60);
+    const startTime = Date.now();
+
+    utterance.onstart = () => {
+      setPlaying(true);
+      intervalRef.current = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        setProgress(Math.min((elapsed / estimatedDurationSec) * 100, 98));
+      }, 500);
+    };
+
+    utterance.onend = () => {
+      setPlaying(false);
+      setProgress(100);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+
+    window.speechSynthesis.speak(utterance);
   }, [text]);
 
   const handlePlay = useCallback(() => {
@@ -106,18 +127,9 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
 
     // Already playing — pause
     if (playing) {
-      if (hasSpeechSynth && utteranceRef.current) {
-        window.speechSynthesis.pause();
-      }
       if (audioRef.current) audioRef.current.pause();
+      if ("speechSynthesis" in window) window.speechSynthesis.pause();
       setPlaying(false);
-      return;
-    }
-
-    // Resume paused speech
-    if (hasSpeechSynth && window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-      setPlaying(true);
       return;
     }
 
@@ -128,59 +140,19 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
       return;
     }
 
-    // --- Fresh play ---
-
-    // Try Web Speech API first (create utterance SYNCHRONOUSLY in gesture)
-    if (hasSpeechSynth) {
-      window.speechSynthesis.cancel();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      utterance.rate = 0.85;
-      utterance.pitch = 1.0;
-
-      const voice = pickVoice();
-      if (voice) utterance.voice = voice;
-
-      // Estimate total duration for progress bar
-      const wordCount = text.split(/\s+/).length;
-      const estimatedDurationSec = wordCount / (150 * 0.85 / 60); // ~150 wpm at 0.85 rate
-      const startTime = Date.now();
-
-      utterance.onstart = () => {
-        setPlaying(true);
-        intervalRef.current = setInterval(() => {
-          const elapsed = (Date.now() - startTime) / 1000;
-          setProgress(Math.min((elapsed / estimatedDurationSec) * 100, 98));
-        }, 500);
-      };
-
-      utterance.onend = () => {
-        setPlaying(false);
-        setProgress(100);
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      };
-
-      utterance.onerror = (e) => {
-        // If speech synthesis fails, try ElevenLabs
-        if (e.error !== "canceled") {
-          setUseTTS(true);
-          playViaTTS();
-        }
-      };
-
-      utteranceRef.current = utterance;
-      window.speechSynthesis.speak(utterance);
+    // Resume paused speech
+    if ("speechSynthesis" in window && window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setPlaying(true);
       return;
     }
 
-    // No Web Speech API — use ElevenLabs
-    setUseTTS(true);
+    // --- Fresh play — try ElevenLabs first ---
     playViaTTS();
-  }, [playing, text, pickVoice, playViaTTS]);
+  }, [playing, playViaTTS]);
 
   const handleStop = useCallback(() => {
-    if (hasSpeechSynth) window.speechSynthesis.cancel();
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -188,7 +160,6 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
     if (intervalRef.current) clearInterval(intervalRef.current);
     setPlaying(false);
     setProgress(0);
-    utteranceRef.current = null;
   }, []);
 
   return (
