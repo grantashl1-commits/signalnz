@@ -127,7 +127,7 @@ export default function ConnectCoursePage() {
         } as any);
       }
     }
-  }, [user, selectedModule, selectedLesson]);
+  }, [user, selectedModule, selectedLesson, hasJournalAccess]);
 
   const handleLessonComplete = (lessonId: string) => {
     haptic("medium");
