@@ -306,25 +306,42 @@ export default function CyclePage() {
                   ? (wUnit === "lbs" ? `${Math.round(weightVal! / 0.453592)}lb` : `${Math.round(weightVal!)}kg`)
                   : displayWeight;
 
+                // Period day fading: day 1 = strongest, day 5 = lightest
+                const isPeriod = indicators.isPeriodDay && cycleDay !== null;
+                const periodOpacity = isPeriod
+                  ? cycleDay <= 2 ? 0.85 : cycleDay <= 3 ? 0.6 : cycleDay <= 4 ? 0.4 : 0.2
+                  : 0;
+
+                // Check if this date is a logged period end
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+                const periodEnd = getPeriodEnd(monthKey);
+                const isPeriodEnd = periodEnd === dateStr;
+
                 return (
                   <button
                     key={dateStr}
                     onClick={() => { haptic("light"); setSelectedDate(dateStr); }}
                     className="touch-btn relative rounded-xl p-1 md:p-2 text-center transition-all active:bg-secondary min-h-[44px]"
-                    style={isToday ? {
-                      outline: '2px solid hsl(284, 22%, 44%)',
-                      outlineOffset: -2,
-                    } : undefined}
+                    style={{
+                      ...(isPeriod ? {
+                        backgroundColor: `rgba(196, 82, 110, ${periodOpacity})`,
+                        borderRadius: "12px",
+                      } : {}),
+                      ...(isToday ? {
+                        outline: '2px solid hsl(284, 22%, 44%)',
+                        outlineOffset: -2,
+                      } : {}),
+                    }}
                   >
                     {/* Today center dot */}
                     {isToday && (
                       <div className="absolute left-1/2 -translate-x-1/2 rounded-full" style={{ top: 3, width: 4, height: 4, backgroundColor: 'hsl(284, 22%, 44%)' }} />
                     )}
-                    <span className="font-body text-xs text-foreground">{date.getDate()}</span>
+                    <span className={`font-body text-xs ${isPeriod && cycleDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
                     <div className="flex justify-center gap-[3px] mt-0.5 flex-wrap">
-                      {/* Period dot — red */}
-                      {indicators.isPeriodDay && (
-                        <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#C4526E" }} />
+                      {/* Period end marker */}
+                      {isPeriodEnd && (
+                        <div className="rounded-full border-2" style={{ width: 6, height: 6, borderColor: "#C4526E", backgroundColor: "transparent" }} />
                       )}
                       {/* Mood flower icon */}
                       {moods.length > 0 && (
@@ -337,8 +354,8 @@ export default function CyclePage() {
                           <circle cx="8" cy="8" r="2" fill="#9B89B4" />
                         </svg>
                       )}
-                      {/* Phase dot — mauve */}
-                      {phase && !indicators.isPeriodDay && (
+                      {/* Phase dot — mauve (non-period days) */}
+                      {phase && !isPeriod && !isPeriodEnd && (
                         <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#9B89B4" }} />
                       )}
                     </div>
