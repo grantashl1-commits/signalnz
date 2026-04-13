@@ -24,7 +24,7 @@ interface Props {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const MOVEMENT_GOALS = [
   { id: "strength", label: "Build strength" },
@@ -54,6 +54,12 @@ const FITNESS_LEVELS = [
   { id: "beginner", label: "Beginner", desc: "New to structured training or returning after a break" },
   { id: "intermediate", label: "Intermediate", desc: "Training 2–3× per week with some experience" },
   { id: "advanced", label: "Advanced", desc: "Training 4–5× per week, comfortable with complex movements" },
+];
+
+const EQUIPMENT_OPTIONS = [
+  { id: "home-none", label: "At Home — No Equipment", desc: "Bodyweight workouts only" },
+  { id: "home-some", label: "At Home — Some Equipment", desc: "Dumbbells, bands, kettlebells, mat" },
+  { id: "gym", label: "Gym", desc: "Full gym access" },
 ];
 
 const LOADING_MESSAGES = [
@@ -211,11 +217,14 @@ export default function OnboardingFlow({ onComplete }: Props) {
   // Step 5 — Fitness Level
   const [fitnessLevel, setFitnessLevel] = useState<string | null>(null);
 
-  // Step 6 — Generating
+  // Step 6 — Equipment
+  const [equipmentPref, setEquipmentPref] = useState<string>("home-some");
+
+  // Step 7 — Generating
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "generating"];
+  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "equipment", "generating"];
 
   const next = () => {
     haptic("light");
@@ -323,7 +332,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Cycle through loading messages on step 6
   useEffect(() => {
-    if (step !== 6) return;
+    if (step !== 7) return;
     setLoadingMsgIndex(0);
     const interval = setInterval(() => {
       setLoadingMsgIndex((i) => {
@@ -339,7 +348,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Auto-save when loading screen finishes
   useEffect(() => {
-    if (step === 6 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
+    if (step === 7 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
       handleFinish();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -386,6 +395,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
             cycle_status: cycleStatus ?? "cycling",
             meal_prep_day: mealPrepDay,
             cycle_mode: cycleStatus ?? "cycling",
+            equipment_preference: equipmentPref,
           } as any, { onConflict: "user_id" });
 
         // ── Auto-generate first training plan in background ──
@@ -419,7 +429,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               weeksPlan: 4,
               daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
               lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
-              equipment: "home-some",
+              equipment: equipmentPref,
             },
           },
         }).then((resp) => {
@@ -512,10 +522,11 @@ export default function OnboardingFlow({ onComplete }: Props) {
     if (step === 3) return movementGoals.length > 0;
     if (step === 4) return true;
     if (step === 5) return !!fitnessLevel;
+    if (step === 6) return !!equipmentPref;
     return true;
   };
 
-  const showProgress = step >= 1 && step <= 5;
+  const showProgress = step >= 1 && step <= 6;
 
   return (
     <div
@@ -527,7 +538,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         {/* Step progress bar */}
         {showProgress && (
           <div className="flex justify-center gap-1.5 mb-8">
-            {[1, 2, 3, 4, 5].map((s) => (
+            {[1, 2, 3, 4, 5, 6].map((s) => (
               <div
                 key={s}
                 className={cn(
@@ -540,7 +551,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         )}
 
         {/* Back button */}
-        {step > 0 && step < 6 && (
+        {step > 0 && step < 7 && (
           <button
             onClick={back}
             className="absolute top-10 left-6 flex items-center gap-1 text-white/70 hover:text-white transition-colors font-body text-sm z-20"
@@ -1006,12 +1017,54 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 ))}
               </div>
 
-              <NextButton onClick={next} disabled={!fitnessLevel} label="Generate my plan" />
+              <NextButton onClick={next} disabled={!fitnessLevel} />
             </motion.div>
           )}
 
-          {/* ───── Step 6: Generating Plan ───── */}
+          {/* ───── Step 6: Equipment ───── */}
           {step === 6 && (
+            <motion.div key="equipment" {...slide} className="space-y-6 pt-8">
+              <StepHeading title="What equipment do you have?" sub="We'll tailor your workouts to match." />
+
+              <div className="space-y-3">
+                {EQUIPMENT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => { haptic("light"); setEquipmentPref(opt.id); }}
+                    className={cn(
+                      "w-full rounded-2xl p-5 text-left transition-all border",
+                      equipmentPref === opt.id
+                        ? "bg-white border-white shadow-lg"
+                        : "bg-white/10 border-white/15 hover:bg-white/15"
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className={cn(
+                          "font-display text-lg font-bold",
+                          equipmentPref === opt.id ? "text-primary" : "text-white"
+                        )}>{opt.label}</p>
+                        <p className={cn(
+                          "font-body text-sm mt-1",
+                          equipmentPref === opt.id ? "text-primary/70" : "text-white/60"
+                        )}>{opt.desc}</p>
+                      </div>
+                      {equipmentPref === opt.id && (
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <NextButton onClick={next} disabled={!equipmentPref} label="Generate my plan" />
+            </motion.div>
+          )}
+
+          {/* ───── Step 7: Generating Plan ───── */}
+          {step === 7 && (
             <motion.div
               key="generating"
               initial={{ opacity: 0 }}

@@ -98,7 +98,7 @@ interface AITrainingPlanTabProps {
 export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabProps = {}) {
   const { currentPhase } = useCycle();
   const profileData = useProfile();
-  const { heightCm, weightKg } = profileData;
+  const { heightCm, weightKg, dateOfBirth, fitnessLevel: profileFitnessLevel, movementGoals, goalWeightKg, equipmentPreference } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -106,16 +106,52 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   const [canGenerate, setCanGenerate] = useState(true);
   const [lastGeneratedAt, setLastGeneratedAt] = useState<string | null>(null);
 
+  // Determine if we have enough profile data to skip questionnaire
+  const hasProfileData = !!(heightCm && weightKg && dateOfBirth && profileFitnessLevel);
+
+  // Map movement goals to AI training goal
+  const mapGoalFromProfile = (): "stronger" | "lean" | "lose-weight" => {
+    if (!movementGoals || movementGoals.length === 0) return "stronger";
+    if (movementGoals.includes("fat_loss")) return "lose-weight";
+    if (movementGoals.includes("cardio") || movementGoals.includes("stress") || movementGoals.includes("mobility")) return "lean";
+    return "stronger";
+  };
+
+  // Calculate age from DOB
+  const calcAgeFromDOB = (): number => {
+    if (!dateOfBirth) return 30;
+    const dob = new Date(dateOfBirth);
+    const now = new Date();
+    let age = now.getFullYear() - dob.getFullYear();
+    const m = now.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+    return age;
+  };
+
+  // Map fitness level to "last workout" approximation
+  const mapLastWorkout = (): string => {
+    if (profileFitnessLevel === "advanced") return "this-week";
+    if (profileFitnessLevel === "intermediate") return "this-month";
+    return "never";
+  };
+
+  const mapDaysPerWeek = (): number => {
+    if (profileFitnessLevel === "advanced") return 5;
+    if (profileFitnessLevel === "intermediate") return 4;
+    return 3;
+  };
+
   const [step, setStep] = useState<Step>("height");
   const [answers, setAnswers] = useState<PlanAnswers>({
     height: heightCm || 165,
     heightUnit: "cm",
     weight: weightKg || 70,
-    age: 30,
-    goal: "stronger",
-    daysPerWeek: 4,
-    lastWorkout: "this-month",
-    equipment: "home-some",
+    age: calcAgeFromDOB(),
+    goal: mapGoalFromProfile(),
+    goalWeight: goalWeightKg || undefined,
+    daysPerWeek: mapDaysPerWeek(),
+    lastWorkout: mapLastWorkout(),
+    equipment: (equipmentPreference as PlanAnswers["equipment"]) || "home-some",
   });
 
   // Load existing AI plan
@@ -193,7 +229,8 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   const weeksForTarget = answers.weeksPlan || 8;
   const kgPerWeek = weightDiff > 0 ? (weightDiff / weeksForTarget).toFixed(1) : "0";
 
-  async function handleGenerate() {
+  async function handleGenerate(overrideAnswers?: PlanAnswers) {
+    const a = overrideAnswers || answers;
     setStep("generating");
     setGenerating(true);
 
@@ -210,15 +247,15 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         body: {
           cyclePhase: currentPhase,
           answers: {
-            height: answers.height,
-            weight: answers.weight,
-            age: answers.age,
-            goal: answers.goal,
-            goalWeight: answers.goalWeight,
-            weeksPlan: answers.weeksPlan,
-            daysPerWeek: answers.daysPerWeek,
-            lastWorkout: answers.lastWorkout,
-            equipment: answers.equipment,
+            height: a.height,
+            weight: a.weight,
+            age: a.age,
+            goal: a.goal,
+            goalWeight: a.goalWeight,
+            weeksPlan: a.weeksPlan,
+            daysPerWeek: a.daysPerWeek,
+            lastWorkout: a.lastWorkout,
+            equipment: a.equipment,
           },
         },
       });
@@ -479,7 +516,53 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     );
   }
 
-  // Onboarding flow
+  // If profile data exists from onboarding, skip questionnaire and generate directly
+  if (hasProfileData) {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-xl font-extrabold text-foreground">AI Training Plan</h2>
+          </div>
+          <p className="font-body text-sm text-muted-foreground leading-relaxed">
+            Generate a personalised training plan based on your profile. Your first plan is free!
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs font-body text-muted-foreground">
+            <span className="bg-secondary rounded-full px-3 py-1">{heightCm} cm</span>
+            <span className="bg-secondary rounded-full px-3 py-1">{weightKg} kg</span>
+            <span className="bg-secondary rounded-full px-3 py-1 capitalize">{profileFitnessLevel}</span>
+            <span className="bg-secondary rounded-full px-3 py-1 capitalize">{(equipmentPreference || "home-some").replace(/-/g, " ")}</span>
+          </div>
+          <button
+            onClick={() => {
+              handleGenerate({
+                height: heightCm || 165,
+                heightUnit: "cm",
+                weight: weightKg || 70,
+                age: calcAgeFromDOB(),
+                goal: mapGoalFromProfile(),
+                goalWeight: goalWeightKg || undefined,
+                daysPerWeek: mapDaysPerWeek(),
+                lastWorkout: mapLastWorkout(),
+                equipment: (equipmentPreference as PlanAnswers["equipment"]) || "home-some",
+              });
+            }}
+            disabled={generating}
+            className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-base font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
+          >
+            {generating ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
+            ) : (
+              <><Sparkles className="h-4 w-4" /> Generate my plan</>
+            )}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Questionnaire flow (fallback for users without profile data)
   return (
     <div className="relative min-h-[60vh]">
       {/* Progress ring */}
@@ -745,7 +828,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
                 </p>
               )}
               <button
-                onClick={handleGenerate}
+                onClick={() => handleGenerate()}
                 className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-base font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
               >
                 <Sparkles className="h-4 w-4" />
