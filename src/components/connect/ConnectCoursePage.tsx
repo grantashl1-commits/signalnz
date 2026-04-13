@@ -28,7 +28,9 @@ const MODULE_COLORS = [
 type View = "modules" | "lessons" | "lesson";
 
 export default function ConnectCoursePage() {
-  const { user } = useAuth();
+  const { user, subscription } = useAuth();
+  const { hasFeatureAccess } = useFeatureGate();
+  const hasJournalAccess = hasFeatureAccess("journal_write");
   const [view, setView] = useState<View>("modules");
   const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(null);
