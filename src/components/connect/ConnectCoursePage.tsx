@@ -86,7 +86,7 @@ export default function ConnectCoursePage() {
       completed: true,
     }, { onConflict: "user_id,activity_id" });
 
-    // Save to vault if flagged
+    // Save to connect_course_vault if flagged
     if (saveToVault) {
       await (supabase.from("connect_course_vault" as any) as any).insert({
         user_id: user.id,
@@ -97,6 +97,35 @@ export default function ConnectCoursePage() {
         content: typeof response === "string" ? response : JSON.stringify(response),
         media_type: activity?.type?.includes("video") ? "video" : activity?.type?.includes("image") ? "image" : "text",
       });
+
+      // Also save to journal Memory Vault if user has journal access
+      if (hasJournalAccess) {
+        const responseText = typeof response === "string" ? response
+          : response?.text || response?.answer || JSON.stringify(response);
+        const vaultEntry: VaultEntry = {
+          id: `connect-${activityId}-${Date.now()}`,
+          entryId: activityId,
+          category: "connect-course",
+          title: `${selectedModule.title} — ${activity?.title || "Activity"}`,
+          preview: responseText.slice(0, 200),
+          date: new Date().toISOString().split("T")[0],
+          timestamp: Date.now(),
+        };
+        const currentVault = loadVault();
+        saveVault([vaultEntry, ...currentVault]);
+
+        // Also persist to cloud vault_entries table
+        await supabase.from("vault_entries").upsert({
+          id: vaultEntry.id,
+          user_id: user.id,
+          entry_id: vaultEntry.entryId,
+          category: vaultEntry.category,
+          title: vaultEntry.title,
+          preview: vaultEntry.preview,
+          date: vaultEntry.date,
+          timestamp: vaultEntry.timestamp,
+        } as any);
+      }
     }
   }, [user, selectedModule, selectedLesson]);
 
