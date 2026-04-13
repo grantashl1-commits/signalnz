@@ -24,7 +24,7 @@ interface Props {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const MOVEMENT_GOALS = [
   { id: "strength", label: "Build strength" },
@@ -54,6 +54,12 @@ const FITNESS_LEVELS = [
   { id: "beginner", label: "Beginner", desc: "New to structured training or returning after a break" },
   { id: "intermediate", label: "Intermediate", desc: "Training 2–3× per week with some experience" },
   { id: "advanced", label: "Advanced", desc: "Training 4–5× per week, comfortable with complex movements" },
+];
+
+const EQUIPMENT_OPTIONS = [
+  { id: "home-none", label: "At Home — No Equipment", desc: "Bodyweight workouts only" },
+  { id: "home-some", label: "At Home — Some Equipment", desc: "Dumbbells, bands, kettlebells, mat" },
+  { id: "gym", label: "Gym", desc: "Full gym access" },
 ];
 
 const LOADING_MESSAGES = [
@@ -211,11 +217,14 @@ export default function OnboardingFlow({ onComplete }: Props) {
   // Step 5 — Fitness Level
   const [fitnessLevel, setFitnessLevel] = useState<string | null>(null);
 
-  // Step 6 — Generating
+  // Step 6 — Equipment
+  const [equipmentPref, setEquipmentPref] = useState<string>("home-some");
+
+  // Step 7 — Generating
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "generating"];
+  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "equipment", "generating"];
 
   const next = () => {
     haptic("light");
