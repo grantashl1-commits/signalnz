@@ -171,14 +171,16 @@ export default function HomePage() {
     return [...pinned, ...rest].slice(0, 10);
   })() : MOCK_POSTS;
 
+  const shownPostIds = new Set(displayPosts.map((p: FeedPost) => p.id));
   const historySections: { date: Date; posts: FeedPost[] }[] = [];
   if (showFeedHistory && allFeedPosts) {
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
       const pastStr = format(pastDate, "yyyy-MM-dd");
-      const pastPosts = pickDailyPosts(allFeedPosts, pastStr);
+      const pastPosts = pickDailyPosts(allFeedPosts, pastStr, 5, shownPostIds);
       if (pastPosts.length > 0) {
         historySections.push({ date: pastDate, posts: pastPosts });
+        pastPosts.forEach((p: FeedPost) => shownPostIds.add(p.id));
       }
     }
   }
