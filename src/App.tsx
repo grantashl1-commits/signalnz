@@ -48,6 +48,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Connect = lazy(() => import("./pages/Connect"));
+const ConnectCourse = lazy(() => import("./components/connect/ConnectCoursePage"));
 
 const queryClient = new QueryClient();
 
@@ -171,6 +172,7 @@ const App = () => {
                             <Route path="/refund-policy" element={<RefundPolicy />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/connect" element={<Connect />} />
+                            <Route path="/connect/course" element={<ConnectCourse />} />
                             <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
