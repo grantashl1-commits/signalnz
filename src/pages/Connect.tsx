@@ -264,6 +264,11 @@ export default function Connect() {
     return <AttachmentQuiz onBack={() => setShowQuiz(false)} />;
   }
 
+  // ═══ LOVE LANGUAGES QUIZ ═══
+  if (showLoveQuiz) {
+    return <LoveLanguagesQuiz onClose={() => setShowLoveQuiz(false)} />;
+  }
+
   // ═══ PARTNER ENTRY (no account needed) ═══
   if (!user) {
     return (
