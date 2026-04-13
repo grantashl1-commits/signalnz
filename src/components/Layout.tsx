@@ -23,6 +23,7 @@ const navItems = [
   { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
   { path: "/journal", icon: BookOpen, label: "Journal" },
   { path: "/community", icon: Users, label: "Community" },
+  { path: "/connect", icon: Heart, label: "Connect" },
 ];
 
 // Mobile bottom tabs: Daily Habits | Nutrition | Movement | Cycle | More | Journal | Community | Account
