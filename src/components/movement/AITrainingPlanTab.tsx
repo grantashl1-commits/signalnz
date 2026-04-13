@@ -547,7 +547,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
                 lastWorkout: mapLastWorkout(),
                 equipment: (equipmentPreference as PlanAnswers["equipment"]) || "home-some",
               });
-            }
+            }}
             disabled={generating}
             className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-base font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
           >
