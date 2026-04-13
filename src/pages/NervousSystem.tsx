@@ -678,7 +678,7 @@ export default function NervousSystemPage() {
                 return (
                   <button
                     key={t.id}
-                    onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
+                    onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); setCategoryFilter("all"); setIntensityFilter("all"); }}
                     className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[13px] transition-all flex items-center justify-center gap-1 whitespace-nowrap min-w-0 px-2 ${
                       tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
                     }`}
