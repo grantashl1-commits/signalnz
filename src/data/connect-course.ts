@@ -2801,4 +2801,377 @@ export const CONNECT_COURSE: CourseModule[] = [
       }
     ]
   }
+  ,
+  {
+    "id": "module-13",
+    "title": "Module 13: This Is How Your Marriage Ends — A Wake-Up Call",
+    "subtitle": "The everyday behaviours silently destroying your relationship — and how to stop them before it's too late.",
+    "description": "Based on Matthew Fray's brutally honest account of how his marriage ended, this module is a wake-up call for couples who think everything is 'fine.' You'll learn how good people accidentally become bad partners, discover the Invalidation Triple Threat that kills relationships, and build the awareness to stop the slow bleed of 10,000 paper cuts before it's too late.",
+    "icon": "lucide-alert-triangle",
+    "estimatedMinutes": 75,
+    "sources": ["This Is How Your Marriage Ends — Matthew Fray"],
+    "lessons": [
+      {
+        "id": "module-13-lesson-1",
+        "title": "Death by a Thousand Paper Cuts",
+        "description": "How marriages don't end with a bang — they bleed out slowly from everyday moments you think don't matter.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m13-l1-a1",
+            "type": "carousel",
+            "title": "The Uncomfortable Truth",
+            "instruction": "Swipe through to understand why marriages really end — and why most people never see it coming.",
+            "content": {
+              "cards": [
+                {
+                  "title": "The Statistics",
+                  "body": "In the US alone, there are ~6,200 marriages per day and ~3,000 divorces per day. Divorce is the #2 most stressful life event — ahead of prison, death of a parent, or losing a limb. Second marriages fail 67% of the time. We're not learning from our mistakes.",
+                  "icon": "lucide-trending-down"
+                },
+                {
+                  "title": "Not With a Bang",
+                  "body": "Love doesn't die in a loud, dramatic way. It bleeds out from 10,000 paper cuts. Quietly. Slowly. She knew something was wrong. He insisted everything was fine. This is how your marriage ends.",
+                  "icon": "lucide-scissors"
+                },
+                {
+                  "title": "The Fish Sandwich",
+                  "body": "A man eats a fish sandwich despite agreeing to be vegan with his wife. He thinks she's 'overreacting about a sandwich.' But it was never about the sandwich — it was about broken promises, eroded trust, and feeling like she doesn't matter enough to keep a commitment.",
+                  "icon": "lucide-fish"
+                },
+                {
+                  "title": "It's Never About the Thing",
+                  "body": "The glass left by the sink. The forgotten anniversary. The fish sandwich. These aren't petty complaints — they're symbols of whether your partner considers you in their daily decisions. Each 'small' thing is a vote for or against the relationship.",
+                  "icon": "lucide-glass-water"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l1-a2",
+            "type": "single_choice",
+            "title": "The Wake-Up Check",
+            "instruction": "Be honest with yourself about where your relationship stands right now.",
+            "content": {
+              "question": "When your partner raises a concern about something you did (or didn't do), what's your most common internal reaction?",
+              "options": [
+                "'Here we go again — they're overreacting about nothing.'",
+                "'I'm a good person. I don't deserve to be criticised like this.'",
+                "'I didn't mean to hurt them, so they shouldn't be hurt.'",
+                "'Something I'm doing is causing them pain. I need to understand what and why.'"
+              ],
+              "correctIndex": 3,
+              "explanation": "The first three responses are exactly the thought patterns Matthew Fray describes having throughout his marriage — the ones that ended it. Only the fourth response creates the possibility of change. Most of us default to the first three without realising it."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l1-a3",
+            "type": "open_response",
+            "title": "Your Paper Cuts",
+            "instruction": "Think about the 'small things' your partner has raised with you that you dismissed as unimportant. List at least three. Then ask yourself: What was your partner really trying to tell you?",
+            "content": {
+              "prompt": "What are the 'fish sandwiches' in your relationship — the things your partner complains about that you think don't matter? What might they actually be about?",
+              "placeholder": "The things my partner raises that I tend to dismiss are… What they might really be saying is…",
+              "minWords": 30
+            },
+            "tip": "Fray: 'Hundreds, maybe thousands of times, my wife tried to communicate that something was wrong. That something hurt. But that doesn't make sense, I thought. I'm not trying to hurt her; therefore, she shouldn't feel hurt.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-13-lesson-2",
+        "title": "Good People Can Be Bad Partners",
+        "description": "Why being a 'good person' doesn't automatically make you a good spouse — and why this distinction destroys marriages.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m13-l2-a1",
+            "type": "carousel",
+            "title": "The Good Person Trap",
+            "instruction": "This is the mindset that ends most marriages — and the people trapped in it have no idea.",
+            "content": {
+              "cards": [
+                {
+                  "title": "The Fatal Logic",
+                  "body": "'Because I'm a good person who loves my wife, who would never harm her intentionally, I must be a good husband!' This logic is as absurd as saying your grandmother should pilot a race car because she's the sweetest person alive.",
+                  "icon": "lucide-brain"
+                },
+                {
+                  "title": "Skill vs. Character",
+                  "body": "Being a good partner requires SKILL — study and practice — just like any other craft. Yet we never think of relationships as something to develop mastery in. We just wing it and hope love carries us through.",
+                  "icon": "lucide-wrench"
+                },
+                {
+                  "title": "The Shitty Omelette",
+                  "body": "Imagine making a terrible omelette in cooking school and defending it by saying you're a nice person who supports charities. That's what it sounds like when you tell your partner you can't be hurting them because you're 'a good guy.'",
+                  "icon": "lucide-egg"
+                },
+                {
+                  "title": "Intent ≠ Impact",
+                  "body": "You didn't MEAN to hurt them. That's probably true. But they're still hurt. And insisting that they shouldn't be — because you didn't intend it — is like stepping on someone's foot and arguing they shouldn't feel pain because you didn't do it on purpose.",
+                  "icon": "lucide-footprints"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l2-a2",
+            "type": "true_false",
+            "title": "Intent vs. Impact",
+            "instruction": "Answer honestly based on YOUR actual behaviour in your relationship.",
+            "content": {
+              "statements": [
+                { "text": "I've told my partner they 'shouldn't feel that way' about something I did.", "answer": null },
+                { "text": "I've defended my actions by pointing out that I'm 'not as bad as' other people's partners.", "answer": null },
+                { "text": "I've compared my partner's reaction to how I would react in the same situation and concluded they're overreacting.", "answer": null },
+                { "text": "I've dismissed a complaint because I believe my intentions were good.", "answer": null },
+                { "text": "I've told my partner I 'didn't mean it that way' as if that should end the conversation.", "answer": null },
+                { "text": "I've felt that my partner should be more grateful for the things I DO right instead of focusing on what I get wrong.", "answer": null }
+              ],
+              "explanation": "Each 'true' represents an instance where you may have invalidated your partner's experience. Fray did all of these — constantly — and each one was a paper cut that slowly bled his marriage to death. Awareness is the first step."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l2-a3",
+            "type": "open_response",
+            "title": "Your Honest Self-Assessment",
+            "instruction": "Fray writes: 'I got most of it wrong. Relationship stuff. Marriage. I was terrible but had no idea I was terrible as life was happening.' Can you relate? Where might you be getting it wrong without realising it?",
+            "content": {
+              "prompt": "Write honestly about the gap between the partner you think you are and the partner your spouse might say you are. What would they say if they could speak freely without you getting defensive?",
+              "placeholder": "I think I'm a good partner because… But if my partner could speak freely, they might say…",
+              "minWords": 30
+            },
+            "tip": "Fray: 'I never felt more unappreciated or more unfairly treated than the times my wife would communicate some new way in which I had disappointed her. It always seemed as if the punishment didn't fit the crime.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-13-lesson-3",
+        "title": "The Invalidation Triple Threat",
+        "description": "The #1 marriage killer hiding in your everyday conversations — and you probably do it multiple times per week.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m13-l3-a1",
+            "type": "carousel",
+            "title": "The Three Ways You Invalidate Your Partner",
+            "instruction": "Fray calls this the world's leading cause of relationship failure. Learn to recognise all three forms.",
+            "content": {
+              "cards": [
+                {
+                  "title": "#1: Their Thoughts Are Wrong",
+                  "body": "Your partner tells you something hurt them. Your response: 'That doesn't make sense. You're wrong to think that.' You correct their interpretation of reality instead of acknowledging their experience. You become the judge of whether their pain is legitimate.",
+                  "icon": "lucide-x-circle"
+                },
+                {
+                  "title": "#2: Their Feelings Are Wrong",
+                  "body": "Your partner expresses pain. Your response: 'You shouldn't feel that way. I didn't mean it, so you shouldn't be hurt.' You tell them their emotional response is incorrect — as if feelings need your approval to exist.",
+                  "icon": "lucide-heart-off"
+                },
+                {
+                  "title": "#3: Their Character Is Wrong",
+                  "body": "Your partner persists because they still feel unheard. Your response: 'You're too sensitive. You're always overreacting. You're crazy.' Now you've attacked WHO THEY ARE as a person — the most damaging invalidation of all.",
+                  "icon": "lucide-user-x"
+                },
+                {
+                  "title": "The Result: Death Spiral",
+                  "body": "Each round of invalidation erodes trust. Your partner stops bringing things up. The silence isn't peace — it's surrender. They've concluded you'll never hear them. They start planning their exit. By the time you notice, it's usually too late.",
+                  "icon": "lucide-spiral"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l3-a2",
+            "type": "sort",
+            "title": "Invalidation or Validation?",
+            "instruction": "Drag each response into the correct category.",
+            "content": {
+              "categories": ["Invalidation (Toxic)", "Validation (Healthy)"],
+              "items": [
+                { "text": "'You're making a big deal out of nothing.'", "correctCategory": "Invalidation (Toxic)" },
+                { "text": "'I can see this really upset you. Help me understand.'", "correctCategory": "Validation (Healthy)" },
+                { "text": "'I didn't mean it that way, so you shouldn't be hurt.'", "correctCategory": "Invalidation (Toxic)" },
+                { "text": "'I hear you. Even though I didn't intend to hurt you, I can see that I did.'", "correctCategory": "Validation (Healthy)" },
+                { "text": "'You're always so sensitive about everything.'", "correctCategory": "Invalidation (Toxic)" },
+                { "text": "'Your feelings matter to me, even when I don't fully understand them.'", "correctCategory": "Validation (Healthy)" },
+                { "text": "'That's not what happened. You're remembering it wrong.'", "correctCategory": "Invalidation (Toxic)" },
+                { "text": "'We might see this differently, but I want to understand your experience of it.'", "correctCategory": "Validation (Healthy)" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l3-a3",
+            "type": "open_response",
+            "title": "Your Invalidation Patterns",
+            "instruction": "Think about your last few disagreements. Which of the three invalidation responses do you default to? Give a specific example and rewrite it as a validating response.",
+            "content": {
+              "prompt": "Which invalidation type is your go-to: dismissing their thoughts, their feelings, or their character? Describe a recent example and rewrite your response.",
+              "placeholder": "My default invalidation is… A recent example was when… A validating response would be…",
+              "minWords": 30
+            },
+            "tip": "Fray: 'The Invalidation Triple Threat erodes trust every time it occurs. It disguises itself as harmless disagreement that's nothing to worry about. So it continues unabated, sneakily eroding trust one paper cut at a time until no trust is left.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-13-lesson-4",
+        "title": "She Feels Like Your Mum (And She Doesn't Want To)",
+        "description": "How the mental load and emotional labour imbalance turns your partner into a parent — and kills desire.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m13-l4-a1",
+            "type": "carousel",
+            "title": "The Partnership Imbalance",
+            "instruction": "Understand how one partner often becomes the household manager by default — and why it destroys intimacy.",
+            "content": {
+              "cards": [
+                {
+                  "title": "The Mental Load",
+                  "body": "One partner (usually her) carries the invisible burden of remembering, planning, organising, and managing everything: doctor's appointments, school events, grocery lists, birthday presents, holiday plans. The other partner 'helps' when asked — but never initiates.",
+                  "icon": "lucide-brain"
+                },
+                {
+                  "title": "'Just Ask Me!'",
+                  "body": "Saying 'just tell me what to do and I'll do it' sounds helpful but IS the problem. It means she has to manage YOU on top of everything else. She doesn't want an employee — she wants a partner who sees what needs doing and does it.",
+                  "icon": "lucide-hand-helping"
+                },
+                {
+                  "title": "The Desire Killer",
+                  "body": "Nobody wants to have sex with someone they have to parent. When she's managing your calendar, reminding you about your mum's birthday, and picking up after you — she doesn't feel like your lover. She feels like your mother. And that kills desire dead.",
+                  "icon": "lucide-heart-crack"
+                },
+                {
+                  "title": "The Fix",
+                  "body": "Notice what needs to be done — and do it. Don't wait to be asked. Take full ownership of household domains (not just 'helping'). Show her you're a competent adult who can manage life alongside her, not someone she has to supervise.",
+                  "icon": "lucide-check-check"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l4-a2",
+            "type": "true_false",
+            "title": "Mental Load Audit",
+            "instruction": "Answer honestly for your relationship.",
+            "content": {
+              "statements": [
+                { "text": "I know when the next doctor/dentist appointment is for everyone in the household.", "answer": null },
+                { "text": "I wait for my partner to tell me what needs to be done around the house.", "answer": null },
+                { "text": "I know what's running low in the fridge/pantry without being told.", "answer": null },
+                { "text": "My partner manages the social calendar (family events, kids' activities, etc.).", "answer": null },
+                { "text": "I've said 'just tell me what you need help with' in the last month.", "answer": null },
+                { "text": "I take full ownership of at least one household domain (meals, laundry, finances, etc.) without reminders.", "answer": null }
+              ],
+              "explanation": "If your partner manages most of the invisible household work, they're carrying the mental load. And every time you say 'just ask me,' you're adding to it — because now they also have to manage you."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l4-a3",
+            "type": "open_response",
+            "title": "Becoming a True Partner",
+            "instruction": "Identify three areas where your partner carries the mental load that you could take full ownership of — not 'help with' but OWN completely.",
+            "content": {
+              "prompt": "What invisible work does your partner do that you've never even noticed? What can you fully own starting this week?",
+              "placeholder": "Three things my partner manages that I could take ownership of are…",
+              "minWords": 25
+            },
+            "tip": "Fray: 'She doesn't want you to 'help.' She wants you to be an equal partner who sees what needs doing and does it without being managed.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-13-lesson-5",
+        "title": "The Art of Getting to Tomorrow",
+        "description": "Moving from awareness to action — committing to do the daily work that keeps your relationship alive.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m13-l5-a1",
+            "type": "carousel",
+            "title": "What Matters vs. What Doesn't",
+            "instruction": "Strip away the noise and focus on the core behaviours that determine whether your relationship survives.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Trust Is Everything",
+                  "body": "Trust isn't just about fidelity. It's built or destroyed in every small moment: Do you consider her in your decisions? Do you follow through? Do you show up emotionally? Every day is a vote for or against your relationship.",
+                  "icon": "lucide-shield-check"
+                },
+                {
+                  "title": "Validate, Don't Fix",
+                  "body": "When your partner is hurting, they don't need your solution. They need to know you HEAR them, you BELIEVE them, and their pain MATTERS to you. Validation isn't agreement — it's acknowledgment that their experience is real.",
+                  "icon": "lucide-ear"
+                },
+                {
+                  "title": "Choose Discomfort Over Disconnection",
+                  "body": "The uncomfortable conversation you're avoiding right now is the one that could save your relationship. Silence feels peaceful but it's actually the sound of your partner giving up on being heard.",
+                  "icon": "lucide-message-square-warning"
+                },
+                {
+                  "title": "It's Not Too Late (Yet)",
+                  "body": "If you're reading this and recognising yourself in these patterns, that's the wake-up call Fray wishes he'd had. Awareness is the first step. But awareness without action is just guilt with extra steps. Choose to do something different — today.",
+                  "icon": "lucide-sunrise"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l5-a2",
+            "type": "comparison",
+            "title": "The Marriage That Ends vs. The Marriage That Lasts",
+            "instruction": "Compare the daily reality of relationships heading toward failure versus those that thrive.",
+            "content": {
+              "pairs": [
+                {
+                  "left": { "label": "Ending", "text": "'Everything is fine' (while she cries in the bathroom)" },
+                  "right": { "label": "Lasting", "text": "'Something seems off. Can we talk about it?'" }
+                },
+                {
+                  "left": { "label": "Ending", "text": "'I didn't mean to hurt you, so you shouldn't be hurt'" },
+                  "right": { "label": "Lasting", "text": "'I hear that I hurt you. I'm sorry. How can I do better?'" }
+                },
+                {
+                  "left": { "label": "Ending", "text": "'She's always overreacting about little things'" },
+                  "right": { "label": "Lasting", "text": "'She keeps raising this — maybe it's more important than I think'" }
+                },
+                {
+                  "left": { "label": "Ending", "text": "'I'm a good person, so I must be a good partner'" },
+                  "right": { "label": "Lasting", "text": "'Being a good partner is a skill I need to keep developing'" }
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m13-l5-a3",
+            "type": "open_response",
+            "title": "Your Letter to Your Partner",
+            "instruction": "Write a letter to your partner (you can share it or keep it private) acknowledging what you've learned in this module. What patterns do you recognise? What do you commit to changing?",
+            "content": {
+              "prompt": "Be vulnerable. Be specific. Name the patterns you see in yourself. Acknowledge the pain you may have caused without intending to. State what you commit to doing differently.",
+              "placeholder": "Dear [partner], after going through this module I realise that…",
+              "minWords": 50
+            },
+            "tip": "Fray: 'We bled out from 10,000 paper cuts. Quietly. Slowly. She knew something was wrong. I insisted everything was fine. This is how your marriage ends. But it doesn't have to be.'",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  }
 ];
