@@ -237,6 +237,9 @@ function extractTodayMeals(planData: any, dayOfWeek: string): string | null {
 function extractTodaySession(planData: any, dayOfWeek: string): string | null {
   try {
     const dayKey = dayOfWeek.toLowerCase();
+    const dayIndex = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(dayKey);
+    // 1-based day of week (Mon=1 .. Sun=7)
+    const isoDayOfWeek = dayIndex === 0 ? 7 : dayIndex;
 
     // Try object-keyed format
     if (planData[dayKey]) {
@@ -251,7 +254,6 @@ function extractTodaySession(planData: any, dayOfWeek: string): string | null {
 
     // Try sessions array
     if (Array.isArray(planData.sessions)) {
-      const dayIndex = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(dayKey);
       const todaySessions = planData.sessions.filter(
         (s: any) => s.day_label?.toLowerCase() === dayKey || s.day_index === dayIndex
       );
@@ -263,11 +265,39 @@ function extractTodaySession(planData: any, dayOfWeek: string): string | null {
       }
     }
 
-    // Try weeks -> sessions structure
-    if (Array.isArray(planData.weeks)) {
-      const currentWeek = planData.weeks[0]; // Most recent
-      if (currentWeek?.sessions) {
-        return extractTodaySession({ sessions: currentWeek.sessions }, dayOfWeek);
+    // ── Handle generate-plan format: weeks[].days[] ──
+    if (Array.isArray(planData.weeks) && planData.weeks.length > 0) {
+      // Use first week (current)
+      const week = planData.weeks[0];
+      if (Array.isArray(week?.days)) {
+        // Match by day number (1-based ISO day of week)
+        const dayMatch = week.days.find((d: any) => d.day === isoDayOfWeek);
+        if (dayMatch) {
+          const title = dayMatch.title || dayMatch.session_type || "Training";
+          const duration = dayMatch.duration_minutes;
+          const exerciseCount = dayMatch.exercises?.length;
+          const parts = [title];
+          if (duration) parts.push(`${duration} min`);
+          if (exerciseCount) parts.push(`${exerciseCount} exercises`);
+          return parts.join(" — ");
+        }
+        // If no match by ISO day, try sequential: day 1 = first training day this week
+        // Find today's position among training days
+        const trainingDays = week.days.filter((d: any) => d.session_type !== "rest");
+        if (trainingDays.length > 0) {
+          // Use modulo to cycle through available days
+          const idx = (isoDayOfWeek - 1) % trainingDays.length;
+          const d = trainingDays[idx];
+          if (d) {
+            const title = d.title || d.session_type || "Training";
+            const duration = d.duration_minutes;
+            return `${title}${duration ? ` — ${duration} min` : ""}`;
+          }
+        }
+      }
+      // Try weeks[].sessions fallback
+      if (week?.sessions) {
+        return extractTodaySession({ sessions: week.sessions }, dayOfWeek);
       }
     }
 
