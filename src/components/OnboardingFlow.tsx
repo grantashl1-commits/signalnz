@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import SignalLogo from "@/components/SignalLogo";
+import iconCream from "@/assets/icon-cream.png";
 import { setLastPeriodStart } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -464,7 +464,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {step === 0 && (
             <motion.div key="welcome" {...slide} className="text-center space-y-8 pt-4">
               <div className="flex justify-center">
-                <SignalLogo size={64} className="text-white" />
+                <img src={iconCream} alt="Signal" className="w-16 h-16" />
               </div>
               <div className="space-y-3">
                 <h1 className="font-display text-4xl font-bold text-white tracking-wide uppercase">Signal</h1>
@@ -932,7 +932,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 animate={{ scale: [1, 1.08, 1], opacity: [0.9, 1, 0.9] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <SignalLogo size={72} className="text-white" />
+                <img src={iconCream} alt="Signal" className="w-[72px] h-[72px]" />
               </motion.div>
 
               {/* Loading messages */}
