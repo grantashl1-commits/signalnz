@@ -270,7 +270,7 @@ export default function HomePage() {
                   className="w-full h-auto object-contain drop-shadow-md"
                 />
               </motion.div>
-              <motion.p {...fadeUp(0.4)} className="font-body text-[1.35rem] md:text-[1.75rem] font-bold text-primary-foreground leading-tight max-w-sm mx-auto mb-5">
+              <motion.p {...fadeUp(0.4)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-5" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
                 Your body already knows. It's time to tune into the signal.
               </motion.p>
               <motion.div {...fadeUp(0.55)} className="mb-6">
