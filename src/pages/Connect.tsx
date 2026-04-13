@@ -542,6 +542,32 @@ export default function Connect() {
               <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
             </button>
 
+            {/* Love Languages Quiz CTA */}
+            <button
+              onClick={() => {
+                if (!hasFeatureAccess("connect_attachment_quiz")) {
+                  haptic("medium");
+                  navigate("/membership");
+                  return;
+                }
+                haptic("light");
+                setShowLoveQuiz(true);
+              }}
+              className="w-full max-w-sm p-4 rounded-2xl bg-card border border-border flex items-center gap-4 mb-10 text-left"
+            >
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Languages className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground">Love Languages Test</p>
+                <p className="text-xs text-muted-foreground">Discover how you give & receive love · 5 min</p>
+              </div>
+              {!hasFeatureAccess("connect_attachment_quiz") && (
+                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium shrink-0">Nourished+</span>
+              )}
+              <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </button>
+
             {/* Setup form */}
             <div className="w-full max-w-sm space-y-4">
               <input
