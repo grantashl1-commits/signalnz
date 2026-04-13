@@ -538,7 +538,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         {/* Step progress bar */}
         {showProgress && (
           <div className="flex justify-center gap-1.5 mb-8">
-            {[1, 2, 3, 4, 5].map((s) => (
+            {[1, 2, 3, 4, 5, 6].map((s) => (
               <div
                 key={s}
                 className={cn(
@@ -551,7 +551,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         )}
 
         {/* Back button */}
-        {step > 0 && step < 6 && (
+        {step > 0 && step < 7 && (
           <button
             onClick={back}
             className="absolute top-10 left-6 flex items-center gap-1 text-white/70 hover:text-white transition-colors font-body text-sm z-20"
