@@ -735,6 +735,13 @@ export default function NervousSystemPage() {
               className="space-y-8 md:space-y-10"
             >
               {/* Meditations tab */}
+              {tab === "meditations" && meditationScripts.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="font-body text-sm text-muted-foreground">No practices match your filters</p>
+                  <button onClick={() => { setDurationFilter("all"); setCategoryFilter("all"); setIntensityFilter("all"); }}
+                    className="font-body text-xs text-primary mt-2 hover:underline">Clear filters</button>
+                </div>
+              )}
               {tab === "meditations" && meditationScripts.map((s, i) => (
                 <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} />
               ))}
