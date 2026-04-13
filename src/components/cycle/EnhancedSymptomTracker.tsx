@@ -214,6 +214,28 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                   ))}
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="font-body text-xs text-muted-foreground mb-1">bedtime</p>
+                  <input
+                    type="time"
+                    value={bedtime}
+                    onChange={(e) => setBedtime(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 min-h-[44px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    style={{ fontSize: "16px" }}
+                  />
+                </div>
+                <div>
+                  <p className="font-body text-xs text-muted-foreground mb-1">wake time</p>
+                  <input
+                    type="time"
+                    value={wakeTime}
+                    onChange={(e) => setWakeTime(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 min-h-[44px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    style={{ fontSize: "16px" }}
+                  />
+                </div>
+              </div>
               <button
                 onClick={() => { haptic("light"); setNightWaking(!nightWaking); }}
                 className={`touch-btn rounded-xl px-3 py-2.5 min-h-[44px] font-body text-xs transition-all ${

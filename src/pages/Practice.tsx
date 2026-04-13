@@ -502,13 +502,7 @@ export default function PracticePage() {
         {/* ═══ HABIT WISDOM CAROUSEL ═══ */}
         <HabitCarousel />
 
-        {/* ═══ SLEEP LOG ═══ */}
-        <motion.div {...fadeUp(0.3)} className="mt-6 mb-2">
-          <SleepCard phaseColor={phaseColor} />
-          <p className="font-body text-[10px] text-muted-foreground/50 text-center mt-2 italic">
-            Smart device integration coming soon — Terra API for real-time sleep data.
-          </p>
-        </motion.div>
+        {/* Sleep tracking moved to Cycle page check-in */}
 
         {/* ═══ CATEGORY CHOOSER SHEET ═══ */}
         <AnimatePresence>
