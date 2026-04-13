@@ -515,7 +515,55 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     );
   }
 
-  // Onboarding flow
+  // If profile data exists from onboarding, skip questionnaire and generate directly
+  if (hasProfileData) {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-xl font-extrabold text-foreground">AI Training Plan</h2>
+          </div>
+          <p className="font-body text-sm text-muted-foreground leading-relaxed">
+            Generate a personalised training plan based on your profile. Your first plan is free!
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs font-body text-muted-foreground">
+            <span className="bg-secondary rounded-full px-3 py-1">{heightCm} cm</span>
+            <span className="bg-secondary rounded-full px-3 py-1">{weightKg} kg</span>
+            <span className="bg-secondary rounded-full px-3 py-1 capitalize">{profileFitnessLevel}</span>
+            <span className="bg-secondary rounded-full px-3 py-1 capitalize">{(equipmentPreference || "home-some").replace(/-/g, " ")}</span>
+          </div>
+          <button
+            onClick={async () => {
+              // Use profile data directly
+              setAnswers({
+                height: heightCm || 165,
+                heightUnit: "cm",
+                weight: weightKg || 70,
+                age: calcAgeFromDOB(),
+                goal: mapGoalFromProfile(),
+                goalWeight: goalWeightKg || undefined,
+                daysPerWeek: mapDaysPerWeek(),
+                lastWorkout: mapLastWorkout(),
+                equipment: (equipmentPreference as PlanAnswers["equipment"]) || "home-some",
+              });
+              handleGenerate();
+            }}
+            disabled={generating}
+            className="w-full h-12 rounded-full bg-primary text-primary-foreground font-display text-base font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
+          >
+            {generating ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
+            ) : (
+              <><Sparkles className="h-4 w-4" /> Generate my plan</>
+            )}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Questionnaire flow (fallback for users without profile data)
   return (
     <div className="relative min-h-[60vh]">
       {/* Progress ring */}
