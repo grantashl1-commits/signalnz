@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, Brain } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
+import AttachmentQuiz from "@/components/connect/AttachmentQuiz";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
 type Message = { id: string; sender_role: string; content: string; created_at: string };
@@ -25,6 +27,8 @@ function hashPin(pin: string): string {
 export default function Connect() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { hasFeatureAccess } = useFeatureGate();
+  const [showQuiz, setShowQuiz] = useState(false);
   const [view, setView] = useState<ConnectView>("intro");
   const [joinCode, setJoinCode] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
@@ -252,6 +256,11 @@ export default function Connect() {
     }
     setAiLoading(false);
   };
+
+  // ═══ ATTACHMENT QUIZ ═══
+  if (showQuiz) {
+    return <AttachmentQuiz onBack={() => setShowQuiz(false)} />;
+  }
 
   // ═══ PARTNER ENTRY (no account needed) ═══
   if (!user) {
@@ -499,6 +508,32 @@ export default function Connect() {
                 </div>
               ))}
             </div>
+
+            {/* Attachment Quiz CTA */}
+            <button
+              onClick={() => {
+                if (!hasFeatureAccess("connect_attachment_quiz")) {
+                  haptic("medium");
+                  navigate("/membership");
+                  return;
+                }
+                haptic("light");
+                setShowQuiz(true);
+              }}
+              className="w-full max-w-sm p-4 rounded-2xl bg-card border border-border flex items-center gap-4 mb-10 text-left"
+            >
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Brain className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground">Attachment Style Quiz</p>
+                <p className="text-xs text-muted-foreground">Discover your attachment pattern · 5 min</p>
+              </div>
+              {!hasFeatureAccess("connect_attachment_quiz") && (
+                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium shrink-0">Nourished+</span>
+              )}
+              <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </button>
 
             {/* Setup form */}
             <div className="w-full max-w-sm space-y-4">
