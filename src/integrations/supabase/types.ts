@@ -1353,6 +1353,7 @@ export type Database = {
           dietary_dislikes: string[] | null
           dietary_preferences: string[] | null
           display_name: string | null
+          equipment_preference: string | null
           fat_target_g: number | null
           fitness_level: string | null
           goal_category_id: string | null
@@ -1385,6 +1386,7 @@ export type Database = {
           dietary_dislikes?: string[] | null
           dietary_preferences?: string[] | null
           display_name?: string | null
+          equipment_preference?: string | null
           fat_target_g?: number | null
           fitness_level?: string | null
           goal_category_id?: string | null
@@ -1417,6 +1419,7 @@ export type Database = {
           dietary_dislikes?: string[] | null
           dietary_preferences?: string[] | null
           display_name?: string | null
+          equipment_preference?: string | null
           fat_target_g?: number | null
           fitness_level?: string | null
           goal_category_id?: string | null
