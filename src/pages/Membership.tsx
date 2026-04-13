@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles, Sprout, Brain, Utensils, Dumbbell, BookOpen, Users, Leaf, Heart, Moon } from "lucide-react";
+import { Check, Crown, Zap, Plus, LogIn, Settings, Sparkles, Sprout, Brain, Utensils, Dumbbell, BookOpen, Users, Leaf, Heart, Moon, Tag } from "lucide-react";
 import TierComparisonTable from "@/components/TierComparisonTable";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
@@ -171,6 +171,8 @@ export default function MembershipPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isAnnual, setIsAnnual] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [showCoupon, setShowCoupon] = useState(false);
   const { creditsRemaining, tier: creditTier } = useAICredits();
 
   useEffect(() => {
@@ -187,8 +189,12 @@ export default function MembershipPage() {
     }
     haptic("medium");
     try {
+      const body: any = { priceId, mode };
+      if (couponCode.trim() && mode === "subscription") {
+        body.couponId = couponCode.trim();
+      }
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId, mode },
+        body,
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
       if (error) throw error;
