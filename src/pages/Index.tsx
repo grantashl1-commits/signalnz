@@ -215,6 +215,21 @@ export default function HomePage() {
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
+        {/* Phase illustration */}
+        <motion.div
+          key={info.phase}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 0.18, scale: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
+        >
+          <img
+            src={PHASE_HERO_IMAGE[info.phase]}
+            alt=""
+            className="w-[80%] max-w-md h-auto object-contain"
+          />
+        </motion.div>
+
         <div className="text-center max-w-xl mx-auto relative z-10">
           <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-8">
             {greeting}, {firstName || "you"}.
