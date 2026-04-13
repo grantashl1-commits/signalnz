@@ -14,6 +14,8 @@ export interface StructuredCheckin {
   sleepQuality?: number;  // 1–5
   nightWaking?: boolean;
   sleepHours?: string;
+  bedtime?: string;       // HH:mm
+  wakeTime?: string;      // HH:mm
   bbt?: string;
   notes?: string;
 }
