@@ -26,6 +26,7 @@ export interface ProfileData {
   lastPeriodDate: string | null;
   cycleStatus: string | null;
   mealPrepDay: string | null;
+  equipmentPreference: string | null;
 }
 
 export function useProfile() {
@@ -54,6 +55,7 @@ export function useProfile() {
   const [lastPeriodDate, setLastPeriodDate] = useState<string | null>(null);
   const [cycleStatus, setCycleStatus] = useState<string | null>(null);
   const [mealPrepDay, setMealPrepDay] = useState<string | null>(null);
+  const [equipmentPreference, setEquipmentPreference] = useState<string | null>(null);
 
   const fetchProfile = useCallback(async () => {
     if (!user) {
@@ -72,7 +74,7 @@ export function useProfile() {
         date_of_birth, weight_kg, height_cm, goal_weight_kg,
         movement_goals, dietary_preferences, dietary_dislikes,
         calorie_target, protein_target_g, carb_target_g, fat_target_g,
-        last_period_date, cycle_status, meal_prep_day
+        last_period_date, cycle_status, meal_prep_day, equipment_preference
       `)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -100,6 +102,7 @@ export function useProfile() {
     setLastPeriodDate(d?.last_period_date ?? null);
     setCycleStatus(d?.cycle_status ?? null);
     setMealPrepDay(d?.meal_prep_day ?? null);
+    setEquipmentPreference(d?.equipment_preference ?? null);
 
     setLoading(false);
   }, [user]);
@@ -169,6 +172,7 @@ export function useProfile() {
     lastPeriodDate,
     cycleStatus,
     mealPrepDay,
+    equipmentPreference,
     // Methods
     updateDisplayName,
     updateCycleMode,
