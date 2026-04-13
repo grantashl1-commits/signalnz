@@ -26,6 +26,7 @@ import menstrualHero from "@/assets/phases/menstrual-hero.png";
 import follicularHero from "@/assets/phases/follicular-hero.png";
 import ovulatoryHero from "@/assets/phases/ovulatory-hero.png";
 import lutealHero from "@/assets/phases/luteal-hero.png";
+import welcomeHero from "@/assets/phases/welcome-hero.png";
 
 const PHASE_HERO_IMAGE: Record<Phase, string> = {
   menstrual: menstrualHero,
