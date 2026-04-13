@@ -1,0 +1,2072 @@
+// Auto-generated Signal Couples Connect Course
+// 10 modules, 30 lessons, 92 activities from 19 relationship science books
+
+export interface CourseActivity {
+  id: string; type: string; title: string; instruction: string;
+  content: any; tip?: string; saveToVault?: boolean;
+}
+
+export interface CourseLesson {
+  id: string; title: string; description: string;
+  estimatedMinutes: number; activities: CourseActivity[];
+}
+
+export interface CourseModule {
+  id: string; title: string; subtitle: string; description: string;
+  icon: string; estimatedMinutes: number; sources: string[];
+  lessons: CourseLesson[];
+}
+
+export const CONNECT_COURSE: CourseModule[] = [
+  {
+    "id": "module-1",
+    "title": "Module 1: Attachment & Connection Foundations",
+    "subtitle": "Understanding your relational blueprint and building secure bonds.",
+    "description": "Explore the roots of your relational patterns and discover how to cultivate a secure and deeply connected partnership. This module sets the stage for a resilient and thriving relationship.",
+    "icon": "lucide-heart",
+    "estimatedMinutes": 60,
+    "sources": [
+      "Attached",
+      "Love Sense",
+      "The Relationship Cure",
+      "Receiving Love Workbook"
+    ],
+    "lessons": [
+      {
+        "id": "module-1-lesson-1",
+        "title": "Unpacking Your Attachment Style",
+        "description": "Identify your primary attachment style and its impact on your relationships.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m1-l1-a1",
+            "type": "carousel",
+            "title": "Decoding Attachment Styles",
+            "instruction": "Swipe through the cards to learn about the main attachment styles.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Secure Attachment",
+                  "body": "Comfortable with intimacy and independence. Trusts partner and feels safe.",
+                  "icon": "lucide-hands-clapping"
+                },
+                {
+                  "title": "Anxious Attachment",
+                  "body": "Craves intimacy, often worries about partner's love or commitment. Can be 'clingy'.",
+                  "icon": "lucide-bell"
+                },
+                {
+                  "title": "Avoidant Attachment",
+                  "body": "Values independence, often uncomfortable with too much closeness. Can seem distant.",
+                  "icon": "lucide-footprints"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l1-a2",
+            "type": "single_choice",
+            "title": "My Relational Blueprint",
+            "instruction": "Which attachment style resonates most with you in your most intimate relationships?",
+            "content": {
+              "question": "Which of these best describes your general approach to intimacy and relationships?",
+              "options": [
+                "I feel comfortable with intimacy and interdependence; I don't worry about being abandoned or getting too close.",
+                "I want to be completely intimate with others, but I often find that others are reluctant to get as close as I would like. I often worry my partner doesn't love me.",
+                "I am uncomfortable being close to others. I find it difficult to trust them completely, or to depend on them. I like my independence."
+              ],
+              "correctIndex": null,
+              "explanation": "There are no 'right' or 'wrong' answers here, only deeper understanding. Most people have a blend, but one usually feels more dominant."
+            },
+            "tip": "Understanding your dominant style is the first step towards growth.",
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l1-a3",
+            "type": "open_response",
+            "title": "Reflecting on My Attachment",
+            "instruction": "In what ways do you see your identified attachment style play out in your current relationship? Provide specific examples.",
+            "content": {
+              "prompt": "How does your attachment style influence your behavior, thoughts, and feelings when you're with your partner, or when you're apart?",
+              "placeholder": "For example, if I'm anxious, I might notice myself seeking reassurance frequently...",
+              "minWords": 50
+            },
+            "tip": "Be honest and non-judgmental with yourself. This is about self-discovery.",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-1-lesson-2",
+        "title": "The Dance of You and I",
+        "description": "Discover how your attachment styles interact and impact your relationship dynamics.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m1-l2-a1",
+            "type": "find_the_pair",
+            "title": "Common Attachment Pairings",
+            "instruction": "Match the attachment style on the left with a common dynamic it creates with another style on the right.",
+            "content": {
+              "pairs": [
+                {
+                  "left": "Secure",
+                  "right": "Creates a stable, supportive base for any partner."
+                },
+                {
+                  "left": "Anxious",
+                  "right": "Often seeks reassurance and closeness, fearing abandonment."
+                },
+                {
+                  "left": "Avoidant",
+                  "right": "Tends to pull back when closeness increases, valuing independence."
+                },
+                {
+                  "left": "Anxious-Avoidant",
+                  "right": "A common 'pursuer-distancer' dynamic."
+                }
+              ]
+            },
+            "tip": "These dynamics are not set in stone; awareness allows for change.",
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l2-a2",
+            "type": "comparison",
+            "title": "My Style & My Partner's Style",
+            "instruction": "Think about your own attachment style and what you perceive to be your partner's. Compare how these styles might meet or clash.",
+            "content": {
+              "itemA": {
+                "title": "My Attachment Style",
+                "points": [
+                  "How I typically react to stress in the relationship.",
+                  "My needs for closeness and independence.",
+                  "How I handle conflict."
+                ]
+              },
+              "itemB": {
+                "title": "Partner's Attachment Style (Perceived)",
+                "points": [
+                  "How I observe my partner reacting to stress.",
+                  "My partner's needs for closeness and independence.",
+                  "How my partner handles conflict (as I see it)."
+                ]
+              },
+              "reflection": "How do these styles interact to create your unique relationship dynamic? Where do you find harmony, and where are the challenges?"
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m1-l2-a3",
+            "type": "video_upload",
+            "title": "Message to My Partner: Understanding Us",
+            "instruction": "Record a short video message for your partner sharing one insight you've gained today about how your attachment styles interact, and one way you hope to better support them given this new understanding.",
+            "content": {
+              "prompt": "Share a gentle observation and a hopeful intention.",
+              "maxSeconds": 90
+            },
+            "tip": "Focus on 'I' statements and express curiosity, not blame.",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-1-lesson-3",
+        "title": "Building a Secure Foundation",
+        "description": "Learn practical steps to move towards greater security and connection in your relationship.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m1-l3-a1",
+            "type": "sort",
+            "title": "Steps to Secure Attachment",
+            "instruction": "Put these actions in order of how you think they contribute to building a more secure bond.",
+            "content": {
+              "items": [
+                "Recognize and soothe your own anxieties.",
+                "Communicate your needs directly and kindly.",
+                "Be responsive and available to your partner's bids for connection.",
+                "Offer reassurance when your partner is distressed.",
+                "Encourage partner's independence and growth."
+              ],
+              "correctOrder": [
+                0,
+                1,
+                3,
+                2,
+                4
+              ],
+              "context": "There isn't one perfect order, but typically self-awareness comes first, then communication, then responsiveness."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l3-a2",
+            "type": "decision_point",
+            "title": "Responding to Insecurity",
+            "instruction": "Your partner mentions they feel a bit distant from you lately. How do you respond?",
+            "content": {
+              "scenario": "Your partner says, 'I've been feeling a little disconnected from you lately.'",
+              "choices": [
+                {
+                  "label": "You: 'Oh, really? I've been so busy with work. I guess I haven't noticed. Let's talk about it later.'",
+                  "outcome": "While acknowledging, this defers the conversation, which might leave your partner feeling dismissed or unheard.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: 'Oh no, I'm so sorry! What did I do? Tell me everything. I need to fix this right away!'",
+                  "outcome": "While well-intentioned, this response can stem from anxiety and put pressure on your partner to 'fix' your feelings, not just share theirs.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: 'I'm sorry to hear that. I want to understand. Can you tell me a bit more about what you're feeling, and what you might need from me?'",
+                  "outcome": "This shows empathy, validates their feelings, and invites open communication, fostering a secure connection.",
+                  "isOptimal": true
+                },
+                {
+                  "label": "You: 'I know, I've been feeling it too. It happens. We'll get over it.'",
+                  "outcome": "This can minimize your partner's specific feelings and miss an opportunity for deeper connection.",
+                  "isOptimal": false
+                }
+              ]
+            },
+            "tip": "A secure response acknowledges, validates, and shows a desire to understand.",
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l3-a3",
+            "type": "short_answer",
+            "title": "One Step Forward",
+            "instruction": "Identify one specific, small action you will take in the next 24 hours to reinforce a more secure connection with your partner, based on what you've learned.",
+            "content": {
+              "prompt": "What's one tangible thing you can do?",
+              "placeholder": "e.g., 'I will initiate a 10-minute check-in conversation about our day tonight.'",
+              "minWords": 10
+            },
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-2",
+    "title": "Module 2: Emotional Bids & Turning Toward",
+    "subtitle": "Learning to see, hear, and respond to calls for connection.",
+    "description": "Discover the hidden language of 'bids for connection' and master the art of 'turning toward' your partner. This module helps you create a rich emotional bank account with frequent, meaningful interactions.",
+    "icon": "lucide-eye",
+    "estimatedMinutes": 60,
+    "sources": [
+      "The Relationship Cure",
+      "Eight Dates",
+      "The Love Prescription"
+    ],
+    "lessons": [
+      {
+        "id": "module-2-lesson-1",
+        "title": "What's a Bid for Connection?",
+        "description": "Understand the different forms emotional bids can take and why they're crucial.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m2-l1-a1",
+            "type": "fill_blanks",
+            "title": "The Essence of a Bid",
+            "instruction": "Fill in the blanks to complete the definition of an emotional bid.",
+            "content": {
+              "text": "An emotional bid for connection is any attempt from one partner to another for ___, attention, ___, or any other form of positive ___. It's an invitation to ___, often subtle.",
+              "blanks": [
+                "affection",
+                "support",
+                "response",
+                "engage"
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m2-l1-a2",
+            "type": "multiple_choice",
+            "title": "Spot the Bid!",
+            "instruction": "Which of the following are examples of bids for connection? (Select all that apply)",
+            "content": {
+              "question": "Which of these are likely bids for connection?",
+              "options": [
+                "Your partner sighs heavily while looking at a pile of dishes.",
+                "Your partner asks, 'Did you see that funny dog video online?'",
+                "Your partner says, 'My boss was really tough on me today.'",
+                "Your partner walks into the room and gently touches your arm.",
+                "Your partner silently flips through their phone while you're talking."
+              ],
+              "correctIndex": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "explanation": "Even a sigh can be a bid for acknowledgment or help. The silent phone interaction is likely a 'turning away'."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m2-l1-a3",
+            "type": "open_response",
+            "title": "My Partner's Secret Language",
+            "instruction": "Reflect on your partner's subtle (or not-so-subtle) ways of bidding for your attention or connection. Describe 2-3 specific examples you've noticed this week.",
+            "content": {
+              "prompt": "What are some of their unique 'bids'? How do they signal a desire for connection?",
+              "placeholder": "My partner often hums or clears their throat when they want to tell me something, waiting for me to ask, 'What's up?'",
+              "minWords": 40
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-2-lesson-2",
+        "title": "The Three Responses: Turn Toward, Turn Away, Turn Against",
+        "description": "Understand the profound impact your response to bids has on your relationship's health.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m2-l2-a1",
+            "type": "true_false",
+            "title": "Bid Response Basics",
+            "instruction": "Determine if the following statements about responding to bids are true or false.",
+            "content": {
+              "statement": "Ignoring a bid is always 'turning away,' even if unintentional.",
+              "correct": true,
+              "explanation": "While intent matters for blame, the *impact* on the bid-maker is that their bid was not met, which registers as 'turning away'."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m2-l2-a2",
+            "type": "decision_point",
+            "title": "Responding in the Moment",
+            "instruction": "Your partner comes home looking visibly stressed and says, 'Ugh, another terrible day at work.' How do you respond?",
+            "content": {
+              "scenario": "Your partner comes home, drops their bag, and says with a sigh, 'Ugh, another terrible day at work.'",
+              "choices": [
+                {
+                  "label": "You: 'Oh, honey, I'm sorry to hear that. What happened?'",
+                  "outcome": "This is 'turning toward' \u2013 you're acknowledging their distress and inviting them to share, showing you care.",
+                  "isOptimal": true
+                },
+                {
+                  "label": "You: 'Yeah, mine was awful too. You wouldn't believe what X did.'",
+                  "outcome": "This is 'turning away' (or 'turning into self-focus') \u2013 you're redirecting the conversation to yourself, missing their bid for support.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: 'What did you expect? You always complain about your job.'",
+                  "outcome": "This is 'turning against' \u2013 you're responding with criticism or defensiveness, escalating negativity.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You nod vaguely from the couch, continuing to scroll on your phone.",
+                  "outcome": "This is 'turning away' \u2013 you're ignoring their bid, making them feel unheard or unimportant.",
+                  "isOptimal": false
+                }
+              ]
+            },
+            "tip": "Even brief, attentive responses count as turning toward.",
+            "saveToVault": false
+          },
+          {
+            "id": "m2-l2-a3",
+            "type": "image_upload",
+            "title": "A Visual Bid",
+            "instruction": "Take a photo that represents a 'bid for connection' you recently made to your partner, or one your partner recently made to you. Add a caption explaining the context.",
+            "content": {
+              "prompt": "Capture a moment of connection or an attempt at one.",
+              "exampleDescription": "A photo of my partner's favorite snack on the counter - a small 'I'm thinking of you' bid."
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-2-lesson-3",
+        "title": "Building Your Emotional Bank Account",
+        "description": "Practice consistent 'turning toward' to build trust, intimacy, and a resilient relationship.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m2-l3-a1",
+            "type": "sort",
+            "title": "Putting Bids into Practice",
+            "instruction": "Arrange these steps to effectively respond to a bid from your partner.",
+            "content": {
+              "items": [
+                "Acknowledge the bid verbally or non-verbally.",
+                "Stop what you're doing (if possible) and give your attention.",
+                "Ask clarifying questions if needed.",
+                "Validate their feeling or intention.",
+                "Offer support or engage in the topic."
+              ],
+              "correctOrder": [
+                1,
+                0,
+                2,
+                3,
+                4
+              ],
+              "context": "Giving attention first is key to showing you're truly 'turning toward'."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m2-l3-a2",
+            "type": "survey",
+            "title": "Our Bid Responsiveness Scale",
+            "instruction": "Rate your and your partner's general responsiveness to each other's bids for connection over the past week.",
+            "content": {
+              "question": "On a scale of 1-10, how frequently do you feel you and your partner 'turn toward' each other's bids?",
+              "scale": {
+                "min": 1,
+                "max": 10,
+                "minLabel": "Rarely / Often miss them",
+                "maxLabel": "Almost always / Consistently present"
+              }
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m2-l3-a3",
+            "type": "video_upload",
+            "title": "Turning Toward: A Pledge",
+            "instruction": "Record a short video to your partner (or to yourself, if solo) outlining one specific way you plan to 'turn toward' bids more intentionally this week.",
+            "content": {
+              "prompt": "Share a concrete plan, such as 'I will put my phone down and make eye contact every time you speak to me about your day.'",
+              "maxSeconds": 60
+            },
+            "tip": "Specificity helps with follow-through!",
+            "saveToVault": true
+          },
+          {
+            "id": "m2-l3-a4",
+            "type": "open_response",
+            "title": "Our Daily Connection Goal",
+            "instruction": "Discuss with your partner (or reflect individually) what a realistic daily goal for 'turning toward' bids could be for your relationship. How will you track it?",
+            "content": {
+              "prompt": "For example, 'We aim for at least 5 positive responses to bids during the evening hours.'",
+              "placeholder": "Our goal is to...",
+              "minWords": 30
+            },
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-3",
+    "title": "Module 3: Communication Without Fighting",
+    "subtitle": "Mastering dialogue, active listening, and gentle starts.",
+    "description": "Learn techniques to express yourselves clearly and listen deeply, transforming disagreements into opportunities for understanding instead of escalating into conflict. Focus on gentle communication.",
+    "icon": "lucide-message-circle",
+    "estimatedMinutes": 60,
+    "sources": [
+      "Communication in Marriage",
+      "The Relationship Cure",
+      "Fight Right",
+      "10 Lessons to Transform Your Marriage"
+    ],
+    "lessons": [
+      {
+        "id": "module-3-lesson-1",
+        "title": "The Art of Active Listening",
+        "description": "Move beyond just hearing words to truly understanding your partner's message and emotion.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m3-l1-a1",
+            "type": "fill_blanks",
+            "title": "Active Listening Core Skills",
+            "instruction": "Complete the sentence describing a key active listening technique.",
+            "content": {
+              "text": "Active listening involves not just hearing, but also ___ feelings, ___ what you heard in your own words, and asking open-ended ___ to encourage deeper sharing.",
+              "blanks": [
+                "validating",
+                "reflecting",
+                "questions"
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m3-l1-a2",
+            "type": "true_false",
+            "title": "Common Listening Mistakes",
+            "instruction": "Identify if the following statement is true or false regarding active listening.",
+            "content": {
+              "statement": "Planning your rebuttal while your partner is speaking is a key part of active listening.",
+              "correct": false,
+              "explanation": "No, this is a common barrier to active listening. It prevents you from truly hearing and understanding your partner's perspective."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m3-l1-a3",
+            "type": "open_response",
+            "title": "Deep Listening Practice",
+            "instruction": "Find a time for a 5-minute conversation with your partner. One person shares about their day or a feeling, the other practices active listening by _not_ offering solutions, but only reflecting, validating, and asking clarifying questions. Then swap roles. Reflect on the experience here.",
+            "content": {
+              "prompt": "What did it feel like to be truly heard? What did you notice about your partner's experience or perspective?",
+              "placeholder": "I noticed that when I focused only on listening, my partner shared more deeply...",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-3-lesson-2",
+        "title": "The Gentle Start-Up",
+        "description": "Learn to initiate difficult conversations in a way that invites cooperation, not defensiveness.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m3-l2-a1",
+            "type": "sort",
+            "title": "Crafting a Gentle Start-Up",
+            "instruction": "Arrange these components into the most effective order for a 'gentle start-up'.",
+            "content": {
+              "items": [
+                "State your positive need.",
+                "Start with 'I' instead of 'You'.",
+                "Describe your feeling about a specific situation.",
+                "Express appreciation or validate their perspective (if appropriate)."
+              ],
+              "correctOrder": [
+                1,
+                2,
+                3,
+                0
+              ],
+              "context": "Starting with an 'I' statement and feeling, then softening with appreciation, followed by a positive need, sets the stage well."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m3-l2-a2",
+            "type": "single_choice",
+            "title": "Good Start vs. Bad Start",
+            "instruction": "Which of the following is an example of a 'gentle start-up'?",
+            "content": {
+              "question": "You need to talk to your partner about feeling overwhelmed by household chores. Which is a gentle start-up?",
+              "options": [
+                "You never help out around here! I'm doing everything!",
+                "I'm so exhausted when I get home. I feel overwhelmed with all the chores, and I was hoping we could talk about how to share the load more evenly.",
+                "Can you explain why you always leave your mess everywhere?",
+                "We need to talk. You're not pulling your weight with chores."
+              ],
+              "correctIndex": 1,
+              "explanation": "The second option uses 'I' statements, expresses a feeling, and states a positive need without blame."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m3-l2-a3",
+            "type": "short_answer",
+            "title": "My Gentle Conversation Starter",
+            "instruction": "Think of one topic you've been wanting to discuss with your partner. Practice crafting a 'gentle start-up' for that conversation.",
+            "content": {
+              "prompt": "Write out your gentle start-up phrase.",
+              "placeholder": "e.g., 'Honey, I've been feeling a bit disconnected lately, and I value our time together. I'd love to find a few minutes to just chat and reconnect this evening.'",
+              "minWords": 20
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-3-lesson-3",
+        "title": "The Speaker-Listener Technique",
+        "description": "Learn a structured communication tool to ensure both partners feel heard and understood.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m3-l3-a1",
+            "type": "carousel",
+            "title": "Rules of the Speaker-Listener",
+            "instruction": "Swipe through these cards to remember the key rules for both the Speaker and the Listener roles.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Rule for Speaker",
+                  "body": "Speak for yourself, use 'I' statements, keep statements brief, stop and let the Listener paraphrase.",
+                  "icon": "lucide-mic"
+                },
+                {
+                  "title": "Rule for Listener",
+                  "body": "Paraphrase what you hear without judging or rebutting, focus on truly understanding their message.",
+                  "icon": "lucide-headphones"
+                },
+                {
+                  "title": "Rule for Both",
+                  "body": "The goal is understanding, not agreement. Don't problem-solve during this exchange.",
+                  "icon": "lucide-users"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m3-l3-a2",
+            "type": "decision_point",
+            "title": "Speaker-Listener in Action",
+            "instruction": "You are the Listener. Your partner says: 'I'm tired of feeling like I have to guess what you want for dinner every night. It makes me feel unappreciated.' How do you respond using the Listener rules?",
+            "content": {
+              "scenario": "Your partner (Speaker) says: 'I'm tired of feeling like I have to guess what you want for dinner every night. It makes me feel unappreciated.'",
+              "choices": [
+                {
+                  "label": "You: 'Oh, so you're feeling frustrated and unappreciated when you have to figure out dinner, and you'd like me to be clearer about my preferences?'",
+                  "outcome": "Excellent! You've paraphrased their core message and feelings clearly, demonstrating understanding.",
+                  "isOptimal": true
+                },
+                {
+                  "label": "You: 'Well, you never ask me! It's not my fault.'",
+                  "outcome": "This is 'turning against' and violates the Listener rule of not rebutting. It will escalate conflict.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: 'Okay, I get it. I'll just pick dinner every night then.'",
+                  "outcome": "This is jumping to problem-solving, which isn't the goal of the Listener role. It also might not be what your partner wants.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: 'Don't be so dramatic. It's just dinner.'",
+                  "outcome": "This invalidates their feelings and is 'turning against', definitely not a good Listener response.",
+                  "isOptimal": false
+                }
+              ]
+            },
+            "tip": "The Listener's job is to reflect, not to agree or solve.",
+            "saveToVault": false
+          },
+          {
+            "id": "m3-l3-a3",
+            "type": "conversation_challenge",
+            "title": "Our Speaker-Listener Session",
+            "instruction": "With your partner, choose a low-stakes issue (e.g., 'What show should we watch tonight?', 'How should we organize the pantry?'). Practice the Speaker-Listener technique for 10 minutes. Record a voice note or type a summary of your experience.",
+            "content": {
+              "prompt": "What was challenging? What felt effective? Did it help you understand each other better?",
+              "maxSeconds": 180
+            },
+            "tip": "Start with easy topics to build confidence before tackling harder ones.",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-4",
+    "title": "Module 4: The Four Horsemen & Antidotes",
+    "subtitle": "Identifying destructive patterns and building healthy alternatives.",
+    "description": "Learn to recognize the four communication patterns that predict divorce (criticism, contempt, defensiveness, stonewalling) and discover powerful antidotes to transform your interactions.",
+    "icon": "lucide-swords",
+    "estimatedMinutes": 60,
+    "sources": [
+      "The Seven Principles for Making Marriage Work",
+      "Fight Right",
+      "The New Marriage Clinic"
+    ],
+    "lessons": [
+      {
+        "id": "module-4-lesson-1",
+        "title": "Meet the Four Horsemen",
+        "description": "Understand the definitions and impact of criticism, contempt, defensiveness, and stonewalling.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m4-l1-a1",
+            "type": "fill_blanks",
+            "title": "Identifying the Horsemen",
+            "instruction": "Fill in the blank with the correct 'Horseman'.",
+            "content": {
+              "text": "Attacking your partner's character is ___. Seeing yourself as the victim and making excuses is ___. Withdrawing emotionally or physically from interaction is ___. And the worst predictor of divorce, expressing disgust or superiority, is ___.",
+              "blanks": [
+                "criticism",
+                "defensiveness",
+                "stonewalling",
+                "contempt"
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m4-l1-a2",
+            "type": "multiple_choice",
+            "title": "Which Horseman is This?",
+            "instruction": "Identify the Horseman being displayed in each scenario. (Select all that apply for each)",
+            "content": {
+              "question": "Which Horseman(en) describes this scenario? Your partner rolls their eyes and sighs loudly when you express a concern.",
+              "options": [
+                "Criticism",
+                "Contempt",
+                "Defensiveness",
+                "Stonewalling"
+              ],
+              "correctIndex": [
+                1
+              ],
+              "explanation": "Eye-rolling and sighing are classic non-verbal signs of contempt \u2013 a feeling of superiority or disgust."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m4-l1-a3",
+            "type": "open_response",
+            "title": "Horsemen in Our Relationship",
+            "instruction": "Reflect on a recent disagreement. Did any of the Four Horsemen show up? Describe the interaction and which Horseman you noticed (in yourself or your partner).",
+            "content": {
+              "prompt": "Be specific about the words or actions you observed.",
+              "placeholder": "I noticed myself getting defensive when my partner brought up the budget, immediately listing reasons why I wasn't at fault.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-4-lesson-2",
+        "title": "Antidote to Criticism & Contempt",
+        "description": "Learn to replace blame with gentle start-ups and appreciation.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m4-l2-a1",
+            "type": "carousel",
+            "title": "Antidotes at a Glance",
+            "instruction": "Swipe through to review the antidotes for Criticism and Contempt.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Antidote to Criticism",
+                  "body": "Use a Gentle Start-Up: 'I feel [emotion] about [specific situation] and I need [positive need].'",
+                  "icon": "lucide-flower"
+                },
+                {
+                  "title": "Antidote to Contempt",
+                  "body": "Build a Culture of Appreciation and Respect. Look for what your partner is doing right and express it often.",
+                  "icon": "lucide-award"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m4-l2-a2",
+            "type": "short_answer",
+            "title": "Transforming Criticism",
+            "instruction": "Rewrite the following critical statement into a 'gentle start-up': 'You always leave your dirty clothes on the floor! You're so inconsiderate!'",
+            "content": {
+              "prompt": "Focus on 'I' statements, your feelings, and a positive need.",
+              "placeholder": "I feel frustrated when I see clothes on the floor because I like our space tidy. Would you be willing to put them in the hamper?",
+              "minWords": 25
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m4-l2-a3",
+            "type": "image_upload",
+            "title": "Appreciation Snapshot",
+            "instruction": "Take a photo of something your partner did recently that you appreciate (even a small gesture). Upload it with a caption explaining why you're grateful.",
+            "content": {
+              "prompt": "Capture a moment or effort you want to acknowledge.",
+              "exampleDescription": "A photo of my partner's neatly made side of the bed, showing their effort to keep things tidy."
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-4-lesson-3",
+        "title": "Antidote to Defensiveness & Stonewalling",
+        "description": "Learn to take responsibility and self-soothe to stay engaged.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m4-l3-a1",
+            "type": "true_false",
+            "title": "Understanding Antidotes",
+            "instruction": "Is the following statement true or false?",
+            "content": {
+              "statement": "The antidote to defensiveness is taking responsibility for at least some part of the problem.",
+              "correct": true,
+              "explanation": "Yes, even if you don't agree with everything, finding common ground or your own contribution can de-escalate."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m4-l3-a2",
+            "type": "decision_point",
+            "title": "Responding to Defensiveness",
+            "instruction": "Your partner says, 'I'm upset you didn't call to say you'd be late.' You're tempted to say, 'I was busy at work! It's not my fault!' What's a better response?",
+            "content": {
+              "scenario": "Your partner: 'I'm upset you didn't call to say you'd be late.' You're busy and stressed. You want to say, 'I was busy at work! It's not my fault!'",
+              "choices": [
+                {
+                  "label": "You: 'You're right, I should have called. I got caught up, but that's no excuse. I'm sorry.'",
+                  "outcome": "Excellent! You're taking responsibility, which is the antidote to defensiveness. This helps lower tension.",
+                  "isOptimal": true
+                },
+                {
+                  "label": "You: 'My day was just as bad, if not worse, than yours. Can we just drop it?'",
+                  "outcome": "This is still defensive and dismissive, turning away from their bid for connection and understanding.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: (Silence, avoiding eye contact) 'Okay.'",
+                  "outcome": "This is stonewalling, which will make your partner feel ignored and unvalued, escalating frustration.",
+                  "isOptimal": false
+                }
+              ]
+            },
+            "tip": "Taking responsibility doesn't mean taking on all the blame, just your piece.",
+            "saveToVault": false
+          },
+          {
+            "id": "m4-l3-a3",
+            "type": "open_response",
+            "title": "My De-escalation Strategy",
+            "instruction": "If you tend to stonewall or get overly defensive, what's one specific self-soothing or de-escalation technique you can commit to practicing during conflict?",
+            "content": {
+              "prompt": "Examples: 'I will take a 20-minute break if I feel overwhelmed,' or 'I will breathe deeply and consciously try to hear my partner before responding.'",
+              "placeholder": "My strategy will be to...",
+              "minWords": 30
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m4-l3-a4",
+            "type": "video_upload",
+            "title": "A Pledge for Connection",
+            "instruction": "Individually, record a short video to your partner affirming your commitment to recognize and address the Four Horsemen in your interactions, and to practice their antidotes. Share one specific antidote you will focus on this week.",
+            "content": {
+              "prompt": "Focus on positive intent and mutual growth.",
+              "maxSeconds": 90
+            },
+            "tip": "This isn't about perfection, but about consistent effort.",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-5",
+    "title": "Module 5: Conflict as Connection",
+    "subtitle": "Transforming disagreements into opportunities for growth and intimacy.",
+    "description": "Shift your perspective on conflict from something to avoid to a powerful pathway for deeper understanding and connection. Learn how to navigate disagreements constructively.",
+    "icon": "lucide-sparkles",
+    "estimatedMinutes": 60,
+    "sources": [
+      "Fight Right",
+      "The New Marriage Clinic",
+      "10 Lessons to Transform Your Marriage",
+      "Us"
+    ],
+    "lessons": [
+      {
+        "id": "module-5-lesson-1",
+        "title": "The Purpose of Conflict",
+        "description": "Understand why conflict is normal, even healthy, and its potential benefits for relationships.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m5-l1-a1",
+            "type": "true_false",
+            "title": "Conflict Myths",
+            "instruction": "Is the following statement about healthy relationships true or false?",
+            "content": {
+              "statement": "Truly loving couples never fight.",
+              "correct": false,
+              "explanation": "False! All couples experience conflict. The difference lies in *how* they fight and repair, not *if* they fight."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m5-l1-a2",
+            "type": "carousel",
+            "title": "Benefits of Healthy Conflict",
+            "instruction": "Swipe through to see how constructively handled conflict can actually strengthen your bond.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Increased Understanding",
+                  "body": "Conflict can reveal hidden needs, dreams, and perspectives, deepening empathy.",
+                  "icon": "lucide-lightbulb"
+                },
+                {
+                  "title": "Stronger Trust",
+                  "body": "Successfully navigating conflict builds confidence in your partner's commitment and ability to repair.",
+                  "icon": "lucide-handshake"
+                },
+                {
+                  "title": "Promotes Growth",
+                  "body": "Addressing issues helps individuals and the relationship evolve, preventing stagnation.",
+                  "icon": "lucide-leaf"
+                },
+                {
+                  "title": "Ventilation & Release",
+                  "body": "Constructive conflict allows for healthy expression of frustrations, preventing resentment buildup.",
+                  "icon": "lucide-wind"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m5-l1-a3",
+            "type": "open_response",
+            "title": "My Conflict Mindset",
+            "instruction": "How do you typically view conflict in your relationship? Do you see it as a threat, an opportunity, or something else? How might changing this perception impact your interactions?",
+            "content": {
+              "prompt": "Share your current mindset and an ideal future mindset.",
+              "placeholder": "I usually dread conflict and try to avoid it, seeing it as dangerous. I want to start seeing it as a chance to understand my partner better...",
+              "minWords": 40
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-5-lesson-2",
+        "title": "The Power of Compromise & Humor",
+        "description": "Discover tools to de-escalate tension and find common ground during disagreements.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m5-l2-a1",
+            "type": "sort",
+            "title": "Elements of Effective Compromise",
+            "instruction": "Order these steps for reaching a fair and satisfying compromise.",
+            "content": {
+              "items": [
+                "Brainstorm solutions together.",
+                "Identify each person's core needs and non-negotiables.",
+                "Listen to fully understand each other's perspectives.",
+                "Agree on a solution that meets most needs and respects boundaries.",
+                "Revisit the compromise later if it's not working."
+              ],
+              "correctOrder": [
+                2,
+                1,
+                0,
+                3,
+                4
+              ],
+              "context": "Understanding before solving is key for compromise."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m5-l2-a2",
+            "type": "decision_point",
+            "title": "Humor as a De-escalator",
+            "instruction": "During a heated discussion about finances, you notice both of you are getting tense. What's a healthy use of humor here?",
+            "content": {
+              "scenario": "You and your partner are discussing money. The tension is rising, voices are getting louder, and you both look stressed.",
+              "choices": [
+                {
+                  "label": "You: 'Honestly, this is so stressful, I feel like we should just buy a lottery ticket and hope for the best!' (with a genuine smile)",
+                  "outcome": "Optimal. This lightens the mood, acknowledges the stress without dismissing the issue, and can provide a brief, healthy break.",
+                  "isOptimal": true
+                },
+                {
+                  "label": "You: (Sarcastic tone) 'Oh, I'm sure your plan to live off ramen noodles will be just perfectly fine.'",
+                  "outcome": "This is contempt. Sarcasm in conflict is often hurtful and escalates tension, rather than de-escalating.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: (Trying to be funny but it lands flat) 'Are we fighting or are we just aggressively planning our retirement?'",
+                  "outcome": "While the intention might be good, if it doesn't land well, it can still be perceived as dismissive or inappropriate, especially if your partner isn't ready.",
+                  "isOptimal": false
+                }
+              ]
+            },
+            "tip": "Humor should be used with warmth and in a way that doesn't minimize feelings.",
+            "saveToVault": false
+          },
+          {
+            "id": "m5-l2-a3",
+            "type": "short_answer",
+            "title": "Our Compromise Area",
+            "instruction": "Identify one area in your relationship where you frequently have disagreements. How could you apply the principles of compromise to find a win-win solution?",
+            "content": {
+              "prompt": "What's the issue, and what's one possible compromise approach?",
+              "placeholder": "Issue: Dividing household chores. Compromise: Each of us picks 2-3 chores that we genuinely don't mind doing, then we split the rest.",
+              "minWords": 30
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-5-lesson-3",
+        "title": "Physiological Self-Soothing and Time-Outs",
+        "description": "Learn to manage physiological flooding during conflict to prevent destructive patterns.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m5-l3-a1",
+            "type": "true_false",
+            "title": "Flooding Facts",
+            "instruction": "Is the following statement true or false?",
+            "content": {
+              "statement": "When your heart rate goes over 100 bpm during conflict, it's harder to think rationally and calmly.",
+              "correct": true,
+              "explanation": "This is known as 'physiological flooding.' When flooded, our bodies go into fight-or-flight, making it difficult to process information or respond constructively."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m5-l3-a2",
+            "type": "carousel",
+            "title": "Signs of Flooding",
+            "instruction": "Swipe through physical and emotional signs that you or your partner might be 'flooded' during an argument.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Physical Signs",
+                  "body": "Increased heart rate, rapid breathing, muscle tension, sweating, feeling light-headed.",
+                  "icon": "lucide-thermometer"
+                },
+                {
+                  "title": "Emotional Signs",
+                  "body": "Feeling overwhelmed, intense anger, feeling numb, inability to think clearly, tunnel vision.",
+                  "icon": "lucide-cloud-rain"
+                },
+                {
+                  "title": "Behavioral Signs",
+                  "body": "Desire to flee, aggression, stonewalling, inability to listen.",
+                  "icon": "lucide-zap"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m5-l3-a3",
+            "type": "short_answer",
+            "title": "Our Time-Out Plan",
+            "instruction": "Discuss with your partner a clear, mutually agreed-upon plan for taking a 'time-out' during conflict. What's your signal? How long will it be? What will you do during it? When will you reconnect?",
+            "content": {
+              "prompt": "Outline your agreed-upon time-out strategy.",
+              "placeholder": "Our signal is 'I need a break.' We'll take 20 minutes to do separate calming activities and reconvene to talk when we are both ready.",
+              "minWords": 40
+            },
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-6",
+    "title": "Module 6: Trust & Commitment",
+    "subtitle": "Building unshakeable reliability and shared future-making.",
+    "description": "Explore the layers of trust and commitment, from basic reliability to deep dedication. Learn how to foster these foundational elements that allow your relationship to thrive.",
+    "icon": "lucide-key-round",
+    "estimatedMinutes": 60,
+    "sources": [
+      "The State of Affairs",
+      "The Relationship Cure",
+      "Couples Therapy Workbook for Healing"
+    ],
+    "lessons": [
+      {
+        "id": "module-6-lesson-1",
+        "title": "The Anatomy of Trust",
+        "description": "Deconstruct what trust means in a relationship and how it's built and eroded.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m6-l1-a1",
+            "type": "true_false",
+            "title": "Trust Fundamentals",
+            "instruction": "Is the following statement true or false?",
+            "content": {
+              "statement": "Trust is primarily about whether your partner tells the truth, and little else.",
+              "correct": false,
+              "explanation": "False! While honesty is crucial, trust also encompasses reliability, fidelity, emotional safety, shared loyalty, and benevolence."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m6-l1-a2",
+            "type": "sort",
+            "title": "Building Blocks of Trust",
+            "instruction": "Order these elements by how foundational you believe they are to building trust, from most to least foundational.",
+            "content": {
+              "items": [
+                "Following through on promises.",
+                "Being emotionally vulnerable with each other.",
+                "Consistently showing up during difficult times.",
+                "Sharing your deepest dreams and fears.",
+                "Protecting each other's reputation in public."
+              ],
+              "correctOrder": [
+                0,
+                2,
+                1,
+                4,
+                3
+              ],
+              "context": "Reliability and showing up are often the first pillars, leading to deeper emotional trust."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m6-l1-a3",
+            "type": "open_response",
+            "title": "Trust in Our Relationship",
+            "instruction": "What aspect of trust (e.g., reliability, emotional safety, honesty, fidelity) feels strongest in your relationship, and which area could benefit from more focus?",
+            "content": {
+              "prompt": "Provide examples for both the strong area and the area for growth.",
+              "placeholder": "Our reliability on daily tasks is strong, but sometimes I feel we could improve emotional safety, particularly when discussing sensitive topics.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-6-lesson-2",
+        "title": "Commitment: More Than Just a Promise",
+        "description": "Understand the two types of commitment and how to nurture a deep dedication to your relationship.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m6-l2-a1",
+            "type": "comparison",
+            "title": "Constraint vs. Dedication Commitment",
+            "instruction": "Compare and contrast two types of commitment.",
+            "content": {
+              "itemA": {
+                "title": "Constraint Commitment",
+                "points": [
+                  "Staying due to external factors (e.g., finances, kids, social pressure).",
+                  "High costs of leaving the relationship.",
+                  "Can foster resentment if not balanced by dedication."
+                ]
+              },
+              "itemB": {
+                "title": "Dedication Commitment",
+                "points": [
+                  "Staying due to attraction to the partner, relationship satisfaction, and shared vision.",
+                  "Active desire to be in the relationship.",
+                  "Fosters mutual growth and happiness."
+                ]
+              },
+              "reflection": "Which type of commitment feels more dominant in your relationship, and in what ways does it manifest?"
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m6-l2-a2",
+            "type": "multiple_choice",
+            "title": "Signs of Strong Dedication",
+            "instruction": "Which of the following behaviors indicate strong dedication commitment? (Select all that apply)",
+            "content": {
+              "question": "Which of these are signs of strong dedication commitment?",
+              "options": [
+                "Prioritizing your partner's well-being.",
+                "Regularly planning for your shared future.",
+                "Speaking positively about your partner to others.",
+                "Avoiding difficult conversations to maintain peace.",
+                "Actively working through challenges when they arise."
+              ],
+              "correctIndex": [
+                0,
+                1,
+                2,
+                4
+              ],
+              "explanation": "Avoiding difficult conversations often signals a lack of dedication to growth, not strong commitment."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m6-l2-a3",
+            "type": "short_answer",
+            "title": "Our Collective Future",
+            "instruction": "Describe one shared dream or goal you and your partner have for your future together. How does working towards this goal reinforce your commitment?",
+            "content": {
+              "prompt": "What future vision excites both of you?",
+              "placeholder": "Our dream is to save enough to buy a small cabin in the mountains. Every time we discuss our savings or look at cabins online, it strengthens our bond and dedication to our shared life.",
+              "minWords": 30
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-6-lesson-3",
+        "title": "Nurturing Trust and Deepening Commitment",
+        "description": "Practical strategies to continuously build and reaffirm trust and dedication in your relationship.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m6-l3-a1",
+            "type": "sort",
+            "title": "Practices for Trust & Commitment",
+            "instruction": "Order these practices from most effective to least effective for building trust and commitment.",
+            "content": {
+              "items": [
+                "Keeping promises, big and small.",
+                "Sharing vulnerable thoughts and feelings.",
+                "Making time for regular quality interactions.",
+                "Defending your partner when they are not present.",
+                "Being transparent about finances and communication with others."
+              ],
+              "correctOrder": [
+                0,
+                4,
+                2,
+                1,
+                3
+              ],
+              "context": "Consistency and transparency are high impact. Protecting reputation and vulnerability, while important, often build on these first."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m6-l3-a2",
+            "type": "video_upload",
+            "title": "Commitment Affirmation",
+            "instruction": "Record a short video message for your partner expressing one specific way they've earned your trust or reinforced your commitment to them, and one way you commit to reciprocating this week.",
+            "content": {
+              "prompt": "Share a heartfelt appreciation and a forward-looking promise.",
+              "maxSeconds": 90
+            },
+            "tip": "Focus on genuine feelings and specific actions.",
+            "saveToVault": true
+          },
+          {
+            "id": "m6-l3-a3",
+            "type": "survey",
+            "title": "Our Trust & Commitment Check-in",
+            "instruction": "Rate the current state of trust and commitment in your relationship.",
+            "content": {
+              "question": "On a scale of 1-10, how strong do you feel the overall trust and commitment are in your relationship today?",
+              "scale": {
+                "min": 1,
+                "max": 10,
+                "minLabel": "Very low / Shaky",
+                "maxLabel": "Very high / Unshakeable"
+              }
+            },
+            "saveToVault": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-7",
+    "title": "Module 7: Intimacy & Desire",
+    "subtitle": "Rekindling passion, physical connection, and emotional closeness.",
+    "description": "Explore the multifaceted aspects of intimacy and sexual desire. Learn to communicate your needs, overcome obstacles, and cultivate a vibrant, fulfilling physical and emotional connection.",
+    "icon": "lucide-droplet",
+    "estimatedMinutes": 60,
+    "sources": [
+      "Come As You Are",
+      "Mating in Captivity",
+      "Eight Dates",
+      "Love Sense"
+    ],
+    "lessons": [
+      {
+        "id": "module-7-lesson-1",
+        "title": "Redefining Intimacy",
+        "description": "Beyond sex: explore the various forms of intimacy that nourish a relationship.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m7-l1-a1",
+            "type": "multiple_choice",
+            "title": "Forms of Intimacy",
+            "instruction": "Which of these are examples of different forms of intimacy in a relationship? (Select all that apply)",
+            "content": {
+              "question": "Intimacy can take many forms. Which of these are true?",
+              "options": [
+                "Emotional intimacy (sharing feelings).",
+                "Physical intimacy (touch, affection, sex).",
+                "Intellectual intimacy (deep conversations, shared ideas).",
+                "Experiential intimacy (shared activities, adventures).",
+                "Spiritual intimacy (shared values, beliefs, meaning)."
+              ],
+              "correctIndex": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "explanation": "Intimacy is a broad concept, encompassing many ways we connect deeply with another person."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m7-l1-a2",
+            "type": "carousel",
+            "title": "The Intimacy Wheel",
+            "instruction": "Swipe to explore various aspects of intimacy.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Emotional Intimacy",
+                  "body": "Feeling understood and accepting each other's vulnerabilities.",
+                  "icon": "lucide-hand-heart"
+                },
+                {
+                  "title": "Physical Intimacy",
+                  "body": "Non-sexual touch, affection, and sexual connection.",
+                  "icon": "lucide-heart-crack"
+                },
+                {
+                  "title": "Affectionate Intimacy",
+                  "body": "Hugs, kisses, holding hands \u2013 small gestures of love.",
+                  "icon": "lucide-gem"
+                },
+                {
+                  "title": "Recreational Intimacy",
+                  "body": "Shared hobbies, playtime, having fun together.",
+                  "icon": "lucide-gamepad"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m7-l1-a3",
+            "type": "open_response",
+            "title": "Our Intimacy Landscape",
+            "instruction": "In which forms of intimacy do you and your partner excel? Which forms feel less developed or could use more attention? What's one small step you could take to enhance a less developed area?",
+            "content": {
+              "prompt": "Reflect on specific examples for each part of the question.",
+              "placeholder": "We're strong in recreational intimacy, always having fun on hikes. Emotional intimacy is sometimes a struggle for me to initiate, so I'll try to share one vulnerable feeling daily.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-7-lesson-2",
+        "title": "Understanding Desire & Eros",
+        "description": "Explore the nuances of sexual desire and how to keep it alive in long-term relationships.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m7-l2-a1",
+            "type": "true_false",
+            "title": "Desire Debunked",
+            "instruction": "Is the following statement true or false?",
+            "content": {
+              "statement": "There is only one 'normal' way for sexual desire to manifest (e.g., spontaneous desire).",
+              "correct": false,
+              "explanation": "False! Many people experience 'responsive desire,' where arousal precedes desire, often stemming from connection or initiation. There's no single 'normal'."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m7-l2-a2",
+            "type": "comparison",
+            "title": "Spontaneous vs. Responsive Desire",
+            "instruction": "Compare these two common forms of sexual desire.",
+            "content": {
+              "itemA": {
+                "title": "Spontaneous Desire",
+                "points": [
+                  "Desire arises 'out of the blue' before any sexual activity.",
+                  "Often driven by hormones, novelty, or anticipation.",
+                  "Commonly portrayed in media; seen as 'ideal' but not universal."
+                ]
+              },
+              "itemB": {
+                "title": "Responsive Desire",
+                "points": [
+                  "Desire emerges in response to sexual stimuli or connection.",
+                  "Often driven by intimacy, playful touch, or a sense of safety.",
+                  "Very common, especially in long-term relationships and for women."
+                ]
+              },
+              "reflection": "Which type of desire do you (and your partner) experience more often? How might understanding this impact your approach to intimacy?"
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m7-l2-a3",
+            "type": "open_response",
+            "title": "My Map of Desire",
+            "instruction": "What are some of the 'on-ramps' (things that increase desire) and 'off-ramps' (things that decrease desire) for *you*? Share 2-3 of each, being honest and specific.",
+            "content": {
+              "prompt": "Think broadly: physical, emotional, environmental factors.",
+              "placeholder": "On-ramps: feeling rested, deep conversation, quiet time together. Off-ramps: stress from work, feeling criticized, overtiredness.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-7-lesson-3",
+        "title": "Cultivating Passion & Playfulness",
+        "description": "Learn to communicate sexual needs and desires, and integrate playful curiosity into your intimate life.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m7-l3-a1",
+            "type": "sort",
+            "title": "Elements of Sexual Communication",
+            "instruction": "Arrange these aspects of sexual communication from most important to least important for a fulfilling sex life.",
+            "content": {
+              "items": [
+                "Expressing desires and preferences clearly.",
+                "Listening non-judgmentally to your partner's wants.",
+                "Feeling safe to be vulnerable about your body and fantasies.",
+                "Giving and receiving honest feedback (gently).",
+                "Initiating intimacy in ways that are inviting, not demanding."
+              ],
+              "correctOrder": [
+                2,
+                1,
+                0,
+                4,
+                3
+              ],
+              "context": "Safety and non-judgmental listening are foundational, allowing for open expression."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m7-l3-a2",
+            "type": "short_answer",
+            "title": "Our Intimacy 'Wish List'",
+            "instruction": "What's one new thing (could be big or small, non-sexual or sexual) you'd like to try or incorporate into your intimate connection with your partner? How will you gently propose it?",
+            "content": {
+              "prompt": "Focus on a positive addition or exploration.",
+              "placeholder": "I'd like to try having a dedicated 'date night' just for intimate conversation weekly. I'll propose it by saying, 'I've been missing our deep talks, would you be open to a weekly 'connection corner' date?'",
+              "minWords": 30
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m7-l3-a3",
+            "type": "video_upload",
+            "title": "Invitation to Play",
+            "instruction": "Record a short video message for your partner, inviting them to engage in one small, playful, or intimate act this week. It could be a simple touch, a shared laugh, or a suggestion for a date.",
+            "content": {
+              "prompt": "Make it light-hearted and invitational.",
+              "maxSeconds": 60
+            },
+            "tip": "Keep it low-pressure and fun!",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-8",
+    "title": "Module 8: Dreams Within Conflict",
+    "subtitle": "Uncovering the deeper meanings behind your perpetual problems.",
+    "description": "Dive beneath the surface of 'unresolvable' conflicts to discover the hidden dreams, values, and aspirations at their core. Transform gridlocked issues by understanding what truly matters to each of you.",
+    "icon": "lucide-moon",
+    "estimatedMinutes": 60,
+    "sources": [
+      "The New Marriage Clinic",
+      "10 Lessons to Transform Your Marriage",
+      "Fight Right"
+    ],
+    "lessons": [
+      {
+        "id": "module-8-lesson-1",
+        "title": "Perpetual vs. Solvable Problems",
+        "description": "Distinguish between conflicts that can be solved and those tied to deeper, ongoing differences.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m8-l1-a1",
+            "type": "true_false",
+            "title": "Conflict Categories",
+            "instruction": "Is the following statement about relationship problems true or false?",
+            "content": {
+              "statement": "Most relationship conflicts (around 69%) are perpetual, meaning they will likely never be fully resolved.",
+              "correct": true,
+              "explanation": "Yes, Gottman research indicates that perpetual problems are common and stem from fundamental personality differences, values, or needs."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m8-l1-a2",
+            "type": "single_choice",
+            "title": "Spot the Perpetual Problem",
+            "instruction": "Which of these scenarios is most likely a 'perpetual problem'?",
+            "content": {
+              "question": "Which scenario is most likely a 'perpetual problem'?",
+              "options": [
+                "Deciding where to go for dinner tonight.",
+                "One partner is a neat freak, the other is messy, leading to ongoing tension about household tidiness.",
+                "Forgetting to pick up milk from the store.",
+                "A disagreement about how to spend the upcoming Saturday afternoon."
+              ],
+              "correctIndex": 1,
+              "explanation": "Different preferences for tidiness often stem from deep-seated personality traits and values, making it a perpetual area of difference."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m8-l1-a3",
+            "type": "open_response",
+            "title": "Our Perpetual Loop",
+            "instruction": "Identify one 'perpetual problem' in your relationship \u2013 an issue you tend to argue about repeatedly without full resolution. Describe the problem and how it typically plays out.",
+            "content": {
+              "prompt": "What's the recurring conflict, and what's the usual dance around it?",
+              "placeholder": "We constantly argue about punctuality. I'm always early/on time, and my partner is always late. It leads to frustration and resentment on my side, and my partner feeling nagged.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-8-lesson-2",
+        "title": "Uncovering Underlying Dreams",
+        "description": "Learn to dig deeper into conflict to discover the core values and dreams at play.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m8-l2-a1",
+            "type": "fill_blanks",
+            "title": "The Core of Perpetual Problems",
+            "instruction": "Fill in the blanks: Behind every perpetual conflict lies an ___ dream, value, or unmet ___.",
+            "content": {
+              "text": "Behind every perpetual conflict lies an ___ dream, value, or unmet ___.",
+              "blanks": [
+                "unspoken",
+                "need"
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m8-l2-a2",
+            "type": "carousel",
+            "title": "Common Dreams Behind Conflicts",
+            "instruction": "Swipe through to see common deeper meanings behind everyday arguments.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Mess vs. Neatness",
+                  "body": "Dream of peace, order, self-expression, freedom, or respect.",
+                  "icon": "lucide-boxes"
+                },
+                {
+                  "title": "Money & Spending",
+                  "body": "Dream of security, freedom, generosity, power, belonging, or pleasure.",
+                  "icon": "lucide-wallet"
+                },
+                {
+                  "title": "Sex & Affection",
+                  "body": "Dream of acceptance, security, control, adventure, comfort, or desire.",
+                  "icon": "lucide-heart-handshake"
+                },
+                {
+                  "title": "Time Together/Apart",
+                  "body": "Dream of connection, independence, adventure, safety, or rest.",
+                  "icon": "lucide-calendar"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m8-l2-a3",
+            "type": "open_response",
+            "title": "My Hidden Dream",
+            "instruction": "Consider the 'perpetual problem' you identified. What deeper value, dream, or unmet need might be fueling *your* side of the conflict?",
+            "content": {
+              "prompt": "Connect your feelings and actions in the conflict to a core desire.",
+              "placeholder": "Regarding punctuality, my need to be early is tied to a dream of feeling respected and being responsible, and a fear of being seen as unreliable.",
+              "minWords": 40
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-8-lesson-3",
+        "title": "Making Peace with Perpetual Problems",
+        "description": "Learn to dialogue about perpetual problems with respect and humor, even if they never fully disappear.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m8-l3-a1",
+            "type": "sort",
+            "title": "Steps to Dialogue about Dreams",
+            "instruction": "Order these steps for effectively discussing the dreams within a conflict.",
+            "content": {
+              "items": [
+                "Validate your partner's dream and experience, even if you don't agree.",
+                "State your own dream/need related to the issue.",
+                "Identify the perpetual problem you'll discuss.",
+                "Brainstorm ways to honor both dreams, even small ones.",
+                "Explain the personal history or meaning behind your dream."
+              ],
+              "correctOrder": [
+                2,
+                1,
+                4,
+                0,
+                3
+              ],
+              "context": "Starting with the problem, then each partner expressing their dream (and why it matters), then validating, then brainstorming is a good flow."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m8-l3-a2",
+            "type": "decision_point",
+            "title": "Honoring a Dream",
+            "instruction": "Your partner's dream (behind their desire for a pristine garden) is to create a beautiful, nurturing home sanctuary. You have limited time. How do you honor their dream?",
+            "content": {
+              "scenario": "Your partner wants a perfect garden, driven by a dream of creating a beautiful, peaceful home sanctuary. You have very little time for gardening.",
+              "choices": [
+                {
+                  "label": "You: 'That's a beautiful dream, and I can see how important that sanctuary feeling is to you. What's one small thing I could do each week to contribute to that, even if it's not gardening?'",
+                  "outcome": "Optimal. You're validating their dream, acknowledging their ideal, and offering a realistic contribution that respects your time constraints.",
+                  "isOptimal": true
+                },
+                {
+                  "label": "You: 'Honestly, I just don't have time for gardening. You'll have to do it yourself or hire someone.'",
+                  "outcome": "This dismisses their dream, which can feel invalidating and lead to resentment, even if the practical solution is needed.",
+                  "isOptimal": false
+                },
+                {
+                  "label": "You: (Sighs) 'Fine, I'll pull weeds for an hour, but I'm not happy about it.'",
+                  "outcome": "While you're doing the task, your attitude communicates a lack of understanding or respect for their deeper dream, potentially poisoning the gesture.",
+                  "isOptimal": false
+                }
+              ]
+            },
+            "tip": "Honor the *dream* first, then discuss the practicalities.",
+            "saveToVault": false
+          },
+          {
+            "id": "m8-l3-a3",
+            "type": "video_upload",
+            "title": "Dialogue About a Dream",
+            "instruction": "With your partner, choose one well-established 'perpetual problem.' Engage in a 10-15 minute discussion where you *both* aim to uncover and understand the deeper dreams/values behind each other's stance. Record a voice note or simple video recap of your insights.",
+            "content": {
+              "prompt": "What did you learn about your partner's deeper dream? What did they learn about yours? How did it feel?",
+              "maxSeconds": 180
+            },
+            "tip": "Remember Rule #1: Understanding, not solving, is the goal here.",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-9",
+    "title": "Module 9: Repair & Recovery",
+    "subtitle": "Mending hurts, rebuilding trust, and moving forward after conflict.",
+    "description": "Learn the essential skills of relationship repair - how to apologize effectively, accept apologies, and find pathways to forgiveness, ensuring conflicts strengthen your bond instead of weakening it.",
+    "icon": "lucide-scissors",
+    "estimatedMinutes": 60,
+    "sources": [
+      "The Relationship Cure",
+      "Couples Therapy Workbook",
+      "Helping Couples on the Brink",
+      "On Grief and Grieving"
+    ],
+    "lessons": [
+      {
+        "id": "module-9-lesson-1",
+        "title": "The Power of Repair Attempts",
+        "description": "Recognize efforts to de-escalate and reconnect during or after conflict.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m9-l1-a1",
+            "type": "true_false",
+            "title": "Repair Basics",
+            "instruction": "Is the following statement about repair attempts true or false?",
+            "content": {
+              "statement": "Only the person who caused the hurt can initiate a repair attempt.",
+              "correct": false,
+              "explanation": "False! Anyone can initiate a repair attempt. Often, simply interrupting negativity with a positive gesture can make a huge difference, regardless of who 'started it'."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m9-l1-a2",
+            "type": "multiple_choice",
+            "title": "Spot the Repair Attempt!",
+            "instruction": "Which of these are examples of effective repair attempts? (Select all that apply)",
+            "content": {
+              "question": "Which of these might be a repair attempt during or after a heated discussion?",
+              "options": [
+                "Saying 'I'm sorry, I worded that badly. Can I try again?'",
+                "Offering a gentle touch or hug amidst tension.",
+                "Making a silly face or joke (if appropriate for your couple).",
+                "Suggesting, 'Let's take a break and talk about this later.'",
+                "Sarcastically saying, 'Are we done with your lecture yet?'"
+              ],
+              "correctIndex": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "explanation": "Sarcasm usually escalates, not repairs. The others are attempts to de-escalate, apologize, or take a constructive pause."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m9-l1-a3",
+            "type": "open_response",
+            "title": "Our Repair Moves",
+            "instruction": "What are some successful repair attempts (verbal or non-verbal) you or your partner have made in the past that helped de-escalate or reconnect? What made them effective?",
+            "content": {
+              "prompt": "Share specific examples and analyze their impact.",
+              "placeholder": "My partner often puts their hand on my arm during an argument, which immediately reminds me that they still care. It helps me calm down and listen.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-9-lesson-2",
+        "title": "The Art of Apology and Forgiveness",
+        "description": "Learn the components of a truly effective apology and the process of genuine forgiveness.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m9-l2-a1",
+            "type": "sort",
+            "title": "Components of a True Apology",
+            "instruction": "Order these elements to craft a comprehensive and sincere apology.",
+            "content": {
+              "items": [
+                "Expressing remorse ('I'm sorry').",
+                "Acknowledging the hurt your actions caused.",
+                "Stating your understanding of their perspective.",
+                "Taking responsibility for your part.",
+                "Making a plan to prevent recurrence (if possible)."
+              ],
+              "correctOrder": [
+                0,
+                3,
+                1,
+                2,
+                4
+              ],
+              "context": "Apologizing, taking responsibility, acknowledging impact, showing understanding, and future intent create a full apology."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m9-l2-a2",
+            "type": "single_choice",
+            "title": "Forgiveness Misconceptions",
+            "instruction": "Which of these statements about forgiveness is true?",
+            "content": {
+              "question": "Which statement best describes true forgiveness?",
+              "options": [
+                "Forgiveness means forgetting what happened.",
+                "Forgiveness means excusing the hurtful behavior.",
+                "Forgiveness is a process of letting go of resentment and choosing peace, not necessarily reconciliation.",
+                "Forgiveness is always a one-time event that immediately heals everything."
+              ],
+              "correctIndex": 2,
+              "explanation": "Forgiveness is a choice for personal healing; it doesn't erase memory, condone behavior, or always lead to renewed trust instantly."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m9-l2-a3",
+            "type": "open_response",
+            "title": "My Practice Apology",
+            "instruction": "Think of a time you want to apologize to your partner (or recently did). Write out a truly comprehensive apology using the elements you just learned.",
+            "content": {
+              "prompt": "Practice crafting an apology that covers remorse, responsibility, understanding, and future action.",
+              "placeholder": "Honey, I'm really sorry for snapping at you earlier. I was stressed, but that's no excuse for how I spoke. I know it made you feel dismissed and hurt, and I regret making you feel that way. I'll work on pausing before reacting next time.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-9-lesson-3",
+        "title": "Grieving, Healing, and Moving Forward",
+        "description": "Address betrayals and deep hurts by understanding the stages of grief and pathways to healing.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m9-l3-a1",
+            "type": "carousel",
+            "title": "Stages of Grieving a Hurt",
+            "instruction": "Swipe through the adapted stages of grief (Kubler-Ross) as they might apply to processing deep relational hurts or betrayals.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Denial/Shock",
+                  "body": "Difficulty believing what happened, feeling numb.",
+                  "icon": "lucide-skull"
+                },
+                {
+                  "title": "Anger",
+                  "body": "Outrage, blame, frustration about the injury.",
+                  "icon": "lucide-angry"
+                },
+                {
+                  "title": "Bargaining",
+                  "body": "Seeking explanations, 'if only' thoughts, trying to undo damage.",
+                  "icon": "lucide-scale"
+                },
+                {
+                  "title": "Depression/Sadness",
+                  "body": "Profound sadness, isolation, lethargy.",
+                  "icon": "lucide-cloud-rain"
+                },
+                {
+                  "title": "Acceptance/Reconstruction",
+                  "body": "Coming to terms with reality and beginning to rebuild, either individually or relationally.",
+                  "icon": "lucide-sparkles"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m9-l3-a2",
+            "type": "short_answer",
+            "title": "Rebuilding Trust Action",
+            "instruction": "If trust has been broken, what's one concrete action you can take (or commit to continuing) to actively rebuild trust with your partner?",
+            "content": {
+              "prompt": "Focus on consistency, transparency, or specific behaviors.",
+              "placeholder": "I will consistently follow through on commitments, no matter how small, to demonstrate reliability.",
+              "minWords": 20
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m9-l3-a3",
+            "type": "video_upload",
+            "title": "A Pledge for Healing",
+            "instruction": "Record a brief video message for your partner acknowledging the importance of repair and committing to a 'no stonewalling' zone during conflicts, and a commitment to actively seeking understanding and apology.",
+            "content": {
+              "prompt": "Focus on the positive intention for healing.",
+              "maxSeconds": 90
+            },
+            "tip": "Even small steps toward repair build significant goodwill.",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "module-10",
+    "title": "Module 10: Building Your Shared Meaning",
+    "subtitle": "Creating a rich, meaningful, and deeply connected life together.",
+    "description": "Discover the profound ways couples create shared meaning through rituals, roles, goals, and values. This module helps you craft a unique, resilient, and deeply satisfying partnership.",
+    "icon": "lucide-tree-pine",
+    "estimatedMinutes": 60,
+    "sources": [
+      "The New Marriage Clinic",
+      "The Relationship Cure",
+      "Eight Dates",
+      "Us"
+    ],
+    "lessons": [
+      {
+        "id": "module-10-lesson-1",
+        "title": "The Architecture of Shared Meaning",
+        "description": "Explore how couples build a unique internal world through shared values, rituals, and symbols.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m10-l1-a1",
+            "type": "multiple_choice",
+            "title": "Elements of Shared Meaning",
+            "instruction": "Which of these contribute to a couple's system of shared meaning? (Select all that apply)",
+            "content": {
+              "question": "Shared meaning is built through...",
+              "options": [
+                "Creating personal rituals of connection.",
+                "Agreeing on fundamental life values and goals.",
+                "Making inside jokes and special terms of endearment.",
+                "Discussing your life philosophies and beliefs.",
+                "Sharing distinct roles within the household or family."
+              ],
+              "correctIndex": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "explanation": "All these elements contribute to a couple's unique culture and sense of shared purpose."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m10-l1-a2",
+            "type": "carousel",
+            "title": "Manifestations of Shared Meaning",
+            "instruction": "Swipe through examples of how shared meaning shows up in daily life.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Rituals of Connection",
+                  "body": "Daily morning coffee together, weekly date night, birthday traditions.",
+                  "icon": "lucide-campfire"
+                },
+                {
+                  "title": "Shared Goals",
+                  "body": "Saving for a home, raising kids a certain way, traveling the world.",
+                  "icon": "lucide-target"
+                },
+                {
+                  "title": "Shared Values",
+                  "body": "Emphasis on family, community, personal growth, adventure, security.",
+                  "icon": "lucide-diamond"
+                },
+                {
+                  "title": "Roles & Narratives",
+                  "body": "Our story of how we met, who takes which responsibilities, how we overcome challenges.",
+                  "icon": "lucide-scroll"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m10-l1-a3",
+            "type": "open_response",
+            "title": "Our Unique Couple Culture",
+            "instruction": "What are some existing rituals, inside jokes, or shared values that already define your unique 'couple culture'? How do these contribute to your sense of belonging together?",
+            "content": {
+              "prompt": "Share specific examples.",
+              "placeholder": "Our Sunday morning pancake ritual is sacred \u2013 it feels like 'us.' Our shared value for adventure means we're always planning next trips, strengthening our bond.",
+              "minWords": 50
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-10-lesson-2",
+        "title": "Crafting Your Shared Future",
+        "description": "Align individual dreams and aspirations to build a compelling joint vision for your life together.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m10-l2-a1",
+            "type": "sort",
+            "title": "Steps to Shared Vision",
+            "instruction": "Order these steps for collaboratively creating a shared future vision.",
+            "content": {
+              "items": [
+                "Identify individual dreams and aspirations.",
+                "Discuss overlapping and converging dreams.",
+                "Find ways to support unique individual dreams.",
+                "Create a compelling narrative of your shared future.",
+                "Brainstorm concrete steps to move towards the shared vision."
+              ],
+              "correctOrder": [
+                0,
+                2,
+                1,
+                4,
+                3
+              ],
+              "context": "Understanding individual dreams first, then finding overlaps and support, then making a plan, and finally narrating the vision."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m10-l2-a2",
+            "type": "image_upload",
+            "title": "Our Vision Board Element",
+            "instruction": "Find or create an image that represents a shared dream or aspiration you have for your future together (e.g., travel, home, family, adventure). Upload it and describe its significance.",
+            "content": {
+              "prompt": "Visualize your shared future.",
+              "exampleDescription": "A photo of a cozy fireplace to represent our dream of a warm, inviting home together."
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m10-l2-a3",
+            "type": "open_response",
+            "title": "Our Future Narrative",
+            "instruction": "As a couple, imagine yourselves 5, 10, or even 20 years from now. Write a short narrative together describing your ideal life: what you're doing, what your relationship feels like, what you've achieved.",
+            "content": {
+              "prompt": "Collaboratively paint a picture of your ideal shared future.",
+              "placeholder": "In 10 years, we are living in a house by the lake, enjoying quiet mornings with coffee, still laughing at each other's jokes. We've supported each other's passions and raised happy, independent kids. Our love feels even deeper and more resilient...",
+              "minWords": 100
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-10-lesson-3",
+        "title": "Rituals of Connection for Life",
+        "description": "Establish sustainable rituals that continually reinforce your shared meaning and emotional connection.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m10-l3-a1",
+            "type": "true_false",
+            "title": "Ritual Reinforcement",
+            "instruction": "Is the following statement about rituals true or false?",
+            "content": {
+              "statement": "Rituals must be grand and elaborate to be effective in building shared meaning.",
+              "correct": false,
+              "explanation": "False! Simple, consistent rituals (like a daily check-in or shared meal) are often the most powerful because they are sustainable and create predictable pockets of connection."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m10-l3-a2",
+            "type": "short_answer",
+            "title": "New Ritual Brainstorm",
+            "instruction": "What's one *new* small ritual you and your partner could create or enhance this week to reinforce your shared meaning or connection?",
+            "content": {
+              "prompt": "Think about daily, weekly, or special occasion rituals.",
+              "placeholder": "We'll start a 'gratitude ritual' before bed, sharing one thing we're grateful for about each other or our day.",
+              "minWords": 20
+            },
+            "saveToVault": true
+          },
+          {
+            "id": "m10-l3-a3",
+            "type": "video_upload",
+            "title": "Our Signal Connect Course Conclusion",
+            "instruction": "Record a final video together, sharing your biggest takeaway from the 'Signal Couples Connect Course' and one actionable commitment you'll both make to continue building your shared meaning and connection.",
+            "content": {
+              "prompt": "What's the one thing you'll carry forward? What's your shared commitment?",
+              "maxSeconds": 180
+            },
+            "tip": "Celebrate your journey and look forward to your continuing growth!",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  }
+];
