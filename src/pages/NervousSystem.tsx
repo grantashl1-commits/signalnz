@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain } from "lucide-react";
+import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain, SlidersHorizontal, ChevronUp, X } from "lucide-react";
 import SleepTimer from "@/components/practice/SleepTimer";
 import { useSleepMusic } from "@/hooks/useSleepMusic";
 import { GatedFeature } from "@/components/FeatureGate";
@@ -87,6 +87,142 @@ function filterByDuration<T extends { durationSec: number }>(items: T[], filter:
   if (filter === "short") return items.filter(s => s.durationSec <= 300);
   if (filter === "medium") return items.filter(s => s.durationSec > 300 && s.durationSec <= 900);
   return items.filter(s => s.durationSec > 900);
+}
+
+// ── Category filter ──
+type CategoryFilter = "all" | "meditation" | "inner-work" | "reading" | "phase-practice";
+const CATEGORY_OPTIONS: { value: CategoryFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "meditation", label: "Meditation" },
+  { value: "inner-work", label: "Inner Work" },
+  { value: "reading", label: "Reading" },
+  { value: "phase-practice", label: "Phase Practice" },
+];
+
+// ── Intensity filter ──
+type IntensityFilter = "all" | "beginner" | "intermediate" | "advanced";
+const INTENSITY_OPTIONS: { value: IntensityFilter; label: string; desc: string }[] = [
+  { value: "all", label: "All levels", desc: "" },
+  { value: "beginner", label: "Beginner", desc: "Body scans, gratitude, breath awareness" },
+  { value: "intermediate", label: "Intermediate", desc: "Self-compassion, inner child, somatic" },
+  { value: "advanced", label: "Advanced", desc: "Parts work, IFS, shadow, deep inner work" },
+];
+
+// Tags that indicate advanced practices
+const ADVANCED_TAGS = ["parts-work", "inner-child", "shadow", "deep-work", "ifs", "reparenting", "psychology"];
+const INTERMEDIATE_TAGS = ["self-compassion", "inner-work", "emotional-processing", "somatic", "healing", "boundaries"];
+
+function getIntensity(script: MeditationScript): IntensityFilter {
+  const tags = script.tags;
+  if (tags.some(t => ADVANCED_TAGS.includes(t))) return "advanced";
+  if (script.category === "inner-work" || tags.some(t => INTERMEDIATE_TAGS.includes(t))) return "intermediate";
+  return "beginner";
+}
+
+// ── Expandable Filter Panel ──
+function FilterPanel({
+  durationFilter, setDurationFilter,
+  categoryFilter, setCategoryFilter,
+  intensityFilter, setIntensityFilter,
+  activeCount,
+}: {
+  durationFilter: DurationFilter; setDurationFilter: (f: DurationFilter) => void;
+  categoryFilter: CategoryFilter; setCategoryFilter: (f: CategoryFilter) => void;
+  intensityFilter: IntensityFilter; setIntensityFilter: (f: IntensityFilter) => void;
+  activeCount: number;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const clearAll = () => {
+    setDurationFilter("all");
+    setCategoryFilter("all");
+    setIntensityFilter("all");
+  };
+
+  return (
+    <div className="pb-3">
+      <button onClick={() => { haptic("light"); setOpen(!open); }}
+        className="flex items-center gap-2 font-body text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <SlidersHorizontal className="h-3.5 w-3.5" />
+        <span>Filters</span>
+        {activeCount > 0 && (
+          <span className="flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold">{activeCount}</span>
+        )}
+        {open ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className="pt-3 space-y-4">
+              {/* Duration */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-body text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Duration</p>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
+                    <button key={f} onClick={() => { haptic("light"); setDurationFilter(f); }}
+                      className={`rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                        durationFilter === f ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      }`}>
+                      {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category */}
+              <div>
+                <p className="font-body text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Category</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {CATEGORY_OPTIONS.map((opt) => (
+                    <button key={opt.value} onClick={() => { haptic("light"); setCategoryFilter(opt.value); }}
+                      className={`rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                        categoryFilter === opt.value ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      }`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Intensity */}
+              <div>
+                <p className="font-body text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Intensity</p>
+                <div className="space-y-1.5">
+                  {INTENSITY_OPTIONS.map((opt) => (
+                    <button key={opt.value} onClick={() => { haptic("light"); setIntensityFilter(opt.value); }}
+                      className={`w-full text-left rounded-xl px-3 py-2 font-body text-[11px] transition-colors flex items-center justify-between ${
+                        intensityFilter === opt.value ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                      }`}>
+                      <div>
+                        <span className="font-medium">{opt.label}</span>
+                        {opt.desc && <span className={`block text-[10px] mt-0.5 ${intensityFilter === opt.value ? "text-primary-foreground/70" : "text-muted-foreground/60"}`}>{opt.desc}</span>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {activeCount > 0 && (
+                <button onClick={() => { haptic("light"); clearAll(); }}
+                  className="flex items-center gap-1 font-body text-[11px] text-primary hover:text-primary/80 transition-colors">
+                  <X className="h-3 w-3" /> Clear all filters
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 // ── Completion tracking hook ──
@@ -188,6 +324,13 @@ function MeditationCard({
         <div className="flex items-center gap-2.5 flex-wrap">
           <span className="font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium bg-primary/10 text-primary">
             {script.category.replace("-", " ")}
+          </span>
+          <span className={`font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium ${
+            getIntensity(script) === "beginner" ? "bg-emerald-500/10 text-emerald-700" :
+            getIntensity(script) === "intermediate" ? "bg-amber-500/10 text-amber-700" :
+            "bg-rose-500/10 text-rose-700"
+          }`}>
+            {getIntensity(script)}
           </span>
           <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
             <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
@@ -452,15 +595,18 @@ export default function NervousSystemPage() {
     return new Date().getHours() >= 20 ? "sleep" : "meditations";
   });
   const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [intensityFilter, setIntensityFilter] = useState<IntensityFilter>("all");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(null);
   const [showFasciaRelease, setShowFasciaRelease] = useState(false);
+  const activeFilterCount = (durationFilter !== "all" ? 1 : 0) + (categoryFilter !== "all" ? 1 : 0) + (intensityFilter !== "all" ? 1 : 0);
   const { currentPhase } = useCycle();
   const { completed, streak, logCompletion } = useMindfulnessLogs();
   const sleepMusic = useSleepMusic();
 
   // Meditation scripts for the meditations tab
   const meditationScripts = useMemo(() => {
-    const all = [
+    let all: MeditationScript[] = [
       ...MEDITATION_SCRIPTS,
       ...GEN_MEDITATION_SCRIPTS,
       ...READING_SCRIPTS,
@@ -471,8 +617,16 @@ export default function NervousSystemPage() {
       ...GROUNDING_PRACTICES,
       ...PRESENCE_PRACTICES,
     ];
+    // Category filter
+    if (categoryFilter !== "all") {
+      all = all.filter(s => s.category === categoryFilter);
+    }
+    // Intensity filter
+    if (intensityFilter !== "all") {
+      all = all.filter(s => getIntensity(s) === intensityFilter);
+    }
     return filterByDuration(all, durationFilter);
-  }, [durationFilter]);
+  }, [durationFilter, categoryFilter, intensityFilter]);
 
   // Sleep scripts
   const sleepScripts = useMemo(() => {
@@ -531,7 +685,7 @@ export default function NervousSystemPage() {
                 return (
                   <button
                     key={t.id}
-                    onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); }}
+                    onClick={() => { haptic("light"); setTab(t.id); setDurationFilter("all"); setCategoryFilter("all"); setIntensityFilter("all"); }}
                     className={`touch-tab flex-1 py-2.5 rounded-xl font-display text-[13px] transition-all flex items-center justify-center gap-1 whitespace-nowrap min-w-0 px-2 ${
                       tab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground italic"
                     }`}
@@ -544,27 +698,36 @@ export default function NervousSystemPage() {
             </div>
           </div>
 
-          {/* Duration filter */}
-          <div className="flex gap-2 pb-3 overflow-x-auto scrollbar-hide">
-            {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
-              <button
-                key={f}
-                onClick={() => setDurationFilter(f)}
-                className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
-                  durationFilter === f
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
-              </button>
-            ))}
-          </div>
+          {/* Filters — expandable panel for meditations, simple duration pills for other tabs */}
+          {tab === "meditations" ? (
+            <FilterPanel
+              durationFilter={durationFilter} setDurationFilter={setDurationFilter}
+              categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
+              intensityFilter={intensityFilter} setIntensityFilter={setIntensityFilter}
+              activeCount={activeFilterCount}
+            />
+          ) : (
+            <div className="flex gap-2 pb-3 overflow-x-auto scrollbar-hide">
+              {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setDurationFilter(f)}
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                    durationFilter === f
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Content */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={`${tab}-${durationFilter}`}
+              key={`${tab}-${durationFilter}-${categoryFilter}-${intensityFilter}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
@@ -572,6 +735,13 @@ export default function NervousSystemPage() {
               className="space-y-8 md:space-y-10"
             >
               {/* Meditations tab */}
+              {tab === "meditations" && meditationScripts.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="font-body text-sm text-muted-foreground">No practices match your filters</p>
+                  <button onClick={() => { setDurationFilter("all"); setCategoryFilter("all"); setIntensityFilter("all"); }}
+                    className="font-body text-xs text-primary mt-2 hover:underline">Clear filters</button>
+                </div>
+              )}
               {tab === "meditations" && meditationScripts.map((s, i) => (
                 <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} />
               ))}
