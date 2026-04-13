@@ -325,6 +325,13 @@ function MeditationCard({
           <span className="font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium bg-primary/10 text-primary">
             {script.category.replace("-", " ")}
           </span>
+          <span className={`font-body text-[10px] px-2.5 py-0.5 rounded-full font-medium ${
+            getIntensity(script) === "beginner" ? "bg-emerald-500/10 text-emerald-700" :
+            getIntensity(script) === "intermediate" ? "bg-amber-500/10 text-amber-700" :
+            "bg-rose-500/10 text-rose-700"
+          }`}>
+            {getIntensity(script)}
+          </span>
           <span className="font-body text-[11px] text-muted-foreground/70 flex items-center gap-1">
             <Clock className="h-3 w-3" /> {formatMeditationDuration(script.durationSec)}
           </span>
