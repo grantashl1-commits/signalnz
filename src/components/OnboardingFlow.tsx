@@ -500,6 +500,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
       } catch { /* ignore */ }
 
       localStorage.setItem("signal_onboarding_complete", "true");
+      localStorage.setItem("cycleModeSelected", "true");
       trackEvent("onboarding_completed", {
         goals_count: movementGoals.length,
         cycle_status: cycleStatus,
