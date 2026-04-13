@@ -119,15 +119,36 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
     const nutritionPlan = plans?.find((p) => p.plan_type === "nutrition");
     if (nutritionPlan?.plan_data) {
       const planData = nutritionPlan.plan_data as any;
-      // Try to find today's meals in the plan data
       const todayMeals = extractTodayMeals(planData, dayOfWeek);
       if (todayMeals) {
         eat = todayMeals;
         hasPersonalisation = true;
       }
     }
+    // Fallback: check localStorage meal plan (from onboarding auto-gen)
     if (!eat) {
-      // Personalise fallback with dietary preferences
+      try {
+        const stored = localStorage.getItem("signal_meal_plan");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed?.plan && Array.isArray(parsed.plan)) {
+            const dayIndex = new Date().getDay(); // 0=Sun
+            const dayPlan = parsed.plan[dayIndex % parsed.plan.length];
+            if (dayPlan) {
+              const parts: string[] = [];
+              if (dayPlan.breakfast?.name) parts.push(dayPlan.breakfast.name);
+              if (dayPlan.lunch?.name) parts.push(dayPlan.lunch.name);
+              if (dayPlan.dinner?.name) parts.push(dayPlan.dinner.name);
+              if (parts.length > 0) {
+                eat = parts.join(" · ");
+                hasPersonalisation = true;
+              }
+            }
+          }
+        }
+      } catch { /* ignore */ }
+    }
+    if (!eat) {
       const prefs = dietaryPreferences;
       if (prefs?.length) {
         eat = `${fallback.eat} Your ${prefs[0].toLowerCase()} preferences are factored in.`;
