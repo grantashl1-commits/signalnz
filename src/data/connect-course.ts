@@ -2428,4 +2428,377 @@ export const CONNECT_COURSE: CourseModule[] = [
       }
     ]
   }
+  ,
+  {
+    "id": "module-12",
+    "title": "Module 12: The Man's Guide — Understanding & Loving Her Better",
+    "subtitle": "Science-backed secrets from the Love Lab for becoming the partner she needs.",
+    "description": "Based on John Gottman's 40 years of relationship research, this module is designed specifically for men who want to understand what women truly want, master the skill of emotional attunement, fight smarter, and build lasting trust. Straight-talking, research-backed, and immediately actionable.",
+    "icon": "lucide-shield",
+    "estimatedMinutes": 75,
+    "sources": ["The Man's Guide to Women — John Gottman, PhD, Julie Schwartz Gottman, PhD, Douglas Abrams & Rachel Carlton Abrams, MD"],
+    "lessons": [
+      {
+        "id": "module-12-lesson-1",
+        "title": "What Women Really Want: Trustworthiness",
+        "description": "The #1 thing every woman is looking for — and it's not what most men think.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m12-l1-a1",
+            "type": "carousel",
+            "title": "The Hero vs. The Zero",
+            "instruction": "Swipe through to understand the core research findings from 40 years of studying 3,000+ couples in Gottman's Love Lab.",
+            "content": {
+              "cards": [
+                {
+                  "title": "Trustworthiness Is #1",
+                  "body": "The number one thing women look for in a man isn't abs, money, or looks. It's trustworthiness: being who you say you are and doing what you say you'll do. Reliability. Accountability. Showing up as yourself.",
+                  "icon": "lucide-shield-check"
+                },
+                {
+                  "title": "Her Two Complaints",
+                  "body": "Women's top two complaints: 'He is never there for me' and 'There isn't enough intimacy and connection.' These women feel alone even when in a relationship.",
+                  "icon": "lucide-heart-crack"
+                },
+                {
+                  "title": "His Two Complaints",
+                  "body": "Men's top two complaints: 'There's too much fighting' and 'There's not enough sex.' Here's the breakthrough — these are causally related to hers. Fix hers and yours get fixed automatically.",
+                  "icon": "lucide-zap"
+                },
+                {
+                  "title": "The Key Variable: You",
+                  "body": "Research shows that what men do in a relationship is, by a large margin, the crucial factor that separates a great relationship from a failed one. You have the power to make or break it.",
+                  "icon": "lucide-key"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l1-a2",
+            "type": "single_choice",
+            "title": "Hero or Zero Self-Check",
+            "instruction": "Be honest — which pattern sounds most like you right now?",
+            "content": {
+              "question": "When your partner is upset about something, what's your default response?",
+              "options": [
+                "I try to fix the problem immediately — offer solutions, suggest she look at it differently, or minimise it.",
+                "I get defensive — I feel like she's attacking me so I counter-attack or shut down.",
+                "I try to listen and understand what she's feeling before jumping to solutions.",
+                "I check out — go on my phone, change the subject, or leave the room."
+              ],
+              "correctIndex": 2,
+              "explanation": "Option 3 is the attunement response. The other three — fixing, defending, and withdrawing — are the most common patterns Gottman found in men whose relationships failed. The good news: attunement is a learnable skill."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l1-a3",
+            "type": "open_response",
+            "title": "Your Trustworthiness Audit",
+            "instruction": "Reflect honestly: In what ways are you showing up as trustworthy — and where are the gaps? Think about reliability, emotional availability, and consistency.",
+            "content": {
+              "prompt": "Consider: Do you follow through on what you say? Are you emotionally available when she needs you? Do you show up as your authentic self?",
+              "placeholder": "The areas where I'm strong are… The areas where I could improve are…",
+              "minWords": 25
+            },
+            "tip": "Gottman: 'Trustworthiness isn't just about fidelity. It's about being who you say you are and doing what you say you'll do.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-12-lesson-2",
+        "title": "A-TT-U-N-E: The Skill That Changes Everything",
+        "description": "Learn the five-step attunement framework that Gottman's research proved leads to less fighting and more intimacy.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m12-l2-a1",
+            "type": "carousel",
+            "title": "The A-TT-U-N-E Framework",
+            "instruction": "Master this five-step process. It's the single most important relationship skill from 40 years of research.",
+            "content": {
+              "cards": [
+                {
+                  "title": "A — Attend",
+                  "body": "Give undivided attention. Turn off the game, put away the phone. Show through your actions that you care about what she's saying. Even if it seems trivial to you, it's important to her — and it's a bid for connection. Attention equals affection.",
+                  "icon": "lucide-eye"
+                },
+                {
+                  "title": "TT — Turn Toward",
+                  "body": "Physically turn toward her. Women equate intimacy with face-to-face, eye-to-eye conversation. Men feel connected side-by-side — but unless you're about to take down a buffalo together, turn toward her while you talk.",
+                  "icon": "lucide-rotate-ccw"
+                },
+                {
+                  "title": "U — Understand",
+                  "body": "Ask questions. Don't offer solutions, don't distract, don't minimise, don't joke. Seek to understand WHY this matters to her. It's not about saying 'I understand' — it's about showing genuine interest.",
+                  "icon": "lucide-search"
+                },
+                {
+                  "title": "N — Nondefensively Listen",
+                  "body": "Don't react, don't counter-attack, don't justify. Any feeling is fact to the person feeling it. You have two ears and one mouth — use them in that ratio. Men who could calm themselves down had the great relationships.",
+                  "icon": "lucide-ear"
+                },
+                {
+                  "title": "E — Empathise",
+                  "body": "Understanding is intellectual. Empathy is emotional. Try to FEEL how she feels. Let her know her feelings make sense. The emotional brain calms down when it feels connected and not alone. Show compassion — it's not about being right.",
+                  "icon": "lucide-heart-handshake"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l2-a2",
+            "type": "comparison",
+            "title": "Zero vs. Hero Responses",
+            "instruction": "Compare these two approaches. Notice how the Hero response uses ATTUNE while the Zero response shuts down connection.",
+            "content": {
+              "pairs": [
+                {
+                  "left": { "label": "Zero", "text": "'You're overreacting. It's not that big a deal. Just let it go.'" },
+                  "right": { "label": "Hero", "text": "'That sounds really frustrating. Tell me more about what happened. I want to understand why this is upsetting you.'" }
+                },
+                {
+                  "left": { "label": "Zero", "text": "'Well maybe if you hadn't done X, Y wouldn't have happened. Here's what you should do…'" },
+                  "right": { "label": "Hero", "text": "'I can see you're really hurt by this. What do you need from me right now? I'm here.'" }
+                },
+                {
+                  "left": { "label": "Zero", "text": "*Keeps eyes on phone* 'Uh-huh. Yeah. That sucks.'" },
+                  "right": { "label": "Hero", "text": "*Puts phone down, turns toward her, makes eye contact* 'Hey — I can see something's bothering you. Talk to me.'" }
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l2-a3",
+            "type": "open_response",
+            "title": "Your ATTUNE Practice",
+            "instruction": "Think of a recent moment where your partner was upset and you didn't attune well. Rewrite how you could have responded using A-TT-U-N-E.",
+            "content": {
+              "prompt": "Describe the situation, what you actually did, and what an ATTUNE response would have looked like.",
+              "placeholder": "The situation was… What I did was… Using ATTUNE, I could have…",
+              "minWords": 30
+            },
+            "tip": "Gottman: 'Listening is sexier than talking. Asking questions is sexier than broadcasting. Being genuinely interested IN HER is much more important than trying to be interesting TO HER.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-12-lesson-3",
+        "title": "Understanding Her Brain & Her Emotions",
+        "description": "Why she experiences emotions differently — and why that's an opportunity, not a problem.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m12-l3-a1",
+            "type": "carousel",
+            "title": "The Hopscotch Lesson",
+            "instruction": "This story from the book perfectly illustrates the fundamental difference between how men and women relate to emotions.",
+            "content": {
+              "cards": [
+                {
+                  "title": "The Boys' Game",
+                  "body": "When 8-year-old Brian cries because he never gets the ball, Gabe stops the game, gives Brian the ball, and play resumes. Problem solved. Emotions dispensed with. For boys, emotions are an interruption to the fun — like an unwelcome leech.",
+                  "icon": "lucide-trophy"
+                },
+                {
+                  "title": "The Girls' Game",
+                  "body": "When Kathy cries during hopscotch, Lisa asks why. They talk about their friendship, plan a sleepover, decide to marry brothers. The game is forgotten — because the game was never the point. Emotions ARE the intimacy.",
+                  "icon": "lucide-heart"
+                },
+                {
+                  "title": "The Insight for Men",
+                  "body": "When you ask 'What is she trying to accomplish by being emotional?' — that's a hopelessly male question. For women, there is no POINT to emotions. They just are. They're opportunities for connection. Stop trying to fix them.",
+                  "icon": "lucide-lightbulb"
+                },
+                {
+                  "title": "Fear Is Different Too",
+                  "body": "When startled, men feel anger. Women feel fear. And women are more easily fear-conditioned — one bad experience creates future fear. Your touch (when she's happy with you) can shut down her brain's fear response entirely. Hold her hand.",
+                  "icon": "lucide-hand-metal"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l3-a2",
+            "type": "true_false",
+            "title": "Myths vs. Research",
+            "instruction": "Test your assumptions against what Gottman's Love Lab actually found.",
+            "content": {
+              "statements": [
+                { "text": "Talking about negative emotions makes them worse.", "answer": false },
+                { "text": "For women, there are no truly 'negative' emotions — all emotions are natural.", "answer": true },
+                { "text": "The best thing to do when she's upset is give her space and let her calm down.", "answer": false },
+                { "text": "Holding her hand when she's afraid can literally shut down the fear response in her brain.", "answer": true },
+                { "text": "Men and women have the same startle response but different emotional reactions to it.", "answer": true },
+                { "text": "Trying to fix her problem is the fastest way to help her feel better.", "answer": false }
+              ],
+              "explanation": "The research is clear: emotions are opportunities for intimacy, not problems to solve. When you attune instead of fix, she feels safe — and that changes everything."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l3-a3",
+            "type": "open_response",
+            "title": "Reframing Emotions",
+            "instruction": "Think about a time her emotions made you uncomfortable or frustrated. How could you see that moment as an opportunity for connection instead of a problem to solve?",
+            "content": {
+              "prompt": "Describe the moment, what you felt, and how you could reframe it using the hopscotch insight.",
+              "placeholder": "She was emotional about… I felt… If I saw it as an opportunity for connection, I would have…",
+              "minWords": 25
+            },
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-12-lesson-4",
+        "title": "Learn to Fight Like a Hero",
+        "description": "The Four Horsemen that destroy relationships — and their research-proven antidotes.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m12-l4-a1",
+            "type": "carousel",
+            "title": "The Four Horsemen of the Apocalypse",
+            "instruction": "Gottman can predict divorce with 94% accuracy by looking for these four toxic patterns. Learn them — and their antidotes.",
+            "content": {
+              "cards": [
+                {
+                  "title": "1. Criticism → Gentle Start-Up",
+                  "body": "Criticism attacks her character: 'You ALWAYS…' 'You NEVER…' The antidote is a gentle start-up: Talk about YOUR feelings and YOUR needs. 'I feel X when Y happens. I need Z.'",
+                  "icon": "lucide-message-circle"
+                },
+                {
+                  "title": "2. Contempt → Appreciation",
+                  "body": "Contempt is the #1 predictor of divorce: eye-rolling, sarcasm, mocking, name-calling. It communicates disgust. The antidote is building a culture of appreciation — expressing what you admire and respect about her, daily.",
+                  "icon": "lucide-sparkles"
+                },
+                {
+                  "title": "3. Defensiveness → Ownership",
+                  "body": "Defensiveness says 'the problem isn't me, it's you.' It escalates every conflict. The antidote is accepting responsibility for even a small part of the problem: 'You're right, I could have handled that better.'",
+                  "icon": "lucide-shield"
+                },
+                {
+                  "title": "4. Stonewalling → Self-Soothing",
+                  "body": "Stonewalling is shutting down, checking out, going silent. It happens when you're physiologically flooded. The antidote: say 'I need 20 minutes to calm down, and then I'll come back to this conversation.' Then actually come back.",
+                  "icon": "lucide-pause"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l4-a2",
+            "type": "sort",
+            "title": "Horseman or Antidote?",
+            "instruction": "Drag each statement into the correct category.",
+            "content": {
+              "categories": ["Horseman (Toxic)", "Antidote (Healthy)"],
+              "items": [
+                { "text": "'You never listen to me. You're so selfish.'", "correctCategory": "Horseman (Toxic)" },
+                { "text": "'I feel unheard when I'm talking and you're on your phone. Can we put devices away during dinner?'", "correctCategory": "Antidote (Healthy)" },
+                { "text": "*Rolls eyes* 'Oh yeah, GREAT idea.'", "correctCategory": "Horseman (Toxic)" },
+                { "text": "'I really appreciate how hard you work. I noticed you did the dishes — thank you.'", "correctCategory": "Antidote (Healthy)" },
+                { "text": "'That's not MY fault. YOU'RE the one who forgot.'", "correctCategory": "Horseman (Toxic)" },
+                { "text": "'You're right, I dropped the ball on that. I'm sorry.'", "correctCategory": "Antidote (Healthy)" },
+                { "text": "*Goes silent, walks out of room, refuses to engage*", "correctCategory": "Horseman (Toxic)" },
+                { "text": "'I'm getting flooded. I need 20 minutes to cool down, then let's talk.'", "correctCategory": "Antidote (Healthy)" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l4-a3",
+            "type": "open_response",
+            "title": "Your Horseman Confession",
+            "instruction": "Which of the Four Horsemen do you use most? Describe a recent example and write the antidote version of what you could have said instead.",
+            "content": {
+              "prompt": "Be honest: Which horseman is your go-to? Describe a recent situation and rewrite your response using the antidote.",
+              "placeholder": "My default horseman is… A recent example was… The antidote response would be…",
+              "minWords": 30
+            },
+            "tip": "Gottman: 'The masters of relationships scan for what's right and express appreciation. The disasters scan for what's wrong and express criticism.'",
+            "saveToVault": true
+          }
+        ]
+      },
+      {
+        "id": "module-12-lesson-5",
+        "title": "Being Her Hero for a Lifetime",
+        "description": "The daily habits and mindset shifts that separate men in thriving relationships from those who end up alone.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m12-l5-a1",
+            "type": "carousel",
+            "title": "The 5:1 Magic Ratio",
+            "instruction": "Learn the daily habits that Gottman's research found in every happy, lasting relationship.",
+            "content": {
+              "cards": [
+                {
+                  "title": "5 to 1",
+                  "body": "Happy couples have 5 positive interactions for every 1 negative interaction. Unhappy couples are closer to 1:1. Every day, you're making deposits or withdrawals from the emotional bank account. Make sure you're net positive.",
+                  "icon": "lucide-scale"
+                },
+                {
+                  "title": "Turn Toward, Not Away",
+                  "body": "Throughout the day, she makes small bids for connection: 'Look at this,' 'How was your day?', a touch on the arm. Masters turn toward these bids 86% of the time. Disasters turn toward only 33%. These micro-moments build or erode trust.",
+                  "icon": "lucide-hand-helping"
+                },
+                {
+                  "title": "Know Her World",
+                  "body": "Masters know their partner's inner world: her dreams, her worries, her favourite things, her stressors. They update this knowledge constantly. Ask about her day — and actually remember the details.",
+                  "icon": "lucide-globe"
+                },
+                {
+                  "title": "Admiration Is Daily",
+                  "body": "Men in great relationships express admiration, fondness, and appreciation every single day. Not grand gestures — small, specific, genuine ones. 'I love how you handled that.' 'You looked beautiful today.' 'I'm proud of you.'",
+                  "icon": "lucide-star"
+                }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l5-a2",
+            "type": "true_false",
+            "title": "Relationship Myths vs. Reality",
+            "instruction": "Test what you think you know against what the research actually shows.",
+            "content": {
+              "statements": [
+                { "text": "Happy couples never fight.", "answer": false },
+                { "text": "Married men have more and better sex than single men.", "answer": true },
+                { "text": "Grand romantic gestures matter more than daily small ones.", "answer": false },
+                { "text": "Men in happy relationships live longer and earn more money.", "answer": true },
+                { "text": "If you have to 'work at' a relationship, it means it's not right.", "answer": false },
+                { "text": "The way a conflict STARTS predicts how it will END 96% of the time.", "answer": true }
+              ],
+              "explanation": "The research is unequivocal: relationships require consistent, daily investment. The payoff — in health, wealth, sex, and happiness — is enormous."
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m12-l5-a3",
+            "type": "open_response",
+            "title": "Your Hero Action Plan",
+            "instruction": "Based on everything in this module, identify 3 specific, actionable things you commit to doing differently starting this week.",
+            "content": {
+              "prompt": "Think about: attunement, the Four Horsemen, the 5:1 ratio, turning toward bids, and daily appreciation. What will you change?",
+              "placeholder": "1. I will… 2. I will… 3. I will…",
+              "minWords": 30
+            },
+            "tip": "Gottman: 'Men, you have the power to make or break a relationship. The bar stools of the world are filled with lonely men sitting in the rubble of their failed one-liners. We don't want that fate for you.'",
+            "saveToVault": true
+          }
+        ]
+      }
+    ]
+  }
 ];
