@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, Brain } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, Brain, Languages } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AttachmentQuiz from "@/components/connect/AttachmentQuiz";
+import LoveLanguagesQuiz from "@/components/connect/LoveLanguagesQuiz";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
@@ -29,6 +30,7 @@ export default function Connect() {
   const navigate = useNavigate();
   const { hasFeatureAccess } = useFeatureGate();
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showLoveQuiz, setShowLoveQuiz] = useState(false);
   const [view, setView] = useState<ConnectView>("intro");
   const [joinCode, setJoinCode] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
