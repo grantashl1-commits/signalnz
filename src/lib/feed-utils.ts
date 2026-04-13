@@ -40,6 +40,8 @@ export function pickDailyPosts<T extends FeedPostSource>(
   for (const post of shuffled) {
     if (picked.length >= targetCount) break;
 
+    if (excludeIds && excludeIds.has((post as any).id)) continue;
+
     const bookKey = post.book_title_author.toLowerCase().trim();
     if (usedBooks.has(bookKey)) continue;
 
