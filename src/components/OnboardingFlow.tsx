@@ -1017,12 +1017,54 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 ))}
               </div>
 
-              <NextButton onClick={next} disabled={!fitnessLevel} label="Generate my plan" />
+              <NextButton onClick={next} disabled={!fitnessLevel} />
             </motion.div>
           )}
 
-          {/* ───── Step 6: Generating Plan ───── */}
+          {/* ───── Step 6: Equipment ───── */}
           {step === 6 && (
+            <motion.div key="equipment" {...slide} className="space-y-6 pt-8">
+              <StepHeading title="What equipment do you have?" sub="We'll tailor your workouts to match." />
+
+              <div className="space-y-3">
+                {EQUIPMENT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => { haptic("light"); setEquipmentPref(opt.id); }}
+                    className={cn(
+                      "w-full rounded-2xl p-5 text-left transition-all border",
+                      equipmentPref === opt.id
+                        ? "bg-white border-white shadow-lg"
+                        : "bg-white/10 border-white/15 hover:bg-white/15"
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className={cn(
+                          "font-display text-lg font-bold",
+                          equipmentPref === opt.id ? "text-primary" : "text-white"
+                        )}>{opt.label}</p>
+                        <p className={cn(
+                          "font-body text-sm mt-1",
+                          equipmentPref === opt.id ? "text-primary/70" : "text-white/60"
+                        )}>{opt.desc}</p>
+                      </div>
+                      {equipmentPref === opt.id && (
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <NextButton onClick={next} disabled={!equipmentPref} label="Generate my plan" />
+            </motion.div>
+          )}
+
+          {/* ───── Step 7: Generating Plan ───── */}
+          {step === 7 && (
             <motion.div
               key="generating"
               initial={{ opacity: 0 }}
