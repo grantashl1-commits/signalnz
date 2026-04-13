@@ -27,6 +27,8 @@ function hashPin(pin: string): string {
 export default function Connect() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { hasFeatureAccess } = useFeatureGate();
+  const [showQuiz, setShowQuiz] = useState(false);
   const [view, setView] = useState<ConnectView>("intro");
   const [joinCode, setJoinCode] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
