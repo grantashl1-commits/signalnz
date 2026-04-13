@@ -72,7 +72,7 @@ export default function ConnectCoursePage() {
     const activity = selectedLesson.activities.find(a => a.id === activityId);
 
     // Upsert progress
-    await supabase.from("connect_course_progress").upsert({
+    await (supabase.from("connect_course_progress" as any) as any).upsert({
       user_id: user.id,
       module_id: selectedModule.id,
       lesson_id: selectedLesson.id,
@@ -84,7 +84,7 @@ export default function ConnectCoursePage() {
 
     // Save to vault if flagged
     if (saveToVault) {
-      await supabase.from("connect_course_vault").insert({
+      await (supabase.from("connect_course_vault" as any) as any).insert({
         user_id: user.id,
         module_id: selectedModule.id,
         lesson_id: selectedLesson.id,
