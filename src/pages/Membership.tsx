@@ -322,6 +322,44 @@ export default function MembershipPage() {
         </button>
       </div>
 
+      {/* Coupon code */}
+      <div className="flex justify-center">
+        {!showCoupon ? (
+          <button
+            onClick={() => { haptic("light"); setShowCoupon(true); }}
+            className="inline-flex items-center gap-1.5 font-body text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Tag className="h-3.5 w-3.5" /> Have a promo code?
+          </button>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="flex items-center gap-2 max-w-xs w-full"
+          >
+            <div className="relative flex-1">
+              <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                placeholder="Enter promo code"
+                className="w-full rounded-xl border border-border bg-background pl-9 pr-3 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            </div>
+            {couponCode && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="rounded-full bg-primary/10 px-2.5 py-1 font-body text-[11px] font-semibold text-primary"
+              >
+                Applied ✓
+              </motion.span>
+            )}
+          </motion.div>
+        )}
+      </div>
+
       {/* Tier cards */}
       <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
         <div className="flex gap-4 md:gap-5 md:grid md:grid-cols-4 min-w-max md:min-w-0">
