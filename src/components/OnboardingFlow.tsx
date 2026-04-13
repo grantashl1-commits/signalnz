@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import SignalLogo from "@/components/SignalLogo";
+import iconCream from "@/assets/icon-cream.png";
 import { setLastPeriodStart } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -387,6 +387,50 @@ export default function OnboardingFlow({ onComplete }: Props) {
             meal_prep_day: mealPrepDay,
             cycle_mode: cycleStatus ?? "cycling",
           } as any, { onConflict: "user_id" });
+
+        // ── Auto-generate first training plan in background ──
+        const lastWorkoutMap: Record<string, string> = {
+          beginner: "never",
+          intermediate: "this-month",
+          advanced: "this-week",
+        };
+        const goalMap: Record<string, string> = {
+          strength: "stronger",
+          fat_loss: "lose-weight",
+          cardio: "lean",
+          stress: "lean",
+          consistency: "stronger",
+          mobility: "lean",
+          event: "stronger",
+          recovery: "lean",
+        };
+
+        supabase.functions.invoke("generate-plan", {
+          body: {
+            cyclePhase: cycleStatus === "cycling" && lastPeriodDate
+              ? undefined // let the edge function determine from profile
+              : "follicular",
+            answers: {
+              height: heightCm || 165,
+              weight: weightKg || 65,
+              age: dob ? calcAge(dob) : 30,
+              goal: goalMap[movementGoals[0]] || "stronger",
+              goalWeight: goalWeightKg,
+              weeksPlan: 4,
+              daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
+              lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
+              equipment: "home-some",
+            },
+          },
+        }).then((resp) => {
+          if (resp.error) {
+            console.warn("Auto training plan generation failed:", resp.error);
+          } else {
+            console.log("Auto training plan generated successfully");
+          }
+        }).catch((err) => {
+          console.warn("Auto training plan generation failed:", err);
+        });
       }
 
       // Keep localStorage fallbacks for existing consumers
@@ -464,7 +508,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {step === 0 && (
             <motion.div key="welcome" {...slide} className="text-center space-y-8 pt-4">
               <div className="flex justify-center">
-                <SignalLogo size={64} className="text-white" />
+                <img src={iconCream} alt="Signal" className="w-16 h-16" />
               </div>
               <div className="space-y-3">
                 <h1 className="font-display text-4xl font-bold text-white tracking-wide uppercase">Signal</h1>
@@ -636,7 +680,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
           {/* ───── Step 2: Your Cycle ───── */}
           {step === 2 && (
-            <motion.div key="cycle" {...slide} className="space-y-6 pt-8">
+            <motion.div key="cycle" {...slide} className="space-y-6 pt-8 pb-8">
               <StepHeading title="Your cycle" sub="This shapes your training and nutrition recommendations each week." />
 
               <div className="space-y-3">
@@ -932,7 +976,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 animate={{ scale: [1, 1.08, 1], opacity: [0.9, 1, 0.9] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <SignalLogo size={72} className="text-white" />
+                <img src={iconCream} alt="Signal" className="w-[72px] h-[72px]" />
               </motion.div>
 
               {/* Loading messages */}
