@@ -1281,22 +1281,34 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          input_json: Json | null
           month_key: string
+          plan_category: string
           plan_type: string
+          result_json: Json | null
+          status: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          input_json?: Json | null
           month_key: string
+          plan_category?: string
           plan_type?: string
+          result_json?: Json | null
+          status?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          input_json?: Json | null
           month_key?: string
+          plan_category?: string
           plan_type?: string
+          result_json?: Json | null
+          status?: string
           user_id?: string
         }
         Relationships: []
