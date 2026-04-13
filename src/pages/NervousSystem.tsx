@@ -691,22 +691,31 @@ export default function NervousSystemPage() {
             </div>
           </div>
 
-          {/* Duration filter */}
-          <div className="flex gap-2 pb-3 overflow-x-auto scrollbar-hide">
-            {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
-              <button
-                key={f}
-                onClick={() => setDurationFilter(f)}
-                className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
-                  durationFilter === f
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
-              </button>
-            ))}
-          </div>
+          {/* Filters — expandable panel for meditations, simple duration pills for other tabs */}
+          {tab === "meditations" ? (
+            <FilterPanel
+              durationFilter={durationFilter} setDurationFilter={setDurationFilter}
+              categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
+              intensityFilter={intensityFilter} setIntensityFilter={setIntensityFilter}
+              activeCount={activeFilterCount}
+            />
+          ) : (
+            <div className="flex gap-2 pb-3 overflow-x-auto scrollbar-hide">
+              {(["all", "short", "medium", "longer"] as DurationFilter[]).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setDurationFilter(f)}
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
+                    durationFilter === f
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {f === "all" ? "All" : f === "short" ? "Under 5 min" : f === "medium" ? "5–15 min" : "15+ min"}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Content */}
           <AnimatePresence mode="wait">
