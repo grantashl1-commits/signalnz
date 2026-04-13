@@ -332,7 +332,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Cycle through loading messages on step 6
   useEffect(() => {
-    if (step !== 6) return;
+    if (step !== 7) return;
     setLoadingMsgIndex(0);
     const interval = setInterval(() => {
       setLoadingMsgIndex((i) => {
@@ -348,7 +348,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Auto-save when loading screen finishes
   useEffect(() => {
-    if (step === 6 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
+    if (step === 7 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
       handleFinish();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
