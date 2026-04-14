@@ -32,7 +32,7 @@ const cardVariant = {
 };
 
 // Cache for stretch lookups
-const stretchCache = new Map<string, { illustration_url: string | null; hold_duration: string; target_muscle: string }>();
+const stretchCache = new Map<string, { hold_duration: string; target_muscle: string }>();
 
 async function lookupStretch(name: string) {
   const key = name.toLowerCase();
@@ -41,13 +41,12 @@ async function lookupStretch(name: string) {
   const searchTerms = key.split(" ").slice(0, 2).join(" ");
   const { data } = await supabase
     .from("stretches")
-    .select("illustration_url, hold_duration, target_muscle")
+    .select("hold_duration, target_muscle")
     .ilike("name", `%${searchTerms}%`)
     .limit(1)
     .maybeSingle();
 
   const result = {
-    illustration_url: (data as { illustration_url?: string | null } | null)?.illustration_url || null,
     hold_duration: data?.hold_duration || "",
     target_muscle: data?.target_muscle || ""
   };
