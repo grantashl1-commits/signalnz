@@ -435,6 +435,191 @@ export const TODDLER_COURSE: CourseModule[] = [
   },
   {
     id: "toddler-m6",
+    title: "The PREP Method",
+    subtitle: "Navigate changes and transitions without meltdowns",
+    description: "Transitions are one of the biggest tantrum triggers. PREP gives you a four-step framework to help your toddler feel in control during everyday changes — from bath time to leaving the park.",
+    estimatedMinutes: 20,
+    sources: ["Transition Psychology", "Positive Discipline"],
+    lessons: [
+      {
+        id: "toddler-m6-l1",
+        title: "Plan, Reveal, Explain, Put in Charge",
+        description: "The four PREP steps that transform transition chaos into calm cooperation",
+        activities: [
+          { id: "t-m6-l1-a1", type: "info_carousel" as any, title: "The PREP Framework", content: { slides: [
+            { heading: "P \u2014 Plan Ahead", body: "Before the transition happens, decide what you\u2019ll say and when. Give warnings: \u2018In 10 minutes, we\u2019ll be leaving the park.\u2019 Visual timers work brilliantly for toddlers who can\u2019t grasp abstract time." },
+            { heading: "R \u2014 Reveal the Plan & E \u2014 Explain Details", body: "Walk through exactly what will happen, step by step. Be specific: \u2018After we eat lunch, daddy will go to the shop and you\u2019ll stay home with mummy. You and mummy will play together until I get back.\u2019 The more details, the safer they feel." },
+            { heading: "P \u2014 Put Them in Charge of Something Small", body: "Give them a micro-job within the transition: \u2018Would you like the blue towel or the grey towel for bath?\u2019 \u2018You can be our toy leader when we pack up!\u2019 Choice = control = cooperation." },
+          ]}},
+          { id: "t-m6-l1-a2", type: "open_response" as any, title: "Script Your PREPs", content: { prompt: "Pick three transitions that regularly cause meltdowns in your household (e.g., leaving the park, bathtime, mealtimes). Write a PREP script for each one, including the specific warning, explanation, and choice you\u2019ll offer.", saveToVault: true }},
+        ]
+      },
+      {
+        id: "toddler-m6-l2",
+        title: "PREP in Action",
+        description: "Real scenarios showing how to apply PREP throughout the day",
+        activities: [
+          { id: "t-m6-l2-a1", type: "info_carousel" as any, title: "Everyday PREP Examples", content: { slides: [
+            { heading: "Bedtime PREP", body: "\u2018In 5 more minutes, we\u2019ll say night night to our toys, put pyjamas on, brush teeth, read two books, snuggle and say night night. Would you like to listen to a song during snuggles or have quiet snuggles tonight?\u2019" },
+            { heading: "Car Seat PREP", body: "\u2018You\u2019re going to put one arm in, then the other. Then I\u2019ll buckle in the middle. Can you show your toy puppy how car seats work? Puppy doesn\u2019t know!\u2019 Making them the \u2018teacher\u2019 gives them agency and distracts from resistance." },
+            { heading: "Playdate Ending PREP", body: "\u2018In 15 minutes, your friend\u2019s mummy will come to pick him up. We\u2019ll gather up all his things and then say bye bye. Should we bring our dog out with us to wave goodbye?\u2019 Involving them in the \u2018closing ceremony\u2019 helps them process the ending." },
+          ]}},
+          { id: "t-m6-l2-a2", type: "single_choice" as any, title: "PREP Practice", content: { question: "You need to leave for school in 10 minutes and your toddler is deep in play. What\u2019s the best PREP approach?", options: [
+            { label: "Just pick them up and go when it\u2019s time", isCorrect: false },
+            { label: "Give a warning, explain what\u2019s next, offer a choice about what to bring", isCorrect: true },
+            { label: "Wait until they finish playing naturally", isCorrect: false },
+            { label: "Bribe them with a treat to leave", isCorrect: false },
+          ], explanation: "PREP in action: \u2018In 10 minutes, we\u2019ll say bye to toys, get shoes on, and drive to school. Do you want to bring teddy or bunny in the car?\u2019 Warn, explain, give a small choice." }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m7",
+    title: "The REDO Method",
+    subtitle: "Redirect behaviour without shame or punishment",
+    description: "When your toddler does something undesirable, the REDO method gives you a four-step script: Reflect, Explain, Direct, and Own. It teaches without punishing.",
+    estimatedMinutes: 15,
+    sources: ["Positive Discipline", "Responsive Parenting"],
+    lessons: [
+      {
+        id: "toddler-m7-l1",
+        title: "Reflect, Explain, Direct, Own",
+        description: "A calm, structured response for unwanted behaviour",
+        activities: [
+          { id: "t-m7-l1-a1", type: "info_carousel" as any, title: "The REDO Steps", content: { slides: [
+            { heading: "R \u2014 Reflect the Behaviour", body: "Narrate what you see without judgment: \u2018I see you\u2019re hitting the dog with your cup.\u2019 This shows your child you\u2019re paying attention and gives them a mirror for their actions." },
+            { heading: "E \u2014 Explain & D \u2014 Direct", body: "Explain what\u2019s appropriate: \u2018Cups are for drinking, and the dog likes it when you\u2019re gentle with your hand.\u2019 Then direct them to try again: \u2018Let\u2019s have a redo and try being gentle.\u2019 Show them what \u2018gentle\u2019 looks like with your hands." },
+            { heading: "O \u2014 Own the Situation", body: "If the behaviour continues after the redo, calmly follow through: \u2018I see you\u2019re still hitting the dog with the cup. The cup is going away for now and we can try again to use it safely and gently later.\u2019 No anger, no lectures. Just a natural outcome." },
+          ]}},
+          { id: "t-m7-l1-a2", type: "open_response" as any, title: "Write Your REDO Scripts", content: { prompt: "Think of 3 recurring behaviours that frustrate you. Write a REDO script for each one (Reflect what you see, Explain the rule, Direct them to redo it, Own with a consequence if needed).", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m8",
+    title: "Teaching Coping Skills",
+    subtitle: "Build your child\u2019s emotional toolkit before they need it",
+    description: "Coping skills are best taught in calm moments, not mid-meltdown. Learn age-appropriate techniques across breathing, physical release, creativity, sensory soothing, and helpful words.",
+    estimatedMinutes: 20,
+    sources: ["Child Development", "Emotional Regulation Research"],
+    lessons: [
+      {
+        id: "toddler-m8-l1",
+        title: "Breathing & Physical Release",
+        description: "Techniques to help your toddler release big energy safely",
+        activities: [
+          { id: "t-m8-l1-a1", type: "info_carousel" as any, title: "Coping Techniques", content: { slides: [
+            { heading: "Deep Breathing for Little Ones", body: "Slow breathing releases GABA in the brain \u2014 a chemical that creates feelings of safety and relaxation. Make it fun:\n\u2022 Bunny breath (quick sniffs)\n\u2022 Smell the flower, blow the candle\n\u2022 Lion breath (big roar exhale)\n\u2022 Dragon breath\n\u2022 Blow bubbles\n\nSay: \u2018When big feelings come, we can take a BIG breath to feel better.\u2019" },
+            { heading: "Physical Release", body: "Help your child channel aggressive energy into something safe:\n\u2022 Stomp feet like a dinosaur\n\u2022 Jumping jacks\n\u2022 Bounce a ball hard\n\u2022 Tense and release: \u2018Squeeze your whole body tight like a lemon... now let go!\u2019\n\nSay: \u2018If we feel like hitting, first we can stomp our feet to let the anger out.\u2019" },
+            { heading: "When Can They Use These?", body: "Important: your child may not be able to access coping tools IN THE MOMENT until around age 4. But start introducing and practising them early, during calm moments. You\u2019re wiring their brain to cope in the future. Think of it as depositing tools into their emotional bank account." },
+          ]}},
+          { id: "t-m8-l1-a2", type: "survey" as any, title: "Which Fits Your Child?", content: { question: "Which coping category do you think your toddler would respond to best?", options: ["Deep breathing (bunny breath, lion breath)", "Physical release (stomping, jumping)", "Creative release (angry chalk, feelings painting)", "Sensory soothing (playdough, water, textures)"], allowMultiple: true }},
+        ]
+      },
+      {
+        id: "toddler-m8-l2",
+        title: "Creative, Sensory & Verbal Coping",
+        description: "Art, nature, senses, and giving them the words",
+        activities: [
+          { id: "t-m8-l2-a1", type: "info_carousel" as any, title: "More Coping Tools", content: { slides: [
+            { heading: "Creative Release", body: "Show your toddler how to express feelings through art:\n\u2022 Angry chalk: designate a special colour for when they\u2019re upset\n\u2022 Feelings painting or drawing\n\u2022 Build something that represents the feeling with blocks\n\u2022 Use animals and toys to act out the situation\n\nFrom age 3, encourage them to tell the story of their emotions." },
+            { heading: "Sensory & Nature", body: "Sensory input helps the body relax:\n\u2022 Squish playdough or putty\n\u2022 Smell something pleasant (flower, essential oil)\n\u2022 Listen to birds or water\n\u2022 Drink some water slowly\n\nNature walks are deeply restorative: take a \u2018rainbow walk\u2019 finding something red, orange, yellow, green, blue, purple." },
+            { heading: "Helpful Words to Practise", body: "Give them phrases to use instead of hitting, screaming, or shutting down:\n\u2022 \u2018I wasn\u2019t done with that!\u2019\n\u2022 \u2018Mummy/Daddy, I need help.\u2019\n\u2022 \u2018I feel sad/mad.\u2019\n\u2022 \u2018I didn\u2019t like that.\u2019\n\u2022 \u2018I need a hug.\u2019\n\u2022 \u2018That wasn\u2019t OK with me.\u2019\n\nPractise these in calm moments and celebrate when they use words instead of actions." },
+          ]}},
+          { id: "t-m8-l2-a2", type: "open_response" as any, title: "Build a Coping Kit", content: { prompt: "Design a personalised \u2018calm-down kit\u2019 for your child. What breathing technique will you practise? What physical release? What sensory item? What helpful phrases will you start teaching this week?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m9",
+    title: "Managing YOUR Emotions",
+    subtitle: "When you\u2019re about to lose it \u2014 the parent emotion thermometer",
+    description: "Toddlers push us to our limits. Learn to monitor your own stress signals and have a plan BEFORE you reach boiling point. Includes the emotion thermometer and repair strategies for when you do lose your cool.",
+    estimatedMinutes: 20,
+    sources: ["Parent Self-Regulation", "Attachment Theory"],
+    lessons: [
+      {
+        id: "toddler-m9-l1",
+        title: "Your Emotion Thermometer",
+        description: "Recognise your stress levels before they boil over",
+        activities: [
+          { id: "t-m9-l1-a1", type: "info_carousel" as any, title: "The Thermometer", content: { slides: [
+            { heading: "Calm \u2192 Frustrated", body: "CALM: Feeling light, open, rolling with the chaos. Strategy: accept feelings, hold boundaries, teach coping skills.\n\nFRUSTRATED: Tension in arms and chest. \u2018Ugh, just do what I say\u2019 thoughts creeping in. Strategy: deep breaths, sip of water to reset." },
+            { heading: "Angry \u2192 Explosive", body: "ANGRY: Breathing intensified, difficult to speak constructively. Strategy: take a breath, feel your feet on the ground, relax your shoulders.\n\nEXPLOSIVE: Heart pounding, physically aggressive urges, dizzying rage. Strategy: STOP. Take a break. Leave the room if children are safe. Schedule self-care time." },
+            { heading: "The Repair Roadmap", body: "When you\u2019ve totally lost it (and you will \u2014 you\u2019re human):\n1. Stop. Walk away if safe.\n2. Cool down (splash water on face, breathe).\n3. Come back and repair: \u2018I\u2019m sorry I yelled. That wasn\u2019t okay. I was feeling really frustrated and I didn\u2019t handle it well. I love you.\u2019\n\nRepair teaches children that relationships can recover from ruptures." },
+          ]}},
+          { id: "t-m9-l1-a2", type: "open_response" as any, title: "Your Personal Thermometer", content: { prompt: "Fill in your own thermometer: What does your body feel like at each level (calm, frustrated, angry, explosive)? What specific strategies will you use at each stage to bring yourself back down?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "toddler-m9-l2",
+        title: "The Lost-It Roadmap",
+        description: "What to do when you\u2019ve gone past your limit",
+        activities: [
+          { id: "t-m9-l2-a1", type: "info_carousel" as any, title: "From Snap to Repair", content: { slides: [
+            { heading: "The Stages of Losing It", body: "GO \u2014 Cool, confident. You\u2019re responding well.\nSLOW DOWN \u2014 Tone rising, impatience creeping in.\nPAUSE \u2014 Harsh tone, unkind words slipping out.\nRESTART \u2014 You\u2019ve snapped. Time to step back.\nRED HOT \u2014 You\u2019ve totally lost it. Body shaking, kids crying. Stop everything." },
+            { heading: "The Restart Protocol", body: "At any \u2018restart\u2019 level:\n1. Say: \u2018I need a moment.\u2019 Walk away (ensure children are safe).\n2. Physical reset: cold water on wrists, step outside, 10 deep breaths.\n3. Self-talk: \u2018I\u2019m a good parent having a hard moment.\u2019\n4. Return when your heart rate has slowed." },
+            { heading: "Repair, Don\u2019t Shame-Spiral", body: "Rather than beating yourself up, use these moments to model emotional recovery for your children:\n\u2018I yelled and that wasn\u2019t okay. Even grown-ups have big feelings sometimes. I\u2019m working on handling mine better. I love you.\u2019\n\nThis teaches them that mistakes don\u2019t define us \u2014 repair does." },
+          ]}},
+          { id: "t-m9-l2-a2", type: "true_false" as any, title: "Reality Check", content: { statement: "Yelling at your toddler occasionally means you\u2019re a bad parent.", isTrue: false, explanation: "Every parent loses their cool sometimes. What matters is what you do AFTER. Repair \u2014 acknowledging the rupture and reconnecting \u2014 actually builds resilience in your child and models healthy emotional processing." }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m10",
+    title: "Routines, Naps & School Readiness",
+    subtitle: "Flexible structure, dropping the nap, and preparing for kindergarten",
+    description: "Daily routines provide the predictability toddlers crave. Learn how to build flexible daily flow, recognise when to drop the nap, and prepare your child for their first school experience.",
+    estimatedMinutes: 25,
+    sources: ["Child Development", "Early Childhood Education"],
+    lessons: [
+      {
+        id: "toddler-m10-l1",
+        title: "Building a Flexible Routine",
+        description: "Predictable flow without rigid schedules",
+        activities: [
+          { id: "t-m10-l1-a1", type: "info_carousel" as any, title: "Flow, Not Schedule", content: { slides: [
+            { heading: "Why Routines Matter", body: "Toddlers thrive on knowing what comes next. A flexible routine \u2014 a \u2018flow\u2019 \u2014 lets them mentally prepare for transitions without the stress of rigid timing. We\u2019re NOT aiming for minute-by-minute schedules that leave everyone stressed." },
+            { heading: "Morning Flow Example", body: "Wake up \u2192 Go potty \u2192 Breakfast \u2192 Playtime (while you do dishes) \u2192 Brush hair \u2192 Get dressed \u2192 Leave for school/activities.\n\nThe ORDER stays consistent. The exact TIMES can flex based on the day." },
+            { heading: "Evening Flow Example", body: "Dinner \u2192 Bath time \u2192 Pyjamas \u2192 Brush teeth \u2192 2 books \u2192 Bed.\n\nKeeping the same sequence every evening signals to their brain: \u2018Sleep is coming.\u2019 This reduces bedtime battles dramatically because there are no surprises." },
+          ]}},
+          { id: "t-m10-l1-a2", type: "open_response" as any, title: "Design Your Flow", content: { prompt: "Map out your ideal morning and evening routine \u2018flow\u2019. What order works for your family? Where do the biggest friction points happen, and how could consistency help?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "toddler-m10-l2",
+        title: "When to Drop the Nap",
+        description: "Signs, strategies, and surviving the transition",
+        activities: [
+          { id: "t-m10-l2-a1", type: "info_carousel" as any, title: "Nap Transition Guide", content: { slides: [
+            { heading: "Signs It\u2019s Time", body: "Usually between ages 3\u20135 (rarely at 2.5):\n\u2022 Taking 20+ minutes to fall asleep at night\n\u2022 Night wakings increasing\n\u2022 Refusing 2+ naps per week consistently\n\u2022 Early morning wake-ups\n\nDon\u2019t rush it! Try capping the nap first before dropping entirely." },
+            { heading: "Cap Before You Cut", body: "Before eliminating naps, try reducing duration:\n\u2022 Age 1\u20132.5: around 2 hours\n\u2022 Age 2.5: reduce to 1\u20131.5 hours\n\u2022 Age 3: maximum 1 hour\n\nIf capping doesn\u2019t solve night-time issues, it may be time to transition to quiet rest time instead." },
+            { heading: "The Little-By-Little Sleep Plan", body: "For bedtime battles and teaching independent sleep:\n1. Place a chair next to their bed\n2. Stay quiet and boring \u2014 no engaging, singing, or back rubs\n3. Repeat your \u2018boring script\u2019: \u2018I\u2019m here, you\u2019re safe. Close your eyes.\u2019\n4. Each night, move the chair slightly further toward the door\n5. After ~2 weeks, you\u2019re at the door, then outside\n\nThis builds self-soothing without abandonment." },
+          ]}},
+          { id: "t-m10-l2-a2", type: "true_false" as any, title: "Nap Check", content: { statement: "Most children should stop napping by age 2.", isTrue: false, explanation: "Most children still benefit from naps until age 3\u20135. Dropping too early often leads to overtiredness and worse behaviour. Look for consistent signs over several weeks before making the change." }},
+        ]
+      },
+      {
+        id: "toddler-m10-l3",
+        title: "Kindergarten Readiness",
+        description: "Preparing your child (and yourself!) for the big school transition",
+        activities: [
+          { id: "t-m10-l3-a1", type: "info_carousel" as any, title: "Ready for School", content: { slides: [
+            { heading: "Focus on Independence, Not ABCs", body: "It\u2019s tempting to worry about counting and letters. But the skill that matters most is independence:\n\u2022 Can they open their lunchbox?\n\u2022 Can they ask when they need something?\n\u2022 Can they use the toilet on their own?\n\u2022 Can they put on shoes and jacket?\n\nPractise these through play and low-pressure games." },
+            { heading: "PREP for Drop-Off", body: "Use PREP to walk through every detail before the first day. Role-play school life with dolls. Read school-themed books together.\n\nAt drop-off: stay calm, stay confident. Your feelings are contagious! If you waver, they\u2019ll worry something\u2019s wrong.\n\nGive a comfort anchor: a bracelet, a drawn heart on their hand, a note in their lunchbox." },
+            { heading: "Expect After-School Meltdowns", body: "They\u2019ve been keeping it together all day in a new environment. That\u2019s exhausting! They\u2019ll melt down at home because YOU are their safe person.\n\nThe meltdown won\u2019t be about school \u2014 it\u2019ll be about crayons or bananas. Look beneath the surface and validate: \u2018You\u2019re feeling really upset. Sometimes I feel upset too.\u2019" },
+          ]}},
+          { id: "t-m10-l3-a2", type: "open_response" as any, title: "School Readiness Plan", content: { prompt: "List 3 independence skills you can start practising with your child this week (opening containers, dressing themselves, asking for help). How will you make each one fun?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m11",
     title: "Specific Situations",
     subtitle: "Hitting, biting, sharing, and other daily challenges",
     description: "Practical, in-the-moment strategies for the most common toddler behaviours that push buttons.",
@@ -442,33 +627,32 @@ export const TODDLER_COURSE: CourseModule[] = [
     sources: ["Child Development Research", "Positive Discipline"],
     lessons: [
       {
-        id: "toddler-m6-l1",
+        id: "toddler-m11-l1",
         title: "Hitting, Biting & Aggression",
         description: "Why it happens and what to do (and not do)",
         activities: [
-          { id: "t-m6-l1-a1", type: "info_carousel" as any, title: "Physical Aggression", content: { slides: [
-            { heading: "Why They Hit/Bite", body: "Toddlers hit and bite because:\n• They can't express feelings in words yet\n• Their impulse control is undeveloped\n• They're testing cause-and-effect\n• They're overwhelmed\n\nIt's NOT because they're 'mean' or you're a bad parent." },
-            { heading: "What to Do In the Moment", body: "1. Block/stop the behaviour: 'I won't let you hit'\n2. Check the other child first (this also teaches empathy)\n3. Name the feeling: 'You were angry'\n4. Offer the alternative: 'Hands are for gentle touch. You can stamp your feet when you're angry'\n\nStay neutral — big reactions (positive OR negative) reinforce the behaviour." },
-            { heading: "When Another Child Hits Yours", body: "This is hard! Model the response you'd want:\n• Comfort your child first\n• Don't shame the other child\n• 'That hurt. We need to use gentle hands'\n• Remove your child from the situation if needed\n• Don't force your child to 'hit back'" },
+          { id: "t-m11-l1-a1", type: "info_carousel" as any, title: "Physical Aggression", content: { slides: [
+            { heading: "Why They Hit/Bite", body: "Toddlers hit and bite because:\n\u2022 They can\u2019t express feelings in words yet\n\u2022 Their impulse control is undeveloped\n\u2022 They\u2019re testing cause-and-effect\n\u2022 They\u2019re overwhelmed\n\nIt\u2019s NOT because they\u2019re \u2018mean\u2019 or you\u2019re a bad parent." },
+            { heading: "What to Do In the Moment", body: "1. Block/stop the behaviour: \u2018I won\u2019t let you hit\u2019\n2. Check the other child first (this also teaches empathy)\n3. Name the feeling: \u2018You were angry\u2019\n4. Offer the alternative: \u2018Hands are for gentle touch. You can stamp your feet when you\u2019re angry\u2019\n\nStay neutral \u2014 big reactions (positive OR negative) reinforce the behaviour." },
+            { heading: "When Another Child Hits Yours", body: "This is hard! Model the response you\u2019d want:\n\u2022 Comfort your child first\n\u2022 Don\u2019t shame the other child\n\u2022 \u2018That hurt. We need to use gentle hands\u2019\n\u2022 Remove your child from the situation if needed\n\u2022 Don\u2019t force your child to \u2018hit back\u2019" },
           ]}},
-          { id: "t-m6-l1-a2", type: "open_response" as any, title: "Your Plan", content: { prompt: "Write a specific script you'll use next time your toddler hits. Include what you'll say to them AND what you'll do with your body (get low, hold hands, etc.).", saveToVault: true }},
+          { id: "t-m11-l1-a2", type: "open_response" as any, title: "Your Plan", content: { prompt: "Write a specific script you\u2019ll use next time your toddler hits. Include what you\u2019ll say to them AND what you\u2019ll do with your body (get low, hold hands, etc.).", saveToVault: true }},
         ]
       },
       {
-        id: "toddler-m6-l2",
+        id: "toddler-m11-l2",
         title: "Sharing & Turn-Taking",
-        description: "Why forced sharing doesn't work and what to do instead",
+        description: "Why forced sharing doesn\u2019t work and what to do instead",
         activities: [
-          { id: "t-m6-l2-a1", type: "info_carousel" as any, title: "The Sharing Myth", content: { slides: [
-            { heading: "Forced Sharing Doesn't Teach Sharing", body: "Imagine someone at work took your coffee and said 'You need to share!' You'd be furious. Forced sharing teaches that other people can take your things whenever they want. True generosity comes from choice, not force." },
-            { heading: "What to Do Instead", body: "• Teach turn-taking: 'When you're finished, then it's their turn'\n• Use a timer for popular toys\n• Protect their right to finish: 'She's still using that. You can have it when she's done'\n• Model generosity: 'Would you like to share some of my snack?'\n• Praise genuine sharing when it naturally occurs" },
+          { id: "t-m11-l2-a1", type: "info_carousel" as any, title: "The Sharing Myth", content: { slides: [
+            { heading: "Forced Sharing Doesn\u2019t Teach Sharing", body: "Imagine someone at work took your coffee and said \u2018You need to share!\u2019 You\u2019d be furious. Forced sharing teaches that other people can take your things whenever they want. True generosity comes from choice, not force." },
+            { heading: "What to Do Instead", body: "\u2022 Teach turn-taking: \u2018When you\u2019re finished, then it\u2019s their turn\u2019\n\u2022 Use a timer for popular toys\n\u2022 Protect their right to finish: \u2018She\u2019s still using that. You can have it when she\u2019s done\u2019\n\u2022 Model generosity: \u2018Would you like to share some of my snack?\u2019\n\u2022 Praise genuine sharing when it naturally occurs" },
           ]}},
         ]
       }
     ]
   },
 ];
-
 // ─── BABY COURSE MODULES ──────────────────────────────────────────────────
 
 export const BABY_COURSE: CourseModule[] = [
