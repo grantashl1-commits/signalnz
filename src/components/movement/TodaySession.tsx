@@ -393,6 +393,26 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       completed: completedExercises.has(ex.id),
     }));
 
+    // Save HR session data if HR was connected
+    let hrSessionId: string | null = null;
+    if (hr.connected && hr.bpm > 0) {
+      try {
+        const { data: hrData } = await (supabase as any)
+          .from("hr_sessions")
+          .insert({
+            user_id: user.id,
+            session_date: todayStr,
+            workout_name: todayWorkout.title,
+            bpm_trace: [],
+            zones_summary: {},
+            cycle_phase: currentPhase,
+          })
+          .select("id")
+          .single();
+        if (hrData) hrSessionId = hrData.id;
+      } catch {}
+    }
+
     const { error } = await (supabase as any)
       .from("workout_logs")
       .insert({
@@ -404,6 +424,8 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
         completed: true,
         cycle_phase: currentPhase,
         session_date: todayStr,
+        hr_session_id: hrSessionId,
+        avg_bpm: hr.connected && hr.bpm > 0 ? hr.bpm : null,
       });
 
     setSessionLogging(false);
