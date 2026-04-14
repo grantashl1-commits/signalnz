@@ -1477,7 +1477,6 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
       },
     ]
   },
-  },
   // ─── MODULE 14: THRIVING AT SCHOOL (inspired by teen success research) ──
   {
     id: "kt-m14",
