@@ -652,6 +652,85 @@ export const TODDLER_COURSE: CourseModule[] = [
       }
     ]
   },
+  {
+    id: "toddler-m12",
+    title: "The BREATHE Method",
+    subtitle: "A seven-step framework for navigating tantrums and meltdowns",
+    description: "When a tantrum hits, you need a clear, step-by-step process. BREATHE gives you seven anchoring steps to stay calm, connect with your child, and guide them through their biggest feelings.",
+    estimatedMinutes: 25,
+    lessons: [
+      {
+        id: "toddler-m12-l1",
+        title: "The Seven Steps of BREATHE",
+        description: "Your complete tantrum navigation system",
+        activities: [
+          { id: "t-m12-l1-a1", type: "info_carousel" as any, title: "B.R.E.A.T.H.E.", content: { slides: [
+            { heading: "B \u2014 Be Clear Ahead of Time", body: "Before a tantrum even starts, set your child up for success. Use PREP to explain what\u2019s happening, what\u2019s expected, and what comes next. When children know the plan, they feel safer and tantrums reduce dramatically.\n\nR \u2014 Release Your Reaction When It Begins\nWhen the tantrum starts, YOUR first job is to regulate yourself. Take a breath. Drop your shoulders. Unclench your jaw. Your child is a sponge for your energy \u2014 if you escalate, they will too." },
+            { heading: "E \u2014 Eye Level & A \u2014 Allow the Feels", body: "Get down to their level physically. This is powerful body language that says \u2018I\u2019m here, I\u2019m safe, I\u2019m not a threat.\u2019 Keep your voice low and calm.\n\nAllow the feelings to flow without trying to fix, distract, or shut them down. Tantrums aren\u2019t the time to teach \u2014 they\u2019re the time to CONNECT. \u2018You\u2019re really upset right now. I\u2019m right here.\u2019" },
+            { heading: "T.H.E. \u2014 Tell, Highlight, Echo", body: "T \u2014 Tell Them Where the Bumpers Are: Once calming, set the boundary: \u2018It\u2019s not okay to throw things. I\u2019ll keep you safe.\u2019\n\nH \u2014 Highlight a Yes: Redirect to what they CAN do: \u2018You can\u2019t throw the blocks, but you CAN stomp your feet!\u2019\n\nE \u2014 Echo the Same Thing Over and Over: Repeat your calm phrase like a broken record. Repetition is soothing and helps their overwhelmed brain process." },
+          ]}},
+          { id: "t-m12-l1-a2", type: "open_response" as any, title: "Your BREATHE Script", content: { prompt: "Write your personal BREATHE script for a common tantrum scenario in your house. What will you say at each step? What does your \u2018broken record\u2019 phrase sound like?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m13",
+    title: "Expectations & Milestones",
+    subtitle: "What your child can actually do at each age",
+    description: "Many parenting struggles come from expecting things children aren\u2019t developmentally ready for. Understand realistic expectations for impulse control, sharing, emotions, and sitting still at each age.",
+    estimatedMinutes: 20,
+    lessons: [
+      {
+        id: "toddler-m13-l1",
+        title: "Realistic Expectations by Age",
+        description: "What to actually expect from your 1, 2, 3, and 4-year-old",
+        activities: [
+          { id: "t-m13-l1-a1", type: "info_carousel" as any, title: "Age-Appropriate Expectations", content: { slides: [
+            { heading: "Impulse Control & Limits", body: "Age 1\u20132: Can\u2019t consistently understand \u2018forbidden\u2019 or manage impulses. This is NORMAL.\nAge 3: Understands rules only SOME of the time.\nAge 4: Can manage impulses MORE of the time.\n\n56% of parents have inaccurate expectations here. 36% believe children under 2 have self-control. They simply don\u2019t yet." },
+            { heading: "Sharing & Turn-Taking", body: "Age 1\u20132: Cannot grasp the concept of sharing.\nAge 3: Starting to understand, but still difficult.\nAge 4: More capable, but still needs practice.\n\nSharing skills genuinely develop between ages 3\u20134. 43% of parents inaccurately expect it before age 3." },
+            { heading: "Tantrums & Sitting Still", body: "Tantrums are normal from age 1. Self-control develops around 3.5\u20134 and takes years to be consistent.\n\nSitting still:\n\u2022 Age 1: Can\u2019t expect it\n\u2022 Age 2: 1\u20133 minutes max\n\u2022 Age 3: 5\u201310 minutes\n\u2022 Age 4: ~10 minutes\n\u2022 Age 5: ~15 minutes\n\nHave food plated and ready BEFORE asking your toddler to sit." },
+          ]}},
+          { id: "t-m13-l1-a2", type: "true_false" as any, title: "Reality Check", content: { statement: "A typical 2-year-old should be able to sit still at the dinner table for 10 minutes.", isTrue: false, explanation: "A 2-year-old can realistically sit for only 1\u20133 minutes. Having overly high expectations leads to unnecessary power struggles." }},
+        ]
+      },
+      {
+        id: "toddler-m13-l2",
+        title: "Developmental Milestones",
+        description: "What\u2019s typical cognitively, emotionally, and physically from 1\u20134",
+        activities: [
+          { id: "t-m13-l2-a1", type: "info_carousel" as any, title: "Growth by Age", content: { slides: [
+            { heading: "By Age 1", body: "Cognitive: Connects objects to names, knows things exist even if hidden.\nSocial: Develops toy preferences, enjoys peekaboo, separation anxiety starts.\nCommunication: Understands some words, responds to name, says simple words.\nPhysical: Walking alone or with support, pincer grasp, tosses balls." },
+            { heading: "By Age 2", body: "Cognitive: Explores new places, experiments to solve problems, sorts by colour.\nSocial: Imitates social behaviour, says \u2018No\u2019, tantrums emerge with big emotions.\nCommunication: Up to 50 words, sentences up to 4 words.\nPhysical: Walks stairs with rail, uses spoon/fork, ready for potty training (20\u201330 months)." },
+            { heading: "By Age 3\u20134", body: "Age 3: Learns names easily, enjoys independence, anticipates routines, beginning to share, speaks in sentences, dresses self, advanced climbing.\n\nAge 4: Understands time and size concepts, engages in cooperative play, can resolve some conflicts, tells detailed stories, hops and balances, draws recognisable shapes." },
+          ]}},
+          { id: "t-m13-l2-a2", type: "open_response" as any, title: "Calibrate Your Expectations", content: { prompt: "Think about one area where you might have had unrealistic expectations for your child\u2019s age. How does knowing the developmental timeline change your perspective?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "toddler-m14",
+    title: "Daycare, Childcare & Consistency",
+    subtitle: "Making these strategies work when you\u2019re not there all day",
+    description: "Whether your child is in daycare, with a nanny, or with grandparents \u2014 you don\u2019t need to be with them 24/7 for these methods to work.",
+    estimatedMinutes: 10,
+    lessons: [
+      {
+        id: "toddler-m14-l1",
+        title: "Consistency at Home is Enough",
+        description: "How to make these strategies work regardless of your childcare setup",
+        activities: [
+          { id: "t-m14-l1-a1", type: "info_carousel" as any, title: "For Working Parents", content: { slides: [
+            { heading: "You Don\u2019t Need to Be There 24/7", body: "These strategies work for every family setup \u2014 stay-at-home, working, single parents. The magic happens when you\u2019re consistent in YOUR home. Your child will flourish inside and outside your home when you provide that predictable, safe foundation." },
+            { heading: "If They\u2019re in Daycare/School", body: "\u2022 Choose a daycare that aligns with your parenting approach\n\u2022 Be consistent at home \u2014 both parents and caregivers using the same strategies\n\u2022 Release the worry about what happens when they\u2019re not with you\n\nWhen home is consistent, that\u2019s MORE than enough." },
+            { heading: "If They Have a Nanny or Grandparent", body: "\u2022 Share these strategies with your caregiver\n\u2022 Discuss approaches daily so you\u2019re on the same page\n\u2022 Focus on your home being the anchor of consistency\n\nThe most important thing: all caregivers in your home using the same language, the same boundaries, the same warmth." },
+          ]}},
+          { id: "t-m14-l1-a2", type: "open_response" as any, title: "Your Consistency Plan", content: { prompt: "Who are the caregivers in your child\u2019s life? List them and note one thing you could share with each person to help create consistency across environments.", saveToVault: true }},
+        ]
+      }
+    ]
+  },
 ];
 // ─── BABY COURSE MODULES ──────────────────────────────────────────────────
 
