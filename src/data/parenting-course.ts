@@ -1057,4 +1057,424 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
       }
     ]
   },
+  },
+  // ─── MODULE 7: SPECIFIC SITUATIONS (Ages 5–8) ──────────────────────────
+  {
+    id: "kt-m7",
+    title: "Specific Situations: Ages 5–8",
+    subtitle: "Real-world scenarios and scripts for younger children",
+    description: "Young children encounter confusing social situations every day. These are the exact scripts and strategies for the most common ones — what to say, what to do, and how to coach your child through it.",
+    estimatedMinutes: 35,
+    sources: ["Child Development Research", "Social Skills Training"],
+    lessons: [
+      {
+        id: "kt-m7-l1",
+        title: "A Friend Says They Don\u2019t Want to Play",
+        description: "Rejection stings at any age \u2014 here\u2019s how to handle it at 5",
+        activities: [
+          { id: "kt-m7-l1-a1", type: "info_carousel" as any, title: "When Friends Reject", content: { slides: [
+            { heading: "Why It Happens", body: "At this age, friendships are fluid. A child who is your kid\u2019s best friend on Monday may ignore them on Tuesday. This is developmentally NORMAL \u2014 they\u2019re learning how relationships work. But it still hurts." },
+            { heading: "What to Say to Your Child", body: "\u2022 \u2018That must have felt really sad. It\u2019s okay to feel that way.\u2019\n\u2022 \u2018Sometimes friends need space. It doesn\u2019t mean they don\u2019t like you.\u2019\n\u2022 \u2018What could you do next time? Maybe ask someone else to play, or find something fun to do on your own.\u2019\n\u2022 \u2018You are a great friend. Not everyone will see that every day, and that\u2019s okay.\u2019" },
+            { heading: "Build the Skill", body: "Practice \u2018friendship flexibility\u2019 at home:\n\u2022 Role-play: \u2018If Sarah says no, what\u2019s your Plan B?\u2019\n\u2022 Encourage multiple friendships \u2014 not just one best friend\n\u2022 Teach: \u2018You can\u2019t control what others do, only how you respond\u2019\n\u2022 Read books about friendship disappointments together" },
+          ]}},
+          { id: "kt-m7-l1-a2", type: "single_choice" as any, title: "Practice", content: { question: "Your 6-year-old comes home crying because their friend said \u2018I don\u2019t want to be your friend anymore.\u2019 Best response?", options: [
+            { label: "\u2018Don\u2019t worry, they didn\u2019t mean it\u2019", isCorrect: false },
+            { label: "\u2018That really hurt, didn\u2019t it? Tell me what happened.\u2019", isCorrect: true },
+            { label: "\u2018Well, find a new friend then\u2019", isCorrect: false },
+            { label: "\u2018I\u2019ll talk to their mum\u2019", isCorrect: false },
+          ], explanation: "Validate the emotion first. Dismissing (\u2018they didn\u2019t mean it\u2019) teaches them their feelings don\u2019t matter. Jumping to fix it removes their agency. Listen, validate, then coach." }},
+        ]
+      },
+      {
+        id: "kt-m7-l2",
+        title: "Being Left Out at Lunchtime",
+        description: "The lonely playground \u2014 what to do when no one will let them join",
+        activities: [
+          { id: "kt-m7-l2-a1", type: "info_carousel" as any, title: "The Lonely Lunchtime", content: { slides: [
+            { heading: "What\u2019s Happening", body: "Exclusion at lunch/recess is one of the most painful experiences for young children. They may not tell you directly \u2014 look for signs: coming home starving (didn\u2019t eat), not wanting to go to school, saying \u2018no one likes me.\u2019" },
+            { heading: "Scripts for Your Child", body: "Teach approach strategies:\n\u2022 Walk up and say: \u2018Can I play too?\u2019 (direct and simple)\n\u2022 Offer something: \u2018I\u2019ve got a ball \u2014 want to play?\u2019\n\u2022 Find the other solo kid: \u2018Hey, want to play with me?\u2019\n\u2022 If groups say no: \u2018That\u2019s okay, I\u2019ll find something else\u2019 (and walk away with head up)" },
+            { heading: "Behind the Scenes", body: "Talk to the teacher \u2014 ask about buddy systems or structured play. Arrange playdates with one or two children to build connections outside school. Don\u2019t over-manage, but do set up conditions for success." },
+          ]}},
+          { id: "kt-m7-l2-a2", type: "open_response" as any, title: "Reflect", content: { prompt: "Does your child have at least one solid friendship at school? If not, what\u2019s one step you could take this week to help them build a connection (e.g. invite a classmate over)?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m7-l3",
+        title: "Someone Is Being Mean to Them",
+        description: "When it\u2019s not quite bullying but still hurts",
+        activities: [
+          { id: "kt-m7-l3-a1", type: "info_carousel" as any, title: "Handling Meanness", content: { slides: [
+            { heading: "Mean vs Bullying", body: "Not all unkindness is bullying. Children at this age are still learning empathy and impulse control. A one-off mean comment is different from repeated, targeted harassment. Both need addressing, but the approach differs." },
+            { heading: "Teach the \u2018So What\u2019 Shield", body: "For verbal meanness, practice responses that deflate the power:\n\u2022 \u2018So?\u2019 (said calmly, then walk away)\n\u2022 \u2018Okay\u2019 (shrug and turn to someone else)\n\u2022 \u2018That\u2019s your opinion\u2019 (then move on)\n\nThe goal: remove the reaction the mean child is looking for. Practice until it feels natural." },
+            { heading: "When Your Child IS the Mean One", body: "This happens too. If you get the call from school:\n\u2022 Don\u2019t shame: \u2018What happened? Tell me the whole story.\u2019\n\u2022 Build empathy: \u2018How do you think Liam felt when you said that?\u2019\n\u2022 Repair: \u2018What could you do to make this right?\u2019\n\u2022 Investigate: \u2018Is something bothering you that made you act that way?\u2019" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m7-l4",
+        title: "First Day Nerves & New Situations",
+        description: "Starting school, joining a team, going to a party alone",
+        activities: [
+          { id: "kt-m7-l4-a1", type: "info_carousel" as any, title: "New Situation Toolkit", content: { slides: [
+            { heading: "Prepare, Don\u2019t Protect", body: "Anxiety about new things is normal. Your job isn\u2019t to remove the anxiety but to help them walk INTO it:\n\u2022 Visit the school/venue beforehand if possible\n\u2022 Read social stories about what to expect\n\u2022 Role-play: \u2018Let\u2019s practise what you\u2019ll say when you walk in\u2019\n\u2022 Give a comfort object (small toy in pocket, bracelet)" },
+            { heading: "The Brave Ladder", body: "Break scary things into small steps:\n1. Talk about the new thing at home\n2. Drive past the school/building\n3. Visit for 10 minutes\n4. Stay for a short session\n5. Full attendance\n\nCelebrate each step. \u2018You did something brave today.\u2019" },
+            { heading: "Morning Drop-Off Struggles", body: "Keep goodbyes SHORT and confident:\n\u2022 \u2018I love you. You\u2019re going to have a great day. I\u2019ll be here at 3.\u2019\n\u2022 Don\u2019t sneak away (breaks trust)\n\u2022 Don\u2019t linger (prolongs the agony)\n\u2022 Create a goodbye ritual (special handshake, three kisses)\n\u2022 Trust the teacher \u2014 most kids calm down within 5 minutes" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m7-l5",
+        title: "Lying & Getting Caught",
+        description: "Why they lie and how to build honesty",
+        activities: [
+          { id: "kt-m7-l5-a1", type: "info_carousel" as any, title: "Understanding Lies", content: { slides: [
+            { heading: "Why Kids Lie", body: "At 5\u20138, children lie for predictable reasons:\n\u2022 To avoid punishment (\u2018I didn\u2019t break it\u2019)\n\u2022 Wishful thinking (\u2018I have a pony at home\u2019)\n\u2022 To please you (\u2018Yes I brushed my teeth\u2019)\n\u2022 To test boundaries\n\nLying is actually a cognitive milestone \u2014 it requires understanding that other people have different knowledge. But it still needs addressing." },
+            { heading: "Don\u2019t Set Traps", body: "If you SAW them eat the cookie, don\u2019t ask \u2018Did you eat a cookie?\u2019 You\u2019re setting them up to lie. Instead: \u2018I see you ate a cookie. We agreed to ask first. Next time, please ask.\u2019\n\nWhen they DO tell the truth about something hard: \u2018Thank you for being honest. That was brave. Let\u2019s figure this out together.\u2019 Make honesty SAFE." },
+            { heading: "Build a Truth-Telling Culture", body: "\u2022 Share YOUR mistakes: \u2018I messed up today \u2014 here\u2019s what happened\u2019\n\u2022 Reduce punishment for honesty: \u2018Because you told me the truth, we\u2019ll work this out together\u2019\n\u2022 Praise truth-telling more than you punish lying\n\u2022 Avoid: \u2018Are you LYING to me?\u2019 (threatening) \u2014 try: \u2018Let\u2019s try that again. What really happened?\u2019" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m7-l6",
+        title: "Sibling Conflict",
+        description: "When they won\u2019t stop fighting",
+        activities: [
+          { id: "kt-m7-l6-a1", type: "info_carousel" as any, title: "Sibling Wars", content: { slides: [
+            { heading: "It\u2019s Normal (But Exhausting)", body: "Siblings aged 5\u20138 fight an average of 3\u20137 times per HOUR. It\u2019s developmentally normal \u2014 they\u2019re practising conflict resolution in the safest environment possible. Your job: teach skills, not referee every battle." },
+            { heading: "The Sportscaster Approach", body: "Instead of judging who\u2019s right, narrate what you see:\n\u2022 \u2018I see two kids who both want the same toy.\u2019\n\u2022 \u2018It sounds like you\u2019re both feeling frustrated.\u2019\n\u2022 \u2018What\u2019s a solution that works for both of you?\u2019\n\nThis teaches THEM to solve conflicts rather than relying on you as judge." },
+            { heading: "Never Compare", body: "The fastest way to destroy sibling relationships:\n\u2718 \u2018Why can\u2019t you be more like your sister?\u2019\n\u2718 \u2018Your brother never does this\u2019\n\u2718 Praising one in front of the other\n\n\u2714 Instead: celebrate each child\u2019s unique strengths separately\n\u2714 Create one-on-one time with each child\n\u2714 \u2018You two will figure this out\u2019 (show belief in their ability)" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m7-l7",
+        title: "Big Questions They Ask",
+        description: "Death, divorce, bodies, fairness \u2014 when they catch you off guard",
+        activities: [
+          { id: "kt-m7-l7-a1", type: "info_carousel" as any, title: "Tricky Questions", content: { slides: [
+            { heading: "When They Ask About Death", body: "\u2018Where do people go when they die?\u2019\n\nBe honest and age-appropriate: \u2018When someone dies, their body stops working. Different families believe different things about what happens next. What\u2019s important is that the people we love stay in our hearts and memories.\u2019\n\nDon\u2019t say: \u2018They went to sleep\u2019 (creates fear of sleep) or \u2018They went away\u2019 (creates abandonment fear)." },
+            { heading: "When They Ask About Divorce/Separation", body: "\u2018Why don\u2019t you and Daddy live together?\u2019\n\n\u2018Mum and Dad realised we\u2019re better parents when we live in different houses. We both love you MORE than anything. Nothing about this is your fault. You\u2019ll always have both of us.\u2019\n\nReassure: their routine, their stuff, access to both parents. Answer questions honestly but simply." },
+            { heading: "Use Little Minds for Metaphors", body: "When your child asks a question you don\u2019t have the words for \u2014 about death, grief, fairness, bodies, or the world \u2014 try the Little Minds Big Questions tool. It creates gentle, age-appropriate metaphor-based stories that help children understand complex topics.\n\nVisit: littleminds.mindcast.co.nz" },
+          ]}},
+          { id: "kt-m7-l7-a2", type: "open_response" as any, title: "Reflect", content: { prompt: "What\u2019s the hardest question your child has ever asked you? How did you handle it? Looking back, is there anything you\u2019d do differently?", saveToVault: true }},
+        ]
+      },
+    ]
+  },
+  // ─── MODULE 8: SPECIFIC SITUATIONS (Ages 9–12) ─────────────────────────
+  {
+    id: "kt-m8",
+    title: "Specific Situations: Ages 9\u201312",
+    subtitle: "Navigating the tween years \u2014 scripts for the in-between age",
+    description: "The tween years are an emotional minefield. Not quite a little kid, not yet a teenager. These are the real situations they\u2019ll face and exactly how to support them.",
+    estimatedMinutes: 40,
+    sources: ["Tween Development", "Social Psychology"],
+    lessons: [
+      {
+        id: "kt-m8-l1",
+        title: "Social Exclusion & Friendship Drama",
+        description: "When the group chat goes quiet or the party invite doesn\u2019t come",
+        activities: [
+          { id: "kt-m8-l1-a1", type: "info_carousel" as any, title: "Friendship Drama", content: { slides: [
+            { heading: "The Group Chat Problem", body: "At this age, social dynamics become more complex. Group chats can become weapons: being removed, being ignored, screenshots being shared. Signs your child is struggling:\n\u2022 Obsessively checking their phone\n\u2022 Mood crashes after screen time\n\u2022 Refusing to go to school\n\u2022 Saying \u2018everyone hates me\u2019" },
+            { heading: "Scripts for Your Child", body: "When they\u2019re excluded from a party or gathering:\n\u2022 \u2018It\u2019s okay to feel hurt \u2014 that IS hurtful\u2019\n\u2022 \u2018Not being invited doesn\u2019t mean not being valued\u2019\n\u2022 \u2018What could you do this weekend that would make you feel good?\u2019\n\u2022 Help them plan something with a different friend\n\nDon\u2019t: call the other parents, post on social media, or badmouth the other kids." },
+            { heading: "The Quality vs Quantity Rule", body: "Help your tween understand: you don\u2019t need 15 friends. You need 2\u20133 people who genuinely care about you. Encourage them to invest in friendships where they feel:\n\u2022 Safe being themselves\n\u2022 Happy after spending time together (not drained)\n\u2022 Supported, not judged\n\u2022 Able to disagree without it being a disaster" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m8-l2",
+        title: "Body Image & Comparison",
+        description: "When they start noticing (and disliking) their changing body",
+        activities: [
+          { id: "kt-m8-l2-a1", type: "info_carousel" as any, title: "Body Confidence", content: { slides: [
+            { heading: "Why 9\u201312 Is Critical", body: "Puberty starts as early as 8 for some children. Bodies change at wildly different rates \u2014 being the first or last creates intense self-consciousness. At this age, children start comparing themselves to peers, celebrities, and social media images." },
+            { heading: "What NOT to Say", body: "\u2718 \u2018You look fine!\u2019 (dismissive)\n\u2718 \u2018Don\u2019t worry about your weight\u2019 (introduces the concept)\n\u2718 Comments about YOUR body (\u2018I\u2019m so fat\u2019 \u2014 they\u2019re listening)\n\u2718 \u2018You\u2019d be so pretty if you just...\u2019\n\u2718 Praising other kids\u2019 appearances\n\n\u2714 Instead: focus on what bodies CAN DO, not what they look like." },
+            { heading: "Build Body Respect", body: "\u2022 Talk about bodies in terms of function: \u2018Your legs are strong \u2014 they carried you up that hill!\u2019\n\u2022 Model body neutrality: eat without guilt, move for joy, dress for comfort\n\u2022 Discuss how images are edited: \u2018Let me show you what filters actually do\u2019\n\u2022 Celebrate diversity: different body types in media, sport, life\n\u2022 If concerned about disordered eating, talk to your GP early" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m8-l3",
+        title: "Academic Pressure & Homework Battles",
+        description: "When school becomes a source of stress rather than growth",
+        activities: [
+          { id: "kt-m8-l3-a1", type: "info_carousel" as any, title: "School Stress", content: { slides: [
+            { heading: "Pressure vs Motivation", body: "There\u2019s a difference between healthy motivation (\u2018I want to do well\u2019) and toxic pressure (\u2018I MUST be the best or I\u2019m a failure\u2019). Watch for:\n\u2022 Perfectionism: refusing to submit work unless it\u2019s flawless\n\u2022 Procrastination: paralysed by fear of failure\n\u2022 Physical symptoms: stomach aches before tests\n\u2022 Cheating (to maintain impossible standards)" },
+            { heading: "Homework Without Tears", body: "\u2022 Create a consistent routine (same time, same place)\n\u2022 Break work into chunks: \u201820 minutes on, 5 minutes off\u2019\n\u2022 Be nearby but don\u2019t hover \u2014 available, not managing\n\u2022 If they\u2019re stuck: \u2018What do you think the first step is?\u2019 (don\u2019t give answers)\n\u2022 Let them experience natural consequences of forgotten homework occasionally \u2014 don\u2019t rescue every time" },
+            { heading: "Redefine Success", body: "Ask: \u2018Did you try your best?\u2019 not \u2018What did you get?\u2019\n\nCelebrate effort, improvement, curiosity \u2014 not grades.\n\n\u2018I noticed you really pushed through that difficult chapter \u2014 that took real determination.\u2019\n\nYour child needs to know their worth isn\u2019t attached to a number on a page." },
+          ]}},
+          { id: "kt-m8-l3-a2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 10-year-old is in tears because they got 78% on a test. They say \u2018I\u2019m so stupid.\u2019 Best response?", options: [
+            { label: "\u2018That\u2019s a great mark! You should be proud!\u2019", isCorrect: false },
+            { label: "\u2018You\u2019re clearly upset. What were you hoping for, and what felt hard about this test?\u2019", isCorrect: true },
+            { label: "\u2018Next time study harder and you\u2019ll do better\u2019", isCorrect: false },
+            { label: "\u2018Marks don\u2019t matter anyway\u2019", isCorrect: false },
+          ], explanation: "Validate the emotion and explore what\u2019s behind it. Dismissing (\u2018great mark!\u2019) ignores their feelings. \u2018Study harder\u2019 implies they didn\u2019t try. \u2018Marks don\u2019t matter\u2019 feels dishonest. Curiosity opens conversation." }},
+        ]
+      },
+      {
+        id: "kt-m8-l4",
+        title: "When a Friend Is Being a Bad Influence",
+        description: "They\u2019re hanging out with someone who worries you",
+        activities: [
+          { id: "kt-m8-l4-a1", type: "info_carousel" as any, title: "Tricky Friendships", content: { slides: [
+            { heading: "Don\u2019t Ban the Friend", body: "Your first instinct may be to forbid the friendship. This almost always backfires \u2014 it makes the friend MORE appealing and pushes your child underground. Instead, keep the friend CLOSE: invite them over, get to know them, observe the dynamic." },
+            { heading: "Coach, Don\u2019t Control", body: "Ask curious questions:\n\u2022 \u2018What do you like about hanging out with Jake?\u2019\n\u2022 \u2018How do you feel after spending time with him?\u2019\n\u2022 \u2018Have you ever felt uncomfortable with something he\u2019s suggested?\u2019\n\u2022 \u2018What would you do if he wanted you to do something you weren\u2019t sure about?\u2019\n\nLet THEM evaluate the friendship." },
+            { heading: "Red Line Conversations", body: "There ARE situations where you step in:\n\u2022 The friend introduces your child to substances\n\u2022 There\u2019s bullying or coercion happening\n\u2022 Criminal activity is involved\n\u2022 Your child\u2019s personality is fundamentally changing\n\nIn these cases: \u2018I\u2019m not going to let you get hurt. This is a safety decision, not a punishment.\u2019" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m8-l5",
+        title: "Online Stranger Danger & Digital Safety",
+        description: "The conversation about people who aren\u2019t who they say they are",
+        activities: [
+          { id: "kt-m8-l5-a1", type: "info_carousel" as any, title: "Digital Safety", content: { slides: [
+            { heading: "The Modern Talk", body: "The \u2018stranger danger\u2019 talk now includes screens. At 9\u201312, children may be on gaming platforms, messaging apps, or social media where strangers can contact them. Be direct:\n\u2022 \u2018Some people online pretend to be kids but aren\u2019t\u2019\n\u2022 \u2018Never share personal info: school name, address, full name\u2019\n\u2022 \u2018If anyone online makes you feel weird or asks for photos, tell me immediately \u2014 you won\u2019t be in trouble\u2019" },
+            { heading: "Grooming Red Flags", body: "Teach your child to recognise:\n\u2022 Someone who gives them lots of compliments and attention\n\u2022 Asks to keep their conversations secret\n\u2022 Offers gifts, game credits, or money\n\u2022 Asks them to move to a different platform\n\u2022 Asks for photos or video\n\u2022 Tries to isolate them from family/friends\n\nUse real language: \u2018Grooming is when an adult pretends to be your friend to get something from you.\u2019" },
+            { heading: "Create a No-Blame Policy", body: "The single most important thing: your child must believe they can come to you WITHOUT getting in trouble. If they\u2019ve broken a screen rule and encountered something scary, the LAST thing you want is for them to hide it because they\u2019re afraid of your reaction.\n\n\u2018If something makes you uncomfortable online, you tell me. I will NEVER be angry at you for telling me. I will always help you.\u2019" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m8-l6",
+        title: "Boredom & Independent Play",
+        description: "When \u2018I\u2019m bored\u2019 becomes a constant complaint",
+        activities: [
+          { id: "kt-m8-l6-a1", type: "info_carousel" as any, title: "The Boredom Gift", content: { slides: [
+            { heading: "Boredom Is Good For Them", body: "Research shows boredom drives creativity, self-direction, and resilience. Children who are constantly entertained never develop the ability to entertain themselves. When your child says \u2018I\u2019m bored,\u2019 resist the urge to fix it." },
+            { heading: "What to Say", body: "\u2022 \u2018That\u2019s great \u2014 your brain is about to come up with something interesting\u2019\n\u2022 \u2018The boredom jar is on the shelf\u2019 (jar of activity ideas they\u2019ve written)\n\u2022 \u2018You have 15 minutes. If you\u2019re still bored after that, I\u2019ve got some chores\u2019\n\u2022 Don\u2019t: hand them a screen, plan an activity, feel guilty" },
+            { heading: "Build Independent Play", body: "Set up conditions for self-directed time:\n\u2022 Art supplies accessible (not hidden)\n\u2022 Building materials (cardboard, tape, sticks)\n\u2022 Books everywhere\n\u2022 A \u2018quiet time\u2019 routine: 30\u201360 minutes daily of no screens, no parental entertainment\n\u2022 Get comfortable with them being uncomfortable \u2014 this is where growth happens" },
+          ]}},
+        ]
+      },
+    ]
+  },
+  // ─── MODULE 9: SPECIFIC SITUATIONS (Ages 13–17) ────────────────────────
+  {
+    id: "kt-m9",
+    title: "Specific Situations: Ages 13\u201317",
+    subtitle: "High-stakes scenarios and how to navigate them",
+    description: "The teenage years bring situations with real consequences. These are the conversations you need to have BEFORE they happen, and exactly what to do when they do.",
+    estimatedMinutes: 45,
+    sources: ["Adolescent Psychology", "Risk Prevention Research"],
+    lessons: [
+      {
+        id: "kt-m9-l1",
+        title: "Peer Pressure to Try Drugs or Alcohol",
+        description: "When \u2018everyone\u2019s doing it\u2019 feels real",
+        activities: [
+          { id: "kt-m9-l1-a1", type: "info_carousel" as any, title: "Substance Pressure", content: { slides: [
+            { heading: "Have the Talk EARLY", body: "Don\u2019t wait until they\u2019re offered something. Start at 11\u201312 with age-appropriate facts:\n\u2022 Alcohol affects the developing brain differently than adult brains\n\u2022 Cannabis is NOT harmless for teenagers \u2014 it affects memory, motivation, and developing neural pathways\n\u2022 Vaping is not \u2018just water vapour\u2019\n\nBe factual, not dramatic. Scare tactics don\u2019t work \u2014 they just stop telling you things." },
+            { heading: "Exit Scripts", body: "Role-play BEFORE it happens. Give them scripts:\n\u2022 \u2018Nah, I\u2019m good\u2019 (casual, no explanation needed)\n\u2022 \u2018I\u2019ve got training tomorrow\u2019 (blame sport/activity)\n\u2022 \u2018My parents drug test me\u2019 (use you as the excuse \u2014 give permission for this)\n\u2022 \u2018I\u2019m on medication that doesn\u2019t mix with it\u2019\n\u2022 Hold a drink/cup to avoid being offered one\n\nThe code word system: text PIZZA and you come get them, no questions asked." },
+            { heading: "If They\u2019ve Already Tried Something", body: "If they tell you (or you find out):\n\u2022 First: breathe. Your reaction determines whether they\u2019ll tell you next time.\n\u2022 \u2018Thank you for telling me. That took courage.\u2019\n\u2022 \u2018Help me understand \u2014 what was the situation?\u2019\n\u2022 Focus on safety, not punishment: \u2018If you\u2019re ever in a situation where you\u2019ve had something and you need a ride, call me. No questions in the car.\u2019\n\u2022 THEN have the boundaries conversation." },
+          ]}},
+          { id: "kt-m9-l1-a2", type: "true_false" as any, title: "Check", content: { statement: "The most effective approach to preventing teenage substance use is showing them graphic images of drug damage.", isTrue: false, explanation: "Research consistently shows scare tactics are ineffective and can actually increase curiosity. Open, honest conversations about real risks, combined with strong family connection and rehearsed exit strategies, are far more effective." }},
+        ]
+      },
+      {
+        id: "kt-m9-l2",
+        title: "A Friend Pressures Them to Drive Drunk (or Get in a Car)",
+        description: "The life-or-death conversation",
+        activities: [
+          { id: "kt-m9-l2-a1", type: "info_carousel" as any, title: "Drunk Driving Safety", content: { slides: [
+            { heading: "The Non-Negotiable Rule", body: "This is one of the few parenting hills to die on. Make it crystal clear:\n\u2022 \u2018You NEVER get in a car with someone who has been drinking. Ever.\u2019\n\u2022 \u2018You NEVER drive after drinking. Ever.\u2019\n\u2022 \u2018I will come get you from ANYWHERE at ANY time with NO punishment for calling me.\u2019\n\nSay this repeatedly. Make it a family mantra." },
+            { heading: "How to Get Out", body: "Practical exit strategies:\n\u2022 Code word text to parent = immediate pick-up\n\u2022 Pre-download a ride-share app with your payment card\n\u2022 \u2018My mum tracks my location \u2014 she\u2019ll know if I\u2019m in a car\u2019\n\u2022 Call ANY family member or trusted adult\n\u2022 Walk if it\u2019s safe, or go to the nearest open business\n\nPractice saying: \u2018I\u2019m going to find another way home.\u2019" },
+            { heading: "After the Situation", body: "If they call you at 2am from a party:\n\u2022 Go get them. Say NOTHING in the car (except \u2018I\u2019m glad you called me\u2019).\n\u2022 Talk the next day when everyone is calm.\n\u2022 \u2018I\u2019m proud of you for making the safe choice. That was hard.\u2019\n\u2022 THEN discuss any other issues (were they drinking? were they somewhere they shouldn\u2019t have been?)\n\nThe message: safety first, consequences second." },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m9-l3",
+        title: "Sexting & Nude Image Pressure",
+        description: "When someone asks for photos \u2014 or sends them",
+        activities: [
+          { id: "kt-m9-l3-a1", type: "info_carousel" as any, title: "Sexting Reality", content: { slides: [
+            { heading: "The Facts", body: "By age 17, approximately 1 in 4 teenagers has sent or received a sexually explicit image. This is a reality parents MUST address. In most countries, sharing intimate images of minors is a criminal offence \u2014 even if the person in the photo sent it themselves." },
+            { heading: "Prevention Scripts", body: "Have this conversation directly:\n\u2022 \u2018If someone asks for a nude photo, the answer is always no \u2014 no matter how much you trust them\u2019\n\u2022 \u2018Screenshots exist. Images can be shared in seconds.\u2019\n\u2022 \u2018If someone sends you an image, don\u2019t forward it. That\u2019s potentially a crime.\u2019\n\u2022 \u2018If someone pressures you, that\u2019s a red flag about THEM, not about you.\u2019\n\nExit line: \u2018Sorry, that\u2019s not my thing\u2019 or simply \u2018No.\u2019" },
+            { heading: "If It\u2019s Already Happened", body: "If your teen\u2019s image has been shared:\n\u2022 Stay calm (they\u2019re already terrified)\n\u2022 \u2018This is not your fault. The person who shared it is responsible.\u2019\n\u2022 Screenshot evidence before anything is deleted\n\u2022 Report to the platform\n\u2022 Contact the school if classmates are involved\n\u2022 Consider contacting police (non-emergency) for advice\n\u2022 Seek support: this can cause significant emotional distress" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m9-l4",
+        title: "Depression, Self-Harm & Suicidal Thoughts",
+        description: "The hardest conversation \u2014 and the most important",
+        activities: [
+          { id: "kt-m9-l4-a1", type: "info_carousel" as any, title: "Mental Health Crisis", content: { slides: [
+            { heading: "Warning Signs", body: "Take these seriously \u2014 even if they seem \u2018attention-seeking\u2019 (attention-seeking IS a call for help):\n\u2022 Withdrawal from friends, family, activities\n\u2022 Changes in sleep, appetite, energy\n\u2022 Giving away possessions\n\u2022 Talking about being a burden\n\u2022 Unexplained marks or long sleeves in summer\n\u2022 Saying \u2018What\u2019s the point?\u2019 or \u2018I wish I wasn\u2019t here\u2019\n\u2022 Sudden calmness after a period of depression (can indicate a decision has been made)" },
+            { heading: "How to Ask the Hard Question", body: "Asking about suicide does NOT plant the idea. Research is clear on this.\n\nSay directly: \u2018Are you thinking about hurting yourself?\u2019 or \u2018Are you having thoughts about not wanting to be alive?\u2019\n\nIf yes:\n\u2022 Stay calm\n\u2022 \u2018I\u2019m really glad you told me. You\u2019re not alone.\u2019\n\u2022 Remove access to means (medications, sharp objects)\n\u2022 Don\u2019t leave them alone\n\u2022 Call your local crisis line or take them to the emergency department" },
+            { heading: "Self-Harm Is Communication", body: "Self-harm (cutting, burning, hitting themselves) is usually NOT a suicide attempt \u2014 it\u2019s a coping mechanism for overwhelming emotions. Do not react with horror or anger.\n\n\u2022 \u2018I can see you\u2019re in a lot of pain. I want to help.\u2019\n\u2022 Don\u2019t demand they stop immediately (they need alternative coping strategies first)\n\u2022 Seek professional support (GP referral to a psychologist or counsellor)\n\u2022 NZ Crisis: Need to Talk? Free call or text 1737" },
+          ]}},
+          { id: "kt-m9-l4-a2", type: "open_response" as any, title: "Your Safety Plan", content: { prompt: "Do you know your local crisis numbers? Does your teen know they can talk to you about dark thoughts without being judged? Write down your family\u2019s mental health safety plan.", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m9-l5",
+        title: "Romantic Relationships & Heartbreak",
+        description: "First love, first breakup, healthy vs unhealthy relationships",
+        activities: [
+          { id: "kt-m9-l5-a1", type: "info_carousel" as any, title: "Teen Relationships", content: { slides: [
+            { heading: "Take It Seriously", body: "A 14-year-old\u2019s heartbreak is as real as an adult\u2019s. Their brain processes it with the same intensity. Never say:\n\u2718 \u2018You\u2019ll get over it\u2019\n\u2718 \u2018You\u2019re too young for a relationship\u2019\n\u2718 \u2018There are plenty more fish\u2019\n\n\u2714 \u2018This really hurts, doesn\u2019t it? I\u2019m here.\u2019\n\u2714 \u2018Tell me about what you liked about this person.\u2019\n\u2714 \u2018Heartbreak is one of the hardest things. It won\u2019t always feel this intense.\u2019" },
+            { heading: "Teaching Healthy Relationship Signs", body: "Teach these BEFORE they start dating:\n\n\u2714 Healthy: respects your boundaries, supports your friendships, communicates openly, makes you feel good about yourself\n\n\u2718 Unhealthy: jealous, controlling, isolating you from friends/family, monitoring your phone, making you feel like you\u2019re never good enough, guilt-tripping\n\n\u2018A person who loves you will never make you feel afraid.\u2019" },
+            { heading: "The Consent Conversation", body: "Be direct and ongoing:\n\u2022 \u2018You have the right to say no at ANY point \u2014 even if you said yes before\u2019\n\u2022 \u2018If someone is too drunk/high to clearly say yes, that\u2019s a no\u2019\n\u2022 \u2018A real partner respects boundaries without sulking\u2019\n\u2022 \u2018Pressure is not love\u2019\n\nThis conversation isn\u2019t one-off. It\u2019s ongoing, casual, and normalised." },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m9-l6",
+        title: "School Refusal & Motivation Loss",
+        description: "When they won\u2019t go to school or have given up on caring",
+        activities: [
+          { id: "kt-m9-l6-a1", type: "info_carousel" as any, title: "School Avoidance", content: { slides: [
+            { heading: "It\u2019s Usually Not Laziness", body: "A teenager refusing school is almost always communicating something deeper:\n\u2022 Anxiety (social or academic)\n\u2022 Bullying they haven\u2019t disclosed\n\u2022 Learning difficulties (they\u2019d rather look \u2018bad\u2019 than \u2018dumb\u2019)\n\u2022 Depression\n\u2022 Not fitting in\n\u2022 Conflict with a teacher\n\nDon\u2019t start with \u2018you HAVE to go.\u2019 Start with: \u2018Help me understand what\u2019s making school so hard right now.\u2019" },
+            { heading: "The Re-Engagement Plan", body: "If they\u2019ve been away:\n1. Meet with the school (pastoral care, dean, counsellor)\n2. Start with partial attendance (just mornings, just favourite subjects)\n3. Identify one adult at school they trust\n4. Address the underlying issue (therapy if needed)\n5. Small wins: \u2018You went for two hours today. That took real courage.\u2019\n\nDon\u2019t: threaten, bribe, or make them feel worse for struggling." },
+            { heading: "When They Just Don\u2019t Care", body: "Some teens lose motivation without anxiety \u2014 they\u2019re just... disconnected. This often signals:\n\u2022 They don\u2019t see the relevance\n\u2022 They\u2019re overwhelmed and have shut down\n\u2022 Depression\n\u2022 They need autonomy (being controlled = checking out)\n\nTry: \u2018What DO you care about? Let\u2019s figure out how to connect that to your future.\u2019" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m9-l7",
+        title: "Identity, Sexuality & Coming Out",
+        description: "When your teen is figuring out who they are",
+        activities: [
+          { id: "kt-m9-l7-a1", type: "info_carousel" as any, title: "Identity Exploration", content: { slides: [
+            { heading: "This Is Normal Development", body: "Adolescence is THE time for identity exploration \u2014 this includes gender, sexuality, beliefs, values, style, and life direction. Your teen trying on different identities isn\u2019t a phase to be corrected \u2014 it\u2019s the developmental task of adolescence." },
+            { heading: "If Your Child Comes Out", body: "What they need to hear:\n\u2022 \u2018Thank you for trusting me with this.\u2019\n\u2022 \u2018I love you. Nothing changes that.\u2019\n\u2022 \u2018What do you need from me?\u2019\n\nWhat NOT to do:\n\u2022 Don\u2019t say \u2018Are you sure?\u2019 or \u2018It\u2019s just a phase\u2019\n\u2022 Don\u2019t out them to other family members without permission\n\u2022 Don\u2019t make it about your feelings (process YOUR emotions separately)\n\u2022 Don\u2019t try to change them" },
+            { heading: "If You\u2019re Struggling", body: "It\u2019s okay if this wasn\u2019t what you expected. It\u2019s okay to need time to adjust. What matters is:\n\u2022 Your child\u2019s safety and mental health\n\u2022 Research shows family acceptance is THE strongest protective factor against depression and suicide in LGBTQ+ youth\n\u2022 Get support for yourself (parent groups, counselling) so you can show up for your child\n\u2022 Their identity is not a reflection of your parenting" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m9-l8",
+        title: "Parties, Alcohol & Staying Safe",
+        description: "Practical party safety without being the \u2018uncool\u2019 parent",
+        activities: [
+          { id: "kt-m9-l8-a1", type: "info_carousel" as any, title: "Party Planning", content: { slides: [
+            { heading: "Before the Party", body: "Every time your teen goes to a party, ask:\n\u2022 Where is it?\n\u2022 Whose house? (contact the parents)\n\u2022 Who else is going?\n\u2022 Will there be alcohol?\n\u2022 How will you get home?\n\u2022 What time will you be back?\n\nYes, they\u2019ll roll their eyes. Do it anyway. Frame it as: \u2018This is what caring looks like.\u2019" },
+            { heading: "The Safety Toolkit", body: "Give them practical tools:\n\u2022 Phone charged, location sharing on\n\u2022 Cash for emergencies\n\u2022 Code word = pick me up immediately\n\u2022 Never leave your drink unattended\n\u2022 Stick with friends, leave with friends\n\u2022 If something feels wrong, LEAVE\n\u2022 \u2018You can always use me as an excuse: Mum said I have to be home by 11\u2019" },
+            { heading: "If You\u2019re Hosting", body: "If the party is at YOUR house:\n\u2022 Be visible but not hovering\n\u2022 No alcohol for under-18s (you\u2019re legally liable)\n\u2022 Lock away your own alcohol and medications\n\u2022 Have food and non-alcoholic drinks available\n\u2022 Know who\u2019s there and how they\u2019re getting home\n\u2022 Have a clear end time\n\u2022 Check the garden/bedrooms periodically" },
+          ]}},
+        ]
+      },
+    ]
+  },
+  // ─── MODULE 10: DIFFICULT FAMILY SITUATIONS ────────────────────────────
+  {
+    id: "kt-m10",
+    title: "Difficult Family Situations",
+    subtitle: "Divorce, grief, trauma, and major life changes",
+    description: "When life throws your family a curveball, children need extra support. These strategies help you guide your child through the hardest chapters.",
+    estimatedMinutes: 30,
+    sources: ["Family Therapy", "Trauma-Informed Care"],
+    lessons: [
+      {
+        id: "kt-m10-l1",
+        title: "Divorce & Separation",
+        description: "How to protect your child\u2019s emotional wellbeing through the split",
+        activities: [
+          { id: "kt-m10-l1-a1", type: "info_carousel" as any, title: "Through the Split", content: { slides: [
+            { heading: "What Children Need to Hear", body: "\u2022 \u2018This is NOT your fault. You didn\u2019t cause this.\u2019\n\u2022 \u2018Both of us love you just as much as always.\u2019\n\u2022 \u2018You don\u2019t have to choose sides.\u2019\n\u2022 \u2018It\u2019s okay to feel sad, angry, confused \u2014 all of those feelings are valid.\u2019\n\u2022 \u2018We\u2019ll figure this out together, and here\u2019s what\u2019s staying the same: [school, friends, sports, bedtime routine].\u2019" },
+            { heading: "The Golden Rules", body: "\u2022 NEVER badmouth the other parent in front of your child\n\u2022 Don\u2019t use your child as a messenger\n\u2022 Don\u2019t pump them for information about the other parent\n\u2022 Don\u2019t compete for their love with gifts or leniency\n\u2022 Keep routines as consistent as possible between houses\n\u2022 Let them love both parents freely\n\nYour child is not your therapist. Get adult support for your own pain." },
+            { heading: "Age-Specific Reactions", body: "5\u20138: May blame themselves, regress (bedwetting, clinginess), act out\n9\u201312: May take sides, feel responsible for fixing it, anger at both parents\n13\u201317: May withdraw, act out, rush into relationships of their own\n\nAll of these are NORMAL grief responses. Patience, consistency, and professional support if needed." },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m10-l2",
+        title: "Grief & Loss",
+        description: "Supporting your child through death, loss, and transition",
+        activities: [
+          { id: "kt-m10-l2-a1", type: "info_carousel" as any, title: "Grief Support", content: { slides: [
+            { heading: "Children Grieve Differently", body: "Children don\u2019t grieve in a straight line. They may seem fine one moment and devastated the next. They may grieve in \u2018puddles\u2019 \u2014 short, intense bursts followed by playing and seeming normal. This doesn\u2019t mean they don\u2019t care. It means their developing brain processes grief in doses." },
+            { heading: "What to Say (And Not Say)", body: "\u2714 \u2018Grandpa died. His body stopped working.\u2019 (clear, honest)\n\u2714 \u2018It\u2019s okay to cry. It\u2019s okay to not cry too.\u2019\n\u2714 \u2018I feel sad too. We can be sad together.\u2019\n\n\u2718 \u2018They\u2019re in a better place\u2019 (why would a better place be away from me?)\n\u2718 \u2018Be strong\u2019 (teaches them to suppress grief)\n\u2718 \u2018They went to sleep\u2019 (creates fear of bedtime)" },
+            { heading: "Use Metaphor-Based Stories", body: "Sometimes the right words are hard to find, especially when you\u2019re grieving too. The Little Minds Big Questions tool creates gentle, age-appropriate metaphor stories about death, loss, and difficult topics.\n\nAsk a question like: \u2018Why did grandma have to die?\u2019 and receive a warm, child-friendly story that helps them process.\n\nVisit: littleminds.mindcast.co.nz" },
+          ]}},
+          { id: "kt-m10-l2-a2", type: "open_response" as any, title: "Reflect", content: { prompt: "Has your family experienced a significant loss? How was it handled? Is there anything you\u2019d do differently knowing what you know now?", saveToVault: true }},
+        ]
+      },
+    ]
+  },
+  // ─── MODULE 11: RAISING CONFIDENT GIRLS ────────────────────────────────
+  {
+    id: "kt-m11",
+    title: "Raising Confident Girls",
+    subtitle: "Building self-worth in a world that challenges it",
+    description: "Girls face unique pressures around body image, perfectionism, people-pleasing, and social dynamics. These strategies help your daughter develop unshakeable self-worth.",
+    estimatedMinutes: 25,
+    sources: ["Girls\u2019 Development Research", "Self-Esteem Studies"],
+    lessons: [
+      {
+        id: "kt-m11-l1",
+        title: "The Power Perspective",
+        description: "Teaching girls they have agency over their own lives",
+        activities: [
+          { id: "kt-m11-l1-a1", type: "info_carousel" as any, title: "Girl Confidence", content: { slides: [
+            { heading: "Stop Praising Pretty", body: "The first thing most adults say to a girl: \u2018You\u2019re so pretty/cute!\u2019 The message: your appearance is your most notable quality.\n\nInstead: \u2018What are you reading?\u2019 \u2018Tell me about your project\u2019 \u2018You seem like you\u2019ve been thinking hard about something.\u2019\n\nPraise effort, curiosity, kindness, courage \u2014 not appearance." },
+            { heading: "Model Imperfection", body: "Your daughter is watching how YOU handle:\n\u2022 Making mistakes (\u2018I messed up. Here\u2019s what I learned.\u2019)\n\u2022 Your body (\u2018I love what my body can do\u2019 \u2014 not \u2018I look fat\u2019)\n\u2022 Conflict (\u2018I disagreed and stood my ground\u2019)\n\u2022 Saying no (\u2018I can\u2019t do that this week\u2019 \u2014 without guilt)\n\u2022 Taking up space (\u2018I have something to say\u2019)\n\nShe will do what you DO, not what you SAY." },
+            { heading: "Encourage Risk-Taking", body: "Girls are socialised to be careful. Boys are told \u2018you\u2019ll be fine.\u2019 Consciously:\n\u2022 Let her climb higher\n\u2022 Let her speak up in class (practise at dinner table first)\n\u2022 Let her fail \u2014 and recover\n\u2022 Encourage her to negotiate (pocket money, bedtime)\n\u2022 Don\u2019t rescue her from discomfort\n\u2022 \u2018That was brave\u2019 > \u2018Be careful\u2019" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m11-l2",
+        title: "Navigating Girl Friendships",
+        description: "The complexities of relational aggression",
+        activities: [
+          { id: "kt-m11-l2-a1", type: "info_carousel" as any, title: "Girl Social Dynamics", content: { slides: [
+            { heading: "Relational Aggression", body: "Girls are more likely to bully through relationships: exclusion, gossip, silent treatment, social media manipulation. This is often invisible to adults but devastating to the target. Don\u2019t dismiss it as \u2018girls being girls.\u2019" },
+            { heading: "Help Her Recognise Toxic Friendships", body: "Teach her the friendship audit:\n\u2022 \u2018Do you feel better or worse after spending time with this person?\u2019\n\u2022 \u2018Can you be yourself around them?\u2019\n\u2022 \u2018Do they support your other friendships or try to control them?\u2019\n\u2022 \u2018Do they keep your secrets safe?\u2019\n\u2022 \u2018Would you treat someone the way they treat you?\u2019" },
+            { heading: "When She IS the Mean Girl", body: "This is harder to hear, but sometimes your daughter is the one causing harm. If this happens:\n\u2022 Don\u2019t defend or deny (\u2018My child would never...\u2019)\n\u2022 \u2018Help me understand what\u2019s going on for you that you\u2019re acting this way\u2019\n\u2022 Address the root: insecurity, home stress, social pressure\n\u2022 Require repair: genuine apology, changed behaviour\n\u2022 Monitor without hovering" },
+          ]}},
+        ]
+      },
+    ]
+  },
+  // ─── MODULE 12: RAISING GOOD BOYS ──────────────────────────────────────
+  {
+    id: "kt-m12",
+    title: "Raising Emotionally Intelligent Boys",
+    subtitle: "Breaking the \u2018man up\u2019 cycle",
+    description: "Boys are conditioned to suppress emotions from a young age. These strategies help your son develop emotional literacy, healthy relationships, and genuine confidence.",
+    estimatedMinutes: 25,
+    sources: ["Masculinity Research", "Emotional Intelligence"],
+    lessons: [
+      {
+        id: "kt-m12-l1",
+        title: "Let Him Feel",
+        description: "Why \u2018toughen up\u2019 is the worst advice we give boys",
+        activities: [
+          { id: "kt-m12-l1-a1", type: "info_carousel" as any, title: "Emotional Boys", content: { slides: [
+            { heading: "The Shutdown Starts Early", body: "By age 5, boys have already learned to suppress emotions. Research shows:\n\u2022 Boys are told \u2018don\u2019t cry\u2019 or \u2018toughen up\u2019 far more than girls\n\u2022 Parents use fewer emotional words with sons\n\u2022 Boys\u2019 pain is taken less seriously\n\u2022 By adolescence, many boys can only express one emotion: anger (because it\u2019s the only one that feels \u2018acceptable\u2019)" },
+            { heading: "What to Do Instead", body: "\u2022 Name emotions: \u2018It looks like you\u2019re feeling frustrated\u2019\n\u2022 Normalise crying: \u2018Crying is your body\u2019s way of releasing big feelings. That\u2019s healthy.\u2019\n\u2022 Model vulnerability: \u2018I felt really sad today when...\u2019\n\u2022 Don\u2019t use gendered emotion language: \u2018Boys don\u2019t cry\u2019 / \u2018Man up\u2019\n\u2022 Create safe spaces: car rides, bedtime, one-on-one walks\n\u2022 Ask open questions: \u2018What was the best/hardest part of your day?\u2019" },
+            { heading: "Communication With Teenage Boys", body: "Teenage boys communicate differently:\n\u2022 They talk while DOING something (not face-to-face)\n\u2022 They speak in short bursts (don\u2019t push for more)\n\u2022 They process internally first (give them time)\n\u2022 They respond to genuine interest, not interrogation\n\nBest conversation triggers: cooking, driving, gaming together, physical activity side by side.\n\n\u2018Grunt\u2019 is a language. Learn it. The connection is still there." },
+          ]}},
+        ]
+      },
+    ]
+  },
+  // ─── MODULE 13: THE LITTLE MINDS TOOL ──────────────────────────────────
+  {
+    id: "kt-m13",
+    title: "Answering Tricky Questions",
+    subtitle: "When your child asks something you don\u2019t have words for",
+    description: "Children ask the hardest questions at the worst times. Use the Little Minds Big Questions tool to create gentle, age-appropriate metaphor stories that help children understand complex topics like death, divorce, feelings, and the world.",
+    estimatedMinutes: 10,
+    sources: ["Narrative Therapy", "Child Communication"],
+    lessons: [
+      {
+        id: "kt-m13-l1",
+        title: "The Power of Metaphor",
+        description: "Why stories work better than explanations for young minds",
+        activities: [
+          { id: "kt-m13-l1-a1", type: "info_carousel" as any, title: "Metaphor Magic", content: { slides: [
+            { heading: "Why Metaphors Work", body: "Children\u2019s brains are wired for stories, not lectures. When you explain death as \u2018the body stopped working,\u2019 they understand intellectually. But when you tell them \u2018it\u2019s like a leaf that falls from a tree in autumn \u2014 the tree remembers every leaf,\u2019 they understand EMOTIONALLY.\n\nMetaphors bypass resistance and create understanding at a deeper level." },
+            { heading: "Common Hard Questions", body: "Questions that catch parents off guard:\n\u2022 \u2018Why did Grandpa die?\u2019\n\u2022 \u2018What happens when you die?\u2019\n\u2022 \u2018Why are you and Daddy fighting?\u2019\n\u2022 \u2018Why is that person homeless?\u2019\n\u2022 \u2018Am I fat?\u2019\n\u2022 \u2018Why do people have different skin colours?\u2019\n\u2022 \u2018Where do babies come from?\u2019\n\u2022 \u2018Why can\u2019t we afford that?\u2019\n\nYou don\u2019t need perfect answers. You need honest, gentle, age-appropriate ones." },
+            { heading: "Little Minds Big Questions", body: "When you\u2019re stuck for words, use the Little Minds tool. It creates warm, age-appropriate metaphor-based stories to help your child understand:\n\n\u2022 Death & grief\n\u2022 Feelings & emotions\n\u2022 Family changes\n\u2022 Fairness & justice\n\u2022 The body\n\u2022 Friendships\n\nJust type your child\u2019s question and get a gentle story you can share together.\n\nVisit: littleminds.mindcast.co.nz" },
+          ]}},
+          { id: "kt-m13-l1-a2", type: "open_response" as any, title: "Try It", content: { prompt: "Think of a question your child has asked that left you speechless. What was it? How did you handle it? Visit littleminds.mindcast.co.nz and try asking that same question \u2014 write down the metaphor you received.", saveToVault: true }},
+        ]
+      },
+    ]
+  },
 ];
