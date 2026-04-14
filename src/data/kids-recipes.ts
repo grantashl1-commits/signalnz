@@ -295,7 +295,7 @@ export function findKidsRecipe(
       if (dt.includes("gluten-free") && !r.tags.includes("gluten-free")) return false;
       if (dt.includes("nut-free") && !r.tags.includes("nut-free")) return false;
       if (dt.includes("egg-free") && !r.tags.includes("egg-free")) return false;
-    }
+      if (dt.includes("keto") && !r.tags.includes("keto")) return false;
     return true;
   });
 
