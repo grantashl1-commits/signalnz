@@ -1833,6 +1833,42 @@ export type Database = {
         }
         Relationships: []
       }
+      todos: {
+        Row: {
+          archived: boolean
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       training_programs: {
         Row: {
           created_at: string

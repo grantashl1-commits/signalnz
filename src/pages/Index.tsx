@@ -4,6 +4,8 @@ import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
+import HomePlannerCard from "@/components/HomePlannerCard";
+import HomeTodoList from "@/components/HomeTodoList";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -301,9 +303,11 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {/* ═══ SECTION 2 — TODAY'S FOCUS ═══ */}
+      {/* ═══ SECTION 2 — PLANNER + TO-DO + TODAY'S FOCUS ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+          {user && <HomePlannerCard />}
+          {user && <HomeTodoList />}
           <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
             <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
             {[
