@@ -17,6 +17,7 @@ import { haptic } from "@/hooks/use-mobile";
 import SleepCard from "@/components/practice/SleepCard";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 import { SUPPLEMENT_GUIDE } from "@/data/nutrition-insights";
+import { getWellnessStackSupplements } from "@/components/nutrition/SupplementRecommender";
 import { useCycle } from "@/contexts/CycleContext";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -429,11 +430,75 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
         )}
       </AnimatePresence>
 
+      {/* ── My Wellness Stack ── */}
+      <WellnessStackCard phaseColor={phaseColor} />
+
       {/* ── Phase Supports (supplements) ── */}
       <PhaseSupplementsCard phase={phase} phaseColor={phaseColor} />
 
       {/* ── Sleep tracker (bottom of page) ── */}
       <SleepCard phaseColor={phaseColor} />
+    </div>
+  );
+}
+
+/* ── My Wellness Stack ── */
+function WellnessStackCard({ phaseColor }: { phaseColor: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const stackSupps = useMemo(() => getWellnessStackSupplements(), []);
+
+  if (stackSupps.length === 0) return null;
+
+  return (
+    <div className="card-warm">
+      <button
+        onClick={() => { haptic("light"); setExpanded(!expanded); }}
+        className="w-full flex items-center justify-between min-h-[44px]"
+      >
+        <div className="flex items-center gap-2">
+          <Zap className="h-3.5 w-3.5 text-primary" />
+          <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
+            My Wellness Stack
+          </p>
+          <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+            {stackSupps.length}
+          </span>
+        </div>
+        {expanded
+          ? <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          : <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        }
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-2 pt-3">
+              {stackSupps.map((s) => (
+                <div key={s.id} className="flex items-start gap-3 rounded-xl px-3 py-2.5 bg-primary/5">
+                  <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-primary" />
+                  <div className="min-w-0">
+                    <p className="font-body text-sm font-medium text-foreground">{s.name}</p>
+                    {s.rdi && (
+                      <p className="font-body text-[11px] text-muted-foreground mt-0.5">
+                        {s.rdi.amount} · {s.rdi.timing}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <p className="font-body text-[10px] text-muted-foreground/50 px-1 pt-1">
+                Manage your stack in Nutrition → Supplements
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
