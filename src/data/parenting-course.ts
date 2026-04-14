@@ -19,6 +19,9 @@ export interface WeeklySchedule {
   totalNightSleep: string;
   keyNotes: string[];
   schedule: SleepScheduleRow[];
+  gentleTips?: { title: string; body: string }[];
+  sleepScience?: string;
+  sourceNote?: string;
 }
 
 export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
@@ -48,7 +51,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:30–7:00 PM", activity: "Bedtime — dark room, swaddle" },
       { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 60–90ml — keep lights dim" },
       { time: "2:00–3:00 AM", activity: "Night feed", feedNote: "Breast: both sides | Bottle: 60–90ml — minimal stimulation" },
-    ]
+    ],
+    sleepScience: "Newborns spend 50% of sleep in REM (active sleep) vs 20% in adults. Sleep cycles are only 40–45 minutes long, meaning they may wake every 20–45 minutes. This is biologically protective and completely normal.",
+    gentleTips: [
+      { title: "The Fourth Trimester", body: "Your newborn has just left a warm, dark, snug environment where every need was instantly met. Recreate womb-like conditions: swaddling, white noise, gentle rocking, skin-to-skin contact. This isn't 'spoiling' — it's honouring their biology." },
+      { title: "Night vs Day Confusion", body: "Newborns don't yet have a circadian rhythm. Help them learn: keep daytime bright and social, keep night feeds dim, quiet, and boring. Don't change nappies at night unless soiled — the stimulation wakes them fully." },
+      { title: "Safe Sleep Reminder", body: "Always place baby on their back, on a firm flat surface, in the same room as you for all sleep. No loose bedding, pillows, or bumpers. Room temperature 16–20°C. If swaddling, follow safe swaddling guidelines." },
+    ],
+    sourceNote: "Schedule inspired by Gina Ford's Contented Little Baby routines. Gentle tips synthesized from Sarah Ockwell-Smith's research on infant sleep physiology."
   },
   {
     weekLabel: "Week 2–4",
@@ -76,7 +86,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:30–7:00 PM", activity: "Bedtime" },
       { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 120ml" },
       { time: "2:30–3:30 AM", activity: "Night feed (may push later)", feedNote: "Breast: both sides | Bottle: 90–120ml" },
-    ]
+    ],
+    sleepScience: "Your baby's sleep cycles are still ~40 minutes. They begin each cycle in light REM sleep — easily woken for the first 20 minutes. The 'danger zone' between cycles is where most wakings happen.",
+    gentleTips: [
+      { title: "Day-Night Distinction", body: "Start building the body clock now: bright light and activity during the day, dim lighting from 5pm onwards. Open curtains when baby wakes, go outside for fresh air. By 4-6 weeks, you'll notice longer night stretches emerging." },
+      { title: "Responsive Settling", body: "If baby fusses between sleep cycles, pause for 30 seconds before rushing in. Some babies resettle with gentle shushing or a hand on the chest. Others need a full pick-up. Both responses are fine — follow YOUR baby's cues." },
+      { title: "Split Feeds for Bedtime", body: "Splitting the pre-bed feed (half before bath, half after) ensures a full tummy without baby falling asleep mid-feed and missing the second half. A well-fed baby sleeps longer stretches." },
+    ],
+    sourceNote: "Schedule inspired by Gina Ford's structured routines. Gentle settling strategies informed by Sarah Ockwell-Smith's responsive parenting approach."
   },
   {
     weekLabel: "Week 4–6",
@@ -103,7 +120,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 120–150ml" },
       { time: "3:00–4:00 AM", activity: "Night feed (dropping naturally)", feedNote: "Breast: one side may suffice | Bottle: 90–120ml" },
-    ]
+    ],
+    sleepScience: "Around 4-6 weeks, the circadian rhythm begins developing. Your baby's body starts producing melatonin in response to darkness. Sleep cycles are still ~45 minutes but stretches of 4-5 hours at night become possible.",
+    gentleTips: [
+      { title: "The 45-Minute Intruder", body: "If your baby wakes exactly 45 minutes into every nap, they're waking at the end of a sleep cycle. Try: gentle hand pressure on chest before the 40-min mark, white noise, or a slightly darker room. Some babies just need time to learn to bridge cycles." },
+      { title: "Awake Windows Matter", body: "At this age, baby can handle 1.5-2 hours awake. Watch for tired signs: yawning, rubbing eyes, turning away from stimulation. Missing the sleep window leads to overtiredness, which paradoxically makes sleep HARDER." },
+      { title: "Dream Feeds Work", body: "The 10:30pm dream feed is your secret weapon. Gently lift baby, offer breast/bottle without fully waking them. This 'tanks them up' and often buys you a 5-6 hour stretch. Keep the room dark and quiet." },
+    ],
+    sourceNote: "Schedule follows Gina Ford's feed-wake-sleep structure. Gentle tips draw on Ockwell-Smith's emphasis on biological sleep readiness cues."
   },
   {
     weekLabel: "Week 6–8",
@@ -129,7 +153,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 150ml" },
       { time: "3:00–5:00 AM", activity: "Night feed (may drop entirely soon)", feedNote: "Breast: one side | Bottle: 90–120ml" },
-    ]
+    ],
+    sleepScience: "Between 6-8 weeks, many babies start sleeping one 5-6 hour stretch. Their 40-minute sleep cycles start maturing, and they spend slightly less time in easily-woken REM sleep (dropping from 50% to ~40%).",
+    gentleTips: [
+      { title: "Consistent Bedtime Ritual", body: "By now, a predictable bedtime sequence helps baby's brain anticipate sleep: feed → bath → dim room → feed top-up → song/story → bed. The routine itself becomes a sleep cue. Keep it to 30-45 minutes." },
+      { title: "When They Won't Settle", body: "Before assuming hunger, check: too hot/cold? Overstimulated? Undertired? Sometimes a 5-minute break in a dim room with white noise is all they need. Sarah Ockwell-Smith calls this the 'danger zone' — the transition between sleep cycles where small discomforts wake them." },
+      { title: "Your Wellbeing Matters Too", body: "Sleep deprivation is cumulative and real. Accept help. Sleep when baby sleeps (even if just once a day). A rested parent is a more responsive parent — this isn't selfish, it's strategic." },
+    ],
+    sourceNote: "Schedule structure from Gina Ford. Gentle approach informed by Ockwell-Smith's 'danger zone' concept and responsive settling research."
   },
   {
     weekLabel: "Week 8–12",
@@ -154,7 +185,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:15 PM", activity: "Top-up feed & settle", feedNote: "Breast: 10 min | Bottle: 60ml" },
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed (can start dropping at 12 wks)", feedNote: "Breast: 15 min | Bottle: 120–150ml" },
-    ]
+    ],
+    sleepScience: "By 8-12 weeks, the circadian rhythm is well-established. Melatonin production kicks in at dusk. Sleep cycles begin lengthening toward 50 minutes. Some babies drop the night feed entirely — but many don't until 4-6 months. Both are normal.",
+    gentleTips: [
+      { title: "Dropping the Dream Feed", body: "Around 12 weeks you can experiment: try reducing the dream feed volume by 30ml every few nights. If baby sleeps through, great. If they wake earlier, bring the dream feed back — they're not ready yet." },
+      { title: "The Third Nap Battle", body: "The afternoon catnap often becomes harder to achieve. Don't stress if it's only 15 minutes — a short nap is still better than none. A walk in the pram or a car ride can help if they resist the cot." },
+      { title: "Gentle vs Rigid", body: "Gina Ford's schedules give structure; Sarah Ockwell-Smith reminds us that every baby is different. Use the schedule as a GUIDE, not a rulebook. If your baby consistently shows tired signs 30 minutes earlier, follow THEIR cues." },
+    ],
+    sourceNote: "Combines Gina Ford's structured feed timing with Ockwell-Smith's emphasis on individual baby cues and responsive care."
   },
   {
     weekLabel: "Month 3–4",
@@ -177,7 +215,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:30 PM", activity: "Top-up & settle", feedNote: "Breast: 10 min | Bottle: 60ml" },
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed (optional — try dropping)", feedNote: "Breast: 15 min | Bottle: 120ml" },
-    ]
+    ],
+    sleepScience: "The 4-month sleep regression is real — your baby's sleep architecture is permanently reorganising from newborn patterns to adult-like cycles. They now cycle through light and deep sleep stages like adults, which means MORE brief wakings between cycles. This isn't a setback, it's brain maturation.",
+    gentleTips: [
+      { title: "Surviving the 4-Month Regression", body: "This is the big one. Your previously 'good sleeper' may suddenly wake every 2 hours. Don't panic — this is their brain upgrading its sleep software. Stay consistent with your routine. It typically lasts 2-6 weeks." },
+      { title: "Drowsy But Awake", body: "This is a good age to start putting baby down drowsy but not fully asleep — if they're ready. Some babies take to it immediately; others need more gradual support. If it causes distress, they're not ready. Try again in a few weeks." },
+      { title: "The Discipline Connection", body: "Sarah Ockwell-Smith reminds us: a well-rested child is a better-regulated child. Sleep and behaviour are deeply linked. Investing in good sleep foundations now pays dividends in the toddler years when emotions are BIG and self-control is small." },
+    ],
+    sourceNote: "Schedule based on Gina Ford. Sleep regression insights from Ockwell-Smith's research on infant sleep cycle maturation."
   },
   {
     weekLabel: "Month 4–6",
@@ -199,7 +244,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "5:00 PM", activity: "Feed, bath, bedtime routine", feedNote: "Breast: 15 min each | Bottle: 180–210ml" },
       { time: "6:45 PM", activity: "Top-up & settle" },
       { time: "7:00 PM", activity: "Bedtime" },
-    ]
+    ],
+    sleepScience: "By 4-6 months, REM drops to ~35% and sleep cycles extend to ~50 minutes. Your baby's body clock is now comparable to an adult's. They may still wake 10-15 times between cycles each night — but most can resettle without help if conditions are right.",
+    gentleTips: [
+      { title: "Solids & Sleep", body: "Starting solids around 6 months can help sleep — but don't introduce them purely for that reason. Follow your baby's readiness signs. If milk intake drops too much during the day due to solids, night wakings may actually INCREASE." },
+      { title: "Separation Awareness Begins", body: "Around 6 months, babies develop object permanence — they know you exist even when you leave the room. This can cause bedtime protests and night wakings. Gentle reassurance (voice from the doorway, brief visits) teaches them you always come back." },
+      { title: "Creating Sleep Independence (Gently)", body: "This is an ideal window to establish independent settling — if your baby is ready. Try a gradual approach: sit beside the cot tonight, move the chair slightly further away each night over 1-2 weeks. No crying it out needed." },
+    ],
+    sourceNote: "Schedule follows Gina Ford's two-nap transition. Gentle settling approach adapted from Ockwell-Smith's gradual withdrawal method."
   },
 ];
 
