@@ -624,6 +624,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
         <div className="card-warm p-4 space-y-4">
           <div className="flex items-start justify-between">
             <div>
+              <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
                 {program?.title} · {todayWorkout.day_label}
               </p>
               <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{todayWorkout.title}</h3>
