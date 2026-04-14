@@ -8,7 +8,7 @@ export interface CourseActivity {
 
 export interface CourseLesson {
   id: string; title: string; description: string;
-  estimatedMinutes: number; activities: CourseActivity[];
+  estimatedMinutes?: number; activities: CourseActivity[];
 }
 
 export interface CourseModule {
