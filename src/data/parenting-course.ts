@@ -19,6 +19,9 @@ export interface WeeklySchedule {
   totalNightSleep: string;
   keyNotes: string[];
   schedule: SleepScheduleRow[];
+  gentleTips?: { title: string; body: string }[];
+  sleepScience?: string;
+  sourceNote?: string;
 }
 
 export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
