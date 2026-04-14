@@ -2,18 +2,18 @@
 // 10 modules, 30 lessons, 92 activities from 19 relationship science books
 
 export interface CourseActivity {
-  id: string; type: string; title: string; instruction: string;
+  id: string; type: string; title: string; instruction?: string;
   content: any; tip?: string; saveToVault?: boolean;
 }
 
 export interface CourseLesson {
   id: string; title: string; description: string;
-  estimatedMinutes: number; activities: CourseActivity[];
+  estimatedMinutes?: number; activities: CourseActivity[];
 }
 
 export interface CourseModule {
   id: string; title: string; subtitle: string; description: string;
-  icon: string; estimatedMinutes: number; sources: string[];
+  icon?: string; estimatedMinutes?: number; sources?: string[];
   lessons: CourseLesson[];
 }
 

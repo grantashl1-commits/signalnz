@@ -787,7 +787,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
           { id: "kt-m6-l1-a1", type: "info_carousel" as any, title: "Identity Building", content: { slides: [
             { heading: "The Values Conversation", body: "Children who know their family's values have an anchor when peer pressure hits. But values must be DISCUSSED, not just assumed. Try: 'In our family, we value kindness, honesty, and showing up for each other. What values are important to YOU?'" },
             { heading: "Rehearsing 'No'", body: "Role-play peer pressure scenarios BEFORE they happen:\n• 'Everyone's doing it — come on!'\n• 'You're such a baby if you don't'\n• 'No one will know'\n\nPractice responses: 'Nah, I'm good', 'I'll pass', 'My parents will literally kill me' (giving them a way out that saves face)." },
-            { heading: "The Code Word", body: "Agree on a code word or text your child can send when they need rescuing from a situation without losing face. 'I'm going to text you "PIZZA" and you call me and say I have to come home.' No questions asked in the moment — debrief later." },
+            { heading: "The Code Word", body: "Agree on a code word or text your child can send when they need rescuing from a situation without losing face. 'I\u2019m going to text you PIZZA and you call me and say I have to come home.' No questions asked in the moment \u2014 debrief later." },
           ]}},
           { id: "kt-m6-l1-a2", type: "open_response" as any, title: "Family Values", content: { prompt: "List your top 5 family values. Have you ever explicitly discussed these with your children? How could you bring these into a natural conversation this week?", saveToVault: true }},
         ]
