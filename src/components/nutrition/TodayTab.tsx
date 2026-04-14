@@ -8,6 +8,7 @@ import { findRecipeByName } from "@/lib/recipe-index";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { getAIMealPlan, type AIMeal } from "@/lib/weekly-planner";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
@@ -572,6 +573,9 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, scale, onMarkEaten, onS
             </AnimatePresence>
           </>
         )}
+
+        {/* Kids alternative swap */}
+        <KidsDinnerAlt dinnerName={meal.name} phase={currentPhase} />
 
         <button onClick={() => !isEaten && onMarkEaten()} disabled={isEaten}
           className="touch-btn w-full rounded-full py-3 min-h-[44px] font-body text-sm font-bold transition-all flex items-center justify-center gap-2"
