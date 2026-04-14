@@ -1057,7 +1057,6 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
       }
     ]
   },
-  },
   // ─── MODULE 7: SPECIFIC SITUATIONS (Ages 5–8) ──────────────────────────
   {
     id: "kt-m7",
