@@ -446,7 +446,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     }
   };
 
-  // Load AI plan session from localStorage
   // Load AI plan session — either from explicit "Start this session" or auto-detect from DB plan
   useEffect(() => {
     const stored = localStorage.getItem("signal_ai_active_session");
@@ -455,12 +454,12 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       return;
     }
 
-    // Auto-detect today's session from saved AI plan
+    // Auto-detect today's session from saved AI plan using current_session_index
     async function loadTodayFromAIPlan() {
       if (!user) return;
       const { data } = await supabase
         .from("user_plans")
-        .select("plan_data")
+        .select("plan_data, current_session_index")
         .eq("user_id", user.id)
         .eq("plan_type", "ai_training")
         .order("generated_at", { ascending: false })
@@ -468,34 +467,42 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
       if (!data || data.length === 0) return;
 
-      const plan = data[0].plan_data as any;
+      const plan = (data[0] as any).plan_data as any;
+      const sessionIndex = (data[0] as any).current_session_index || 0;
       if (!plan?.weeks?.length) return;
 
-      // Find today's day in the current week
-      const dayOfWeek = new Date().getDay(); // 0=Sun
-      const sessionIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      // Flatten all training days across all weeks
+      const allDays: any[] = [];
+      for (const week of plan.weeks) {
+        if (!week.days) continue;
+        for (const day of week.days) {
+          if (day.session_type !== "rest" && !day.title?.toLowerCase().includes("rest") && day.exercises?.length > 0) {
+            allDays.push(day);
+          }
+        }
+      }
 
-      // Use first week's days as the template (weeks rotate)
-      const currentWeek = plan.weeks[0];
-      const days = currentWeek?.days || [];
+      if (allDays.length === 0) return;
+
+      // Check if today's session was already logged
+      const { data: todayLogs } = await supabase
+        .from("workout_logs")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("session_date", todayStr)
+        .eq("completed", true);
       
-      if (days.length === 0) return;
+      if (todayLogs && todayLogs.length > 0) return; // Already logged today
 
-      // Find the session for today (skip rest days)
-      const trainingDays = days.filter((d: any) => 
-        d.session_type !== "rest" && !d.title?.toLowerCase().includes("rest")
-      );
-
-      if (trainingDays.length === 0) return;
-
-      const todayDay = trainingDays[sessionIdx % trainingDays.length];
-      if (todayDay && todayDay.exercises?.length > 0) {
+      // Use session index to pick the right day (wraps around)
+      const todayDay = allDays[sessionIndex % allDays.length];
+      if (todayDay) {
         setAiSession(todayDay);
       }
     }
 
     loadTodayFromAIPlan();
-  }, [user]);
+  }, [user, todayStr]);
 
   // No training program AND no AI session
   const hasManualProgram = !!(goalCategoryId && program && todayWorkout);
