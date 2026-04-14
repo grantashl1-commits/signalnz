@@ -73,7 +73,7 @@ import kidsHpChickenStirFry from "./kids-hp-chicken-stir-fry.jpg";
 import kidsHpVeggiePastaBake from "./kids-hp-veggie-pasta-bake.jpg";
 import kidsHpSausageTrayBake from "./kids-hp-sausage-tray-bake.jpg";
 
-// Annabel Karmel collections
+// Annabel Karmel
 import kidsAkSalmonTeriyakiBites from "./kids-ak-salmon-teriyaki-bites.jpg";
 import kidsAkChickenKatsu from "./kids-ak-chicken-katsu.jpg";
 import kidsAkVeggieSausageRolls from "./kids-ak-veggie-sausage-rolls.jpg";
@@ -137,22 +137,73 @@ import kidsKmChocBananaPops from "./kids-km-choc-banana-pops.jpg";
 import kidsSwVeggieLoadedMince from "./kids-sw-veggie-loaded-mince.jpg";
 import kidsSwSalmonRiceBalls from "./kids-sw-salmon-rice-balls.jpg";
 import kidsSwChickenVeggieSoup from "./kids-sw-chicken-veggie-soup.jpg";
-// Dairy Free
+
+// Dairy Free (expanded)
 import kidsDfChickenSatayBowls from "./kids-df-chicken-satay-bowls.jpg";
 import kidsDfBananaPancakes from "./kids-df-banana-pancakes.jpg";
 import kidsDfSpaghettiMeatballs from "./kids-df-spaghetti-meatballs.jpg";
-// Gluten Free
+import kidsDfChickenTenders from "./kids-df-chicken-tenders.jpg";
+import kidsDfFriedRice from "./kids-df-fried-rice.jpg";
+import kidsDfPastaBolognese from "./kids-df-pasta-bolognese.jpg";
+import kidsDfFishTacos from "./kids-df-fish-tacos.jpg";
+import kidsDfMeatballSub from "./kids-df-meatball-sub.jpg";
+import kidsDfTeriyakiSalmon from "./kids-df-teriyaki-salmon.jpg";
+import kidsDfChickenNoodleSoup from "./kids-df-chicken-noodle-soup.jpg";
+import kidsDfPorkStirFry from "./kids-df-pork-stir-fry.jpg";
+import kidsDfTacoBowls from "./kids-df-taco-bowls.jpg";
+import kidsDfChickenSkewers from "./kids-df-chicken-skewers.jpg";
+import kidsDfVeggieCurry from "./kids-df-veggie-curry.jpg";
+
+// Gluten Free (expanded)
 import kidsGfChickenTenders from "./kids-gf-chicken-tenders.jpg";
 import kidsGfBananaBread from "./kids-gf-banana-bread.jpg";
 import kidsGfPizzaBites from "./kids-gf-pizza-bites.jpg";
-// Keto
+import kidsGfMacCheese from "./kids-gf-mac-cheese.jpg";
+import kidsGfFishFingers from "./kids-gf-fish-fingers.jpg";
+import kidsGfChickenDrumsticks from "./kids-gf-chicken-drumsticks.jpg";
+import kidsGfPancakes from "./kids-gf-pancakes.jpg";
+import kidsGfMeatballs from "./kids-gf-meatballs.jpg";
+import kidsGfFriedRice from "./kids-gf-fried-rice.jpg";
+import kidsGfNuggets from "./kids-gf-nuggets.jpg";
+import kidsGfSausageRolls from "./kids-gf-sausage-rolls.jpg";
+import kidsGfBananaMuffins from "./kids-gf-banana-muffins.jpg";
+import kidsGfBeefTacos from "./kids-gf-beef-tacos.jpg";
+
+// Keto (expanded)
 import kidsKetoCheeseCrisps from "./kids-keto-cheese-crisps.jpg";
 import kidsKetoChickenNuggets from "./kids-keto-chicken-nuggets.jpg";
 import kidsKetoZucchiniBoats from "./kids-keto-zucchini-boats.jpg";
-// Baking
+import kidsKetoPepperoniCups from "./kids-keto-pepperoni-cups.jpg";
+import kidsKetoCauliflowerMac from "./kids-keto-cauliflower-mac.jpg";
+import kidsKetoBaconEggCups from "./kids-keto-bacon-egg-cups.jpg";
+import kidsKetoMeatballBake from "./kids-keto-meatball-bake.jpg";
+import kidsKetoHamPinwheels from "./kids-keto-ham-pinwheels.jpg";
+import kidsKetoAvocadoFries from "./kids-keto-avocado-fries.jpg";
+import kidsKetoChickenTenders from "./kids-keto-chicken-tenders.jpg";
+import kidsKetoSausageBalls from "./kids-keto-sausage-balls.jpg";
+import kidsKetoTunaMelts from "./kids-keto-tuna-melts.jpg";
+import kidsKetoButterChicken from "./kids-keto-butter-chicken.jpg";
+
+// Baking (expanded Sainsbury's)
 import kidsSbChocolateBrownies from "./kids-sb-chocolate-brownies.jpg";
 import kidsSbScones from "./kids-sb-scones.jpg";
 import kidsSbRainbowCupcakes from "./kids-sb-rainbow-cupcakes.jpg";
+import kidsSbBananaLoaf from "./kids-sb-banana-loaf.jpg";
+import kidsSbJamTarts from "./kids-sb-jam-tarts.jpg";
+import kidsSbCheeseStraws from "./kids-sb-cheese-straws.jpg";
+import kidsSbChocolateChipCookies from "./kids-sb-chocolate-chip-cookies.jpg";
+import kidsSbRockyRoad from "./kids-sb-rocky-road.jpg";
+import kidsSbLemonDrizzle from "./kids-sb-lemon-drizzle.jpg";
+import kidsSbFlapjacks from "./kids-sb-flapjacks.jpg";
+import kidsSbVictoriaSponge from "./kids-sb-victoria-sponge.jpg";
+import kidsSbPizzaDough from "./kids-sb-pizza-dough.jpg";
+import kidsSbShortbread from "./kids-sb-shortbread.jpg";
+import kidsSbCarrotCake from "./kids-sb-carrot-cake.jpg";
+import kidsSbMeringues from "./kids-sb-meringues.jpg";
+import kidsSbCornflakeCakes from "./kids-sb-cornflake-cakes.jpg";
+import kidsSbBreadRolls from "./kids-sb-bread-rolls.jpg";
+import kidsSbAppleCrumble from "./kids-sb-apple-crumble.jpg";
+import kidsSbSausageRolls from "./kids-sb-sausage-rolls.jpg";
 
 export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-chicken-strips": kidsChickenStrips,
@@ -178,7 +229,7 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-mac-cheese": kidsMacCheese,
   "kids-pork-stir-fry": kidsPorkStirFry,
   "kids-shrimp-pasta": kidsShrimpPasta,
-  // Paleo-inspired
+  // Paleo
   "kids-paleo-banana-muffins": kidsPaleoBananaMuffins,
   "kids-paleo-sweet-potato-pancakes": kidsPaleoSweetPotatoPancakes,
   "kids-paleo-veggie-scramble": kidsPaleoVeggieScramble,
@@ -199,7 +250,7 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-paleo-curried-pork": kidsPaleoCurriedPork,
   "kids-paleo-zucchini-fries": kidsPaleoZucchiniFries,
   "kids-paleo-cauliflower-bites": kidsPaleoCauliflowerBites,
-  // New England-inspired
+  // New England
   "kids-ne-granola-clusters": kidsNeGranolaClusters,
   "kids-ne-blueberry-muffins": kidsNeBlueberryMuffins,
   "kids-ne-cornbread-bites": kidsNeCornbreadBites,
@@ -211,7 +262,7 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-ne-pumpkin-mac": kidsNePumpkinMac,
   "kids-ne-cranberry-chicken": kidsNeCranberryChicken,
   "kids-ne-beef-pot-pie": kidsNeBeefPotPie,
-  // Healthy Parents / Healthy Kids-inspired
+  // Healthy Parents / Healthy Kids
   "kids-hp-bircher-cups": kidsHpBircherCups,
   "kids-hp-zucchini-fritters": kidsHpZucchiniFritters,
   "kids-hp-banana-pikelets": kidsHpBananaPikelets,
@@ -226,7 +277,7 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-hp-chicken-stir-fry": kidsHpChickenStirFry,
   "kids-hp-veggie-pasta-bake": kidsHpVeggiePastaBake,
   "kids-hp-sausage-tray-bake": kidsHpSausageTrayBake,
-  // Annabel Karmel collections
+  // Annabel Karmel
   "kids-ak-salmon-teriyaki-bites": kidsAkSalmonTeriyakiBites,
   "kids-ak-chicken-katsu": kidsAkChickenKatsu,
   "kids-ak-veggie-sausage-rolls": kidsAkVeggieSausageRolls,
@@ -274,7 +325,7 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-ej-traffic-light-peppers": kidsEjTrafficLightPeppers,
   // Sean Covey
   "kids-sc-proactive-smoothie-bowl": kidsScProactiveSmoothieBowl,
-  // Sarah Pound: Wholesome
+  // Sarah Pound
   "kids-sp-one-pan-sausage-pasta": kidsSpOnePanSausagePasta,
   "kids-sp-honey-soy-salmon": kidsSpHoneySoySalmon,
   "kids-sp-chicken-pesto-bake": kidsSpChickenPestoBake,
@@ -290,20 +341,67 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-sw-veggie-loaded-mince": kidsSwVeggieLoadedMince,
   "kids-sw-salmon-rice-balls": kidsSwSalmonRiceBalls,
   "kids-sw-chicken-veggie-soup": kidsSwChickenVeggieSoup,
-  // Dairy Free
+  // Dairy Free (expanded)
   "kids-df-chicken-satay-bowls": kidsDfChickenSatayBowls,
   "kids-df-banana-pancakes": kidsDfBananaPancakes,
   "kids-df-spaghetti-meatballs": kidsDfSpaghettiMeatballs,
-  // Gluten Free
+  "kids-df-chicken-tenders": kidsDfChickenTenders,
+  "kids-df-fried-rice": kidsDfFriedRice,
+  "kids-df-pasta-bolognese": kidsDfPastaBolognese,
+  "kids-df-fish-tacos": kidsDfFishTacos,
+  "kids-df-meatball-sub": kidsDfMeatballSub,
+  "kids-df-teriyaki-salmon": kidsDfTeriyakiSalmon,
+  "kids-df-chicken-noodle-soup": kidsDfChickenNoodleSoup,
+  "kids-df-pork-stir-fry": kidsDfPorkStirFry,
+  "kids-df-taco-bowls": kidsDfTacoBowls,
+  "kids-df-chicken-skewers": kidsDfChickenSkewers,
+  "kids-df-veggie-curry": kidsDfVeggieCurry,
+  // Gluten Free (expanded)
   "kids-gf-chicken-tenders": kidsGfChickenTenders,
   "kids-gf-banana-bread": kidsGfBananaBread,
   "kids-gf-pizza-bites": kidsGfPizzaBites,
-  // Keto
+  "kids-gf-mac-cheese": kidsGfMacCheese,
+  "kids-gf-fish-fingers": kidsGfFishFingers,
+  "kids-gf-chicken-drumsticks": kidsGfChickenDrumsticks,
+  "kids-gf-pancakes": kidsGfPancakes,
+  "kids-gf-meatballs": kidsGfMeatballs,
+  "kids-gf-fried-rice": kidsGfFriedRice,
+  "kids-gf-nuggets": kidsGfNuggets,
+  "kids-gf-sausage-rolls": kidsGfSausageRolls,
+  "kids-gf-banana-muffins": kidsGfBananaMuffins,
+  "kids-gf-beef-tacos": kidsGfBeefTacos,
+  // Keto (expanded)
   "kids-keto-cheese-crisps": kidsKetoCheeseCrisps,
   "kids-keto-chicken-nuggets": kidsKetoChickenNuggets,
   "kids-keto-zucchini-boats": kidsKetoZucchiniBoats,
-  // Baking
+  "kids-keto-pepperoni-cups": kidsKetoPepperoniCups,
+  "kids-keto-cauliflower-mac": kidsKetoCauliflowerMac,
+  "kids-keto-bacon-egg-cups": kidsKetoBaconEggCups,
+  "kids-keto-meatball-bake": kidsKetoMeatballBake,
+  "kids-keto-ham-pinwheels": kidsKetoHamPinwheels,
+  "kids-keto-avocado-fries": kidsKetoAvocadoFries,
+  "kids-keto-chicken-tenders": kidsKetoChickenTenders,
+  "kids-keto-sausage-balls": kidsKetoSausageBalls,
+  "kids-keto-tuna-melts": kidsKetoTunaMelts,
+  "kids-keto-butter-chicken": kidsKetoButterChicken,
+  // Baking (full Sainsbury's)
   "kids-sb-chocolate-brownies": kidsSbChocolateBrownies,
   "kids-sb-scones": kidsSbScones,
   "kids-sb-rainbow-cupcakes": kidsSbRainbowCupcakes,
+  "kids-sb-banana-loaf": kidsSbBananaLoaf,
+  "kids-sb-jam-tarts": kidsSbJamTarts,
+  "kids-sb-cheese-straws": kidsSbCheeseStraws,
+  "kids-sb-chocolate-chip-cookies": kidsSbChocolateChipCookies,
+  "kids-sb-rocky-road": kidsSbRockyRoad,
+  "kids-sb-lemon-drizzle": kidsSbLemonDrizzle,
+  "kids-sb-flapjacks": kidsSbFlapjacks,
+  "kids-sb-victoria-sponge": kidsSbVictoriaSponge,
+  "kids-sb-pizza-dough": kidsSbPizzaDough,
+  "kids-sb-shortbread": kidsSbShortbread,
+  "kids-sb-carrot-cake": kidsSbCarrotCake,
+  "kids-sb-meringues": kidsSbMeringues,
+  "kids-sb-cornflake-cakes": kidsSbCornflakeCakes,
+  "kids-sb-bread-rolls": kidsSbBreadRolls,
+  "kids-sb-apple-crumble": kidsSbAppleCrumble,
+  "kids-sb-sausage-rolls": kidsSbSausageRolls,
 };
