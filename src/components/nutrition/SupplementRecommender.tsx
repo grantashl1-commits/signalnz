@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pill, ChevronDown, ChevronUp, ShieldCheck, Info, Sparkles } from "lucide-react";
+import { Pill, ChevronDown, ChevronUp, ShieldCheck, Info, Sparkles, Plus, Check } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useCycle } from "@/contexts/CycleContext";
 import { HABIT_LIBRARY, type LibraryHabit } from "@/data/habit-library";
 import { haptic } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 // Get all supplement habits from the library
 const ALL_SUPPLEMENTS = HABIT_LIBRARY.filter(h => h.category === "supplements");
@@ -217,10 +218,38 @@ const PRIORITY_BADGE = {
   consider: { label: "Consider", bg: "bg-secondary", text: "text-muted-foreground" },
 };
 
+// Wellness Stack localStorage helpers
+function getWellnessStack(): string[] {
+  try {
+    const stored = localStorage.getItem("signal_wellness_stack");
+    return stored ? JSON.parse(stored) : [];
+  } catch { return []; }
+}
+
+function toggleWellnessStackItem(suppId: string): boolean {
+  const stack = getWellnessStack();
+  const idx = stack.indexOf(suppId);
+  if (idx >= 0) {
+    stack.splice(idx, 1);
+    localStorage.setItem("signal_wellness_stack", JSON.stringify(stack));
+    return false;
+  } else {
+    stack.push(suppId);
+    localStorage.setItem("signal_wellness_stack", JSON.stringify(stack));
+    return true;
+  }
+}
+
+export function getWellnessStackSupplements(): LibraryHabit[] {
+  const stack = getWellnessStack();
+  return ALL_SUPPLEMENTS.filter(s => stack.includes(s.id));
+}
+
 export default function SupplementRecommender() {
   const { currentPhase } = useCycle();
   const profile = useProfile();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [stack, setStack] = useState<string[]>(getWellnessStack);
 
   const recommendations = useMemo(() => {
     return getRecommendations(currentPhase, {
@@ -233,6 +262,17 @@ export default function SupplementRecommender() {
       cycleMode: profile.cycleMode,
     });
   }, [currentPhase, profile]);
+
+  const handleToggleStack = useCallback((suppId: string, suppName: string) => {
+    haptic("medium");
+    const added = toggleWellnessStackItem(suppId);
+    setStack(getWellnessStack());
+    if (added) {
+      toast.success(`${suppName} added to your Wellness Stack`, { description: "View in Habits → Supplements" });
+    } else {
+      toast(`${suppName} removed from your Wellness Stack`);
+    }
+  }, []);
 
   return (
     <div className="space-y-4">
