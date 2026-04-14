@@ -456,9 +456,9 @@ function CompactMealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEate
 }
 
 /* ── Compact Snack Card (same visual as meal cards) ── */
-function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExpand }: {
+function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExpand, onLog }: {
   label: string; name: string; image: string;
-  isEaten: boolean; phaseColor: string; onToggleExpand: () => void;
+  isEaten: boolean; phaseColor: string; onToggleExpand: () => void; onLog: () => void;
 }) {
   return (
     <div className="rounded-[14px] bg-card shadow-soft overflow-hidden" onClick={onToggleExpand}>
@@ -471,14 +471,19 @@ function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExp
       <div className="p-2 space-y-1">
         <p className="font-body text-[9px] uppercase tracking-wider font-medium" style={{ color: phaseColor }}>{label}</p>
         <p className="font-display text-[10px] italic text-foreground leading-tight line-clamp-2">{name}</p>
-        {isEaten && (
+        {isEaten ? (
           <div className="flex items-center gap-1">
             <WildStar size={10} color={phaseColor} />
             <span className="font-body text-[8px] font-medium" style={{ color: phaseColor }}>Logged</span>
           </div>
-        )}
-        {!isEaten && (
-          <p className="font-body text-[8px] text-muted-foreground">Tap to expand</p>
+        ) : (
+          <button
+            onClick={(e) => { e.stopPropagation(); onLog(); }}
+            className="w-full rounded-lg py-1.5 font-body text-[10px] font-medium transition-all"
+            style={{ backgroundColor: `${phaseColor}10`, color: phaseColor }}
+          >
+            Log
+          </button>
         )}
       </div>
     </div>
