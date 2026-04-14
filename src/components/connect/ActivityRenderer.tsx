@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import type { CourseActivity } from "@/data/connect-course";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
@@ -15,6 +15,8 @@ const ComparisonActivity = lazy(() => import("./activities/ComparisonActivity"))
 const SurveyActivity = lazy(() => import("./activities/SurveyActivity"));
 const FindPairActivity = lazy(() => import("./activities/FindPairActivity"));
 const MediaUpload = lazy(() => import("./activities/MediaUpload"));
+const AttachmentQuiz = lazy(() => import("@/components/connect/AttachmentQuiz"));
+const LoveLanguagesQuiz = lazy(() => import("@/components/connect/LoveLanguagesQuiz"));
 
 const Loader = () => (
   <div className="flex justify-center py-8">
@@ -29,6 +31,35 @@ interface Props {
 
 export default function ActivityRenderer({ activity, onComplete }: Props) {
   const handle = (response: any) => onComplete(activity.id, response);
+  const [quizOpen, setQuizOpen] = useState(false);
+
+  // Full-screen quiz activities
+  if (activity.type === "attachment_quiz" && quizOpen) {
+    return <Suspense fallback={<Loader />}><AttachmentQuiz onBack={() => { setQuizOpen(false); handle({ completed: true }); }} /></Suspense>;
+  }
+  if (activity.type === "love_languages_quiz" && quizOpen) {
+    return <Suspense fallback={<Loader />}><LoveLanguagesQuiz onClose={() => { setQuizOpen(false); handle({ completed: true }); }} /></Suspense>;
+  }
+
+  if (activity.type === "attachment_quiz" || activity.type === "love_languages_quiz") {
+    return (
+      <div className="p-6 rounded-2xl bg-card border border-border text-center space-y-4">
+        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+          {activity.type === "attachment_quiz" 
+            ? <span className="text-2xl">🧩</span>
+            : <span className="text-2xl">💝</span>}
+        </div>
+        <h3 className="font-display text-lg font-bold text-foreground">{activity.title}</h3>
+        <p className="text-sm text-muted-foreground">{activity.instruction}</p>
+        <button
+          onClick={() => setQuizOpen(true)}
+          className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-sm font-semibold"
+        >
+          Start Quiz
+        </button>
+      </div>
+    );
+  }
 
   return (
     <Suspense fallback={<Loader />}>
