@@ -10,6 +10,16 @@ import { useCycle } from "@/contexts/CycleContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import { TimerButton, isTimeBased, parseTimeFromReps } from "@/components/movement/IntervalTimer";
+
+function parseRestSeconds(rest: string | null): number | null {
+  if (!rest) return null;
+  const sec = rest.match(/(\d+)\s*s/i);
+  if (sec) return parseInt(sec[1]);
+  const min = rest.match(/(\d+)\s*min/i);
+  if (min) return parseInt(min[1]) * 60;
+  return null;
+}
 
 /* ── Evidence-based technique tips by keyword ── */
 const TECHNIQUE_TIPS: Record<string, { cue: string; why: string }[]> = {
