@@ -326,6 +326,7 @@ export default function TodayTab() {
               meal={meals.find(m => m.slot === expandedMeal)!}
               isEaten={!!eaten[expandedMeal]}
               phaseColor={phaseColor}
+              phase={currentPhase}
               scale={getScale(expandedMeal)}
               onMarkEaten={() => markEaten(expandedMeal)}
               onScaleChange={(v) => setScale(expandedMeal, v)}
