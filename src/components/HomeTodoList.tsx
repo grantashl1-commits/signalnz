@@ -4,7 +4,9 @@ import { Check, Plus, Trash2, Archive, Sparkles } from "lucide-react";
 import { useTodos } from "@/hooks/useTodos";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
+import { toast } from "sonner";
 
 export default function HomeTodoList() {
   const { user } = useAuth();
@@ -32,6 +34,33 @@ export default function HomeTodoList() {
 
   const handleArchive = async (id: string) => {
     haptic("medium");
+    const todo = todos.find((t) => t.id === id);
+    if (todo) {
+      // Save to vault as achievement
+      const ve: VaultEntry = {
+        id: Date.now().toString(),
+        entryId: todo.id,
+        category: "look-what-youve-done",
+        title: todo.title,
+        preview: `Completed ${todo.completed_at ? new Date(todo.completed_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short" }) : "today"}`,
+        date: new Date().toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" }),
+        timestamp: Date.now(),
+      };
+      // Local vault
+      const vault = loadVault();
+      saveVault([ve, ...vault]);
+      // Cloud vault
+      if (user) {
+        await supabase.from("vault_entries").upsert({
+          id: ve.id, user_id: user.id, entry_id: ve.entryId,
+          category: ve.category, title: ve.title, preview: ve.preview,
+          date: ve.date, timestamp: ve.timestamp,
+        } as any);
+      }
+      toast.success("Saved to Look What You've Done ✨", {
+        description: "Find it in your Memory Vault",
+      });
+    }
     await archiveTodo(id);
   };
 
