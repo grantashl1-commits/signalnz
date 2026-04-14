@@ -121,10 +121,37 @@ import kidsEjChickenGoujons from "./kids-ej-chicken-goujons.jpg";
 import kidsEjTrafficLightPeppers from "./kids-ej-traffic-light-peppers.jpg";
 // Sean Covey
 import kidsScProactiveSmoothieBowl from "./kids-sc-proactive-smoothie-bowl.jpg";
-// Sarah Pound
+// Sarah Pound: Wholesome + Fast Weeknight Dinners
 import kidsSpOnePanSausagePasta from "./kids-sp-one-pan-sausage-pasta.jpg";
 import kidsSpHoneySoySalmon from "./kids-sp-honey-soy-salmon.jpg";
 import kidsSpChickenPestoBake from "./kids-sp-chicken-pesto-bake.jpg";
+import kidsSpCreamyTuscanChicken from "./kids-sp-creamy-tuscan-chicken.jpg";
+import kidsSpBeefStroganoff from "./kids-sp-beef-stroganoff.jpg";
+import kidsSpLemonHerbFish from "./kids-sp-lemon-herb-fish.jpg";
+import kidsSpTeriyakiMeatballs from "./kids-sp-teriyaki-meatballs.jpg";
+import kidsSpChickenQuesadillas from "./kids-sp-chicken-quesadillas.jpg";
+import kidsSpPumpkinSoup from "./kids-sp-pumpkin-soup.jpg";
+import kidsSpStickyChickenDrumsticks from "./kids-sp-sticky-chicken-drumsticks.jpg";
+import kidsSpOnePotBolognese from "./kids-sp-one-pot-bolognese.jpg";
+import kidsSpLambCutlets from "./kids-sp-lamb-cutlets.jpg";
+import kidsSpChickenFriedRice from "./kids-sp-chicken-fried-rice.jpg";
+import kidsSpCheesyMeatballBake from "./kids-sp-cheesy-meatball-bake.jpg";
+import kidsSpSalmonPatties from "./kids-sp-salmon-patties.jpg";
+import kidsSpChickenSchnitzel from "./kids-sp-chicken-schnitzel.jpg";
+import kidsSpButterChicken from "./kids-sp-butter-chicken.jpg";
+import kidsSpPorkStirFry from "./kids-sp-pork-stir-fry.jpg";
+import kidsSpFishPie from "./kids-sp-fish-pie.jpg";
+import kidsSpTacoNight from "./kids-sp-taco-night.jpg";
+import kidsSpChickenNoodleSoup from "./kids-sp-chicken-noodle-soup.jpg";
+import kidsSpChilliConCarne from "./kids-sp-chilli-con-carne.jpg";
+import kidsSpChickenBurgers from "./kids-sp-chicken-burgers.jpg";
+import kidsSpCarbonara from "./kids-sp-carbonara.jpg";
+import kidsSpGreekLambBowls from "./kids-sp-greek-lamb-bowls.jpg";
+import kidsSpVeggieFrittata from "./kids-sp-veggie-frittata.jpg";
+import kidsSpHoneyMustardChicken from "./kids-sp-honey-mustard-chicken.jpg";
+import kidsSpTunaPasta from "./kids-sp-tuna-pasta.jpg";
+import kidsSpSausageTrayBake from "./kids-sp-sausage-tray-bake.jpg";
+import kidsSpNachos from "./kids-sp-nachos.jpg";
 // Danielle Kartes
 import kidsDkPbBananaBites from "./kids-dk-pb-banana-bites.jpg";
 import kidsDkConfettiRice from "./kids-dk-confetti-rice.jpg";
@@ -329,6 +356,33 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-sp-one-pan-sausage-pasta": kidsSpOnePanSausagePasta,
   "kids-sp-honey-soy-salmon": kidsSpHoneySoySalmon,
   "kids-sp-chicken-pesto-bake": kidsSpChickenPestoBake,
+  "kids-sp-creamy-tuscan-chicken": kidsSpCreamyTuscanChicken,
+  "kids-sp-beef-stroganoff": kidsSpBeefStroganoff,
+  "kids-sp-lemon-herb-fish": kidsSpLemonHerbFish,
+  "kids-sp-teriyaki-meatballs": kidsSpTeriyakiMeatballs,
+  "kids-sp-chicken-quesadillas": kidsSpChickenQuesadillas,
+  "kids-sp-pumpkin-soup": kidsSpPumpkinSoup,
+  "kids-sp-sticky-chicken-drumsticks": kidsSpStickyChickenDrumsticks,
+  "kids-sp-one-pot-bolognese": kidsSpOnePotBolognese,
+  "kids-sp-lamb-cutlets": kidsSpLambCutlets,
+  "kids-sp-chicken-fried-rice": kidsSpChickenFriedRice,
+  "kids-sp-cheesy-meatball-bake": kidsSpCheesyMeatballBake,
+  "kids-sp-salmon-patties": kidsSpSalmonPatties,
+  "kids-sp-chicken-schnitzel": kidsSpChickenSchnitzel,
+  "kids-sp-butter-chicken": kidsSpButterChicken,
+  "kids-sp-pork-stir-fry": kidsSpPorkStirFry,
+  "kids-sp-fish-pie": kidsSpFishPie,
+  "kids-sp-taco-night": kidsSpTacoNight,
+  "kids-sp-chicken-noodle-soup": kidsSpChickenNoodleSoup,
+  "kids-sp-chilli-con-carne": kidsSpChilliConCarne,
+  "kids-sp-chicken-burgers": kidsSpChickenBurgers,
+  "kids-sp-carbonara": kidsSpCarbonara,
+  "kids-sp-greek-lamb-bowls": kidsSpGreekLambBowls,
+  "kids-sp-veggie-frittata": kidsSpVeggieFrittata,
+  "kids-sp-honey-mustard-chicken": kidsSpHoneyMustardChicken,
+  "kids-sp-tuna-pasta": kidsSpTunaPasta,
+  "kids-sp-sausage-tray-bake": kidsSpSausageTrayBake,
+  "kids-sp-nachos": kidsSpNachos,
   // Danielle Kartes
   "kids-dk-pb-banana-bites": kidsDkPbBananaBites,
   "kids-dk-confetti-rice": kidsDkConfettiRice,
