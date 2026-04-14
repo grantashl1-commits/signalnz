@@ -560,7 +560,6 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                           <span className="font-body text-xs font-bold flex-shrink-0" style={{ color: weekPhaseColor }}>
                             {smartDisplay}
                           </span>
-                          </span>
                           {item.isCustom && (
                             <button onClick={() => removeCustomItem(item.name)}
                               className="touch-btn p-1 min-h-[28px] min-w-[28px] flex items-center justify-center text-muted-foreground/40 active:text-destructive">
