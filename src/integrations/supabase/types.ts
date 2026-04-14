@@ -2062,6 +2062,7 @@ export type Database = {
       }
       user_plans: {
         Row: {
+          current_session_index: number | null
           cycle_phase_at_generation: string | null
           cycle_week: number | null
           generated_at: string
@@ -2072,6 +2073,7 @@ export type Database = {
           week_number: number | null
         }
         Insert: {
+          current_session_index?: number | null
           cycle_phase_at_generation?: string | null
           cycle_week?: number | null
           generated_at?: string
@@ -2082,6 +2084,7 @@ export type Database = {
           week_number?: number | null
         }
         Update: {
+          current_session_index?: number | null
           cycle_phase_at_generation?: string | null
           cycle_week?: number | null
           generated_at?: string
@@ -2266,6 +2269,8 @@ export type Database = {
       }
       workout_logs: {
         Row: {
+          avg_bpm: number | null
+          calories: number | null
           completed: boolean
           created_at: string
           cycle_phase: string | null
@@ -2273,12 +2278,17 @@ export type Database = {
           exercises: Json
           hr_session_id: string | null
           id: string
+          max_bpm: number | null
           notes: string | null
+          plan_id: string | null
           session_date: string
           user_id: string
           workout_template_id: string | null
+          zone2_plus_percent: number | null
         }
         Insert: {
+          avg_bpm?: number | null
+          calories?: number | null
           completed?: boolean
           created_at?: string
           cycle_phase?: string | null
@@ -2286,12 +2296,17 @@ export type Database = {
           exercises?: Json
           hr_session_id?: string | null
           id?: string
+          max_bpm?: number | null
           notes?: string | null
+          plan_id?: string | null
           session_date?: string
           user_id: string
           workout_template_id?: string | null
+          zone2_plus_percent?: number | null
         }
         Update: {
+          avg_bpm?: number | null
+          calories?: number | null
           completed?: boolean
           created_at?: string
           cycle_phase?: string | null
@@ -2299,12 +2314,23 @@ export type Database = {
           exercises?: Json
           hr_session_id?: string | null
           id?: string
+          max_bpm?: number | null
           notes?: string | null
+          plan_id?: string | null
           session_date?: string
           user_id?: string
           workout_template_id?: string | null
+          zone2_plus_percent?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "workout_logs_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "user_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workout_sessions: {
         Row: {
