@@ -48,16 +48,27 @@ export function parseTimeFromReps(reps: string | null): number | null {
   if (!reps) return null;
   const r = reps.toLowerCase().trim();
 
-  // "40s", "90s", "30s each", "90s each side"
-  const secMatch = r.match(/^(\d+)\s*s(?:ec)?/);
+  // Skip rep-based strings like "12 reps", "8 per side"
+  if (/^\d+\s*(reps?|per\s)/.test(r)) return null;
+
+  // "40s", "90s", "30s each", "90s each side", "30 sec", "45 sec per side"
+  const secMatch = r.match(/^(\d+)\s*s(?:ec(?:onds?)?)?/);
   if (secMatch) return parseInt(secMatch[1]);
+
+  // "hold 45 seconds", "hold 30s"
+  const holdMatch = r.match(/hold\s+(\d+)\s*s(?:ec(?:onds?)?)?/);
+  if (holdMatch) return parseInt(holdMatch[1]);
 
   // "3 min run", "5 min", "10 min", "25 min", "2 min walk"
   const minMatch = r.match(/^(\d+)\s*min/);
   if (minMatch) return parseInt(minMatch[1]) * 60;
 
-  // "30s" embedded
-  const embeddedSec = r.match(/(\d+)\s*s(?:ec|econds?)?/);
+  // "30 seconds", "45 seconds per side", "60 seconds"
+  const secondsMatch = r.match(/(\d+)\s*seconds?/);
+  if (secondsMatch) return parseInt(secondsMatch[1]);
+
+  // Embedded seconds like "30s" not at start
+  const embeddedSec = r.match(/(\d+)\s*s(?:ec(?:onds?)?)?/);
   if (embeddedSec && !r.includes("rep") && !r.includes("set")) return parseInt(embeddedSec[1]);
 
   return null;

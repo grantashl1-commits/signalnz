@@ -301,6 +301,19 @@ function AIExerciseRow({
                   <p className="font-body text-xs text-foreground">{ex.progression}</p>
                 </div>
               )}
+
+              {/* Timer for time-based exercises */}
+              {isTimeBased(ex.reps_or_duration) && (
+                <div className="mt-1">
+                  <TimerButton
+                    exerciseName={ex.name}
+                    reps={ex.reps_or_duration}
+                    sets={ex.sets}
+                    restSeconds={ex.rest ? parseRestSeconds(ex.rest) : null}
+                    onComplete={onToggle}
+                  />
+                </div>
+              )}
             </div>
           </motion.div>
         )}
