@@ -1007,6 +1007,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "The Smoke Detector Analogy", body: "Everyone has a 'smoke detector' in their brain (the amygdala). In anxious children, this alarm is too sensitive — it goes off when there's no real danger, like when toast burns and sets off the fire alarm. The alarm isn't broken — it's just set too sensitive. Our job is to help recalibrate it." },
             { heading: "Anxiety vs Normal Worry", body: "ALL children worry sometimes. Anxiety becomes a concern when it:\n• Stops them doing things they want to do\n• Causes regular physical symptoms\n• Lasts weeks/months, not days\n• Is disproportionate to the situation\n• Impacts school, friendships, or family life" },
             { heading: "The Accommodation Trap", body: "The most natural parenting instinct — removing the thing causing anxiety — actually makes anxiety WORSE long-term. When we let them avoid scary things, we confirm their brain's message: 'This IS dangerous.' Gradual, supported exposure is the evidence-based alternative." },
+            { heading: "The Worry Cycle (Goff)", body: "Sissy Goff identifies a predictable worry cycle in girls especially: trigger → anxious thought → physical sensation → avoidance → temporary relief → increased sensitivity. Each time we allow avoidance, the cycle gets shorter and the anxiety trigger list grows. Breaking the cycle means helping your child sit WITH discomfort rather than flee from it." },
           ]}},
           { id: "kt-m3-l1-a2", type: "true_false" as any, title: "Check", content: { statement: "The best way to help an anxious child is to remove the source of their anxiety.", isTrue: false, explanation: "While it feels kind, accommodation (removing the scary thing) reinforces the anxiety loop. Gradual exposure — facing the fear in small, supported steps — is how the brain learns 'I can handle this.'" }},
         ]
@@ -1020,8 +1021,29 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Name It to Tame It", body: "Give the anxiety a name and character. 'Oh, Worry Monster is visiting again. What's he saying today?' This externalises the anxiety — your child isn't anxious, the Worry Monster is bothering them. This creates distance and a sense of control." },
             { heading: "The Worry Window", body: "Designate a 15-minute 'worry time' each day. When anxious thoughts arise, they write them on a note and put them in a 'worry box' to discuss at worry time. Most worries feel smaller by then. This teaches them they can postpone worry — it doesn't have to consume their whole day." },
             { heading: "The 5-4-3-2-1 Grounding", body: "For acute anxiety moments:\n• 5 things you can SEE\n• 4 things you can TOUCH\n• 3 things you can HEAR\n• 2 things you can SMELL\n• 1 thing you can TASTE\n\nThis brings them out of their head and into the present moment." },
+            { heading: "Bravery Ladders (Goff)", body: "Sissy Goff recommends building graduated 'bravery ladders' — a list of 8–10 steps from least to most anxiety-provoking, tackled one at a time. Example for school anxiety: 1) Talk about school at home, 2) Drive past school, 3) Walk to the gate, 4) Go in for 10 minutes… Each rung proves to the brain: 'I survived that. I can handle the next step.'" },
+            { heading: "The Parental Anxiety Transfer", body: "Goff emphasises that anxious parents often unconsciously transmit their own worry to children. Your facial expressions, tone, and hovering teach your child the world isn't safe. Practice: before reacting, take one breath and ask yourself 'Is this MY anxiety or theirs?' Model calm confidence even when you feel anxious inside." },
           ]}},
           { id: "kt-m3-l2-a2", type: "open_response" as any, title: "Your Family Plan", content: { prompt: "Which of these strategies would work best for your child? How will you introduce it? Write down a specific plan for this week.", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m3-l3",
+        title: "Raising Worry-Free Girls",
+        description: "Why girls are twice as likely to develop anxiety — and what to do about it",
+        activities: [
+          { id: "kt-m3-l3-a1", type: "info_carousel" as any, title: "Girls & Anxiety", content: { slides: [
+            { heading: "The Gender Gap", body: "Girls are diagnosed with anxiety disorders at roughly double the rate of boys. Sissy Goff identifies several contributors: socialisation toward people-pleasing, perfectionism culture, social media comparison, relational aggression, and earlier puberty flooding the brain with hormones before coping skills are mature." },
+            { heading: "The Perfectionism Trap", body: "Many anxious girls aren't 'problem' children — they're TOO good. They over-prepare, over-achieve, and over-control because failure feels catastrophic. Signs: spending hours on homework that should take 30 minutes, refusing to submit 'imperfect' work, meltdowns over small mistakes, avoiding new activities where they might not excel immediately." },
+            { heading: "Building Brave, Not Fearless", body: "The goal isn't to eliminate fear — it's to teach her to act DESPITE fear. Goff's approach:\n• Normalise imperfection: share YOUR mistakes openly\n• Praise process over outcome: 'I loved how you kept trying'\n• Create safe failure zones: cooking, crafts, sport — where mistakes are expected\n• Limit reassurance: instead of 'you'll be fine,' try 'you can handle hard things'\n• Resist rescuing: let her struggle, sit with discomfort, find her own solutions" },
+            { heading: "Connection Before Correction", body: "When your daughter is spiralling, she needs connection before strategy. Sit with her. Don't fix. Say: 'I'm here. You're safe. We'll figure this out together.' Once her nervous system calms (5–15 minutes), THEN introduce coping tools. A dysregulated child cannot learn — they can only feel." },
+          ]}},
+          { id: "kt-m3-l3-a2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 10-year-old daughter refuses to go to her friend's birthday party because 'what if no one talks to me?' Best approach?", options: [
+            { label: "'Don't be silly, of course they will!'", isCorrect: false },
+            { label: "'Fine, you don't have to go'", isCorrect: false },
+            { label: "'That worry sounds really real. Let's make a bravery plan together — what's one small step?'", isCorrect: true },
+            { label: "'I'll come with you and stay the whole time'", isCorrect: false },
+          ], explanation: "Validating the feeling while building a graduated plan teaches her she can face fear. Dismissing ('don't be silly') invalidates. Allowing avoidance strengthens the anxiety. Staying the whole time accommodates rather than builds independence." }},
         ]
       }
     ]
@@ -1068,6 +1090,8 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "The Brain Renovation", body: "The teenage brain is undergoing the biggest remodel since toddlerhood. The emotional centre (amygdala) is fully active, but the rational centre (prefrontal cortex) won't be complete until their mid-twenties. They're driving a car with a powerful accelerator and underdeveloped brakes." },
             { heading: "Why They're So Emotional", body: "Puberty floods the brain with hormones that amplify emotions. Everything feels more intense — happiness, sadness, embarrassment, anger. They're not being dramatic — they genuinely FEEL things more strongly than you do. Saying 'calm down' is as useful as telling someone to stop hiccupping." },
             { heading: "Risk-Taking Is Biological", body: "The reward centre of the teenage brain is hypersensitive, especially around peers. This is why they do things that seem stupid — the brain's reward signal (dopamine hit) literally drowns out the risk assessment. This is especially true in groups." },
+            { heading: "The Plasticity Window (Jensen)", body: "Frances Jensen's research reveals the teenage brain is MORE plastic than the adult brain — meaning it learns faster but is also more vulnerable. Every experience literally wires the brain. This is why addiction takes hold faster in teens, why trauma impacts more deeply, and why positive experiences and skill-building during this window have outsized lifelong effects." },
+            { heading: "Sleep & the Teenage Brain (Jensen)", body: "Jensen demonstrates that the teenage circadian clock genuinely shifts — melatonin release moves 1–2 hours later. They're biologically wired to fall asleep later and wake later. Early school start times work AGAINST their biology. Chronic sleep deprivation in teens impairs memory consolidation, emotional regulation, and impulse control — making every other problem worse." },
           ]}},
           { id: "kt-m5-l1-a2", type: "single_choice" as any, title: "Understanding", content: { question: "Why do teenagers take more risks when they're with friends?", options: [
             { label: "They want to show off", isCorrect: false },
@@ -1088,6 +1112,20 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Choose Your Battles", body: "Ask yourself: 'Will this matter in 5 years?'\n\nWorth fighting for: Safety, respect, values, education\nNot worth fighting for: Messy room, hair colour, clothing choices, music taste\n\nEvery battle costs relationship capital. Spend it on what truly matters." },
           ]}},
           { id: "kt-m5-l2-a2", type: "open_response" as any, title: "Connection Audit", content: { prompt: "When was the last time you had a meaningful conversation with your teen? What conditions were present? How can you create more of those conditions this week?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m5-l3",
+        title: "The Vulnerable Teenage Brain",
+        description: "How substances, stress, and screens affect the developing brain differently",
+        activities: [
+          { id: "kt-m5-l3-a1", type: "info_carousel" as any, title: "Brain Vulnerabilities", content: { slides: [
+            { heading: "Substances Hit Harder (Jensen)", body: "Jensen's brain imaging studies show that alcohol, cannabis, and nicotine affect the teenage brain MORE severely than the adult brain. THC locks onto receptors in the hippocampus (memory) and prefrontal cortex (judgment) that are still being built. One heavy drinking episode can damage white matter connections that took years to develop. The brain doesn't fully recover — these aren't 'experiments,' they're permanent alterations." },
+            { heading: "Stress Wires the Brain for Anxiety", body: "Chronic stress during adolescence (academic pressure, social drama, family conflict) literally wires the stress response system to be hyperactive. Jensen calls this 'stress kindling' — repeated stress lowers the threshold for future stress responses. A teen under chronic pressure doesn't just feel stressed NOW — they're building a brain that's more anxiety-prone for life." },
+            { heading: "Digital Overload & Attention", body: "Jensen warns that constant digital switching (texts, apps, videos, notifications) is training the teenage brain for distraction, not focus. The brain strengthens whatever neural pathways are used most. A brain trained on 15-second videos builds weaker sustained-attention circuits. This isn't about willpower — it's structural." },
+            { heading: "The Good News: Positive Plasticity", body: "The same plasticity that makes the teenage brain vulnerable also makes it exceptionally responsive to positive experiences. Music lessons, sport, creative pursuits, deep friendships, meditation — all wire the brain in beneficial ways MORE powerfully during adolescence than at any other time. Invest in enrichment, not just protection." },
+          ]}},
+          { id: "kt-m5-l3-a2", type: "true_false" as any, title: "Brain Check", content: { statement: "A teenager's brain recovers from a heavy drinking episode just as well as an adult's brain.", isTrue: false, explanation: "Jensen's research shows the opposite — the teenage brain is MORE vulnerable to alcohol damage because key structures are still developing. White matter damage from binge drinking during adolescence can have lasting effects on memory and cognitive function." }},
         ]
       }
     ]
