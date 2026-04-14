@@ -215,7 +215,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:30 PM", activity: "Top-up & settle", feedNote: "Breast: 10 min | Bottle: 60ml" },
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed (optional — try dropping)", feedNote: "Breast: 15 min | Bottle: 120ml" },
-    ]
+    ],
+    sleepScience: "The 4-month sleep regression is real — your baby's sleep architecture is permanently reorganising from newborn patterns to adult-like cycles. They now cycle through light and deep sleep stages like adults, which means MORE brief wakings between cycles. This isn't a setback, it's brain maturation.",
+    gentleTips: [
+      { title: "Surviving the 4-Month Regression", body: "This is the big one. Your previously 'good sleeper' may suddenly wake every 2 hours. Don't panic — this is their brain upgrading its sleep software. Stay consistent with your routine. It typically lasts 2-6 weeks." },
+      { title: "Drowsy But Awake", body: "This is a good age to start putting baby down drowsy but not fully asleep — if they're ready. Some babies take to it immediately; others need more gradual support. If it causes distress, they're not ready. Try again in a few weeks." },
+      { title: "The Discipline Connection", body: "Sarah Ockwell-Smith reminds us: a well-rested child is a better-regulated child. Sleep and behaviour are deeply linked. Investing in good sleep foundations now pays dividends in the toddler years when emotions are BIG and self-control is small." },
+    ],
+    sourceNote: "Schedule based on Gina Ford. Sleep regression insights from Ockwell-Smith's research on infant sleep cycle maturation."
   },
   {
     weekLabel: "Month 4–6",
@@ -237,7 +244,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "5:00 PM", activity: "Feed, bath, bedtime routine", feedNote: "Breast: 15 min each | Bottle: 180–210ml" },
       { time: "6:45 PM", activity: "Top-up & settle" },
       { time: "7:00 PM", activity: "Bedtime" },
-    ]
+    ],
+    sleepScience: "By 4-6 months, REM drops to ~35% and sleep cycles extend to ~50 minutes. Your baby's body clock is now comparable to an adult's. They may still wake 10-15 times between cycles each night — but most can resettle without help if conditions are right.",
+    gentleTips: [
+      { title: "Solids & Sleep", body: "Starting solids around 6 months can help sleep — but don't introduce them purely for that reason. Follow your baby's readiness signs. If milk intake drops too much during the day due to solids, night wakings may actually INCREASE." },
+      { title: "Separation Awareness Begins", body: "Around 6 months, babies develop object permanence — they know you exist even when you leave the room. This can cause bedtime protests and night wakings. Gentle reassurance (voice from the doorway, brief visits) teaches them you always come back." },
+      { title: "Creating Sleep Independence (Gently)", body: "This is an ideal window to establish independent settling — if your baby is ready. Try a gradual approach: sit beside the cot tonight, move the chair slightly further away each night over 1-2 weeks. No crying it out needed." },
+    ],
+    sourceNote: "Schedule follows Gina Ford's two-nap transition. Gentle settling approach adapted from Ockwell-Smith's gradual withdrawal method."
   },
 ];
 
