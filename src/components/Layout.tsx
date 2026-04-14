@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles, Heart } from "lucide-react";
+import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles, Heart, Baby, ChevronDown } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -13,27 +13,33 @@ import SignalLogo from "@/components/SignalLogo";
 
 import PageTransition from "@/components/PageTransition";
 
-// Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
-// Desktop nav: Home | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
-const navItems = [
-  { path: "/my-practice", icon: Leaf, label: "Habits" },
-  { path: "/nutrition", icon: Utensils, label: "Nutrition" },
-  { path: "/movement", icon: Dumbbell, label: "Movement" },
-  { path: "/cycle", icon: Moon, label: "Cycle" },
-  { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
-  { path: "/journal", icon: BookOpen, label: "Journal" },
-  { path: "/community", icon: Users, label: "Community" },
-  { path: "/connect", icon: Heart, label: "Connect" },
+// Desktop nav categories
+const NAV_CATEGORIES = [
+  {
+    label: "Body",
+    items: [
+      { path: "/cycle", icon: Moon, label: "Cycle" },
+      { path: "/movement", icon: Dumbbell, label: "Movement" },
+      { path: "/nutrition", icon: Utensils, label: "Nutrition" },
+    ],
+  },
+  {
+    label: "Mind",
+    items: [
+      { path: "/my-practice", icon: Leaf, label: "Habits" },
+      { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
+      { path: "/journal", icon: BookOpen, label: "Journal" },
+    ],
+  },
+  {
+    label: "Life",
+    items: [
+      { path: "/community", icon: Users, label: "Community" },
+      { path: "/connect", icon: Heart, label: "Connect" },
+      { path: "/parenting", icon: Baby, label: "Parenting" },
+    ],
+  },
 ];
-
-// Mobile bottom tabs: Daily Habits | Nutrition | Movement | Cycle | More | Journal | Community | Account
-// That's 8 items — too many for a tab bar. We'll do 5 primary + More overlay.
-// Primary: Home(logo) + Daily Habits | Cycle | Journal | Move | More
-// Per user request exact order: Daily Habits | Nutrition | Movement | Cycle | More
-// With More containing: Mindfulness | Journal | Community | Account
-// But user also wants Journal and Community as top-level... Let's use 5 tabs + More:
-// Tabs: Daily Habits | Cycle | Journal | Move | More
-// More: Nutrition | Mindfulness | Community | Account
 
 const PRIMARY_TABS = [
   { path: "/", label: "Home", icon: Home },
@@ -43,14 +49,37 @@ const PRIMARY_TABS = [
   { path: "more", label: "More", icon: MoreHorizontal },
 ];
 
-const MORE_ITEMS = [
-  { path: "/my-practice", label: "Habits", icon: Leaf },
-  { path: "/mindfulness", label: "Mindfulness", icon: Brain },
-  { path: "/journal", label: "Journal", icon: BookOpen },
-  { path: "/community", label: "Community", icon: Users },
-  { path: "/connect", label: "Connect", icon: Heart },
-  { path: "/account", label: "Account", icon: User },
+const MORE_CATEGORIES = [
+  {
+    label: "Body",
+    items: [
+      { path: "/my-practice", label: "Habits", icon: Leaf },
+    ],
+  },
+  {
+    label: "Mind",
+    items: [
+      { path: "/mindfulness", label: "Mindfulness", icon: Brain },
+      { path: "/journal", label: "Journal", icon: BookOpen },
+    ],
+  },
+  {
+    label: "Life",
+    items: [
+      { path: "/community", label: "Community", icon: Users },
+      { path: "/connect", label: "Connect", icon: Heart },
+      { path: "/parenting", label: "Parenting", icon: Baby },
+    ],
+  },
+  {
+    label: "",
+    items: [
+      { path: "/account", label: "Account", icon: User },
+    ],
+  },
 ];
+
+const ALL_MORE_PATHS = MORE_CATEGORIES.flatMap(c => c.items.map(i => i.path));
 
 const PHASE_BORDER: Record<string, string> = {
   menstrual: "border-phase-menstrual",
