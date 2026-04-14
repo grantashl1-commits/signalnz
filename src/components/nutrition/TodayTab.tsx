@@ -458,10 +458,7 @@ function CompactMealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEate
         <p className="font-display text-[11px] italic text-foreground leading-tight line-clamp-2">{name}</p>
         
         {macros && (
-          <div className="space-y-0.5">
-            <p className="font-body text-[8px] text-muted-foreground">{Math.round(macros.cal * scale)} cal</p>
-            <p className="font-body text-[8px] text-muted-foreground">P:{Math.round(macros.p * scale)}g C:{Math.round(macros.c * scale)}g F:{Math.round(macros.f * scale)}g</p>
-          </div>
+          <p className="font-body text-[8px] text-muted-foreground">{Math.round(macros.cal * scale)} cal</p>
         )}
 
         <button
