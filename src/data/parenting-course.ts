@@ -1,5 +1,6 @@
-// Parenting course data — inspired by evidence-based infant/toddler/teen approaches
-// All content is original and synthesized from multiple parenting philosophies
+// Parenting course data — AI-generated educational content synthesized from
+// widely-accepted developmental psychology and parenting research.
+// All titles, scripts, and strategies are original. Not a substitute for professional advice.
 
 import type { CourseModule, CourseLesson, CourseActivity } from "@/data/connect-course";
 
