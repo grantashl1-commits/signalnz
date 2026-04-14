@@ -170,6 +170,29 @@ export default function ParentingCoursePage() {
                 </motion.button>
               )}
 
+              {/* Little Minds tool card for kids-teens tab */}
+              {activeTab === "kids-teens" && (
+                <motion.a
+                  href="https://littleminds.mindcast.co.nz/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="block w-full text-left p-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-amber-500/10 to-orange-400/5 mb-4 hover:border-primary/40 active:scale-[0.99] transition-all"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/15 flex items-center justify-center shrink-0">
+                      <MessageCircleQuestion className="h-5 w-5 text-amber-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-display text-sm font-bold text-foreground">Little Minds Big Questions</h3>
+                      <p className="font-body text-xs text-muted-foreground mt-1">When your child asks a tricky question, get a gentle metaphor-based story to help them understand</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+                  </div>
+                </motion.a>
+              )}
+
               {/* Course modules */}
               <div className="grid gap-3">
                 {course.map((mod, i) => {
