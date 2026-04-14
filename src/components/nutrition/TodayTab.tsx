@@ -346,6 +346,7 @@ export default function TodayTab() {
               isEaten={!!eaten["morning-snack"]}
               phaseColor={phaseColor}
               onToggleExpand={() => { haptic("light"); setExpandedMeal(expandedMeal === "morning-snack" ? null : "morning-snack"); }}
+              onLog={() => markEaten("morning-snack")}
             />
             <CompactSnackCard
               label="Afternoon"
@@ -354,6 +355,7 @@ export default function TodayTab() {
               isEaten={!!eaten["afternoon-snack"]}
               phaseColor={phaseColor}
               onToggleExpand={() => { haptic("light"); setExpandedMeal(expandedMeal === "afternoon-snack" ? null : "afternoon-snack"); }}
+              onLog={() => markEaten("afternoon-snack")}
             />
             <CompactSnackCard
               label="Seed Cycling"
@@ -362,6 +364,7 @@ export default function TodayTab() {
               isEaten={seedsTaken}
               phaseColor={phaseColor}
               onToggleExpand={() => { haptic("light"); setExpandedMeal(expandedMeal === "seed-cycling" ? null : "seed-cycling"); }}
+              onLog={handleSeedCyclingLog}
             />
           </div>
         </div>
