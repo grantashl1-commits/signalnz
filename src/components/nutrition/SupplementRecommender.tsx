@@ -389,6 +389,26 @@ export default function SupplementRecommender() {
                           <p className="font-body text-[11px] text-muted-foreground leading-relaxed italic">{rec.supplement.note}</p>
                         </div>
                       )}
+
+                      {/* Add to Wellness Stack */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleStack(rec.supplement.id, rec.supplement.name);
+                        }}
+                        className="w-full touch-btn rounded-xl py-2.5 font-body text-xs font-medium transition-all flex items-center justify-center gap-2"
+                        style={{
+                          backgroundColor: stack.includes(rec.supplement.id) ? 'hsl(var(--primary))' : 'transparent',
+                          color: stack.includes(rec.supplement.id) ? 'hsl(var(--primary-foreground))' : 'hsl(var(--primary))',
+                          border: '1.5px solid hsl(var(--primary))',
+                        }}
+                      >
+                        {stack.includes(rec.supplement.id) ? (
+                          <><Check className="h-3.5 w-3.5" /> In my Wellness Stack</>
+                        ) : (
+                          <><Plus className="h-3.5 w-3.5" /> Add to my Wellness Stack</>
+                        )}
+                      </button>
                     </div>
                   </motion.div>
                 )}
