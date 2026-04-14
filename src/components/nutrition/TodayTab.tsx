@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
@@ -348,7 +349,13 @@ export default function TodayTab() {
 
         {/* Snacks + Seed Cycling — 3-column row like meals */}
         <div>
-          <h3 className="font-display text-card-title font-bold text-foreground mb-3">Snacks</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-display text-card-title font-bold text-foreground">Snacks</h3>
+            <div className="flex items-center gap-2">
+              <span className="font-body text-[10px] text-muted-foreground">{trackSnacks ? "Tracking macros" : "Not tracking"}</span>
+              <Switch checked={trackSnacks} onCheckedChange={toggleSnackTracking} className="scale-75" />
+            </div>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             <CompactSnackCard
               label="Morning"
