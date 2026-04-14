@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, Dumbbell, ChevronRight, Loader2 } from "lucide-react";
+import { Search, ChevronRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
@@ -19,14 +19,12 @@ interface DBExercise {
   category: string | null;
   difficulty: number | null;
   illustration_url: string | null;
-  gif_url: string | null;
   instructions: string | null;
   cues: string[] | null;
   equipment: string[] | null;
   primary_muscles: string[] | null;
 }
 
-// Pre-made workout templates built from DB exercises
 interface QuickWorkout {
   id: string;
   title: string;
@@ -68,13 +66,12 @@ export default function LibraryTab() {
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
   const { guard: guardExpand } = useGatedExpand("movement_browse");
 
-  // Fetch exercises from DB
   useEffect(() => {
     const fetchExercises = async () => {
       setLoading(true);
       const { data } = await supabase
         .from("exercises")
-        .select("id, name, body_part, target, category, difficulty, illustration_url, gif_url, instructions, cues, equipment, primary_muscles")
+        .select("id, name, body_part, target, category, difficulty, illustration_url, instructions, cues, equipment, primary_muscles")
         .order("name");
       if (data) setExercises(data as unknown as DBExercise[]);
       setLoading(false);
@@ -117,7 +114,7 @@ export default function LibraryTab() {
 
     let query = supabase
       .from("exercises")
-      .select("id, name, body_part, target, category, difficulty, illustration_url, gif_url, instructions, cues, equipment, primary_muscles");
+      .select("id, name, body_part, target, category, difficulty, illustration_url, instructions, cues, equipment, primary_muscles");
 
     if (workout.exerciseFilters.categories?.length) {
       query = query.in("category", workout.exerciseFilters.categories);
@@ -153,7 +150,6 @@ export default function LibraryTab() {
 
   return (
     <div className="space-y-5">
-      {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
@@ -165,7 +161,6 @@ export default function LibraryTab() {
         />
       </div>
 
-      {/* Body part filters */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
         {FILTERS.map(f => (
           <button
@@ -180,7 +175,6 @@ export default function LibraryTab() {
         ))}
       </div>
 
-      {/* View toggle */}
       <div className="flex gap-1 bg-secondary rounded-lg p-0.5">
         <button
           onClick={() => setView("exercises")}
@@ -205,10 +199,9 @@ export default function LibraryTab() {
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         </div>
       ) : view === "exercises" ? (
-        /* Exercise list */
         <div className="space-y-1.5">
           {filtered.length === 0 && (
-            <p className="text-center font-body text-sm text-muted-foreground py-8">No exercises found.</p>
+            <p className="py-8 text-center font-body text-sm text-muted-foreground">No exercises found.</p>
           )}
           {filtered.slice(0, 50).map((ex, i) => (
             <motion.div
@@ -216,14 +209,19 @@ export default function LibraryTab() {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(i * 0.02, 0.5) }}
-              className="flex items-center gap-3 rounded-xl bg-card border border-border p-2.5 hover:bg-card/80 transition-colors"
+              className="flex items-center gap-3 rounded-xl border border-border bg-card p-2.5 transition-colors hover:bg-card/80"
             >
-              <ExerciseDemonstration exerciseName={ex.name} size={48} className="rounded-lg shrink-0" />
+              <ExerciseDemonstration
+                exerciseName={ex.name}
+                imageUrl={ex.illustration_url}
+                size={48}
+                className="shrink-0 rounded-lg"
+              />
               <div className="flex-1 min-w-0">
                 <p className="font-body text-sm font-medium text-foreground truncate">{ex.name}</p>
-                <div className="flex items-center gap-2 mt-0.5">
+                <div className="mt-0.5 flex items-center gap-2">
                   {ex.target && (
-                    <span className="font-body text-[9px] text-primary uppercase tracking-wider">{ex.target}</span>
+                    <span className="font-body text-[9px] uppercase tracking-wider text-primary">{ex.target}</span>
                   )}
                   {ex.category && (
                     <span className={`font-body text-[9px] uppercase tracking-wider ${
@@ -242,13 +240,12 @@ export default function LibraryTab() {
             </motion.div>
           ))}
           {filtered.length > 50 && (
-            <p className="text-center font-body text-xs text-muted-foreground py-4">
+            <p className="py-4 text-center font-body text-xs text-muted-foreground">
               Showing 50 of {filtered.length} exercises. Use search to narrow results.
             </p>
           )}
         </div>
       ) : (
-        /* Quick workouts */
         <div className="space-y-3">
           {filteredWorkouts.map((w, i) => {
             const expanded = expandedWorkout === w.id;
@@ -259,11 +256,11 @@ export default function LibraryTab() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.06 }}
-                className="rounded-xl bg-card border border-border overflow-hidden"
+                className="overflow-hidden rounded-xl border border-border bg-card"
               >
                 <button
                   onClick={() => handleExpandWorkout(w)}
-                  className="w-full p-4 text-left flex items-center gap-3"
+                  className="flex w-full items-center gap-3 p-4 text-left"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -272,23 +269,28 @@ export default function LibraryTab() {
                         {w.intensity}
                       </span>
                     </div>
-                    <p className="font-body text-xs text-muted-foreground mt-0.5">{w.description}</p>
+                    <p className="mt-0.5 font-body text-xs text-muted-foreground">{w.description}</p>
                   </div>
-                  <span className="font-body text-xs text-muted-foreground shrink-0">{w.duration}</span>
-                  <ChevronRight className={`h-4 w-4 text-muted-foreground/50 shrink-0 transition-transform ${expanded ? "rotate-90" : ""}`} />
+                  <span className="shrink-0 font-body text-xs text-muted-foreground">{w.duration}</span>
+                  <ChevronRight className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${expanded ? "rotate-90" : ""}`} />
                 </button>
                 {expanded && (
-                  <div className="px-4 pb-4 border-t border-border pt-3 space-y-1.5">
+                  <div className="space-y-1.5 border-t border-border px-4 pb-4 pt-3">
                     {wExercises.length === 0 ? (
                       <div className="flex items-center justify-center py-4">
                         <Loader2 className="h-4 w-4 animate-spin text-primary" />
                       </div>
                     ) : (
                       wExercises.map(ex => (
-                        <div key={ex.id} className="flex items-center gap-2.5 bg-secondary/50 rounded-xl p-2">
-                          <ExerciseDemonstration exerciseName={ex.name} size={36} className="rounded-lg shrink-0" />
+                        <div key={ex.id} className="flex items-center gap-2.5 rounded-xl bg-secondary/50 p-2">
+                          <ExerciseDemonstration
+                            exerciseName={ex.name}
+                            imageUrl={ex.illustration_url}
+                            size={36}
+                            className="shrink-0 rounded-lg"
+                          />
                           <div className="min-w-0 flex-1">
-                            <p className="font-body text-sm text-foreground truncate">{ex.name}</p>
+                            <p className="truncate font-body text-sm text-foreground">{ex.name}</p>
                             <p className="font-body text-[9px] text-primary">{ex.target}</p>
                           </div>
                         </div>
