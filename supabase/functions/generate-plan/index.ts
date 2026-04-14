@@ -294,7 +294,14 @@ Adapt the intensity and exercise selection to match the user's cycle phase each 
 
     const plan = await generateWithAI(systemPrompt, userPrompt);
 
-    // ─── Save to DB ─────────────────────────
+    // ─── Save to DB — delete old plans first ─────────────────────────
+    // Remove any previous AI training plans for this user
+    await supabase
+      .from("user_plans")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("plan_type", "ai_training");
+
     await Promise.all([
       supabase.from("user_plans").insert({
         user_id: user.id,
@@ -302,6 +309,7 @@ Adapt the intensity and exercise selection to match the user's cycle phase each 
         plan_data: plan,
         cycle_phase_at_generation: cyclePhase || "follicular",
         week_number: 1,
+        current_session_index: 0,
       }),
       supabase.from("plan_generations").insert({
         user_id: user.id,

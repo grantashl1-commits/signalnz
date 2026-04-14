@@ -243,6 +243,10 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         return;
       }
 
+      // Delete old AI plans from localStorage
+      localStorage.removeItem("signal_ai_workout_plan");
+      localStorage.removeItem("signal_ai_active_session");
+
       const resp = await supabase.functions.invoke("generate-plan", {
         body: {
           cyclePhase: currentPhase,
@@ -262,14 +266,14 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
 
       // Handle credit/limit errors
       if (resp.error) {
-        const errData = typeof resp.error === 'object' ? resp.error : {};
-        if (errData.message?.includes?.("insufficient_credits") || resp.data?.error === "insufficient_credits") {
+        const errMsg = typeof resp.error === 'object' ? (resp.error as any)?.message : String(resp.error);
+        if (errMsg?.includes?.("insufficient_credits") || resp.data?.error === "insufficient_credits") {
           toast.error("You've used your free plan this month. Extra plans cost 3 credits — top up in your account.");
           setStep("equipment");
           setGenerating(false);
           return;
         }
-        throw resp.error;
+        throw new Error(errMsg || "Plan generation failed");
       }
 
       if (resp.data?.error === "insufficient_credits") {
@@ -280,6 +284,10 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
       }
 
       const plan = resp.data?.plan || resp.data;
+      if (!plan || (!plan.weeks && !plan.title)) {
+        throw new Error("Invalid plan returned");
+      }
+
       setExistingPlan(plan);
       localStorage.setItem("signal_ai_workout_plan", JSON.stringify(plan));
       setCanGenerate(false);
@@ -293,7 +301,11 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     } catch (err: any) {
       console.error("Plan generation failed:", err);
       toast.error("Failed to generate plan. Please try again.");
-      setStep("equipment");
+      // Reload existing plan in case the edge function saved it despite the error
+      await loadExistingPlan();
+      if (!existingPlan) {
+        setStep("equipment");
+      }
     } finally {
       setGenerating(false);
     }

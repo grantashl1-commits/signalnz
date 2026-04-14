@@ -393,6 +393,26 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       completed: completedExercises.has(ex.id),
     }));
 
+    // Save HR session data if HR was connected
+    let hrSessionId: string | null = null;
+    if (hr.connected && hr.bpm > 0) {
+      try {
+        const { data: hrData } = await (supabase as any)
+          .from("hr_sessions")
+          .insert({
+            user_id: user.id,
+            session_date: todayStr,
+            workout_name: todayWorkout.title,
+            bpm_trace: [],
+            zones_summary: {},
+            cycle_phase: currentPhase,
+          })
+          .select("id")
+          .single();
+        if (hrData) hrSessionId = hrData.id;
+      } catch {}
+    }
+
     const { error } = await (supabase as any)
       .from("workout_logs")
       .insert({
@@ -404,6 +424,8 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
         completed: true,
         cycle_phase: currentPhase,
         session_date: todayStr,
+        hr_session_id: hrSessionId,
+        avg_bpm: hr.connected && hr.bpm > 0 ? hr.bpm : null,
       });
 
     setSessionLogging(false);
@@ -424,7 +446,6 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
     }
   };
 
-  // Load AI plan session from localStorage
   // Load AI plan session — either from explicit "Start this session" or auto-detect from DB plan
   useEffect(() => {
     const stored = localStorage.getItem("signal_ai_active_session");
@@ -433,12 +454,12 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       return;
     }
 
-    // Auto-detect today's session from saved AI plan
+    // Auto-detect today's session from saved AI plan using current_session_index
     async function loadTodayFromAIPlan() {
       if (!user) return;
       const { data } = await supabase
         .from("user_plans")
-        .select("plan_data")
+        .select("plan_data, current_session_index")
         .eq("user_id", user.id)
         .eq("plan_type", "ai_training")
         .order("generated_at", { ascending: false })
@@ -446,34 +467,42 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
       if (!data || data.length === 0) return;
 
-      const plan = data[0].plan_data as any;
+      const plan = (data[0] as any).plan_data as any;
+      const sessionIndex = (data[0] as any).current_session_index || 0;
       if (!plan?.weeks?.length) return;
 
-      // Find today's day in the current week
-      const dayOfWeek = new Date().getDay(); // 0=Sun
-      const sessionIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      // Flatten all training days across all weeks
+      const allDays: any[] = [];
+      for (const week of plan.weeks) {
+        if (!week.days) continue;
+        for (const day of week.days) {
+          if (day.session_type !== "rest" && !day.title?.toLowerCase().includes("rest") && day.exercises?.length > 0) {
+            allDays.push(day);
+          }
+        }
+      }
 
-      // Use first week's days as the template (weeks rotate)
-      const currentWeek = plan.weeks[0];
-      const days = currentWeek?.days || [];
+      if (allDays.length === 0) return;
+
+      // Check if today's session was already logged
+      const { data: todayLogs } = await supabase
+        .from("workout_logs")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("session_date", todayStr)
+        .eq("completed", true);
       
-      if (days.length === 0) return;
+      if (todayLogs && todayLogs.length > 0) return; // Already logged today
 
-      // Find the session for today (skip rest days)
-      const trainingDays = days.filter((d: any) => 
-        d.session_type !== "rest" && !d.title?.toLowerCase().includes("rest")
-      );
-
-      if (trainingDays.length === 0) return;
-
-      const todayDay = trainingDays[sessionIdx % trainingDays.length];
-      if (todayDay && todayDay.exercises?.length > 0) {
+      // Use session index to pick the right day (wraps around)
+      const todayDay = allDays[sessionIndex % allDays.length];
+      if (todayDay) {
         setAiSession(todayDay);
       }
     }
 
     loadTodayFromAIPlan();
-  }, [user]);
+  }, [user, todayStr]);
 
   // No training program AND no AI session
   const hasManualProgram = !!(goalCategoryId && program && todayWorkout);
@@ -523,13 +552,18 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const manualCompletedCount = todayExercises.filter(ex => completedExercises.has(ex.id)).length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* AI Session card */}
       {hasAiSession && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="h-px flex-1 bg-primary/20" />
+            <span className="font-display text-[10px] font-bold text-primary uppercase tracking-[0.2em]">✦ AI Training Plan</span>
+            <div className="h-px flex-1 bg-primary/20" />
+          </div>
         <div className="card-warm p-4 space-y-4">
           <div className="flex items-start justify-between">
             <div>
-              <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">AI Training Plan</p>
               <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{aiSession.title || "Session"}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <Clock className="h-3 w-3 text-muted-foreground" />
@@ -577,16 +611,66 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           )}
 
           <button
-            onClick={() => { localStorage.removeItem("signal_ai_active_session"); setAiSession(null); toast.success("Session complete!"); }}
+            onClick={async () => {
+              // Log the AI session to workout_logs
+              if (user) {
+                const exercisesPayload = aiExercises.map((ex: any) => ({
+                  exercise_name: ex.name,
+                  sets: ex.sets,
+                  reps: ex.reps_or_duration || ex.reps,
+                  completed: true,
+                }));
+                await (supabase as any).from("workout_logs").insert({
+                  user_id: user.id,
+                  workout_template_id: null,
+                  exercises: exercisesPayload,
+                  duration_minutes: aiSession.duration_minutes || 45,
+                  notes: `AI plan: ${aiSession.title || "Session"}`,
+                  completed: true,
+                  cycle_phase: currentPhase,
+                  session_date: todayStr,
+                  avg_bpm: hr.connected && hr.bpm > 0 ? hr.bpm : null,
+                });
+
+                // Advance current_session_index in user_plans
+                const { data: planData } = await supabase
+                  .from("user_plans")
+                  .select("id, current_session_index")
+                  .eq("user_id", user.id)
+                  .eq("plan_type", "ai_training")
+                  .order("generated_at", { ascending: false })
+                  .limit(1);
+                if (planData && planData.length > 0) {
+                  const currentIdx = (planData[0] as any).current_session_index || 0;
+                  await (supabase as any)
+                    .from("user_plans")
+                    .update({ current_session_index: currentIdx + 1 })
+                    .eq("id", planData[0].id);
+                }
+              }
+
+              localStorage.removeItem("signal_ai_active_session");
+              setAiSession(null);
+              haptic("success");
+              toast.success("Session logged! 🎉");
+              onSessionLogged?.();
+            }}
             className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2"
           >
-            <Save className="h-4 w-4" /> Finish session
+            <Save className="h-4 w-4" /> Finish & log session
           </button>
+        </div>
         </div>
       )}
 
       {/* Manual program card */}
       {hasManualProgram && todayWorkout && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="h-px flex-1 bg-primary/20" />
+            <span className="font-display text-[10px] font-bold text-primary uppercase tracking-[0.2em]">✦ Training Programme</span>
+            <div className="h-px flex-1 bg-primary/20" />
+          </div>
         <div className="card-warm p-4 space-y-4">
           <div className="flex items-start justify-between">
             <div>
@@ -693,6 +777,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
               <span className="font-body text-sm text-emerald-600 font-medium">Session logged ✓</span>
             </div>
           )}
+        </div>
         </div>
       )}
 
