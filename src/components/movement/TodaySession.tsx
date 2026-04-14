@@ -10,6 +10,16 @@ import { useCycle } from "@/contexts/CycleContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import { TimerButton, isTimeBased, parseTimeFromReps } from "@/components/movement/IntervalTimer";
+
+function parseRestSeconds(rest: string | null): number | null {
+  if (!rest) return null;
+  const sec = rest.match(/(\d+)\s*s/i);
+  if (sec) return parseInt(sec[1]);
+  const min = rest.match(/(\d+)\s*min/i);
+  if (min) return parseInt(min[1]) * 60;
+  return null;
+}
 
 /* ── Evidence-based technique tips by keyword ── */
 const TECHNIQUE_TIPS: Record<string, { cue: string; why: string }[]> = {
@@ -299,6 +309,19 @@ function AIExerciseRow({
                 <div className="flex items-start gap-2 rounded-lg bg-primary/5 px-2.5 py-2">
                   <TrendingUp className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
                   <p className="font-body text-xs text-foreground">{ex.progression}</p>
+                </div>
+              )}
+
+              {/* Timer for time-based exercises */}
+              {isTimeBased(ex.reps_or_duration) && (
+                <div className="mt-1">
+                  <TimerButton
+                    exerciseName={ex.name}
+                    reps={ex.reps_or_duration}
+                    sets={ex.sets}
+                    restSeconds={ex.rest ? parseRestSeconds(ex.rest) : null}
+                    onComplete={onToggle}
+                  />
                 </div>
               )}
             </div>
