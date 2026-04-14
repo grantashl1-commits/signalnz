@@ -604,10 +604,53 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
           )}
 
           <button
-            onClick={() => { localStorage.removeItem("signal_ai_active_session"); setAiSession(null); toast.success("Session complete!"); }}
+            onClick={async () => {
+              // Log the AI session to workout_logs
+              if (user) {
+                const exercisesPayload = aiExercises.map((ex: any) => ({
+                  exercise_name: ex.name,
+                  sets: ex.sets,
+                  reps: ex.reps_or_duration || ex.reps,
+                  completed: true,
+                }));
+                await (supabase as any).from("workout_logs").insert({
+                  user_id: user.id,
+                  workout_template_id: null,
+                  exercises: exercisesPayload,
+                  duration_minutes: aiSession.duration_minutes || 45,
+                  notes: `AI plan: ${aiSession.title || "Session"}`,
+                  completed: true,
+                  cycle_phase: currentPhase,
+                  session_date: todayStr,
+                  avg_bpm: hr.connected && hr.bpm > 0 ? hr.bpm : null,
+                });
+
+                // Advance current_session_index in user_plans
+                const { data: planData } = await supabase
+                  .from("user_plans")
+                  .select("id, current_session_index")
+                  .eq("user_id", user.id)
+                  .eq("plan_type", "ai_training")
+                  .order("generated_at", { ascending: false })
+                  .limit(1);
+                if (planData && planData.length > 0) {
+                  const currentIdx = (planData[0] as any).current_session_index || 0;
+                  await (supabase as any)
+                    .from("user_plans")
+                    .update({ current_session_index: currentIdx + 1 })
+                    .eq("id", planData[0].id);
+                }
+              }
+
+              localStorage.removeItem("signal_ai_active_session");
+              setAiSession(null);
+              haptic("success");
+              toast.success("Session logged! 🎉");
+              onSessionLogged?.();
+            }}
             className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2"
           >
-            <Save className="h-4 w-4" /> Finish session
+            <Save className="h-4 w-4" /> Finish & log session
           </button>
         </div>
         </div>
