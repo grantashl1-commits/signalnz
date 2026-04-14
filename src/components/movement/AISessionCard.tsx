@@ -32,24 +32,24 @@ const cardVariant = {
 };
 
 // Cache for stretch lookups
-const stretchCache = new Map<string, { gif_url: string | null; hold_duration: string; target_muscle: string }>();
+const stretchCache = new Map<string, { illustration_url: string | null; hold_duration: string; target_muscle: string }>();
 
 async function lookupStretch(name: string) {
   const key = name.toLowerCase();
   if (stretchCache.has(key)) return stretchCache.get(key)!;
-  
+
   const searchTerms = key.split(" ").slice(0, 2).join(" ");
   const { data } = await supabase
     .from("stretches")
-    .select("gif_url, hold_duration, target_muscle")
+    .select("illustration_url, hold_duration, target_muscle")
     .ilike("name", `%${searchTerms}%`)
     .limit(1)
     .maybeSingle();
-  
-  const result = { 
-    gif_url: data?.gif_url || null, 
-    hold_duration: data?.hold_duration || "", 
-    target_muscle: data?.target_muscle || "" 
+
+  const result = {
+    illustration_url: (data as { illustration_url?: string | null } | null)?.illustration_url || null,
+    hold_duration: data?.hold_duration || "",
+    target_muscle: data?.target_muscle || ""
   };
   stretchCache.set(key, result);
   return result;
@@ -66,7 +66,7 @@ interface AISessionCardProps {
 }
 
 function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
-  const [stretchData, setStretchData] = useState<{ gif_url: string | null; hold_duration: string; target_muscle: string } | null>(null);
+  const [stretchData, setStretchData] = useState<{ illustration_url: string | null; hold_duration: string; target_muscle: string } | null>(null);
 
   useEffect(() => {
     lookupStretch(item.name).then(setStretchData);
@@ -76,11 +76,12 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
     <div className="flex items-center gap-2.5 py-1.5">
       {showGif && (
         <div className="flex-shrink-0">
-          {stretchData?.gif_url ? (
-            <img src={stretchData.gif_url} alt={sanitizeText(item.name)} className="w-9 h-9 rounded-lg object-cover" loading="lazy" />
-          ) : (
-            <ExerciseDemonstration exerciseName={sanitizeText(item.name)} size={36} className="rounded-lg" />
-          )}
+          <ExerciseDemonstration
+            exerciseName={sanitizeText(item.name)}
+            imageUrl={stretchData?.illustration_url}
+            size={36}
+            className="rounded-lg"
+          />
         </div>
       )}
       <div className="flex-1 min-w-0">
