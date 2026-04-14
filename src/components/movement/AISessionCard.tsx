@@ -65,7 +65,7 @@ interface AISessionCardProps {
 }
 
 function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
-  const [stretchData, setStretchData] = useState<{ illustration_url: string | null; hold_duration: string; target_muscle: string } | null>(null);
+  const [stretchData, setStretchData] = useState<{ hold_duration: string; target_muscle: string } | null>(null);
 
   useEffect(() => {
     lookupStretch(item.name).then(setStretchData);
@@ -77,7 +77,6 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
         <div className="flex-shrink-0">
           <ExerciseDemonstration
             exerciseName={sanitizeText(item.name)}
-            imageUrl={stretchData?.illustration_url}
             size={36}
             className="rounded-lg"
           />
