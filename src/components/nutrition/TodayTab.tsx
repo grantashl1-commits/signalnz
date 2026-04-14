@@ -80,6 +80,17 @@ export default function TodayTab() {
   const todayStr = new Date().toISOString().split("T")[0];
   const [seedsTaken, setSeedsState] = useState(getSeedsTaken(todayStr));
 
+  // Snack tracking opt-out
+  const [trackSnacks, setTrackSnacks] = useState(() => {
+    try { return localStorage.getItem("signal_track_snacks") !== "false"; } catch { return true; }
+  });
+  const toggleSnackTracking = useCallback(() => {
+    const newVal = !trackSnacks;
+    setTrackSnacks(newVal);
+    localStorage.setItem("signal_track_snacks", newVal ? "true" : "false");
+    haptic("medium");
+  }, [trackSnacks]);
+
   const [eaten, setEaten] = useState<Record<string, boolean>>(() => {
     const stored: Record<string, boolean> = {};
     ["breakfast", "lunch", "dinner", "morning-snack", "afternoon-snack", "seed-cycling"].forEach((slot) => {
@@ -199,21 +210,21 @@ export default function TodayTab() {
       }
     });
     
-    if (eaten["morning-snack"]) {
+    if (trackSnacks && eaten["morning-snack"]) {
       const s = getScale("morning-snack");
       totalCal += Math.round(snackMacros.morning.cal * s);
       totalP += Math.round(snackMacros.morning.p * s);
       totalC += Math.round(snackMacros.morning.c * s);
       totalF += Math.round(snackMacros.morning.f * s);
     }
-    if (eaten["afternoon-snack"]) {
+    if (trackSnacks && eaten["afternoon-snack"]) {
       const s = getScale("afternoon-snack");
       totalCal += Math.round(snackMacros.afternoon.cal * s);
       totalP += Math.round(snackMacros.afternoon.p * s);
       totalC += Math.round(snackMacros.afternoon.c * s);
       totalF += Math.round(snackMacros.afternoon.f * s);
     }
-    if (eaten["seed-cycling"]) {
+    if (trackSnacks && eaten["seed-cycling"]) {
       totalCal += SEED_CYCLING_MACROS.cal;
       totalP += SEED_CYCLING_MACROS.p;
       totalC += SEED_CYCLING_MACROS.c;
@@ -221,7 +232,7 @@ export default function TodayTab() {
     }
     
     return { cal: totalCal, p: totalP, c: totalC, f: totalF };
-  }, [eaten, meals, portionScale, snackMacros]);
+  }, [eaten, meals, portionScale, snackMacros, trackSnacks]);
 
   const macroTargets = useMemo(() => {
     if (nutritionTarget) {
