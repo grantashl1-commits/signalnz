@@ -531,11 +531,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                     {items.map(item => {
                       const key = `${cat}:${item.name}`;
                       const isChecked = checkedItems[key];
-                      const displayQty = item.totalQty < 1 ? `${Math.round(item.totalQty * 10) / 10}` :
-                        item.totalQty > 10 ? `${Math.round(item.totalQty)}` :
-                          `${Math.round(item.totalQty * 10) / 10}`;
+                      const smartDisplay = formatSmartQty(item.totalQty, item.unit, item.name);
                       const parsed: ParsedIngredient = {
-                        raw: item.name, quantity: displayQty, unit: item.unit,
+                        raw: item.name, quantity: String(item.totalQty), unit: item.unit,
                         name: item.name, searchTerm: item.searchTerm,
                       };
 
@@ -560,7 +558,8 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                             )}
                           </span>
                           <span className="font-body text-xs font-bold flex-shrink-0" style={{ color: weekPhaseColor }}>
-                            {displayQty} {item.unit}
+                            {smartDisplay}
+                          </span>
                           </span>
                           {item.isCustom && (
                             <button onClick={() => removeCustomItem(item.name)}
