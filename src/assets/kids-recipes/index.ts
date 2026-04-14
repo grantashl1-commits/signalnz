@@ -73,6 +73,87 @@ import kidsHpChickenStirFry from "./kids-hp-chicken-stir-fry.jpg";
 import kidsHpVeggiePastaBake from "./kids-hp-veggie-pasta-bake.jpg";
 import kidsHpSausageTrayBake from "./kids-hp-sausage-tray-bake.jpg";
 
+// Annabel Karmel collections
+import kidsAkSalmonTeriyakiBites from "./kids-ak-salmon-teriyaki-bites.jpg";
+import kidsAkChickenKatsu from "./kids-ak-chicken-katsu.jpg";
+import kidsAkVeggieSausageRolls from "./kids-ak-veggie-sausage-rolls.jpg";
+import kidsAkPinwheelWraps from "./kids-ak-pinwheel-wraps.jpg";
+import kidsAkPastaSaladPots from "./kids-ak-pasta-salad-pots.jpg";
+import kidsAkMiniMeatloafCups from "./kids-ak-mini-meatloaf-cups.jpg";
+import kidsAkSweetPotatoFingers from "./kids-ak-sweet-potato-fingers.jpg";
+import kidsAkOnePotPasta from "./kids-ak-one-pot-pasta.jpg";
+import kidsAkSpeedyChickenWraps from "./kids-ak-speedy-chicken-wraps.jpg";
+// America's Test Kitchen
+import kidsAtkSmashBurgers from "./kids-atk-smash-burgers.jpg";
+import kidsAtkCrispyQuesadilla from "./kids-atk-crispy-quesadilla.jpg";
+import kidsAtkSheetPanNachos from "./kids-atk-sheet-pan-nachos.jpg";
+import kidsAtkStickyDrumsticks from "./kids-atk-sticky-drumsticks.jpg";
+import kidsAtkCheeseBread from "./kids-atk-cheese-bread.jpg";
+// Ava Archer
+import kidsAaRainbowSkewers from "./kids-aa-rainbow-skewers.jpg";
+import kidsAaPizzaScrolls from "./kids-aa-pizza-scrolls.jpg";
+import kidsAaBananaPancakeFaces from "./kids-aa-banana-pancake-faces.jpg";
+import kidsAaAntsOnALog from "./kids-aa-ants-on-a-log.jpg";
+import kidsAaChickenPopcorn from "./kids-aa-chicken-popcorn.jpg";
+import kidsAaCheeseStars from "./kids-aa-cheese-stars.jpg";
+// Bryton Taylor
+import kidsBtDragonNoodles from "./kids-bt-dragon-noodles.jpg";
+import kidsBtFairyBreadToast from "./kids-bt-fairy-bread-toast.jpg";
+// Naturally Nourished Kids
+import kidsNnEnergyBalls from "./kids-nn-energy-balls.jpg";
+import kidsNnSweetPotatoWaffles from "./kids-nn-sweet-potato-waffles.jpg";
+import kidsNnTurkeyVeggieMuffins from "./kids-nn-turkey-veggie-muffins.jpg";
+// Little Helpers Toddler
+import kidsLhBananaOatCookies from "./kids-lh-banana-oat-cookies.jpg";
+import kidsLhAvocadoToastFaces from "./kids-lh-avocado-toast-faces.jpg";
+import kidsLhMiniPizzas from "./kids-lh-mini-pizzas.jpg";
+// Buddy Oliver
+import kidsBoFishGoujonWraps from "./kids-bo-fish-goujon-wraps.jpg";
+import kidsBoPastaPestoPeas from "./kids-bo-pasta-pesto-peas.jpg";
+import kidsBoChickenLollipops from "./kids-bo-chicken-lollipops.jpg";
+// Olivia Rana
+import kidsOrVeggieHummusWraps from "./kids-or-veggie-hummus-wraps.jpg";
+import kidsOrTunaMeltPockets from "./kids-or-tuna-melt-pockets.jpg";
+import kidsOrPastaMuffins from "./kids-or-pasta-muffins.jpg";
+// Emma Jane Frost
+import kidsEjSpaghettiNests from "./kids-ej-spaghetti-nests.jpg";
+import kidsEjChickenGoujons from "./kids-ej-chicken-goujons.jpg";
+import kidsEjTrafficLightPeppers from "./kids-ej-traffic-light-peppers.jpg";
+// Sean Covey
+import kidsScProactiveSmoothieBowl from "./kids-sc-proactive-smoothie-bowl.jpg";
+// Sarah Pound
+import kidsSpOnePanSausagePasta from "./kids-sp-one-pan-sausage-pasta.jpg";
+import kidsSpHoneySoySalmon from "./kids-sp-honey-soy-salmon.jpg";
+import kidsSpChickenPestoBake from "./kids-sp-chicken-pesto-bake.jpg";
+// Danielle Kartes
+import kidsDkPbBananaBites from "./kids-dk-pb-banana-bites.jpg";
+import kidsDkConfettiRice from "./kids-dk-confetti-rice.jpg";
+import kidsDkDippableChicken from "./kids-dk-dippable-chicken.jpg";
+// Kim McCosker
+import kidsKmHamCheeseScrolls from "./kids-km-ham-cheese-scrolls.jpg";
+import kidsKmCornFritters from "./kids-km-corn-fritters.jpg";
+import kidsKmChocBananaPops from "./kids-km-choc-banana-pops.jpg";
+// Sarah Wilson
+import kidsSwVeggieLoadedMince from "./kids-sw-veggie-loaded-mince.jpg";
+import kidsSwSalmonRiceBalls from "./kids-sw-salmon-rice-balls.jpg";
+import kidsSwChickenVeggieSoup from "./kids-sw-chicken-veggie-soup.jpg";
+// Dairy Free
+import kidsDfChickenSatayBowls from "./kids-df-chicken-satay-bowls.jpg";
+import kidsDfBananaPancakes from "./kids-df-banana-pancakes.jpg";
+import kidsDfSpaghettiMeatballs from "./kids-df-spaghetti-meatballs.jpg";
+// Gluten Free
+import kidsGfChickenTenders from "./kids-gf-chicken-tenders.jpg";
+import kidsGfBananaBread from "./kids-gf-banana-bread.jpg";
+import kidsGfPizzaBites from "./kids-gf-pizza-bites.jpg";
+// Keto
+import kidsKetoCheeseCrisps from "./kids-keto-cheese-crisps.jpg";
+import kidsKetoChickenNuggets from "./kids-keto-chicken-nuggets.jpg";
+import kidsKetoZucchiniBoats from "./kids-keto-zucchini-boats.jpg";
+// Baking
+import kidsSbChocolateBrownies from "./kids-sb-chocolate-brownies.jpg";
+import kidsSbScones from "./kids-sb-scones.jpg";
+import kidsSbRainbowCupcakes from "./kids-sb-rainbow-cupcakes.jpg";
+
 export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-chicken-strips": kidsChickenStrips,
   "kids-chicken-fried-rice": kidsChickenFriedRice,
