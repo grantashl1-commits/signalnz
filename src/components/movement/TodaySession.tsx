@@ -728,6 +728,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             </div>
           )}
         </div>
+        </div>
       )}
 
       {/* Rest day — only show when manual program exists but no workout today AND no AI session */}
