@@ -72,7 +72,8 @@ export default function ActivityRenderer({ activity, onComplete }: Props) {
           case "fill_blanks": return <FillBlanks content={activity.content} onComplete={handle} />;
           case "open_response": return <OpenResponse content={activity.content} onComplete={handle} />;
           case "short_answer": return <ShortAnswer content={activity.content} onComplete={handle} />;
-          case "carousel": return <CarouselActivity content={activity.content} onComplete={handle} />;
+          case "carousel":
+          case "info_carousel": return <CarouselActivity content={{ cards: activity.content?.slides?.map((s: any) => ({ title: s.heading, body: s.body })) || activity.content?.cards || [] }} onComplete={handle} />;
           case "decision_point": return <DecisionPoint content={activity.content} onComplete={handle} />;
           case "comparison": return <ComparisonActivity content={activity.content} onComplete={handle} />;
           case "survey": return <SurveyActivity content={activity.content} onComplete={handle} />;
