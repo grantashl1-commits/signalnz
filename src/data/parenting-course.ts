@@ -1758,4 +1758,260 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
       }
     ]
   },
+  // ─── MODULE 18: MINDFUL PARENTING (Clarke-Fields) ──────────────────────
+  {
+    id: "kt-m18",
+    title: "Mindful Parenting",
+    subtitle: "Breaking reactive cycles & responding with intention",
+    description: "You can't pour from an empty cup. Hunter Clarke-Fields' approach helps you recognise your own triggers, break generational patterns of reactivity, and show up as the parent you want to be — even on the hard days.",
+    estimatedMinutes: 35,
+    sourceBooks: ["Raising Good Humans — Hunter Clarke-Fields"],
+    sources: ["Mindfulness Research", "Attachment Theory"],
+    lessons: [
+      {
+        id: "kt-m18-l1",
+        title: "Your Triggers Aren't About Your Child",
+        description: "Understanding why YOU react the way you do",
+        activities: [
+          { id: "kt-m18-l1-a1", type: "info_carousel" as any, title: "Trigger Awareness", content: { slides: [
+            { heading: "The Autopilot Problem", body: "Clarke-Fields explains that most parenting reactions are on autopilot — we default to whatever WE experienced growing up. Yelling, threatening, shaming, withdrawing — these aren't conscious choices. They're conditioned responses from our own childhood. The first step to changing is noticing: 'I'm reacting, not responding.'" },
+            { heading: "Mapping Your Triggers", body: "Common parental triggers and what's underneath:\n• Child whining → 'I can't handle being needed constantly' (overwhelm)\n• Child defying → 'I'm not respected/in control' (powerlessness)\n• Child crying → 'I was told crying was weakness' (inherited shame)\n• Sibling fighting → 'I need peace to function' (sensory overload)\n• Child lying → 'I can't trust anyone' (betrayal wound)\n\nYour trigger reveals YOUR unmet need, not your child's flaw." },
+            { heading: "The STOP Practice", body: "When you feel the surge of reactivity:\n\nS — Stop. Physically pause. Don't speak.\nT — Take a breath. One deep breath reactivates your prefrontal cortex.\nO — Observe. What am I feeling? What's my body doing? What story am I telling myself?\nP — Proceed. Now choose your response consciously.\n\nThis takes 10 seconds. Those 10 seconds change everything." },
+            { heading: "Repair Over Perfection", body: "You WILL lose it sometimes. Clarke-Fields says the magic isn't in never making mistakes — it's in how you repair. After you've calmed down:\n• 'I yelled at you and that wasn't okay. I'm sorry.'\n• 'You didn't deserve that. I was feeling overwhelmed and I handled it badly.'\n• 'What can I do to make this right?'\n\nRepair teaches your child: mistakes are human, accountability matters, and relationships can heal." },
+          ]}},
+          { id: "kt-m18-l1-a2", type: "open_response" as any, title: "Trigger Map", content: { prompt: "What are your top 3 parenting triggers? For each one, can you identify what's UNDERNEATH it — what need or wound is being activated? Write honestly; this is just for you.", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m18-l2",
+        title: "Breaking Generational Patterns",
+        description: "You don't have to parent the way you were parented",
+        activities: [
+          { id: "kt-m18-l2-a1", type: "info_carousel" as any, title: "Breaking the Cycle", content: { slides: [
+            { heading: "The Inheritance", body: "Clarke-Fields is clear: we parent the way we were parented UNLESS we consciously choose otherwise. The phrases that come out under stress — 'Because I said so,' 'Stop crying or I'll give you something to cry about,' 'You're being ridiculous' — those are echoes. They're your parents' voices coming through your mouth. Noticing this is the beginning of change." },
+            { heading: "The Inner Child Work", body: "When your child's behaviour triggers an outsized reaction, ask: 'How old do I feel right now?' Often the answer isn't your actual age — it's 6, or 10, or 14. Your wounded inner child is reacting to their wounded inner child. Two hurt kids can't solve anything. The adult needs to show up first." },
+            { heading: "Choosing Your Legacy", body: "Write two lists:\n1. What I received from my parents that I want to KEEP: (love of reading, family dinners, work ethic...)\n2. What I received that I want to CHANGE: (criticism, emotional unavailability, yelling, comparison...)\n\nYou are the transition generation. The patterns that stop with you don't reach your grandchildren." },
+            { heading: "Daily Mindfulness Practice", body: "Clarke-Fields recommends just 5 minutes daily:\n• Morning: set a parenting intention ('Today I will pause before reacting')\n• During conflict: one conscious breath before speaking\n• Evening: reflect without judgment — 'What went well? What would I do differently?'\n\nMindfulness isn't about being calm all the time. It's about being AWARE of when you're not calm — and choosing what to do next." },
+          ]}},
+          { id: "kt-m18-l2-a2", type: "survey" as any, title: "Self-Awareness", content: { question: "Which reactive pattern do you most want to break?", options: ["Yelling when overwhelmed", "Withdrawing/shutting down", "Over-controlling/micromanaging", "Using guilt or shame", "Comparing my kids to others", "Dismissing their emotions"] }},
+        ]
+      },
+      {
+        id: "kt-m18-l3",
+        title: "Responding vs Reacting",
+        description: "Practical scripts for the moments that test you most",
+        activities: [
+          { id: "kt-m18-l3-a1", type: "info_carousel" as any, title: "Response Scripts", content: { slides: [
+            { heading: "Instead of Yelling", body: "REACTIVE: 'HOW MANY TIMES DO I HAVE TO TELL YOU?!'\nRESPONSIVE: 'I notice this keeps happening. Let's figure out a system that works for both of us.'\n\nREACTIVE: 'STOP IT RIGHT NOW!'\nRESPONSIVE: 'I can see you're struggling. I'm going to take a breath, and then we'll work this out.'\n\nThe shift: from controlling THEM to regulating YOURSELF." },
+            { heading: "Instead of Shaming", body: "REACTIVE: 'What is WRONG with you?'\nRESPONSIVE: 'That behaviour isn't okay. You're a good person having a hard moment.'\n\nREACTIVE: 'You always do this!'\nRESPONSIVE: 'This happened today. What was going on for you?'\n\nREACTIVE: 'You're being such a brat!'\nRESPONSIVE: 'I can see big feelings are in charge right now. I'm here when you're ready.'" },
+            { heading: "Instead of Threatening", body: "REACTIVE: 'If you don't stop, I'm taking everything away!'\nRESPONSIVE: 'Here's what's going to happen: [clear, calm consequence]. You choose.'\n\nREACTIVE: 'Wait till your father gets home!'\nRESPONSIVE: 'We're going to deal with this now, together, calmly.'\n\nThe principle: consequences should be related, respectful, and reasonable — not punitive." },
+            { heading: "The 24-Hour Rule", body: "Clarke-Fields suggests: for any non-urgent issue, wait 24 hours before having the conversation. Most things feel less catastrophic after sleep. You'll be calmer, they'll be calmer, and the conversation will be productive rather than punitive.\n\nExceptions: safety issues require immediate action. Everything else can wait." },
+          ]}},
+          { id: "kt-m18-l3-a2", type: "open_response" as any, title: "Script Practice", content: { prompt: "Think of the last time you reacted instead of responded. Rewrite the moment: what did you say, and what could you have said instead? How might the outcome have changed?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 19: GENTLE DISCIPLINE (Ockwell-Smith) ──────────────────────
+  {
+    id: "kt-m19",
+    title: "Gentle Discipline",
+    subtitle: "Setting boundaries with empathy, not punishment",
+    description: "Sarah Ockwell-Smith's gentle discipline approach proves you can have firm boundaries AND deep connection. Discipline means 'to teach' — not 'to punish.' These strategies work with your child's brain, not against it.",
+    estimatedMinutes: 35,
+    sourceBooks: ["Gentle Discipline — Sarah Ockwell-Smith"],
+    sources: ["Developmental Psychology", "Attachment Research"],
+    lessons: [
+      {
+        id: "kt-m19-l1",
+        title: "Why Punishment Doesn't Work",
+        description: "The science behind why traditional discipline backfires",
+        activities: [
+          { id: "kt-m19-l1-a1", type: "info_carousel" as any, title: "Beyond Punishment", content: { slides: [
+            { heading: "Punishment vs Discipline", body: "Ockwell-Smith draws a critical distinction:\n\nPUNISHMENT: Making a child suffer for a mistake. Goal: compliance through fear.\nDISCIPLINE: Teaching a child to make better choices. Goal: understanding through connection.\n\nPunishment stops behaviour in the moment. Discipline changes behaviour for life. The question isn't 'How do I make them stop?' — it's 'What do I want them to LEARN?'" },
+            { heading: "Why Time-Outs Often Fail", body: "Traditional time-outs isolate a dysregulated child — exactly when they need connection most. Ockwell-Smith explains that when a child is in fight/flight, their learning brain is offline. They can't reflect on what they did wrong from a 'naughty step.' They can only feel rejected.\n\nAlternative: 'Time-IN' — sit with them, help them calm, THEN discuss what happened." },
+            { heading: "The Punishment-Rebellion Cycle", body: "Research shows punishment creates one of three outcomes:\n1. Compliance through fear (breaks the relationship)\n2. Sneakiness (they learn to not get caught)\n3. Rebellion (they push back harder)\n\nNone of these teach the child to make good decisions when you're not watching. Gentle discipline builds INTERNAL motivation — they do the right thing because they understand WHY, not because they're afraid." },
+            { heading: "Behaviour Is Communication", body: "Every challenging behaviour is trying to tell you something:\n• Hitting = 'I don't have words for how I feel'\n• Whining = 'I need connection/attention'\n• Defiance = 'I need some control over my life'\n• Lying = 'I don't feel safe telling the truth'\n• Tantrums = 'My feelings are too big for my body'\n\nAddress the NEED underneath the behaviour, not just the behaviour itself." },
+          ]}},
+          { id: "kt-m19-l1-a2", type: "single_choice" as any, title: "Check", content: { question: "Your 4-year-old hits their sibling. According to gentle discipline, the FIRST step is:", options: [
+            { label: "Put them in time-out immediately", isCorrect: false },
+            { label: "Take away a toy as consequence", isCorrect: false },
+            { label: "Ensure the hurt child is safe, then connect with the hitter to understand what happened", isCorrect: true },
+            { label: "Ignore it — they'll grow out of it", isCorrect: false },
+          ], explanation: "Gentle discipline prioritises safety first (check on the hurt child), then connection (what's going on for the child who hit?), then teaching ('Hitting hurts. When you're angry, you can....'). Punishment skips the learning step entirely." }},
+        ]
+      },
+      {
+        id: "kt-m19-l2",
+        title: "Age-Appropriate Expectations",
+        description: "Understanding what your child's brain can actually do",
+        activities: [
+          { id: "kt-m19-l2-a1", type: "info_carousel" as any, title: "Brain Development", content: { slides: [
+            { heading: "The Immature Brain", body: "Ockwell-Smith emphasises: most 'misbehaviour' is developmentally NORMAL. A 2-year-old grabbing toys isn't 'selfish' — they haven't developed theory of mind yet. A 5-year-old lying isn't 'manipulative' — they're testing reality. A teenager slamming doors isn't 'disrespectful' — their emotional regulation is under construction.\n\nMatching expectations to brain development prevents frustration on both sides." },
+            { heading: "What to Expect & When", body: "0–2: Cannot share, cannot regulate emotions, cannot understand 'why'\n2–4: Beginning empathy, short impulse control, emotional flooding common\n4–7: Can follow rules but will forget under stress, developing conscience\n7–11: Can reason, understand consequences, still emotionally immature\n12+: Can think abstractly but prefrontal cortex still developing until ~25\n\nAsk: 'Is this something my child CAN'T do yet, or WON'T do?'" },
+            { heading: "Reframing Challenging Phases", body: "• 'Terrible twos' → 'The age of autonomy' (they're learning independence)\n• 'Threenager' → 'The age of imagination' (testing boundaries = testing reality)\n• 'Difficult tween' → 'The age of identity' (they're figuring out who they are)\n• 'Impossible teenager' → 'The age of separation' (biologically designed to pull away)\n\nEvery frustrating phase serves a developmental purpose." },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m19-l3",
+        title: "The Gentle Discipline Toolkit",
+        description: "Practical strategies that maintain boundaries AND connection",
+        activities: [
+          { id: "kt-m19-l3-a1", type: "info_carousel" as any, title: "Practical Tools", content: { slides: [
+            { heading: "Natural & Logical Consequences", body: "Natural consequences: 'You didn't wear your coat → you got cold' (the world teaches)\nLogical consequences: 'You threw the toy → the toy is put away for today' (related, respectful, reasonable)\n\nOckwell-Smith's test: Is the consequence RELATED to the behaviour? Is it RESPECTFUL of the child? Is it REASONABLE for their age? If any answer is no, it's punishment disguised as a consequence." },
+            { heading: "The CALM Approach", body: "C — Connect first. Get on their level, make eye contact, use a calm voice.\nA — Acknowledge the feeling. 'I can see you're really frustrated.'\nL — Limit the behaviour. 'I won't let you hit. Hitting hurts.'\nM — Move to solution. 'What could you do instead when you feel this angry?'\n\nThis takes longer than yelling. But the learning lasts infinitely longer." },
+            { heading: "Collaborative Problem-Solving", body: "For recurring issues, sit down OUTSIDE the moment and problem-solve together:\n1. 'I've noticed mornings are really stressful. What's hard about them for you?'\n2. 'What's hard about them for me is...'\n3. 'What could we try that works for both of us?'\n4. Write the plan together. Try it for a week. Review.\n\nChildren who help create solutions are far more likely to follow them." },
+            { heading: "When You Need to Say No", body: "Gentle doesn't mean permissive. You CAN say no firmly and kindly:\n• 'I hear you want to stay up. The answer is no. Your body needs sleep.'\n• 'I understand you're disappointed. We're still leaving now.'\n• 'You can feel angry about the boundary. The boundary stays.'\n\nHold the limit with calm confidence. Empathy for their feelings doesn't mean changing the rule." },
+          ]}},
+          { id: "kt-m19-l3-a2", type: "open_response" as any, title: "Reframe a Battle", content: { prompt: "Think of a recurring discipline issue in your home. Using the CALM approach, write out how you could handle it differently next time. What's the feeling underneath the behaviour?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 20: TALKING ABOUT TOUGH TOPICS (Silverman/Faber) ──────────
+  {
+    id: "kt-m20",
+    title: "Talking About Tough Topics",
+    subtitle: "Having the conversations that matter — even when they're hard",
+    description: "Dr Robyn Silverman and Adele Faber show that HOW you talk to your child matters as much as WHAT you say. These frameworks help you navigate the conversations about race, death, sex, money, mental health, and everything else that catches you off guard.",
+    estimatedMinutes: 35,
+    sourceBooks: ["How to Talk to Kids About Anything — Dr Robyn Silverman", "How to Talk So Kids Will Listen & Listen So Kids Will Talk — Adele Faber"],
+    sources: ["Communication Research", "Child Psychology"],
+    lessons: [
+      {
+        id: "kt-m20-l1",
+        title: "The Art of Listening",
+        description: "Why children stop talking and how to reopen the door",
+        activities: [
+          { id: "kt-m20-l1-a1", type: "info_carousel" as any, title: "Listening Skills", content: { slides: [
+            { heading: "Why Kids Stop Talking", body: "Faber identifies the conversation killers parents use daily without realising:\n• Denying feelings: 'You're fine!' 'There's nothing to be scared of'\n• Philosophising: 'Well, life isn't always fair'\n• Advising: 'What you should do is...'\n• Interrogating: 'Why did you do that? What were you thinking?'\n• Defending the other person: 'I'm sure they didn't mean it'\n\nEach one sends the message: your feelings aren't valid. Eventually, they stop sharing." },
+            { heading: "The Faber Method: Accept Feelings", body: "Instead of fixing, try:\n1. LISTEN with full attention (put down your phone)\n2. ACKNOWLEDGE with a word: 'Oh...' 'Mmm...' 'I see...'\n3. NAME the feeling: 'That sounds really frustrating'\n4. GIVE the wish in fantasy: 'I wish I could make it not rain for your game'\n\nThis doesn't fix the problem. It does something better — it makes your child feel understood. A child who feels understood will come back." },
+            { heading: "The Power of 'Tell Me More'", body: "Silverman's simplest tool: when your child mentions something — anything — say 'Tell me more about that.' Not 'why?' (feels interrogative). Not 'what happened?' (feels investigative). Just: 'Tell me more.'\n\nThis works with toddlers and teenagers. It signals genuine interest without pressure. It hands them control of the conversation. And it often reveals things you'd never have known to ask about." },
+          ]}},
+          { id: "kt-m20-l1-a2", type: "single_choice" as any, title: "Practice", content: { question: "Your child says 'Nobody at school likes me.' Best first response?", options: [
+            { label: "'Of course they do! You have lots of friends!'", isCorrect: false },
+            { label: "'That sounds really lonely. Tell me more about what happened.'", isCorrect: true },
+            { label: "'Maybe if you were nicer to people...'", isCorrect: false },
+            { label: "'Do you want me to talk to your teacher?'", isCorrect: false },
+          ], explanation: "Faber's approach: acknowledge the feeling first, then invite them to share more. Denying ('of course they do') invalidates. Advising and fixing skip the emotional step entirely." }},
+        ]
+      },
+      {
+        id: "kt-m20-l2",
+        title: "Conversations About Bodies, Sex & Consent",
+        description: "Age-appropriate honesty that builds safety",
+        activities: [
+          { id: "kt-m20-l2-a1", type: "info_carousel" as any, title: "The Body Talk", content: { slides: [
+            { heading: "Start Early, Stay Casual (Silverman)", body: "Silverman emphasises: the 'sex talk' should never be ONE big conversation. It should be hundreds of small, casual ones starting from toddlerhood.\n\nAge 2–4: Correct names for body parts. 'Your body belongs to you.'\nAge 5–8: How babies are made (simplified). Puberty preview. Good touch vs bad touch.\nAge 9–12: Detailed puberty. Consent. Healthy relationships. Online safety.\nAge 13+: Sex, contraception, consent, pornography literacy, healthy relationships." },
+            { heading: "The Consent Conversation", body: "Consent education starts at 2, not 12:\n• 'Your body, your rules. No one touches you without permission.'\n• 'Ask before you hug your friend.'\n• 'Uncle Joe wants a hug. You can say no. A wave is fine.'\n• 'If someone touches you and it feels wrong, tell me. You will NEVER be in trouble.'\n\nAs they age: 'Consent is enthusiastic. Silence is not yes. Pressure is not okay. You can change your mind at any time.'" },
+            { heading: "When They Find Pornography", body: "Average age of first exposure to pornography: 11. Silverman's approach — don't panic, educate:\n• 'You're not in trouble for seeing this.'\n• 'What you saw is not what real relationships/sex look like.'\n• 'Those are actors performing for a camera. Real intimacy involves caring about the other person's feelings.'\n• 'If you see something that makes you feel confused or uncomfortable, you can always talk to me.'\n\nThis conversation should happen BEFORE exposure, not after." },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m20-l3",
+        title: "Race, Privilege & Difference",
+        description: "Helping your child understand and respect diversity",
+        activities: [
+          { id: "kt-m20-l3-a1", type: "info_carousel" as any, title: "Diversity Talks", content: { slides: [
+            { heading: "Don't Be Colourblind (Silverman)", body: "Silverman cautions against 'We don't see colour' — children DO notice differences from age 3. Pretending differences don't exist teaches them it's shameful to notice or discuss them.\n\nInstead: 'People have different skin colours, like people have different eye colours. All are beautiful. What matters is how we treat each other.'" },
+            { heading: "Answering Embarrassing Questions", body: "When your child points at someone and says loudly 'Why is that person in a wheelchair?'\n• Don't shush them (teaches that disability is shameful)\n• Answer simply: 'Their legs work differently, so they use a chair to help them move around.'\n• If appropriate, model friendly interaction\n\nSilverman says: children's curiosity about difference is healthy. Our discomfort is the problem, not their questions." },
+            { heading: "Building Empathy Through Exposure", body: "Diverse books, friendships, media, and experiences teach empathy naturally. If your child's world is homogeneous, actively broaden it:\n• Books featuring characters from different backgrounds\n• Cultural events and festivals\n• Conversations about inequality: 'Not everyone has what we have. What could we do about that?'\n• Model inclusivity in your own friendships and choices" },
+          ]}},
+          { id: "kt-m20-l3-a2", type: "open_response" as any, title: "Reflect", content: { prompt: "What tough conversation have you been avoiding with your child? Using the Faber listening method (acknowledge feelings, name the emotion, invite them to share), write out how you could start that conversation this week.", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 21: THE DISENGAGED TEEN (Anderson/Winthrop) ────────────────
+  {
+    id: "kt-m21",
+    title: "The Disengaged Teen",
+    subtitle: "Reigniting motivation when your teenager has checked out",
+    description: "Jenny Anderson and Rebecca Winthrop's research reveals why so many teens disengage — and it's not laziness. These strategies help you understand what's driving the disconnection and rebuild your teenager's sense of purpose and agency.",
+    estimatedMinutes: 30,
+    sourceBooks: ["The Disengaged Teen — Jenny Anderson & Rebecca Winthrop"],
+    sources: ["Adolescent Motivation Research", "Education Psychology"],
+    lessons: [
+      {
+        id: "kt-m21-l1",
+        title: "Why Teens Disengage",
+        description: "It's not laziness — it's something deeper",
+        activities: [
+          { id: "kt-m21-l1-a1", type: "info_carousel" as any, title: "Understanding Disengagement", content: { slides: [
+            { heading: "The Disengagement Epidemic", body: "Anderson and Winthrop found that teen disengagement is rarely about laziness. The most common drivers:\n• Feeling unseen: 'No one at school actually knows me'\n• Feeling irrelevant: 'Why does any of this matter?'\n• Feeling powerless: 'Nothing I do changes anything'\n• Overwhelm: 'There's too much expected of me and I can't do any of it well'\n• Misalignment: 'What I care about isn't what school values'\n\nDisengagement is a PROTECTIVE response — they withdraw to protect themselves from failure or meaninglessness." },
+            { heading: "The Belonging Crisis", body: "Research shows the #1 predictor of teen engagement isn't intelligence, discipline, or resources — it's BELONGING. A teenager who feels they belong (at school, in a family, in a community) will show up and try. A teenager who feels like an outsider will check out.\n\nAsk your teen: 'Where do you feel most like yourself? Where do you feel you belong?' If they can't answer, that's your starting point." },
+            { heading: "Performance vs Mastery", body: "Anderson and Winthrop distinguish between performance orientation ('I need to get an A') and mastery orientation ('I want to understand this'). Teens who are performance-oriented burn out faster — every test becomes a judgment of their worth. Teens who are mastery-oriented are more resilient because they're driven by curiosity, not fear.\n\nShift the conversation: from 'What did you get?' to 'What did you learn?'" },
+          ]}},
+          { id: "kt-m21-l1-a2", type: "survey" as any, title: "Check In", content: { question: "What signs of disengagement do you see in your teen?", options: ["Declining grades without apparent cause", "Loss of interest in activities they used to love", "Spending most time alone in their room", "Saying 'I don't care' about most things", "Resisting school or responsibilities", "Excessive screen use as escape"] }},
+        ]
+      },
+      {
+        id: "kt-m21-l2",
+        title: "Rebuilding Connection & Purpose",
+        description: "Practical strategies to re-engage your teenager",
+        activities: [
+          { id: "kt-m21-l2-a1", type: "info_carousel" as any, title: "Re-Engagement", content: { slides: [
+            { heading: "The Autonomy Lever", body: "Disengaged teens often feel controlled in every aspect of their life: school dictates their day, parents dictate their evening, social media dictates their social life. Anderson and Winthrop recommend increasing REAL autonomy:\n• Let them choose how they study (not whether)\n• Let them choose activities (don't over-schedule)\n• Give genuine decision-making power in family matters\n• Ask for their opinion — and actually use it\n\nAutonomy doesn't mean permissiveness. It means treating them as capable of making some decisions." },
+            { heading: "The Purpose Project", body: "Help your teen connect to something bigger than grades:\n• What injustice bothers them? (environment, poverty, animal welfare)\n• What community could they serve?\n• What skill could they teach someone else?\n• What problem could they solve?\n\nPurpose doesn't have to be grand. A teenager who volunteers at a dog shelter, builds a community garden, or tutors younger kids finds meaning — and motivation follows meaning." },
+            { heading: "The 1:1 Investment", body: "Anderson and Winthrop emphasise: disengaged teens are re-engaged by ONE caring adult who sees them. This might be you. It might be a coach, teacher, aunt, or mentor.\n\nWhat this person does: shows genuine interest, remembers details, doesn't judge, holds them to high expectations while showing they believe in them.\n\nSchedule regular 1:1 time with your teen. No agenda. No lectures. Just presence." },
+            { heading: "From Passive to Active", body: "Disengaged teens are often passively consuming (scrolling, watching, gaming). The antidote is ACTIVE engagement:\n• Creating something (music, art, code, food)\n• Building something (physical or digital)\n• Competing at something (sport, debate, gaming at a competitive level)\n• Learning something they CHOSE (not school-mandated)\n\nThe shift from consumer to creator is often the turning point." },
+          ]}},
+          { id: "kt-m21-l2-a2", type: "open_response" as any, title: "Purpose Finding", content: { prompt: "What does your teenager actually care about — even if it seems trivial? How could you connect that interest to a sense of purpose or real-world engagement? Write a plan for one experiment this month.", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 22: ANXIETY DEEP DIVE — SPECIFIC AGES (Goff) ──────────────
+  {
+    id: "kt-m22",
+    title: "Anxiety by Age & Stage",
+    subtitle: "What worry looks like at every age — and exactly what to do",
+    description: "Sissy Goff's age-specific anxiety strategies help you recognise what's normal worry, what's clinical anxiety, and how to support your child at every developmental stage — from separation anxiety at 2 to existential dread at 16.",
+    estimatedMinutes: 35,
+    sourceBooks: ["Raising Worry-Free Girls — Sissy Goff"],
+    sources: ["Anxiety Research", "Developmental Psychology"],
+    lessons: [
+      {
+        id: "kt-m22-l1",
+        title: "Early Childhood Anxiety (Ages 2–7)",
+        description: "Separation fears, monsters, and new situations",
+        activities: [
+          { id: "kt-m22-l1-a1", type: "info_carousel" as any, title: "Little Worriers", content: { slides: [
+            { heading: "Normal Fears by Age", body: "2–3: Separation anxiety, loud noises, animals, dark\n3–5: Monsters, the dark, something happening to parents, bad dreams\n5–7: Natural disasters, germs/getting sick, burglars, being alone\n\nThese fears are developmentally APPROPRIATE — the child's imagination has outpaced their rational thinking. They're not 'being silly.' Their brain genuinely perceives threat." },
+            { heading: "The Containment Approach (Goff)", body: "For young anxious children, Goff recommends 'containment' — not dismissing the fear but putting a boundary around it:\n• 'Worry Monster gets 5 minutes, then he has to go to bed too'\n• Create a physical 'worry box' — write/draw the worry, put it in the box, close the lid\n• Use a 'brave spray' (water in a spray bottle) for monsters\n• Read the worry a 'bedtime story' then say goodnight to it\n\nYou're teaching them: worry has a place, but it doesn't get to run the show." },
+            { heading: "Separation Anxiety Scripts", body: "Drop-off anxiety is agonising for everyone. Goff's approach:\n1. Validate: 'I know it's hard to say goodbye. Missing me makes sense.'\n2. Confidence: 'Your teacher will take great care of you. I always come back.'\n3. Ritual: Create a goodbye ritual (special handshake, kiss on the palm, matching bracelets)\n4. Quick exit: Long, emotional goodbyes make it worse. Be warm, be brief, be gone.\n5. Trust: 'You will be okay. I believe in you.'" },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m22-l2",
+        title: "Tween Anxiety (Ages 8–12)",
+        description: "Social worries, perfectionism, and the comparison trap",
+        activities: [
+          { id: "kt-m22-l2-a1", type: "info_carousel" as any, title: "Tween Worries", content: { slides: [
+            { heading: "The Social Anxiety Surge", body: "At 8–12, the brain becomes acutely aware of social evaluation. Goff identifies common tween anxiety triggers:\n• Being judged by peers\n• Not being invited/included\n• Saying something 'stupid' in class\n• Physical changes during puberty\n• Germs, illness, contamination\n• World events (climate, war, pandemics)\n\nThis is when generalised anxiety often first appears — worry that's not about one specific thing but about EVERYTHING." },
+            { heading: "The Perfectionist Tween", body: "Goff sees perfectionism as 'anxiety wearing an achievement costume.' Signs:\n• Erasing and rewriting homework repeatedly\n• Refusing to try new things where they might fail\n• Catastrophising small mistakes ('I got one wrong — I'm going to fail the whole year')\n• Physical symptoms before tests (stomach aches, headaches)\n• Excessive preparation that never feels 'enough'\n\nThe fix: deliberately model imperfection. Share YOUR mistakes. Celebrate effort over outcome. Let them see you fail and recover." },
+            { heading: "Building Anxiety Resilience", body: "Goff's framework for tween anxiety:\n1. NORMALISE: 'Lots of people your age feel this way. It doesn't mean something is wrong with you.'\n2. EXTERNALISE: 'That's your anxiety talking, not the truth. What does YOUR voice say?'\n3. EXPOSE: Gradually face feared situations in small steps\n4. CELEBRATE: 'You did the scary thing. THAT is what bravery looks like.'\n5. CONNECT: Ensure they have at least one person (besides you) they trust" },
+          ]}},
+          { id: "kt-m22-l2-a2", type: "true_false" as any, title: "Check", content: { statement: "A child who performs well academically cannot have an anxiety disorder.", isTrue: false, explanation: "Many anxious children are high performers — their anxiety DRIVES the performance. Goff calls this 'the gifted anxious child.' They may get straight A's while suffering silently. Academic success can actually mask anxiety because adults think 'they're doing fine' when internally they're in constant distress." }},
+        ]
+      },
+      {
+        id: "kt-m22-l3",
+        title: "Teenage Anxiety (Ages 13–17)",
+        description: "Existential worry, social comparison, and building long-term coping",
+        activities: [
+          { id: "kt-m22-l3-a1", type: "info_carousel" as any, title: "Teen Anxiety", content: { slides: [
+            { heading: "The New Anxiety Landscape", body: "Today's teenagers face anxiety triggers that didn't exist a generation ago:\n• Social media comparison (24/7)\n• Global events in real-time (doom scrolling)\n• Academic pressure intensified by university competition\n• Identity questions (gender, sexuality, values)\n• Climate anxiety ('What's the point if the planet is dying?')\n• FOMO (fear of missing out — every event is documented)\n\nGoff notes that teen anxiety has increased 70% in the past decade. This isn't weakness — it's an appropriate response to an overwhelming environment." },
+            { heading: "When Anxiety Becomes a Disorder", body: "Normal teen worry crosses into clinical anxiety when:\n• It persists most days for 6+ months\n• It significantly impairs daily functioning\n• Physical symptoms are chronic (sleep disruption, appetite changes, panic attacks)\n• They avoid major areas of life (school, social events, leaving the house)\n• They're using substances to manage it\n• They express hopelessness\n\nIf you recognise these signs: seek professional help. Anxiety disorders respond extremely well to treatment (CBT) — especially when caught early." },
+            { heading: "Long-Term Coping Architecture", body: "Goff's framework for building lifelong anxiety management:\n\nDAILY: Movement (30 min), sleep hygiene, limited doom-scrolling, one moment of mindfulness\nWEEKLY: Time in nature, social connection (real, not digital), creative expression\nAS NEEDED: Breathing techniques, journaling, talking to a trusted person\nPROFESSIONAL: Therapy when coping tools aren't enough\n\nThe goal isn't to eliminate anxiety — it's to build a toolkit robust enough to manage it." },
+            { heading: "Supporting Without Enabling", body: "The hardest balance: being supportive without accidentally reinforcing anxiety.\n\nSUPPORTIVE: 'I believe you can handle this. I'm here if you need me.'\nENABLING: 'You don't have to go if you don't want to.'\n\nSUPPORTIVE: 'Let's break this into smaller steps.'\nENABLING: 'I'll do it for you.'\n\nSUPPORTIVE: 'What's the worst that could realistically happen?'\nENABLING: 'You're right, it probably will go badly.'\n\nYour confidence in them becomes their confidence in themselves." },
+          ]}},
+          { id: "kt-m22-l3-a2", type: "open_response" as any, title: "Anxiety Action Plan", content: { prompt: "On a scale of 1–10, how would you rate your child's current anxiety level? What are their top 3 anxiety triggers? Using Goff's framework (normalise, externalise, expose, celebrate, connect), write a support plan for the biggest trigger.", saveToVault: true }},
+        ]
+      }
+    ]
+  },
 ];
