@@ -18,6 +18,7 @@ const VAULT_CATEGORIES = [
   { key: "body-whispers", label: "Body Whispers", desc: "Notes from your cycle — what your body wanted you to know", color: "#C4526E", icon: Flower2 },
   { key: "knowledge-hub", label: "Knowledge Hub", desc: "Insights from the feed you want to reflect on", color: "#5B7F87", icon: BookOpen },
   { key: "connect-course", label: "Connect Course", desc: "Reflections and insights from your couples course journey", color: "#7F5BA6", icon: Users },
+  { key: "look-what-youve-done", label: "Look What You've Done", desc: "Just when you thought you hadn't achieved much — here's proof you have", color: "#8B7355", icon: Star },
 ];
 
 function VaultDrawer({ label }: { label: string }) {
