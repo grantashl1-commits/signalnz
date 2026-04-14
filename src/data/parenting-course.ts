@@ -435,21 +435,21 @@ export const TODDLER_COURSE: CourseModule[] = [
   },
   {
     id: "toddler-m6",
-    title: "The PREP Method",
+    title: "The Transition Toolkit",
     subtitle: "Navigate changes and transitions without meltdowns",
-    description: "Transitions are one of the biggest tantrum triggers. PREP gives you a four-step framework to help your toddler feel in control during everyday changes — from bath time to leaving the park.",
+    description: "Transitions are one of the biggest tantrum triggers. This four-step framework helps your toddler feel in control during everyday changes — from bath time to leaving the park.",
     estimatedMinutes: 20,
     sources: ["Transition Psychology", "Positive Discipline"],
     lessons: [
       {
         id: "toddler-m6-l1",
-        title: "Plan, Reveal, Explain, Put in Charge",
-        description: "The four PREP steps that transform transition chaos into calm cooperation",
+        title: "Prepare, Preview, Empower",
+        description: "Four steps that transform transition chaos into calm cooperation",
         activities: [
-          { id: "t-m6-l1-a1", type: "info_carousel" as any, title: "The PREP Framework", content: { slides: [
-            { heading: "P \u2014 Plan Ahead", body: "Before the transition happens, decide what you\u2019ll say and when. Give warnings: \u2018In 10 minutes, we\u2019ll be leaving the park.\u2019 Visual timers work brilliantly for toddlers who can\u2019t grasp abstract time." },
-            { heading: "R \u2014 Reveal the Plan & E \u2014 Explain Details", body: "Walk through exactly what will happen, step by step. Be specific: \u2018After we eat lunch, daddy will go to the shop and you\u2019ll stay home with mummy. You and mummy will play together until I get back.\u2019 The more details, the safer they feel." },
-            { heading: "P \u2014 Put Them in Charge of Something Small", body: "Give them a micro-job within the transition: \u2018Would you like the blue towel or the grey towel for bath?\u2019 \u2018You can be our toy leader when we pack up!\u2019 Choice = control = cooperation." },
+          { id: "t-m6-l1-a1", type: "info_carousel" as any, title: "The Transition Framework", content: { slides: [
+            { heading: "Step 1 — Prepare Ahead", body: "Before the transition happens, decide what you\u2019ll say and when. Give warnings: \u2018In 10 minutes, we\u2019ll be leaving the park.\u2019 Visual timers work brilliantly for toddlers who can\u2019t grasp abstract time." },
+            { heading: "Step 2 — Preview What\u2019s Next", body: "Walk through exactly what will happen, step by step. Be specific: \u2018After we eat lunch, daddy will go to the shop and you\u2019ll stay home with mummy. You and mummy will play together until I get back.\u2019 The more details, the safer they feel." },
+            { heading: "Step 3 — Empower With Choice", body: "Give them a micro-job within the transition: \u2018Would you like the blue towel or the grey towel for bath?\u2019 \u2018You can be our toy leader when we pack up!\u2019 Choice = control = cooperation." },
           ]}},
           { id: "t-m6-l1-a2", type: "open_response" as any, title: "Script Your PREPs", content: { prompt: "Pick three transitions that regularly cause meltdowns in your household (e.g., leaving the park, bathtime, mealtimes). Write a PREP script for each one, including the specific warning, explanation, and choice you\u2019ll offer.", saveToVault: true }},
         ]
@@ -476,23 +476,23 @@ export const TODDLER_COURSE: CourseModule[] = [
   },
   {
     id: "toddler-m7",
-    title: "The REDO Method",
+    title: "The Gentle Redirect",
     subtitle: "Redirect behaviour without shame or punishment",
-    description: "When your toddler does something undesirable, the REDO method gives you a four-step script: Reflect, Explain, Direct, and Own. It teaches without punishing.",
+    description: "When your toddler does something undesirable, this four-step approach teaches without punishing: Notice, Name, Guide, Follow Through.",
     estimatedMinutes: 15,
     sources: ["Positive Discipline", "Responsive Parenting"],
     lessons: [
       {
         id: "toddler-m7-l1",
-        title: "Reflect, Explain, Direct, Own",
+        title: "Notice, Name, Guide, Follow Through",
         description: "A calm, structured response for unwanted behaviour",
         activities: [
-          { id: "t-m7-l1-a1", type: "info_carousel" as any, title: "The REDO Steps", content: { slides: [
-            { heading: "R \u2014 Reflect the Behaviour", body: "Narrate what you see without judgment: \u2018I see you\u2019re hitting the dog with your cup.\u2019 This shows your child you\u2019re paying attention and gives them a mirror for their actions." },
-            { heading: "E \u2014 Explain & D \u2014 Direct", body: "Explain what\u2019s appropriate: \u2018Cups are for drinking, and the dog likes it when you\u2019re gentle with your hand.\u2019 Then direct them to try again: \u2018Let\u2019s have a redo and try being gentle.\u2019 Show them what \u2018gentle\u2019 looks like with your hands." },
-            { heading: "O \u2014 Own the Situation", body: "If the behaviour continues after the redo, calmly follow through: \u2018I see you\u2019re still hitting the dog with the cup. The cup is going away for now and we can try again to use it safely and gently later.\u2019 No anger, no lectures. Just a natural outcome." },
+          { id: "t-m7-l1-a1", type: "info_carousel" as any, title: "The Gentle Redirect Steps", content: { slides: [
+            { heading: "Step 1 — Notice the Behaviour", body: "Narrate what you see without judgment: \u2018I see you\u2019re hitting the dog with your cup.\u2019 This shows your child you\u2019re paying attention and gives them a mirror for their actions." },
+            { heading: "Step 2 — Name & Guide", body: "Name what\u2019s appropriate: \u2018Cups are for drinking, and the dog likes it when you\u2019re gentle with your hand.\u2019 Then guide them to try again: \u2018Let\u2019s try that again gently.\u2019 Show them what \u2018gentle\u2019 looks like with your hands." },
+            { heading: "Step 3 — Follow Through", body: "If the behaviour continues, calmly follow through: \u2018I see you\u2019re still hitting the dog with the cup. The cup is going away for now and we can try again to use it safely and gently later.\u2019 No anger, no lectures. Just a natural outcome." },
           ]}},
-          { id: "t-m7-l1-a2", type: "open_response" as any, title: "Write Your REDO Scripts", content: { prompt: "Think of 3 recurring behaviours that frustrate you. Write a REDO script for each one (Reflect what you see, Explain the rule, Direct them to redo it, Own with a consequence if needed).", saveToVault: true }},
+          { id: "t-m7-l1-a2", type: "open_response" as any, title: "Write Your Redirect Scripts", content: { prompt: "Think of 3 recurring behaviours that frustrate you. Write a gentle redirect script for each one (Notice what you see, Name the rule, Guide them to try again, Follow through if needed).", saveToVault: true }},
         ]
       }
     ]
