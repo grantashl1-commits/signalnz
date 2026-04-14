@@ -308,17 +308,21 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
           {user && <HomePlannerCard />}
           {user && <HomeTodoList />}
-          <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
-            <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
+          <motion.div {...fadeUp(0.1)} className="relative overflow-hidden rounded-[20px] bg-card p-5 space-y-3" style={{ boxShadow: "var(--shadow-soft)" }}>
+            {/* Subtle ruled lines */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{
+              backgroundImage: `repeating-linear-gradient(transparent, transparent 27px, hsl(var(--foreground)) 28px)`,
+            }} />
+            <p className="font-hand text-base text-foreground/60 relative">today</p>
             {[
               { label: "eat", value: focus.eat, href: "/nutrition" },
               { label: "move", value: focus.move, href: "/movement" },
               { label: "rest", value: focus.rest, href: "/practice" },
               { label: "cycle", value: focus.cycle, href: "/cycle" },
             ].map(({ label, value, href }) => (
-              <Link key={label} to={href} className="flex gap-3 items-start group hover:bg-foreground/[0.03] -mx-2 px-2 py-1 rounded-lg transition-colors">
-                <span className="font-body text-section-label w-10 pt-0.5" style={{ color: 'hsl(var(--label-color))' }}>{label}</span>
-                <p className="text-body-lg text-foreground/70 leading-snug flex-1 group-hover:text-foreground transition-colors">{value}</p>
+              <Link key={label} to={href} className="flex gap-3 items-start group hover:bg-foreground/[0.03] -mx-2 px-2 py-1.5 rounded-lg transition-colors relative">
+                <span className="font-hand text-sm w-10 pt-0.5 text-primary/50">{label}</span>
+                <p className="font-hand text-[15px] text-foreground/65 leading-snug flex-1 group-hover:text-foreground transition-colors border-b border-dotted border-foreground/8 pb-1">{value}</p>
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all mt-1 flex-shrink-0" />
               </Link>
             ))}
