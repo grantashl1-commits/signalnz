@@ -97,6 +97,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
   const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const previousPathRef = useRef(location.pathname);
   const previousPath = previousPathRef.current;
@@ -127,21 +128,53 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Home className={`h-3.5 w-3.5 ${location.pathname === "/" ? "fill-primary" : ""}`} />
               Home
             </Link>
-            {navItems.map((item) => {
-              const active = location.pathname === item.path;
+            {NAV_CATEGORIES.map((cat) => {
+              const catActive = cat.items.some(i => location.pathname === i.path || location.pathname.startsWith(i.path));
+              const isOpen = openDropdown === cat.label;
               return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
-                    active
-                      ? "bg-primary/15 text-primary font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                  }`}
+                <div key={cat.label} className="relative"
+                  onMouseEnter={() => setOpenDropdown(cat.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  <item.icon className={`h-3.5 w-3.5 ${active ? "fill-primary" : ""}`} />
-                  {item.label}
-                </Link>
+                  <button
+                    className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
+                      catActive
+                        ? "bg-primary/15 text-primary font-semibold"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                    }`}
+                  >
+                    {cat.label}
+                    <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-card border border-border/20 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50"
+                      >
+                        {cat.items.map((item) => {
+                          const active = location.pathname === item.path || location.pathname.startsWith(item.path);
+                          return (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              onClick={() => setOpenDropdown(null)}
+                              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
+                                active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
+                              }`}
+                            >
+                              <item.icon className="h-4 w-4" />
+                              {item.label}
+                            </Link>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               );
             })}
           </nav>
