@@ -120,7 +120,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 120–150ml" },
       { time: "3:00–4:00 AM", activity: "Night feed (dropping naturally)", feedNote: "Breast: one side may suffice | Bottle: 90–120ml" },
-    ]
+    ],
+    sleepScience: "Around 4-6 weeks, the circadian rhythm begins developing. Your baby's body starts producing melatonin in response to darkness. Sleep cycles are still ~45 minutes but stretches of 4-5 hours at night become possible.",
+    gentleTips: [
+      { title: "The 45-Minute Intruder", body: "If your baby wakes exactly 45 minutes into every nap, they're waking at the end of a sleep cycle. Try: gentle hand pressure on chest before the 40-min mark, white noise, or a slightly darker room. Some babies just need time to learn to bridge cycles." },
+      { title: "Awake Windows Matter", body: "At this age, baby can handle 1.5-2 hours awake. Watch for tired signs: yawning, rubbing eyes, turning away from stimulation. Missing the sleep window leads to overtiredness, which paradoxically makes sleep HARDER." },
+      { title: "Dream Feeds Work", body: "The 10:30pm dream feed is your secret weapon. Gently lift baby, offer breast/bottle without fully waking them. This 'tanks them up' and often buys you a 5-6 hour stretch. Keep the room dark and quiet." },
+    ],
+    sourceNote: "Schedule follows Gina Ford's feed-wake-sleep structure. Gentle tips draw on Ockwell-Smith's emphasis on biological sleep readiness cues."
   },
   {
     weekLabel: "Week 6–8",
