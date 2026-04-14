@@ -1614,6 +1614,33 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_parenting_scripts: {
+        Row: {
+          age_group: string
+          id: string
+          module_id: string | null
+          saved_at: string
+          script_id: string
+          user_id: string
+        }
+        Insert: {
+          age_group: string
+          id?: string
+          module_id?: string | null
+          saved_at?: string
+          script_id: string
+          user_id: string
+        }
+        Update: {
+          age_group?: string
+          id?: string
+          module_id?: string | null
+          saved_at?: string
+          script_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       shopping_lists: {
         Row: {
           checked_items: Json
