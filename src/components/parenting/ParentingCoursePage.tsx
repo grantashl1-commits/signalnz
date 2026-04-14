@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap } from "lucide-react";
+import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
