@@ -485,9 +485,9 @@ function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExp
 }
 
 /* ── Expanded Meal Detail ── */
-function ExpandedMealDetail({ meal, isEaten, phaseColor, scale, onMarkEaten, onScaleChange, onClose }: {
+function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEaten, onScaleChange, onClose }: {
   meal: { slot: string; label: string; name: string; recipe?: Recipe; aiMeal?: AIMeal };
-  isEaten: boolean; phaseColor: string; scale: number;
+  isEaten: boolean; phaseColor: string; phase: Phase; scale: number;
   onMarkEaten: () => void; onScaleChange: (v: number) => void; onClose: () => void;
 }) {
   const [showMethod, setShowMethod] = useState(false);
@@ -575,7 +575,7 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, scale, onMarkEaten, onS
         )}
 
         {/* Kids alternative swap */}
-        <KidsDinnerAlt dinnerName={meal.name} phase={currentPhase} />
+        <KidsDinnerAlt dinnerName={meal.name} phase={phase} />
 
         <button onClick={() => !isEaten && onMarkEaten()} disabled={isEaten}
           className="touch-btn w-full rounded-full py-3 min-h-[44px] font-body text-sm font-bold transition-all flex items-center justify-center gap-2"
