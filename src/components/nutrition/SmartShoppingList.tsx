@@ -62,6 +62,81 @@ function parseQty(qty: string): number {
   return isNaN(n) ? 1 : n;
 }
 
+/**
+ * Convert large/awkward quantities into more practical shopping units.
+ * e.g. 19 tbsp → 280 ml, 24 cup → 3.4 kg, etc.
+ */
+function smartUnit(qty: number, unit: string, name: string): { qty: number; unit: string } {
+  const u = unit.toLowerCase().replace(/s$/, "").replace(/\.$/, "");
+  const lower = name.toLowerCase();
+
+  // tsp → tbsp → ml → cups → litres
+  if (u === "tsp" || u === "teaspoon") {
+    const ml = qty * 5;
+    if (ml >= 1000) return { qty: Math.round(ml / 100) / 10, unit: "L" };
+    if (ml >= 60) return { qty: Math.round(ml), unit: "ml" };
+    if (qty >= 6) return { qty: Math.round(qty / 3 * 10) / 10, unit: "tbsp" };
+    return { qty, unit };
+  }
+
+  if (u === "tbsp" || u === "tablespoon") {
+    const ml = qty * 15;
+    if (ml >= 1000) return { qty: Math.round(ml / 100) / 10, unit: "L" };
+    if (ml >= 60) return { qty: Math.round(ml), unit: "ml" };
+    return { qty, unit };
+  }
+
+  // Cups: for dry goods like seeds/nuts/flour → grams/kg; for liquids → ml/L
+  if (u === "cup") {
+    const isDryBulk = /seed|nut|walnut|almond|cashew|flour|oat|granola|rice|quinoa|lentil|chickpea|bean|sugar|cocoa|cacao|coconut|sesame|flax|pumpkin|sunflower/i.test(lower);
+    const isLiquid = /milk|water|stock|broth|juice|oil|cream|yoghurt|yogurt/i.test(lower);
+
+    if (isDryBulk) {
+      // Approximate: 1 cup seeds/nuts ≈ 140g, flour ≈ 120g, grains ≈ 185g, sugar ≈ 200g
+      let gPerCup = 150; // default for seeds/nuts
+      if (/flour/.test(lower)) gPerCup = 120;
+      if (/rice|quinoa|lentil|chickpea|bean|oat/.test(lower)) gPerCup = 185;
+      if (/sugar/.test(lower)) gPerCup = 200;
+      if (/coconut/.test(lower)) gPerCup = 85;
+      const grams = qty * gPerCup;
+      if (grams >= 1000) return { qty: Math.round(grams / 100) / 10, unit: "kg" };
+      if (grams >= 50) return { qty: Math.round(grams), unit: "g" };
+      return { qty, unit };
+    }
+
+    if (isLiquid || qty >= 4) {
+      const ml = qty * 250;
+      if (ml >= 1000) return { qty: Math.round(ml / 100) / 10, unit: "L" };
+      return { qty: Math.round(ml), unit: "ml" };
+    }
+
+    return { qty, unit };
+  }
+
+  // ml → L
+  if (u === "ml") {
+    if (qty >= 1000) return { qty: Math.round(qty / 100) / 10, unit: "L" };
+    return { qty, unit };
+  }
+
+  // g → kg
+  if (u === "g" || u === "gram") {
+    if (qty >= 1000) return { qty: Math.round(qty / 100) / 10, unit: "kg" };
+    return { qty, unit };
+  }
+
+  return { qty, unit };
+}
+
+function formatSmartQty(totalQty: number, unit: string, name: string): string {
+  const converted = smartUnit(totalQty, unit, name);
+  const q = converted.qty;
+  const display = q < 1 ? `${Math.round(q * 10) / 10}` :
+    q > 10 ? `${Math.round(q)}` :
+      `${Math.round(q * 10) / 10}`;
+  return `${display} ${converted.unit}`;
+}
+
 interface AggregatedItem {
   name: string;
   totalQty: number;
