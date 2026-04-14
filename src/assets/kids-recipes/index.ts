@@ -145,4 +145,84 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-hp-chicken-stir-fry": kidsHpChickenStirFry,
   "kids-hp-veggie-pasta-bake": kidsHpVeggiePastaBake,
   "kids-hp-sausage-tray-bake": kidsHpSausageTrayBake,
+  // Annabel Karmel collections
+  "kids-ak-salmon-teriyaki-bites": kidsAkSalmonTeriyakiBites,
+  "kids-ak-chicken-katsu": kidsAkChickenKatsu,
+  "kids-ak-veggie-sausage-rolls": kidsAkVeggieSausageRolls,
+  "kids-ak-pinwheel-wraps": kidsAkPinwheelWraps,
+  "kids-ak-pasta-salad-pots": kidsAkPastaSaladPots,
+  "kids-ak-mini-meatloaf-cups": kidsAkMiniMeatloafCups,
+  "kids-ak-sweet-potato-fingers": kidsAkSweetPotatoFingers,
+  "kids-ak-one-pot-pasta": kidsAkOnePotPasta,
+  "kids-ak-speedy-chicken-wraps": kidsAkSpeedyChickenWraps,
+  // America's Test Kitchen
+  "kids-atk-smash-burgers": kidsAtkSmashBurgers,
+  "kids-atk-crispy-quesadilla": kidsAtkCrispyQuesadilla,
+  "kids-atk-sheet-pan-nachos": kidsAtkSheetPanNachos,
+  "kids-atk-sticky-drumsticks": kidsAtkStickyDrumsticks,
+  "kids-atk-cheese-bread": kidsAtkCheeseBread,
+  // Ava Archer
+  "kids-aa-rainbow-skewers": kidsAaRainbowSkewers,
+  "kids-aa-pizza-scrolls": kidsAaPizzaScrolls,
+  "kids-aa-banana-pancake-faces": kidsAaBananaPancakeFaces,
+  "kids-aa-ants-on-a-log": kidsAaAntsOnALog,
+  "kids-aa-chicken-popcorn": kidsAaChickenPopcorn,
+  "kids-aa-cheese-stars": kidsAaCheeseStars,
+  // Bryton Taylor
+  "kids-bt-dragon-noodles": kidsBtDragonNoodles,
+  "kids-bt-fairy-bread-toast": kidsBtFairyBreadToast,
+  // Naturally Nourished Kids
+  "kids-nn-energy-balls": kidsNnEnergyBalls,
+  "kids-nn-sweet-potato-waffles": kidsNnSweetPotatoWaffles,
+  "kids-nn-turkey-veggie-muffins": kidsNnTurkeyVeggieMuffins,
+  // Little Helpers Toddler
+  "kids-lh-banana-oat-cookies": kidsLhBananaOatCookies,
+  "kids-lh-avocado-toast-faces": kidsLhAvocadoToastFaces,
+  "kids-lh-mini-pizzas": kidsLhMiniPizzas,
+  // Buddy Oliver
+  "kids-bo-fish-goujon-wraps": kidsBoFishGoujonWraps,
+  "kids-bo-pasta-pesto-peas": kidsBoPastaPestoPeas,
+  "kids-bo-chicken-lollipops": kidsBoChickenLollipops,
+  // Olivia Rana
+  "kids-or-veggie-hummus-wraps": kidsOrVeggieHummusWraps,
+  "kids-or-tuna-melt-pockets": kidsOrTunaMeltPockets,
+  "kids-or-pasta-muffins": kidsOrPastaMuffins,
+  // Emma Jane Frost
+  "kids-ej-spaghetti-nests": kidsEjSpaghettiNests,
+  "kids-ej-chicken-goujons": kidsEjChickenGoujons,
+  "kids-ej-traffic-light-peppers": kidsEjTrafficLightPeppers,
+  // Sean Covey
+  "kids-sc-proactive-smoothie-bowl": kidsScProactiveSmoothieBowl,
+  // Sarah Pound: Wholesome
+  "kids-sp-one-pan-sausage-pasta": kidsSpOnePanSausagePasta,
+  "kids-sp-honey-soy-salmon": kidsSpHoneySoySalmon,
+  "kids-sp-chicken-pesto-bake": kidsSpChickenPestoBake,
+  // Danielle Kartes
+  "kids-dk-pb-banana-bites": kidsDkPbBananaBites,
+  "kids-dk-confetti-rice": kidsDkConfettiRice,
+  "kids-dk-dippable-chicken": kidsDkDippableChicken,
+  // Kim McCosker
+  "kids-km-ham-cheese-scrolls": kidsKmHamCheeseScrolls,
+  "kids-km-corn-fritters": kidsKmCornFritters,
+  "kids-km-choc-banana-pops": kidsKmChocBananaPops,
+  // Sarah Wilson
+  "kids-sw-veggie-loaded-mince": kidsSwVeggieLoadedMince,
+  "kids-sw-salmon-rice-balls": kidsSwSalmonRiceBalls,
+  "kids-sw-chicken-veggie-soup": kidsSwChickenVeggieSoup,
+  // Dairy Free
+  "kids-df-chicken-satay-bowls": kidsDfChickenSatayBowls,
+  "kids-df-banana-pancakes": kidsDfBananaPancakes,
+  "kids-df-spaghetti-meatballs": kidsDfSpaghettiMeatballs,
+  // Gluten Free
+  "kids-gf-chicken-tenders": kidsGfChickenTenders,
+  "kids-gf-banana-bread": kidsGfBananaBread,
+  "kids-gf-pizza-bites": kidsGfPizzaBites,
+  // Keto
+  "kids-keto-cheese-crisps": kidsKetoCheeseCrisps,
+  "kids-keto-chicken-nuggets": kidsKetoChickenNuggets,
+  "kids-keto-zucchini-boats": kidsKetoZucchiniBoats,
+  // Baking
+  "kids-sb-chocolate-brownies": kidsSbChocolateBrownies,
+  "kids-sb-scones": kidsSbScones,
+  "kids-sb-rainbow-cupcakes": kidsSbRainbowCupcakes,
 };
