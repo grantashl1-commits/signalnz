@@ -411,10 +411,8 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       .map(cat => {
         const items = categories[cat];
         return `${CATEGORY_META[cat]}\n${items.map(i => {
-          const qty = i.totalQty < 1 ? `${Math.round(i.totalQty * 10) / 10}` :
-            i.totalQty > 10 ? `${Math.round(i.totalQty)}` :
-              `${Math.round(i.totalQty * 10) / 10}`;
-          return `  ${qty} ${i.unit} ${i.name}${i.isPantryStaple ? " ✓ pantry" : ""}`;
+          const smart = formatSmartQty(i.totalQty, i.unit, i.name);
+          return `  ${smart} ${i.name}${i.isPantryStaple ? " ✓ pantry" : ""}`;
         }).join("\n")}`;
       })
       .join("\n\n");
@@ -429,10 +427,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     const tableHtml = catOrder.map(cat => {
       const items = categories[cat];
       const rows = items.map(i => {
-        const qty = i.totalQty < 1 ? `${Math.round(i.totalQty * 10) / 10}` :
-          i.totalQty > 10 ? `${Math.round(i.totalQty)}` : `${Math.round(i.totalQty * 10) / 10}`;
+        const smart = formatSmartQty(i.totalQty, i.unit, i.name);
         const checked = checkedItems[`${cat}:${i.name}`] ? "✓" : "☐";
-        return `<tr><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;width:20px;">${checked}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;">${i.name}${i.isPantryStaple ? ' <span style="color:#999;font-size:9px;">(pantry)</span>' : ""}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;text-align:right;white-space:nowrap;">${qty} ${i.unit}</td></tr>`;
+        return `<tr><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;width:20px;">${checked}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;">${i.name}${i.isPantryStaple ? ' <span style="color:#999;font-size:9px;">(pantry)</span>' : ""}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;text-align:right;white-space:nowrap;">${smart}</td></tr>`;
       }).join("");
       return `<div style="break-inside:avoid;margin-bottom:12px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th colspan="3" style="background:#5B2D72;color:white;padding:5px 8px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.5px;">${CATEGORY_META[cat]}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     }).join("");
