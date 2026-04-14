@@ -34,6 +34,30 @@ export const CONNECT_COURSE: CourseModule[] = [
     ],
     "lessons": [
       {
+        "id": "module-1-lesson-0",
+        "title": "Know Yourself First",
+        "description": "Before exploring your relationship, take time to understand your own attachment patterns and how you naturally give and receive love.",
+        "estimatedMinutes": 15,
+        "activities": [
+          {
+            "id": "m1-l0-a1",
+            "type": "attachment_quiz",
+            "title": "Attachment Style Quiz",
+            "instruction": "Discover your attachment pattern across different relational contexts — understanding this is the foundation of deeper connection. Takes about 5 minutes.",
+            "content": {},
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a2",
+            "type": "love_languages_quiz",
+            "title": "Love Languages Test",
+            "instruction": "Uncover how you naturally give and receive love — this helps you and your partner speak each other's language. Takes about 5 minutes.",
+            "content": {},
+            "saveToVault": false
+          }
+        ]
+      },
+      {
         "id": "module-1-lesson-1",
         "title": "Unpacking Your Attachment Style",
         "description": "Identify your primary attachment style and its impact on your relationships.",
