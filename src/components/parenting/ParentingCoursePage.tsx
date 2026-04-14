@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion } from "lucide-react";
+import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion, Search, X, Wrench, BookMarked, Lightbulb } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
@@ -29,6 +29,18 @@ const MODULE_COLORS = [
   "from-fuchsia-500/20 to-pink-400/10",
 ];
 
+// ─── Quick Toolkit items for Kids & Teens ───
+const TOOLKIT_ITEMS = [
+  { label: "Exit Scripts", desc: "Pre-rehearsed phrases for peer pressure", moduleId: "kt-m6" },
+  { label: "Code Word System", desc: "Text PIZZA = pick me up, no questions", moduleId: "kt-m6" },
+  { label: "Calm-Down Kit", desc: "Age-appropriate regulation strategies", moduleId: "kt-m3" },
+  { label: "Family Media Agreement", desc: "Screen time contract template", moduleId: "kt-m4" },
+  { label: "Growth Mindset Poster", desc: "The 'YET' wall for the family", moduleId: "kt-m1" },
+  { label: "Friendship Audit", desc: "5 questions to assess healthy friendships", moduleId: "kt-m11" },
+  { label: "Safety Toolkit", desc: "Party safety checklist for teens", moduleId: "kt-m9" },
+  { label: "Brave Ladder", desc: "Step-by-step approach for anxiety", moduleId: "kt-m3" },
+];
+
 type View = "modules" | "lessons" | "lesson" | "sleep-schedule";
 
 export default function ParentingCoursePage() {
@@ -39,6 +51,9 @@ export default function ParentingCoursePage() {
   const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(null);
   const [completedActivities, setCompletedActivities] = useState<Set<string>>(new Set());
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [showToolkit, setShowToolkit] = useState(false);
 
   const currentTab = TABS.find(t => t.id === activeTab)!;
   const course = currentTab.course;
@@ -64,6 +79,23 @@ export default function ParentingCoursePage() {
       });
   }, [user]);
 
+  // Filtered modules/lessons for search
+  const filteredCourse = useMemo(() => {
+    if (!searchQuery.trim()) return course;
+    const q = searchQuery.toLowerCase();
+    return course
+      .map(mod => {
+        const modMatch = mod.title.toLowerCase().includes(q) || mod.subtitle.toLowerCase().includes(q) || mod.description.toLowerCase().includes(q);
+        const matchedLessons = mod.lessons.filter(l =>
+          l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q)
+        );
+        if (modMatch) return mod;
+        if (matchedLessons.length > 0) return { ...mod, lessons: matchedLessons };
+        return null;
+      })
+      .filter(Boolean) as CourseModule[];
+  }, [course, searchQuery]);
+
   const openModule = (mod: CourseModule) => {
     haptic("medium");
     setSelectedModule(mod);
@@ -74,6 +106,15 @@ export default function ParentingCoursePage() {
     haptic("medium");
     setSelectedLesson(lesson);
     setView("lesson");
+  };
+
+  // Jump to a module from toolkit
+  const jumpToModule = (moduleId: string) => {
+    const mod = course.find(m => m.id === moduleId);
+    if (mod) {
+      setShowToolkit(false);
+      openModule(mod);
+    }
   };
 
   const handleSaveProgress = useCallback(async (activityId: string, response: any) => {
@@ -129,11 +170,11 @@ export default function ParentingCoursePage() {
 
       <ContentSection className="px-4 md:px-4 max-w-3xl mx-auto pb-32">
         {/* Tab bar */}
-        <div className="flex gap-1 p-1 bg-secondary/50 rounded-xl mb-6">
+        <div className="flex gap-1 p-1 bg-secondary/50 rounded-xl mb-4">
           {TABS.map(tab => (
             <button
               key={tab.id}
-              onClick={() => { setActiveTab(tab.id); setView("modules"); setSelectedModule(null); }}
+              onClick={() => { setActiveTab(tab.id); setView("modules"); setSelectedModule(null); setSearchQuery(""); setShowToolkit(false); }}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-body text-xs font-medium transition-all ${
                 activeTab === tab.id
                   ? "bg-card text-foreground shadow-sm"
@@ -146,11 +187,83 @@ export default function ParentingCoursePage() {
           ))}
         </div>
 
+        {/* Search + Toolkit bar (modules view only) */}
+        {view === "modules" && (
+          <div className="flex items-center gap-2 mb-4">
+            {showSearch ? (
+              <div className="flex-1 flex items-center gap-2 bg-card border border-border rounded-xl px-3 py-2">
+                <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+                <input
+                  autoFocus
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Search modules & lessons..."
+                  className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
+                />
+                <button onClick={() => { setShowSearch(false); setSearchQuery(""); }}>
+                  <X className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => setShowSearch(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground text-xs font-medium transition-colors"
+                >
+                  <Search className="h-3.5 w-3.5" /> Search
+                </button>
+                {activeTab === "kids-teens" && (
+                  <button
+                    onClick={() => setShowToolkit(!showToolkit)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-medium transition-colors ${
+                      showToolkit ? "bg-primary/10 border-primary/30 text-primary" : "bg-card border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Wrench className="h-3.5 w-3.5" /> Quick Toolkit
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Quick Toolkit panel */}
+        <AnimatePresence>
+          {showToolkit && view === "modules" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden mb-4"
+            >
+              <div className="p-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/[0.02]">
+                <div className="flex items-center gap-2 mb-3">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <h3 className="font-display text-sm font-bold text-foreground">Quick Toolkit</h3>
+                  <span className="text-[10px] text-muted-foreground ml-auto">Tap to jump to module</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {TOOLKIT_ITEMS.map(item => (
+                    <button
+                      key={item.label}
+                      onClick={() => jumpToModule(item.moduleId)}
+                      className="text-left p-3 rounded-xl bg-card border border-border hover:border-primary/30 active:scale-[0.98] transition-all"
+                    >
+                      <p className="font-body text-xs font-semibold text-foreground">{item.label}</p>
+                      <p className="font-body text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence mode="wait">
           {view === "modules" && (
             <motion.div key={`modules-${activeTab}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {/* Sleep schedule card for babies tab */}
-              {activeTab === "babies" && (
+              {activeTab === "babies" && !searchQuery && (
                 <motion.button
                   onClick={() => setView("sleep-schedule")}
                   initial={{ opacity: 0, y: 12 }}
@@ -171,7 +284,7 @@ export default function ParentingCoursePage() {
               )}
 
               {/* Little Minds tool card for kids-teens tab */}
-              {activeTab === "kids-teens" && (
+              {activeTab === "kids-teens" && !searchQuery && (
                 <motion.a
                   href="https://littleminds.mindcast.co.nz/"
                   target="_blank"
@@ -193,14 +306,23 @@ export default function ParentingCoursePage() {
                 </motion.a>
               )}
 
+              {/* Search results info */}
+              {searchQuery && (
+                <p className="font-body text-xs text-muted-foreground mb-3">
+                  {filteredCourse.length} {filteredCourse.length === 1 ? "result" : "results"} for "{searchQuery}"
+                </p>
+              )}
+
               {/* Course modules */}
               <div className="grid gap-3">
-                {course.map((mod, i) => {
+                {filteredCourse.map((mod, i) => {
                   const progress = getModuleProgress(mod);
+                  const modAny = mod as any;
+                  const sourceBooks: string[] | undefined = modAny.sourceBooks;
                   return (
                     <motion.button key={mod.id} onClick={() => openModule(mod)}
                       initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.06 }}
+                      transition={{ delay: i * 0.04 }}
                       className="w-full text-left p-5 rounded-2xl border border-border bg-card hover:border-primary/30 active:scale-[0.99] transition-all"
                     >
                       <div className="flex items-start gap-4">
@@ -220,6 +342,23 @@ export default function ParentingCoursePage() {
                               {mod.lessons.length} lessons
                             </span>
                           </div>
+                          {/* Source book badges */}
+                          {sourceBooks && sourceBooks.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {sourceBooks.slice(0, 3).map(book => {
+                                const shortName = book.split("—")[0].trim();
+                                return (
+                                  <span key={book} className="inline-flex items-center gap-0.5 text-[9px] bg-primary/8 text-primary/70 px-1.5 py-0.5 rounded-full">
+                                    <BookMarked className="h-2.5 w-2.5" />
+                                    {shortName}
+                                  </span>
+                                );
+                              })}
+                              {sourceBooks.length > 3 && (
+                                <span className="text-[9px] text-muted-foreground/50 px-1">+{sourceBooks.length - 3}</span>
+                              )}
+                            </div>
+                          )}
                           {progress > 0 && <Progress value={progress} className="h-1 mt-2" />}
                         </div>
                         <ChevronRight className="h-4 w-4 text-muted-foreground/40 mt-1 shrink-0" />
@@ -228,6 +367,15 @@ export default function ParentingCoursePage() {
                   );
                 })}
               </div>
+
+              {/* No results */}
+              {searchQuery && filteredCourse.length === 0 && (
+                <div className="text-center py-12">
+                  <Search className="h-8 w-8 text-muted-foreground/20 mx-auto mb-3" />
+                  <p className="font-body text-sm text-muted-foreground">No modules or lessons match "{searchQuery}"</p>
+                  <button onClick={() => setSearchQuery("")} className="font-body text-xs text-primary mt-2">Clear search</button>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -250,6 +398,21 @@ export default function ParentingCoursePage() {
               <div className="mb-5">
                 <h2 className="font-display text-xl font-bold text-foreground">{selectedModule.title}</h2>
                 <p className="font-body text-sm text-muted-foreground mt-1">{selectedModule.description}</p>
+                {/* Source books in lesson view */}
+                {(selectedModule as any).sourceBooks && (
+                  <div className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
+                    <p className="font-body text-[10px] uppercase tracking-wider text-primary/60 mb-1.5 flex items-center gap-1">
+                      <BookMarked className="h-3 w-3" /> Reference Books
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {((selectedModule as any).sourceBooks as string[]).map(book => (
+                        <span key={book} className="font-body text-[10px] text-primary/80 bg-primary/10 px-2 py-0.5 rounded-full">
+                          {book}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
                 {selectedModule.lessons.map((lesson, i) => {
