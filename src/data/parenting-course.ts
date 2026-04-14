@@ -153,7 +153,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 150ml" },
       { time: "3:00–5:00 AM", activity: "Night feed (may drop entirely soon)", feedNote: "Breast: one side | Bottle: 90–120ml" },
-    ]
+    ],
+    sleepScience: "Between 6-8 weeks, many babies start sleeping one 5-6 hour stretch. Their 40-minute sleep cycles start maturing, and they spend slightly less time in easily-woken REM sleep (dropping from 50% to ~40%).",
+    gentleTips: [
+      { title: "Consistent Bedtime Ritual", body: "By now, a predictable bedtime sequence helps baby's brain anticipate sleep: feed → bath → dim room → feed top-up → song/story → bed. The routine itself becomes a sleep cue. Keep it to 30-45 minutes." },
+      { title: "When They Won't Settle", body: "Before assuming hunger, check: too hot/cold? Overstimulated? Undertired? Sometimes a 5-minute break in a dim room with white noise is all they need. Sarah Ockwell-Smith calls this the 'danger zone' — the transition between sleep cycles where small discomforts wake them." },
+      { title: "Your Wellbeing Matters Too", body: "Sleep deprivation is cumulative and real. Accept help. Sleep when baby sleeps (even if just once a day). A rested parent is a more responsive parent — this isn't selfish, it's strategic." },
+    ],
+    sourceNote: "Schedule structure from Gina Ford. Gentle approach informed by Ockwell-Smith's 'danger zone' concept and responsive settling research."
   },
   {
     weekLabel: "Week 8–12",
@@ -178,7 +185,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:15 PM", activity: "Top-up feed & settle", feedNote: "Breast: 10 min | Bottle: 60ml" },
       { time: "7:00 PM", activity: "Bedtime" },
       { time: "10:30 PM", activity: "Dream feed (can start dropping at 12 wks)", feedNote: "Breast: 15 min | Bottle: 120–150ml" },
-    ]
+    ],
+    sleepScience: "By 8-12 weeks, the circadian rhythm is well-established. Melatonin production kicks in at dusk. Sleep cycles begin lengthening toward 50 minutes. Some babies drop the night feed entirely — but many don't until 4-6 months. Both are normal.",
+    gentleTips: [
+      { title: "Dropping the Dream Feed", body: "Around 12 weeks you can experiment: try reducing the dream feed volume by 30ml every few nights. If baby sleeps through, great. If they wake earlier, bring the dream feed back — they're not ready yet." },
+      { title: "The Third Nap Battle", body: "The afternoon catnap often becomes harder to achieve. Don't stress if it's only 15 minutes — a short nap is still better than none. A walk in the pram or a car ride can help if they resist the cot." },
+      { title: "Gentle vs Rigid", body: "Gina Ford's schedules give structure; Sarah Ockwell-Smith reminds us that every baby is different. Use the schedule as a GUIDE, not a rulebook. If your baby consistently shows tired signs 30 minutes earlier, follow THEIR cues." },
+    ],
+    sourceNote: "Combines Gina Ford's structured feed timing with Ockwell-Smith's emphasis on individual baby cues and responsive care."
   },
   {
     weekLabel: "Month 3–4",
