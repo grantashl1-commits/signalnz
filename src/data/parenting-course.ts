@@ -51,7 +51,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:30–7:00 PM", activity: "Bedtime — dark room, swaddle" },
       { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 60–90ml — keep lights dim" },
       { time: "2:00–3:00 AM", activity: "Night feed", feedNote: "Breast: both sides | Bottle: 60–90ml — minimal stimulation" },
-    ]
+    ],
+    sleepScience: "Newborns spend 50% of sleep in REM (active sleep) vs 20% in adults. Sleep cycles are only 40–45 minutes long, meaning they may wake every 20–45 minutes. This is biologically protective and completely normal.",
+    gentleTips: [
+      { title: "The Fourth Trimester", body: "Your newborn has just left a warm, dark, snug environment where every need was instantly met. Recreate womb-like conditions: swaddling, white noise, gentle rocking, skin-to-skin contact. This isn't 'spoiling' — it's honouring their biology." },
+      { title: "Night vs Day Confusion", body: "Newborns don't yet have a circadian rhythm. Help them learn: keep daytime bright and social, keep night feeds dim, quiet, and boring. Don't change nappies at night unless soiled — the stimulation wakes them fully." },
+      { title: "Safe Sleep Reminder", body: "Always place baby on their back, on a firm flat surface, in the same room as you for all sleep. No loose bedding, pillows, or bumpers. Room temperature 16–20°C. If swaddling, follow safe swaddling guidelines." },
+    ],
+    sourceNote: "Schedule inspired by Gina Ford's Contented Little Baby routines. Gentle tips synthesized from Sarah Ockwell-Smith's research on infant sleep physiology."
   },
   {
     weekLabel: "Week 2–4",
@@ -79,7 +86,14 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       { time: "6:30–7:00 PM", activity: "Bedtime" },
       { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 120ml" },
       { time: "2:30–3:30 AM", activity: "Night feed (may push later)", feedNote: "Breast: both sides | Bottle: 90–120ml" },
-    ]
+    ],
+    sleepScience: "Your baby's sleep cycles are still ~40 minutes. They begin each cycle in light REM sleep — easily woken for the first 20 minutes. The 'danger zone' between cycles is where most wakings happen.",
+    gentleTips: [
+      { title: "Day-Night Distinction", body: "Start building the body clock now: bright light and activity during the day, dim lighting from 5pm onwards. Open curtains when baby wakes, go outside for fresh air. By 4-6 weeks, you'll notice longer night stretches emerging." },
+      { title: "Responsive Settling", body: "If baby fusses between sleep cycles, pause for 30 seconds before rushing in. Some babies resettle with gentle shushing or a hand on the chest. Others need a full pick-up. Both responses are fine — follow YOUR baby's cues." },
+      { title: "Split Feeds for Bedtime", body: "Splitting the pre-bed feed (half before bath, half after) ensures a full tummy without baby falling asleep mid-feed and missing the second half. A well-fed baby sleeps longer stretches." },
+    ],
+    sourceNote: "Schedule inspired by Gina Ford's structured routines. Gentle settling strategies informed by Sarah Ockwell-Smith's responsive parenting approach."
   },
   {
     weekLabel: "Week 4–6",
