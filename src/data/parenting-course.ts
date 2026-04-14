@@ -995,6 +995,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Understanding and supporting your anxious child",
     description: "Anxiety in children has risen significantly. Learn to recognise it, understand the anxious brain, and use evidence-based strategies to help your child manage worry without accommodation.",
     estimatedMinutes: 30,
+    sourceBooks: ["Raising Worry-Free Girls — Sissy Goff", "Raising Mentally Strong Kids — Daniel Amen", "The Disengaged Teen — Jenny Anderson & Rebecca Winthrop"],
     sources: ["CBT for Children", "Anxiety Research"],
     lessons: [
       {
@@ -1031,6 +1032,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Managing technology without constant battles",
     description: "Screens aren't going away. Learn how to set healthy boundaries, recognise problematic use, and help your child develop a balanced relationship with technology.",
     estimatedMinutes: 20,
+    sourceBooks: ["The Teenage Brain — Frances E. Jensen", "Raising Mentally Strong Kids — Daniel Amen"],
     sources: ["Digital Wellness Research", "AAP Guidelines"],
     lessons: [
       {
