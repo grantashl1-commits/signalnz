@@ -1477,4 +1477,184 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
       },
     ]
   },
+  },
+  // ─── MODULE 14: THRIVING AT SCHOOL (inspired by teen success research) ──
+  {
+    id: "kt-m14",
+    title: "Thriving at School",
+    subtitle: "Helping your child own their education",
+    description: "School is more than grades — it's where your child learns to persist, manage time, and find their voice. These strategies help them take ownership of their learning journey.",
+    estimatedMinutes: 30,
+    sourceBooks: ["The 6 Most Important Decisions You'll Ever Make — Sean Covey", "How to Raise an Adult — Julie Lythcott-Haims"],
+    sources: ["Education Psychology", "Teen Development Research"],
+    lessons: [
+      {
+        id: "kt-m14-l1",
+        title: "Motivation vs Pressure",
+        description: "Finding the sweet spot that drives learning without breaking them",
+        activities: [
+          { id: "kt-m14-l1-a1", type: "info_carousel" as any, title: "Internal Drive", content: { slides: [
+            { heading: "The Ownership Shift", body: "Children who see education as THEIR project (not yours) are more motivated. Stop asking 'Did you do your homework?' and start asking 'What's your plan for tonight?' The shift from monitoring to coaching changes everything." },
+            { heading: "The Switch Point Metaphor", body: "Every small decision is like a railway switch — just three inches of steel that sends you hundreds of miles in one direction or another. Help your teen see that daily choices about study, effort, and showing up are switch points for their future. Not dramatic — just true." },
+            { heading: "When They're Failing", body: "Before you panic:\n• Ask: 'What's going on?' (not 'Why are you failing?')\n• Investigate: learning difficulty? social issue? depression? wrong subject?\n• Separate the person from the grade: 'You are not your marks'\n• Problem-solve together: 'What would help? A tutor? A study group? A different approach?'\n• Let natural consequences teach when appropriate" },
+          ]}},
+          { id: "kt-m14-l1-a2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 14-year-old says 'School is pointless, I'm going to be a YouTuber.' Best response?", options: [
+            { label: "'That's not a real career. Focus on your studies.'", isCorrect: false },
+            { label: "'Tell me more about what you'd create. What skills would you need?'", isCorrect: true },
+            { label: "'Fine, but you still need to pass.'", isCorrect: false },
+          ], explanation: "Curiosity opens dialogue. When you explore their interest, you can naturally connect it to real skills (editing, marketing, communication, business) that school CAN support. Dismissing dreams closes the conversation entirely." }},
+        ]
+      },
+      {
+        id: "kt-m14-l2",
+        title: "Finding Their Voice",
+        description: "Helping your child discover what lights them up",
+        activities: [
+          { id: "kt-m14-l2-a1", type: "info_carousel" as any, title: "Discover Their Spark", content: { slides: [
+            { heading: "Beyond Academics", body: "Not every child thrives in traditional schooling. Help them find their 'thing':\n• What do they lose track of time doing?\n• What topics do they choose to read/watch about?\n• What would they do if no one was watching or judging?\n• What problem in the world bothers them most?\n\nTheir 'thing' might be music, coding, cooking, sport, art, activism — it doesn't have to look like a traditional career path." },
+            { heading: "The 10-Year Vision", body: "Try this exercise with your teen: 'Introduce yourself as you'd like to be 10 years from now. Where do you live? What do you do? What matters to you?'\n\nThis isn't about pressure — it's about possibility. When they can see a future worth working toward, daily motivation follows naturally." },
+          ]}},
+          { id: "kt-m14-l2-a2", type: "open_response" as any, title: "Your Child's Spark", content: { prompt: "What activities make your child come alive? When do you see them most engaged? How could you create more opportunities for that spark this month?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 15: MAKING & KEEPING GOOD FRIENDS (teen friendship skills) ──
+  {
+    id: "kt-m15",
+    title: "Making & Keeping Good Friends",
+    subtitle: "Teaching your teen to choose wisely and be a true friend",
+    description: "Friendships are one of the biggest influences on your teenager's choices. These strategies help them choose friends who lift them up, handle friendship drama, and stand up to peer pressure.",
+    estimatedMinutes: 30,
+    sourceBooks: ["The 6 Most Important Decisions You'll Ever Make — Sean Covey", "How to Talk So Teens Will Listen — Adele Faber"],
+    sources: ["Social Psychology", "Adolescent Development"],
+    lessons: [
+      {
+        id: "kt-m15-l1",
+        title: "The Friendship Filter",
+        description: "Choosing friends who make you better, not worse",
+        activities: [
+          { id: "kt-m15-l1-a1", type: "info_carousel" as any, title: "Choosing Well", content: { slides: [
+            { heading: "Steady vs Fickle Friends", body: "Teach your child the difference:\n\nSteady friends: like you for who you are, stick around when things are hard, keep your secrets, celebrate your wins without jealousy.\n\nFickle friends: like you for what you have or who you know, drop you when someone 'better' comes along, use your secrets as weapons.\n\nAsk: 'Would this person still be your friend if you lost everything popular about you?'" },
+            { heading: "The Popularity Trap", body: "Popularity isn't good or bad — it depends on WHY someone is popular. Some people are well-liked because they're genuinely kind and capable. Others are 'popular' because people are afraid of them.\n\nHelp your teen see: real influence comes from character, not status. The kids who are comfortable being themselves — not trying to climb the social ladder — often end up happiest." },
+            { heading: "Don't Centre Your Life on Friends", body: "Friends make a terrible 'centre of gravity' for your life — they're imperfect, changeable, and human. If your self-worth depends on your friend count or how they treat you today, you'll be an emotional rollercoaster.\n\nBetter centre: your own values. When you know what you stand for, friendships become something you enjoy — not something you desperately need." },
+          ]}},
+          { id: "kt-m15-l1-a2", type: "open_response" as any, title: "Friendship Audit", content: { prompt: "Think about your child's closest friends. Do they bring out the best in your child? Is there a friendship that concerns you? How could you have a conversation about it without banning anyone?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m15-l2",
+        title: "Handling Gossip, Bullying & Betrayal",
+        description: "What to do when friends turn on you",
+        activities: [
+          { id: "kt-m15-l2-a1", type: "info_carousel" as any, title: "When It Goes Wrong", content: { slides: [
+            { heading: "When a Friend Betrays You", body: "It happens to almost everyone. A trusted friend shares your secret, talks behind your back, or drops you for a new crowd. Coach your teen:\n\n• 'You have a right to feel hurt — that was a betrayal of trust'\n• 'You can't control what they did, only how you respond'\n• 'Would you want to confront them directly, or let the friendship go?'\n• 'What does this teach you about what you need in a friend?'" },
+            { heading: "Responding to Gossip", body: "Two strategies for when people talk:\n\n1. Confront calmly: 'I've heard you've been saying things about me. I'd prefer if you talked to me directly.' (Takes courage, often shuts it down)\n\n2. Rise above: Sometimes the most powerful response is no response. When you stop reacting, gossip loses its fuel.\n\nBoth are valid — help your teen choose based on the situation." },
+            { heading: "Forgive the Small Stuff", body: "Friends will annoy each other. They'll be thoughtless, competitive, moody. Before blowing up a friendship over a single incident, ask:\n• 'Is this a pattern or a one-off?'\n• 'Are they going through something hard?'\n• 'Is this worth losing the friendship over?'\n\nForgive the small quirks. Draw the line at repeated cruelty." },
+          ]}},
+        ]
+      },
+      {
+        id: "kt-m15-l3",
+        title: "Being a Good Friend",
+        description: "The skills that make people want to be around you",
+        activities: [
+          { id: "kt-m15-l3-a1", type: "info_carousel" as any, title: "Friendship Skills", content: { slides: [
+            { heading: "The Emotional Bank Account", body: "Every relationship has an invisible 'trust bank account'. Deposits: keeping promises, being kind, listening, showing up. Withdrawals: gossip, flaking, selfishness, breaking trust.\n\nWhen the account is full, friendships can survive tough moments. When it's empty, one small conflict can end it.\n\nAsk your teen: 'Are you making more deposits or withdrawals in your friendships?'" },
+            { heading: "Listen First", body: "The #1 friendship skill: genuinely listening. Not waiting for your turn to talk. Not looking at your phone. Actually hearing what someone is feeling.\n\nPractice at home:\n• 'Tell me about your day — I'm just going to listen'\n• Model putting your phone down during conversations\n• Reflect back: 'It sounds like you felt...' before offering advice" },
+            { heading: "Stand Up, Don't Stand By", body: "A true friend doesn't just avoid being mean — they stand up when someone else IS being mean. Teach your teen:\n• 'If you see someone being excluded, invite them in'\n• 'If a friend is being talked about, change the subject or walk away'\n• 'Being a bystander IS a choice — and it's the wrong one'\n\nCourage in small moments builds character for big ones." },
+          ]}},
+          { id: "kt-m15-l3-a2", type: "survey" as any, title: "Reflect", content: { question: "Which friendship skill does your family need to practise most?", options: ["Listening without fixing", "Being loyal when it's hard", "Forgiving small stuff", "Standing up for others"] }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 16: AVOIDING ADDICTIONS ─────────────────────────────────────
+  {
+    id: "kt-m16",
+    title: "Addiction-Proofing Your Child",
+    subtitle: "Honest conversations about substances, screens, and habits",
+    description: "Addiction doesn't start with hard drugs — it starts with coping patterns. These strategies help you have honest, effective conversations about substances, screen dependency, and building healthy habits.",
+    estimatedMinutes: 30,
+    sourceBooks: ["The 6 Most Important Decisions You'll Ever Make — Sean Covey", "The Teenage Brain — Frances E. Jensen", "Raising Mentally Strong Kids — Daniel Amen"],
+    sources: ["Addiction Psychology", "Adolescent Neuroscience"],
+    lessons: [
+      {
+        id: "kt-m16-l1",
+        title: "Three Hard Truths About Addiction",
+        description: "What every parent and teen needs to understand",
+        activities: [
+          { id: "kt-m16-l1-a1", type: "info_carousel" as any, title: "Addiction Reality", content: { slides: [
+            { heading: "Truth 1: It's Progressive", body: "Nobody plans to become addicted. It starts small and grows slowly. First it's fun, then it's fun with problems, then it's just problems. The teenage brain is especially vulnerable because the reward system is hypersensitive while the 'brake system' (prefrontal cortex) is still developing.\n\nThis isn't a moral failing — it's neuroscience." },
+            { heading: "Truth 2: Addiction Replaces Connection", body: "People don't become addicted to substances — they become addicted to the relief substances provide. Loneliness, anxiety, boredom, pain — substances numb these. The antidote isn't willpower — it's CONNECTION.\n\nThe strongest protective factor against addiction: a teen who feels genuinely connected to their family and has at least one trusted adult they can talk to." },
+            { heading: "Truth 3: It Can Happen to Anyone", body: "Addiction doesn't discriminate by income, intelligence, or family type. Risk factors include:\n• Family history of addiction\n• Untreated anxiety or depression\n• Early exposure (before age 15)\n• Trauma\n• Social isolation\n• Peer group that normalises substance use\n\nProtective factors: strong family bond, clear boundaries, emotional literacy, meaningful activities, delayed first exposure." },
+          ]}},
+          { id: "kt-m16-l1-a2", type: "true_false" as any, title: "Fact Check", content: { statement: "Cannabis is completely safe for teenagers because it's a natural plant.", isTrue: false, explanation: "Cannabis significantly affects the developing teenage brain. Research shows regular use before age 25 can impair memory, motivation, attention, and increase risk of psychosis in those predisposed. 'Natural' does not mean safe for a developing brain." }},
+        ]
+      },
+      {
+        id: "kt-m16-l2",
+        title: "Screen & Social Media Dependency",
+        description: "When the phone becomes the problem",
+        activities: [
+          { id: "kt-m16-l2-a1", type: "info_carousel" as any, title: "Digital Dependency", content: { slides: [
+            { heading: "The Dopamine Loop", body: "Social media, gaming, and short-form video are engineered to be addictive. Every notification, like, and new video triggers a dopamine hit in your teen's already-sensitive reward system.\n\nSigns of dependency:\n• Anxiety when phone is taken away\n• Can't go 10 minutes without checking\n• Mood crashes after scrolling\n• Choosing screen over real-life activities\n• Sleep disruption from late-night use" },
+            { heading: "Boundaries That Work", body: "Negotiate boundaries WITH them (not imposed on them):\n• No phones at meals or in bedrooms after a set time\n• Screen-free first hour after waking\n• Weekly screen time review together (not as punishment — as awareness)\n• Model it yourself (if you're always on YOUR phone, why shouldn't they be?)\n• Replace screen time with something better, not just nothing" },
+            { heading: "The Comparison Trap", body: "Social media creates a distorted mirror. Everyone's life looks better, easier, more exciting. Help your teen see:\n• 'People post their highlights, not their hard days'\n• 'How do you feel AFTER 30 minutes of scrolling? Better or worse?'\n• 'What would you have done with that hour if you didn't have a phone?'\n\nAwareness is the first step. Don't lecture — help them notice the pattern themselves." },
+          ]}},
+          { id: "kt-m16-l2-a2", type: "open_response" as any, title: "Family Digital Audit", content: { prompt: "How much screen time does your family consume daily? Be honest about YOUR usage too. What's one boundary you could introduce this week that applies to everyone — including you?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m16-l3",
+        title: "Striking at the Root",
+        description: "Addressing the WHY behind unhealthy coping",
+        activities: [
+          { id: "kt-m16-l3-a1", type: "info_carousel" as any, title: "Root Causes", content: { slides: [
+            { heading: "Ask Why, Not What", body: "Instead of focusing on WHAT they're doing (drinking, vaping, endless scrolling), ask WHY:\n• What are they trying to escape from?\n• What emotion are they trying to manage?\n• What need is being met by this behaviour?\n\n'I'm not asking to judge — I'm asking because I care about what's driving this.'" },
+            { heading: "Build Alternative Coping", body: "Your teen needs healthy ways to handle:\n• Stress → physical activity, breathing, journaling\n• Loneliness → genuine connection, community, pets\n• Boredom → creative projects, nature, learning something new\n• Pain → therapy, talking, processing with a safe adult\n\nThe goal: make healthy coping as accessible and rewarding as the unhealthy option." },
+            { heading: "If They're Already Struggling", body: "If you suspect substance use or serious dependency:\n• Don't panic publicly (process your fear with another adult first)\n• Approach with care: 'I've noticed some changes. I'm worried, not angry.'\n• Listen more than you talk\n• Seek professional help early (GP, counsellor, addiction service)\n• NZ: Alcohol Drug Helpline 0800 787 797\n• Remember: early intervention dramatically improves outcomes" },
+          ]}},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE 17: BUILDING SELF-WORTH ─────────────────────────────────────
+  {
+    id: "kt-m17",
+    title: "Building Unshakeable Self-Worth",
+    subtitle: "Helping your child like who they are — from the inside out",
+    description: "Self-worth is the foundation everything else is built on. These strategies help your child develop genuine confidence based on character and competence — not likes, looks, or popularity.",
+    estimatedMinutes: 30,
+    sourceBooks: ["The 6 Most Important Decisions You'll Ever Make — Sean Covey", "Good Inside — Becky Kennedy", "Raising Girls Who Like Themselves — Kasey Edwards"],
+    sources: ["Self-Esteem Research", "Positive Psychology"],
+    lessons: [
+      {
+        id: "kt-m17-l1",
+        title: "The Two Mirrors",
+        description: "Teaching your child to see themselves clearly",
+        activities: [
+          { id: "kt-m17-l1-a1", type: "info_carousel" as any, title: "Mirrors of Self-Worth", content: { slides: [
+            { heading: "The Social Mirror", body: "The 'social mirror' is what the world reflects back at your child: peer opinions, social media likes, grades, appearance comments. This mirror is distorted — it changes daily, it's based on others' insecurities, and it never gives an accurate picture.\n\nIf your child bases their worth on this mirror, they'll always be searching for validation." },
+            { heading: "The True Mirror", body: "The 'true mirror' reflects who they actually are: their values, their effort, their kindness, their growth. This mirror is stable — it doesn't change based on who's looking.\n\nHelp them build this mirror by regularly reflecting THEIR qualities back to them:\n• 'I noticed you helped that kid who was sitting alone. That takes courage.'\n• 'You didn't give up on that project even when it was hard. That's persistence.'\n• 'The way you handled that disagreement showed real maturity.'" },
+            { heading: "Character + Competence", body: "True confidence comes from two sources:\n\n1. CHARACTER: Who you are when no one's watching. Integrity, kindness, resilience.\n2. COMPETENCE: Getting good at something through effort. Sport, art, music, academics, cooking, fixing things.\n\nHelp your child develop BOTH. Character without skill feels hollow. Skill without character feels empty." },
+          ]}},
+          { id: "kt-m17-l1-a2", type: "open_response" as any, title: "Reflect", content: { prompt: "Which mirror does your child look at most — the social mirror or the true mirror? What's one thing you could say this week to strengthen their true mirror?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-m17-l2",
+        title: "Conquering Their Personal Challenge",
+        description: "Everyone has a thing they struggle with — help them face it",
+        activities: [
+          { id: "kt-m17-l2-a1", type: "info_carousel" as any, title: "Facing the Fear", content: { slides: [
+            { heading: "Everyone Has One", body: "Every child has something that feels like their biggest obstacle — their personal dragon to slay. It might be:\n• Speaking up in class\n• Making friends\n• A learning difficulty\n• Body image\n• A family situation\n• Anxiety\n• Not fitting in\n\nThe size of the challenge doesn't matter. What matters is that they face it, not avoid it." },
+            { heading: "Small Wins Build Confidence", body: "Confidence doesn't come from affirmations or pep talks. It comes from DOING hard things and surviving. Help your child:\n\n1. Name the challenge (what specifically scares them?)\n2. Break it into tiny steps\n3. Celebrate each step (not just the outcome)\n4. Normalise setbacks ('Everyone falls. Getting up is the skill.')\n5. Model your own struggles ('I was nervous about that presentation too')" },
+            { heading: "The Anti-Comparison Practice", body: "Comparison is the thief of joy — especially for teenagers. Help them shift:\n\nFROM: 'Why am I not as good/pretty/smart/popular as them?'\nTO: 'Am I better than I was yesterday?'\n\nCreate a family practice: each person shares one thing they improved at this week, no matter how small. Progress is personal." },
+          ]}},
+          { id: "kt-m17-l2-a2", type: "survey" as any, title: "Your Child's Challenge", content: { question: "What do you think your child struggles with most?", options: ["Social confidence", "Academic pressure", "Body image", "Family situation", "Finding their identity", "Anxiety or worry"] }},
+        ]
+      }
+    ]
+  },
 ];
