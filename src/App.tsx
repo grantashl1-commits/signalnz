@@ -49,6 +49,7 @@ const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Connect = lazy(() => import("./pages/Connect"));
 const ConnectCourse = lazy(() => import("./components/connect/ConnectCoursePage"));
+const Parenting = lazy(() => import("./components/parenting/ParentingCoursePage"));
 
 const queryClient = new QueryClient();
 
