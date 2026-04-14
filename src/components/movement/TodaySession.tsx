@@ -610,14 +610,20 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             <Save className="h-4 w-4" /> Finish session
           </button>
         </div>
+        </div>
       )}
 
       {/* Manual program card */}
       {hasManualProgram && todayWorkout && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="h-px flex-1 bg-primary/20" />
+            <span className="font-display text-[10px] font-bold text-primary uppercase tracking-[0.2em]">✦ Training Programme</span>
+            <div className="h-px flex-1 bg-primary/20" />
+          </div>
         <div className="card-warm p-4 space-y-4">
           <div className="flex items-start justify-between">
             <div>
-              <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">
                 {program?.title} · {todayWorkout.day_label}
               </p>
               <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{todayWorkout.title}</h3>
