@@ -14,6 +14,7 @@ export interface CourseLesson {
 export interface CourseModule {
   id: string; title: string; subtitle: string; description: string;
   icon?: string; estimatedMinutes?: number; sources?: string[];
+  sourceBooks?: string[];
   lessons: CourseLesson[];
 }
 
