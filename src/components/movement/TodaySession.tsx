@@ -545,13 +545,18 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const manualCompletedCount = todayExercises.filter(ex => completedExercises.has(ex.id)).length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* AI Session card */}
       {hasAiSession && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="h-px flex-1 bg-primary/20" />
+            <span className="font-display text-[10px] font-bold text-primary uppercase tracking-[0.2em]">✦ AI Training Plan</span>
+            <div className="h-px flex-1 bg-primary/20" />
+          </div>
         <div className="card-warm p-4 space-y-4">
           <div className="flex items-start justify-between">
             <div>
-              <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">AI Training Plan</p>
               <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{aiSession.title || "Session"}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <Clock className="h-3 w-3 text-muted-foreground" />
