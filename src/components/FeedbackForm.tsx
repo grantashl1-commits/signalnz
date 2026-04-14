@@ -75,6 +75,10 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted?: () => void
 
     setSubmitting(true);
     try {
+      // Get the actual auth session to ensure user_id matches auth.uid()
+      const { data: { session } } = await supabase.auth.getSession();
+      const authUserId = session?.user?.id ?? null;
+
       // Upload all files
       const uploadedUrls: string[] = [];
       for (const fp of files) {
@@ -93,7 +97,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted?: () => void
       const subject = `[${category}] ${description.trim().slice(0, 80)}`;
 
       const { error } = await supabase.from("feedback").insert({
-        user_id: user?.id ?? null,
+        user_id: authUserId,
         user_email: userEmail || null,
         category,
         subject: subject,
