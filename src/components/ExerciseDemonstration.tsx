@@ -1,14 +1,48 @@
-import { useMemo } from "react";
-import { getAnimationForExercise } from "@/data/exercise-animations";
-import ExerciseRig from "@/components/movement/ExerciseRig";
-import ExerciseSilhouette from "@/components/movement/ExerciseSilhouette";
+import { useState, useEffect, useMemo } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   exerciseName: string;
   size?: number;
   className?: string;
   showLabel?: boolean;
+  /** Override: if provided, skip the DB lookup */
   imageUrl?: string | null;
+}
+
+// ── Global illustration cache (loaded once) ─────────────────────────
+let illustrationMap: Map<string, string> | null = null;
+let loadingPromise: Promise<void> | null = null;
+
+function ensureIllustrationMap(): Promise<void> {
+  if (illustrationMap) return Promise.resolve();
+  if (loadingPromise) return loadingPromise;
+
+  loadingPromise = (async () => {
+    const map = new Map<string, string>();
+    // Fetch in batches (1000-row default limit)
+    let from = 0;
+    const batchSize = 1000;
+    while (true) {
+      const { data } = await supabase
+        .from("exercises")
+        .select("name, illustration_url")
+        .not("illustration_url", "is", null)
+        .range(from, from + batchSize - 1);
+
+      if (!data || data.length === 0) break;
+      for (const row of data) {
+        if (row.illustration_url) {
+          map.set(row.name.toLowerCase(), row.illustration_url);
+        }
+      }
+      if (data.length < batchSize) break;
+      from += batchSize;
+    }
+    illustrationMap = map;
+  })();
+
+  return loadingPromise;
 }
 
 export default function ExerciseDemonstration({
@@ -16,9 +50,22 @@ export default function ExerciseDemonstration({
   size = 96,
   className = "",
   showLabel = false,
-  imageUrl,
+  imageUrl: imageUrlProp,
 }: Props) {
-  const animation = useMemo(() => getAnimationForExercise(exerciseName), [exerciseName]);
+  const [ready, setReady] = useState(!!illustrationMap);
+
+  useEffect(() => {
+    if (!illustrationMap) {
+      ensureIllustrationMap().then(() => setReady(true));
+    }
+  }, []);
+
+  // Resolve the URL: explicit prop > cached map
+  const resolvedUrl = useMemo(() => {
+    if (imageUrlProp) return imageUrlProp;
+    if (!illustrationMap) return null;
+    return illustrationMap.get(exerciseName.toLowerCase()) ?? null;
+  }, [imageUrlProp, exerciseName, ready]);
 
   const label = showLabel && size >= 64 ? (
     <div className="absolute bottom-0 left-0 right-0 rounded-b-xl bg-gradient-to-t from-foreground/80 to-transparent px-1 py-0.5">
@@ -26,37 +73,23 @@ export default function ExerciseDemonstration({
     </div>
   ) : null;
 
-  if (imageUrl) {
-    return (
-      <div className="relative" style={{ width: size, height: size }}>
-        <div className={`overflow-hidden rounded-xl bg-accent/30 ${className}`} style={{ width: size, height: size }}>
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <div
+        className={`overflow-hidden rounded-xl bg-accent/30 flex items-center justify-center ${className}`}
+        style={{ width: size, height: size }}
+      >
+        {resolvedUrl ? (
           <img
-            src={imageUrl}
+            src={resolvedUrl}
             alt={`${exerciseName} illustration`}
             className="h-full w-full object-contain"
             loading="lazy"
           />
-        </div>
-        {label}
-      </div>
-    );
-  }
-
-  if (animation) {
-    return (
-      <div className="relative" style={{ width: size, height: size }}>
-        <div className={`overflow-hidden rounded-xl bg-accent/30 ${className}`} style={{ width: size, height: size }}>
-          <ExerciseRig animation={animation} size={size} playing />
-        </div>
-        {label}
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <div className={`overflow-hidden rounded-xl bg-accent/30 ${className}`} style={{ width: size, height: size }}>
-        <ExerciseSilhouette exerciseName={exerciseName} size={size} />
+        ) : (
+          // Minimal placeholder while loading
+          <div className="h-full w-full animate-pulse bg-secondary/50 rounded-xl" />
+        )}
       </div>
       {label}
     </div>
