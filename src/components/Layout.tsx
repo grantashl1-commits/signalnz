@@ -251,7 +251,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {
               const isMore = path === "more";
               const isActive = isMore
-                ? moreOpen || MORE_ITEMS.some(m => location.pathname === m.path || location.pathname.startsWith(m.path))
+                ? moreOpen || ALL_MORE_PATHS.some(p => location.pathname === p || location.pathname.startsWith(p))
                 : path === "/" ? location.pathname === "/" : (location.pathname === path || location.pathname.startsWith(path));
               return (
                 <button
@@ -331,27 +331,36 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               transition={{ type: "spring", damping: 30, stiffness: 400 }}
             >
               <div className="mx-4 mb-2 bg-card rounded-2xl border border-border/20 shadow-2xl overflow-hidden">
-                {MORE_ITEMS.map(({ path, label, icon: Icon }) => {
-                  const active = location.pathname === path || location.pathname.startsWith(path);
-                  return (
-                    <button
-                      key={path}
-                      onClick={() => {
-                        haptic("light");
-                        setMoreOpen(false);
-                        navigate(path);
-                      }}
-                      className={`w-full flex items-center gap-3 px-5 py-3.5 transition-colors ${
-                        active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
-                      }`}
-                      style={{ WebkitTapHighlightColor: "transparent" }}
-                    >
-                      <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
-                      <span className="text-sm font-medium">{label}</span>
-                      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
-                    </button>
-                  );
-                })}
+                {MORE_CATEGORIES.map((cat) => (
+                  <div key={cat.label || "other"}>
+                    {cat.label && (
+                      <div className="px-5 pt-3 pb-1">
+                        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{cat.label}</span>
+                      </div>
+                    )}
+                    {cat.items.map(({ path, label, icon: Icon }) => {
+                      const active = location.pathname === path || location.pathname.startsWith(path);
+                      return (
+                        <button
+                          key={path}
+                          onClick={() => {
+                            haptic("light");
+                            setMoreOpen(false);
+                            navigate(path);
+                          }}
+                          className={`w-full flex items-center gap-3 px-5 py-3 transition-colors ${
+                            active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
+                          }`}
+                          style={{ WebkitTapHighlightColor: "transparent" }}
+                        >
+                          <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
+                          <span className="text-sm font-medium">{label}</span>
+                          {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
             </motion.div>
           </>
