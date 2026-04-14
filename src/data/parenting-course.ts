@@ -911,6 +911,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Helping your child bounce back from setbacks",
     description: "Resilience isn't something children are born with — it's built through how we respond to their struggles. Learn the coaching approach that transforms setbacks into growth.",
     estimatedMinutes: 25,
+    sourceBooks: ["Raising Mentally Strong Kids — Daniel Amen", "Raising Good Humans — Hunter Clarke-Fields"],
     sources: ["Resilience Research", "Growth Mindset"],
     lessons: [
       {
@@ -952,6 +953,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Practical strategies for parents when your child is being targeted",
     description: "Bullying can be devastating. Learn how to recognise the signs, respond effectively, work with schools, and build your child's social confidence and assertiveness skills.",
     estimatedMinutes: 30,
+    sourceBooks: ["How to Talk So Kids Will Listen — Adele Faber", "How to Talk to Kids About Anything — Dr Robyn Silverman", "Raising Good Humans — Hunter Clarke-Fields"],
     sources: ["Anti-Bullying Research", "Social Skills Development"],
     lessons: [
       {
@@ -1052,6 +1054,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Staying connected through the toughest developmental stage",
     description: "The teenage brain is undergoing a massive renovation. Understanding what's happening biologically will transform how you communicate with and support your teen.",
     estimatedMinutes: 30,
+    sourceBooks: ["How to Talk So Teens Will Listen — Adele Faber", "The Teenage Brain — Frances E. Jensen", "The Disengaged Teen — Jenny Anderson & Rebecca Winthrop"],
     sources: ["Adolescent Psychology", "Family Systems Therapy"],
     lessons: [
       {
@@ -1093,6 +1096,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Helping your child stay true to themselves",
     description: "As children grow, peer influence grows with them. Learn how to help your child develop a strong sense of self, navigate peer pressure, and make values-based decisions.",
     estimatedMinutes: 20,
+    sourceBooks: ["How to Talk to Kids About Anything — Dr Robyn Silverman", "The 6 Most Important Decisions You'll Ever Make — Sean Covey"],
     sources: ["Identity Development", "Social Psychology"],
     lessons: [
       {
@@ -1117,6 +1121,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Real-world scenarios and scripts for younger children",
     description: "Young children encounter confusing social situations every day. These are the exact scripts and strategies for the most common ones — what to say, what to do, and how to coach your child through it.",
     estimatedMinutes: 35,
+    sourceBooks: ["How to Talk So Kids Will Listen — Adele Faber", "Gentle Discipline — Sarah Ockwell-Smith", "Have a New Kid by Friday — Kevin Leman"],
     sources: ["Child Development Research", "Social Skills Training"],
     lessons: [
       {
@@ -1309,6 +1314,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "High-stakes scenarios and how to navigate them",
     description: "The teenage years bring situations with real consequences. These are the conversations you need to have BEFORE they happen, and exactly what to do when they do.",
     estimatedMinutes: 45,
+    sourceBooks: ["The Teenage Brain — Frances E. Jensen", "How to Talk So Teens Will Listen — Adele Faber", "Raising Mentally Strong Kids — Daniel Amen", "How to Raise an Adult — Julie Lythcott-Haims"],
     sources: ["Adolescent Psychology", "Risk Prevention Research"],
     lessons: [
       {
@@ -1418,6 +1424,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Divorce, grief, trauma, and major life changes",
     description: "When life throws your family a curveball, children need extra support. These strategies help you guide your child through the hardest chapters.",
     estimatedMinutes: 30,
+    sourceBooks: ["How to Talk to Kids About Anything — Dr Robyn Silverman", "Raising Good Humans — Hunter Clarke-Fields"],
     sources: ["Family Therapy", "Trauma-Informed Care"],
     lessons: [
       {
@@ -1454,7 +1461,8 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Building self-worth in a world that challenges it",
     description: "Girls face unique pressures around body image, perfectionism, people-pleasing, and social dynamics. These strategies help your daughter develop unshakeable self-worth.",
     estimatedMinutes: 25,
-    sources: ["Girls\u2019 Development Research", "Self-Esteem Studies"],
+    sourceBooks: ["Raising Worry-Free Girls — Sissy Goff", "How to Raise an Adult — Julie Lythcott-Haims", "How to Talk to Kids About Anything — Dr Robyn Silverman"],
+    sources: ["Girls' Development Research", "Self-Esteem Studies"],
     lessons: [
       {
         id: "kt-m11-l1",
@@ -1489,6 +1497,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "Breaking the \u2018man up\u2019 cycle",
     description: "Boys are conditioned to suppress emotions from a young age. These strategies help your son develop emotional literacy, healthy relationships, and genuine confidence.",
     estimatedMinutes: 25,
+    sourceBooks: ["Raising Mentally Strong Kids — Daniel Amen", "Raising Good Humans — Hunter Clarke-Fields", "How to Talk So Kids Will Listen — Adele Faber"],
     sources: ["Masculinity Research", "Emotional Intelligence"],
     lessons: [
       {
@@ -1512,6 +1521,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
     subtitle: "When your child asks something you don\u2019t have words for",
     description: "Children ask the hardest questions at the worst times. Use the Little Minds Big Questions tool to create gentle, age-appropriate metaphor stories that help children understand complex topics like death, divorce, feelings, and the world.",
     estimatedMinutes: 10,
+    sourceBooks: ["How to Talk to Kids About Anything — Dr Robyn Silverman"],
     sources: ["Narrative Therapy", "Child Communication"],
     lessons: [
       {
