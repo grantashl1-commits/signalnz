@@ -11,6 +11,8 @@ import logoBotanical from "@/assets/logo-explorations/signal-logo-botanical.png"
 import logoWave from "@/assets/logo-explorations/signal-logo-wave.png";
 import logoCursive from "@/assets/logo-explorations/signal-logo-cursive.png";
 import logoMixed from "@/assets/logo-explorations/signal-logo-mixed.png";
+import dotsPurpleOnCream from "@/assets/logo-explorations/signal-dots-purple-on-cream.png";
+import dotsCreamOnPurple from "@/assets/logo-explorations/signal-dots-cream-on-purple.png";
 
 /* ── brand tokens ── */
 const C = {
