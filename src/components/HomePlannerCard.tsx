@@ -433,29 +433,31 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
       </div>
       <DottedLine />
 
-      {/* Imported calendar events (read-only) */}
+      {/* Imported calendar events — weekly grid */}
       {cal.importedEvents.length > 0 && (
         <div>
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center justify-between mb-2">
             <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider">📅 My Calendar</p>
             <button onClick={cal.clearCalendar} className="font-hand text-[10px] text-muted-foreground/40 hover:text-destructive transition-colors">
               disconnect
             </button>
           </div>
-          <div className="space-y-1 mb-2">
-            {cal.importedEvents.slice(0, 8).map((ev, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <span className="font-hand text-[11px] text-primary/40 w-10 flex-shrink-0 pt-0.5">{ev.time}</span>
-                <p className="font-hand text-[12px] text-foreground/50 flex-1 leading-snug">{ev.summary}</p>
-              </div>
-            ))}
-            {cal.importedEvents.length > 8 && (
-              <p className="font-hand text-[10px] text-muted-foreground/30 text-center">
-                +{cal.importedEvents.length - 8} more
-              </p>
-            )}
+          <div className="grid grid-cols-7 gap-px">
+            {DAYS_OF_WEEK.map((_, colIdx) => {
+              const dayEvents = cal.importedEvents.filter(ev => ev.dayIndex === colIdx);
+              return (
+                <div key={colIdx} className="min-h-[48px] space-y-0.5 px-0.5">
+                  {dayEvents.map((ev, i) => (
+                    <div key={i} className="rounded-md bg-primary/8 px-1 py-0.5">
+                      <p className="font-hand text-[8px] text-primary/50 leading-none">{ev.time}</p>
+                      <p className="font-hand text-[9px] text-foreground/60 leading-tight truncate">{ev.summary}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
           </div>
-          <DottedLine />
+          <DottedLine className="mt-2" />
         </div>
       )}
 
