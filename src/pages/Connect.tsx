@@ -27,6 +27,8 @@ function hashPin(pin: string): string {
   }
   return String(hash);
 }
+const CONNECT_COURSE_PRICE_ID = "price_1TMVQKEAvaJHDMD4SdXWKeFW";
+const CONNECT_COURSE_PRODUCT_ID = "prod_ULBn2vV58V9s9l";
 
 export default function Connect() {
   const { user } = useAuth();
