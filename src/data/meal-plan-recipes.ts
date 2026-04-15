@@ -652,7 +652,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Whisk eggs with salt and pepper.",
-      "Heat olive oil in a pan. Sauté spinach and onion for 1 min.",
+      "Heat olive oil in a pan. Saute spinach and onion for 1 min.",
       "Pour eggs over vegetables. Cook 3 min until edges set.",
       "Add feta, fold in half, cook 1 more minute.",
     ],
@@ -1009,7 +1009,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "1/2 lemon, juiced",
     ],
     method: [
-      "Preheat oven to 200°C. Pierce potato and bake 45 min until soft.",
+      "Preheat oven to 200 degreesC. Pierce potato and bake 45 min until soft.",
       "Cut open and fluff the inside with a fork.",
       "Top with hummus and serve with salad dressed in olive oil and lemon.",
     ],
@@ -1143,7 +1143,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Roast pumpkin at 200°C for 20 min until golden.",
+      "Roast pumpkin at 200 degreesC for 20 min until golden.",
       "Season and grill chicken 5-6 min each side. Slice.",
       "Toss rocket with olive oil. Top with chicken, pumpkin, pumpkin seeds, and balsamic glaze.",
     ],
@@ -1170,7 +1170,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Sauté onion and garlic in olive oil.",
+      "Saute onion and garlic in olive oil.",
       "Add pumpkin, stock, and cumin. Simmer 15 min.",
       "Add chicken and cook 10 min until done. Shred chicken.",
       "Blend soup partially, stir in coconut cream and shredded chicken.",
@@ -1198,7 +1198,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Sauté onion and garlic in olive oil.",
+      "Saute onion and garlic in olive oil.",
       "Add sweet potato, stock, and paprika. Simmer 15 min.",
       "Add chicken, cook 10 min. Shred.",
       "Blend partially, stir in coconut cream and chicken.",
@@ -1227,7 +1227,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt, pepper, and thyme",
     ],
     method: [
-      "Sauté onion, carrot, and celery in olive oil for 5 min.",
+      "Saute onion, carrot, and celery in olive oil for 5 min.",
       "Add chicken and stock. Simmer 15 min.",
       "Stir in spinach until wilted. Season with thyme, salt, and pepper.",
       "Serve with toasted sourdough.",
@@ -1308,7 +1308,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     method: [
       "Cook quinoa per packet instructions.",
       "Season and grill chicken 5-6 min each side. Slice.",
-      "Roast or sauté vegetables in olive oil.",
+      "Roast or saute vegetables in olive oil.",
       "Assemble bowl with quinoa, chicken, vegetables, and hummus. Drizzle with lemon juice.",
     ],
     phaseBenefit: "Complete protein from quinoa and chicken fuels rising follicular energy.",
@@ -1332,7 +1332,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "1/2 tsp cumin",
     ],
     method: [
-      "Roast vegetables with olive oil and cumin at 200°C for 15 min.",
+      "Roast vegetables with olive oil and cumin at 200 degreesC for 15 min.",
       "Spread hummus on the wrap.",
       "Layer roasted vegetables and spinach. Roll tightly.",
     ],
@@ -1363,7 +1363,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Brown lamb in olive oil over high heat. Set aside.",
-      "Sauté onion, carrot, celery, and garlic.",
+      "Saute onion, carrot, celery, and garlic.",
       "Add lentils, tomatoes, stock, cumin, and lamb.",
       "Simmer 30 min until lentils are tender. Season.",
     ],
@@ -1393,7 +1393,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Brown lamb in olive oil. Set aside.",
-      "Sauté onion and carrots. Add spices.",
+      "Saute onion and carrots. Add spices.",
       "Add lentils, tomatoes, stock, and lamb. Simmer 35 min.",
       "Season and garnish with parsley.",
     ],
@@ -1418,7 +1418,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "1 tbsp olive oil",
     ],
     method: [
-      "Roast vegetables at 200°C for 15 min.",
+      "Roast vegetables at 200 degreesC for 15 min.",
       "Season and grill lamb 3-4 min each side. Slice.",
       "Spread hummus on wrap. Layer lamb, roasted veg, and rocket. Roll.",
     ],
@@ -1533,7 +1533,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt, pepper, and parmesan to serve",
     ],
     method: [
-      "Sauté onion, carrot, and celery in olive oil for 5 min.",
+      "Saute onion, carrot, and celery in olive oil for 5 min.",
       "Add zucchini, tomatoes, stock, beans, and oregano. Simmer 15 min.",
       "Add pasta and cook until tender, about 8 min.",
       "Season and serve with parmesan.",
@@ -1564,7 +1564,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "1 tsp oregano",
     ],
     method: [
-      "Sauté onion, carrot, and celery in olive oil.",
+      "Saute onion, carrot, and celery in olive oil.",
       "Add chicken, tomatoes, stock, beans, and oregano. Simmer 15 min.",
       "Remove chicken, shred, and return to pot. Add pasta, cook 8 min.",
     ],
@@ -1696,7 +1696,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook quinoa per packet instructions.",
-      "Roast beetroot at 200°C for 20 min.",
+      "Roast beetroot at 200 degreesC for 20 min.",
       "Toss rocket with olive oil and balsamic.",
       "Top with quinoa, beetroot, pumpkin seeds, and feta.",
     ],
@@ -1798,7 +1798,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Cook quinoa. Roast vegetables with 1 tbsp olive oil at 200°C for 15 min.",
+      "Cook quinoa. Roast vegetables with 1 tbsp olive oil at 200 degreesC for 15 min.",
       "Toss leaves with remaining olive oil and lemon juice.",
       "Top with quinoa, roasted veg, and pumpkin seeds.",
     ],
@@ -1827,7 +1827,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Toss chickpeas, kumara, and carrots with olive oil and spices.",
-      "Roast at 200°C for 25 min.",
+      "Roast at 200 degreesC for 25 min.",
       "Whisk tahini with lemon juice and water.",
       "Serve roasted veg over spinach, drizzle with tahini dressing.",
     ],
@@ -1854,8 +1854,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt, pepper, and basil",
     ],
     method: [
-      "Roast tomatoes cut-side up at 200°C for 15 min.",
-      "Sauté onion and garlic in olive oil. Add lentils, stock, and cumin.",
+      "Roast tomatoes cut-side up at 200 degreesC for 15 min.",
+      "Saute onion and garlic in olive oil. Add lentils, stock, and cumin.",
       "Add roasted tomatoes. Simmer 15 min.",
       "Blend partially. Season with basil, salt, and pepper.",
     ],
@@ -1885,7 +1885,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Whisk chickpea flour, water, nutritional yeast, turmeric, baking powder, salt, and pepper.",
       "Let batter rest 10 min.",
       "Heat olive oil in an oven-safe pan. Add roasted vegetables.",
-      "Pour batter over and cook 5 min. Transfer to oven at 200°C for 15 min.",
+      "Pour batter over and cook 5 min. Transfer to oven at 200 degreesC for 15 min.",
     ],
     phaseBenefit: "Chickpea flour provides plant protein. Satisfying vegan option for the luteal phase.",
     nutrition: { calories: 280, protein: 14, carbs: 32, fat: 10, fibre: 6 },
@@ -1965,7 +1965,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Bake sweet potato at 200°C for 35 min until soft.",
+      "Bake sweet potato at 200 degreesC for 35 min until soft.",
       "Mix cabbage and carrot. Dress with tahini, lemon juice, and olive oil.",
       "Split sweet potato and fill with tahini slaw.",
       "Top with pumpkin seeds.",
@@ -2124,7 +2124,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt, pepper, and lemon juice",
     ],
     method: [
-      "Sauté onion and garlic in olive oil.",
+      "Saute onion and garlic in olive oil.",
       "Add beans, stock, and paprika. Simmer 15 min.",
       "Add kale and cook 5 min until wilted.",
       "Season with salt, pepper, and lemon juice.",
@@ -2154,7 +2154,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt, pepper, and parmesan",
     ],
     method: [
-      "Sauté onion, garlic, carrot, and celery in olive oil.",
+      "Saute onion, garlic, carrot, and celery in olive oil.",
       "Add beef mince and brown, breaking up with a spoon.",
       "Add tomatoes and oregano. Simmer 20 min.",
       "Cook pasta. Serve sauce over pasta with parmesan.",
@@ -2186,7 +2186,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook noodles. Sear beef in butter over high heat, set aside.",
-      "Sauté onion and mushrooms in olive oil.",
+      "Saute onion and mushrooms in olive oil.",
       "Add stock, simmer 5 min. Stir in sour cream and mustard.",
       "Return beef, heat through. Serve over noodles with parsley.",
     ],
@@ -2241,7 +2241,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Place fish in a baking dish. Top with butter, lemon juice, dill.",
-      "Bake at 200°C for 15 min.",
+      "Bake at 200 degreesC for 15 min.",
       "Blanch greens in boiling water for 2 min. Toss with olive oil.",
       "Serve fish with greens and pan juices.",
     ],
@@ -2271,11 +2271,11 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "1 tbsp olive oil",
     ],
     method: [
-      "Sauté onion and mushrooms in butter. Add flour, stir 1 min.",
+      "Saute onion and mushrooms in butter. Add flour, stir 1 min.",
       "Add stock and cream. Simmer until thickened.",
       "Add chicken and cook 10 min. Season.",
       "Transfer to a pie dish, top with pastry, brush with egg.",
-      "Bake at 200°C for 20 min until golden. Serve with salad.",
+      "Bake at 200 degreesC for 20 min until golden. Serve with salad.",
     ],
     phaseBenefit: "Comforting and nourishing. Chicken provides iron and B12 for menstrual support.",
     nutrition: { calories: 560, protein: 32, carbs: 34, fat: 32 },
@@ -2330,7 +2330,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and coriander",
     ],
     method: [
-      "Sauté onion and garlic. Add spices, stir 1 min.",
+      "Saute onion and garlic. Add spices, stir 1 min.",
       "Add chicken and brown. Pour in coconut milk.",
       "Simmer 20 min until chicken is cooked. Stir in spinach.",
       "Cook rice. Serve curry over rice with coriander.",
@@ -2359,7 +2359,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Marinate chicken in yoghurt and half the tikka sauce for 10 min.",
-      "Sauté onion and garlic. Add chicken, cook until golden.",
+      "Saute onion and garlic. Add chicken, cook until golden.",
       "Add remaining sauce, simmer 15 min.",
       "Cook rice. Serve with coriander and naan.",
     ],
@@ -2388,7 +2388,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Coriander and feta to serve",
     ],
     method: [
-      "Sauté onion and garlic in olive oil. Add spices.",
+      "Saute onion and garlic in olive oil. Add spices.",
       "Add tomatoes and chickpeas. Simmer 10 min.",
       "Make 4 wells, crack eggs in. Cover and cook 5 min until set.",
       "Serve with crusty bread, coriander, and feta.",
@@ -2418,9 +2418,9 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Boil potatoes until soft. Mash with half the butter and a splash of milk.",
-      "Sauté leek in remaining butter. Add flour, stir 1 min. Add milk and cream, simmer until thick.",
+      "Saute leek in remaining butter. Add flour, stir 1 min. Add milk and cream, simmer until thick.",
       "Add fish and peas, cook 5 min. Transfer to a baking dish.",
-      "Top with mash. Bake at 200°C for 15 min until golden.",
+      "Top with mash. Bake at 200 degreesC for 15 min until golden.",
     ],
     phaseBenefit: "Comforting with omega-3 from salmon. Complex carbs from potato manage cravings.",
     nutrition: { calories: 520, protein: 32, carbs: 42, fat: 24 },
@@ -2498,7 +2498,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and pepper",
     ],
     method: [
-      "Toss vegetables with 1 tbsp olive oil and rosemary. Roast at 200°C for 20 min.",
+      "Toss vegetables with 1 tbsp olive oil and rosemary. Roast at 200 degreesC for 20 min.",
       "Season lamb cutlets. Pan-fry 3 min each side for medium.",
       "Rest 5 min. Serve with roasted vegetables.",
     ],
@@ -2526,7 +2526,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     method: [
       "Place salmon on a lined tray. Top with lemon zest, garlic, herbs, and olive oil.",
       "Arrange asparagus around salmon.",
-      "Bake at 200°C for 15 min.",
+      "Bake at 200 degreesC for 15 min.",
       "Squeeze fresh lemon juice over before serving.",
     ],
     phaseBenefit: "Salmon provides omega-3 for hormone synthesis. Asparagus is rich in folate.",
@@ -2554,7 +2554,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt and nutritional yeast",
     ],
     method: [
-      "Sauté onion, garlic, carrot, and celery in olive oil.",
+      "Saute onion, garlic, carrot, and celery in olive oil.",
       "Add lentils, tomatoes, and 1 cup water. Simmer 25 min.",
       "Season with oregano and salt.",
       "Cook pasta. Serve sauce over pasta with nutritional yeast.",
@@ -2611,7 +2611,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     method: [
       "Rub chicken with olive oil, rosemary, salt, and pepper.",
       "Arrange vegetables around chicken in a roasting pan.",
-      "Roast at 200°C for 50 min until golden and cooked through.",
+      "Roast at 200 degreesC for 50 min until golden and cooked through.",
       "Rest 10 min before carving. Serve with pan juices.",
     ],
     phaseBenefit: "Classic comfort food. Chicken provides protein and B6 for the luteal phase.",
@@ -2660,7 +2660,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Salt, pepper, and herbs",
     ],
     method: [
-      "Cook quinoa. Roast vegetables with olive oil at 200°C for 15 min.",
+      "Cook quinoa. Roast vegetables with olive oil at 200 degreesC for 15 min.",
       "Season and pan-fry salmon 4 min each side.",
       "Serve salmon on quinoa with roasted vegetables and lemon juice.",
     ],
@@ -2744,9 +2744,9 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Brown beef in olive oil in a heavy pot. Set aside.",
-      "Sauté onion. Add carrots, sweet potato, tomatoes, stock, and paste.",
+      "Saute onion. Add carrots, sweet potato, tomatoes, stock, and paste.",
       "Return beef. Add paprika and thyme.",
-      "Cover and cook at 160°C for 2 hours until tender.",
+      "Cover and cook at 160 degreesC for 2 hours until tender.",
     ],
     phaseBenefit: "Slow-cooked beef provides heme iron and B12. Sweet potato adds complex carbs and vitamin A.",
     nutrition: { calories: 480, protein: 36, carbs: 36, fat: 18 },
@@ -2773,9 +2773,9 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Thyme, salt, and pepper",
     ],
     method: [
-      "Brown beef, set aside. Sauté onion. Add flour, stir.",
+      "Brown beef, set aside. Saute onion. Add flour, stir.",
       "Add stock, tomato paste, and thyme. Return beef.",
-      "Add root vegetables. Cover, cook at 160°C for 2 hours.",
+      "Add root vegetables. Cover, cook at 160 degreesC for 2 hours.",
       "Season and serve.",
     ],
     phaseBenefit: "Ultimate comfort food for the luteal phase. Iron from beef and starchy root vegetables.",
@@ -2804,9 +2804,9 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Brown lamb shanks in olive oil. Set aside.",
-      "Sauté onion and garlic. Add tomatoes, stock, and rosemary.",
+      "Saute onion and garlic. Add tomatoes, stock, and rosemary.",
       "Return shanks, add vegetables. Cover.",
-      "Cook at 160°C for 2.5 hours until meat falls off the bone.",
+      "Cook at 160 degreesC for 2.5 hours until meat falls off the bone.",
     ],
     phaseBenefit: "Lamb shanks are rich in heme iron and zinc. Slow cooking creates deep nourishment.",
     nutrition: { calories: 560, protein: 42, carbs: 28, fat: 28 },
@@ -2833,7 +2833,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Brown lamb in olive oil. Set aside.",
-      "Sauté onion, garlic, and spices.",
+      "Saute onion, garlic, and spices.",
       "Add coconut milk and lamb. Simmer 1 hour until tender.",
       "Cook rice. Serve curry over rice with coriander.",
     ],
@@ -2861,7 +2861,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Coriander and lime",
     ],
     method: [
-      "Roast sweet potato with olive oil and cumin at 200°C for 20 min.",
+      "Roast sweet potato with olive oil and cumin at 200 degreesC for 20 min.",
       "Cook rice. Warm black beans.",
       "Assemble bowls: rice, sweet potato, beans, avocado, salsa, yoghurt.",
       "Garnish with coriander and lime.",
@@ -2947,7 +2947,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Brown tempeh in olive oil. Set aside.",
-      "Sauté onion, garlic, and mushrooms.",
+      "Saute onion, garlic, and mushrooms.",
       "Add stock, tamari, tomato paste, and thyme. Simmer 15 min.",
       "Return tempeh, cook 5 min. Serve with crusty bread.",
     ],
@@ -3003,7 +3003,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Coriander",
     ],
     method: [
-      "Press and cube tofu. Sauté onion and garlic.",
+      "Press and cube tofu. Saute onion and garlic.",
       "Add curry paste and turmeric. Add pumpkin and coconut milk.",
       "Simmer 15 min. Add tofu and spinach, cook 5 min.",
       "Cook rice. Serve curry over rice with coriander.",
@@ -3033,7 +3033,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     method: [
       "Press and cube tofu.",
-      "Sauté curry paste for 1 min. Add coconut milk.",
+      "Saute curry paste for 1 min. Add coconut milk.",
       "Add tofu, capsicum, and zucchini. Simmer 15 min.",
       "Stir in spinach and tamari. Cook rice. Serve with basil and lime.",
     ],
