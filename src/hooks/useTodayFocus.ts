@@ -147,7 +147,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
 
   const focus = useMemo<TodayFocus>(() => {
     const fallback = GENERIC[currentPhase];
-    if (!user) return { ...fallback, personalised: false };
+    if (!user) return { eat: fallback.eat, move: fallback.move, rest: pickDailyRest(fallback.rest), cycle: fallback.cycle, personalised: false };
 
     let eat = "";
     let move = "";
@@ -189,13 +189,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
       } catch { /* ignore */ }
     }
     if (!eat) {
-      const prefs = dietaryPreferences;
-      if (prefs?.length) {
-        eat = `${fallback.eat} Your ${prefs[0].toLowerCase()} preferences are factored in.`;
-        hasPersonalisation = true;
-      } else {
-        eat = fallback.eat;
-      }
+      eat = fallback.eat;
     }
 
     // ── MOVE: Show today's session or phase-matched suggestion ──
@@ -213,14 +207,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
         }
       }
       if (!move) {
-        // Personalise with fitness level
-        const level = fitnessLevel;
-        if (level) {
-          move = `${fallback.move} Tailored for your ${level} fitness level.`;
-          hasPersonalisation = true;
-        } else {
-          move = fallback.move;
-        }
+        move = fallback.move;
       }
     }
 
@@ -237,7 +224,7 @@ export function useTodayFocus(): { focus: TodayFocus; loading: boolean } {
         hasPersonalisation = true;
       }
     }
-    if (!rest) rest = fallback.rest;
+    if (!rest) rest = pickDailyRest(fallback.rest);
 
     // ── CYCLE: Always personalise with actual day + phase ──
     if (cycleStartDate) {
