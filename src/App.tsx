@@ -175,6 +175,7 @@ const App = () => {
                             <Route path="/refund-policy" element={<RefundPolicy />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/connect" element={<Connect />} />
+                            <Route path="/connect/join/:code" element={<Connect />} />
                             <Route path="/parenting" element={<Parenting />} />
                             <Route path="/connect/course" element={<ConnectCourse />} />
                             <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
