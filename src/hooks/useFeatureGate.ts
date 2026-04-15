@@ -199,6 +199,11 @@ export function useFeatureGate() {
     getRequiredTier,
     getFeatureAccess,
     hasFeatureAccess,
+    hasOneOffPurchase,
+    getMinTierForFeature,
+  };
+}
+    hasFeatureAccess,
     getMinTierForFeature,
   };
 }
