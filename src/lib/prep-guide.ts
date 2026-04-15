@@ -227,14 +227,21 @@ export function generatePrepGuide(
 
 /** Generate todo title strings from prep tasks for auto-adding to the todo list */
 export function prepTaskToTodoTitle(task: PrepTask): string {
-  if (task.timeHint === "Morning") {
-    return `🍳 ${task.description}`;
-  }
+  // Calculate the actual prep day name from prepDate
+  const prepDayName = new Date(task.prepDate + "T12:00:00").toLocaleDateString("en-NZ", { weekday: "long" });
+  const forDay = task.servingDay !== prepDayName ? ` (for ${task.servingDay})` : "";
+
   if (task.timeHint === "Night before") {
-    return `🌙 ${task.description}`;
+    return `${prepDayName} evening: ${task.description}${forDay}`;
+  }
+  if (task.timeHint === "Morning") {
+    return `${prepDayName} morning: ${task.description}${forDay}`;
   }
   if (task.category === "batch") {
-    return `📦 ${task.description}`;
+    return `${prepDayName}: ${task.description}`;
   }
-  return `🔪 ${task.description}`;
+  if (task.timeHint === "Afternoon") {
+    return `${prepDayName} arvo: ${task.description}${forDay}`;
+  }
+  return `${prepDayName}: ${task.description}${forDay}`;
 }
