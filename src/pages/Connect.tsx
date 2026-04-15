@@ -1,15 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, Share2 } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
+import AppreciationPanel from "@/components/connect/AppreciationPanel";
+import ConnectCourseView from "@/components/connect/ConnectCourseView";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
-type Message = { id: string; sender_role: string; content: string; created_at: string };
+type SpaceTab = "chat" | "course" | "appreciate";
+type Message = { id: string; sender_role: string; content: string; created_at: string; metadata?: any };
 
 // Simple hash for PIN (not crypto-grade, but fine for a 4-digit PIN check)
 function hashPin(pin: string): string {
@@ -25,10 +28,8 @@ function hashPin(pin: string): string {
 export default function Connect() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { code: urlCode } = useParams<{ code?: string }>();
-  const hasValidUrlCode = !!urlCode && urlCode.replace(/[^A-Z0-9]/gi, "").length === 6;
-  const [view, setView] = useState<ConnectView>(hasValidUrlCode ? "partner-pin" : "intro");
-  const [joinCode, setJoinCode] = useState(urlCode?.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6) || "");
+  const [view, setView] = useState<ConnectView>("intro");
+  const [joinCode, setJoinCode] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [pin, setPin] = useState(["", "", "", ""]);
@@ -39,6 +40,7 @@ export default function Connect() {
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
 
   // Chat state
+  const [spaceTab, setSpaceTab] = useState<SpaceTab>("chat");
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -107,31 +109,14 @@ export default function Connect() {
     return code;
   };
 
-  const getShareUrl = (code: string) => `${window.location.origin}/connect/join/${code}`;
-
   const copyCode = async () => {
     try {
-      await navigator.clipboard.writeText(getShareUrl(generatedCode));
+      await navigator.clipboard.writeText(generatedCode);
       setCopied(true);
       haptic("light");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Couldn't copy — try manually");
-    }
-  };
-
-  const shareLink = async () => {
-    const url = getShareUrl(generatedCode);
-    const text = `Join our Signal Connect space 💜\nUse the PIN I shared with you.\n${url}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "Signal Connect", text, url });
-        haptic("medium");
-      } catch { /* user cancelled */ }
-    } else {
-      await navigator.clipboard.writeText(text);
-      toast.success("Link copied — send it to your partner");
-      haptic("light");
     }
   };
 
@@ -359,114 +344,180 @@ export default function Connect() {
   }
 
   // ═══ CONNECTED SPACE (chat) ═══
+  // Share to partner callback for course activities
+  const shareToPartner = async (text: string) => {
+    if (!connectionId) return;
+    const role = isPartnerSession ? "partner" : "member";
+    await supabase.from("connect_messages").insert({
+      connection_id: connectionId,
+      sender_role: role,
+      content: text,
+      metadata: { type: "shared_activity" },
+    });
+  };
+
   if (view === "space" && connectionId) {
+    const senderRole = isPartnerSession ? "partner" as const : "member" as const;
+
     return (
       <div className="flex flex-col h-[calc(100vh-var(--header-height)-var(--nav-height))] bg-background">
         {/* Header */}
-        <div className="flex-none px-4 py-3 border-b border-border flex items-center gap-3">
-          <button onClick={() => { setView("intro"); setConnectionId(null); }} className="p-1.5 rounded-full hover:bg-muted">
-            <ArrowLeft className="w-5 h-5 text-foreground" />
-          </button>
-          <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-            <Heart className="w-4 h-4 text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">Signal Connect</p>
-            <p className="text-[10px] text-muted-foreground">with {partnerDisplayName} · AI coaching active</p>
-          </div>
-          {generatedCode && (
-            <button onClick={copyCode} className="text-[10px] text-muted-foreground bg-muted px-2 py-1 rounded-full flex items-center gap-1">
-              {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-              {generatedCode}
+        <div className="flex-none px-4 py-3 border-b border-border">
+          <div className="flex items-center gap-3">
+            <button onClick={() => { setView("intro"); setConnectionId(null); }} className="p-1.5 rounded-full hover:bg-muted">
+              <ArrowLeft className="w-5 h-5 text-foreground" />
             </button>
-          )}
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-          {messages.length === 0 && (
-            <div className="text-center py-12">
-              <Bot className="w-10 h-10 text-primary/30 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground font-medium mb-1">Your coaching space</p>
-              <p className="text-xs text-muted-foreground/60 max-w-xs mx-auto">
-                Ask anything about your relationship, communication, or goals.
-                Your AI coach draws from relationship science and NLP.
-              </p>
+            <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
+              <Heart className="w-4 h-4 text-primary" />
             </div>
-          )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground truncate">Signal Connect</p>
+              <p className="text-[10px] text-muted-foreground">with {partnerDisplayName}</p>
+            </div>
+          </div>
 
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.sender_role === "ai" ? "justify-start" : msg.sender_role === "partner" ? "justify-end" : "justify-end"}`}
-            >
-              <div
-                className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
-                  msg.sender_role === "ai"
-                    ? "bg-card border border-border text-foreground"
-                    : msg.sender_role === "partner"
-                    ? "bg-primary/20 text-foreground ml-8"
-                    : "bg-primary text-primary-foreground ml-8"
+          {/* Tabs */}
+          <div className="flex gap-1 mt-3 bg-muted/50 rounded-full p-0.5">
+            {([
+              { key: "chat" as SpaceTab, label: "Chat", icon: MessageSquare },
+              { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
+              { key: "appreciate" as SpaceTab, label: "💜", icon: null },
+            ]).map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => { haptic("light"); setSpaceTab(tab.key); }}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-medium transition-all ${
+                  spaceTab === tab.key
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {msg.sender_role === "ai" && (
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Bot className="w-3 h-3 text-primary" />
-                    <span className="text-[10px] font-semibold text-primary">Coach</span>
-                  </div>
-                )}
-                {msg.sender_role === "ai" ? (
-                  <div className="prose prose-sm text-sm [&_p]:mb-1 [&_ul]:mt-1">
-                    <ReactMarkdown>{msg.content}</ReactMarkdown>
-                  </div>
-                ) : (
-                  <p className="text-sm">{msg.content}</p>
-                )}
-                <p className={`text-[9px] mt-1 ${msg.sender_role === "ai" ? "text-muted-foreground/40" : "opacity-60"}`}>
-                  {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                </p>
-              </div>
-            </div>
-          ))}
-
-          {aiLoading && (
-            <div className="flex justify-start">
-              <div className="bg-card border border-border rounded-2xl px-4 py-3 flex items-center gap-2">
-                <Bot className="w-3 h-3 text-primary" />
-                <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={chatEndRef} />
-        </div>
-
-        {/* Input */}
-        <div className="flex-none px-4 py-3 border-t border-border bg-background" style={{ paddingBottom: "calc(0.75rem + var(--safe-bottom))" }}>
-          <div className="flex items-end gap-2">
-            <textarea
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-              }}
-              placeholder="Ask your coach anything..."
-              rows={1}
-              className="flex-1 resize-none rounded-2xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors min-h-[44px] max-h-[120px]"
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!chatInput.trim() || aiLoading}
-              className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 disabled:opacity-40 transition-opacity"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+                {tab.icon && <tab.icon className="w-3.5 h-3.5" />}
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
+
+        {/* Tab content */}
+        {spaceTab === "chat" && (
+          <>
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+              {messages.length === 0 && (
+                <div className="text-center py-12">
+                  <Bot className="w-10 h-10 text-primary/30 mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground font-medium mb-1">Your coaching space</p>
+                  <p className="text-xs text-muted-foreground/60 max-w-xs mx-auto">
+                    Ask anything about your relationship, communication, or goals.
+                    Your AI coach draws from relationship science and NLP.
+                  </p>
+                </div>
+              )}
+
+              {messages.map((msg) => {
+                const isAppreciation = msg.metadata?.type === "appreciation";
+                return (
+                  <div
+                    key={msg.id}
+                    className={`flex ${msg.sender_role === "ai" ? "justify-start" : "justify-end"}`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
+                        isAppreciation
+                          ? "bg-gradient-to-br from-primary/10 to-violet-500/10 border border-primary/20 text-foreground"
+                          : msg.sender_role === "ai"
+                          ? "bg-card border border-border text-foreground"
+                          : msg.sender_role === "partner"
+                          ? "bg-primary/20 text-foreground ml-8"
+                          : "bg-primary text-primary-foreground ml-8"
+                      }`}
+                    >
+                      {msg.sender_role === "ai" && (
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Bot className="w-3 h-3 text-primary" />
+                          <span className="text-[10px] font-semibold text-primary">Coach</span>
+                        </div>
+                      )}
+                      {isAppreciation ? (
+                        <div className="text-center py-1">
+                          <p className="text-sm font-semibold">{msg.content}</p>
+                          {msg.metadata?.subtext && (
+                            <p className="text-[10px] text-muted-foreground mt-1 italic">{msg.metadata.subtext}</p>
+                          )}
+                        </div>
+                      ) : msg.sender_role === "ai" ? (
+                        <div className="prose prose-sm text-sm [&_p]:mb-1 [&_ul]:mt-1">
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        </div>
+                      ) : (
+                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      )}
+                      <p className={`text-[9px] mt-1 ${msg.sender_role === "ai" ? "text-muted-foreground/40" : "opacity-60"}`}>
+                        {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {aiLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-card border border-border rounded-2xl px-4 py-3 flex items-center gap-2">
+                    <Bot className="w-3 h-3 text-primary" />
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="flex-none px-4 py-3 border-t border-border bg-background" style={{ paddingBottom: "calc(0.75rem + var(--safe-bottom))" }}>
+              <div className="flex items-end gap-2">
+                <textarea
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+                  }}
+                  placeholder="Ask your coach anything..."
+                  rows={1}
+                  className="flex-1 resize-none rounded-2xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors min-h-[44px] max-h-[120px]"
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={!chatInput.trim() || aiLoading}
+                  className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 disabled:opacity-40 transition-opacity"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {spaceTab === "course" && (
+          <div className="flex-1 overflow-y-auto">
+            <ConnectCourseView
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
+              onShareToPartner={shareToPartner}
+            />
+          </div>
+        )}
+
+        {spaceTab === "appreciate" && (
+          <div className="flex-1 overflow-y-auto">
+            <AppreciationPanel connectionId={connectionId} senderRole={senderRole} />
+          </div>
+        )}
       </div>
     );
   }
@@ -582,18 +633,14 @@ export default function Connect() {
               ))}
             </div>
 
-            <button onClick={shareLink} className="w-full max-w-xs bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 mb-3">
-              <Share2 className="w-4 h-4" /> Send link to your partner
-            </button>
-
             <button onClick={copyCode} className="flex items-center gap-2 text-sm text-primary font-medium mb-10">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Link copied!" : "Copy invite link"}
+              {copied ? "Copied!" : "Copy code"}
             </button>
 
             <button
               onClick={() => setView("space")}
-              className="bg-card border border-border text-foreground px-8 py-3.5 rounded-full text-sm font-medium"
+              className="bg-primary text-primary-foreground px-8 py-3.5 rounded-full text-sm font-semibold"
             >
               Enter Connect space
             </button>
