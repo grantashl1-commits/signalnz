@@ -341,9 +341,9 @@ export default function HomePage() {
                 className="mx-auto mb-5 w-[85%] max-w-[340px] md:w-[75%] md:max-w-[400px]"
               >
                 <img
-                  src={welcomeHero}
+                  src={homepageGirl}
                   alt="Tune into your signal"
-                  className="w-full h-auto object-contain drop-shadow-md"
+                  className="w-full h-auto object-contain rounded-2xl"
                 />
               </motion.div>
               <motion.p {...fadeUp(0.4)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-5" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
