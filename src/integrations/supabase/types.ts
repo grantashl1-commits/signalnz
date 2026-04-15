@@ -456,6 +456,48 @@ export type Database = {
         }
         Relationships: []
       }
+      connect_messages: {
+        Row: {
+          connection_id: string
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          sender_role: string
+        }
+        Insert: {
+          connection_id: string
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          sender_role?: string
+        }
+        Update: {
+          connection_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          sender_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_messages_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_messages_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cycle_logs: {
         Row: {
           created_at: string
