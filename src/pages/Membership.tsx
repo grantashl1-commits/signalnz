@@ -37,17 +37,17 @@ const STRIPE_TIERS = {
 const GIFT_OPTIONS = [
   {
     label: "3 months",
-    tier: "nourished" as const,
+    tier: "thriving" as const,
     durationMonths: 3,
-    price: "$57",
-    priceId: "price_1TMVmZEAvaJHDMD43jhStJqU",
+    price: "$117",
+    priceId: "price_1TMWJFEAvaJHDMD4iGL6khn0",
   },
   {
     label: "12 months",
-    tier: "nourished" as const,
+    tier: "thriving" as const,
     durationMonths: 12,
-    price: "$152",
-    priceId: "price_1TMVmaEAvaJHDMD4PLseDPvN",
+    price: "$312",
+    priceId: "price_1TMWJGEAvaJHDMD4n7Yn1tXj",
   },
 ];
 
