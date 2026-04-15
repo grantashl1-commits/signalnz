@@ -343,8 +343,8 @@ function useImportedCalendar(today: Date) {
   };
 }
 
-/* ── WEEK Page — Planner + Calendar Import ── */
-function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent, intention, setIntention, mantra, setMantra }: {
+/* ── WEEK Page — Calendar only ── */
+function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent }: {
   today: Date;
   events: ManualEvent[];
   showAddEvent: boolean;
@@ -355,10 +355,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
   setNewTitle: (v: string) => void;
   addEvent: () => void;
   removeEvent: (id: string) => void;
-  intention: string;
-  setIntention: (v: string) => void;
-  mantra: string;
-  setMantra: (v: string) => void;
 }) {
   const dayOfWeek = today.getDay();
   const [showCalendarOptions, setShowCalendarOptions] = useState(false);
