@@ -425,7 +425,7 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
 
       {/* Manual events */}
       <div className="space-y-1.5 min-h-[40px]">
-        {events.length === 0 && !showAddEvent && cal.importedEvents.length === 0 ? (
+        {events.length === 0 && !showAddEvent ? (
           <div className="text-center py-3">
             <Calendar className="h-5 w-5 text-muted-foreground/20 mx-auto mb-2" />
             <p className="font-hand text-[13px] italic text-muted-foreground/40">
@@ -489,46 +489,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
         )}
       </AnimatePresence>
 
-      {/* Calendar import input */}
-      <AnimatePresence>
-        {cal.showImportInput && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="rounded-xl bg-secondary/30 p-3 space-y-2">
-              <p className="font-hand text-[11px] text-foreground/60">
-                Paste your calendar's ICS/subscription URL
-              </p>
-              <p className="font-body text-[10px] text-muted-foreground/50 leading-snug">
-                Google: Calendar Settings → "Secret address in iCal format"
-              </p>
-              <div className="flex gap-1.5">
-                <input
-                  type="url"
-                  value={importUrl}
-                  onChange={(e) => setImportUrl(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleImportCalendar()}
-                  placeholder="https://calendar.google.com/..."
-                  className="flex-1 font-body text-[12px] bg-transparent border-b border-dotted border-foreground/15 outline-none placeholder:text-muted-foreground/25 text-foreground/70"
-                  style={{ fontSize: "16px" }}
-                  autoFocus
-                />
-                <button
-                  onClick={handleImportCalendar}
-                  disabled={cal.importing}
-                  className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-body text-xs disabled:opacity-50"
-                >
-                  {cal.importing ? <Loader2 className="h-3 w-3 animate-spin" /> : "Import"}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Action buttons row */}
       <div className="flex items-center justify-between flex-wrap gap-y-1">
         <button
@@ -541,18 +501,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
           <Plus className="h-3 w-3" />
           add event
         </button>
-        {!cal.icsUrl && (
-          <button
-            onClick={() => {
-              haptic("light");
-              cal.setShowImportInput(!cal.showImportInput);
-            }}
-            className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors"
-          >
-            <Download className="h-3 w-3" />
-            import calendar
-          </button>
-        )}
         <button
           onClick={() => {
             haptic("light");
