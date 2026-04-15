@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
-import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
+import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History, Utensils, Dumbbell, Moon, Heart, Sparkles, Leaf } from "lucide-react";
 import { JournalSection, DottedDivider, CelestialHeader } from "@/components/JournalBorders";
 import HomePlannerCard from "@/components/HomePlannerCard";
 import HomeCalendarCard from "@/components/HomeCalendarCard";
