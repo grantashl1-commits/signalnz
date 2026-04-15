@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, ChevronRight, Loader2 } from "lucide-react";
+import { Search, ChevronRight, Loader2, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
+import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
