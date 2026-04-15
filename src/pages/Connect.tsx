@@ -510,6 +510,30 @@ export default function Connect() {
           </>
         )}
 
+        {spaceTab === "reflect" && (
+          <div className="flex-1 overflow-y-auto">
+            <PrivateReflection
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
+              onCardsSent={(cards) => { setMyCards(cards); setSpaceTab("shared"); }}
+            />
+          </div>
+        )}
+
+        {spaceTab === "shared" && (
+          <div className="flex-1 overflow-y-auto">
+            <SharedRoom
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
+              myName={isPartnerSession ? partnerDisplayName : "You"}
+              myCards={myCards}
+              theirCards={theirCards}
+            />
+          </div>
+        )}
+
         {spaceTab === "course" && (
           <div className="flex-1 overflow-y-auto">
             <ConnectCourseView
@@ -517,6 +541,16 @@ export default function Connect() {
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               onShareToPartner={shareToPartner}
+            />
+          </div>
+        )}
+
+        {spaceTab === "checkin" && (
+          <div className="flex-1 overflow-y-auto">
+            <WeeklyCheckIn
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
             />
           </div>
         )}
