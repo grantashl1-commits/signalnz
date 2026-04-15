@@ -62,8 +62,8 @@ const ZONE_COLORS = ["#94a3b8", "#3b82f6", "#22c55e", "#f59e0b", "#ef4444"];
 
 export default function QuickWorkoutSession({ title, duration, intensity, exercises, onBack }: Props) {
   const { user } = useAuth();
-  const { profile } = useProfile();
-  const { phase, cycleDay } = useCycle();
+  const { dateOfBirth, weightKg } = useProfile();
+  const { currentPhase, currentCycleDay } = useCycle();
   const { bpm, connected, connecting, connect, isSupported } = useGlobalHeartRate();
   useWakeLock();
 
@@ -94,12 +94,12 @@ export default function QuickWorkoutSession({ title, duration, intensity, exerci
   const minutes = Math.floor(elapsed / 60);
   const seconds = elapsed % 60;
 
-  const age = profile?.date_of_birth
-    ? Math.floor((Date.now() - new Date(profile.date_of_birth).getTime()) / 31557600000)
+  const age = dateOfBirth
+    ? Math.floor((Date.now() - new Date(dateOfBirth).getTime()) / 31557600000)
     : 30;
   const maxHR = getMaxHR(age);
   const zone = bpm > 0 ? getZoneForBPM(bpm, maxHR) : null;
-  const zoneColor = zone ? ZONE_COLORS[zone.index] : undefined;
+  const zoneColor = zone ? zone.color : undefined;
 
   const toggleExercise = useCallback((id: string) => {
     haptic("light");
@@ -139,9 +139,9 @@ export default function QuickWorkoutSession({ title, duration, intensity, exerci
         max_bpm: maxBpm,
         bpm_trace: trace,
         zones_summary: {},
-        cycle_phase: phase || null,
-        cycle_day: cycleDay || null,
-        calories: avgBpm ? estimateCalories(avgBpm, Math.round(elapsed / 60), profile?.weight_kg || 60) : null,
+        cycle_phase: currentPhase || null,
+        cycle_day: currentCycleDay || null,
+        calories: avgBpm ? estimateCalories(avgBpm, Math.round(elapsed / 60), weightKg || 60, age) : null,
       });
     }
 
@@ -184,7 +184,7 @@ export default function QuickWorkoutSession({ title, duration, intensity, exerci
                 <span className="font-body text-[9px] text-muted-foreground">bpm</span>
                 {zone && (
                   <span className="rounded-full px-1.5 py-0.5 font-body text-[8px] font-bold text-white" style={{ backgroundColor: zoneColor }}>
-                    Z{zone.index + 1}
+                    Z{zone.zone}
                   </span>
                 )}
               </div>
