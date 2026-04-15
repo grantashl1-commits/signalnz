@@ -25,6 +25,10 @@ export const FEATURE_ACCESS: Record<
   cycle_full_logging:   { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
   cycle_phase_guidance: { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
   cycle_ai_insights:    { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
+  hormone_hub:          { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
+  seed_cycling:         { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
+  irregular_period:     { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
+  perimenopause_mode:   { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
 
   // Knowledge Feed
   feed_access:          { free: "teaser", rooted: "full", nourished: "full", thriving: "full" },
@@ -33,6 +37,7 @@ export const FEATURE_ACCESS: Record<
   // AI Signal
   signal_daily:         { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
   stoic_readings:       { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
+  stoic_journal:        { free: "locked", rooted: "full", nourished: "full", thriving: "full" },
 
   // Nutrition
   nutrition_browse:     { free: "view_only", rooted: "view_only", nourished: "full", thriving: "full" },
@@ -40,39 +45,63 @@ export const FEATURE_ACCESS: Record<
   nutrition_shopping:   { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
   nutrition_fridge:     { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
   nutrition_plants:     { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  nutrition_meal_prep:  { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  nutrition_kids:       { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  nutrition_supplements:{ free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  nutrition_ai_recipes: { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
 
   // Movement
   movement_browse:      { free: "view_only", rooted: "view_only", nourished: "full", thriving: "full" },
   movement_training:    { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
   movement_sessions:    { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
   movement_body_vis:    { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  movement_hr_monitor:  { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
 
   // Journal
   journal_write:        { free: "write_no_save", rooted: "write_no_save", nourished: "full", thriving: "full" },
   journal_ai:           { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
   journal_dream:        { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
   journal_vault:        { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  journal_gratitude:    { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  journal_one_line:     { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
 
   // Breathwork
   breathwork_browse:    { free: "view_only", rooted: "view_only", nourished: "full", thriving: "full" },
 
   // Nervous System
   nervous_browse:       { free: "view_only", rooted: "view_only", nourished: "full", thriving: "full" },
+  somatic_exercises:    { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  fascia_release:       { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
 
   // Practice
   practice_browse:      { free: "view_only", rooted: "view_only", nourished: "view_only", thriving: "full" },
   practice_habits:      { free: "full", rooted: "full", nourished: "full", thriving: "full" },
   practice_sleep:       { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
+  dosha_quiz:           { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
 
   // Community
   community_browse:     { free: "view_only", rooted: "view_only", nourished: "view_only", thriving: "full" },
   community_nearby:     { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
+  community_challenges: { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
+  community_chat:       { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
 
   // Recommendations
   recommendations:      { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
 
-  // Connect
-  connect_attachment_quiz: { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  // Connect (Couples)
+  connect_reflect:          { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_shared_room:      { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_course:           { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_appreciation:     { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_checkin:          { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_attachment_quiz:  { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_love_languages:   { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+  connect_coach:            { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
+
+  // Parenting
+  parenting_course:         { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
+  parenting_sleep_schedule: { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
+  parenting_age_guides:     { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
 };
 
 /** Which minimum tier each route requires (for full page blocking) */
