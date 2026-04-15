@@ -371,13 +371,12 @@ export default function MembershipPage() {
           onClick={() => {
             haptic("light");
             setIsAnnual(true);
-            toast.info("Annual billing is coming soon. Monthly plans are available now.");
           }}
           className={`font-body text-sm font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
             isAnnual ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          Annual <span className="text-muted-foreground/50">(soon)</span>
+          Annual <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary ml-1">Save 33%</span>
         </button>
       </div>
 
