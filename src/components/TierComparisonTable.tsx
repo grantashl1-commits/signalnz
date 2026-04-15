@@ -29,6 +29,10 @@ const COMPARISON_DATA: CategoryGroup[] = [
       { key: "cycle_full_logging", label: "Log mood, symptoms, energy & weight" },
       { key: "cycle_phase_guidance", label: "Phase guidance" },
       { key: "cycle_ai_insights", label: "Cycle AI insights" },
+      { key: "hormone_hub", label: "Hormone Education Hub" },
+      { key: "seed_cycling", label: "Seed cycling guide" },
+      { key: "irregular_period", label: "Irregular period support" },
+      { key: "perimenopause_mode", label: "Perimenopause mode" },
     ],
   },
   {
@@ -43,6 +47,7 @@ const COMPARISON_DATA: CategoryGroup[] = [
     features: [
       { key: "signal_daily", label: "Daily Signal / AMA / Give", notes: { rooted: "30 credits/mo", nourished: "100 credits/mo", thriving: "500 credits/mo" } },
       { key: "stoic_readings", label: "Daily Philosophical Readings" },
+      { key: "stoic_journal", label: "Stoic journal prompts" },
     ],
   },
   {
@@ -53,6 +58,10 @@ const COMPARISON_DATA: CategoryGroup[] = [
       { key: "nutrition_shopping", label: "Shopping list" },
       { key: "nutrition_fridge", label: "Fridge-to-recipe" },
       { key: "nutrition_plants", label: "Plant tracker" },
+      { key: "nutrition_meal_prep", label: "Meal prep guide" },
+      { key: "nutrition_kids", label: "Kids recipes & alternatives" },
+      { key: "nutrition_supplements", label: "Supplement recommender" },
+      { key: "nutrition_ai_recipes", label: "AI-generated recipes" },
     ],
   },
   {
@@ -62,6 +71,7 @@ const COMPARISON_DATA: CategoryGroup[] = [
       { key: "movement_training", label: "AI training plans" },
       { key: "movement_sessions", label: "Workout sessions & timer" },
       { key: "movement_body_vis", label: "Body visualiser" },
+      { key: "movement_hr_monitor", label: "Heart rate monitor" },
     ],
   },
   {
@@ -71,18 +81,17 @@ const COMPARISON_DATA: CategoryGroup[] = [
       { key: "journal_ai", label: "AI journal insights" },
       { key: "journal_dream", label: "Dream Studio" },
       { key: "journal_vault", label: "Memory Vault" },
+      { key: "journal_gratitude", label: "Gratitude entries" },
+      { key: "journal_one_line", label: "One-line journal" },
     ],
   },
   {
-    category: "Breathwork",
+    category: "Breathwork & Nervous System",
     features: [
       { key: "breathwork_browse", label: "Breathwork sessions", notes: { free: "Browse only", rooted: "Browse only" } },
-    ],
-  },
-  {
-    category: "Nervous System",
-    features: [
       { key: "nervous_browse", label: "Nervous system exercises", notes: { free: "Browse only", rooted: "Browse only" } },
+      { key: "somatic_exercises", label: "Somatic exercises" },
+      { key: "fascia_release", label: "Fascia release player" },
     ],
   },
   {
@@ -91,13 +100,37 @@ const COMPARISON_DATA: CategoryGroup[] = [
       { key: "practice_browse", label: "Mindfulness exercises", notes: { free: "Browse only", rooted: "Browse only", nourished: "Browse only" } },
       { key: "practice_habits", label: "Habits" },
       { key: "practice_sleep", label: "Sleep tracking" },
+      { key: "dosha_quiz", label: "Dosha quiz" },
+    ],
+  },
+  {
+    category: "Connect (Couples)",
+    features: [
+      { key: "connect_reflect", label: "AI reflection room" },
+      { key: "connect_shared_room", label: "Shared conversation space" },
+      { key: "connect_course", label: "Couples course (13 modules)" },
+      { key: "connect_coach", label: "AI relationship coach" },
+      { key: "connect_appreciation", label: "Appreciation messages" },
+      { key: "connect_checkin", label: "Weekly check-in" },
+      { key: "connect_attachment_quiz", label: "Attachment style quiz" },
+      { key: "connect_love_languages", label: "Love languages quiz" },
     ],
   },
   {
     category: "Community",
     features: [
       { key: "community_browse", label: "Community groups", notes: { free: "View only", rooted: "View only", nourished: "View only", thriving: "Join & chat" } },
-      { key: "community_nearby", label: "Nearby" },
+      { key: "community_nearby", label: "Nearby members" },
+      { key: "community_challenges", label: "Community challenges" },
+      { key: "community_chat", label: "Group chat" },
+    ],
+  },
+  {
+    category: "Parenting",
+    features: [
+      { key: "parenting_course", label: "Parenting course" },
+      { key: "parenting_sleep_schedule", label: "Baby sleep schedule" },
+      { key: "parenting_age_guides", label: "Age-based guides" },
     ],
   },
   {
