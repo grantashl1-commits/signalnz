@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import { AtmosphericHero } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import ReactMarkdown from "react-markdown";
 import {
   Dumbbell, Salad, Loader2, RefreshCw, Zap, Moon, Activity,
@@ -688,6 +689,8 @@ export default function CoachPage() {
   return (
     <>
       <AtmosphericHero>
+        <SignalPulse />
+        <div className="text-center relative z-10">
         <p className="font-body text-[11px] uppercase tracking-[0.25em] text-white/60 mb-3">MY COACH</p>
         <h1 className="font-display text-4xl md:text-5xl font-bold italic text-white mb-3">Your Plan</h1>
         <p className="font-display text-base italic text-white/70 max-w-md">
