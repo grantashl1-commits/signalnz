@@ -1,12 +1,20 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, ListPlus, Check, Calendar, Clock, Package, Snowflake, Sun } from "lucide-react";
+import { ChevronDown, ChevronUp, ListPlus, Check, Calendar } from "lucide-react";
 import { AIMealPlan } from "@/lib/weekly-planner";
 import { generatePrepGuide, PrepDayPlan, PrepTask, prepTaskToTodoTitle } from "@/lib/prep-guide";
 import { useTodos } from "@/hooks/useTodos";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { Phase } from "@/lib/cycle-utils";
+import {
+  BatchPrepIcon,
+  AdvancePrepIcon,
+  MorningPrepIcon,
+  DefrostIcon,
+  NightPrepIcon,
+  GeneralPrepIcon,
+} from "./PrepIcons";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -15,11 +23,11 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-const CATEGORY_ICON: Record<string, typeof Package> = {
-  batch: Package,
-  advance: Clock,
-  morning: Sun,
-  defrost: Snowflake,
+const CATEGORY_ICON: Record<string, React.FC<{ className?: string; style?: React.CSSProperties; size?: number }>> = {
+  batch: BatchPrepIcon,
+  advance: AdvancePrepIcon,
+  morning: MorningPrepIcon,
+  defrost: DefrostIcon,
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -168,7 +176,7 @@ export default function MealPrepGuide({ plan, weekNumber, weekDates, phase, onBa
                     </div>
                     <div className="space-y-0.5">
                       {day.tasks.slice(0, expanded ? undefined : 3).map(task => {
-                        const Icon = CATEGORY_ICON[task.category] || Clock;
+                        const Icon = CATEGORY_ICON[task.category] || GeneralPrepIcon;
                         return (
                           <p key={task.id} className="font-body text-xs text-muted-foreground flex items-center gap-1.5">
                             <Icon className="h-3 w-3 flex-shrink-0" style={{ color: phaseColor }} />
@@ -213,7 +221,7 @@ export default function MealPrepGuide({ plan, weekNumber, weekDates, phase, onBa
                       )}
 
                       {day.tasks.map(task => {
-                        const Icon = CATEGORY_ICON[task.category] || Clock;
+                        const Icon = CATEGORY_ICON[task.category] || GeneralPrepIcon;
                         const isAdded = addedTasks.has(task.id);
 
                         return (
