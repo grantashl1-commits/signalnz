@@ -20,8 +20,8 @@ interface Props {
 
 const LOADING_MESSAGES = [
   "Reading your words...",
-  "Finding the connection...",
-  "Almost there...",
+  "Connecting to ancient wisdom...",
+  "Weaving your metaphor...",
 ];
 
 export default function StoicLensDisplay({
