@@ -72,18 +72,23 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Secure Attachment",
-                  "body": "Comfortable with intimacy and independence. Trusts partner and feels safe.",
+                  "body": "Comfortable with both intimacy and independence. You trust your partner, communicate openly, and don't fear abandonment or engulfment. About 50% of adults are securely attached. This style develops when caregivers were consistently responsive and emotionally available.",
                   "icon": "lucide-hands-clapping"
                 },
                 {
                   "title": "Anxious Attachment",
-                  "body": "Craves intimacy, often worries about partner's love or commitment. Can be 'clingy'.",
+                  "body": "You crave deep closeness but worry your partner doesn't want you as much as you want them. You may seek constant reassurance, over-analyse texts, and feel triggered by perceived distance. This often develops from inconsistent caregiving — sometimes present, sometimes absent.",
                   "icon": "lucide-bell"
                 },
                 {
                   "title": "Avoidant Attachment",
-                  "body": "Values independence, often uncomfortable with too much closeness. Can seem distant.",
+                  "body": "You value independence highly and feel uncomfortable when relationships get too close. You may pull away when things deepen, equate intimacy with loss of freedom, and struggle to express emotions. This style often stems from emotionally unavailable or dismissive caregivers.",
                   "icon": "lucide-footprints"
+                },
+                {
+                  "title": "Disorganised Attachment",
+                  "body": "A push-pull dynamic — you desperately want connection but simultaneously fear it. You may swing between clingy and distant behaviours, often feeling confused by your own reactions. This style typically develops when a caregiver was both a source of comfort and fear.",
+                  "icon": "lucide-shuffle"
                 }
               ]
             },
