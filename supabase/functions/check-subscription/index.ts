@@ -50,7 +50,7 @@ serve(async (req) => {
     // Fetch one-off purchases in parallel with Stripe check
     const purchasesPromise = supabaseClient
       .from("one_off_purchases")
-      .select("product_key")
+      .select("product_key, ai_access_expires_at")
       .eq("user_id", user.id);
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
@@ -58,7 +58,11 @@ serve(async (req) => {
 
     // Resolve purchases
     const { data: purchases } = await purchasesPromise;
-    const oneOffKeys = (purchases ?? []).map((p: any) => p.product_key);
+    const oneOffDetails = (purchases ?? []).map((p: any) => ({
+      product_key: p.product_key,
+      ai_access_expires_at: p.ai_access_expires_at,
+    }));
+    const oneOffKeys = oneOffDetails.map((d: any) => d.product_key);
 
     if (customers.data.length === 0) {
       return new Response(JSON.stringify({ subscribed: false, one_off_purchases: oneOffKeys }), {
