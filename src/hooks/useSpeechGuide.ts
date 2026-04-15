@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { pickPreferredReaderVoice } from "@/lib/script-audio";
 
 interface SpeechGuideOptions {
   steps: { id: string; title: string; body: string }[];
@@ -59,19 +60,10 @@ export function useSpeechGuide({
     const utterance = new SpeechSynthesisUtterance(step.body);
     utterance.rate = rate;
     utterance.pitch = pitch;
-    utterance.lang = "en-NZ";
+    utterance.lang = "en-US";
 
-    // Try to pick a soft, soothing voice — prefer female voices
     const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find(
-      (v) => v.lang.startsWith("en") && (v.name.toLowerCase().includes("samantha") || v.name.toLowerCase().includes("karen") || v.name.toLowerCase().includes("moira"))
-    ) || voices.find(
-      (v) => v.lang.startsWith("en") && v.name.toLowerCase().includes("female")
-    ) || voices.find(
-      (v) => v.lang.startsWith("en-") && !v.name.toLowerCase().includes("google")
-    ) || voices.find(
-      (v) => v.lang.startsWith("en")
-    );
+    const preferred = pickPreferredReaderVoice(voices);
     if (preferred) utterance.voice = preferred;
 
     utterance.onstart = () => setIsSpeaking(true);

@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     const DEFAULT_VOICE_ID =
-      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "pFZP5JQG7iQjIQuC4Bku";
+      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "XrExE9yKIg1WjnnlVkGX";
 
     if (!ELEVENLABS_API_KEY) {
       return new Response(
@@ -59,8 +59,9 @@ Deno.serve(async (req) => {
     );
 
     // --- CACHE CHECK ---
-    const textHash = await hashText(text);
-    const cachePath = `stoic/${textHash}.mp3`;
+    const voice = voiceId || DEFAULT_VOICE_ID;
+    const textHash = await hashText(`${voice}:calm-reader-v2:${text}`);
+    const cachePath = `inline/calm-reader-v2/${textHash}.mp3`;
     const { data: urlData } = supabase.storage
       .from("practice-audio")
       .getPublicUrl(cachePath);
@@ -100,8 +101,6 @@ Deno.serve(async (req) => {
     }
 
     // --- GENERATE ---
-    const voice = voiceId || DEFAULT_VOICE_ID;
-
     const ttsResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`,
       {
@@ -114,11 +113,11 @@ Deno.serve(async (req) => {
           text,
           model_id: "eleven_multilingual_v2",
           voice_settings: {
-            stability: 0.85,
-            similarity_boost: 0.6,
-            style: 0.15,
-            use_speaker_boost: false,
-            speed: 0.75,
+            stability: 0.58,
+            similarity_boost: 0.74,
+            style: 0.2,
+            use_speaker_boost: true,
+            speed: 0.88,
           },
         }),
       }

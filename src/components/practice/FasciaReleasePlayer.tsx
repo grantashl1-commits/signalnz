@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Volume2, VolumeX, Leaf } from "lucide-react";
 import { FASCIA_EXERCISES, type FasciaExercise } from "@/data/fascia-release-exercises";
 import { haptic } from "@/hooks/use-mobile";
+import { CALM_READER_VOICE_ID, getScriptAudioOverride } from "@/lib/script-audio";
 
 interface Props {
   onClose: () => void;
@@ -30,8 +31,11 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
 
   // ── TTS Generation ──────────────────────────────────────────
   const generateTTS = useCallback(
-    async (text: string): Promise<HTMLAudioElement | null> => {
+    async (text: string, scriptId: string): Promise<HTMLAudioElement | null> => {
       try {
+        const overrideUrl = getScriptAudioOverride(scriptId);
+        if (overrideUrl) return new Audio(overrideUrl);
+
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-generate-inline`,
           {
@@ -41,7 +45,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
               apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
               Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
             },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ text, voiceId: CALM_READER_VOICE_ID }),
           }
         );
         if (!response.ok) return null;
@@ -70,7 +74,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
         return;
       }
 
-      const audio = await generateTTS(ex.ttsScript);
+      const audio = await generateTTS(ex.ttsScript, `fascia-${ex.id}`);
       if (audio && !mutedRef.current) {
         currentAudioRef.current = audio;
         try { await audio.play(); } catch { /* autoplay blocked */ }
@@ -84,7 +88,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
     async (nextIdx: number) => {
       if (nextIdx >= totalExercises) return;
       const nextEx = FASCIA_EXERCISES[nextIdx];
-      const audio = await generateTTS(nextEx.ttsScript);
+      const audio = await generateTTS(nextEx.ttsScript, `fascia-${nextEx.id}`);
       if (audio) {
         prefetchedAudioRef.current = { idx: nextIdx, audio };
       }

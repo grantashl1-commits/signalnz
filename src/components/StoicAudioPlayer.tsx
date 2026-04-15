@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, X, Volume2, Loader2 } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
+import { CALM_READER_VOICE_ID, CALM_READER_VOICE_LABEL, pickPreferredReaderVoice } from "@/lib/script-audio";
 
 interface Props {
   title: string;
@@ -48,7 +49,7 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ text, user_identifier }),
+          body: JSON.stringify({ text, user_identifier, voiceId: CALM_READER_VOICE_ID }),
         }
       );
       if (!response.ok) throw new Error("TTS failed");
@@ -89,16 +90,11 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
-    utterance.rate = 0.85;
-    utterance.pitch = 1.0;
+    utterance.rate = 0.82;
+    utterance.pitch = 0.95;
 
-    // Try to pick a soft voice
     const voices = window.speechSynthesis.getVoices();
-    const voice =
-      voices.find((v) => v.lang.startsWith("en") && /samantha|karen|moira|zira/i.test(v.name)) ||
-      voices.find((v) => v.lang.startsWith("en") && /female/i.test(v.name)) ||
-      voices.find((v) => v.lang.startsWith("en-") && !/google/i.test(v.name)) ||
-      voices.find((v) => v.lang.startsWith("en"));
+    const voice = pickPreferredReaderVoice(voices);
     if (voice) utterance.voice = voice;
 
     const wordCount = text.split(/\s+/).length;
@@ -200,7 +196,7 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
             <p className="font-display text-sm italic text-foreground truncate">{title}</p>
             <p className="font-body text-[10px] text-muted-foreground flex items-center gap-1">
               <Volume2 className="h-3 w-3" />
-              {playing ? "Playing…" : progress >= 100 ? "Finished" : "Tap to listen"}
+              {playing ? `Playing ${CALM_READER_VOICE_LABEL}…` : progress >= 100 ? "Finished" : "Tap to listen"}
             </p>
           </div>
 

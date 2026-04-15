@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { buildVersionedPracticeAudioPath, CALM_READER_VOICE_ID, getScriptAudioOverride } from "@/lib/script-audio";
 
 interface UseElevenLabsTTSOptions {
   practiceId: string;
@@ -24,7 +25,10 @@ export function useElevenLabsTTS({
 
   // Check if audio already exists in storage
   const checkCache = useCallback(async (): Promise<string | null> => {
-    const filePath = `practices/${practiceId}.mp3`;
+    const overrideUrl = getScriptAudioOverride(practiceId);
+    if (overrideUrl) return overrideUrl;
+
+    const filePath = buildVersionedPracticeAudioPath(practiceId);
     const { data } = supabase.storage
       .from("practice-audio")
       .getPublicUrl(filePath);
@@ -73,6 +77,7 @@ export function useElevenLabsTTS({
           body: JSON.stringify({
             text: ttsScript,
             practiceId,
+            voiceId: CALM_READER_VOICE_ID,
             user_identifier,
           }),
         }
