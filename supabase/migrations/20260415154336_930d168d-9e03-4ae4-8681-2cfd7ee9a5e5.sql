@@ -1,0 +1,1 @@
+ALTER TABLE public.one_off_purchases ADD COLUMN ai_access_expires_at TIMESTAMP WITH TIME ZONE DEFAULT NULL;

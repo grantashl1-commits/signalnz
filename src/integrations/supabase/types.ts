@@ -1520,6 +1520,7 @@ export type Database = {
       }
       one_off_purchases: {
         Row: {
+          ai_access_expires_at: string | null
           id: string
           product_key: string
           purchased_at: string
@@ -1528,6 +1529,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_access_expires_at?: string | null
           id?: string
           product_key: string
           purchased_at?: string
@@ -1536,6 +1538,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_access_expires_at?: string | null
           id?: string
           product_key?: string
           purchased_at?: string
