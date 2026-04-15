@@ -17,6 +17,8 @@ interface SubscriptionInfo {
   subscriptionEnd: string | null;
   oneOffPurchases: string[];
   oneOffDetails: OneOffPurchaseDetail[];
+  giftTier: string | null;
+  giftExpiresAt: string | null;
 }
 
 interface AuthState {
@@ -31,6 +33,10 @@ const TIERS_MAP: Record<string, "rooted" | "nourished" | "thriving"> = {
   prod_UDBbsFCvpYtvUN: "rooted",
   prod_U9Pqh2vkb2wrNR: "nourished",
   prod_U9Pr8k3iP6Bler: "thriving",
+  // Annual products
+  prod_ULCAuPZLPCzkVC: "rooted",
+  prod_ULCAKYHv5cAWvN: "nourished",
+  prod_ULCAFa2rgCwiqZ: "thriving",
 };
 
 const defaultSub: SubscriptionInfo = {
@@ -40,6 +46,8 @@ const defaultSub: SubscriptionInfo = {
   subscriptionEnd: null,
   oneOffPurchases: [],
   oneOffDetails: [],
+  giftTier: null,
+  giftExpiresAt: null,
 };
 
 const AuthContext = createContext<AuthState>({
@@ -70,13 +78,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       const productId = data?.product_id ?? null;
       const details: OneOffPurchaseDetail[] = data?.one_off_details ?? [];
+      const baseTier = (productId && TIERS_MAP[productId]) || "free";
+      
+      // Gift tier can elevate the user's effective tier
+      const giftTier = data?.gift_tier ?? null;
+      const giftExpiresAt = data?.gift_expires_at ?? null;
+      const TIER_LEVEL: Record<string, number> = { free: 0, rooted: 1, nourished: 2, thriving: 3 };
+      const giftLevel = giftTier ? (TIER_LEVEL[giftTier] ?? 0) : 0;
+      const effectiveTier = giftLevel > (TIER_LEVEL[baseTier] ?? 0) ? giftTier as SubscriptionInfo["tier"] : baseTier;
+      
       setSubscription({
         subscribed: !!data?.subscribed,
         productId,
-        tier: (productId && TIERS_MAP[productId]) || "free",
+        tier: effectiveTier,
         subscriptionEnd: data?.subscription_end ?? null,
         oneOffPurchases: details.map((d: OneOffPurchaseDetail) => d.product_key),
         oneOffDetails: details,
+        giftTier,
+        giftExpiresAt,
       });
     } catch {
       setSubscription(defaultSub);

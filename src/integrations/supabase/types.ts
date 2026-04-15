@@ -1030,6 +1030,51 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_codes: {
+        Row: {
+          code: string
+          duration_months: number
+          expires_at: string | null
+          id: string
+          purchased_at: string
+          purchaser_email: string
+          recipient_email: string | null
+          redeemed_at: string | null
+          redeemed_by: string | null
+          stripe_product_id: string | null
+          stripe_session_id: string | null
+          tier: string
+        }
+        Insert: {
+          code: string
+          duration_months?: number
+          expires_at?: string | null
+          id?: string
+          purchased_at?: string
+          purchaser_email: string
+          recipient_email?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          tier: string
+        }
+        Update: {
+          code?: string
+          duration_months?: number
+          expires_at?: string | null
+          id?: string
+          purchased_at?: string
+          purchaser_email?: string
+          recipient_email?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          tier?: string
+        }
+        Relationships: []
+      }
       goal_categories: {
         Row: {
           created_at: string
