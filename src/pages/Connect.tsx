@@ -12,7 +12,7 @@ import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import ReflectRoom from "@/components/connect/ReflectRoom";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
-type SpaceTab = "chat" | "course" | "appreciate";
+type SpaceTab = "reflect" | "chat" | "course" | "appreciate";
 type Message = { id: string; sender_role: string; content: string; created_at: string; metadata?: any };
 
 // Simple hash for PIN (not crypto-grade, but fine for a 4-digit PIN check)
