@@ -27,9 +27,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Pour into a bowl.",
       "Top with granola, berries, and coconut flakes.",
     ],
-    phaseBenefit: "Acai is rich in antioxidants and iron — ideal for replenishing during menstruation.",
+    phaseBenefit: "Acai is rich in antioxidants and iron -- ideal for replenishing during menstruation.",
     nutrition: { calories: 350, protein: 8, carbs: 52, fat: 12, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "avocado-toast-hemp",
     name: "Avocado Toast on Rye with Hemp Seeds",
     phase: "menstrual",
@@ -52,7 +53,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hemp seeds provide omega-3 and zinc. Avocado offers magnesium to ease cramping.",
     nutrition: { calories: 420, protein: 12, carbs: 38, fat: 26, fibre: 10 },
-  },\n  {
+  },
+  {
     id: "avocado-toast-poached-egg",
     name: "Avocado Toast on Rye with Poached Egg",
     phase: "menstrual",
@@ -76,7 +78,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Eggs provide iron and B12 to support energy during menstruation.",
     nutrition: { calories: 450, protein: 18, carbs: 34, fat: 28 },
-  },\n  {
+  },
+  {
     id: "avocado-toast-poached-luteal",
     name: "Avocado Toast with Poached Egg",
     phase: "luteal",
@@ -100,7 +103,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Avocado and pumpkin seeds provide magnesium and B6 for luteal support.",
     nutrition: { calories: 480, protein: 20, carbs: 36, fat: 30 },
-  },\n  {
+  },
+  {
     id: "avocado-toast-sunflower",
     name: "Avocado Toast with Sunflower Seeds",
     phase: "luteal",
@@ -123,7 +127,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Sunflower seeds provide selenium for progesterone support in the luteal phase.",
     nutrition: { calories: 400, protein: 10, carbs: 34, fat: 26, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "banana-oat-pancakes-tahini",
     name: "Banana Oat Pancakes with Tahini",
     phase: "luteal",
@@ -150,7 +155,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Banana provides B6 for progesterone production. Tahini is rich in calcium and magnesium.",
     nutrition: { calories: 420, protein: 14, carbs: 56, fat: 16, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "banana-oat-pancakes-bacon",
     name: "Banana Oat Pancakes with Bacon",
     phase: "luteal",
@@ -177,7 +183,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Bacon provides protein and B12. Banana offers B6 to support luteal hormone balance.",
     nutrition: { calories: 520, protein: 24, carbs: 52, fat: 22 },
-  },\n  {
+  },
+  {
     id: "bircher-muesli-apple",
     name: "Bircher Muesli with Apple and Cinnamon",
     phase: "follicular",
@@ -202,7 +209,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Oats provide sustained energy for rising follicular phase activity. Apple pectin feeds beneficial gut bacteria.",
     nutrition: { calories: 380, protein: 12, carbs: 58, fat: 10, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "bircher-muesli-yoghurt",
     name: "Bircher Muesli with Yoghurt and Berries",
     phase: "follicular",
@@ -225,7 +233,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Yoghurt provides probiotics for estrogen metabolism. Berries offer antioxidants.",
     nutrition: { calories: 360, protein: 14, carbs: 50, fat: 12, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "buckwheat-pancakes-maple",
     name: "Buckwheat Pancakes with Maple Syrup",
     phase: "menstrual",
@@ -249,9 +258,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Heat coconut oil in a pan. Cook pancakes 2 min each side.",
       "Serve with extra maple syrup.",
     ],
-    phaseBenefit: "Buckwheat is naturally gluten-free and rich in magnesium — helps relax muscles and ease cramps.",
+    phaseBenefit: "Buckwheat is naturally gluten-free and rich in magnesium -- helps relax muscles and ease cramps.",
     nutrition: { calories: 380, protein: 10, carbs: 62, fat: 10, fibre: 4 },
-  },\n  {
+  },
+  {
     id: "buckwheat-pancakes-bacon",
     name: "Buckwheat Pancakes with Bacon and Maple Syrup",
     phase: "menstrual",
@@ -277,7 +287,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron from bacon combined with buckwheat's magnesium supports menstrual recovery.",
     nutrition: { calories: 480, protein: 22, carbs: 54, fat: 18 },
-  },\n  {
+  },
+  {
     id: "buckwheat-porridge-banana",
     name: "Buckwheat Porridge with Banana",
     phase: "follicular",
@@ -301,7 +312,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Buckwheat provides magnesium and rutin for circulation. Rising energy suits the follicular phase.",
     nutrition: { calories: 380, protein: 10, carbs: 60, fat: 12, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "buckwheat-porridge-honey",
     name: "Buckwheat Porridge with Banana and Honey",
     phase: "follicular",
@@ -324,7 +336,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Warming porridge with complete amino acids supports follicular energy.",
     nutrition: { calories: 400, protein: 12, carbs: 62, fat: 14, fibre: 5 },
-  },\n  {
+  },
+  {
     id: "buckwheat-waffles-berries",
     name: "Buckwheat Waffles with Berries",
     phase: "luteal",
@@ -349,7 +362,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Complex carbs stabilise blood sugar in the luteal phase. Berries provide vitamin C.",
     nutrition: { calories: 420, protein: 14, carbs: 54, fat: 18, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "buckwheat-waffles-yoghurt",
     name: "Buckwheat Waffles with Berries and Yoghurt",
     phase: "luteal",
@@ -375,7 +389,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Yoghurt adds calcium and probiotics. Complex carbs manage luteal cravings.",
     nutrition: { calories: 460, protein: 18, carbs: 52, fat: 20, fibre: 5 },
-  },\n  {
+  },
+  {
     id: "chia-parfait-mango",
     name: "Chia Parfait with Mango and Coconut",
     phase: "follicular",
@@ -398,7 +413,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Chia seeds provide omega-3 for hormone building blocks. Mango offers vitamin C and folate.",
     nutrition: { calories: 340, protein: 8, carbs: 38, fat: 18, fibre: 12 },
-  },\n  {
+  },
+  {
     id: "chia-pudding-pomegranate",
     name: "Chia Pudding with Pomegranate and Walnuts",
     phase: "menstrual",
@@ -420,7 +436,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Pomegranate is rich in iron and antioxidants. Walnuts provide omega-3 for anti-inflammatory support.",
     nutrition: { calories: 320, protein: 10, carbs: 32, fat: 18, fibre: 12 },
-  },\n  {
+  },
+  {
     id: "cinnamon-oat-granola-oatmilk",
     name: "Cinnamon Oat Granola with Oat Milk",
     phase: "luteal",
@@ -443,7 +460,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Oats and pumpkin seeds provide magnesium to reduce PMS. Cinnamon stabilises blood sugar.",
     nutrition: { calories: 380, protein: 10, carbs: 56, fat: 14, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "cinnamon-oat-granola-milk",
     name: "Cinnamon Oat Granola with Milk",
     phase: "luteal",
@@ -464,7 +482,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Granola provides sustained energy for the luteal phase. Milk adds calcium.",
     nutrition: { calories: 400, protein: 14, carbs: 52, fat: 16, fibre: 5 },
-  },\n  {
+  },
+  {
     id: "eggs-benedict-salmon",
     name: "Eggs Benedict with Smoked Salmon",
     phase: "menstrual",
@@ -491,7 +510,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Salmon provides omega-3 and vitamin D. Eggs offer iron and B12 for menstrual recovery.",
     nutrition: { calories: 580, protein: 30, carbs: 28, fat: 38 },
-  },\n  {
+  },
+  {
     id: "fresh-fruit-salad-hemp",
     name: "Fresh Fruit Salad with Mint and Hemp Seeds",
     phase: "ovulatory",
@@ -511,9 +531,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Scatter with torn mint leaves and hemp seeds.",
       "Squeeze lime juice over the top.",
     ],
-    phaseBenefit: "Light and hydrating — appetite naturally dips during ovulation. Hemp seeds provide zinc for egg quality.",
+    phaseBenefit: "Light and hydrating -- appetite naturally dips during ovulation. Hemp seeds provide zinc for egg quality.",
     nutrition: { calories: 180, protein: 5, carbs: 32, fat: 5, fibre: 4 },
-  },\n  {
+  },
+  {
     id: "greek-yoghurt-berries",
     name: "Greek Yoghurt with Berries and Almonds",
     phase: "ovulatory",
@@ -534,7 +555,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "High-protein, light breakfast suits ovulatory energy. Almonds provide vitamin E for fertility.",
     nutrition: { calories: 280, protein: 18, carbs: 24, fat: 14, fibre: 3 },
-  },\n  {
+  },
+  {
     id: "green-juice-almonds",
     name: "Green Juice and a Handful of Almonds",
     phase: "ovulatory",
@@ -559,7 +581,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lighter eating suits the ovulatory phase. Almonds provide zinc and vitamin E for egg health.",
     nutrition: { calories: 280, protein: 8, carbs: 36, fat: 14, fibre: 5 },
-  },\n  {
+  },
+  {
     id: "green-smoothie-protein",
     name: "Green Smoothie with Protein Powder",
     phase: "follicular",
@@ -583,9 +606,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Protein supports muscle recovery. Spinach provides iron for the follicular phase.",
     nutrition: { calories: 340, protein: 28, carbs: 42, fat: 8, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "green-smoothie-spinach",
-    name: "Green Smoothie — Spinach, Apple, Ginger, Flaxseed",
+    name: "Green Smoothie -- Spinach, Apple, Ginger, Flaxseed",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -608,7 +632,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Flaxseed provides lignans for estrogen balance. Ginger aids digestion in the follicular phase.",
     nutrition: { calories: 180, protein: 4, carbs: 34, fat: 4, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "omelette-feta-spinach",
     name: "Omelette with Feta and Spinach",
     phase: "follicular",
@@ -633,7 +658,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Eggs provide complete protein and choline. Spinach adds iron for the follicular phase.",
     nutrition: { calories: 380, protein: 24, carbs: 4, fat: 30 },
-  },\n  {
+  },
+  {
     id: "poached-eggs-avocado",
     name: "Poached Eggs with Avocado and Tomato",
     phase: "ovulatory",
@@ -658,7 +684,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light and nutrient-dense for the ovulatory phase. Tomato provides lycopene for cellular protection.",
     nutrition: { calories: 420, protein: 18, carbs: 28, fat: 28 },
-  },\n  {
+  },
+  {
     id: "rainbow-smoothie-hemp",
     name: "Rainbow Smoothie Bowl with Hemp Seeds",
     phase: "ovulatory",
@@ -682,9 +709,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hemp seeds provide zinc for ovulation. Acai offers potent antioxidants for egg quality.",
     nutrition: { calories: 360, protein: 10, carbs: 50, fat: 14, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "rainbow-smoothie-acai",
-    name: "Rainbow Smoothie Bowl — Acai, Banana, Mixed Berries",
+    name: "Rainbow Smoothie Bowl -- Acai, Banana, Mixed Berries",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -707,7 +735,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Antioxidant powerhouse for the ovulatory phase. Light yet satisfying.",
     nutrition: { calories: 340, protein: 8, carbs: 52, fat: 12, fibre: 7 },
-  },\n  {
+  },
+  {
     id: "scrambled-eggs-sourdough",
     name: "Scrambled Eggs on Sourdough with Spinach",
     phase: "menstrual",
@@ -731,7 +760,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Eggs provide iron and B12 for energy. Spinach adds extra iron to combat menstrual losses.",
     nutrition: { calories: 420, protein: 22, carbs: 30, fat: 22 },
-  },\n  {
+  },
+  {
     id: "scrambled-eggs-salmon-avo",
     name: "Scrambled Eggs with Smoked Salmon and Avocado",
     phase: "follicular",
@@ -755,9 +785,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Salmon provides omega-3 for hormone production in the follicular phase.",
     nutrition: { calories: 520, protein: 30, carbs: 28, fat: 32 },
-  },\n  {
+  },
+  {
     id: "smoothie-cacao-chia",
-    name: "Smoothie — Banana, Almond Milk, Cacao, Chia",
+    name: "Smoothie -- Banana, Almond Milk, Cacao, Chia",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -777,11 +808,12 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Blend until smooth.",
       "Pour and serve.",
     ],
-    phaseBenefit: "Cacao is one of the highest food sources of magnesium — essential for reducing PMS symptoms.",
+    phaseBenefit: "Cacao is one of the highest food sources of magnesium -- essential for reducing PMS symptoms.",
     nutrition: { calories: 320, protein: 10, carbs: 38, fat: 16, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "smoothie-spinach-cacao",
-    name: "Smoothie Bowl — Spinach, Banana, Hemp Seeds, Cacao",
+    name: "Smoothie Bowl -- Spinach, Banana, Hemp Seeds, Cacao",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -804,7 +836,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Spinach provides iron. Cacao is rich in magnesium to ease menstrual cramps.",
     nutrition: { calories: 320, protein: 10, carbs: 46, fat: 12, fibre: 7 },
-  },\n  {
+  },
+  {
     id: "sourdough-avo-microgreens",
     name: "Sourdough with Smashed Avocado and Microgreens",
     phase: "follicular",
@@ -828,7 +861,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Microgreens are concentrated in folate and vitamins. Avocado provides healthy fats for hormone synthesis.",
     nutrition: { calories: 400, protein: 10, carbs: 36, fat: 26, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "sourdough-avo-egg",
     name: "Sourdough with Smashed Avocado and Poached Egg",
     phase: "follicular",
@@ -852,7 +886,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Protein from eggs supports rising follicular energy. Avocado offers magnesium.",
     nutrition: { calories: 460, protein: 18, carbs: 34, fat: 28 },
-  },\n  {
+  },
+  {
     id: "warm-oat-porridge-banana",
     name: "Warm Oat Porridge with Banana and Almond Butter",
     phase: "luteal",
@@ -875,7 +910,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Complex carbs stabilise blood sugar. Banana provides B6 for progesterone support.",
     nutrition: { calories: 420, protein: 14, carbs: 58, fat: 16, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "warm-spiced-porridge-dates",
     name: "Warm Spiced Oat Porridge with Dates and Almonds",
     phase: "menstrual",
@@ -899,7 +935,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Dates provide iron. Almonds offer magnesium for cramp relief. Warming and comforting.",
     nutrition: { calories: 440, protein: 14, carbs: 62, fat: 16, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "warm-chia-pudding-pear",
     name: "Warm Chia Pudding with Poached Pear",
     phase: "luteal",
@@ -924,7 +961,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Warming chia pudding is comforting in the luteal phase. Pear provides fibre for bloating relief.",
     nutrition: { calories: 340, protein: 8, carbs: 42, fat: 16, fibre: 14 },
-  },\n  {
+  },
+  {
     id: "avocado-mango-sushi",
     name: "Avocado and Mango Sushi Rolls",
     phase: "ovulatory",
@@ -951,7 +989,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light and fresh for the ovulatory phase. Avocado provides folate for egg development.",
     nutrition: { calories: 380, protein: 8, carbs: 62, fat: 12, fibre: 5 },
-  },\n  {
+  },
+  {
     id: "baked-potato-hummus",
     name: "Baked Potato with Hummus and Salad",
     phase: "luteal",
@@ -976,7 +1015,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Starchy potato provides complex carbs the body craves in the luteal phase. Hummus adds protein.",
     nutrition: { calories: 420, protein: 12, carbs: 62, fat: 16, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "black-bean-tacos",
     name: "Black Bean Tacos with Avocado and Salsa",
     phase: "menstrual",
@@ -1003,7 +1043,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Black beans are rich in iron and fibre. Anti-inflammatory spices support menstrual comfort.",
     nutrition: { calories: 480, protein: 20, carbs: 58, fat: 18, fibre: 16 },
-  },\n  {
+  },
+  {
     id: "brown-rice-sushi-bowl",
     name: "Brown Rice Sushi Bowl with Edamame",
     phase: "follicular",
@@ -1031,7 +1072,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Edamame provides phytoestrogens for follicular phase estrogen support.",
     nutrition: { calories: 480, protein: 18, carbs: 64, fat: 16, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "chicken-caesar-wrap",
     name: "Chicken Caesar Wrap",
     phase: "follicular",
@@ -1055,7 +1097,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lean protein supports rising follicular energy. Parmesan provides calcium.",
     nutrition: { calories: 480, protein: 38, carbs: 28, fat: 22 },
-  },\n  {
+  },
+  {
     id: "chicken-beetroot-salad",
     name: "Chicken and Beetroot Salad with Feta",
     phase: "ovulatory",
@@ -1080,7 +1123,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Beetroot supports nitric oxide production. Light and antioxidant-rich for ovulation.",
     nutrition: { calories: 460, protein: 36, carbs: 22, fat: 24 },
-  },\n  {
+  },
+  {
     id: "chicken-pumpkin-salad",
     name: "Chicken and Pumpkin Salad",
     phase: "luteal",
@@ -1105,7 +1149,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Pumpkin provides beta-carotene and B6. Warming salad suits the luteal phase.",
     nutrition: { calories: 440, protein: 36, carbs: 24, fat: 22 },
-  },\n  {
+  },
+  {
     id: "chicken-pumpkin-soup",
     name: "Chicken and Pumpkin Soup",
     phase: "menstrual",
@@ -1132,7 +1177,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Warming, comforting, and easy to digest during menstruation.",
     nutrition: { calories: 380, protein: 28, carbs: 32, fat: 16 },
-  },\n  {
+  },
+  {
     id: "chicken-sweet-potato-soup",
     name: "Chicken and Sweet Potato Soup",
     phase: "luteal",
@@ -1159,7 +1205,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Sweet potato provides B6 for progesterone production. Warming and sustaining.",
     nutrition: { calories: 420, protein: 30, carbs: 38, fat: 16 },
-  },\n  {
+  },
+  {
     id: "chicken-veg-soup-sourdough",
     name: "Chicken and Vegetable Soup with Sourdough",
     phase: "menstrual",
@@ -1187,7 +1234,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron-rich spinach with vitamin C from vegetables aids iron absorption during menstruation.",
     nutrition: { calories: 420, protein: 28, carbs: 36, fat: 16 },
-  },\n  {
+  },
+  {
     id: "grilled-chicken-caesar",
     name: "Grilled Chicken Caesar Salad",
     phase: "menstrual",
@@ -1211,7 +1259,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lean protein and iron from chicken support menstrual recovery.",
     nutrition: { calories: 460, protein: 36, carbs: 18, fat: 26 },
-  },\n  {
+  },
+  {
     id: "grilled-chicken-mango-salad",
     name: "Grilled Chicken and Mango Salad",
     phase: "ovulatory",
@@ -1237,7 +1286,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light, fresh, and packed with vitamin C. Perfect for the ovulatory phase.",
     nutrition: { calories: 420, protein: 34, carbs: 24, fat: 20 },
-  },\n  {
+  },
+  {
     id: "grilled-chicken-quinoa-bowl",
     name: "Grilled Chicken and Quinoa Bowl",
     phase: "follicular",
@@ -1263,7 +1313,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Complete protein from quinoa and chicken fuels rising follicular energy.",
     nutrition: { calories: 520, protein: 40, carbs: 42, fat: 18 },
-  },\n  {
+  },
+  {
     id: "hummus-roasted-veg-wrap",
     name: "Hummus and Roasted Veg Wrap",
     phase: "menstrual",
@@ -1287,7 +1338,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Chickpea hummus provides iron and protein. Warming roasted vegetables comfort during menstruation.",
     nutrition: { calories: 380, protein: 14, carbs: 42, fat: 18, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "lamb-lentil-soup",
     name: "Lamb and Lentil Soup",
     phase: "menstrual",
@@ -1317,7 +1369,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lamb is one of the best sources of heme iron. Lentils add fibre and plant iron.",
     nutrition: { calories: 480, protein: 34, carbs: 38, fat: 18, fibre: 10 },
-  },\n  {
+  },
+  {
     id: "lamb-lentil-stew",
     name: "Lamb and Lentil Stew",
     phase: "luteal",
@@ -1346,7 +1399,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Hearty and sustaining for the luteal phase. Lamb provides iron and B12.",
     nutrition: { calories: 500, protein: 36, carbs: 36, fat: 20, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "lamb-roasted-veg-wrap",
     name: "Lamb and Roasted Vegetable Wrap",
     phase: "luteal",
@@ -1370,7 +1424,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron-rich lamb with B6-rich pumpkin supports luteal phase needs.",
     nutrition: { calories: 520, protein: 32, carbs: 38, fat: 24 },
-  },\n  {
+  },
+  {
     id: "lamb-kofta-wrap",
     name: "Lamb Kofta Wrap with Hummus",
     phase: "menstrual",
@@ -1396,9 +1451,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Warm flatbreads. Spread with hummus.",
       "Top with kofta, salad, and lemon juice.",
     ],
-    phaseBenefit: "Lamb provides heme iron and zinc — essential for menstrual recovery.",
+    phaseBenefit: "Lamb provides heme iron and zinc -- essential for menstrual recovery.",
     nutrition: { calories: 520, protein: 32, carbs: 36, fat: 26 },
-  },\n  {
+  },
+  {
     id: "large-leafy-salad-tahini",
     name: "Large Leafy Salad with Pumpkin Seeds, Sunflower Seeds, and Tahini",
     phase: "ovulatory",
@@ -1426,7 +1482,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Zinc from seeds supports ovulation. Light yet satisfying.",
     nutrition: { calories: 380, protein: 12, carbs: 18, fat: 30, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "lentil-spinach-salad",
     name: "Lentil and Spinach Salad",
     phase: "menstrual",
@@ -1452,7 +1509,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Double iron from lentils and spinach. Vitamin C from capsicum aids absorption.",
     nutrition: { calories: 380, protein: 20, carbs: 42, fat: 14, fibre: 12 },
-  },\n  {
+  },
+  {
     id: "minestrone-soup",
     name: "Minestrone Soup",
     phase: "luteal",
@@ -1482,7 +1540,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Fibre-rich and sustaining. Complex carbs help manage luteal phase cravings.",
     nutrition: { calories: 340, protein: 14, carbs: 50, fat: 8, fibre: 10 },
-  },\n  {
+  },
+  {
     id: "minestrone-chicken",
     name: "Minestrone Soup with Shredded Chicken",
     phase: "luteal",
@@ -1511,7 +1570,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Protein-rich and comforting. Supports higher calorie needs in the luteal phase.",
     nutrition: { calories: 420, protein: 30, carbs: 46, fat: 12, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "miso-soup-tofu",
     name: "Miso Soup with Tofu and Wakame",
     phase: "menstrual",
@@ -1536,7 +1596,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Miso provides probiotics for gut health. Tofu offers iron and phytoestrogens.",
     nutrition: { calories: 160, protein: 12, carbs: 12, fat: 6, fibre: 2 },
-  },\n  {
+  },
+  {
     id: "miso-soup-rice-pickles",
     name: "Miso Soup with Rice and Pickled Veg",
     phase: "follicular",
@@ -1560,7 +1621,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Fermented miso supports the estrobolome. Brown rice provides sustained follicular energy.",
     nutrition: { calories: 340, protein: 14, carbs: 50, fat: 8, fibre: 5 },
-  },\n  {
+  },
+  {
     id: "prawn-avocado-rolls",
     name: "Prawn and Avocado Rice Paper Rolls",
     phase: "ovulatory",
@@ -1586,7 +1648,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light and fresh for ovulatory energy. Prawns provide lean protein and zinc.",
     nutrition: { calories: 320, protein: 18, carbs: 34, fat: 12, fibre: 4 },
-  },\n  {
+  },
+  {
     id: "prawn-mango-salad",
     name: "Prawn and Mango Salad",
     phase: "follicular",
@@ -1612,7 +1675,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light, zinc-rich prawns support follicular development. Mango adds vitamin C.",
     nutrition: { calories: 320, protein: 22, carbs: 24, fat: 14 },
-  },\n  {
+  },
+  {
     id: "quinoa-beet-salad",
     name: "Quinoa and Roasted Beet Salad with Pumpkin Seeds",
     phase: "menstrual",
@@ -1638,7 +1702,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Beetroot supports blood production. Quinoa provides complete protein and iron.",
     nutrition: { calories: 420, protein: 16, carbs: 44, fat: 20, fibre: 7 },
-  },\n  {
+  },
+  {
     id: "roast-chicken-avo-salad",
     name: "Roast Chicken and Avocado Salad",
     phase: "luteal",
@@ -1663,7 +1728,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Protein and healthy fats support the luteal phase. Pumpkin seeds add magnesium.",
     nutrition: { calories: 460, protein: 36, carbs: 12, fat: 30 },
-  },\n  {
+  },
+  {
     id: "roast-chicken-hummus-plate",
     name: "Roast Chicken and Hummus Plate",
     phase: "follicular",
@@ -1687,7 +1753,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Complete protein with fibre-rich chickpeas. Quick and nourishing for follicular energy.",
     nutrition: { calories: 520, protein: 38, carbs: 32, fat: 26 },
-  },\n  {
+  },
+  {
     id: "roast-chicken-sandwich",
     name: "Roast Chicken Sandwich with Avocado",
     phase: "menstrual",
@@ -1711,7 +1778,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lean protein with iron from chicken. Quick comfort meal during menstruation.",
     nutrition: { calories: 480, protein: 32, carbs: 34, fat: 24 },
-  },\n  {
+  },
+  {
     id: "roasted-veg-quinoa-salad",
     name: "Roasted Veg and Quinoa Salad",
     phase: "follicular",
@@ -1736,7 +1804,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Complete protein from quinoa fuels follicular energy. Rainbow vegetables provide antioxidants.",
     nutrition: { calories: 420, protein: 14, carbs: 46, fat: 20, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "roasted-chickpea-root-bowl",
     name: "Roasted Chickpea and Root Vegetable Bowl",
     phase: "luteal",
@@ -1764,7 +1833,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Complex carbs from root vegetables satisfy luteal cravings. Chickpeas provide iron.",
     nutrition: { calories: 440, protein: 18, carbs: 52, fat: 18, fibre: 12 },
-  },\n  {
+  },
+  {
     id: "roasted-tomato-lentil-soup",
     name: "Roasted Tomato and Lentil Soup",
     phase: "luteal",
@@ -1791,7 +1861,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Roasted tomatoes intensify lycopene. Warming lentils sustain energy in the luteal phase.",
     nutrition: { calories: 320, protein: 18, carbs: 44, fat: 6, fibre: 12 },
-  },\n  {
+  },
+  {
     id: "roasted-veg-frittata",
     name: "Roasted Veg Frittata (Vegan, Chickpea Flour)",
     phase: "luteal",
@@ -1818,7 +1889,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Chickpea flour provides plant protein. Satisfying vegan option for the luteal phase.",
     nutrition: { calories: 280, protein: 14, carbs: 32, fat: 10, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "salmon-rocket-salad",
     name: "Salmon and Rocket Salad",
     phase: "follicular",
@@ -1843,7 +1915,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Salmon provides omega-3 for hormone synthesis in the follicular phase.",
     nutrition: { calories: 420, protein: 32, carbs: 4, fat: 32 },
-  },\n  {
+  },
+  {
     id: "soba-noodle-sesame",
     name: "Soba Noodle Salad with Sesame Dressing",
     phase: "follicular",
@@ -1871,7 +1944,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Soba noodles provide buckwheat minerals. Sesame offers zinc for follicular support.",
     nutrition: { calories: 420, protein: 18, carbs: 54, fat: 14, fibre: 6 },
-  },\n  {
+  },
+  {
     id: "stuffed-sweet-potato-tahini",
     name: "Stuffed Sweet Potato with Tahini Slaw",
     phase: "luteal",
@@ -1898,7 +1972,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Sweet potato is rich in B6 for progesterone support. Tahini provides calcium.",
     nutrition: { calories: 380, protein: 10, carbs: 52, fat: 18, fibre: 10 },
-  },\n  {
+  },
+  {
     id: "tuna-white-bean-salad",
     name: "Tuna and White Bean Salad",
     phase: "menstrual",
@@ -1922,7 +1997,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Tuna provides omega-3 and iron. White beans add fibre and plant iron.",
     nutrition: { calories: 420, protein: 30, carbs: 34, fat: 18, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "tuna-melt-sourdough",
     name: "Tuna Melt on Sourdough",
     phase: "luteal",
@@ -1946,7 +2022,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Comfort food with protein and calcium. Satisfies luteal phase cravings.",
     nutrition: { calories: 480, protein: 30, carbs: 32, fat: 26 },
-  },\n  {
+  },
+  {
     id: "tuna-poke-bowl",
     name: "Tuna Poke Bowl with Edamame",
     phase: "follicular",
@@ -1973,7 +2050,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Omega-3 rich tuna supports follicular hormone production. Edamame adds phytoestrogens.",
     nutrition: { calories: 480, protein: 36, carbs: 44, fat: 18 },
-  },\n  {
+  },
+  {
     id: "turkey-avocado-wrap",
     name: "Turkey and Avocado Wrap",
     phase: "follicular",
@@ -1997,7 +2075,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lean turkey provides B6 and tryptophan. Quick fuel for follicular energy.",
     nutrition: { calories: 420, protein: 28, carbs: 34, fat: 20 },
-  },\n  {
+  },
+  {
     id: "vietnamese-rice-paper-rolls",
     name: "Vietnamese Rice Paper Rolls",
     phase: "follicular",
@@ -2024,7 +2103,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light, raw, and hydrating. Fresh herbs support digestion in the follicular phase.",
     nutrition: { calories: 320, protein: 12, carbs: 50, fat: 6, fibre: 4 },
-  },\n  {
+  },
+  {
     id: "white-bean-kale-soup",
     name: "White Bean and Kale Soup",
     phase: "menstrual",
@@ -2051,7 +2131,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Kale provides iron and calcium. White beans offer fibre and plant protein for menstrual support.",
     nutrition: { calories: 280, protein: 16, carbs: 36, fat: 8, fibre: 10 },
-  },\n  {
+  },
+  {
     id: "beef-bolognese-pasta",
     name: "Beef Bolognese with Pasta",
     phase: "menstrual",
@@ -2080,7 +2161,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Beef is the richest source of heme iron and B12. Essential for menstrual recovery.",
     nutrition: { calories: 580, protein: 32, carbs: 58, fat: 22 },
-  },\n  {
+  },
+  {
     id: "beef-mushroom-stroganoff",
     name: "Beef and Mushroom Stroganoff",
     phase: "luteal",
@@ -2110,7 +2192,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Rich and comforting for the luteal phase. Beef provides iron and B12.",
     nutrition: { calories: 580, protein: 34, carbs: 46, fat: 28 },
-  },\n  {
+  },
+  {
     id: "beef-veg-stirfry-noodles",
     name: "Beef and Vegetable Stir-fry with Noodles",
     phase: "follicular",
@@ -2138,7 +2221,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron from beef with vitamin C from capsicum for absorption. Energising for the follicular phase.",
     nutrition: { calories: 520, protein: 34, carbs: 48, fat: 18 },
-  },\n  {
+  },
+  {
     id: "baked-fish-lemon-butter",
     name: "Baked Fish with Lemon Butter and Greens",
     phase: "follicular",
@@ -2163,7 +2247,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "White fish provides lean protein and omega-3. Light and easy to digest.",
     nutrition: { calories: 380, protein: 34, carbs: 8, fat: 24 },
-  },\n  {
+  },
+  {
     id: "chicken-mushroom-pie",
     name: "Chicken and Mushroom Pie with Salad",
     phase: "menstrual",
@@ -2194,7 +2279,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Comforting and nourishing. Chicken provides iron and B12 for menstrual support.",
     nutrition: { calories: 560, protein: 32, carbs: 34, fat: 32 },
-  },\n  {
+  },
+  {
     id: "chicken-stirfry-broccoli",
     name: "Chicken Stir-fry with Broccoli and Brown Rice",
     phase: "follicular",
@@ -2221,7 +2307,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lean protein with cruciferous broccoli supports estrogen metabolism.",
     nutrition: { calories: 520, protein: 38, carbs: 52, fat: 14 },
-  },\n  {
+  },
+  {
     id: "chicken-thigh-curry",
     name: "Chicken Thigh Curry with Brown Rice",
     phase: "menstrual",
@@ -2250,7 +2337,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron from chicken thighs with anti-inflammatory turmeric. Warming and comforting.",
     nutrition: { calories: 560, protein: 32, carbs: 44, fat: 28 },
-  },\n  {
+  },
+  {
     id: "chicken-tikka-masala-rice",
     name: "Chicken Tikka Masala with Rice",
     phase: "luteal",
@@ -2277,7 +2365,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Protein-rich and satisfying for the luteal phase. Spices aid digestion.",
     nutrition: { calories: 540, protein: 36, carbs: 52, fat: 18 },
-  },\n  {
+  },
+  {
     id: "chickpea-shakshuka",
     name: "Chickpea Shakshuka with Crusty Bread",
     phase: "menstrual",
@@ -2306,7 +2395,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron from chickpeas with vitamin C from tomatoes for absorption. Warming and satisfying.",
     nutrition: { calories: 480, protein: 24, carbs: 44, fat: 22, fibre: 10 },
-  },\n  {
+  },
+  {
     id: "fish-pie-mashed",
     name: "Fish Pie with Mashed Potato",
     phase: "luteal",
@@ -2334,7 +2424,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Comforting with omega-3 from salmon. Complex carbs from potato manage cravings.",
     nutrition: { calories: 520, protein: 32, carbs: 42, fat: 24 },
-  },\n  {
+  },
+  {
     id: "grilled-fish-tacos",
     name: "Grilled Fish Tacos with Slaw",
     phase: "follicular",
@@ -2362,7 +2453,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light protein with vitamin C from cabbage. Energising for the follicular phase.",
     nutrition: { calories: 440, protein: 32, carbs: 36, fat: 18 },
-  },\n  {
+  },
+  {
     id: "grilled-fish-capsicum-couscous",
     name: "Grilled Fish with Roasted Capsicum and Couscous",
     phase: "ovulatory",
@@ -2388,7 +2480,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light and fresh for the ovulatory phase. Capsicum provides vitamin C and antioxidants.",
     nutrition: { calories: 440, protein: 34, carbs: 42, fat: 14 },
-  },\n  {
+  },
+  {
     id: "lamb-cutlets-roasted-veg",
     name: "Lamb Cutlets with Roasted Vegetables",
     phase: "follicular",
@@ -2409,9 +2502,10 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
       "Season lamb cutlets. Pan-fry 3 min each side for medium.",
       "Rest 5 min. Serve with roasted vegetables.",
     ],
-    phaseBenefit: "Lamb provides heme iron and zinc — excellent for follicular development.",
+    phaseBenefit: "Lamb provides heme iron and zinc -- excellent for follicular development.",
     nutrition: { calories: 520, protein: 34, carbs: 28, fat: 30 },
-  },\n  {
+  },
+  {
     id: "lemon-herb-salmon",
     name: "Lemon Herb Salmon with Asparagus",
     phase: "follicular",
@@ -2437,7 +2531,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Salmon provides omega-3 for hormone synthesis. Asparagus is rich in folate.",
     nutrition: { calories: 420, protein: 36, carbs: 8, fat: 28 },
-  },\n  {
+  },
+  {
     id: "lentil-bolognese-pasta",
     name: "Lentil Bolognese with Pasta",
     phase: "follicular",
@@ -2466,7 +2561,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron-rich lentils with tomato vitamin C for absorption. Satisfying plant-based bolognese.",
     nutrition: { calories: 480, protein: 24, carbs: 68, fat: 8, fibre: 14 },
-  },\n  {
+  },
+  {
     id: "pan-seared-salmon-mash",
     name: "Pan-seared Salmon with Mashed Potato and Greens",
     phase: "menstrual",
@@ -2492,7 +2588,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Omega-3 from salmon reduces inflammation. Iron and comfort for menstruation.",
     nutrition: { calories: 560, protein: 36, carbs: 44, fat: 28 },
-  },\n  {
+  },
+  {
     id: "roast-chicken-roasted-veg",
     name: "Roast Chicken with Roasted Vegetables",
     phase: "luteal",
@@ -2519,7 +2616,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Classic comfort food. Chicken provides protein and B6 for the luteal phase.",
     nutrition: { calories: 580, protein: 40, carbs: 38, fat: 28 },
-  },\n  {
+  },
+  {
     id: "salmon-mashed-kumara",
     name: "Salmon with Mashed Kumara and Greens",
     phase: "luteal",
@@ -2543,7 +2641,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Kumara provides B6 for progesterone. Salmon adds omega-3 for anti-inflammatory support.",
     nutrition: { calories: 540, protein: 36, carbs: 42, fat: 26 },
-  },\n  {
+  },
+  {
     id: "salmon-roasted-veg-quinoa",
     name: "Salmon with Roasted Vegetables and Quinoa",
     phase: "menstrual",
@@ -2567,7 +2666,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Omega-3 and protein from salmon with iron from quinoa. Anti-inflammatory.",
     nutrition: { calories: 520, protein: 38, carbs: 36, fat: 24 },
-  },\n  {
+  },
+  {
     id: "salmon-teriyaki-stirfry",
     name: "Salmon Teriyaki with Stir-fried Vegetables",
     phase: "ovulatory",
@@ -2594,7 +2694,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Light yet nourishing for the ovulatory phase. Salmon provides omega-3 for fertility.",
     nutrition: { calories: 520, protein: 34, carbs: 46, fat: 22 },
-  },\n  {
+  },
+  {
     id: "seared-tuna-quinoa",
     name: "Seared Tuna with Quinoa and Asian Greens",
     phase: "ovulatory",
@@ -2619,7 +2720,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "High-quality protein with omega-3 for the ovulatory phase. Zinc from sesame supports egg health.",
     nutrition: { calories: 460, protein: 42, carbs: 32, fat: 18 },
-  },\n  {
+  },
+  {
     id: "slow-cooked-beef-stew",
     name: "Slow-cooked Beef and Sweet Potato Stew",
     phase: "menstrual",
@@ -2648,7 +2750,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Slow-cooked beef provides heme iron and B12. Sweet potato adds complex carbs and vitamin A.",
     nutrition: { calories: 480, protein: 36, carbs: 36, fat: 18 },
-  },\n  {
+  },
+  {
     id: "slow-cooked-beef-casserole",
     name: "Slow-cooked Beef Casserole with Root Vegetables",
     phase: "luteal",
@@ -2677,7 +2780,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Ultimate comfort food for the luteal phase. Iron from beef and starchy root vegetables.",
     nutrition: { calories: 520, protein: 38, carbs: 40, fat: 20 },
-  },\n  {
+  },
+  {
     id: "slow-cooked-lamb-shanks",
     name: "Slow-cooked Lamb Shanks with Root Vegetables",
     phase: "menstrual",
@@ -2706,7 +2810,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lamb shanks are rich in heme iron and zinc. Slow cooking creates deep nourishment.",
     nutrition: { calories: 560, protein: 42, carbs: 28, fat: 28 },
-  },\n  {
+  },
+  {
     id: "slow-cooked-lamb-curry",
     name: "Slow-cooked Lamb Curry with Rice",
     phase: "luteal",
@@ -2734,7 +2839,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Warming curry with anti-inflammatory turmeric. Lamb provides iron for the luteal phase.",
     nutrition: { calories: 580, protein: 34, carbs: 44, fat: 30 },
-  },\n  {
+  },
+  {
     id: "sweet-potato-burrito-bowl",
     name: "Sweet Potato and Black Bean Burrito Bowl",
     phase: "menstrual",
@@ -2762,7 +2868,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Iron from black beans with B6 from sweet potato. Comforting during menstruation.",
     nutrition: { calories: 520, protein: 20, carbs: 72, fat: 16, fibre: 14 },
-  },\n  {
+  },
+  {
     id: "tempeh-broccoli-stirfry",
     name: "Tempeh and Broccoli Stir-fry",
     phase: "follicular",
@@ -2790,7 +2897,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Tempeh provides probiotics and phytoestrogens. Broccoli supports estrogen metabolism.",
     nutrition: { calories: 480, protein: 26, carbs: 50, fat: 18, fibre: 8 },
-  },\n  {
+  },
+  {
     id: "tempeh-broccoli-ginger",
     name: "Tempeh Stir-fry with Broccoli and Ginger",
     phase: "menstrual",
@@ -2815,7 +2923,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Ginger is anti-inflammatory and eases nausea. Tempeh adds iron and probiotics.",
     nutrition: { calories: 460, protein: 24, carbs: 48, fat: 18 },
-  },\n  {
+  },
+  {
     id: "tempeh-mushroom-stew",
     name: "Tempeh and Mushroom Stew with Crusty Bread",
     phase: "luteal",
@@ -2844,7 +2953,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Mushrooms provide B vitamins. Warming stew comforts in the luteal phase.",
     nutrition: { calories: 380, protein: 22, carbs: 34, fat: 16 },
-  },\n  {
+  },
+  {
     id: "teriyaki-tempeh-rice",
     name: "Teriyaki Tempeh with Jasmine Rice",
     phase: "follicular",
@@ -2870,7 +2980,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Tempeh provides phytoestrogens and complete protein for the follicular phase.",
     nutrition: { calories: 480, protein: 24, carbs: 58, fat: 16 },
-  },\n  {
+  },
+  {
     id: "tofu-pumpkin-curry",
     name: "Tofu and Pumpkin Curry",
     phase: "luteal",
@@ -2899,7 +3010,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Pumpkin provides beta-carotene and B6. Warming and satisfying for the luteal phase.",
     nutrition: { calories: 480, protein: 22, carbs: 48, fat: 24 },
-  },\n  {
+  },
+  {
     id: "tofu-thai-green-curry",
     name: "Tofu and Vegetable Thai Green Curry",
     phase: "menstrual",
@@ -2927,7 +3039,8 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Coconut milk provides warming fats. Anti-inflammatory ginger and galangal in curry paste ease cramps.",
     nutrition: { calories: 480, protein: 20, carbs: 44, fat: 26 },
-  },\n  {
+  },
+  {
     id: "grilled-chicken-caesar-dinner",
     name: "Grilled Chicken Caesar Salad",
     phase: "menstrual",
