@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Plus, X, ChevronRight, ArrowRight, Check, Trash2, Archive, Sparkles, CalendarPlus, Download, Loader2 } from "lucide-react";
-import { format, startOfWeek, endOfWeek, isWithinInterval, parseISO } from "date-fns";
+import { Calendar, Plus, X, ChevronRight, ArrowRight, Check, Trash2, Archive, Sparkles, CalendarPlus } from "lucide-react";
+import { format } from "date-fns";
 import { haptic, useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { useTodos } from "@/hooks/useTodos";
@@ -237,91 +237,6 @@ function TodayPage({ today }: { today: Date }) {
   );
 }
 
-/* ── Calendar import hook ── */
-interface ImportedEvent {
-  summary: string;
-  start: string;
-  end: string;
-  time: string;
-  dayIndex: number; // 0=Mon, 6=Sun
-}
-
-function useImportedCalendar(today: Date) {
-  const [icsUrl, setIcsUrl] = useState<string>(() =>
-    localStorage.getItem("signal_calendar_url") || ""
-  );
-  const [importedEvents, setImportedEvents] = useState<ImportedEvent[]>([]);
-  const [importing, setImporting] = useState(false);
-  const [showImportInput, setShowImportInput] = useState(false);
-
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-
-  const fetchCalendar = useCallback(async (url: string) => {
-    if (!url) return;
-    setImporting(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("calendar-proxy", {
-        body: { url },
-      });
-      if (error) throw error;
-      const events: ImportedEvent[] = (data?.events || [])
-        .filter((ev: any) => {
-          try {
-            const d = parseISO(ev.start);
-            return isWithinInterval(d, { start: weekStart, end: weekEnd });
-          } catch { return false; }
-        })
-        .map((ev: any) => {
-          const d = new Date(ev.start);
-          const time = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-          const jsDay = d.getDay(); // 0=Sun
-          const dayIndex = jsDay === 0 ? 6 : jsDay - 1; // 0=Mon
-          return { ...ev, time, dayIndex };
-        })
-        .sort((a: ImportedEvent, b: ImportedEvent) => a.start.localeCompare(b.start));
-      setImportedEvents(events);
-      localStorage.setItem("signal_calendar_url", url);
-      localStorage.setItem("signal_calendar_cache", JSON.stringify({ events, fetched: Date.now() }));
-    } catch (e) {
-      console.error("Calendar import failed:", e);
-      toast.error("Could not fetch calendar", { description: "Check your URL and try again" });
-    } finally {
-      setImporting(false);
-    }
-  }, [weekStart, weekEnd]);
-
-  // Auto-fetch on mount if URL is saved
-  useEffect(() => {
-    if (icsUrl) {
-      // Use cache if less than 30 minutes old
-      try {
-        const cached = JSON.parse(localStorage.getItem("signal_calendar_cache") || "{}");
-        if (cached.events && Date.now() - cached.fetched < 30 * 60 * 1000) {
-          const filtered = cached.events.filter((ev: any) => {
-            try {
-              const d = parseISO(ev.start);
-              return isWithinInterval(d, { start: weekStart, end: weekEnd });
-            } catch { return false; }
-          });
-          setImportedEvents(filtered);
-          return;
-        }
-      } catch {}
-      fetchCalendar(icsUrl);
-    }
-  }, [icsUrl]);
-
-  return {
-    icsUrl, setIcsUrl, importedEvents, importing, showImportInput, setShowImportInput, fetchCalendar,
-    clearCalendar: () => {
-      setIcsUrl("");
-      setImportedEvents([]);
-      localStorage.removeItem("signal_calendar_url");
-      localStorage.removeItem("signal_calendar_cache");
-    },
-  };
-}
 
 /* ── WEEK Page — Calendar only ── */
 function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent }: {
@@ -338,8 +253,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
 }) {
   const dayOfWeek = today.getDay();
   const [showCalendarOptions, setShowCalendarOptions] = useState(false);
-  const cal = useImportedCalendar(today);
-  const [importUrl, setImportUrl] = useState("");
 
   const generateICSData = () => {
     const lines = [
@@ -389,14 +302,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
     toast.success("Calendar export ready");
   };
 
-  const handleImportCalendar = () => {
-    if (!importUrl.trim()) return;
-    haptic("medium");
-    cal.fetchCalendar(importUrl.trim());
-    cal.setIcsUrl(importUrl.trim());
-    cal.setShowImportInput(false);
-    setImportUrl("");
-  };
 
   return (
     <div className="space-y-3">
@@ -433,37 +338,9 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
       </div>
       <DottedLine />
 
-      {/* Imported calendar events — weekly grid */}
-      {cal.importedEvents.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider">📅 My Calendar</p>
-            <button onClick={cal.clearCalendar} className="font-hand text-[10px] text-muted-foreground/40 hover:text-destructive transition-colors">
-              disconnect
-            </button>
-          </div>
-          <div className="grid grid-cols-7 gap-px">
-            {DAYS_OF_WEEK.map((_, colIdx) => {
-              const dayEvents = cal.importedEvents.filter(ev => ev.dayIndex === colIdx);
-              return (
-                <div key={colIdx} className="min-h-[48px] space-y-0.5 px-0.5">
-                  {dayEvents.map((ev, i) => (
-                    <div key={i} className="rounded-md bg-primary/8 px-1 py-0.5">
-                      <p className="font-hand text-[8px] text-primary/50 leading-none">{ev.time}</p>
-                      <p className="font-hand text-[9px] text-foreground/60 leading-tight truncate">{ev.summary}</p>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-          <DottedLine className="mt-2" />
-        </div>
-      )}
-
       {/* Manual events */}
       <div className="space-y-1.5 min-h-[40px]">
-        {events.length === 0 && !showAddEvent && cal.importedEvents.length === 0 ? (
+        {events.length === 0 && !showAddEvent ? (
           <div className="text-center py-3">
             <Calendar className="h-5 w-5 text-muted-foreground/20 mx-auto mb-2" />
             <p className="font-hand text-[13px] italic text-muted-foreground/40">
@@ -527,46 +404,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
         )}
       </AnimatePresence>
 
-      {/* Calendar import input */}
-      <AnimatePresence>
-        {cal.showImportInput && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="rounded-xl bg-secondary/30 p-3 space-y-2">
-              <p className="font-hand text-[11px] text-foreground/60">
-                Paste your calendar's ICS/subscription URL
-              </p>
-              <p className="font-body text-[10px] text-muted-foreground/50 leading-snug">
-                Google: Calendar Settings → "Secret address in iCal format"
-              </p>
-              <div className="flex gap-1.5">
-                <input
-                  type="url"
-                  value={importUrl}
-                  onChange={(e) => setImportUrl(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleImportCalendar()}
-                  placeholder="https://calendar.google.com/..."
-                  className="flex-1 font-body text-[12px] bg-transparent border-b border-dotted border-foreground/15 outline-none placeholder:text-muted-foreground/25 text-foreground/70"
-                  style={{ fontSize: "16px" }}
-                  autoFocus
-                />
-                <button
-                  onClick={handleImportCalendar}
-                  disabled={cal.importing}
-                  className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-body text-xs disabled:opacity-50"
-                >
-                  {cal.importing ? <Loader2 className="h-3 w-3 animate-spin" /> : "Import"}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Action buttons row */}
       <div className="flex items-center justify-between flex-wrap gap-y-1">
         <button
@@ -579,18 +416,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
           <Plus className="h-3 w-3" />
           add event
         </button>
-        {!cal.icsUrl && (
-          <button
-            onClick={() => {
-              haptic("light");
-              cal.setShowImportInput(!cal.showImportInput);
-            }}
-            className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors"
-          >
-            <Download className="h-3 w-3" />
-            import calendar
-          </button>
-        )}
         <button
           onClick={() => {
             haptic("light");

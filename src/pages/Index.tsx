@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
 import { JournalSection, DottedDivider, CelestialHeader } from "@/components/JournalBorders";
 import HomePlannerCard from "@/components/HomePlannerCard";
+import HomeCalendarCard from "@/components/HomeCalendarCard";
 import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
@@ -308,6 +309,7 @@ export default function HomePage() {
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
           {user && <HomePlannerCard />}
+          {user && <HomeCalendarCard />}
           {user && <HomeHabitsDisplay />}
         </div>
       </ContentSection>
