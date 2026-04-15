@@ -186,13 +186,22 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
       emotional_flags: aiResult?.emotional_flags || [],
     };
 
-    await supabase.from("connect_reflections").insert({
-      connection_id: connectionId,
-      partner_role: partnerRole,
-      raw_entry: rawText,
-      cards,
-      shared_keys: ["approved"],
-    });
+    if (isPartnerSession()) {
+      await partnerProxy("insert_reflection", {
+        partner_role: partnerRole,
+        raw_entry: rawText,
+        cards,
+        shared_keys: ["approved"],
+      });
+    } else {
+      await supabase.from("connect_reflections").insert({
+        connection_id: connectionId,
+        partner_role: partnerRole,
+        raw_entry: rawText,
+        cards,
+        shared_keys: ["approved"],
+      });
+    }
 
     setRawText("");
     setAiResult(null);
@@ -204,34 +213,44 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
   // ─── Mark as resolved ───
   const handleResolve = async () => {
     haptic("medium");
-    await supabase.from("connect_reflections").insert({
-      connection_id: connectionId,
+    const resolvePayload = {
       partner_role: partnerRole,
       raw_entry: `[${partnerRole} marked as resolved]`,
       cards: { status: "resolved" },
       shared_keys: ["status"],
-    });
+    };
+    if (isPartnerSession()) {
+      await partnerProxy("insert_reflection", resolvePayload);
+    } else {
+      await supabase.from("connect_reflections").insert({
+        connection_id: connectionId,
+        ...resolvePayload,
+      });
+    }
     setThreadStatus("resolved");
     setStep("resolved");
-
-    // Generate personal insight
     generateInsight();
   };
 
   // ─── Need space ───
   const handleNeedSpace = async () => {
     haptic("light");
-    await supabase.from("connect_reflections").insert({
-      connection_id: connectionId,
+    const spacePayload = {
       partner_role: partnerRole,
       raw_entry: `[${partnerRole} needs space]`,
       cards: { status: "space" },
       shared_keys: ["status"],
-    });
+    };
+    if (isPartnerSession()) {
+      await partnerProxy("insert_reflection", spacePayload);
+    } else {
+      await supabase.from("connect_reflections").insert({
+        connection_id: connectionId,
+        ...spacePayload,
+      });
+    }
     setThreadStatus("space");
     setStep("space");
-
-    // Still generate personal insight
     generateInsight();
   };
 
@@ -270,11 +289,14 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
 
   // ─── Start a new thread (clear old) ───
   const handleNewThread = async () => {
-    // Delete old reflections for this connection
-    await supabase
-      .from("connect_reflections")
-      .delete()
-      .eq("connection_id", connectionId);
+    if (isPartnerSession()) {
+      await partnerProxy("delete_reflections");
+    } else {
+      await supabase
+        .from("connect_reflections")
+        .delete()
+        .eq("connection_id", connectionId);
+    }
     setThread([]);
     setThreadStatus("active");
     setInsight(null);
