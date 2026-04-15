@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
     const { data: allCandidates, error } = await supabase
       .from("exercises")
       .select("id, name, category, body_part, target, illustration_url")
-      .not("illustration_url", "like", "%exercise-assets%")
+      .or("illustration_url.is.null,illustration_url.not.like.*exercise-assets*")
       .order("name")
       .range(0, 999); // fetch up to 1000 candidates
 
