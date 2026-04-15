@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ArrowLeft, Search, Check, BookOpen, X } from "lucide-react";
+import { Plus, ArrowLeft, Search, Check, BookOpen, X, Sparkles } from "lucide-react";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
@@ -12,8 +12,6 @@ import { haptic } from "@/hooks/use-mobile";
 import { useDailyStoic, useJournalEntries2, type JournalEntryRow, type StoicLens } from "@/hooks/useStoicJournal";
 import StoicJournalSeedCard from "@/components/StoicJournalSeedCard";
 import StoicLensDisplay from "@/components/StoicLensDisplay";
-import JournalEntries from "@/components/journal/JournalEntries";
-import JournalActivities from "@/components/journal/JournalActivities";
 import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
 import GratitudeEditor from "@/components/journal/GratitudeEditor";
 import OneLineEditor from "@/components/journal/OneLineEditor";
@@ -23,29 +21,20 @@ import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } 
 import DreamStudio from "@/components/journal/DreamStudio";
 import StoicAudioPlayer from "@/components/StoicAudioPlayer";
 
-type Tab = "write" | "entries" | "insights" | "vision";
+type Tab = "write" | "insights" | "vision";
 type View = "list" | "write" | "detail" | "gratitude" | "one-line";
 type EntryType = "reflect" | "gratitude" | "one line";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "write", label: "Write" },
-  { id: "entries", label: "Journal Entries" },
-  { id: "insights", label: "Memories" },
+  { id: "insights", label: "Memory Vault" },
   { id: "vision", label: "Vision Board" },
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {
   write: "Your story, one chapter at a time.",
-  entries: "Everything you've written.",
   insights: "Patterns, reflections, and memories.",
   vision: "Visualise the life you're creating.",
-};
-
-const TAB_TITLES: Record<Tab, string> = {
-  write: "Reflect",
-  entries: "Reflect",
-  insights: "Reflect",
-  vision: "Reflect",
 };
 
 const PHASE_COLORS: Record<string, string> = {
@@ -92,7 +81,7 @@ function buildStoicReadingText(reading: { seq_day: number; title: string; quote:
   return `Day ${reading.seq_day}.\n\n${reading.title}.\n\n"${reading.quote}"\n\n— ${reading.source}\n\n${reading.reflection}`;
 }
 
-// ── Writing View (with inline mood + type + collapsible stoic) ──
+// ── Writing View (full-screen modal) ──
 function WritingView({
   mood,
   entryType,
@@ -107,9 +96,6 @@ function WritingView({
   const { currentPhase } = useCycle();
   const [text, setText] = useState("");
   const [saved, setSaved] = useState(false);
-  const { currentDay, reading, listenedToday, markListened } = useDailyStoic();
-  const [stoicOpen, setStoicOpen] = useState(false);
-  const [showPlayer, setShowPlayer] = useState(false);
 
   const wordCount = text.split(/\s+/).filter(Boolean).length;
   const placeholder = getPlaceholder(currentPhase, mood);
@@ -118,11 +104,6 @@ function WritingView({
     if (!text.trim()) return;
     setSaved(true);
     onSave(text, wordCount);
-  };
-
-  const handleListen = () => {
-    setShowPlayer(true);
-    markListened();
   };
 
   return (
@@ -146,28 +127,6 @@ function WritingView({
       </div>
 
       <div className="flex-1 flex flex-col px-5 pb-6 pt-4 overflow-y-auto">
-        {/* Collapsible Stoic card */}
-        {reading && (
-          <>
-            <button
-              onClick={() => setStoicOpen(!stoicOpen)}
-              className="flex items-center gap-2 text-muted-foreground/30 font-body text-[10px] tracking-wide mb-3"
-            >
-              <span>{stoicOpen ? "▾" : "▸"}</span>
-              <span>today's stoic</span>
-            </button>
-            {stoicOpen && (
-              <StoicJournalSeedCard
-                reading={reading}
-                currentDay={currentDay}
-                listenedToday={listenedToday}
-                onListen={handleListen}
-                onSkip={() => setStoicOpen(false)}
-              />
-            )}
-          </>
-        )}
-
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -189,10 +148,6 @@ function WritingView({
           </button>
         </div>
       </div>
-
-      {showPlayer && reading && (
-        <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
-      )}
     </motion.div>
   );
 }
@@ -267,81 +222,8 @@ function EntryDetailView({
         </div>
       )}
 
-      {entry.stoic_seq_day && reading && (
-        <button
-          onClick={handleListen}
-          className="flex items-center gap-2 rounded-xl bg-secondary/60 px-4 py-3 font-display text-sm italic text-foreground hover:bg-secondary transition-colors w-full justify-center"
-        >
-          ▶ Listen again · Day {entry.stoic_seq_day}
-        </button>
-      )}
-
       {showPlayer && reading && (
         <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
-      )}
-    </motion.div>
-  );
-}
-
-// ── Stoic Entry List Card ──
-function StoicEntryCard({ entry, onClick }: { entry: JournalEntryRow; onClick: () => void }) {
-  const createdDate = new Date(entry.created_at);
-  const isToday = createdDate.toDateString() === new Date().toDateString();
-  const dateLabel = isToday ? "Today" : createdDate.toLocaleDateString("en-NZ", { weekday: "short", day: "numeric", month: "short" });
-  const timeLabel = createdDate.toLocaleTimeString("en-NZ", { hour: "2-digit", minute: "2-digit" });
-  const preview = (entry.content || entry.title || Object.values(entry.prompts || {}).filter(Boolean)[0] || "").slice(0, 100);
-  const readTime = entry.word_count && entry.word_count > 100 ? `${Math.max(1, Math.round(entry.word_count / 200))} min read` : "";
-
-  const typeBadge = entry.entry_type === "gratitude" ? "· Gratitude" : entry.entry_type === "one-line" ? "· One line" : null;
-
-  const MOOD_COLORS: Record<string, string> = {
-    heavy: "#C4526E", clear: "#5C4A9E", grounded: "#C47A8A", unsettled: "#9B89B4", open: "#999",
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      onClick={onClick}
-      className="card-warm p-4 cursor-pointer hover:shadow-md transition-shadow"
-      style={entry.cycle_phase ? { backgroundColor: `${PHASE_HEX[entry.cycle_phase] || "#999"}08` } : undefined}
-    >
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-body text-[11px] text-muted-foreground">{dateLabel} · {timeLabel}</span>
-        {readTime && <span className="font-body text-[10px] text-muted-foreground/50">{readTime}</span>}
-      </div>
-
-      {typeBadge ? (
-        <p className="font-display text-sm italic text-foreground mb-2">{typeBadge}</p>
-      ) : (
-        <p className="font-display text-sm italic text-foreground leading-relaxed mb-2 line-clamp-2">"{preview}..."</p>
-      )}
-
-      {entry.mood && (
-        <div className="flex items-center gap-1.5 mb-1">
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: MOOD_COLORS[entry.mood] || "#999" }} />
-          <span className="font-body text-[10px] text-muted-foreground capitalize">{entry.mood}</span>
-        </div>
-      )}
-
-      {entry.stoic_seq_day && (
-        <div className="flex items-center gap-2 mb-1">
-          <BookOpen className="h-3 w-3 text-primary" />
-          <span className="font-body text-[10px] text-muted-foreground">Day {entry.stoic_seq_day} · {entry.stoic_title}</span>
-        </div>
-      )}
-      {entry.stoic_lens && (
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px]">🌿</span>
-          <span className="font-body text-[10px] text-primary">Reflection saved</span>
-        </div>
-      )}
-
-      {entry.cycle_phase && (
-        <div className="flex items-center gap-1.5 mt-2">
-          <span className={`w-1.5 h-1.5 rounded-full ${PHASE_COLORS[entry.cycle_phase] || "bg-muted"}`} />
-          <span className="font-body text-[10px] text-muted-foreground">{entry.cycle_phase} · day {entry.cycle_day}</span>
-        </div>
       )}
     </motion.div>
   );
@@ -353,9 +235,6 @@ export default function JournalPage() {
   const [tab, setTab] = useState<Tab>("write");
   const [view, setView] = useState<View>("list");
   const [selectedEntry, setSelectedEntry] = useState<JournalEntryRow | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterStoic, setFilterStoic] = useState(false);
-  const [pinnedEntry, setPinnedEntry] = useState<{ id: string; content: string } | null>(null);
   const [currentMood, setCurrentMood] = useState<string | null>(null);
   const [entryType, setEntryType] = useState<EntryType>("reflect");
   const [promptIdx, setPromptIdx] = useState(0);
@@ -366,6 +245,11 @@ export default function JournalPage() {
 
   const [showPlayer, setShowPlayer] = useState(false);
   const [postSaveEntry, setPostSaveEntry] = useState<JournalEntryRow | null>(null);
+
+  // Inline write state (for the Write tab textarea)
+  const [inlineText, setInlineText] = useState("");
+  const [inlineSaving, setInlineSaving] = useState(false);
+  const [inlineSaved, setInlineSaved] = useState(false);
 
   const MYTH_PROMPTS_COUNT = 25;
   useEffect(() => {
@@ -420,31 +304,35 @@ export default function JournalPage() {
     setCurrentMood(null);
   };
 
+  // Inline save for the Write tab textarea
+  const handleInlineSave = async () => {
+    if (!inlineText.trim() || inlineSaving) return;
+    setInlineSaving(true);
+    const wordCount = inlineText.split(/\s+/).filter(Boolean).length;
+    const saved = await saveEntry({
+      content: inlineText,
+      word_count: wordCount,
+      entry_type: "standard",
+      mood: currentMood || undefined,
+      cycle_phase: currentPhase,
+      cycle_day: currentCycleDay,
+      cycle_mode: "cycling",
+      stoic_seq_day: reading?.seq_day,
+      stoic_title: reading?.title,
+    });
+
+    if (saved) {
+      setPostSaveEntry(saved);
+      setInlineSaved(true);
+      setTimeout(() => setInlineSaved(false), 3000);
+    }
+    setInlineSaving(false);
+    setInlineText("");
+  };
+
   const handleLensGenerated = (lens: StoicLens) => {
     if (selectedEntry) updateStoicLens(selectedEntry.id, lens);
     if (postSaveEntry) updateStoicLens(postSaveEntry.id, lens);
-  };
-
-  const filteredEntries = useMemo(() => {
-    let list = entries;
-    if (filterStoic) list = list.filter((e) => e.stoic_lens);
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter((e) =>
-        (e.content || "").toLowerCase().includes(q) ||
-        (e.title || "").toLowerCase().includes(q)
-      );
-    }
-    return list;
-  }, [entries, filterStoic, searchQuery]);
-
-  const handleHeatMapTap = (date: string, entry?: JournalEntryRow) => {
-    if (entry) {
-      setSelectedEntry(entry);
-      setView("detail");
-    } else {
-      handleWrite();
-    }
   };
 
   const handleSaveToVault = useCallback(async (entry: JournalEntry) => {
@@ -455,14 +343,35 @@ export default function JournalPage() {
     await journalSync.updateEntry({ ...entry, savedToVault: true });
   }, [journalSync]);
 
-  const handlePinToDreamStudio = useCallback(async (entry: JournalEntry) => {
-    haptic("medium");
-    const content = Object.values(entry.prompts).filter(Boolean)[0] || entry.title || "";
-    const el: DreamElement = { id: `pin-${Date.now()}`, type: "text", content: content.slice(0, 200), x: Math.random() * 400 + 100, y: Math.random() * 300 + 100, width: 240, height: 140, zIndex: 0, linkedEntryId: entry.id };
-    const board = loadDreamBoard();
-    saveDreamBoard([...board, el]);
-    await journalSync.updateEntry({ ...entry, pinnedToDreamStudio: true });
-  }, [journalSync]);
+  const MYTH_PROMPTS = [
+    "What stories have you been telling yourself about who you are?",
+    "What would be possible if you rewrote your most limiting belief?",
+    "Where in your life are you refusing the call to adventure?",
+    "What part of yourself have you been hiding from the world?",
+    "Who have been the mentors in your life, and what wisdom did they offer?",
+    "What fears are you carrying that no longer serve you?",
+    "What does your inner hero look like when you let them speak?",
+    "What moment in your life marked a crossing of the threshold?",
+    "What would it mean to yield to what life is asking of you right now?",
+    "What shadow are you avoiding that might hold your greatest gift?",
+    "When did your plans fall apart — and what grew from the wreckage?",
+    "What does the unknown feel like in your body right now?",
+    "What belief did you inherit that you're ready to let go of?",
+    "What is your personal myth — the story you tell about who you are?",
+    "What challenge transformed you into who you are becoming?",
+    "What would your life look like if you trusted the process?",
+    "What are you being called toward that you keep resisting?",
+    "What does it mean to come home to yourself?",
+    "What old identity are you clinging to that no longer fits?",
+    "What would your most authentic self do differently today?",
+    "What have you been afraid to face with compassion?",
+    "What new chapter are you ready to begin writing?",
+    "How might your greatest wound become your greatest teacher?",
+    "What does courage look like for you in this season of life?",
+    "What would happen if you let go of needing to know the outcome?",
+  ];
+
+  const inlineWordCount = inlineText.split(/\s+/).filter(Boolean).length;
 
   return (
     <GatedFeature featureKey="journal_write">
@@ -506,90 +415,94 @@ export default function JournalPage() {
             >
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
-                <div className="space-y-8 md:space-y-10">
+                <div className="space-y-6 md:space-y-8">
 
-                  {/* Write button */}
-                  <button
-                    onClick={handleWrite}
-                    className="touch-btn w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-4 font-display text-base italic text-primary-foreground active:scale-[0.97]"
-                  >
-                    <Plus className="h-4 w-4" /> Start writing
-                  </button>
+                  {/* Rotating prompt */}
+                  <div className="text-center px-4 min-h-[60px] flex items-center justify-center">
+                    <AnimatePresence mode="wait">
+                      <motion.p
+                        key={promptIdx}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.4 }}
+                        className="font-display italic leading-relaxed"
+                        style={{ fontSize: 'var(--quote-size)', color: 'hsl(var(--muted-foreground))' }}
+                      >
+                        "{MYTH_PROMPTS[promptIdx]}"
+                      </motion.p>
+                    </AnimatePresence>
+                  </div>
 
-                  {/* Daily prompt + stats strip */}
-                  {(() => {
-                    const MYTH_PROMPTS = [
-                      "What stories have you been telling yourself about who you are?",
-                      "What would be possible if you rewrote your most limiting belief?",
-                      "Where in your life are you refusing the call to adventure?",
-                      "What part of yourself have you been hiding from the world?",
-                      "Who have been the mentors in your life, and what wisdom did they offer?",
-                      "What fears are you carrying that no longer serve you?",
-                      "What does your inner hero look like when you let them speak?",
-                      "What moment in your life marked a crossing of the threshold?",
-                      "What would it mean to yield to what life is asking of you right now?",
-                      "What shadow are you avoiding that might hold your greatest gift?",
-                      "When did your plans fall apart — and what grew from the wreckage?",
-                      "What does the unknown feel like in your body right now?",
-                      "What belief did you inherit that you're ready to let go of?",
-                      "What is your personal myth — the story you tell about who you are?",
-                      "What challenge transformed you into who you are becoming?",
-                      "What would your life look like if you trusted the process?",
-                      "What are you being called toward that you keep resisting?",
-                      "What does it mean to come home to yourself?",
-                      "What old identity are you clinging to that no longer fits?",
-                      "What would your most authentic self do differently today?",
-                      "What have you been afraid to face with compassion?",
-                      "What new chapter are you ready to begin writing?",
-                      "How might your greatest wound become your greatest teacher?",
-                      "What does courage look like for you in this season of life?",
-                      "What would happen if you let go of needing to know the outcome?",
-                    ];
+                  {/* Inline journal textarea + save */}
+                  <div className="card-warm p-4 space-y-3">
+                    <textarea
+                      value={inlineText}
+                      onChange={(e) => setInlineText(e.target.value)}
+                      placeholder={getPlaceholder(currentPhase, currentMood)}
+                      rows={5}
+                      className="w-full resize-none bg-transparent font-hand text-lg text-foreground leading-relaxed placeholder:text-muted-foreground/30 focus:outline-none"
+                      style={{ caretColor: "hsl(14, 100%, 64%)", fontSize: "18px" }}
+                    />
+                    <div className="flex items-center justify-between">
+                      <span className="font-body text-xs text-muted-foreground">{inlineWordCount} words</span>
+                      <button
+                        onClick={handleInlineSave}
+                        disabled={!inlineText.trim() || inlineSaving}
+                        className="touch-btn rounded-xl bg-primary px-5 py-2.5 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {inlineSaved ? <Check className="h-4 w-4" /> : null}
+                        {inlineSaving ? "Saving…" : inlineSaved ? "Saved" : "Save entry"}
+                      </button>
+                    </div>
+                  </div>
 
-
-                    const prompt = MYTH_PROMPTS[promptIdx];
-                    const now = new Date();
-                    const weekStart = new Date(now);
-                    weekStart.setDate(now.getDate() - now.getDay());
-                    const weekStartStr = weekStart.toISOString().split("T")[0];
-                    const thisWeekCount = entries.filter(e => e.date >= weekStartStr).length;
-                    const totalCount = entries.length;
-
-                    return (
-                      <div className="pt-4 space-y-4">
-                        <div className="text-center px-4 min-h-[60px] flex items-center justify-center">
-                          <AnimatePresence mode="wait">
-                            <motion.p
-                              key={promptIdx}
-                              initial={{ opacity: 0, y: 8 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -8 }}
-                              transition={{ duration: 0.4 }}
-                              className="font-display italic leading-relaxed"
-                              style={{ fontSize: 'var(--quote-size)', color: 'hsl(var(--muted-foreground))' }}
-                            >
-                              "{prompt}"
-                            </motion.p>
-                          </AnimatePresence>
-                        </div>
-
-                        {/* Stats strip */}
-                        <div className="flex items-center justify-center gap-1.5">
-                          <span className="font-body" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
-                            {thisWeekCount} {thisWeekCount === 1 ? "entry" : "entries"} this week
-                          </span>
-                          <span style={{ color: 'hsl(var(--label-color))', fontSize: 'var(--label-size)' }}>·</span>
-                          <span className="font-body" style={{ fontSize: 'var(--label-size)', letterSpacing: 'var(--label-tracking)', color: 'hsl(var(--label-color))' }}>
-                            {totalCount} total
-                          </span>
-                        </div>
+                  {/* ── Daily Philosophy ── */}
+                  {reading && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="h-4 w-4 text-primary" />
+                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Today's Philosophy · Day {currentDay}</span>
                       </div>
-                    );
-                  })()}
 
-                  {/* Post-save Stoic Lens prompt */}
-                  {postSaveEntry && !postSaveEntry.stoic_lens && postSaveEntry.stoic_seq_day && (
-                    <div className="mb-4">
+                      <div className="rounded-2xl border border-primary/15 bg-primary/[0.03] p-5 space-y-3">
+                        <h3 className="font-display text-xl italic text-foreground leading-snug">"{reading.title}"</h3>
+                        <blockquote className="font-editorial text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
+                          "{reading.quote}"
+                        </blockquote>
+                        <p className="font-body text-[11px] text-muted-foreground">— {reading.source}</p>
+                        <p className="font-body text-sm text-foreground/80 leading-relaxed">{reading.reflection}</p>
+
+                        {reading.journal_prompt && (
+                          <p className="font-hand text-sm text-primary/80 pt-2 border-t border-border/30">
+                            {reading.journal_prompt}
+                          </p>
+                        )}
+
+                        {/* Listen button */}
+                        <button
+                          onClick={handleListen}
+                          className="flex items-center gap-2 rounded-xl bg-secondary/60 px-4 py-2.5 font-display text-sm italic text-foreground hover:bg-secondary transition-colors w-full justify-center"
+                        >
+                          ▶ Listen to today's reading
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── AI Metaphor CTA ── */}
+                  {postSaveEntry && !postSaveEntry.stoic_lens && postSaveEntry.stoic_seq_day && reading && (
+                    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 p-5 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Ancestral Reflection</span>
+                      </div>
+                      <p className="font-display text-base italic text-foreground leading-relaxed">
+                        Curious to see how your journal relates to the wisdom of our ancestors?
+                      </p>
+                      <p className="font-body text-xs text-muted-foreground leading-relaxed">
+                        We'll weave a metaphor connecting your words to the philosophy above — drawing from the Dao, ancient fables, and timeless wisdom traditions.
+                      </p>
                       <StoicLensDisplay
                         entryId={postSaveEntry.id}
                         entryContent={postSaveEntry.content || ""}
@@ -604,55 +517,23 @@ export default function JournalPage() {
                       />
                     </div>
                   )}
-                </div>
-              )}
 
-              {/* ═══ ENTRIES TAB ═══ */}
-              {tab === "entries" && view === "list" && (
-                <div className="space-y-8 md:space-y-10">
-                  {/* Search */}
-                  <div className="flex gap-3">
-                    <div className="flex-1 relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <input
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search entries..."
-                        className="w-full rounded-xl border border-border bg-background pl-9 pr-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      />
+                  {/* Show existing lens if already generated */}
+                  {postSaveEntry && postSaveEntry.stoic_lens && (
+                    <div className="rounded-2xl border border-primary/15 bg-primary/[0.03] p-5 space-y-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Your Reflection</span>
+                      </div>
+                      <p className="font-display text-sm italic text-foreground/80 leading-relaxed">{postSaveEntry.stoic_lens.bridge_metaphor}</p>
+                      <p className="font-body text-xs text-muted-foreground italic">{postSaveEntry.stoic_lens.stoic_principle}</p>
+                      <p className="font-hand text-sm text-primary">{postSaveEntry.stoic_lens.carry_forward}</p>
                     </div>
-                  </div>
-
-                  <button
-                    onClick={() => setFilterStoic(!filterStoic)}
-                    className={`rounded-full px-3 py-1.5 font-body text-[11px] transition-colors ${
-                      filterStoic ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground"
-                    }`}
-                  >
-                    With Stoic reflection
-                  </button>
-
-                  {filteredEntries.length > 0 ? (
-                    <div className="space-y-3">
-                      {filteredEntries.map((entry) => (
-                        <StoicEntryCard
-                          key={entry.id}
-                          entry={entry}
-                          onClick={() => { setSelectedEntry(entry); setView("detail"); }}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <JournalEntries
-                      onSaveToVault={handleSaveToVault}
-                      onPinToDreamStudio={handlePinToDreamStudio}
-                      journalSync={journalSync}
-                    />
                   )}
                 </div>
               )}
 
-              {/* ═══ MEMORIES TAB ═══ */}
+              {/* ═══ MEMORY VAULT TAB ═══ */}
               {tab === "insights" && (
                 <div className="space-y-6">
                   <JournalInsights entries={entries} />
@@ -672,7 +553,7 @@ export default function JournalPage() {
               )}
 
               {/* Entry detail */}
-              {(tab === "write" || tab === "entries") && view === "detail" && selectedEntry && (
+              {tab === "write" && view === "detail" && selectedEntry && (
                 <EntryDetailView
                   entry={selectedEntry}
                   onBack={() => { setView("list"); setSelectedEntry(null); }}
@@ -714,7 +595,7 @@ export default function JournalPage() {
           )}
         </AnimatePresence>
 
-        {/* Stoic TTS Player */}
+        {/* TTS Player */}
         {showPlayer && reading && (
           <StoicAudioPlayer title={reading.title} text={buildStoicReadingText(reading)} onClose={() => setShowPlayer(false)} />
         )}

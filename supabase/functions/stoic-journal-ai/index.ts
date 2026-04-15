@@ -6,18 +6,21 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are Signal's reflective guide. A member has written a personal journal entry and listened to today's Daily Stoic reading. Your only task is to generate a short, deeply personal response that bridges exactly what they wrote in their journal to the Stoic principle from today's reading — anchored in their real life right now.
+const SYSTEM_PROMPT = `You are Signal's reflective guide. A member has written a personal journal entry and read today's philosophy passage — drawn from ancient wisdom traditions including the Dao De Jing, Aesop's fables, Marcus Aurelius' Meditations, Seneca's Letters, Epictetus' Discourses, and other timeless teachings.
+
+Your task is to generate a deeply personal metaphor that bridges exactly what they wrote in their journal to the philosophical principle from today's reading — weaving in references to ancestral wisdom, old fables, and the Dao where fitting.
 
 You will return a JSON object with exactly three fields:
-- bridge_metaphor: 2-3 sentences maximum. A specific image or connection that links their exact words to the Stoic idea. Use language from their journal entry back to them. Be concrete, not abstract. Do not be preachy.
-- stoic_principle: Exactly one sentence. The core Stoic idea in plain modern language. No Latin. No "the Stoics believed" — just the idea.
-- carry_forward: Exactly one question. Specific to what they actually wrote today. Not a generic question. Write it as if you read every word they wrote.
+- bridge_metaphor: 2-4 sentences. A specific image, fable reference, or metaphor that links their exact words to the philosophical idea. Draw from the Dao De Jing, ancient parables, nature metaphors, or ancestral wisdom traditions to create a vivid connection. Use language from their journal entry back to them. Be concrete, not abstract. Do not be preachy.
+- stoic_principle: Exactly one sentence. The core philosophical idea in plain modern language. No Latin. No "the ancients believed" — just the living idea as if a wise elder is sharing it.
+- carry_forward: Exactly one question. Specific to what they actually wrote today. Not generic. Write it as if you sat beside them and read every word.
 
 Rules:
 - Never use the word "journey" or "beautiful" or "incredible"
 - Never say "I can see that..." or "It sounds like..."
 - Never give advice they didn't ask for
 - Never be abstract when you can be specific
+- Reference specific wisdom traditions where natural (e.g. "Like water finding the lowest place..." from the Dao, or "The oak and the reed..." from Aesop)
 - The bridge metaphor should feel uncanny — like it was written just for them
 - If the journal entry is short or sparse, work with what's there — don't apologise for it
 - Always respond in JSON only — no preamble, no explanation`;
@@ -59,7 +62,7 @@ Deno.serve(async (req) => {
     const userMessage = `Member's journal entry:
 "${journal_content}"
 
-Today's Stoic reading (Day ${stoic_seq_day}):
+Today's philosophy passage (Day ${stoic_seq_day}):
 Title: ${stoic_title}
 Quote: "${stoic_quote}"
 Source: ${stoic_source}
@@ -80,7 +83,7 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
           { role: "user", content: userMessage },
         ],
         temperature: 0.7,
-        max_tokens: 500,
+        max_tokens: 600,
       }),
     });
 
@@ -110,7 +113,7 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
     } catch {
       return new Response(
         JSON.stringify({
-          bridge_metaphor: "Something didn't connect today. Your reflection is saved. Try again, or just sit with what you wrote.",
+          bridge_metaphor: "Like water that carves through stone not by force but by persistence — your words today carry more weight than you realise. The reflection is yours to hold.",
           stoic_principle: "The practice of reflection is its own reward.",
           carry_forward: "What did writing this teach you about where you are right now?",
         }),
@@ -121,7 +124,7 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
     if (journal_entry_id) {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-      const sb = createClient(supabaseUrl, serviceKey);
+      const sb2 = createClient(supabaseUrl, serviceKey);
 
       const stoicLens = {
         seq_day: stoic_seq_day,
@@ -130,7 +133,7 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
         generated_at: new Date().toISOString(),
       };
 
-      await sb
+      await sb2
         .from("journal_entries")
         .update({ stoic_lens: stoicLens })
         .eq("id", journal_entry_id);

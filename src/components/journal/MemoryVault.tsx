@@ -6,6 +6,7 @@ import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
 
 const VAULT_CATEGORIES = [
+  { key: "journal-entries", label: "Journal Entries", desc: "Your saved journal reflections", color: "#5C4A9E", icon: BookOpen },
   { key: "funny-moments", label: "Funny Moments", desc: "The things that made you laugh out loud", color: "#C4876B", icon: Smile },
   { key: "tiny-wins", label: "Tiny Wins", desc: "Small victories that deserve to be remembered", color: "#D4A84B", icon: Star },
   { key: "firsts", label: "Firsts", desc: "The first time you did something brave or new", color: "#7F5B87", icon: Zap },
