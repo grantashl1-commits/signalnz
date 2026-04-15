@@ -14,11 +14,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Montserrat", "sans-serif"],
-        body: ["Montserrat", "Lato", "sans-serif"],
+        display: ["Reddit Sans", "sans-serif"],
+        body: ["Reddit Sans", "sans-serif"],
         editorial: ["Cormorant Garamond", "serif"],
         hand: ["Caveat", "cursive"],
-        mono: ["Montserrat", "Lato", "sans-serif"],
+        mono: ["Reddit Sans", "monospace"],
       },
       fontSize: {
         "display-xl": ["3.5rem", { lineHeight: "1.1", fontWeight: "800", letterSpacing: "-0.02em" }],
