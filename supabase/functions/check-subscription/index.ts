@@ -80,7 +80,7 @@ serve(async (req) => {
     const giftExpiresAt = activeGift?.expires_at ?? null;
 
     if (customers.data.length === 0) {
-      return new Response(JSON.stringify({ subscribed: false, one_off_purchases: oneOffKeys, one_off_details: oneOffDetails }), {
+      return new Response(JSON.stringify({ subscribed: false, one_off_purchases: oneOffKeys, one_off_details: oneOffDetails, gift_tier: giftTier, gift_expires_at: giftExpiresAt }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -115,6 +115,7 @@ serve(async (req) => {
       product_id: productId,
       subscription_end: subscriptionEnd,
       one_off_purchases: oneOffKeys, one_off_details: oneOffDetails,
+      gift_tier: giftTier, gift_expires_at: giftExpiresAt,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
