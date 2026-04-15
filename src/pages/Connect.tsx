@@ -25,8 +25,9 @@ function hashPin(pin: string): string {
 export default function Connect() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [view, setView] = useState<ConnectView>("intro");
-  const [joinCode, setJoinCode] = useState("");
+  const { code: urlCode } = useParams<{ code?: string }>();
+  const [view, setView] = useState<ConnectView>(urlCode ? "join" : "intro");
+  const [joinCode, setJoinCode] = useState(urlCode?.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6) || "");
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [pin, setPin] = useState(["", "", "", ""]);
