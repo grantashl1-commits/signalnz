@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
-import { findKidsRecipe, type KidsRecipe } from "@/data/kids-recipes";
+import { findKidsRecipe, type KidsRecipe, type KidsMealType } from "@/data/kids-recipes";
 import { getKidAlternative } from "@/data/kids-alternatives";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -13,20 +13,23 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-interface KidsDinnerAltProps {
-  dinnerName: string;
+interface KidsMealAltProps {
+  /** The adult meal name to find alternatives for */
+  mealName: string;
+  /** Which meal slot this is — breakfast, lunch, or dinner */
+  mealType?: KidsMealType;
   phase: Phase;
 }
 
-export default function KidsDinnerAlt({ dinnerName, phase }: KidsDinnerAltProps) {
+export default function KidsDinnerAlt({ mealName, mealType = "dinner", phase }: KidsMealAltProps) {
   const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const phaseColor = PHASE_HEX[phase];
 
-  // Find 2 protein-matched kids recipes
-  const option1 = findKidsRecipe(dinnerName, "dinner", [], "", [], 0);
-  const option2 = findKidsRecipe(dinnerName, "dinner", [], "", option1 ? [option1.id] : [], 1);
-  const fallbackTip = getKidAlternative(dinnerName);
+  // Find 2 protein-matched kids recipes for the correct meal type
+  const option1 = findKidsRecipe(mealName, mealType, [], "", [], 0);
+  const option2 = findKidsRecipe(mealName, mealType, [], "", option1 ? [option1.id] : [], 1);
+  const fallbackTip = getKidAlternative(mealName);
 
   const hasOptions = option1 || option2;
 
@@ -57,7 +60,7 @@ export default function KidsDinnerAlt({ dinnerName, phase }: KidsDinnerAltProps)
               {hasOptions ? (
                 <>
                   <p className="font-body text-[10px] text-muted-foreground italic">
-                    Let them choose — two protein-matched options:
+                    Let them choose — two {mealType === "breakfast" ? "brekkie" : mealType} options with the same protein:
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {[option1, option2].filter(Boolean).map((opt) => {
@@ -83,6 +86,16 @@ export default function KidsDinnerAlt({ dinnerName, phase }: KidsDinnerAltProps)
                           <p className="font-body text-[10px] text-muted-foreground mt-1">
                             {recipe.prepTime} · {recipe.serves} serves
                           </p>
+                          {/* Dietary tags */}
+                          {recipe.tags.filter(t => t.endsWith("-free") || t === "vegetarian" || t === "vegan" || t === "keto").length > 0 && (
+                            <div className="flex flex-wrap gap-0.5 mt-1">
+                              {recipe.tags.filter(t => t.endsWith("-free") || t === "vegetarian" || t === "vegan" || t === "keto").map(tag => (
+                                <span key={tag} className="font-body text-[8px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                           {isSelected && (
                             <motion.div
                               initial={{ opacity: 0 }}
@@ -91,10 +104,22 @@ export default function KidsDinnerAlt({ dinnerName, phase }: KidsDinnerAltProps)
                             >
                               <p className="font-body text-[10px] text-muted-foreground mb-1 font-medium">Ingredients:</p>
                               <ul className="space-y-0.5">
-                              {recipe.ingredients.map((ing, i) => (
+                                {recipe.ingredients.map((ing, i) => (
                                   <li key={i} className="font-body text-[9px] text-muted-foreground">• {ing}</li>
                                 ))}
                               </ul>
+                              {recipe.method.length > 0 && (
+                                <>
+                                  <p className="font-body text-[10px] text-muted-foreground mb-1 mt-2 font-medium">Method:</p>
+                                  <ol className="space-y-0.5">
+                                    {recipe.method.map((step, i) => (
+                                      <li key={i} className="font-body text-[9px] text-muted-foreground">
+                                        {i + 1}. {step}
+                                      </li>
+                                    ))}
+                                  </ol>
+                                </>
+                              )}
                             </motion.div>
                           )}
                         </button>
