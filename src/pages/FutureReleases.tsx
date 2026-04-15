@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Target, TrendingUp, Globe, Users, DollarSign, Calendar,
@@ -6,6 +7,8 @@ import {
   Rocket, Building2, Megaphone, Handshake, BarChart3, MapPin
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
 
 /* ────────────────────────── CONSTANTS ────────────────────────── */
 
