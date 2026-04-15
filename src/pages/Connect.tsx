@@ -272,6 +272,9 @@ export default function Connect() {
   };
 
 
+  // Auto-advance to PIN entry when partner arrives via URL link with valid code
+  const initialViewForPartner = urlCode && urlCode.length === 6 ? "partner-pin" : view;
+
   // ═══ PARTNER ENTRY (no account needed) ═══
   if (!user) {
     return (
