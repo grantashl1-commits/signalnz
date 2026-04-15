@@ -93,8 +93,11 @@ const TIERS = [
         features: [
           "5 knowledge posts per day",
           "Full cycle logging & phase guidance",
+          "Hormone Education Hub",
+          "Seed cycling & irregular period support",
+          "Perimenopause mode",
           "AI Signal, AMA & Give",
-          "Daily philosophical readings",
+          "Daily philosophical readings & journal prompts",
           "Save to Knowledge Hub",
         ],
       },
@@ -118,14 +121,40 @@ const TIERS = [
         features: [],
       },
       {
-        title: "Unlocked",
+        title: "Nutrition",
         features: [
           "Full recipes, meal plans & shopping list",
-          "AI training plans & workout sessions",
           "Fridge-to-recipe & plant tracker",
+          "Meal prep guide & kids recipes",
+          "Supplement recommender",
+          "AI-generated recipes",
+        ],
+      },
+      {
+        title: "Movement",
+        features: [
+          "AI training plans & workout sessions",
+          "Body visualiser & heart rate monitor",
+        ],
+      },
+      {
+        title: "Mind & Body",
+        features: [
           "Journal with AI insights & Dream Studio",
-          "Breathwork & nervous system players",
-          "Body visualiser",
+          "Gratitude & one-line journal",
+          "Breathwork & somatic exercises",
+          "Fascia release player",
+          "Dosha quiz",
+        ],
+      },
+      {
+        title: "Connect (Couples)",
+        features: [
+          "AI reflection room & shared space",
+          "13-module couples course",
+          "AI relationship coach",
+          "Appreciation messages & weekly check-in",
+          "Attachment & love language quizzes",
         ],
       },
     ],
@@ -148,10 +177,22 @@ const TIERS = [
         features: [],
       },
       {
-        title: "Unlocked",
+        title: "Community",
         features: [
           "Community groups, chat & challenges",
           "Nearby members map",
+        ],
+      },
+      {
+        title: "Parenting",
+        features: [
+          "Parenting course & age-based guides",
+          "Baby sleep schedule",
+        ],
+      },
+      {
+        title: "Wellness",
+        features: [
           "Full mindfulness with audio",
           "Sleep tracking",
           "Personalised recommendations",
