@@ -176,7 +176,7 @@ export default function MealPrepGuide({ plan, weekNumber, weekDates, phase, onBa
                     </div>
                     <div className="space-y-0.5">
                       {day.tasks.slice(0, expanded ? undefined : 3).map(task => {
-                        const Icon = CATEGORY_ICON[task.category] || Clock;
+                        const Icon = CATEGORY_ICON[task.category] || GeneralPrepIcon;
                         return (
                           <p key={task.id} className="font-body text-xs text-muted-foreground flex items-center gap-1.5">
                             <Icon className="h-3 w-3 flex-shrink-0" style={{ color: phaseColor }} />
@@ -221,7 +221,7 @@ export default function MealPrepGuide({ plan, weekNumber, weekDates, phase, onBa
                       )}
 
                       {day.tasks.map(task => {
-                        const Icon = CATEGORY_ICON[task.category] || Clock;
+                        const Icon = CATEGORY_ICON[task.category] || GeneralPrepIcon;
                         const isAdded = addedTasks.has(task.id);
 
                         return (
