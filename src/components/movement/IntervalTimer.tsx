@@ -75,6 +75,9 @@ export function parseTimeFromReps(reps: string | null): number | null {
 }
 
 export function isTimeBased(reps: string | null): boolean {
+  if (!reps) return false;
+  // Also detect compound patterns like "60s run then 90s walk"
+  if (/\d+\s*(s|sec|min)\s+\w+\s+then\s+\d+\s*(s|sec|min)/i.test(reps)) return true;
   return parseTimeFromReps(reps) !== null;
 }
 
@@ -100,6 +103,36 @@ export function buildIntervalsForExercise(
   sets: number | null,
   restSeconds: number | null,
 ): TimerInterval[] {
+  if (!reps) return [];
+
+  // Handle compound interval patterns like "60s run then 90s walk" or "3 min run then 90s walk"
+  const compoundMatch = reps.match(/(\d+)\s*(s|sec|min)\s+\w+\s+then\s+(\d+)\s*(s|sec|min)\s+\w+/i);
+  if (compoundMatch) {
+    const workVal = parseInt(compoundMatch[1]);
+    const workUnit = compoundMatch[2].toLowerCase();
+    const restVal = parseInt(compoundMatch[3]);
+    const restUnit = compoundMatch[4].toLowerCase();
+    const workSec = workUnit.startsWith("min") ? workVal * 60 : workVal;
+    const restSec = restUnit.startsWith("min") ? restVal * 60 : restVal;
+    const totalSets = sets || 1;
+    const intervals: TimerInterval[] = [];
+
+    for (let i = 0; i < totalSets; i++) {
+      intervals.push({
+        label: totalSets > 1 ? `Work (${i + 1}/${totalSets})` : "Work",
+        durationSec: workSec,
+        type: "work",
+      });
+      // Always add the rest/recovery interval (it's part of the compound pattern)
+      intervals.push({
+        label: totalSets > 1 ? `Recovery (${i + 1}/${totalSets})` : "Recovery",
+        durationSec: restSec,
+        type: "rest",
+      });
+    }
+    return intervals;
+  }
+
   const workSec = parseTimeFromReps(reps);
   if (!workSec) return [];
 

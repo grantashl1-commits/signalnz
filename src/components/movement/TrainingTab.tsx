@@ -71,6 +71,14 @@ export default function TrainingTab() {
 
   const handleSelectGoal = async (goalId: string) => {
     haptic("medium");
+    // Clear any cached AI training plan so user starts fresh
+    localStorage.removeItem("signal_ai_workout_plan");
+    localStorage.removeItem("signal_ai_active_session");
+    // Reset UI state to beginning
+    setSelectedPhaseIdx(0);
+    setWorkouts([]);
+    setActiveWorkout(null);
+    setActiveExercises([]);
     await selectGoal(goalId);
     // View will update via the effect above when program loads
   };
