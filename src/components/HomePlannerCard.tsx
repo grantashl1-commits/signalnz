@@ -450,31 +450,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
             </div>
           );
         })}
-      </div>
-      <DottedLine />
-
-      {/* Intention + Mantra */}
-      <div>
-        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Weekly Intention</p>
-        <input
-          type="text"
-          value={intention}
-          onChange={(e) => setIntention(e.target.value)}
-          placeholder="What am I focusing on?"
-          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
-        />
-      </div>
-      <div>
-        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Goal or Mantra</p>
-        <input
-          type="text"
-          value={mantra}
-          onChange={(e) => setMantra(e.target.value)}
-          placeholder="I am becoming..."
-          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
-        />
-      </div>
-
       <DottedLine />
 
       {/* Imported calendar events (read-only) */}
