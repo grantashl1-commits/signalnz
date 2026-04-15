@@ -346,7 +346,7 @@ function AIRecipeCard({ recipe, phaseColor }: { recipe: AIGeneratedRecipe; phase
                   <ol className="space-y-1">
                     {recipe.method.map((step, idx) => (
                       <li key={idx} className="font-body text-xs text-muted-foreground">
-                        <span className="font-semibold text-foreground">{idx + 1}.</span> {step}
+                        <span className="font-semibold text-foreground">{idx + 1}.</span> {step.replace(/^\d+[\.\)]\s*/, "")}
                       </li>
                     ))}
                   </ol>
