@@ -38,29 +38,6 @@ function DottedLine({ className = "" }: { className?: string }) {
   return <div className={`border-b border-dotted border-foreground/10 ${className}`} />;
 }
 
-function useWeeklyIntention() {
-  const weekKey = format(new Date(), "yyyy-'W'II");
-  const [intention, setIntention] = useState(() =>
-    localStorage.getItem(`signal_intention_${weekKey}`) || ""
-  );
-  const save = useCallback((val: string) => {
-    setIntention(val);
-    localStorage.setItem(`signal_intention_${weekKey}`, val);
-  }, [weekKey]);
-  return { intention, setIntention: save };
-}
-
-function useWeeklyMantra() {
-  const weekKey = format(new Date(), "yyyy-'W'II");
-  const [mantra, setMantra] = useState(() =>
-    localStorage.getItem(`signal_mantra_${weekKey}`) || ""
-  );
-  const save = useCallback((val: string) => {
-    setMantra(val);
-    localStorage.setItem(`signal_mantra_${weekKey}`, val);
-  }, [weekKey]);
-  return { mantra, setMantra: save };
-}
 
 /* ── TODAY Page — Focus + To-Do ── */
 function TodayPage({ today }: { today: Date }) {
