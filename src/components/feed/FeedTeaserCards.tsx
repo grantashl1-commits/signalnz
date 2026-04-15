@@ -54,7 +54,7 @@ export default function FeedTeaserCards() {
               {post.title}
             </p>
             <p className="font-body text-sm text-foreground/70 line-clamp-3">
-              {post.description}
+              Discover insights drawn from leading wellness research and apply them to your daily rhythm.
             </p>
           </div>
 
