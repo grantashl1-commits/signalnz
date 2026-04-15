@@ -150,7 +150,7 @@ export default function Feed() {
             <Rss className="h-5 w-5 text-primary" />
           </div>
           <h1 className="font-display text-2xl md:text-3xl italic text-foreground">
-            Knowledge Incoming
+            Feed Your Mind
           </h1>
           <p className="font-body text-sm text-muted-foreground">
             {feedAccess === "full"
