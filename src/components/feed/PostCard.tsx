@@ -110,14 +110,19 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-card text-card-foreground border-0"
+      className="relative bg-card text-card-foreground border-0 overflow-hidden"
       style={{ borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-soft)" }}
     >
-      <div className="p-5 space-y-3">
-        {/* Book source */}
+      {/* Journal-style ruled lines background */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+        backgroundImage: `repeating-linear-gradient(transparent, transparent 27px, hsl(var(--foreground)) 28px)`,
+      }} />
+
+      <div className="relative p-5 space-y-3">
+        {/* Book source — hand-drawn style */}
         <div className="flex items-center gap-2 text-muted-foreground">
           <BookOpen className="h-3.5 w-3.5 flex-shrink-0" />
-          <span className="font-body text-[11px] tracking-wide uppercase leading-snug">
+          <span className="font-hand text-[11px] tracking-wide uppercase leading-snug">
             {post.book_title_author}
           </span>
         </div>
@@ -136,7 +141,7 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
           </div>
         )}
 
-        {/* Post body */}
+        {/* Post body — keep readable with body font */}
         <div className="font-body text-sm leading-relaxed text-foreground/90">
           {renderMarkdownLite(displayText)}
         </div>
@@ -144,14 +149,15 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
         {shouldTruncate && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="font-body text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+            className="font-hand text-xs font-medium text-primary hover:text-primary/80 transition-colors"
           >
             {expanded ? "Show less" : "Read more"}
           </button>
         )}
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 pt-1 border-t border-border/30">
+        {/* Actions — dotted divider */}
+        <div className="border-t border-dotted border-foreground/10" />
+        <div className="flex items-center gap-1">
           <button
             onClick={handleLike}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all min-h-[40px] ${

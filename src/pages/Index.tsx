@@ -317,9 +317,9 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.15)}>
             <div className="flex items-center gap-2 mb-2">
-              <Rss className="h-4 w-4 text-primary" />
-              <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
-                knowledge incoming
+              <Rss className="h-4 w-4 text-primary/60" />
+              <p className="font-hand text-[10px] uppercase tracking-wider" style={{ color: 'hsl(var(--label-color))' }}>
+                feed your mind
               </p>
             </div>
             {feedLoading ? (

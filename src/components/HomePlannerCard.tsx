@@ -38,29 +38,6 @@ function DottedLine({ className = "" }: { className?: string }) {
   return <div className={`border-b border-dotted border-foreground/10 ${className}`} />;
 }
 
-function useWeeklyIntention() {
-  const weekKey = format(new Date(), "yyyy-'W'II");
-  const [intention, setIntention] = useState(() =>
-    localStorage.getItem(`signal_intention_${weekKey}`) || ""
-  );
-  const save = useCallback((val: string) => {
-    setIntention(val);
-    localStorage.setItem(`signal_intention_${weekKey}`, val);
-  }, [weekKey]);
-  return { intention, setIntention: save };
-}
-
-function useWeeklyMantra() {
-  const weekKey = format(new Date(), "yyyy-'W'II");
-  const [mantra, setMantra] = useState(() =>
-    localStorage.getItem(`signal_mantra_${weekKey}`) || ""
-  );
-  const save = useCallback((val: string) => {
-    setMantra(val);
-    localStorage.setItem(`signal_mantra_${weekKey}`, val);
-  }, [weekKey]);
-  return { mantra, setMantra: save };
-}
 
 /* ── TODAY Page — Focus + To-Do ── */
 function TodayPage({ today }: { today: Date }) {
@@ -343,8 +320,8 @@ function useImportedCalendar(today: Date) {
   };
 }
 
-/* ── WEEK Page — Planner + Calendar Import ── */
-function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent, intention, setIntention, mantra, setMantra }: {
+/* ── WEEK Page — Calendar only ── */
+function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent }: {
   today: Date;
   events: ManualEvent[];
   showAddEvent: boolean;
@@ -355,10 +332,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
   setNewTitle: (v: string) => void;
   addEvent: () => void;
   removeEvent: (id: string) => void;
-  intention: string;
-  setIntention: (v: string) => void;
-  mantra: string;
-  setMantra: (v: string) => void;
 }) {
   const dayOfWeek = today.getDay();
   const [showCalendarOptions, setShowCalendarOptions] = useState(false);
@@ -455,30 +428,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
           );
         })}
       </div>
-      <DottedLine />
-
-      {/* Intention + Mantra */}
-      <div>
-        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Weekly Intention</p>
-        <input
-          type="text"
-          value={intention}
-          onChange={(e) => setIntention(e.target.value)}
-          placeholder="What am I focusing on?"
-          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
-        />
-      </div>
-      <div>
-        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Goal or Mantra</p>
-        <input
-          type="text"
-          value={mantra}
-          onChange={(e) => setMantra(e.target.value)}
-          placeholder="I am becoming..."
-          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
-        />
-      </div>
-
       <DottedLine />
 
       {/* Imported calendar events (read-only) */}
@@ -678,23 +627,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
         )}
       </AnimatePresence>
 
-      {/* Gratitude */}
-      <DottedLine />
-      <div>
-        <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1">✦ Gratitude</p>
-        <textarea
-          rows={2}
-          placeholder="I am grateful for..."
-          className="w-full bg-transparent font-hand text-[13px] text-foreground placeholder:text-muted-foreground/25 resize-none outline-none leading-relaxed"
-          onChange={(e) => {
-            const weekKey = format(today, "yyyy-'W'II");
-            localStorage.setItem(`signal_gratitude_${weekKey}`, e.target.value);
-          }}
-          defaultValue={(() => {
-            try { return localStorage.getItem(`signal_gratitude_${format(today, "yyyy-'W'II")}`) || ""; } catch { return ""; }
-          })()}
-        />
-      </div>
 
       <div className="flex justify-center pt-1">
         <img src={botanicalSprig} alt="" className="w-8 h-12 opacity-15" loading="lazy" />
@@ -706,8 +638,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
 export default function HomePlannerCard() {
   const today = new Date();
   const todayStr = format(today, "yyyy-MM-dd");
-  const { intention, setIntention } = useWeeklyIntention();
-  const { mantra, setMantra } = useWeeklyMantra();
   const [events, setEvents] = useState<ManualEvent[]>(() => loadEvents(todayStr));
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [newTime, setNewTime] = useState("09:00");
@@ -736,7 +666,6 @@ export default function HomePlannerCard() {
 
   const weekPageProps = {
     today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent,
-    intention, setIntention, mantra, setMantra,
   };
 
   return (
