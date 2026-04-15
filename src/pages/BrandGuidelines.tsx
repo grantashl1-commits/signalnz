@@ -19,6 +19,7 @@ import yocmIconV3 from "@/assets/logo-explorations/signal-icon-yocm-style-v3.png
 import yocmExactV1 from "@/assets/logo-explorations/signal-icon-yocm-exact-v1.png";
 import yocmExactV2 from "@/assets/logo-explorations/signal-icon-yocm-exact-v2.png";
 import yocmExactV3 from "@/assets/logo-explorations/signal-icon-yocm-exact-v3.png";
+import yocmWatercolour from "@/assets/logo-explorations/signal-icon-yocm-watercolour.png";
 
 /* ── brand tokens ── */
 const C = {
@@ -278,18 +279,18 @@ export default function BrandGuidelines() {
             unmistakably Signal. Paired with Reddit Sans "Signal" and a Caveat tagline underneath.
           </p>
 
-          {/* ── PROPOSED LOCKUP: Purple on Cream ── */}
+          {/* ── PROPOSED LOCKUP: Watercolour on Cream ── */}
           <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
             Primary — Purple on Cream
           </p>
           <div className="rounded-2xl p-8 md:p-12 mb-6" style={{ backgroundColor: C.warmIvory, border: `1px solid ${C.lavender}22` }}>
             <div className="flex items-center gap-5 md:gap-8">
-              <img src={dotsPurpleOnCream} alt="Signal dot circle icon" className="w-16 h-16 md:w-24 md:h-24 object-contain flex-shrink-0" />
-              <div className="flex flex-col">
-                <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(28px, 5vw, 48px)", color: C.brandPurple, letterSpacing: "0.06em", lineHeight: 1 }}>
+              <img src={yocmWatercolour} alt="Signal watercolour dot circle icon" className="w-20 h-20 md:w-28 md:h-28 object-contain flex-shrink-0" />
+              <div className="flex flex-col" style={{ minWidth: 0 }}>
+                <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 5vw, 56px)", color: C.brandPurple, letterSpacing: "0.08em", lineHeight: 1, textTransform: "uppercase" }}>
                   Signal
                 </span>
-                <span style={{ fontFamily: "'Caveat', cursive", fontWeight: 600, fontSize: "clamp(14px, 2.5vw, 20px)", color: C.lavender, marginTop: 2, alignSelf: "flex-end" }}>
+                <span style={{ fontFamily: "'Caveat', cursive", fontWeight: 600, fontSize: "clamp(15px, 2.5vw, 22px)", color: C.lavender, marginTop: 4, textAlign: "right" }}>
                   Tune into your inner self
                 </span>
               </div>
@@ -302,12 +303,12 @@ export default function BrandGuidelines() {
           </p>
           <div className="rounded-2xl p-8 md:p-12 mb-10" style={{ backgroundColor: C.brandPurple }}>
             <div className="flex items-center gap-5 md:gap-8">
-              <img src={dotsCreamOnPurple} alt="Signal dot circle icon inverse" className="w-16 h-16 md:w-24 md:h-24 object-contain flex-shrink-0" />
-              <div className="flex flex-col">
-                <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(28px, 5vw, 48px)", color: C.warmIvory, letterSpacing: "0.06em", lineHeight: 1 }}>
+              <img src={yocmWatercolour} alt="Signal watercolour dot circle icon inverse" className="w-20 h-20 md:w-28 md:h-28 object-contain flex-shrink-0 brightness-[1.8] contrast-[0.8]" />
+              <div className="flex flex-col" style={{ minWidth: 0 }}>
+                <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 5vw, 56px)", color: C.warmIvory, letterSpacing: "0.08em", lineHeight: 1, textTransform: "uppercase" }}>
                   Signal
                 </span>
-                <span style={{ fontFamily: "'Caveat', cursive", fontWeight: 600, fontSize: "clamp(14px, 2.5vw, 20px)", color: `${C.warmIvory}bb`, marginTop: 2, alignSelf: "flex-end" }}>
+                <span style={{ fontFamily: "'Caveat', cursive", fontWeight: 600, fontSize: "clamp(15px, 2.5vw, 22px)", color: `${C.warmIvory}bb`, marginTop: 4, textAlign: "right" }}>
                   Tune into your inner self
                 </span>
               </div>
@@ -321,16 +322,16 @@ export default function BrandGuidelines() {
           <div className="grid grid-cols-2 gap-4 md:gap-6 mb-10">
             <div className="flex flex-col gap-2">
               <div className="rounded-xl overflow-hidden flex items-center justify-center p-8 aspect-square" style={{ backgroundColor: C.warmIvory, border: `1px solid ${C.lavender}22` }}>
-                <img src={dotsPurpleOnCream} alt="Purple dots on cream" className="w-full h-full object-contain max-w-[200px]" loading="lazy" />
+                <img src={yocmWatercolour} alt="Watercolour icon on cream" className="w-full h-full object-contain max-w-[200px]" loading="lazy" />
               </div>
-              <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Purple on Cream</p>
+              <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Watercolour on Cream</p>
               <p style={{ fontWeight: 500, fontSize: 12, color: C.body }}>Primary icon for light backgrounds, loading states</p>
             </div>
             <div className="flex flex-col gap-2">
               <div className="rounded-xl overflow-hidden flex items-center justify-center p-8 aspect-square" style={{ backgroundColor: C.brandPurple }}>
-                <img src={dotsCreamOnPurple} alt="Cream dots on purple" className="w-full h-full object-contain max-w-[200px]" loading="lazy" />
+                <img src={yocmWatercolour} alt="Watercolour icon on purple" className="w-full h-full object-contain max-w-[200px] brightness-[1.8] contrast-[0.8]" loading="lazy" />
               </div>
-              <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Cream on Purple</p>
+              <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Watercolour on Purple</p>
               <p style={{ fontWeight: 500, fontSize: 12, color: C.body }}>Inverse icon for dark/purple backgrounds</p>
             </div>
           </div>
