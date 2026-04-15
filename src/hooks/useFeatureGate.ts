@@ -203,7 +203,3 @@ export function useFeatureGate() {
     getMinTierForFeature,
   };
 }
-    hasFeatureAccess,
-    getMinTierForFeature,
-  };
-}
