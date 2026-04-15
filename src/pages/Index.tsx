@@ -94,6 +94,77 @@ function isTodayPrepDay(mealPrepDay: string | null): boolean {
   return today.toLowerCase() === mealPrepDay.toLowerCase();
 }
 
+function PublicPreviewSection() {
+  const navigate = useNavigate();
+  const previewFeatures = [
+    { icon: Sparkles, label: "Daily AI Signal", desc: "Personalised daily wisdom based on your cycle phase" },
+    { icon: Utensils, label: "Nutrition & Meal Plans", desc: "Cycle-synced recipes, shopping lists & meal prep guides" },
+    { icon: Dumbbell, label: "Movement & Training", desc: "AI-generated workout plans for your goals and phase" },
+    { icon: Moon, label: "Mindfulness & Sleep", desc: "Guided breathwork, somatic exercises & sleep tools" },
+    { icon: Heart, label: "Connect (Couples)", desc: "AI reflection room, love language & attachment quizzes" },
+    { icon: Leaf, label: "Habit Tracking", desc: "Daily rituals, weekly goals & monthly habit streaks" },
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* Today's Focus preview */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+        className="card-warm p-5"
+      >
+        <p className="font-body text-section-label uppercase mb-2" style={{ color: 'hsl(var(--label-color))' }}>
+          your daily planner
+        </p>
+        <p className="font-display text-lg italic text-foreground mb-1">Set your intention. Track your day.</p>
+        <p className="font-body text-sm text-muted-foreground mb-4">
+          Signal gives you a daily focus, to-do list, and weekly calendar — all synced to your cycle phase.
+        </p>
+        <div className="space-y-2 mb-4">
+          {["Morning meditation — 10 min", "Prep this week's lunches", "Evening walk"].map((item, i) => (
+            <div key={i} className="flex items-center gap-3 rounded-xl bg-secondary/40 px-4 py-2.5">
+              <div className="h-4 w-4 rounded-full border-2 border-primary/30" />
+              <span className="font-body text-sm text-foreground/60">{item}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => navigate("/auth")}
+          className="w-full rounded-xl bg-primary/10 text-primary px-4 py-2.5 font-body text-sm font-semibold hover:bg-primary/15 transition-colors"
+        >
+          Sign up to start planning →
+        </button>
+      </motion.div>
+
+      {/* Feature grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="card-warm p-5"
+      >
+        <p className="font-body text-section-label uppercase mb-2" style={{ color: 'hsl(var(--label-color))' }}>
+          what's inside signal
+        </p>
+        <p className="font-display text-lg italic text-foreground mb-4">Everything you need, in one place.</p>
+        <div className="grid grid-cols-2 gap-2.5">
+          {previewFeatures.map((f) => {
+            const Icon = f.icon;
+            return (
+              <div key={f.label} className="rounded-xl bg-secondary/40 p-3">
+                <Icon className="h-4 w-4 text-primary mb-1.5" />
+                <p className="font-body text-xs font-semibold text-foreground leading-tight">{f.label}</p>
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5 leading-snug">{f.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
