@@ -31,7 +31,8 @@ const CONNECT_COURSE_PRICE_ID = "price_1TMVQKEAvaJHDMD4SdXWKeFW";
 const CONNECT_COURSE_PRODUCT_ID = "prod_ULBn2vV58V9s9l";
 
 export default function Connect() {
-  const { user } = useAuth();
+  const { user, session, refreshSubscription } = useAuth();
+  const { hasFeatureAccess, hasOneOffPurchase } = useFeatureGate();
   const navigate = useNavigate();
   const [view, setView] = useState<ConnectView>("intro");
   const [joinCode, setJoinCode] = useState("");
@@ -40,9 +41,12 @@ export default function Connect() {
   const [pin, setPin] = useState(["", "", "", ""]);
   const [partnerName, setPartnerName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [connectionId, setConnectionId] = useState<string | null>(null);
   const [isPartnerSession, setIsPartnerSession] = useState(false);
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
+
+  const hasConnectAccess = hasFeatureAccess("connect_course") || hasOneOffPurchase("connect_course");
 
   // Chat state
   const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
