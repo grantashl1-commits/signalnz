@@ -19,6 +19,7 @@ import yocmIconV3 from "@/assets/logo-explorations/signal-icon-yocm-style-v3.png
 import yocmExactV1 from "@/assets/logo-explorations/signal-icon-yocm-exact-v1.png";
 import yocmExactV2 from "@/assets/logo-explorations/signal-icon-yocm-exact-v2.png";
 import yocmExactV3 from "@/assets/logo-explorations/signal-icon-yocm-exact-v3.png";
+import yocmWatercolour from "@/assets/logo-explorations/signal-icon-yocm-watercolour.png";
 
 /* ── brand tokens ── */
 const C = {
