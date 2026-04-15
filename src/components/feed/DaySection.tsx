@@ -16,11 +16,11 @@ export default function DaySection({ date, posts, onLike, onJournal, likedPosts 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 px-1">
-        <div className="h-px flex-1 bg-border/40" />
-        <span className="font-display text-sm italic text-muted-foreground">
+        <div className="h-px flex-1 border-b border-dotted border-foreground/10" />
+        <span className="font-hand text-sm text-muted-foreground/60">
           {isToday ? `Today — ${format(date, "EEEE d MMMM")}` : label}
         </span>
-        <div className="h-px flex-1 bg-border/40" />
+        <div className="h-px flex-1 border-b border-dotted border-foreground/10" />
       </div>
       
       <div className="space-y-4">
