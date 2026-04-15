@@ -81,6 +81,7 @@ export default function Connect() {
         body: {
           priceId: CONNECT_COURSE_PRICE_ID,
           mode: "payment",
+          successPath: "/connect?purchase=success",
         },
       });
       if (error) throw error;
