@@ -1,10 +1,15 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Plus, X, ChevronRight, ChevronLeft } from "lucide-react";
+import { Calendar, Plus, X, ChevronRight, ArrowRight, Check, Trash2, Archive, Sparkles, CalendarPlus } from "lucide-react";
 import { format } from "date-fns";
-import { haptic } from "@/hooks/use-mobile";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { haptic, useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import { useTodos } from "@/hooks/useTodos";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
+import { useTodayFocus } from "@/hooks/useTodayFocus";
 
 import botanicalSprig from "@/assets/journal/botanical-sprig.png";
 import botanicalCorner from "@/assets/journal/botanical-corner.png";
@@ -57,70 +62,206 @@ function useWeeklyMantra() {
   return { mantra, setMantra: save };
 }
 
-/* ── Left Page Content ── */
-function LeftPage({ today, intention, setIntention, mantra, setMantra }: {
-  today: Date;
-  intention: string;
-  setIntention: (v: string) => void;
-  mantra: string;
-  setMantra: (v: string) => void;
-}) {
+/* ── TODAY Page — Focus + To-Do ── */
+function TodayPage({ today }: { today: Date }) {
+  const { user } = useAuth();
+  const { focus } = useTodayFocus();
+  const { todos, loading, addTodo, toggleTodo, archiveTodo, deleteTodo } = useTodos();
+  const [newTask, setNewTask] = useState("");
+  const [showInput, setShowInput] = useState(false);
+
+  const active = todos.filter((t) => !t.completed);
+  const justDone = todos.filter((t) => t.completed);
+
+  const handleAdd = async () => {
+    if (!newTask.trim()) return;
+    haptic("medium");
+    await addTodo(newTask);
+    setNewTask("");
+    setShowInput(false);
+  };
+
+  const handleToggle = async (id: string, completed: boolean) => {
+    haptic("light");
+    await toggleTodo(id, completed);
+  };
+
+  const handleArchive = async (id: string) => {
+    haptic("medium");
+    const todo = todos.find((t) => t.id === id);
+    if (todo) {
+      const ve: VaultEntry = {
+        id: Date.now().toString(),
+        entryId: todo.id,
+        category: "look-what-youve-done",
+        title: todo.title,
+        preview: `Completed ${todo.completed_at ? new Date(todo.completed_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short" }) : "today"}`,
+        date: new Date().toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" }),
+        timestamp: Date.now(),
+      };
+      const vault = loadVault();
+      saveVault([ve, ...vault]);
+      if (user) {
+        await supabase.from("vault_entries").upsert({
+          id: ve.id, user_id: user.id, entry_id: ve.entryId,
+          category: ve.category, title: ve.title, preview: ve.preview,
+          date: ve.date, timestamp: ve.timestamp,
+        } as any);
+      }
+      toast.success("Saved to Look What You've Done ✨", {
+        description: "Find it in your Memory Vault",
+      });
+    }
+    await archiveTodo(id);
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="text-center">
-        <p className="font-hand text-[11px] text-muted-foreground/60 uppercase tracking-widest">
-          Week of
-        </p>
-        <p className="font-hand text-lg text-foreground/80">
-          {format(today, "d MMMM")}
-        </p>
+    <div className="space-y-5">
+      {/* Today's Focus */}
+      <div>
+        <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-2">✦ Today's Focus</p>
+        <div className="space-y-1.5">
+          {[
+            { label: "eat", value: focus.eat, href: "/nutrition" },
+            { label: "move", value: focus.move, href: "/movement" },
+            { label: "rest", value: focus.rest, href: "/practice" },
+            { label: "cycle", value: focus.cycle, href: "/cycle" },
+          ].map(({ label, value, href }) => (
+            <Link key={label} to={href} className="flex gap-3 items-start group hover:bg-foreground/[0.03] -mx-2 px-2 py-1.5 rounded-lg transition-colors relative">
+              <span className="font-hand text-sm w-10 pt-0.5 text-primary/50">{label}</span>
+              <p className="font-hand text-[15px] text-foreground/65 leading-snug flex-1 group-hover:text-foreground transition-colors border-b border-dotted border-foreground/8 pb-1">{value}</p>
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all mt-1 flex-shrink-0" />
+            </Link>
+          ))}
+        </div>
       </div>
+
       <DottedLine />
+
+      {/* To-Do List */}
       <div>
-        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Weekly Intention</p>
-        <input
-          type="text"
-          value={intention}
-          onChange={(e) => setIntention(e.target.value)}
-          placeholder="What am I focusing on?"
-          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
-        />
-      </div>
-      <div>
-        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Goal or Mantra</p>
-        <input
-          type="text"
-          value={mantra}
-          onChange={(e) => setMantra(e.target.value)}
-          placeholder="I am becoming..."
-          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
-        />
-      </div>
-      <DottedLine className="mt-3" />
-      <div className="pt-1">
-        <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1">✦ Gratitude</p>
-        <textarea
-          rows={3}
-          placeholder="I am grateful for..."
-          className="w-full bg-transparent font-hand text-[13px] text-foreground placeholder:text-muted-foreground/25 resize-none outline-none leading-relaxed"
-          onChange={(e) => {
-            const weekKey = format(today, "yyyy-'W'II");
-            localStorage.setItem(`signal_gratitude_${weekKey}`, e.target.value);
-          }}
-          defaultValue={(() => {
-            try { return localStorage.getItem(`signal_gratitude_${format(today, "yyyy-'W'II")}`) || ""; } catch { return ""; }
-          })()}
-        />
-      </div>
-      <div className="flex justify-center pt-2">
-        <img src={botanicalSprig} alt="" className="w-10 h-16 opacity-15" loading="lazy" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-primary/60" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4" />
+              <path d="M8 12.5l2.5 2.5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider">To-Do</p>
+          </div>
+          <button
+            onClick={() => setShowInput(!showInput)}
+            className="text-primary active:opacity-70 transition-opacity"
+          >
+            <Plus className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        {/* Add input */}
+        <AnimatePresence>
+          {showInput && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden mb-2"
+            >
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newTask}
+                  onChange={(e) => setNewTask(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+                  placeholder="What needs doing?"
+                  className="flex-1 font-hand text-sm text-foreground bg-secondary/30 border border-border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  style={{ fontSize: "16px" }}
+                  autoFocus
+                />
+                <button
+                  onClick={handleAdd}
+                  className="rounded-xl bg-primary px-3.5 py-2 font-body text-xs font-medium text-primary-foreground active:opacity-90"
+                >
+                  Add
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {loading ? (
+          <p className="font-hand text-sm italic text-muted-foreground/50 text-center py-2">Loading...</p>
+        ) : active.length === 0 && justDone.length === 0 && !showInput ? (
+          <p className="font-hand text-[13px] italic text-muted-foreground/40 text-center py-2">
+            Nothing on your list — what a beautiful feeling ✨
+          </p>
+        ) : (
+          <div className="space-y-0.5">
+            <AnimatePresence>
+              {active.map((todo) => (
+                <motion.div
+                  key={todo.id}
+                  layout
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 8, height: 0 }}
+                  className="flex items-center gap-3 group py-1.5"
+                >
+                  <button
+                    onClick={() => handleToggle(todo.id, true)}
+                    className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-primary/30 hover:border-primary/60 transition-colors"
+                  />
+                  <p className="flex-1 font-hand text-[14px] text-foreground leading-snug min-w-0">{todo.title}</p>
+                  <button
+                    onClick={() => deleteTodo(todo.id)}
+                    className="text-muted-foreground/0 group-hover:text-muted-foreground/40 hover:!text-destructive transition-colors flex-shrink-0"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            <AnimatePresence>
+              {justDone.map((todo) => (
+                <motion.div
+                  key={todo.id}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-3 group py-1.5"
+                >
+                  <button
+                    onClick={() => handleToggle(todo.id, false)}
+                    className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 border-2 border-primary/40 flex items-center justify-center"
+                  >
+                    <Check className="h-3 w-3 text-primary" />
+                  </button>
+                  <p className="flex-1 font-hand text-[14px] text-muted-foreground/50 line-through leading-snug min-w-0">{todo.title}</p>
+                  <button
+                    onClick={() => handleArchive(todo.id)}
+                    title="Archive to vault"
+                    className="text-muted-foreground/0 group-hover:text-primary/50 hover:!text-primary transition-colors flex-shrink-0"
+                  >
+                    <Archive className="h-3.5 w-3.5" />
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {justDone.length > 0 && (
+          <p className="font-body text-[10px] text-muted-foreground/50 flex items-center gap-1 mt-2">
+            <Sparkles className="h-3 w-3" />
+            Tap <Archive className="h-3 w-3 inline" /> to save completed tasks to your "Look What You've Done" vault
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
-/* ── Right Page Content ── */
-function RightPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent }: {
+/* ── WEEK Page — Planner + Calendar Import ── */
+function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent, intention, setIntention, mantra, setMantra }: {
   today: Date;
   events: ManualEvent[];
   showAddEvent: boolean;
@@ -131,19 +272,76 @@ function RightPage({ today, events, showAddEvent, setShowAddEvent, newTime, setN
   setNewTitle: (v: string) => void;
   addEvent: () => void;
   removeEvent: (id: string) => void;
+  intention: string;
+  setIntention: (v: string) => void;
+  mantra: string;
+  setMantra: (v: string) => void;
 }) {
   const dayOfWeek = today.getDay();
+  const [showCalendarOptions, setShowCalendarOptions] = useState(false);
+
+  const generateICSData = () => {
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Signal//EN",
+    ];
+    events.forEach((ev) => {
+      const [h, m] = ev.time.split(":");
+      const start = new Date(today);
+      start.setHours(parseInt(h), parseInt(m), 0);
+      const end = new Date(start);
+      end.setHours(start.getHours() + 1);
+      const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      lines.push("BEGIN:VEVENT", `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`, `SUMMARY:${ev.title}`, "END:VEVENT");
+    });
+    lines.push("END:VCALENDAR");
+    return lines.join("\r\n");
+  };
+
+  const handleCalendarExport = (type: "google" | "outlook" | "apple") => {
+    if (events.length === 0) {
+      toast.info("No events to export");
+      return;
+    }
+    if (type === "google") {
+      const ev = events[0];
+      const [h, m] = ev.time.split(":");
+      const start = new Date(today);
+      start.setHours(parseInt(h), parseInt(m), 0);
+      const end = new Date(start);
+      end.setHours(start.getHours() + 1);
+      const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${fmt(start)}/${fmt(end)}`;
+      window.open(url, "_blank");
+    } else {
+      const ics = generateICSData();
+      const blob = new Blob([ics], { type: "text/calendar" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "signal-events.ics";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    setShowCalendarOptions(false);
+    toast.success("Calendar export ready");
+  };
+
   return (
-    <div className="space-y-2">
-      <div className="text-center mb-1">
-        <p className="font-hand text-lg text-foreground/80">
-          {format(today, "EEEE")}
+    <div className="space-y-3">
+      {/* Week header */}
+      <div className="text-center">
+        <p className="font-hand text-[11px] text-muted-foreground/60 uppercase tracking-widest">
+          Week of
         </p>
-        <p className="font-hand text-[10px] text-muted-foreground/50 uppercase tracking-widest">
-          {format(today, "d MMM yyyy")}
+        <p className="font-hand text-lg text-foreground/80">
+          {format(today, "d MMMM")}
         </p>
       </div>
-      <div className="flex items-center justify-between gap-0.5 px-0.5 mb-2">
+
+      {/* Week day strip */}
+      <div className="flex items-center justify-between gap-0.5 px-0.5 mb-1">
         {DAYS_OF_WEEK.map((d, i) => {
           const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
           const isToday = i === adjustedDay;
@@ -164,9 +362,35 @@ function RightPage({ today, events, showAddEvent, setShowAddEvent, newTime, setN
         })}
       </div>
       <DottedLine />
-      <div className="space-y-1.5 min-h-[80px]">
+
+      {/* Intention + Mantra */}
+      <div>
+        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Weekly Intention</p>
+        <input
+          type="text"
+          value={intention}
+          onChange={(e) => setIntention(e.target.value)}
+          placeholder="What am I focusing on?"
+          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
+        />
+      </div>
+      <div>
+        <p className="font-hand text-[11px] text-muted-foreground/50 mb-1">Goal or Mantra</p>
+        <input
+          type="text"
+          value={mantra}
+          onChange={(e) => setMantra(e.target.value)}
+          placeholder="I am becoming..."
+          className="w-full bg-transparent font-hand text-sm text-foreground placeholder:text-muted-foreground/30 border-b border-dotted border-foreground/10 pb-1 outline-none focus:border-primary/30 transition-colors"
+        />
+      </div>
+
+      <DottedLine />
+
+      {/* Events */}
+      <div className="space-y-1.5 min-h-[60px]">
         {events.length === 0 && !showAddEvent ? (
-          <div className="text-center py-4">
+          <div className="text-center py-3">
             <Calendar className="h-5 w-5 text-muted-foreground/20 mx-auto mb-2" />
             <p className="font-hand text-[13px] italic text-muted-foreground/40">
               A blank page to fill...
@@ -196,6 +420,7 @@ function RightPage({ today, events, showAddEvent, setShowAddEvent, newTime, setN
           ))
         )}
       </div>
+
       <AnimatePresence>
         {showAddEvent && (
           <motion.div
@@ -227,21 +452,80 @@ function RightPage({ today, events, showAddEvent, setShowAddEvent, newTime, setN
           </motion.div>
         )}
       </AnimatePresence>
-      <button
-        onClick={() => {
-          haptic("light");
-          setShowAddEvent(!showAddEvent);
-        }}
-        className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors mt-1"
-      >
-        <Plus className="h-3 w-3" />
-        add to today
-      </button>
-      <div className="mt-auto pt-3">
-        <DottedLine className="mb-2" />
-        <p className="font-hand text-[11px] text-muted-foreground/35 italic text-center leading-relaxed">
-          {getWeeklyPrompt()}
-        </p>
+
+      {/* Action buttons row */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => {
+            haptic("light");
+            setShowAddEvent(!showAddEvent);
+          }}
+          className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors"
+        >
+          <Plus className="h-3 w-3" />
+          add to today
+        </button>
+        <button
+          onClick={() => {
+            haptic("light");
+            setShowCalendarOptions(!showCalendarOptions);
+          }}
+          className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors"
+        >
+          <CalendarPlus className="h-3 w-3" />
+          add to calendar
+        </button>
+      </div>
+
+      {/* Calendar export options */}
+      <AnimatePresence>
+        {showCalendarOptions && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="rounded-xl bg-secondary/30 p-3 space-y-1">
+              {[
+                { key: "google" as const, label: "Google Calendar", icon: "📅" },
+                { key: "outlook" as const, label: "Outlook Calendar", icon: "📧" },
+                { key: "apple" as const, label: "Apple Calendar", icon: "🗓️" },
+              ].map(({ key, label, icon }) => (
+                <button
+                  key={key}
+                  onClick={() => handleCalendarExport(key)}
+                  className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] text-left hover:bg-secondary/50 transition-colors"
+                >
+                  <span className="text-base">{icon}</span>
+                  <span className="font-body text-sm text-foreground">{label}</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Gratitude */}
+      <DottedLine />
+      <div>
+        <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1">✦ Gratitude</p>
+        <textarea
+          rows={2}
+          placeholder="I am grateful for..."
+          className="w-full bg-transparent font-hand text-[13px] text-foreground placeholder:text-muted-foreground/25 resize-none outline-none leading-relaxed"
+          onChange={(e) => {
+            const weekKey = format(today, "yyyy-'W'II");
+            localStorage.setItem(`signal_gratitude_${weekKey}`, e.target.value);
+          }}
+          defaultValue={(() => {
+            try { return localStorage.getItem(`signal_gratitude_${format(today, "yyyy-'W'II")}`) || ""; } catch { return ""; }
+          })()}
+        />
+      </div>
+
+      <div className="flex justify-center pt-1">
+        <img src={botanicalSprig} alt="" className="w-8 h-12 opacity-15" loading="lazy" />
       </div>
     </div>
   );
@@ -257,7 +541,7 @@ export default function HomePlannerCard() {
   const [newTime, setNewTime] = useState("09:00");
   const [newTitle, setNewTitle] = useState("");
   const isMobile = useIsMobile();
-  const [mobilePage, setMobilePage] = useState<"left" | "right">("left");
+  const [mobilePage, setMobilePage] = useState<"today" | "week">("today");
 
   const addEvent = useCallback(() => {
     if (!newTitle.trim()) return;
@@ -278,8 +562,9 @@ export default function HomePlannerCard() {
     saveEvents(todayStr, updated);
   }, [events, todayStr]);
 
-  const rightPageProps = {
+  const weekPageProps = {
     today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent,
+    intention, setIntention, mantra, setMantra,
   };
 
   return (
@@ -300,64 +585,63 @@ export default function HomePlannerCard() {
       <img src={botanicalLavender} alt="" className="absolute bottom-4 left-3 w-8 h-16 opacity-10 pointer-events-none" loading="lazy" />
 
       <div className="relative p-5">
-        {/* ── MOBILE: Single page with tab toggle ── */}
         {isMobile ? (
           <div>
-            {/* Page tab indicator */}
+            {/* Page tab indicator — Today first */}
             <div className="flex items-center justify-center gap-3 mb-4">
               <button
-                onClick={() => { haptic("light"); setMobilePage("left"); }}
+                onClick={() => { haptic("light"); setMobilePage("today"); }}
                 className={`font-hand text-[12px] px-3 py-1 rounded-full transition-all ${
-                  mobilePage === "left"
-                    ? "bg-primary/12 text-primary"
-                    : "text-muted-foreground/40"
-                }`}
-              >
-                ✦ This Week
-              </button>
-              <span className="text-muted-foreground/20 text-[10px]">|</span>
-              <button
-                onClick={() => { haptic("light"); setMobilePage("right"); }}
-                className={`font-hand text-[12px] px-3 py-1 rounded-full transition-all ${
-                  mobilePage === "right"
+                  mobilePage === "today"
                     ? "bg-primary/12 text-primary"
                     : "text-muted-foreground/40"
                 }`}
               >
                 Today →
               </button>
+              <span className="text-muted-foreground/20 text-[10px]">|</span>
+              <button
+                onClick={() => { haptic("light"); setMobilePage("week"); }}
+                className={`font-hand text-[12px] px-3 py-1 rounded-full transition-all ${
+                  mobilePage === "week"
+                    ? "bg-primary/12 text-primary"
+                    : "text-muted-foreground/40"
+                }`}
+              >
+                ✦ This Week
+              </button>
             </div>
 
             <AnimatePresence mode="wait">
               <motion.div
                 key={mobilePage}
-                initial={{ opacity: 0, x: mobilePage === "right" ? 20 : -20 }}
+                initial={{ opacity: 0, x: mobilePage === "week" ? 20 : -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: mobilePage === "right" ? -20 : 20 }}
+                exit={{ opacity: 0, x: mobilePage === "week" ? -20 : 20 }}
                 transition={{ duration: 0.25 }}
               >
-                {mobilePage === "left" ? (
-                  <LeftPage today={today} intention={intention} setIntention={setIntention} mantra={mantra} setMantra={setMantra} />
+                {mobilePage === "today" ? (
+                  <TodayPage today={today} />
                 ) : (
-                  <RightPage {...rightPageProps} />
+                  <WeekPage {...weekPageProps} />
                 )}
               </motion.div>
             </AnimatePresence>
 
             {/* Page dots */}
             <div className="flex justify-center gap-2 mt-4">
-              <div className={`w-1.5 h-1.5 rounded-full transition-colors ${mobilePage === "left" ? "bg-primary/50" : "bg-muted-foreground/20"}`} />
-              <div className={`w-1.5 h-1.5 rounded-full transition-colors ${mobilePage === "right" ? "bg-primary/50" : "bg-muted-foreground/20"}`} />
+              <div className={`w-1.5 h-1.5 rounded-full transition-colors ${mobilePage === "today" ? "bg-primary/50" : "bg-muted-foreground/20"}`} />
+              <div className={`w-1.5 h-1.5 rounded-full transition-colors ${mobilePage === "week" ? "bg-primary/50" : "bg-muted-foreground/20"}`} />
             </div>
           </div>
         ) : (
           /* ── DESKTOP: Open book spread ── */
-          <div className="grid grid-cols-2 gap-4" style={{ minHeight: 280 }}>
+          <div className="grid grid-cols-2 gap-4" style={{ minHeight: 380 }}>
             <div className="pr-3 border-r border-dotted border-foreground/8">
-              <LeftPage today={today} intention={intention} setIntention={setIntention} mantra={mantra} setMantra={setMantra} />
+              <TodayPage today={today} />
             </div>
             <div className="pl-1">
-              <RightPage {...rightPageProps} />
+              <WeekPage {...weekPageProps} />
             </div>
           </div>
         )}

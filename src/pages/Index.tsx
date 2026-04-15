@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
 import { JournalSection, DottedDivider, CelestialHeader } from "@/components/JournalBorders";
 import HomePlannerCard from "@/components/HomePlannerCard";
-import HomeTodoList from "@/components/HomeTodoList";
+import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -23,7 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, subDays } from "date-fns";
 import { toast } from "sonner";
 import { pickDailyPosts } from "@/lib/feed-utils";
-import { useTodayFocus } from "@/hooks/useTodayFocus";
+
 
 import menstrualHero from "@/assets/phases/menstrual-hero.png";
 import follicularHero from "@/assets/phases/follicular-hero.png";
@@ -101,7 +101,7 @@ export default function HomePage() {
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const { focus } = useTodayFocus();
+  
 
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
@@ -304,27 +304,11 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {/* ═══ SECTION 2 — PLANNER + TO-DO + TODAY'S FOCUS ═══ */}
+      {/* ═══ SECTION 2 — PLANNER + HABITS ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
           {user && <HomePlannerCard />}
-          {user && <HomeTodoList />}
-          <JournalSection title="today" showCorners>
-            <div className="space-y-2">
-              {[
-                { label: "eat", value: focus.eat, href: "/nutrition" },
-                { label: "move", value: focus.move, href: "/movement" },
-                { label: "rest", value: focus.rest, href: "/practice" },
-                { label: "cycle", value: focus.cycle, href: "/cycle" },
-              ].map(({ label, value, href }) => (
-                <Link key={label} to={href} className="flex gap-3 items-start group hover:bg-foreground/[0.03] -mx-2 px-2 py-1.5 rounded-lg transition-colors relative">
-                  <span className="font-hand text-sm w-10 pt-0.5 text-primary/50">{label}</span>
-                  <p className="font-hand text-[15px] text-foreground/65 leading-snug flex-1 group-hover:text-foreground transition-colors border-b border-dotted border-foreground/8 pb-1">{value}</p>
-                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all mt-1 flex-shrink-0" />
-                </Link>
-              ))}
-            </div>
-          </JournalSection>
+          {user && <HomeHabitsDisplay />}
         </div>
       </ContentSection>
 
