@@ -55,6 +55,43 @@ export default function Connect() {
   const [aiLoading, setAiLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Handle purchase success redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("purchase") === "success" && user) {
+      // Record the one-off purchase
+      supabase.from("one_off_purchases").upsert({
+        user_id: user.id,
+        product_key: "connect_course",
+        stripe_product_id: CONNECT_COURSE_PRODUCT_ID,
+      }, { onConflict: "user_id,product_key" }).then(() => {
+        refreshSubscription();
+        toast.success("Connect Course unlocked! 🎉");
+        // Clean URL
+        window.history.replaceState({}, "", "/connect");
+      });
+    }
+  }, [user, refreshSubscription]);
+
+  const handlePurchaseConnect = async () => {
+    if (!user) { navigate("/auth"); return; }
+    setPurchaseLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          priceId: CONNECT_COURSE_PRICE_ID,
+          mode: "payment",
+        },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (err) {
+      toast.error("Could not start checkout. Please try again.");
+    } finally {
+      setPurchaseLoading(false);
+    }
+  };
+
   // Check for existing connection on load
   useEffect(() => {
     if (!user) return;
