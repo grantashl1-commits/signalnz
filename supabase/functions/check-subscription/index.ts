@@ -62,13 +62,22 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
-    // Resolve purchases
+    // Resolve purchases and gifts
     const { data: purchases } = await purchasesPromise;
+    const { data: gifts } = await giftsPromise;
     const oneOffDetails = (purchases ?? []).map((p: any) => ({
       product_key: p.product_key,
       ai_access_expires_at: p.ai_access_expires_at,
     }));
     const oneOffKeys = oneOffDetails.map((d: any) => d.product_key);
+
+    // Check for active gift membership
+    const now = new Date();
+    const activeGift = (gifts ?? []).find((g: any) => 
+      g.expires_at && new Date(g.expires_at) > now
+    );
+    const giftTier = activeGift?.tier ?? null;
+    const giftExpiresAt = activeGift?.expires_at ?? null;
 
     if (customers.data.length === 0) {
       return new Response(JSON.stringify({ subscribed: false, one_off_purchases: oneOffKeys, one_off_details: oneOffDetails }), {
