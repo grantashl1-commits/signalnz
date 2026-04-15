@@ -385,19 +385,26 @@ export default function Connect() {
           <div className="flex gap-1 mt-3 bg-muted/50 rounded-full p-0.5">
             {([
               { key: "chat" as SpaceTab, label: "Chat", icon: MessageSquare },
+          {/* Tabs - scrollable */}
+          <div className="flex gap-1 mt-3 overflow-x-auto no-scrollbar">
+            {([
+              { key: "reflect" as SpaceTab, label: "Reflect", icon: PenLine },
+              { key: "shared" as SpaceTab, label: "Shared", icon: Users },
               { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
+              { key: "chat" as SpaceTab, label: "Coach", icon: Bot },
+              { key: "checkin" as SpaceTab, label: "Check-in", icon: BarChart3 },
               { key: "appreciate" as SpaceTab, label: "💜", icon: null },
             ]).map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => { haptic("light"); setSpaceTab(tab.key); }}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-medium transition-all ${
+                className={`shrink-0 flex items-center justify-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
                   spaceTab === tab.key
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {tab.icon && <tab.icon className="w-3.5 h-3.5" />}
+                {tab.icon && <tab.icon className="w-3 h-3" />}
                 {tab.label}
               </button>
             ))}
