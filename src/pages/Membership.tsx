@@ -16,23 +16,40 @@ const STRIPE_TIERS = {
   rooted: {
     priceId: "price_1TElEOEAvaJHDMD4nbJ489js",
     productId: "prod_UDBbsFCvpYtvUN",
-    annualPriceId: "price_annual_rooted",
+    annualPriceId: "price_1TMVmQEAvaJHDMD4XMXZwRW3",
   },
   nourished: {
     priceId: "price_1TB71HEAvaJHDMD49yoKtzpf",
     productId: "prod_U9Pqh2vkb2wrNR",
-    annualPriceId: "price_annual_nourished",
+    annualPriceId: "price_1TMVmSEAvaJHDMD4IhV6CMC0",
   },
   thriving: {
     priceId: "price_1TB71pEAvaJHDMD4gkBPg6Vt",
     productId: "prod_U9Pr8k3iP6Bler",
-    annualPriceId: "price_annual_thriving",
+    annualPriceId: "price_1TMVmTEAvaJHDMD4pkgGBABF",
   },
   topup: {
     priceId: "price_1TB729EAvaJHDMD4kgzSS7JM",
     productId: "prod_U9PrdS82rTl5Bw",
   },
 };
+
+const GIFT_OPTIONS = [
+  {
+    label: "3 months",
+    tier: "nourished" as const,
+    durationMonths: 3,
+    price: "$57",
+    priceId: "price_1TMVmZEAvaJHDMD43jhStJqU",
+  },
+  {
+    label: "12 months",
+    tier: "nourished" as const,
+    durationMonths: 12,
+    price: "$152",
+    priceId: "price_1TMVmaEAvaJHDMD4PLseDPvN",
+  },
+];
 
 /* ─── AI credit cost reference (shown to users) ─── */
 const CREDIT_COSTS = [
