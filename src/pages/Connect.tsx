@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
+import { setPartnerSession, clearPartnerSession, partnerProxy, isPartnerSession as checkIsPartner } from "@/hooks/usePartnerProxy";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import ReflectRoom from "@/components/connect/ReflectRoom";
 
@@ -190,35 +191,26 @@ export default function Connect() {
     }
     setLoading(true);
 
-    // Use secure RPC to verify PIN without exposing hash
-    const { data, error } = await supabase.rpc("verify_partner_pin", {
-      _code: joinCode.toUpperCase(),
-      _pin_hash: hashPin(fullPin),
-    });
+    try {
+      // Use edge function proxy — validates PIN server-side
+      const result = await partnerProxy("verify_pin", undefined, {
+        join_code: joinCode.toUpperCase(),
+        pin_hash: hashPin(fullPin),
+      });
 
-    if (error || !data || data.length === 0) {
-      toast.error(error ? "Code not found — check with your partner" : "PIN doesn't match — try again");
-      setLoading(false);
-      return;
+      // Store partner session for subsequent proxy calls
+      setPartnerSession(result.connection_id, hashPin(fullPin));
+
+      setConnectionId(result.connection_id);
+      setPartnerDisplayName(result.partner_name || "Partner");
+      setIsPartnerSession(true);
+      setView("space");
+      haptic("medium");
+      toast.success("Connected! 💜");
+    } catch (e: any) {
+      toast.error(e.message || "PIN doesn't match — try again");
     }
-
-    const match = data[0];
-
-    // Link the connection
-    if (match.connection_status === "pending") {
-      await supabase
-        .from("partner_connections")
-        .update({ status: "linked", partner_user_id: user?.id || null })
-        .eq("id", match.connection_id);
-    }
-
-    setConnectionId(match.connection_id);
-    setPartnerDisplayName(match.partner_name || "Partner");
-    setIsPartnerSession(true);
-    setView("space");
     setLoading(false);
-    haptic("medium");
-    toast.success("Connected! 💜");
   };
 
   // ─── Send a chat message ───
