@@ -86,7 +86,7 @@ function Section({ id, bg = C.pearl, children, className = "" }: { id: string; b
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: C.brandPurple }}>
+    <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, color: C.brandPurple }}>
       {children}
     </h2>
   );
@@ -94,7 +94,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
+    <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
       {children}
     </p>
   );
@@ -130,7 +130,7 @@ export default function BrandGuidelines() {
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="relative overflow-x-hidden" style={{ fontFamily: "'Montserrat', sans-serif", backgroundColor: C.pearl }}>
+    <div className="relative overflow-x-hidden" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: C.pearl }}>
       {/* ── sticky side nav (desktop) ── */}
       <nav className="fixed left-0 top-0 bottom-0 z-50 hidden lg:flex flex-col justify-center pl-6 gap-3">
         {SECTIONS.map(({ id, label }) => (
@@ -213,7 +213,7 @@ export default function BrandGuidelines() {
             </p>
             <div className="flex items-center gap-4 p-4 rounded-lg" style={{ backgroundColor: C.pearl }}>
               <img src="/logos/Icon_purple.png" alt="Signal ring icon" className="w-10 h-10 object-contain" />
-              <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple, letterSpacing: "0.1em" }}>SIGNAL</span>
+              <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple, letterSpacing: "0.1em" }}>SIGNAL</span>
             </div>
           </div>
 
@@ -426,19 +426,19 @@ export default function BrandGuidelines() {
               <SectionLabel>Scale</SectionLabel>
               <div className="space-y-4">
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 28, color: C.brandPurple }}>Home Hero — 28px</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: 28, color: C.brandPurple }}>Home Hero — 28px</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 800</p>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple }}>Card Title — 20px</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple }}>Card Title — 20px</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 800</p>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.6 }}>Body copy — 15px / 1.6 line height</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.6 }}>Body copy — 15px / 1.6 line height</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 500</p>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.12em" }}>Section label — 11px / 0.12em</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.12em" }}>Section label — 11px / 0.12em</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 600 · Uppercase · +12em tracking</p>
                 </div>
               </div>
@@ -450,10 +450,10 @@ export default function BrandGuidelines() {
       {/* ═══════════  6. MOTION  ═══════════ */}
       <Section id="motion" bg={C.deepNavy}>
         <div className="relative z-10 max-w-4xl mx-auto w-full">
-          <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
+          <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
             05 — Motion
           </p>
-          <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: C.warmIvory }}>
+          <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, color: C.warmIvory }}>
             Loading Animations
           </h2>
           <div className="w-12 h-[2px] rounded-full my-4 md:my-6" style={{ backgroundColor: `${C.warmIvory}40` }} />
