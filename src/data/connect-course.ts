@@ -72,18 +72,23 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Secure Attachment",
-                  "body": "Comfortable with intimacy and independence. Trusts partner and feels safe.",
+                  "body": "Comfortable with both intimacy and independence. You trust your partner, communicate openly, and don't fear abandonment or engulfment. About 50% of adults are securely attached. This style develops when caregivers were consistently responsive and emotionally available.",
                   "icon": "lucide-hands-clapping"
                 },
                 {
                   "title": "Anxious Attachment",
-                  "body": "Craves intimacy, often worries about partner's love or commitment. Can be 'clingy'.",
+                  "body": "You crave deep closeness but worry your partner doesn't want you as much as you want them. You may seek constant reassurance, over-analyse texts, and feel triggered by perceived distance. This often develops from inconsistent caregiving — sometimes present, sometimes absent.",
                   "icon": "lucide-bell"
                 },
                 {
                   "title": "Avoidant Attachment",
-                  "body": "Values independence, often uncomfortable with too much closeness. Can seem distant.",
+                  "body": "You value independence highly and feel uncomfortable when relationships get too close. You may pull away when things deepen, equate intimacy with loss of freedom, and struggle to express emotions. This style often stems from emotionally unavailable or dismissive caregivers.",
                   "icon": "lucide-footprints"
+                },
+                {
+                  "title": "Disorganised Attachment",
+                  "body": "A push-pull dynamic — you desperately want connection but simultaneously fear it. You may swing between clingy and distant behaviours, often feeling confused by your own reactions. This style typically develops when a caregiver was both a source of comfort and fear.",
+                  "icon": "lucide-shuffle"
                 }
               ]
             },
@@ -622,17 +627,17 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Rule for Speaker",
-                  "body": "Speak for yourself, use 'I' statements, keep statements brief, stop and let the Listener paraphrase.",
+                  "body": "Speak only for yourself using 'I' statements — 'I feel…' not 'You always…'. Keep statements brief and focused on one issue at a time. After each key point, pause and let the Listener paraphrase back what they heard. Don't move on until they've accurately reflected your message. You hold 'the floor' — only the Speaker talks.",
                   "icon": "lucide-mic"
                 },
                 {
                   "title": "Rule for Listener",
-                  "body": "Paraphrase what you hear without judging or rebutting, focus on truly understanding their message.",
+                  "body": "Your only job is to understand, not to agree, fix, or rebut. Paraphrase what you hear in your own words: 'So what you're saying is…'. Check back: 'Did I get that right?' Don't insert your perspective until it's your turn as Speaker. This feels unnatural at first — but it's transformative when practised consistently.",
                   "icon": "lucide-headphones"
                 },
                 {
                   "title": "Rule for Both",
-                  "body": "The goal is understanding, not agreement. Don't problem-solve during this exchange.",
+                  "body": "The goal is understanding, never agreement or problem-solving during this exchange. Use a physical object (a pen, a cushion) as 'the floor' — whoever holds it speaks. Switch roles frequently. If emotions escalate, either partner can call a 20-minute break. This structure prevents the conversation from spiralling into attack-defend loops.",
                   "icon": "lucide-users"
                 }
               ]
@@ -924,22 +929,22 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Increased Understanding",
-                  "body": "Conflict can reveal hidden needs, dreams, and perspectives, deepening empathy.",
+                  "body": "Conflict — when handled well — forces you to articulate what you actually need, not just what annoys you. It reveals hidden dreams, unspoken expectations, and deeper emotional landscapes. Couples who lean into disagreements with curiosity often report understanding their partner better afterward than before the fight started.",
                   "icon": "lucide-lightbulb"
                 },
                 {
                   "title": "Stronger Trust",
-                  "body": "Successfully navigating conflict builds confidence in your partner's commitment and ability to repair.",
+                  "body": "Every conflict you navigate together without destroying each other builds a deposit of confidence. You learn: 'We can disagree and survive. We can hurt and repair.' This trust — forged through friction, not just smooth sailing — is more resilient than trust that's never been tested.",
                   "icon": "lucide-handshake"
                 },
                 {
                   "title": "Promotes Growth",
-                  "body": "Addressing issues helps individuals and the relationship evolve, preventing stagnation.",
+                  "body": "Relationships that avoid all conflict stagnate. The tension of disagreement — when metabolised constructively — pushes both partners to examine their assumptions, develop empathy, and evolve. Research shows couples who engage in productive conflict report higher personal growth than those who 'never fight.'",
                   "icon": "lucide-leaf"
                 },
                 {
                   "title": "Ventilation & Release",
-                  "body": "Constructive conflict allows for healthy expression of frustrations, preventing resentment buildup.",
+                  "body": "Suppressed frustrations don't disappear — they ferment into resentment, contempt, and emotional distance. Constructive conflict provides a pressure valve: expressing what's wrong in real time prevents the slow poisoning of unspoken grievances. Think of it as emotional hygiene for your relationship.",
                   "icon": "lucide-wind"
                 }
               ]
@@ -1059,18 +1064,23 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Physical Signs",
-                  "body": "Increased heart rate, rapid breathing, muscle tension, sweating, feeling light-headed.",
+                  "body": "Your heart rate climbs above 100 bpm, breathing becomes shallow and rapid, muscles tense (especially jaw, shoulders, and fists), palms sweat, and you may feel light-headed or dizzy. Gottman's research showed that once heart rate exceeds 100 bpm, your ability to listen accurately drops by over 50%. Your body is preparing to fight or flee — not to have a conversation.",
                   "icon": "lucide-thermometer"
                 },
                 {
                   "title": "Emotional Signs",
-                  "body": "Feeling overwhelmed, intense anger, feeling numb, inability to think clearly, tunnel vision.",
+                  "body": "An overwhelming sense of being attacked or trapped. Intense anger that feels disproportionate to the topic. Feeling numb or 'checked out'. Tunnel vision — you can only see your partner's worst qualities. The inability to remember anything good about your relationship in this moment. These are signs your amygdala has hijacked your rational brain.",
                   "icon": "lucide-cloud-rain"
                 },
                 {
                   "title": "Behavioral Signs",
-                  "body": "Desire to flee, aggression, stonewalling, inability to listen.",
+                  "body": "An urgent desire to leave the room, raising your voice without intending to, repeating the same point louder each time, crossing arms, refusing eye contact, or going completely silent (stonewalling). You may notice yourself interrupting constantly or mentally rehearsing your counter-argument instead of listening. These are all signals to pause — not push through.",
                   "icon": "lucide-zap"
+                },
+                {
+                  "title": "The 20-Minute Reset",
+                  "body": "When flooded, it takes at least 20 minutes for your physiology to return to baseline — no matter how 'calm' you think you feel after 5 minutes. During this break: no ruminating on the argument, no replaying what you should have said. Instead: walk, breathe deeply, listen to music, or do something soothing. Then return and try again.",
+                  "icon": "lucide-timer"
                 }
               ]
             },
@@ -1347,23 +1357,28 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Emotional Intimacy",
-                  "body": "Feeling understood and accepting each other's vulnerabilities.",
+                  "body": "Feeling truly understood — and being brave enough to let your partner see the parts of you that feel messy or uncertain. Emotional intimacy grows when you share fears, dreams, and insecurities without editing yourself. It's the foundation every other form of intimacy rests on.",
                   "icon": "lucide-hand-heart"
                 },
                 {
                   "title": "Physical Intimacy",
-                  "body": "Non-sexual touch, affection, and sexual connection.",
+                  "body": "More than sex — it includes non-sexual touch, affection, and the comfort of physical closeness. Research shows couples who maintain regular physical contact (even just sitting close) have lower cortisol levels and stronger immune systems. Touch is a language unto itself.",
                   "icon": "lucide-heart-crack"
                 },
                 {
                   "title": "Affectionate Intimacy",
-                  "body": "Hugs, kisses, holding hands \u2013 small gestures of love.",
+                  "body": "The small gestures that say 'I see you and I choose you' — a lingering hug, a kiss goodbye, holding hands while walking. Gottman's research found couples who maintained daily affection rituals were 67% more likely to report relationship satisfaction after 6 years.",
                   "icon": "lucide-gem"
                 },
                 {
                   "title": "Recreational Intimacy",
-                  "body": "Shared hobbies, playtime, having fun together.",
+                  "body": "Shared play and adventure — hobbies, spontaneous outings, or simply being silly together. Couples who regularly try new activities together experience a boost in relationship excitement similar to the early 'honeymoon phase'. Novelty together rewires your brain to associate your partner with joy.",
                   "icon": "lucide-gamepad"
+                },
+                {
+                  "title": "Intellectual Intimacy",
+                  "body": "Deep conversations where you explore ideas, challenge assumptions, and share your inner worlds. This form of closeness means you value your partner's mind as much as their heart. Discussing books, debating philosophies, or dreaming aloud together — all build this dimension.",
+                  "icon": "lucide-brain"
                 }
               ]
             },
@@ -1591,23 +1606,28 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Mess vs. Neatness",
-                  "body": "Dream of peace, order, self-expression, freedom, or respect.",
+                  "body": "On the surface it's about dishes and laundry. Underneath, one partner dreams of peace and order — a sanctuary from chaos. The other dreams of freedom and self-expression — a home that feels lived-in, not sterile. Neither is wrong; they're pursuing different core needs through the same battlefield.",
                   "icon": "lucide-boxes"
                 },
                 {
                   "title": "Money & Spending",
-                  "body": "Dream of security, freedom, generosity, power, belonging, or pleasure.",
+                  "body": "The saver dreams of security and safety — money in the bank means 'we'll be okay'. The spender dreams of freedom and generosity — life is for enjoying now. These aren't character flaws; they're often rooted in childhood experiences of scarcity or abundance that shaped each person's relationship with safety.",
                   "icon": "lucide-wallet"
                 },
                 {
                   "title": "Sex & Affection",
-                  "body": "Dream of acceptance, security, control, adventure, comfort, or desire.",
+                  "body": "One partner's desire for more physical intimacy may carry a dream of acceptance and desirability — 'I need to know you want me.' The other's hesitation may carry a dream of autonomy and emotional safety — 'I need to feel safe before I can open up.' Both are reaching for connection through different doorways.",
                   "icon": "lucide-heart-handshake"
                 },
                 {
-                  "title": "Time Together/Apart",
-                  "body": "Dream of connection, independence, adventure, safety, or rest.",
+                  "title": "Time Together / Apart",
+                  "body": "The partner wanting more togetherness dreams of deep connection and belonging — 'We're a team.' The one craving solitude dreams of independence and self-renewal — 'I need space to come back as my best self.' Understanding the dream transforms 'You're always gone' into 'I miss you, and connection matters to me.'",
                   "icon": "lucide-calendar"
+                },
+                {
+                  "title": "Parenting Styles",
+                  "body": "The strict parent dreams of structure and preparing their child for a tough world. The lenient parent dreams of warmth, creativity, and letting the child be free. Both are shaped by how they were raised — and what they wished had been different. Honouring both dreams creates balanced parenting.",
+                  "icon": "lucide-baby"
                 }
               ]
             },
@@ -1847,28 +1867,28 @@ export const CONNECT_COURSE: CourseModule[] = [
             "content": {
               "cards": [
                 {
-                  "title": "Denial/Shock",
-                  "body": "Difficulty believing what happened, feeling numb.",
+                  "title": "Denial / Shock",
+                  "body": "The initial protective response — 'This can't be happening to us.' You may feel numb, disconnected, or unable to process the reality of what's occurred. This isn't weakness; it's your psyche giving you time to absorb a truth that's too large to take in all at once. Allow yourself this space without forcing resolution.",
                   "icon": "lucide-skull"
                 },
                 {
                   "title": "Anger",
-                  "body": "Outrage, blame, frustration about the injury.",
+                  "body": "Outrage surfaces — at your partner, at yourself, at the unfairness. 'How could they do this?' Anger is grief's bodyguard; it protects you from the deeper pain underneath. It's important to express anger constructively rather than suppress it, but equally important not to weaponise it against your partner or yourself.",
                   "icon": "lucide-angry"
                 },
                 {
                   "title": "Bargaining",
-                  "body": "Seeking explanations, 'if only' thoughts, trying to undo damage.",
+                  "body": "'If only I had paid more attention…' 'If only we'd talked about this sooner…' The mind searches for a way to rewrite the past. Bargaining is an attempt to regain control in a situation that feels chaotic. It's natural, but staying here too long prevents you from facing what actually happened.",
                   "icon": "lucide-scale"
                 },
                 {
-                  "title": "Depression/Sadness",
-                  "body": "Profound sadness, isolation, lethargy.",
+                  "title": "Depression / Sadness",
+                  "body": "The deep ache settles in — profound sadness, withdrawal, low energy. This isn't clinical depression; it's the appropriate response to loss. You're mourning what the relationship was, or what you thought it was. This stage requires patience, self-compassion, and often the support of a therapist or trusted friend.",
                   "icon": "lucide-cloud-rain"
                 },
                 {
-                  "title": "Acceptance/Reconstruction",
-                  "body": "Coming to terms with reality and beginning to rebuild, either individually or relationally.",
+                  "title": "Acceptance / Reconstruction",
+                  "body": "Not 'getting over it' but finding a way to carry it. You begin integrating the experience into your story rather than being consumed by it. Acceptance doesn't mean approval — it means choosing to move forward, whether that's rebuilding the relationship with new understanding or releasing it with grace.",
                   "icon": "lucide-sparkles"
                 }
               ]
@@ -1957,22 +1977,22 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Rituals of Connection",
-                  "body": "Daily morning coffee together, weekly date night, birthday traditions.",
+                  "body": "The predictable, cherished moments that anchor your relationship — morning coffee together, a weekly date night, birthday traditions, the way you always kiss goodbye. Gottman found these micro-rituals are the single strongest predictor of long-term satisfaction. They say: 'Our relationship is a priority, every single day.'",
                   "icon": "lucide-campfire"
                 },
                 {
                   "title": "Shared Goals",
-                  "body": "Saving for a home, raising kids a certain way, traveling the world.",
+                  "body": "The dreams you build toward together — saving for a home, raising children with intention, travelling the world, building a business. Shared goals create a sense of 'we-ness' that transcends daily friction. When you're both pulling in the same direction, individual sacrifices feel meaningful rather than resentful.",
                   "icon": "lucide-target"
                 },
                 {
                   "title": "Shared Values",
-                  "body": "Emphasis on family, community, personal growth, adventure, security.",
+                  "body": "The non-negotiable principles you both hold — emphasis on family, commitment to personal growth, valuing adventure or security or community. When values align, decisions become easier. When they diverge, understanding each other's 'why' prevents values clashes from becoming identity wars.",
                   "icon": "lucide-diamond"
                 },
                 {
                   "title": "Roles & Narratives",
-                  "body": "Our story of how we met, who takes which responsibilities, how we overcome challenges.",
+                  "body": "Every couple creates a mythology — the story of how you met, inside jokes, who handles what, how you've overcome challenges. These shared narratives form your 'couple identity'. Research shows couples who tell their story with warmth and fondness (even during hard times) are significantly more likely to stay together.",
                   "icon": "lucide-scroll"
                 }
               ]
