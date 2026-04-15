@@ -273,9 +273,6 @@ export default function Connect() {
   };
 
 
-  // Auto-advance to PIN entry when partner arrives via URL link with valid code
-  const initialViewForPartner = urlCode && urlCode.length === 6 ? "partner-pin" : view;
-
   // ═══ PARTNER ENTRY (no account needed) ═══
   if (!user) {
     return (
@@ -289,7 +286,7 @@ export default function Connect() {
             Two people. Two perspectives. One shared wellness journey.
           </p>
 
-          {(urlCode && joinCode.length === 6 ? false : view === "intro") ? (
+          {view === "intro" ? (
             <div className="w-full space-y-4">
               <button
                 onClick={() => navigate("/auth")}
