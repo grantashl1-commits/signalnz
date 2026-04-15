@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
+import { setPartnerSession, clearPartnerSession, partnerProxy, isPartnerSession as checkIsPartner } from "@/hooks/usePartnerProxy";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import ReflectRoom from "@/components/connect/ReflectRoom";
 
@@ -69,33 +70,45 @@ export default function Connect() {
   // Load messages when connection is active
   useEffect(() => {
     if (!connectionId) return;
-    supabase
-      .from("connect_messages")
-      .select("*")
-      .eq("connection_id", connectionId)
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
+
+    const loadMessages = async () => {
+      if (isPartnerSession) {
+        // Partner: use proxy
+        try {
+          const data = await partnerProxy("load_messages");
+          if (data) setMessages(data as Message[]);
+        } catch { /* silent */ }
+      } else {
+        // Member: direct DB
+        const { data } = await supabase
+          .from("connect_messages")
+          .select("*")
+          .eq("connection_id", connectionId)
+          .order("created_at", { ascending: true });
         if (data) setMessages(data as Message[]);
-      });
+      }
+    };
+    loadMessages();
 
-    // Realtime subscription
-    const channel = supabase
-      .channel(`connect-${connectionId}`)
-      .on("postgres_changes", {
-        event: "INSERT",
-        schema: "public",
-        table: "connect_messages",
-        filter: `connection_id=eq.${connectionId}`,
-      }, (payload) => {
-        setMessages((prev) => {
-          if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
-          return [...prev, payload.new as Message];
-        });
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [connectionId]);
+    // Realtime subscription (works for members; partners poll or get optimistic updates)
+    if (!isPartnerSession) {
+      const channel = supabase
+        .channel(`connect-${connectionId}`)
+        .on("postgres_changes", {
+          event: "INSERT",
+          schema: "public",
+          table: "connect_messages",
+          filter: `connection_id=eq.${connectionId}`,
+        }, (payload) => {
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
+            return [...prev, payload.new as Message];
+          });
+        })
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [connectionId, isPartnerSession]);
 
   // Auto-scroll chat
   useEffect(() => {
@@ -190,35 +203,26 @@ export default function Connect() {
     }
     setLoading(true);
 
-    // Use secure RPC to verify PIN without exposing hash
-    const { data, error } = await supabase.rpc("verify_partner_pin", {
-      _code: joinCode.toUpperCase(),
-      _pin_hash: hashPin(fullPin),
-    });
+    try {
+      // Use edge function proxy — validates PIN server-side
+      const result = await partnerProxy("verify_pin", undefined, {
+        join_code: joinCode.toUpperCase(),
+        pin_hash: hashPin(fullPin),
+      });
 
-    if (error || !data || data.length === 0) {
-      toast.error(error ? "Code not found — check with your partner" : "PIN doesn't match — try again");
-      setLoading(false);
-      return;
+      // Store partner session for subsequent proxy calls
+      setPartnerSession(result.connection_id, hashPin(fullPin));
+
+      setConnectionId(result.connection_id);
+      setPartnerDisplayName(result.partner_name || "Partner");
+      setIsPartnerSession(true);
+      setView("space");
+      haptic("medium");
+      toast.success("Connected! 💜");
+    } catch (e: any) {
+      toast.error(e.message || "PIN doesn't match — try again");
     }
-
-    const match = data[0];
-
-    // Link the connection
-    if (match.connection_status === "pending") {
-      await supabase
-        .from("partner_connections")
-        .update({ status: "linked", partner_user_id: user?.id || null })
-        .eq("id", match.connection_id);
-    }
-
-    setConnectionId(match.connection_id);
-    setPartnerDisplayName(match.partner_name || "Partner");
-    setIsPartnerSession(true);
-    setView("space");
     setLoading(false);
-    haptic("medium");
-    toast.success("Connected! 💜");
   };
 
   // ─── Send a chat message ───
@@ -232,11 +236,15 @@ export default function Connect() {
     const tempId = crypto.randomUUID();
     setMessages((prev) => [...prev, { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() }]);
 
-    await supabase.from("connect_messages").insert({
-      connection_id: connectionId,
-      sender_role: role,
-      content: text,
-    });
+    if (isPartnerSession) {
+      await partnerProxy("insert_message", { sender_role: role, content: text });
+    } else {
+      await supabase.from("connect_messages").insert({
+        connection_id: connectionId,
+        sender_role: role,
+        content: text,
+      });
+    }
 
     // Ask AI for coaching response
     setAiLoading(true);
@@ -246,11 +254,15 @@ export default function Connect() {
         body: { message: text, history: recentHistory, connection_id: connectionId },
       });
       if (!error && data?.response) {
-        await supabase.from("connect_messages").insert({
-          connection_id: connectionId,
-          sender_role: "ai",
-          content: data.response,
-        });
+        if (isPartnerSession) {
+          await partnerProxy("insert_message", { sender_role: "ai", content: data.response });
+        } else {
+          await supabase.from("connect_messages").insert({
+            connection_id: connectionId,
+            sender_role: "ai",
+            content: data.response,
+          });
+        }
       }
     } catch {
       // Silent fail — AI is optional
