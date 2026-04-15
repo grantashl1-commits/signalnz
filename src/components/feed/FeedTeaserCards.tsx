@@ -54,9 +54,7 @@ export default function FeedTeaserCards() {
               {post.title}
             </p>
             <p className="font-body text-sm text-foreground/70 line-clamp-3">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-              ad minim veniam, quis nostrud exercitation.
+              {post.description}
             </p>
           </div>
 
