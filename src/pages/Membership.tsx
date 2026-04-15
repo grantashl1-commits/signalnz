@@ -543,11 +543,6 @@ export default function MembershipPage() {
                       if (!user) navigate("/auth");
                       return;
                     }
-                    if (isAnnual) {
-                      toast.info("Annual billing is coming soon. Monthly plans are available now.");
-                      setIsAnnual(false);
-                      return;
-                    }
                     handleCheckout(getPriceId(t.key));
                   }}
                   disabled={isCurrent}
