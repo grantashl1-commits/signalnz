@@ -581,14 +581,18 @@ export default function Connect() {
               ))}
             </div>
 
+            <button onClick={shareLink} className="w-full max-w-xs bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 mb-3">
+              <Share2 className="w-4 h-4" /> Send link to your partner
+            </button>
+
             <button onClick={copyCode} className="flex items-center gap-2 text-sm text-primary font-medium mb-10">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copied!" : "Copy code"}
+              {copied ? "Link copied!" : "Copy invite link"}
             </button>
 
             <button
               onClick={() => setView("space")}
-              className="bg-primary text-primary-foreground px-8 py-3.5 rounded-full text-sm font-semibold"
+              className="bg-card border border-border text-foreground px-8 py-3.5 rounded-full text-sm font-medium"
             >
               Enter Connect space
             </button>
