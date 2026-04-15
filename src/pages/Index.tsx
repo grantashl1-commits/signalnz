@@ -328,14 +328,17 @@ export default function HomePage() {
             </>
           ) : (
             <>
-              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-1">
                 {greeting}.
+              </motion.p>
+              <motion.p {...fadeUp(0.15)} className="text-[2rem] md:text-[2.5rem] italic font-bold text-primary-foreground leading-tight mb-4" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
+                You.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-                className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
+                className="mx-auto mb-5 w-[85%] max-w-[340px] md:w-[75%] md:max-w-[400px]"
               >
                 <img
                   src={welcomeHero}
