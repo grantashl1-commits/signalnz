@@ -42,7 +42,7 @@ const COMPARISON_DATA: CategoryGroup[] = [
     category: "AI Signal",
     features: [
       { key: "signal_daily", label: "Daily Signal / AMA / Give", notes: { rooted: "30 credits/mo", nourished: "100 credits/mo", thriving: "500 credits/mo" } },
-      { key: "stoic_readings", label: "Stoic Readings" },
+      { key: "stoic_readings", label: "Daily Philosophical Readings" },
     ],
   },
   {
