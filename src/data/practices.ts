@@ -46,6 +46,7 @@ export interface PracticeConfig {
   // future-ready fields
   locale?: string;
   backgroundAudioUrl?: string;
+  ttsScript?: string;
 }
 
 // ── Breathwork Practices ────────────────────────────────────
@@ -74,6 +75,72 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
       { label: "Exhale", seconds: 4, cue: "Breathe out" },
       { label: "Hold", seconds: 4, cue: "Hold" },
     ],
+    ttsScript: `Welcome. [pause] Let’s take a moment to settle in. [pause] Find a comfortable position, wherever you are. [long pause]
+
+Today, we’ll practice Box Breathing. [pause] This simple, rhythmic breath helps to gently reset your nervous system, bringing a sense of calm and balance. [long pause]
+
+The pattern is simple: We’ll breathe in for four counts, [pause] hold for four, [pause] breathe out for four, [pause] and hold again for four. [pause] We’ll repeat this square rhythm together.
+
+Let’s begin. [pause]
+
+Breathe in, two, three, four. [pause]
+Hold, two, three, four. [pause]
+Breathe out, two, three, four. [pause]
+Hold, two, three, four. [long pause]
+
+Breathe in, two, three, four. [pause]
+Hold, two, three, four. [pause]
+Breathe out, two, three, four. [pause]
+Hold, two, three, four. [long pause]
+
+Just letting your body settle into this rhythm. [pause]
+
+Breathe in. [pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+Finding your own natural flow now. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+Just a few more rounds, sensing the balance you’re creating. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+This is your final round. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+Hold. [long pause]
+
+Now, just release the count. [pause] Allow your breath to return to its natural rhythm. [long pause]
+
+Notice how your body feels. [pause] You’ve offered your nervous system a gentle reset, [pause] creating a quiet space within. [long pause]
+
+Take this feeling with you as you move into the rest of your day. [long pause]`,
   },
   {
     id: "physiological-sigh",
@@ -97,6 +164,46 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
       { label: "Sniff", seconds: 1, cue: "One more sip of air" },
       { label: "Exhale", seconds: 6, cue: "Long slow exhale" },
     ],
+    ttsScript: `Welcome. [pause] Settle into your space. [pause] Let's bring a little calm to your system. [pause]
+
+Today, we’ll be practicing the Physiological Sigh. [pause] It’s a powerful way your body naturally reduces stress, and we’re going to guide it intentionally. [long pause]
+
+Here's how it works: You'll take a deep breath in through your nose, then, right before you exhale, take another quick, short sip of air. [pause] Think of it like two inhales back to back. [long pause] Then you'll breathe out slowly, fully, and completely through your mouth, as if you’re sighing out all the tension. [pause] No need to force anything, just a gentle, long exhale. [long pause]
+
+Let's begin. [pause]
+
+Breathe in... [pause]
+And take another little sip of air... [pause]
+Now, sigh it out slowly, completely. [long pause]
+
+Breathe in... [long pause]
+Sip... [pause]
+And exhale, releasing everything. [long pause]
+
+Just like that. [pause] Your body knows what to do. [long pause]
+
+Breathe in... [long pause]
+Sip... [pause]
+Breathe out. [long pause]
+
+In... [long pause]
+Sip... [pause]
+Out. [long pause]
+
+In... [long pause]
+Sip... [pause]
+Out. [long pause]
+
+Continue at your own pace now, for a few more rounds. [pause] Just the double inhale, followed by that long, sighing exhale. [long pause]
+
+You’re doing beautifully. [long pause]
+Each exhale is a moment of release. [long pause]
+
+One more round now. [long pause]
+
+And a final, gentle exhale. [long pause]
+
+Allow your breath to return to its natural rhythm. [long pause] Notice any shifts in your body, in your mind. [long pause] You’ve just offered your nervous system a beautiful gift of calm. [long pause] Carry this feeling with you. [long pause]`,
   },
   {
     id: "coherent-breathing",
@@ -119,6 +226,76 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
       { label: "Inhale", seconds: 5, cue: "Breathe in" },
       { label: "Exhale", seconds: 5, cue: "Breathe out" },
     ],
+    ttsScript: `Welcome. [pause] Settle into your space now. [pause] Let’s bring your attention gently inward. [long pause]
+
+Today, we're going to explore Coherent Breathing. [pause] This rhythmic practice is a wonderful way to harmonize your nervous system, bringing a sense of calm and balance. [long pause]
+
+Our pattern will be a gentle inhale for a count of five, [pause] and then a smooth exhale for a count of five. [pause] There’s no need to strain or push. [pause] Simply allow your breath to flow naturally with the rhythm. [long pause]
+
+Let's begin. [long pause]
+
+Breathe in, two, three, four, five. [pause]
+Breathe out, two, three, four, five. [long pause]
+
+Breathe in, two, three, four, five. [pause]
+Breathe out, two, three, four, five. [long pause]
+
+Feel the gentle expansion and release. [pause]
+
+Breathe in, two, three, four, five. [pause]
+Breathe out, two, three, four, five. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Finding your natural rhythm here. [pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Allow your body to soften with each exhale. [pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Just noticing the rise and fall. [pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+You’re doing beautifully. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Continue to let your breath flow. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Breathe in. [long pause]
+Breathe out. [long pause]
+
+Almost there. [long pause]
+
+Breathe in, two, three, four, five. [pause]
+Breathe out, two, three, four, five. [long pause]
+
+One last round with this rhythm. [pause]
+
+Breathe in, two, three, four, five. [pause]
+Breathe out, two, three, four, five. [long pause]
+
+Now, allow your breath to return to its natural pace. [long pause] Take a moment to notice how you feel. [pause] You’ve just offered a beautiful gift to your nervous system, [pause] supporting its ability to find calm and resilience. [long pause] Carry this gentle awareness with you as you move forward.`,
   },
   {
     id: "four-seven-eight",
@@ -142,6 +319,59 @@ export const BREATHWORK_PRACTICES: PracticeConfig[] = [
       { label: "Hold", seconds: 7, cue: "Hold gently" },
       { label: "Exhale", seconds: 8, cue: "Slow exhale" },
     ],
+    ttsScript: `Welcome. [pause] Take a moment to just settle in. [pause] Find a comfortable position, [pause] allowing your body to soften wherever it can. [long pause]
+
+Today, we'll explore 4-7-8 breathing, a simple yet powerful technique that acts like a natural tranquilizer for your nervous system. [pause] It’s especially wonderful for unwinding and preparing for rest. [long pause]
+
+Here’s how it works: you'll gently inhale through your nose for a count of four, [pause] hold your breath for a count of seven, [pause] and then exhale completely through your mouth, [pause] making a soft whooshing sound, [pause] for a count of eight. [pause] Let’s try it together. [long pause]
+
+Breathe in. [pause] Two, three, four. [pause]
+Hold. [long pause] Two, three, four, five, six, seven. [long pause]
+Breathe out. [long pause] Two, three, four, five, six, seven, eight. [long pause]
+
+Let’s go again. [pause] Relaxing into the rhythm. [pause]
+
+Breathe in. [pause] Two, three, four. [pause]
+Hold. [long pause] Two, three, four, five, six, seven. [long pause]
+Breathe out. [long pause] Two, three, four, five, six, seven, eight. [long pause]
+
+Feeling your body soften with each exhalation. [pause]
+
+Breathe in. [pause]
+Hold. [long pause]
+Breathe out. [long pause]
+
+Inhaling calm. [pause] Releasing tension. [pause]
+
+Breathe in. [pause]
+Hold. [long pause]
+Breathe out. [long pause]
+
+Continuing at your own pace now, [pause] guided by my voice. [long pause]
+
+Breathe in. [pause]
+Hold. [long pause]
+Breathe out. [long pause]
+
+Breathe in. [pause]
+Hold. [long pause]
+Breathe out. [long pause]
+
+Just a few more rounds. [pause] Allowing your nervous system to fully unwind. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+
+Final round. [pause] Deepest breath yet. [long pause]
+
+Breathe in. [long pause]
+Hold. [long pause]
+Breathe out. [long pause]
+
+[long pause]
+
+Gently return to your natural breath. [pause] Notice the stillness you've created within. [pause] You’ve just offered your nervous system a profound moment of peace and calm. [long pause] Carry this feeling with you. [long pause]`,
   },
 ];
 

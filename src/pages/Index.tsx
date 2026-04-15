@@ -4,6 +4,9 @@ import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
+import { JournalSection, DottedDivider, CelestialHeader } from "@/components/JournalBorders";
+import HomePlannerCard from "@/components/HomePlannerCard";
+import HomeTodoList from "@/components/HomeTodoList";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -20,33 +23,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, subDays } from "date-fns";
 import { toast } from "sonner";
 import { pickDailyPosts } from "@/lib/feed-utils";
+import { useTodayFocus } from "@/hooks/useTodayFocus";
 
-const FOCUS: Record<Phase, { nutrition: string; movement: string; nervous: string; cycle: string }> = {
-  follicular: {
-    nutrition: "Embrace fermented foods and complex carbs as estrogen rises.",
-    movement: "This is your strength window — lift heavy, push harder.",
-    nervous: "Coherent breathing — 5 breaths per minute for 5 minutes.",
-    cycle: "Estrogen is climbing — energy and clarity are your superpowers right now.",
-  },
-  menstrual: {
-    nutrition: "Focus on iron-rich foods with vitamin C to support your body.",
-    movement: "Rest is productive. Gentle yoga and walking only.",
-    nervous: "Physiological sigh — instant calm when you need it.",
-    cycle: "Honour your need for rest. This is your inner winter.",
-  },
-  ovulatory: {
-    nutrition: "Antioxidants, folate, and zinc for peak hormonal output.",
-    movement: "Peak energy — go for high intensity and group workouts.",
-    nervous: "You're naturally more social — lean into connection.",
-    cycle: "You're at your communicative peak — use this window wisely.",
-  },
-  luteal: {
-    nutrition: "Higher calorie needs are normal. Eat nutrient-dense complex carbs.",
-    movement: "Intuitive movement. Pilates, moderate strength, walk when in doubt.",
-    nervous: "4-7-8 breathing before bed for deeper sleep.",
-    cycle: "Progesterone is rising — turn inward and prioritise rest.",
-  },
+import menstrualHero from "@/assets/phases/menstrual-hero.png";
+import follicularHero from "@/assets/phases/follicular-hero.png";
+import ovulatoryHero from "@/assets/phases/ovulatory-hero.png";
+import lutealHero from "@/assets/phases/luteal-hero.png";
+import welcomeHero from "@/assets/phases/welcome-hero.png";
+
+const PHASE_HERO_IMAGE: Record<Phase, string> = {
+  menstrual: menstrualHero,
+  follicular: follicularHero,
+  ovulatory: ovulatoryHero,
+  luteal: lutealHero,
 };
+
+
 
 const PHASE_SUBTEXT: Record<Phase, string> = {
   menstrual: "Your body is in its Menstrual phase — rest and restoration are your focus.",
@@ -109,7 +101,7 @@ export default function HomePage() {
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const focus = FOCUS[info.phase];
+  const { focus } = useTodayFocus();
 
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
@@ -182,14 +174,16 @@ export default function HomePage() {
     return [...pinned, ...rest].slice(0, 10);
   })() : MOCK_POSTS;
 
+  const shownPostIds = new Set(displayPosts.map((p: FeedPost) => p.id));
   const historySections: { date: Date; posts: FeedPost[] }[] = [];
   if (showFeedHistory && allFeedPosts) {
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
       const pastStr = format(pastDate, "yyyy-MM-dd");
-      const pastPosts = pickDailyPosts(allFeedPosts, pastStr);
+      const pastPosts = pickDailyPosts(allFeedPosts, pastStr, 5, shownPostIds);
       if (pastPosts.length > 0) {
         historySections.push({ date: pastDate, posts: pastPosts });
+        pastPosts.forEach((p: FeedPost) => shownPostIds.add(p.id));
       }
     }
   }
@@ -227,22 +221,65 @@ export default function HomePage() {
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
         <SignalPulse />
-        <div className="text-center max-w-xl mx-auto relative z-10">
-          <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-8">
-            {greeting}, {firstName || "you"}.
-          </motion.p>
-          <motion.p {...fadeUp(0.35)} className="font-body text-[1.75rem] md:text-[2rem] font-bold text-primary-foreground leading-tight max-w-md mx-auto mb-6">
-            {PHASE_SUBTEXT[info.phase]}
-          </motion.p>
-          <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-10">
-            Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
-          </motion.p>
-          {!hasSetCycle && (
-            <motion.div {...fadeUp(0.5)} className="mb-8">
-              <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                Set up your cycle <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
+        <div className="text-center max-w-xl mx-auto relative z-10 px-4">
+          {user ? (
+            <>
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
+                {greeting}, {firstName || "you"}.
+              </motion.p>
+              <motion.div
+                key={info.phase}
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
+              >
+                <img
+                  src={PHASE_HERO_IMAGE[info.phase]}
+                  alt={`${PHASE_SHORT[info.phase]} phase illustration`}
+                  className="w-full h-auto object-contain drop-shadow-md"
+                />
+              </motion.div>
+              <motion.p {...fadeUp(0.35)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-3" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
+                {PHASE_SUBTEXT[info.phase]}
+              </motion.p>
+              <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-6 md:mb-8">
+                Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
+              </motion.p>
+              {!hasSetCycle && (
+                <motion.div {...fadeUp(0.5)} className="mb-6 md:mb-8">
+                  <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
+                    Set up your cycle <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </motion.div>
+              )}
+            </>
+          ) : (
+            <>
+              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
+                {greeting}.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
+              >
+                <img
+                  src={welcomeHero}
+                  alt="Tune into your signal"
+                  className="w-full h-auto object-contain drop-shadow-md"
+                />
+              </motion.div>
+              <motion.p {...fadeUp(0.4)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-5" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
+                Your body already knows. It's time to tune into the signal.
+              </motion.p>
+              <motion.div {...fadeUp(0.55)} className="mb-6">
+                <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
+                  Get started <ArrowRight className="h-4 w-4" />
+                </Link>
+              </motion.div>
+            </>
           )}
         </div>
       </AtmosphericHero>
@@ -267,23 +304,27 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {/* ═══ SECTION 2 — TODAY'S FOCUS ═══ */}
+      {/* ═══ SECTION 2 — PLANNER + TO-DO + TODAY'S FOCUS ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
-          <motion.div {...fadeUp(0.1)} className="card-warm space-y-3">
-            <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>today</p>
-            {[
-              { label: "eat", value: focus.nutrition },
-              { label: "move", value: focus.movement },
-              { label: "rest", value: focus.nervous },
-              { label: "cycle", value: focus.cycle },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex gap-3 items-start">
-                <span className="font-body text-section-label w-10 pt-0.5" style={{ color: 'hsl(var(--label-color))' }}>{label}</span>
-                <p className="text-body-lg text-foreground/70 leading-snug flex-1">{value}</p>
-              </div>
-            ))}
-          </motion.div>
+          {user && <HomePlannerCard />}
+          {user && <HomeTodoList />}
+          <JournalSection title="today" showCorners>
+            <div className="space-y-2">
+              {[
+                { label: "eat", value: focus.eat, href: "/nutrition" },
+                { label: "move", value: focus.move, href: "/movement" },
+                { label: "rest", value: focus.rest, href: "/practice" },
+                { label: "cycle", value: focus.cycle, href: "/cycle" },
+              ].map(({ label, value, href }) => (
+                <Link key={label} to={href} className="flex gap-3 items-start group hover:bg-foreground/[0.03] -mx-2 px-2 py-1.5 rounded-lg transition-colors relative">
+                  <span className="font-hand text-sm w-10 pt-0.5 text-primary/50">{label}</span>
+                  <p className="font-hand text-[15px] text-foreground/65 leading-snug flex-1 group-hover:text-foreground transition-colors border-b border-dotted border-foreground/8 pb-1">{value}</p>
+                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all mt-1 flex-shrink-0" />
+                </Link>
+              ))}
+            </div>
+          </JournalSection>
         </div>
       </ContentSection>
 
@@ -297,9 +338,6 @@ export default function HomePage() {
                 knowledge incoming
               </p>
             </div>
-            <p className="font-body text-sm text-muted-foreground mb-4">
-              10 insights a day — sourced from books that matter
-            </p>
             {feedLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (

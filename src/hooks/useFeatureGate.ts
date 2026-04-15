@@ -70,6 +70,9 @@ export const FEATURE_ACCESS: Record<
 
   // Recommendations
   recommendations:      { free: "locked", rooted: "locked", nourished: "locked", thriving: "full" },
+
+  // Connect
+  connect_attachment_quiz: { free: "locked", rooted: "locked", nourished: "full", thriving: "full" },
 };
 
 /** Which minimum tier each route requires (for full page blocking) */

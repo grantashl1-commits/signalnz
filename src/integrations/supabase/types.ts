@@ -65,6 +65,39 @@ export type Database = {
         }
         Relationships: []
       }
+      attachment_quiz_results: {
+        Row: {
+          answers: Json
+          attachment_style: string | null
+          created_at: string
+          id: string
+          self_esteem_score: number | null
+          style_scores: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          attachment_style?: string | null
+          created_at?: string
+          id?: string
+          self_esteem_score?: number | null
+          style_scores?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          attachment_style?: string | null
+          created_at?: string
+          id?: string
+          self_esteem_score?: number | null
+          style_scores?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       body_measurements: {
         Row: {
           arms: string | null
@@ -422,41 +455,6 @@ export type Database = {
           visibility?: Json
         }
         Relationships: []
-      }
-      connect_messages: {
-        Row: {
-          connection_id: string
-          content: string
-          created_at: string
-          id: string
-          metadata: Json | null
-          sender_role: string
-        }
-        Insert: {
-          connection_id: string
-          content: string
-          created_at?: string
-          id?: string
-          metadata?: Json | null
-          sender_role?: string
-        }
-        Update: {
-          connection_id?: string
-          content?: string
-          created_at?: string
-          id?: string
-          metadata?: Json | null
-          sender_role?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "connect_messages_connection_id_fkey"
-            columns: ["connection_id"]
-            isOneToOne: false
-            referencedRelation: "partner_connections"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       cycle_logs: {
         Row: {
@@ -1274,22 +1272,34 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          input_json: Json | null
           month_key: string
+          plan_category: string
           plan_type: string
+          result_json: Json | null
+          status: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          input_json?: Json | null
           month_key: string
+          plan_category?: string
           plan_type?: string
+          result_json?: Json | null
+          status?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          input_json?: Json | null
           month_key?: string
+          plan_category?: string
           plan_type?: string
+          result_json?: Json | null
+          status?: string
           user_id?: string
         }
         Relationships: []
@@ -1334,6 +1344,7 @@ export type Database = {
           dietary_dislikes: string[] | null
           dietary_preferences: string[] | null
           display_name: string | null
+          equipment_preference: string | null
           fat_target_g: number | null
           fitness_level: string | null
           goal_category_id: string | null
@@ -1366,6 +1377,7 @@ export type Database = {
           dietary_dislikes?: string[] | null
           dietary_preferences?: string[] | null
           display_name?: string | null
+          equipment_preference?: string | null
           fat_target_g?: number | null
           fitness_level?: string | null
           goal_category_id?: string | null
@@ -1398,6 +1410,7 @@ export type Database = {
           dietary_dislikes?: string[] | null
           dietary_preferences?: string[] | null
           display_name?: string | null
+          equipment_preference?: string | null
           fat_target_g?: number | null
           fitness_level?: string | null
           goal_category_id?: string | null
@@ -1475,6 +1488,63 @@ export type Database = {
           },
         ]
       }
+      push_tokens: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          platform?: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          created_at: string
+          function_name: string
+          id: string
+          request_count: number
+          user_identifier: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          function_name: string
+          id?: string
+          request_count?: number
+          user_identifier: string
+          window_start: string
+        }
+        Update: {
+          created_at?: string
+          function_name?: string
+          id?: string
+          request_count?: number
+          user_identifier?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           converted_at: string | null
@@ -1499,6 +1569,33 @@ export type Database = {
           referred_user_id?: string | null
           referrer_id?: string
           status?: string
+        }
+        Relationships: []
+      }
+      saved_parenting_scripts: {
+        Row: {
+          age_group: string
+          id: string
+          module_id: string | null
+          saved_at: string
+          script_id: string
+          user_id: string
+        }
+        Insert: {
+          age_group: string
+          id?: string
+          module_id?: string | null
+          saved_at?: string
+          script_id: string
+          user_id: string
+        }
+        Update: {
+          age_group?: string
+          id?: string
+          module_id?: string | null
+          saved_at?: string
+          script_id?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1721,6 +1818,42 @@ export type Database = {
         }
         Relationships: []
       }
+      todos: {
+        Row: {
+          archived: boolean
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       training_programs: {
         Row: {
           created_at: string
@@ -1887,6 +2020,7 @@ export type Database = {
       }
       user_plans: {
         Row: {
+          current_session_index: number | null
           cycle_phase_at_generation: string | null
           cycle_week: number | null
           generated_at: string
@@ -1897,6 +2031,7 @@ export type Database = {
           week_number: number | null
         }
         Insert: {
+          current_session_index?: number | null
           cycle_phase_at_generation?: string | null
           cycle_week?: number | null
           generated_at?: string
@@ -1907,6 +2042,7 @@ export type Database = {
           week_number?: number | null
         }
         Update: {
+          current_session_index?: number | null
           cycle_phase_at_generation?: string | null
           cycle_week?: number | null
           generated_at?: string
@@ -2091,6 +2227,8 @@ export type Database = {
       }
       workout_logs: {
         Row: {
+          avg_bpm: number | null
+          calories: number | null
           completed: boolean
           created_at: string
           cycle_phase: string | null
@@ -2098,12 +2236,17 @@ export type Database = {
           exercises: Json
           hr_session_id: string | null
           id: string
+          max_bpm: number | null
           notes: string | null
+          plan_id: string | null
           session_date: string
           user_id: string
           workout_template_id: string | null
+          zone2_plus_percent: number | null
         }
         Insert: {
+          avg_bpm?: number | null
+          calories?: number | null
           completed?: boolean
           created_at?: string
           cycle_phase?: string | null
@@ -2111,12 +2254,17 @@ export type Database = {
           exercises?: Json
           hr_session_id?: string | null
           id?: string
+          max_bpm?: number | null
           notes?: string | null
+          plan_id?: string | null
           session_date?: string
           user_id: string
           workout_template_id?: string | null
+          zone2_plus_percent?: number | null
         }
         Update: {
+          avg_bpm?: number | null
+          calories?: number | null
           completed?: boolean
           created_at?: string
           cycle_phase?: string | null
@@ -2124,12 +2272,23 @@ export type Database = {
           exercises?: Json
           hr_session_id?: string | null
           id?: string
+          max_bpm?: number | null
           notes?: string | null
+          plan_id?: string | null
           session_date?: string
           user_id?: string
           workout_template_id?: string | null
+          zone2_plus_percent?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "workout_logs_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "user_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workout_sessions: {
         Row: {
@@ -2265,6 +2424,42 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_connections_safe: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          join_code: string | null
+          member_user_id: string | null
+          partner_name: string | null
+          partner_user_id: string | null
+          shared_preferences: Json | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          join_code?: string | null
+          member_user_id?: string | null
+          partner_name?: string | null
+          partner_user_id?: string | null
+          shared_preferences?: Json | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          join_code?: string | null
+          member_user_id?: string | null
+          partner_name?: string | null
+          partner_user_id?: string | null
+          shared_preferences?: Json | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       _postgis_deprecate: {
@@ -2394,6 +2589,22 @@ export type Database = {
             }
             Returns: string
           }
+      check_rate_limit: {
+        Args: {
+          _function_name: string
+          _max_per_minute?: number
+          _user_id: string
+        }
+        Returns: Json
+      }
+      deduct_ai_credits: {
+        Args: {
+          p_cost: number
+          p_function_name?: string
+          p_user_identifier: string
+        }
+        Returns: number
+      }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {
@@ -2534,6 +2745,14 @@ export type Database = {
         Returns: boolean
       }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      lookup_connection_by_code: {
+        Args: { _code: string }
+        Returns: {
+          id: string
+          partner_name: string
+          status: string
+        }[]
+      }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -3166,6 +3385,16 @@ export type Database = {
         }
         Returns: string
       }
+      verify_partner_pin:
+        | {
+            Args: { _code: string; _pin_hash: string }
+            Returns: {
+              connection_id: string
+              connection_status: string
+              partner_name: string
+            }[]
+          }
+        | { Args: { _connection_id: string; _pin: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

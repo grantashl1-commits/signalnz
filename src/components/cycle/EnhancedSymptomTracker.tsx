@@ -4,6 +4,7 @@ import { Check, X } from "lucide-react";
 import { Phase } from "@/lib/cycle-utils";
 import { getStructuredSymptoms, setStructuredSymptoms, SymptomEntry } from "@/lib/cycle-symptom-utils";
 import { haptic } from "@/hooks/use-mobile";
+import { SYMPTOM_ICONS } from "@/assets/symptoms";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -60,6 +61,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
   const [sleepQuality, setSleepQuality] = useState<number>(3);
   const [nightWaking, setNightWaking] = useState(false);
   const [sleepHours, setSleepHours] = useState("");
+  const [bedtime, setBedtime] = useState("");
+  const [wakeTime, setWakeTime] = useState("");
   const [bbt, setBbt] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -73,6 +76,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
       setSleepQuality(existing.sleepQuality ?? 3);
       setNightWaking(existing.nightWaking ?? false);
       setSleepHours(existing.sleepHours ?? "");
+      setBedtime(existing.bedtime ?? "");
+      setWakeTime(existing.wakeTime ?? "");
       setBbt(existing.bbt ?? "");
       setNotes(existing.notes ?? "");
     }
@@ -103,6 +108,8 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
       sleepQuality,
       nightWaking,
       sleepHours: sleepHours || undefined,
+      bedtime: bedtime || undefined,
+      wakeTime: wakeTime || undefined,
       bbt: bbt || undefined,
       notes: notes || undefined,
     });
@@ -166,7 +173,7 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                     <button
                       key={symptom}
                       onClick={() => toggleSeverity(symptom)}
-                      className={`touch-btn rounded-xl px-3 py-2.5 min-h-[44px] text-left transition-all flex items-center justify-between ${
+                      className={`touch-btn rounded-xl px-3 py-2.5 min-h-[44px] text-left transition-all flex items-center gap-2 ${
                         severity > 0 ? "ring-1" : "bg-secondary/50"
                       }`}
                       style={severity > 0 ? { 
@@ -174,7 +181,15 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                         borderColor: color,
                       } : {}}
                     >
-                      <span className="font-body text-[11px] text-foreground leading-tight">{symptom}</span>
+                      {SYMPTOM_ICONS[symptom] && (
+                        <img
+                          src={SYMPTOM_ICONS[symptom]}
+                          alt=""
+                          className="w-6 h-6 shrink-0 object-contain"
+                          loading="lazy"
+                        />
+                      )}
+                      <span className="font-body text-[11px] text-foreground leading-tight flex-1">{symptom}</span>
                       {severity > 0 && (
                         <span className="font-body text-[9px] shrink-0 ml-1" style={{ color }}>
                           {SEVERITY_LABELS[severity]}
@@ -206,6 +221,28 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
                       {n}
                     </button>
                   ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="font-body text-xs text-muted-foreground mb-1">bedtime</p>
+                  <input
+                    type="time"
+                    value={bedtime}
+                    onChange={(e) => setBedtime(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 min-h-[44px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    style={{ fontSize: "16px" }}
+                  />
+                </div>
+                <div>
+                  <p className="font-body text-xs text-muted-foreground mb-1">wake time</p>
+                  <input
+                    type="time"
+                    value={wakeTime}
+                    onChange={(e) => setWakeTime(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 min-h-[44px] font-body text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    style={{ fontSize: "16px" }}
+                  />
                 </div>
               </div>
               <button

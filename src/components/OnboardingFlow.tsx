@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import SignalLogo from "@/components/SignalLogo";
+import iconCream from "@/assets/icon-cream.png";
 import { setLastPeriodStart } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format, differenceInYears } from "date-fns";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -23,7 +24,7 @@ interface Props {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const MOVEMENT_GOALS = [
   { id: "strength", label: "Build strength" },
@@ -53,6 +54,12 @@ const FITNESS_LEVELS = [
   { id: "beginner", label: "Beginner", desc: "New to structured training or returning after a break" },
   { id: "intermediate", label: "Intermediate", desc: "Training 2–3× per week with some experience" },
   { id: "advanced", label: "Advanced", desc: "Training 4–5× per week, comfortable with complex movements" },
+];
+
+const EQUIPMENT_OPTIONS = [
+  { id: "home-none", label: "At Home — No Equipment", desc: "Bodyweight workouts only" },
+  { id: "home-some", label: "At Home — Some Equipment", desc: "Dumbbells, bands, kettlebells, mat" },
+  { id: "gym", label: "Gym", desc: "Full gym access" },
 ];
 
 const LOADING_MESSAGES = [
@@ -169,6 +176,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
   const { updateDisplayName } = useProfile();
   const { setCycleStartDate } = useCycle();
 
+  // Track onboarding start
+  useEffect(() => {
+    trackEvent("onboarding_started");
+    trackEvent("onboarding_step_viewed", { step: 0, step_name: "welcome" });
+  }, []);
+
   // Navigation
   const [step, setStep] = useState(0);
 
@@ -204,12 +217,27 @@ export default function OnboardingFlow({ onComplete }: Props) {
   // Step 5 — Fitness Level
   const [fitnessLevel, setFitnessLevel] = useState<string | null>(null);
 
-  // Step 6 — Generating
+  // Step 6 — Equipment
+  const [equipmentPref, setEquipmentPref] = useState<string>("home-some");
+
+  // Step 7 — Generating
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const next = () => { haptic("light"); setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1)); };
-  const back = () => { haptic("light"); setStep((s) => Math.max(s - 1, 0)); };
+  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "equipment", "generating"];
+
+  const next = () => {
+    haptic("light");
+    const nextStep = Math.min(step + 1, TOTAL_STEPS - 1);
+    trackEvent("onboarding_step_completed", { step: step, step_name: STEP_NAMES[step] });
+    trackEvent("onboarding_step_viewed", { step: nextStep, step_name: STEP_NAMES[nextStep] });
+    setStep(nextStep);
+  };
+  const back = () => {
+    haptic("light");
+    trackEvent("onboarding_step_back", { from_step: step, from_step_name: STEP_NAMES[step] });
+    setStep((s) => Math.max(s - 1, 0));
+  };
 
   // Derived macros (calculated once for display in step 4)
   const macros = weightKg && heightCm
@@ -304,7 +332,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Cycle through loading messages on step 6
   useEffect(() => {
-    if (step !== 6) return;
+    if (step !== 7) return;
     setLoadingMsgIndex(0);
     const interval = setInterval(() => {
       setLoadingMsgIndex((i) => {
@@ -320,7 +348,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Auto-save when loading screen finishes
   useEffect(() => {
-    if (step === 6 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
+    if (step === 7 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
       handleFinish();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -367,7 +395,99 @@ export default function OnboardingFlow({ onComplete }: Props) {
             cycle_status: cycleStatus ?? "cycling",
             meal_prep_day: mealPrepDay,
             cycle_mode: cycleStatus ?? "cycling",
+            equipment_preference: equipmentPref,
           } as any, { onConflict: "user_id" });
+
+        // ── Auto-generate first training plan in background ──
+        const lastWorkoutMap: Record<string, string> = {
+          beginner: "never",
+          intermediate: "this-month",
+          advanced: "this-week",
+        };
+        const goalMap: Record<string, string> = {
+          strength: "stronger",
+          fat_loss: "lose-weight",
+          cardio: "lean",
+          stress: "lean",
+          consistency: "stronger",
+          mobility: "lean",
+          event: "stronger",
+          recovery: "lean",
+        };
+
+        supabase.functions.invoke("generate-plan", {
+          body: {
+            cyclePhase: cycleStatus === "cycling" && lastPeriodDate
+              ? undefined // let the edge function determine from profile
+              : "follicular",
+            answers: {
+              height: heightCm || 165,
+              weight: weightKg || 65,
+              age: dob ? calcAge(dob) : 30,
+              goal: goalMap[movementGoals[0]] || "stronger",
+              goalWeight: goalWeightKg,
+              weeksPlan: 4,
+              daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
+              lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
+              equipment: equipmentPref,
+            },
+          },
+        }).then((resp) => {
+          if (resp.error) {
+            console.warn("Auto training plan generation failed:", resp.error);
+          } else {
+            console.log("Auto training plan generated successfully");
+          }
+        }).catch((err) => {
+          console.warn("Auto training plan generation failed:", err);
+        });
+
+        // ── Auto-generate first nutrition plan in background ──
+        const cycleDay = 1; // default start
+        const dietPrefMap: Record<string, string> = {
+          omnivore: "", vegetarian: "Vegetarian", vegan: "Vegan",
+          gluten_free: "Gluten-free", dairy_free: "Dairy-free",
+          pescatarian: "Pescatarian", low_carb: "Keto", mediterranean: "",
+        };
+        const nutritionPrefs = {
+          breakfast: "rotate",
+          lunch: "rotate",
+          dinner: "mix",
+          prepDays: [mealPrepDay || "Sunday"],
+          adults: 1,
+          kids: 0,
+          dietType: dietPrefMap[dietaryPrefs[0]] || "",
+          dislikes: dietaryDislikes.join(", "),
+          calorieTarget: String(m.calories),
+        };
+
+        supabase.functions.invoke("meal-plan-ai", {
+          body: {
+            preferences: nutritionPrefs,
+            startCycleDay: cycleDay,
+            endCycleDay: cycleDay + 6,
+            userDietaryDislikes: dietaryDislikes,
+          },
+        }).then(async (resp) => {
+          if (resp.error) {
+            console.warn("Auto nutrition plan generation failed:", resp.error);
+          } else {
+            console.log("Auto nutrition plan generated successfully");
+            // Save to localStorage for the nutrition module to pick up
+            try {
+              const planData = resp.data;
+              if (planData?.plan) {
+                localStorage.setItem("signal_meal_plan", JSON.stringify({
+                  plan: planData.plan,
+                  generatedAt: new Date().toISOString(),
+                  cycleDay,
+                }));
+              }
+            } catch { /* ignore */ }
+          }
+        }).catch((err) => {
+          console.warn("Auto nutrition plan generation failed:", err);
+        });
       }
 
       // Keep localStorage fallbacks for existing consumers
@@ -380,6 +500,13 @@ export default function OnboardingFlow({ onComplete }: Props) {
       } catch { /* ignore */ }
 
       localStorage.setItem("signal_onboarding_complete", "true");
+      localStorage.setItem("cycleModeSelected", "true");
+      trackEvent("onboarding_completed", {
+        goals_count: movementGoals.length,
+        cycle_status: cycleStatus,
+        fitness_level: fitnessLevel,
+        has_dietary_prefs: dietaryPrefs.length > 0,
+      });
     } catch (e) {
       console.error("Onboarding save error:", e);
     }
@@ -396,10 +523,11 @@ export default function OnboardingFlow({ onComplete }: Props) {
     if (step === 3) return movementGoals.length > 0;
     if (step === 4) return true;
     if (step === 5) return !!fitnessLevel;
+    if (step === 6) return !!equipmentPref;
     return true;
   };
 
-  const showProgress = step >= 1 && step <= 5;
+  const showProgress = step >= 1 && step <= 6;
 
   return (
     <div
@@ -411,7 +539,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         {/* Step progress bar */}
         {showProgress && (
           <div className="flex justify-center gap-1.5 mb-8">
-            {[1, 2, 3, 4, 5].map((s) => (
+            {[1, 2, 3, 4, 5, 6].map((s) => (
               <div
                 key={s}
                 className={cn(
@@ -424,7 +552,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         )}
 
         {/* Back button */}
-        {step > 0 && step < 6 && (
+        {step > 0 && step < 7 && (
           <button
             onClick={back}
             className="absolute top-10 left-6 flex items-center gap-1 text-white/70 hover:text-white transition-colors font-body text-sm z-20"
@@ -439,7 +567,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {step === 0 && (
             <motion.div key="welcome" {...slide} className="text-center space-y-8 pt-4">
               <div className="flex justify-center">
-                <SignalLogo size={64} className="text-white" />
+                <img src={iconCream} alt="Signal" className="w-16 h-16" />
               </div>
               <div className="space-y-3">
                 <h1 className="font-display text-4xl font-bold text-white tracking-wide uppercase">Signal</h1>
@@ -611,7 +739,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
           {/* ───── Step 2: Your Cycle ───── */}
           {step === 2 && (
-            <motion.div key="cycle" {...slide} className="space-y-6 pt-8">
+            <motion.div key="cycle" {...slide} className="space-y-6 pt-8 pb-8">
               <StepHeading title="Your cycle" sub="This shapes your training and nutrition recommendations each week." />
 
               <div className="space-y-3">
@@ -890,12 +1018,54 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 ))}
               </div>
 
-              <NextButton onClick={next} disabled={!fitnessLevel} label="Generate my plan" />
+              <NextButton onClick={next} disabled={!fitnessLevel} />
             </motion.div>
           )}
 
-          {/* ───── Step 6: Generating Plan ───── */}
+          {/* ───── Step 6: Equipment ───── */}
           {step === 6 && (
+            <motion.div key="equipment" {...slide} className="space-y-6 pt-8">
+              <StepHeading title="What equipment do you have?" sub="We'll tailor your workouts to match." />
+
+              <div className="space-y-3">
+                {EQUIPMENT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => { haptic("light"); setEquipmentPref(opt.id); }}
+                    className={cn(
+                      "w-full rounded-2xl p-5 text-left transition-all border",
+                      equipmentPref === opt.id
+                        ? "bg-white border-white shadow-lg"
+                        : "bg-white/10 border-white/15 hover:bg-white/15"
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className={cn(
+                          "font-display text-lg font-bold",
+                          equipmentPref === opt.id ? "text-primary" : "text-white"
+                        )}>{opt.label}</p>
+                        <p className={cn(
+                          "font-body text-sm mt-1",
+                          equipmentPref === opt.id ? "text-primary/70" : "text-white/60"
+                        )}>{opt.desc}</p>
+                      </div>
+                      {equipmentPref === opt.id && (
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <NextButton onClick={next} disabled={!equipmentPref} label="Generate my plan" />
+            </motion.div>
+          )}
+
+          {/* ───── Step 7: Generating Plan ───── */}
+          {step === 7 && (
             <motion.div
               key="generating"
               initial={{ opacity: 0 }}
@@ -907,7 +1077,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 animate={{ scale: [1, 1.08, 1], opacity: [0.9, 1, 0.9] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <SignalLogo size={72} className="text-white" />
+                <img src={iconCream} alt="Signal" className="w-[72px] h-[72px]" />
               </motion.div>
 
               {/* Loading messages */}

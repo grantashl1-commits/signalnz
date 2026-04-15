@@ -1,13 +1,14 @@
 import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Landmark, Copy, Check } from "lucide-react";
+import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Copy, Check } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
-import SleepCard from "@/components/practice/SleepCard";
+
+import HabitCarousel from "@/components/HabitCarousel";
 import {
   getHabits, addHabit, removeHabit,
   HABIT_CATEGORIES,
@@ -275,8 +276,8 @@ export default function PracticePage() {
         <AtmosphericHero size="md">
           <SignalPulse />
           <div className="text-center relative z-10">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Practice</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Ritual</h1>
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Daily</p>
+            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Habits</h1>
             <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
               Build rituals that honour your cycle.
             </p>
@@ -284,11 +285,6 @@ export default function PracticePage() {
         </AtmosphericHero>
 
         <div className="px-5 md:px-8 pb-8 md:pb-12">
-
-        {/* Sleep Card */}
-        <motion.div {...fadeUp(0.05)} className="mb-6">
-          <SleepCard phaseColor={phaseColor} />
-        </motion.div>
 
         {/* Progress Summary / Empty State */}
         {totalHabits === 0 ? (
@@ -503,6 +499,10 @@ export default function PracticePage() {
           )}
         </div>
 
+        {/* ═══ HABIT WISDOM CAROUSEL ═══ */}
+        <HabitCarousel />
+
+        {/* Sleep tracking moved to Cycle page check-in */}
 
         {/* ═══ CATEGORY CHOOSER SHEET ═══ */}
         <AnimatePresence>
@@ -537,17 +537,16 @@ export default function PracticePage() {
                         nutrition:   { icon: Salad, tint: "bg-[hsl(142_30%_95%)]", border: "border-[hsl(142_35%_78%)]" },
                         movement:    { icon: Zap, tint: "bg-[hsl(35_40%_95%)]", border: "border-[hsl(35_45%_78%)]" },
                         "self-care": { icon: Sparkles, tint: "bg-[hsl(330_30%_96%)]", border: "border-[hsl(330_35%_80%)]" },
-                        foundations: { icon: Landmark, tint: "bg-[hsl(260_25%_95%)]", border: "border-[hsl(260_30%_80%)]" },
                       };
-                      return [...HABIT_CATEGORIES, { id: "foundations" as HabitCategory, label: "Foundations", color: "hsl(var(--primary))" }].map(cat => {
-                        const meta = CATEGORY_META[cat.id] || CATEGORY_META.foundations;
+                      return HABIT_CATEGORIES.map(cat => {
+                        const meta = CATEGORY_META[cat.id] || CATEGORY_META["self-care"];
                         const Icon = meta.icon;
                         return (
                           <button
                             key={cat.id}
                             onClick={() => {
                               setShowCategoryChooser(false);
-                              openPicker(cat.id === ("foundations" as string) ? "self-care" : cat.id as HabitCategory);
+                              openPicker(cat.id as HabitCategory);
                             }}
                             className={`touch-btn rounded-[16px] h-[88px] flex flex-col items-center justify-center gap-2 border shadow-soft hover:shadow-medium hover:border-primary/20 ${meta.tint} ${meta.border}`}
                           >

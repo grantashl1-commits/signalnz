@@ -10,12 +10,14 @@ import {
   SELF_CARE_RITUALS,
   type Habit,
   type HabitCategory,
+  type HabitFrequencyType,
 } from "@/data/self-care-rituals";
-import { HABIT_LIBRARY, getLibraryHabitsForCategory, type LibraryHabit } from "@/data/habit-library";
+import { HABIT_LIBRARY, getLibraryHabitsForCategory, parseFrequencyType, type LibraryHabit } from "@/data/habit-library";
 import { haptic } from "@/hooks/use-mobile";
 import SleepCard from "@/components/practice/SleepCard";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 import { SUPPLEMENT_GUIDE } from "@/data/nutrition-insights";
+import { getWellnessStackSupplements } from "@/components/nutrition/SupplementRecommender";
 import { useCycle } from "@/contexts/CycleContext";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -90,13 +92,14 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
     if (getHabits().length === 0) setEditMode(false);
   };
 
-  const handleAddFromLibrary = (name: string, id: string, category: HabitCategory) => {
+  const handleAddFromLibrary = (name: string, id: string, category: HabitCategory, freqType?: HabitFrequencyType) => {
     if (habits.some(h => h.name === name)) return;
     haptic("medium");
     const habit: Habit = {
       id: `${category}-${id}-${Date.now()}`,
       name,
       category,
+      frequencyType: freqType || "daily",
       createdAt: new Date().toISOString(),
     };
     addHabit(habit);
@@ -119,6 +122,16 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
 
   const completedCount = habits.filter(h => completedIds.has(h.id)).length;
 
+  // Group habits by frequency type
+  const habitsByFreq = useMemo(() => {
+    const groups: Record<HabitFrequencyType, Habit[]> = { daily: [], weekly: [], monthly: [] };
+    habits.forEach(h => {
+      const ft = h.frequencyType || "daily";
+      groups[ft].push(h);
+    });
+    return groups;
+  }, [habits]);
+
   // Phase 5D: smart nudges (shown when user has habits but none are nudge-worthy, or has no habits)
   const userHabitIds = useMemo(() => new Set(habits.map(h => h.id)), [habits]);
   const smartNudges = useMemo(
@@ -127,12 +140,14 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
   );
 
   // Get library items for selected category
-  const getLibraryItems = (): { id: string; name: string }[] => {
+  const getLibraryItems = (): { id: string; name: string; freqType: HabitFrequencyType }[] => {
     if (!selectedCategory) return [];
     if (selectedCategory === "self-care") {
-      return SELF_CARE_RITUALS.map(r => ({ id: r.id, name: r.name }));
+      return SELF_CARE_RITUALS.map(r => ({ id: r.id, name: r.name, freqType: "monthly" as const }));
     }
-    return getLibraryHabitsForCategory(selectedCategory).map(h => ({ id: h.id, name: h.name }));
+    return getLibraryHabitsForCategory(selectedCategory).map(h => ({
+      id: h.id, name: h.name, freqType: h.frequencyType || parseFrequencyType(h.frequency),
+    }));
   };
 
   const libraryItems = getLibraryItems().filter(item =>
@@ -147,7 +162,7 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
       <div className="card-warm">
         <div className="flex items-center justify-between mb-4">
           <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
-            today's habits
+            my habits
           </p>
           <div className="flex items-center gap-2">
             {habits.length > 0 && (
@@ -182,46 +197,60 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
           </div>
         ) : (
           <>
-            {/* Habit list */}
-            <div className="space-y-1">
-              {habits.map((habit) => {
-                const done = completedIds.has(habit.id);
-                const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
+            {/* Habit list grouped by frequency */}
+            <div className="space-y-3">
+              {(["daily", "weekly", "monthly"] as const).map(freqType => {
+                const groupHabits = habitsByFreq[freqType];
+                if (groupHabits.length === 0) return null;
+                const label = freqType === "daily" ? "Daily" : freqType === "weekly" ? "This Week" : "This Month";
                 return (
-                  <div key={habit.id} className="flex items-center gap-1">
-                    {editMode && (
-                      <motion.button
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        onClick={() => handleDelete(habit.id)}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-destructive/70 hover:text-destructive hover:bg-destructive/10 flex-shrink-0 min-w-[44px] min-h-[44px]"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </motion.button>
-                    )}
-                    <motion.button
-                      onClick={() => !editMode && handleToggle(habit.id)}
-                      className="flex-1 flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
-                      whileTap={editMode ? {} : { scale: 0.98 }}
-                    >
-                      <div
-                        className="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
-                        style={{
-                          borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--border))',
-                          backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
-                        }}
-                      >
-                        {done && <Check className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={3} />}
-                      </div>
-                      <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotClass}`} />
-                      <span
-                        className={`font-body text-sm flex-1 transition-all duration-200 ${
-                          done ? "line-through text-muted-foreground/60" : "text-foreground"
-                        }`}
-                      >
-                        {habit.name}
-                      </span>
-                    </motion.button>
+                  <div key={freqType}>
+                    <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">
+                      {label}
+                    </p>
+                    <div className="space-y-0.5">
+                      {groupHabits.map((habit) => {
+                        const done = completedIds.has(habit.id);
+                        const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
+                        return (
+                          <div key={habit.id} className="flex items-center gap-1">
+                            {editMode && (
+                              <motion.button
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                onClick={() => handleDelete(habit.id)}
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-destructive/70 hover:text-destructive hover:bg-destructive/10 flex-shrink-0 min-w-[44px] min-h-[44px]"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </motion.button>
+                            )}
+                            <motion.button
+                              onClick={() => !editMode && handleToggle(habit.id)}
+                              className="flex-1 flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
+                              whileTap={editMode ? {} : { scale: 0.98 }}
+                            >
+                              <div
+                                className="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                                style={{
+                                  borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                                  backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
+                                }}
+                              >
+                                {done && <Check className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={3} />}
+                              </div>
+                              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotClass}`} />
+                              <span
+                                className={`font-body text-sm flex-1 transition-all duration-200 ${
+                                  done ? "line-through text-muted-foreground/60" : "text-foreground"
+                                }`}
+                              >
+                                {habit.name}
+                              </span>
+                            </motion.button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 );
               })}
@@ -350,10 +379,11 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                     <div className="max-h-[240px] overflow-y-auto space-y-0.5 -mx-1 px-1">
                       {libraryItems.map(item => {
                         const alreadyAdded = existingNames.has(item.name);
+                        const freqLabel = item.freqType === "monthly" ? "Monthly" : item.freqType === "weekly" ? "Weekly" : "Daily";
                         return (
                           <button
                             key={item.id}
-                            onClick={() => !alreadyAdded && handleAddFromLibrary(item.name, item.id, selectedCategory)}
+                            onClick={() => !alreadyAdded && handleAddFromLibrary(item.name, item.id, selectedCategory, item.freqType)}
                             disabled={alreadyAdded}
                             className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-left transition-colors ${
                               alreadyAdded
@@ -366,7 +396,10 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                             ) : (
                               <Plus className="w-4 h-4 text-primary flex-shrink-0" />
                             )}
-                            <span className="font-body text-sm text-foreground">{item.name}</span>
+                            <span className="font-body text-sm text-foreground flex-1">{item.name}</span>
+                            <span className="font-body text-[9px] uppercase tracking-wider text-muted-foreground/50 flex-shrink-0">
+                              {freqLabel}
+                            </span>
                           </button>
                         );
                       })}
@@ -397,11 +430,75 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
         )}
       </AnimatePresence>
 
+      {/* ── My Wellness Stack ── */}
+      <WellnessStackCard phaseColor={phaseColor} />
+
       {/* ── Phase Supports (supplements) ── */}
       <PhaseSupplementsCard phase={phase} phaseColor={phaseColor} />
 
       {/* ── Sleep tracker (bottom of page) ── */}
       <SleepCard phaseColor={phaseColor} />
+    </div>
+  );
+}
+
+/* ── My Wellness Stack ── */
+function WellnessStackCard({ phaseColor }: { phaseColor: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const stackSupps = useMemo(() => getWellnessStackSupplements(), []);
+
+  if (stackSupps.length === 0) return null;
+
+  return (
+    <div className="card-warm">
+      <button
+        onClick={() => { haptic("light"); setExpanded(!expanded); }}
+        className="w-full flex items-center justify-between min-h-[44px]"
+      >
+        <div className="flex items-center gap-2">
+          <Zap className="h-3.5 w-3.5 text-primary" />
+          <p className="font-body text-section-label uppercase" style={{ color: 'hsl(var(--label-color))' }}>
+            My Wellness Stack
+          </p>
+          <span className="font-body text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
+            {stackSupps.length}
+          </span>
+        </div>
+        {expanded
+          ? <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          : <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        }
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-2 pt-3">
+              {stackSupps.map((s) => (
+                <div key={s.id} className="flex items-start gap-3 rounded-xl px-3 py-2.5 bg-primary/5">
+                  <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-primary" />
+                  <div className="min-w-0">
+                    <p className="font-body text-sm font-medium text-foreground">{s.name}</p>
+                    {s.rdi && (
+                      <p className="font-body text-[11px] text-muted-foreground mt-0.5">
+                        {s.rdi.amount} · {s.rdi.timing}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <p className="font-body text-[10px] text-muted-foreground/50 px-1 pt-1">
+                Manage your stack in Nutrition → Supplements
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

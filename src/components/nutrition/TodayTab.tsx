@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
@@ -8,6 +9,7 @@ import { findRecipeByName } from "@/lib/recipe-index";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { getAIMealPlan, type AIMeal } from "@/lib/weekly-planner";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
@@ -78,6 +80,17 @@ export default function TodayTab() {
   const [portionScale, setPortionScale] = useState<Record<string, number>>({});
   const todayStr = new Date().toISOString().split("T")[0];
   const [seedsTaken, setSeedsState] = useState(getSeedsTaken(todayStr));
+
+  // Snack tracking opt-out
+  const [trackSnacks, setTrackSnacks] = useState(() => {
+    try { return localStorage.getItem("signal_track_snacks") !== "false"; } catch { return true; }
+  });
+  const toggleSnackTracking = useCallback(() => {
+    const newVal = !trackSnacks;
+    setTrackSnacks(newVal);
+    localStorage.setItem("signal_track_snacks", newVal ? "true" : "false");
+    haptic("medium");
+  }, [trackSnacks]);
 
   const [eaten, setEaten] = useState<Record<string, boolean>>(() => {
     const stored: Record<string, boolean> = {};
@@ -198,21 +211,21 @@ export default function TodayTab() {
       }
     });
     
-    if (eaten["morning-snack"]) {
+    if (trackSnacks && eaten["morning-snack"]) {
       const s = getScale("morning-snack");
       totalCal += Math.round(snackMacros.morning.cal * s);
       totalP += Math.round(snackMacros.morning.p * s);
       totalC += Math.round(snackMacros.morning.c * s);
       totalF += Math.round(snackMacros.morning.f * s);
     }
-    if (eaten["afternoon-snack"]) {
+    if (trackSnacks && eaten["afternoon-snack"]) {
       const s = getScale("afternoon-snack");
       totalCal += Math.round(snackMacros.afternoon.cal * s);
       totalP += Math.round(snackMacros.afternoon.p * s);
       totalC += Math.round(snackMacros.afternoon.c * s);
       totalF += Math.round(snackMacros.afternoon.f * s);
     }
-    if (eaten["seed-cycling"]) {
+    if (trackSnacks && eaten["seed-cycling"]) {
       totalCal += SEED_CYCLING_MACROS.cal;
       totalP += SEED_CYCLING_MACROS.p;
       totalC += SEED_CYCLING_MACROS.c;
@@ -220,7 +233,7 @@ export default function TodayTab() {
     }
     
     return { cal: totalCal, p: totalP, c: totalC, f: totalF };
-  }, [eaten, meals, portionScale, snackMacros]);
+  }, [eaten, meals, portionScale, snackMacros, trackSnacks]);
 
   const macroTargets = useMemo(() => {
     if (nutritionTarget) {
@@ -325,6 +338,7 @@ export default function TodayTab() {
               meal={meals.find(m => m.slot === expandedMeal)!}
               isEaten={!!eaten[expandedMeal]}
               phaseColor={phaseColor}
+              phase={currentPhase}
               scale={getScale(expandedMeal)}
               onMarkEaten={() => markEaten(expandedMeal)}
               onScaleChange={(v) => setScale(expandedMeal, v)}
@@ -335,7 +349,13 @@ export default function TodayTab() {
 
         {/* Snacks + Seed Cycling — 3-column row like meals */}
         <div>
-          <h3 className="font-display text-card-title font-bold text-foreground mb-3">Snacks</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-display text-card-title font-bold text-foreground">Snacks</h3>
+            <div className="flex items-center gap-2">
+              <span className="font-body text-[10px] text-muted-foreground">{trackSnacks ? "Tracking macros" : "Not tracking"}</span>
+              <Switch checked={trackSnacks} onCheckedChange={toggleSnackTracking} className="scale-75" />
+            </div>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             <CompactSnackCard
               label="Morning"
@@ -344,6 +364,7 @@ export default function TodayTab() {
               isEaten={!!eaten["morning-snack"]}
               phaseColor={phaseColor}
               onToggleExpand={() => { haptic("light"); setExpandedMeal(expandedMeal === "morning-snack" ? null : "morning-snack"); }}
+              onLog={() => markEaten("morning-snack")}
             />
             <CompactSnackCard
               label="Afternoon"
@@ -352,6 +373,7 @@ export default function TodayTab() {
               isEaten={!!eaten["afternoon-snack"]}
               phaseColor={phaseColor}
               onToggleExpand={() => { haptic("light"); setExpandedMeal(expandedMeal === "afternoon-snack" ? null : "afternoon-snack"); }}
+              onLog={() => markEaten("afternoon-snack")}
             />
             <CompactSnackCard
               label="Seed Cycling"
@@ -360,6 +382,7 @@ export default function TodayTab() {
               isEaten={seedsTaken}
               phaseColor={phaseColor}
               onToggleExpand={() => { haptic("light"); setExpandedMeal(expandedMeal === "seed-cycling" ? null : "seed-cycling"); }}
+              onLog={handleSeedCyclingLog}
             />
           </div>
         </div>
@@ -435,10 +458,7 @@ function CompactMealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEate
         <p className="font-display text-[11px] italic text-foreground leading-tight line-clamp-2">{name}</p>
         
         {macros && (
-          <div className="space-y-0.5">
-            <p className="font-body text-[8px] text-muted-foreground">{Math.round(macros.cal * scale)} cal</p>
-            <p className="font-body text-[8px] text-muted-foreground">P:{Math.round(macros.p * scale)}g C:{Math.round(macros.c * scale)}g F:{Math.round(macros.f * scale)}g</p>
-          </div>
+          <p className="font-body text-[8px] text-muted-foreground">{Math.round(macros.cal * scale)} cal</p>
         )}
 
         <button
@@ -454,9 +474,9 @@ function CompactMealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEate
 }
 
 /* ── Compact Snack Card (same visual as meal cards) ── */
-function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExpand }: {
+function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExpand, onLog }: {
   label: string; name: string; image: string;
-  isEaten: boolean; phaseColor: string; onToggleExpand: () => void;
+  isEaten: boolean; phaseColor: string; onToggleExpand: () => void; onLog: () => void;
 }) {
   return (
     <div className="rounded-[14px] bg-card shadow-soft overflow-hidden" onClick={onToggleExpand}>
@@ -469,14 +489,19 @@ function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExp
       <div className="p-2 space-y-1">
         <p className="font-body text-[9px] uppercase tracking-wider font-medium" style={{ color: phaseColor }}>{label}</p>
         <p className="font-display text-[10px] italic text-foreground leading-tight line-clamp-2">{name}</p>
-        {isEaten && (
+        {isEaten ? (
           <div className="flex items-center gap-1">
             <WildStar size={10} color={phaseColor} />
             <span className="font-body text-[8px] font-medium" style={{ color: phaseColor }}>Logged</span>
           </div>
-        )}
-        {!isEaten && (
-          <p className="font-body text-[8px] text-muted-foreground">Tap to expand</p>
+        ) : (
+          <button
+            onClick={(e) => { e.stopPropagation(); onLog(); }}
+            className="w-full rounded-lg py-1.5 font-body text-[10px] font-medium transition-all"
+            style={{ backgroundColor: `${phaseColor}10`, color: phaseColor }}
+          >
+            Log
+          </button>
         )}
       </div>
     </div>
@@ -484,9 +509,9 @@ function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExp
 }
 
 /* ── Expanded Meal Detail ── */
-function ExpandedMealDetail({ meal, isEaten, phaseColor, scale, onMarkEaten, onScaleChange, onClose }: {
+function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEaten, onScaleChange, onClose }: {
   meal: { slot: string; label: string; name: string; recipe?: Recipe; aiMeal?: AIMeal };
-  isEaten: boolean; phaseColor: string; scale: number;
+  isEaten: boolean; phaseColor: string; phase: Phase; scale: number;
   onMarkEaten: () => void; onScaleChange: (v: number) => void; onClose: () => void;
 }) {
   const [showMethod, setShowMethod] = useState(false);
@@ -572,6 +597,9 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, scale, onMarkEaten, onS
             </AnimatePresence>
           </>
         )}
+
+        {/* Kids alternative swap */}
+        <KidsDinnerAlt dinnerName={meal.name} phase={phase} />
 
         <button onClick={() => !isEaten && onMarkEaten()} disabled={isEaten}
           className="touch-btn w-full rounded-full py-3 min-h-[44px] font-body text-sm font-bold transition-all flex items-center justify-center gap-2"

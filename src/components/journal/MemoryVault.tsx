@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, Plus, X, Sparkles, BookOpen, Lock, Heart, Smile, Star, Zap, BookMarked, HeartHandshake, Flower2, Shuffle, Sun } from "lucide-react";
+import { Trash2, Plus, X, Sparkles, BookOpen, Lock, Heart, Smile, Star, Zap, BookMarked, HeartHandshake, Flower2, Shuffle, Sun, Users } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
@@ -17,6 +17,8 @@ const VAULT_CATEGORIES = [
   { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", color: "#D4A84B", icon: Sun },
   { key: "body-whispers", label: "Body Whispers", desc: "Notes from your cycle — what your body wanted you to know", color: "#C4526E", icon: Flower2 },
   { key: "knowledge-hub", label: "Knowledge Hub", desc: "Insights from the feed you want to reflect on", color: "#5B7F87", icon: BookOpen },
+  { key: "connect-course", label: "Connect Course", desc: "Reflections and insights from your couples course journey", color: "#7F5BA6", icon: Users },
+  { key: "look-what-youve-done", label: "Look What You've Done", desc: "Just when you thought you hadn't achieved much — here's proof you have", color: "#8B7355", icon: Star },
 ];
 
 function VaultDrawer({ label }: { label: string }) {

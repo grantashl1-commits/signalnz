@@ -37,6 +37,23 @@ Deno.serve(async (req) => {
 
     const { prompt, duration, user_identifier } = await req.json();
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Rate limiting: 3 per minute (expensive audio generation)
+    if (user_identifier) {
+      const { data: rl } = await supabase.rpc("check_rate_limit", {
+        _user_id: user_identifier, _function_name: "sleep-music", _max_per_minute: 3,
+      });
+      if (rl && !rl.allowed) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     const musicPrompt = prompt || 
       "Gentle, ambient sleep music with soft piano notes, warm pad synths, and subtle nature sounds. " +
       "Very slow tempo, calming and peaceful. No percussion, no sudden changes. " +
@@ -44,10 +61,7 @@ Deno.serve(async (req) => {
 
     const durationSeconds = Math.min(duration || 120, 300);
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // (supabase client already created above)
 
     // --- CACHE CHECK ---
     const cacheKey = await hashText(`${musicPrompt}::${durationSeconds}`);
@@ -76,34 +90,22 @@ Deno.serve(async (req) => {
       }
     }
 
-    // --- CREDIT CHECK ---
+    // --- CREDIT CHECK (atomic) ---
     if (user_identifier) {
-      const { data: credit } = await supabase
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_identifier", user_identifier)
-        .maybeSingle();
-
-      if (credit && credit.credits_remaining !== null && credit.credits_remaining <= 0) {
-        return new Response(
-          JSON.stringify({ error: "You've used all your credits for this month. Upgrade your plan for more." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      // Sleep music costs 3 credits (it's expensive to generate)
-      if (credit) {
-        await supabase
-          .from("ai_credits")
-          .update({ credits_remaining: Math.max(0, (credit.credits_remaining || 0) - 3) })
-          .eq("user_identifier", user_identifier);
-      }
-
-      await supabase.from("ai_usage").insert({
-        user_identifier,
-        function_name: "sleep-music",
-        tokens_used: durationSeconds,
+      const { error: creditError } = await supabase.rpc("deduct_ai_credits", {
+        p_user_identifier: user_identifier,
+        p_cost: 3,
+        p_function_name: "sleep-music",
       });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
+          return new Response(
+            JSON.stringify({ error: "You've used all your credits for this month. Upgrade your plan for more." }),
+            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.error("Credit deduction error:", creditError);
+      }
     }
 
     // --- GENERATE ---

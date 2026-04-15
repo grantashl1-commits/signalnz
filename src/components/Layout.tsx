@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles, Heart } from "lucide-react";
+import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles, Heart, Baby, ChevronDown } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
@@ -13,26 +13,33 @@ import SignalLogo from "@/components/SignalLogo";
 
 import PageTransition from "@/components/PageTransition";
 
-// Desktop nav: Home | Daily Habits | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
-// Desktop nav: Home | Nutrition | Movement | Cycle | Mindfulness | Journal | Community
-const navItems = [
-  { path: "/my-practice", icon: Leaf, label: "My Practice" },
-  { path: "/nutrition", icon: Utensils, label: "Nutrition" },
-  { path: "/movement", icon: Dumbbell, label: "Movement" },
-  { path: "/cycle", icon: Moon, label: "Cycle" },
-  { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
-  { path: "/journal", icon: BookOpen, label: "Journal" },
-  { path: "/community", icon: Users, label: "Community" },
+// Desktop nav categories
+const NAV_CATEGORIES = [
+  {
+    label: "Body",
+    items: [
+      { path: "/cycle", icon: Moon, label: "Cycle" },
+      { path: "/movement", icon: Dumbbell, label: "Movement" },
+      { path: "/nutrition", icon: Utensils, label: "Nutrition" },
+    ],
+  },
+  {
+    label: "Mind",
+    items: [
+      { path: "/my-practice", icon: Leaf, label: "Habits" },
+      { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
+      { path: "/journal", icon: BookOpen, label: "Journal" },
+    ],
+  },
+  {
+    label: "Life",
+    items: [
+      { path: "/community", icon: Users, label: "Community" },
+      { path: "/connect", icon: Heart, label: "Connect" },
+      { path: "/parenting", icon: Baby, label: "Parenting" },
+    ],
+  },
 ];
-
-// Mobile bottom tabs: Daily Habits | Nutrition | Movement | Cycle | More | Journal | Community | Account
-// That's 8 items — too many for a tab bar. We'll do 5 primary + More overlay.
-// Primary: Home(logo) + Daily Habits | Cycle | Journal | Move | More
-// Per user request exact order: Daily Habits | Nutrition | Movement | Cycle | More
-// With More containing: Mindfulness | Journal | Community | Account
-// But user also wants Journal and Community as top-level... Let's use 5 tabs + More:
-// Tabs: Daily Habits | Cycle | Journal | Move | More
-// More: Nutrition | Mindfulness | Community | Account
 
 const PRIMARY_TABS = [
   { path: "/", label: "Home", icon: Home },
@@ -42,14 +49,37 @@ const PRIMARY_TABS = [
   { path: "more", label: "More", icon: MoreHorizontal },
 ];
 
-const MORE_ITEMS = [
-  { path: "/my-practice", label: "My Practice", icon: Leaf },
-  { path: "/mindfulness", label: "Mindfulness", icon: Brain },
-  { path: "/journal", label: "Journal", icon: BookOpen },
-  { path: "/community", label: "Community", icon: Users },
-  { path: "/connect", label: "Connect", icon: Heart },
-  { path: "/account", label: "Account", icon: User },
+const MORE_CATEGORIES = [
+  {
+    label: "Body",
+    items: [
+      { path: "/my-practice", label: "Habits", icon: Leaf },
+    ],
+  },
+  {
+    label: "Mind",
+    items: [
+      { path: "/mindfulness", label: "Mindfulness", icon: Brain },
+      { path: "/journal", label: "Journal", icon: BookOpen },
+    ],
+  },
+  {
+    label: "Life",
+    items: [
+      { path: "/community", label: "Community", icon: Users },
+      { path: "/connect", label: "Connect", icon: Heart },
+      { path: "/parenting", label: "Parenting", icon: Baby },
+    ],
+  },
+  {
+    label: "",
+    items: [
+      { path: "/account", label: "Account", icon: User },
+    ],
+  },
 ];
+
+const ALL_MORE_PATHS = MORE_CATEGORIES.flatMap(c => c.items.map(i => i.path));
 
 const PHASE_BORDER: Record<string, string> = {
   menstrual: "border-phase-menstrual",
@@ -67,6 +97,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
   const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const previousPathRef = useRef(location.pathname);
   const previousPath = previousPathRef.current;
@@ -97,21 +128,53 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Home className={`h-3.5 w-3.5 ${location.pathname === "/" ? "fill-primary" : ""}`} />
               Home
             </Link>
-            {navItems.map((item) => {
-              const active = location.pathname === item.path;
+            {NAV_CATEGORIES.map((cat) => {
+              const catActive = cat.items.some(i => location.pathname === i.path || location.pathname.startsWith(i.path));
+              const isOpen = openDropdown === cat.label;
               return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
-                    active
-                      ? "bg-primary/15 text-primary font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                  }`}
+                <div key={cat.label} className="relative"
+                  onMouseEnter={() => setOpenDropdown(cat.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  <item.icon className={`h-3.5 w-3.5 ${active ? "fill-primary" : ""}`} />
-                  {item.label}
-                </Link>
+                  <button
+                    className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
+                      catActive
+                        ? "bg-primary/15 text-primary font-semibold"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                    }`}
+                  >
+                    {cat.label}
+                    <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-card border border-border/20 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50"
+                      >
+                        {cat.items.map((item) => {
+                          const active = location.pathname === item.path || location.pathname.startsWith(item.path);
+                          return (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              onClick={() => setOpenDropdown(null)}
+                              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
+                                active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
+                              }`}
+                            >
+                              <item.icon className="h-4 w-4" />
+                              {item.label}
+                            </Link>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               );
             })}
           </nav>
@@ -119,7 +182,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3 flex-shrink-0 ml-6">
             <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-                day {info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+                {PHASE_SHORT[info.phase].toLowerCase()} · day {info.cycleDay}
               </span>
             </div>
             <Link
@@ -141,7 +204,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
               <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-                D{info.cycleDay} · {PHASE_SHORT[info.phase].toLowerCase()}
+                {PHASE_SHORT[info.phase].toLowerCase()} · day {info.cycleDay}
               </span>
             </div>
           </div>
@@ -188,7 +251,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {
               const isMore = path === "more";
               const isActive = isMore
-                ? moreOpen || MORE_ITEMS.some(m => location.pathname === m.path || location.pathname.startsWith(m.path))
+                ? moreOpen || ALL_MORE_PATHS.some(p => location.pathname === p || location.pathname.startsWith(p))
                 : path === "/" ? location.pathname === "/" : (location.pathname === path || location.pathname.startsWith(path));
               return (
                 <button
@@ -268,27 +331,36 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               transition={{ type: "spring", damping: 30, stiffness: 400 }}
             >
               <div className="mx-4 mb-2 bg-card rounded-2xl border border-border/20 shadow-2xl overflow-hidden">
-                {MORE_ITEMS.map(({ path, label, icon: Icon }) => {
-                  const active = location.pathname === path || location.pathname.startsWith(path);
-                  return (
-                    <button
-                      key={path}
-                      onClick={() => {
-                        haptic("light");
-                        setMoreOpen(false);
-                        navigate(path);
-                      }}
-                      className={`w-full flex items-center gap-3 px-5 py-3.5 transition-colors ${
-                        active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
-                      }`}
-                      style={{ WebkitTapHighlightColor: "transparent" }}
-                    >
-                      <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
-                      <span className="text-sm font-medium">{label}</span>
-                      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
-                    </button>
-                  );
-                })}
+                {MORE_CATEGORIES.map((cat) => (
+                  <div key={cat.label || "other"}>
+                    {cat.label && (
+                      <div className="px-5 pt-3 pb-1">
+                        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{cat.label}</span>
+                      </div>
+                    )}
+                    {cat.items.map(({ path, label, icon: Icon }) => {
+                      const active = location.pathname === path || location.pathname.startsWith(path);
+                      return (
+                        <button
+                          key={path}
+                          onClick={() => {
+                            haptic("light");
+                            setMoreOpen(false);
+                            navigate(path);
+                          }}
+                          className={`w-full flex items-center gap-3 px-5 py-3 transition-colors ${
+                            active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
+                          }`}
+                          style={{ WebkitTapHighlightColor: "transparent" }}
+                        >
+                          <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
+                          <span className="text-sm font-medium">{label}</span>
+                          {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
             </motion.div>
           </>

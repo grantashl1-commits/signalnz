@@ -1,59 +1,42 @@
 import { motion } from "framer-motion";
 
 /**
- * Subtle signal pulse animation — dotted concentric rings that slowly expand and fade,
- * matching the brand's dotted-ring logo motif.
+ * Ambient dot-pattern pulse used inside AtmosphericHero headers.
+ * Creates a gentle breathing / radial effect behind page titles.
  */
 export default function SignalPulse({
-  color = "hsl(var(--primary-foreground))",
-  opacity = 0.08,
-  size = 300,
+  color = "rgba(255,255,255,0.08)",
+  opacity = 0.5,
+  size = 64,
 }: {
   color?: string;
   opacity?: number;
   size?: number;
 }) {
-  const ringConfigs = [
-    { dots: 24, dotR: 3 },
-    { dots: 32, dotR: 2.5 },
-    { dots: 40, dotR: 2 },
-  ];
+  const dots = Array.from({ length: 3 });
 
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-      {ringConfigs.map((ring, i) => (
-        <motion.svg
+      {dots.map((_, i) => (
+        <motion.div
           key={i}
-          viewBox="0 0 100 100"
-          className="absolute"
-          style={{ width: size, height: size }}
-          initial={{ scale: 0.3, opacity: 0 }}
+          className="absolute rounded-full"
+          style={{
+            width: size * (1 + i * 0.8),
+            height: size * (1 + i * 0.8),
+            border: `1px solid ${color}`,
+          }}
           animate={{
-            scale: [0.3, 2, 3.5],
-            opacity: [opacity, opacity * 0.5, 0],
+            scale: [1, 1.15, 1],
+            opacity: [opacity * (1 - i * 0.15), opacity * 0.3, opacity * (1 - i * 0.15)],
           }}
           transition={{
-            duration: 8,
+            duration: 4 + i * 1.5,
             repeat: Infinity,
-            delay: i * 2.6,
-            ease: "easeOut",
+            ease: "easeInOut",
+            delay: i * 0.6,
           }}
-        >
-          {Array.from({ length: ring.dots }, (_, di) => {
-            const angle = (2 * Math.PI * di) / ring.dots;
-            const cx = 50 + 40 * Math.cos(angle);
-            const cy = 50 + 40 * Math.sin(angle);
-            return (
-              <circle
-                key={di}
-                cx={cx}
-                cy={cy}
-                r={ring.dotR}
-                fill={color}
-              />
-            );
-          })}
-        </motion.svg>
+        />
       ))}
     </div>
   );

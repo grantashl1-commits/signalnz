@@ -1,136 +1,97 @@
-import { useState, useEffect } from "react";
-import { Dumbbell } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-
-interface ExerciseResult {
-  illustration_url: string | null;
-  gif_url: string | null;
-  target: string | null;
-  name: string;
-}
-
-const exerciseCache = new Map<string, ExerciseResult | null>();
-
-const STRIP_WORDS = ["tempo", "slow", "fast", "heavy", "paused", "weighted", "reverse", "modified", "with", "4-sec", "hold", "pulse", "sumo", "goblet"];
-
-function getSearchVariants(name: string): string[] {
-  let current = name.toLowerCase().trim();
-  const variants: string[] = [current];
-
-  for (const word of STRIP_WORDS) {
-    const regex = new RegExp(`\\b${word}\\b`, "gi");
-    if (regex.test(current)) {
-      current = current.replace(regex, "").replace(/\s+/g, " ").trim();
-      if (current) variants.push(current);
-    }
-  }
-
-  const words = variants[variants.length - 1].split(" ");
-  for (let i = 1; i < words.length; i++) {
-    variants.push(words.slice(i).join(" "));
-  }
-
-  return [...new Set(variants.filter(Boolean))];
-}
-
-async function lookupExercise(exerciseName: string): Promise<ExerciseResult | null> {
-  if (exerciseCache.has(exerciseName)) return exerciseCache.get(exerciseName) ?? null;
-
-  const variants = getSearchVariants(exerciseName);
-
-  for (const query of variants) {
-    const { data } = await supabase
-      .from("exercises")
-      .select("illustration_url, gif_url, target, name")
-      .ilike("name", `%${query}%`)
-      .limit(1)
-      .maybeSingle();
-
-    if (data) {
-      const result = data as unknown as ExerciseResult;
-      exerciseCache.set(exerciseName, result);
-      return result;
-    }
-  }
-
-  exerciseCache.set(exerciseName, null);
-  return null;
-}
 
 interface Props {
   exerciseName: string;
   size?: number;
   className?: string;
   showLabel?: boolean;
+  /** Override: if provided, skip the DB lookup */
+  imageUrl?: string | null;
 }
 
-export default function ExerciseDemonstration({ exerciseName, size = 96, className = "", showLabel = false }: Props) {
-  const [exercise, setExercise] = useState<ExerciseResult | null>(exerciseCache.get(exerciseName) ?? null);
-  const [loading, setLoading] = useState(!exerciseCache.has(exerciseName));
-  const [imgError, setImgError] = useState(false);
+// ── Global illustration cache (loaded once) ─────────────────────────
+let illustrationMap: Map<string, string> | null = null;
+let loadingPromise: Promise<void> | null = null;
+
+function ensureIllustrationMap(): Promise<void> {
+  if (illustrationMap) return Promise.resolve();
+  if (loadingPromise) return loadingPromise;
+
+  loadingPromise = (async () => {
+    const map = new Map<string, string>();
+    // Fetch in batches (1000-row default limit)
+    let from = 0;
+    const batchSize = 1000;
+    while (true) {
+      const { data } = await supabase
+        .from("exercises")
+        .select("name, illustration_url")
+        .not("illustration_url", "is", null)
+        .range(from, from + batchSize - 1);
+
+      if (!data || data.length === 0) break;
+      for (const row of data) {
+        if (row.illustration_url) {
+          map.set(row.name.toLowerCase(), row.illustration_url);
+        }
+      }
+      if (data.length < batchSize) break;
+      from += batchSize;
+    }
+    illustrationMap = map;
+  })();
+
+  return loadingPromise;
+}
+
+export default function ExerciseDemonstration({
+  exerciseName,
+  size = 96,
+  className = "",
+  showLabel = false,
+  imageUrl: imageUrlProp,
+}: Props) {
+  const [ready, setReady] = useState(!!illustrationMap);
 
   useEffect(() => {
-    if (exerciseCache.has(exerciseName)) {
-      setExercise(exerciseCache.get(exerciseName) ?? null);
-      setLoading(false);
-      return;
+    if (!illustrationMap) {
+      ensureIllustrationMap().then(() => setReady(true));
     }
-    let cancelled = false;
-    setLoading(true);
-    lookupExercise(exerciseName).then((result) => {
-      if (!cancelled) {
-        setExercise(result);
-        setLoading(false);
-      }
-    });
-    return () => { cancelled = true; };
-  }, [exerciseName]);
+  }, []);
 
-  if (loading) {
-    return (
-      <div
-        className={`rounded-xl bg-accent animate-pulse ${className}`}
-        style={{ width: size, height: size }}
-      />
-    );
-  }
+  // Resolve the URL: explicit prop > cached map
+  const resolvedUrl = useMemo(() => {
+    if (imageUrlProp) return imageUrlProp;
+    if (!illustrationMap) return null;
+    return illustrationMap.get(exerciseName.toLowerCase()) ?? null;
+  }, [imageUrlProp, exerciseName, ready]);
 
-  // Prefer gif_url (animated anatomy), fall back to illustration_url
-  const imageUrl = (!imgError && exercise?.gif_url) || exercise?.illustration_url;
-
-  if (!imageUrl) {
-    return (
-      <div
-        className={`flex flex-col items-center justify-center rounded-xl gap-1 ${className}`}
-        style={{ width: size, height: size, backgroundColor: "hsl(var(--accent))" }}
-      >
-        <Dumbbell className="text-primary/50" style={{ width: size * 0.28, height: size * 0.28 }} />
-        {size >= 64 && (
-          <span className="text-[9px] text-primary/60 italic leading-tight text-center px-1 line-clamp-2">{exerciseName}</span>
-        )}
-      </div>
-    );
-  }
+  const label = showLabel && size >= 64 ? (
+    <div className="absolute bottom-0 left-0 right-0 rounded-b-xl bg-gradient-to-t from-foreground/80 to-transparent px-1 py-0.5">
+      <span className="line-clamp-1 text-[8px] font-medium leading-tight text-background">{exerciseName}</span>
+    </div>
+  ) : null;
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <img
-        src={imageUrl}
-        alt={exerciseName}
-        loading="lazy"
-        className={`w-full h-full object-cover rounded-xl ${className}`}
+      <div
+        className={`overflow-hidden rounded-xl bg-accent/30 flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
-        onError={() => {
-          if (!imgError && exercise?.illustration_url) {
-            setImgError(true);
-          }
-        }}
-      />
-      {showLabel && size >= 64 && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent rounded-b-xl px-1 py-0.5">
-          <span className="text-[8px] text-white font-medium leading-tight line-clamp-1">{exerciseName}</span>
-        </div>
-      )}
+      >
+        {resolvedUrl ? (
+          <img
+            src={resolvedUrl}
+            alt={`${exerciseName} illustration`}
+            className="h-full w-full object-contain"
+            loading="lazy"
+          />
+        ) : (
+          // Minimal placeholder while loading
+          <div className="h-full w-full animate-pulse bg-secondary/50 rounded-xl" />
+        )}
+      </div>
+      {label}
     </div>
   );
 }

@@ -4,8 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { captureReferralParam } from "@/hooks/useReferral";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
 import SignalLogo from "@/components/SignalLogo";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,6 +17,9 @@ import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CycleProvider } from "@/contexts/CycleContext";
 import { HeartRateProvider } from "@/contexts/HeartRateContext";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+
+// Eagerly load the home page (critical path)
 import Index from "./pages/Index";
 import Cycle from "./pages/Cycle";
 import Nutrition from "./pages/Nutrition";
@@ -37,17 +41,24 @@ import AnimationPOC from "./pages/AnimationPOC";
 import Admin from "./pages/Admin";
 import Coach from "./pages/Coach";
 import Feed from "./pages/Feed";
-<<<<<<< Updated upstream
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
 import Connect from "./pages/Connect";
-=======
->>>>>>> Stashed changes
 
 
 const queryClient = new QueryClient();
+
+// Minimal loading fallback for lazy routes
+const RouteFallback = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <SignalRingAnimation variant="pulse" size={64} color="hsl(var(--primary))" />
+  </div>
+);
+
+/** Registers device for push notifications (no-op on web) */
+const PushRegistrar = () => { usePushNotifications(); return null; };
 
 const App = () => {
   const [appReady, setAppReady] = useState(false);
@@ -119,6 +130,7 @@ const App = () => {
         >
           <BrowserRouter>
             <AuthProvider>
+              <PushRegistrar />
               <CycleProvider>
               <HeartRateProvider>
               <SignalPanelProvider>
@@ -157,7 +169,6 @@ const App = () => {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/connect" element={<Connect />} />
                         <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
-                        <Route path="/feed" element={<Feed />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Layout>

@@ -365,16 +365,60 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
       completed: completedExercises.has(ex.id),
     }));
 
+    // Calculate HR stats if available
+    const sessionAvgBPM = hrData.length > 0
+      ? Math.round(hrData.reduce((s, d) => s + d.bpm, 0) / hrData.length)
+      : null;
+    const sessionMaxBPM = hrData.length > 0
+      ? Math.max(...hrData.map(d => d.bpm))
+      : null;
+    const sessionCalories = sessionAvgBPM && hrElapsed > 0
+      ? estimateCalories(sessionAvgBPM, hrElapsed / 60, userWeight, userAge)
+      : null;
+    const sessionZone2Pct = hrData.length > 0
+      ? Math.round((hrData.filter(d => getZoneForBPM(d.bpm, maxHR).zone >= 2).length / hrData.length) * 100)
+      : null;
+
+    // Save HR session if we have HR data
+    let hrSessionId: string | null = null;
+    if (hrData.length > 0 && sessionAvgBPM) {
+      try {
+        const { data: hrSessionData } = await (supabase as any)
+          .from("hr_sessions")
+          .insert({
+            user_id: user.id,
+            session_date: new Date().toISOString().split("T")[0],
+            workout_name: template.title,
+            avg_bpm: sessionAvgBPM,
+            max_bpm: sessionMaxBPM,
+            calories: sessionCalories,
+            duration_minutes: Math.round(hrElapsed / 60),
+            bpm_trace: hrData,
+            zones_summary: {},
+            zone2_plus_percent: sessionZone2Pct,
+            cycle_phase: currentPhase,
+          })
+          .select("id")
+          .single();
+        if (hrSessionData) hrSessionId = hrSessionData.id;
+      } catch {}
+    }
+
     const { error } = await (supabase as any)
       .from("workout_logs")
       .insert({
         user_id: user.id,
         workout_template_id: template.id,
         exercises: exercisesPayload,
-        duration_minutes: template.estimated_duration_mins,
+        duration_minutes: hrElapsed > 0 ? Math.round(hrElapsed / 60) : template.estimated_duration_mins,
         notes: sessionNotes.trim() || null,
         completed: true,
         cycle_phase: currentPhase,
+        hr_session_id: hrSessionId,
+        avg_bpm: sessionAvgBPM,
+        max_bpm: sessionMaxBPM,
+        calories: sessionCalories,
+        zone2_plus_percent: sessionZone2Pct,
       });
 
     setSessionLogging(false);

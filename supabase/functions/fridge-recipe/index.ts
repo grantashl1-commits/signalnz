@@ -13,21 +13,32 @@ serve(async (req) => {
     const body = await req.json();
     const { ingredients, imageBase64, phase, dietary, allergies, dislikes, cookingSkill, equipment, calorieTarget, bodyGoal } = body;
 
-    // Credit check: fridge recipe costs 2 credits
+    // Credit check: fridge recipe costs 2 credits (atomic)
     const userIdentifier = body.userIdentifier;
     if (userIdentifier) {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-      const { data: credits } = await sb.from("ai_credits").select("*").eq("user_identifier", userIdentifier).maybeSingle();
-      const cost = 2;
-      if (credits && (credits.credits_remaining || 0) < cost) {
-        return new Response(JSON.stringify({ error: `You need ${cost} AI credits for recipe generation. Top up or upgrade your plan.` }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      // Rate limiting: 5 per minute (expensive operation)
+      const { data: rl } = await sb.rpc("check_rate_limit", {
+        _user_id: userIdentifier, _function_name: "fridge-recipe", _max_per_minute: 5,
+      });
+      if (rl && !rl.allowed) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
-      if (credits) {
-        await sb.from("ai_credits").update({ credits_remaining: (credits.credits_remaining || 0) - cost, updated_at: new Date().toISOString() }).eq("user_identifier", userIdentifier);
-      } else if (!credits) {
-        await sb.from("ai_credits").insert({ user_identifier: userIdentifier, credits_remaining: 5 - cost, tier: "free" });
+
+      const { error: creditError } = await sb.rpc("deduct_ai_credits", {
+        p_user_identifier: userIdentifier,
+        p_cost: 2,
+        p_function_name: "fridge-recipe",
+      });
+      if (creditError) {
+        if (creditError.message?.includes("insufficient_credits")) {
+          return new Response(JSON.stringify({ error: "You need 2 AI credits for recipe generation. Top up or upgrade your plan." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        console.error("Credit deduction error:", creditError);
       }
-      await sb.from("ai_usage").insert({ user_identifier: userIdentifier, function_name: "fridge-recipe", tokens_used: cost });
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");

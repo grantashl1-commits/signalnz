@@ -62,6 +62,81 @@ function parseQty(qty: string): number {
   return isNaN(n) ? 1 : n;
 }
 
+/**
+ * Convert large/awkward quantities into more practical shopping units.
+ * e.g. 19 tbsp → 280 ml, 24 cup → 3.4 kg, etc.
+ */
+function smartUnit(qty: number, unit: string, name: string): { qty: number; unit: string } {
+  const u = unit.toLowerCase().replace(/s$/, "").replace(/\.$/, "");
+  const lower = name.toLowerCase();
+
+  // tsp → tbsp → ml → cups → litres
+  if (u === "tsp" || u === "teaspoon") {
+    const ml = qty * 5;
+    if (ml >= 1000) return { qty: Math.round(ml / 100) / 10, unit: "L" };
+    if (ml >= 60) return { qty: Math.round(ml), unit: "ml" };
+    if (qty >= 6) return { qty: Math.round(qty / 3 * 10) / 10, unit: "tbsp" };
+    return { qty, unit };
+  }
+
+  if (u === "tbsp" || u === "tablespoon") {
+    const ml = qty * 15;
+    if (ml >= 1000) return { qty: Math.round(ml / 100) / 10, unit: "L" };
+    if (ml >= 60) return { qty: Math.round(ml), unit: "ml" };
+    return { qty, unit };
+  }
+
+  // Cups: for dry goods like seeds/nuts/flour → grams/kg; for liquids → ml/L
+  if (u === "cup") {
+    const isDryBulk = /seed|nut|walnut|almond|cashew|flour|oat|granola|rice|quinoa|lentil|chickpea|bean|sugar|cocoa|cacao|coconut|sesame|flax|pumpkin|sunflower/i.test(lower);
+    const isLiquid = /milk|water|stock|broth|juice|oil|cream|yoghurt|yogurt/i.test(lower);
+
+    if (isDryBulk) {
+      // Approximate: 1 cup seeds/nuts ≈ 140g, flour ≈ 120g, grains ≈ 185g, sugar ≈ 200g
+      let gPerCup = 150; // default for seeds/nuts
+      if (/flour/.test(lower)) gPerCup = 120;
+      if (/rice|quinoa|lentil|chickpea|bean|oat/.test(lower)) gPerCup = 185;
+      if (/sugar/.test(lower)) gPerCup = 200;
+      if (/coconut/.test(lower)) gPerCup = 85;
+      const grams = qty * gPerCup;
+      if (grams >= 1000) return { qty: Math.round(grams / 100) / 10, unit: "kg" };
+      if (grams >= 50) return { qty: Math.round(grams), unit: "g" };
+      return { qty, unit };
+    }
+
+    if (isLiquid || qty >= 4) {
+      const ml = qty * 250;
+      if (ml >= 1000) return { qty: Math.round(ml / 100) / 10, unit: "L" };
+      return { qty: Math.round(ml), unit: "ml" };
+    }
+
+    return { qty, unit };
+  }
+
+  // ml → L
+  if (u === "ml") {
+    if (qty >= 1000) return { qty: Math.round(qty / 100) / 10, unit: "L" };
+    return { qty, unit };
+  }
+
+  // g → kg
+  if (u === "g" || u === "gram") {
+    if (qty >= 1000) return { qty: Math.round(qty / 100) / 10, unit: "kg" };
+    return { qty, unit };
+  }
+
+  return { qty, unit };
+}
+
+function formatSmartQty(totalQty: number, unit: string, name: string): string {
+  const converted = smartUnit(totalQty, unit, name);
+  const q = converted.qty;
+  const display = q < 1 ? `${Math.round(q * 10) / 10}` :
+    q > 10 ? `${Math.round(q)}` :
+      `${Math.round(q * 10) / 10}`;
+  return `${display} ${converted.unit}`;
+}
+
 interface AggregatedItem {
   name: string;
   totalQty: number;
@@ -336,10 +411,8 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       .map(cat => {
         const items = categories[cat];
         return `${CATEGORY_META[cat]}\n${items.map(i => {
-          const qty = i.totalQty < 1 ? `${Math.round(i.totalQty * 10) / 10}` :
-            i.totalQty > 10 ? `${Math.round(i.totalQty)}` :
-              `${Math.round(i.totalQty * 10) / 10}`;
-          return `  ${qty} ${i.unit} ${i.name}${i.isPantryStaple ? " ✓ pantry" : ""}`;
+          const smart = formatSmartQty(i.totalQty, i.unit, i.name);
+          return `  ${smart} ${i.name}${i.isPantryStaple ? " ✓ pantry" : ""}`;
         }).join("\n")}`;
       })
       .join("\n\n");
@@ -354,10 +427,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     const tableHtml = catOrder.map(cat => {
       const items = categories[cat];
       const rows = items.map(i => {
-        const qty = i.totalQty < 1 ? `${Math.round(i.totalQty * 10) / 10}` :
-          i.totalQty > 10 ? `${Math.round(i.totalQty)}` : `${Math.round(i.totalQty * 10) / 10}`;
+        const smart = formatSmartQty(i.totalQty, i.unit, i.name);
         const checked = checkedItems[`${cat}:${i.name}`] ? "✓" : "☐";
-        return `<tr><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;width:20px;">${checked}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;">${i.name}${i.isPantryStaple ? ' <span style="color:#999;font-size:9px;">(pantry)</span>' : ""}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;text-align:right;white-space:nowrap;">${qty} ${i.unit}</td></tr>`;
+        return `<tr><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;width:20px;">${checked}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;">${i.name}${i.isPantryStaple ? ' <span style="color:#999;font-size:9px;">(pantry)</span>' : ""}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;text-align:right;white-space:nowrap;">${smart}</td></tr>`;
       }).join("");
       return `<div style="break-inside:avoid;margin-bottom:12px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th colspan="3" style="background:#5B2D72;color:white;padding:5px 8px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.5px;">${CATEGORY_META[cat]}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     }).join("");
@@ -456,11 +528,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                     {items.map(item => {
                       const key = `${cat}:${item.name}`;
                       const isChecked = checkedItems[key];
-                      const displayQty = item.totalQty < 1 ? `${Math.round(item.totalQty * 10) / 10}` :
-                        item.totalQty > 10 ? `${Math.round(item.totalQty)}` :
-                          `${Math.round(item.totalQty * 10) / 10}`;
+                      const smartDisplay = formatSmartQty(item.totalQty, item.unit, item.name);
                       const parsed: ParsedIngredient = {
-                        raw: item.name, quantity: displayQty, unit: item.unit,
+                        raw: item.name, quantity: String(item.totalQty), unit: item.unit,
                         name: item.name, searchTerm: item.searchTerm,
                       };
 
@@ -485,7 +555,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                             )}
                           </span>
                           <span className="font-body text-xs font-bold flex-shrink-0" style={{ color: weekPhaseColor }}>
-                            {displayQty} {item.unit}
+                            {smartDisplay}
                           </span>
                           {item.isCustom && (
                             <button onClick={() => removeCustomItem(item.name)}

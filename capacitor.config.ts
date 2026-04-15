@@ -1,7 +1,6 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-<<<<<<< Updated upstream
   appId: 'app.lovable.signalnz',
   appName: 'Signal',
   webDir: 'dist',
