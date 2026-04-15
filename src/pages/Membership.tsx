@@ -625,6 +625,12 @@ export default function MembershipPage() {
 
       {/* One-off course purchases */}
       <CourseCards session={session} />
+
+      {/* Gift a membership */}
+      <GiftSection session={session} />
+
+      {/* Redeem a gift */}
+      <RedeemSection session={session} />
     </div>
   );
 }
