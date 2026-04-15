@@ -236,11 +236,15 @@ export default function Connect() {
     const tempId = crypto.randomUUID();
     setMessages((prev) => [...prev, { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() }]);
 
-    await supabase.from("connect_messages").insert({
-      connection_id: connectionId,
-      sender_role: role,
-      content: text,
-    });
+    if (isPartnerSession) {
+      await partnerProxy("insert_message", { sender_role: role, content: text });
+    } else {
+      await supabase.from("connect_messages").insert({
+        connection_id: connectionId,
+        sender_role: role,
+        content: text,
+      });
+    }
 
     // Ask AI for coaching response
     setAiLoading(true);
@@ -250,11 +254,15 @@ export default function Connect() {
         body: { message: text, history: recentHistory, connection_id: connectionId },
       });
       if (!error && data?.response) {
-        await supabase.from("connect_messages").insert({
-          connection_id: connectionId,
-          sender_role: "ai",
-          content: data.response,
-        });
+        if (isPartnerSession) {
+          await partnerProxy("insert_message", { sender_role: "ai", content: data.response });
+        } else {
+          await supabase.from("connect_messages").insert({
+            connection_id: connectionId,
+            sender_role: "ai",
+            content: data.response,
+          });
+        }
       }
     } catch {
       // Silent fail — AI is optional
