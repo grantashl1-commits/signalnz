@@ -338,8 +338,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
 }) {
   const dayOfWeek = today.getDay();
   const [showCalendarOptions, setShowCalendarOptions] = useState(false);
-  const cal = useImportedCalendar(today);
-  const [importUrl, setImportUrl] = useState("");
 
   const generateICSData = () => {
     const lines = [
