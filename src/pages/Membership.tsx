@@ -37,17 +37,17 @@ const STRIPE_TIERS = {
 const GIFT_OPTIONS = [
   {
     label: "3 months",
-    tier: "nourished" as const,
+    tier: "thriving" as const,
     durationMonths: 3,
-    price: "$57",
-    priceId: "price_1TMVmZEAvaJHDMD43jhStJqU",
+    price: "$117",
+    priceId: "price_1TMWJFEAvaJHDMD4iGL6khn0",
   },
   {
     label: "12 months",
-    tier: "nourished" as const,
+    tier: "thriving" as const,
     durationMonths: 12,
-    price: "$152",
-    priceId: "price_1TMVmaEAvaJHDMD4PLseDPvN",
+    price: "$312",
+    priceId: "price_1TMWJGEAvaJHDMD4n7Yn1tXj",
   },
 ];
 
@@ -853,7 +853,7 @@ function GiftSection({ session }: { session: any }) {
         <h3 className="font-display text-lg italic text-foreground">Gift Signal</h3>
       </div>
       <p className="font-body text-sm text-muted-foreground mb-4">
-        Give someone you love the gift of wellness. They'll get full Nourished access — nutrition, movement, journaling, and more.
+        Give someone you love the gift of wellness. They'll get full Thriving access — nutrition, movement, journaling, AI features, and more.
       </p>
 
       {giftCode ? (
