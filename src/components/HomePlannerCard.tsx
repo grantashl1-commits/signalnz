@@ -387,14 +387,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
     toast.success("Calendar export ready");
   };
 
-  const handleImportCalendar = () => {
-    if (!importUrl.trim()) return;
-    haptic("medium");
-    cal.fetchCalendar(importUrl.trim());
-    cal.setIcsUrl(importUrl.trim());
-    cal.setShowImportInput(false);
-    setImportUrl("");
-  };
 
   return (
     <div className="space-y-3">
