@@ -795,3 +795,181 @@ function CourseCards({ session }: { session: any }) {
     </motion.div>
   );
 }
+
+function GiftSection({ session }: { session: any }) {
+  const navigate = useNavigate();
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [selectedGift, setSelectedGift] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [giftCode, setGiftCode] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (searchParams.get("gift") === "success" && code) {
+      setGiftCode(code);
+    }
+  }, [searchParams]);
+
+  const handleGiftPurchase = async () => {
+    if (!session) { navigate("/auth"); return; }
+    const gift = GIFT_OPTIONS[selectedGift];
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-gift", {
+        body: {
+          priceId: gift.priceId,
+          recipientEmail: recipientEmail.trim() || undefined,
+          tier: gift.tier,
+          durationMonths: gift.durationMonths,
+        },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (err: any) {
+      toast.error(err.message || "Could not start gift checkout");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyCode = () => {
+    if (giftCode) {
+      navigator.clipboard.writeText(giftCode);
+      toast.success("Gift code copied!");
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+      className="card-warm p-5 md:p-6 max-w-md mx-auto"
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <Gift className="h-5 w-5 text-primary" />
+        <h3 className="font-display text-lg italic text-foreground">Gift Signal</h3>
+      </div>
+      <p className="font-body text-sm text-muted-foreground mb-4">
+        Give someone you love the gift of wellness. They'll get full Nourished access — nutrition, movement, journaling, and more.
+      </p>
+
+      {giftCode ? (
+        <div className="rounded-xl bg-primary/5 border border-primary/15 p-4 text-center space-y-3">
+          <p className="font-body text-sm text-foreground">🎁 Gift purchased! Share this code:</p>
+          <div className="flex items-center justify-center gap-2">
+            <code className="font-mono text-lg font-bold text-primary bg-secondary px-4 py-2 rounded-lg">{giftCode}</code>
+            <button onClick={copyCode} className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
+              <Copy className="h-4 w-4 text-foreground" />
+            </button>
+          </div>
+          <p className="font-body text-xs text-muted-foreground">The recipient enters this on the membership page to activate their access.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="flex gap-2">
+            {GIFT_OPTIONS.map((g, i) => (
+              <button
+                key={i}
+                onClick={() => { haptic("light"); setSelectedGift(i); }}
+                className={`flex-1 rounded-xl px-3 py-3 text-center transition-all ${
+                  selectedGift === i
+                    ? "bg-primary text-primary-foreground shadow-soft"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                <span className="font-body text-sm font-bold block">{g.price}</span>
+                <span className="font-body text-[11px] block">{g.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <input
+            type="email"
+            value={recipientEmail}
+            onChange={(e) => setRecipientEmail(e.target.value)}
+            placeholder="Recipient's email (optional)"
+            className="w-full rounded-xl border border-border bg-background px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
+          <p className="font-body text-[11px] text-muted-foreground">
+            You'll receive a gift code to share. If you enter their email, we'll notify them too.
+          </p>
+
+          <button
+            onClick={handleGiftPurchase}
+            disabled={loading}
+            className="touch-btn w-full rounded-xl px-4 py-3 min-h-[52px] bg-primary text-primary-foreground font-body text-sm font-bold active:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {loading
+              ? <><Loader2 className="w-4 h-4 animate-spin" /> Loading...</>
+              : <><Gift className="w-4 h-4" /> Buy gift — {GIFT_OPTIONS[selectedGift].price} NZD</>
+            }
+          </button>
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+function RedeemSection({ session }: { session: any }) {
+  const navigate = useNavigate();
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { refreshSubscription } = useAuth();
+
+  const handleRedeem = async () => {
+    if (!session) { navigate("/auth"); return; }
+    if (!code.trim()) { toast.error("Please enter a gift code"); return; }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("redeem-gift", {
+        body: { code: code.trim() },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) throw error;
+      if (data?.success) {
+        toast.success(`🎉 Gift redeemed! You now have ${data.tier} access for ${data.duration_months} months.`);
+        setCode("");
+        refreshSubscription();
+      } else {
+        throw new Error(data?.error || "Could not redeem");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Could not redeem gift code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.45 }}
+      className="max-w-sm mx-auto text-center"
+    >
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <Ticket className="h-4 w-4 text-primary" />
+        <h3 className="font-display text-base italic text-foreground">Redeem a gift</h3>
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          placeholder="SIGNAL-XXXXXXXX"
+          className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+        />
+        <button
+          onClick={handleRedeem}
+          disabled={loading || !code.trim()}
+          className="rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-bold text-primary-foreground disabled:opacity-50 flex items-center gap-1.5"
+        >
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Redeem"}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
