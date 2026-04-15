@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, ChevronRight, Loader2 } from "lucide-react";
+import { Search, ChevronRight, Loader2, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
+import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
@@ -64,6 +65,7 @@ export default function LibraryTab() {
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
+  const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
 
   useEffect(() => {
@@ -147,6 +149,19 @@ export default function LibraryTab() {
     { id: "lower", label: "Lower Body" },
     { id: "rehabilitation", label: "Rehabilitation" },
   ];
+
+  // If a workout session is active, show the session view
+  if (activeSession) {
+    return (
+      <QuickWorkoutSession
+        title={activeSession.workout.title}
+        duration={activeSession.workout.duration}
+        intensity={activeSession.workout.intensity}
+        exercises={activeSession.exercises}
+        onBack={() => setActiveSession(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-5">
@@ -275,26 +290,55 @@ export default function LibraryTab() {
                   <ChevronRight className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${expanded ? "rotate-90" : ""}`} />
                 </button>
                 {expanded && (
-                  <div className="space-y-1.5 border-t border-border px-4 pb-4 pt-3">
+                  <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
                     {wExercises.length === 0 ? (
                       <div className="flex items-center justify-center py-4">
                         <Loader2 className="h-4 w-4 animate-spin text-primary" />
                       </div>
                     ) : (
-                      wExercises.map(ex => (
-                        <div key={ex.id} className="flex items-center gap-2.5 rounded-xl bg-secondary/50 p-2">
-                          <ExerciseDemonstration
-                            exerciseName={ex.name}
-                            imageUrl={ex.illustration_url}
-                            size={36}
-                            className="shrink-0 rounded-lg"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate font-body text-sm text-foreground">{ex.name}</p>
-                            <p className="font-body text-[9px] text-primary">{ex.target}</p>
-                          </div>
+                      <>
+                        <div className="space-y-1.5">
+                          {wExercises.map(ex => {
+                            const rx = getExercisePrescription(w.intensity, ex.category);
+                            return (
+                              <div key={ex.id} className="flex items-center gap-2.5 rounded-xl bg-secondary/50 p-2">
+                                <ExerciseDemonstration
+                                  exerciseName={ex.name}
+                                  imageUrl={ex.illustration_url}
+                                  size={36}
+                                  className="shrink-0 rounded-lg"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate font-body text-sm text-foreground">{ex.name}</p>
+                                  <div className="flex gap-2 mt-0.5">
+                                    <span className="font-body text-[10px] text-primary font-medium">
+                                      {rx.sets} × {rx.reps}
+                                    </span>
+                                    {rx.rest !== "—" && (
+                                      <span className="font-body text-[10px] text-muted-foreground">Rest {rx.rest}</span>
+                                    )}
+                                  </div>
+                                  {ex.target && (
+                                    <span className="font-body text-[9px] text-muted-foreground">{ex.target}</span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      ))
+
+                        {/* Start Workout button */}
+                        <button
+                          onClick={() => {
+                            haptic("medium");
+                            setActiveSession({ workout: w, exercises: wExercises });
+                          }}
+                          className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-primary-foreground font-body text-sm font-semibold transition-colors hover:bg-primary/90"
+                        >
+                          <Play className="h-4 w-4" />
+                          Start Workout
+                        </button>
+                      </>
                     )}
                   </div>
                 )}
