@@ -27,8 +27,8 @@ function hashPin(pin: string): string {
   }
   return String(hash);
 }
-const CONNECT_COURSE_PRICE_ID = "price_1TMVQKEAvaJHDMD4SdXWKeFW";
-const CONNECT_COURSE_PRODUCT_ID = "prod_ULBn2vV58V9s9l";
+const CONNECT_COURSE_PRICE_ID = "price_1TMVazEAvaJHDMD4refQpKGS";
+const CONNECT_COURSE_PRODUCT_ID = "prod_ULByZrRIjVLpQ3";
 
 export default function Connect() {
   const { user, session, refreshSubscription } = useAuth();
@@ -59,11 +59,14 @@ export default function Connect() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("purchase") === "success" && user) {
-      // Record the one-off purchase
+      // Record the one-off purchase with 3-month AI window
+      const expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + 3);
       supabase.from("one_off_purchases").upsert({
         user_id: user.id,
         product_key: "connect_course",
         stripe_product_id: CONNECT_COURSE_PRODUCT_ID,
+        ai_access_expires_at: expiresAt.toISOString(),
       }, { onConflict: "user_id,product_key" }).then(() => {
         refreshSubscription();
         toast.success("Connect Course unlocked! 🎉");
@@ -685,7 +688,8 @@ export default function Connect() {
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     13-module couples course · AI relationship coach · Reflection room · Attachment & love language quizzes · Appreciation tools · Weekly check-ins
                   </p>
-                  <p className="text-2xl font-bold text-foreground">$149 <span className="text-sm font-normal text-muted-foreground">NZD · lifetime access</span></p>
+                  <p className="text-2xl font-bold text-foreground">$79 <span className="text-sm font-normal text-muted-foreground">NZD · 3 months AI coaching</span></p>
+                  <p className="text-[11px] text-muted-foreground/70">Course content stays yours forever. AI coach & reflection room active for 3 months.</p>
                   <button
                     onClick={handlePurchaseConnect}
                     disabled={purchaseLoading}
