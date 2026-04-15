@@ -498,6 +498,66 @@ export type Database = {
           },
         ]
       }
+      connect_partner_progress: {
+        Row: {
+          activity_id: string
+          activity_type: string
+          completed: boolean
+          connection_id: string
+          created_at: string
+          id: string
+          lesson_id: string
+          module_id: string
+          partner_role: string
+          response: Json | null
+          shared_to_partner: boolean
+          updated_at: string
+        }
+        Insert: {
+          activity_id: string
+          activity_type?: string
+          completed?: boolean
+          connection_id: string
+          created_at?: string
+          id?: string
+          lesson_id: string
+          module_id: string
+          partner_role?: string
+          response?: Json | null
+          shared_to_partner?: boolean
+          updated_at?: string
+        }
+        Update: {
+          activity_id?: string
+          activity_type?: string
+          completed?: boolean
+          connection_id?: string
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          module_id?: string
+          partner_role?: string
+          response?: Json | null
+          shared_to_partner?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_partner_progress_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_partner_progress_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cycle_logs: {
         Row: {
           created_at: string
