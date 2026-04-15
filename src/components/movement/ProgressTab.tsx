@@ -52,13 +52,15 @@ export default function ProgressTab() {
       const set: PhotoSet = { ...EMPTY_SET };
       for (const view of ["front", "side", "back", "3d"] as PhotoView[]) {
         const path = `${user.id}/${s.key}_${view}`;
-        const { data } = supabase.storage.from("progress-photos").getPublicUrl(path);
-        // Check if the file exists by trying to download metadata
+        // Check if the file exists
         const { data: fileData } = await supabase.storage.from("progress-photos").list(user.id, {
           search: `${s.key}_${view}`,
         });
         if (fileData && fileData.length > 0) {
-          set[view] = data.publicUrl + `?t=${Date.now()}`;
+          const { data: signedData } = await supabase.storage.from("progress-photos").createSignedUrl(path, 3600);
+          if (signedData?.signedUrl) {
+            set[view] = signedData.signedUrl;
+          }
         }
       }
       result[s.key] = set;
@@ -102,11 +104,13 @@ export default function ProgressTab() {
         upsert: true,
       });
       if (!error) {
-        const { data } = supabase.storage.from("progress-photos").getPublicUrl(path);
-        setPhotos(prev => ({
-          ...prev,
-          [section]: { ...prev[section], [view]: data.publicUrl + `?t=${Date.now()}` },
-        }));
+        const { data: signedData } = await supabase.storage.from("progress-photos").createSignedUrl(path, 3600);
+        if (signedData?.signedUrl) {
+          setPhotos(prev => ({
+            ...prev,
+            [section]: { ...prev[section], [view]: signedData.signedUrl },
+          }));
+        }
       }
     } else {
       // Fallback to localStorage

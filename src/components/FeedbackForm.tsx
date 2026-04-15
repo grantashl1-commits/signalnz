@@ -88,10 +88,12 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted?: () => void
           .from("feedback-screenshots")
           .upload(path, fp.file, { contentType: fp.file.type });
         if (uploadErr) throw uploadErr;
-        const { data: urlData } = supabase.storage
+        const { data: signedData } = await supabase.storage
           .from("feedback-screenshots")
-          .getPublicUrl(path);
-        uploadedUrls.push(urlData.publicUrl);
+          .createSignedUrl(path, 86400); // 24h expiry
+        if (signedData?.signedUrl) {
+          uploadedUrls.push(signedData.signedUrl);
+        }
       }
 
       const subject = `[${category}] ${description.trim().slice(0, 80)}`;

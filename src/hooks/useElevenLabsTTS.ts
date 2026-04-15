@@ -29,16 +29,17 @@ export function useElevenLabsTTS({
     if (overrideUrl) return overrideUrl;
 
     const filePath = buildVersionedPracticeAudioPath(practiceId);
-    const { data } = supabase.storage
+    // Use signed URL for private bucket
+    const { data: signedData } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(filePath);
+      .createSignedUrl(filePath, 3600); // 1h expiry
 
-    if (!data?.publicUrl) return null;
+    if (!signedData?.signedUrl) return null;
 
     // HEAD request to verify the file actually exists
     try {
-      const resp = await fetch(data.publicUrl, { method: "HEAD" });
-      if (resp.ok) return data.publicUrl;
+      const resp = await fetch(signedData.signedUrl, { method: "HEAD" });
+      if (resp.ok) return signedData.signedUrl;
     } catch {
       // File doesn't exist yet
     }
