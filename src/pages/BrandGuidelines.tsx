@@ -373,22 +373,37 @@ export default function BrandGuidelines() {
           <Divider />
 
           <div className="space-y-4 md:space-y-8">
-            {/* Montserrat */}
+            {/* Reddit Sans */}
             <div className="rounded-xl p-5 md:p-8" style={{ backgroundColor: C.warmIvory }}>
-              <SectionLabel>Primary — Montserrat</SectionLabel>
-              <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 8vw, 72px)", color: C.brandPurple, letterSpacing: "0.1em", lineHeight: 1.1 }}>
-                SIGNAL
+              <SectionLabel>Primary — Reddit Sans</SectionLabel>
+              <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 8vw, 72px)", color: C.brandPurple, letterSpacing: "0.05em", lineHeight: 1.1 }}>
+                signal
               </p>
               <p style={{ fontWeight: 500, fontSize: 13, color: C.body, marginTop: 12, lineHeight: 1.7 }}>
-                Montserrat is used for the wordmark, UI labels, headings, and all structural text.
+                Reddit Sans is used for all UI labels, body text, headings, and structural typography. Its rounded, friendly character pairs beautifully with Caveat's warmth.
               </p>
               <div className="mt-4 space-y-2">
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender }}>Weight 800 / 600 / 400 · Track: +10 to +35em · Case: Uppercase / Mixed</p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender }}>Weight 800 / 600 / 400 / 300 · Track: 0 to +10em · Case: Mixed / lowercase</p>
                 <div className="flex flex-wrap gap-3 mt-3">
-                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ backgroundColor: C.brandPurple, color: C.warmIvory, fontWeight: 800, letterSpacing: "0.1em" }}>EXTRABOLD 800</span>
-                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ backgroundColor: `${C.brandPurple}20`, color: C.brandPurple, fontWeight: 600 }}>SEMIBOLD 600</span>
-                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ backgroundColor: `${C.brandPurple}10`, color: C.brandPurple, fontWeight: 400 }}>Regular 400</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: C.brandPurple, color: C.warmIvory, fontWeight: 800 }}>ExtraBold 800</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: `${C.brandPurple}20`, color: C.brandPurple, fontWeight: 600 }}>SemiBold 600</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: `${C.brandPurple}10`, color: C.brandPurple, fontWeight: 400 }}>Regular 400</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: `${C.brandPurple}08`, color: C.brandPurple, fontWeight: 300 }}>Light 300</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Caveat */}
+            <div className="rounded-xl p-5 md:p-8" style={{ backgroundColor: C.warmIvory }}>
+              <SectionLabel>Handwritten — Caveat</SectionLabel>
+              <p style={{ fontFamily: "'Caveat', cursive", fontWeight: 700, fontSize: "clamp(28px, 6vw, 52px)", color: C.brandPurple, lineHeight: 1.2 }}>
+                Your inner signal is always there
+              </p>
+              <p style={{ fontWeight: 500, fontSize: 13, color: C.body, marginTop: 12, lineHeight: 1.7 }}>
+                Caveat brings warmth, authenticity, and a journal-like intimacy. Used for homepage section labels, card headings, planner elements, and decorative text that invites rather than instructs.
+              </p>
+              <div className="mt-4">
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender }}>Weight 400 / 500 / 600 / 700 · Used for: Labels, headings, decorative elements</p>
               </div>
             </div>
 
