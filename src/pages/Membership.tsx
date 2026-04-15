@@ -5,6 +5,8 @@ import TierComparisonTable from "@/components/TierComparisonTable";
 import { SeedGeometry, BotanicalSprig, CymatiSketch } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
