@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import AppreciationPanel from "@/components/connect/AppreciationPanel";
 import { setPartnerSession, clearPartnerSession, partnerProxy, isPartnerSession as checkIsPartner } from "@/hooks/usePartnerProxy";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import ReflectRoom from "@/components/connect/ReflectRoom";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
 type SpaceTab = "reflect" | "chat" | "course" | "appreciate";
