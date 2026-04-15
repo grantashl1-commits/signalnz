@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Plus, X, ChevronRight, ArrowRight, Check, Trash2, Archive, Sparkles, CalendarPlus, Download, Loader2 } from "lucide-react";
-import { format, startOfWeek, endOfWeek, isWithinInterval, parseISO } from "date-fns";
+import { Calendar, Plus, X, ChevronRight, ArrowRight, Check, Trash2, Archive, Sparkles, CalendarPlus } from "lucide-react";
+import { format } from "date-fns";
 import { haptic, useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { useTodos } from "@/hooks/useTodos";
