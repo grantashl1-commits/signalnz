@@ -40,6 +40,7 @@ export default function Connect() {
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
 
   // Chat state
+  const [spaceTab, setSpaceTab] = useState<SpaceTab>("chat");
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
