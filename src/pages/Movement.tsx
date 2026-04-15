@@ -430,34 +430,7 @@ export default function MovementPage() {
             </button>
           )}
 
-          {/* Workout history from Supabase */}
-          {supabaseLogs.length > 0 && (
-            <div>
-              <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em] mb-2">Workout history</p>
-              <div className="space-y-2">
-                {supabaseLogs.map(log => (
-                  <div key={log.id} className="card-warm p-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-body text-sm font-medium text-foreground">
-                          {log.workout_template_id ? "Training session" : "Logged workout"}
-                        </p>
-                        <p className="font-body text-[9px] text-muted-foreground">
-                          {log.session_date} · {log.duration_minutes ? `${log.duration_minutes} min` : ""}
-                        </p>
-                      </div>
-                      <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Check className="h-3 w-3 text-primary" />
-                      </div>
-                    </div>
-                    {log.notes && (
-                      <p className="font-body text-xs text-muted-foreground mt-1.5 italic">"{log.notes}"</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Workout history is now shown inside MovementCalendar */}
 
           {/* HR session history from localStorage */}
           {sessions.length > 0 && (
