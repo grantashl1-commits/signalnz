@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState, memo } from "react";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
+import logoBotanicalDotsV1 from "@/assets/logo-explorations/signal-botanical-dots-v1.png";
+import logoBotanicalDotsV2 from "@/assets/logo-explorations/signal-botanical-dots-v2.png";
+import logoIconBotanicalRings from "@/assets/logo-explorations/signal-icon-botanical-rings.png";
+import logoIconSoftRings from "@/assets/logo-explorations/signal-icon-soft-rings.png";
+import logoStackedBotanical from "@/assets/logo-explorations/signal-stacked-botanical.png";
+import logoSoftSerif from "@/assets/logo-explorations/signal-logo-soft-serif.png";
+import logoBotanical from "@/assets/logo-explorations/signal-logo-botanical.png";
+import logoWave from "@/assets/logo-explorations/signal-logo-wave.png";
+import logoCursive from "@/assets/logo-explorations/signal-logo-cursive.png";
+import logoMixed from "@/assets/logo-explorations/signal-logo-mixed.png";
+
 /* ── brand tokens ── */
 const C = {
   brandPurple: "#5B2D72",
@@ -17,6 +28,7 @@ const SECTIONS = [
   { id: "cover", label: "Cover" },
   { id: "story", label: "Story" },
   { id: "brand-mark", label: "Brand Mark" },
+  { id: "logo-explorations", label: "Explorations" },
   { id: "colours", label: "Colours" },
   { id: "typography", label: "Type" },
   { id: "motion", label: "Motion" },
@@ -74,7 +86,7 @@ function Section({ id, bg = C.pearl, children, className = "" }: { id: string; b
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: C.brandPurple }}>
+    <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, color: C.brandPurple }}>
       {children}
     </h2>
   );
@@ -82,7 +94,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
+    <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
       {children}
     </p>
   );
@@ -118,7 +130,7 @@ export default function BrandGuidelines() {
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="relative overflow-x-hidden" style={{ fontFamily: "'Montserrat', sans-serif", backgroundColor: C.pearl }}>
+    <div className="relative overflow-x-hidden" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: C.pearl }}>
       {/* ── sticky side nav (desktop) ── */}
       <nav className="fixed left-0 top-0 bottom-0 z-50 hidden lg:flex flex-col justify-center pl-6 gap-3">
         {SECTIONS.map(({ id, label }) => (
@@ -201,7 +213,7 @@ export default function BrandGuidelines() {
             </p>
             <div className="flex items-center gap-4 p-4 rounded-lg" style={{ backgroundColor: C.pearl }}>
               <img src="/logos/Icon_purple.png" alt="Signal ring icon" className="w-10 h-10 object-contain" />
-              <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple, letterSpacing: "0.1em" }}>SIGNAL</span>
+              <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple, letterSpacing: "0.1em" }}>SIGNAL</span>
             </div>
           </div>
 
@@ -247,6 +259,81 @@ export default function BrandGuidelines() {
         </div>
       </Section>
 
+      {/* ═══════════  LOGO EXPLORATIONS  ═══════════ */}
+      <Section id="logo-explorations" bg={C.warmIvory}>
+        <div className="relative z-10 max-w-5xl mx-auto w-full">
+          <SectionLabel>02b — Logo Evolution</SectionLabel>
+          <SectionTitle>Botanical + Signal Rings</SectionTitle>
+          <Divider />
+          <p style={{ fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.8, marginBottom: 24 }}>
+            Exploring a softer identity that combines the lowercase botanical wordmark with
+            hand-illustrated signal rings — reimagining the concentric dots as organic,
+            watercolour-drawn ripples rather than mechanical circles.
+          </p>
+
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Wordmark + Rings Combined
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
+            {[
+              { src: logoBotanicalDotsV1, label: "Botanical Rings V1", desc: "Concentric rings emanate from behind the wordmark, leaf accent on the 'i'" },
+              { src: logoBotanicalDotsV2, label: "Icon + Wordmark Lockup", desc: "Separated hand-drawn ring icon paired with botanical wordmark" },
+              { src: logoStackedBotanical, label: "Stacked Lockup", desc: "Ring icon stacked above wordmark — vertical format for app icons" },
+              { src: logoBotanical, label: "Original Botanical", desc: "The starting point — clean lowercase with leaf accent" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-6 md:p-10 aspect-[16/9]"
+                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain" loading="lazy" />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.5 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Icon Mark — Soft Illustrated Rings
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-10">
+            {[
+              { src: logoIconBotanicalRings, label: "Botanical Rings", desc: "Three rings with leaf sprig — app icon candidate" },
+              { src: logoIconSoftRings, label: "Soft Watercolour Rings", desc: "Hand-drawn organic ripples — loading animation candidate" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-6 aspect-square"
+                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain max-w-[160px]" loading="lazy" />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.5 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Other Typography Directions
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {[
+              { src: logoSoftSerif, label: "Soft Serif", desc: "Elegant wide-spaced editorial" },
+              { src: logoCursive, label: "Cursive Watercolour", desc: "Full handwritten calligraphy" },
+              { src: logoMixed, label: "Mixed Script", desc: "Hand-drawn S + serif 'ignal'" },
+              { src: logoWave, label: "Wave Underline", desc: "Clean type with signal wave" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-4 md:p-6 aspect-[16/9]"
+                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain" loading="lazy" />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* ═══════════  4. COLOUR PALETTE  ═══════════ */}
       <Section id="colours" bg={C.warmIvory}>
         <div className="max-w-5xl mx-auto w-full">
@@ -286,22 +373,37 @@ export default function BrandGuidelines() {
           <Divider />
 
           <div className="space-y-4 md:space-y-8">
-            {/* Montserrat */}
+            {/* Reddit Sans */}
             <div className="rounded-xl p-5 md:p-8" style={{ backgroundColor: C.warmIvory }}>
-              <SectionLabel>Primary — Montserrat</SectionLabel>
-              <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 8vw, 72px)", color: C.brandPurple, letterSpacing: "0.1em", lineHeight: 1.1 }}>
-                SIGNAL
+              <SectionLabel>Primary — Reddit Sans</SectionLabel>
+              <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(32px, 8vw, 72px)", color: C.brandPurple, letterSpacing: "0.05em", lineHeight: 1.1 }}>
+                signal
               </p>
               <p style={{ fontWeight: 500, fontSize: 13, color: C.body, marginTop: 12, lineHeight: 1.7 }}>
-                Montserrat is used for the wordmark, UI labels, headings, and all structural text.
+                Reddit Sans is used for all UI labels, body text, headings, and structural typography. Its rounded, friendly character pairs beautifully with Caveat's warmth.
               </p>
               <div className="mt-4 space-y-2">
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender }}>Weight 800 / 600 / 400 · Track: +10 to +35em · Case: Uppercase / Mixed</p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender }}>Weight 800 / 600 / 400 / 300 · Track: 0 to +10em · Case: Mixed / lowercase</p>
                 <div className="flex flex-wrap gap-3 mt-3">
-                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ backgroundColor: C.brandPurple, color: C.warmIvory, fontWeight: 800, letterSpacing: "0.1em" }}>EXTRABOLD 800</span>
-                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ backgroundColor: `${C.brandPurple}20`, color: C.brandPurple, fontWeight: 600 }}>SEMIBOLD 600</span>
-                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ backgroundColor: `${C.brandPurple}10`, color: C.brandPurple, fontWeight: 400 }}>Regular 400</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: C.brandPurple, color: C.warmIvory, fontWeight: 800 }}>ExtraBold 800</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: `${C.brandPurple}20`, color: C.brandPurple, fontWeight: 600 }}>SemiBold 600</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: `${C.brandPurple}10`, color: C.brandPurple, fontWeight: 400 }}>Regular 400</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs" style={{ fontFamily: "'Reddit Sans', sans-serif", backgroundColor: `${C.brandPurple}08`, color: C.brandPurple, fontWeight: 300 }}>Light 300</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Caveat */}
+            <div className="rounded-xl p-5 md:p-8" style={{ backgroundColor: C.warmIvory }}>
+              <SectionLabel>Handwritten — Caveat</SectionLabel>
+              <p style={{ fontFamily: "'Caveat', cursive", fontWeight: 700, fontSize: "clamp(28px, 6vw, 52px)", color: C.brandPurple, lineHeight: 1.2 }}>
+                Your inner signal is always there
+              </p>
+              <p style={{ fontWeight: 500, fontSize: 13, color: C.body, marginTop: 12, lineHeight: 1.7 }}>
+                Caveat brings warmth, authenticity, and a journal-like intimacy. Used for homepage section labels, card headings, planner elements, and decorative text that invites rather than instructs.
+              </p>
+              <div className="mt-4">
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.lavender }}>Weight 400 / 500 / 600 / 700 · Used for: Labels, headings, decorative elements</p>
               </div>
             </div>
 
@@ -324,19 +426,19 @@ export default function BrandGuidelines() {
               <SectionLabel>Scale</SectionLabel>
               <div className="space-y-4">
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 28, color: C.brandPurple }}>Home Hero — 28px</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: 28, color: C.brandPurple }}>Home Hero — 28px</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 800</p>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple }}>Card Title — 20px</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: 20, color: C.brandPurple }}>Card Title — 20px</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 800</p>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.6 }}>Body copy — 15px / 1.6 line height</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.6 }}>Body copy — 15px / 1.6 line height</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 500</p>
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.12em" }}>Section label — 11px / 0.12em</p>
+                  <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.12em" }}>Section label — 11px / 0.12em</p>
                   <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>Montserrat 600 · Uppercase · +12em tracking</p>
                 </div>
               </div>
@@ -348,10 +450,10 @@ export default function BrandGuidelines() {
       {/* ═══════════  6. MOTION  ═══════════ */}
       <Section id="motion" bg={C.deepNavy}>
         <div className="relative z-10 max-w-4xl mx-auto w-full">
-          <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
+          <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8 }}>
             05 — Motion
           </p>
-          <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800, color: C.warmIvory }}>
+          <h2 className="text-2xl md:text-[32px] tracking-tight mb-2" style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, color: C.warmIvory }}>
             Loading Animations
           </h2>
           <div className="w-12 h-[2px] rounded-full my-4 md:my-6" style={{ backgroundColor: `${C.warmIvory}40` }} />
