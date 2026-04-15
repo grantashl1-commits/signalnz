@@ -380,7 +380,8 @@ export default function Connect() {
           {/* Tabs */}
           <div className="flex gap-1 mt-3 bg-muted/50 rounded-full p-0.5">
             {([
-              { key: "chat" as SpaceTab, label: "Chat", icon: MessageSquare },
+              { key: "reflect" as SpaceTab, label: "Reflect", icon: PenLine },
+              { key: "chat" as SpaceTab, label: "Coach", icon: MessageSquare },
               { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
               { key: "appreciate" as SpaceTab, label: "💜", icon: null },
             ]).map((tab) => (
