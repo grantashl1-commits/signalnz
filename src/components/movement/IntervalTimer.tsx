@@ -75,6 +75,9 @@ export function parseTimeFromReps(reps: string | null): number | null {
 }
 
 export function isTimeBased(reps: string | null): boolean {
+  if (!reps) return false;
+  // Also detect compound patterns like "60s run then 90s walk"
+  if (/\d+\s*(s|sec|min)\s+\w+\s+then\s+\d+\s*(s|sec|min)/i.test(reps)) return true;
   return parseTimeFromReps(reps) !== null;
 }
 
