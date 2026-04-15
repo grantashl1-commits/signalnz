@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -9,9 +9,12 @@ import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
+import PrivateReflection, { type ReflectionCard } from "@/components/connect/PrivateReflection";
+import SharedRoom from "@/components/connect/SharedRoom";
+import WeeklyCheckIn from "@/components/connect/WeeklyCheckIn";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
-type SpaceTab = "chat" | "course" | "appreciate";
+type SpaceTab = "chat" | "reflect" | "shared" | "course" | "checkin" | "appreciate";
 type Message = { id: string; sender_role: string; content: string; created_at: string; metadata?: any };
 
 // Simple hash for PIN (not crypto-grade, but fine for a 4-digit PIN check)
@@ -38,9 +41,11 @@ export default function Connect() {
   const [connectionId, setConnectionId] = useState<string | null>(null);
   const [isPartnerSession, setIsPartnerSession] = useState(false);
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
+  const [myCards, setMyCards] = useState<ReflectionCard[]>([]);
+  const [theirCards, setTheirCards] = useState<ReflectionCard[]>([]);
 
   // Chat state
-  const [spaceTab, setSpaceTab] = useState<SpaceTab>("chat");
+  const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -376,23 +381,26 @@ export default function Connect() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-1 mt-3 bg-muted/50 rounded-full p-0.5">
+          {/* Tabs - scrollable */}
+          <div className="flex gap-1 mt-3 overflow-x-auto no-scrollbar">
             {([
-              { key: "chat" as SpaceTab, label: "Chat", icon: MessageSquare },
+              { key: "reflect" as SpaceTab, label: "Reflect", icon: PenLine },
+              { key: "shared" as SpaceTab, label: "Shared", icon: Users },
               { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
+              { key: "chat" as SpaceTab, label: "Coach", icon: Bot },
+              { key: "checkin" as SpaceTab, label: "Check-in", icon: BarChart3 },
               { key: "appreciate" as SpaceTab, label: "💜", icon: null },
             ]).map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => { haptic("light"); setSpaceTab(tab.key); }}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-medium transition-all ${
+                className={`shrink-0 flex items-center justify-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
                   spaceTab === tab.key
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {tab.icon && <tab.icon className="w-3.5 h-3.5" />}
+                {tab.icon && <tab.icon className="w-3 h-3" />}
                 {tab.label}
               </button>
             ))}
@@ -502,6 +510,30 @@ export default function Connect() {
           </>
         )}
 
+        {spaceTab === "reflect" && (
+          <div className="flex-1 overflow-y-auto">
+            <PrivateReflection
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
+              onCardsSent={(cards) => { setMyCards(cards); setSpaceTab("shared"); }}
+            />
+          </div>
+        )}
+
+        {spaceTab === "shared" && (
+          <div className="flex-1 overflow-y-auto">
+            <SharedRoom
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
+              myName={isPartnerSession ? partnerDisplayName : "You"}
+              myCards={myCards}
+              theirCards={theirCards}
+            />
+          </div>
+        )}
+
         {spaceTab === "course" && (
           <div className="flex-1 overflow-y-auto">
             <ConnectCourseView
@@ -509,6 +541,16 @@ export default function Connect() {
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               onShareToPartner={shareToPartner}
+            />
+          </div>
+        )}
+
+        {spaceTab === "checkin" && (
+          <div className="flex-1 overflow-y-auto">
+            <WeeklyCheckIn
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
             />
           </div>
         )}

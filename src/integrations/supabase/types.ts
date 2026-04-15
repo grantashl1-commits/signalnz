@@ -456,6 +456,93 @@ export type Database = {
         }
         Relationships: []
       }
+      connect_checkins: {
+        Row: {
+          appreciation: string | null
+          connection_id: string
+          created_at: string
+          id: string
+          partner_role: string
+          scores: Json
+          week_key: string
+        }
+        Insert: {
+          appreciation?: string | null
+          connection_id: string
+          created_at?: string
+          id?: string
+          partner_role?: string
+          scores?: Json
+          week_key: string
+        }
+        Update: {
+          appreciation?: string | null
+          connection_id?: string
+          created_at?: string
+          id?: string
+          partner_role?: string
+          scores?: Json
+          week_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_checkins_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_checkins_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connect_commitments: {
+        Row: {
+          committed_at: string
+          connection_id: string
+          id: string
+          next_step: string
+          timeframe: string
+          why: string | null
+        }
+        Insert: {
+          committed_at?: string
+          connection_id: string
+          id?: string
+          next_step: string
+          timeframe: string
+          why?: string | null
+        }
+        Update: {
+          committed_at?: string
+          connection_id?: string
+          id?: string
+          next_step?: string
+          timeframe?: string
+          why?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_commitments_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_commitments_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connect_messages: {
         Row: {
           connection_id: string
@@ -554,6 +641,106 @@ export type Database = {
             columns: ["connection_id"]
             isOneToOne: false
             referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connect_reflections: {
+        Row: {
+          cards: Json
+          connection_id: string
+          created_at: string
+          id: string
+          partner_role: string
+          raw_entry: string
+          shared_keys: string[]
+        }
+        Insert: {
+          cards?: Json
+          connection_id: string
+          created_at?: string
+          id?: string
+          partner_role?: string
+          raw_entry: string
+          shared_keys?: string[]
+        }
+        Update: {
+          cards?: Json
+          connection_id?: string
+          created_at?: string
+          id?: string
+          partner_role?: string
+          raw_entry?: string
+          shared_keys?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_reflections_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_reflections_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connect_shared_responses: {
+        Row: {
+          acknowledgement: string | null
+          category: string
+          connection_id: string
+          created_at: string
+          id: string
+          partner_role: string
+          reflection_id: string | null
+          response_text: string | null
+        }
+        Insert: {
+          acknowledgement?: string | null
+          category: string
+          connection_id: string
+          created_at?: string
+          id?: string
+          partner_role: string
+          reflection_id?: string | null
+          response_text?: string | null
+        }
+        Update: {
+          acknowledgement?: string | null
+          category?: string
+          connection_id?: string
+          created_at?: string
+          id?: string
+          partner_role?: string
+          reflection_id?: string | null
+          response_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connect_shared_responses_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_shared_responses_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "partner_connections_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connect_shared_responses_reflection_id_fkey"
+            columns: ["reflection_id"]
+            isOneToOne: false
+            referencedRelation: "connect_reflections"
             referencedColumns: ["id"]
           },
         ]
