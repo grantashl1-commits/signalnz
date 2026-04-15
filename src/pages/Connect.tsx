@@ -106,14 +106,31 @@ export default function Connect() {
     return code;
   };
 
+  const getShareUrl = (code: string) => `${window.location.origin}/connect/join/${code}`;
+
   const copyCode = async () => {
     try {
-      await navigator.clipboard.writeText(generatedCode);
+      await navigator.clipboard.writeText(getShareUrl(generatedCode));
       setCopied(true);
       haptic("light");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Couldn't copy — try manually");
+    }
+  };
+
+  const shareLink = async () => {
+    const url = getShareUrl(generatedCode);
+    const text = `Join our Signal Connect space 💜\nUse the PIN I shared with you.\n${url}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Signal Connect", text, url });
+        haptic("medium");
+      } catch { /* user cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast.success("Link copied — send it to your partner");
+      haptic("light");
     }
   };
 
