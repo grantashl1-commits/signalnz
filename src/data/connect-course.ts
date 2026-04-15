@@ -627,17 +627,17 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Rule for Speaker",
-                  "body": "Speak for yourself, use 'I' statements, keep statements brief, stop and let the Listener paraphrase.",
+                  "body": "Speak only for yourself using 'I' statements — 'I feel…' not 'You always…'. Keep statements brief and focused on one issue at a time. After each key point, pause and let the Listener paraphrase back what they heard. Don't move on until they've accurately reflected your message. You hold 'the floor' — only the Speaker talks.",
                   "icon": "lucide-mic"
                 },
                 {
                   "title": "Rule for Listener",
-                  "body": "Paraphrase what you hear without judging or rebutting, focus on truly understanding their message.",
+                  "body": "Your only job is to understand, not to agree, fix, or rebut. Paraphrase what you hear in your own words: 'So what you're saying is…'. Check back: 'Did I get that right?' Don't insert your perspective until it's your turn as Speaker. This feels unnatural at first — but it's transformative when practised consistently.",
                   "icon": "lucide-headphones"
                 },
                 {
                   "title": "Rule for Both",
-                  "body": "The goal is understanding, not agreement. Don't problem-solve during this exchange.",
+                  "body": "The goal is understanding, never agreement or problem-solving during this exchange. Use a physical object (a pen, a cushion) as 'the floor' — whoever holds it speaks. Switch roles frequently. If emotions escalate, either partner can call a 20-minute break. This structure prevents the conversation from spiralling into attack-defend loops.",
                   "icon": "lucide-users"
                 }
               ]
@@ -929,22 +929,22 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Increased Understanding",
-                  "body": "Conflict can reveal hidden needs, dreams, and perspectives, deepening empathy.",
+                  "body": "Conflict — when handled well — forces you to articulate what you actually need, not just what annoys you. It reveals hidden dreams, unspoken expectations, and deeper emotional landscapes. Couples who lean into disagreements with curiosity often report understanding their partner better afterward than before the fight started.",
                   "icon": "lucide-lightbulb"
                 },
                 {
                   "title": "Stronger Trust",
-                  "body": "Successfully navigating conflict builds confidence in your partner's commitment and ability to repair.",
+                  "body": "Every conflict you navigate together without destroying each other builds a deposit of confidence. You learn: 'We can disagree and survive. We can hurt and repair.' This trust — forged through friction, not just smooth sailing — is more resilient than trust that's never been tested.",
                   "icon": "lucide-handshake"
                 },
                 {
                   "title": "Promotes Growth",
-                  "body": "Addressing issues helps individuals and the relationship evolve, preventing stagnation.",
+                  "body": "Relationships that avoid all conflict stagnate. The tension of disagreement — when metabolised constructively — pushes both partners to examine their assumptions, develop empathy, and evolve. Research shows couples who engage in productive conflict report higher personal growth than those who 'never fight.'",
                   "icon": "lucide-leaf"
                 },
                 {
                   "title": "Ventilation & Release",
-                  "body": "Constructive conflict allows for healthy expression of frustrations, preventing resentment buildup.",
+                  "body": "Suppressed frustrations don't disappear — they ferment into resentment, contempt, and emotional distance. Constructive conflict provides a pressure valve: expressing what's wrong in real time prevents the slow poisoning of unspoken grievances. Think of it as emotional hygiene for your relationship.",
                   "icon": "lucide-wind"
                 }
               ]
@@ -1064,18 +1064,23 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Physical Signs",
-                  "body": "Increased heart rate, rapid breathing, muscle tension, sweating, feeling light-headed.",
+                  "body": "Your heart rate climbs above 100 bpm, breathing becomes shallow and rapid, muscles tense (especially jaw, shoulders, and fists), palms sweat, and you may feel light-headed or dizzy. Gottman's research showed that once heart rate exceeds 100 bpm, your ability to listen accurately drops by over 50%. Your body is preparing to fight or flee — not to have a conversation.",
                   "icon": "lucide-thermometer"
                 },
                 {
                   "title": "Emotional Signs",
-                  "body": "Feeling overwhelmed, intense anger, feeling numb, inability to think clearly, tunnel vision.",
+                  "body": "An overwhelming sense of being attacked or trapped. Intense anger that feels disproportionate to the topic. Feeling numb or 'checked out'. Tunnel vision — you can only see your partner's worst qualities. The inability to remember anything good about your relationship in this moment. These are signs your amygdala has hijacked your rational brain.",
                   "icon": "lucide-cloud-rain"
                 },
                 {
                   "title": "Behavioral Signs",
-                  "body": "Desire to flee, aggression, stonewalling, inability to listen.",
+                  "body": "An urgent desire to leave the room, raising your voice without intending to, repeating the same point louder each time, crossing arms, refusing eye contact, or going completely silent (stonewalling). You may notice yourself interrupting constantly or mentally rehearsing your counter-argument instead of listening. These are all signals to pause — not push through.",
                   "icon": "lucide-zap"
+                },
+                {
+                  "title": "The 20-Minute Reset",
+                  "body": "When flooded, it takes at least 20 minutes for your physiology to return to baseline — no matter how 'calm' you think you feel after 5 minutes. During this break: no ruminating on the argument, no replaying what you should have said. Instead: walk, breathe deeply, listen to music, or do something soothing. Then return and try again.",
+                  "icon": "lucide-timer"
                 }
               ]
             },
