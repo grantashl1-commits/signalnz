@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState, memo } from "react";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
+import logoBotanicalDotsV1 from "@/assets/logo-explorations/signal-botanical-dots-v1.png";
+import logoBotanicalDotsV2 from "@/assets/logo-explorations/signal-botanical-dots-v2.png";
+import logoIconBotanicalRings from "@/assets/logo-explorations/signal-icon-botanical-rings.png";
+import logoIconSoftRings from "@/assets/logo-explorations/signal-icon-soft-rings.png";
+import logoStackedBotanical from "@/assets/logo-explorations/signal-stacked-botanical.png";
+import logoSoftSerif from "@/assets/logo-explorations/signal-logo-soft-serif.png";
+import logoBotanical from "@/assets/logo-explorations/signal-logo-botanical.png";
+import logoWave from "@/assets/logo-explorations/signal-logo-wave.png";
+import logoCursive from "@/assets/logo-explorations/signal-logo-cursive.png";
+import logoMixed from "@/assets/logo-explorations/signal-logo-mixed.png";
+
 /* ── brand tokens ── */
 const C = {
   brandPurple: "#5B2D72",
