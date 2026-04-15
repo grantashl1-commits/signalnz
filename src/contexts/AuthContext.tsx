@@ -5,12 +5,18 @@ import { identifyUser, resetUser } from "@/lib/analytics";
 import { setSentryUser, clearSentryUser } from "@/lib/error-monitoring";
 import type { User, Session } from "@supabase/supabase-js";
 
+interface OneOffPurchaseDetail {
+  product_key: string;
+  ai_access_expires_at: string | null;
+}
+
 interface SubscriptionInfo {
   subscribed: boolean;
   productId: string | null;
   tier: "free" | "rooted" | "nourished" | "thriving";
   subscriptionEnd: string | null;
   oneOffPurchases: string[];
+  oneOffDetails: OneOffPurchaseDetail[];
 }
 
 interface AuthState {
@@ -33,6 +39,7 @@ const defaultSub: SubscriptionInfo = {
   tier: "free",
   subscriptionEnd: null,
   oneOffPurchases: [],
+  oneOffDetails: [],
 };
 
 const AuthContext = createContext<AuthState>({
@@ -62,12 +69,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       if (error) throw error;
       const productId = data?.product_id ?? null;
+      const details: OneOffPurchaseDetail[] = data?.one_off_details ?? [];
       setSubscription({
         subscribed: !!data?.subscribed,
         productId,
         tier: (productId && TIERS_MAP[productId]) || "free",
         subscriptionEnd: data?.subscription_end ?? null,
-        oneOffPurchases: data?.one_off_purchases ?? [],
+        oneOffPurchases: details.map((d: OneOffPurchaseDetail) => d.product_key),
+        oneOffDetails: details,
       });
     } catch {
       setSubscription(defaultSub);
