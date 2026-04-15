@@ -402,6 +402,16 @@ export default function Connect() {
         </div>
 
         {/* Tab content */}
+        {spaceTab === "reflect" && (
+          <div className="flex-1 overflow-y-auto">
+            <ReflectRoom
+              connectionId={connectionId}
+              partnerRole={senderRole}
+              partnerName={partnerDisplayName}
+            />
+          </div>
+        )}
+
         {spaceTab === "chat" && (
           <>
             {/* Messages */}
