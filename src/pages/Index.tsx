@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
 import { JournalSection, DottedDivider, CelestialHeader } from "@/components/JournalBorders";
 import HomePlannerCard from "@/components/HomePlannerCard";
-import HomeTodoList from "@/components/HomeTodoList";
+import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -23,7 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, subDays } from "date-fns";
 import { toast } from "sonner";
 import { pickDailyPosts } from "@/lib/feed-utils";
-import { useTodayFocus } from "@/hooks/useTodayFocus";
+
 
 import menstrualHero from "@/assets/phases/menstrual-hero.png";
 import follicularHero from "@/assets/phases/follicular-hero.png";
