@@ -611,6 +611,9 @@ export default function MembershipPage() {
           Top up 50 credits
         </button>
       </motion.div>
+
+      {/* One-off course purchases */}
+      <CourseCards session={session} />
     </div>
   );
 }
