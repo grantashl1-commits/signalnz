@@ -24,7 +24,7 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    const { priceId, mode = "subscription", couponId } = await req.json();
+    const { priceId, mode = "subscription", couponId, successPath } = await req.json();
     if (!priceId) throw new Error("priceId is required");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -37,13 +37,18 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
+    const origin = req.headers.get("origin");
+    const resolvedSuccessUrl = successPath
+      ? `${origin}${successPath}`
+      : `${origin}/membership?success=true`;
+
     const sessionParams: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       mode,
-      success_url: `${req.headers.get("origin")}/membership?success=true`,
-      cancel_url: `${req.headers.get("origin")}/membership`,
+      success_url: resolvedSuccessUrl,
+      cancel_url: `${origin}/membership`,
     };
 
     if (couponId && mode === "subscription") {
