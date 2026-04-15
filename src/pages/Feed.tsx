@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import DaySection from "@/components/feed/DaySection";
 import FeedTeaserCards from "@/components/feed/FeedTeaserCards";
 import type { FeedPost } from "@/components/feed/PostCard";
@@ -143,7 +144,8 @@ export default function Feed() {
   return (
     <div className="pb-28">
       <AtmosphericHero>
-        <div className="text-center space-y-2">
+        <SignalPulse />
+        <div className="text-center space-y-2 relative z-10">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Rss className="h-5 w-5 text-primary" />
           </div>

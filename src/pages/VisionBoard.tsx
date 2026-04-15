@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import DreamStudio from "@/components/journal/DreamStudio";
 
@@ -11,7 +12,8 @@ export default function VisionBoard() {
     <GatedPage requiredTier="nourished">
       <div className="relative">
         <AtmosphericHero size="md">
-          <div className="text-center">
+          <SignalPulse />
+          <div className="text-center relative z-10">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Vision Board</p>
             <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
               Dream Studio

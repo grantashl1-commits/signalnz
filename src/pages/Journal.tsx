@@ -6,6 +6,7 @@ import { BotanicalSprig } from "@/components/BotanicalElements";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import { useDailyStoic, useJournalEntries2, type JournalEntryRow, type StoicLens } from "@/hooks/useStoicJournal";
@@ -467,7 +468,8 @@ export default function JournalPage() {
     <GatedFeature featureKey="journal_write">
       <div className="relative">
         <AtmosphericHero size="md">
-          <div className="text-center">
+          <SignalPulse />
+          <div className="text-center relative z-10">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
             <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Reflect</h1>
             <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">

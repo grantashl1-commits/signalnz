@@ -4,6 +4,7 @@ import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import SignalPulse from "@/components/SignalPulse";
 import { supabase } from "@/integrations/supabase/client";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
@@ -113,7 +114,8 @@ export default function CommunityPage() {
 
       {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
-        <div className="text-center">
+        <SignalPulse />
+        <div className="text-center relative z-10">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Community</p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Village</h1>
           <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">

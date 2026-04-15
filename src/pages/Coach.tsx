@@ -696,6 +696,7 @@ export default function CoachPage() {
         <p className="font-display text-base italic text-white/70 max-w-md">
           Check in, set goals, and get AI-powered training and nutrition plans.
         </p>
+        </div>
       </AtmosphericHero>
 
       <div className="max-w-2xl mx-auto px-4 pb-32 space-y-6 mt-6">
