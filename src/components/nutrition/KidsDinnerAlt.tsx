@@ -114,7 +114,7 @@ export default function KidsDinnerAlt({ mealName, mealType = "dinner", phase }: 
                                   <ol className="space-y-0.5">
                                     {recipe.method.map((step, i) => (
                                       <li key={i} className="font-body text-[9px] text-muted-foreground">
-                                        {i + 1}. {step}
+                                        {i + 1}. {step.replace(/^\d+[\.\)]\s*/, "")}
                                       </li>
                                     ))}
                                   </ol>
