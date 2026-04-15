@@ -97,19 +97,21 @@ Deno.serve(async (req) => {
     for (const item of items) {
       const filePath = `${prefix}/${item.id}.mp3`;
 
-      // Check if already cached
-      const { data: urlData } = supabase.storage
+      // Check if already cached using list
+      const { data: files } = await supabase.storage
         .from("practice-audio")
-        .getPublicUrl(filePath);
+        .list(filePath.split("/").slice(0, -1).join("/"), {
+          search: filePath.split("/").pop(),
+        });
 
-      if (urlData?.publicUrl) {
-        try {
-          const head = await fetch(urlData.publicUrl, { method: "HEAD" });
-          if (head.ok) {
-            results.push({ id: item.id, status: "cached", url: urlData.publicUrl });
-            continue;
-          }
-        } catch { /* not cached */ }
+      if (files && files.length > 0) {
+        const { data: signedData } = await supabase.storage
+          .from("practice-audio")
+          .createSignedUrl(filePath, 3600);
+        if (signedData?.signedUrl) {
+          results.push({ id: item.id, status: "cached", url: signedData.signedUrl });
+          continue;
+        }
       }
 
       // Generate
@@ -127,10 +129,10 @@ Deno.serve(async (req) => {
         if (uploadErr) {
           results.push({ id: item.id, status: `upload_error: ${uploadErr.message}` });
         } else {
-          const { data: newUrl } = supabase.storage
+          const { data: signedData } = await supabase.storage
             .from("practice-audio")
-            .getPublicUrl(filePath);
-          results.push({ id: item.id, status: "generated", url: newUrl.publicUrl });
+            .createSignedUrl(filePath, 3600);
+          results.push({ id: item.id, status: "generated", url: signedData?.signedUrl });
         }
 
         // Rate limit: pause 1s between generations to avoid ElevenLabs throttling

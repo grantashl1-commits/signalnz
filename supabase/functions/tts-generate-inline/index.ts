@@ -62,20 +62,21 @@ Deno.serve(async (req) => {
     const voice = voiceId || DEFAULT_VOICE_ID;
     const textHash = await hashText(`${voice}:calm-reader-v2:${text}`);
     const cachePath = `inline/calm-reader-v2/${textHash}.mp3`;
-    const { data: urlData } = supabase.storage
+    // Check cache using download approach (service_role bypasses RLS)
+    const { data: fileData, error: downloadErr } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(cachePath);
+      .download(cachePath);
 
-    // Verify file exists with HEAD request
-    if (urlData?.publicUrl) {
-      try {
-        const headResp = await fetch(urlData.publicUrl, { method: "HEAD" });
-        if (headResp.ok) {
-          // Serve cached audio — no ElevenLabs cost, no credit deduction
-          return new Response(
-            JSON.stringify({ audioUrl: urlData.publicUrl, cached: true }),
-            { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
+    if (!downloadErr && fileData) {
+      // File exists — create signed URL for client
+      const { data: signedData } = await supabase.storage
+        .from("practice-audio")
+        .createSignedUrl(cachePath, 3600);
+      if (signedData?.signedUrl) {
+        return new Response(
+          JSON.stringify({ audioUrl: signedData.signedUrl, cached: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
         }
       } catch {
         // File doesn't exist yet, continue to generate
@@ -142,12 +143,12 @@ Deno.serve(async (req) => {
         upsert: true,
       });
 
-    const { data: newUrl } = supabase.storage
+    const { data: newSignedUrl } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(cachePath);
+      .createSignedUrl(cachePath, 3600);
 
     return new Response(
-      JSON.stringify({ audioUrl: newUrl.publicUrl, cached: false }),
+      JSON.stringify({ audioUrl: newSignedUrl?.signedUrl, cached: false }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {

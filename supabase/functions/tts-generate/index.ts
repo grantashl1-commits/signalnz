@@ -109,14 +109,14 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { data: urlData } = supabase.storage
+    const { data: signedData } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(filePath);
+      .createSignedUrl(filePath, 3600);
 
     return new Response(
       JSON.stringify({
         practiceId,
-        audioUrl: urlData.publicUrl,
+        audioUrl: signedData?.signedUrl,
         message: "Audio generated and stored successfully",
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

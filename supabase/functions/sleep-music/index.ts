@@ -66,28 +66,20 @@ Deno.serve(async (req) => {
     // --- CACHE CHECK ---
     const cacheKey = await hashText(`${musicPrompt}::${durationSeconds}`);
     const cachePath = `sleep/${cacheKey}.mp3`;
-    const { data: urlData } = supabase.storage
+    // Check cache using download (service_role bypasses RLS)
+    const { data: cachedFile, error: dlErr } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(cachePath);
+      .download(cachePath);
 
-    if (urlData?.publicUrl) {
-      try {
-        const headResp = await fetch(urlData.publicUrl, { method: "HEAD" });
-        if (headResp.ok) {
-          // Serve cached — redirect to stored file
-          const cachedResp = await fetch(urlData.publicUrl);
-          const cachedBuffer = await cachedResp.arrayBuffer();
-          return new Response(cachedBuffer, {
-            headers: {
-              ...corsHeaders,
-              "Content-Type": "audio/mpeg",
-              "Cache-Control": "public, max-age=86400",
-            },
-          });
-        }
-      } catch {
-        // Not cached yet
-      }
+    if (!dlErr && cachedFile) {
+      const cachedBuffer = await cachedFile.arrayBuffer();
+      return new Response(cachedBuffer, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "audio/mpeg",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
     }
 
     // --- CREDIT CHECK (atomic) ---
