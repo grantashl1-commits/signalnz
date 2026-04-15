@@ -1857,28 +1857,28 @@ export const CONNECT_COURSE: CourseModule[] = [
             "content": {
               "cards": [
                 {
-                  "title": "Denial/Shock",
-                  "body": "Difficulty believing what happened, feeling numb.",
+                  "title": "Denial / Shock",
+                  "body": "The initial protective response — 'This can't be happening to us.' You may feel numb, disconnected, or unable to process the reality of what's occurred. This isn't weakness; it's your psyche giving you time to absorb a truth that's too large to take in all at once. Allow yourself this space without forcing resolution.",
                   "icon": "lucide-skull"
                 },
                 {
                   "title": "Anger",
-                  "body": "Outrage, blame, frustration about the injury.",
+                  "body": "Outrage surfaces — at your partner, at yourself, at the unfairness. 'How could they do this?' Anger is grief's bodyguard; it protects you from the deeper pain underneath. It's important to express anger constructively rather than suppress it, but equally important not to weaponise it against your partner or yourself.",
                   "icon": "lucide-angry"
                 },
                 {
                   "title": "Bargaining",
-                  "body": "Seeking explanations, 'if only' thoughts, trying to undo damage.",
+                  "body": "'If only I had paid more attention…' 'If only we'd talked about this sooner…' The mind searches for a way to rewrite the past. Bargaining is an attempt to regain control in a situation that feels chaotic. It's natural, but staying here too long prevents you from facing what actually happened.",
                   "icon": "lucide-scale"
                 },
                 {
-                  "title": "Depression/Sadness",
-                  "body": "Profound sadness, isolation, lethargy.",
+                  "title": "Depression / Sadness",
+                  "body": "The deep ache settles in — profound sadness, withdrawal, low energy. This isn't clinical depression; it's the appropriate response to loss. You're mourning what the relationship was, or what you thought it was. This stage requires patience, self-compassion, and often the support of a therapist or trusted friend.",
                   "icon": "lucide-cloud-rain"
                 },
                 {
-                  "title": "Acceptance/Reconstruction",
-                  "body": "Coming to terms with reality and beginning to rebuild, either individually or relationally.",
+                  "title": "Acceptance / Reconstruction",
+                  "body": "Not 'getting over it' but finding a way to carry it. You begin integrating the experience into your story rather than being consumed by it. Acceptance doesn't mean approval — it means choosing to move forward, whether that's rebuilding the relationship with new understanding or releasing it with grace.",
                   "icon": "lucide-sparkles"
                 }
               ]
@@ -1967,22 +1967,22 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Rituals of Connection",
-                  "body": "Daily morning coffee together, weekly date night, birthday traditions.",
+                  "body": "The predictable, cherished moments that anchor your relationship — morning coffee together, a weekly date night, birthday traditions, the way you always kiss goodbye. Gottman found these micro-rituals are the single strongest predictor of long-term satisfaction. They say: 'Our relationship is a priority, every single day.'",
                   "icon": "lucide-campfire"
                 },
                 {
                   "title": "Shared Goals",
-                  "body": "Saving for a home, raising kids a certain way, traveling the world.",
+                  "body": "The dreams you build toward together — saving for a home, raising children with intention, travelling the world, building a business. Shared goals create a sense of 'we-ness' that transcends daily friction. When you're both pulling in the same direction, individual sacrifices feel meaningful rather than resentful.",
                   "icon": "lucide-target"
                 },
                 {
                   "title": "Shared Values",
-                  "body": "Emphasis on family, community, personal growth, adventure, security.",
+                  "body": "The non-negotiable principles you both hold — emphasis on family, commitment to personal growth, valuing adventure or security or community. When values align, decisions become easier. When they diverge, understanding each other's 'why' prevents values clashes from becoming identity wars.",
                   "icon": "lucide-diamond"
                 },
                 {
                   "title": "Roles & Narratives",
-                  "body": "Our story of how we met, who takes which responsibilities, how we overcome challenges.",
+                  "body": "Every couple creates a mythology — the story of how you met, inside jokes, who handles what, how you've overcome challenges. These shared narratives form your 'couple identity'. Research shows couples who tell their story with warmth and fondness (even during hard times) are significantly more likely to stay together.",
                   "icon": "lucide-scroll"
                 }
               ]
