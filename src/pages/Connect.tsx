@@ -9,6 +9,7 @@ import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
+import ReflectRoom from "@/components/connect/ReflectRoom";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
 type SpaceTab = "chat" | "course" | "appreciate";
