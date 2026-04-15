@@ -312,7 +312,7 @@ export default function HomePage() {
         </div>
       </ContentSection>
 
-      {/* ═══ SECTION 3 — KNOWLEDGE FEED ═══ */}
+      {/* ═══ SECTION 3 — FEED YOUR MIND ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeUp(0.15)}>
