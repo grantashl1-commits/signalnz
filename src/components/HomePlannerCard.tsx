@@ -450,6 +450,7 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
             </div>
           );
         })}
+      </div>
       <DottedLine />
 
       {/* Imported calendar events (read-only) */}
