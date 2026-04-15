@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigate } from "react-router-dom";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { toast } from "sonner";
 import {
   Users, DollarSign, TrendingUp, Shield, Clock, CheckCircle, XCircle,
@@ -70,23 +71,11 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary", toolt
 
 export default function AdminPage() {
   const { user, session } = useAuth();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const isAdmin = useAdminGuard();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"overview" | "groups" | "members" | "feedback" | "ai" | "nps">("overview");
   const [updatingGroup, setUpdatingGroup] = useState<string | null>(null);
-
-  // Check admin role
-  useEffect(() => {
-    if (!user) { setIsAdmin(false); return; }
-    supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle()
-      .then(({ data }) => setIsAdmin(!!data));
-  }, [user]);
 
   const fetchStats = useCallback(async () => {
     if (!session) return;

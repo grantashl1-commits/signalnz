@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Target, TrendingUp, Globe, Users, DollarSign, Calendar,
@@ -6,6 +7,8 @@ import {
   Rocket, Building2, Megaphone, Handshake, BarChart3, MapPin
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
 
 /* ────────────────────────── CONSTANTS ────────────────────────── */
 
@@ -211,6 +214,17 @@ const MilestoneCard = ({ m, index }: { m: typeof MILESTONES[0]; index: number })
 /* ────────────────────────── PAGE ────────────────────────── */
 
 const FutureReleases = () => {
+  const isAdmin = useAdminGuard();
+
+  if (isAdmin === null) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <SignalRingAnimation variant="pulse" size={64} color="hsl(var(--primary))" />
+      </div>
+    );
+  }
+  if (!isAdmin) return <Navigate to="/" replace />;
+
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
