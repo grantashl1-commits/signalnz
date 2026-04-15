@@ -41,9 +41,11 @@ export default function Connect() {
   const [connectionId, setConnectionId] = useState<string | null>(null);
   const [isPartnerSession, setIsPartnerSession] = useState(false);
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
+  const [myCards, setMyCards] = useState<ReflectionCard[]>([]);
+  const [theirCards, setTheirCards] = useState<ReflectionCard[]>([]);
 
   // Chat state
-  const [spaceTab, setSpaceTab] = useState<SpaceTab>("chat");
+  const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
