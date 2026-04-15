@@ -33,6 +33,10 @@ const TIERS_MAP: Record<string, "rooted" | "nourished" | "thriving"> = {
   prod_UDBbsFCvpYtvUN: "rooted",
   prod_U9Pqh2vkb2wrNR: "nourished",
   prod_U9Pr8k3iP6Bler: "thriving",
+  // Annual products
+  prod_ULCAuPZLPCzkVC: "rooted",
+  prod_ULCAKYHv5cAWvN: "nourished",
+  prod_ULCAFa2rgCwiqZ: "thriving",
 };
 
 const defaultSub: SubscriptionInfo = {
