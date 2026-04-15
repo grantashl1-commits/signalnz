@@ -70,33 +70,45 @@ export default function Connect() {
   // Load messages when connection is active
   useEffect(() => {
     if (!connectionId) return;
-    supabase
-      .from("connect_messages")
-      .select("*")
-      .eq("connection_id", connectionId)
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
+
+    const loadMessages = async () => {
+      if (isPartnerSession) {
+        // Partner: use proxy
+        try {
+          const data = await partnerProxy("load_messages");
+          if (data) setMessages(data as Message[]);
+        } catch { /* silent */ }
+      } else {
+        // Member: direct DB
+        const { data } = await supabase
+          .from("connect_messages")
+          .select("*")
+          .eq("connection_id", connectionId)
+          .order("created_at", { ascending: true });
         if (data) setMessages(data as Message[]);
-      });
+      }
+    };
+    loadMessages();
 
-    // Realtime subscription
-    const channel = supabase
-      .channel(`connect-${connectionId}`)
-      .on("postgres_changes", {
-        event: "INSERT",
-        schema: "public",
-        table: "connect_messages",
-        filter: `connection_id=eq.${connectionId}`,
-      }, (payload) => {
-        setMessages((prev) => {
-          if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
-          return [...prev, payload.new as Message];
-        });
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [connectionId]);
+    // Realtime subscription (works for members; partners poll or get optimistic updates)
+    if (!isPartnerSession) {
+      const channel = supabase
+        .channel(`connect-${connectionId}`)
+        .on("postgres_changes", {
+          event: "INSERT",
+          schema: "public",
+          table: "connect_messages",
+          filter: `connection_id=eq.${connectionId}`,
+        }, (payload) => {
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
+            return [...prev, payload.new as Message];
+          });
+        })
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [connectionId, isPartnerSession]);
 
   // Auto-scroll chat
   useEffect(() => {
