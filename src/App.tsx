@@ -51,6 +51,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Connect = lazy(() => import("./pages/Connect"));
 const ConnectCourse = lazy(() => import("./components/connect/ConnectCoursePage"));
 const Parenting = lazy(() => import("./components/parenting/ParentingCoursePage"));
+const FutureReleases = lazy(() => import("./pages/FutureReleases"));
 
 const queryClient = new QueryClient();
 
@@ -178,6 +179,7 @@ const App = () => {
                             <Route path="/parenting" element={<Parenting />} />
                             <Route path="/connect/course" element={<ConnectCourse />} />
                             <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
+                            <Route path="/future-releases" element={<FutureReleases />} />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
                         </Suspense>
