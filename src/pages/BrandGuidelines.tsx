@@ -332,6 +332,29 @@ export default function BrandGuidelines() {
             </div>
           </div>
 
+          {/* ── YOCM-Style Illustrated Icons ── */}
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            YOCM Journal-Style — Hand-Drawn Illustrated Icon
+          </p>
+          <p style={{ fontWeight: 500, fontSize: 13, color: C.body, lineHeight: 1.7, marginBottom: 16 }}>
+            The Signal dot circle reimagined as a hand-drawn watercolour illustration — thin sienna pen outlines, soft purple washes, and botanical/celestial accents from our Year of Coming Home journal aesthetic.
+          </p>
+          <div className="grid grid-cols-3 gap-4 md:gap-6 mb-10">
+            {[
+              { src: yocmIconV1, label: "Concentric Rings", desc: "Multiple orbits with varying dot sizes and purple watercolour wash" },
+              { src: yocmIconV2, label: "Botanical Wreath", desc: "Dot ring with leaf sprigs and star accents woven between" },
+              { src: yocmIconV3, label: "Celestial Mandala", desc: "Concentric dotted rings with moon and star motifs at centre" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-4 aspect-square" style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain" loading="lazy" width={1024} height={1024} />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
           {/* ── Previous explorations ── */}
           <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
             Earlier Explorations
