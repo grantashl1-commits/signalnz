@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import MealPrepGuide from "./MealPrepGuide";
 import { useCycle } from "@/contexts/CycleContext";
 import { Phase } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS } from "@/data/meal-plans";
@@ -97,7 +98,7 @@ interface WeekDay {
   isAI: boolean;
 }
 
-type Step = "prep" | "plan" | "shop";
+type Step = "prep" | "plan" | "shop" | "prepguide";
 
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
@@ -343,7 +344,6 @@ export default function MyWeekTab() {
   }
 
   if (step === "shop" && aiPlan) {
-    // Determine which cycle week we're in (1-4)
     const currentWeek = Math.ceil(currentCycleDay / 7);
     return (
       <div className="space-y-4">
@@ -355,6 +355,24 @@ export default function MyWeekTab() {
         </button>
         <SmartShoppingList plan={aiPlan} weekNumber={currentWeek} />
       </div>
+    );
+  }
+
+  if (step === "prepguide" && aiPlan) {
+    const currentWeek = Math.ceil(currentCycleDay / 7);
+    const prepWeekDates = weekData.days.map(d => ({
+      date: d.date,
+      dateStr: d.dateStr,
+      dayName: d.dayName,
+    }));
+    return (
+      <MealPrepGuide
+        plan={aiPlan}
+        weekNumber={currentWeek}
+        weekDates={prepWeekDates}
+        phase={weekData.dominantPhase}
+        onBack={() => { haptic("light"); setStep("plan"); }}
+      />
     );
   }
 
@@ -437,6 +455,15 @@ export default function MyWeekTab() {
           >
             Rebuild plan
           </button>
+          {aiPlan && (
+            <button
+              onClick={() => { haptic("light"); setStep("prepguide"); }}
+              className="font-body text-xs text-primary underline flex items-center gap-1"
+            >
+              <ClipboardList className="h-3 w-3" />
+              Prep guide
+            </button>
+          )}
           {aiPlan && (
             <button
               onClick={() => { haptic("light"); setStep("shop"); }}
