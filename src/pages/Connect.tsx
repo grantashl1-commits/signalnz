@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -9,9 +9,12 @@ import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
+import PrivateReflection, { type ReflectionCard } from "@/components/connect/PrivateReflection";
+import SharedRoom from "@/components/connect/SharedRoom";
+import WeeklyCheckIn from "@/components/connect/WeeklyCheckIn";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
-type SpaceTab = "chat" | "course" | "appreciate";
+type SpaceTab = "chat" | "reflect" | "shared" | "course" | "checkin" | "appreciate";
 type Message = { id: string; sender_role: string; content: string; created_at: string; metadata?: any };
 
 // Simple hash for PIN (not crypto-grade, but fine for a 4-digit PIN check)
