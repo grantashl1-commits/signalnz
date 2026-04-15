@@ -8,32 +8,72 @@ import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { format } from "date-fns";
 
 /* ── Generic fallbacks per phase (shown to free / logged-out users) ── */
-const GENERIC: Record<Phase, { eat: string; move: string; rest: string; cycle: string }> = {
+const GENERIC: Record<Phase, { eat: string; move: string; rest: string[]; cycle: string }> = {
   follicular: {
     eat: "Embrace fermented foods and complex carbs as estrogen rises.",
     move: "This is your strength window — lift heavy, push harder.",
-    rest: "Coherent breathing — 5 breaths per minute for 5 minutes.",
+    rest: [
+      "Coherent breathing — 5 breaths per minute for 5 minutes.",
+      "Try a 10-minute walking meditation in nature.",
+      "Journal three things you're excited about this week.",
+      "Stretch for 10 minutes — your body is waking up.",
+      "Listen to something that lifts your mood today.",
+      "Try a cold-water face splash to reset your nervous system.",
+      "Do a 5-minute gratitude scan before bed tonight.",
+    ],
     cycle: "Estrogen is climbing — energy and clarity are your superpowers right now.",
   },
   menstrual: {
     eat: "Focus on iron-rich foods with vitamin C to support your body.",
     move: "Rest is productive. Gentle yoga and walking only.",
-    rest: "Physiological sigh — instant calm when you need it.",
+    rest: [
+      "Physiological sigh — instant calm when you need it.",
+      "Run a warm bath with magnesium salts tonight.",
+      "Legs up the wall for 10 minutes — let gravity do the work.",
+      "Wrap yourself in a blanket and do nothing for 15 minutes.",
+      "Try a body scan meditation before sleep.",
+      "Sip on chamomile or ginger tea this evening.",
+      "Give yourself permission to cancel one thing today.",
+    ],
     cycle: "Honour your need for rest. This is your inner winter.",
   },
   ovulatory: {
     eat: "Antioxidants, folate, and zinc for peak hormonal output.",
     move: "Peak energy — go for high intensity and group workouts.",
-    rest: "You're naturally more social — lean into connection.",
+    rest: [
+      "You're naturally more social — lean into connection.",
+      "Call or voice-note someone you love today.",
+      "Dance to your favourite song — no rules, just feel it.",
+      "Take a creative break — draw, write, or daydream for 10 minutes.",
+      "Try laughter yoga — yes, it's real, and it works.",
+      "Spend time outdoors — sunlight boosts your peak-phase glow.",
+      "Do something spontaneous today — say yes to the unexpected.",
+    ],
     cycle: "You're at your communicative peak — use this window wisely.",
   },
   luteal: {
     eat: "Higher calorie needs are normal. Eat nutrient-dense complex carbs.",
     move: "Intuitive movement. Pilates, moderate strength, walk when in doubt.",
-    rest: "4-7-8 breathing before bed for deeper sleep.",
+    rest: [
+      "4-7-8 breathing before bed for deeper sleep.",
+      "Try a 10-minute yin yoga sequence to calm your nervous system.",
+      "Light a candle and sit quietly for 5 minutes tonight.",
+      "Write down anything weighing on your mind — then close the notebook.",
+      "Gentle self-massage on your neck and shoulders before bed.",
+      "Diffuse lavender or cedarwood — your body craves grounding scents.",
+      "Put your phone away an hour before bed — your future self will thank you.",
+    ],
     cycle: "Progesterone is rising — turn inward and prioritise rest.",
   },
 };
+
+/** Pick a rest tip that rotates daily based on the day of year */
+function pickDailyRest(tips: string[]): string {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
+  return tips[dayOfYear % tips.length];
+}
 
 export interface TodayFocus {
   eat: string;
