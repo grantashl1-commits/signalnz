@@ -275,7 +275,9 @@ function useImportedCalendar(today: Date) {
         .map((ev: any) => {
           const d = new Date(ev.start);
           const time = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-          return { ...ev, time };
+          const jsDay = d.getDay(); // 0=Sun
+          const dayIndex = jsDay === 0 ? 6 : jsDay - 1; // 0=Mon
+          return { ...ev, time, dayIndex };
         })
         .sort((a: ImportedEvent, b: ImportedEvent) => a.start.localeCompare(b.start));
       setImportedEvents(events);
