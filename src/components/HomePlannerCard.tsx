@@ -689,7 +689,6 @@ export default function HomePlannerCard() {
 
   const weekPageProps = {
     today, events, showAddEvent, setShowAddEvent, newTime, setNewTime, newTitle, setNewTitle, addEvent, removeEvent,
-    intention, setIntention, mantra, setMantra,
   };
 
   return (
