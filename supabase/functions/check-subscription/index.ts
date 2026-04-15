@@ -47,11 +47,17 @@ serve(async (req) => {
     }
     const user = userData.user;
 
-    // Fetch one-off purchases in parallel with Stripe check
+    // Fetch one-off purchases and gift codes in parallel with Stripe check
     const purchasesPromise = supabaseClient
       .from("one_off_purchases")
       .select("product_key, ai_access_expires_at")
       .eq("user_id", user.id);
+
+    const giftsPromise = supabaseClient
+      .from("gift_codes")
+      .select("tier, duration_months, redeemed_at, expires_at")
+      .eq("redeemed_by", user.id)
+      .not("redeemed_at", "is", null);
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
