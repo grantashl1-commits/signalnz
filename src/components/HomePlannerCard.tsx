@@ -243,6 +243,7 @@ interface ImportedEvent {
   start: string;
   end: string;
   time: string;
+  dayIndex: number; // 0=Mon, 6=Sun
 }
 
 function useImportedCalendar(today: Date) {
