@@ -433,34 +433,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
       </div>
       <DottedLine />
 
-      {/* Imported calendar events — weekly grid */}
-      {cal.importedEvents.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider">📅 My Calendar</p>
-            <button onClick={cal.clearCalendar} className="font-hand text-[10px] text-muted-foreground/40 hover:text-destructive transition-colors">
-              disconnect
-            </button>
-          </div>
-          <div className="grid grid-cols-7 gap-px">
-            {DAYS_OF_WEEK.map((_, colIdx) => {
-              const dayEvents = cal.importedEvents.filter(ev => ev.dayIndex === colIdx);
-              return (
-                <div key={colIdx} className="min-h-[48px] space-y-0.5 px-0.5">
-                  {dayEvents.map((ev, i) => (
-                    <div key={i} className="rounded-md bg-primary/8 px-1 py-0.5">
-                      <p className="font-hand text-[8px] text-primary/50 leading-none">{ev.time}</p>
-                      <p className="font-hand text-[9px] text-foreground/60 leading-tight truncate">{ev.summary}</p>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-          <DottedLine className="mt-2" />
-        </div>
-      )}
-
       {/* Manual events */}
       <div className="space-y-1.5 min-h-[40px]">
         {events.length === 0 && !showAddEvent && cal.importedEvents.length === 0 ? (
