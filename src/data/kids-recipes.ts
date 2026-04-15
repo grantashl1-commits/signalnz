@@ -1,19 +1,23 @@
 /**
  * Kid-friendly recipe bank — curated from 25 reference cookbooks.
  * No macro information included (by design).
- * Each recipe tagged with protein type + dietary flags for matching & filtering.
+ * Each recipe tagged with protein type, dietary flags, and similarity tags for matching.
  */
+
+export type KidsMealType = "breakfast" | "lunch" | "dinner";
 
 export interface KidsRecipe {
   id: string;
   name: string;
-  mealType: ("lunch" | "dinner")[];
+  mealType: KidsMealType[];
   protein: string; // chicken, beef, fish, tofu, beans, eggs, lentils, cheese, pork, shrimp, none
   prepTime: string;
   serves: number;
   ingredients: string[];
   method: string[];
   tags: string[]; // dietary: dairy-free, gluten-free, nut-free, egg-free, vegetarian, vegan
+  /** Similarity tags for matching adult meals: cuisine, cooking style, format */
+  similarity?: string[];
   image?: string;
 }
 
