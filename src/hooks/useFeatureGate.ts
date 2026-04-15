@@ -124,13 +124,25 @@ const ROUTE_TIERS: Record<string, FeatureTier> = {
 
 /**
  * Maps one-off purchase product_keys to the feature keys they unlock.
+ * "ai" features are time-limited; "content" features are lifetime.
  */
-const ONE_OFF_FEATURE_MAP: Record<string, string[]> = {
-  connect_course: [
-    "connect_reflect", "connect_shared_room", "connect_course",
-    "connect_appreciation", "connect_checkin", "connect_attachment_quiz",
-    "connect_love_languages", "connect_coach",
-  ],
+const ONE_OFF_FEATURE_MAP: Record<string, { content: string[]; ai: string[] }> = {
+  connect_course: {
+    content: ["connect_course", "connect_attachment_quiz", "connect_love_languages"],
+    ai: ["connect_reflect", "connect_shared_room", "connect_appreciation", "connect_checkin", "connect_coach"],
+  },
+  parenting_baby_toddler: {
+    content: ["parenting_course", "parenting_sleep_schedule"],
+    ai: [],
+  },
+  parenting_kids: {
+    content: ["parenting_course", "parenting_age_guides"],
+    ai: [],
+  },
+  parenting_teens: {
+    content: ["parenting_course", "parenting_age_guides"],
+    ai: [],
+  },
 };
 
 export function useFeatureGate() {
@@ -138,12 +150,20 @@ export function useFeatureGate() {
   const currentTier = subscription.tier;
   const currentLevel = TIER_LEVEL[currentTier] ?? 0;
   const oneOffPurchases = subscription.oneOffPurchases ?? [];
+  const oneOffDetails = subscription.oneOffDetails ?? [];
 
   // Build set of feature keys unlocked by one-off purchases
   const oneOffUnlocked = new Set<string>();
-  for (const key of oneOffPurchases) {
-    const features = ONE_OFF_FEATURE_MAP[key];
-    if (features) features.forEach((f) => oneOffUnlocked.add(f));
+  for (const purchase of oneOffDetails) {
+    const map = ONE_OFF_FEATURE_MAP[purchase.product_key];
+    if (!map) continue;
+    // Content features are always unlocked
+    map.content.forEach((f) => oneOffUnlocked.add(f));
+    // AI features only unlocked if not expired
+    const aiActive = !purchase.ai_access_expires_at || new Date(purchase.ai_access_expires_at) > new Date();
+    if (aiActive) {
+      map.ai.forEach((f) => oneOffUnlocked.add(f));
+    }
   }
 
   /** Check if user has access to a given tier */
