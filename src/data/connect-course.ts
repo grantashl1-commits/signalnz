@@ -1347,23 +1347,28 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Emotional Intimacy",
-                  "body": "Feeling understood and accepting each other's vulnerabilities.",
+                  "body": "Feeling truly understood — and being brave enough to let your partner see the parts of you that feel messy or uncertain. Emotional intimacy grows when you share fears, dreams, and insecurities without editing yourself. It's the foundation every other form of intimacy rests on.",
                   "icon": "lucide-hand-heart"
                 },
                 {
                   "title": "Physical Intimacy",
-                  "body": "Non-sexual touch, affection, and sexual connection.",
+                  "body": "More than sex — it includes non-sexual touch, affection, and the comfort of physical closeness. Research shows couples who maintain regular physical contact (even just sitting close) have lower cortisol levels and stronger immune systems. Touch is a language unto itself.",
                   "icon": "lucide-heart-crack"
                 },
                 {
                   "title": "Affectionate Intimacy",
-                  "body": "Hugs, kisses, holding hands \u2013 small gestures of love.",
+                  "body": "The small gestures that say 'I see you and I choose you' — a lingering hug, a kiss goodbye, holding hands while walking. Gottman's research found couples who maintained daily affection rituals were 67% more likely to report relationship satisfaction after 6 years.",
                   "icon": "lucide-gem"
                 },
                 {
                   "title": "Recreational Intimacy",
-                  "body": "Shared hobbies, playtime, having fun together.",
+                  "body": "Shared play and adventure — hobbies, spontaneous outings, or simply being silly together. Couples who regularly try new activities together experience a boost in relationship excitement similar to the early 'honeymoon phase'. Novelty together rewires your brain to associate your partner with joy.",
                   "icon": "lucide-gamepad"
+                },
+                {
+                  "title": "Intellectual Intimacy",
+                  "body": "Deep conversations where you explore ideas, challenge assumptions, and share your inner worlds. This form of closeness means you value your partner's mind as much as their heart. Discussing books, debating philosophies, or dreaming aloud together — all build this dimension.",
+                  "icon": "lucide-brain"
                 }
               ]
             },
@@ -1591,23 +1596,28 @@ export const CONNECT_COURSE: CourseModule[] = [
               "cards": [
                 {
                   "title": "Mess vs. Neatness",
-                  "body": "Dream of peace, order, self-expression, freedom, or respect.",
+                  "body": "On the surface it's about dishes and laundry. Underneath, one partner dreams of peace and order — a sanctuary from chaos. The other dreams of freedom and self-expression — a home that feels lived-in, not sterile. Neither is wrong; they're pursuing different core needs through the same battlefield.",
                   "icon": "lucide-boxes"
                 },
                 {
                   "title": "Money & Spending",
-                  "body": "Dream of security, freedom, generosity, power, belonging, or pleasure.",
+                  "body": "The saver dreams of security and safety — money in the bank means 'we'll be okay'. The spender dreams of freedom and generosity — life is for enjoying now. These aren't character flaws; they're often rooted in childhood experiences of scarcity or abundance that shaped each person's relationship with safety.",
                   "icon": "lucide-wallet"
                 },
                 {
                   "title": "Sex & Affection",
-                  "body": "Dream of acceptance, security, control, adventure, comfort, or desire.",
+                  "body": "One partner's desire for more physical intimacy may carry a dream of acceptance and desirability — 'I need to know you want me.' The other's hesitation may carry a dream of autonomy and emotional safety — 'I need to feel safe before I can open up.' Both are reaching for connection through different doorways.",
                   "icon": "lucide-heart-handshake"
                 },
                 {
-                  "title": "Time Together/Apart",
-                  "body": "Dream of connection, independence, adventure, safety, or rest.",
+                  "title": "Time Together / Apart",
+                  "body": "The partner wanting more togetherness dreams of deep connection and belonging — 'We're a team.' The one craving solitude dreams of independence and self-renewal — 'I need space to come back as my best self.' Understanding the dream transforms 'You're always gone' into 'I miss you, and connection matters to me.'",
                   "icon": "lucide-calendar"
+                },
+                {
+                  "title": "Parenting Styles",
+                  "body": "The strict parent dreams of structure and preparing their child for a tough world. The lenient parent dreams of warmth, creativity, and letting the child be free. Both are shaped by how they were raised — and what they wished had been different. Honouring both dreams creates balanced parenting.",
+                  "icon": "lucide-baby"
                 }
               ]
             },
