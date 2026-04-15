@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
-import { getMaxHR, getZoneForBPM, HR_ZONES, estimateCalories } from "@/data/workouts";
+import { getMaxHR, getZoneForBPM, estimateCalories } from "@/data/workouts";
 
 interface QuickExercise {
   id: string;
@@ -58,7 +58,7 @@ export function getExercisePrescription(
   }
 }
 
-const ZONE_COLORS = ["#94a3b8", "#3b82f6", "#22c55e", "#f59e0b", "#ef4444"];
+
 
 export default function QuickWorkoutSession({ title, duration, intensity, exercises, onBack }: Props) {
   const { user } = useAuth();
