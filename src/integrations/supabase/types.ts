@@ -1518,6 +1518,33 @@ export type Database = {
         }
         Relationships: []
       }
+      one_off_purchases: {
+        Row: {
+          id: string
+          product_key: string
+          purchased_at: string
+          stripe_product_id: string | null
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          product_key: string
+          purchased_at?: string
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          product_key?: string
+          purchased_at?: string
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       partner_connections: {
         Row: {
           created_at: string

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import AppreciationPanel from "@/components/connect/AppreciationPanel";
 import { setPartnerSession, clearPartnerSession, partnerProxy, isPartnerSession as checkIsPartner } from "@/hooks/usePartnerProxy";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import ReflectRoom from "@/components/connect/ReflectRoom";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
 type SpaceTab = "reflect" | "chat" | "course" | "appreciate";
@@ -26,9 +27,12 @@ function hashPin(pin: string): string {
   }
   return String(hash);
 }
+const CONNECT_COURSE_PRICE_ID = "price_1TMVQKEAvaJHDMD4SdXWKeFW";
+const CONNECT_COURSE_PRODUCT_ID = "prod_ULBn2vV58V9s9l";
 
 export default function Connect() {
-  const { user } = useAuth();
+  const { user, session, refreshSubscription } = useAuth();
+  const { hasFeatureAccess, hasOneOffPurchase } = useFeatureGate();
   const navigate = useNavigate();
   const [view, setView] = useState<ConnectView>("intro");
   const [joinCode, setJoinCode] = useState("");
@@ -37,9 +41,12 @@ export default function Connect() {
   const [pin, setPin] = useState(["", "", "", ""]);
   const [partnerName, setPartnerName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [connectionId, setConnectionId] = useState<string | null>(null);
   const [isPartnerSession, setIsPartnerSession] = useState(false);
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
+
+  const hasConnectAccess = hasFeatureAccess("connect_course") || hasOneOffPurchase("connect_course");
 
   // Chat state
   const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
@@ -47,6 +54,44 @@ export default function Connect() {
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Handle purchase success redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("purchase") === "success" && user) {
+      // Record the one-off purchase
+      supabase.from("one_off_purchases").upsert({
+        user_id: user.id,
+        product_key: "connect_course",
+        stripe_product_id: CONNECT_COURSE_PRODUCT_ID,
+      }, { onConflict: "user_id,product_key" }).then(() => {
+        refreshSubscription();
+        toast.success("Connect Course unlocked! 🎉");
+        // Clean URL
+        window.history.replaceState({}, "", "/connect");
+      });
+    }
+  }, [user, refreshSubscription]);
+
+  const handlePurchaseConnect = async () => {
+    if (!user) { navigate("/auth"); return; }
+    setPurchaseLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          priceId: CONNECT_COURSE_PRICE_ID,
+          mode: "payment",
+          successPath: "/connect?purchase=success",
+        },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (err) {
+      toast.error("Could not start checkout. Please try again.");
+    } finally {
+      setPurchaseLoading(false);
+    }
+  };
 
   // Check for existing connection on load
   useEffect(() => {
@@ -596,40 +641,72 @@ export default function Connect() {
             </div>
 
 
-            {/* Setup form */}
-            <div className="w-full max-w-sm space-y-4">
-              <input
-                value={partnerName}
-                onChange={(e) => setPartnerName(e.target.value)}
-                placeholder="Your partner's name"
-                className="w-full rounded-xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary/30 focus:outline-none transition-colors"
-              />
-              <div>
-                <p className="text-xs text-muted-foreground mb-2 text-center">Set a 4-digit PIN for your partner</p>
-                <div className="flex justify-center gap-3">
-                  {pin.map((digit, i) => (
-                    <input
-                      key={i}
-                      id={`pin-${i}`}
-                      type="password"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handlePinChange(i, e.target.value)}
-                      onKeyDown={(e) => handlePinKeyDown(i, e)}
-                      className="w-14 h-14 rounded-xl bg-card border-2 border-border text-center text-2xl font-bold text-foreground focus:border-primary focus:outline-none transition-colors"
-                    />
-                  ))}
+            {hasConnectAccess ? (
+              <>
+                {/* Setup form */}
+                <div className="w-full max-w-sm space-y-4">
+                  <input
+                    value={partnerName}
+                    onChange={(e) => setPartnerName(e.target.value)}
+                    placeholder="Your partner's name"
+                    className="w-full rounded-xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary/30 focus:outline-none transition-colors"
+                  />
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-2 text-center">Set a 4-digit PIN for your partner</p>
+                    <div className="flex justify-center gap-3">
+                      {pin.map((digit, i) => (
+                        <input
+                          key={i}
+                          id={`pin-${i}`}
+                          type="password"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => handlePinChange(i, e.target.value)}
+                          onKeyDown={(e) => handlePinKeyDown(i, e)}
+                          className="w-14 h-14 rounded-xl bg-card border-2 border-border text-center text-2xl font-bold text-foreground focus:border-primary focus:outline-none transition-colors"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCreateConnection}
+                    disabled={loading}
+                    className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
+                  >
+                    {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</> : <>Create Connect space <ArrowRight className="w-4 h-4" /></>}
+                  </button>
                 </div>
+              </>
+            ) : (
+              <div className="w-full max-w-sm space-y-4">
+                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center space-y-3">
+                  <p className="font-display text-lg text-foreground">Unlock Signal Connect</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    13-module couples course · AI relationship coach · Reflection room · Attachment & love language quizzes · Appreciation tools · Weekly check-ins
+                  </p>
+                  <p className="text-2xl font-bold text-foreground">$149 <span className="text-sm font-normal text-muted-foreground">NZD · lifetime access</span></p>
+                  <button
+                    onClick={handlePurchaseConnect}
+                    disabled={purchaseLoading}
+                    className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
+                  >
+                    {purchaseLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Loading...</> : <><ShoppingBag className="w-4 h-4" /> Purchase Connect Course</>}
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+                <button
+                  onClick={() => { haptic("light"); navigate("/membership"); }}
+                  className="w-full bg-card border border-border text-foreground py-3 rounded-full text-sm font-medium"
+                >
+                  Subscribe to Nourished or Thriving
+                </button>
               </div>
-              <button
-                onClick={handleCreateConnection}
-                disabled={loading}
-                className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
-              >
-                {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</> : <>Create Connect space <ArrowRight className="w-4 h-4" /></>}
-              </button>
-            </div>
+            )}
           </motion.div>
         )}
 

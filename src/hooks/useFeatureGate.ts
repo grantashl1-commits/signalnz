@@ -122,10 +122,29 @@ const ROUTE_TIERS: Record<string, FeatureTier> = {
   "/recommendations": "free",
 };
 
+/**
+ * Maps one-off purchase product_keys to the feature keys they unlock.
+ */
+const ONE_OFF_FEATURE_MAP: Record<string, string[]> = {
+  connect_course: [
+    "connect_reflect", "connect_shared_room", "connect_course",
+    "connect_appreciation", "connect_checkin", "connect_attachment_quiz",
+    "connect_love_languages", "connect_coach",
+  ],
+};
+
 export function useFeatureGate() {
   const { user, subscription } = useAuth();
   const currentTier = subscription.tier;
   const currentLevel = TIER_LEVEL[currentTier] ?? 0;
+  const oneOffPurchases = subscription.oneOffPurchases ?? [];
+
+  // Build set of feature keys unlocked by one-off purchases
+  const oneOffUnlocked = new Set<string>();
+  for (const key of oneOffPurchases) {
+    const features = ONE_OFF_FEATURE_MAP[key];
+    if (features) features.forEach((f) => oneOffUnlocked.add(f));
+  }
 
   /** Check if user has access to a given tier */
   const hasAccess = (requiredTier: FeatureTier) => {
@@ -145,6 +164,8 @@ export function useFeatureGate() {
 
   /** Get the access level for a specific feature */
   const getFeatureAccess = (featureKey: string): FeatureAccess => {
+    // One-off purchase overrides tier gating
+    if (oneOffUnlocked.has(featureKey)) return "full";
     const config = FEATURE_ACCESS[featureKey];
     if (!config) return "full";
     return config[currentTier] ?? "locked";
@@ -153,6 +174,11 @@ export function useFeatureGate() {
   /** Check if a feature has full access */
   const hasFeatureAccess = (featureKey: string): boolean => {
     return getFeatureAccess(featureKey) === "full";
+  };
+
+  /** Check if user has a specific one-off purchase */
+  const hasOneOffPurchase = (productKey: string): boolean => {
+    return oneOffPurchases.includes(productKey);
   };
 
   /** Get the minimum tier needed for full access to a feature */
@@ -173,6 +199,7 @@ export function useFeatureGate() {
     getRequiredTier,
     getFeatureAccess,
     hasFeatureAccess,
+    hasOneOffPurchase,
     getMinTierForFeature,
   };
 }

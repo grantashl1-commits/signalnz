@@ -10,6 +10,7 @@ interface SubscriptionInfo {
   productId: string | null;
   tier: "free" | "rooted" | "nourished" | "thriving";
   subscriptionEnd: string | null;
+  oneOffPurchases: string[];
 }
 
 interface AuthState {
@@ -31,6 +32,7 @@ const defaultSub: SubscriptionInfo = {
   productId: null,
   tier: "free",
   subscriptionEnd: null,
+  oneOffPurchases: [],
 };
 
 const AuthContext = createContext<AuthState>({
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         productId,
         tier: (productId && TIERS_MAP[productId]) || "free",
         subscriptionEnd: data?.subscription_end ?? null,
+        oneOffPurchases: data?.one_off_purchases ?? [],
       });
     } catch {
       setSubscription(defaultSub);
@@ -84,7 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (event === "SIGNED_IN" && newSession?.user) {
           linkReferral(newSession.user.id);
-          // Identify user in analytics & error monitoring
           identifyUser(newSession.user.id, { email: newSession.user.email });
           setSentryUser(newSession.user.id, newSession.user.email);
         }

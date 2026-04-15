@@ -24,7 +24,7 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ subscribed: false }), {
+      return new Response(JSON.stringify({ subscribed: false, one_off_purchases: [] }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -32,7 +32,7 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     if (!token) {
-      return new Response(JSON.stringify({ subscribed: false }), {
+      return new Response(JSON.stringify({ subscribed: false, one_off_purchases: [] }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -40,18 +40,28 @@ serve(async (req) => {
 
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError || !userData?.user?.email) {
-      return new Response(JSON.stringify({ subscribed: false }), {
+      return new Response(JSON.stringify({ subscribed: false, one_off_purchases: [] }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
     const user = userData.user;
 
+    // Fetch one-off purchases in parallel with Stripe check
+    const purchasesPromise = supabaseClient
+      .from("one_off_purchases")
+      .select("product_key")
+      .eq("user_id", user.id);
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
+    // Resolve purchases
+    const { data: purchases } = await purchasesPromise;
+    const oneOffKeys = (purchases ?? []).map((p: any) => p.product_key);
+
     if (customers.data.length === 0) {
-      return new Response(JSON.stringify({ subscribed: false }), {
+      return new Response(JSON.stringify({ subscribed: false, one_off_purchases: oneOffKeys }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -85,6 +95,7 @@ serve(async (req) => {
       subscribed: hasActiveSub,
       product_id: productId,
       subscription_end: subscriptionEnd,
+      one_off_purchases: oneOffKeys,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
