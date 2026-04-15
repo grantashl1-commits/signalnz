@@ -259,6 +259,81 @@ export default function BrandGuidelines() {
         </div>
       </Section>
 
+      {/* ═══════════  LOGO EXPLORATIONS  ═══════════ */}
+      <Section id="logo-explorations" bg={C.warmIvory}>
+        <div className="relative z-10 max-w-5xl mx-auto w-full">
+          <SectionLabel>02b — Logo Evolution</SectionLabel>
+          <SectionTitle>Botanical + Signal Rings</SectionTitle>
+          <Divider />
+          <p style={{ fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.8, marginBottom: 24 }}>
+            Exploring a softer identity that combines the lowercase botanical wordmark with
+            hand-illustrated signal rings — reimagining the concentric dots as organic,
+            watercolour-drawn ripples rather than mechanical circles.
+          </p>
+
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Wordmark + Rings Combined
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
+            {[
+              { src: logoBotanicalDotsV1, label: "Botanical Rings V1", desc: "Concentric rings emanate from behind the wordmark, leaf accent on the 'i'" },
+              { src: logoBotanicalDotsV2, label: "Icon + Wordmark Lockup", desc: "Separated hand-drawn ring icon paired with botanical wordmark" },
+              { src: logoStackedBotanical, label: "Stacked Lockup", desc: "Ring icon stacked above wordmark — vertical format for app icons" },
+              { src: logoBotanical, label: "Original Botanical", desc: "The starting point — clean lowercase with leaf accent" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-6 md:p-10 aspect-[16/9]"
+                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain" loading="lazy" />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.5 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Icon Mark — Soft Illustrated Rings
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-10">
+            {[
+              { src: logoIconBotanicalRings, label: "Botanical Rings", desc: "Three rings with leaf sprig — app icon candidate" },
+              { src: logoIconSoftRings, label: "Soft Watercolour Rings", desc: "Hand-drawn organic ripples — loading animation candidate" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-6 aspect-square"
+                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain max-w-[160px]" loading="lazy" />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.5 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Other Typography Directions
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {[
+              { src: logoSoftSerif, label: "Soft Serif", desc: "Elegant wide-spaced editorial" },
+              { src: logoCursive, label: "Cursive Watercolour", desc: "Full handwritten calligraphy" },
+              { src: logoMixed, label: "Mixed Script", desc: "Hand-drawn S + serif 'ignal'" },
+              { src: logoWave, label: "Wave Underline", desc: "Clean type with signal wave" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center p-4 md:p-6 aspect-[16/9]"
+                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
+                  <img src={item.src} alt={item.label} className="w-full h-full object-contain" loading="lazy" />
+                </div>
+                <p style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{item.label}</p>
+                <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* ═══════════  4. COLOUR PALETTE  ═══════════ */}
       <Section id="colours" bg={C.warmIvory}>
         <div className="max-w-5xl mx-auto w-full">
