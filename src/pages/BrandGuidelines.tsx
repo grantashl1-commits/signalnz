@@ -28,6 +28,7 @@ const SECTIONS = [
   { id: "cover", label: "Cover" },
   { id: "story", label: "Story" },
   { id: "brand-mark", label: "Brand Mark" },
+  { id: "logo-explorations", label: "Explorations" },
   { id: "colours", label: "Colours" },
   { id: "typography", label: "Type" },
   { id: "motion", label: "Motion" },
