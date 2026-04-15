@@ -315,33 +315,79 @@ export const KIDS_RECIPE_BANK: KidsRecipe[] = [
   { id: "kids-sb-bread-rolls", name: "Soft White Bread Rolls", mealType: ["dinner"], protein: "eggs", prepTime: "90 min", serves: 8, ingredients: ["3½ cups strong white flour","1 sachet yeast","1 tsp salt","1 tsp sugar","1 cup warm water","2 tbsp olive oil","1 egg, beaten for glaze","sesame seeds"], method: ["Mix flour, yeast, salt, sugar","Add water and oil, knead 10 minutes","Rise in warm place 45 minutes","Knock back, shape into 8 rolls","Brush with egg, sprinkle seeds","Bake at 200°C for 15-18 minutes"], tags: ["nut-free","dairy-free","baking"] },
   { id: "kids-sb-apple-crumble", name: "Apple Crumble", mealType: ["dinner"], protein: "eggs", prepTime: "40 min", serves: 6, ingredients: ["4 apples, peeled and sliced","2 tbsp sugar","1 tsp cinnamon","1 cup flour","½ cup brown sugar","75g cold butter, cubed","½ cup oats"], method: ["Preheat oven to 190°C","Toss apples with sugar and cinnamon, place in dish","Rub butter into flour until breadcrumby","Mix in brown sugar and oats","Sprinkle over apples","Bake 30-35 minutes until golden and bubbling"], tags: ["nut-free","egg-free","baking","vegetarian"] },
   { id: "kids-sb-sausage-rolls", name: "Puff Pastry Sausage Rolls", mealType: ["lunch","dinner"], protein: "pork", prepTime: "30 min", serves: 12, ingredients: ["2 sheets puff pastry","500g pork sausage meat","1 carrot, grated","1 onion, grated","1 tsp mixed herbs","1 egg, beaten for glaze","sesame seeds"], method: ["Mix sausage meat with carrot, onion, herbs","Lay filling along pastry edge, roll up","Brush with egg, sprinkle sesame seeds","Cut into portions","Bake at 200°C for 20-25 minutes until golden"], tags: ["nut-free","baking"] },
+
+  // ── DEDICATED KIDS BREAKFASTS ──
+  { id: "kids-bfast-overnight-oats", name: "Overnight Oats with Berries", mealType: ["breakfast"], protein: "none", prepTime: "5 min + overnight", serves: 2, ingredients: ["1 cup rolled oats","1 cup milk or plant milk","2 tbsp yoghurt","1 tbsp honey","½ cup mixed berries","1 tbsp chia seeds"], method: ["Mix oats, milk, yoghurt, honey, chia seeds","Refrigerate overnight in jars","Top with berries in the morning","Serve cold"], tags: ["vegetarian","nut-free","egg-free"], similarity: ["overnight","oats","cold"] },
+  { id: "kids-bfast-egg-toast-soldiers", name: "Boiled Eggs with Toast Soldiers", mealType: ["breakfast"], protein: "eggs", prepTime: "10 min", serves: 2, ingredients: ["4 eggs","4 slices bread, cut into soldiers","butter for spreading"], method: ["Boil eggs for 5-6 minutes (soft) or 8 minutes (hard)","Toast bread, butter and cut into soldiers","Serve eggs in egg cups with soldiers for dipping"], tags: ["nut-free"], similarity: ["eggs","toast","simple"] },
+  { id: "kids-bfast-yoghurt-bowl", name: "Yoghurt Fruit Bowl", mealType: ["breakfast"], protein: "none", prepTime: "5 min", serves: 2, ingredients: ["1½ cups Greek yoghurt","1 banana, sliced","½ cup berries","2 tbsp granola","1 tbsp honey"], method: ["Divide yoghurt between bowls","Top with banana, berries, granola","Drizzle with honey"], tags: ["vegetarian","nut-free","egg-free","gluten-free"], similarity: ["yoghurt","cold","fruit"] },
+  { id: "kids-bfast-cheese-toast", name: "Cheesy Vegemite Toast", mealType: ["breakfast"], protein: "cheese", prepTime: "5 min", serves: 2, ingredients: ["4 slices bread","butter","Vegemite","1 cup grated cheese"], method: ["Toast bread","Spread with butter and a thin layer of Vegemite","Top with grated cheese","Grill until cheese melts"], tags: ["vegetarian","nut-free","egg-free"], similarity: ["toast","cheese","simple"] },
+  { id: "kids-bfast-smoothie-bowl", name: "Banana Berry Smoothie Bowl", mealType: ["breakfast"], protein: "none", prepTime: "5 min", serves: 2, ingredients: ["2 frozen bananas","1 cup frozen berries","½ cup milk","2 tbsp oats","toppings: coconut, seeds, fruit"], method: ["Blend bananas, berries, milk until thick","Pour into bowls","Top with oats, coconut, seeds and fresh fruit"], tags: ["vegan","nut-free","dairy-free","egg-free","gluten-free"], similarity: ["smoothie","cold","fruit"] },
+  { id: "kids-bfast-porridge", name: "Creamy Cinnamon Porridge", mealType: ["breakfast"], protein: "none", prepTime: "10 min", serves: 2, ingredients: ["1 cup rolled oats","2 cups milk","1 tsp cinnamon","1 tbsp honey","banana and berries to serve"], method: ["Cook oats in milk over medium heat, stirring","Add cinnamon, cook until creamy","Top with honey, sliced banana and berries"], tags: ["vegetarian","nut-free","egg-free"], similarity: ["oats","warm","porridge"] },
+  { id: "kids-bfast-avo-toast", name: "Smashed Avo on Toast", mealType: ["breakfast"], protein: "none", prepTime: "5 min", serves: 2, ingredients: ["2 slices sourdough","1 ripe avocado","squeeze of lemon","pinch salt","cherry tomatoes (optional)"], method: ["Toast bread","Mash avocado with lemon and salt","Spread on toast","Top with halved cherry tomatoes if desired"], tags: ["vegan","nut-free","dairy-free","egg-free"], similarity: ["toast","avocado","simple"] },
+  { id: "kids-bfast-waffles", name: "Mini Waffles with Fruit", mealType: ["breakfast"], protein: "eggs", prepTime: "15 min", serves: 4, ingredients: ["1½ cups flour","2 tsp baking powder","1 egg","1 cup milk","2 tbsp melted butter","1 tbsp sugar","berries and maple syrup"], method: ["Mix flour, baking powder, sugar","Whisk egg, milk, butter separately","Combine wet and dry","Cook in waffle maker until golden","Serve with berries and maple syrup"], tags: ["nut-free"], similarity: ["waffle","sweet","fruit"] },
+  { id: "kids-bfast-scrambled-eggs", name: "Simple Scrambled Eggs on Toast", mealType: ["breakfast"], protein: "eggs", prepTime: "10 min", serves: 2, ingredients: ["4 eggs","2 tbsp milk","1 tbsp butter","2 slices bread, toasted","salt and pepper"], method: ["Whisk eggs with milk, salt and pepper","Melt butter in pan over low heat","Add eggs, gently stir until just set","Serve on toast"], tags: ["nut-free","gluten-free"], similarity: ["eggs","toast","simple"] },
+  { id: "kids-bfast-baked-beans-toast", name: "Baked Beans on Toast", mealType: ["breakfast"], protein: "beans", prepTime: "5 min", serves: 2, ingredients: ["1 can baked beans","2 slices bread","butter","grated cheese (optional)"], method: ["Heat beans in saucepan","Toast and butter bread","Pour beans over toast","Top with grated cheese if desired"], tags: ["vegetarian","nut-free","egg-free"], similarity: ["beans","toast","simple"] },
 ];
 
-/** Map protein keywords to match adult recipe proteins */
+/** Map protein keywords to match adult recipe proteins (meat type, not grams) */
 export const PROTEIN_ALIASES: Record<string, string[]> = {
-  chicken: ["chicken"],
-  beef: ["beef", "steak", "mince"],
-  fish: ["fish", "salmon", "tuna", "cod", "snapper"],
+  chicken: ["chicken", "turkey", "poultry"],
+  beef: ["beef", "steak", "mince", "lamb", "venison"],
+  fish: ["fish", "salmon", "tuna", "cod", "snapper", "prawn", "shrimp", "seafood"],
   tofu: ["tofu", "tempeh"],
-  beans: ["bean", "chickpea", "lentil"],
-  lentils: ["lentil"],
-  eggs: ["egg", "frittata"],
-  cheese: ["cheese", "mac"],
-  pork: ["pork", "bacon", "ham", "sausage"],
+  beans: ["bean", "chickpea", "lentil", "legume"],
+  lentils: ["lentil", "dhal", "dal"],
+  eggs: ["egg", "frittata", "shakshuka", "omelette"],
+  cheese: ["cheese", "mac", "halloumi", "ricotta"],
+  pork: ["pork", "bacon", "ham", "sausage", "prosciutto"],
   shrimp: ["shrimp", "prawn"],
-  none: ["vegan", "plant"],
+  none: ["vegan", "plant", "smoothie", "oat", "porridge", "granola", "fruit", "acai", "avocado"],
 };
 
-/** Find the best kids recipe matching a protein type and dietary restrictions */
+/** Detect similarity tags from adult recipe name */
+const SIMILARITY_KEYWORDS: Record<string, string[]> = {
+  "pasta": ["pasta", "spaghetti", "penne", "linguine", "fettuccine", "noodle", "lasagne"],
+  "rice-bowl": ["rice bowl", "buddha bowl", "grain bowl", "poke"],
+  "stir-fry": ["stir fry", "stir-fry", "wok"],
+  "curry": ["curry", "korma", "tikka", "masala", "dhal", "dal"],
+  "mexican": ["taco", "burrito", "quesadilla", "nacho", "enchilada", "fajita"],
+  "asian": ["thai", "japanese", "chinese", "korean", "vietnamese", "miso", "teriyaki", "soy"],
+  "crispy": ["crispy", "crumbed", "crusted", "schnitzel", "fried"],
+  "soup": ["soup", "chowder", "broth", "stew"],
+  "bake": ["bake", "casserole", "gratin", "roast"],
+  "wrap": ["wrap", "roll", "burrito", "spring roll"],
+  "pizza": ["pizza", "flatbread"],
+  "toast": ["toast", "sourdough", "bread"],
+  "oats": ["oat", "porridge", "muesli", "bircher", "overnight"],
+  "smoothie": ["smoothie", "acai", "bowl"],
+  "eggs": ["egg", "scramble", "omelette", "frittata", "shakshuka"],
+  "pancake": ["pancake", "waffle", "pikelet", "crepe", "french toast"],
+  "salad": ["salad", "slaw"],
+  "meatball": ["meatball", "kofta", "rissole"],
+  "burger": ["burger", "patty", "rissole"],
+};
+
+function detectSimilarityTags(recipeName: string): string[] {
+  const lower = recipeName.toLowerCase();
+  const tags: string[] = [];
+  for (const [tag, keywords] of Object.entries(SIMILARITY_KEYWORDS)) {
+    if (keywords.some(k => lower.includes(k))) {
+      tags.push(tag);
+    }
+  }
+  return tags;
+}
+
+/** Find the best kids recipe matching a protein type, meal type, and dietary restrictions */
 export function findKidsRecipe(
   adultRecipeName: string,
-  mealType: "lunch" | "dinner",
+  mealType: KidsMealType,
   kidsAllergies: string[],
   kidsDietType: string,
   exclude: string[] = [],
   seed: number = 0,
 ): KidsRecipe | null {
-  // Detect protein from adult recipe name/ingredients
+  // Detect protein (meat type) from adult recipe name
   const lower = adultRecipeName.toLowerCase();
   let detectedProtein = "";
   for (const [protein, aliases] of Object.entries(PROTEIN_ALIASES)) {
@@ -351,10 +397,15 @@ export function findKidsRecipe(
     }
   }
 
-  // Filter candidates
+  // Detect similarity tags from adult recipe
+  const adultSimilarity = detectSimilarityTags(adultRecipeName);
+
+  // Filter candidates by meal type and dietary requirements
   let candidates = KIDS_RECIPE_BANK.filter(r => {
     if (!r.mealType.includes(mealType)) return false;
     if (exclude.includes(r.id)) return false;
+    // Skip baking-only items for meal alternatives
+    if (r.tags.includes("baking") && !r.tags.includes("vegetarian") && !r.tags.includes("vegan")) return false;
     // Check allergies
     for (const allergy of kidsAllergies) {
       const al = allergy.toLowerCase().trim();
@@ -365,7 +416,6 @@ export function findKidsRecipe(
       };
       const requiredTag = tagMap[al] || `${al}-free`;
       if (!r.tags.includes(requiredTag)) {
-        // Also check ingredients
         const ingLower = r.ingredients.join(" ").toLowerCase();
         if (ingLower.includes(al)) return false;
       }
@@ -384,12 +434,26 @@ export function findKidsRecipe(
     return true;
   });
 
-  // Prefer matching protein
-  if (detectedProtein) {
-    const proteinMatches = candidates.filter(r => r.protein === detectedProtein);
-    if (proteinMatches.length > 0) candidates = proteinMatches;
-  }
-
   if (candidates.length === 0) return null;
-  return candidates[seed % candidates.length];
+
+  // Score candidates: protein match + similarity overlap
+  const scored = candidates.map(r => {
+    let score = 0;
+    // Protein (meat) match is most important
+    if (detectedProtein && r.protein === detectedProtein) score += 10;
+    // Similarity tag overlap
+    const recipeSim = r.similarity || detectSimilarityTags(r.name);
+    const overlap = adultSimilarity.filter(t => recipeSim.includes(t)).length;
+    score += overlap * 3;
+    return { recipe: r, score };
+  });
+
+  // Sort by score descending, then use seed for variety among top matches
+  scored.sort((a, b) => b.score - a.score);
+
+  // Get top tier (recipes with the highest score)
+  const topScore = scored[0].score;
+  const topTier = scored.filter(s => s.score >= topScore - 2);
+
+  return topTier[seed % topTier.length].recipe;
 }
