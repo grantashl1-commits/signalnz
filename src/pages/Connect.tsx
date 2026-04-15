@@ -60,7 +60,7 @@ export default function Connect() {
         if (data) {
           setConnectionId(data.id);
           setPartnerDisplayName(data.partner_name || "Partner");
-          setGeneratedCode(data.join_code);
+          // join_code excluded from safe view for security
           setView("space");
         }
       });
