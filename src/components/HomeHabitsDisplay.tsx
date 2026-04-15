@@ -6,11 +6,6 @@ import { haptic } from "@/hooks/use-mobile";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 import { Link } from "react-router-dom";
 
-/**
- * Read-only habits display for the home page.
- * Users can check off habits here — it syncs with the Practice page.
- * Habits are added/removed only from the Practice page.
- */
 export default function HomeHabitsDisplay() {
   const habits = useMemo(() => getHabits(), []);
   const { completedIds, toggle: toggleHabit } = useHabitCompletions();
@@ -33,22 +28,6 @@ export default function HomeHabitsDisplay() {
 
   if (habits.length === 0) return null;
 
-  const completedCount = habits.filter(h => completedIds.has(h.id)).length;
-
-  const habitsByFreq = useMemo(() => {
-    const groups: Record<HabitFrequencyType, Habit[]> = { daily: [], weekly: [], monthly: [] };
-    habits.forEach(h => {
-      const ft = h.frequencyType || "daily";
-      groups[ft].push(h);
-    });
-    return groups;
-  }, [habits]);
-
-  const handleToggle = (habitId: string) => {
-    haptic("light");
-    toggleHabit(habitId);
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -64,10 +43,7 @@ export default function HomeHabitsDisplay() {
           <span className="font-body text-xs text-muted-foreground">
             {completedCount}/{habits.length}
           </span>
-          <Link
-            to="/practice"
-            className="font-body text-[11px] text-primary font-medium"
-          >
+          <Link to="/practice" className="font-body text-[11px] text-primary font-medium">
             Edit
           </Link>
         </div>
@@ -104,11 +80,7 @@ export default function HomeHabitsDisplay() {
                         {done && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
                       </div>
                       <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
-                      <span
-                        className={`font-body text-sm flex-1 transition-all duration-200 ${
-                          done ? "line-through text-muted-foreground/60" : "text-foreground"
-                        }`}
-                      >
+                      <span className={`font-body text-sm flex-1 transition-all duration-200 ${done ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
                         {habit.name}
                       </span>
                     </motion.button>
