@@ -15,6 +15,22 @@ export default function HomeHabitsDisplay() {
   const habits = useMemo(() => getHabits(), []);
   const { completedIds, toggle: toggleHabit } = useHabitCompletions();
 
+  const completedCount = habits.filter(h => completedIds.has(h.id)).length;
+
+  const habitsByFreq = useMemo(() => {
+    const groups: Record<HabitFrequencyType, Habit[]> = { daily: [], weekly: [], monthly: [] };
+    habits.forEach(h => {
+      const ft = h.frequencyType || "daily";
+      groups[ft].push(h);
+    });
+    return groups;
+  }, [habits]);
+
+  const handleToggle = (habitId: string) => {
+    haptic("light");
+    toggleHabit(habitId);
+  };
+
   if (habits.length === 0) return null;
 
   const completedCount = habits.filter(h => completedIds.has(h.id)).length;
