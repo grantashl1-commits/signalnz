@@ -5,6 +5,7 @@ import type { PracticeConfig } from "@/data/practices";
 import { useAudioGuide } from "./AudioGuide";
 import { useElevenLabsTTS } from "@/hooks/useElevenLabsTTS";
 import { haptic } from "@/hooks/use-mobile";
+import { CALM_READER_VOICE_LABEL, pickPreferredReaderVoice } from "@/lib/script-audio";
 
 interface Props {
   practice: PracticeConfig;
@@ -70,9 +71,12 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
       if (!hasAudio && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
-        u.rate = 0.85;
-        u.pitch = 0.9;
-        u.volume = 0.6;
+        u.lang = "en-US";
+        u.rate = 0.82;
+        u.pitch = 0.92;
+        u.volume = 0.75;
+        const voice = pickPreferredReaderVoice(window.speechSynthesis.getVoices());
+        if (voice) u.voice = voice;
         window.speechSynthesis.speak(u);
       }
     },
@@ -238,11 +242,11 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
           {ttsLoading ? (
             <span className="font-body text-[11px] px-3 py-1 rounded-full bg-primary/10 text-primary inline-flex items-center gap-1.5">
               <Loader2 className="h-3 w-3 animate-spin" />
-              preparing Lily's voice…
+              preparing {CALM_READER_VOICE_LABEL}…
             </span>
           ) : hasAudio ? (
             <span className="font-body text-[11px] px-3 py-1 rounded-full bg-primary/10 text-primary">
-              guided by Lily
+              guided by {CALM_READER_VOICE_LABEL}
             </span>
           ) : ttsError ? (
             <span className="font-body text-[11px] px-3 py-1 rounded-full bg-muted text-muted-foreground">

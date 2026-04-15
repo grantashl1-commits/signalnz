@@ -32,6 +32,7 @@ const Journal = lazy(() => import("./pages/Journal"));
 const Modules = lazy(() => import("./pages/Modules"));
 const Membership = lazy(() => import("./pages/Membership"));
 const Practice = lazy(() => import("./pages/Practice"));
+const Scripts = lazy(() => import("./pages/Scripts"));
 const Recommendations = lazy(() => import("./pages/Recommendations"));
 const Community = lazy(() => import("./pages/Community"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -157,6 +158,7 @@ const App = () => {
                             <Route path="/modules" element={<Modules />} />
                             <Route path="/membership" element={<Membership />} />
                             <Route path="/my-practice" element={<Practice />} />
+                            <Route path="/scripts" element={<Scripts />} />
                             <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
                             <Route path="/recommendations" element={<Recommendations />} />
                             <Route path="/community" element={<Community />} />
