@@ -91,14 +91,9 @@ export default function KidsDinnerAlt({ dinnerName, phase }: KidsDinnerAltProps)
                             >
                               <p className="font-body text-[10px] text-muted-foreground mb-1 font-medium">Ingredients:</p>
                               <ul className="space-y-0.5">
-                                {recipe.ingredients.slice(0, 5).map((ing, i) => (
+                              {recipe.ingredients.map((ing, i) => (
                                   <li key={i} className="font-body text-[9px] text-muted-foreground">• {ing}</li>
                                 ))}
-                                {recipe.ingredients.length > 5 && (
-                                  <li className="font-body text-[9px] text-muted-foreground/60">
-                                    + {recipe.ingredients.length - 5} more
-                                  </li>
-                                )}
                               </ul>
                             </motion.div>
                           )}
