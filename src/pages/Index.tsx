@@ -308,9 +308,15 @@ export default function HomePage() {
       {/* ═══ SECTION 2 — PLANNER + HABITS ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
-          {user && <HomePlannerCard />}
-          {user && <HomeCalendarCard />}
-          {user && <HomeHabitsDisplay />}
+          {user ? (
+            <>
+              <HomePlannerCard />
+              <HomeCalendarCard />
+              <HomeHabitsDisplay />
+            </>
+          ) : (
+            <PublicPreviewSection />
+          )}
         </div>
       </ContentSection>
 
