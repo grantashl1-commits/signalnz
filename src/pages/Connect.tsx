@@ -706,7 +706,7 @@ export default function Connect() {
                   Subscribe to Nourished or Thriving
                 </button>
               </div>
-            )
+            )}
           </motion.div>
         )}
 
