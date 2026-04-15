@@ -288,7 +288,7 @@ export default function Connect() {
             Two people. Two perspectives. One shared wellness journey.
           </p>
 
-          {view === "intro" ? (
+          {(urlCode && joinCode.length === 6 ? false : view === "intro") ? (
             <div className="w-full space-y-4">
               <button
                 onClick={() => navigate("/auth")}
