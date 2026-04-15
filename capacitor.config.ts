@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.signalnz',
+  appId: 'nz.co.mindcast.signal',
   appName: 'Signal',
   webDir: 'dist',
   server: {
@@ -25,37 +25,6 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
     },
-=======
-  appId: 'nz.co.mindcast.signal',
-  appName: 'Signal NZ',
-  webDir: 'dist',
-  // During development: serve from live URL so you don't need to rebuild on every change
-  // Comment this out for production builds
-  server: {
-    url: 'https://signal.mindcast.co.nz',
-    cleartext: false,
-  },
-  android: {
-    backgroundColor: '#1a0a2e', // Match your brand purple splash
-    allowMixedContent: false,
-  },
-  plugins: {
-    SplashScreen: {
-      launchShowDuration: 1500,
-      backgroundColor: '#1a0a2e',
-      showSpinner: false,
-      androidSplashResourceName: 'splash',
-      splashFullScreen: true,
-      splashImmersive: true,
-    },
-    StatusBar: {
-      style: 'LIGHT',
-      backgroundColor: '#1a0a2e',
-    },
-    PushNotifications: {
-      presentationOptions: ['badge', 'sound', 'alert'],
-    },
->>>>>>> Stashed changes
   },
 };
 

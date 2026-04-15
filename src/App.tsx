@@ -21,32 +21,35 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 // Eagerly load the home page (critical path)
 import Index from "./pages/Index";
-import Cycle from "./pages/Cycle";
-import Nutrition from "./pages/Nutrition";
-import Movement from "./pages/Movement";
-import Breathwork from "./pages/Breathwork";
-import NervousSystem from "./pages/NervousSystem";
-import Journal from "./pages/Journal";
-import Modules from "./pages/Modules";
-import Membership from "./pages/Membership";
-import Practice from "./pages/Practice";
-import Recommendations from "./pages/Recommendations";
-import Community from "./pages/Community";
-import Auth from "./pages/Auth";
-import Account from "./pages/Account";
-import NotFound from "./pages/NotFound";
-import Feedback from "./pages/Feedback";
-import BrandGuidelines from "./pages/BrandGuidelines";
-import AnimationPOC from "./pages/AnimationPOC";
-import Admin from "./pages/Admin";
-import Coach from "./pages/Coach";
-import Feed from "./pages/Feed";
-import Terms from "./pages/Terms";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import RefundPolicy from "./pages/RefundPolicy";
-import Contact from "./pages/Contact";
-import Connect from "./pages/Connect";
 
+// Lazy-load all other routes
+const Cycle = lazy(() => import("./pages/Cycle"));
+const Nutrition = lazy(() => import("./pages/Nutrition"));
+const Movement = lazy(() => import("./pages/Movement"));
+const Breathwork = lazy(() => import("./pages/Breathwork"));
+const NervousSystem = lazy(() => import("./pages/NervousSystem"));
+const Journal = lazy(() => import("./pages/Journal"));
+const Modules = lazy(() => import("./pages/Modules"));
+const Membership = lazy(() => import("./pages/Membership"));
+const Practice = lazy(() => import("./pages/Practice"));
+const Recommendations = lazy(() => import("./pages/Recommendations"));
+const Community = lazy(() => import("./pages/Community"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Account = lazy(() => import("./pages/Account"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Feedback = lazy(() => import("./pages/Feedback"));
+const BrandGuidelines = lazy(() => import("./pages/BrandGuidelines"));
+const AnimationPOC = lazy(() => import("./pages/AnimationPOC"));
+const Admin = lazy(() => import("./pages/Admin"));
+const Coach = lazy(() => import("./pages/Coach"));
+const Feed = lazy(() => import("./pages/Feed"));
+const Terms = lazy(() => import("./pages/Terms"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Connect = lazy(() => import("./pages/Connect"));
+const ConnectCourse = lazy(() => import("./components/connect/ConnectCoursePage"));
+const Parenting = lazy(() => import("./components/parenting/ParentingCoursePage"));
 
 const queryClient = new QueryClient();
 
@@ -134,46 +137,52 @@ const App = () => {
               <CycleProvider>
               <HeartRateProvider>
               <SignalPanelProvider>
-                <Routes>
-                  <Route path="/brand" element={<BrandGuidelines />} />
-                  <Route path="/animation-poc" element={<AnimationPOC />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="*" element={
-                    <Layout>
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/cycle" element={<Cycle />} />
-                        <Route path="/nutrition" element={<Nutrition />} />
-                        <Route path="/movement" element={<Movement />} />
-                        <Route path="/breathwork" element={<Navigate to="/mindfulness" replace />} />
-                        <Route path="/nervous-system" element={<Navigate to="/mindfulness" replace />} />
-                        <Route path="/mindfulness" element={<NervousSystem />} />
-                        <Route path="/journal" element={<Journal />} />
-                        <Route path="/modules" element={<Modules />} />
-                        <Route path="/membership" element={<Membership />} />
-                        <Route path="/my-practice" element={<Practice />} />
-                        <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
-                        <Route path="/recommendations" element={<Recommendations />} />
-                        <Route path="/community" element={<Community />} />
-                        <Route path="/account" element={<Account />} />
-                        <Route path="/settings" element={<Navigate to="/account" replace />} />
-                        <Route path="/profile" element={<Navigate to="/account" replace />} />
-                        <Route path="/home" element={<Navigate to="/" replace />} />
-                        <Route path="/feedback" element={<Feedback />} />
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="/coach" element={<Coach />} />
-                        <Route path="/feed" element={<Feed />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                        <Route path="/refund-policy" element={<RefundPolicy />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/connect" element={<Connect />} />
-                        <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Layout>
-                  } />
-                </Routes>
+                <Suspense fallback={<RouteFallback />}>
+                  <Routes>
+                    <Route path="/brand" element={<BrandGuidelines />} />
+                    <Route path="/animation-poc" element={<AnimationPOC />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="*" element={
+                      <Layout>
+                        <Suspense fallback={<RouteFallback />}>
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/cycle" element={<Cycle />} />
+                            <Route path="/nutrition" element={<Nutrition />} />
+                            <Route path="/movement" element={<Movement />} />
+                            <Route path="/breathwork" element={<Navigate to="/mindfulness" replace />} />
+                            <Route path="/nervous-system" element={<Navigate to="/mindfulness" replace />} />
+                            <Route path="/mindfulness" element={<NervousSystem />} />
+                            <Route path="/journal" element={<Journal />} />
+                            <Route path="/modules" element={<Modules />} />
+                            <Route path="/membership" element={<Membership />} />
+                            <Route path="/my-practice" element={<Practice />} />
+                            <Route path="/daily-habits" element={<Navigate to="/my-practice" replace />} />
+                            <Route path="/recommendations" element={<Recommendations />} />
+                            <Route path="/community" element={<Community />} />
+                            <Route path="/account" element={<Account />} />
+                            <Route path="/settings" element={<Navigate to="/account" replace />} />
+                            <Route path="/profile" element={<Navigate to="/account" replace />} />
+                            <Route path="/home" element={<Navigate to="/" replace />} />
+                            <Route path="/feedback" element={<Feedback />} />
+                            <Route path="/admin" element={<Admin />} />
+                            <Route path="/coach" element={<Coach />} />
+                            <Route path="/feed" element={<Feed />} />
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                            <Route path="/refund-policy" element={<RefundPolicy />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/connect" element={<Connect />} />
+                            <Route path="/parenting" element={<Parenting />} />
+                            <Route path="/connect/course" element={<ConnectCourse />} />
+                            <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </Suspense>
+                      </Layout>
+                    } />
+                  </Routes>
+                </Suspense>
               </SignalPanelProvider>
               </HeartRateProvider>
               </CycleProvider>

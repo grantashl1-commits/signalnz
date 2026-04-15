@@ -30,6 +30,72 @@ export default function Connect() {
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [pin, setPin] = useState(["", "", "", ""]);
+  const [partnerName, setPartnerName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [connectionId, setConnectionId] = useState<string | null>(null);
+  const [isPartnerSession, setIsPartnerSession] = useState(false);
+  const [partnerDisplayName, setPartnerDisplayName] = useState("");
+
+  // Chat state
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Check for existing connection on load
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("partner_connections_safe")
+      .select("*")
+      .eq("member_user_id", user.id)
+      .eq("status", "linked")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setConnectionId(data.id);
+          setPartnerDisplayName(data.partner_name || "Partner");
+          setGeneratedCode(data.join_code);
+          setView("space");
+        }
+      });
+  }, [user]);
+
+  // Load messages when connection is active
+  useEffect(() => {
+    if (!connectionId) return;
+    supabase
+      .from("connect_messages")
+      .select("*")
+      .eq("connection_id", connectionId)
+      .order("created_at", { ascending: true })
+      .then(({ data }) => {
+        if (data) setMessages(data as Message[]);
+      });
+
+    // Realtime subscription
+    const channel = supabase
+      .channel(`connect-${connectionId}`)
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "connect_messages",
+        filter: `connection_id=eq.${connectionId}`,
+      }, (payload) => {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
+          return [...prev, payload.new as Message];
+        });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [connectionId]);
+
+  // Auto-scroll chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Generate a random 6-char invite code
   const generateCode = () => {
@@ -103,9 +169,49 @@ export default function Connect() {
   // ─── Partner enters join code ───
   const handlePartnerJoin = () => {
     if (joinCode.length !== 6) {
-      toast.error("Please enter a 6-character code");
+      toast.error("Enter the 6-character code from your partner");
       return;
     }
+    haptic("light");
+    setView("partner-pin");
+  };
+
+  // ─── Partner verifies PIN ───
+  const handlePartnerPinVerify = async () => {
+    const fullPin = pin.join("");
+    if (fullPin.length !== 4) {
+      toast.error("Enter the 4-digit PIN");
+      return;
+    }
+    setLoading(true);
+
+    // Use secure RPC to verify PIN without exposing hash
+    const { data, error } = await supabase.rpc("verify_partner_pin", {
+      _code: joinCode.toUpperCase(),
+      _pin_hash: hashPin(fullPin),
+    });
+
+    if (error || !data || data.length === 0) {
+      toast.error(error ? "Code not found — check with your partner" : "PIN doesn't match — try again");
+      setLoading(false);
+      return;
+    }
+
+    const match = data[0];
+
+    // Link the connection
+    if (match.connection_status === "pending") {
+      await supabase
+        .from("partner_connections")
+        .update({ status: "linked", partner_user_id: user?.id || null })
+        .eq("id", match.connection_id);
+    }
+
+    setConnectionId(match.connection_id);
+    setPartnerDisplayName(match.partner_name || "Partner");
+    setIsPartnerSession(true);
+    setView("space");
+    setLoading(false);
     haptic("medium");
     toast.success("Connected! 💜");
   };
@@ -147,6 +253,8 @@ export default function Connect() {
     setAiLoading(false);
   };
 
+
+  // ═══ PARTNER ENTRY (no account needed) ═══
   if (!user) {
     return (
       <div className="min-h-screen pb-24 px-6">
@@ -393,54 +501,33 @@ export default function Connect() {
               ))}
             </div>
 
-            <h2 className="font-display text-2xl text-foreground text-center mb-2">
-              Your partner code
-            </h2>
-            <p className="text-sm text-muted-foreground text-center max-w-xs mb-8">
-              Share this code with your partner. They'll enter it on their Signal app to connect.
-            </p>
 
-            {/* Code display */}
-            <div className="flex gap-2 mb-6">
-              {generatedCode.split("").map((char, i) => (
-                <div
-                  key={i}
-                  className="w-12 h-14 rounded-xl bg-card border-2 border-primary/20 flex items-center justify-center"
-                >
-                  <span className="text-2xl font-bold text-foreground tracking-wider">{char}</span>
+            {/* Setup form */}
+            <div className="w-full max-w-sm space-y-4">
+              <input
+                value={partnerName}
+                onChange={(e) => setPartnerName(e.target.value)}
+                placeholder="Your partner's name"
+                className="w-full rounded-xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary/30 focus:outline-none transition-colors"
+              />
+              <div>
+                <p className="text-xs text-muted-foreground mb-2 text-center">Set a 4-digit PIN for your partner</p>
+                <div className="flex justify-center gap-3">
+                  {pin.map((digit, i) => (
+                    <input
+                      key={i}
+                      id={`pin-${i}`}
+                      type="password"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handlePinChange(i, e.target.value)}
+                      onKeyDown={(e) => handlePinKeyDown(i, e)}
+                      className="w-14 h-14 rounded-xl bg-card border-2 border-border text-center text-2xl font-bold text-foreground focus:border-primary focus:outline-none transition-colors"
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            <button
-              onClick={copyCode}
-              className="flex items-center gap-2 text-sm text-primary font-medium mb-10"
-            >
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copied!" : "Copy code"}
-            </button>
-
-            {/* PIN setup */}
-            <div className="w-full max-w-xs">
-              <p className="text-xs text-muted-foreground text-center mb-3">
-                Set a 4-digit PIN for quick partner switching
-              </p>
-              <div className="flex justify-center gap-3 mb-8">
-                {pin.map((digit, i) => (
-                  <input
-                    key={i}
-                    id={`pin-${i}`}
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handlePinChange(i, e.target.value)}
-                    onKeyDown={(e) => handlePinKeyDown(i, e)}
-                    className="w-14 h-14 rounded-xl bg-card border-2 border-border text-center text-2xl font-bold text-foreground focus:border-primary focus:outline-none transition-colors"
-                  />
-                ))}
               </div>
-
               <button
                 onClick={handleCreateConnection}
                 disabled={loading}
