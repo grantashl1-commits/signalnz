@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, Share2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -25,8 +25,10 @@ function hashPin(pin: string): string {
 export default function Connect() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [view, setView] = useState<ConnectView>("intro");
-  const [joinCode, setJoinCode] = useState("");
+  const { code: urlCode } = useParams<{ code?: string }>();
+  const hasValidUrlCode = !!urlCode && urlCode.replace(/[^A-Z0-9]/gi, "").length === 6;
+  const [view, setView] = useState<ConnectView>(hasValidUrlCode ? "partner-pin" : "intro");
+  const [joinCode, setJoinCode] = useState(urlCode?.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6) || "");
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [pin, setPin] = useState(["", "", "", ""]);
@@ -105,14 +107,31 @@ export default function Connect() {
     return code;
   };
 
+  const getShareUrl = (code: string) => `${window.location.origin}/connect/join/${code}`;
+
   const copyCode = async () => {
     try {
-      await navigator.clipboard.writeText(generatedCode);
+      await navigator.clipboard.writeText(getShareUrl(generatedCode));
       setCopied(true);
       haptic("light");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Couldn't copy — try manually");
+    }
+  };
+
+  const shareLink = async () => {
+    const url = getShareUrl(generatedCode);
+    const text = `Join our Signal Connect space 💜\nUse the PIN I shared with you.\n${url}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Signal Connect", text, url });
+        haptic("medium");
+      } catch { /* user cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast.success("Link copied — send it to your partner");
+      haptic("light");
     }
   };
 
@@ -563,14 +582,18 @@ export default function Connect() {
               ))}
             </div>
 
+            <button onClick={shareLink} className="w-full max-w-xs bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 mb-3">
+              <Share2 className="w-4 h-4" /> Send link to your partner
+            </button>
+
             <button onClick={copyCode} className="flex items-center gap-2 text-sm text-primary font-medium mb-10">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copied!" : "Copy code"}
+              {copied ? "Link copied!" : "Copy invite link"}
             </button>
 
             <button
               onClick={() => setView("space")}
-              className="bg-primary text-primary-foreground px-8 py-3.5 rounded-full text-sm font-semibold"
+              className="bg-card border border-border text-foreground px-8 py-3.5 rounded-full text-sm font-medium"
             >
               Enter Connect space
             </button>
