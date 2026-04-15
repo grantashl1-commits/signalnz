@@ -457,6 +457,15 @@ export default function MyWeekTab() {
           </button>
           {aiPlan && (
             <button
+              onClick={() => { haptic("light"); setStep("prepguide"); }}
+              className="font-body text-xs text-primary underline flex items-center gap-1"
+            >
+              <ClipboardList className="h-3 w-3" />
+              Prep guide
+            </button>
+          )}
+          {aiPlan && (
+            <button
               onClick={() => { haptic("light"); setStep("shop"); }}
               className="font-body text-xs text-primary underline"
             >
