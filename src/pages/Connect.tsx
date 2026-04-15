@@ -26,7 +26,8 @@ export default function Connect() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { code: urlCode } = useParams<{ code?: string }>();
-  const [view, setView] = useState<ConnectView>(urlCode ? "join" : "intro");
+  const hasValidUrlCode = !!urlCode && urlCode.replace(/[^A-Z0-9]/gi, "").length === 6;
+  const [view, setView] = useState<ConnectView>(hasValidUrlCode ? "partner-pin" : "intro");
   const [joinCode, setJoinCode] = useState(urlCode?.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6) || "");
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
