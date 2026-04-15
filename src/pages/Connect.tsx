@@ -381,10 +381,6 @@ export default function Connect() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-1 mt-3 bg-muted/50 rounded-full p-0.5">
-            {([
-              { key: "chat" as SpaceTab, label: "Chat", icon: MessageSquare },
           {/* Tabs - scrollable */}
           <div className="flex gap-1 mt-3 overflow-x-auto no-scrollbar">
             {([
