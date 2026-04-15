@@ -599,7 +599,7 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
         )}
 
         {/* Kids alternative swap */}
-        <KidsDinnerAlt dinnerName={meal.name} phase={phase} />
+        <KidsDinnerAlt mealName={meal.name} mealType={meal.slot as any} phase={phase} />
 
         <button onClick={() => !isEaten && onMarkEaten()} disabled={isEaten}
           className="touch-btn w-full rounded-full py-3 min-h-[44px] font-body text-sm font-bold transition-all flex items-center justify-center gap-2"
