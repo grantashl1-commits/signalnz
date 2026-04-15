@@ -650,23 +650,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
         )}
       </AnimatePresence>
 
-      {/* Gratitude */}
-      <DottedLine />
-      <div>
-        <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1">✦ Gratitude</p>
-        <textarea
-          rows={2}
-          placeholder="I am grateful for..."
-          className="w-full bg-transparent font-hand text-[13px] text-foreground placeholder:text-muted-foreground/25 resize-none outline-none leading-relaxed"
-          onChange={(e) => {
-            const weekKey = format(today, "yyyy-'W'II");
-            localStorage.setItem(`signal_gratitude_${weekKey}`, e.target.value);
-          }}
-          defaultValue={(() => {
-            try { return localStorage.getItem(`signal_gratitude_${format(today, "yyyy-'W'II")}`) || ""; } catch { return ""; }
-          })()}
-        />
-      </div>
 
       <div className="flex justify-center pt-1">
         <img src={botanicalSprig} alt="" className="w-8 h-12 opacity-15" loading="lazy" />
@@ -678,8 +661,6 @@ function WeekPage({ today, events, showAddEvent, setShowAddEvent, newTime, setNe
 export default function HomePlannerCard() {
   const today = new Date();
   const todayStr = format(today, "yyyy-MM-dd");
-  const { intention, setIntention } = useWeeklyIntention();
-  const { mantra, setMantra } = useWeeklyMantra();
   const [events, setEvents] = useState<ManualEvent[]>(() => loadEvents(todayStr));
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [newTime, setNewTime] = useState("09:00");
