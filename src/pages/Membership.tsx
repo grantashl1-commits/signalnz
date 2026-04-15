@@ -94,7 +94,7 @@ const TIERS = [
           "5 knowledge posts per day",
           "Full cycle logging & phase guidance",
           "AI Signal, AMA & Give",
-          "Stoic daily readings",
+          "Daily philosophical readings",
           "Save to Knowledge Hub",
         ],
       },
