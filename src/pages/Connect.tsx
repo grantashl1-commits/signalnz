@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, Share2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
