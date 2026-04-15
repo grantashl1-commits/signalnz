@@ -83,12 +83,13 @@ async function animateAndUpload(ex: { id: string; name: string; illustration_url
       return { id: ex.id, name: ex.name, success: false, error: `gif_upload: ${uploadErr.message}` };
     }
 
-    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/exercise-assets/${gifPath}`;
+    const { data: signedData } = await supabase.storage.from("exercise-assets").createSignedUrl(gifPath, 86400);
+    const gifUrl = signedData?.signedUrl || `${SUPABASE_URL}/storage/v1/object/exercise-assets/${gifPath}`;
 
     // Update DB with gif_url
     const { error: dbErr } = await supabase
       .from("exercises")
-      .update({ gif_url: publicUrl })
+      .update({ gif_url: gifUrl })
       .eq("id", ex.id);
 
     if (dbErr) {

@@ -70,12 +70,13 @@ async function generateAndUpload(ex: { id: string; name: string; category: strin
       return { id: ex.id, name: ex.name, success: false, error: `upload: ${uploadErr.message}` };
     }
 
-    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/exercise-assets/${filePath}`;
+    const { data: signedData } = await supabase.storage.from("exercise-assets").createSignedUrl(filePath, 86400);
+    const illustrationUrl = signedData?.signedUrl || `${SUPABASE_URL}/storage/v1/object/exercise-assets/${filePath}`;
 
     // Update DB
     const { error: dbErr } = await supabase
       .from("exercises")
-      .update({ illustration_url: publicUrl })
+      .update({ illustration_url: illustrationUrl })
       .eq("id", ex.id);
 
     if (dbErr) {

@@ -57,9 +57,9 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: uploadError.message }, 500);
     }
 
-    const { data } = admin.storage.from("practice-audio").getPublicUrl(filePath);
+    const { data: signedData } = await admin.storage.from("practice-audio").createSignedUrl(filePath, 3600);
 
-    return jsonResponse({ audioUrl: data.publicUrl, filePath });
+    return jsonResponse({ audioUrl: signedData?.signedUrl, filePath });
   } catch (error) {
     console.error("script-audio-upload error", error);
     return jsonResponse({ error: "Internal server error" }, 500);
