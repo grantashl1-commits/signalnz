@@ -617,3 +617,164 @@ export default function MembershipPage() {
     </div>
   );
 }
+
+const ONE_OFF_COURSES = [
+  {
+    key: "connect_course",
+    title: "Connect — Couples Course",
+    description: "13-module relationship course with AI coaching, reflection room, attachment & love language quizzes",
+    price: "$79",
+    detail: "3 months AI coaching · course content forever",
+    icon: Heart,
+    priceId: "price_1TMVazEAvaJHDMD4refQpKGS",
+    includedIn: "Nourished",
+    successPath: "/connect?purchase=success",
+    accent: "#E879A0",
+  },
+  {
+    key: "parenting_baby_toddler",
+    title: "Parenting — Baby & Toddler",
+    description: "Sleep schedules, developmental milestones, evidence-based guidance for ages 0-4",
+    price: "$49",
+    detail: "Lifetime access",
+    icon: Baby,
+    priceId: "price_1TMVb2EAvaJHDMD4VM8LcrqU",
+    includedIn: "Thriving",
+    successPath: "/modules?purchase=parenting_baby_toddler",
+    accent: "#8B9CF7",
+  },
+  {
+    key: "parenting_kids",
+    title: "Parenting — Kids (5-12)",
+    description: "Emotional regulation, boundaries, communication strategies for school-age children",
+    price: "$49",
+    detail: "Lifetime access",
+    icon: GraduationCap,
+    priceId: "price_1TMVb3EAvaJHDMD4nhlIzWFd",
+    includedIn: "Thriving",
+    successPath: "/modules?purchase=parenting_kids",
+    accent: "#6DC4A0",
+  },
+  {
+    key: "parenting_teens",
+    title: "Parenting — Teens (13-17)",
+    description: "Navigating adolescence, digital safety, independence, and maintaining connection",
+    price: "$49",
+    detail: "Lifetime access",
+    icon: Users,
+    priceId: "price_1TMVb3EAvaJHDMD4xcf6OA1D",
+    includedIn: "Thriving",
+    successPath: "/modules?purchase=parenting_teens",
+    accent: "#E8A838",
+  },
+];
+
+function CourseCards({ session }: { session: any }) {
+  const navigate = useNavigate();
+  const { hasOneOffPurchase } = useFeatureGate();
+  const { subscription } = useAuth();
+  const [loadingKey, setLoadingKey] = useState<string | null>(null);
+
+  const handleCoursePurchase = async (course: typeof ONE_OFF_COURSES[0]) => {
+    if (!session) { navigate("/auth"); return; }
+    setLoadingKey(course.key);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId: course.priceId, mode: "payment", successPath: course.successPath },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (err: any) {
+      toast.error(err.message || "Could not start checkout");
+    } finally {
+      setLoadingKey(null);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35 }}
+      className="space-y-5"
+    >
+      <div className="text-center">
+        <p className="font-hand text-base text-primary mb-1">no subscription needed</p>
+        <h2 className="font-display text-xl md:text-2xl italic text-foreground">Individual Courses</h2>
+        <p className="font-body text-xs text-muted-foreground mt-1">Purchase standalone access — no monthly commitment</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+        {ONE_OFF_COURSES.map((course) => {
+          const owned = hasOneOffPurchase(course.key);
+          const includedViaSub = (course.includedIn === "Nourished" && ["nourished", "thriving"].includes(subscription.tier))
+            || (course.includedIn === "Thriving" && subscription.tier === "thriving");
+          const IconComp = course.icon;
+
+          return (
+            <div
+              key={course.key}
+              className={`card-warm p-5 relative overflow-hidden ${owned ? "ring-2 ring-primary" : ""}`}
+            >
+              {owned && (
+                <span className="absolute top-3 right-3 rounded-full bg-primary/10 px-2.5 py-0.5 font-hand text-[11px] font-bold text-primary">
+                  Purchased ✓
+                </span>
+              )}
+              {includedViaSub && !owned && (
+                <span className="absolute top-3 right-3 rounded-full bg-primary/10 px-2.5 py-0.5 font-hand text-[11px] font-bold text-primary">
+                  Included
+                </span>
+              )}
+
+              <div className="flex items-start gap-3 mb-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: `${course.accent}20` }}
+                >
+                  <IconComp className="w-5 h-5" style={{ color: course.accent }} />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-display text-sm italic text-foreground leading-tight">{course.title}</h3>
+                  <p className="font-body text-[11px] text-muted-foreground mt-0.5 leading-snug">{course.description}</p>
+                </div>
+              </div>
+
+              <div className="flex items-baseline gap-1.5 mb-1">
+                <span className="font-body text-xl font-bold text-foreground">{course.price}</span>
+                <span className="font-body text-xs text-muted-foreground">NZD</span>
+              </div>
+              <p className="font-body text-[11px] text-muted-foreground mb-3">{course.detail}</p>
+
+              {owned || includedViaSub ? (
+                <button
+                  onClick={() => navigate(course.key === "connect_course" ? "/connect" : "/modules")}
+                  className="w-full rounded-xl bg-secondary text-foreground px-4 py-2.5 font-body text-sm font-semibold"
+                >
+                  {owned ? "Open course" : `Included in ${course.includedIn}`}
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleCoursePurchase(course)}
+                  disabled={loadingKey === course.key}
+                  className="w-full rounded-xl px-4 py-2.5 font-body text-sm font-bold text-white active:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
+                  style={{ backgroundColor: course.accent }}
+                >
+                  {loadingKey === course.key
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Loading...</>
+                    : <><ShoppingBag className="w-4 h-4" /> Purchase</>
+                  }
+                </button>
+              )}
+
+              <p className="font-body text-[10px] text-muted-foreground/60 mt-2 text-center">
+                Also included free with {course.includedIn} membership
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
