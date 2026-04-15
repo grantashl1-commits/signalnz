@@ -13,6 +13,9 @@ import logoCursive from "@/assets/logo-explorations/signal-logo-cursive.png";
 import logoMixed from "@/assets/logo-explorations/signal-logo-mixed.png";
 import dotsPurpleOnCream from "@/assets/logo-explorations/signal-dots-purple-on-cream.png";
 import dotsCreamOnPurple from "@/assets/logo-explorations/signal-dots-cream-on-purple.png";
+import yocmIconV1 from "@/assets/logo-explorations/signal-icon-yocm-style-v1.png";
+import yocmIconV2 from "@/assets/logo-explorations/signal-icon-yocm-style-v2.png";
+import yocmIconV3 from "@/assets/logo-explorations/signal-icon-yocm-style-v3.png";
 
 /* ── brand tokens ── */
 const C = {
