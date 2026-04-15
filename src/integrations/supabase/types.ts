@@ -2717,7 +2717,6 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string | null
-          join_code: string | null
           member_user_id: string | null
           partner_name: string | null
           partner_user_id: string | null
@@ -2728,7 +2727,6 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string | null
-          join_code?: string | null
           member_user_id?: string | null
           partner_name?: string | null
           partner_user_id?: string | null
@@ -2739,7 +2737,6 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string | null
-          join_code?: string | null
           member_user_id?: string | null
           partner_name?: string | null
           partner_user_id?: string | null
