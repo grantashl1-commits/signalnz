@@ -344,7 +344,6 @@ export default function MyWeekTab() {
   }
 
   if (step === "shop" && aiPlan) {
-    // Determine which cycle week we're in (1-4)
     const currentWeek = Math.ceil(currentCycleDay / 7);
     return (
       <div className="space-y-4">
@@ -356,6 +355,24 @@ export default function MyWeekTab() {
         </button>
         <SmartShoppingList plan={aiPlan} weekNumber={currentWeek} />
       </div>
+    );
+  }
+
+  if (step === "prepguide" && aiPlan) {
+    const currentWeek = Math.ceil(currentCycleDay / 7);
+    const prepWeekDates = weekData.days.map(d => ({
+      date: d.date,
+      dateStr: d.dateStr,
+      dayName: d.dayName,
+    }));
+    return (
+      <MealPrepGuide
+        plan={aiPlan}
+        weekNumber={currentWeek}
+        weekDates={prepWeekDates}
+        phase={weekData.dominantPhase}
+        onBack={() => { haptic("light"); setStep("plan"); }}
+      />
     );
   }
 
