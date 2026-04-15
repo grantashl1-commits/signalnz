@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
+import { isPartnerSession, partnerProxy } from "@/hooks/usePartnerProxy";
 
 interface ReflectRoomProps {
   connectionId: string;
@@ -76,11 +77,17 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
   }, [connectionId]);
 
   const loadThread = async () => {
-    const { data } = await supabase
-      .from("connect_reflections")
-      .select("*")
-      .eq("connection_id", connectionId)
-      .order("created_at", { ascending: true });
+    let data: any[] | null = null;
+    if (isPartnerSession()) {
+      data = await partnerProxy("load_reflections");
+    } else {
+      const res = await supabase
+        .from("connect_reflections")
+        .select("*")
+        .eq("connection_id", connectionId)
+        .order("created_at", { ascending: true });
+      data = res.data;
+    }
 
     if (data && data.length > 0) {
       const mapped: ThreadMessage[] = data.map((d: any) => {
