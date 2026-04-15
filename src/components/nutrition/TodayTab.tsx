@@ -585,12 +585,15 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
               {showMethod && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                   <ol className="space-y-2 pt-2">
-                    {method.map((step, idx) => (
+                    {method.map((step, idx) => {
+                      const cleanStep = step.replace(/^\d+[\.\)]\s*/, "");
+                      return (
                       <li key={idx} className="flex gap-3">
                         <span className="font-body text-sm font-bold flex-shrink-0 mt-0.5" style={{ color: phaseColor }}>{idx + 1}.</span>
-                        <p className="font-body text-sm text-muted-foreground leading-relaxed">{step}</p>
+                        <p className="font-body text-sm text-muted-foreground leading-relaxed">{cleanStep}</p>
                       </li>
-                    ))}
+                      );
+                    })}
                   </ol>
                 </motion.div>
               )}
