@@ -265,63 +265,82 @@ export default function BrandGuidelines() {
       <Section id="logo-explorations" bg={C.warmIvory}>
         <div className="relative z-10 max-w-5xl mx-auto w-full">
           <SectionLabel>02b — Logo Evolution</SectionLabel>
-          <SectionTitle>Botanical + Signal Rings</SectionTitle>
+          <SectionTitle>Proposed Lockup — Dot Circle + Wordmark</SectionTitle>
           <Divider />
           <p style={{ fontWeight: 500, fontSize: 15, color: C.body, lineHeight: 1.8, marginBottom: 24 }}>
-            Exploring a softer identity that combines the lowercase botanical wordmark with
-            hand-illustrated signal rings — reimagining the concentric dots as organic,
-            watercolour-drawn ripples rather than mechanical circles.
+            The hand-drawn concentric dot circle becomes our primary icon — organic, breathing, and
+            unmistakably Signal. Paired with Reddit Sans "Signal" and a Caveat tagline underneath.
           </p>
 
+          {/* ── PROPOSED LOCKUP: Purple on Cream ── */}
           <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
-            Wordmark + Rings Combined
+            Primary — Purple on Cream
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-10">
-            {[
-              { src: logoBotanicalDotsV1, label: "Botanical Rings V1", desc: "Concentric rings emanate from behind the wordmark, leaf accent on the 'i'" },
-              { src: logoBotanicalDotsV2, label: "Icon + Wordmark Lockup", desc: "Separated hand-drawn ring icon paired with botanical wordmark" },
-              { src: logoStackedBotanical, label: "Stacked Lockup", desc: "Ring icon stacked above wordmark — vertical format for app icons" },
-              { src: logoBotanical, label: "Original Botanical", desc: "The starting point — clean lowercase with leaf accent" },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col gap-2">
-                <div className="rounded-xl overflow-hidden flex items-center justify-center p-6 md:p-10 aspect-[16/9]"
-                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
-                  <img src={item.src} alt={item.label} className="w-full h-full object-contain" loading="lazy" />
-                </div>
-                <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>{item.label}</p>
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.5 }}>{item.desc}</p>
+          <div className="rounded-2xl p-8 md:p-12 mb-6" style={{ backgroundColor: C.warmIvory, border: `1px solid ${C.lavender}22` }}>
+            <div className="flex items-center gap-5 md:gap-8">
+              <img src={dotsPurpleOnCream} alt="Signal dot circle icon" className="w-16 h-16 md:w-24 md:h-24 object-contain flex-shrink-0" />
+              <div className="flex flex-col">
+                <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(28px, 5vw, 48px)", color: C.brandPurple, letterSpacing: "0.06em", lineHeight: 1 }}>
+                  Signal
+                </span>
+                <span style={{ fontFamily: "'Caveat', cursive", fontWeight: 600, fontSize: "clamp(14px, 2.5vw, 20px)", color: C.lavender, marginTop: 2, alignSelf: "flex-end" }}>
+                  Tune into your inner self
+                </span>
               </div>
-            ))}
+            </div>
           </div>
 
+          {/* ── PROPOSED LOCKUP: Cream on Purple (inverse) ── */}
           <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
-            Icon Mark — Soft Illustrated Rings
+            Inverse — Cream on Purple
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-10">
-            {[
-              { src: logoIconBotanicalRings, label: "Botanical Rings", desc: "Three rings with leaf sprig — app icon candidate" },
-              { src: logoIconSoftRings, label: "Soft Watercolour Rings", desc: "Hand-drawn organic ripples — loading animation candidate" },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col gap-2">
-                <div className="rounded-xl overflow-hidden flex items-center justify-center p-6 aspect-square"
-                  style={{ backgroundColor: C.pearl, border: `1px solid ${C.lavender}22` }}>
-                  <img src={item.src} alt={item.label} className="w-full h-full object-contain max-w-[160px]" loading="lazy" />
-                </div>
-                <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>{item.label}</p>
-                <p style={{ fontWeight: 500, fontSize: 12, color: C.body, lineHeight: 1.5 }}>{item.desc}</p>
+          <div className="rounded-2xl p-8 md:p-12 mb-10" style={{ backgroundColor: C.brandPurple }}>
+            <div className="flex items-center gap-5 md:gap-8">
+              <img src={dotsCreamOnPurple} alt="Signal dot circle icon inverse" className="w-16 h-16 md:w-24 md:h-24 object-contain flex-shrink-0" />
+              <div className="flex flex-col">
+                <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontWeight: 800, fontSize: "clamp(28px, 5vw, 48px)", color: C.warmIvory, letterSpacing: "0.06em", lineHeight: 1 }}>
+                  Signal
+                </span>
+                <span style={{ fontFamily: "'Caveat', cursive", fontWeight: 600, fontSize: "clamp(14px, 2.5vw, 20px)", color: `${C.warmIvory}bb`, marginTop: 2, alignSelf: "flex-end" }}>
+                  Tune into your inner self
+                </span>
               </div>
-            ))}
+            </div>
           </div>
 
+          {/* ── Standalone Icon Marks ── */}
           <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
-            Other Typography Directions
+            Standalone Icon — App Icon / Loading Animation
+          </p>
+          <div className="grid grid-cols-2 gap-4 md:gap-6 mb-10">
+            <div className="flex flex-col gap-2">
+              <div className="rounded-xl overflow-hidden flex items-center justify-center p-8 aspect-square" style={{ backgroundColor: C.warmIvory, border: `1px solid ${C.lavender}22` }}>
+                <img src={dotsPurpleOnCream} alt="Purple dots on cream" className="w-full h-full object-contain max-w-[200px]" loading="lazy" />
+              </div>
+              <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Purple on Cream</p>
+              <p style={{ fontWeight: 500, fontSize: 12, color: C.body }}>Primary icon for light backgrounds, loading states</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="rounded-xl overflow-hidden flex items-center justify-center p-8 aspect-square" style={{ backgroundColor: C.brandPurple }}>
+                <img src={dotsCreamOnPurple} alt="Cream dots on purple" className="w-full h-full object-contain max-w-[200px]" loading="lazy" />
+              </div>
+              <p style={{ fontWeight: 800, fontSize: 13, color: C.brandPurple }}>Cream on Purple</p>
+              <p style={{ fontWeight: 500, fontSize: 12, color: C.body }}>Inverse icon for dark/purple backgrounds</p>
+            </div>
+          </div>
+
+          {/* ── Previous explorations ── */}
+          <p style={{ fontWeight: 600, fontSize: 11, color: C.lavender, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16 }}>
+            Earlier Explorations
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {[
-              { src: logoSoftSerif, label: "Soft Serif", desc: "Elegant wide-spaced editorial" },
-              { src: logoCursive, label: "Cursive Watercolour", desc: "Full handwritten calligraphy" },
-              { src: logoMixed, label: "Mixed Script", desc: "Hand-drawn S + serif 'ignal'" },
-              { src: logoWave, label: "Wave Underline", desc: "Clean type with signal wave" },
+              { src: logoBotanicalDotsV1, label: "Botanical Rings V1", desc: "Concentric rings behind wordmark" },
+              { src: logoBotanicalDotsV2, label: "Icon + Wordmark", desc: "Separated ring icon + wordmark" },
+              { src: logoStackedBotanical, label: "Stacked", desc: "Icon above wordmark" },
+              { src: logoBotanical, label: "Botanical", desc: "Lowercase with leaf accent" },
+              { src: logoSoftSerif, label: "Soft Serif", desc: "Editorial wide-spaced" },
+              { src: logoWave, label: "Wave", desc: "Signal wave underline" },
             ].map((item) => (
               <div key={item.label} className="flex flex-col gap-2">
                 <div className="rounded-xl overflow-hidden flex items-center justify-center p-4 md:p-6 aspect-[16/9]"
@@ -332,36 +351,6 @@ export default function BrandGuidelines() {
                 <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>{item.desc}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* ═══════════  4. COLOUR PALETTE  ═══════════ */}
-      <Section id="colours" bg={C.warmIvory}>
-        <div className="max-w-5xl mx-auto w-full">
-          <SectionLabel>03 — Palette</SectionLabel>
-          <SectionTitle>Colour Palette</SectionTitle>
-          <Divider />
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
-            {PALETTE.map((c) => {
-              const isLight = ["#F5EFE8", "#FDFCFB"].includes(c.hex);
-              const logoSrc = isLight ? "/logos/Icon_purple.png" : "/logos/Icon_cream.png";
-              return (
-                <div key={c.hex} className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.lavender}33` }}>
-                  <div className="h-20 md:h-36 flex items-end p-3 md:p-4 relative" style={{ backgroundColor: c.hex }}>
-                    <img src={logoSrc} alt="" className="absolute top-3 right-3 w-6 h-6 md:w-8 md:h-8 object-contain opacity-40" loading="lazy" />
-                    <span className="text-[10px] md:text-xs uppercase tracking-[0.12em]" style={{ fontWeight: 800, color: isLight ? C.brandPurple : C.warmIvory }}>
-                      {c.name}
-                    </span>
-                  </div>
-                  <div className="p-3 md:p-4 space-y-0.5" style={{ backgroundColor: C.pearl }}>
-                    <p style={{ fontWeight: 800, fontSize: 12, color: C.brandPurple }}>{c.hex.toUpperCase()}</p>
-                    <p style={{ fontWeight: 500, fontSize: 11, color: C.lavender }}>RGB {c.rgb}</p>
-                    <p style={{ fontWeight: 500, fontSize: 11, color: C.body, marginTop: 4 }}>{c.usage}</p>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
       </Section>
