@@ -37,11 +37,14 @@ import AnimationPOC from "./pages/AnimationPOC";
 import Admin from "./pages/Admin";
 import Coach from "./pages/Coach";
 import Feed from "./pages/Feed";
+<<<<<<< Updated upstream
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
 import Connect from "./pages/Connect";
+=======
+>>>>>>> Stashed changes
 
 
 const queryClient = new QueryClient();
@@ -154,6 +157,7 @@ const App = () => {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/connect" element={<Connect />} />
                         <Route path="/vision-board" element={<Navigate to="/journal" replace />} />
+                        <Route path="/feed" element={<Feed />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Layout>
