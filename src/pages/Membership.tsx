@@ -853,7 +853,7 @@ function GiftSection({ session }: { session: any }) {
         <h3 className="font-display text-lg italic text-foreground">Gift Signal</h3>
       </div>
       <p className="font-body text-sm text-muted-foreground mb-4">
-        Give someone you love the gift of wellness. They'll get full Nourished access — nutrition, movement, journaling, and more.
+        Give someone you love the gift of wellness. They'll get full Thriving access — nutrition, movement, journaling, AI features, and more.
       </p>
 
       {giftCode ? (
