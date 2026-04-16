@@ -57,6 +57,7 @@ const SESSION_TEMPLATES: SessionTemplate[] = [
       { label: "Strength A — Compound Lifts", exerciseQuery: { body_part: "quadriceps", limit: 3 } },
       { label: "Accessory Work — Posterior Chain", exerciseQuery: { body_part: "hamstrings", limit: 3 } },
       { label: "Conditioning Finisher", exerciseQuery: { body_part: "glutes", limit: 2 } },
+      { label: "Core Stability", exerciseQuery: { body_part: "abdominals", limit: 2 } },
     ],
   },
   {
@@ -82,6 +83,7 @@ const SESSION_TEMPLATES: SessionTemplate[] = [
       { label: "Strength A — Push", exerciseQuery: { body_part: "chest", limit: 3 } },
       { label: "Strength B — Pull", exerciseQuery: { body_part: "lats", limit: 3 } },
       { label: "Accessory — Arms", exerciseQuery: { body_part: "biceps", limit: 2 } },
+      { label: "Shoulders & Rear Delts", exerciseQuery: { body_part: "shoulders", limit: 2 } },
     ],
   },
   {
@@ -106,6 +108,7 @@ const SESSION_TEMPLATES: SessionTemplate[] = [
     sections: [
       { label: "Circuit A — Compound", exerciseQuery: { body_part: "quadriceps", limit: 3 } },
       { label: "Circuit B — Upper/Core", exerciseQuery: { body_part: "abdominals", limit: 3 } },
+      { label: "Circuit C — Functional", exerciseQuery: { body_part: "glutes", limit: 2 } },
     ],
   },
   {
@@ -151,6 +154,7 @@ const SESSION_TEMPLATES: SessionTemplate[] = [
     sections: [
       { label: "HIIT Circuit", exerciseQuery: { body_part: "quadriceps", limit: 4 } },
       { label: "Core Finisher", exerciseQuery: { body_part: "abdominals", limit: 3 } },
+      { label: "Conditioning", exerciseQuery: { body_part: "glutes", limit: 2 } },
     ],
   },
 ];
