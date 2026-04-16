@@ -294,7 +294,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
       setLastGeneratedAt(new Date().toISOString());
 
       if (resp.data?.is_first_free) {
-        toast.success("Your free AI training plan is ready! 🎉");
+        toast.success("Your free AI training plan is ready!");
       } else {
         toast.success(`Plan generated! (${resp.data?.credits_used || 3} credits used)`);
       }
@@ -468,10 +468,10 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
                                       <p className="font-body text-[10px] text-muted-foreground/70 mt-0.5">{ex.load_guidance}</p>
                                     )}
                                     {ex.form_cue && (
-                                      <p className="font-body text-[10px] text-primary/60 italic mt-0.5">💡 {ex.form_cue}</p>
+                                      <p className="font-body text-[10px] text-primary/60 italic mt-0.5 flex items-start gap-1"><Sparkles className="h-3 w-3 shrink-0 mt-px" />{ex.form_cue}</p>
                                     )}
                                     {ex.progression && (
-                                      <p className="font-body text-[10px] text-muted-foreground/60 mt-0.5">↗ {ex.progression}</p>
+                                      <p className="font-body text-[10px] text-muted-foreground/60 mt-0.5 flex items-start gap-1"><ChevronRight className="h-3 w-3 shrink-0 mt-px" />{ex.progression}</p>
                                     )}
                                   </div>
                                 </div>
@@ -713,7 +713,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
               </div>
               <div className="flex items-center justify-center gap-2 text-sm">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="font-body text-foreground">TODAY → <span className="text-primary font-bold">{new Date(Date.now() + (weeksForTarget * 7 * 86400000)).toLocaleDateString("en-NZ", { month: "short", day: "numeric" })}</span></span>
+                <span className="font-body text-foreground">TODAY <ChevronRight className="inline h-3.5 w-3.5" /> <span className="text-primary font-bold">{new Date(Date.now() + (weeksForTarget * 7 * 86400000)).toLocaleDateString("en-NZ", { month: "short", day: "numeric" })}</span></span>
               </div>
               {Number(kgPerWeek) > 1.5 && (
                 <p className="font-body text-xs text-amber-500 text-center">
