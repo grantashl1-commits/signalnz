@@ -77,9 +77,6 @@ Deno.serve(async (req) => {
           JSON.stringify({ audioUrl: signedData.signedUrl, cached: true }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
-        }
-      } catch {
-        // File doesn't exist yet, continue to generate
       }
     }
 
