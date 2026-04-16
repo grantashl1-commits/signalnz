@@ -289,6 +289,14 @@ USER PROFILE:
 CYCLE PHASE GUIDANCE: ${phaseGuidance}
 
 Generate a ${answers?.weeksPlan || 8}-week plan with ${answers?.daysPerWeek || 4} training days per week.
+
+CRITICAL EXERCISE COUNT RULES:
+- Every non-rest training session MUST include a MINIMUM of 6 exercises (not counting warm-up or cool-down).
+- For advanced users or those training 4-5 days/week, aim for 7-9 exercises per session.
+- For users wanting to lose weight with gym access, include 8-10 exercises per session.
+- Never generate a session with fewer than 6 exercises — this is a hard minimum.
+- Do NOT use emoji in any text output — no emoji characters anywhere in titles, cues, notes, or guidance.
+
 Each week should progressively build on the previous. Include specific exercises from our exercise database where possible.
 Adapt the intensity and exercise selection to match the user's cycle phase each week.`;
 
