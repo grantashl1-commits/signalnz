@@ -13,6 +13,7 @@ import ChatRoom from "@/components/community/ChatRoom";
 import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
 import { haptic } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 const TABS = [
   { id: "discover", label: "Discover" },
@@ -27,7 +28,10 @@ export default function CommunityPage() {
 
   const [joined, setJoined] = useState<string[]>([]);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  // DB-derived: true when user has a user_locations row AND is_visible = true.
+  // 'hasLocationRow' tells us whether they've ever set up a suburb at all.
   const [locationEnabled, setLocationEnabled] = useState(false);
+  const [hasLocationRow, setHasLocationRow] = useState(false);
   const [showOptIn, setShowOptIn] = useState(false);
   const [pendingJoin, setPendingJoin] = useState<string | null>(null);
   const [dbGroups, setDbGroups] = useState<any[]>([]);
@@ -37,12 +41,31 @@ export default function CommunityPage() {
 
   // Load persisted state + fetch groups + fetch user memberships
   useEffect(() => {
-    try {
-      const loc = localStorage.getItem("signal_community_location");
-      if (loc === "true") setLocationEnabled(true);
-    } catch {}
     fetchGroups();
     fetchMyMemberships();
+    refreshLocationStatus();
+  }, []);
+
+  // Single source of truth: read user_locations row to determine enabled state.
+  const refreshLocationStatus = useCallback(async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) {
+      setLocationEnabled(false);
+      setHasLocationRow(false);
+      return;
+    }
+    const { data } = await supabase
+      .from("user_locations" as any)
+      .select("is_visible")
+      .eq("user_id", userData.user.id)
+      .maybeSingle();
+    if (data) {
+      setHasLocationRow(true);
+      setLocationEnabled(((data as any).is_visible) === true);
+    } else {
+      setHasLocationRow(false);
+      setLocationEnabled(false);
+    }
   }, []);
 
   const fetchGroups = async () => {
@@ -69,7 +92,6 @@ export default function CommunityPage() {
       return;
     }
 
-    // Fetch last_read_at per group
     const { data: lastReads } = await supabase
       .from("community_last_reads")
       .select("group_id, last_read_at")
@@ -79,8 +101,6 @@ export default function CommunityPage() {
     const lastReadMap = new Map<string, string>();
     (lastReads ?? []).forEach((r: any) => lastReadMap.set(r.group_id, r.last_read_at));
 
-    // For each joined group, count messages newer than last_read (or all if none)
-    // Run in parallel for speed.
     const counts = await Promise.all(
       joined.map(async (gid) => {
         const since = lastReadMap.get(gid) ?? "1970-01-01T00:00:00Z";
@@ -100,11 +120,8 @@ export default function CommunityPage() {
     setUnreadByGroup(next);
   }, [joined]);
 
-  // Recompute when joined groups change, when active group changes,
-  // or when section changes (so leaving/entering chat refreshes badges).
   useEffect(() => { computeUnread(); }, [computeUnread, activeGroup, section]);
 
-  // Realtime: any new message in one of my joined groups bumps the badge.
   useEffect(() => {
     if (joined.length === 0) return;
     const channel = supabase
@@ -115,9 +132,7 @@ export default function CommunityPage() {
         (payload) => {
           const msg = payload.new as any;
           if (!joined.includes(msg.group_id)) return;
-          // Skip if it's the active group I'm currently viewing in chat
           if (section === "chat" && activeGroup === msg.group_id) return;
-          // Skip my own messages
           supabase.auth.getUser().then(({ data }) => {
             if (data.user?.id === msg.user_id) return;
             setUnreadByGroup((prev) => ({
@@ -131,30 +146,67 @@ export default function CommunityPage() {
     return () => { supabase.removeChannel(channel); };
   }, [joined, section, activeGroup]);
 
-  // Total unread across all joined groups (for the Chat tab badge)
   const totalUnread = Object.values(unreadByGroup).reduce((a, b) => a + b, 0);
 
   const persistJoined = (newJoined: string[]) => {
     setJoined(newJoined);
   };
 
-  const toggleLocation = () => {
+  /**
+   * Toggle Nearby visibility. Writes to BOTH:
+   *   • user_locations.is_visible    (controls who can see this user in the Nearby SELECT policy)
+   *   • profiles.is_nearby_visible   (consumed by NearbyView's filter)
+   *
+   * If the user has no location row yet, redirect them to the Nearby tab to set one up.
+   * Returns true on success, false on failure or no-op (so the Switch can revert UI).
+   */
+  const toggleLocation = useCallback(async (): Promise<boolean> => {
+    const { data: userData } = await supabase.auth.getUser();
+    const uid = userData?.user?.id;
+    if (!uid) {
+      toast.error("Please sign in to manage location");
+      return false;
+    }
+    if (!hasLocationRow) {
+      // No suburb on file — bounce to Nearby to do the geolocation flow.
+      setSection("nearby");
+      setShowOptIn(true);
+      toast.info("Set up your suburb in the Nearby tab first");
+      return false;
+    }
     const next = !locationEnabled;
+    const { error: locErr } = await supabase
+      .from("user_locations" as any)
+      .update({ is_visible: next, updated_at: new Date().toISOString() } as any)
+      .eq("user_id", uid);
+    if (locErr) {
+      toast.error("Couldn't update visibility");
+      return false;
+    }
+    await supabase
+      .from("profiles")
+      .update({ is_nearby_visible: next } as any)
+      .eq("user_id", uid);
     setLocationEnabled(next);
-    localStorage.setItem("signal_community_location", String(next));
-  };
+    toast.success(next ? "You're visible in Nearby" : "You're hidden from Nearby");
+    return true;
+  }, [hasLocationRow, locationEnabled]);
 
   const joinGroupInDb = async (groupId: string) => {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData?.user) return;
-    // Idempotent: ignore conflict if already a member
     await supabase
       .from("community_memberships")
       .insert({ user_id: userData.user.id, group_id: groupId });
   };
 
   const join = async (id: string) => {
-    if (!locationEnabled) {
+    // Only suburb-type groups need location verification.
+    // Interest groups (Mums & Bubs, running clubs, etc.) join freely.
+    const target = dbGroups.find((g) => g.id === id);
+    const requiresLocation = target?.group_type === "suburb";
+
+    if (requiresLocation && !locationEnabled) {
       setPendingJoin(id);
       setShowOptIn(true);
       return;
@@ -167,30 +219,25 @@ export default function CommunityPage() {
     setSection("chat");
   };
 
+  // After accepting the LocationOptIn modal, the user goes to the Nearby tab
+  // to do the actual GPS detection. We just close the modal and route them.
   const handleLocationAccept = async () => {
-    setLocationEnabled(true);
-    localStorage.setItem("signal_community_location", "true");
     setShowOptIn(false);
+    setSection("nearby");
     if (pendingJoin) {
-      if (!joined.includes(pendingJoin)) {
-        await joinGroupInDb(pendingJoin);
-        persistJoined([...joined, pendingJoin]);
-      }
-      setActiveGroup(pendingJoin);
-      setSection("chat");
+      // Stash it — they can come back to Discover after granting location.
       setPendingJoin(null);
+      toast.info("Enable location, then re-join the group");
     }
   };
 
   const group = dbGroups.find((g) => g.id === activeGroup) || dbGroups.find((g) => joined.includes(g.id));
 
   const handleNearbyTab = () => {
-    if (!locationEnabled) setShowOptIn(true);
+    if (!hasLocationRow) setShowOptIn(true);
     setSection("nearby");
   };
 
-  // From Nearby: Message a member → open the user's primary group chat with @mention prefilled.
-  // Falls back to the first joined group if a perfect match can't be found.
   const handleMessageMember = useCallback((userId: string, _displayName: string) => {
     if (joined.length === 0) {
       setSection("discover");
@@ -212,7 +259,6 @@ export default function CommunityPage() {
       }}
     >
     <div className="relative">
-      {/* Location opt-in modal */}
       <AnimatePresence>
         {showOptIn && (
           <LocationOptIn
@@ -222,7 +268,6 @@ export default function CommunityPage() {
         )}
       </AnimatePresence>
 
-      {/* ═══ HERO ═══ */}
       <AtmosphericHero size="md">
         <SignalPulse />
         <div className="text-center relative z-10">
@@ -236,8 +281,6 @@ export default function CommunityPage() {
 
       <ContentSection className="px-5 md:px-4">
 
-
-      {/* Tab bar — sticky on mobile */}
       <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-5 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-secondary/50 rounded-2xl p-1 overflow-x-auto">
           {TABS.map((t) => {
@@ -267,7 +310,6 @@ export default function CommunityPage() {
         </div>
       </div>
 
-      {/* Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={section}
@@ -282,6 +324,7 @@ export default function CommunityPage() {
               locationEnabled={locationEnabled}
               onRequestLocation={() => setShowOptIn(true)}
               onToggleLocation={toggleLocation}
+              onLocationChanged={refreshLocationStatus}
               onMessageMember={handleMessageMember}
             />
           )}
@@ -335,7 +378,14 @@ export default function CommunityPage() {
             )
           )}
           {section === "challenges" && <ChallengesPanel joined={joined} />}
-          {section === "profile" && <CommunityProfile locationEnabled={locationEnabled} onToggleLocation={toggleLocation} />}
+          {section === "profile" && (
+            <CommunityProfile
+              locationEnabled={locationEnabled}
+              hasLocationRow={hasLocationRow}
+              onToggleLocation={toggleLocation}
+              onGoToNearby={() => setSection("nearby")}
+            />
+          )}
         </motion.div>
       </AnimatePresence>
 

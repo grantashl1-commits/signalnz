@@ -289,11 +289,14 @@ interface NearbyViewProps {
   locationEnabled: boolean;
   onRequestLocation: () => void;
   onToggleLocation?: () => void;
+  /** Called whenever this component changes the user's location row, so the
+   * parent can refresh its DB-derived locationEnabled state. */
+  onLocationChanged?: () => void;
   onMessageMember?: (userId: string, displayName: string) => void;
 }
 
 // ─── Main Component ────────────────────────────────────────
-export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation, onMessageMember }: NearbyViewProps) {
+export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation, onLocationChanged, onMessageMember }: NearbyViewProps) {
   const { toast } = useToast();
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "requesting" | "granted" | "denied" | "saving"
@@ -467,6 +470,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
     setUserCity(city);
     setLocationStatus("granted");
     setIsNearbyVisible(true);
+    onLocationChanged?.();
 
     toast({
       title: "You're on the map!",
@@ -561,6 +565,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       .eq("user_id", user.id);
 
     setIsNearbyVisible(newVisible);
+    onLocationChanged?.();
 
     toast({
       title: newVisible ? "You're visible in Nearby" : "You've gone invisible",
