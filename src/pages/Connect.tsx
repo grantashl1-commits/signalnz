@@ -54,6 +54,8 @@ export default function Connect() {
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const broadcastChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const channelReadyRef = useRef(false);
 
   // Handle purchase success redirect
   useEffect(() => {
@@ -136,21 +138,62 @@ export default function Connect() {
     };
     loadMessages();
 
+    // Defensive polling fallback every 5s — guarantees messages eventually appear
+    // even if realtime broadcast fails (e.g. for unauthenticated partner sessions).
+    const pollInterval = setInterval(loadMessages, 5000);
+
     // Broadcast realtime — works for both authenticated members AND unauthenticated partners.
-    // Both sides subscribe to the same channel; sender broadcasts after insert.
-    const channel = supabase
-      .channel(`connect-msg-${connectionId}`, { config: { broadcast: { self: false } } })
+    // CRITICAL: We must keep a single subscribed channel and send through IT.
+    // Sending via supabase.channel(...).send(...) on an unsubscribed channel silently drops the message.
+    channelReadyRef.current = false;
+    const channel = supabase.channel(`connect-msg-${connectionId}`, {
+      config: { broadcast: { self: false, ack: true } },
+    });
+    channel
       .on("broadcast", { event: "new_message" }, (payload) => {
+        console.log("[Connect] received broadcast new_message", payload);
         const msg = payload.payload as Message;
         setMessages((prev) => {
           if (prev.some((m) => m.id === msg.id)) return prev;
           return [...prev, msg];
         });
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log("[Connect] channel status:", status);
+        if (status === "SUBSCRIBED") channelReadyRef.current = true;
+      });
+    broadcastChannelRef.current = channel;
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      clearInterval(pollInterval);
+      channelReadyRef.current = false;
+      broadcastChannelRef.current = null;
+      supabase.removeChannel(channel);
+    };
   }, [connectionId, isPartnerSession]);
+
+  // Helper: broadcast through the SUBSCRIBED channel (waiting briefly if needed)
+  const broadcastNewMessage = async (msg: any) => {
+    const channel = broadcastChannelRef.current;
+    if (!channel) {
+      console.warn("[Connect] no channel to broadcast through");
+      return;
+    }
+    // Wait up to 2s for SUBSCRIBED
+    for (let i = 0; i < 20 && !channelReadyRef.current; i++) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    try {
+      const result = await channel.send({
+        type: "broadcast",
+        event: "new_message",
+        payload: msg,
+      });
+      console.log("[Connect] broadcast send result:", result);
+    } catch (e) {
+      console.error("[Connect] broadcast send error:", e);
+    }
+  };
 
   // Auto-scroll chat
   useEffect(() => {
@@ -293,11 +336,7 @@ export default function Connect() {
 
     // Broadcast to the other side (postgres_changes won't reach unauthenticated partner)
     if (inserted) {
-      await supabase.channel(`connect-msg-${connectionId}`).send({
-        type: "broadcast",
-        event: "new_message",
-        payload: inserted,
-      });
+      await broadcastNewMessage(inserted);
     }
 
     // Ask AI for coaching response
@@ -322,11 +361,7 @@ export default function Connect() {
         if (aiInserted) {
           // Add locally and broadcast to the other side
           setMessages((prev) => prev.some((m) => m.id === aiInserted.id) ? prev : [...prev, aiInserted]);
-          await supabase.channel(`connect-msg-${connectionId}`).send({
-            type: "broadcast",
-            event: "new_message",
-            payload: aiInserted,
-          });
+          await broadcastNewMessage(aiInserted);
         }
       }
     } catch {
@@ -443,11 +478,7 @@ export default function Connect() {
       inserted = data;
     }
     if (inserted) {
-      await supabase.channel(`connect-msg-${connectionId}`).send({
-        type: "broadcast",
-        event: "new_message",
-        payload: inserted,
-      });
+      await broadcastNewMessage(inserted);
     }
   };
 
