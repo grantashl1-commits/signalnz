@@ -222,7 +222,15 @@ function SuburbMap({
 }
 
 // ─── User Card ─────────────────────────────────────────────
-function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (u: NearbyUser) => void }) {
+function UserCard({
+  user,
+  onViewProfile,
+  onMessage,
+}: {
+  user: NearbyUser;
+  onViewProfile?: (u: NearbyUser) => void;
+  onMessage?: (u: NearbyUser) => void;
+}) {
   return (
     <div
       className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-2 relative cursor-pointer active:bg-secondary/50 transition-colors"
@@ -250,11 +258,11 @@ function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (
           )}
         </div>
 
-        <div>
-          <p className="font-semibold text-foreground text-sm leading-tight">
+        <div className="min-w-0">
+          <p className="font-semibold text-foreground text-sm leading-tight truncate">
             {user.display_name}
           </p>
-          <p className="text-xs text-muted-foreground">{user.suburb}</p>
+          <p className="text-xs text-muted-foreground truncate">{user.suburb}</p>
         </div>
       </div>
 
@@ -262,6 +270,15 @@ function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (
         <span className="self-start px-2.5 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground font-medium">
           {user.profession}
         </span>
+      )}
+
+      {onMessage && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onMessage(user); }}
+          className="touch-btn mt-1 self-stretch px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/15 active:scale-[0.97] transition-all"
+        >
+          Message
+        </button>
       )}
     </div>
   );
