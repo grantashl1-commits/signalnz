@@ -284,6 +284,8 @@ export default function CommunityPage() {
 
       <ContentSection className="px-5 md:px-4">
 
+      {suspension && <SuspensionBanner suspension={suspension} />}
+
       <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-5 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-secondary/50 rounded-2xl p-1 overflow-x-auto">
           {TABS.map((t) => {
