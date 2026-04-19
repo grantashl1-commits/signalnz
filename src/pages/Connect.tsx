@@ -121,13 +121,11 @@ export default function Connect() {
 
     const loadMessages = async () => {
       if (isPartnerSession) {
-        // Partner: use proxy
         try {
           const data = await partnerProxy("load_messages");
           if (data) setMessages(data as Message[]);
         } catch { /* silent */ }
       } else {
-        // Member: direct DB
         const { data } = await supabase
           .from("connect_messages")
           .select("*")
@@ -138,24 +136,20 @@ export default function Connect() {
     };
     loadMessages();
 
-    // Realtime subscription (works for members; partners poll or get optimistic updates)
-    if (!isPartnerSession) {
-      const channel = supabase
-        .channel(`connect-${connectionId}`)
-        .on("postgres_changes", {
-          event: "INSERT",
-          schema: "public",
-          table: "connect_messages",
-          filter: `connection_id=eq.${connectionId}`,
-        }, (payload) => {
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
-            return [...prev, payload.new as Message];
-          });
-        })
-        .subscribe();
-      return () => { supabase.removeChannel(channel); };
-    }
+    // Broadcast realtime — works for both authenticated members AND unauthenticated partners.
+    // Both sides subscribe to the same channel; sender broadcasts after insert.
+    const channel = supabase
+      .channel(`connect-msg-${connectionId}`, { config: { broadcast: { self: false } } })
+      .on("broadcast", { event: "new_message" }, (payload) => {
+        const msg = payload.payload as Message;
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [connectionId, isPartnerSession]);
 
   // Auto-scroll chat
