@@ -32,20 +32,29 @@ export default function CommunityPage() {
   const [pendingJoin, setPendingJoin] = useState<string | null>(null);
   const [dbGroups, setDbGroups] = useState<any[]>([]);
 
-  // Load persisted state + fetch groups
+  // Load persisted state + fetch groups + fetch user memberships
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("signal_community_joined");
-      if (saved) setJoined(JSON.parse(saved));
       const loc = localStorage.getItem("signal_community_location");
       if (loc === "true") setLocationEnabled(true);
     } catch {}
     fetchGroups();
+    fetchMyMemberships();
   }, []);
 
   const fetchGroups = async () => {
     const { data } = await supabase.from("community_groups").select("*").eq("status", "approved");
     if (data) setDbGroups(data);
+  };
+
+  const fetchMyMemberships = async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) return;
+    const { data } = await supabase
+      .from("community_memberships")
+      .select("group_id")
+      .eq("user_id", userData.user.id);
+    if (data) setJoined(data.map((m) => m.group_id));
   };
 
   const persistJoined = (newJoined: string[]) => {
