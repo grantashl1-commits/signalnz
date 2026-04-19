@@ -37,10 +37,10 @@ const PHASE_TRAINING_GUIDANCE: Record<string, { icon: React.ComponentType<{ clas
   },
 };
 
-type View = "goal-select" | "program" | "phase-workouts" | "session";
+type View = "goal-select" | "program" | "phase-workouts" | "session" | "run-session";
 
 export default function TrainingTab() {
-  const { currentPhase, currentWeekNumber, currentCycleDay } = useCycle();
+  const { currentPhase, currentCycleDay } = useCycle();
   const {
     goals,
     goalCategoryId,
@@ -50,6 +50,7 @@ export default function TrainingTab() {
     selectGoal,
     fetchWorkouts,
     fetchWorkoutExercises,
+    fetchWorkoutIntervals,
   } = useTrainingProgram();
 
   const [view, setView] = useState<View>("goal-select");
@@ -57,30 +58,25 @@ export default function TrainingTab() {
   const [workouts, setWorkouts] = useState<WorkoutTemplate[]>([]);
   const [activeWorkout, setActiveWorkout] = useState<WorkoutTemplate | null>(null);
   const [activeExercises, setActiveExercises] = useState<WorkoutExercise[]>([]);
+  const [activeIntervals, setActiveIntervals] = useState<WorkoutInterval[]>([]);
   const [loadingSub, setLoadingSub] = useState(false);
 
-  // Determine initial view based on whether user has a goal
   useEffect(() => {
     if (loading) return;
-    if (goalCategoryId && program) {
-      setView("program");
-    } else {
-      setView("goal-select");
-    }
+    if (goalCategoryId && program) setView("program");
+    else setView("goal-select");
   }, [loading, goalCategoryId, program]);
 
   const handleSelectGoal = async (goalId: string) => {
     haptic("medium");
-    // Clear any cached AI training plan so user starts fresh
     localStorage.removeItem("signal_ai_workout_plan");
     localStorage.removeItem("signal_ai_active_session");
-    // Reset UI state to beginning
     setSelectedPhaseIdx(0);
     setWorkouts([]);
     setActiveWorkout(null);
     setActiveExercises([]);
+    setActiveIntervals([]);
     await selectGoal(goalId);
-    // View will update via the effect above when program loads
   };
 
   const handleStartProgram = async () => {
@@ -104,13 +100,18 @@ export default function TrainingTab() {
     setLoadingSub(false);
   };
 
-  const handleOpenWorkout = async (wt: WorkoutTemplate) => {
+  const handleStartSession = async (wt: WorkoutTemplate) => {
     haptic("medium");
     setLoadingSub(true);
-    const exs = await fetchWorkoutExercises(wt.id);
+    const [exs, ivs] = await Promise.all([
+      fetchWorkoutExercises(wt.id),
+      fetchWorkoutIntervals(wt.id),
+    ]);
     setActiveWorkout(wt);
     setActiveExercises(exs);
-    setView("session");
+    setActiveIntervals(ivs);
+    if (ivs.length > 0 && exs.length === 0) setView("run-session");
+    else setView("session");
     setLoadingSub(false);
   };
 
@@ -124,11 +125,11 @@ export default function TrainingTab() {
 
   const phaseGuidance = PHASE_TRAINING_GUIDANCE[currentPhase];
   const PhaseIcon = phaseGuidance?.icon;
+  const isSessionView = view === "session" || view === "run-session";
 
   return (
     <div className="pb-8 space-y-4">
-      {/* Cycle phase training context banner */}
-      {phaseGuidance && view !== "session" && (
+      {phaseGuidance && !isSessionView && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,16 +152,10 @@ export default function TrainingTab() {
         </motion.div>
       )}
 
-      {/* Goal selection */}
       {view === "goal-select" && (
-        <GoalSelectionScreen
-          goals={goals}
-          selectedGoalId={goalCategoryId}
-          onSelect={handleSelectGoal}
-        />
+        <GoalSelectionScreen goals={goals} selectedGoalId={goalCategoryId} onSelect={handleSelectGoal} />
       )}
 
-      {/* Program overview */}
       {view === "program" && program && (
         <ProgramOverview
           program={program}
@@ -171,10 +166,8 @@ export default function TrainingTab() {
         />
       )}
 
-      {/* Phase workouts list */}
       {view === "phase-workouts" && (
         <div className="space-y-5">
-          {/* Phase tabs */}
           {phases.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
               {phases.map((ph, idx) => (
@@ -193,14 +186,12 @@ export default function TrainingTab() {
             </div>
           )}
 
-          {/* Phase focus */}
           {phases[selectedPhaseIdx]?.phase_goal && (
             <p className="font-body text-sm text-muted-foreground leading-relaxed">
               {phases[selectedPhaseIdx].phase_goal}
             </p>
           )}
 
-          {/* Workout cards */}
           {loadingSub ? (
             <div className="flex items-center justify-center py-10">
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
@@ -208,25 +199,12 @@ export default function TrainingTab() {
           ) : (
             <div className="grid gap-3">
               {workouts.map((wt, i) => (
-                <motion.button
+                <WorkoutDayAccordion
                   key={wt.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06 }}
-                  onClick={() => handleOpenWorkout(wt)}
-                  className="w-full rounded-xl bg-card border border-border p-4 text-left hover:bg-card/80 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">{wt.day_label}</p>
-                      <h3 className="font-display text-base font-bold text-foreground mt-0.5">{wt.title}</h3>
-                    </div>
-                    <span className="font-body text-xs text-muted-foreground shrink-0">{wt.estimated_duration_mins} min</span>
-                  </div>
-                  {wt.session_notes && (
-                    <p className="font-body text-xs text-muted-foreground mt-1.5 line-clamp-2">{wt.session_notes}</p>
-                  )}
-                </motion.button>
+                  workout={wt}
+                  index={i}
+                  onStartSession={handleStartSession}
+                />
               ))}
             </div>
           )}
@@ -240,12 +218,19 @@ export default function TrainingTab() {
         </div>
       )}
 
-      {/* Active workout session */}
       {view === "session" && activeWorkout && (
         <WorkoutSessionView
           template={activeWorkout}
           exercises={activeExercises}
           phaseName={phases[selectedPhaseIdx]?.title}
+          onBack={() => setView("phase-workouts")}
+        />
+      )}
+
+      {view === "run-session" && activeWorkout && (
+        <RunIntervalPlayer
+          template={activeWorkout}
+          intervals={activeIntervals}
           onBack={() => setView("phase-workouts")}
         />
       )}
