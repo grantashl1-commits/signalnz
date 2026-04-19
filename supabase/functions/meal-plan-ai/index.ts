@@ -406,6 +406,7 @@ function assignMealsForWeek(dayStart: number, dayEnd: number, prefs: any, baseSe
   const assignments: Record<string, any> = {};
   const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
   const dietType = prefs.dietType || "";
+  const dietaryPrefs: string[] = prefs.userDietaryPrefs || [];
   const totalDays = dayEnd - dayStart + 1;
 
   // Helper: pick N unique recipes for a meal type across phase changes
@@ -415,7 +416,7 @@ function assignMealsForWeek(dayStart: number, dayEnd: number, prefs: any, baseSe
     for (let i = 0; i < count; i++) {
       // Try each day's phase to get phase-appropriate recipes
       const phase = getPhaseForDay(dayStart + (i % totalDays));
-      const recipe = pickRecipe(phase, mealType, dislikes, dietType, usedNames, seed + i * 17);
+      const recipe = pickRecipe(phase, mealType, dislikes, dietType, usedNames, seed + i * 17, dietaryPrefs);
       if (recipe) {
         results.push(recipe);
         usedNames.push(recipe.name);
@@ -514,7 +515,7 @@ serve(async (req) => {
   try {
     const body = await req.json();
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
-      startCycleDay, endCycleDay, userDietaryDislikes } = body;
+      startCycleDay, endCycleDay, userDietaryDislikes, userDietaryPrefs } = body;
 
     // Credit check: deterministic plan costs 1 credit (atomic)
     const userIdentifier = body.userIdentifier;
@@ -536,6 +537,7 @@ serve(async (req) => {
     const prefs = {
       ...(preferences || {}),
       userDietaryDislikes: userDietaryDislikes || [],
+      userDietaryPrefs: userDietaryPrefs || [],
     };
     const kidsCount = prefs.kids || 0;
     const kidsDietType = prefs.kidsDietType || "";
@@ -547,7 +549,7 @@ serve(async (req) => {
       const phase = getPhaseForDay(regenerateDay);
       const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
       const currentName = existingPlan.days?.find((d: any) => d.cycleDay === regenerateDay)?.[regenerateMeal]?.name || "";
-      const recipe = pickRecipe(phase, regenerateMeal === "morningSnack" || regenerateMeal === "afternoonSnack" ? "snack" : regenerateMeal, dislikes, prefs.dietType || "", [currentName], Date.now());
+      const recipe = pickRecipe(phase, regenerateMeal === "morningSnack" || regenerateMeal === "afternoonSnack" ? "snack" : regenerateMeal, dislikes, prefs.dietType || "", [currentName], Date.now(), prefs.userDietaryPrefs || []);
       if (recipe) {
         return new Response(JSON.stringify({ name: recipe.name, phase, mealType: regenerateMeal, prepTime: recipe.prepTime, serves: recipe.serves, calories: `~${recipe.calories} kcal`, protein: `~${recipe.protein}g`, ingredients: recipe.ingredients, method: recipe.method, nutritionalNote: recipe.nutritionalNote, keyNutrients: recipe.keyNutrients }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
