@@ -22,6 +22,8 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupComplete, setSignupComplete] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha | null>(null);
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
 
@@ -31,34 +33,50 @@ export default function AuthPage() {
     }
   }, [authLoading, user, navigate]);
 
+  const resetCaptcha = () => {
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!captchaToken) {
+      toast.error("Please complete the captcha");
+      return;
+    }
     setLoading(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+          options: { captchaToken },
+        });
         if (error) throw error;
         toast.success("Welcome back!");
         navigate("/account", { replace: true });
       } else {
         // Anti-bot guards on signup (in priority order):
-        //   1. Disposable / burner email blocklist (200+ domains)
-        //   2. Strong password length (HIBP leaked-password check is server-side)
-        //   3. Server side: email verification required, anonymous sign-ups disabled
+        //   1. hCaptcha challenge (verified server-side by Supabase Auth)
+        //   2. Disposable / burner email blocklist (200+ domains)
+        //   3. Strong password length (HIBP leaked-password check is server-side)
+        //   4. Server side: email verification required, anonymous sign-ups disabled
         if (await isDisposableEmail(email)) {
           toast.error("Please use a permanent email address (no temporary or burner emails)");
           setLoading(false);
+          resetCaptcha();
           return;
         }
         if (password.length < MIN_PASSWORD_LENGTH) {
           toast.error(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
           setLoading(false);
+          resetCaptcha();
           return;
         }
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: window.location.origin, captchaToken },
         });
         if (error) {
           // Surface HIBP rejection nicely
@@ -68,12 +86,14 @@ export default function AuthPage() {
             throw error;
           }
           setLoading(false);
+          resetCaptcha();
           return;
         }
         setSignupComplete(true);
       }
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
+      resetCaptcha();
     } finally {
       setLoading(false);
     }
