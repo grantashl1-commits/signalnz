@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles } from "lucide-react";
 import { HABIT_CAROUSEL_CARDS } from "@/data/habit-carousel-data";
 import { CardMotif } from "@/components/CardMotifs";
-import { getAvailableCardIds, recordDraw, canDrawToday } from "@/lib/wisdom-cooldown";
+import { getAvailableCardIds, recordDraw, canDrawToday, getTodayCardId } from "@/lib/wisdom-cooldown";
 import { haptic } from "@/hooks/use-mobile";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -15,8 +15,25 @@ export default function HabitCarousel() {
   const [ritualOpen, setRitualOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [flipped, setFlipped] = useState(false);
-  const [todayCard, setTodayCard] = useState<typeof HABIT_CAROUSEL_CARDS[0] | null>(null);
-  const drawAllowed = canDrawToday();
+  // Rehydrate today's drawn card from storage so it persists across reloads
+  // and automatically clears at midnight (local time).
+  const [todayCard, setTodayCard] = useState<typeof HABIT_CAROUSEL_CARDS[0] | null>(() => {
+    const id = getTodayCardId();
+    return id ? HABIT_CAROUSEL_CARDS.find(c => c.id === id) ?? null : null;
+  });
+  const [drawAllowed, setDrawAllowed] = useState(canDrawToday());
+
+  // Auto-reset at midnight: schedule a refresh exactly at next 00:00 local time.
+  useEffect(() => {
+    const now = new Date();
+    const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 1);
+    const ms = nextMidnight.getTime() - now.getTime();
+    const t = window.setTimeout(() => {
+      setTodayCard(null);
+      setDrawAllowed(true);
+    }, ms);
+    return () => window.clearTimeout(t);
+  }, []);
 
   // Get available deck (excluding cooldown cards)
   const availableDeck = useMemo(() => {
@@ -51,6 +68,7 @@ export default function HabitCarousel() {
       const card = shuffled[index];
       recordDraw(card.id);
       setTodayCard(card);
+      setDrawAllowed(false);
     }, 600);
   }, [shuffled]);
 
