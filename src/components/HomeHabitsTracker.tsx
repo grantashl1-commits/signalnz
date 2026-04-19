@@ -240,7 +240,7 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                               </div>
                               <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotClass}`} />
                               <span
-                                className={`font-body text-sm flex-1 transition-all duration-200 ${
+                                className={`font-hand text-lg flex-1 transition-all duration-200 ${
                                   done ? "line-through text-muted-foreground/60" : "text-foreground"
                                 }`}
                               >
@@ -298,7 +298,7 @@ export default function HomeHabitsTracker({ phase }: { phase: string }) {
                   >
                     {isDone && <Check className="w-3.5 h-3.5" style={{ color: phaseColor }} strokeWidth={3} />}
                   </div>
-                  <span className={`font-body text-sm flex-1 transition-all duration-200 ${isDone ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
+                  <span className={`font-hand text-lg flex-1 transition-all duration-200 ${isDone ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
                     {nudge.name}
                   </span>
                   <span className="font-body text-[9px] uppercase tracking-wider text-muted-foreground/50 flex-shrink-0">
