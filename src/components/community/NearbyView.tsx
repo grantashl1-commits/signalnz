@@ -222,7 +222,15 @@ function SuburbMap({
 }
 
 // ─── User Card ─────────────────────────────────────────────
-function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (u: NearbyUser) => void }) {
+function UserCard({
+  user,
+  onViewProfile,
+  onMessage,
+}: {
+  user: NearbyUser;
+  onViewProfile?: (u: NearbyUser) => void;
+  onMessage?: (u: NearbyUser) => void;
+}) {
   return (
     <div
       className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-2 relative cursor-pointer active:bg-secondary/50 transition-colors"
@@ -250,11 +258,11 @@ function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (
           )}
         </div>
 
-        <div>
-          <p className="font-semibold text-foreground text-sm leading-tight">
+        <div className="min-w-0">
+          <p className="font-semibold text-foreground text-sm leading-tight truncate">
             {user.display_name}
           </p>
-          <p className="text-xs text-muted-foreground">{user.suburb}</p>
+          <p className="text-xs text-muted-foreground truncate">{user.suburb}</p>
         </div>
       </div>
 
@@ -262,6 +270,15 @@ function UserCard({ user, onViewProfile }: { user: NearbyUser; onViewProfile?: (
         <span className="self-start px-2.5 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground font-medium">
           {user.profession}
         </span>
+      )}
+
+      {onMessage && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onMessage(user); }}
+          className="touch-btn mt-1 self-stretch px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/15 active:scale-[0.97] transition-all"
+        >
+          Message
+        </button>
       )}
     </div>
   );
@@ -272,10 +289,11 @@ interface NearbyViewProps {
   locationEnabled: boolean;
   onRequestLocation: () => void;
   onToggleLocation?: () => void;
+  onMessageMember?: (userId: string, displayName: string) => void;
 }
 
 // ─── Main Component ────────────────────────────────────────
-export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation }: NearbyViewProps) {
+export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation, onMessageMember }: NearbyViewProps) {
   const { toast } = useToast();
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "requesting" | "granted" | "denied" | "saving"
@@ -287,6 +305,8 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
   const [isNearbyVisible, setIsNearbyVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const presenceChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const [onlineIds, setOnlineIds] = useState<Set<string>>(new Set());
   const [viewingProfile, setViewingProfile] = useState<NearbyUser | null>(null);
 
   const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
@@ -295,8 +315,35 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
     checkExistingLocation();
     return () => {
       channelRef.current?.unsubscribe();
+      presenceChannelRef.current?.unsubscribe();
     };
   }, []);
+
+  // Subscribe to suburb-scoped presence whenever the user's suburb changes
+  useEffect(() => {
+    if (!userSuburb) return;
+    let active = true;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !active) return;
+      presenceChannelRef.current?.unsubscribe();
+      const slug = userSuburb.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      const channel = supabase.channel(`nearby-presence-${slug}`, {
+        config: { presence: { key: user.id } },
+      });
+      channel
+        .on("presence", { event: "sync" }, () => {
+          setOnlineIds(new Set(Object.keys(channel.presenceState())));
+        })
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await channel.track({ user_id: user.id, online_at: new Date().toISOString() });
+          }
+        });
+      presenceChannelRef.current = channel;
+    })();
+    return () => { active = false; };
+  }, [userSuburb]);
 
   const checkExistingLocation = async () => {
     const {
@@ -470,7 +517,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           initials: getInitials(prof?.display_name || "U"),
           suburb: loc.suburb,
           profession: prof?.profession,
-          is_online: Math.random() > 0.4, // Replace with real presence tracking later
+          is_online: false, // computed from presence (see is_online derivation below)
           avatar_url: prof?.avatar_url,
         };
       });
@@ -529,7 +576,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ? nearbyUsers.filter((u) => u.suburb === activeSuburb)
       : nearbyUsers;
 
-  const activeCount = nearbyUsers.filter((u) => u.is_online).length;
+  const activeCount = nearbyUsers.filter((u) => onlineIds.has(u.user_id)).length;
 
   const suburbCounts = nearbyUsers.reduce<Record<string, number>>((acc, u) => {
     acc[u.suburb] = (acc[u.suburb] || 0) + 1;
@@ -686,7 +733,12 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {filteredUsers.map((user) => (
-            <UserCard key={user.user_id} user={user} onViewProfile={setViewingProfile} />
+            <UserCard
+              key={user.user_id}
+              user={{ ...user, is_online: onlineIds.has(user.user_id) }}
+              onViewProfile={setViewingProfile}
+              onMessage={onMessageMember ? (u) => onMessageMember(u.user_id, u.display_name) : undefined}
+            />
           ))}
         </div>
       )}
