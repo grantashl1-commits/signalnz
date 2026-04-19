@@ -22,6 +22,122 @@ function getCyclePhaseGuidance(phase: string): string {
   return map[phase?.toLowerCase()] || map.follicular;
 }
 
+// ── Exercise matching helpers ─────────────────────────────────────
+type ExerciseRow = {
+  id: string;
+  name: string;
+  slug: string | null;
+  illustration_url: string | null;
+  gif_url: string | null;
+  primary_muscles: string[] | null;
+  body_part: string | null;
+};
+
+function normaliseName(s: string): string {
+  return s.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokenize(s: string): Set<string> {
+  const stop = new Set(["the","a","an","with","and","of","to","on","in","for","or","x","kg","lbs","reps","set","sets"]);
+  return new Set(normaliseName(s).split(" ").filter(t => t.length > 1 && !stop.has(t)));
+}
+
+function jaccardScore(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let inter = 0;
+  for (const t of a) if (b.has(t)) inter++;
+  const union = a.size + b.size - inter;
+  return inter / union;
+}
+
+function findBestExerciseMatch(
+  name: string,
+  library: ExerciseRow[],
+): ExerciseRow | null {
+  const target = tokenize(name);
+  if (target.size === 0) return null;
+
+  let best: ExerciseRow | null = null;
+  let bestScore = 0;
+
+  for (const ex of library) {
+    const score = jaccardScore(target, tokenize(ex.name));
+    if (score > bestScore) {
+      bestScore = score;
+      best = ex;
+    }
+  }
+
+  return bestScore >= 0.4 ? best : null;
+}
+
+// ── Run interval generation ─────────────────────────────────────
+function isRunSession(sessionType: string | undefined, title: string | undefined): boolean {
+  const s = `${sessionType || ""} ${title || ""}`.toLowerCase();
+  return /\b(run|jog|sprint|interval|c25k|hiit|cardio)\b/.test(s);
+}
+
+function generateRunIntervals(durationMinutes: number, weekNumber: number): any[] {
+  // Simple progressive C25K-style: warmup walk + run/walk repeats + cooldown
+  const totalSec = (durationMinutes || 30) * 60;
+  const warmup = 300; // 5 min walk
+  const cooldown = 300; // 5 min walk
+  const workSec = Math.max(600, totalSec - warmup - cooldown);
+
+  // Progress run duration with week number
+  const runDur = Math.min(60 + weekNumber * 30, 240); // 60s → 240s
+  const walkDur = Math.max(60, 120 - weekNumber * 10); // 120s → 60s
+  const cycleSec = runDur + walkDur;
+  const repeats = Math.max(4, Math.floor(workSec / cycleSec));
+
+  return [
+    { kind: "warmup", duration_sec: warmup, repeat_count: 1, label: "Warm-up walk", intensity_cue: "Brisk walking pace, conversational." },
+    { kind: "run", duration_sec: runDur, repeat_count: repeats, label: `Run ${runDur}s`, intensity_cue: "RPE 6-7, can speak short phrases." },
+    { kind: "walk", duration_sec: walkDur, repeat_count: repeats, label: `Walk ${walkDur}s`, intensity_cue: "Recovery walk, breathe deeply." },
+    { kind: "cooldown", duration_sec: cooldown, repeat_count: 1, label: "Cool-down walk", intensity_cue: "Slow down, lower heart rate." },
+  ];
+}
+
+// ── Enrichment: attach GIFs and library matches ─────────────────────────────────────
+async function enrichPlanWithExerciseData(plan: any, supabase: any): Promise<any> {
+  // Fetch all exercises once
+  const { data: library, error } = await supabase
+    .from("exercises")
+    .select("id, name, slug, illustration_url, gif_url, primary_muscles, body_part");
+
+  if (error || !library) {
+    console.warn("Could not fetch exercise library:", error);
+    return plan;
+  }
+
+  for (const week of plan.weeks || []) {
+    for (const day of week.days || []) {
+      // Add intervals[] for run sessions
+      if (isRunSession(day.session_type, day.title)) {
+        day.intervals = generateRunIntervals(day.duration_minutes || 30, week.week_number || 1);
+      }
+
+      // Enrich each exercise
+      for (const ex of day.exercises || []) {
+        const match = findBestExerciseMatch(ex.name, library);
+        if (match) {
+          ex.exercise_id = match.id;
+          ex.slug = match.slug;
+          ex.illustration_url = match.illustration_url;
+          ex.gif_url = match.gif_url;
+          ex.primary_muscles = match.primary_muscles;
+          ex.body_part = match.body_part;
+        }
+      }
+    }
+  }
+
+  return plan;
+}
+
 // Fetch and summarise key PDF names from reference-pdfs/movement bucket
 async function getEvidenceContext(supabase: any): Promise<string> {
   const { data: files } = await supabase.storage
@@ -30,7 +146,6 @@ async function getEvidenceContext(supabase: any): Promise<string> {
 
   if (!files || files.length === 0) return "No reference materials available.";
 
-  // Extract book titles from filenames for the AI prompt context
   const books = files
     .filter((f: any) => f.name.endsWith(".pdf"))
     .map((f: any) => {
@@ -42,45 +157,8 @@ async function getEvidenceContext(supabase: any): Promise<string> {
       return clean;
     });
 
-  // Fetch first 3 PDFs as base64 for deep analysis
-  const pdfContents: { name: string; base64: string }[] = [];
-  const priorityBooks = [
-    "Essentials_of_strength_training",
-    "High-Performance_Training",
-    "Science_and_Development_of_Muscle_Hypertrophy",
-    "The_female_body_bible",
-    "In_the_flo",
-    "Beginners_Guide_to_Weight_Lifting",
-    "The_Forever_Strong_Playbook",
-    "Overcoming_gravity",
-    "Total_Heart_Rate_Training",
-  ];
-
-  for (const book of priorityBooks.slice(0, 3)) {
-    const match = files.find((f: any) => f.name.includes(book));
-    if (match) {
-      try {
-        const { data: blob } = await supabase.storage
-          .from("reference-pdfs")
-          .download(`movement/${match.name}`);
-        if (blob) {
-          const arrayBuf = await blob.arrayBuffer();
-          const bytes = new Uint8Array(arrayBuf);
-          // Only take first 500KB to stay within token limits
-          const truncated = bytes.slice(0, 500_000);
-          const base64 = btoa(String.fromCharCode(...truncated));
-          pdfContents.push({ name: match.name, base64 });
-        }
-      } catch (e) {
-        console.log(`Skipping PDF ${match.name}: ${e}`);
-      }
-    }
-  }
-
   return `EVIDENCE BASE (${books.length} reference books in our library):
-${books.join("\n")}
-
-${pdfContents.length > 0 ? `\nDeep analysis available from: ${pdfContents.map(p => p.name).join(", ")}` : ""}`;
+${books.slice(0, 25).join("\n")}`;
 }
 
 async function generateWithAI(
@@ -111,20 +189,20 @@ async function generateWithAI(
             parameters: {
               type: "object",
               properties: {
-                title: { type: "string", description: "Plan title e.g. 'Stronger Foundation — 8 Week Program'" },
-                overview: { type: "string", description: "2-3 sentence overview of the program approach" },
+                title: { type: "string" },
+                overview: { type: "string" },
                 duration_weeks: { type: "number" },
                 days_per_week: { type: "number" },
                 equipment_level: { type: "string" },
-                phase_awareness: { type: "string", description: "How the plan adapts to menstrual cycle phases" },
+                phase_awareness: { type: "string" },
                 weeks: {
                   type: "array",
                   items: {
                     type: "object",
                     properties: {
                       week_number: { type: "number" },
-                      theme: { type: "string", description: "e.g. 'Foundation & Technique'" },
-                      phase_note: { type: "string", description: "Cycle phase adaptation note" },
+                      theme: { type: "string" },
+                      phase_note: { type: "string" },
                       days: {
                         type: "array",
                         items: {
@@ -132,7 +210,7 @@ async function generateWithAI(
                           properties: {
                             day: { type: "number" },
                             title: { type: "string" },
-                            session_type: { type: "string", description: "e.g. 'strength', 'hiit', 'active-recovery', 'rest'" },
+                            session_type: { type: "string", description: "strength | hiit | run | active-recovery | rest | mobility" },
                             duration_minutes: { type: "number" },
                             warmup: { type: "string" },
                             exercises: {
@@ -144,12 +222,16 @@ async function generateWithAI(
                                   sets: { type: "number" },
                                   reps_or_duration: { type: "string" },
                                   rest_seconds: { type: "number" },
-                                  rpe: { type: "string" },
-                                  load_guidance: { type: "string", description: "e.g. 'moderate — aim for 60-70% 1RM'" },
+                                  rpe: { type: "string", description: "e.g. 'RPE 6-7'" },
+                                  tempo: { type: "string", description: "e.g. '3-1-1' (eccentric-pause-concentric)" },
+                                  weight_kg_min: { type: "number", description: "Lower bound of suggested kg load (omit for bodyweight)" },
+                                  weight_kg_max: { type: "number", description: "Upper bound of suggested kg load (omit for bodyweight)" },
+                                  load_guidance: { type: "string" },
                                   form_cue: { type: "string" },
-                                  progression: { type: "string", description: "How to progress week-over-week" },
+                                  tip: { type: "string", description: "A short coaching tip or technique cue" },
+                                  progression: { type: "string" },
                                 },
-                                required: ["name", "sets", "reps_or_duration"],
+                                required: ["name", "sets", "reps_or_duration", "rpe", "tip"],
                                 additionalProperties: false,
                               },
                             },
@@ -221,7 +303,6 @@ serve(async (req) => {
     const isFirstFree = (genCount || 0) === 0;
 
     if (!isFirstFree) {
-      // Atomic credit deduction — 3 credits for extra plan generation
       const { error: creditError } = await supabase.rpc("deduct_ai_credits", {
         p_user_identifier: user.id,
         p_cost: 3,
@@ -256,39 +337,36 @@ serve(async (req) => {
 CORE PRINCIPLES:
 - Every plan must be cycle-phase aware (menstrual, follicular, ovulatory, luteal).
 - Progressive overload is fundamental — increase volume, load, or intensity week over week.
-- Include an RPE target for every exercise.
-- Include form cues, kg load guidance (where equipment allows) and an RPE explainer.
+- Every exercise MUST have: name, sets, reps_or_duration, rpe, and a short tip (training cue).
+- For loaded exercises (gym/home-some), include weight_kg_min and weight_kg_max as numeric kg ranges.
+- For bodyweight exercises (home-none), omit weight fields and use form_cue / tip for progression.
 - Sessions should include warmup and cooldown.
 - Rest days are part of the programme.
-- Do NOT use the word "Signal" in any title, exercise name, programme name, theme, or coaching note. Use neutral, descriptive language (e.g. "Glute Foundations", "Lower-Body Strength A", "Foundation Week").
+- Do NOT use the word "Signal" in any title, exercise name, programme name, theme, or coaching note.
 - Do NOT use emoji anywhere in the output.
 
+EXERCISE NAMING (CRITICAL — for library matching):
+- Use canonical, library-style names so they can be matched to our exercise database with anatomy GIFs.
+- Examples: "Barbell Back Squat", "Romanian Deadlift", "Goblet Squat", "Dumbbell Bench Press", "Bent-Over Row", "Glute Bridge", "Bird Dog", "Plank", "Walking Lunge", "Hip Thrust", "Lat Pulldown", "Cable Row", "Push-Up", "Pull-Up", "Overhead Press".
+- Avoid creative names ("Power Pulse Squat") — use the standard term.
+
 EQUIPMENT MAPPING:
-- "home-none": Bodyweight only — push-ups, squats, lunges, planks, burpees, mountain climbers, glute bridges. Skip kg load_guidance; use bodyweight cues.
-- "home-some": Dumbbells, resistance bands, kettlebells, yoga mat — goblet squats, DB rows, banded walks. Suggest a kg range per dumbbell.
-- "gym": Full equipment — barbell, cables, machines, squat rack, bench press. Suggest barbell/dumbbell kg ranges.
+- "home-none": Bodyweight only.
+- "home-some": Dumbbells, bands, kettlebells, mat.
+- "gym": Full equipment incl. barbell, cables, machines.
 
-EXPERIENCE MAPPING:
-- "this-week": Intermediate-advanced, can handle complex movements.
-- "this-month": Intermediate, familiar with most exercises.
-- "six-months": Beginner-intermediate, focus on technique first.
-- "never": True beginner, bodyweight focus weeks 1-2, then introduce load.
-
-KG LOAD GUIDANCE FORMULA (use the user's bodyweight + goal + experience to anchor the suggestion, then express as a range tied to the RPE):
-- Compound lower-body lifts (squat, deadlift, hip thrust): start ~0.6–0.8× bodyweight at RPE 6–7 for intermediates; ~0.4–0.6× for beginners; ~1.0–1.2× for advanced.
-- Compound upper-body lifts (bench, OHP, row): start ~0.4–0.5× bodyweight for intermediates; lower for beginners.
-- Single-arm/leg accessories (DB row, lunge, RDL): each side ~25–35% of the bilateral lift weight.
-- Isolation (curls, lateral raises, leg extensions): ~10–25% of bodyweight, range based on RPE.
-- Always express load_guidance as a kg range with the RPE rationale, e.g. "Aim for 12–18 kg per dumbbell — RPE 6 means you could comfortably do 4 more reps with good form" OR "Bodyweight only — slow 3-second eccentric for extra stimulus".
+KG LOAD FORMULA (use bodyweight + goal + experience):
+- Lower-body compound (squat/deadlift/hip thrust): beginner ~0.4-0.6× BW, intermediate ~0.6-0.8× BW, advanced ~1.0-1.2× BW.
+- Upper-body compound (bench/OHP/row): intermediate ~0.4-0.5× BW.
+- Single-arm/leg accessories: ~25-35% of bilateral lift weight per side.
+- Isolation: ~10-25% of bodyweight.
 
 UPPER/LOWER ALTERNATION (HARD RULE):
-- Each non-rest training day must be tagged in the title as one of: "Lower Body", "Upper Body", "Full Body", "Push", "Pull", "Posterior Chain", "Core & Conditioning", "Active Recovery", "Mobility/Flexibility", "Cardio/HIIT".
-- Across the week, alternate so two consecutive training days NEVER target the same primary movement pattern. Acceptable patterns:
-  • 3 days: Lower / Upper / Full Body
-  • 4 days: Lower / Upper / Lower / Upper  (or Push/Pull/Lower/Full)
-  • 5 days: Lower / Upper / Full / Lower / Upper
-  • 6 days: Lower / Upper / Conditioning / Lower / Upper / Active-Recovery
-- Within each session, sequence exercises so primary muscle groups are not stacked back-to-back (e.g. quads then hamstrings then glutes, not three quad-dominant lifts in a row).
+- Each non-rest training day must be tagged in the title (e.g. "Lower Body — Glute Focus", "Upper Body Push", "Posterior Chain & Core").
+- Two consecutive training days NEVER target the same primary movement pattern.
+
+RUN / CARDIO SESSIONS:
+- If a day is a run/cardio session, set session_type to "run" or "hiit" and include warmup + cooldown notes. Intervals will be auto-generated by the system based on duration.
 
 ${evidenceContext}`;
 
@@ -309,28 +387,24 @@ CYCLE PHASE GUIDANCE: ${phaseGuidance}
 Generate a ${answers?.weeksPlan || 8}-week plan with ${answers?.daysPerWeek || 4} training days per week.
 
 CRITICAL EXERCISE COUNT RULES:
-- Every non-rest training session MUST include a MINIMUM of 6 exercises (not counting warm-up or cool-down).
-- For advanced users or those training 4-5 days/week, aim for 7-9 exercises per session.
-- For users wanting to lose weight with gym access, include 8-10 exercises per session.
-- For "Get Stronger" goal: extend strength sessions to 8+ exercises with longer rest (90-180s).
-- Never generate a session with fewer than 6 exercises — this is a hard minimum.
+- Every non-rest training session MUST include a MINIMUM of 6 exercises (excluding warm-up/cool-down).
+- 4-5 days/week → aim for 7-9 exercises.
+- "Lose weight" + gym → 8-10 exercises.
+- "Get Stronger" → 8+ exercises with 90-180s rest.
 
-CRITICAL LOAD & RPE RULES:
-- Every main-block exercise MUST include load_guidance with either a kg range (when equipment allows) or a clear bodyweight progression cue.
-- Every exercise MUST include an rpe field (e.g. "RPE 6", "RPE 7-8") and the load_guidance string MUST also contain a brief RPE explainer ("RPE 6 = you could do 4 more reps with good form").
+CRITICAL FIELDS PER EXERCISE:
+- Always provide: name (canonical library term), sets, reps_or_duration, rpe (e.g. "RPE 6-7"), tip (one-sentence cue).
+- For loaded movements: weight_kg_min, weight_kg_max as numbers.
+- Optional: tempo (e.g. "3-1-1"), form_cue, progression.
 
-CRITICAL ALTERNATION RULES:
-- Days within the week alternate between Upper / Lower / Full Body / Conditioning so no two back-to-back training days hit the same primary pattern.
-- Day titles must clearly identify the body region (e.g. "Lower Body — Glute Focus", "Upper Body — Push", "Posterior Chain & Core").
+Each week progressively builds on the previous. Adapt intensity and selection to the cycle phase each week.`;
 
-Each week should progressively build on the previous. Include specific exercises from our exercise database where possible.
-Adapt the intensity and exercise selection to match the user's cycle phase each week.`;
+    let plan = await generateWithAI(systemPrompt, userPrompt);
 
-
-    const plan = await generateWithAI(systemPrompt, userPrompt);
+    // ─── Enrich plan with exercise library data (GIFs, slugs, intervals) ─────────────────────────
+    plan = await enrichPlanWithExerciseData(plan, supabase);
 
     // ─── Save to DB — delete old plans first ─────────────────────────
-    // Remove any previous AI training plans for this user
     await supabase
       .from("user_plans")
       .delete()
