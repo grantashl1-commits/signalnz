@@ -207,39 +207,124 @@ function getPhaseForDay(cycleDay: number): string {
   return "luteal";
 }
 
-function filterRecipes(phase: string, mealType: string, dislikes: string[], dietType: string, exclude: string[]): Recipe[] {
+// Hard ingredient blocklists per dietary preference. Recipe is rejected if ANY ingredient
+// (or its name) contains a blocked term. This is the source of truth — tags alone aren't trusted.
+const DIET_BLOCKLISTS: Record<string, string[]> = {
+  vegan: [
+    "egg", "milk", "yoghurt", "yogurt", "cheese", "feta", "halloumi", "ricotta", "mozzarella",
+    "parmesan", "cream", "butter", "ghee", "honey", "whey", "casein", "chicken", "beef",
+    "pork", "lamb", "bacon", "ham", "salmon", "tuna", "fish", "shrimp", "prawn", "anchovy",
+    "gelatin", "lard", "duck", "turkey", "sausage",
+  ],
+  vegetarian: [
+    "chicken", "beef", "pork", "lamb", "bacon", "ham", "salmon", "tuna", "fish", "shrimp",
+    "prawn", "anchovy", "gelatin", "lard", "duck", "turkey", "sausage",
+  ],
+  pescatarian: [
+    "chicken", "beef", "pork", "lamb", "bacon", "ham", "duck", "turkey", "sausage", "lard",
+  ],
+  "dairy-free": [
+    "milk", "yoghurt", "yogurt", "cheese", "feta", "halloumi", "ricotta", "mozzarella",
+    "parmesan", "cream", "butter", "ghee", "whey", "casein",
+  ],
+  "gluten-free": [
+    "wheat", "flour", "bread", "pasta", "noodle", "couscous", "barley", "rye", "spelt",
+    "wrap", "tortilla", "breadcrumb", "soy sauce", "ramen",
+  ],
+  "nut-free": [
+    "almond", "cashew", "walnut", "pecan", "hazelnut", "pistachio", "macadamia", "peanut",
+    "nut butter",
+  ],
+};
+
+// Allow words that contain a blocked substring but are themselves safe (e.g. "coconut" in nut-free,
+// "buttercup squash" doesn't apply here, "fishless" — none of our recipes use these but guard anyway).
+const SAFE_OVERRIDES: Record<string, string[]> = {
+  "nut-free": ["coconut"], // coconut is not a true nut for allergy purposes here
+  vegan: [],
+  vegetarian: [],
+};
+
+function violatesDiet(r: Recipe, dietKey: string): boolean {
+  const blocked = DIET_BLOCKLISTS[dietKey];
+  if (!blocked) return false;
+  const safe = SAFE_OVERRIDES[dietKey] || [];
+  const haystack = (r.name + " " + r.ingredients.join(" ")).toLowerCase();
+  for (const term of blocked) {
+    const idx = haystack.indexOf(term);
+    if (idx === -1) continue;
+    // Check if this hit is actually a safe override word
+    const isSafe = safe.some(s => {
+      const sIdx = haystack.indexOf(s);
+      return sIdx !== -1 && sIdx <= idx && sIdx + s.length >= idx + term.length;
+    });
+    if (!isSafe) return true;
+  }
+  return false;
+}
+
+// Map free-text dietType into ordered list of canonical keys
+function resolveDietKeys(dietType: string, extras: string[] = []): string[] {
+  const text = (dietType + " " + extras.join(" ")).toLowerCase();
+  const keys: string[] = [];
+  if (text.includes("vegan")) keys.push("vegan");
+  else if (text.includes("vegetarian")) keys.push("vegetarian");
+  else if (text.includes("pescatarian")) keys.push("pescatarian");
+  if (text.includes("dairy-free") || text.includes("dairy free") || text.includes("lactose")) keys.push("dairy-free");
+  if (text.includes("gluten-free") || text.includes("gluten free") || text.includes("coeliac") || text.includes("celiac")) keys.push("gluten-free");
+  if (text.includes("nut-free") || text.includes("nut free") || text.includes("nut allerg")) keys.push("nut-free");
+  return keys;
+}
+
+function filterRecipes(phase: string, mealType: string, dislikes: string[], dietType: string, exclude: string[], dietaryPrefs: string[] = []): Recipe[] {
+  const dietKeys = resolveDietKeys(dietType, dietaryPrefs);
   return RECIPE_BANK.filter(r => {
     if (!r.phase.includes(phase) && !r.phase.includes("menstrual") && !r.phase.includes("follicular") && !r.phase.includes("ovulatory") && !r.phase.includes("luteal")) return false;
-    // Prefer phase-specific, but allow universal snacks
     const phaseMatch = r.phase.includes(phase) || r.phase.length === 4;
     if (!phaseMatch) return false;
     if (!r.mealType.includes(mealType)) return false;
     if (exclude.includes(r.name)) return false;
-    // Filter dislikes
+
+    // Filter user-defined dislikes
     const nameLower = r.name.toLowerCase();
     const ingredientsLower = r.ingredients.join(" ").toLowerCase();
     for (const d of dislikes) {
       const dl = d.toLowerCase().trim();
       if (dl && (nameLower.includes(dl) || ingredientsLower.includes(dl))) return false;
     }
-    // Filter diet type
-    if (dietType) {
-      const dt = dietType.toLowerCase();
-      if (dt.includes("vegan") && !r.tags.includes("vegan")) return false;
-      if (dt.includes("vegetarian") && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
-      if (dt.includes("keto") && !r.tags.includes("keto-friendly") && r.carbs > 20) return false;
+
+    // Hard dietary filters — INGREDIENT-LEVEL, not just tag
+    for (const key of dietKeys) {
+      if (violatesDiet(r, key)) return false;
     }
+
+    // Macro hint: keto
+    if (dietType.toLowerCase().includes("keto") && r.carbs > 20 && !r.tags.includes("keto-friendly")) return false;
+
     return true;
   });
 }
 
-function pickRecipe(phase: string, mealType: string, dislikes: string[], dietType: string, used: string[], seed: number): Recipe | null {
-  const candidates = filterRecipes(phase, mealType, dislikes, dietType, used);
+function pickRecipe(phase: string, mealType: string, dislikes: string[], dietType: string, used: string[], seed: number, dietaryPrefs: string[] = []): Recipe | null {
+  const candidates = filterRecipes(phase, mealType, dislikes, dietType, used, dietaryPrefs);
   if (candidates.length === 0) {
-    // Fallback: try any phase
-    const fallback = RECIPE_BANK.filter(r => r.mealType.includes(mealType) && !used.includes(r.name));
-    if (fallback.length === 0) return null;
-    return fallback[seed % fallback.length];
+    // Diet-safe fallback: relax phase + meal but KEEP dietary filters strict
+    const dietKeys = resolveDietKeys(dietType, dietaryPrefs);
+    const safe = RECIPE_BANK.filter(r => {
+      if (!r.mealType.includes(mealType)) return false;
+      if (used.includes(r.name)) return false;
+      for (const d of dislikes) {
+        const dl = d.toLowerCase().trim();
+        if (dl && r.ingredients.join(" ").toLowerCase().includes(dl)) return false;
+      }
+      for (const key of dietKeys) if (violatesDiet(r, key)) return false;
+      return true;
+    });
+    if (safe.length > 0) return safe[seed % safe.length];
+    // Last resort: any meal-type match still respecting diet
+    const any = RECIPE_BANK.filter(r => r.mealType.includes(mealType) && !dietKeys.some(k => violatesDiet(r, k)));
+    if (any.length === 0) return null;
+    return any[seed % any.length];
   }
   return candidates[seed % candidates.length];
 }
