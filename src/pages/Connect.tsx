@@ -276,15 +276,27 @@ export default function Connect() {
 
     // Optimistic local add
     const tempId = crypto.randomUUID();
-    setMessages((prev) => [...prev, { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() }]);
+    const optimistic: Message = { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() };
+    setMessages((prev) => [...prev, optimistic]);
 
+    let inserted: any = null;
     if (isPartnerSession) {
-      await partnerProxy("insert_message", { sender_role: role, content: text });
+      inserted = await partnerProxy("insert_message", { sender_role: role, content: text });
     } else {
-      await supabase.from("connect_messages").insert({
+      const { data } = await supabase.from("connect_messages").insert({
         connection_id: connectionId,
         sender_role: role,
         content: text,
+      }).select().single();
+      inserted = data;
+    }
+
+    // Broadcast to the other side (postgres_changes won't reach unauthenticated partner)
+    if (inserted) {
+      await supabase.channel(`connect-msg-${connectionId}`).send({
+        type: "broadcast",
+        event: "new_message",
+        payload: inserted,
       });
     }
 
@@ -296,13 +308,24 @@ export default function Connect() {
         body: { message: text, history: recentHistory, connection_id: connectionId },
       });
       if (!error && data?.response) {
+        let aiInserted: any = null;
         if (isPartnerSession) {
-          await partnerProxy("insert_message", { sender_role: "ai", content: data.response });
+          aiInserted = await partnerProxy("insert_message", { sender_role: "ai", content: data.response });
         } else {
-          await supabase.from("connect_messages").insert({
+          const { data: aiRow } = await supabase.from("connect_messages").insert({
             connection_id: connectionId,
             sender_role: "ai",
             content: data.response,
+          }).select().single();
+          aiInserted = aiRow;
+        }
+        if (aiInserted) {
+          // Add locally and broadcast to the other side
+          setMessages((prev) => prev.some((m) => m.id === aiInserted.id) ? prev : [...prev, aiInserted]);
+          await supabase.channel(`connect-msg-${connectionId}`).send({
+            type: "broadcast",
+            event: "new_message",
+            payload: aiInserted,
           });
         }
       }
