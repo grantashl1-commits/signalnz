@@ -205,7 +205,7 @@ export default function HomeCalendarCard() {
       ...manualEvents.map(ev => ({ time: ev.time, title: ev.title, dayIndex: ev.dayIndex })),
     ];
     const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Signal//EN"];
-    const ws = startOfWeek(today, { weekStartsOn: 1 });
+    const ws = startOfWeek(viewDate, { weekStartsOn: 1 });
     allEvents.forEach((ev) => {
       const [h, m] = ev.time.split(":");
       const d = new Date(ws);
@@ -225,7 +225,7 @@ export default function HomeCalendarCard() {
     if (allCount === 0) { toast.info("No events to export"); return; }
     if (type === "google" && manualEvents.length > 0) {
       const ev = manualEvents[0];
-      const ws = startOfWeek(today, { weekStartsOn: 1 });
+      const ws = startOfWeek(viewDate, { weekStartsOn: 1 });
       const d = new Date(ws);
       d.setDate(d.getDate() + ev.dayIndex);
       const [h, m] = ev.time.split(":");
@@ -244,12 +244,15 @@ export default function HomeCalendarCard() {
     toast.success("Calendar export ready");
   };
 
-  // Build week dates
+  // Build week dates relative to viewDate
+  const todayStr = format(today, "yyyy-MM-dd");
+  const weekStart = startOfWeek(viewDate, { weekStartsOn: 1 });
   const weekDates = DAYS_OF_WEEK.map((d, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() + (i - adjustedDay));
-    return { day: d, date: date.getDate(), isToday: i === adjustedDay };
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + i);
+    return { day: d, date: date.getDate(), isToday: format(date, "yyyy-MM-dd") === todayStr };
   });
+  const weekRangeLabel = `${format(weekStart, "MMM d")} – ${format(new Date(weekStart.getTime() + 6 * 86400000), "MMM d")}`;
 
   return (
     <motion.div
@@ -331,6 +334,33 @@ export default function HomeCalendarCard() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Week navigation */}
+        <div className="flex items-center justify-between mb-2 px-1">
+          <button
+            onClick={goToPrevWeek}
+            className="p-1 -ml-1 text-muted-foreground/50 hover:text-primary transition-colors"
+            aria-label="Previous week"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={goToToday}
+            disabled={isCurrentWeek}
+            className={`font-hand text-[11px] transition-colors ${
+              isCurrentWeek ? "text-muted-foreground/40" : "text-primary/70 hover:text-primary"
+            }`}
+          >
+            {isCurrentWeek ? `this week · ${weekRangeLabel}` : `${weekRangeLabel} · today`}
+          </button>
+          <button
+            onClick={goToNextWeek}
+            className="p-1 -mr-1 text-muted-foreground/50 hover:text-primary transition-colors"
+            aria-label="Next week"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
 
         {/* Weekly grid with combined day/date headers */}
         <div className="grid grid-cols-7 gap-[2px]">
