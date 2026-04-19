@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +12,9 @@ import signalIcon from "@/assets/pwa-icon-512-purple.png";
 // Minimum password length for new accounts. Combined with HIBP leaked-password check
 // (enabled in auth settings), this stops credential-stuffing and weak passwords.
 const MIN_PASSWORD_LENGTH = 10;
+// Public hCaptcha site key — safe to ship in client bundle.
+// The matching secret is configured in Cloud → Auth Settings → Bot and Abuse Protection.
+const HCAPTCHA_SITE_KEY = "a1ba8d4e-2e56-43d6-9f54-1104cae809d4";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,6 +22,8 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupComplete, setSignupComplete] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha | null>(null);
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
 
@@ -27,34 +33,50 @@ export default function AuthPage() {
     }
   }, [authLoading, user, navigate]);
 
+  const resetCaptcha = () => {
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!captchaToken) {
+      toast.error("Please complete the captcha");
+      return;
+    }
     setLoading(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+          options: { captchaToken },
+        });
         if (error) throw error;
         toast.success("Welcome back!");
         navigate("/account", { replace: true });
       } else {
         // Anti-bot guards on signup (in priority order):
-        //   1. Disposable / burner email blocklist (200+ domains)
-        //   2. Strong password length (HIBP leaked-password check is server-side)
-        //   3. Server side: email verification required, anonymous sign-ups disabled
+        //   1. hCaptcha challenge (verified server-side by Supabase Auth)
+        //   2. Disposable / burner email blocklist (200+ domains)
+        //   3. Strong password length (HIBP leaked-password check is server-side)
+        //   4. Server side: email verification required, anonymous sign-ups disabled
         if (await isDisposableEmail(email)) {
           toast.error("Please use a permanent email address (no temporary or burner emails)");
           setLoading(false);
+          resetCaptcha();
           return;
         }
         if (password.length < MIN_PASSWORD_LENGTH) {
           toast.error(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
           setLoading(false);
+          resetCaptcha();
           return;
         }
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: window.location.origin, captchaToken },
         });
         if (error) {
           // Surface HIBP rejection nicely
@@ -64,12 +86,14 @@ export default function AuthPage() {
             throw error;
           }
           setLoading(false);
+          resetCaptcha();
           return;
         }
         setSignupComplete(true);
       }
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
+      resetCaptcha();
     } finally {
       setLoading(false);
     }
@@ -194,9 +218,19 @@ export default function AuthPage() {
                   </button>
                 )}
               </div>
+              <div className="flex justify-center">
+                <HCaptcha
+                  ref={captchaRef}
+                  sitekey={HCAPTCHA_SITE_KEY}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)}
+                  onError={() => setCaptchaToken(null)}
+                  theme="light"
+                />
+              </div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !captchaToken}
                 className="w-full rounded-xl bg-primary px-4 py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {loading ? "Please wait…" : isLogin ? "Sign in" : "Create account"}
