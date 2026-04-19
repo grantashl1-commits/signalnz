@@ -513,6 +513,7 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
   isEaten: boolean; phaseColor: string; phase: Phase; scale: number;
   onMarkEaten: () => void; onScaleChange: (v: number) => void; onClose: () => void;
 }) {
+  const { currentCycleDay } = useCycle();
   const [showMethod, setShowMethod] = useState(false);
   const ingredients = meal.aiMeal?.ingredients || meal.recipe?.ingredients || [];
   const method = meal.aiMeal?.method || meal.recipe?.method || [];
