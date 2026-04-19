@@ -53,6 +53,20 @@ export interface WorkoutTemplate {
   cooldown_notes: string | null;
   session_notes: string | null;
   estimated_duration_mins: number;
+  total_duration_sec?: number | null;
+}
+
+export interface WorkoutInterval {
+  id: string;
+  workout_id: string;
+  order_index: number;
+  block_label: string;
+  kind: "warmup" | "run" | "walk" | "work" | "rest" | "cooldown" | "jog" | "sprint" | "recovery";
+  duration_sec: number;
+  repeat_count: number;
+  target_pace: string | null;
+  target_rpe: number | null;
+  notes: string | null;
 }
 
 export interface WorkoutExercise {
@@ -68,6 +82,10 @@ export interface WorkoutExercise {
   progression_notes: string | null;
   is_superset: boolean;
   superset_group: string | null;
+  tempo?: string | null;
+  tip?: string | null;
+  weight_kg_min?: number | null;
+  weight_kg_max?: number | null;
   exercise?: {
     id: string;
     name: string;
