@@ -225,13 +225,16 @@ export default function MyWeekTab() {
         createdAt: Date.now(),
         lockedMeals: {},
       };
-      setAiPlan(plan);
-      saveAIMealPlan(plan);
+      // Attach kid-friendly alternatives for each lunch/dinner so their
+      // ingredients flow into the shopping list.
+      const planWithKids = attachKidsMeals(plan);
+      setAiPlan(planWithKids);
+      saveAIMealPlan(planWithKids);
       setStep("plan");
       toast.success("Your personalised 4-week plan is ready!");
 
       // Phase 4B: persist to Supabase in background
-      savePlanToSupabase(plan);
+      savePlanToSupabase(planWithKids);
     } catch (e: any) {
       console.error("AI plan generation failed:", e);
       toast.error(e.message || "Failed to generate plan. Please try again.");
