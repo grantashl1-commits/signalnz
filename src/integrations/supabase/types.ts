@@ -140,6 +140,76 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_answers: {
+        Row: {
+          answer: string
+          created_at: string
+          group_id: string
+          id: string
+          question_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          group_id: string
+          id?: string
+          question_index: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          question_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_answers_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenge_completions: {
+        Row: {
+          challenge_index: number
+          completed_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          challenge_index: number
+          completed_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          challenge_index?: number
+          completed_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_completions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_participants: {
         Row: {
           challenge_id: string
@@ -1540,6 +1610,7 @@ export type Database = {
           comment_id: string | null
           created_at: string | null
           id: string
+          message_id: string | null
           post_id: string | null
           reason: string | null
           reporter_id: string | null
@@ -1551,6 +1622,7 @@ export type Database = {
           comment_id?: string | null
           created_at?: string | null
           id?: string
+          message_id?: string | null
           post_id?: string | null
           reason?: string | null
           reporter_id?: string | null
@@ -1562,6 +1634,7 @@ export type Database = {
           comment_id?: string | null
           created_at?: string | null
           id?: string
+          message_id?: string | null
           post_id?: string | null
           reason?: string | null
           reporter_id?: string | null
@@ -1575,6 +1648,13 @@ export type Database = {
             columns: ["comment_id"]
             isOneToOne: false
             referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moderation_queue_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
             referencedColumns: ["id"]
           },
           {
