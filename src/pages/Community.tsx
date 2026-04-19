@@ -14,6 +14,8 @@ import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import { useAccountStatus } from "@/hooks/useAccountStatus";
+import SuspensionBanner from "@/components/community/SuspensionBanner";
 
 const TABS = [
   { id: "discover", label: "Discover" },
@@ -25,6 +27,7 @@ const TABS = [
 
 export default function CommunityPage() {
   const [section, setSection] = useState("discover");
+  const { suspension } = useAccountStatus();
 
   const [joined, setJoined] = useState<string[]>([]);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
