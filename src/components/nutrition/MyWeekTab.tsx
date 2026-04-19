@@ -726,6 +726,7 @@ export default function MyWeekTab() {
                             {(key === "lunch" || key === "dinner") && (() => {
                               const kidsMeal = key === "lunch" ? (day as any).kidsLunch : (day as any).kidsDinner;
                               if (!kidsMeal) return null;
+                              const slot = key as "lunch" | "dinner";
                               return (
                                 <div
                                   className="mt-3 rounded-xl p-3"
@@ -734,12 +735,26 @@ export default function MyWeekTab() {
                                     backgroundColor: `${dayPhaseColor}08`,
                                   }}
                                 >
-                                  <div className="flex items-center gap-1.5 mb-1">
-                                    <span className="font-body text-[9px] uppercase tracking-wider font-semibold" style={{ color: dayPhaseColor }}>
-                                      Kids' option
-                                    </span>
-                                    <span className="font-body text-[9px] text-muted-foreground">·</span>
-                                    <span className="font-body text-[9px] text-muted-foreground">{kidsMeal.prepTime} · serves {kidsMeal.serves}</span>
+                                  <div className="flex items-center justify-between gap-2 mb-1">
+                                    <div className="flex items-center gap-1.5 min-w-0">
+                                      <span className="font-body text-[9px] uppercase tracking-wider font-semibold whitespace-nowrap" style={{ color: dayPhaseColor }}>
+                                        Kids' option
+                                      </span>
+                                      <span className="font-body text-[9px] text-muted-foreground">·</span>
+                                      <span className="font-body text-[9px] text-muted-foreground truncate">{kidsMeal.prepTime} · serves {kidsMeal.serves}</span>
+                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSwapKidsMeal(day.cycleDay, slot);
+                                      }}
+                                      className="touch-btn flex items-center gap-1 rounded-full px-2 py-1 min-h-[28px] font-body text-[10px] font-semibold transition-all active:opacity-80"
+                                      style={{ backgroundColor: `${dayPhaseColor}18`, color: dayPhaseColor }}
+                                      aria-label="Swap kids meal"
+                                    >
+                                      <RefreshCw className="h-3 w-3" />
+                                      Swap
+                                    </button>
                                   </div>
                                   <p className="font-hand text-base font-bold" style={{ color: dayPhaseColor }}>
                                     {kidsMeal.name}
@@ -750,6 +765,7 @@ export default function MyWeekTab() {
                                 </div>
                               );
                             })()}
+
                           </div>
                         );
                       })}
