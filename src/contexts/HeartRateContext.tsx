@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from "react";
+import { connectNativeHR, isNative, type HRConnection } from "@/lib/native-hr";
 
 interface HeartRateState {
   connected: boolean;
@@ -58,6 +59,7 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
 
   const deviceRef = useRef<any>(null);
   const characteristicRef = useRef<any>(null);
+  const nativeRef = useRef<HRConnection | null>(null);
   const bpmRef = useRef<number>(0);
   const sessionRef = useRef<HRSession>(initialSession);
   const tickRef = useRef<number | null>(null);
@@ -66,7 +68,10 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
   useEffect(() => { sessionRef.current = session; }, [session]);
   useEffect(() => { bpmRef.current = state.bpm; }, [state.bpm]);
 
-  const isSupported = typeof navigator !== "undefined" && "bluetooth" in (navigator as any);
+  // Native (iOS/Android) is always supported via the Capacitor BLE plugin.
+  // On the web we fall back to navigator.bluetooth (Chromium-based browsers only).
+  const isSupported = isNative()
+    || (typeof navigator !== "undefined" && "bluetooth" in (navigator as any));
 
   const handleHRMeasurement = useCallback((event: Event) => {
     const value = (event.target as any)?.value;
@@ -79,12 +84,39 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
 
   const connect = useCallback(async () => {
     if (!isSupported) {
-      setState(prev => ({ ...prev, error: "Bluetooth not supported in this browser." }));
+      setState(prev => ({ ...prev, error: "Bluetooth not supported on this device." }));
       return;
     }
 
     setState(prev => ({ ...prev, connecting: true, error: null }));
 
+    // ── Native path (iOS/Android) — keeps streaming when backgrounded ──
+    if (isNative()) {
+      try {
+        const handle = await connectNativeHR(
+          (bpm) => setState(prev => ({ ...prev, bpm })),
+          () => setState(prev => ({ ...prev, connected: false, bpm: 0, deviceName: null })),
+        );
+        nativeRef.current = handle;
+        setState({
+          connected: true,
+          connecting: false,
+          deviceName: handle.deviceName,
+          bpm: 0,
+          error: null,
+        });
+      } catch (err: any) {
+        const msg = String(err?.message || err);
+        setState(prev => ({
+          ...prev,
+          connecting: false,
+          error: msg.toLowerCase().includes("cancel") ? null : "Could not connect. Please try again.",
+        }));
+      }
+      return;
+    }
+
+    // ── Web Bluetooth fallback ──
     try {
       const nav = navigator as any;
       const device = await nav.bluetooth.requestDevice({
@@ -122,6 +154,10 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
   }, [isSupported, handleHRMeasurement]);
 
   const disconnect = useCallback(() => {
+    if (nativeRef.current) {
+      nativeRef.current.disconnect().catch(() => {});
+      nativeRef.current = null;
+    }
     if (characteristicRef.current) {
       try {
         characteristicRef.current.removeEventListener("characteristicvaluechanged", handleHRMeasurement);
