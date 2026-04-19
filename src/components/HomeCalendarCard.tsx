@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Loader2, Plus, ChevronRight, X } from "lucide-react";
+import { Download, Loader2, Plus, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { format, startOfWeek, endOfWeek, isWithinInterval, parseISO } from "date-fns";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -134,18 +134,43 @@ function useImportedCalendar(today: Date) {
 
 export default function HomeCalendarCard() {
   const today = new Date();
-  const dayOfWeek = today.getDay();
+  const [viewDate, setViewDate] = useState<Date>(today);
+  const dayOfWeek = viewDate.getDay();
   const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const cal = useImportedCalendar(today);
+  const cal = useImportedCalendar(viewDate);
   const [importUrl, setImportUrl] = useState("");
 
-  const weekKey = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
+  const weekKey = format(startOfWeek(viewDate, { weekStartsOn: 1 }), "yyyy-MM-dd");
   const [manualEvents, setManualEvents] = useState<ManualEvent[]>(() => loadManualEvents(weekKey));
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [newTime, setNewTime] = useState("09:00");
   const [newTitle, setNewTitle] = useState("");
   const [newDayIdx, setNewDayIdx] = useState(adjustedDay);
   const [showCalendarOptions, setShowCalendarOptions] = useState(false);
+
+  // Reload manual events when week changes
+  useEffect(() => {
+    setManualEvents(loadManualEvents(weekKey));
+  }, [weekKey]);
+
+  const goToPrevWeek = () => {
+    haptic("light");
+    const d = new Date(viewDate);
+    d.setDate(d.getDate() - 7);
+    setViewDate(d);
+  };
+  const goToNextWeek = () => {
+    haptic("light");
+    const d = new Date(viewDate);
+    d.setDate(d.getDate() + 7);
+    setViewDate(d);
+  };
+  const goToToday = () => {
+    haptic("light");
+    setViewDate(new Date());
+  };
+  const isCurrentWeek = format(startOfWeek(viewDate, { weekStartsOn: 1 }), "yyyy-MM-dd") ===
+    format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
 
   const handleImportCalendar = () => {
     if (!importUrl.trim()) return;
