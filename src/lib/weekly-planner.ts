@@ -457,3 +457,58 @@ export function getAIMealPlan(): AIMealPlan | null {
 export function clearAIMealPlan(): void {
   localStorage.removeItem(AI_PLAN_KEY);
 }
+
+// ─── Kids meals — attach kid-friendly alternatives at plan generation ──────
+import { findKidsRecipe, type KidsRecipe } from "@/data/kids-recipes";
+
+function kidsRecipeToAIMeal(recipe: KidsRecipe, mealType: "lunch" | "dinner", phase: Phase): AIMeal {
+  return {
+    name: recipe.name,
+    phase,
+    mealType,
+    prepTime: recipe.prepTime,
+    serves: recipe.serves,
+    ingredients: recipe.ingredients,
+    method: recipe.method,
+    nutritionalNote: `Kid-friendly alternative — ingredients are added to your shopping list automatically.`,
+    keyNutrients: recipe.tags.filter(t => t.endsWith("-free") || t === "vegetarian" || t === "vegan"),
+  };
+}
+
+/**
+ * Walk every day in the plan and attach a kid-friendly lunch + dinner.
+ * Called once after the AI plan is generated so kids' ingredients flow into
+ * the SmartShoppingList. Skipped when prefs.kids is 0.
+ */
+export function attachKidsMeals(plan: AIMealPlan): AIMealPlan {
+  const prefs = plan.prepPreferences;
+  if (!prefs.kids || prefs.kids < 1) return plan;
+
+  const allergies = (prefs.kidsAllergies || "")
+    .split(/[,;]/)
+    .map(a => a.trim())
+    .filter(Boolean);
+  const dietType = prefs.kidsDietType || "";
+
+  const updatedDays = plan.days.map(day => {
+    const usedIds: string[] = [];
+    let kidsLunch: AIMeal | undefined;
+    let kidsDinner: AIMeal | undefined;
+
+    const lunchPick = findKidsRecipe(day.lunch.name, "lunch", allergies, dietType, usedIds, day.cycleDay);
+    if (lunchPick) {
+      usedIds.push(lunchPick.id);
+      kidsLunch = kidsRecipeToAIMeal(lunchPick, "lunch", day.phase);
+    }
+
+    const dinnerPick = findKidsRecipe(day.dinner.name, "dinner", allergies, dietType, usedIds, day.cycleDay);
+    if (dinnerPick) {
+      kidsDinner = kidsRecipeToAIMeal(dinnerPick, "dinner", day.phase);
+    }
+
+    return { ...day, kidsLunch, kidsDinner };
+  });
+
+  return { ...plan, days: updatedDays };
+}
+
