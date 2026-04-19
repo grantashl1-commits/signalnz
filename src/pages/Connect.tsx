@@ -426,12 +426,29 @@ export default function Connect() {
   const shareToPartner = async (text: string) => {
     if (!connectionId) return;
     const role = isPartnerSession ? "partner" : "member";
-    await supabase.from("connect_messages").insert({
-      connection_id: connectionId,
-      sender_role: role,
-      content: text,
-      metadata: { type: "shared_activity" },
-    });
+    let inserted: any = null;
+    if (isPartnerSession) {
+      inserted = await partnerProxy("insert_message", {
+        sender_role: role,
+        content: text,
+        metadata: { type: "shared_activity" },
+      });
+    } else {
+      const { data } = await supabase.from("connect_messages").insert({
+        connection_id: connectionId,
+        sender_role: role,
+        content: text,
+        metadata: { type: "shared_activity" },
+      }).select().single();
+      inserted = data;
+    }
+    if (inserted) {
+      await supabase.channel(`connect-msg-${connectionId}`).send({
+        type: "broadcast",
+        event: "new_message",
+        payload: inserted,
+      });
+    }
   };
 
   if (view === "space" && connectionId) {
