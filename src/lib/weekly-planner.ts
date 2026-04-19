@@ -459,7 +459,7 @@ export function clearAIMealPlan(): void {
 }
 
 // ─── Kids meals — attach kid-friendly alternatives at plan generation ──────
-import { findKidsRecipe, type KidsRecipe } from "@/data/kids-recipes";
+import { findKidsRecipe, KIDS_RECIPE_BANK, type KidsRecipe } from "@/data/kids-recipes";
 
 function kidsRecipeToAIMeal(recipe: KidsRecipe, mealType: "lunch" | "dinner", phase: Phase): AIMeal {
   return {
@@ -510,5 +510,52 @@ export function attachKidsMeals(plan: AIMealPlan): AIMealPlan {
   });
 
   return { ...plan, days: updatedDays };
+}
+
+/**
+ * Swap the kids' alternative for a single day's lunch or dinner with the next
+ * compatible recipe from the curated bank. Returns a new plan with the swap
+ * applied; if no alternative is available, returns the plan unchanged.
+ */
+export function swapKidsMeal(
+  plan: AIMealPlan,
+  cycleDay: number,
+  mealType: "lunch" | "dinner",
+): { plan: AIMealPlan; swapped: boolean } {
+  const prefs = plan.prepPreferences;
+  if (!prefs.kids || prefs.kids < 1) return { plan, swapped: false };
+
+  const allergies = (prefs.kidsAllergies || "")
+    .split(/[,;]/)
+    .map(a => a.trim())
+    .filter(Boolean);
+  const dietType = prefs.kidsDietType || "";
+
+  const dayIndex = plan.days.findIndex(d => d.cycleDay === cycleDay);
+  if (dayIndex < 0) return { plan, swapped: false };
+  const day = plan.days[dayIndex];
+
+  const currentKey: keyof AIPlannedDay = mealType === "lunch" ? "kidsLunch" : "kidsDinner";
+  const currentName = (day[currentKey] as AIMeal | undefined)?.name?.toLowerCase();
+
+  // Exclude any bank entries matching the current kids' meal name so the swap
+  // always returns a different recipe when possible.
+  const exclude: string[] = [];
+  if (currentName) {
+    for (const r of KIDS_RECIPE_BANK) {
+      if (r.name.toLowerCase() === currentName) exclude.push(r.id);
+    }
+  }
+
+  const adultName = mealType === "lunch" ? day.lunch.name : day.dinner.name;
+  // Use cycleDay + a rotating offset so repeated swaps cycle through options
+  const seed = cycleDay + exclude.length + 1;
+  const pick = findKidsRecipe(adultName, mealType, allergies, dietType, exclude, seed);
+  if (!pick) return { plan, swapped: false };
+
+  const newMeal = kidsRecipeToAIMeal(pick, mealType, day.phase);
+  const newDay = { ...day, [currentKey]: newMeal };
+  const updatedDays = plan.days.map((d, i) => (i === dayIndex ? newDay : d));
+  return { plan: { ...plan, days: updatedDays }, swapped: true };
 }
 
