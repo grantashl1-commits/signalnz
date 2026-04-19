@@ -315,8 +315,35 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
     checkExistingLocation();
     return () => {
       channelRef.current?.unsubscribe();
+      presenceChannelRef.current?.unsubscribe();
     };
   }, []);
+
+  // Subscribe to suburb-scoped presence whenever the user's suburb changes
+  useEffect(() => {
+    if (!userSuburb) return;
+    let active = true;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !active) return;
+      presenceChannelRef.current?.unsubscribe();
+      const slug = userSuburb.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      const channel = supabase.channel(`nearby-presence-${slug}`, {
+        config: { presence: { key: user.id } },
+      });
+      channel
+        .on("presence", { event: "sync" }, () => {
+          setOnlineIds(new Set(Object.keys(channel.presenceState())));
+        })
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await channel.track({ user_id: user.id, online_at: new Date().toISOString() });
+          }
+        });
+      presenceChannelRef.current = channel;
+    })();
+    return () => { active = false; };
+  }, [userSuburb]);
 
   const checkExistingLocation = async () => {
     const {
