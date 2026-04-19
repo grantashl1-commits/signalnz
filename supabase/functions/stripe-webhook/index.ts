@@ -157,6 +157,90 @@ serve(async (req) => {
       }
     }
 
+    // Monthly renewal: refill credits when an invoice is paid (including $0 invoices from 100%-off coupons)
+    if (event.type === "invoice.payment_succeeded") {
+      const invoice = event.data.object as Stripe.Invoice;
+      const billingReason = invoice.billing_reason; // "subscription_create" | "subscription_cycle" | "subscription_update" | ...
+
+      // Skip the very first invoice — checkout.session.completed already set credits.
+      // Only refill on actual renewals (and updates that re-bill).
+      if (billingReason !== "subscription_cycle" && billingReason !== "subscription_update") {
+        logStep("Invoice paid but skipping refill", { billingReason });
+        return new Response(JSON.stringify({ received: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const customerEmail = invoice.customer_email;
+      if (!customerEmail) {
+        logStep("Invoice has no customer_email, skipping");
+        return new Response(JSON.stringify({ received: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Determine tier from the invoice's line items (subscription product)
+      let tierInfo: { tier: string; credits: number } | null = null;
+      for (const li of invoice.lines.data) {
+        const productId = typeof li.price?.product === "string" ? li.price.product : "";
+        if (PRODUCT_TIER_MAP[productId]) {
+          tierInfo = PRODUCT_TIER_MAP[productId];
+          break;
+        }
+      }
+
+      if (!tierInfo) {
+        logStep("Invoice product not in tier map, skipping refill", { invoiceId: invoice.id });
+        return new Response(JSON.stringify({ received: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Look up user by email
+      const { data: userData } = await supabase.auth.admin.listUsers();
+      const user = userData?.users?.find((u) => u.email === customerEmail);
+      const userIdentifier = user?.id || customerEmail;
+
+      logStep("Renewal refill", { userIdentifier, tier: tierInfo.tier, credits: tierInfo.credits, billingReason });
+
+      const { data: existing } = await supabase
+        .from("ai_credits")
+        .select("*")
+        .eq("user_identifier", userIdentifier)
+        .maybeSingle();
+
+      // Reset to tier amount, but cap at 2x tier (preserves top-ups & light-user surplus)
+      const cap = tierInfo.credits * 2;
+      const currentBalance = existing?.credits_remaining ?? 0;
+      const newBalance = Math.min(Math.max(currentBalance, tierInfo.credits), cap);
+
+      if (existing) {
+        // Don't downgrade unlimited / manually-boosted accounts
+        if (existing.tier === "unlimited") {
+          logStep("Skipping refill for unlimited tier user", { userIdentifier });
+        } else {
+          await supabase
+            .from("ai_credits")
+            .update({
+              credits_remaining: newBalance,
+              tier: tierInfo.tier,
+              last_topup_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq("user_identifier", userIdentifier);
+          logStep("Renewal credits refilled", { newBalance, cap });
+        }
+      } else {
+        await supabase.from("ai_credits").insert({
+          user_identifier: userIdentifier,
+          credits_remaining: tierInfo.credits,
+          tier: tierInfo.tier,
+          last_topup_at: new Date().toISOString(),
+        });
+        logStep("Renewal created new credits row", { credits: tierInfo.credits });
+      }
+    }
+
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
