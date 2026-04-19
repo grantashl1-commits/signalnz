@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { text, voiceId, practiceId, user_identifier } = await req.json();
+    const { text, voiceId, voiceVersion, practiceId, user_identifier } = await req.json();
 
     if (!text || !practiceId) {
       return new Response(
@@ -34,6 +34,12 @@ Deno.serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Sanitise voiceVersion to a safe folder slug; default to female (Regina).
+    const safeVoiceVersion =
+      typeof voiceVersion === "string" && /^[a-z0-9-]+$/i.test(voiceVersion)
+        ? voiceVersion
+        : "regina-v1";
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -93,7 +99,7 @@ Deno.serve(async (req) => {
 
     const audioBuffer = await ttsResponse.arrayBuffer();
 
-    const filePath = `practices/regina-v1/${practiceId}.mp3`;
+    const filePath = `practices/${safeVoiceVersion}/${practiceId}.mp3`;
     const { error: uploadError } = await supabase.storage
       .from("practice-audio")
       .upload(filePath, audioBuffer, {
