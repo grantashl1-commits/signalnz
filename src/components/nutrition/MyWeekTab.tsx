@@ -103,7 +103,7 @@ type Step = "prep" | "plan" | "shop" | "prepguide";
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
   const { user } = useAuth();
-  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes } = useProfile();
+  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, dietaryPreferences } = useProfile();
   const [weekOffset, setWeekOffset] = useState(0);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [aiPlan, setAiPlan] = useState<AIMealPlan | null>(getAIMealPlan);
@@ -237,7 +237,7 @@ export default function MyWeekTab() {
     } finally {
       setIsGenerating(false);
     }
-  }, [calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, savePlanToSupabase]);
+  }, [calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, dietaryPreferences, savePlanToSupabase]);
 
   // Regenerate single meal
   const handleRegenerateMeal = useCallback(async (cycleDay: number, mealType: string) => {
