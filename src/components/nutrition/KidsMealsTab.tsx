@@ -105,10 +105,10 @@ export default function KidsMealsTab() {
       </div>
 
       {/* Meal type filter */}
-      <FilterRow label="Meal" value={mealType} onChange={setMealType} options={MEAL_OPTIONS} />
+      <FilterRow label="Meal" value={mealType} onChange={(v) => setMealType(v as MealFilter | null)} options={MEAL_OPTIONS} />
 
       {/* Protein filter */}
-      <FilterRow label="Protein" value={protein} onChange={setProtein} options={PROTEIN_OPTIONS} />
+      <FilterRow label="Protein" value={protein} onChange={(v) => setProtein(v as ProteinFilter | null)} options={PROTEIN_OPTIONS} />
 
       {/* Diet filter */}
       <div className="space-y-1.5">
@@ -132,7 +132,7 @@ export default function KidsMealsTab() {
       </div>
 
       {/* Prep time filter */}
-      <FilterRow label="Prep time" value={prep} onChange={setPrep} options={PREP_OPTIONS} />
+      <FilterRow label="Prep time" value={prep} onChange={(v) => setPrep(v as PrepFilter | null)} options={PREP_OPTIONS} />
 
       {/* Active filters summary */}
       <div className="flex items-center justify-between">
@@ -180,14 +180,14 @@ export default function KidsMealsTab() {
   );
 }
 
-interface FilterRowProps<T extends string> {
+interface FilterRowProps {
   label: string;
-  value: T | null;
-  onChange: (v: T | null) => void;
-  options: { value: T; label: string }[];
+  value: string | null;
+  onChange: (v: string | null) => void;
+  options: { value: string; label: string }[];
 }
 
-function FilterRow<T extends string>({ label, value, onChange, options }: FilterRowProps<T>) {
+function FilterRow({ label, value, onChange, options }: FilterRowProps) {
   return (
     <div className="space-y-1.5">
       <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
