@@ -139,20 +139,56 @@ export default function Connect() {
     loadMessages();
 
     // Broadcast realtime — works for both authenticated members AND unauthenticated partners.
-    // Both sides subscribe to the same channel; sender broadcasts after insert.
-    const channel = supabase
-      .channel(`connect-msg-${connectionId}`, { config: { broadcast: { self: false } } })
+    // CRITICAL: We must keep a single subscribed channel and send through IT.
+    // Sending via supabase.channel(...).send(...) on an unsubscribed channel silently drops the message.
+    channelReadyRef.current = false;
+    const channel = supabase.channel(`connect-msg-${connectionId}`, {
+      config: { broadcast: { self: false, ack: true } },
+    });
+    channel
       .on("broadcast", { event: "new_message" }, (payload) => {
+        console.log("[Connect] received broadcast new_message", payload);
         const msg = payload.payload as Message;
         setMessages((prev) => {
           if (prev.some((m) => m.id === msg.id)) return prev;
           return [...prev, msg];
         });
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log("[Connect] channel status:", status);
+        if (status === "SUBSCRIBED") channelReadyRef.current = true;
+      });
+    broadcastChannelRef.current = channel;
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      channelReadyRef.current = false;
+      broadcastChannelRef.current = null;
+      supabase.removeChannel(channel);
+    };
   }, [connectionId, isPartnerSession]);
+
+  // Helper: broadcast through the SUBSCRIBED channel (waiting briefly if needed)
+  const broadcastNewMessage = async (msg: any) => {
+    const channel = broadcastChannelRef.current;
+    if (!channel) {
+      console.warn("[Connect] no channel to broadcast through");
+      return;
+    }
+    // Wait up to 2s for SUBSCRIBED
+    for (let i = 0; i < 20 && !channelReadyRef.current; i++) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    try {
+      const result = await channel.send({
+        type: "broadcast",
+        event: "new_message",
+        payload: msg,
+      });
+      console.log("[Connect] broadcast send result:", result);
+    } catch (e) {
+      console.error("[Connect] broadcast send error:", e);
+    }
+  };
 
   // Auto-scroll chat
   useEffect(() => {
