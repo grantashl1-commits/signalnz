@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Loader2, Plus, ChevronRight, X } from "lucide-react";
+import { Download, Loader2, Plus, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { format, startOfWeek, endOfWeek, isWithinInterval, parseISO } from "date-fns";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -134,18 +134,43 @@ function useImportedCalendar(today: Date) {
 
 export default function HomeCalendarCard() {
   const today = new Date();
-  const dayOfWeek = today.getDay();
+  const [viewDate, setViewDate] = useState<Date>(today);
+  const dayOfWeek = viewDate.getDay();
   const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const cal = useImportedCalendar(today);
+  const cal = useImportedCalendar(viewDate);
   const [importUrl, setImportUrl] = useState("");
 
-  const weekKey = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
+  const weekKey = format(startOfWeek(viewDate, { weekStartsOn: 1 }), "yyyy-MM-dd");
   const [manualEvents, setManualEvents] = useState<ManualEvent[]>(() => loadManualEvents(weekKey));
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [newTime, setNewTime] = useState("09:00");
   const [newTitle, setNewTitle] = useState("");
   const [newDayIdx, setNewDayIdx] = useState(adjustedDay);
   const [showCalendarOptions, setShowCalendarOptions] = useState(false);
+
+  // Reload manual events when week changes
+  useEffect(() => {
+    setManualEvents(loadManualEvents(weekKey));
+  }, [weekKey]);
+
+  const goToPrevWeek = () => {
+    haptic("light");
+    const d = new Date(viewDate);
+    d.setDate(d.getDate() - 7);
+    setViewDate(d);
+  };
+  const goToNextWeek = () => {
+    haptic("light");
+    const d = new Date(viewDate);
+    d.setDate(d.getDate() + 7);
+    setViewDate(d);
+  };
+  const goToToday = () => {
+    haptic("light");
+    setViewDate(new Date());
+  };
+  const isCurrentWeek = format(startOfWeek(viewDate, { weekStartsOn: 1 }), "yyyy-MM-dd") ===
+    format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
 
   const handleImportCalendar = () => {
     if (!importUrl.trim()) return;
@@ -180,7 +205,7 @@ export default function HomeCalendarCard() {
       ...manualEvents.map(ev => ({ time: ev.time, title: ev.title, dayIndex: ev.dayIndex })),
     ];
     const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Signal//EN"];
-    const ws = startOfWeek(today, { weekStartsOn: 1 });
+    const ws = startOfWeek(viewDate, { weekStartsOn: 1 });
     allEvents.forEach((ev) => {
       const [h, m] = ev.time.split(":");
       const d = new Date(ws);
@@ -200,7 +225,7 @@ export default function HomeCalendarCard() {
     if (allCount === 0) { toast.info("No events to export"); return; }
     if (type === "google" && manualEvents.length > 0) {
       const ev = manualEvents[0];
-      const ws = startOfWeek(today, { weekStartsOn: 1 });
+      const ws = startOfWeek(viewDate, { weekStartsOn: 1 });
       const d = new Date(ws);
       d.setDate(d.getDate() + ev.dayIndex);
       const [h, m] = ev.time.split(":");
@@ -219,12 +244,15 @@ export default function HomeCalendarCard() {
     toast.success("Calendar export ready");
   };
 
-  // Build week dates
+  // Build week dates relative to viewDate
+  const todayStr = format(today, "yyyy-MM-dd");
+  const weekStart = startOfWeek(viewDate, { weekStartsOn: 1 });
   const weekDates = DAYS_OF_WEEK.map((d, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() + (i - adjustedDay));
-    return { day: d, date: date.getDate(), isToday: i === adjustedDay };
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + i);
+    return { day: d, date: date.getDate(), isToday: format(date, "yyyy-MM-dd") === todayStr };
   });
+  const weekRangeLabel = `${format(weekStart, "MMM d")} – ${format(new Date(weekStart.getTime() + 6 * 86400000), "MMM d")}`;
 
   return (
     <motion.div
@@ -306,6 +334,33 @@ export default function HomeCalendarCard() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Week navigation */}
+        <div className="flex items-center justify-between mb-2 px-1">
+          <button
+            onClick={goToPrevWeek}
+            className="p-1 -ml-1 text-muted-foreground/50 hover:text-primary transition-colors"
+            aria-label="Previous week"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={goToToday}
+            disabled={isCurrentWeek}
+            className={`font-hand text-[11px] transition-colors ${
+              isCurrentWeek ? "text-muted-foreground/40" : "text-primary/70 hover:text-primary"
+            }`}
+          >
+            {isCurrentWeek ? `this week · ${weekRangeLabel}` : `${weekRangeLabel} · today`}
+          </button>
+          <button
+            onClick={goToNextWeek}
+            className="p-1 -mr-1 text-muted-foreground/50 hover:text-primary transition-colors"
+            aria-label="Next week"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
 
         {/* Weekly grid with combined day/date headers */}
         <div className="grid grid-cols-7 gap-[2px]">

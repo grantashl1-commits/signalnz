@@ -107,7 +107,7 @@ export default function HomeTodoList() {
                 onChange={(e) => setNewTask(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAdd()}
                 placeholder="What needs doing?"
-                className="flex-1 font-display text-sm italic text-foreground bg-secondary/30 border border-border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="flex-1 font-hand text-base text-foreground bg-secondary/30 border border-border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 style={{ fontSize: "16px" }}
                 autoFocus
               />
@@ -125,11 +125,11 @@ export default function HomeTodoList() {
       {/* Todo items */}
       {loading ? (
         <div className="py-4 text-center">
-          <p className="font-display text-sm italic text-muted-foreground/50">Loading...</p>
+          <p className="font-hand text-base text-muted-foreground/50">Loading...</p>
         </div>
       ) : active.length === 0 && justDone.length === 0 && !showInput ? (
         <div className="py-3 text-center">
-          <p className="font-display text-sm italic text-muted-foreground/50">
+          <p className="font-hand text-base text-muted-foreground/50">
             Nothing on your list — what a beautiful feeling ✨
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function HomeTodoList() {
                   onClick={() => handleToggle(todo.id, true)}
                   className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-primary/30 hover:border-primary/60 transition-colors flex items-center justify-center"
                 />
-                <p className="flex-1 font-display text-[15px] italic text-foreground leading-snug min-w-0">{todo.title}</p>
+                <p className="flex-1 font-hand text-lg text-foreground leading-snug min-w-0">{todo.title}</p>
                 <button
                   onClick={() => deleteTodo(todo.id)}
                   className="text-muted-foreground/0 group-hover:text-muted-foreground/40 hover:!text-destructive transition-colors flex-shrink-0"
@@ -177,7 +177,7 @@ export default function HomeTodoList() {
                 >
                   <Check className="h-3 w-3 text-primary" />
                 </button>
-                <p className="flex-1 font-display text-[15px] italic text-muted-foreground/50 line-through leading-snug min-w-0">{todo.title}</p>
+                <p className="flex-1 font-hand text-lg text-muted-foreground/50 line-through leading-snug min-w-0">{todo.title}</p>
                 <button
                   onClick={() => handleArchive(todo.id)}
                   title="Archive to vault"
