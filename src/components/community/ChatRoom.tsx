@@ -14,6 +14,7 @@ interface DBMessage {
   content: string | null;
   media_path: string | null;
   metadata: any;
+  is_removed?: boolean;
   created_at: string;
 }
 
