@@ -417,7 +417,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             <>
               <span className="inline-block w-1 h-1 rounded-full bg-muted-foreground/40 mx-0.5" />
               <span className="inline-flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 {onlineCount} online
               </span>
             </>
@@ -455,7 +455,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
               {!isMe && (
                 <div className="cursor-pointer relative" onClick={() => setViewingMember({ userId: m.user_id, name })}>
                   <Avatar initials={avatar} />
-                  {isOnline && <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-card" />}
+                  {isOnline && <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-primary border border-card" />}
                 </div>
               )}
               <div className={`max-w-[78%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
