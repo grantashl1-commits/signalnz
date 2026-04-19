@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +12,9 @@ import signalIcon from "@/assets/pwa-icon-512-purple.png";
 // Minimum password length for new accounts. Combined with HIBP leaked-password check
 // (enabled in auth settings), this stops credential-stuffing and weak passwords.
 const MIN_PASSWORD_LENGTH = 10;
+// Public hCaptcha site key — safe to ship in client bundle.
+// The matching secret is configured in Cloud → Auth Settings → Bot and Abuse Protection.
+const HCAPTCHA_SITE_KEY = "a1ba8d4e-2e56-43d6-9f54-1104cae809d4";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
