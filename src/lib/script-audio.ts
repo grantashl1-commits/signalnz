@@ -1,6 +1,6 @@
-export const CALM_READER_VOICE_ID = "XrExE9yKIg1WjnnlVkGX";
-export const CALM_READER_VOICE_LABEL = "Signal Reader";
-export const VOICE_CACHE_VERSION = "calm-reader-v2";
+export const CALM_READER_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS";
+export const CALM_READER_VOICE_LABEL = "Regina";
+export const VOICE_CACHE_VERSION = "regina-v1";
 
 const SCRIPT_AUDIO_OVERRIDES_KEY = "signal_script_audio_overrides";
 
