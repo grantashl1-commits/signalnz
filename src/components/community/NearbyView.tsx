@@ -289,10 +289,11 @@ interface NearbyViewProps {
   locationEnabled: boolean;
   onRequestLocation: () => void;
   onToggleLocation?: () => void;
+  onMessageMember?: (userId: string, displayName: string) => void;
 }
 
 // ─── Main Component ────────────────────────────────────────
-export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation }: NearbyViewProps) {
+export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation, onMessageMember }: NearbyViewProps) {
   const { toast } = useToast();
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "requesting" | "granted" | "denied" | "saving"
