@@ -32,15 +32,14 @@ export default function CommunityPage() {
   const [pendingJoin, setPendingJoin] = useState<string | null>(null);
   const [dbGroups, setDbGroups] = useState<any[]>([]);
 
-  // Load persisted state + fetch groups
+  // Load persisted state + fetch groups + fetch user memberships
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("signal_community_joined");
-      if (saved) setJoined(JSON.parse(saved));
       const loc = localStorage.getItem("signal_community_location");
       if (loc === "true") setLocationEnabled(true);
     } catch {}
     fetchGroups();
+    fetchMyMemberships();
   }, []);
 
   const fetchGroups = async () => {
@@ -48,9 +47,18 @@ export default function CommunityPage() {
     if (data) setDbGroups(data);
   };
 
+  const fetchMyMemberships = async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) return;
+    const { data } = await supabase
+      .from("community_memberships")
+      .select("group_id")
+      .eq("user_id", userData.user.id);
+    if (data) setJoined(data.map((m) => m.group_id));
+  };
+
   const persistJoined = (newJoined: string[]) => {
     setJoined(newJoined);
-    localStorage.setItem("signal_community_joined", JSON.stringify(newJoined));
   };
 
   const toggleLocation = () => {
@@ -59,25 +67,38 @@ export default function CommunityPage() {
     localStorage.setItem("signal_community_location", String(next));
   };
 
-  const join = (id: string) => {
+  const joinGroupInDb = async (groupId: string) => {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) return;
+    // Idempotent: ignore conflict if already a member
+    await supabase
+      .from("community_memberships")
+      .insert({ user_id: userData.user.id, group_id: groupId });
+  };
+
+  const join = async (id: string) => {
     if (!locationEnabled) {
       setPendingJoin(id);
       setShowOptIn(true);
       return;
     }
-    const newJoined = joined.includes(id) ? joined : [...joined, id];
-    persistJoined(newJoined);
+    if (!joined.includes(id)) {
+      await joinGroupInDb(id);
+      persistJoined([...joined, id]);
+    }
     setActiveGroup(id);
     setSection("chat");
   };
 
-  const handleLocationAccept = () => {
+  const handleLocationAccept = async () => {
     setLocationEnabled(true);
     localStorage.setItem("signal_community_location", "true");
     setShowOptIn(false);
     if (pendingJoin) {
-      const newJoined = joined.includes(pendingJoin) ? joined : [...joined, pendingJoin];
-      persistJoined(newJoined);
+      if (!joined.includes(pendingJoin)) {
+        await joinGroupInDb(pendingJoin);
+        persistJoined([...joined, pendingJoin]);
+      }
       setActiveGroup(pendingJoin);
       setSection("chat");
       setPendingJoin(null);
