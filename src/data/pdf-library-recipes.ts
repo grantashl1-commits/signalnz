@@ -25,7 +25,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   // ─── Menstrual Phase: Iron-Rich, Anti-Inflammatory, Warming ───
   {
     id: "signal-iron-restore-bowl",
-    name: "Signal Iron Restore Bowl",
+    name: "Iron Restore Bowl",
     phase: "menstrual",
     serves: 2,
     prepTime: "25 min",
@@ -52,7 +52,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-golden-immunity-soup",
-    name: "Signal Golden Immunity Soup",
+    name: "Golden Immunity Soup",
     phase: "menstrual",
     serves: 4,
     prepTime: "30 min",
@@ -80,7 +80,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-warming-miso-ramen",
-    name: "Signal Warming Miso Ramen",
+    name: "Warming Miso Ramen",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -108,7 +108,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   // ─── Follicular Phase: Light, Energising, Fermented ───
   {
     id: "signal-spring-grain-bowl",
-    name: "Signal Spring Grain Bowl",
+    name: "Spring Grain Bowl",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -132,7 +132,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-herbed-chickpea-flatbread",
-    name: "Signal Herbed Chickpea Flatbread",
+    name: "Herbed Chickpea Flatbread",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -157,7 +157,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-citrus-tempeh-salad",
-    name: "Signal Citrus Tempeh Salad",
+    name: "Citrus Tempeh Salad",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -185,7 +185,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   // ─── Ovulatory Phase: Light, Raw, Antioxidant-Rich ───
   {
     id: "signal-rainbow-nourish-plate",
-    name: "Signal Rainbow Nourish Plate",
+    name: "Rainbow Nourish Plate",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 min",
@@ -210,7 +210,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-green-goddess-wrap",
-    name: "Signal Green Goddess Wrap",
+    name: "Green Goddess Wrap",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -235,7 +235,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-mango-cashew-sushi-bowl",
-    name: "Signal Mango Cashew Sushi Bowl",
+    name: "Mango Cashew Sushi Bowl",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -261,7 +261,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   // ─── Luteal Phase: Warming, Sustaining, Magnesium-Rich ───
   {
     id: "signal-magnesium-bowl",
-    name: "Signal Magnesium Power Bowl",
+    name: "Magnesium Power Bowl",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -287,7 +287,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-comfort-dhal",
-    name: "Signal Comfort Dhal",
+    name: "Comfort Dhal",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -315,7 +315,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-pms-ease-stew",
-    name: "Signal PMS Ease Stew",
+    name: "PMS Ease Stew",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -345,7 +345,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   // ─── Cross-Phase Staples ───
   {
     id: "signal-seed-cycling-granola",
-    name: "Signal Seed Cycling Granola",
+    name: "Seed Cycling Granola",
     phase: "follicular",
     serves: 10,
     prepTime: "30 min",
@@ -374,7 +374,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-adaptogen-hot-cacao",
-    name: "Signal Adaptogen Hot Cacao",
+    name: "Adaptogen Hot Cacao",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -398,7 +398,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-omega-3-breakfast-bowl",
-    name: "Signal Omega-3 Breakfast Bowl",
+    name: "Omega-3 Breakfast Bowl",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
@@ -424,7 +424,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-hormone-balance-smoothie",
-    name: "Signal Hormone Balance Smoothie",
+    name: "Hormone Balance Smoothie",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -446,7 +446,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-anti-inflammatory-curry",
-    name: "Signal Anti-Inflammatory Curry",
+    name: "Anti-Inflammatory Curry",
     phase: "menstrual",
     serves: 4,
     prepTime: "35 min",
@@ -474,7 +474,7 @@ export const LIBRARY_RECIPES: Recipe[] = [
   },
   {
     id: "signal-protein-recovery-bowl",
-    name: "Signal Protein Recovery Bowl",
+    name: "Protein Recovery Bowl",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",

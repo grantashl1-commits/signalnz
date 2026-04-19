@@ -13,7 +13,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   // ─── Breakfast / Smoothies ───
   {
     id: "signal-wild-blueberry-smoothie-bowl",
-    name: "Signal Wild Blueberry Smoothie Bowl",
+    name: "Wild Blueberry Smoothie Bowl",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -38,7 +38,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-oatmeal-cookie-smoothie",
-    name: "Signal Oatmeal Cookie Dough Smoothie",
+    name: "Oatmeal Cookie Dough Smoothie",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -63,7 +63,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-tropical-chia-pudding",
-    name: "Signal Tropical Chia Pudding",
+    name: "Tropical Chia Pudding",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min + overnight",
@@ -88,7 +88,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-kimchi-tofu-scramble",
-    name: "Signal Kimchi Tofu Scramble Tacos",
+    name: "Kimchi Tofu Scramble Tacos",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
@@ -114,7 +114,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-orange-spice-overnight-oats",
-    name: "Signal Orange Spice Overnight Oats",
+    name: "Orange Spice Overnight Oats",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min + overnight",
@@ -142,7 +142,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   // ─── Soups ───
   {
     id: "signal-curry-carrot-soup",
-    name: "Signal Sun-Kissed Curry Carrot Soup",
+    name: "Sun-Kissed Curry Carrot Soup",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -170,7 +170,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-rosemary-minestrone",
-    name: "Signal Rosemary Minestrone",
+    name: "Rosemary Minestrone",
     phase: "menstrual",
     serves: 6,
     prepTime: "40 min",
@@ -199,7 +199,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-tortilla-soup",
-    name: "Signal 15-Minute Tortilla Soup",
+    name: "15-Minute Tortilla Soup",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",
@@ -229,7 +229,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   // ─── Mains / Bowls ───
   {
     id: "signal-miso-peanut-noodle-bowl",
-    name: "Signal Creamy Miso-Peanut Noodle Bowl",
+    name: "Creamy Miso-Peanut Noodle Bowl",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -258,7 +258,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-sweet-potato-lentil-curry",
-    name: "Signal Sweet Potato Lentil Curry",
+    name: "Sweet Potato Lentil Curry",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -287,7 +287,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-wild-rice-power-bowl",
-    name: "Signal Wild Rice Power Bowl",
+    name: "Wild Rice Power Bowl",
     phase: "ovulatory",
     serves: 2,
     prepTime: "40 min",
@@ -314,7 +314,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-crunchy-tempeh-tacos",
-    name: "Signal Crunchy Tempeh Tacos",
+    name: "Crunchy Tempeh Tacos",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -342,7 +342,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-chickpea-shakshuka",
-    name: "Signal Speedy Chickpea Shakshuka",
+    name: "Speedy Chickpea Shakshuka",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -370,7 +370,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-southwest-quinoa-salad",
-    name: "Signal Southwest Quinoa Salad",
+    name: "Southwest Quinoa Salad",
     phase: "ovulatory",
     serves: 4,
     prepTime: "25 min",
@@ -399,7 +399,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-eat-the-rainbow-salad",
-    name: "Signal Eat the Rainbow Salad",
+    name: "Eat the Rainbow Salad",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -425,7 +425,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-hummus-kimchi-wraps",
-    name: "Signal Hummus Kimchi Wraps",
+    name: "Hummus Kimchi Wraps",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -450,7 +450,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-forbidden-rice-salad",
-    name: "Signal Forbidden Rice Salad",
+    name: "Forbidden Rice Salad",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -477,7 +477,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-peanut-pumpkin-power-bowl",
-    name: "Signal Peanut Pumpkin Power Bowl",
+    name: "Peanut Pumpkin Power Bowl",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -504,7 +504,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-edamame-veggie-rice",
-    name: "Signal Stir-Fried Veggie & Edamame Rice",
+    name: "Stir-Fried Veggie & Edamame Rice",
     phase: "ovulatory",
     serves: 4,
     prepTime: "20 min",
@@ -534,7 +534,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   // ─── Snacks & Treats ───
   {
     id: "signal-energy-bites",
-    name: "Signal 5-Ingredient Energy Bites",
+    name: "5-Ingredient Energy Bites",
     phase: "follicular",
     serves: 12,
     prepTime: "10 min",
@@ -557,7 +557,7 @@ export const PLANT_POWERED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-choc-raspberry-chia-parfait",
-    name: "Signal Chocolate Raspberry Chia Parfait",
+    name: "Chocolate Raspberry Chia Parfait",
     phase: "luteal",
     serves: 2,
     prepTime: "10 min + 2 hrs",
