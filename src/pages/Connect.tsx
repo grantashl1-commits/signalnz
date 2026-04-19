@@ -54,6 +54,8 @@ export default function Connect() {
   const [chatInput, setChatInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const broadcastChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const channelReadyRef = useRef(false);
 
   // Handle purchase success redirect
   useEffect(() => {
