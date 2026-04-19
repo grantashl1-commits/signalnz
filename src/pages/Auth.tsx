@@ -218,9 +218,19 @@ export default function AuthPage() {
                   </button>
                 )}
               </div>
+              <div className="flex justify-center">
+                <HCaptcha
+                  ref={captchaRef}
+                  sitekey={HCAPTCHA_SITE_KEY}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)}
+                  onError={() => setCaptchaToken(null)}
+                  theme="light"
+                />
+              </div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !captchaToken}
                 className="w-full rounded-xl bg-primary px-4 py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {loading ? "Please wait…" : isLogin ? "Sign in" : "Create account"}
