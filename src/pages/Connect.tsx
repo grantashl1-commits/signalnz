@@ -331,11 +331,7 @@ export default function Connect() {
 
     // Broadcast to the other side (postgres_changes won't reach unauthenticated partner)
     if (inserted) {
-      await supabase.channel(`connect-msg-${connectionId}`).send({
-        type: "broadcast",
-        event: "new_message",
-        payload: inserted,
-      });
+      await broadcastNewMessage(inserted);
     }
 
     // Ask AI for coaching response
@@ -360,11 +356,7 @@ export default function Connect() {
         if (aiInserted) {
           // Add locally and broadcast to the other side
           setMessages((prev) => prev.some((m) => m.id === aiInserted.id) ? prev : [...prev, aiInserted]);
-          await supabase.channel(`connect-msg-${connectionId}`).send({
-            type: "broadcast",
-            event: "new_message",
-            payload: aiInserted,
-          });
+          await broadcastNewMessage(aiInserted);
         }
       }
     } catch {
@@ -481,11 +473,7 @@ export default function Connect() {
       inserted = data;
     }
     if (inserted) {
-      await supabase.channel(`connect-msg-${connectionId}`).send({
-        type: "broadcast",
-        event: "new_message",
-        payload: inserted,
-      });
+      await broadcastNewMessage(inserted);
     }
   };
 
