@@ -52,6 +52,10 @@ export interface AIPlannedDay {
   lunch: AIMeal;
   afternoonSnack: AIMeal;
   dinner: AIMeal;
+  /** Kid-friendly alternative for lunch — auto-attached at plan generation when kids > 0 */
+  kidsLunch?: AIMeal;
+  /** Kid-friendly alternative for dinner — auto-attached at plan generation when kids > 0 */
+  kidsDinner?: AIMeal;
 }
 
 export interface AIMealPlan {
