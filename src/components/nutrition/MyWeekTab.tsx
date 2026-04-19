@@ -20,6 +20,7 @@ import {
   getSavedPreferences,
   DEFAULT_PREFS,
   attachKidsMeals,
+  swapKidsMeal,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
