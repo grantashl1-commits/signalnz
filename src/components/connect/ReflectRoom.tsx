@@ -56,29 +56,54 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
 
   const otherRole = partnerRole === "member" ? "partner" : "member";
 
+  const broadcastChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const channelReadyRef = useRef(false);
+
   // Load existing thread
   useEffect(() => {
     loadThread();
 
     // Broadcast realtime — works for unauthenticated partner too.
-    // Each side broadcasts after insert/delete; both sides reload on receipt.
-    const channel = supabase
-      .channel(`reflect-${connectionId}`, { config: { broadcast: { self: false } } })
+    // CRITICAL: keep a single subscribed channel and send through IT.
+    channelReadyRef.current = false;
+    const channel = supabase.channel(`reflect-${connectionId}`, {
+      config: { broadcast: { self: false, ack: true } },
+    });
+    channel
       .on("broadcast", { event: "thread_update" }, () => {
+        console.log("[Reflect] received thread_update");
         loadThread();
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log("[Reflect] channel status:", status);
+        if (status === "SUBSCRIBED") channelReadyRef.current = true;
+      });
+    broadcastChannelRef.current = channel;
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      channelReadyRef.current = false;
+      broadcastChannelRef.current = null;
+      supabase.removeChannel(channel);
+    };
   }, [connectionId]);
 
-  // Notify the other side that the thread changed
+  // Notify the other side that the thread changed (through SUBSCRIBED channel)
   const broadcastThreadUpdate = async () => {
-    await supabase.channel(`reflect-${connectionId}`).send({
-      type: "broadcast",
-      event: "thread_update",
-      payload: { at: Date.now() },
-    });
+    const channel = broadcastChannelRef.current;
+    if (!channel) return;
+    for (let i = 0; i < 20 && !channelReadyRef.current; i++) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    try {
+      const result = await channel.send({
+        type: "broadcast",
+        event: "thread_update",
+        payload: { at: Date.now() },
+      });
+      console.log("[Reflect] broadcast result:", result);
+    } catch (e) {
+      console.error("[Reflect] broadcast error:", e);
+    }
   };
 
   const loadThread = async () => {
