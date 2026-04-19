@@ -176,6 +176,7 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
   const [showBoards, setShowBoards] = useState(false);
   const [activeRitual, setActiveRitual] = useState<typeof DREAM_RITUALS[0] | null>(null);
   const [showFutureSelf, setShowFutureSelf] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "canvas">("list");
 
   // Auto-create a default board if none exist
   useEffect(() => {
