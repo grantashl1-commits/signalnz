@@ -97,6 +97,7 @@ const QUIZ_PAIRS: QuizPair[] = [
   { a: { text: "my partner says something encouraging to me.", lang: "words" }, b: { text: "I get to spend time in a shared activity or hobby with my partner.", lang: "time" } },
   { a: { text: "my partner surprises me with a small token of their appreciation.", lang: "gifts" }, b: { text: "my partner and I touch a lot during the normal course of the day.", lang: "touch" } },
   { a: { text: "my partner helps me out — especially if I know they're already busy.", lang: "service" }, b: { text: "I hear my partner specifically tell me, \"I appreciate you.\"", lang: "words" } },
+  { a: { text: "my partner and I embrace after we've been apart for a while.", lang: "touch" }, b: { text: "I hear my partner say how much I mean to him/her.", lang: "words" } },
 ];
 
 const LANG_LABELS: Record<Lang, string> = {
