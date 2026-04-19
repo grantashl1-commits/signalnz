@@ -194,6 +194,15 @@ export function useTrainingProgram() {
     return (data as unknown as WorkoutExercise[]) || [];
   }, []);
 
+  const fetchWorkoutIntervals = useCallback(async (templateId: string): Promise<WorkoutInterval[]> => {
+    const { data } = await supabase
+      .from("workout_intervals" as any)
+      .select("*")
+      .eq("workout_id", templateId)
+      .order("order_index");
+    return ((data as any) as WorkoutInterval[]) || [];
+  }, []);
+
   return {
     goals,
     goalCategoryId,
@@ -203,5 +212,6 @@ export function useTrainingProgram() {
     selectGoal,
     fetchWorkouts,
     fetchWorkoutExercises,
+    fetchWorkoutIntervals,
   };
 }
