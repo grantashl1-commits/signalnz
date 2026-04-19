@@ -467,6 +467,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
             startCycleDay: cycleDay,
             endCycleDay: cycleDay + 6,
             userDietaryDislikes: dietaryDislikes,
+            userDietaryPrefs: dietaryPrefs,
           },
         }).then(async (resp) => {
           if (resp.error) {

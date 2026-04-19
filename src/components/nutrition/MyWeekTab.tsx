@@ -195,6 +195,7 @@ export default function MyWeekTab() {
         userCarbTargetG: carbTargetG ?? undefined,
         userFatTargetG: fatTargetG ?? undefined,
         userDietaryDislikes: dietaryDislikes?.length ? dietaryDislikes : undefined,
+        userDietaryPrefs: dietaryPreferences?.length ? dietaryPreferences : undefined,
       };
 
       for (const batch of batches) {
