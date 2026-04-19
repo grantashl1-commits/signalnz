@@ -522,7 +522,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
                 {saving ? (
                   <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <><Save className="h-4 w-4" /> Save to Signal</>
+                  <><Save className="h-4 w-4" /> Save session</>
                 )}
               </button>
             </div>
@@ -531,7 +531,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
                 <Check className="h-3 w-3 text-emerald-600" />
               </div>
-              <span className="font-body text-sm text-emerald-600 font-medium">Session saved to Signal</span>
+              <span className="font-body text-sm text-emerald-600 font-medium">Session saved</span>
             </div>
           )}
 
