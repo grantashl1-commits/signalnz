@@ -271,7 +271,12 @@ export default function MyWeekTab() {
         }
         return d;
       });
-      const updated = { ...aiPlan, days: updatedDays };
+      let updated = { ...aiPlan, days: updatedDays };
+      // Re-attach kids meals if the regenerated slot was a lunch/dinner so the
+      // kid alternative tracks the new parent meal and the shopping list updates.
+      if (mealType === "lunch" || mealType === "dinner") {
+        updated = attachKidsMeals(updated);
+      }
       setAiPlan(updated);
       saveAIMealPlan(updated);
       toast.success("Meal regenerated!");
