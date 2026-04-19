@@ -86,6 +86,17 @@ const QUIZ_PAIRS: QuizPair[] = [
   { a: { text: "my partner works on special projects with me that I have to complete.", lang: "service" }, b: { text: "my partner gives me an exciting gift.", lang: "gifts" } },
   { a: { text: "I'm complimented by my partner on my appearance.", lang: "words" }, b: { text: "my partner takes the time to listen to me and really understand my feelings.", lang: "time" } },
   { a: { text: "my partner and I share non-sexual touch in public.", lang: "touch" }, b: { text: "my partner offers to run errands for me.", lang: "service" } },
+  // Love Nudge screenshots 20–29
+  { a: { text: "my partner does a bit more than his/her normal share of the responsibilities we share (around the house, work-related, etc).", lang: "service" }, b: { text: "I get a gift that I know my partner put thought into choosing.", lang: "gifts" } },
+  { a: { text: "my partner doesn't check his/her phone while we're talking.", lang: "time" }, b: { text: "my partner goes out of their way to do something that relieves pressure on me.", lang: "service" } },
+  { a: { text: "I can look forward to a holiday because of a gift I anticipate receiving.", lang: "gifts" }, b: { text: "I hear the words, \"I appreciate you\" from my partner.", lang: "words" } },
+  { a: { text: "my partner brings me a little gift after he/she has been traveling without me.", lang: "gifts" }, b: { text: "my partner takes care of something I'm responsible to do but I feel too stressed to do at the time.", lang: "service" } },
+  { a: { text: "my partner doesn't interrupt me while I'm talking.", lang: "time" }, b: { text: "gift giving is an important part of our relationship.", lang: "gifts" } },
+  { a: { text: "my partner helps me out when he/she knows I'm already tired.", lang: "service" }, b: { text: "I get to go somewhere while spending time with my partner.", lang: "time" } },
+  { a: { text: "my partner and I are physically intimate.", lang: "touch" }, b: { text: "my partner gives me a little gift that he/she picked up in the course of their normal day.", lang: "gifts" } },
+  { a: { text: "my partner says something encouraging to me.", lang: "words" }, b: { text: "I get to spend time in a shared activity or hobby with my partner.", lang: "time" } },
+  { a: { text: "my partner surprises me with a small token of their appreciation.", lang: "gifts" }, b: { text: "my partner and I touch a lot during the normal course of the day.", lang: "touch" } },
+  { a: { text: "my partner helps me out — especially if I know they're already busy.", lang: "service" }, b: { text: "I hear my partner specifically tell me, \"I appreciate you.\"", lang: "words" } },
 ];
 
 const LANG_LABELS: Record<Lang, string> = {
