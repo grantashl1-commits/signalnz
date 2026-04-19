@@ -130,8 +130,12 @@ export default function MyWeekTab() {
           .maybeSingle();
         if (data?.plan_data) {
           const restoredPlan = data.plan_data as AIMealPlan;
-          setAiPlan(restoredPlan);
-          saveAIMealPlan(restoredPlan);
+          // Backfill kids meals if the saved plan predates the kids-at-generation flow.
+          const finalPlan = (restoredPlan.prepPreferences?.kids ?? 0) > 0
+            ? attachKidsMeals(restoredPlan)
+            : restoredPlan;
+          setAiPlan(finalPlan);
+          saveAIMealPlan(finalPlan);
           setStep("plan");
         }
       } catch (e) {
