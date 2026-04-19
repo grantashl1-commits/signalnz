@@ -85,10 +85,14 @@ export default function ExerciseDemonstration({
             alt={`${exerciseName} illustration`}
             className="h-full w-full object-contain"
             loading="lazy"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           />
         ) : (
-          // Minimal placeholder while loading
-          <div className="h-full w-full animate-pulse bg-secondary/50 rounded-xl" />
+          <div className="h-full w-full flex items-center justify-center bg-primary/10">
+            <span className="font-display text-xs font-bold text-primary uppercase">
+              {exerciseName.slice(0, 2)}
+            </span>
+          </div>
         )}
       </div>
       {label}
