@@ -60,6 +60,7 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
     },
     steps: script.steps,
     ttsScript: script.ttsScript,
+    author: script.evidenceSource,
   };
 }
 

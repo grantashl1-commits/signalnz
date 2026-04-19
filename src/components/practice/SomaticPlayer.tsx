@@ -52,6 +52,8 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     practiceId: practice.id,
     ttsScript,
     enabled: !!ttsScript,
+    author: practice.author,
+    voiceGender: practice.voiceGender,
   });
 
   // Use generated audio URL if available, otherwise fall back to practice config

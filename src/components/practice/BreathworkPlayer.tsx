@@ -39,6 +39,8 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
     practiceId: practice.id,
     ttsScript: practice.ttsScript || "",
     enabled: hasTtsScript,
+    author: practice.author,
+    voiceGender: practice.voiceGender,
   });
 
   // Determine the best audio source: TTS narration > pre-uploaded file
