@@ -371,8 +371,9 @@ export function generateAIShoppingList(plan: AIMealPlan, weekNumber: number): Sh
   const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
 
   weekDays.forEach(day => {
-    [day.breakfast, day.lunch, day.dinner].forEach(meal => {
-      if (meal.isLeftover) return;
+    const meals: (AIMeal | undefined)[] = [day.breakfast, day.lunch, day.dinner, day.kidsLunch, day.kidsDinner];
+    meals.forEach(meal => {
+      if (!meal || meal.isLeftover) return;
       meal.ingredients.forEach(ingStr => {
         const parsed = parseIngredient(ingStr);
         const baseQty = parseQuantity(parsed.quantity);
