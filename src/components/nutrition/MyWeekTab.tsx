@@ -707,6 +707,34 @@ export default function MyWeekTab() {
                                 )}
                               </div>
                             )}
+                            {/* Kids alternative — auto-attached at plan generation */}
+                            {(key === "lunch" || key === "dinner") && (() => {
+                              const kidsMeal = key === "lunch" ? (day as any).kidsLunch : (day as any).kidsDinner;
+                              if (!kidsMeal) return null;
+                              return (
+                                <div
+                                  className="mt-3 rounded-xl p-3"
+                                  style={{
+                                    borderLeft: `3px solid ${dayPhaseColor}`,
+                                    backgroundColor: `${dayPhaseColor}08`,
+                                  }}
+                                >
+                                  <div className="flex items-center gap-1.5 mb-1">
+                                    <span className="font-body text-[9px] uppercase tracking-wider font-semibold" style={{ color: dayPhaseColor }}>
+                                      Kids' option
+                                    </span>
+                                    <span className="font-body text-[9px] text-muted-foreground">·</span>
+                                    <span className="font-body text-[9px] text-muted-foreground">{kidsMeal.prepTime} · serves {kidsMeal.serves}</span>
+                                  </div>
+                                  <p className="font-hand text-base font-bold" style={{ color: dayPhaseColor }}>
+                                    {kidsMeal.name}
+                                  </p>
+                                  <p className="font-body text-[10px] text-muted-foreground italic mt-1">
+                                    Ingredients are already in your shopping list.
+                                  </p>
+                                </div>
+                              );
+                            })()}
                           </div>
                         );
                       })}
