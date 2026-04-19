@@ -63,6 +63,9 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
   useEffect(() => {
     loadThread();
 
+    // Defensive polling fallback every 5s
+    const pollInterval = setInterval(loadThread, 5000);
+
     // Broadcast realtime — works for unauthenticated partner too.
     // CRITICAL: keep a single subscribed channel and send through IT.
     channelReadyRef.current = false;
@@ -81,6 +84,7 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
     broadcastChannelRef.current = channel;
 
     return () => {
+      clearInterval(pollInterval);
       channelReadyRef.current = false;
       broadcastChannelRef.current = null;
       supabase.removeChannel(channel);
