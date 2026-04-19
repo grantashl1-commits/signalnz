@@ -121,13 +121,11 @@ export default function Connect() {
 
     const loadMessages = async () => {
       if (isPartnerSession) {
-        // Partner: use proxy
         try {
           const data = await partnerProxy("load_messages");
           if (data) setMessages(data as Message[]);
         } catch { /* silent */ }
       } else {
-        // Member: direct DB
         const { data } = await supabase
           .from("connect_messages")
           .select("*")
@@ -138,24 +136,20 @@ export default function Connect() {
     };
     loadMessages();
 
-    // Realtime subscription (works for members; partners poll or get optimistic updates)
-    if (!isPartnerSession) {
-      const channel = supabase
-        .channel(`connect-${connectionId}`)
-        .on("postgres_changes", {
-          event: "INSERT",
-          schema: "public",
-          table: "connect_messages",
-          filter: `connection_id=eq.${connectionId}`,
-        }, (payload) => {
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === (payload.new as Message).id)) return prev;
-            return [...prev, payload.new as Message];
-          });
-        })
-        .subscribe();
-      return () => { supabase.removeChannel(channel); };
-    }
+    // Broadcast realtime — works for both authenticated members AND unauthenticated partners.
+    // Both sides subscribe to the same channel; sender broadcasts after insert.
+    const channel = supabase
+      .channel(`connect-msg-${connectionId}`, { config: { broadcast: { self: false } } })
+      .on("broadcast", { event: "new_message" }, (payload) => {
+        const msg = payload.payload as Message;
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [connectionId, isPartnerSession]);
 
   // Auto-scroll chat
@@ -282,15 +276,27 @@ export default function Connect() {
 
     // Optimistic local add
     const tempId = crypto.randomUUID();
-    setMessages((prev) => [...prev, { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() }]);
+    const optimistic: Message = { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() };
+    setMessages((prev) => [...prev, optimistic]);
 
+    let inserted: any = null;
     if (isPartnerSession) {
-      await partnerProxy("insert_message", { sender_role: role, content: text });
+      inserted = await partnerProxy("insert_message", { sender_role: role, content: text });
     } else {
-      await supabase.from("connect_messages").insert({
+      const { data } = await supabase.from("connect_messages").insert({
         connection_id: connectionId,
         sender_role: role,
         content: text,
+      }).select().single();
+      inserted = data;
+    }
+
+    // Broadcast to the other side (postgres_changes won't reach unauthenticated partner)
+    if (inserted) {
+      await supabase.channel(`connect-msg-${connectionId}`).send({
+        type: "broadcast",
+        event: "new_message",
+        payload: inserted,
       });
     }
 
@@ -302,13 +308,24 @@ export default function Connect() {
         body: { message: text, history: recentHistory, connection_id: connectionId },
       });
       if (!error && data?.response) {
+        let aiInserted: any = null;
         if (isPartnerSession) {
-          await partnerProxy("insert_message", { sender_role: "ai", content: data.response });
+          aiInserted = await partnerProxy("insert_message", { sender_role: "ai", content: data.response });
         } else {
-          await supabase.from("connect_messages").insert({
+          const { data: aiRow } = await supabase.from("connect_messages").insert({
             connection_id: connectionId,
             sender_role: "ai",
             content: data.response,
+          }).select().single();
+          aiInserted = aiRow;
+        }
+        if (aiInserted) {
+          // Add locally and broadcast to the other side
+          setMessages((prev) => prev.some((m) => m.id === aiInserted.id) ? prev : [...prev, aiInserted]);
+          await supabase.channel(`connect-msg-${connectionId}`).send({
+            type: "broadcast",
+            event: "new_message",
+            payload: aiInserted,
           });
         }
       }
@@ -409,12 +426,29 @@ export default function Connect() {
   const shareToPartner = async (text: string) => {
     if (!connectionId) return;
     const role = isPartnerSession ? "partner" : "member";
-    await supabase.from("connect_messages").insert({
-      connection_id: connectionId,
-      sender_role: role,
-      content: text,
-      metadata: { type: "shared_activity" },
-    });
+    let inserted: any = null;
+    if (isPartnerSession) {
+      inserted = await partnerProxy("insert_message", {
+        sender_role: role,
+        content: text,
+        metadata: { type: "shared_activity" },
+      });
+    } else {
+      const { data } = await supabase.from("connect_messages").insert({
+        connection_id: connectionId,
+        sender_role: role,
+        content: text,
+        metadata: { type: "shared_activity" },
+      }).select().single();
+      inserted = data;
+    }
+    if (inserted) {
+      await supabase.channel(`connect-msg-${connectionId}`).send({
+        type: "broadcast",
+        event: "new_message",
+        payload: inserted,
+      });
+    }
   };
 
   if (view === "space" && connectionId) {
