@@ -75,6 +75,17 @@ const QUIZ_PAIRS: QuizPair[] = [
   { a: { text: "my partner expresses appreciation for something specific I did.", lang: "words" }, b: { text: "my partner gives me a long, lingering hug.", lang: "touch" } },
   { a: { text: "my partner takes care of an errand I've been putting off.", lang: "service" }, b: { text: "my partner gives me a souvenir from somewhere they've been.", lang: "gifts" } },
   { a: { text: "my partner and I take a quiet walk together.", lang: "time" }, b: { text: "my partner squeezes my hand to reassure me.", lang: "touch" } },
+  // Additional Love Nudge "It's more meaningful to me when..." pairs
+  { a: { text: "I hear my partner tell me, 'I'm proud of you.'", lang: "words" }, b: { text: "my partner helps me with a task.", lang: "service" } },
+  { a: { text: "I get to do things with my partner.", lang: "time" }, b: { text: "I hear supportive words from my partner.", lang: "words" } },
+  { a: { text: "my partner does things for me instead of just talking about doing nice things.", lang: "service" }, b: { text: "I feel connected to my partner through a hug.", lang: "touch" } },
+  { a: { text: "I hear praise from my partner.", lang: "words" }, b: { text: "my partner gives me something that shows they were really thinking about me.", lang: "gifts" } },
+  { a: { text: "I'm able to just be around my partner.", lang: "time" }, b: { text: "I get a back rub or massage from my partner.", lang: "touch" } },
+  { a: { text: "my partner reacts positively to something I've accomplished.", lang: "words" }, b: { text: "my partner does something for me that I know they don't particularly enjoy.", lang: "service" } },
+  { a: { text: "my partner and I kiss frequently.", lang: "touch" }, b: { text: "I sense my partner is showing interest in the things I care about.", lang: "time" } },
+  { a: { text: "my partner works on special projects with me that I have to complete.", lang: "service" }, b: { text: "my partner gives me an exciting gift.", lang: "gifts" } },
+  { a: { text: "I'm complimented by my partner on my appearance.", lang: "words" }, b: { text: "my partner takes the time to listen to me and really understand my feelings.", lang: "time" } },
+  { a: { text: "my partner and I share non-sexual touch in public.", lang: "touch" }, b: { text: "my partner offers to run errands for me.", lang: "service" } },
 ];
 
 const LANG_LABELS: Record<Lang, string> = {
