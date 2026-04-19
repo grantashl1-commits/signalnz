@@ -138,6 +138,10 @@ export default function Connect() {
     };
     loadMessages();
 
+    // Defensive polling fallback every 5s — guarantees messages eventually appear
+    // even if realtime broadcast fails (e.g. for unauthenticated partner sessions).
+    const pollInterval = setInterval(loadMessages, 5000);
+
     // Broadcast realtime — works for both authenticated members AND unauthenticated partners.
     // CRITICAL: We must keep a single subscribed channel and send through IT.
     // Sending via supabase.channel(...).send(...) on an unsubscribed channel silently drops the message.
