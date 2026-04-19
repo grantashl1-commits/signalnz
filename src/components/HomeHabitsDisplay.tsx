@@ -43,7 +43,7 @@ export default function HomeHabitsDisplay() {
           <span className="font-body text-xs text-muted-foreground">
             {completedCount}/{habits.length}
           </span>
-          <Link to="/practice" className="font-body text-[11px] text-primary font-medium">
+          <Link to="/my-practice" className="font-body text-[11px] text-primary font-medium">
             Edit
           </Link>
         </div>
@@ -80,7 +80,7 @@ export default function HomeHabitsDisplay() {
                         {done && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
                       </div>
                       <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
-                      <span className={`font-body text-sm flex-1 transition-all duration-200 ${done ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
+                      <span className={`font-hand text-lg flex-1 transition-all duration-200 ${done ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
                         {habit.name}
                       </span>
                     </motion.button>

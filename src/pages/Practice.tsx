@@ -459,7 +459,7 @@ export default function PracticePage() {
                             </button>
 
                             <div className="flex-1 min-w-0">
-                              <p className={`font-display text-base font-semibold leading-snug transition-all ${
+                              <p className={`font-hand text-xl leading-snug transition-all ${
                                 done ? "line-through text-muted-foreground" : "text-foreground"
                               }`}>
                                 {habit.name}
