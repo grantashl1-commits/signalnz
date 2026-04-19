@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import { Eye, Lock } from "lucide-react";
-import { HandDrawnCamera, HandDrawnEye, HandDrawnLock } from "@/components/BotanicalElements";
+import { useState, useEffect } from "react";
+import { Eye, Lock, MapPin } from "lucide-react";
+import { HandDrawnCamera } from "@/components/BotanicalElements";
+import { Switch } from "@/components/ui/switch";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,8 +9,14 @@ import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
 interface CommunityProfileProps {
+  /** Currently visible in the Nearby tab (DB-backed). */
   locationEnabled: boolean;
-  onToggleLocation: () => void;
+  /** Whether a user_locations row exists at all (i.e. they've completed GPS setup once). */
+  hasLocationRow: boolean;
+  /** Async toggle — returns true on success so we can revert the Switch on failure. */
+  onToggleLocation: () => Promise<boolean> | boolean | void;
+  /** Jump to the Nearby tab for first-time location setup. */
+  onGoToNearby: () => void;
 }
 
 const FIELDS = [
@@ -33,7 +40,7 @@ interface ProfileData {
   visibility: Record<string, boolean>;
 }
 
-export default function CommunityProfile({ locationEnabled, onToggleLocation }: CommunityProfileProps) {
+export default function CommunityProfile({ locationEnabled, hasLocationRow, onToggleLocation, onGoToNearby }: CommunityProfileProps) {
   const { user } = useAuth();
   const { avatarUrl } = useProfile();
   const [profileData, setProfileData] = useState<ProfileData>({
@@ -45,8 +52,11 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
   const displayPhoto = avatarUrl || photo;
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [togglingLocation, setTogglingLocation] = useState(false);
+  // Optimistic UI for the location switch — kept in sync with the DB-derived prop.
+  const [optimisticLocation, setOptimisticLocation] = useState(locationEnabled);
+  useEffect(() => { setOptimisticLocation(locationEnabled); }, [locationEnabled]);
 
-  // Load from database on mount
   useEffect(() => {
     if (!user) { setLoading(false); return; }
     loadProfile();
@@ -76,7 +86,6 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
         visibility: (d.visibility && typeof d.visibility === "object") ? d.visibility : { ...DEFAULT_VISIBILITY },
       });
     } else {
-      // Try loading from localStorage for migration
       try {
         const raw = localStorage.getItem("signal_community_profile");
         if (raw) {
@@ -100,14 +109,22 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
     setProfileData(prev => ({ ...prev, visibility: { ...prev.visibility, [key]: !prev.visibility[key] } }));
   };
 
-  const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setProfileData(prev => ({ ...prev, photo: ev.target?.result as string }));
-    };
-    reader.readAsDataURL(file);
+  const handleLocationToggle = async (next: boolean) => {
+    if (togglingLocation) return;
+    haptic("light");
+    if (!hasLocationRow) {
+      onGoToNearby();
+      return;
+    }
+    setOptimisticLocation(next);
+    setTogglingLocation(true);
+    try {
+      const result = await onToggleLocation();
+      // If parent returns false (failure) revert the switch.
+      if (result === false) setOptimisticLocation(!next);
+    } finally {
+      setTogglingLocation(false);
+    }
   };
 
   const handleSave = async () => {
@@ -139,7 +156,6 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
 
       if (error) throw error;
 
-      // Also keep localStorage as backup
       localStorage.setItem("signal_community_profile", JSON.stringify(profileData));
 
       setSaved(true);
@@ -195,26 +211,50 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
         </p>
       </div>
 
-      {/* Nearby toggle */}
+      {/* Nearby toggle — DB-backed */}
       <div className="card-warm p-4">
-        <div className="flex justify-between items-center mb-1.5 gap-3">
+        <div className="flex justify-between items-start mb-2 gap-3">
           <div className="min-w-0 flex-1">
-            <p className="font-display text-[15px] italic text-foreground mb-0.5">
-              {locationEnabled ? "Visible in Nearby" : "Hidden from Nearby"}
+            <div className="flex items-center gap-2 mb-1">
+              <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+              <p className="font-display text-[15px] italic text-foreground">
+                {!hasLocationRow
+                  ? "Location not set up"
+                  : optimisticLocation
+                    ? "Visible in Nearby"
+                    : "Hidden from Nearby"}
+              </p>
+            </div>
+            <p className="font-body text-[11px] text-muted-foreground leading-relaxed">
+              {!hasLocationRow
+                ? "Set up your suburb in the Nearby tab to share location with neighbours."
+                : "Suburb-level only · your address is never shared"}
             </p>
-            <p className="font-body text-[11px] text-muted-foreground">Suburb-level only · your address is never shared</p>
           </div>
-          <button
-            onClick={onToggleLocation}
-            className="touch-btn w-12 h-7 rounded-full relative transition-colors flex-shrink-0"
-            style={{ backgroundColor: locationEnabled ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.3)" }}
-          >
-            <div
-              className="w-5 h-5 rounded-full bg-card absolute top-[3px] transition-[left] shadow-sm"
-              style={{ left: locationEnabled ? 23 : 3 }}
+          {hasLocationRow ? (
+            <Switch
+              checked={optimisticLocation}
+              disabled={togglingLocation}
+              onCheckedChange={handleLocationToggle}
+              aria-label="Toggle Nearby visibility"
+              className="flex-shrink-0 mt-1"
             />
-          </button>
+          ) : (
+            <button
+              onClick={onGoToNearby}
+              className="touch-btn flex-shrink-0 mt-0.5 text-[11px] font-body font-medium px-3 py-1.5 rounded-full bg-primary text-primary-foreground active:scale-[0.97] whitespace-nowrap"
+            >
+              Set up
+            </button>
+          )}
         </div>
+        {hasLocationRow && (
+          <p className="font-display text-[11px] italic text-muted-foreground mt-2 leading-snug">
+            {optimisticLocation
+              ? "Other Signal members in your suburb can see your profile and message you."
+              : "You can still browse Nearby — others just can't see you."}
+          </p>
+        )}
       </div>
 
       {/* Section label */}
