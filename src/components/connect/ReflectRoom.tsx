@@ -60,21 +60,26 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
   useEffect(() => {
     loadThread();
 
-    // Realtime for new messages
+    // Broadcast realtime — works for unauthenticated partner too.
+    // Each side broadcasts after insert/delete; both sides reload on receipt.
     const channel = supabase
-      .channel(`reflect-${connectionId}`)
-      .on("postgres_changes", {
-        event: "INSERT",
-        schema: "public",
-        table: "connect_reflections",
-        filter: `connection_id=eq.${connectionId}`,
-      }, () => {
+      .channel(`reflect-${connectionId}`, { config: { broadcast: { self: false } } })
+      .on("broadcast", { event: "thread_update" }, () => {
         loadThread();
       })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
   }, [connectionId]);
+
+  // Notify the other side that the thread changed
+  const broadcastThreadUpdate = async () => {
+    await supabase.channel(`reflect-${connectionId}`).send({
+      type: "broadcast",
+      event: "thread_update",
+      payload: { at: Date.now() },
+    });
+  };
 
   const loadThread = async () => {
     let data: any[] | null = null;
