@@ -8,13 +8,14 @@ import { haptic } from "@/hooks/use-mobile";
 import TodayTab from "@/components/nutrition/TodayTab";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import DiscoverTab from "@/components/nutrition/DiscoverTab";
+import KidsMealsTab from "@/components/nutrition/KidsMealsTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
 import { Dumbbell, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
 
-type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
+type TabId = "today" | "myweek" | "discover" | "kids" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
@@ -32,6 +33,7 @@ export default function NutritionPage() {
     { id: "today", label: "Today" },
     { id: "myweek", label: "My Week" },
     { id: "discover", label: "Discover" },
+    { id: "kids", label: "Kids Meals" },
     { id: "supplements", label: "Supplements" },
     { id: "shop", label: "Shop" },
   ];
@@ -88,6 +90,7 @@ export default function NutritionPage() {
           {activeTab === "today" && <TodayTab />}
           {activeTab === "myweek" && <MyWeekTab />}
           {activeTab === "discover" && <DiscoverTab />}
+          {activeTab === "kids" && <KidsMealsTab />}
           {activeTab === "supplements" && <SupplementRecommender />}
           {activeTab === "shop" && <ShoppingListPanel />}
         </div>

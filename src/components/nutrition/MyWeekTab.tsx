@@ -19,6 +19,7 @@ import {
   clearAIMealPlan,
   getSavedPreferences,
   DEFAULT_PREFS,
+  attachKidsMeals,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
@@ -129,8 +130,12 @@ export default function MyWeekTab() {
           .maybeSingle();
         if (data?.plan_data) {
           const restoredPlan = data.plan_data as AIMealPlan;
-          setAiPlan(restoredPlan);
-          saveAIMealPlan(restoredPlan);
+          // Backfill kids meals if the saved plan predates the kids-at-generation flow.
+          const finalPlan = (restoredPlan.prepPreferences?.kids ?? 0) > 0
+            ? attachKidsMeals(restoredPlan)
+            : restoredPlan;
+          setAiPlan(finalPlan);
+          saveAIMealPlan(finalPlan);
           setStep("plan");
         }
       } catch (e) {
@@ -224,13 +229,16 @@ export default function MyWeekTab() {
         createdAt: Date.now(),
         lockedMeals: {},
       };
-      setAiPlan(plan);
-      saveAIMealPlan(plan);
+      // Attach kid-friendly alternatives for each lunch/dinner so their
+      // ingredients flow into the shopping list.
+      const planWithKids = attachKidsMeals(plan);
+      setAiPlan(planWithKids);
+      saveAIMealPlan(planWithKids);
       setStep("plan");
       toast.success("Your personalised 4-week plan is ready!");
 
       // Phase 4B: persist to Supabase in background
-      savePlanToSupabase(plan);
+      savePlanToSupabase(planWithKids);
     } catch (e: any) {
       console.error("AI plan generation failed:", e);
       toast.error(e.message || "Failed to generate plan. Please try again.");
@@ -267,7 +275,12 @@ export default function MyWeekTab() {
         }
         return d;
       });
-      const updated = { ...aiPlan, days: updatedDays };
+      let updated = { ...aiPlan, days: updatedDays };
+      // Re-attach kids meals if the regenerated slot was a lunch/dinner so the
+      // kid alternative tracks the new parent meal and the shopping list updates.
+      if (mealType === "lunch" || mealType === "dinner") {
+        updated = attachKidsMeals(updated);
+      }
       setAiPlan(updated);
       saveAIMealPlan(updated);
       toast.success("Meal regenerated!");
@@ -694,6 +707,34 @@ export default function MyWeekTab() {
                                 )}
                               </div>
                             )}
+                            {/* Kids alternative — auto-attached at plan generation */}
+                            {(key === "lunch" || key === "dinner") && (() => {
+                              const kidsMeal = key === "lunch" ? (day as any).kidsLunch : (day as any).kidsDinner;
+                              if (!kidsMeal) return null;
+                              return (
+                                <div
+                                  className="mt-3 rounded-xl p-3"
+                                  style={{
+                                    borderLeft: `3px solid ${dayPhaseColor}`,
+                                    backgroundColor: `${dayPhaseColor}08`,
+                                  }}
+                                >
+                                  <div className="flex items-center gap-1.5 mb-1">
+                                    <span className="font-body text-[9px] uppercase tracking-wider font-semibold" style={{ color: dayPhaseColor }}>
+                                      Kids' option
+                                    </span>
+                                    <span className="font-body text-[9px] text-muted-foreground">·</span>
+                                    <span className="font-body text-[9px] text-muted-foreground">{kidsMeal.prepTime} · serves {kidsMeal.serves}</span>
+                                  </div>
+                                  <p className="font-hand text-base font-bold" style={{ color: dayPhaseColor }}>
+                                    {kidsMeal.name}
+                                  </p>
+                                  <p className="font-body text-[10px] text-muted-foreground italic mt-1">
+                                    Ingredients are already in your shopping list.
+                                  </p>
+                                </div>
+                              );
+                            })()}
                           </div>
                         );
                       })}

@@ -9,7 +9,6 @@ import { findRecipeByName } from "@/lib/recipe-index";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
-import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { getAIMealPlan, type AIMeal } from "@/lib/weekly-planner";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
@@ -514,6 +513,7 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
   isEaten: boolean; phaseColor: string; phase: Phase; scale: number;
   onMarkEaten: () => void; onScaleChange: (v: number) => void; onClose: () => void;
 }) {
+  const { currentCycleDay } = useCycle();
   const [showMethod, setShowMethod] = useState(false);
   const ingredients = meal.aiMeal?.ingredients || meal.recipe?.ingredients || [];
   const method = meal.aiMeal?.method || meal.recipe?.method || [];
@@ -601,9 +601,32 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
           </>
         )}
 
-        {/* Kids alternative swap */}
-        <KidsDinnerAlt mealName={meal.name} mealType={meal.slot as any} phase={phase} />
-
+        {/* Kids alternative is now picked at plan generation — find it on aiMeal's parent day */}
+        {(meal.slot === "lunch" || meal.slot === "dinner") && (() => {
+          const aiPlan = getAIMealPlan();
+          if (!aiPlan) return null;
+          const today = aiPlan.days.find(d => d.cycleDay === currentCycleDay);
+          const kidsMeal = today
+            ? (meal.slot === "lunch" ? (today as any).kidsLunch : (today as any).kidsDinner)
+            : null;
+          if (!kidsMeal) return null;
+          return (
+            <div
+              className="mt-2 rounded-xl p-3"
+              style={{ borderLeft: `3px solid ${phaseColor}`, backgroundColor: `${phaseColor}08` }}
+            >
+              <span className="font-body text-[9px] uppercase tracking-wider font-semibold" style={{ color: phaseColor }}>
+                Kids' option
+              </span>
+              <p className="font-hand text-base font-bold mt-0.5" style={{ color: phaseColor }}>
+                {kidsMeal.name}
+              </p>
+              <p className="font-body text-[10px] text-muted-foreground italic mt-1">
+                {kidsMeal.prepTime} · serves {kidsMeal.serves} · ingredients in your shopping list
+              </p>
+            </div>
+          );
+        })()}
         <button onClick={() => !isEaten && onMarkEaten()} disabled={isEaten}
           className="touch-btn w-full rounded-full py-3 min-h-[44px] font-body text-sm font-bold transition-all flex items-center justify-center gap-2"
           style={{ backgroundColor: isEaten ? phaseColor : "transparent", color: isEaten ? "white" : phaseColor, border: `2px solid ${phaseColor}` }}>
