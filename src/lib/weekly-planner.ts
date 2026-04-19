@@ -459,7 +459,7 @@ export function clearAIMealPlan(): void {
 }
 
 // ─── Kids meals — attach kid-friendly alternatives at plan generation ──────
-import { findKidsRecipe, type KidsRecipe } from "@/data/kids-recipes";
+import { findKidsRecipe, KIDS_RECIPE_BANK, type KidsRecipe } from "@/data/kids-recipes";
 
 function kidsRecipeToAIMeal(recipe: KidsRecipe, mealType: "lunch" | "dinner", phase: Phase): AIMeal {
   return {
@@ -538,15 +538,11 @@ export function swapKidsMeal(
   const currentKey: keyof AIPlannedDay = mealType === "lunch" ? "kidsLunch" : "kidsDinner";
   const currentName = (day[currentKey] as AIMeal | undefined)?.name?.toLowerCase();
 
-  // Build an exclusion list using IDs from the bank that match the current name
+  // Exclude any bank entries matching the current kids' meal name so the swap
+  // always returns a different recipe when possible.
   const exclude: string[] = [];
-  for (const r of (await Promise.resolve([])) as KidsRecipe[]) {
-    // placeholder — replaced below
-  }
-  // Resolve excluded IDs by scanning the bank (avoid await—use sync require pattern)
-  const { KIDS_RECIPE_BANK: BANK } = require("@/data/kids-recipes") as typeof import("@/data/kids-recipes");
   if (currentName) {
-    for (const r of BANK) {
+    for (const r of KIDS_RECIPE_BANK) {
       if (r.name.toLowerCase() === currentName) exclude.push(r.id);
     }
   }
