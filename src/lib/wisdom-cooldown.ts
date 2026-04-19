@@ -54,3 +54,20 @@ export function canDrawToday(): boolean {
     now.getDate() !== last.getDate()
   );
 }
+
+/**
+ * Returns the cardId drawn today (local time), or null if no card has been drawn today.
+ * Used to rehydrate the displayed card across reloads — resets at midnight.
+ */
+export function getTodayCardId(): string | null {
+  const records = getDrawnCards();
+  if (records.length === 0) return null;
+  const last = records.reduce((a, b) => (a.drawnAt > b.drawnAt ? a : b));
+  const lastDate = new Date(last.drawnAt);
+  const now = new Date();
+  const sameDay =
+    now.getFullYear() === lastDate.getFullYear() &&
+    now.getMonth() === lastDate.getMonth() &&
+    now.getDate() === lastDate.getDate();
+  return sameDay ? last.cardId : null;
+}
