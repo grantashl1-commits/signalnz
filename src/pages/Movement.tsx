@@ -209,9 +209,8 @@ export default function MovementPage() {
     { id: "progress" as const, label: "Progress" },
   ];
 
-  if (showHR) {
-    return <LiveHRView workoutName={todayWorkoutData?.name || "Workout"} onClose={() => setShowHR(false)} />;
-  }
+  // LiveHRView is rendered as a non-blocking overlay below — never short-circuit
+  // the page so the user can scroll and expand exercise notes underneath.
 
   // Helper: find which phase a workout belongs to (for library "all" view)
   const getWorkoutPhase = (workoutId: string): Phase | null => {
@@ -334,16 +333,27 @@ export default function MovementPage() {
         </div>
       )}
 
-      {/* Floating HR indicator when connected but modal closed */}
+      {/* Compact floating HR chip — visible when connected and overlay is closed.
+          Tapping it opens the full HR overlay; the underlying page is fully scrollable. */}
       {!showHR && globalHR.connected && (
         <button
           onClick={() => setShowHR(true)}
-          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
+          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-3.5 py-2 shadow-lg active:scale-95 transition-transform"
+          aria-label="Open heart rate monitor"
         >
-          <Heart className="h-4 w-4 text-primary-foreground" />
+          <Heart className={`h-4 w-4 text-primary-foreground ${globalHR.session.running ? "animate-pulse" : ""}`} />
           <span className="font-body text-sm font-bold text-primary-foreground">{globalHR.bpm || "—"}</span>
           <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
         </button>
+      )}
+
+      {/* LiveHRView as a non-blocking overlay — page underneath stays scrollable
+          (LiveHRView renders its own fixed inset-0 container). */}
+      {showHR && (
+        <LiveHRView
+          workoutName={todayWorkoutData?.name || globalHR.session.workoutName || "Workout"}
+          onClose={() => setShowHR(false)}
+        />
       )}
 
       {/* LIBRARY TAB */}

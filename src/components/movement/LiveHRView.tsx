@@ -212,9 +212,10 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     if (profileAge && profileWeight) setAgeSet(true);
   }, [profileAge, profileWeight]);
 
-  const [running, setRunning] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-  const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
+  // ── Session state lives in HeartRateContext so it survives navigation ──
+  const { session, elapsed, startSession, stopSession, resetSession } = hr;
+  const running = session.running;
+  const hrData = session.hrData;
   const [summary, setSummary] = useState<WorkoutSession | null>(null);
 
   // Session save state
@@ -224,55 +225,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const [saved, setSaved] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
 
-  const intervalRef = useRef<number | null>(null);
-  const sampleIntervalRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const elapsedRef = useRef<number>(0);
-  const bpmRef = useRef<number>(0);
-
   const maxHR = getMaxHR(age);
   const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
 
   const zone2PlusMins = hrData.filter((d) => getZoneForBPM(d.bpm, maxHR).zone >= 2).length * 2 / 60;
   const zone2Goal = 21;
   const zone2Reached = zone2PlusMins >= zone2Goal;
-
-  useEffect(() => { elapsedRef.current = elapsed; }, [elapsed]);
-  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
-
-  // Timer
-  useEffect(() => {
-    if (running) {
-      startTimeRef.current = Date.now() - elapsedRef.current * 1000;
-      intervalRef.current = window.setInterval(() => {
-        setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
-      }, 1000);
-    }
-    return () => {
-      if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    };
-  }, [running]);
-
-  // HR sampling every 2 seconds
-  useEffect(() => {
-    if (!running) {
-      if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-      return;
-    }
-    const addSample = () => {
-      const bpm = bpmRef.current;
-      if (bpm <= 0) return;
-      const secsFromStart = startTimeRef.current > 0
-        ? Math.floor((Date.now() - startTimeRef.current) / 1000)
-        : elapsedRef.current;
-      setHrData((prev) => [...prev, { time: secsFromStart, bpm }]);
-    };
-    addSample();
-    sampleIntervalRef.current = window.setInterval(addSample, 2000);
-    return () => {
-      if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-    };
-  }, [running]);
 
   const handleSetAge = () => {
     setUserAge(age);
@@ -283,22 +241,18 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const handleStart = () => {
     haptic("medium");
     wakeLock.toggle();
-    setElapsed(0);
-    elapsedRef.current = 0;
-    setHrData([]);
     setSaved(false);
     setSavedId(null);
-    setRunning(true);
+    startSession(workoutName);
   };
 
   const handleStop = () => {
     haptic("success");
-    setRunning(false);
     releaseWakeLock();
-    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-
-    const finalHrData = hrData.length > 0 ? hrData : (hr.bpm > 0 ? [{ time: elapsed, bpm: hr.bpm }] : []);
+    const finalSession = stopSession();
+    const finalHrData = finalSession.hrData.length > 0
+      ? finalSession.hrData
+      : (hr.bpm > 0 ? [{ time: elapsed, bpm: hr.bpm }] : []);
     const derivedDurationSecs = elapsed > 0 ? elapsed
       : finalHrData.length > 1 ? finalHrData[finalHrData.length - 1].time
       : finalHrData.length === 1 ? 2 : 0;
@@ -399,7 +353,15 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   };
 
   const handleClose = () => {
+    // Do NOT release wakelock or stop the global session — keep recording in
+    // the background. Closing this view just hides the full chart; the floating
+    // chip stays visible on the page so the user can re-open it any time.
+    onClose();
+  };
+
+  const handleDoneAndReset = () => {
     releaseWakeLock();
+    resetSession();
     onClose();
   };
 
@@ -560,7 +522,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
                 {saving ? (
                   <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <><Save className="h-4 w-4" /> Save to Signal</>
+                  <><Save className="h-4 w-4" /> Save session</>
                 )}
               </button>
             </div>
@@ -569,12 +531,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
                 <Check className="h-3 w-3 text-emerald-600" />
               </div>
-              <span className="font-body text-sm text-emerald-600 font-medium">Session saved to Signal</span>
+              <span className="font-body text-sm text-emerald-600 font-medium">Session saved</span>
             </div>
           )}
 
           <button
-            onClick={handleClose}
+            onClick={handleDoneAndReset}
             className="touch-btn w-full rounded-[14px] py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary"
           >
             Done →

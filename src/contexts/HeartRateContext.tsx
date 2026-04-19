@@ -8,13 +8,41 @@ interface HeartRateState {
   error: string | null;
 }
 
+/**
+ * Global session state — the active workout timer + sample log lives here so it
+ * survives navigation between pages, page scrolls, and modal toggles.
+ */
+export interface HRSession {
+  running: boolean;
+  startedAt: number; // Date.now() at session start (0 if never started)
+  elapsedAtStart: number; // Elapsed seconds when start was last pressed (resume support)
+  /** Sampled bpm trace, recorded every 2 seconds while running. */
+  hrData: { time: number; bpm: number }[];
+  /** Optional label of the workout that was running when the session started. */
+  workoutName: string | null;
+}
+
 interface HeartRateContextValue extends HeartRateState {
   connect: () => Promise<void>;
   disconnect: () => void;
   isSupported: boolean;
+  /** Current elapsed seconds — re-computed from `startedAt` so it advances every render tick. */
+  session: HRSession;
+  elapsed: number;
+  startSession: (workoutName?: string) => void;
+  stopSession: () => HRSession;
+  resetSession: () => void;
 }
 
 const HeartRateContext = createContext<HeartRateContextValue | null>(null);
+
+const initialSession: HRSession = {
+  running: false,
+  startedAt: 0,
+  elapsedAtStart: 0,
+  hrData: [],
+  workoutName: null,
+};
 
 export function HeartRateProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<HeartRateState>({
@@ -25,8 +53,18 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
     error: null,
   });
 
+  const [session, setSession] = useState<HRSession>(initialSession);
+  const [elapsed, setElapsed] = useState(0);
+
   const deviceRef = useRef<any>(null);
   const characteristicRef = useRef<any>(null);
+  const bpmRef = useRef<number>(0);
+  const sessionRef = useRef<HRSession>(initialSession);
+  const tickRef = useRef<number | null>(null);
+  const sampleRef = useRef<number | null>(null);
+
+  useEffect(() => { sessionRef.current = session; }, [session]);
+  useEffect(() => { bpmRef.current = state.bpm; }, [state.bpm]);
 
   const isSupported = typeof navigator !== "undefined" && "bluetooth" in (navigator as any);
 
@@ -96,11 +134,79 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
     setState({ connected: false, connecting: false, deviceName: null, bpm: 0, error: null });
   }, [handleHRMeasurement]);
 
+  // ── Session timer (runs at the provider level so it persists across pages) ──
+  useEffect(() => {
+    if (!session.running) {
+      if (tickRef.current) { clearInterval(tickRef.current); tickRef.current = null; }
+      return;
+    }
+    const tick = () => {
+      const s = sessionRef.current;
+      if (!s.running || s.startedAt === 0) return;
+      const next = s.elapsedAtStart + Math.floor((Date.now() - s.startedAt) / 1000);
+      setElapsed(next);
+    };
+    tick();
+    tickRef.current = window.setInterval(tick, 1000);
+    return () => {
+      if (tickRef.current) { clearInterval(tickRef.current); tickRef.current = null; }
+    };
+  }, [session.running]);
+
+  // ── HR sampler (runs at the provider level so samples accumulate across pages) ──
+  useEffect(() => {
+    if (!session.running) {
+      if (sampleRef.current) { clearInterval(sampleRef.current); sampleRef.current = null; }
+      return;
+    }
+    const addSample = () => {
+      const bpm = bpmRef.current;
+      if (bpm <= 0) return;
+      const s = sessionRef.current;
+      const secsFromStart = s.startedAt > 0
+        ? s.elapsedAtStart + Math.floor((Date.now() - s.startedAt) / 1000)
+        : s.elapsedAtStart;
+      setSession(prev => ({ ...prev, hrData: [...prev.hrData, { time: secsFromStart, bpm }] }));
+    };
+    addSample();
+    sampleRef.current = window.setInterval(addSample, 2000);
+    return () => {
+      if (sampleRef.current) { clearInterval(sampleRef.current); sampleRef.current = null; }
+    };
+  }, [session.running]);
+
+  const startSession = useCallback((workoutName?: string) => {
+    setSession({
+      running: true,
+      startedAt: Date.now(),
+      elapsedAtStart: 0,
+      hrData: [],
+      workoutName: workoutName ?? sessionRef.current.workoutName ?? null,
+    });
+    setElapsed(0);
+  }, []);
+
+  const stopSession = useCallback((): HRSession => {
+    const final: HRSession = { ...sessionRef.current, running: false };
+    setSession(final);
+    return final;
+  }, []);
+
+  const resetSession = useCallback(() => {
+    setSession(initialSession);
+    setElapsed(0);
+  }, []);
+
   // Do NOT disconnect on unmount — this is the global provider
   // The connection persists across navigation
 
   return (
-    <HeartRateContext.Provider value={{ ...state, connect, disconnect, isSupported }}>
+    <HeartRateContext.Provider value={{
+      ...state,
+      connect, disconnect, isSupported,
+      session, elapsed,
+      startSession, stopSession, resetSession,
+    }}>
       {children}
     </HeartRateContext.Provider>
   );
