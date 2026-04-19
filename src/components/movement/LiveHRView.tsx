@@ -353,7 +353,15 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   };
 
   const handleClose = () => {
+    // Do NOT release wakelock or stop the global session — keep recording in
+    // the background. Closing this view just hides the full chart; the floating
+    // chip stays visible on the page so the user can re-open it any time.
+    onClose();
+  };
+
+  const handleDoneAndReset = () => {
     releaseWakeLock();
+    resetSession();
     onClose();
   };
 
