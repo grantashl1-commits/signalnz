@@ -1,6 +1,6 @@
 ---
 name: Community chat
-description: Real-time, member-only chat for /community groups (Thriving tier) — text, polls, events, image + voice uploads, presence, moderation
+description: Real-time, member-only chat for /community groups (Thriving tier) — text, polls, events, image + voice uploads, presence, moderation, reactions, replies, mentions, edits, unread badges
 type: feature
 ---
 
