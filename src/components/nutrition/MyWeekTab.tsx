@@ -19,6 +19,7 @@ import {
   clearAIMealPlan,
   getSavedPreferences,
   DEFAULT_PREFS,
+  attachKidsMeals,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
