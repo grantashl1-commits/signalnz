@@ -1,11 +1,21 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { buildVersionedPracticeAudioPath, CALM_READER_VOICE_ID, getScriptAudioOverride } from "@/lib/script-audio";
+import {
+  buildVersionedPracticeAudioPath,
+  getScriptAudioOverride,
+  getVoiceConfig,
+  resolveVoiceGender,
+  type VoiceGender,
+} from "@/lib/script-audio";
 
 interface UseElevenLabsTTSOptions {
   practiceId: string;
   ttsScript: string;
   enabled?: boolean;
+  /** Optional author / source string used to auto-route to male voice. */
+  author?: string | null;
+  /** Explicit override — wins over author inference. */
+  voiceGender?: VoiceGender;
 }
 
 /**
@@ -17,18 +27,23 @@ export function useElevenLabsTTS({
   practiceId,
   ttsScript,
   enabled = true,
+  author,
+  voiceGender,
 }: UseElevenLabsTTSOptions) {
   const [audioUrl, setAudioUrl] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const attemptedRef = useRef(false);
 
+  const gender = resolveVoiceGender({ voiceGender, author });
+  const { voiceId, voiceVersion } = getVoiceConfig(gender);
+
   // Check if audio already exists in storage
   const checkCache = useCallback(async (): Promise<string | null> => {
     const overrideUrl = getScriptAudioOverride(practiceId);
     if (overrideUrl) return overrideUrl;
 
-    const filePath = buildVersionedPracticeAudioPath(practiceId);
+    const filePath = buildVersionedPracticeAudioPath(practiceId, voiceVersion);
     // Use signed URL for private bucket
     const { data: signedData } = await supabase.storage
       .from("practice-audio")
@@ -44,7 +59,7 @@ export function useElevenLabsTTS({
       // File doesn't exist yet
     }
     return null;
-  }, [practiceId]);
+  }, [practiceId, voiceVersion]);
 
   // Generate audio via edge function
   const generate = useCallback(async () => {
@@ -61,7 +76,6 @@ export function useElevenLabsTTS({
       }
 
       // Get user identifier for credit tracking
-      const { supabase } = await import("@/integrations/supabase/client");
       const { data: { user } } = await supabase.auth.getUser();
       const user_identifier = user?.id || user?.email || "anonymous";
 
@@ -78,7 +92,8 @@ export function useElevenLabsTTS({
           body: JSON.stringify({
             text: ttsScript,
             practiceId,
-            voiceId: CALM_READER_VOICE_ID,
+            voiceId,
+            voiceVersion,
             user_identifier,
           }),
         }
@@ -97,7 +112,7 @@ export function useElevenLabsTTS({
     } finally {
       setLoading(false);
     }
-  }, [practiceId, ttsScript, checkCache]);
+  }, [practiceId, ttsScript, checkCache, voiceId, voiceVersion]);
 
   // Auto-check cache on mount
   useEffect(() => {
@@ -115,5 +130,6 @@ export function useElevenLabsTTS({
     error,
     generate,
     hasGeneratedAudio: !!audioUrl,
+    voiceGender: gender,
   };
 }

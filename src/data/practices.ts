@@ -47,6 +47,10 @@ export interface PracticeConfig {
   locale?: string;
   backgroundAudioUrl?: string;
   ttsScript?: string;
+  /** Author / source attribution — used to auto-pick male voice for male teachers. */
+  author?: string;
+  /** Explicit voice override; wins over author inference. */
+  voiceGender?: "male" | "female";
 }
 
 // ── Breathwork Practices ────────────────────────────────────
