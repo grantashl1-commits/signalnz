@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     const DEFAULT_VOICE_ID =
-      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "XrExE9yKIg1WjnnlVkGX";
+      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "M7wzTk2Y1hGQyRzr9sbS";
 
     if (!ELEVENLABS_API_KEY) {
       return new Response(
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
 
     const audioBuffer = await ttsResponse.arrayBuffer();
 
-    const filePath = `practices/calm-reader-v2/${practiceId}.mp3`;
+    const filePath = `practices/regina-v1/${practiceId}.mp3`;
     const { error: uploadError } = await supabase.storage
       .from("practice-audio")
       .upload(filePath, audioBuffer, {
