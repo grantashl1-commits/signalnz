@@ -165,6 +165,7 @@ export default function Connect() {
     broadcastChannelRef.current = channel;
 
     return () => {
+      clearInterval(pollInterval);
       channelReadyRef.current = false;
       broadcastChannelRef.current = null;
       supabase.removeChannel(channel);
