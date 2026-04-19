@@ -8,7 +8,7 @@ import BoardCanvas from "./dream/BoardCanvas";
 import BoardToolbar from "./dream/BoardToolbar";
 import BoardEmptyState from "./dream/BoardEmptyState";
 import BoardSwitcher from "./dream/BoardSwitcher";
-import BoardStackedView from "./dream/BoardStackedView";
+import MobileBoardView from "./dream/MobileBoardView";
 import AddImageModal from "./dream/AddImageModal";
 import type { DreamElement } from "@/lib/journal-store";
 import { WildStar, HandDrawnSparkle } from "@/components/BotanicalElements";
@@ -176,6 +176,7 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
   const [showBoards, setShowBoards] = useState(false);
   const [activeRitual, setActiveRitual] = useState<typeof DREAM_RITUALS[0] | null>(null);
   const [showFutureSelf, setShowFutureSelf] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "canvas">("list");
 
   // Auto-create a default board if none exist
   useEffect(() => {
@@ -257,8 +258,61 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
   if (activeRitual) return <DreamRitualFlow ritual={activeRitual} onComplete={handleRitualComplete} onBack={() => setActiveRitual(null)} />;
   if (showFutureSelf) return <FutureSelfMode onComplete={handleFutureSelfComplete} onBack={() => setShowFutureSelf(false)} />;
 
-  // Mobile: full canvas (same as desktop)
+  // ── Mobile: stacked card view (Milanote-style) with optional canvas ──
   if (isMobile) {
+    if (mobileView === "list") {
+      return (
+        <div className="relative w-full px-3 pt-2">
+          <MobileBoardView
+            elements={board.elements}
+            connections={board.connections}
+            selectedId={board.selectedId}
+            activeBoard={board.activeBoard}
+            onSelect={board.setSelectedId}
+            onUpdate={board.updateElement}
+            onDelete={board.deleteElement}
+            onDuplicate={board.duplicateElement}
+            onAddElement={handleAddElement}
+            onAddImage={() => setShowImageModal(true)}
+            onStartRitual={handleStarterRitual}
+            onOpenBoards={() => setShowBoards(true)}
+            onOpenRituals={() => setShowRituals(true)}
+            onSwitchToCanvas={() => setMobileView("canvas")}
+          />
+
+          {/* Rituals sheet (full screen on mobile) */}
+          {showRituals && (
+            <div className="fixed inset-0 z-[120] bg-background/95 backdrop-blur-sm overflow-y-auto" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+              <RitualsPanel
+                onStartRitual={(r) => { setActiveRitual(r); setShowRituals(false); }}
+                onStartFutureSelf={() => { setShowFutureSelf(true); setShowRituals(false); }}
+                onClose={() => setShowRituals(false)}
+              />
+            </div>
+          )}
+
+          {/* Boards sheet (full screen on mobile) */}
+          {showBoards && (
+            <div className="fixed inset-0 z-[120] bg-background" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+              <BoardSwitcher
+                boards={board.boards}
+                activeBoardId={board.activeBoardId}
+                onSwitch={(id) => { board.switchBoard(id); setShowBoards(false); }}
+                onCreate={(title, color) => board.createBoard(title, color)}
+                onRename={board.renameBoard}
+                onDelete={board.deleteBoard}
+                onClose={() => setShowBoards(false)}
+              />
+            </div>
+          )}
+
+          <AddImageModal open={showImageModal} onClose={() => setShowImageModal(false)} onImageReady={handleImageReady} />
+          <SaveIndicator status={board.saveStatus} />
+        </div>
+      );
+    }
+
+    // Mobile canvas mode (opt-in)
     return (
       <div className="relative w-full" style={{ height: "calc(100vh - 220px)" }}>
         <BoardCanvas
@@ -299,47 +353,19 @@ export default function DreamStudio({ pinnedEntry }: { pinnedEntry?: { id: strin
             onAddImage={() => setShowImageModal(true)}
           />
 
+          {/* Back to list button — replaces the cramped Boards/Rituals buttons */}
           <button
-            onClick={() => setShowBoards(!showBoards)}
-            className="absolute top-3 right-[100px] z-50 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border shadow-lg font-display text-[12px] italic text-foreground"
-          >
-            <LayoutGrid className="h-3.5 w-3.5 text-primary/60" />
-            {board.activeBoard?.title || "Boards"}
-          </button>
-
-          <button
-            onClick={() => setShowRituals(!showRituals)}
+            onClick={() => setMobileView("list")}
             className="absolute top-3 right-3 z-50 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border shadow-lg font-display text-[12px] italic text-foreground"
           >
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> Rituals
+            <ArrowLeft className="h-3.5 w-3.5 text-primary/60" />
+            List
           </button>
 
           {board.elements.length > 0 && (
             <div className="absolute bottom-3 right-3 z-50 font-body text-[10px] text-muted-foreground/60 bg-card/80 border border-border rounded-lg px-2.5 py-1 backdrop-blur-sm">
               {board.elements.length} elements
             </div>
-          )}
-
-          {showRituals && (
-            <div className="absolute inset-0 z-[100] bg-background/95 overflow-y-auto p-4">
-              <RitualsPanel
-                onStartRitual={(r) => { setActiveRitual(r); setShowRituals(false); }}
-                onStartFutureSelf={() => { setShowFutureSelf(true); setShowRituals(false); }}
-                onClose={() => setShowRituals(false)}
-              />
-            </div>
-          )}
-
-          {showBoards && (
-            <BoardSwitcher
-              boards={board.boards}
-              activeBoardId={board.activeBoardId}
-              onSwitch={(id) => { board.switchBoard(id); setShowBoards(false); }}
-              onCreate={(title, color) => board.createBoard(title, color)}
-              onRename={board.renameBoard}
-              onDelete={board.deleteBoard}
-              onClose={() => setShowBoards(false)}
-            />
           )}
         </BoardCanvas>
 
