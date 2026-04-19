@@ -536,7 +536,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           )}
 
           <button
-            onClick={handleClose}
+            onClick={handleDoneAndReset}
             className="touch-btn w-full rounded-[14px] py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary"
           >
             Done →
