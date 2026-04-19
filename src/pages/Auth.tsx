@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { isDisposableEmail } from "@/lib/disposable-emails";
 import signalIcon from "@/assets/pwa-icon-512-purple.png";
+
+// Minimum password length for new accounts. Combined with HIBP leaked-password check
+// (enabled in auth settings), this stops credential-stuffing and weak passwords.
+const MIN_PASSWORD_LENGTH = 10;
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -32,12 +37,35 @@ export default function AuthPage() {
         toast.success("Welcome back!");
         navigate("/account", { replace: true });
       } else {
+        // Anti-bot guards on signup (in priority order):
+        //   1. Disposable / burner email blocklist (200+ domains)
+        //   2. Strong password length (HIBP leaked-password check is server-side)
+        //   3. Server side: email verification required, anonymous sign-ups disabled
+        if (await isDisposableEmail(email)) {
+          toast.error("Please use a permanent email address (no temporary or burner emails)");
+          setLoading(false);
+          return;
+        }
+        if (password.length < MIN_PASSWORD_LENGTH) {
+          toast.error(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+          setLoading(false);
+          return;
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: window.location.origin },
         });
-        if (error) throw error;
+        if (error) {
+          // Surface HIBP rejection nicely
+          if (error.message?.toLowerCase().includes("compromised") || error.message?.toLowerCase().includes("pwned")) {
+            toast.error("This password has appeared in a known data breach. Please choose a stronger one.");
+          } else {
+            throw error;
+          }
+          setLoading(false);
+          return;
+        }
         setSignupComplete(true);
       }
     } catch (err: any) {
@@ -149,11 +177,11 @@ export default function AuthPage() {
               <div className="flex flex-col">
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder={isLogin ? "Password" : `Password (min ${MIN_PASSWORD_LENGTH} characters)`}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={isLogin ? 6 : MIN_PASSWORD_LENGTH}
                   className="w-full rounded-xl border border-border bg-card px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 {isLogin && (

@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_suspensions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          lifted_at: string | null
+          lifted_by: string | null
+          reason: string
+          scope: string
+          suspended_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          lifted_at?: string | null
+          lifted_by?: string | null
+          reason: string
+          scope?: string
+          suspended_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          lifted_at?: string | null
+          lifted_by?: string | null
+          reason?: string
+          scope?: string
+          suspended_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_credits: {
         Row: {
           credits_remaining: number | null
@@ -1006,6 +1042,21 @@ export type Database = {
           tags?: string[] | null
           title?: string
           tts_script?: string | null
+        }
+        Relationships: []
+      }
+      disposable_email_domains: {
+        Row: {
+          added_at: string
+          domain: string
+        }
+        Insert: {
+          added_at?: string
+          domain: string
+        }
+        Update: {
+          added_at?: string
+          domain?: string
         }
         Relationships: []
       }
@@ -2625,6 +2676,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_reports: {
+        Row: {
+          admin_notes: string | null
+          context_id: string | null
+          context_type: string
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          context_id?: string | null
+          context_type: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          context_id?: string | null
+          context_type?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_user_id?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -3379,6 +3475,10 @@ export type Database = {
       }
       is_group_member: {
         Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_user_suspended: {
+        Args: { _scope?: string; _user_id: string }
         Returns: boolean
       }
       longtransactionsenabled: { Args: never; Returns: boolean }

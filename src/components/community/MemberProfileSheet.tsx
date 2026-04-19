@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { X, Flag } from "lucide-react";
+
+const ReportUserModal = lazy(() => import("@/components/community/ReportUserModal"));
 
 interface MemberProfileSheetProps {
   userId: string;
@@ -20,8 +23,10 @@ interface CommunityProfile {
 }
 
 export default function MemberProfileSheet({ userId, displayName, onClose }: MemberProfileSheetProps) {
+  const { user } = useAuth();
   const [profile, setProfile] = useState<CommunityProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [reportOpen, setReportOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -36,6 +41,7 @@ export default function MemberProfileSheet({ userId, displayName, onClose }: Mem
   }, [userId]);
 
   const vis = (profile?.visibility as Record<string, boolean>) || {};
+  const isOwnProfile = user?.id === userId;
 
   const fields = [
     { key: "career", label: "Career", value: profile?.career },
@@ -80,8 +86,33 @@ export default function MemberProfileSheet({ userId, displayName, onClose }: Mem
               </div>
             ))
           )}
+
+          {/* Report button — never shown on your own profile */}
+          {!isOwnProfile && user && (
+            <div className="pt-3 border-t border-border">
+              <button
+                onClick={() => setReportOpen(true)}
+                className="touch-btn w-full flex items-center justify-center gap-2 rounded-xl bg-secondary/40 hover:bg-destructive/10 text-muted-foreground hover:text-destructive py-2.5 font-body text-xs font-medium transition-colors"
+              >
+                <Flag className="h-3.5 w-3.5" />
+                Report this member
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {reportOpen && (
+        <Suspense fallback={null}>
+          <ReportUserModal
+            open={reportOpen}
+            reportedUserId={userId}
+            reportedUserName={displayName}
+            contextType="profile"
+            onClose={() => setReportOpen(false)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

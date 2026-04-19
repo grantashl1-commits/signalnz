@@ -14,6 +14,8 @@ import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import { useAccountStatus } from "@/hooks/useAccountStatus";
+import SuspensionBanner from "@/components/community/SuspensionBanner";
 
 const TABS = [
   { id: "discover", label: "Discover" },
@@ -25,6 +27,7 @@ const TABS = [
 
 export default function CommunityPage() {
   const [section, setSection] = useState("discover");
+  const { suspension } = useAccountStatus();
 
   const [joined, setJoined] = useState<string[]>([]);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
@@ -280,6 +283,8 @@ export default function CommunityPage() {
       </AtmosphericHero>
 
       <ContentSection className="px-5 md:px-4">
+
+      {suspension && <SuspensionBanner suspension={suspension} />}
 
       <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-5 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
         <div className="flex bg-secondary/50 rounded-2xl p-1 overflow-x-auto">
