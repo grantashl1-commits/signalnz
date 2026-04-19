@@ -22,7 +22,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Keto-Green (Hormone Fix inspired) ───
   {
     id: "signal-keto-green-bowl",
-    name: "Signal Keto-Green Power Bowl",
+    name: "Keto-Green Power Bowl",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -31,7 +31,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "2 cups mixed greens (kale, rocket, spinach)",
       "1 avocado, sliced",
       "2 eggs, soft-boiled",
-      "1/4 cup sauerkraut",
+      "1/4 cups sauerkraut",
       "2 tbsp extra virgin olive oil",
       "1 tbsp apple cider vinegar",
       "1 tbsp pumpkin seeds",
@@ -48,7 +48,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-cauliflower-steak",
-    name: "Signal Cauliflower Steak with Chimichurri",
+    name: "Cauliflower Steak with Chimichurri",
     phase: "ovulatory",
     serves: 2,
     prepTime: "30 min",
@@ -75,7 +75,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Protein-Centric (Forever Strong inspired) ───
   {
     id: "signal-protein-power-plate",
-    name: "Signal Protein Power Plate",
+    name: "Protein Power Plate",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -100,7 +100,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-steak-sweet-potato",
-    name: "Signal Steak & Kumara Mash",
+    name: "Steak & Kumara Mash",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -127,7 +127,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Volumetrics (high-volume, low-calorie) ───
   {
     id: "signal-volume-veggie-soup",
-    name: "Signal Volume Veggie Soup",
+    name: "Volume Veggie Soup",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
@@ -154,7 +154,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-stuffed-capsicum",
-    name: "Signal Stuffed Capsicum",
+    name: "Stuffed Capsicum",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -166,7 +166,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "1 cup corn kernels",
       "1 tsp cumin",
       "1 tsp smoked paprika",
-      "1/4 cup grated cheese",
+      "1/4 cups grated cheese",
       "Fresh coriander",
     ],
     method: [
@@ -182,7 +182,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Keto (Ketogenic Bible inspired) ───
   {
     id: "signal-keto-salmon-plate",
-    name: "Signal Keto Salmon Plate",
+    name: "Keto Salmon Plate",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -207,7 +207,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-keto-egg-cups",
-    name: "Signal Keto Egg Cups",
+    name: "Keto Egg Cups",
     phase: "menstrual",
     serves: 6,
     prepTime: "25 min",
@@ -215,8 +215,8 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ingredients: [
       "6 eggs",
       "6 slices prosciutto",
-      "1/2 cup baby spinach, chopped",
-      "1/4 cup sun-dried tomatoes, chopped",
+      "1/2 cups baby spinach, chopped",
+      "1/4 cups sun-dried tomatoes, chopped",
       "2 tbsp parmesan, grated",
       "Salt and pepper",
     ],
@@ -233,7 +233,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── AIP / Paleo Approach ───
   {
     id: "signal-aip-healing-bowl",
-    name: "Signal AIP Healing Bowl",
+    name: "AIP Healing Bowl",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -259,7 +259,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-aip-sweet-potato-hash",
-    name: "Signal AIP Sweet Potato Hash",
+    name: "AIP Sweet Potato Hash",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -286,7 +286,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Sports Nutrition (Nancy Clark inspired) ───
   {
     id: "signal-pre-workout-toast",
-    name: "Signal Pre-Workout Power Toast",
+    name: "Pre-Workout Power Toast",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -308,7 +308,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-post-workout-smoothie",
-    name: "Signal Post-Workout Recovery Smoothie",
+    name: "Post-Workout Recovery Smoothie",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -319,7 +319,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "1 cup milk of choice",
       "1 tbsp oats",
       "1 tbsp almond butter",
-      "1/2 cup frozen berries",
+      "1/2 cups frozen berries",
     ],
     method: [
       "Blend all ingredients until smooth. Serve immediately.",
@@ -332,7 +332,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Menopause / Perimenopause (Haver inspired) ───
   {
     id: "signal-fibre-30-salad",
-    name: "Signal Fibre-30 Rainbow Salad",
+    name: "Fibre-30 Rainbow Salad",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
@@ -342,7 +342,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "1 cup edamame",
       "1 beetroot, grated",
       "1 carrot, ribboned",
-      "1/2 cup red cabbage, shredded",
+      "1/2 cups red cabbage, shredded",
       "2 tbsp tahini",
       "1 tbsp lemon juice",
       "1 tbsp flaxseed, ground",
@@ -359,7 +359,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-bone-building-bowl",
-    name: "Signal Bone Building Bowl",
+    name: "Bone Building Bowl",
     phase: "menstrual",
     serves: 2,
     prepTime: "25 min",
@@ -368,7 +368,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "200g tinned sardines, drained",
       "1 cup brown rice, cooked",
       "2 cups rocket",
-      "1/2 cup white beans, drained",
+      "1/2 cups white beans, drained",
       "2 tbsp lemon-olive oil dressing",
       "1 tbsp sesame seeds",
       "Fresh dill",
@@ -385,7 +385,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Gut-Hormone Axis (Hormone Havoc / Shah inspired) ───
   {
     id: "signal-gut-hormone-plate",
-    name: "Signal Gut-Hormone Repair Plate",
+    name: "Gut-Hormone Repair Plate",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -409,16 +409,16 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-fermented-feast-bowl",
-    name: "Signal Fermented Feast Bowl",
+    name: "Fermented Feast Bowl",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 min",
     keyNutrients: ["Probiotics", "Diversity", "Protein"],
     ingredients: [
       "1 cup brown rice, cooked",
-      "1/2 cup tempeh, sliced and pan-fried",
-      "1/4 cup sauerkraut",
-      "1/4 cup pickled beetroot",
+      "1/2 cups tempeh, sliced and pan-fried",
+      "1/4 cups sauerkraut",
+      "1/4 cups pickled beetroot",
       "1 cup mixed greens",
       "2 tbsp miso-tahini dressing",
       "Sesame seeds",
@@ -435,7 +435,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Balanced Moderation (Eat Your Ice Cream inspired) ───
   {
     id: "signal-balanced-burger",
-    name: "Signal Balanced Gourmet Burger",
+    name: "Balanced Gourmet Burger",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -459,7 +459,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-dark-choc-bark",
-    name: "Signal Dark Chocolate Seed Bark",
+    name: "Dark Chocolate Seed Bark",
     phase: "luteal",
     serves: 8,
     prepTime: "15 min",
@@ -484,18 +484,18 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Microbial Diversity (Spoon-Fed / Spector inspired) ───
   {
     id: "signal-30-plant-stir-fry",
-    name: "Signal 30-Plant Stir-Fry",
+    name: "30-Plant Stir-Fry",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
     keyNutrients: ["Diversity", "Fibre", "Phytonutrients"],
     ingredients: [
-      "1/2 cup broccoli florets",
-      "1/2 cup red capsicum, sliced",
-      "1/2 cup snap peas",
-      "1/2 cup mushrooms, sliced",
-      "1/2 cup bok choy",
-      "1/4 cup cashews",
+      "1/2 cups broccoli florets",
+      "1/2 cups red capsicum, sliced",
+      "1/2 cups snap peas",
+      "1/2 cups mushrooms, sliced",
+      "1/2 cups bok choy",
+      "1/4 cups cashews",
       "200g tofu, cubed",
       "2 tbsp tamari",
       "1 tbsp sesame oil",
@@ -513,14 +513,14 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-polyphenol-bowl",
-    name: "Signal Polyphenol Power Bowl",
+    name: "Polyphenol Power Bowl",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
     keyNutrients: ["Polyphenols", "Prebiotics", "Omega-3"],
     ingredients: [
       "1 cup Greek yoghurt",
-      "1/2 cup frozen dark cherries, thawed",
+      "1/2 cups frozen dark cherries, thawed",
       "2 tbsp walnuts, crushed",
       "1 tbsp raw cacao nibs",
       "1 tbsp ground flaxseed",
@@ -538,7 +538,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Calorie Adequacy (No Period Now What inspired) ───
   {
     id: "signal-nourish-pasta",
-    name: "Signal Nourish Pasta",
+    name: "Nourish Pasta",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -548,7 +548,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "2 tbsp pesto",
       "200g chicken thigh, sliced",
       "1 cup cherry tomatoes, halved",
-      "1/4 cup parmesan, grated",
+      "1/4 cups parmesan, grated",
       "1 tbsp olive oil",
       "Fresh basil",
     ],
@@ -563,16 +563,16 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-energy-dense-granola",
-    name: "Signal Energy-Dense Granola",
+    name: "Energy-Dense Granola",
     phase: "menstrual",
     serves: 8,
     prepTime: "30 min",
     keyNutrients: ["Energy", "Iron", "Healthy fats"],
     ingredients: [
       "2 cups rolled oats",
-      "1/2 cup almonds, roughly chopped",
-      "1/4 cup sunflower seeds",
-      "1/4 cup dried apricots, chopped",
+      "1/2 cups almonds, roughly chopped",
+      "1/4 cups sunflower seeds",
+      "1/4 cups dried apricots, chopped",
       "3 tbsp coconut oil, melted",
       "2 tbsp maple syrup",
       "1 tbsp molasses",
@@ -593,7 +593,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Blood Sugar Balance (Syndrome X inspired) ───
   {
     id: "signal-blood-sugar-bowl",
-    name: "Signal Blood Sugar Balance Bowl",
+    name: "Blood Sugar Balance Bowl",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -617,7 +617,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-cinnamon-protein-pancakes",
-    name: "Signal Cinnamon Protein Pancakes",
+    name: "Cinnamon Protein Pancakes",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -626,7 +626,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
       "1 cup oat flour",
       "1 scoop vanilla protein powder",
       "1 egg",
-      "3/4 cup milk",
+      "3/4 cups milk",
       "1 tsp cinnamon",
       "1 tsp baking powder",
       "1 tbsp coconut oil for cooking",
@@ -646,7 +646,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Low-FODMAP (Cooper inspired) ───
   {
     id: "signal-fodmap-chicken-bowl",
-    name: "Signal Low-FODMAP Chicken Bowl",
+    name: "Low-FODMAP Chicken Bowl",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -671,7 +671,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-fodmap-pumpkin-soup",
-    name: "Signal Low-FODMAP Pumpkin Soup",
+    name: "Low-FODMAP Pumpkin Soup",
     phase: "menstrual",
     serves: 4,
     prepTime: "30 min",
@@ -700,7 +700,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   // ─── Anti-Inflammation (Jessica Black inspired) ───
   {
     id: "signal-turmeric-fish-tray",
-    name: "Signal Turmeric Fish Tray Bake",
+    name: "Turmeric Fish Tray Bake",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -727,7 +727,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
   },
   {
     id: "signal-anti-inflam-golden-latte",
-    name: "Signal Anti-Inflam Golden Latte",
+    name: "Anti-Inflam Golden Latte",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
