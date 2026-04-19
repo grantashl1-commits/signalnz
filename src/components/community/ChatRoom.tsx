@@ -574,7 +574,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         <Suspense fallback={null}>
           <MemberProfileSheet
             userId={viewingMember.userId}
-            name={viewingMember.name}
+            displayName={viewingMember.name}
             onClose={() => setViewingMember(null)}
           />
         </Suspense>
