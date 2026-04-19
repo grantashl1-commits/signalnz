@@ -234,6 +234,7 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
         ...resolvePayload,
       });
     }
+    await broadcastThreadUpdate();
     setThreadStatus("resolved");
     setStep("resolved");
     generateInsight();
