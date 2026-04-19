@@ -257,6 +257,7 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
         ...spacePayload,
       });
     }
+    await broadcastThreadUpdate();
     setThreadStatus("space");
     setStep("space");
     generateInsight();
@@ -305,6 +306,7 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
         .delete()
         .eq("connection_id", connectionId);
     }
+    await broadcastThreadUpdate();
     setThread([]);
     setThreadStatus("active");
     setInsight(null);
