@@ -576,7 +576,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ? nearbyUsers.filter((u) => u.suburb === activeSuburb)
       : nearbyUsers;
 
-  const activeCount = nearbyUsers.filter((u) => u.is_online).length;
+  const activeCount = nearbyUsers.filter((u) => onlineIds.has(u.user_id)).length;
 
   const suburbCounts = nearbyUsers.reduce<Record<string, number>>((acc, u) => {
     acc[u.suburb] = (acc[u.suburb] || 0) + 1;
