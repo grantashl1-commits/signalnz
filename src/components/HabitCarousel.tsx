@@ -68,6 +68,7 @@ export default function HabitCarousel() {
       const card = shuffled[index];
       recordDraw(card.id);
       setTodayCard(card);
+      setDrawAllowed(false);
     }, 600);
   }, [shuffled]);
 
