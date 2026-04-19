@@ -209,9 +209,8 @@ export default function MovementPage() {
     { id: "progress" as const, label: "Progress" },
   ];
 
-  if (showHR) {
-    return <LiveHRView workoutName={todayWorkoutData?.name || "Workout"} onClose={() => setShowHR(false)} />;
-  }
+  // LiveHRView is rendered as a non-blocking overlay below — never short-circuit
+  // the page so the user can scroll and expand exercise notes underneath.
 
   // Helper: find which phase a workout belongs to (for library "all" view)
   const getWorkoutPhase = (workoutId: string): Phase | null => {
