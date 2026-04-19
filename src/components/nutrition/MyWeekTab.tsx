@@ -299,6 +299,20 @@ export default function MyWeekTab() {
     setStep("prep");
   };
 
+  const handleSwapKidsMeal = useCallback((cycleDay: number, mealType: "lunch" | "dinner") => {
+    if (!aiPlan) return;
+    haptic("light");
+    const { plan: updated, swapped } = swapKidsMeal(aiPlan, cycleDay, mealType);
+    if (!swapped) {
+      toast.info("No other compatible kids' recipes found.");
+      return;
+    }
+    setAiPlan(updated);
+    saveAIMealPlan(updated);
+    toast.success("Swapped kids' meal — shopping list updated.");
+  }, [aiPlan]);
+
+
   // Build week data
   const weekData = useMemo(() => {
     const monday = getMondayOfWeek(new Date(), weekOffset);
