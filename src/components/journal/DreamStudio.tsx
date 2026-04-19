@@ -8,7 +8,7 @@ import BoardCanvas from "./dream/BoardCanvas";
 import BoardToolbar from "./dream/BoardToolbar";
 import BoardEmptyState from "./dream/BoardEmptyState";
 import BoardSwitcher from "./dream/BoardSwitcher";
-import BoardStackedView from "./dream/BoardStackedView";
+import MobileBoardView from "./dream/MobileBoardView";
 import AddImageModal from "./dream/AddImageModal";
 import type { DreamElement } from "@/lib/journal-store";
 import { WildStar, HandDrawnSparkle } from "@/components/BotanicalElements";
