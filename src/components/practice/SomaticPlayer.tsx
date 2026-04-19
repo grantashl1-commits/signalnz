@@ -32,11 +32,16 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Get the TTS script for this somatic practice
+  // Get the TTS script for this practice — meditations pass it via `practice.ttsScript`,
+  // somatic practices source it from the somatic-scripts data file.
   const somaticScript = getSomaticScriptById(practice.id);
-  const ttsScript = somaticScript?.ttsScript || somaticScript?.narration || "";
+  const ttsScript =
+    practice.ttsScript ||
+    somaticScript?.ttsScript ||
+    somaticScript?.narration ||
+    "";
 
-  // ElevenLabs TTS generation hook
+  // ElevenLabs TTS generation hook (enabled for any narrated practice with a script)
   const {
     audioUrl: generatedAudioUrl,
     loading: ttsLoading,
@@ -46,7 +51,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
   } = useElevenLabsTTS({
     practiceId: practice.id,
     ttsScript,
-    enabled: practice.category === "somatic" && !!ttsScript,
+    enabled: !!ttsScript,
   });
 
   // Use generated audio URL if available, otherwise fall back to practice config

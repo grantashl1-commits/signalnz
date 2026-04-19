@@ -47,7 +47,7 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
     id: script.id,
     title: script.title,
     subtitle: script.subtitle,
-    category: "somatic",
+    category: "meditation",
     mode: "narrated-sequence",
     durationSec: script.durationSec,
     benefit: script.description,
@@ -55,10 +55,11 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
       enabled: true,
       audioUrl: `/audio/${script.id}.mp3`,
       durationSec: script.durationSec,
-      voiceName: "SIGNAL Calm",
+      voiceName: "Signal Reader",
       provider: "elevenlabs",
     },
     steps: script.steps,
+    ttsScript: script.ttsScript,
   };
 }
 
