@@ -2540,6 +2540,10 @@ export type Database = {
           rpe_target: number | null
           sets: number | null
           superset_group: string | null
+          tempo: string | null
+          tip: string | null
+          weight_kg_max: number | null
+          weight_kg_min: number | null
           workout_id: string
         }
         Insert: {
@@ -2555,6 +2559,10 @@ export type Database = {
           rpe_target?: number | null
           sets?: number | null
           superset_group?: string | null
+          tempo?: string | null
+          tip?: string | null
+          weight_kg_max?: number | null
+          weight_kg_min?: number | null
           workout_id: string
         }
         Update: {
@@ -2570,6 +2578,10 @@ export type Database = {
           rpe_target?: number | null
           sets?: number | null
           superset_group?: string | null
+          tempo?: string | null
+          tip?: string | null
+          weight_kg_max?: number | null
+          weight_kg_min?: number | null
           workout_id?: string
         }
         Relationships: [
@@ -2582,6 +2594,56 @@ export type Database = {
           },
           {
             foreignKeyName: "workout_exercises_workout_template_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_intervals: {
+        Row: {
+          block_label: string
+          created_at: string
+          duration_sec: number
+          id: string
+          kind: string
+          notes: string | null
+          order_index: number
+          repeat_count: number
+          target_pace: string | null
+          target_rpe: number | null
+          workout_id: string
+        }
+        Insert: {
+          block_label: string
+          created_at?: string
+          duration_sec: number
+          id?: string
+          kind: string
+          notes?: string | null
+          order_index?: number
+          repeat_count?: number
+          target_pace?: string | null
+          target_rpe?: number | null
+          workout_id: string
+        }
+        Update: {
+          block_label?: string
+          created_at?: string
+          duration_sec?: number
+          id?: string
+          kind?: string
+          notes?: string | null
+          order_index?: number
+          repeat_count?: number
+          target_pace?: string | null
+          target_rpe?: number | null
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_intervals_workout_id_fkey"
             columns: ["workout_id"]
             isOneToOne: false
             referencedRelation: "workout_templates"
@@ -2697,6 +2759,7 @@ export type Database = {
           session_number: number | null
           session_type: string | null
           title: string
+          total_duration_sec: number | null
           warmup_notes: string | null
         }
         Insert: {
@@ -2711,6 +2774,7 @@ export type Database = {
           session_number?: number | null
           session_type?: string | null
           title: string
+          total_duration_sec?: number | null
           warmup_notes?: string | null
         }
         Update: {
@@ -2725,6 +2789,7 @@ export type Database = {
           session_number?: number | null
           session_type?: string | null
           title?: string
+          total_duration_sec?: number | null
           warmup_notes?: string | null
         }
         Relationships: [
