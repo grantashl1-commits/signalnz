@@ -517,7 +517,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           initials: getInitials(prof?.display_name || "U"),
           suburb: loc.suburb,
           profession: prof?.profession,
-          is_online: Math.random() > 0.4, // Replace with real presence tracking later
+          is_online: false, // computed from presence (see is_online derivation below)
           avatar_url: prof?.avatar_url,
         };
       });
@@ -733,7 +733,12 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {filteredUsers.map((user) => (
-            <UserCard key={user.user_id} user={user} onViewProfile={setViewingProfile} />
+            <UserCard
+              key={user.user_id}
+              user={{ ...user, is_online: onlineIds.has(user.user_id) }}
+              onViewProfile={setViewingProfile}
+              onMessage={onMessageMember ? (u) => onMessageMember(u.user_id, u.display_name) : undefined}
+            />
           ))}
         </div>
       )}
