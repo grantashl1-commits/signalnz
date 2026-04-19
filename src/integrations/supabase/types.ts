@@ -401,6 +401,35 @@ export type Database = {
           },
         ]
       }
+      community_last_reads: {
+        Row: {
+          group_id: string
+          id: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_last_reads_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_memberships: {
         Row: {
           group_id: string
@@ -434,36 +463,48 @@ export type Database = {
         Row: {
           content: string | null
           created_at: string
+          edited_at: string | null
           group_id: string
           id: string
           is_removed: boolean
           media_path: string | null
+          mentions: string[]
           message_type: string
           metadata: Json
+          original_content: string | null
+          reply_to_id: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           content?: string | null
           created_at?: string
+          edited_at?: string | null
           group_id: string
           id?: string
           is_removed?: boolean
           media_path?: string | null
+          mentions?: string[]
           message_type?: string
           metadata?: Json
+          original_content?: string | null
+          reply_to_id?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           content?: string | null
           created_at?: string
+          edited_at?: string | null
           group_id?: string
           id?: string
           is_removed?: boolean
           media_path?: string | null
+          mentions?: string[]
           message_type?: string
           metadata?: Json
+          original_content?: string | null
+          reply_to_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -473,6 +514,13 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
             referencedColumns: ["id"]
           },
         ]
@@ -1568,6 +1616,38 @@ export type Database = {
           thriving_note?: string | null
         }
         Relationships: []
+      }
+      message_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mindfulness_logs: {
         Row: {
