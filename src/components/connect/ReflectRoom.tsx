@@ -208,6 +208,8 @@ export default function ReflectRoom({ connectionId, partnerRole, partnerName }: 
       });
     }
 
+    await broadcastThreadUpdate();
+    await loadThread();
     setRawText("");
     setAiResult(null);
     setStep("waiting");
