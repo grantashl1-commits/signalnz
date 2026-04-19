@@ -25,6 +25,19 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
     },
+    // Allow Bluetooth heart-rate monitors to keep streaming when the
+    // app is backgrounded or the screen is locked. Native permissions
+    // (NSBluetoothAlwaysUsageDescription, BLUETOOTH_CONNECT/SCAN, and
+    // ios background mode "bluetooth-central") must also be granted in
+    // Info.plist / AndroidManifest.xml after `npx cap sync`.
+    BluetoothLe: {
+      displayStrings: {
+        scanning: 'Scanning for heart-rate monitor…',
+        cancel: 'Cancel',
+        availableDevices: 'Available devices',
+        noDeviceFound: 'No device found',
+      },
+    },
   },
 };
 
