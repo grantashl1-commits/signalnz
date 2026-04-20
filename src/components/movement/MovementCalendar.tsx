@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 import { WildStar } from "@/components/BotanicalElements";
 import { supabase } from "@/integrations/supabase/client";
-import { Flame, Clock, Zap, Dumbbell } from "lucide-react";
-import streakFlame from "@/assets/streak-flame.png";
+import { Clock, Zap, Dumbbell, Flame, Check } from "lucide-react";
+
+/** Minimum Zone 2+ minutes in a single day to count toward the Zone 2+ tally. */
+const Z2_DAILY_GOAL_MIN = 21;
 
 /* ── Body-part tag derivation from exercise data ── */
 const BODY_KEYWORDS: Record<string, string[]> = {
