@@ -296,9 +296,14 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                         {log.session_date}
                       </p>
                     </div>
-                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <img src={streakFlame} alt="" className="w-3.5 h-3.5" width={14} height={14} />
-                    </div>
+                    {z2Mins >= Z2_DAILY_GOAL_MIN && (
+                      <div
+                        className="h-5 w-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0"
+                        title="Zone 2+ goal reached"
+                      >
+                        <Check className="h-3 w-3 text-white" strokeWidth={3.5} />
+                      </div>
+                    )}
                   </div>
 
                   {/* Stats row */}
