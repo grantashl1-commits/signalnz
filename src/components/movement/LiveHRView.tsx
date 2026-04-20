@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bluetooth, Activity, PenLine, Save, Check } from "lucide-react";
+import { X, Bluetooth, Activity, PenLine, Save, Check, Minus, Plus, GripHorizontal, BluetoothOff } from "lucide-react";
 import {
   ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
   ReferenceArea, ReferenceLine, Tooltip,
@@ -579,7 +579,15 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           ) : (
             <div className="rounded-xl p-4 border border-border bg-card/60 flex items-center gap-3">
               <Bluetooth className="h-4 w-4 text-emerald-500" />
-              <span className="font-body text-sm text-emerald-600">Connected · {hr.deviceName} ✓</span>
+              <span className="font-body text-sm text-emerald-600 flex-1">Connected · {hr.deviceName} ✓</span>
+              <button
+                onClick={() => { haptic("light"); hr.disconnect(); }}
+                className="touch-btn flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-muted-foreground hover:text-foreground"
+                aria-label="Disconnect heart rate monitor"
+              >
+                <BluetoothOff className="h-3.5 w-3.5" />
+                <span className="font-body text-xs">Disconnect</span>
+              </button>
             </div>
           )}
 
@@ -639,98 +647,242 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     );
   }
 
-  // ── Live workout view ─────────────────────────────────────────────────────────
+  // ── Live workout view: draggable floating panel ───────────────────────────────
+  // Solid background so underlying page stays readable; the panel can be moved
+  // anywhere on screen (e.g. tucked to the bottom while reading exercise notes).
+  return (
+    <DraggableHRPanel
+      workoutName={workoutName}
+      bpm={hr.bpm}
+      currentZone={currentZone}
+      elapsed={elapsed}
+      formatTime={formatTime}
+      hrData={hrData}
+      maxHR={maxHR}
+      zone2PlusMins={zone2PlusMins}
+      zone2Goal={zone2Goal}
+      zone2Reached={zone2Reached}
+      onClose={handleClose}
+      onStop={handleStop}
+      onDisconnect={() => { haptic("light"); hr.disconnect(); }}
+      connected={hr.connected}
+      deviceName={hr.deviceName}
+    />
+  );
+}
 
-  const ringSize = 120;
-  const strokeW = 10;
-  const radius = (ringSize - strokeW) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const z2Progress = Math.min(zone2PlusMins / zone2Goal, 1);
-  const strokeDash = circumference * z2Progress;
+// ─── Draggable floating HR panel ────────────────────────────────────────────────
+
+interface DraggableHRPanelProps {
+  workoutName: string;
+  bpm: number;
+  currentZone: typeof HR_ZONES[0];
+  elapsed: number;
+  formatTime: (s: number) => string;
+  hrData: { time: number; bpm: number }[];
+  maxHR: number;
+  zone2PlusMins: number;
+  zone2Goal: number;
+  zone2Reached: boolean;
+  onClose: () => void;
+  onStop: () => void;
+  onDisconnect: () => void;
+  connected: boolean;
+  deviceName: string | null;
+}
+
+function DraggableHRPanel({
+  workoutName, bpm, currentZone, elapsed, formatTime, hrData, maxHR,
+  zone2PlusMins, zone2Goal, zone2Reached, onClose, onStop, onDisconnect,
+  connected, deviceName,
+}: DraggableHRPanelProps) {
+  const PANEL_W = 320;
+  const [collapsed, setCollapsed] = useState(false);
+  const [pos, setPos] = useState(() => {
+    // Default near top-right, below the page header
+    if (typeof window === "undefined") return { x: 20, y: 80 };
+    const stored = localStorage.getItem("signal_hr_panel_pos");
+    if (stored) {
+      try {
+        const p = JSON.parse(stored);
+        if (typeof p.x === "number" && typeof p.y === "number") return p;
+      } catch {}
+    }
+    return { x: Math.max(8, window.innerWidth - PANEL_W - 16), y: 80 };
+  });
+  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+
+  // Persist position
+  useEffect(() => {
+    localStorage.setItem("signal_hr_panel_pos", JSON.stringify(pos));
+  }, [pos]);
+
+  // Clamp on viewport resize
+  useEffect(() => {
+    const onResize = () => {
+      setPos((p) => ({
+        x: Math.min(Math.max(8, p.x), window.innerWidth - PANEL_W - 8),
+        y: Math.min(Math.max(8, p.y), window.innerHeight - 80),
+      }));
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = { startX: e.clientX, startY: e.clientY, origX: pos.x, origY: pos.y };
+  }, [pos.x, pos.y]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragRef.current) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    const panelH = collapsed ? 64 : 360;
+    setPos({
+      x: Math.min(Math.max(8, dragRef.current.origX + dx), window.innerWidth - PANEL_W - 8),
+      y: Math.min(Math.max(8, dragRef.current.origY + dy), window.innerHeight - panelH),
+    });
+  }, [collapsed]);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
+    dragRef.current = null;
+  }, []);
+
+  const z2Pct = Math.min((zone2PlusMins / zone2Goal) * 100, 100);
 
   return (
-    <div className="fixed inset-0 z-[80] overflow-y-auto transition-colors duration-700" style={{ backgroundColor: currentZone.color + "08" }}>
-      <div className="max-w-lg mx-auto px-5 py-6 space-y-5">
-        <div className="flex items-center justify-between">
-          <p className="font-body text-sm text-muted-foreground">{workoutName}</p>
-          {!running && (
-            <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-              <X className="h-4 w-4 text-muted-foreground" />
-            </button>
-          )}
+    <div
+      className="fixed z-[80] rounded-2xl bg-card border border-border shadow-2xl select-none"
+      style={{
+        left: pos.x,
+        top: pos.y,
+        width: PANEL_W,
+        // Solid background — never see-through. Subtle zone-tint accent on header.
+        boxShadow: `0 18px 40px -12px ${currentZone.color}55, 0 8px 20px -8px hsl(var(--foreground) / 0.15)`,
+      }}
+    >
+      {/* Drag handle / header */}
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        className="flex items-center gap-2 px-3 py-2 rounded-t-2xl cursor-grab active:cursor-grabbing touch-none"
+        style={{ backgroundColor: currentZone.color + "22" }}
+      >
+        <GripHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <motion.div
+            className="h-2 w-2 rounded-full flex-shrink-0"
+            style={{ backgroundColor: currentZone.color }}
+            animate={{ scale: [1, 1.4, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          />
+          <span className="font-body text-xs font-bold text-foreground truncate">
+            {bpm || "—"} bpm · Z{currentZone.zone}
+          </span>
+          <span className="font-body text-[10px] text-muted-foreground truncate">
+            {formatTime(elapsed)}
+          </span>
         </div>
-
-        {/* Live BPM hero */}
-        <div
-          className="rounded-3xl p-6 text-center transition-colors duration-700"
-          style={{ backgroundColor: currentZone.color + "18" }}
+        <button
+          onClick={(e) => { e.stopPropagation(); haptic("light"); setCollapsed((c) => !c); }}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="touch-btn p-1.5 rounded-full hover:bg-secondary"
+          aria-label={collapsed ? "Expand panel" : "Collapse panel"}
         >
-          <motion.p
-            className="font-body text-[5rem] leading-none font-bold"
-            style={{ color: currentZone.color }}
-            animate={{ scale: [1, 1.02, 1] }}
-            transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-          >
-            {hr.bpm || "—"}
-          </motion.p>
-          <p className="font-body text-xs uppercase tracking-widest mt-1" style={{ color: currentZone.color }}>bpm</p>
-          <ZonePill zone={currentZone} />
-        </div>
+          {collapsed ? <Plus className="h-3.5 w-3.5 text-muted-foreground" /> : <Minus className="h-3.5 w-3.5 text-muted-foreground" />}
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); haptic("light"); onClose(); }}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="touch-btn p-1.5 rounded-full hover:bg-secondary"
+          aria-label="Hide panel"
+        >
+          <X className="h-3.5 w-3.5 text-muted-foreground" />
+        </button>
+      </div>
 
-        {/* Zone 2+ ring + timer */}
-        <div className="flex items-center justify-center gap-8">
-          <div className="relative flex-shrink-0" style={{ width: ringSize, height: ringSize }}>
-            <svg width={ringSize} height={ringSize} className="-rotate-90">
-              <circle cx={ringSize / 2} cy={ringSize / 2} r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth={strokeW} />
-              <circle cx={ringSize / 2} cy={ringSize / 2} r={radius} fill="none" stroke={currentZone.color} strokeWidth={strokeW}
-                strokeDasharray={circumference} strokeDashoffset={circumference - strokeDash} strokeLinecap="round"
-                className="transition-all duration-1000"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-body text-sm font-bold text-foreground">
-                {Math.round(zone2PlusMins)}<span className="text-muted-foreground">/{zone2Goal}</span>
-              </span>
-              <span className="font-body text-[9px] text-muted-foreground">min Z2+</span>
+      {!collapsed && (
+        <div className="p-4 space-y-3">
+          <p className="font-body text-[10px] text-muted-foreground uppercase tracking-widest truncate">
+            {workoutName}
+          </p>
+
+          {/* BPM hero (compact) */}
+          <div
+            className="rounded-xl p-3 text-center transition-colors"
+            style={{ backgroundColor: currentZone.color + "12" }}
+          >
+            <motion.p
+              className="font-body text-5xl leading-none font-bold"
+              style={{ color: currentZone.color }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {bpm || "—"}
+            </motion.p>
+            <p className="font-body text-[10px] uppercase tracking-widest mt-1" style={{ color: currentZone.color }}>
+              Zone {currentZone.zone} · {currentZone.label}
+            </p>
+          </div>
+
+          {/* Zone 2+ progress + elapsed */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-lg bg-secondary/60 p-2">
+              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">Z2+ progress</p>
+              <p className="font-body text-sm font-bold text-foreground mt-0.5">
+                {Math.round(zone2PlusMins)}<span className="text-muted-foreground">/{zone2Goal}m</span>
+              </p>
+              <div className="mt-1 h-1.5 rounded-full bg-border overflow-hidden">
+                <div
+                  className="h-full transition-all duration-700"
+                  style={{ width: `${z2Pct}%`, backgroundColor: currentZone.color }}
+                />
+              </div>
+            </div>
+            <div className="rounded-lg bg-secondary/60 p-2">
+              <p className="font-body text-[9px] text-muted-foreground uppercase tracking-wider">Elapsed</p>
+              <p className="font-body text-sm font-bold text-foreground mt-0.5">{formatTime(elapsed)}</p>
+              {zone2Reached && (
+                <p className="font-body text-[9px] mt-0.5" style={{ color: currentZone.color }}>
+                  ✓ Z2+ goal reached
+                </p>
+              )}
             </div>
           </div>
-          <div className="text-center">
-            <p className="font-body text-3xl text-foreground">{formatTime(elapsed)}</p>
-            <p className="font-body text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">elapsed</p>
-          </div>
-        </div>
 
-        {zone2Reached && (
-          <div className="flex items-center justify-center gap-2">
-            <WildStar size={16} />
-            <p className="font-body text-sm font-semibold" style={{ color: currentZone.color }}>Zone 2+ goal reached</p>
-          </div>
-        )}
+          {/* Compact line chart */}
+          {hrData.length >= 4 && (
+            <HRLineChart data={hrData} maxHR={maxHR} currentSecs={elapsed} height={90} />
+          )}
 
-        {/* Real-time HR line chart (replaces bar chart) */}
-        {hrData.length >= 4 && (
-          <div className="space-y-1.5">
-            <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em]">Heart rate</p>
-            <HRLineChart
-              data={hrData}
-              maxHR={maxHR}
-              currentSecs={elapsed}
-              height={160}
-            />
-          </div>
-        )}
+          {/* Connection + actions */}
+          {connected && (
+            <div className="flex items-center gap-1.5 text-[10px] text-emerald-600">
+              <Bluetooth className="h-3 w-3" />
+              <span className="font-body truncate flex-1">{deviceName}</span>
+              <button
+                onClick={onDisconnect}
+                className="touch-btn rounded-full bg-secondary px-2 py-1 text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                aria-label="Disconnect monitor"
+              >
+                <BluetoothOff className="h-3 w-3" />
+                <span className="font-body text-[10px]">Disconnect</span>
+              </button>
+            </div>
+          )}
 
-        {/* Controls */}
-        {!running ? (
-          <button onClick={handleStart} className="touch-btn w-full rounded-[14px] py-4 min-h-[56px] font-body text-base font-bold text-primary-foreground bg-primary">
-            Start session →
-          </button>
-        ) : (
-          <button onClick={handleStop} className="touch-btn w-full rounded-[14px] py-4 min-h-[56px] font-body text-base font-bold text-primary-foreground bg-primary">
+          <button
+            onClick={onStop}
+            className="touch-btn w-full rounded-[12px] py-2.5 min-h-[44px] font-body text-sm font-bold text-primary-foreground bg-primary"
+          >
             End session →
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
