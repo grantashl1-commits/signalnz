@@ -579,7 +579,15 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           ) : (
             <div className="rounded-xl p-4 border border-border bg-card/60 flex items-center gap-3">
               <Bluetooth className="h-4 w-4 text-emerald-500" />
-              <span className="font-body text-sm text-emerald-600">Connected · {hr.deviceName} ✓</span>
+              <span className="font-body text-sm text-emerald-600 flex-1">Connected · {hr.deviceName} ✓</span>
+              <button
+                onClick={() => { haptic("light"); hr.disconnect(); }}
+                className="touch-btn flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-muted-foreground hover:text-foreground"
+                aria-label="Disconnect heart rate monitor"
+              >
+                <BluetoothOff className="h-3.5 w-3.5" />
+                <span className="font-body text-xs">Disconnect</span>
+              </button>
             </div>
           )}
 
