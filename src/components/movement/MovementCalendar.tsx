@@ -246,11 +246,11 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
               {/* Zone 2+ achievement checkmark — only when ≥21min Z2+ on this day */}
               {cell.z2Achieved && (
                 <div
-                  className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center ring-2 ring-card shadow-sm"
+                  className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center ring-2 ring-card shadow-sm"
                   aria-label="Zone 2+ goal reached"
                   title="Zone 2+ goal reached (21+ min)"
                 >
-                  <Check className="h-2.5 w-2.5 text-white" strokeWidth={3.5} />
+                  <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3.5} />
                 </div>
               )}
             </div>
@@ -298,10 +298,10 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                     </div>
                     {z2Mins >= Z2_DAILY_GOAL_MIN && (
                       <div
-                        className="h-5 w-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0"
+                        className="h-5 w-5 rounded-full bg-primary flex items-center justify-center shrink-0"
                         title="Zone 2+ goal reached"
                       >
-                        <Check className="h-3 w-3 text-white" strokeWidth={3.5} />
+                        <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3.5} />
                       </div>
                     )}
                   </div>
