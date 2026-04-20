@@ -127,7 +127,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
 
   // Compute stats
   const { dayCells, workoutCount, totalMinutes, zone2Days, totalCalories, elapsedDays, activityDays } = useMemo(() => {
-    const cells: { day: number; dateStr: string; hasWorkout: boolean; isToday: boolean; isPast: boolean; count: number }[] = [];
+    const cells: { day: number; dateStr: string; hasWorkout: boolean; isToday: boolean; isPast: boolean; count: number; z2Achieved: boolean }[] = [];
     let wCount = 0, mins = 0, z2 = 0, cals = 0, actDays = 0, elapsed = 0;
 
     for (let d = 1; d <= daysInMonth; d++) {
@@ -138,17 +138,24 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
       const dayLogs = logsByDate[dateStr] || [];
       const hasWorkout = dayLogs.length > 0;
 
-      if (isPast || isToday) elapsed++;
+      // Sum Z2+ minutes across every workout logged on this day
+      let dayZ2Mins = 0;
       if (hasWorkout) {
         wCount += dayLogs.length;
         actDays++;
         for (const l of dayLogs) {
           mins += l.duration_minutes || 0;
           cals += l.calories || 0;
-          if (l.zone2_plus_percent && l.zone2_plus_percent > 0) z2++;
+          if (l.zone2_plus_percent && l.duration_minutes) {
+            dayZ2Mins += (l.zone2_plus_percent / 100) * l.duration_minutes;
+          }
         }
       }
-      cells.push({ day: d, dateStr, hasWorkout, isToday, isPast, count: dayLogs.length });
+      const z2Achieved = dayZ2Mins >= Z2_DAILY_GOAL_MIN;
+      if (z2Achieved) z2++;
+
+      if (isPast || isToday) elapsed++;
+      cells.push({ day: d, dateStr, hasWorkout, isToday, isPast, count: dayLogs.length, z2Achieved });
     }
     return { dayCells: cells, workoutCount: wCount, totalMinutes: mins, zone2Days: z2, totalCalories: cals, elapsedDays: elapsed, activityDays: actDays };
   }, [logsByDate, daysInMonth, viewYear, viewMonth, todayStr]);
