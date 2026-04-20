@@ -1,46 +1,22 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, RotateCcw, X, Timer, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, RotateCcw, X, Timer, Volume2, VolumeX, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
-
-// ── Audio beep using Web Audio API ──────────────────────────────────────────
-
-let audioCtx: AudioContext | null = null;
-
-function getAudioCtx(): AudioContext {
-  if (!audioCtx) audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-  return audioCtx;
-}
-
-function playBeep(frequency = 880, duration = 0.15, count = 1) {
-  try {
-    const ctx = getAudioCtx();
-    if (ctx.state === "suspended") ctx.resume();
-    for (let i = 0; i < count; i++) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = "sine";
-      osc.frequency.value = frequency;
-      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.25);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.25 + duration);
-      osc.start(ctx.currentTime + i * 0.25);
-      osc.stop(ctx.currentTime + i * 0.25 + duration);
-    }
-  } catch {
-    // Audio not available
-  }
-}
-
-function playFinishBeep() {
-  playBeep(1046, 0.2, 3); // Higher pitch, triple beep
-}
-
-function playTransitionBeep() {
-  playBeep(880, 0.15, 2); // Double beep for transition
-}
+import { useWakeLock } from "@/hooks/useWakeLock";
+import {
+  useWorkoutTimer,
+  startWorkoutTimer,
+  pauseWorkoutTimer,
+  resumeWorkoutTimer,
+  resetWorkoutTimer,
+  skipWorkoutStep,
+  stopWorkoutTimer,
+  setWorkoutTimerMuted,
+  getDisplayRemaining,
+  type TimerStep,
+} from "@/lib/workout-timer-store";
 
 // ── Parse time from reps string ─────────────────────────────────────────────
 
