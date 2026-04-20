@@ -22,8 +22,7 @@ import {
   HR_ZONES, getZoneForBPM, getMaxHR, estimateCalories,
 } from "@/data/workouts";
 import {
-  ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
-  ReferenceArea, ReferenceLine,
+  BarChart, Bar, Cell, XAxis, YAxis, ResponsiveContainer, LabelList,
 } from "recharts";
 
 interface Props {
