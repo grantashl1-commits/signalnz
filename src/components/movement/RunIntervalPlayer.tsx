@@ -1,11 +1,26 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, SkipForward, RotateCcw, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import type { WorkoutInterval, WorkoutTemplate } from "@/hooks/useTrainingProgram";
+import {
+  useWorkoutTimer,
+  startWorkoutTimer,
+  pauseWorkoutTimer,
+  resumeWorkoutTimer,
+  resetWorkoutTimer,
+  skipWorkoutStep,
+  stopWorkoutTimer,
+  setWorkoutTimerMuted,
+  getDisplayRemaining,
+  type TimerStep,
+  type TimerKind,
+} from "@/lib/workout-timer-store";
 
-interface Step {
+interface FlatInterval {
   intervalId: string;
   block_label: string;
   kind: WorkoutInterval["kind"];
@@ -29,17 +44,14 @@ const KIND_COLORS: Record<WorkoutInterval["kind"], { bg: string; text: string; r
   recovery: { bg: "bg-teal-500/15",   text: "text-teal-400",   ring: "ring-teal-400/40" },
 };
 
-function flattenIntervals(intervals: WorkoutInterval[]): Step[] {
+function flattenIntervals(intervals: WorkoutInterval[]): FlatInterval[] {
   const sorted = [...intervals].sort((a, b) => a.order_index - b.order_index);
-  // Group sequential repeating blocks: e.g. run(reps=8) + walk(reps=8) means alternate run/walk for 8 cycles.
-  // We'll detect by adjacent rows with repeat_count > 1 sharing the same repeat count.
-  const steps: Step[] = [];
+  const steps: FlatInterval[] = [];
   let i = 0;
   while (i < sorted.length) {
     const cur = sorted[i];
     const next = sorted[i + 1];
     if (cur.repeat_count > 1 && next && next.repeat_count === cur.repeat_count) {
-      // Pair: alternate cur/next for repeat_count cycles
       for (let r = 0; r < cur.repeat_count; r++) {
         steps.push({
           intervalId: `${cur.id}-${r}`,
@@ -104,23 +116,6 @@ function fmt(secs: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-// Audio cue helpers
-function beep(freq = 880, durationMs = 200, volume = 0.3) {
-  try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = freq;
-    osc.type = "sine";
-    gain.gain.setValueAtTime(volume, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + durationMs / 1000);
-    osc.start();
-    osc.stop(ctx.currentTime + durationMs / 1000);
-  } catch {}
-}
-
 export default function RunIntervalPlayer({
   template,
   intervals,
@@ -130,111 +125,105 @@ export default function RunIntervalPlayer({
   intervals: WorkoutInterval[];
   onBack: () => void;
 }) {
-  const steps = useMemo(() => flattenIntervals(intervals), [intervals]);
-  const totalDurationSec = useMemo(() => steps.reduce((s, x) => s + x.duration_sec, 0), [steps]);
+  const flatSteps = useMemo(() => flattenIntervals(intervals), [intervals]);
+  const totalDurationSec = useMemo(() => flatSteps.reduce((s, x) => s + x.duration_sec, 0), [flatSteps]);
+  const session = useWorkoutTimer();
+  const location = useLocation();
+  const wakeLock = useWakeLock();
 
-  const [stepIdx, setStepIdx] = useState(0);
-  const [remaining, setRemaining] = useState(steps[0]?.duration_sec ?? 0);
-  const [running, setRunning] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [completed, setCompleted] = useState(false);
-  const tickRef = useRef<number | null>(null);
-
-  // Reset when intervals change
+  // Initialise the global session if not already running this workout.
   useEffect(() => {
-    setStepIdx(0);
-    setRemaining(steps[0]?.duration_sec ?? 0);
-    setRunning(false);
-    setCompleted(false);
-  }, [intervals, steps]);
-
-  // Tick
-  useEffect(() => {
-    if (!running) return;
-    tickRef.current = window.setInterval(() => {
-      setRemaining((r) => {
-        if (r <= 1) {
-          // Step finished
-          setStepIdx((idx) => {
-            const next = idx + 1;
-            if (next >= steps.length) {
-              // Workout complete
-              if (!muted) beep(523, 600, 0.4);
-              haptic("medium");
-              setRunning(false);
-              setCompleted(true);
-              return idx;
-            }
-            const nextStep = steps[next];
-            if (!muted) beep(880, 250, 0.4);
-            haptic("medium");
-            // Set remaining via micro-task to next step's duration
-            setTimeout(() => setRemaining(nextStep.duration_sec), 0);
-            return next;
-          });
-          return 0;
-        }
-        if (r <= 4 && !muted) beep(660, 100, 0.2); // 3-2-1 countdown
-        return r - 1;
+    if (!flatSteps.length) return;
+    const stepsForStore: TimerStep[] = flatSteps.map((s) => ({
+      id: s.intervalId,
+      label: `${s.block_label}${s.totalReps > 1 ? ` (${s.rep}/${s.totalReps})` : ""}`,
+      durationSec: s.duration_sec,
+      kind: s.kind as TimerKind,
+    }));
+    const sameSession =
+      session &&
+      session.title === template.title &&
+      session.steps.length === stepsForStore.length &&
+      session.steps[0]?.id === stepsForStore[0]?.id;
+    if (!sameSession) {
+      startWorkoutTimer({
+        title: template.title,
+        returnPath: location.pathname,
+        steps: stepsForStore,
       });
-    }, 1000);
-    return () => {
-      if (tickRef.current) window.clearInterval(tickRef.current);
-    };
-  }, [running, steps, muted]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template.id, flatSteps.length]);
 
-  const cur = steps[stepIdx];
+  // Wake lock while running.
+  useEffect(() => {
+    if (session?.running && !wakeLock.isActive && wakeLock.isSupported) {
+      wakeLock.toggle();
+    }
+    if (!session?.running && wakeLock.isActive) {
+      wakeLock.release();
+    }
+    return () => {
+      if (wakeLock.isActive) wakeLock.release();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.running]);
+
+  const stepIdx = session?.stepIdx ?? 0;
+  const cur = flatSteps[stepIdx];
+  const completed = session?.finished ?? false;
+  const running = session?.running ?? false;
+  const muted = session?.muted ?? false;
+  const remaining = session ? getDisplayRemaining(session) : (cur?.duration_sec ?? 0);
   const colors = cur ? KIND_COLORS[cur.kind] : KIND_COLORS.run;
+
   const elapsedTotal = useMemo(() => {
-    return steps.slice(0, stepIdx).reduce((s, x) => s + x.duration_sec, 0) + (cur ? cur.duration_sec - remaining : 0);
-  }, [steps, stepIdx, remaining, cur]);
+    return flatSteps.slice(0, stepIdx).reduce((s, x) => s + x.duration_sec, 0) + (cur ? cur.duration_sec - remaining : 0);
+  }, [flatSteps, stepIdx, remaining, cur]);
   const overallPct = totalDurationSec > 0 ? (elapsedTotal / totalDurationSec) * 100 : 0;
   const stepPct = cur && cur.duration_sec > 0 ? ((cur.duration_sec - remaining) / cur.duration_sec) * 100 : 0;
 
   const handlePlayPause = () => {
     if (completed) return;
     haptic("light");
-    setRunning((r) => !r);
+    if (running) pauseWorkoutTimer();
+    else resumeWorkoutTimer();
   };
-  const handleSkip = () => {
-    haptic("medium");
-    if (stepIdx + 1 >= steps.length) {
-      setCompleted(true);
-      setRunning(false);
-      return;
-    }
-    const next = stepIdx + 1;
-    setStepIdx(next);
-    setRemaining(steps[next].duration_sec);
-  };
-  const handleReset = () => {
-    haptic("medium");
-    setStepIdx(0);
-    setRemaining(steps[0]?.duration_sec ?? 0);
-    setRunning(false);
-    setCompleted(false);
-  };
+  const handleSkip = () => { haptic("medium"); skipWorkoutStep(); };
+  const handleReset = () => { haptic("medium"); resetWorkoutTimer(); };
+  const handleBack = () => { onBack(); };
+  const handleEnd = () => { stopWorkoutTimer(); onBack(); };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={handleBack} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
-        <button
-          onClick={() => setMuted((m) => !m)}
-          className="p-2 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground"
-          aria-label={muted ? "Unmute cues" : "Mute cues"}
-        >
-          {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-        </button>
+        <div className="flex items-center gap-2">
+          {session && (
+            <button
+              onClick={handleEnd}
+              className="text-xs text-muted-foreground hover:text-destructive transition-colors px-2 py-1"
+            >
+              End session
+            </button>
+          )}
+          <button
+            onClick={() => setWorkoutTimerMuted(!muted)}
+            className="p-2 rounded-full bg-card border border-border text-muted-foreground hover:text-foreground"
+            aria-label={muted ? "Unmute cues" : "Mute cues"}
+          >
+            {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
 
       <div>
         <p className="font-body text-[10px] text-primary uppercase tracking-[0.15em]">{template.day_label || "Run Session"}</p>
         <h2 className="font-display text-xl font-bold text-foreground mt-0.5">{template.title}</h2>
         <p className="font-body text-xs text-muted-foreground mt-1">
-          Total {fmt(totalDurationSec)} · {steps.length} blocks
+          Total {fmt(totalDurationSec)} · {flatSteps.length} blocks
         </p>
       </div>
 
@@ -265,7 +254,7 @@ export default function RunIntervalPlayer({
             className={cn("rounded-2xl border-2 p-6 text-center", colors.bg, "border-border", "ring-2", colors.ring)}
           >
             <p className={cn("font-body text-[10px] uppercase tracking-[0.2em] font-semibold", colors.text)}>
-              {cur.kind} · {cur.totalReps > 1 ? `Rep ${cur.rep}/${cur.totalReps}` : "Block"} {stepIdx + 1}/{steps.length}
+              {cur.kind} · {cur.totalReps > 1 ? `Rep ${cur.rep}/${cur.totalReps}` : "Block"} {stepIdx + 1}/{flatSteps.length}
             </p>
             <h3 className="font-display text-lg font-bold text-foreground mt-1">{cur.block_label}</h3>
             <div className="font-display text-6xl font-bold text-foreground mt-3 tabular-nums">{fmt(remaining)}</div>
@@ -278,7 +267,6 @@ export default function RunIntervalPlayer({
             {cur.notes && (
               <p className="font-body text-xs text-foreground/70 mt-3 italic">{cur.notes}</p>
             )}
-            {/* Step progress */}
             <div className="mt-4 h-1 rounded-full bg-background/40 overflow-hidden">
               <div className="h-full bg-foreground/60 transition-all duration-1000" style={{ width: `${stepPct}%` }} />
             </div>
@@ -324,23 +312,21 @@ export default function RunIntervalPlayer({
         </button>
       </div>
 
-      {/* Up next */}
-      {!completed && stepIdx + 1 < steps.length && (
+      {!completed && stepIdx + 1 < flatSteps.length && (
         <div className="rounded-xl bg-card border border-border p-3">
           <p className="font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Up next</p>
           <p className="font-body text-sm font-medium text-foreground mt-1">
-            {steps[stepIdx + 1].block_label} · {fmt(steps[stepIdx + 1].duration_sec)}
+            {flatSteps[stepIdx + 1].block_label} · {fmt(flatSteps[stepIdx + 1].duration_sec)}
           </p>
         </div>
       )}
 
-      {/* Block list */}
       <details className="rounded-xl bg-card/60 border border-border">
         <summary className="cursor-pointer font-body text-xs font-medium text-muted-foreground p-3 hover:text-foreground">
-          View all {steps.length} blocks
+          View all {flatSteps.length} blocks
         </summary>
         <ul className="px-3 pb-3 space-y-1.5">
-          {steps.map((s, i) => (
+          {flatSteps.map((s, i) => (
             <li
               key={s.intervalId}
               className={cn(

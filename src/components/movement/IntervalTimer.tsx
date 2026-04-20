@@ -1,46 +1,22 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, RotateCcw, X, Timer, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, RotateCcw, X, Timer, Volume2, VolumeX, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
-
-// ── Audio beep using Web Audio API ──────────────────────────────────────────
-
-let audioCtx: AudioContext | null = null;
-
-function getAudioCtx(): AudioContext {
-  if (!audioCtx) audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-  return audioCtx;
-}
-
-function playBeep(frequency = 880, duration = 0.15, count = 1) {
-  try {
-    const ctx = getAudioCtx();
-    if (ctx.state === "suspended") ctx.resume();
-    for (let i = 0; i < count; i++) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = "sine";
-      osc.frequency.value = frequency;
-      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.25);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.25 + duration);
-      osc.start(ctx.currentTime + i * 0.25);
-      osc.stop(ctx.currentTime + i * 0.25 + duration);
-    }
-  } catch {
-    // Audio not available
-  }
-}
-
-function playFinishBeep() {
-  playBeep(1046, 0.2, 3); // Higher pitch, triple beep
-}
-
-function playTransitionBeep() {
-  playBeep(880, 0.15, 2); // Double beep for transition
-}
+import { useWakeLock } from "@/hooks/useWakeLock";
+import {
+  useWorkoutTimer,
+  startWorkoutTimer,
+  pauseWorkoutTimer,
+  resumeWorkoutTimer,
+  resetWorkoutTimer,
+  skipWorkoutStep,
+  stopWorkoutTimer,
+  setWorkoutTimerMuted,
+  getDisplayRemaining,
+  type TimerStep,
+} from "@/lib/workout-timer-store";
 
 // ── Parse time from reps string ─────────────────────────────────────────────
 
@@ -194,90 +170,84 @@ export function buildIntervalsForWorkout(
   return intervals;
 }
 
-// ── Timer Component ─────────────────────────────────────────────────────────
+// ── Timer Component (uses global store) ─────────────────────────────────────
 
 interface IntervalTimerProps {
   intervals: TimerInterval[];
+  /** Friendly title for the floating bar (e.g. "Walk/Run Intervals"). */
+  title?: string;
+  /** Path to navigate back to from the floating bar — defaults to current. */
+  returnPath?: string;
   onClose: () => void;
   onComplete?: () => void;
   accentColor?: string;
 }
 
-export default function IntervalTimer({ intervals, onClose, onComplete, accentColor }: IntervalTimerProps) {
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(intervals[0]?.durationSec || 0);
-  const [running, setRunning] = useState(false);
-  const [finished, setFinished] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+function intervalsToSteps(intervals: TimerInterval[]): TimerStep[] {
+  return intervals.map((iv, i) => ({
+    id: `step-${i}-${iv.label}`,
+    label: iv.label,
+    durationSec: iv.durationSec,
+    kind: iv.type === "rest" ? "rest" : "work",
+  }));
+}
+
+export default function IntervalTimer({ intervals, title, returnPath, onClose, onComplete, accentColor }: IntervalTimerProps) {
+  const session = useWorkoutTimer();
+  const location = useLocation();
+  const wakeLock = useWakeLock();
   const accent = accentColor || "hsl(var(--primary))";
 
-  const current = intervals[currentIdx];
-  const totalIntervals = intervals.length;
-  const progress = current ? 1 - timeLeft / current.durationSec : 1;
-
-  const clearTimer = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+  // If the visible session doesn't match these intervals (different ids), start fresh on mount.
+  useEffect(() => {
+    const steps = intervalsToSteps(intervals);
+    const matchingTitle = title || intervals[0]?.label || "Workout timer";
+    const path = returnPath ?? location.pathname;
+    if (!session || session.title !== matchingTitle || session.steps.length !== steps.length) {
+      startWorkoutTimer({ title: matchingTitle, returnPath: path, steps });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Tick
+  // Acquire wake lock while running.
   useEffect(() => {
-    if (!running || finished) return;
+    if (session?.running && !wakeLock.isActive && wakeLock.isSupported) {
+      wakeLock.toggle();
+    }
+    if (!session?.running && wakeLock.isActive) {
+      wakeLock.release();
+    }
+    return () => {
+      if (wakeLock.isActive) wakeLock.release();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.running]);
 
-    intervalRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          // Interval complete
-          if (currentIdx < totalIntervals - 1) {
-            // Move to next interval
-            const nextIdx = currentIdx + 1;
-            setCurrentIdx(nextIdx);
-            if (!muted) playTransitionBeep();
-            haptic("medium");
-            return intervals[nextIdx].durationSec;
-          } else {
-            // All done
-            setRunning(false);
-            setFinished(true);
-            if (!muted) playFinishBeep();
-            haptic("medium");
-            onComplete?.();
-            return 0;
-          }
-        }
-        // Warning beep at 3 seconds
-        if (prev === 4 && !muted) playBeep(660, 0.1, 1);
-        return prev - 1;
-      });
-    }, 1000);
+  // Fire onComplete once when finished.
+  useEffect(() => {
+    if (session?.finished) onComplete?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.finished]);
 
-    return clearTimer;
-  }, [running, finished, currentIdx, totalIntervals, intervals, muted, clearTimer, onComplete]);
+  if (!session) return null;
+
+  const current = session.steps[session.stepIdx];
+  const finished = session.finished;
+  const totalIntervals = session.steps.length;
+  const isRest = current?.kind === "rest";
+  const timeLeft = getDisplayRemaining(session);
+  const progress = current ? 1 - timeLeft / current.durationSec : 1;
 
   const handlePlayPause = () => {
     haptic("light");
-    // Resume audio context on first user interaction
-    if (!running) {
-      try { getAudioCtx().resume(); } catch {}
-    }
-    setRunning(!running);
+    if (session.running) pauseWorkoutTimer();
+    else resumeWorkoutTimer();
   };
+  const handleReset = () => { haptic("light"); resetWorkoutTimer(); };
+  const handleSkip = () => { haptic("medium"); skipWorkoutStep(); };
+  const handleClose = () => { stopWorkoutTimer(); onClose(); };
+  const handleMute = () => { haptic("light"); setWorkoutTimerMuted(!session.muted); };
 
-  const handleReset = () => {
-    haptic("light");
-    clearTimer();
-    setCurrentIdx(0);
-    setTimeLeft(intervals[0]?.durationSec || 0);
-    setRunning(false);
-    setFinished(false);
-  };
-
-  if (!current && !finished) return null;
-
-  // Circumference for progress ring
   const radius = 90;
   const circumference = 2 * Math.PI * radius;
 
@@ -288,49 +258,40 @@ export default function IntervalTimer({ intervals, onClose, onComplete, accentCo
       exit={{ opacity: 0, scale: 0.95 }}
       className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center p-6"
     >
-      {/* Close & mute buttons */}
       <div className="absolute top-4 right-4 flex items-center gap-2">
         <button
-          onClick={() => { haptic("light"); setMuted(!muted); }}
+          onClick={handleMute}
           className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground"
         >
-          {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          {session.muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </button>
         <button
-          onClick={() => { clearTimer(); onClose(); }}
+          onClick={handleClose}
           className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground"
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Interval counter */}
       <p className="font-body text-xs text-muted-foreground uppercase tracking-[0.15em] mb-2">
-        {finished ? "Complete!" : `${currentIdx + 1} / ${totalIntervals}`}
+        {finished ? "Complete!" : `${session.stepIdx + 1} / ${totalIntervals}`}
       </p>
 
-      {/* Current interval label */}
       <h2 className={cn(
         "font-display text-xl font-bold text-center mb-8",
-        finished ? "text-primary" : current?.type === "rest" ? "text-muted-foreground" : "text-foreground"
+        finished ? "text-primary" : isRest ? "text-muted-foreground" : "text-foreground"
       )}>
         {finished ? "All intervals done!" : current?.label}
       </h2>
 
-      {/* Progress ring */}
       <div className="relative h-56 w-56 mb-8">
         <svg viewBox="0 0 200 200" className="h-56 w-56 -rotate-90">
-          <circle
-            cx="100" cy="100" r={radius}
-            fill="none"
-            stroke="hsl(var(--border))"
-            strokeWidth="6"
-          />
+          <circle cx="100" cy="100" r={radius} fill="none" stroke="hsl(var(--border))" strokeWidth="6" />
           {!finished && (
             <circle
               cx="100" cy="100" r={radius}
               fill="none"
-              stroke={current?.type === "rest" ? "hsl(var(--muted-foreground))" : accent}
+              stroke={isRest ? "hsl(var(--muted-foreground))" : accent}
               strokeWidth="6"
               strokeLinecap="round"
               strokeDasharray={circumference}
@@ -342,39 +303,34 @@ export default function IntervalTimer({ intervals, onClose, onComplete, accentCo
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={cn(
             "font-display text-5xl font-bold tabular-nums",
-            finished ? "text-primary" : current?.type === "rest" ? "text-muted-foreground" : "text-foreground"
+            finished ? "text-primary" : isRest ? "text-muted-foreground" : "text-foreground"
           )}>
             {finished ? "✓" : formatTime(timeLeft)}
           </span>
-          {!finished && current?.type === "rest" && (
+          {!finished && isRest && (
             <span className="font-body text-xs text-muted-foreground mt-1 uppercase tracking-wider">rest</span>
           )}
         </div>
       </div>
 
-      {/* Type indicator pill */}
       {!finished && (
         <div className={cn(
           "rounded-full px-4 py-1.5 mb-6 font-body text-xs font-bold uppercase tracking-wider",
-          current?.type === "rest"
-            ? "bg-secondary text-muted-foreground"
-            : "text-primary-foreground"
+          isRest ? "bg-secondary text-muted-foreground" : "text-primary-foreground"
         )}
-        style={current?.type !== "rest" ? { backgroundColor: accent } : undefined}
+        style={!isRest ? { backgroundColor: accent } : undefined}
         >
-          {current?.type === "rest" ? "Rest" : "Work"}
+          {isRest ? "Rest" : "Work"}
         </div>
       )}
 
-      {/* Up next */}
-      {!finished && currentIdx < totalIntervals - 1 && (
+      {!finished && session.stepIdx < totalIntervals - 1 && (
         <p className="font-body text-xs text-muted-foreground mb-6">
-          Next: <span className="font-medium text-foreground">{intervals[currentIdx + 1].label}</span>
-          {" · "}{formatTime(intervals[currentIdx + 1].durationSec)}
+          Next: <span className="font-medium text-foreground">{session.steps[session.stepIdx + 1].label}</span>
+          {" · "}{formatTime(session.steps[session.stepIdx + 1].durationSec)}
         </p>
       )}
 
-      {/* Controls */}
       <div className="flex items-center gap-4">
         <button
           onClick={handleReset}
@@ -389,22 +345,24 @@ export default function IntervalTimer({ intervals, onClose, onComplete, accentCo
             className="h-16 w-16 rounded-full flex items-center justify-center text-primary-foreground shadow-lg"
             style={{ backgroundColor: accent }}
           >
-            {running
-              ? <Pause className="h-7 w-7" />
-              : <Play className="h-7 w-7 ml-0.5" />
-            }
+            {session.running ? <Pause className="h-7 w-7" /> : <Play className="h-7 w-7 ml-0.5" />}
           </button>
         ) : (
           <button
-            onClick={() => { clearTimer(); onClose(); }}
+            onClick={handleClose}
             className="h-16 w-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg"
           >
             <X className="h-7 w-7" />
           </button>
         )}
 
-        {/* Skip forward (placeholder space for symmetry) */}
-        <div className="h-12 w-12" />
+        <button
+          onClick={handleSkip}
+          disabled={finished}
+          className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30"
+        >
+          <SkipForward className="h-5 w-5" />
+        </button>
       </div>
     </motion.div>
   );
@@ -450,6 +408,7 @@ export function TimerButton({
         {open && (
           <IntervalTimer
             intervals={intervals}
+            title={exerciseName}
             onClose={() => setOpen(false)}
             onComplete={onComplete}
           />
@@ -493,6 +452,7 @@ export function WorkoutIntervalButton({
         {open && (
           <IntervalTimer
             intervals={intervals}
+            title={exercises[0]?.name || "Interval workout"}
             onClose={() => setOpen(false)}
             onComplete={onComplete}
           />
@@ -501,3 +461,4 @@ export function WorkoutIntervalButton({
     </>
   );
 }
+

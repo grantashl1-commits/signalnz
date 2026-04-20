@@ -10,6 +10,7 @@ import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
 import SignalLogo from "@/components/SignalLogo";
+import FloatingWorkoutTimer from "@/components/movement/FloatingWorkoutTimer";
 
 import PageTransition from "@/components/PageTransition";
 
@@ -374,6 +375,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         initialPrompt={initialPrompt}
         pageContext={pageContext}
       />
+
+      {/* Persistent workout timer mini-bar (visible on every page when timer is running). */}
+      <FloatingWorkoutTimer />
     </div>
   );
 }
