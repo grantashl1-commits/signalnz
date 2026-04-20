@@ -355,6 +355,17 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
     if (!user || sessionLogged || sessionLogging) return;
     setSessionLogging(true);
 
+    // Auto-stop HR tracking so the session is captured at the moment of logging.
+    if (hrRunning) {
+      setHrRunning(false);
+      if (hrIntervalRef.current) { clearInterval(hrIntervalRef.current); hrIntervalRef.current = null; }
+      if (hrSampleRef.current) { clearInterval(hrSampleRef.current); hrSampleRef.current = null; }
+    }
+    // Also stop the global HR session (used by floating chip / LiveHRView).
+    if (hr.session.running) {
+      try { hr.stopSession(); } catch {}
+    }
+
     const exercisesPayload = localExercises.map((ex) => ({
       exercise_id: ex.exercise?.id,
       exercise_name: ex.exercise?.name,
@@ -637,27 +648,45 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
             );
           })()}
 
-          {/* Mini HR graph */}
-          {hrData.length >= 4 && (
-            <div className="h-24 rounded-xl overflow-hidden">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={hrData.filter((_, i) => i % 3 === 0 || i === hrData.length - 1).map(d => ({
-                  mins: parseFloat((d.time / 60).toFixed(2)), bpm: d.bpm
-                }))} margin={{ top: 2, right: 4, bottom: 0, left: 0 }}>
-                  {/* Zone bands */}
-                  <ReferenceArea y1={40} y2={Math.round(maxHR * 0.6)} fill={HR_ZONES[0].color} fillOpacity={0.08} ifOverflow="extendDomain" />
-                  <ReferenceArea y1={Math.round(maxHR * 0.6)} y2={Math.round(maxHR * 0.7)} fill={HR_ZONES[1].color} fillOpacity={0.1} ifOverflow="extendDomain" />
-                  <ReferenceArea y1={Math.round(maxHR * 0.7)} y2={Math.round(maxHR * 0.8)} fill={HR_ZONES[2].color} fillOpacity={0.1} ifOverflow="extendDomain" />
-                  <ReferenceArea y1={Math.round(maxHR * 0.8)} y2={maxHR + 10} fill={HR_ZONES[3].color} fillOpacity={0.1} ifOverflow="extendDomain" />
-                  <XAxis dataKey="mins" type="number" domain={["dataMin", "dataMax"]} hide />
-                  <YAxis domain={["dataMin - 10", maxHR + 10]} hide />
-                  <ReferenceLine y={Math.round(maxHR * 0.6)} stroke={HR_ZONES[1].color} strokeDasharray="3 3" strokeWidth={0.5} />
-                  <ReferenceLine y={Math.round(maxHR * 0.7)} stroke={HR_ZONES[2].color} strokeDasharray="3 3" strokeWidth={0.5} />
-                  <Line type="monotone" dataKey="bpm" stroke="hsl(var(--primary))" strokeWidth={1.5} dot={false} isAnimationActive={false} />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-          )}
+          {/* Mini zone bar chart */}
+          {hrData.length >= 4 && (() => {
+            const zoneTotals = [0, 0, 0, 0, 0];
+            hrData.forEach((d) => { zoneTotals[getZoneForBPM(d.bpm, maxHR).zone - 1] += 2 / 60; });
+            const barData = HR_ZONES.map((z, i) => ({
+              name: `Z${z.zone}`,
+              minutes: Math.round(zoneTotals[i] * 10) / 10,
+              color: z.color,
+            }));
+            const hasAny = barData.some(b => b.minutes > 0);
+            if (!hasAny) return null;
+            return (
+              <div className="h-28 rounded-xl bg-background/40 p-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={barData} margin={{ top: 12, right: 4, bottom: 0, left: 0 }}>
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fontSize: 9, fontFamily: "Montserrat", fill: "hsl(var(--muted-foreground))" }}
+                      stroke="hsl(var(--border))"
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis hide domain={[0, "dataMax + 1"]} />
+                    <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
+                      <LabelList
+                        dataKey="minutes"
+                        position="top"
+                        formatter={(v: number) => v > 0 ? `${v}m` : ""}
+                        style={{ fontSize: 9, fontFamily: "Montserrat", fill: "hsl(var(--foreground))" }}
+                      />
+                      {barData.map((entry, idx) => (
+                        <Cell key={idx} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            );
+          })()}
         </div>
       )}
 
