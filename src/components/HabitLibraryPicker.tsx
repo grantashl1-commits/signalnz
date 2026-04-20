@@ -330,12 +330,39 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
               <h2 className="font-display text-lg italic font-bold text-foreground">
                 {CATEGORY_TITLES[category]} habits.
               </h2>
-              <p className="font-hand text-sm text-bloom">Tap to add to your daily list.</p>
+              <p className="font-hand text-sm text-bloom">
+                {stackMode && category === "supplements"
+                  ? "Pick everything in your stack."
+                  : "Tap to add to your daily list."}
+              </p>
             </div>
             <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
+
+          {/* Build your wellness stack toggle (supplements only) */}
+          {category === "supplements" && (
+            <button
+              onClick={() => {
+                haptic("light");
+                setStackMode(m => !m);
+                setStackSelected(new Set());
+              }}
+              className={`mt-3 w-full touch-btn rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 transition-all border ${
+                stackMode
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-primary border-primary/40"
+              }`}
+            >
+              {stackMode ? <X className="h-4 w-4" /> : <Layers className="h-4 w-4" />}
+              <span className="font-body text-sm font-semibold">
+                {stackMode ? "Cancel stack" : "Build your wellness stack"}
+              </span>
+              {!stackMode && <Sparkles className="h-3.5 w-3.5 opacity-70" />}
+            </button>
+          )}
+
           <div className="relative mt-3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
