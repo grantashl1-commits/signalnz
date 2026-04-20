@@ -243,16 +243,15 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
               >
                 {cell.day}
               </span>
-              {/* Streak flame icon on workout days */}
-              {cell.hasWorkout && (
-                <img
-                  src={streakFlame}
-                  alt=""
-                  className="absolute -top-1 -right-0.5 w-3.5 h-3.5 opacity-90"
-                  loading="lazy"
-                  width={14}
-                  height={14}
-                />
+              {/* Zone 2+ achievement checkmark — only when ≥21min Z2+ on this day */}
+              {cell.z2Achieved && (
+                <div
+                  className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center ring-2 ring-card shadow-sm"
+                  aria-label="Zone 2+ goal reached"
+                  title="Zone 2+ goal reached (21+ min)"
+                >
+                  <Check className="h-2.5 w-2.5 text-white" strokeWidth={3.5} />
+                </div>
               )}
             </div>
           ))}
