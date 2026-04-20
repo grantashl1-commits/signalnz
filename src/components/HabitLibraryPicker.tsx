@@ -460,27 +460,67 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
             })()}
           </AnimatePresence>
 
-          {/* Custom input */}
-          <div className="mt-5 pt-4 border-t border-border">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={customName}
-                onChange={e => setCustomName(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleCustomAdd()}
-                placeholder="Add your own habit..."
-                className="flex-1 rounded-xl bg-secondary px-4 py-2.5 font-body text-[16px] text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <button
-                onClick={handleCustomAdd}
-                disabled={!customName.trim()}
-                className="touch-btn rounded-full px-4 py-2.5 font-hand text-sm font-bold text-primary-foreground bg-primary active:opacity-90 transition-opacity disabled:opacity-30 whitespace-nowrap"
-              >
-                Add →
-              </button>
+          {/* Custom input — hidden in stack mode */}
+          {!(stackMode && category === "supplements") && (
+            <div className="mt-5 pt-4 border-t border-border">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customName}
+                  onChange={e => setCustomName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleCustomAdd()}
+                  placeholder="Add your own habit..."
+                  className="flex-1 rounded-xl bg-secondary px-4 py-2.5 font-body text-[16px] text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <button
+                  onClick={handleCustomAdd}
+                  disabled={!customName.trim()}
+                  className="touch-btn rounded-full px-4 py-2.5 font-hand text-sm font-bold text-primary-foreground bg-primary active:opacity-90 transition-opacity disabled:opacity-30 whitespace-nowrap"
+                >
+                  Add →
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Stack mode bottom spacer so save bar doesn't overlap content */}
+          {stackMode && category === "supplements" && <div className="h-24" />}
         </div>
+
+        {/* Sticky Save Stack bar */}
+        {stackMode && category === "supplements" && (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            className="absolute bottom-0 left-0 right-0 px-5 pt-3 pb-5 bg-card border-t border-border"
+            style={{ boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.15)" }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <p className="font-body text-xs text-muted-foreground">
+                {stackSelected.size} selected
+              </p>
+              {stackSelected.size > 0 && (
+                <button
+                  onClick={() => { haptic("light"); setStackSelected(new Set()); }}
+                  className="font-hand text-xs text-muted-foreground underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <button
+              onClick={handleSaveStack}
+              disabled={stackSelected.size === 0}
+              className="touch-btn w-full rounded-xl py-3 font-body text-sm font-semibold bg-primary text-primary-foreground disabled:opacity-30 active:opacity-90 flex items-center justify-center gap-2"
+            >
+              <Check className="h-4 w-4" />
+              {stackSelected.size === 0
+                ? "Pick supplements to bundle"
+                : `Add stack of ${stackSelected.size} as one habit`}
+            </button>
+          </motion.div>
+        )}
       </motion.div>
     </AnimatePresence>
   );
