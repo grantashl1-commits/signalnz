@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, HelpCircle, Search, Plus, ExternalLink } from "lucide-react";
+import { X, Check, HelpCircle, Search, Plus, ExternalLink, Layers, Sparkles } from "lucide-react";
 import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
@@ -27,6 +27,42 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
   const [customName, setCustomName] = useState("");
   const [search, setSearch] = useState("");
   const existingHabits = getHabits();
+
+  // Wellness Stack mode (supplements only) — multi-select to bundle into one habit
+  const [stackMode, setStackMode] = useState(false);
+  const [stackSelected, setStackSelected] = useState<Set<string>>(new Set());
+
+  const toggleStackPick = (id: string) => {
+    haptic("light");
+    setStackSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSaveStack = () => {
+    if (stackSelected.size === 0) return;
+    haptic("medium");
+    const libraryHabits = getLibraryHabitsForCategory(category);
+    const picked = libraryHabits.filter(h => stackSelected.has(h.id));
+    const names = picked.map(h => h.name);
+    // Strip dosage parens for cleaner bracket list (e.g. "Magnesium Glycinate" stays, "Creatine 3–5g" stays)
+    const bracketList = names.join(", ");
+    const habit: Habit = {
+      id: `${category}-stack-${Date.now()}`,
+      name: `Take daily supplements (${bracketList})`,
+      category,
+      createdAt: new Date().toISOString(),
+      notes: `Wellness stack: ${names.length} supplement${names.length === 1 ? "" : "s"}.`,
+    };
+    addHabit(habit);
+    setStackSelected(new Set());
+    setStackMode(false);
+    onAdded();
+    onClose();
+  };
 
   const isAlreadyAdded = (name: string) =>
     existingHabits.some(h => h.name === name);
@@ -205,42 +241,61 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
     const IconComponent = HABIT_ICONS[habit.icon] || CapsuleIcon;
     const added = isAlreadyAdded(habit.name) || isJustAdded(habit.id);
     const hasInfo = !!(habit.nzBrands || habit.note || habit.description);
+    const isPicked = stackSelected.has(habit.id);
+    const inStackMode = stackMode && category === "supplements";
 
     return (
       <div key={habit.id} className="relative">
         <button
-          onClick={() => handleInstantAdd(habit.name, habit.id, {
-            duration: habit.frequency,
-            notes: habit.description,
-          })}
-          disabled={added}
+          onClick={() => {
+            if (inStackMode) {
+              toggleStackPick(habit.id);
+              return;
+            }
+            handleInstantAdd(habit.name, habit.id, {
+              duration: habit.frequency,
+              notes: habit.description,
+            });
+          }}
+          disabled={!inStackMode && added}
           className={`touch-btn w-full flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
-            added
-              ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
-              : "bg-card border-primary/30 shadow-sm"
+            inStackMode
+              ? isPicked
+                ? "bg-primary/15 border-primary ring-2 ring-primary shadow-md"
+                : "bg-card border-primary/30 shadow-sm"
+              : added
+                ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
+                : "bg-card border-primary/30 shadow-sm"
           }`}
           style={{ minHeight: 90 }}
         >
-          <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+          <IconComponent size={28} color={(inStackMode && isPicked) ? "#7f5b87" : added ? "#af92b6" : "#7f5b87"} />
           <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
             {habit.name}
           </span>
-          {habit.frequencyType && habit.frequencyType !== "daily" && (
+          {!inStackMode && habit.frequencyType && habit.frequencyType !== "daily" && (
             <span className={`font-hand text-[9px] px-1.5 py-0.5 rounded-full ${
               habit.frequencyType === "weekly" ? "bg-accent/20 text-accent-foreground/70" : "bg-secondary text-muted-foreground"
             }`}>
               {habit.frequencyType === "weekly" ? "Weekly" : "Monthly"}
             </span>
           )}
-          {added && (
+          {!inStackMode && added && (
             <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="font-hand text-[9px] text-bloom">
               added
             </motion.span>
           )}
         </button>
 
-        {/* Info bubble */}
-        {hasInfo && (
+        {/* Stack-mode picked badge */}
+        {inStackMode && isPicked && (
+          <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center z-10 shadow">
+            <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+          </div>
+        )}
+
+        {/* Info bubble (hidden in stack mode to keep tap target clean) */}
+        {!inStackMode && hasInfo && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -275,12 +330,39 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
               <h2 className="font-display text-lg italic font-bold text-foreground">
                 {CATEGORY_TITLES[category]} habits.
               </h2>
-              <p className="font-hand text-sm text-bloom">Tap to add to your daily list.</p>
+              <p className="font-hand text-sm text-bloom">
+                {stackMode && category === "supplements"
+                  ? "Pick everything in your stack."
+                  : "Tap to add to your daily list."}
+              </p>
             </div>
             <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
+
+          {/* Build your wellness stack toggle (supplements only) */}
+          {category === "supplements" && (
+            <button
+              onClick={() => {
+                haptic("light");
+                setStackMode(m => !m);
+                setStackSelected(new Set());
+              }}
+              className={`mt-3 w-full touch-btn rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 transition-all border ${
+                stackMode
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-primary border-primary/40"
+              }`}
+            >
+              {stackMode ? <X className="h-4 w-4" /> : <Layers className="h-4 w-4" />}
+              <span className="font-body text-sm font-semibold">
+                {stackMode ? "Cancel stack" : "Build your wellness stack"}
+              </span>
+              {!stackMode && <Sparkles className="h-3.5 w-3.5 opacity-70" />}
+            </button>
+          )}
+
           <div className="relative mt-3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -378,27 +460,67 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
             })()}
           </AnimatePresence>
 
-          {/* Custom input */}
-          <div className="mt-5 pt-4 border-t border-border">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={customName}
-                onChange={e => setCustomName(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleCustomAdd()}
-                placeholder="Add your own habit..."
-                className="flex-1 rounded-xl bg-secondary px-4 py-2.5 font-body text-[16px] text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <button
-                onClick={handleCustomAdd}
-                disabled={!customName.trim()}
-                className="touch-btn rounded-full px-4 py-2.5 font-hand text-sm font-bold text-primary-foreground bg-primary active:opacity-90 transition-opacity disabled:opacity-30 whitespace-nowrap"
-              >
-                Add →
-              </button>
+          {/* Custom input — hidden in stack mode */}
+          {!(stackMode && category === "supplements") && (
+            <div className="mt-5 pt-4 border-t border-border">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customName}
+                  onChange={e => setCustomName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleCustomAdd()}
+                  placeholder="Add your own habit..."
+                  className="flex-1 rounded-xl bg-secondary px-4 py-2.5 font-body text-[16px] text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <button
+                  onClick={handleCustomAdd}
+                  disabled={!customName.trim()}
+                  className="touch-btn rounded-full px-4 py-2.5 font-hand text-sm font-bold text-primary-foreground bg-primary active:opacity-90 transition-opacity disabled:opacity-30 whitespace-nowrap"
+                >
+                  Add →
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Stack mode bottom spacer so save bar doesn't overlap content */}
+          {stackMode && category === "supplements" && <div className="h-24" />}
         </div>
+
+        {/* Sticky Save Stack bar */}
+        {stackMode && category === "supplements" && (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            className="absolute bottom-0 left-0 right-0 px-5 pt-3 pb-5 bg-card border-t border-border"
+            style={{ boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.15)" }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <p className="font-body text-xs text-muted-foreground">
+                {stackSelected.size} selected
+              </p>
+              {stackSelected.size > 0 && (
+                <button
+                  onClick={() => { haptic("light"); setStackSelected(new Set()); }}
+                  className="font-hand text-xs text-muted-foreground underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <button
+              onClick={handleSaveStack}
+              disabled={stackSelected.size === 0}
+              className="touch-btn w-full rounded-xl py-3 font-body text-sm font-semibold bg-primary text-primary-foreground disabled:opacity-30 active:opacity-90 flex items-center justify-center gap-2"
+            >
+              <Check className="h-4 w-4" />
+              {stackSelected.size === 0
+                ? "Pick supplements to bundle"
+                : `Add stack of ${stackSelected.size} as one habit`}
+            </button>
+          </motion.div>
+        )}
       </motion.div>
     </AnimatePresence>
   );
