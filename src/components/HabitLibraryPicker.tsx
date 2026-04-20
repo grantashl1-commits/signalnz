@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, HelpCircle, Search, Plus, ExternalLink } from "lucide-react";
+import { X, Check, HelpCircle, Search, Plus, ExternalLink, Layers, Sparkles } from "lucide-react";
 import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
@@ -27,6 +27,42 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
   const [customName, setCustomName] = useState("");
   const [search, setSearch] = useState("");
   const existingHabits = getHabits();
+
+  // Wellness Stack mode (supplements only) — multi-select to bundle into one habit
+  const [stackMode, setStackMode] = useState(false);
+  const [stackSelected, setStackSelected] = useState<Set<string>>(new Set());
+
+  const toggleStackPick = (id: string) => {
+    haptic("light");
+    setStackSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSaveStack = () => {
+    if (stackSelected.size === 0) return;
+    haptic("medium");
+    const libraryHabits = getLibraryHabitsForCategory(category);
+    const picked = libraryHabits.filter(h => stackSelected.has(h.id));
+    const names = picked.map(h => h.name);
+    // Strip dosage parens for cleaner bracket list (e.g. "Magnesium Glycinate" stays, "Creatine 3–5g" stays)
+    const bracketList = names.join(", ");
+    const habit: Habit = {
+      id: `${category}-stack-${Date.now()}`,
+      name: `Take daily supplements (${bracketList})`,
+      category,
+      createdAt: new Date().toISOString(),
+      notes: `Wellness stack: ${names.length} supplement${names.length === 1 ? "" : "s"}.`,
+    };
+    addHabit(habit);
+    setStackSelected(new Set());
+    setStackMode(false);
+    onAdded();
+    onClose();
+  };
 
   const isAlreadyAdded = (name: string) =>
     existingHabits.some(h => h.name === name);
