@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bluetooth, Activity, PenLine, Save, Check } from "lucide-react";
+import { X, Bluetooth, Activity, PenLine, Save, Check, Minus, Plus, GripHorizontal, BluetoothOff } from "lucide-react";
 import {
   ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
   ReferenceArea, ReferenceLine, Tooltip,
