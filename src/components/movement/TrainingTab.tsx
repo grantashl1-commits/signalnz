@@ -10,6 +10,7 @@ import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise, type Wo
 import { haptic } from "@/hooks/use-mobile";
 import { useCycle } from "@/contexts/CycleContext";
 import { cn } from "@/lib/utils";
+import { getWorkoutTimerSnapshot } from "@/lib/workout-timer-store";
 
 // Cycle-phase training guidance
 const PHASE_TRAINING_GUIDANCE: Record<string, { icon: React.ComponentType<{ className?: string }>; label: string; color: string; note: string }> = {
@@ -65,9 +66,35 @@ export default function TrainingTab() {
 
   useEffect(() => {
     if (loading) return;
+    // Restore in-progress run session if a global timer is still running.
+    const live = getWorkoutTimerSnapshot();
+    if (live && !live.finished && phases.length > 0) {
+      // Find the workout matching the active timer's title across all phases.
+      (async () => {
+        for (let pIdx = 0; pIdx < phases.length; pIdx++) {
+          const wts = await fetchWorkouts(phases[pIdx].id);
+          const match = wts.find((w) => w.title === live.title);
+          if (match) {
+            const ivs = await fetchWorkoutIntervals(match.id);
+            if (ivs.length > 0) {
+              setSelectedPhaseIdx(pIdx);
+              setWorkouts(wts);
+              setActiveWorkout(match);
+              setActiveIntervals(ivs);
+              setView("run-session");
+              return;
+            }
+          }
+        }
+        // Fallback if no match.
+        if (goalCategoryId && program) setView("program");
+        else setView("goal-select");
+      })();
+      return;
+    }
     if (goalCategoryId && program) setView("program");
     else setView("goal-select");
-  }, [loading, goalCategoryId, program]);
+  }, [loading, goalCategoryId, program, phases]);
 
   const handleSelectGoal = async (goalId: string) => {
     haptic("medium");
