@@ -241,42 +241,61 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
     const IconComponent = HABIT_ICONS[habit.icon] || CapsuleIcon;
     const added = isAlreadyAdded(habit.name) || isJustAdded(habit.id);
     const hasInfo = !!(habit.nzBrands || habit.note || habit.description);
+    const isPicked = stackSelected.has(habit.id);
+    const inStackMode = stackMode && category === "supplements";
 
     return (
       <div key={habit.id} className="relative">
         <button
-          onClick={() => handleInstantAdd(habit.name, habit.id, {
-            duration: habit.frequency,
-            notes: habit.description,
-          })}
-          disabled={added}
+          onClick={() => {
+            if (inStackMode) {
+              toggleStackPick(habit.id);
+              return;
+            }
+            handleInstantAdd(habit.name, habit.id, {
+              duration: habit.frequency,
+              notes: habit.description,
+            });
+          }}
+          disabled={!inStackMode && added}
           className={`touch-btn w-full flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
-            added
-              ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
-              : "bg-card border-primary/30 shadow-sm"
+            inStackMode
+              ? isPicked
+                ? "bg-primary/15 border-primary ring-2 ring-primary shadow-md"
+                : "bg-card border-primary/30 shadow-sm"
+              : added
+                ? "bg-bloom/10 border-bloom ring-1 ring-bloom/30 shadow-md opacity-70"
+                : "bg-card border-primary/30 shadow-sm"
           }`}
           style={{ minHeight: 90 }}
         >
-          <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+          <IconComponent size={28} color={(inStackMode && isPicked) ? "#7f5b87" : added ? "#af92b6" : "#7f5b87"} />
           <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
             {habit.name}
           </span>
-          {habit.frequencyType && habit.frequencyType !== "daily" && (
+          {!inStackMode && habit.frequencyType && habit.frequencyType !== "daily" && (
             <span className={`font-hand text-[9px] px-1.5 py-0.5 rounded-full ${
               habit.frequencyType === "weekly" ? "bg-accent/20 text-accent-foreground/70" : "bg-secondary text-muted-foreground"
             }`}>
               {habit.frequencyType === "weekly" ? "Weekly" : "Monthly"}
             </span>
           )}
-          {added && (
+          {!inStackMode && added && (
             <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="font-hand text-[9px] text-bloom">
               added
             </motion.span>
           )}
         </button>
 
-        {/* Info bubble */}
-        {hasInfo && (
+        {/* Stack-mode picked badge */}
+        {inStackMode && isPicked && (
+          <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center z-10 shadow">
+            <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+          </div>
+        )}
+
+        {/* Info bubble (hidden in stack mode to keep tap target clean) */}
+        {!inStackMode && hasInfo && (
           <button
             onClick={(e) => {
               e.stopPropagation();
