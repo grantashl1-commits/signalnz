@@ -51,7 +51,7 @@ export default function PageTransition({ children, previousPath }: Props) {
   const direction = getDirection(previousPath, location.pathname);
 
   return (
-    <AnimatePresence mode="popLayout" custom={direction}>
+    <AnimatePresence mode="wait" custom={direction}>
       <motion.div
         key={location.pathname}
         custom={direction}
