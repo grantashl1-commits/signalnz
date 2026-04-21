@@ -142,7 +142,15 @@ export default function AuthPage() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <SignalLogo size={80} color="hsl(var(--primary))" className="mx-auto mb-4" />
+          <img
+            src="/logos/Icon_purple.png"
+            alt="Signal"
+            width={80}
+            height={80}
+            className="mx-auto mb-4"
+            style={{ width: 80, height: 80, display: "block" }}
+            draggable={false}
+          />
           <h1 className="font-display text-2xl italic text-foreground">
             {signupComplete ? "check your email" : isLogin ? "Welcome back" : "Create account"}
           </h1>
