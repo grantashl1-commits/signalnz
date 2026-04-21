@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { captureReferralParam } from "@/hooks/useReferral";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, type ComponentType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 import SignalLogo from "@/components/SignalLogo";
@@ -22,9 +22,39 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 // Eagerly load the home page (critical path)
 import Index from "./pages/Index";
 
+const lazyWithRetry = <T extends { default: ComponentType<any> }>(
+  importer: () => Promise<T>,
+  retryKey: string,
+) =>
+  lazy(async () => {
+    const storageKey = `signal-lazy-retry:${retryKey}`;
+
+    try {
+      const module = await importer();
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem(storageKey);
+      }
+      return module;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isChunkLoadError = /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module|Loading chunk|Failed to import/i.test(message);
+
+      if (typeof window !== "undefined" && isChunkLoadError && !sessionStorage.getItem(storageKey)) {
+        sessionStorage.setItem(storageKey, "1");
+        window.location.href = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+        return new Promise<never>(() => {});
+      }
+
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem(storageKey);
+      }
+      throw error;
+    }
+  });
+
 // Lazy-load all other routes
 const Cycle = lazy(() => import("./pages/Cycle"));
-const Nutrition = lazy(() => import("./pages/Nutrition"));
+const Nutrition = lazyWithRetry(() => import("./pages/Nutrition"), "nutrition-page");
 const Movement = lazy(() => import("./pages/Movement"));
 const Breathwork = lazy(() => import("./pages/Breathwork"));
 const NervousSystem = lazy(() => import("./pages/NervousSystem"));
