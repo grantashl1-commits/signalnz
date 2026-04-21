@@ -23,25 +23,25 @@
       "name": "Journal",
       "short_name": "Journal",
       "url": "/journal",
-      "icons": [{ "src": "/logos/pwa-icon-512.png?v=7", "sizes": "512x512" }]
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=8", "sizes": "512x512" }]
     },
     {
       "name": "Nutrition",
       "short_name": "Nutrition",
       "url": "/nutrition",
-      "icons": [{ "src": "/logos/pwa-icon-512.png?v=7", "sizes": "512x512" }]
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=8", "sizes": "512x512" }]
     },
     {
       "name": "Movement",
       "short_name": "Movement",
       "url": "/movement",
-      "icons": [{ "src": "/logos/pwa-icon-512.png?v=7", "sizes": "512x512" }]
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=8", "sizes": "512x512" }]
     },
     {
       "name": "Cycle",
       "short_name": "Cycle",
       "url": "/cycle",
-      "icons": [{ "src": "/logos/pwa-icon-512.png?v=7", "sizes": "512x512" }]
+      "icons": [{ "src": "/logos/pwa-icon-512.png?v=8", "sizes": "512x512" }]
     }
   ],
   "share_target": {
@@ -55,13 +55,13 @@
   },
   "icons": [
     {
-      "src": "/logos/pwa-icon-512.png?v=7",
+      "src": "/logos/pwa-icon-512.png?v=8",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logos/apple-touch-icon.png?v=7",
+      "src": "/logos/apple-touch-icon.png?v=8",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -69,7 +69,7 @@
   ],
   "screenshots": [
     {
-      "src": "/logos/pwa-icon-512.png?v=7",
+      "src": "/logos/pwa-icon-512.png?v=8",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
