@@ -450,7 +450,12 @@ export function saveAIMealPlan(plan: AIMealPlan): void {
 export function getAIMealPlan(): AIMealPlan | null {
   try {
     const val = localStorage.getItem(AI_PLAN_KEY);
-    return val ? JSON.parse(val) : null;
+    if (!val) return null;
+
+    const parsed = JSON.parse(val);
+    if (!parsed || !Array.isArray(parsed.days)) return null;
+
+    return parsed as AIMealPlan;
   } catch { return null; }
 }
 
