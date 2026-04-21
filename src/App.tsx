@@ -125,13 +125,20 @@ const App = () => {
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
               <div className="relative" style={{ width: 260, height: 260 }}>
-                {/* Spinning ring */}
+                {/* Spinning brand ring */}
                 <motion.div
                   className="absolute inset-0"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
                 >
-                  <SignalLogo size={260} color="#9B7BB0" />
+                  <img
+                    src="/logos/Icon_purple.png"
+                    alt=""
+                    width={260}
+                    height={260}
+                    style={{ width: 260, height: 260, display: "block" }}
+                    draggable={false}
+                  />
                 </motion.div>
                 {/* Centre text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
