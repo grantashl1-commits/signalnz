@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import signalIcon from "@/assets/pwa-icon-512-purple.png";
+import SignalLogo from "@/components/SignalLogo";
 
 /**
- * Branded loading animation using the actual Signal purple icon.
+ * Branded loading animation using the actual Signal logo mark.
  * Three variants: ripple (sequential fade), pulse (breathing), orbit (spin).
  */
 
@@ -15,15 +15,18 @@ interface Props {
   className?: string;
 }
 
-/* ─── A: Sequential Ripple ─── app launch / loading */
-function SequentialRipple({ size, className }: Omit<Props, "variant">) {
+function AnimatedLogo({ size, color, className }: Omit<Props, "variant">) {
   return (
-    <motion.img
-      src={signalIcon}
-      alt="Loading"
-      width={size}
-      height={size}
-      className={className}
+    <div className={className} style={{ width: size, height: size }}>
+      <SignalLogo size={size} color={color ?? "currentColor"} />
+    </div>
+  );
+}
+
+/* ─── A: Sequential Ripple ─── app launch / loading */
+function SequentialRipple({ size, className, color }: Omit<Props, "variant">) {
+  return (
+    <motion.div
       animate={{
         opacity: [0, 1, 1, 0],
         scale: [0.8, 1.05, 1.05, 0.8],
@@ -34,19 +37,16 @@ function SequentialRipple({ size, className }: Omit<Props, "variant">) {
         ease: "easeInOut",
         times: [0, 0.2, 0.7, 1],
       }}
-    />
+    >
+      <AnimatedLogo size={size} color={color} className={className} />
+    </motion.div>
   );
 }
 
 /* ─── B: Breathing Pulse ─── idle / thinking / listening */
-function BreathingPulse({ size, className }: Omit<Props, "variant">) {
+function BreathingPulse({ size, className, color }: Omit<Props, "variant">) {
   return (
-    <motion.img
-      src={signalIcon}
-      alt="Thinking"
-      width={size}
-      height={size}
-      className={className}
+    <motion.div
       animate={{
         opacity: [0.5, 1, 0.5],
         scale: [0.9, 1.05, 0.9],
@@ -56,26 +56,25 @@ function BreathingPulse({ size, className }: Omit<Props, "variant">) {
         repeat: Infinity,
         ease: "easeInOut",
       }}
-    />
+    >
+      <AnimatedLogo size={size} color={color} className={className} />
+    </motion.div>
   );
 }
 
 /* ─── C: Orbit Spin ─── background processing / saving */
-function OrbitSpin({ size, className }: Omit<Props, "variant">) {
+function OrbitSpin({ size, className, color }: Omit<Props, "variant">) {
   return (
-    <motion.img
-      src={signalIcon}
-      alt="Processing"
-      width={size}
-      height={size}
-      className={className}
+    <motion.div
       animate={{ rotate: 360 }}
       transition={{
         duration: 3,
         repeat: Infinity,
         ease: "linear",
       }}
-    />
+    >
+      <AnimatedLogo size={size} color={color} className={className} />
+    </motion.div>
   );
 }
 
@@ -83,16 +82,17 @@ function OrbitSpin({ size, className }: Omit<Props, "variant">) {
 export default function SignalRingAnimation({
   variant = "pulse",
   size = 64,
+  color = "currentColor",
   className = "",
 }: Props) {
   switch (variant) {
     case "ripple":
-      return <SequentialRipple size={size} className={className} />;
+      return <SequentialRipple size={size} color={color} className={className} />;
     case "orbit":
-      return <OrbitSpin size={size} className={className} />;
+      return <OrbitSpin size={size} color={color} className={className} />;
     case "pulse":
     default:
-      return <BreathingPulse size={size} className={className} />;
+      return <BreathingPulse size={size} color={color} className={className} />;
   }
 }
 
