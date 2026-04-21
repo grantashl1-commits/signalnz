@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { captureReferralParam } from "@/hooks/useReferral";
 import { useState, useEffect, lazy, Suspense, type ComponentType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import * as Sentry from "@sentry/react";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 import SignalLogo from "@/components/SignalLogo";
 import { supabase } from "@/integrations/supabase/client";
