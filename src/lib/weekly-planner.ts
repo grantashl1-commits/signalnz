@@ -100,7 +100,7 @@ export function normalizeAIMealPlan(value: unknown): AIMealPlan | null {
   if (!Array.isArray(rawPlan.days)) return null;
 
   const days = rawPlan.days
-    .map((rawDay) => {
+    .map<AIPlannedDay | null>((rawDay) => {
       if (!rawDay || typeof rawDay !== "object") return null;
       const day = rawDay as Partial<AIPlannedDay> & Record<string, unknown>;
       const cycleDay = typeof day.cycleDay === "number" && Number.isFinite(day.cycleDay) ? day.cycleDay : null;
@@ -149,7 +149,7 @@ export function normalizeAIMealPlan(value: unknown): AIMealPlan | null {
         kidsDinner: sanitizeAIMeal(day.kidsDinner, fallbackPhase, "dinner") ?? undefined,
       } satisfies AIPlannedDay;
     })
-    .filter((day): day is AIPlannedDay => Boolean(day))
+    .filter((day): day is AIPlannedDay => day !== null)
     .sort((a, b) => a.cycleDay - b.cycleDay);
 
   if (days.length === 0) return null;
