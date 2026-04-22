@@ -5,6 +5,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
 import { useRef, useEffect, useState } from "react";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
@@ -99,6 +100,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const pullToRefresh = usePullToRefresh({
+    threshold: 76,
+    onRefresh: async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 120));
+      window.location.reload();
+    },
+  });
 
   const previousPathRef = useRef(location.pathname);
   const previousPath = previousPathRef.current;
@@ -216,7 +224,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-hidden relative">
         {isMobile ? (
           <PageTransition previousPath={previousPath}>
-            <div className="h-full overflow-y-auto overscroll-none">
+            <div
+              ref={pullToRefresh.scrollRef}
+              onTouchStart={pullToRefresh.onTouchStart}
+              onTouchMove={pullToRefresh.onTouchMove}
+              onTouchEnd={pullToRefresh.onTouchEnd}
+              className="h-full overflow-y-auto overscroll-none relative"
+            >
+              <div
+                className="pointer-events-none sticky top-0 z-20 flex justify-center overflow-hidden transition-[height] duration-200 ease-out"
+                style={{ height: pullToRefresh.isPulling || pullToRefresh.refreshing ? pullToRefresh.pullDistance : 0 }}
+                aria-hidden="true"
+              >
+                <div className="mt-3 flex h-10 w-10 items-center justify-center rounded-full bg-card/90 text-primary shadow-soft backdrop-blur-md">
+                  <SignalRingAnimation variant="pulse" size={22} color="hsl(var(--primary))" />
+                </div>
+              </div>
               {children}
             </div>
           </PageTransition>

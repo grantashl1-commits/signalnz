@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, type TouchEvent } from "react";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Options {
@@ -13,13 +13,13 @@ export function usePullToRefresh({ onRefresh, threshold = 70 }: Options) {
   const startYRef = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
+  const onTouchStart = useCallback((e: TouchEvent) => {
     if (scrollRef.current?.scrollTop === 0) {
       startYRef.current = e.touches[0].clientY;
     }
   }, []);
 
-  const onTouchMove = useCallback((e: React.TouchEvent) => {
+  const onTouchMove = useCallback((e: TouchEvent) => {
     if (!startYRef.current) return;
     const delta = e.touches[0].clientY - startYRef.current;
     if (delta > 0 && scrollRef.current?.scrollTop === 0) {
