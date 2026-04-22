@@ -12,12 +12,12 @@ import { haptic } from "@/hooks/use-mobile";
 import { useDailyStoic, useJournalEntries2, type JournalEntryRow, type StoicLens } from "@/hooks/useStoicJournal";
 import StoicJournalSeedCard from "@/components/StoicJournalSeedCard";
 import StoicLensDisplay from "@/components/StoicLensDisplay";
-import MemoryVault, { saveEntryToVault } from "@/components/journal/MemoryVault";
+import MemoryVault from "@/components/journal/MemoryVault";
 import GratitudeEditor from "@/components/journal/GratitudeEditor";
 import OneLineEditor from "@/components/journal/OneLineEditor";
 import JournalInsights from "@/components/journal/JournalInsights";
 import { useJournalSync } from "@/hooks/useJournalSync";
-import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
+import { type JournalEntry, type DreamElement, type VaultEntry } from "@/lib/journal-store";
 import DreamStudio from "@/components/journal/DreamStudio";
 import StoicAudioPlayer from "@/components/StoicAudioPlayer";
 
@@ -79,6 +79,19 @@ function getPlaceholder(phase: string, mood: string | null): string {
 
 function buildStoicReadingText(reading: { seq_day: number; title: string; quote: string; source: string; reflection: string }): string {
   return `Day ${reading.seq_day}.\n\n${reading.title}.\n\n"${reading.quote}"\n\n— ${reading.source}\n\n${reading.reflection}`;
+}
+
+function buildAncestralVaultEntry(entry: JournalEntryRow, lens: StoicLens): VaultEntry {
+  const date = new Date(entry.created_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" });
+  return {
+    id: `ancestral-${entry.id}`,
+    entryId: entry.id,
+    category: "journal-entries",
+    title: lens.stoic_title || entry.title || "Ancestral reflection",
+    preview: `${lens.bridge_metaphor}\n\n${lens.stoic_principle}`.slice(0, 320),
+    date,
+    timestamp: new Date(entry.created_at).getTime(),
+  };
 }
 
 // ── Writing View (full-screen modal) ──
@@ -331,8 +344,12 @@ export default function JournalPage() {
   };
 
   const handleLensGenerated = (lens: StoicLens) => {
-    if (selectedEntry) updateStoicLens(selectedEntry.id, lens);
-    if (postSaveEntry) updateStoicLens(postSaveEntry.id, lens);
+    const targetEntry = selectedEntry || postSaveEntry;
+    if (!targetEntry) return;
+    updateStoicLens(targetEntry.id, lens);
+    journalSync.saveVaultEntry(buildAncestralVaultEntry(targetEntry, lens));
+    if (postSaveEntry?.id === targetEntry.id) setPostSaveEntry({ ...postSaveEntry, stoic_lens: lens });
+    if (selectedEntry?.id === targetEntry.id) setSelectedEntry({ ...selectedEntry, stoic_lens: lens });
   };
 
   const handleSaveToVault = useCallback(async (entry: JournalEntry) => {
@@ -457,12 +474,12 @@ export default function JournalPage() {
                     </div>
                   </div>
 
-                  {/* ── Daily Philosophy ── */}
+                  {/* ── Ancestral Reading ── */}
                   {reading && (
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
                         <BookOpen className="h-4 w-4 text-primary" />
-                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Today's Philosophy · Day {currentDay}</span>
+                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Ancestral Reading · Day {currentDay}</span>
                       </div>
 
                       <div className="rounded-2xl border border-primary/15 bg-primary/[0.03] p-5 space-y-3">
@@ -490,18 +507,18 @@ export default function JournalPage() {
                     </div>
                   )}
 
-                  {/* ── AI Metaphor CTA ── */}
+                  {/* ── Ancestral Metaphor CTA ── */}
                   {postSaveEntry && !postSaveEntry.stoic_lens && postSaveEntry.stoic_seq_day && reading && (
-                    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 p-5 space-y-3">
+                    <div className="rounded-2xl border border-primary/20 bg-primary/[0.03] p-5 space-y-3">
                       <div className="flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-primary" />
-                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Ancestral Reflection</span>
+                        <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Ancestral Metaphor</span>
                       </div>
                       <p className="font-display text-base italic text-foreground leading-relaxed">
-                        Curious to see how your journal relates to the wisdom of our ancestors?
+                        Ready to connect your journal entry with today’s ancestral reading?
                       </p>
                       <p className="font-body text-xs text-muted-foreground leading-relaxed">
-                        We'll weave a metaphor connecting your words to the philosophy above — drawing from the Dao, ancient fables, and timeless wisdom traditions.
+                        Create a short metaphor from what you experienced, what you wrote, and the reading’s main message. It will be saved to your Memory Vault.
                       </p>
                       <StoicLensDisplay
                         entryId={postSaveEntry.id}

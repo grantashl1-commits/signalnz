@@ -94,7 +94,7 @@ export default function StoicLensDisplay({
       >
         <div className="flex items-center gap-2">
           <span className="font-body text-base">🌿</span>
-          <span className="font-body text-[11px] uppercase tracking-wider text-primary">The Stoic Lens · Day {lens.seq_day}</span>
+          <span className="font-body text-[11px] uppercase tracking-wider text-primary">Ancestral metaphor · Day {lens.seq_day}</span>
         </div>
         <p className="font-body text-[11px] text-muted-foreground">{lens.stoic_title} — {reading?.author}</p>
 
@@ -170,61 +170,39 @@ export default function StoicLensDisplay({
     >
       <div className="flex items-center gap-2">
         <span className="font-body text-base">🌿</span>
-        <span className="font-display text-lg italic text-foreground">The Stoic Lens</span>
+        <span className="font-display text-lg italic text-foreground">Create your metaphor</span>
       </div>
 
-      {!listenedToday && reading ? (
-        <>
-          <p className="font-body text-sm text-muted-foreground leading-relaxed italic">
-            Listen to today's reading first, then generate your reflection.
-          </p>
-          {onListen && (
-            <button
-              onClick={() => { haptic("medium"); onListen(); }}
-              className="touch-btn flex items-center gap-2 rounded-xl bg-primary px-4 py-3 font-display text-sm italic text-primary-foreground active:scale-[0.97]"
-            >
-              <Play className="h-4 w-4" /> Listen · Day {reading.seq_day}
-            </button>
-          )}
-
-          {/* Written passage fallback */}
-          {reading.reflection && (
-            <div className="pt-2">
-              <button
-                onClick={() => setShowPassage(!showPassage)}
-                className="flex items-center gap-2 font-body text-[11px] text-primary hover:underline"
-              >
-                <BookOpen className="h-3 w-3" />
-                {showPassage ? "Hide passage" : "Or read instead"}
-                {showPassage ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-              </button>
-              {showPassage && (
-                <div className="mt-3 space-y-2">
-                  <blockquote className="font-display text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
-                    "{reading.quote}"
-                    <footer className="font-body text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
-                  </blockquote>
-                  <p className="font-body text-sm text-foreground/80 leading-relaxed">{reading.reflection}</p>
-                </div>
-              )}
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <p className="font-body text-sm text-muted-foreground leading-relaxed">
-            You've reflected. Now let Signal show you how today's Stoic principle connects to exactly what you wrote.
-          </p>
-          <button
-            onClick={() => { haptic("medium"); generateLens(); }}
-            className="touch-btn w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:scale-[0.97]"
-          >
-            <Sparkles className="h-4 w-4" /> Generate my reflection →
+      <p className="font-body text-sm text-muted-foreground leading-relaxed">
+        We’ll connect what you wrote with Day {reading?.seq_day}'s ancestral reading, then save the metaphor into your Memory Vault.
+      </p>
+      <button
+        onClick={() => { haptic("medium"); generateLens(); }}
+        className="touch-btn w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-display text-sm italic text-primary-foreground active:scale-[0.97]"
+      >
+        <Sparkles className="h-4 w-4" /> Create my metaphor
+      </button>
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 pt-1">
+        {onListen && reading && (
+          <button onClick={() => { haptic("medium"); onListen(); }} className="flex items-center gap-1.5 font-body text-[11px] text-primary hover:underline">
+            <Play className="h-3 w-3" /> {listenedToday ? "Listen again" : "Listen first"}
           </button>
-          <p className="font-body text-xs text-muted-foreground/50 text-center">
-            This uses what you wrote + Day {reading?.seq_day}'s reading to create something made just for today.
-          </p>
-        </>
+        )}
+        {reading?.reflection && (
+          <button onClick={() => setShowPassage(!showPassage)} className="flex items-center gap-1.5 font-body text-[11px] text-primary hover:underline">
+            <BookOpen className="h-3 w-3" /> {showPassage ? "Hide reading" : "Read ancestral passage"}
+            {showPassage ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          </button>
+        )}
+      </div>
+      {showPassage && reading && (
+        <div className="mt-3 space-y-2">
+          <blockquote className="font-display text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
+            "{reading.quote}"
+            <footer className="font-body text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
+          </blockquote>
+          <p className="font-body text-sm text-foreground/80 leading-relaxed">{reading.reflection}</p>
+        </div>
       )}
     </motion.div>
   );
