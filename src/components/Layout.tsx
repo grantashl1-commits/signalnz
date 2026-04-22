@@ -11,6 +11,7 @@ import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
 import SignalLogo from "@/components/SignalLogo";
+import SignalRingAnimation from "@/components/SignalRingAnimation";
 import FloatingWorkoutTimer from "@/components/movement/FloatingWorkoutTimer";
 
 import PageTransition from "@/components/PageTransition";
