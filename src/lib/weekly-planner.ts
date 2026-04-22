@@ -65,6 +65,108 @@ export interface AIMealPlan {
   lockedMeals: Record<string, boolean>; // key: "{cycleDay}-{mealType}"
 }
 
+function isPhase(value: unknown): value is Phase {
+  return value === "menstrual" || value === "follicular" || value === "ovulatory" || value === "luteal";
+}
+
+function sanitizeAIMeal(value: unknown, fallbackPhase: Phase, mealType: AIMeal["mealType"]): AIMeal | null {
+  if (!value || typeof value !== "object") return null;
+
+  const meal = value as Partial<AIMeal> & Record<string, unknown>;
+  const name = typeof meal.name === "string" ? meal.name.trim() : "";
+  if (!name) return null;
+
+  return {
+    name,
+    phase: isPhase(meal.phase) ? meal.phase : fallbackPhase,
+    mealType: meal.mealType === "breakfast" || meal.mealType === "lunch" || meal.mealType === "dinner" || meal.mealType === "snack"
+      ? meal.mealType
+      : mealType,
+    prepTime: typeof meal.prepTime === "string" && meal.prepTime.trim() ? meal.prepTime : "20 min",
+    serves: typeof meal.serves === "number" && Number.isFinite(meal.serves) && meal.serves > 0 ? meal.serves : 2,
+    ingredients: Array.isArray(meal.ingredients) ? meal.ingredients.filter((item): item is string => typeof item === "string" && item.trim().length > 0) : [],
+    method: Array.isArray(meal.method) ? meal.method.filter((item): item is string => typeof item === "string" && item.trim().length > 0) : [],
+    nutritionalNote: typeof meal.nutritionalNote === "string" ? meal.nutritionalNote : "",
+    keyNutrients: Array.isArray(meal.keyNutrients) ? meal.keyNutrients.filter((item): item is string => typeof item === "string" && item.trim().length > 0) : [],
+    isLeftover: Boolean(meal.isLeftover),
+    leftoverFrom: typeof meal.leftoverFrom === "number" && Number.isFinite(meal.leftoverFrom) ? meal.leftoverFrom : undefined,
+  };
+}
+
+export function normalizeAIMealPlan(value: unknown): AIMealPlan | null {
+  if (!value || typeof value !== "object") return null;
+
+  const rawPlan = value as Partial<AIMealPlan> & Record<string, unknown>;
+  if (!Array.isArray(rawPlan.days)) return null;
+
+  const days = rawPlan.days
+    .map<AIPlannedDay | null>((rawDay) => {
+      if (!rawDay || typeof rawDay !== "object") return null;
+      const day = rawDay as Partial<AIPlannedDay> & Record<string, unknown>;
+      const cycleDay = typeof day.cycleDay === "number" && Number.isFinite(day.cycleDay) ? day.cycleDay : null;
+      const fallbackPhase: Phase = isPhase(day.phase) ? day.phase : getPhaseFromDay(cycleDay ?? 1);
+      if (!cycleDay) return null;
+
+      const breakfast = sanitizeAIMeal(day.breakfast, fallbackPhase, "breakfast");
+      const lunch = sanitizeAIMeal(day.lunch, fallbackPhase, "lunch");
+      const dinner = sanitizeAIMeal(day.dinner, fallbackPhase, "dinner");
+      const morningSnack = sanitizeAIMeal(day.morningSnack, fallbackPhase, "snack");
+      const afternoonSnack = sanitizeAIMeal(day.afternoonSnack, fallbackPhase, "snack");
+
+      if (!breakfast || !lunch || !dinner) return null;
+
+      return {
+        cycleDay,
+        phase: fallbackPhase,
+        breakfast,
+        lunch,
+        dinner,
+        morningSnack: morningSnack ?? {
+          name: "Phase snack",
+          phase: fallbackPhase,
+          mealType: "snack",
+          prepTime: "5 min",
+          serves: 1,
+          ingredients: [],
+          method: [],
+          nutritionalNote: "",
+          keyNutrients: [],
+          isLeftover: false,
+        },
+        afternoonSnack: afternoonSnack ?? {
+          name: "Phase snack",
+          phase: fallbackPhase,
+          mealType: "snack",
+          prepTime: "5 min",
+          serves: 1,
+          ingredients: [],
+          method: [],
+          nutritionalNote: "",
+          keyNutrients: [],
+          isLeftover: false,
+        },
+        kidsLunch: sanitizeAIMeal(day.kidsLunch, fallbackPhase, "lunch") ?? undefined,
+        kidsDinner: sanitizeAIMeal(day.kidsDinner, fallbackPhase, "dinner") ?? undefined,
+      } satisfies AIPlannedDay;
+    })
+    .filter((day): day is AIPlannedDay => day !== null)
+    .sort((a, b) => a.cycleDay - b.cycleDay);
+
+  if (days.length === 0) return null;
+
+  return {
+    days,
+    prepPreferences: {
+      ...DEFAULT_PREFS,
+      ...(rawPlan.prepPreferences && typeof rawPlan.prepPreferences === "object" ? rawPlan.prepPreferences : {}),
+    },
+    createdAt: typeof rawPlan.createdAt === "number" && Number.isFinite(rawPlan.createdAt) ? rawPlan.createdAt : Date.now(),
+    lockedMeals: rawPlan.lockedMeals && typeof rawPlan.lockedMeals === "object"
+      ? Object.fromEntries(Object.entries(rawPlan.lockedMeals).filter(([, locked]) => typeof locked === "boolean"))
+      : {},
+  };
+}
+
 export interface PlannedMeal {
   name: string;
   recipeId?: string;
@@ -452,10 +554,7 @@ export function getAIMealPlan(): AIMealPlan | null {
     const val = localStorage.getItem(AI_PLAN_KEY);
     if (!val) return null;
 
-    const parsed = JSON.parse(val);
-    if (!parsed || !Array.isArray(parsed.days)) return null;
-
-    return parsed as AIMealPlan;
+    return normalizeAIMealPlan(JSON.parse(val));
   } catch { return null; }
 }
 
