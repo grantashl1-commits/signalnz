@@ -15,7 +15,7 @@ import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
-  getPeriodEnd,
+  getPeriodEnd, todayCycleDate, getLastPeriodStart,
 } from "@/lib/cycle-utils";
 import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
@@ -61,7 +61,7 @@ export default function CyclePage() {
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const nextPhaseIdx = (phases.indexOf(info.phase) + 1) % 4;
   const nextPhase = PHASE_LABELS[phases[nextPhaseIdx]];
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = todayCycleDate();
   const hasDateSet = !!lastPeriod;
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +81,7 @@ export default function CyclePage() {
 
   const handleCycleUpdate = useCallback(() => {
     cycle.refresh();
-    setLastPeriod(cycle.cycleStartDate || "");
+    setLastPeriod(getLastPeriodStart() || "");
     setRefreshKey((k) => k + 1);
   }, [cycle]);
 
@@ -291,7 +291,7 @@ export default function CyclePage() {
               ))}
               {calendarDays.map((date, i) => {
                 if (!date) return <div key={`empty-${i}`} />;
-                const dateStr = date.toISOString().split("T")[0];
+                const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
                 const isToday = dateStr === todayStr;
                 const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
                 const phase = cycleDay ? getPhaseFromDay(cycleDay) : null;
