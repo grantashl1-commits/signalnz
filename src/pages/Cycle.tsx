@@ -15,7 +15,7 @@ import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
-  getPeriodEnd, todayCycleDate, getLastPeriodStart,
+  getPeriodEnd, todayCycleDate, getLastPeriodStart, getPeriodDayForDate,
 } from "@/lib/cycle-utils";
 import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
@@ -309,9 +309,10 @@ export default function CyclePage() {
                   : displayWeight;
 
                 // Period day fading: day 1 = strongest, day 5 = lightest
-                const isPeriod = indicators.isPeriodDay && cycleDay !== null;
+                const periodDay = getPeriodDayForDate(dateStr);
+                const isPeriod = indicators.isPeriodDay && periodDay !== null;
                 const periodOpacity = isPeriod
-                  ? cycleDay <= 2 ? 0.85 : cycleDay <= 3 ? 0.6 : cycleDay <= 4 ? 0.4 : 0.2
+                  ? periodDay <= 2 ? 0.85 : periodDay <= 3 ? 0.6 : periodDay <= 4 ? 0.4 : 0.2
                   : 0;
 
                 // Check if this date is a logged period end
@@ -339,7 +340,7 @@ export default function CyclePage() {
                     {isToday && (
                       <div className="absolute left-1/2 -translate-x-1/2 rounded-full" style={{ top: 3, width: 4, height: 4, backgroundColor: 'hsl(284, 22%, 44%)' }} />
                     )}
-                    <span className={`font-body text-xs ${isPeriod && cycleDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
+                    <span className={`font-body text-xs ${isPeriod && periodDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
                     <div className="flex justify-center gap-[3px] mt-0.5 flex-wrap">
                       {/* Period end marker */}
                       {isPeriodEnd && (

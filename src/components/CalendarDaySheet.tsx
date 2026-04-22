@@ -10,7 +10,7 @@ import {
   getMoods, setMoods, getSymptomsNew, setSymptomsNew,
   getWeight, setWeight, getWeightUnit, setWeightUnit, getWeightHistory,
   getNotes, setNotes, getPeriodEnd, setPeriodEnd, getPeriodLength,
-  PHASE_SHORT,
+  PHASE_SHORT, getPeriodDayForDate,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
@@ -53,7 +53,8 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
   const phaseColor = PHASE_HEX[phase];
 
   // Period tracking
-  const isPeriodDay = cycleDay !== null && cycleDay >= 1 && cycleDay <= 5;
+  const periodDay = getPeriodDayForDate(dateStr);
+  const isPeriodDay = periodDay !== null;
   const monthKey = dateStr.slice(0, 7);
   const periodEnd = getPeriodEnd(monthKey);
 
@@ -192,9 +193,9 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
               <div>
                 <p className="font-hand text-sm font-bold text-primary mb-3">period tracking</p>
                 <div className="grid grid-cols-2 gap-3">
-                  {isPeriodDay && cycleDay ? (
+                  {isPeriodDay && periodDay ? (
                     <div className="rounded-2xl px-4 py-3 min-h-[52px] flex items-center justify-center border-2" style={{ borderColor: "#C4526E", backgroundColor: "#C4526E" }}>
-                      <span className="font-body text-sm font-bold text-card">PERIOD DAY {cycleDay}</span>
+                      <span className="font-body text-sm font-bold text-card">PERIOD DAY {periodDay}</span>
                     </div>
                   ) : (
                     <PeriodToggleButton
