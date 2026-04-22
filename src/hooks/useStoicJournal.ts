@@ -53,6 +53,28 @@ export interface JournalEntryRow {
   timestamp: number;
 }
 
+function cleanStoicText(value: string | null): string | null {
+  if (!value) return value;
+  return value
+    .replace(/�/g, "–")
+    .replace(/\uFFFD/g, "–")
+    .replace(/\s+–\s+/g, "–")
+    .trim();
+}
+
+function normalizeStoicReading(reading: StoicReading): StoicReading {
+  return {
+    ...reading,
+    title: cleanStoicText(reading.title) || reading.title,
+    author: cleanStoicText(reading.author) || reading.author,
+    source: cleanStoicText(reading.source) || reading.source,
+    quote: cleanStoicText(reading.quote) || reading.quote,
+    reflection: cleanStoicText(reading.reflection) || reading.reflection,
+    journal_prompt: cleanStoicText(reading.journal_prompt),
+    tts_script: cleanStoicText(reading.tts_script),
+  };
+}
+
 export function useDailyStoic() {
   const { user } = useAuth();
   const [currentDay, setCurrentDay] = useState(1);
@@ -66,7 +88,7 @@ export function useDailyStoic() {
       .select("*")
       .eq("seq_day", day)
       .maybeSingle();
-    if (readingData) setReading(readingData as unknown as StoicReading);
+    if (readingData) setReading(normalizeStoicReading(readingData as unknown as StoicReading));
   }, []);
 
   useEffect(() => {
