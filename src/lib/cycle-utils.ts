@@ -42,6 +42,61 @@ export const PHASE_DAYS: Record<Phase, [number, number]> = {
   luteal: [15, 28],
 };
 
+const DAY_MS = 1000 * 60 * 60 * 24;
+const CYCLE_TIME_ZONE_KEY = "signal_cycle_time_zone";
+const PERIOD_HISTORY_KEY = "cyclePeriodHistory";
+
+export interface PeriodRecord {
+  id: string;
+  startDate: string;
+  endDate: string | null;
+  lengthDays: number;
+  cycleLengthDays: number | null;
+  symptomDays: number;
+  symptomCount: number;
+  moodDays: number;
+  notesDays: number;
+  createdAt: string;
+}
+
+export function getCycleTimeZone(): string {
+  return localStorage.getItem(CYCLE_TIME_ZONE_KEY) || "Pacific/Auckland";
+}
+
+export function setCycleTimeZone(timeZone: string): void {
+  localStorage.setItem(CYCLE_TIME_ZONE_KEY, timeZone);
+}
+
+export function formatLocalDate(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-NZ", {
+    timeZone: getCycleTimeZone(),
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const get = (type: string) => parts.find((part) => part.type === type)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+export function todayCycleDate(): string {
+  return formatLocalDate(new Date());
+}
+
+export function parseCycleDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+export function addCycleDays(dateStr: string, days: number): string {
+  const date = parseCycleDate(dateStr);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+export function daysBetween(startDate: string, endDate: string): number {
+  return Math.round((parseCycleDate(endDate).getTime() - parseCycleDate(startDate).getTime()) / DAY_MS);
+}
+
 export function getPhaseFromDay(cycleDay: number): Phase {
   if (cycleDay >= 1 && cycleDay <= 5) return "menstrual";
   if (cycleDay >= 6 && cycleDay <= 13) return "follicular";
@@ -57,11 +112,7 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
   if (!lastPeriodStart) {
     return { name: "Follicular Phase", phase: "follicular", day: 3, cycleDay: 8 };
   }
-  const [sy, sm, sd] = lastPeriodStart.split("-").map(Number);
-  const start = new Date(sy, sm - 1, sd);
-  const today = new Date();
-  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const diffDays = Math.round((todayMidnight.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const diffDays = daysBetween(lastPeriodStart, todayCycleDate()) + 1;
   const cycleDay = ((diffDays - 1) % 28) + 1;
   const phase = getPhaseFromDay(cycleDay);
   const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 15;
@@ -76,10 +127,8 @@ export function getCycleInfo(lastPeriodStart: string | null): PhaseInfo {
 }
 
 export function getCycleDayForDate(lastPeriodStart: string, date: Date): number {
-  const [sy, sm, sd] = lastPeriodStart.split("-").map(Number);
-  const start = new Date(sy, sm - 1, sd);
-  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const diffDays = Math.round((target.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const target = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const diffDays = daysBetween(lastPeriodStart, target) + 1;
   return ((diffDays - 1) % 28) + 1;
 }
 
