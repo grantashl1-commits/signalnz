@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, Moon, Zap, AlertCircle } from "lucide-react";
-import { getPhaseFromDay, getCycleDayForDate, Phase, PHASE_SHORT, getPeriodHistory } from "@/lib/cycle-utils";
+import { addCycleDays, daysBetween, getPhaseFromDay, getCycleDayForDate, Phase, PHASE_SHORT, getPeriodHistory, todayCycleDate } from "@/lib/cycle-utils";
 import { getStructuredSymptoms } from "@/lib/cycle-symptom-utils";
 
 interface Props {
@@ -31,9 +31,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
 
   const insights = useMemo(() => {
     const result: Insight[] = [];
-    const start = new Date(cycleStartDate);
-    const today = new Date();
-    const totalDays = Math.round((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const totalDays = daysBetween(cycleStartDate, todayCycleDate());
     
     if (totalDays < 28) return result; // Need at least one full cycle
 
@@ -50,9 +48,8 @@ export default function CycleInsights({ cycleStartDate }: Props) {
     let loggedDays = 0;
 
     for (let i = 0; i < Math.min(totalDays, 84); i++) { // look back up to 3 cycles
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = addCycleDays(todayCycleDate(), -i);
+      const d = new Date(`${dateStr}T12:00:00`);
       const cycleDay = getCycleDayForDate(cycleStartDate, d);
       const phase = getPhaseFromDay(cycleDay);
       const checkin = getStructuredSymptoms(dateStr);
