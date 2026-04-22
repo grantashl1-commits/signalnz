@@ -345,10 +345,7 @@ export function getMonthLogSummary(year: number, month: number): { periodDays: n
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-    if (lastPeriod) {
-      const cycleDay = getCycleDayForDate(lastPeriod, date);
-      if (cycleDay >= 1 && cycleDay <= 5) periodDays++;
-    }
+    if (getPeriodDayForDate(dateStr)) periodDays++;
     if (getSymptomsNew(dateStr).length > 0) symptomsLogged++;
     if (getMoods(dateStr).length > 0) moodsLogged++;
   }
@@ -361,12 +358,7 @@ export function getDayIndicators(dateStr: string, lastPeriod: string | null): {
   hasMood: boolean; hasSymptoms: boolean; hasWeight: boolean;
   hasNotes: boolean; hasSeeds: boolean; isPeriodDay: boolean;
 } {
-  const date = new Date(dateStr + "T12:00:00");
-  let isPeriodDay = false;
-  if (lastPeriod) {
-    const cycleDay = getCycleDayForDate(lastPeriod, date);
-    isPeriodDay = cycleDay >= 1 && cycleDay <= 5;
-  }
+  const isPeriodDay = !!getPeriodDayForDate(dateStr);
 
   return {
     hasMood: getMoods(dateStr).length > 0,
@@ -399,6 +391,22 @@ export function getPeriodHistory(): PeriodRecord[] {
 
 export function savePeriodHistory(records: PeriodRecord[]): void {
   localStorage.setItem(PERIOD_HISTORY_KEY, JSON.stringify(records));
+}
+
+export function getPeriodRecordForDate(dateStr: string): PeriodRecord | null {
+  return getPeriodHistory().find((record) => {
+    if (!record.endDate) return record.startDate === dateStr;
+    return daysBetween(record.startDate, dateStr) >= 0 && daysBetween(dateStr, record.endDate) >= 0;
+  }) || null;
+}
+
+export function getPeriodDayForDate(dateStr: string): number | null {
+  const record = getPeriodRecordForDate(dateStr);
+  if (record) return daysBetween(record.startDate, dateStr) + 1;
+  const lastPeriod = getLastPeriodStart();
+  if (!lastPeriod) return null;
+  const day = daysBetween(lastPeriod, dateStr) + 1;
+  return day >= 1 && day <= 5 ? day : null;
 }
 
 function countLoggedData(startDate: string, endDate: string) {
