@@ -20,6 +20,7 @@ import {
   getSavedPreferences,
   DEFAULT_PREFS,
   attachKidsMeals,
+  normalizeAIMealPlan,
   swapKidsMeal,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
@@ -130,7 +131,8 @@ export default function MyWeekTab() {
           .limit(1)
           .maybeSingle();
         if (data?.plan_data) {
-          const restoredPlan = data.plan_data as AIMealPlan;
+          const restoredPlan = normalizeAIMealPlan(data.plan_data);
+          if (!restoredPlan) return;
           // Backfill kids meals if the saved plan predates the kids-at-generation flow.
           const finalPlan = (restoredPlan.prepPreferences?.kids ?? 0) > 0
             ? attachKidsMeals(restoredPlan)
