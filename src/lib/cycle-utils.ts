@@ -446,11 +446,10 @@ export function getSymptomFrequency(): Record<string, number> {
   if (!lastPeriod) return {};
 
   const freq: Record<string, number> = {};
-  const start = new Date(lastPeriod);
-  const today = new Date();
+  const totalDays = daysBetween(lastPeriod, todayCycleDate());
 
-  for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0];
+  for (let offset = 0; offset <= totalDays; offset++) {
+    const dateStr = addCycleDays(lastPeriod, offset);
     const symptoms = getSymptomsNew(dateStr);
     symptoms.forEach((s) => {
       freq[s] = (freq[s] || 0) + 1;
@@ -469,13 +468,12 @@ export function getMoodsByPhase(): Record<Phase, Record<string, number>> {
     menstrual: {}, follicular: {}, ovulatory: {}, luteal: {},
   };
 
-  const start = new Date(lastPeriod);
-  const today = new Date();
+  const totalDays = daysBetween(lastPeriod, todayCycleDate());
 
-  for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0];
+  for (let offset = 0; offset <= totalDays; offset++) {
+    const dateStr = addCycleDays(lastPeriod, offset);
     const moods = getMoods(dateStr);
-    const cycleDay = getCycleDayForDate(lastPeriod, d);
+    const cycleDay = ((offset % 28) + 1);
     const phase = getPhaseFromDay(cycleDay);
 
     moods.forEach((m) => {
