@@ -15,7 +15,7 @@ import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
-  getPeriodEnd,
+  getPeriodEnd, todayCycleDate, getLastPeriodStart, getPeriodDayForDate,
 } from "@/lib/cycle-utils";
 import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
@@ -61,7 +61,7 @@ export default function CyclePage() {
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const nextPhaseIdx = (phases.indexOf(info.phase) + 1) % 4;
   const nextPhase = PHASE_LABELS[phases[nextPhaseIdx]];
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = todayCycleDate();
   const hasDateSet = !!lastPeriod;
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +81,7 @@ export default function CyclePage() {
 
   const handleCycleUpdate = useCallback(() => {
     cycle.refresh();
-    setLastPeriod(cycle.cycleStartDate || "");
+    setLastPeriod(getLastPeriodStart() || "");
     setRefreshKey((k) => k + 1);
   }, [cycle]);
 
@@ -291,7 +291,7 @@ export default function CyclePage() {
               ))}
               {calendarDays.map((date, i) => {
                 if (!date) return <div key={`empty-${i}`} />;
-                const dateStr = date.toISOString().split("T")[0];
+                const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
                 const isToday = dateStr === todayStr;
                 const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
                 const phase = cycleDay ? getPhaseFromDay(cycleDay) : null;
@@ -309,9 +309,10 @@ export default function CyclePage() {
                   : displayWeight;
 
                 // Period day fading: day 1 = strongest, day 5 = lightest
-                const isPeriod = indicators.isPeriodDay && cycleDay !== null;
+                const periodDay = getPeriodDayForDate(dateStr);
+                const isPeriod = indicators.isPeriodDay && periodDay !== null;
                 const periodOpacity = isPeriod
-                  ? cycleDay <= 2 ? 0.85 : cycleDay <= 3 ? 0.6 : cycleDay <= 4 ? 0.4 : 0.2
+                  ? periodDay <= 2 ? 0.85 : periodDay <= 3 ? 0.6 : periodDay <= 4 ? 0.4 : 0.2
                   : 0;
 
                 // Check if this date is a logged period end
@@ -339,7 +340,7 @@ export default function CyclePage() {
                     {isToday && (
                       <div className="absolute left-1/2 -translate-x-1/2 rounded-full" style={{ top: 3, width: 4, height: 4, backgroundColor: 'hsl(284, 22%, 44%)' }} />
                     )}
-                    <span className={`font-body text-xs ${isPeriod && cycleDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
+                    <span className={`font-body text-xs ${isPeriod && periodDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
                     <div className="flex justify-center gap-[3px] mt-0.5 flex-wrap">
                       {/* Period end marker */}
                       {isPeriodEnd && (

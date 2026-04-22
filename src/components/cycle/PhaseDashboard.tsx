@@ -87,7 +87,7 @@ export default function PhaseDashboard({ phase, cycleDay }: Props) {
   const [expanded, setExpanded] = useState(false);
   const content = PHASE_CONTENT[phase];
   const color = PHASE_HEX[phase];
-  const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 18;
+  const phaseStartDay = phase === "menstrual" ? 1 : phase === "follicular" ? 6 : phase === "ovulatory" ? 14 : 15;
   const dayInPhase = cycleDay - phaseStartDay + 1;
 
   const tiles = [
