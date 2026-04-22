@@ -151,6 +151,10 @@ export function getLastPeriodStart(): string | null {
 }
 
 export function setLastPeriodStart(date: string): void {
+  const previousStart = getLastPeriodStart();
+  if (previousStart && previousStart !== date && daysBetween(previousStart, date) > 0) {
+    archivePeriodBeforeNewStart(previousStart, date);
+  }
   localStorage.setItem("cycleStartDate", date);
   localStorage.setItem("mindcast_last_period", date); // backward compat
 }
@@ -165,29 +169,24 @@ export function setPeriodEnd(monthKey: string, date: string): void {
 }
 
 export function getPeriodLength(startDate: string, endDate: string): number {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  return daysBetween(startDate, endDate) + 1;
 }
 
 // ─── Daily Check-in ────────────────────────────────────────
 export function getCheckin(): string | null {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayCycleDate();
   return localStorage.getItem(`mindcast_checkin_${today}`);
 }
 
 export function setCheckin(feeling: string): void {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayCycleDate();
   localStorage.setItem(`mindcast_checkin_${today}`, feeling);
 }
 
 export function getCheckinStreak(): number {
   let streak = 0;
-  const today = new Date();
   for (let i = 0; i < 90; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().split("T")[0];
+    const key = addCycleDays(todayCycleDate(), -i);
     if (localStorage.getItem(`mindcast_checkin_${key}`)) {
       streak++;
     } else {
@@ -199,12 +198,12 @@ export function getCheckinStreak(): number {
 
 // ─── Water ─────────────────────────────────────────────────
 export function getWaterCount(): number {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayCycleDate();
   return parseInt(localStorage.getItem(`mindcast_water_${today}`) || "0", 10);
 }
 
 export function setWaterCount(count: number): void {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayCycleDate();
   localStorage.setItem(`mindcast_water_${today}`, count.toString());
 }
 
@@ -245,11 +244,8 @@ export function setWeightUnit(unit: "kg" | "lbs"): void {
 
 export function getWeightHistory(days: number = 7): { date: string; value: number }[] {
   const results: { date: string; value: number }[] = [];
-  const today = new Date();
   for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = addCycleDays(todayCycleDate(), -i);
     const w = getWeight(dateStr);
     if (w !== null) results.push({ date: dateStr, value: w });
   }
