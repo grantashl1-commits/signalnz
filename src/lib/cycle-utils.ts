@@ -316,11 +316,8 @@ export function setDailySignal(date: string, signal: string): void {
 // ─── Recent Data Helpers ───────────────────────────────────
 export function getRecentSymptoms(days: number = 3): { date: string; symptoms: string[] }[] {
   const results: { date: string; symptoms: string[] }[] = [];
-  const today = new Date();
   for (let i = 0; i < days; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = addCycleDays(todayCycleDate(), -i);
     const symptoms = getSymptomsNew(dateStr);
     if (symptoms.length > 0) results.push({ date: dateStr, symptoms });
   }
@@ -329,11 +326,8 @@ export function getRecentSymptoms(days: number = 3): { date: string; symptoms: s
 
 export function getRecentMoods(days: number = 2): { date: string; moods: string[] }[] {
   const results: { date: string; moods: string[] }[] = [];
-  const today = new Date();
   for (let i = 0; i < days; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = addCycleDays(todayCycleDate(), -i);
     const moods = getMoods(dateStr);
     if (moods.length > 0) results.push({ date: dateStr, moods });
   }
@@ -350,7 +344,7 @@ export function getMonthLogSummary(year: number, month: number): { periodDays: n
 
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
-    const dateStr = date.toISOString().split("T")[0];
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
     if (lastPeriod) {
       const cycleDay = getCycleDayForDate(lastPeriod, date);
       if (cycleDay >= 1 && cycleDay <= 5) periodDays++;
@@ -392,6 +386,58 @@ export function archiveCycle(monthKey: string, data: Record<string, any>): void 
 export function getCycleHistory(monthKey: string): Record<string, any> | null {
   const val = localStorage.getItem(`cycleHistory:${monthKey}`);
   return val ? JSON.parse(val) : null;
+}
+
+export function getPeriodHistory(): PeriodRecord[] {
+  try {
+    const records = JSON.parse(localStorage.getItem(PERIOD_HISTORY_KEY) || "[]") as PeriodRecord[];
+    return records.sort((a, b) => b.startDate.localeCompare(a.startDate));
+  } catch {
+    return [];
+  }
+}
+
+export function savePeriodHistory(records: PeriodRecord[]): void {
+  localStorage.setItem(PERIOD_HISTORY_KEY, JSON.stringify(records));
+}
+
+function countLoggedData(startDate: string, endDate: string) {
+  let symptomDays = 0;
+  let symptomCount = 0;
+  let moodDays = 0;
+  let notesDays = 0;
+  for (let offset = 0; offset <= daysBetween(startDate, endDate); offset++) {
+    const dateStr = addCycleDays(startDate, offset);
+    const symptoms = getSymptomsNew(dateStr);
+    if (symptoms.length) {
+      symptomDays++;
+      symptomCount += symptoms.length;
+    }
+    if (getMoods(dateStr).length) moodDays++;
+    if (getNotes(dateStr).trim()) notesDays++;
+  }
+  return { symptomDays, symptomCount, moodDays, notesDays };
+}
+
+function archivePeriodBeforeNewStart(previousStart: string, newStart: string): void {
+  const inferredEnd = addCycleDays(newStart, -1);
+  const monthKey = previousStart.slice(0, 7);
+  const savedEnd = getPeriodEnd(monthKey);
+  const endDate = savedEnd && daysBetween(previousStart, savedEnd) >= 0 && daysBetween(savedEnd, newStart) > 0 ? savedEnd : inferredEnd;
+  const existing = getPeriodHistory().filter((record) => record.startDate !== previousStart);
+  const logged = countLoggedData(previousStart, endDate);
+  savePeriodHistory([
+    {
+      id: `period-${previousStart}`,
+      startDate: previousStart,
+      endDate,
+      lengthDays: getPeriodLength(previousStart, endDate),
+      cycleLengthDays: daysBetween(previousStart, newStart),
+      createdAt: new Date().toISOString(),
+      ...logged,
+    },
+    ...existing,
+  ]);
 }
 
 // ─── Symptom Frequency for Current Cycle ───────────────────
