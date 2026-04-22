@@ -46,7 +46,7 @@ function PeriodToggleButton({ label, isActive, onTap }: { label: string; isActiv
 
 export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Props) {
   const [panel, setPanel] = useState<Panel>("main");
-  const { cycleStartDate: lastPeriod } = useCycle();
+  const { cycleStartDate: lastPeriod, setCycleStartDate } = useCycle();
   const date = new Date(dateStr + "T12:00:00");
   const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
   const phase: Phase = cycleDay ? getPhaseFromDay(cycleDay) : "follicular";
@@ -74,6 +74,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
   const handleStartPeriod = () => {
     haptic("medium");
     setLastPeriodStart(dateStr);
+    setCycleStartDate(dateStr);
     onCycleUpdate?.();
   };
 
@@ -148,7 +149,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
   };
 
   const periodLength = lastPeriod && periodEnd ? getPeriodLength(lastPeriod, periodEnd) : null;
-  const dateLabel = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  const dateLabel = date.toLocaleDateString("en-NZ", { weekday: "short", month: "short", day: "numeric" });
 
   return (
     <AnimatePresence>

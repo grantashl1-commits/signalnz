@@ -36,8 +36,15 @@ function localMidnight(dateStr: string): Date {
 }
 
 function todayLocalStr(): string {
-  const t = new Date();
-  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+  const timeZone = localStorage.getItem("signal_cycle_time_zone") || "Pacific/Auckland";
+  const parts = new Intl.DateTimeFormat("en-NZ", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const get = (type: string) => parts.find((part) => part.type === type)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
 function computeCycleDay(startDate: string): number {
@@ -128,7 +135,7 @@ export function CycleProvider({ children }: { children: ReactNode }) {
   const getCalendarDateForCycleDay = useCallback(
     (cycleDay: number): Date | null => {
       if (!startDate) return null;
-      const start = new Date(startDate);
+      const start = localMidnight(startDate);
       const offset = cycleDay - 1; // cycle day 1 = start date
       const result = new Date(start);
       result.setDate(result.getDate() + offset);
