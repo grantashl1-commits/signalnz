@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, Moon, Zap, AlertCircle } from "lucide-react";
-import { getPhaseFromDay, getCycleDayForDate, Phase, PHASE_SHORT } from "@/lib/cycle-utils";
+import { getPhaseFromDay, getCycleDayForDate, Phase, PHASE_SHORT, getPeriodHistory } from "@/lib/cycle-utils";
 import { getStructuredSymptoms } from "@/lib/cycle-symptom-utils";
 
 interface Props {
@@ -15,6 +15,20 @@ interface Insight {
 }
 
 export default function CycleInsights({ cycleStartDate }: Props) {
+  const history = useMemo(() => getPeriodHistory(), [cycleStartDate]);
+  const stats = useMemo(() => {
+    const records = history.slice(0, 6);
+    const completed = records.filter((record) => record.lengthDays > 0);
+    const average = (values: number[]) => values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : null;
+    return {
+      records,
+      averagePeriod: average(completed.map((record) => record.lengthDays)),
+      averageCycle: average(completed.map((record) => record.cycleLengthDays || 0).filter(Boolean)),
+      totalSymptoms: completed.reduce((sum, record) => sum + record.symptomCount, 0),
+      maxPeriod: Math.max(5, ...completed.map((record) => record.lengthDays)),
+    };
+  }, [history]);
+
   const insights = useMemo(() => {
     const result: Insight[] = [];
     const start = new Date(cycleStartDate);
@@ -55,7 +69,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
       }
     }
 
-    if (loggedDays < 7) return result; // Need minimum data
+    if (loggedDays < 7 && history.length === 0) return result; // Need minimum data
 
     // Insight: Luteal fatigue pattern
     const lutealFatigueCount = phaseSymptoms.luteal["Fatigue / low energy"] || 0;
@@ -104,9 +118,9 @@ export default function CycleInsights({ cycleStartDate }: Props) {
     }
 
     return result;
-  }, [cycleStartDate]);
+  }, [cycleStartDate, history.length]);
 
-  if (insights.length === 0) {
+  if (insights.length === 0 && stats.records.length === 0) {
     return (
       <div className="card-warm p-5 text-center">
         <p className="font-display text-base italic text-foreground mb-1">your insights are building</p>
@@ -120,6 +134,39 @@ export default function CycleInsights({ cycleStartDate }: Props) {
   return (
     <div className="space-y-3">
       <p className="font-display text-base italic text-foreground">your cycle patterns</p>
+      {stats.records.length > 0 && (
+        <div className="card-warm p-4 space-y-4">
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="rounded-xl bg-background/60 border border-border/50 p-3">
+              <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground">avg period</p>
+              <p className="font-display text-xl font-bold text-foreground">{stats.averagePeriod ?? "—"}<span className="text-xs font-body text-muted-foreground">d</span></p>
+            </div>
+            <div className="rounded-xl bg-background/60 border border-border/50 p-3">
+              <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground">avg cycle</p>
+              <p className="font-display text-xl font-bold text-foreground">{stats.averageCycle ?? "—"}<span className="text-xs font-body text-muted-foreground">d</span></p>
+            </div>
+            <div className="rounded-xl bg-background/60 border border-border/50 p-3">
+              <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground">symptoms</p>
+              <p className="font-display text-xl font-bold text-foreground">{stats.totalSymptoms}</p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {stats.records.map((record) => (
+              <div key={record.id} className="grid grid-cols-[minmax(0,1fr)_84px_42px] items-center gap-2 text-xs">
+                <div className="min-w-0">
+                  <p className="font-body text-foreground truncate">{record.startDate}</p>
+                  <p className="font-body text-[10px] text-muted-foreground">{record.symptomDays} symptom days · {record.moodDays} mood days</p>
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${Math.max(10, (record.lengthDays / stats.maxPeriod) * 100)}%` }} />
+                </div>
+                <p className="font-body text-right text-muted-foreground">{record.lengthDays}d</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {insights.map((insight, i) => (
         <motion.div
           key={i}
