@@ -54,11 +54,21 @@ const TAG_COLORS: Record<string, string> = {
   General: "bg-secondary text-muted-foreground",
 };
 
+// NZ-safe local date string (YYYY-MM-DD in Pacific/Auckland)
+function nzDateStr(d: Date): string {
+  const parts = new Intl.DateTimeFormat("en-NZ", {
+    timeZone: "Pacific/Auckland",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(d);
+  const get = (t: string) => parts.find(p => p.type === t)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
 export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: number }) {
   const today = new Date();
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
-  const todayStr = today.toISOString().split("T")[0];
+  const todayStr = nzDateStr(today);
 
   const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,7 +140,8 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(viewYear, viewMonth, d);
-      const dateStr = date.toISOString().split("T")[0];
+      // NZ-safe local YYYY-MM-DD (no UTC drift; matches what Today writes)
+      const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       const isToday = dateStr === todayStr;
       const isPast = date < today && !isToday;
       const dayLogs = logsByDate[dateStr] || [];
@@ -140,11 +151,16 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
       if (hasWorkout) {
         wCount += dayLogs.length;
         actDays++;
+        let dayZ2Mins = 0;
         for (const l of dayLogs) {
           mins += l.duration_minutes || 0;
           cals += l.calories || 0;
-          if (l.zone2_plus_percent && l.zone2_plus_percent > 0) z2++;
+          if (l.zone2_plus_percent && l.duration_minutes) {
+            dayZ2Mins += (l.zone2_plus_percent / 100) * l.duration_minutes;
+          }
         }
+        // Successful Zone 2+ day requires ≥21 min in Z2 or higher
+        if (dayZ2Mins >= 21) z2++;
       }
       cells.push({ day: d, dateStr, hasWorkout, isToday, isPast, count: dayLogs.length });
     }
@@ -156,12 +172,11 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
   // Streak (look back up to 90 days across all data)
   const streak = useMemo(() => {
     const dateSet = new Set(logs.map(l => l.session_date));
-    // For streak we need data beyond this month - just use what we have
     let s = 0;
     for (let i = 0; i < 90; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().split("T")[0];
+      const ds = nzDateStr(d);
       if (dateSet.has(ds)) s++;
       else if (i > 0) break; // allow today to not have one yet
       else break;
