@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Star, Shield, Eye, Ear, Hand, Sparkles, Sun, Moon, Flower2, Send } from "lucide-react";
+import { motion } from "framer-motion";
+import { Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
+import { YOCH_ICON_MAP, YochSentHeart } from "./YochAppreciationIcons";
 
 /* ─── Research-backed phrases ───
  * Sourced from Gottman's "turning toward" research, NVC needs,
@@ -12,32 +13,34 @@ import { haptic } from "@/hooks/use-mobile";
  */
 
 export interface AppreciationPhrase {
-  id: string;
-  icon: React.ElementType;
+  id: keyof typeof YOCH_ICON_MAP;
   phrase: string;
   subtext: string;
-  color: string;
+  /** Soft watercolor wash background */
+  wash: string;
+  /** Pen colour */
+  ink: string;
   category: "safety" | "seen" | "valued" | "loved" | "gratitude";
 }
 
 export const APPRECIATION_PHRASES: AppreciationPhrase[] = [
   // What women wish they heard more
-  { id: "see-you", icon: Eye, phrase: "I see you", subtext: "I notice everything you do", color: "from-violet-400 to-purple-500", category: "seen" },
-  { id: "enough", icon: Star, phrase: "You are enough", subtext: "Exactly as you are, right now", color: "from-amber-400 to-orange-500", category: "valued" },
-  { id: "listening", icon: Ear, phrase: "I'm listening", subtext: "Tell me more — I want to understand", color: "from-sky-400 to-blue-500", category: "seen" },
-  { id: "not-alone", icon: Hand, phrase: "You don't have to do it all", subtext: "Let me carry some of this with you", color: "from-teal-400 to-emerald-500", category: "safety" },
-  { id: "here-for-you", icon: Shield, phrase: "I'm here for you", subtext: "No matter what — I'm not going anywhere", color: "from-indigo-400 to-blue-500", category: "safety" },
+  { id: "see-you", phrase: "I see you", subtext: "I notice everything you do", wash: "bg-[hsl(270_35%_92%)]", ink: "text-[hsl(270_30%_40%)]", category: "seen" },
+  { id: "enough", phrase: "You are enough", subtext: "Exactly as you are, right now", wash: "bg-[hsl(35_55%_90%)]", ink: "text-[hsl(25_45%_38%)]", category: "valued" },
+  { id: "listening", phrase: "I'm listening", subtext: "Tell me more — I want to understand", wash: "bg-[hsl(200_40%_92%)]", ink: "text-[hsl(210_35%_38%)]", category: "seen" },
+  { id: "not-alone", phrase: "You don't have to do it all", subtext: "Let me carry some of this with you", wash: "bg-[hsl(150_30%_90%)]", ink: "text-[hsl(160_30%_32%)]", category: "safety" },
+  { id: "here-for-you", phrase: "I'm here for you", subtext: "No matter what — I'm not going anywhere", wash: "bg-[hsl(220_35%_92%)]", ink: "text-[hsl(225_35%_38%)]", category: "safety" },
 
   // What men wish they heard more
-  { id: "proud", icon: Sparkles, phrase: "I'm proud of you", subtext: "I see how hard you try", color: "from-rose-400 to-pink-500", category: "valued" },
-  { id: "trust", icon: Shield, phrase: "I trust you", subtext: "I believe in your judgment", color: "from-emerald-400 to-green-500", category: "valued" },
-  { id: "safe", icon: Heart, phrase: "You make me feel safe", subtext: "Being with you feels like home", color: "from-pink-400 to-rose-500", category: "loved" },
-  { id: "believe", icon: Sun, phrase: "I believe in you", subtext: "Even when you don't believe in yourself", color: "from-yellow-400 to-amber-500", category: "valued" },
-  { id: "thank-you", icon: Flower2, phrase: "Thank you for being you", subtext: "Not for what you do — for who you are", color: "from-fuchsia-400 to-purple-500", category: "gratitude" },
+  { id: "proud", phrase: "I'm proud of you", subtext: "I see how hard you try", wash: "bg-[hsl(345_50%_92%)]", ink: "text-[hsl(345_40%_42%)]", category: "valued" },
+  { id: "trust", phrase: "I trust you", subtext: "I believe in your judgment", wash: "bg-[hsl(140_30%_90%)]", ink: "text-[hsl(150_30%_32%)]", category: "valued" },
+  { id: "safe", phrase: "You make me feel safe", subtext: "Being with you feels like home", wash: "bg-[hsl(355_50%_92%)]", ink: "text-[hsl(350_40%_42%)]", category: "loved" },
+  { id: "believe", phrase: "I believe in you", subtext: "Even when you don't believe in yourself", wash: "bg-[hsl(45_60%_90%)]", ink: "text-[hsl(35_50%_38%)]", category: "valued" },
+  { id: "thank-you", phrase: "Thank you for being you", subtext: "Not for what you do — for who you are", wash: "bg-[hsl(290_35%_92%)]", ink: "text-[hsl(285_30%_42%)]", category: "gratitude" },
 
   // Universal / Gottman-inspired
-  { id: "love-unsaid", icon: Heart, phrase: "I love you — even when I forget to say it", subtext: "It's always there, underneath everything", color: "from-red-400 to-rose-500", category: "loved" },
-  { id: "choose-you", icon: Moon, phrase: "I'd choose you again", subtext: "Every single time", color: "from-slate-400 to-indigo-500", category: "loved" },
+  { id: "love-unsaid", phrase: "I love you — even when I forget to say it", subtext: "It's always there, underneath everything", wash: "bg-[hsl(10_55%_92%)]", ink: "text-[hsl(355_45%_42%)]", category: "loved" },
+  { id: "choose-you", phrase: "I'd choose you again", subtext: "Every single time", wash: "bg-[hsl(240_25%_92%)]", ink: "text-[hsl(245_30%_42%)]", category: "loved" },
 ];
 
 interface Props {
@@ -86,7 +89,7 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
         {APPRECIATION_PHRASES.map((phrase) => {
           const isSent = sent.has(phrase.id);
           const isSending = sending === phrase.id;
-          const Icon = phrase.icon;
+          const Icon = YOCH_ICON_MAP[phrase.id];
 
           return (
             <motion.button
@@ -100,8 +103,8 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
                   : "border-border bg-card hover:border-primary/20 active:scale-[0.98]"
               }`}
             >
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${phrase.color} flex items-center justify-center mb-3`}>
-                <Icon className="w-5 h-5 text-white" />
+              <div className={`w-12 h-12 rounded-2xl ${phrase.wash} flex items-center justify-center mb-3`}>
+                <Icon className={`w-7 h-7 ${phrase.ink}`} />
               </div>
               <p className="font-display text-sm font-bold text-foreground leading-tight">{phrase.phrase}</p>
               <p className="text-[10px] text-muted-foreground mt-1 leading-snug">{phrase.subtext}</p>
@@ -110,9 +113,9 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center"
+                  className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center"
                 >
-                  <Heart className="w-3 h-3 text-primary fill-primary" />
+                  <YochSentHeart className="w-5 h-5 text-primary" />
                 </motion.div>
               )}
 
