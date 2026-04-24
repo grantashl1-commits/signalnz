@@ -54,11 +54,21 @@ const TAG_COLORS: Record<string, string> = {
   General: "bg-secondary text-muted-foreground",
 };
 
+// NZ-safe local date string (YYYY-MM-DD in Pacific/Auckland)
+function nzDateStr(d: Date): string {
+  const parts = new Intl.DateTimeFormat("en-NZ", {
+    timeZone: "Pacific/Auckland",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(d);
+  const get = (t: string) => parts.find(p => p.type === t)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
 export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: number }) {
   const today = new Date();
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
-  const todayStr = today.toISOString().split("T")[0];
+  const todayStr = nzDateStr(today);
 
   const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [loading, setLoading] = useState(true);
