@@ -89,7 +89,7 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
         {APPRECIATION_PHRASES.map((phrase) => {
           const isSent = sent.has(phrase.id);
           const isSending = sending === phrase.id;
-          const Icon = phrase.icon;
+          const Icon = YOCH_ICON_MAP[phrase.id];
 
           return (
             <motion.button
@@ -103,8 +103,8 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
                   : "border-border bg-card hover:border-primary/20 active:scale-[0.98]"
               }`}
             >
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${phrase.color} flex items-center justify-center mb-3`}>
-                <Icon className="w-5 h-5 text-white" />
+              <div className={`w-12 h-12 rounded-2xl ${phrase.wash} flex items-center justify-center mb-3`}>
+                <Icon className={`w-7 h-7 ${phrase.ink}`} />
               </div>
               <p className="font-display text-sm font-bold text-foreground leading-tight">{phrase.phrase}</p>
               <p className="text-[10px] text-muted-foreground mt-1 leading-snug">{phrase.subtext}</p>
@@ -113,9 +113,9 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center"
+                  className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center"
                 >
-                  <Heart className="w-3 h-3 text-primary fill-primary" />
+                  <YochSentHeart className="w-5 h-5 text-primary" />
                 </motion.div>
               )}
 
