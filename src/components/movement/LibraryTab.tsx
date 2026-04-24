@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Search, ChevronRight, Loader2, Play } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, ChevronRight, ChevronDown, Loader2, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
@@ -64,6 +64,7 @@ export default function LibraryTab() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
+  const [expandedExerciseId, setExpandedExerciseId] = useState<string | null>(null);
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
   const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
@@ -218,42 +219,124 @@ export default function LibraryTab() {
           {filtered.length === 0 && (
             <p className="py-8 text-center font-body text-sm text-muted-foreground">No exercises found.</p>
           )}
-          {filtered.slice(0, 50).map((ex, i) => (
-            <motion.div
-              key={ex.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(i * 0.02, 0.5) }}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-2.5 transition-colors hover:bg-card/80"
-            >
-              <ExerciseDemonstration
-                exerciseName={ex.name}
-                imageUrl={ex.illustration_url}
-                size={48}
-                className="shrink-0 rounded-lg"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="font-body text-sm font-medium text-foreground truncate">{ex.name}</p>
-                <div className="mt-0.5 flex items-center gap-2">
-                  {ex.target && (
-                    <span className="font-body text-[9px] uppercase tracking-wider text-primary">{ex.target}</span>
-                  )}
-                  {ex.category && (
-                    <span className={`font-body text-[9px] uppercase tracking-wider ${
-                      ex.category === "rehabilitation" ? "text-emerald-500" : "text-muted-foreground"
-                    }`}>{ex.category}</span>
-                  )}
-                  {ex.difficulty && (
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, d) => (
-                        <div key={d} className={`h-1 w-1 rounded-full ${d < ex.difficulty! ? "bg-primary" : "bg-border"}`} />
-                      ))}
+          {filtered.slice(0, 50).map((ex, i) => {
+            const isExpanded = expandedExerciseId === ex.id;
+            return (
+              <motion.div
+                key={ex.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(i * 0.02, 0.5) }}
+                className="overflow-hidden rounded-xl border border-border bg-card transition-colors hover:bg-card/80"
+              >
+                <button
+                  onClick={() => {
+                    haptic("light");
+                    if (!isExpanded && !guardExpand()) return;
+                    setExpandedExerciseId(isExpanded ? null : ex.id);
+                  }}
+                  className="flex w-full items-center gap-3 p-2.5 text-left"
+                >
+                  <ExerciseDemonstration
+                    exerciseName={ex.name}
+                    imageUrl={ex.illustration_url}
+                    size={48}
+                    className="shrink-0 rounded-lg"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-body text-sm font-medium text-foreground truncate">{ex.name}</p>
+                    <div className="mt-0.5 flex items-center gap-2">
+                      {ex.target && (
+                        <span className="font-body text-[9px] uppercase tracking-wider text-primary">{ex.target}</span>
+                      )}
+                      {ex.category && (
+                        <span className={`font-body text-[9px] uppercase tracking-wider ${
+                          ex.category === "rehabilitation" ? "text-emerald-500" : "text-muted-foreground"
+                        }`}>{ex.category}</span>
+                      )}
+                      {ex.difficulty && (
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: 5 }).map((_, d) => (
+                            <div key={d} className={`h-1 w-1 rounded-full ${d < ex.difficulty! ? "bg-primary" : "bg-border"}`} />
+                          ))}
+                        </div>
+                      )}
                     </div>
+                  </div>
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border-t border-border px-3 pb-3 pt-3 space-y-2.5">
+                        {ex.equipment && ex.equipment.length > 0 && (
+                          <div>
+                            <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Equipment</p>
+                            <div className="flex flex-wrap gap-1">
+                              {ex.equipment.map((eq, idx) => (
+                                <span key={idx} className="rounded-full bg-secondary px-2 py-0.5 font-body text-[10px] text-foreground">
+                                  {eq.replace(/_/g, " ")}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {ex.primary_muscles && ex.primary_muscles.length > 0 && (
+                          <div>
+                            <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Primary muscles</p>
+                            <div className="flex flex-wrap gap-1">
+                              {ex.primary_muscles.map((m, idx) => (
+                                <span key={idx} className="rounded-full bg-primary/10 px-2 py-0.5 font-body text-[10px] text-primary">
+                                  {m.replace(/_/g, " ")}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {ex.instructions && (
+                          <div>
+                            <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Instructions</p>
+                            <p className="font-body text-xs text-foreground/80 leading-relaxed whitespace-pre-line">
+                              {ex.instructions}
+                            </p>
+                          </div>
+                        )}
+
+                        {ex.cues && ex.cues.length > 0 && (
+                          <div>
+                            <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Form cues</p>
+                            <ul className="space-y-1">
+                              {ex.cues.map((c, idx) => (
+                                <li key={idx} className="flex gap-1.5 font-body text-xs text-foreground/80">
+                                  <span className="text-primary">•</span>
+                                  <span>{c}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {!ex.instructions && (!ex.cues || ex.cues.length === 0) && (
+                          <p className="font-body text-xs text-muted-foreground italic">
+                            No detailed instructions available for this exercise.
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
                   )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
           {filtered.length > 50 && (
             <p className="py-4 text-center font-body text-xs text-muted-foreground">
               Showing 50 of {filtered.length} exercises. Use search to narrow results.

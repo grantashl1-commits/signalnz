@@ -501,3 +501,102 @@ export function WorkoutIntervalButton({
     </>
   );
 }
+
+// ── Structured Interval Button (for run/walk programs from DB) ──────────────
+
+export interface StructuredInterval {
+  block_label: string;
+  kind: string; // 'warmup' | 'run' | 'walk' | 'cooldown' | 'rest' | string
+  duration_sec: number;
+  repeat_count: number;
+  target_pace?: string | null;
+}
+
+/** Expand DB workout_intervals rows into a flat list, repeating run/walk pairs. */
+export function expandStructuredIntervals(rows: StructuredInterval[]): TimerInterval[] {
+  if (!rows || rows.length === 0) return [];
+
+  const out: TimerInterval[] = [];
+  let i = 0;
+  while (i < rows.length) {
+    const row = rows[i];
+    const isRest = row.kind === "walk" || row.kind === "rest" || row.kind === "cooldown" || row.kind === "warmup";
+
+    // If this is a run with repeat_count > 1 followed by a walk with the same repeat_count,
+    // alternate them (run/walk × N).
+    const next = rows[i + 1];
+    if (
+      row.repeat_count > 1 &&
+      next &&
+      next.repeat_count === row.repeat_count &&
+      (row.kind === "run" || row.kind === "work") &&
+      (next.kind === "walk" || next.kind === "rest")
+    ) {
+      const total = row.repeat_count;
+      for (let r = 0; r < total; r++) {
+        out.push({
+          label: `${row.block_label} (${r + 1}/${total})`,
+          durationSec: row.duration_sec,
+          type: "work",
+        });
+        out.push({
+          label: `${next.block_label} (${r + 1}/${total})`,
+          durationSec: next.duration_sec,
+          type: "rest",
+        });
+      }
+      i += 2;
+      continue;
+    }
+
+    // Otherwise expand by repeat_count linearly
+    const reps = Math.max(1, row.repeat_count || 1);
+    for (let r = 0; r < reps; r++) {
+      out.push({
+        label: reps > 1 ? `${row.block_label} (${r + 1}/${reps})` : row.block_label,
+        durationSec: row.duration_sec,
+        type: isRest ? "rest" : "work",
+      });
+    }
+    i++;
+  }
+  return out;
+}
+
+export function StructuredIntervalButton({
+  rows,
+  onComplete,
+}: {
+  rows: StructuredInterval[];
+  onComplete?: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const intervals = expandStructuredIntervals(rows);
+
+  if (intervals.length === 0) return null;
+
+  const totalSec = intervals.reduce((s, i) => s + i.durationSec, 0);
+  const totalMin = Math.max(1, Math.round(totalSec / 60));
+
+  return (
+    <>
+      <button
+        onClick={() => { haptic("medium"); setOpen(true); }}
+        className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 py-3 font-body text-sm font-medium text-primary hover:bg-primary/15 transition-colors"
+      >
+        <Timer className="h-4 w-4" />
+        Start session timer · {totalMin} min · {intervals.length} blocks
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <IntervalTimer
+            intervals={intervals}
+            onClose={() => setOpen(false)}
+            onComplete={onComplete}
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

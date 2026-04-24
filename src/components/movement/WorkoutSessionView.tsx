@@ -16,7 +16,7 @@ import { useProfile } from "@/hooks/useProfile";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { TimerButton, WorkoutIntervalButton, isTimeBased } from "@/components/movement/IntervalTimer";
+import { TimerButton, WorkoutIntervalButton, isTimeBased, StructuredIntervalButton, type StructuredInterval } from "@/components/movement/IntervalTimer";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
 import {
   HR_ZONES, getZoneForBPM, getMaxHR, estimateCalories,
@@ -281,6 +281,21 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
   // Local exercises — can be modified by swaps
   const [localExercises, setLocalExercises] = useState<WorkoutExercise[]>(exercises);
   useEffect(() => { setLocalExercises(exercises); }, [exercises]);
+
+  // Structured intervals (from workout_intervals table — for C25K/run programs)
+  const [structuredIntervals, setStructuredIntervals] = useState<StructuredInterval[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("workout_intervals")
+        .select("block_label, kind, duration_sec, repeat_count, target_pace, order_index")
+        .eq("workout_id", template.id)
+        .order("order_index");
+      if (!cancelled && data) setStructuredIntervals(data as StructuredInterval[]);
+    })();
+    return () => { cancelled = true; };
+  }, [template.id]);
 
   // Exercise completion
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
@@ -663,6 +678,10 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
       )}
 
       {(() => {
+        // Prefer structured intervals from DB (e.g. Couch to 5K run/walk blocks)
+        if (structuredIntervals.length > 0) {
+          return <StructuredIntervalButton rows={structuredIntervals} />;
+        }
         const timeExercises = localExercises.filter(e => e.exercise && isTimeBased(e.reps));
         if (timeExercises.length >= 2) {
           return (
