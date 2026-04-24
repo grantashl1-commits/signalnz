@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_suspensions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          lifted_at: string | null
+          lifted_by: string | null
+          reason: string
+          scope: string
+          suspended_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          lifted_at?: string | null
+          lifted_by?: string | null
+          reason: string
+          scope?: string
+          suspended_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          lifted_at?: string | null
+          lifted_by?: string | null
+          reason?: string
+          scope?: string
+          suspended_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_credits: {
         Row: {
           credits_remaining: number | null
@@ -139,6 +175,76 @@ export type Database = {
           weight?: string | null
         }
         Relationships: []
+      }
+      challenge_answers: {
+        Row: {
+          answer: string
+          created_at: string
+          group_id: string
+          id: string
+          question_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          group_id: string
+          id?: string
+          question_index: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          question_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_answers_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenge_completions: {
+        Row: {
+          challenge_index: number
+          completed_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          challenge_index: number
+          completed_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          challenge_index?: number
+          completed_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_completions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       challenge_participants: {
         Row: {
@@ -331,6 +437,35 @@ export type Database = {
           },
         ]
       }
+      community_last_reads: {
+        Row: {
+          group_id: string
+          id: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_last_reads_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_memberships: {
         Row: {
           group_id: string
@@ -356,6 +491,72 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_messages: {
+        Row: {
+          content: string | null
+          created_at: string
+          edited_at: string | null
+          group_id: string
+          id: string
+          is_removed: boolean
+          media_path: string | null
+          mentions: string[]
+          message_type: string
+          metadata: Json
+          original_content: string | null
+          reply_to_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          edited_at?: string | null
+          group_id: string
+          id?: string
+          is_removed?: boolean
+          media_path?: string | null
+          mentions?: string[]
+          message_type?: string
+          metadata?: Json
+          original_content?: string | null
+          reply_to_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          edited_at?: string | null
+          group_id?: string
+          id?: string
+          is_removed?: boolean
+          media_path?: string | null
+          mentions?: string[]
+          message_type?: string
+          metadata?: Json
+          original_content?: string | null
+          reply_to_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
             referencedColumns: ["id"]
           },
         ]
@@ -844,6 +1045,21 @@ export type Database = {
         }
         Relationships: []
       }
+      disposable_email_domains: {
+        Row: {
+          added_at: string
+          domain: string
+        }
+        Insert: {
+          added_at?: string
+          domain: string
+        }
+        Update: {
+          added_at?: string
+          domain?: string
+        }
+        Relationships: []
+      }
       dream_boards: {
         Row: {
           active_board_id: string | null
@@ -1027,6 +1243,51 @@ export type Database = {
           plan_type?: string
           user_id?: string
           week_start_date?: string
+        }
+        Relationships: []
+      }
+      gift_codes: {
+        Row: {
+          code: string
+          duration_months: number
+          expires_at: string | null
+          id: string
+          purchased_at: string
+          purchaser_email: string
+          recipient_email: string | null
+          redeemed_at: string | null
+          redeemed_by: string | null
+          stripe_product_id: string | null
+          stripe_session_id: string | null
+          tier: string
+        }
+        Insert: {
+          code: string
+          duration_months?: number
+          expires_at?: string | null
+          id?: string
+          purchased_at?: string
+          purchaser_email: string
+          recipient_email?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          tier: string
+        }
+        Update: {
+          code?: string
+          duration_months?: number
+          expires_at?: string | null
+          id?: string
+          purchased_at?: string
+          purchaser_email?: string
+          recipient_email?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          tier?: string
         }
         Relationships: []
       }
@@ -1407,6 +1668,38 @@ export type Database = {
         }
         Relationships: []
       }
+      message_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mindfulness_logs: {
         Row: {
           completed: boolean
@@ -1448,6 +1741,7 @@ export type Database = {
           comment_id: string | null
           created_at: string | null
           id: string
+          message_id: string | null
           post_id: string | null
           reason: string | null
           reporter_id: string | null
@@ -1459,6 +1753,7 @@ export type Database = {
           comment_id?: string | null
           created_at?: string | null
           id?: string
+          message_id?: string | null
           post_id?: string | null
           reason?: string | null
           reporter_id?: string | null
@@ -1470,6 +1765,7 @@ export type Database = {
           comment_id?: string | null
           created_at?: string | null
           id?: string
+          message_id?: string | null
           post_id?: string | null
           reason?: string | null
           reporter_id?: string | null
@@ -1483,6 +1779,13 @@ export type Database = {
             columns: ["comment_id"]
             isOneToOne: false
             referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moderation_queue_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
             referencedColumns: ["id"]
           },
           {
@@ -1514,6 +1817,36 @@ export type Database = {
           created_at?: string
           id?: string
           score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      one_off_purchases: {
+        Row: {
+          ai_access_expires_at: string | null
+          id: string
+          product_key: string
+          purchased_at: string
+          stripe_product_id: string | null
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_access_expires_at?: string | null
+          id?: string
+          product_key: string
+          purchased_at?: string
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_access_expires_at?: string | null
+          id?: string
+          product_key?: string
+          purchased_at?: string
+          stripe_product_id?: string | null
+          stripe_session_id?: string | null
           user_id?: string
         }
         Relationships: []
@@ -2343,6 +2676,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_reports: {
+        Row: {
+          admin_notes: string | null
+          context_id: string | null
+          context_type: string
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          context_id?: string | null
+          context_type: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          context_id?: string | null
+          context_type?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_user_id?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -2465,6 +2843,10 @@ export type Database = {
           rpe_target: number | null
           sets: number | null
           superset_group: string | null
+          tempo: string | null
+          tip: string | null
+          weight_kg_max: number | null
+          weight_kg_min: number | null
           workout_id: string
         }
         Insert: {
@@ -2480,6 +2862,10 @@ export type Database = {
           rpe_target?: number | null
           sets?: number | null
           superset_group?: string | null
+          tempo?: string | null
+          tip?: string | null
+          weight_kg_max?: number | null
+          weight_kg_min?: number | null
           workout_id: string
         }
         Update: {
@@ -2495,6 +2881,10 @@ export type Database = {
           rpe_target?: number | null
           sets?: number | null
           superset_group?: string | null
+          tempo?: string | null
+          tip?: string | null
+          weight_kg_max?: number | null
+          weight_kg_min?: number | null
           workout_id?: string
         }
         Relationships: [
@@ -2507,6 +2897,56 @@ export type Database = {
           },
           {
             foreignKeyName: "workout_exercises_workout_template_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_intervals: {
+        Row: {
+          block_label: string
+          created_at: string
+          duration_sec: number
+          id: string
+          kind: string
+          notes: string | null
+          order_index: number
+          repeat_count: number
+          target_pace: string | null
+          target_rpe: number | null
+          workout_id: string
+        }
+        Insert: {
+          block_label: string
+          created_at?: string
+          duration_sec: number
+          id?: string
+          kind: string
+          notes?: string | null
+          order_index?: number
+          repeat_count?: number
+          target_pace?: string | null
+          target_rpe?: number | null
+          workout_id: string
+        }
+        Update: {
+          block_label?: string
+          created_at?: string
+          duration_sec?: number
+          id?: string
+          kind?: string
+          notes?: string | null
+          order_index?: number
+          repeat_count?: number
+          target_pace?: string | null
+          target_rpe?: number | null
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_intervals_workout_id_fkey"
             columns: ["workout_id"]
             isOneToOne: false
             referencedRelation: "workout_templates"
@@ -2622,6 +3062,7 @@ export type Database = {
           session_number: number | null
           session_type: string | null
           title: string
+          total_duration_sec: number | null
           warmup_notes: string | null
         }
         Insert: {
@@ -2636,6 +3077,7 @@ export type Database = {
           session_number?: number | null
           session_type?: string | null
           title: string
+          total_duration_sec?: number | null
           warmup_notes?: string | null
         }
         Update: {
@@ -2650,6 +3092,7 @@ export type Database = {
           session_number?: number | null
           session_type?: string | null
           title?: string
+          total_duration_sec?: number | null
           warmup_notes?: string | null
         }
         Relationships: [
@@ -2717,7 +3160,6 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string | null
-          join_code: string | null
           member_user_id: string | null
           partner_name: string | null
           partner_user_id: string | null
@@ -2728,7 +3170,6 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string | null
-          join_code?: string | null
           member_user_id?: string | null
           partner_name?: string | null
           partner_user_id?: string | null
@@ -2739,7 +3180,6 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string | null
-          join_code?: string | null
           member_user_id?: string | null
           partner_name?: string | null
           partner_user_id?: string | null
@@ -3031,6 +3471,14 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_user_suspended: {
+        Args: { _scope?: string; _user_id: string }
         Returns: boolean
       }
       longtransactionsenabled: { Args: never; Returns: boolean }
