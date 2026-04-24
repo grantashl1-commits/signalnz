@@ -64,6 +64,7 @@ export default function LibraryTab() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
+  const [expandedExerciseId, setExpandedExerciseId] = useState<string | null>(null);
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
   const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
