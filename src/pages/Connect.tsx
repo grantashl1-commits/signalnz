@@ -390,7 +390,7 @@ export default function Connect() {
               { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
               { key: "chat" as SpaceTab, label: "Coach", icon: Bot },
               { key: "checkin" as SpaceTab, label: "Check-in", icon: BarChart3 },
-              { key: "appreciate" as SpaceTab, label: "💜", icon: null },
+              { key: "appreciate" as SpaceTab, label: "Appreciate", icon: YochSentHeart },
             ]).map((tab) => (
               <button
                 key={tab.key}
