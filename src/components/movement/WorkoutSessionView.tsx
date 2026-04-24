@@ -282,6 +282,21 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
   const [localExercises, setLocalExercises] = useState<WorkoutExercise[]>(exercises);
   useEffect(() => { setLocalExercises(exercises); }, [exercises]);
 
+  // Structured intervals (from workout_intervals table — for C25K/run programs)
+  const [structuredIntervals, setStructuredIntervals] = useState<StructuredInterval[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("workout_intervals")
+        .select("block_label, kind, duration_sec, repeat_count, target_pace, order_index")
+        .eq("workout_id", template.id)
+        .order("order_index");
+      if (!cancelled && data) setStructuredIntervals(data as StructuredInterval[]);
+    })();
+    return () => { cancelled = true; };
+  }, [template.id]);
+
   // Exercise completion
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
