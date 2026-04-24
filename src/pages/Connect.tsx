@@ -380,6 +380,21 @@ export default function Connect() {
               <p className="text-sm font-semibold text-foreground truncate">Signal Connect</p>
               <p className="text-[10px] text-muted-foreground">with {partnerDisplayName}</p>
             </div>
+            {!isPartnerSession && generatedCode && (
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedCode);
+                  haptic("light");
+                  toast.success("Join code copied");
+                }}
+                className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 hover:bg-primary/15 transition"
+                title="Tap to copy your partner's join code"
+              >
+                <Link2 className="w-3 h-3 text-primary" />
+                <span className="text-[11px] font-mono font-semibold tracking-wider text-primary">{generatedCode}</span>
+                <Copy className="w-3 h-3 text-primary/70" />
+              </button>
+            )}
           </div>
 
           {/* Tabs - scrollable */}
