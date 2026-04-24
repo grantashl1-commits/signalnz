@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
+import { YochSentHeart } from "@/components/connect/YochAppreciationIcons";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import PrivateReflection, { type ReflectionCard } from "@/components/connect/PrivateReflection";
 import SharedRoom from "@/components/connect/SharedRoom";
@@ -389,7 +390,7 @@ export default function Connect() {
               { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
               { key: "chat" as SpaceTab, label: "Coach", icon: Bot },
               { key: "checkin" as SpaceTab, label: "Check-in", icon: BarChart3 },
-              { key: "appreciate" as SpaceTab, label: "💜", icon: null },
+              { key: "appreciate" as SpaceTab, label: "Appreciate", icon: YochSentHeart },
             ]).map((tab) => (
               <button
                 key={tab.key}
@@ -448,10 +449,11 @@ export default function Connect() {
                         </div>
                       )}
                       {isAppreciation ? (
-                        <div className="text-center py-1">
-                          <p className="text-sm font-semibold">{msg.content}</p>
+                        <div className="text-center py-1 flex flex-col items-center gap-1">
+                          <YochSentHeart className="w-6 h-6 text-primary mb-0.5" />
+                          <p className="text-sm font-semibold">{msg.content.replace(/^💜\s*/, "")}</p>
                           {msg.metadata?.subtext && (
-                            <p className="text-[10px] text-muted-foreground mt-1 italic">{msg.metadata.subtext}</p>
+                            <p className="text-[10px] text-muted-foreground italic">{msg.metadata.subtext}</p>
                           )}
                         </div>
                       ) : msg.sender_role === "ai" ? (
