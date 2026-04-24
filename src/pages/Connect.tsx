@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
+import { YochSentHeart } from "@/components/connect/YochAppreciationIcons";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import PrivateReflection, { type ReflectionCard } from "@/components/connect/PrivateReflection";
 import SharedRoom from "@/components/connect/SharedRoom";
