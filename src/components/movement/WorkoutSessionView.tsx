@@ -678,6 +678,10 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
       )}
 
       {(() => {
+        // Prefer structured intervals from DB (e.g. Couch to 5K run/walk blocks)
+        if (structuredIntervals.length > 0) {
+          return <StructuredIntervalButton rows={structuredIntervals} />;
+        }
         const timeExercises = localExercises.filter(e => e.exercise && isTimeBased(e.reps));
         if (timeExercises.length >= 2) {
           return (
