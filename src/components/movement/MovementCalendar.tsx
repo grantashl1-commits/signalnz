@@ -151,11 +151,16 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
       if (hasWorkout) {
         wCount += dayLogs.length;
         actDays++;
+        let dayZ2Mins = 0;
         for (const l of dayLogs) {
           mins += l.duration_minutes || 0;
           cals += l.calories || 0;
-          if (l.zone2_plus_percent && l.zone2_plus_percent > 0) z2++;
+          if (l.zone2_plus_percent && l.duration_minutes) {
+            dayZ2Mins += (l.zone2_plus_percent / 100) * l.duration_minutes;
+          }
         }
+        // Successful Zone 2+ day requires ≥21 min in Z2 or higher
+        if (dayZ2Mins >= 21) z2++;
       }
       cells.push({ day: d, dateStr, hasWorkout, isToday, isPast, count: dayLogs.length });
     }
