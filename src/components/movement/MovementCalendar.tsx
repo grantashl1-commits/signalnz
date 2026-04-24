@@ -140,7 +140,8 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(viewYear, viewMonth, d);
-      const dateStr = date.toISOString().split("T")[0];
+      // NZ-safe local YYYY-MM-DD (no UTC drift; matches what Today writes)
+      const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       const isToday = dateStr === todayStr;
       const isPast = date < today && !isToday;
       const dayLogs = logsByDate[dateStr] || [];
