@@ -255,6 +255,132 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
   },
 ];
 
+// ─── TODDLER SLEEP SCHEDULES (18 months – 3 years) ────────────────────────
+
+export const TODDLER_SLEEP_SCHEDULES: WeeklySchedule[] = [
+  {
+    weekLabel: "18 Months",
+    ageRange: "15–18 months",
+    totalDaySleep: "1.5–2 hours",
+    totalNightSleep: "10.5–12 hours",
+    keyNotes: [
+      "One midday nap — awake windows are 5–6 hours",
+      "Nap transition from 2 naps usually completes 14–18 months",
+      "Expect a 'nap battle' phase — hold firm, overtired toddlers fight sleep harder",
+      "Bedtime should be earlier (6:30–7 PM) if the nap is short or skipped",
+    ],
+    schedule: [
+      { time: "7:00 AM", activity: "Wake & breakfast" },
+      { time: "9:30 AM", activity: "Morning snack + outdoor play or active time" },
+      { time: "11:45 AM", activity: "Lunch — calm, wind-down begins" },
+      { time: "12:30–2:30 PM", activity: "Nap — dark room, white noise (1.5–2 hrs)" },
+      { time: "2:30 PM", activity: "Wake & afternoon snack" },
+      { time: "5:00 PM", activity: "Dinner — calm table time" },
+      { time: "6:15 PM", activity: "Bath — warm, dim, brief" },
+      { time: "6:30 PM", activity: "Bedtime routine — books, song, comfort object" },
+      { time: "7:00–7:30 PM", activity: "Lights out — dark room, white noise" },
+    ],
+    sleepScience: "At 18 months, toddlers consolidate to one nap as their circadian rhythm strengthens. The transition is complete when they can stay awake 5–6 hours comfortably. During the transition, alternating nap and no-nap days is normal — go with your child's cues rather than forcing a schedule.",
+    gentleTips: [
+      { title: "The Nap Transition", body: "Dropping to one nap is often messy. Signs they're ready: consistently fighting the morning nap, or taking too long to fall asleep at night. Keep the midday nap until at least 2.5–3 years — even quiet rest in a dark room helps nervous system recovery." },
+      { title: "Bedtime Battles", body: "18-month-olds often resist sleep due to a developmental burst in independence ('No!' is their favourite word for a reason). A consistent, predictable routine is your best tool — the same 3 steps, in the same order, every night. Predictability feels safe." },
+      { title: "Early Waking", body: "If your toddler wakes before 6 AM, check: is the room light-tight? Is the nap too early (before 12 PM)? Is bedtime too late, causing overtiredness? Often counter-intuitive: an earlier bedtime reduces early waking, not a later one." },
+    ],
+    sourceNote: "Schedule informed by Gina Ford's toddler routines and Sarah Ockwell-Smith's developmental approach to sleep."
+  },
+  {
+    weekLabel: "2 Years",
+    ageRange: "18–24 months",
+    totalDaySleep: "1–1.5 hours",
+    totalNightSleep: "11–12 hours",
+    keyNotes: [
+      "One midday nap — awake windows 5–6 hours",
+      "Some toddlers begin resisting the nap — still offer quiet time",
+      "Night wakings often spike around 2 years (developmental leap, molars, separation anxiety)",
+      "Consistent bedtime routine is the most powerful sleep tool you have",
+    ],
+    schedule: [
+      { time: "7:00 AM", activity: "Wake & breakfast" },
+      { time: "9:30 AM", activity: "Morning snack + active outdoor play" },
+      { time: "12:00 PM", activity: "Lunch — calm the environment before nap" },
+      { time: "1:00–2:30 PM", activity: "Nap or quiet time — dark room (1–1.5 hrs)" },
+      { time: "2:30–3:00 PM", activity: "Wake & snack — avoid sleeping past 3:30 PM" },
+      { time: "5:15 PM", activity: "Dinner" },
+      { time: "6:30 PM", activity: "Bath, pyjamas, teeth" },
+      { time: "6:50 PM", activity: "Books or calm play in the bedroom" },
+      { time: "7:00–7:30 PM", activity: "Lights out" },
+    ],
+    sleepScience: "Two-year-olds are in a major developmental leap — language explosion, growing independence, and beginning moral reasoning all happen simultaneously. Sleep disruptions at this age are often driven by the brain processing huge amounts of new learning, not by routine failures. This too shall pass.",
+    gentleTips: [
+      { title: "The 2-Year Sleep Regression", body: "Night wakings often spike around 18–24 months due to increased awareness of surroundings, molars, and separation anxiety. Respond warmly but consistently — brief reassurance, then out. Avoid starting new sleep crutches (rocking, feeding to sleep) that will need to be undone later." },
+      { title: "Quiet Time vs Nap", body: "If your toddler resists napping, still offer 60–90 minutes of quiet time in their room with a few calm toys. Rest (even without sleep) supports afternoon regulation. Many children who 'dropped' the nap at 2 will pick it up again at 2.5 — their need for it fluctuates." },
+      { title: "Fear of the Dark", body: "Around 2 years, some toddlers develop a genuine fear of the dark (imagination kicks in). A dim, warm night light is fine — it won't wreck sleep. What matters most is that they feel safe. Address fears with empathy during the day, not at bedtime." },
+    ],
+    sourceNote: "Routine structure informed by Gina Ford. Developmental context drawn from Ockwell-Smith and Janet Lansbury's responsive toddler approaches."
+  },
+  {
+    weekLabel: "2.5 Years",
+    ageRange: "2–2.5 years",
+    totalDaySleep: "0–1 hour (quiet time)",
+    totalNightSleep: "11–12 hours",
+    keyNotes: [
+      "Nap may shorten or become irregular — quiet time is still essential",
+      "If nap is skipped, bedtime should move earlier (6:30–7 PM)",
+      "Avoid naps later than 3:30 PM or longer than 1 hour — protects night sleep",
+      "This age often tests limits at bedtime — maintain the routine with warmth and firmness",
+    ],
+    schedule: [
+      { time: "7:00 AM", activity: "Wake & breakfast" },
+      { time: "9:30 AM", activity: "Morning snack + activity" },
+      { time: "12:00 PM", activity: "Lunch" },
+      { time: "12:45–2:00 PM", activity: "Quiet time / nap — dark room, door closed (up to 75 min)" },
+      { time: "2:00 PM", activity: "Wake & snack — do not allow nap past 3 PM" },
+      { time: "5:00 PM", activity: "Dinner — early to protect bedtime" },
+      { time: "6:15 PM", activity: "Bath & wind-down" },
+      { time: "6:45 PM", activity: "Bedtime routine — 2 books, song, cuddle" },
+      { time: "7:00–7:15 PM", activity: "Lights out (earlier if nap was skipped)" },
+    ],
+    sleepScience: "Between 2.5 and 3 years, about 50% of children still need a nap. The other 50% do better without one but still need quiet rest. The key indicator: does your child fall asleep easily at night and wake well-rested? If they're difficult to settle at 7 PM, the nap may be too long or too late.",
+    gentleTips: [
+      { title: "Quiet Time as a Non-Negotiable", body: "Even if your child no longer sleeps, insist on 60–90 minutes of rest in their room each day. Use a quiet box (rotating set of calm toys, puzzles, or books). The boundary is: you stay in your room until the quiet time timer rings. Start with 20 minutes and build gradually." },
+      { title: "Curtain Calls", body: "2.5-year-olds are masters of stalling — one more hug, a glass of water, 'my tummy hurts.' Pre-empt them: offer the drink before you leave, give two extra hugs in the routine itself, do a final check together. Then hold the boundary firmly but kindly." },
+      { title: "Clocks and Toddler Alarms", body: "A toddler OK-to-wake clock (e.g. Gro Clock, Hatch) can be transformative at this age. When the sun icon appears, it's morning. When the moon is there, it's sleep time. Toddlers respond well to an external, non-parent authority — the clock says it, not you." },
+    ],
+    sourceNote: "Routine structure and nap guidance informed by Gina Ford and the Millpond Sleep Clinic approach. Quiet time concept from Ockwell-Smith."
+  },
+  {
+    weekLabel: "3 Years",
+    ageRange: "3–3.5 years",
+    totalDaySleep: "0 hours (quiet time only)",
+    totalNightSleep: "10.5–11.5 hours",
+    keyNotes: [
+      "Most 3-year-olds no longer nap — quiet time replaces the nap slot",
+      "Night sleep extends as day sleep disappears — expect 10.5–11.5 hrs",
+      "Bedtime may need to move earlier (6:30–7 PM) to compensate for no nap",
+      "Nightmares become more common — respond calmly and briefly",
+    ],
+    schedule: [
+      { time: "7:00 AM", activity: "Wake & breakfast" },
+      { time: "10:00 AM", activity: "Morning snack + active play" },
+      { time: "12:15 PM", activity: "Lunch" },
+      { time: "1:00–2:00 PM", activity: "Quiet time — independent play in their room (no sleep)" },
+      { time: "2:00 PM", activity: "Afternoon activity" },
+      { time: "3:30 PM", activity: "Afternoon snack" },
+      { time: "5:00 PM", activity: "Dinner" },
+      { time: "6:15 PM", activity: "Bath, pyjamas, teeth" },
+      { time: "6:30 PM", activity: "Bedtime routine — 2 books, connection time" },
+      { time: "7:00 PM", activity: "Lights out — white noise, dark room" },
+    ],
+    sleepScience: "At 3 years, the sleep pressure (adenosine) that triggers daytime napping has reduced enough that most children can get through the day without it. Their circadian rhythm is now adult-like. The priority shifts: total night sleep (10.5–11.5 hrs) matters more than any daytime sleep.",
+    gentleTips: [
+      { title: "Nightmares vs Night Terrors", body: "Nightmares (2nd half of night, child wakes and can describe the dream) are normal at 3+ and driven by a growing imagination. Comfort fully, then resettle. Night terrors (first 3 hours of sleep, child is distressed but unresponsive) are different — do not try to wake them. They'll settle naturally in 5–15 minutes." },
+      { title: "Building the Sleep Ritual", body: "By 3, your child can participate in their bedtime routine. Let them choose one book, pick their pyjamas, press the white noise button. Ownership increases cooperation. A visual routine chart (pictures of each step) helps them feel in control and reduces negotiations." },
+      { title: "Screen Time and Sleep", body: "Blue light from screens delays melatonin production by 1–3 hours. Switch off all screens at least 60 minutes before bedtime. If screens are used in the evening, use blue-light filter settings. The content matters too — fast-paced or exciting shows increase arousal even with the filter." },
+    ],
+    sourceNote: "Age-appropriate sleep needs from NHS and AAP guidelines. Nightmares vs terrors guidance from the Sleep Foundation. Routine approach from Ockwell-Smith."
+  },
+];
+
 // ─── TODDLER COURSE MODULES ───────────────────────────────────────────────
 
 export const TODDLER_COURSE: CourseModule[] = [
@@ -873,7 +999,199 @@ export const BABY_COURSE: CourseModule[] = [
             { heading: "Paced Bottle Feeding", body: "Hold baby semi-upright (not lying flat). Hold bottle horizontal so milk doesn't flow too fast. Let baby draw milk in at their own pace. Pause every few minutes to burp. A feed should take 15–20 minutes (not 5 minutes of guzzling). This prevents overfeeding and gas." },
             { heading: "Combination Feeding", body: "Many families combine breast and bottle successfully. The key: maintain breast stimulation by expressing whenever you give a bottle. This protects supply while giving you flexibility. No guilt — fed is best, and your mental health matters." },
           ]}},
-          { id: "b-m2-l2-a2", type: "find_pair" as any, title: "Match the Method", content: { instruction: "Match each feeding method with its key principle.", pairs: [["Paced bottle feeding", "Hold baby semi-upright, let them control pace"], ["Calculating amounts", "150ml per kg of body weight per day"], ["Combination feeding", "Express when giving a bottle to protect supply"], ["Burping technique", "Pause every few minutes during feed"]] }},
+          { id: "b-m2-l2-a2", type: "find_the_pair" as any, title: "Match the Method", content: { instruction: "Match each feeding method with its key principle.", pairs: [["Paced bottle feeding", "Hold baby semi-upright, let them control pace"], ["Calculating amounts", "150ml per kg of body weight per day"], ["Combination feeding", "Express when giving a bottle to protect supply"], ["Burping technique", "Pause every few minutes during feed"]] }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "baby-m4",
+    title: "Baby Brain Development & Play",
+    subtitle: "Wiring a growing brain through everyday interaction",
+    description: "Every nappy change, eye-contact moment, and tummy time session is literally building your baby's brain. Understand the sensory milestones from birth to 12 months, and how responsive play creates the neural foundations for everything that follows.",
+    estimatedMinutes: 30,
+    sourceBooks: ["What's Going On In There? — Lise Eliot", "The Wonder Weeks — Hetty van de Rijt & Frans Plooij"],
+    sources: ["Infant Neuroscience", "Developmental Psychology"],
+    lessons: [
+      {
+        id: "baby-m4-l1",
+        title: "How Your Baby's Brain Grows",
+        description: "One million new neural connections per second — what's actually happening",
+        activities: [
+          { id: "b-m4-l1-a1", type: "info_carousel" as any, title: "The Building Brain", content: { slides: [
+            { heading: "1 Million Connections Per Second", body: "In the first year of life, your baby's brain creates approximately 1 million new neural connections every second. This is faster than at any other time in their life. The experiences you provide — or fail to provide — literally shape which pathways get wired and which get pruned.\n\nThis isn't pressure — it's empowering. Normal, loving parenting is brain-building parenting." },
+            { heading: "Serve & Return", body: "The single most powerful brain-building interaction is 'serve and return' — your baby initiates (looks, babbles, reaches) and you respond (eye contact, copy their sound, name what they're doing). Repeat.\n\nThis back-and-forth is the foundation of language, emotional regulation, and secure attachment. It happens naturally in loving care — but knowing it's happening means you'll do more of it." },
+            { heading: "What 'Enrichment' Actually Means", body: "You don't need flashcards, educational toys, or screen programs. Research is clear: babies benefit most from:\n• Human faces, especially yours\n• Real conversation (not baby-talk shows)\n• Responsive interaction\n• Varied sensory experience (textures, sounds, light)\n• Safe exploration\n\nThe expensive stuff is for adults who feel guilty. The free stuff is what actually works." },
+          ]}},
+          { id: "b-m4-l1-a2", type: "true_false" as any, title: "Reality Check", content: { statement: "Educational baby videos and apps are beneficial for brain development in the first year.", isTrue: false, explanation: "The American Academy of Pediatrics recommends no screen time for children under 18-24 months (video calls with family excepted). Babies learn language through LIVE interaction, not screens — the two-way responsiveness is irreplaceable." }},
+        ]
+      },
+      {
+        id: "baby-m4-l2",
+        title: "Sensory Milestones & Tummy Time",
+        description: "Month-by-month development and how to support it",
+        activities: [
+          { id: "b-m4-l2-a1", type: "info_carousel" as any, title: "Month by Month", content: { slides: [
+            { heading: "Birth–3 Months: High Contrast & Faces", body: "Vision: blurry beyond 20-30cm — hold your face close. Loves high-contrast black/white patterns. Hearing: can recognise your voice from birth (heard it in the womb). Smell: recognises mother's milk scent.\n\nWhat to do: talk to them constantly. Make eye contact during feeds. Hold black/white images at close range. Play music and sing (pitch matters less than connection)." },
+            { heading: "3–6 Months: Reaching & Rolling", body: "Hands discover objects. Reaching and mouthing begins — this IS how they learn. Vision develops colour. Begin to push up on tummy. Laugh appears around 4 months.\n\nWhat to do: Offer objects of different textures, weights, and shapes. Let them grasp your finger, a soft toy, a rattle. More tummy time — aim for 30 min/day total across sessions." },
+            { heading: "6–12 Months: Crawling & Babbling", body: "Sitting unsupported arrives (around 6–8 months). Crawling begins. Object permanence develops — peekaboo is suddenly HILARIOUS because they now know you exist even when hidden.\n\nBabbling starts ('ba-ba', 'ma-ma'). Respond to every babble as if it's a word. The back-and-forth of 'conversation' is how language wires in." },
+          ]}},
+          { id: "b-m4-l2-a2", type: "info_carousel" as any, title: "The Tummy Time Toolkit", content: { slides: [
+            { heading: "Why Tummy Time Matters", body: "Since the 'Back to Sleep' campaign (essential for SIDS prevention), babies spend less time on their tummies. This means tummy time must be intentional. It builds:\n• Neck, back and shoulder muscles\n• Head control (essential for crawling and walking)\n• Reduces flat head syndrome\n• Develops visual perspective\n\nStart from day 1 — even a few seconds counts." },
+            { heading: "Tummy Time Troubleshooting", body: "If they hate it:\n• Do it straight after a nappy change (fresher and more alert)\n• Get down at their level — your face is motivation\n• Place on YOUR chest (tummy-to-chest)\n• Use a rolled towel under their chest for support\n• High-contrast mat or mirror in front of them\n• Build up slowly — 1 minute at a time\n\nGoal: 30 minutes total per day across multiple sessions by 3 months." },
+            { heading: "Play Ideas by Age", body: "0–3m: Tummy time, mobiles, talking faces, high-contrast cards\n3–6m: Soft rattles, textured toys, peekaboo, floor mat exploration\n6–9m: Object permanence toys, soft stacking cups, bath play, treasure basket (everyday objects of different textures)\n9–12m: Push/pull toys, simple shape sorters, board books, finger foods as sensory play" },
+          ]}},
+        ]
+      },
+      {
+        id: "baby-m4-l3",
+        title: "Wonder Weeks — Developmental Leaps",
+        description: "Understanding the 10 'stormy periods' of the first year",
+        activities: [
+          { id: "b-m4-l3-a1", type: "info_carousel" as any, title: "The Mental Leaps", content: { slides: [
+            { heading: "What Wonder Weeks Are", body: "Van de Rijt and Plooij's research identified predictable developmental 'leaps' — periods when babies' brains are doing intensive reorganisation work. During a leap, babies often:\n• Become clingier, fussier, and harder to settle\n• Have disrupted sleep\n• Feed more frequently\n• Seem to 'forget' skills they had\n\nThis is NOT regression. It's advancement. The leap is followed by a burst of new abilities." },
+            { heading: "The First 5 Leaps (Birth–6 months)", body: "Leap 1 (~5 weeks): Notices changing sensations — suddenly 'sees' light and patterns.\nLeap 2 (~8 weeks): Recognises patterns in the world.\nLeap 3 (~12 weeks): Transitions — finds that actions create change.\nLeap 4 (~19 weeks): Events — understands that actions are connected in a series.\nLeap 5 (~26 weeks): Relationships — starts understanding distance, depth, boundaries." },
+            { heading: "When They're Stormy", body: "During a leap, the three Cs become more intense: Clingy, Cranky, Crying.\n\nWhat helps:\n• More skin contact and holding (you can't 'spoil' a baby in a leap)\n• Offer the breast/bottle more — sucking is genuinely soothing\n• Simplify the environment — less stimulation, more comfort\n• Name what's happening: 'You're learning so much. This is hard work for your brain.'\n• Trust that the storm passes — usually within days to a couple of weeks" },
+          ]}},
+          { id: "b-m4-l3-a2", type: "open_response" as any, title: "Track Your Baby", content: { prompt: "How old is your baby and what have you noticed them doing that's new this week? How does knowing about developmental leaps change how you feel about a fussy period?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "baby-m5",
+    title: "Introducing Solids",
+    subtitle: "First foods, baby-led weaning, and building a healthy relationship with eating",
+    description: "The transition to solid food is one of the most exciting and confusing milestones of the first year. Whether you choose purees, baby-led weaning, or a combination — this guide gives you the evidence-based framework to do it confidently.",
+    estimatedMinutes: 30,
+    sourceBooks: ["Baby-Led Weaning — Gill Rapley & Tracey Murkett"],
+    sources: ["Paediatric Nutrition", "Infant Feeding Guidelines"],
+    lessons: [
+      {
+        id: "baby-m5-l1",
+        title: "When & How to Start",
+        description: "Signs of readiness and first-food principles",
+        activities: [
+          { id: "b-m5-l1-a1", type: "info_carousel" as any, title: "Starting Solids", content: { slides: [
+            { heading: "Signs of Readiness (Not Just Age)", body: "NHS, WHO, and most paediatric bodies recommend starting around 6 months — but look for all THREE readiness signs:\n1. Can sit up with minimal support and hold their head steady\n2. Has lost the tongue-thrust reflex (no longer automatically pushes food out with tongue)\n3. Shows interest in food — reaching, watching intently\n\nNOT signs of readiness: waking at night (babies can wake for many reasons), sucking fists (normal newborn behaviour)." },
+            { heading: "The Division of Responsibility", body: "Ellyn Satter's principle applies from day one of solids: YOUR job is to decide WHAT is offered, WHEN, and WHERE. YOUR BABY'S job is to decide WHETHER to eat and HOW MUCH.\n\nNever: force food, play aeroplane to distract, make them eat 'one more bite.' This overrides their natural hunger/fullness signals and can contribute to disordered eating later.\n\nTrust: babies are born with excellent appetite regulation. Honour it." },
+            { heading: "Milk First (Until 12 Months)", body: "Until 12 months, breast milk or formula remains the PRIMARY nutrition source. Solids are complimentary — they're about exploring flavours, textures, and building skills, not replacing nutrition.\n\nThe NHS recommendation: offer solids about an hour AFTER a milk feed in the beginning (so hunger doesn't drive frustration). As they get older and more competent, shift toward meals before milk." },
+          ]}},
+          { id: "b-m5-l1-a2", type: "survey" as any, title: "Your Approach", content: { question: "Which approach to starting solids are you planning?", options: ["Traditional purees", "Baby-led weaning", "Combination (both)", "Not sure yet"] }},
+        ]
+      },
+      {
+        id: "baby-m5-l2",
+        title: "Baby-Led Weaning vs Purees",
+        description: "Understanding both approaches and choosing yours",
+        activities: [
+          { id: "b-m5-l2-a1", type: "info_carousel" as any, title: "Approaches Compared", content: { slides: [
+            { heading: "Baby-Led Weaning (BLW)", body: "Gill Rapley's approach: skip purees entirely and offer soft, appropriately sized pieces of real food from the start. Baby feeds themselves.\n\nAdvantages:\n• Develops self-feeding skills immediately\n• Exposes baby to varied textures from the start (less picky eating)\n• Baby controls how much they eat\n• Family mealtimes are easier\n\nRequires: sitting independently, patience with mess, understanding of gagging vs choking." },
+            { heading: "Traditional Purees", body: "Starting with smooth purees and gradually increasing texture.\n\nAdvantages:\n• More control over exact quantities and nutrients\n• Lower stress around gagging\n• Can be prepared in bulk and frozen\n• Well-established method with generational confidence behind it\n\nRequires: gradual texture progression (lumps by 7–8 months — texture avoidance is a risk of purees only)." },
+            { heading: "Combination (Most Families)", body: "Most families blend both approaches: purees for iron-rich foods and nutrient density, soft finger foods for texture experience and self-feeding development.\n\nThe most important thing isn't your approach — it's texture progression. Research shows babies who are still on smooth purees at 9+ months are significantly more likely to be picky eaters at 7 years. Lumpy and finger foods by 7–9 months matter." },
+          ]}},
+          { id: "b-m5-l2-a2", type: "find_the_pair" as any, title: "Match the Food to the Stage", content: { instruction: "Match each food to the stage it's appropriate for.", pairs: [["6 months — first foods", "Broccoli floret, mashed sweet potato, iron-fortified infant cereal"], ["7–9 months — texture progression", "Soft cooked pasta, minced meat, mashed banana pieces, cheese"], ["9–12 months — family food", "Soft pieces of whatever the family eats, minus salt, honey, whole nuts"], ["6–12 months — iron priority", "Red meat, legumes, fortified cereal — offer twice daily"]] }},
+        ]
+      },
+      {
+        id: "baby-m5-l3",
+        title: "Allergens, Gagging & Food Safety",
+        description: "What you need to know to do this confidently",
+        activities: [
+          { id: "b-m5-l3-a1", type: "info_carousel" as any, title: "Safe Solids", content: { slides: [
+            { heading: "Allergen Introduction", body: "Current evidence shows introducing common allergens EARLY (starting at 6 months) reduces the risk of allergy development — the opposite of what was previously advised.\n\nIntroduce one at a time, 3–5 days apart, watching for reactions:\n• Peanut (smooth peanut butter thinned with warm water)\n• Tree nuts (same method)\n• Egg (well-cooked)\n• Dairy (cheese, yoghurt — not cow's milk as a main drink until 12 months)\n• Wheat, fish, shellfish\n\nIf family history of severe allergy: discuss with your paediatrician first." },
+            { heading: "Gagging vs Choking", body: "GAGGING is normal, safe, and protective. The gag reflex in babies is positioned far forward on the tongue — it triggers frequently and dramatically but is the body doing its job. Signs: loud, retching noise, red face, eyes watering. Action: stay calm, don't interfere.\n\nCHOKING is different: silent, distressed, blue colour, ineffective breathing. Action: learn infant choking first aid BEFORE starting solids. Every parent should know this.\n\nKnowing the difference transforms your confidence." },
+            { heading: "Foods to Avoid Before 12 Months", body: "Never before 12 months:\n• Honey (risk of botulism)\n• Whole cow's milk as main drink\n• Salt (kidneys can't handle it)\n• Added sugar\n• Whole nuts (choking risk)\n• Raw shellfish\n• Unpasteurised cheese\n• Shark, marlin, swordfish (high mercury)\n\nAfter 12 months: honey is fine, cow's milk becomes the drink, and most restrictions lift. Focus shifts to a varied, balanced family diet." },
+          ]}},
+          { id: "b-m5-l3-a2", type: "true_false" as any, title: "Safety Check", content: { statement: "If your baby gags dramatically on a piece of food, you should immediately remove the food from their mouth with your finger.", isTrue: false, explanation: "Gag reflex is protective — let it do its job. Inserting your finger can actually push food further back. Stay calm, watch, and let them work through it. Act only if signs of actual choking appear: silence, ineffective breathing, blue colour. Learn infant first aid — it's the best preparation." }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "baby-m6",
+    title: "Postnatal Wellbeing for Parents",
+    subtitle: "The hardest job nobody prepared you for — caring for yourself too",
+    description: "Having a baby doesn't just change your schedule — it changes your identity, your relationship, and your nervous system. Brené Brown's vulnerability research, combined with postnatal mental health science, gives you a framework for navigating new parenthood honestly.",
+    estimatedMinutes: 25,
+    sourceBooks: ["Daring Greatly — Brené Brown", "The Postnatal Depletion Cure — Dr Oscar Serrallach"],
+    sources: ["Postnatal Psychology", "Vulnerability Research"],
+    lessons: [
+      {
+        id: "baby-m6-l1",
+        title: "The Vulnerability of New Parenthood",
+        description: "Why this is the hardest thing you've ever done — and why that's okay",
+        activities: [
+          { id: "b-m6-l1-a1", type: "info_carousel" as any, title: "Honest About Hard", content: { slides: [
+            { heading: "The 'Should' Trap", body: "Brené Brown's research identifies that shame thrives in the gap between who we think we should be and who we actually are. New parenthood is a shame incubator:\n• 'I should be enjoying every moment'\n• 'I should know instinctively what to do'\n• 'Good parents don't feel resentment/boredom/overwhelm'\n• 'I should be able to do this on my own'\n\nNone of this is true. All of it is human. The shame spiral makes everything worse." },
+            { heading: "Vulnerability is Not Weakness", body: "Brown's core thesis: vulnerability — the willingness to show up when you don't have all the answers — is not weakness. It IS courage.\n\nAsking for help is vulnerable. Admitting you're struggling is vulnerable. Saying 'I'm not coping' is vulnerable. Every one of these is an act of strength, not failure.\n\nThe parents who model emotional honesty are raising children who can do the same." },
+            { heading: "The 'Good Enough' Parent", body: "Donald Winnicott's research showed children don't need perfect parents — they need 'good enough' parents. The research says it even more directly: children need to experience small, manageable disappointments and ruptures (you not being there instantly, you having a bad day) followed by repair. These are the conditions that build resilience.\n\nPerfect parenting, if it were possible, would actually undermine your child's development. Good enough is genuinely enough." },
+          ]}},
+          { id: "b-m6-l1-a2", type: "open_response" as any, title: "Shame Audit", content: { prompt: "What does the inner critic say when you're having a hard parenting moment? Write 2–3 'I should...' or 'I shouldn't...' beliefs you carry. Then: is this actually true? Where did this belief come from?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "baby-m6-l2",
+        title: "Baby Blues, PND & When to Get Help",
+        description: "The mental health realities no one talks about enough",
+        activities: [
+          { id: "b-m6-l2-a1", type: "info_carousel" as any, title: "Mental Health After Baby", content: { slides: [
+            { heading: "Baby Blues (Days 3–14)", body: "Up to 80% of new mothers experience the 'baby blues' in the first 1–2 weeks: unexplained crying, mood swings, feeling overwhelmed and anxious despite a healthy baby. This is caused by the dramatic hormonal withdrawal after birth — oestrogen and progesterone drop sharply in 24–48 hours.\n\nBaby blues are:\n• Normal and expected\n• Temporary (typically resolving by day 10–14)\n• Not a sign of postnatal depression\n\nSupport: rest, company, physical comfort, reassurance that this passes." },
+            { heading: "Postnatal Depression (PND)", body: "PND affects approximately 1 in 7 mothers — and is underdiagnosed in fathers (affecting 1 in 10). It's NOT the baby blues, and it's NOT a failure of love for your baby.\n\nSigns: persistent low mood, inability to enjoy things you used to love, intense anxiety, feeling like a bad parent, inability to bond, thoughts of harm (to self or rarely to baby), inability to sleep even when the baby sleeps.\n\nIf symptoms last more than 2 weeks or are severe: see your GP. PND is highly treatable — and you deserve support." },
+            { heading: "Postnatal Anxiety & Intrusive Thoughts", body: "Less talked about than PND but very common: postnatal anxiety. Constant worry about the baby, hypervigilance, inability to rest, catastrophising.\n\nIntrusive thoughts (unwanted, distressing thoughts about harm coming to the baby) affect up to 91% of new parents. Having the thought does NOT mean you want it to happen. It's your brain's overactive threat-detection — not evidence of who you are.\n\nIf intrusive thoughts feel overwhelming or you can't dismiss them: speak to your GP or midwife. You won't be judged. You will be helped." },
+            { heading: "Partners & Dads", body: "Partners often have less visible needs: they're expected to 'be strong' for the new mother, return to work quickly, and manage on less sleep without the same social support network. Paternal PND is real, under-recognised, and often presents as irritability, withdrawal, or increased alcohol use rather than obvious sadness.\n\nIf you're a partner reading this: your mental health matters. Your child needs YOU well. Ask for help from your GP or a trusted person." },
+          ]}},
+          { id: "b-m6-l2-a2", type: "true_false" as any, title: "Myth Buster", content: { statement: "Intrusive thoughts about harm coming to your baby are a sign that you might actually hurt them.", isTrue: false, explanation: "Intrusive thoughts are extremely common in new parenthood and have no predictive relationship with acting on them. They're the brain's overactive threat-detection system misfiring. Parents who have intrusive thoughts are typically horrified by them precisely because they love their baby. If these thoughts become distressing or uncontrollable, speak to your GP — this is very treatable." }},
+        ]
+      },
+      {
+        id: "baby-m6-l3",
+        title: "The Relationship After Baby",
+        description: "Protecting your partnership through the hardest adjustment of your lives",
+        activities: [
+          { id: "b-m6-l3-a1", type: "info_carousel" as any, title: "Partnership Survival", content: { slides: [
+            { heading: "The Research Is Blunt", body: "The Gottman Institute's research found that 67% of couples report a significant drop in relationship satisfaction in the first 3 years after having a child. The primary causes: sleep deprivation, unequal load-sharing, loss of adult time, and the 'accumulation of resentments' (small score-keeping that adds up).\n\nThis doesn't mean your relationship is failing. It means you're having a baby. Knowing this is normal reduces the catastrophising." },
+            { heading: "The Daily Six Minutes", body: "Gottman's research also found the antidote. Couples who maintain connection through the newborn period share six specific daily habits:\n• 2 minutes: meaningful goodbye in the morning\n• 2 minutes: genuine check-in at reunion\n• 2 minutes: physical affection (not sex — just contact)\n\nThis sounds almost insultingly small. But it creates a 'bids for connection' habit that protects the relationship through the hardest stretches." },
+            { heading: "Who Does What", body: "The single greatest predictor of relationship satisfaction after a baby: perceived fairness of the load.\n\nThis doesn't mean a 50/50 split — it means BOTH people feeling the split is fair given their circumstances. Talk explicitly (not during a fight) about:\n• Night feeding arrangements\n• Who handles daytime care\n• Who handles domestic tasks\n• How each person gets recovery time\n• What 'off-duty' means for each person\n\nAssumptions lead to resentment. Agreements lead to teamwork." },
+          ]}},
+          { id: "b-m6-l3-a2", type: "open_response" as any, title: "Partnership Check-in", content: { prompt: "Have an honest conversation with your partner (or write it here if you're reflecting alone): What's working? What's causing the most friction? What would make each of you feel more supported?", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  {
+    id: "baby-m7",
+    title: "Attachment & Your Baby's Emotional Life",
+    subtitle: "Building the secure base that shapes everything",
+    description: "Attachment science reveals that how you respond to your baby's emotional needs in the first year creates the template for all their future relationships. This isn't pressure — it's one of the most practical frameworks in all of developmental psychology.",
+    estimatedMinutes: 25,
+    sourceBooks: ["The Whole-Brain Child — Daniel J. Siegel & Tina Payne Bryson", "What Mothers Do — Naomi Stadlen"],
+    sources: ["Attachment Theory", "Infant Mental Health"],
+    lessons: [
+      {
+        id: "baby-m7-l1",
+        title: "Attachment Theory for Real Life",
+        description: "What secure attachment looks like (and how you build it)",
+        activities: [
+          { id: "b-m7-l1-a1", type: "info_carousel" as any, title: "Attachment Explained", content: { slides: [
+            { heading: "The Four Styles", body: "Bowlby and Ainsworth's research identified four attachment styles:\n\nSECURE (60% of children): Uses parent as safe base. Distressed when parent leaves, comforted when they return.\n\nANXIOUS/AMBIVALENT (15%): Clingy, hard to comfort, preoccupied with parent's availability.\n\nAVOIDANT (20%): Seems independent, suppresses need — but stress markers show they're affected.\n\nDISORGANISED (5%): Inconsistent — parent is source of both comfort AND fear." },
+            { heading: "How Secure Attachment Is Built", body: "The research is more forgiving than you might think. Secure attachment is built through CONSISTENT responsiveness — not perfect responsiveness.\n\nYou don't need to get it right every time. You need to:\n• Notice when your baby signals a need\n• Respond in a warm, timely way most of the time\n• Repair when you get it wrong\n\nStudies show that parents who respond sensitively to their baby 30–50% of the time still raise securely attached children. You have more margin than you think." },
+            { heading: "The Brain Science", body: "When a baby's stress signal (crying) is consistently met with a calming response, it actually shapes the architecture of their stress-response system. The hippocampus (memory), amygdala (threat detection), and vagus nerve (calm/recovery) are all built through the experience of being soothed.\n\nYou are co-regulating them now so they can self-regulate later. The holding, the rocking, the voice — this is medicine for the nervous system, not 'spoiling.'" },
+          ]}},
+          { id: "b-m7-l1-a2", type: "true_false" as any, title: "Attachment Myth", content: { statement: "Responding too quickly to your baby's cries will 'spoil' them and make them more demanding.", isTrue: false, explanation: "Research shows the opposite: babies whose cries are consistently responded to in the first year cry LESS, not more. Consistent responsiveness builds a secure nervous system that doesn't need to escalate to be heard. The 'spoiling' concern has no evidence base for children under 12 months." }},
+        ]
+      },
+      {
+        id: "baby-m7-l2",
+        title: "Co-Regulation & Emotional Safety",
+        description: "How you teach your baby to calm down (by being calm yourself)",
+        activities: [
+          { id: "b-m7-l2-a1", type: "info_carousel" as any, title: "Your Nervous System, Their Nervous System", content: { slides: [
+            { heading: "What Co-Regulation Is", body: "Co-regulation is the process by which your calm nervous system helps your baby's stressed nervous system come back to baseline. It's how emotional regulation is transmitted — first between you, eventually internalised by them.\n\nEvidence: babies as young as 3 months show measurable heart rate slowing when their distressed mother's heart rate calms. The nervous systems are in communication. Your calm state is the tool." },
+            { heading: "The Still Face Study", body: "Ed Tronick's research showed: when a mother looks at her infant with a blank, unresponsive face for just 2 minutes, the baby first tries to engage, then shows distress, then turns inward. When responsiveness resumes, the baby recovers quickly.\n\nThis isn't cause for guilt — it's a reminder that connection doesn't need to be intense or performative. Just present. Just responsive. That's what the nervous system is looking for." },
+            { heading: "When You're Not Regulated", body: "You can't co-regulate your baby if you're dysregulated yourself — this is why parental self-care is not selfish.\n\nWhen you're flooded:\n• Put baby down safely and take 3 slow breaths before continuing\n• Call someone to take over for 15 minutes\n• Acknowledge it to yourself: 'I'm dysregulated. I need to calm before I can help them calm.'\n\nBrief pauses are safe. Trying to soothe through your own escalating distress is less effective and more exhausting." },
+          ]}},
+          { id: "b-m7-l2-a2", type: "open_response" as any, title: "Your Regulation Strategy", content: { prompt: "What do you do when your baby's crying pushes you to your limit? What are your early warning signs? Write a 'when I feel overwhelmed' plan: one thing you can do in the moment, one person you can call.", saveToVault: true }},
         ]
       }
     ]
@@ -1296,7 +1614,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "What NOT to Say", body: "\u2718 \u2018You look fine!\u2019 (dismissive)\n\u2718 \u2018Don\u2019t worry about your weight\u2019 (introduces the concept)\n\u2718 Comments about YOUR body (\u2018I\u2019m so fat\u2019 \u2014 they\u2019re listening)\n\u2718 \u2018You\u2019d be so pretty if you just...\u2019\n\u2718 Praising other kids\u2019 appearances\n\n\u2714 Instead: focus on what bodies CAN DO, not what they look like." },
             { heading: "Build Body Respect", body: "\u2022 Talk about bodies in terms of function: \u2018Your legs are strong \u2014 they carried you up that hill!\u2019\n\u2022 Model body neutrality: eat without guilt, move for joy, dress for comfort\n\u2022 Discuss how images are edited: \u2018Let me show you what filters actually do\u2019\n\u2022 Celebrate diversity: different body types in media, sport, life\n\u2022 If concerned about disordered eating, talk to your GP early" },
           ]}},
-          { id: "kt-m8-l2-a2", type: "find_pair" as any, title: "Match the Response", content: { instruction: "Match each body image scenario with the best response.", pairs: [["'Am I fat?'", "'Your body is strong and growing. What matters is how you feel, not how you look.'"], ["You catch yourself saying 'I look terrible'", "Reframe: 'I love what my body can do' — they're always listening"], ["They compare themselves to an influencer", "'Let me show you what filters actually do to photos'"], ["They refuse to wear shorts in summer", "Don't force it. 'You get to choose what you're comfortable in.'"]] }},
+          { id: "kt-m8-l2-a2", type: "find_the_pair" as any, title: "Match the Response", content: { instruction: "Match each body image scenario with the best response.", pairs: [["'Am I fat?'", "'Your body is strong and growing. What matters is how you feel, not how you look.'"], ["You catch yourself saying 'I look terrible'", "Reframe: 'I love what my body can do' — they're always listening"], ["They compare themselves to an influencer", "'Let me show you what filters actually do to photos'"], ["They refuse to wear shorts in summer", "Don't force it. 'You get to choose what you're comfortable in.'"]] }},
         ]
       },
       {
@@ -1494,7 +1812,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "The Golden Rules", body: "\u2022 NEVER badmouth the other parent in front of your child\n\u2022 Don\u2019t use your child as a messenger\n\u2022 Don\u2019t pump them for information about the other parent\n\u2022 Don\u2019t compete for their love with gifts or leniency\n\u2022 Keep routines as consistent as possible between houses\n\u2022 Let them love both parents freely\n\nYour child is not your therapist. Get adult support for your own pain." },
             { heading: "Age-Specific Reactions", body: "5\u20138: May blame themselves, regress (bedwetting, clinginess), act out\n9\u201312: May take sides, feel responsible for fixing it, anger at both parents\n13\u201317: May withdraw, act out, rush into relationships of their own\n\nAll of these are NORMAL grief responses. Patience, consistency, and professional support if needed." },
           ]}},
-          { id: "kt-m10-l1-a2", type: "find_pair" as any, title: "Match the Strategy", content: { instruction: "Match each screen time challenge with the best approach.", pairs: [["Teen won't put phone away at dinner", "Model it first — everyone puts phones in a basket"], ["Child is anxious without their device", "Gradual exposure — start with 30 min phone-free"], ["They're watching inappropriate content", "Open conversation, not punishment — 'Tell me what you saw'"], ["Gaming is affecting sleep", "Negotiate a device curfew together — devices charge outside bedrooms"]] }},
+          { id: "kt-m10-l1-a2", type: "find_the_pair" as any, title: "Match the Strategy", content: { instruction: "Match each screen time challenge with the best approach.", pairs: [["Teen won't put phone away at dinner", "Model it first — everyone puts phones in a basket"], ["Child is anxious without their device", "Gradual exposure — start with 30 min phone-free"], ["They're watching inappropriate content", "Open conversation, not punishment — 'Tell me what you saw'"], ["Gaming is affecting sleep", "Negotiate a device curfew together — devices charge outside bedrooms"]] }},
         ]
       },
       {
@@ -1571,7 +1889,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Communication With Teenage Boys", body: "Teenage boys communicate differently:\n\u2022 They talk while DOING something (not face-to-face)\n\u2022 They speak in short bursts (don\u2019t push for more)\n\u2022 They process internally first (give them time)\n\u2022 They respond to genuine interest, not interrogation\n\nBest conversation triggers: cooking, driving, gaming together, physical activity side by side.\n\n\u2018Grunt\u2019 is a language. Learn it. The connection is still there." },
           ]}},
           { id: "kt-m12-l1-a2", type: "fill_blanks" as any, title: "Rewrite the Script", content: { sentence: "Instead of saying 'Man up' or 'Boys don't ___', try: 'It looks like you're feeling ___. Crying is your body's way of releasing big ___. That's ___.'", blanks: ["cry", "frustrated", "feelings", "healthy"] }},
-          { id: "kt-m12-l1-a3", type: "find_pair" as any, title: "Connect With Teen Boys", content: { instruction: "Match the communication strategy with when it works best for teenage boys.", pairs: [["Talk while doing something side-by-side", "When you need to discuss something emotional"], ["Car conversations", "When they seem withdrawn or moody"], ["Don't push for more words", "When they give short answers — the connection is still there"], ["Cook or game together", "When you want regular check-in time"]] }},
+          { id: "kt-m12-l1-a3", type: "find_the_pair" as any, title: "Connect With Teen Boys", content: { instruction: "Match the communication strategy with when it works best for teenage boys.", pairs: [["Talk while doing something side-by-side", "When you need to discuss something emotional"], ["Car conversations", "When they seem withdrawn or moody"], ["Don't push for more words", "When they give short answers — the connection is still there"], ["Cook or game together", "When you want regular check-in time"]] }},
         ]
       },
     ]
@@ -1985,6 +2303,121 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "From Passive to Active", body: "Disengaged teens are often passively consuming (scrolling, watching, gaming). The antidote is ACTIVE engagement:\n• Creating something (music, art, code, food)\n• Building something (physical or digital)\n• Competing at something (sport, debate, gaming at a competitive level)\n• Learning something they CHOSE (not school-mandated)\n\nThe shift from consumer to creator is often the turning point." },
           ]}},
           { id: "kt-m21-l2-a2", type: "open_response" as any, title: "Purpose Finding", content: { prompt: "What does your teenager actually care about — even if it seems trivial? How could you connect that interest to a sense of purpose or real-world engagement? Write a plan for one experiment this month.", saveToVault: true }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE NEW-A: SHAME RESILIENCE (Brené Brown — Daring Greatly) ──────
+  {
+    id: "kt-m-shame",
+    title: "Shame Resilience in Your Family",
+    subtitle: "Breaking the shame cycle — for you and your children",
+    description: "Brené Brown's research in Daring Greatly reveals that shame is the most powerful, most destructive emotion in family life — and the least talked about. Understanding and interrupting the shame cycle transforms parenting from control to connection.",
+    estimatedMinutes: 35,
+    sourceBooks: ["Daring Greatly — Brené Brown"],
+    sources: ["Shame Resilience Research", "Vulnerability Science"],
+    lessons: [
+      {
+        id: "kt-shame-l1",
+        title: "What Shame Actually Is",
+        description: "The difference between guilt, shame, and why it matters profoundly",
+        activities: [
+          { id: "kt-shame-l1-a1", type: "info_carousel" as any, title: "Shame vs Guilt", content: { slides: [
+            { heading: "The Critical Distinction", body: "Brown's research makes a distinction that changes everything:\n\nGUILT: 'I did something bad' — the focus is on the BEHAVIOUR. It's motivating: 'I'm going to make this right.'\n\nSHAME: 'I AM bad' — the focus is on the SELF. It's destructive: it makes people want to hide, shut down, or lash out.\n\nGuilty people make amends. Ashamed people become defensive, aggressive, or implode. These require completely different responses." },
+            { heading: "How Shame Shows Up in Parenting", body: "We accidentally activate shame in our children constantly:\n• 'You should be ashamed of yourself'\n• 'What were you THINKING?' (said with contempt)\n• 'Why can't you be more like your sister?'\n• Shaming in front of others\n• Withdrawing love as punishment\n• Eye rolls, sighs, disgust responses\n\nEach of these targets WHO THEY ARE, not WHAT THEY DID. Brown's research shows shame does not teach better behaviour — it teaches children to hide who they are." },
+            { heading: "The Shame Spiral", body: "Brown identifies a shame spiral that goes:\n1. Trigger (criticism, rejection, failure, comparison)\n2. Internal message ('I am not good enough / I am defective')\n3. Physical response (heat, contraction, wanting to disappear)\n4. Behaviour: fight (aggression), flight (withdraw), freeze (shut down)\n5. Temporary relief then deeper shame ('I reacted badly, which proves I'm broken')\n\nNoticing WHERE IN THIS SPIRAL your child (or you) is, tells you exactly what they need." },
+            { heading: "Your Own Shame History", body: "Brown is clear: you cannot give your child what you don't have. If shame was a frequent tool in your own upbringing, it will emerge under stress unless you've worked through it.\n\nCommon parent shame triggers:\n• Your child misbehaves in public\n• School feedback about your child\n• Comparison with 'better' parents\n• Losing your temper\n• Not meeting your own parenting standards\n\nWhen you feel shame as a parent, notice it. Name it. It needs to be witnessed, not acted on." },
+          ]}},
+          { id: "kt-shame-l1-a2", type: "single_choice" as any, title: "Check Your Understanding", content: { question: "Your 9-year-old cheats on a test. Which response targets guilt (the behaviour) rather than shame (the self)?", options: [
+            { label: "'You should be ashamed of yourself — I raised you better than this'", isCorrect: false },
+            { label: "'What were you THINKING?!' (with obvious disappointment and contempt)", isCorrect: false },
+            { label: "'Cheating isn't okay. What happened — what were you trying to solve? Let's figure out a different way to handle this.'", isCorrect: true },
+            { label: "Take away their favourite thing and tell them they've destroyed your trust", isCorrect: false },
+          ], explanation: "Addressing the behaviour ('cheating isn't okay') while being curious about what drove it targets the action, not the child. Shame-based responses ('you should be ashamed', contempt) target identity and teach the child to hide, not improve." }},
+        ]
+      },
+      {
+        id: "kt-shame-l2",
+        title: "Building Shame Resilience",
+        description: "Brown's four-element framework for families",
+        activities: [
+          { id: "kt-shame-l2-a1", type: "info_carousel" as any, title: "The Resilience Framework", content: { slides: [
+            { heading: "Element 1: Recognise Shame", body: "Help your child name what they're feeling in moments of shame: 'That felt humiliating, didn't it? Like you wanted to disappear?'\n\nChildren who can name shame develop it less. Naming creates distance: 'I'm feeling shame' rather than 'I AM shameful.'\n\nNormalise it: 'Everyone feels this sometimes. Even grown-ups. Even me.' Share a time you felt it. Brown says empathy is the antidote to shame — it cannot survive being spoken out loud and met with kindness." },
+            { heading: "Element 2: Reality-Test the Message", body: "Shame sends a message: 'You are defective/not enough/unlovable.' This message is almost never accurate.\n\nHelp children examine it:\n• 'Your brain is telling you that you're stupid because you got a question wrong. Is that actually true?'\n• 'Your shame is saying everyone hates you. What's the actual evidence?'\n• 'You made a bad choice. That's different from being a bad person.'\n\nReality-testing is a skill. It takes practice. Start young." },
+            { heading: "Element 3: Reach Out", body: "Shame needs secrecy to survive. Vulnerability kills it.\n\nTeach your child that shame reduces when we talk to a safe person. Brown says: 'Shame cannot survive being spoken out loud to someone who loves you.'\n\nTo be that safe person, they need to know:\n• You won't punish them for being honest\n• You won't change how you feel about them\n• You've felt it too\n• The relationship is bigger than any mistake\n\nEvery time you create safety for honesty, you're building their shame resilience." },
+            { heading: "Element 4: Speak Shame", body: "Brown's most powerful tool: learn the language of shame.\n\nInstead of: 'I'm so stupid'\nTry teaching: 'I'm having a shame story — I'm telling myself I'm stupid because I made a mistake. But mistakes don't mean I'm stupid.'\n\nInstead of: (withdrawing, going quiet, hiding)\nTry teaching: 'I feel ashamed right now. I'm going to tell someone I trust.'\n\nThis requires YOU to model it first: 'I messed up at work today and part of me started to feel like a failure. I had to remind myself that one mistake doesn't define me.'" },
+          ]}},
+          { id: "kt-shame-l2-a2", type: "open_response" as any, title: "Your Family Shame Patterns", content: { prompt: "What shame messages did you receive growing up? ('You should be ashamed', comparisons, public embarrassment?) How have these shaped your parenting? What shame-based habit do you most want to change?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-shame-l3",
+        title: "Vulnerability as a Parenting Practice",
+        description: "How choosing courage in front of your children changes everything",
+        activities: [
+          { id: "kt-shame-l3-a1", type: "info_carousel" as any, title: "Daring Greatly as a Parent", content: { slides: [
+            { heading: "Wholehearted Parenting", body: "Brown's concept of 'wholehearted parenting': showing up with your whole self — imperfections included — rather than trying to model impossible perfection.\n\nWholehearted parents:\n• Acknowledge their mistakes out loud\n• Share age-appropriate struggles\n• Say 'I don't know' rather than projecting false confidence\n• Ask for help rather than pretending to have it together\n• Talk about emotions — including their own\n\nThe irony: admitting fallibility makes you more trustworthy to your children, not less." },
+            { heading: "Protecting Kids from Failure: The Backfire", body: "Brown identifies a parenting paradox: the more we try to protect our children from disappointment, failure, and pain, the less capable they become of handling it.\n\n'Never let them fail' teaches: the world is too dangerous for you to handle alone. You need me to make it safe.\n'I believe you can handle this' teaches: you have what it takes. Hard things are survivable.\n\nBeing willing to let your child struggle in supported ways is one of the most loving, courageous things you can do." },
+            { heading: "The 'Enough' Conversation", body: "One of the most powerful things you can do for your child: tell them explicitly — not in response to achievement but simply and often — that they are ENOUGH.\n\n'You don't have to earn my love. You already have it.'\n'You being you is what I love — not your grades/performance/behaviour.'\n'You are enough exactly as you are.'\n\nBrown's research shows children who believe they are inherently worthy — separate from what they achieve — are more resilient, more connected, and more capable than those who must prove their worth." },
+          ]}},
+          { id: "kt-shame-l3-a2", type: "single_choice" as any, title: "Daring Greatly Practice", content: { question: "Your teenage daughter is about to try out for the school play and is terrified of failing. What does 'daring greatly' look like as her parent?", options: [
+            { label: "'You'll definitely get it — you're so talented!'", isCorrect: false },
+            { label: "'I know this is scary. Trying when you might fail is the bravest thing. I'm proud of you for showing up.'", isCorrect: true },
+            { label: "'Just don't bother if you're not confident you'll get in'", isCorrect: false },
+            { label: "'I'll talk to the drama teacher to make sure they see how good you are'", isCorrect: false },
+          ], explanation: "Brown's 'daring greatly' is about showing up vulnerably, not winning. False reassurance ('you'll definitely get it') sets up shame if they don't. The courageous message is: the act of trying — not the outcome — is what you're celebrating." }},
+        ]
+      }
+    ]
+  },
+  // ─── MODULE NEW-B: BELONGING vs FITTING IN (Brené Brown — Braving the Wilderness) ──
+  {
+    id: "kt-m-belonging",
+    title: "True Belonging vs Fitting In",
+    subtitle: "Teaching your child to belong to themselves first",
+    description: "In Braving the Wilderness, Brené Brown makes a distinction that hits hardest for teenagers: true belonging requires you to be yourself. Fitting in requires you to be what the group wants. These two things are opposites — and learning to tell them apart changes everything.",
+    estimatedMinutes: 25,
+    sourceBooks: ["Braving the Wilderness — Brené Brown"],
+    sources: ["Belonging Research", "Identity Development"],
+    lessons: [
+      {
+        id: "kt-belong-l1",
+        title: "The Difference That Changes Everything",
+        description: "Why the most popular kids are often the loneliest",
+        activities: [
+          { id: "kt-belong-l1-a1", type: "info_carousel" as any, title: "Belonging vs Fitting In", content: { slides: [
+            { heading: "Brown's Critical Distinction", body: "Brown defines belonging as 'the innate human desire to be part of something larger than us. But it must not require us to change who we are.'\n\nFitting in is the opposite: assessing a group and changing yourself to match what's required.\n\nThe cruel paradox: teenagers who are best at 'fitting in' — who are most chameleon-like and socially strategic — often feel the most profoundly alone. They've never been truly seen, because they never show their true self." },
+            { heading: "Belonging Starts With Self", body: "Brown's most counter-intuitive finding: TRUE belonging requires belonging to yourself first.\n\nThis means:\n• Knowing what you actually think, value, and feel (not what you're supposed to think/value/feel)\n• Being willing to stand alone in your own opinion\n• Tolerating the discomfort of not fitting in rather than betraying who you are\n\nThis is rare. It's the work of adolescence. And it's the exact thing that reduces loneliness." },
+            { heading: "The Wilderness", body: "Brown uses 'the wilderness' as a metaphor for the experience of true belonging: it feels exposed and dangerous, but it's also where genuine connection is found.\n\nShe identifies people who have 'the wilderness' — who can be in a group without losing themselves, disagree without being disagreeable, and hold their opinion while genuinely staying open to others.\n\nThis is the capacity your child is building during adolescence. It's messy. It's supposed to be." },
+          ]}},
+          { id: "kt-belong-l1-a2", type: "true_false" as any, title: "Check", content: { statement: "A teenager with a large friend group who is included in everything is unlikely to feel lonely.", isTrue: false, explanation: "Brown's research shows widespread social belonging (fitting in with many groups) and true belonging (being genuinely known and accepted) are entirely different. Many socially successful teenagers report profound loneliness because they're performing, not connecting. True connection comes from authenticity — being known for who you actually are." }},
+        ]
+      },
+      {
+        id: "kt-belong-l2",
+        title: "Raising Socially Brave Kids",
+        description: "Practical strategies for authentic belonging",
+        activities: [
+          { id: "kt-belong-l2-a1", type: "info_carousel" as any, title: "Social Courage", content: { slides: [
+            { heading: "The Courage to Disagree", body: "Brown calls this 'civility' — the ability to hold your ground in disagreement without needing the other person to be wrong.\n\nHelp your child practise:\n• 'I see it differently'\n• 'I'm not sure I agree'\n• 'That doesn't feel right to me'\n• 'I hear you, and I think...' (not 'but')\n\nDo this at home first. A family dinner table where differing opinions are welcomed without consequences is the training ground for social courage." },
+            { heading: "Teaching Values, Not Rules", body: "Rules tell children what to do when you're watching. Values guide them when you're not.\n\nHelp them build their values through questions, not lectures:\n• 'What kind of friend do YOU want to be?'\n• 'What does fairness mean to you?'\n• 'What would you think of yourself if you did that?'\n• 'In 10 years, what will you be glad you stood for?'\n\nChildren who can articulate their values have an anchor when peer pressure hits. They can say 'That's not who I am' rather than needing to justify 'no' with an excuse." },
+            { heading: "Model Belonging to Yourself", body: "Brown's challenge to parents: do YOU belong to yourself? Or do you perform for others, avoid conflict at the cost of honesty, and change your behaviour based on the room?\n\nChildren who watch their parents:\n• Hold opinions under social pressure\n• Acknowledge when they're wrong without shame\n• Say 'no' without excessive justification\n• Share genuine feelings (appropriately)\n• Include people on the margins\n\n...learn that it's possible to belong without performing. You are their template." },
+            { heading: "People-Pleasing vs Kindness", body: "Help your child see the difference:\n\nKINDNESS: I want to do something good for you.\nPEOPLE-PLEASING: I'm doing this so you'll like me / won't be angry / won't reject me.\n\nKindness is strong and confident. People-pleasing is anxious and exhausting.\n\nSigns of people-pleasing in children: saying yes when they mean no, apologising for things that aren't their fault, changing their opinion when challenged, inability to disappoint anyone.\n\nAddress this early — it tends to intensify and can contribute to significant anxiety and burnout." },
+          ]}},
+          { id: "kt-belong-l2-a2", type: "open_response" as any, title: "Belonging Audit", content: { prompt: "Does your child 'fit in' or do they 'belong' in their main social group? When do you see them being most authentically themselves? What would help them feel safe showing up as themselves more often?", saveToVault: true }},
+        ]
+      },
+      {
+        id: "kt-belong-l3",
+        title: "The Loneliness Epidemic",
+        description: "Why connection is the most urgent issue for teenagers today",
+        activities: [
+          { id: "kt-belong-l3-a1", type: "info_carousel" as any, title: "Connected but Lonely", content: { slides: [
+            { heading: "The Paradox of the Connected Generation", body: "Today's teenagers are the most socially 'connected' generation in history — and one of the loneliest. Brown and subsequent researchers point to the same culprit: the substitution of performance (social media) for presence (real connection).\n\nDigital communication provides the appearance of belonging without the vulnerability that creates actual belonging. You can have 1000 followers and feel completely unknown.\n\nThe antidote isn't less technology — it's more genuine presence." },
+            { heading: "What Real Connection Requires", body: "Brown's definition of connection: 'the energy that exists between people when they feel seen, heard, and valued.'\n\nThis cannot happen:\n• In a group chat\n• Through likes\n• In a performance\n• Through consensus-seeking\n\nIt CAN happen:\n• In one-on-one conversations\n• When you share something real\n• When you disagree and stay close\n• When you're seen at your worst and still wanted\n• In shared experience (sport, cooking, creative projects, adventure)" },
+            { heading: "Creating Conditions for Real Connection", body: "Practical actions to help your teenager find genuine belonging:\n\n• Facilitate one-on-one time with friends (not group hangs, which are performance-heavy)\n• Encourage shared-activity friendships (teams, bands, volunteering, creating things)\n• Reduce social media's dominance — physical presence is irreplaceable\n• Create a home where friends want to come, feel comfortable, and are genuinely welcomed\n• Ask your teen: 'Is there anyone at school who feels left out? Could you include them this week?'\n\nThe smallest acts of genuine inclusion are powerful beyond their apparent size." },
+          ]}},
+          { id: "kt-belong-l3-a2", type: "open_response" as any, title: "Connection Plan", content: { prompt: "When does your child experience GENUINE connection — not performing, not scrolling, but actually being known? How can you create more of those conditions this month?", saveToVault: true }},
         ]
       }
     ]

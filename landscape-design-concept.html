@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landscape Design Concept — Mediterranean Retreat</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1410;
+    font-family: 'Georgia', serif;
+    color: #E8DDD0;
+  }
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: #D4C4A8;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header .sub {
+    font-size: 0.95rem;
+    color: #A09080;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .divider {
+    width: 80px;
+    height: 1px;
+    background: #C4713A;
+    margin: 20px auto;
+  }
+  .viz-container {
+    background: #f5f0e8;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    margin-bottom: 48px;
+  }
+  .legend-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  .legend-card {
+    background: #231e18;
+    border: 1px solid #3a3028;
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .legend-card h3 {
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #C4713A;
+    margin-bottom: 20px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    font-size: 0.88rem;
+    color: #C8B8A0;
+  }
+  .swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  .feature-card {
+    background: #231e18;
+    border: 1px solid #3a3028;
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .feature-card .icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  .feature-card h4 {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #C4713A;
+    margin-bottom: 10px;
+  }
+  .feature-card p {
+    font-size: 0.85rem;
+    color: #A09080;
+    line-height: 1.6;
+  }
+  .footer-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #6a5a4a;
+    letter-spacing: 0.1em;
+    padding-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="sub">Concept Visualisation</div>
+    <div class="divider"></div>
+    <h1>Mediterranean Retreat</h1>
+    <div class="divider"></div>
+    <div class="sub">Foxterra-Inspired Outdoor Living — Pool, Spa, Sauna &amp; Alfresco Kitchen</div>
+  </div>
+
+  <!-- MAIN VISUALIZATION -->
+  <div class="viz-container">
+    <svg viewBox="0 0 1200 820" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;">
+      <defs>
+
+        <!-- Sky gradient -->
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7EC8E3"/>
+          <stop offset="60%" stop-color="#B8DFF0"/>
+          <stop offset="100%" stop-color="#D8EEF8"/>
+        </linearGradient>
+
+        <!-- Bank/hillside gradient -->
+        <linearGradient id="bank" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#4a6741"/>
+          <stop offset="40%" stop-color="#5a7a50"/>
+          <stop offset="100%" stop-color="#6a8a60"/>
+        </linearGradient>
+
+        <!-- Stone wall texture gradient -->
+        <linearGradient id="stonewall" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#C9B99A"/>
+          <stop offset="50%" stop-color="#B8A888"/>
+          <stop offset="100%" stop-color="#A89878"/>
+        </linearGradient>
+
+        <!-- Pool water gradient -->
+        <linearGradient id="poolwater" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1E90C8"/>
+          <stop offset="40%" stop-color="#28A8E0"/>
+          <stop offset="100%" stop-color="#3BC0F0"/>
+        </linearGradient>
+
+        <!-- Tile/travertine -->
+        <linearGradient id="travertine" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#E8DDD0"/>
+          <stop offset="100%" stop-color="#D4C4A8"/>
+        </linearGradient>
+
+        <!-- Lawn gradient -->
+        <linearGradient id="lawn" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5a8a48"/>
+          <stop offset="100%" stop-color="#4a7838"/>
+        </linearGradient>
+
+        <!-- Wood gradient for sauna/pergola -->
+        <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#8B6040"/>
+          <stop offset="50%" stop-color="#A07848"/>
+          <stop offset="100%" stop-color="#8B6040"/>
+        </linearGradient>
+
+        <!-- Spa water -->
+        <linearGradient id="spawater" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#2088B8"/>
+          <stop offset="100%" stop-color="#30A8D8"/>
+        </linearGradient>
+
+        <!-- Shadow -->
+        <linearGradient id="shadow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(0,0,0,0.3)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+        </linearGradient>
+
+        <!-- Slide gradient -->
+        <linearGradient id="slidegrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#D4C4A8"/>
+          <stop offset="100%" stop-color="#B8A888"/>
+        </linearGradient>
+
+        <!-- Pergola shade -->
+        <linearGradient id="pergolaShade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(120,80,40,0.15)"/>
+          <stop offset="100%" stop-color="rgba(120,80,40,0.04)"/>
+        </linearGradient>
+
+        <!-- Tile pattern -->
+        <pattern id="tilePattern" width="24" height="24" patternUnits="userSpaceOnUse">
+          <rect width="24" height="24" fill="#E0D0B8"/>
+          <rect x="0" y="0" width="23" height="23" fill="#E8DDD0" rx="0.5"/>
+          <rect x="0" y="0" width="11" height="11" fill="#ECDFD0" rx="0.3"/>
+          <rect x="13" y="13" width="11" height="11" fill="#ECDFD0" rx="0.3"/>
+        </pattern>
+
+        <!-- Pool tile border -->
+        <pattern id="poolTile" width="16" height="16" patternUnits="userSpaceOnUse">
+          <rect width="16" height="16" fill="#1878A8"/>
+          <rect x="1" y="1" width="14" height="14" fill="#1E90C8" rx="1"/>
+        </pattern>
+
+        <!-- Stone wall pattern -->
+        <pattern id="stonePattern" width="60" height="30" patternUnits="userSpaceOnUse">
+          <rect width="60" height="30" fill="#C0AE90"/>
+          <rect x="1" y="1" width="38" height="13" fill="#C9B99A" rx="1"/>
+          <rect x="41" y="1" width="18" height="13" fill="#BFA88A" rx="1"/>
+          <rect x="1" y="16" width="18" height="13" fill="#BFA88A" rx="1"/>
+          <rect x="21" y="16" width="38" height="13" fill="#C9B99A" rx="1"/>
+        </pattern>
+
+        <!-- Wood plank pattern -->
+        <pattern id="woodPlank" width="12" height="60" patternUnits="userSpaceOnUse">
+          <rect width="12" height="60" fill="#7A5030"/>
+          <rect x="1" y="0" width="10" height="60" fill="#8B6040"/>
+          <line x1="0" y1="20" x2="12" y2="20" stroke="#6a4020" stroke-width="0.5"/>
+          <line x1="0" y1="40" x2="12" y2="40" stroke="#6a4020" stroke-width="0.5"/>
+        </pattern>
+
+        <!-- Grass pattern -->
+        <pattern id="grassPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+          <rect width="20" height="20" fill="#5a8a48"/>
+          <rect x="0" y="0" width="20" height="20" fill="#5a8a48"/>
+          <line x1="5" y1="8" x2="7" y2="0" stroke="#4a7838" stroke-width="1" opacity="0.4"/>
+          <line x1="12" y1="10" x2="14" y2="2" stroke="#4a7838" stroke-width="1" opacity="0.4"/>
+        </pattern>
+
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="2" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.25)"/>
+        </filter>
+
+        <filter id="glowBlue" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+
+      </defs>
+
+      <!-- ===================== SKY ===================== -->
+      <rect width="1200" height="820" fill="url(#sky)"/>
+
+      <!-- Clouds -->
+      <ellipse cx="200" cy="80" rx="80" ry="25" fill="white" opacity="0.7"/>
+      <ellipse cx="250" cy="70" rx="60" ry="20" fill="white" opacity="0.8"/>
+      <ellipse cx="160" cy="85" rx="50" ry="18" fill="white" opacity="0.6"/>
+      <ellipse cx="900" cy="60" rx="100" ry="28" fill="white" opacity="0.65"/>
+      <ellipse cx="960" cy="50" rx="70" ry="22" fill="white" opacity="0.7"/>
+      <ellipse cx="840" cy="68" rx="60" ry="20" fill="white" opacity="0.55"/>
+
+      <!-- ===================== BANK / HILLSIDE (top background) ===================== -->
+      <!-- The back bank/terrace from the original photo -->
+      <path d="M0,280 Q200,220 400,210 Q600,200 800,215 Q1000,225 1200,240 L1200,820 L0,820 Z" fill="url(#lawn)"/>
+
+      <!-- Bank retaining wall (stone) -->
+      <path d="M0,280 Q200,220 400,210 Q600,200 800,215 Q1000,225 1200,240 L1200,300 Q1000,285 800,270 Q600,258 400,268 Q200,278 0,340 Z" fill="url(#stonePattern)"/>
+      <!-- Wall highlight -->
+      <path d="M0,280 Q200,220 400,210 Q600,200 800,215 Q1000,225 1200,240" fill="none" stroke="#D4C4A8" stroke-width="3" opacity="0.6"/>
+
+      <!-- Bank plantings (lavender rows like original) -->
+      <g opacity="0.85">
+        <!-- Row 1 -->
+        <ellipse cx="100" cy="185" rx="30" ry="10" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="180" cy="178" rx="28" ry="9" fill="#9080C8" opacity="0.7"/>
+        <ellipse cx="260" cy="172" rx="32" ry="10" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="340" cy="168" rx="30" ry="9" fill="#9080C8" opacity="0.7"/>
+        <ellipse cx="420" cy="165" rx="28" ry="9" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="500" cy="163" rx="32" ry="10" fill="#9080C8" opacity="0.7"/>
+        <ellipse cx="580" cy="162" rx="30" ry="9" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="660" cy="164" rx="28" ry="9" fill="#9080C8" opacity="0.7"/>
+        <ellipse cx="740" cy="167" rx="32" ry="10" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="820" cy="170" rx="30" ry="9" fill="#9080C8" opacity="0.7"/>
+        <ellipse cx="900" cy="174" rx="28" ry="9" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="980" cy="178" rx="32" ry="10" fill="#9080C8" opacity="0.7"/>
+        <ellipse cx="1060" cy="182" rx="30" ry="9" fill="#8878C0" opacity="0.7"/>
+        <ellipse cx="1140" cy="188" rx="28" ry="9" fill="#9080C8" opacity="0.7"/>
+        <!-- Row 2 -->
+        <ellipse cx="130" cy="205" rx="28" ry="9" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="210" cy="198" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+        <ellipse cx="290" cy="193" rx="28" ry="8" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="370" cy="189" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+        <ellipse cx="450" cy="187" rx="28" ry="8" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="530" cy="185" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+        <ellipse cx="610" cy="184" rx="28" ry="8" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="690" cy="186" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+        <ellipse cx="770" cy="188" rx="28" ry="8" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="850" cy="192" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+        <ellipse cx="930" cy="196" rx="28" ry="8" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="1010" cy="200" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+        <ellipse cx="1090" cy="204" rx="28" ry="8" fill="#7868B0" opacity="0.6"/>
+        <ellipse cx="1170" cy="209" rx="30" ry="9" fill="#8070B8" opacity="0.6"/>
+      </g>
+
+      <!-- House (left side, modern white vertical board cladding) -->
+      <g filter="url(#softShadow)">
+        <!-- Main house body -->
+        <rect x="0" y="290" width="230" height="530" fill="#F2F0EC"/>
+        <!-- Vertical board cladding lines -->
+        <g stroke="#E0DDD8" stroke-width="1.5" opacity="0.6">
+          <line x1="20" y1="290" x2="20" y2="820"/>
+          <line x1="40" y1="290" x2="40" y2="820"/>
+          <line x1="60" y1="290" x2="60" y2="820"/>
+          <line x1="80" y1="290" x2="80" y2="820"/>
+          <line x1="100" y1="290" x2="100" y2="820"/>
+          <line x1="120" y1="290" x2="120" y2="820"/>
+          <line x1="140" y1="290" x2="140" y2="820"/>
+          <line x1="160" y1="290" x2="160" y2="820"/>
+          <line x1="180" y1="290" x2="180" y2="820"/>
+          <line x1="200" y1="290" x2="200" y2="820"/>
+          <line x1="220" y1="290" x2="220" y2="820"/>
+        </g>
+        <!-- Large slider windows -->
+        <rect x="30" y="340" width="180" height="130" fill="#B8D8E8" opacity="0.8" rx="1"/>
+        <line x1="120" y1="340" x2="120" y2="470" stroke="white" stroke-width="4"/>
+        <line x1="30" y1="405" x2="210" y2="405" stroke="white" stroke-width="3"/>
+        <!-- Window frame -->
+        <rect x="30" y="340" width="180" height="130" fill="none" stroke="#D0CCC8" stroke-width="3" rx="1"/>
+        <!-- Second window -->
+        <rect x="30" y="500" width="180" height="100" fill="#B8D8E8" opacity="0.8" rx="1"/>
+        <line x1="120" y1="500" x2="120" y2="600" stroke="white" stroke-width="4"/>
+        <rect x="30" y="500" width="180" height="100" fill="none" stroke="#D0CCC8" stroke-width="3" rx="1"/>
+        <!-- Roof edge -->
+        <rect x="0" y="282" width="240" height="14" fill="#E0DDD8"/>
+      </g>
+
+      <!-- ===================== TRAVERTINE TERRACE / DECK AREA ===================== -->
+      <!-- Main terrace wrapping around pool -->
+      <path d="M230,360 L1200,360 L1200,820 L230,820 Z" fill="url(#tilePattern)"/>
+
+      <!-- Terrace border/edging (stone trim) -->
+      <rect x="230" y="358" width="970" height="8" fill="#C4B298"/>
+
+      <!-- ===================== POOL SLIDE (built into bank) ===================== -->
+      <!-- Slide structure coming down from bank -->
+      <g filter="url(#softShadow)">
+        <!-- Slide trough sides -->
+        <!-- Left wall of slide -->
+        <path d="M620,215 Q650,260 660,310 Q668,340 672,370" fill="none" stroke="#C9B99A" stroke-width="12" stroke-linecap="round"/>
+        <!-- Right wall of slide -->
+        <path d="M650,212 Q680,258 688,308 Q695,338 698,368" fill="none" stroke="#C9B99A" stroke-width="12" stroke-linecap="round"/>
+        <!-- Slide surface (between walls) -->
+        <path d="M622,215 Q652,260 662,310 Q670,340 674,370 L696,368 Q692,338 685,308 Q678,258 648,212 Z" fill="url(#slidegrad)" opacity="0.95"/>
+        <!-- Slide surface sheen -->
+        <path d="M632,220 Q660,265 669,314 Q676,342 679,370" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3"/>
+        <!-- Water on slide -->
+        <path d="M635,222 Q663,267 672,316 Q679,344 682,372" fill="none" stroke="#80C8E8" stroke-width="2" opacity="0.6" stroke-dasharray="6,4"/>
+        <!-- Slide entry platform (top, on bank) -->
+        <rect x="595" y="200" width="90" height="28" rx="4" fill="url(#stonePattern)"/>
+        <rect x="595" y="200" width="90" height="28" rx="4" fill="none" stroke="#B0A090" stroke-width="1.5"/>
+        <!-- Slide entry arch/structure -->
+        <path d="M600,200 L600,170 Q640,155 680,170 L680,200" fill="#C9B99A" stroke="#B0A090" stroke-width="1.5"/>
+        <text x="640" y="158" text-anchor="middle" font-size="9" fill="#7a6a5a" letter-spacing="1" font-family="Georgia, serif">SLIDE</text>
+        <!-- Slide exit into pool -->
+        <ellipse cx="685" cy="372" rx="20" ry="8" fill="#28A8E0" opacity="0.7"/>
+      </g>
+
+      <!-- ===================== MAIN POOL (11m x 5m) ===================== -->
+      <!-- Pool shell -->
+      <g filter="url(#softShadow)">
+        <!-- Pool outer stone coping -->
+        <rect x="425" y="395" width="570" height="280" rx="8" fill="#C4B298"/>
+        <!-- Pool water -->
+        <rect x="435" y="403" width="550" height="262" rx="6" fill="url(#poolwater)"/>
+        <!-- Pool tile border (waterline) -->
+        <rect x="435" y="403" width="550" height="18" rx="3" fill="url(#poolTile)" opacity="0.9"/>
+        <rect x="435" y="647" width="550" height="18" rx="3" fill="url(#poolTile)" opacity="0.7"/>
+        <rect x="435" y="403" width="18" height="262" fill="url(#poolTile)" opacity="0.8"/>
+        <rect x="967" y="403" width="18" height="262" fill="url(#poolTile)" opacity="0.7"/>
+        <!-- Water shimmer lines -->
+        <g stroke="rgba(255,255,255,0.25)" stroke-width="1.5" opacity="0.8">
+          <path d="M450,440 Q550,435 650,440 Q750,445 850,440 Q930,437 975,440" fill="none"/>
+          <path d="M450,470 Q560,464 680,470 Q780,476 900,470 Q950,468 975,470" fill="none"/>
+          <path d="M450,510 Q580,504 700,510 Q820,516 940,510 Q960,508 975,510" fill="none"/>
+          <path d="M450,550 Q570,544 690,550 Q810,556 930,550 Q958,548 975,550" fill="none"/>
+          <path d="M450,590 Q560,584 680,590 Q800,596 930,590 Q960,588 975,590" fill="none"/>
+          <path d="M450,625 Q550,620 680,625 Q810,630 940,625 Q963,623 975,625" fill="none"/>
+        </g>
+        <!-- Pool light glow (underwater) -->
+        <ellipse cx="710" cy="600" rx="80" ry="30" fill="#60D0F8" opacity="0.12"/>
+        <ellipse cx="710" cy="600" rx="50" ry="18" fill="#60D0F8" opacity="0.15"/>
+        <!-- Pool steps (near house end) -->
+        <rect x="435" y="630" width="80" height="15" rx="2" fill="#3090C0" opacity="0.8"/>
+        <rect x="435" y="645" width="80" height="8" rx="2" fill="#2878A8" opacity="0.8"/>
+
+        <!-- Pool dimension labels -->
+        <text x="710" y="545" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.7)" font-family="Georgia, serif" font-style="italic">11m × 5m</text>
+
+        <!-- Pool label -->
+        <text x="710" y="562" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-family="Georgia, serif" letter-spacing="3" text-transform="uppercase">SWIMMING POOL</text>
+      </g>
+
+      <!-- ===================== SPA POOL (circular) ===================== -->
+      <g filter="url(#softShadow)">
+        <!-- Spa outer coping -->
+        <ellipse cx="1120" cy="490" rx="68" ry="68" fill="#C4B298"/>
+        <!-- Spa stone bench ring -->
+        <ellipse cx="1120" cy="490" rx="62" ry="62" fill="url(#stonePattern)"/>
+        <!-- Spa water -->
+        <ellipse cx="1120" cy="490" rx="52" ry="52" fill="url(#spawater)"/>
+        <!-- Spa jets bubbles -->
+        <ellipse cx="1100" cy="475" rx="5" ry="3" fill="rgba(255,255,255,0.4)"/>
+        <ellipse cx="1140" cy="505" rx="4" ry="3" fill="rgba(255,255,255,0.35)"/>
+        <ellipse cx="1110" cy="510" rx="3" ry="2" fill="rgba(255,255,255,0.3)"/>
+        <ellipse cx="1135" cy="470" rx="4" ry="2.5" fill="rgba(255,255,255,0.35)"/>
+        <!-- Spa steam effect -->
+        <path d="M1105,440 Q1108,428 1112,440" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+        <path d="M1120,438 Q1123,425 1127,438" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+        <path d="M1135,441 Q1138,429 1142,441" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+        <!-- Spa shimmer -->
+        <ellipse cx="1115" cy="480" rx="25" ry="10" fill="rgba(255,255,255,0.1)"/>
+        <!-- SPA label -->
+        <text x="1120" y="494" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.65)" font-family="Georgia, serif" letter-spacing="3">SPA</text>
+      </g>
+
+      <!-- Spa connection/steps -->
+      <rect x="1048" y="482" width="18" height="16" rx="2" fill="#B0A090"/>
+
+      <!-- ===================== OUTDOOR SAUNA ===================== -->
+      <g filter="url(#softShadow)">
+        <!-- Sauna building stone base -->
+        <rect x="1030" y="580" width="155" height="130" rx="4" fill="url(#stonePattern)"/>
+        <!-- Sauna wooden walls -->
+        <rect x="1035" y="584" width="145" height="122" rx="3" fill="url(#woodPlank)"/>
+        <!-- Sauna roof -->
+        <path d="M1025,584 L1107,550 L1190,584 Z" fill="#5a3820"/>
+        <path d="M1025,584 L1107,550 L1190,584 Z" fill="none" stroke="#3a2010" stroke-width="2"/>
+        <!-- Roof overhang detail -->
+        <line x1="1025" y1="584" x2="1190" y2="584" stroke="#3a2010" stroke-width="3"/>
+        <!-- Sauna door -->
+        <rect x="1090" y="634" width="38" height="72" rx="2" fill="#3a2010"/>
+        <rect x="1092" y="636" width="34" height="68" rx="1" fill="#4a2818"/>
+        <!-- Door handle -->
+        <circle cx="1125" cy="672" r="3" fill="#C4713A"/>
+        <!-- Sauna window -->
+        <rect x="1042" y="610" width="36" height="26" rx="2" fill="#6a4828" opacity="0.8"/>
+        <line x1="1060" y1="610" x2="1060" y2="636" stroke="#3a2010" stroke-width="1.5"/>
+        <line x1="1042" y1="623" x2="1078" y2="623" stroke="#3a2010" stroke-width="1.5"/>
+        <!-- Steam from sauna -->
+        <path d="M1050,550 Q1054,536 1058,550" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+        <path d="M1060,545 Q1064,530 1068,545" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+        <!-- SAUNA label -->
+        <text x="1107" y="545" text-anchor="middle" font-size="9" fill="#8a7060" font-family="Georgia, serif" letter-spacing="3">SAUNA</text>
+      </g>
+
+      <!-- ===================== BBQ KITCHEN ISLAND ===================== -->
+      <g filter="url(#softShadow)">
+        <!-- Pergola posts (4 corners) -->
+        <rect x="240" y="390" width="12" height="200" rx="2" fill="#8B6040"/>
+        <rect x="420" y="390" width="12" height="200" rx="2" fill="#7a5030"/>
+        <rect x="240" y="390" width="12" height="200" rx="2" fill="none" stroke="#6a4020" stroke-width="1"/>
+        <rect x="420" y="390" width="12" height="200" rx="2" fill="none" stroke="#6a4020" stroke-width="1"/>
+
+        <!-- Pergola beams (horizontal) -->
+        <rect x="240" y="390" width="192" height="10" rx="2" fill="#8B6040"/>
+        <rect x="240" y="395" width="192" height="6" rx="1" fill="#A07848"/>
+        <!-- Pergola rafters (vertical slats overhead) -->
+        <g fill="#9a7040" opacity="0.85">
+          <rect x="258" y="400" width="8" height="170" rx="1"/>
+          <rect x="280" y="400" width="8" height="170" rx="1"/>
+          <rect x="302" y="400" width="8" height="170" rx="1"/>
+          <rect x="324" y="400" width="8" height="170" rx="1"/>
+          <rect x="346" y="400" width="8" height="170" rx="1"/>
+          <rect x="368" y="400" width="8" height="170" rx="1"/>
+          <rect x="390" y="400" width="8" height="170" rx="1"/>
+          <rect x="412" y="400" width="8" height="170" rx="1"/>
+        </g>
+        <!-- Pergola shade area -->
+        <rect x="240" y="400" width="192" height="170" fill="url(#pergolaShade)"/>
+        <!-- Climbing vine on pergola -->
+        <path d="M252,395 Q265,420 258,450 Q252,470 265,490" fill="none" stroke="#3a7030" stroke-width="2" opacity="0.7"/>
+        <ellipse cx="258" cy="430" rx="8" ry="5" fill="#4a8038" opacity="0.6"/>
+        <ellipse cx="262" cy="460" rx="7" ry="5" fill="#4a8038" opacity="0.5"/>
+
+        <!-- BBQ Island base (L-shaped stone counter) -->
+        <!-- Main counter -->
+        <rect x="245" y="530" width="170" height="52" rx="4" fill="url(#stonePattern)"/>
+        <!-- Counter top -->
+        <rect x="245" y="526" width="170" height="10" rx="2" fill="#D4C4A8"/>
+        <!-- Counter face stone detail -->
+        <rect x="245" y="536" width="170" height="46" rx="3" fill="url(#stonePattern)" opacity="0.9"/>
+
+        <!-- BBQ grill surface -->
+        <rect x="258" y="528" width="70" height="8" rx="2" fill="#2a2a2a"/>
+        <g stroke="#444" stroke-width="1.5">
+          <line x1="263" y1="528" x2="263" y2="536"/>
+          <line x1="270" y1="528" x2="270" y2="536"/>
+          <line x1="277" y1="528" x2="277" y2="536"/>
+          <line x1="284" y1="528" x2="284" y2="536"/>
+          <line x1="291" y1="528" x2="291" y2="536"/>
+          <line x1="298" y1="528" x2="298" y2="536"/>
+          <line x1="305" y1="528" x2="305" y2="536"/>
+          <line x1="312" y1="528" x2="312" y2="536"/>
+          <line x1="319" y1="528" x2="319" y2="536"/>
+        </g>
+        <!-- BBQ smoke -->
+        <path d="M280,525 Q284,510 288,525" fill="none" stroke="rgba(100,100,100,0.4)" stroke-width="2"/>
+        <path d="M290,522 Q294,506 298,522" fill="none" stroke="rgba(100,100,100,0.3)" stroke-width="1.5"/>
+
+        <!-- Sink (right of grill) -->
+        <rect x="338" y="528" width="40" height="8" rx="2" fill="#A8A0A0"/>
+        <ellipse cx="358" cy="532" rx="14" ry="4" fill="#8A8888"/>
+        <!-- Tap/faucet -->
+        <rect x="363" y="521" width="4" height="10" rx="1" fill="#B0A898"/>
+        <rect x="358" y="519" width="14" height="4" rx="2" fill="#C0B8A8"/>
+
+        <!-- Outdoor fridge door -->
+        <rect x="387" y="530" width="24" height="46" rx="2" fill="#C0B8A0"/>
+        <rect x="389" y="532" width="20" height="42" rx="1" fill="#D0C8B0"/>
+        <circle cx="396" cy="553" r="2" fill="#C4713A"/>
+
+        <!-- Counter extension (side return) -->
+        <rect x="405" y="526" width="10" height="56" rx="2" fill="#C4B298"/>
+        <rect x="405" y="526" width="10" height="10" rx="2" fill="#D4C4A8"/>
+
+        <!-- Counter stools (3) -->
+        <circle cx="275" cy="600" r="16" fill="#D4C4A8" stroke="#C4B298" stroke-width="2"/>
+        <circle cx="313" cy="600" r="16" fill="#D4C4A8" stroke="#C4B298" stroke-width="2"/>
+        <circle cx="351" cy="600" r="16" fill="#D4C4A8" stroke="#C4B298" stroke-width="2"/>
+        <!-- Stool legs -->
+        <line x1="275" y1="616" x2="272" y2="635" stroke="#A09080" stroke-width="2"/>
+        <line x1="275" y1="616" x2="278" y2="635" stroke="#A09080" stroke-width="2"/>
+        <line x1="313" y1="616" x2="310" y2="635" stroke="#A09080" stroke-width="2"/>
+        <line x1="313" y1="616" x2="316" y2="635" stroke="#A09080" stroke-width="2"/>
+        <line x1="351" y1="616" x2="348" y2="635" stroke="#A09080" stroke-width="2"/>
+        <line x1="351" y1="616" x2="354" y2="635" stroke="#A09080" stroke-width="2"/>
+
+        <!-- BBQ label -->
+        <text x="330" y="517" text-anchor="middle" font-size="9" fill="#8a7060" font-family="Georgia, serif" letter-spacing="2">OUTDOOR KITCHEN</text>
+      </g>
+
+      <!-- ===================== POOL LOUNGERS / FURNITURE ===================== -->
+      <!-- Sun loungers beside pool (right side) -->
+      <g opacity="0.9">
+        <!-- Lounger 1 -->
+        <rect x="1010" y="420" width="20" height="60" rx="4" fill="#E8DDD0"/>
+        <rect x="1010" y="420" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="1020" cy="413" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+
+        <!-- Lounger 2 -->
+        <rect x="1010" y="500" width="20" height="60" rx="4" fill="#E8DDD0"/>
+        <rect x="1010" y="500" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="1020" cy="493" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+
+        <!-- Lounger 3 -->
+        <rect x="1010" y="580" width="20" height="60" rx="4" fill="#E8DDD0"/>
+        <rect x="1010" y="580" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="1020" cy="573" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+      </g>
+
+      <!-- Loungers below pool -->
+      <g opacity="0.9">
+        <rect x="490" y="700" width="60" height="20" rx="4" fill="#E8DDD0"/>
+        <rect x="490" y="700" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="484" cy="710" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+
+        <rect x="600" y="700" width="60" height="20" rx="4" fill="#E8DDD0"/>
+        <rect x="600" y="700" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="594" cy="710" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+
+        <rect x="720" y="700" width="60" height="20" rx="4" fill="#E8DDD0"/>
+        <rect x="720" y="700" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="714" cy="710" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+
+        <rect x="840" y="700" width="60" height="20" rx="4" fill="#E8DDD0"/>
+        <rect x="840" y="700" width="20" height="20" rx="3" fill="#D4C4A8"/>
+        <circle cx="834" cy="710" r="8" fill="#E8DDD0" stroke="#D4C4A8" stroke-width="1.5"/>
+      </g>
+
+      <!-- Parasol / umbrella -->
+      <line x1="670" y1="700" x2="670" y2="750" stroke="#A09080" stroke-width="2"/>
+      <path d="M635,700 Q670,680 705,700" fill="#C4713A" opacity="0.85"/>
+      <path d="M640,700 Q670,685 700,700" fill="rgba(255,255,255,0.15)"/>
+
+      <!-- ===================== TERRACE PLANTERS & DETAIL ===================== -->
+      <!-- Large terracotta pots -->
+      <g>
+        <!-- Pot 1 (left near house) -->
+        <ellipse cx="235" cy="370" rx="16" ry="6" fill="#C4713A"/>
+        <path d="M220,370 Q218,395 222,402 Q235,408 248,402 Q252,395 250,370 Z" fill="#C4713A"/>
+        <path d="M220,370 Q218,376 222,380 Q235,384 248,380 Q252,376 250,370 Z" fill="#D4823A"/>
+        <!-- Plant in pot -->
+        <ellipse cx="235" cy="365" rx="18" ry="12" fill="#3a7030" opacity="0.8"/>
+        <ellipse cx="228" cy="358" rx="10" ry="7" fill="#4a8038" opacity="0.7"/>
+        <ellipse cx="242" cy="358" rx="10" ry="7" fill="#4a8038" opacity="0.7"/>
+
+        <!-- Pot 2 -->
+        <ellipse cx="430" cy="370" rx="16" ry="6" fill="#C4713A"/>
+        <path d="M415,370 Q413,395 417,402 Q430,408 443,402 Q447,395 445,370 Z" fill="#C4713A"/>
+        <path d="M415,370 Q413,376 417,380 Q430,384 443,380 Q447,376 445,370 Z" fill="#D4823A"/>
+        <ellipse cx="430" cy="365" rx="18" ry="12" fill="#3a7030" opacity="0.8"/>
+        <ellipse cx="423" cy="358" rx="10" ry="7" fill="#4a8038" opacity="0.7"/>
+        <ellipse cx="437" cy="358" rx="10" ry="7" fill="#4a8038" opacity="0.7"/>
+
+        <!-- Pot 3 (right side) -->
+        <ellipse cx="1000" cy="650" rx="14" ry="5" fill="#C4713A"/>
+        <path d="M987,650 Q985,672 989,678 Q1000,683 1011,678 Q1015,672 1013,650 Z" fill="#C4713A"/>
+        <path d="M987,650 Q985,655 989,659 Q1000,663 1011,659 Q1015,655 1013,650 Z" fill="#D4823A"/>
+        <ellipse cx="1000" cy="645" rx="16" ry="10" fill="#5a3820" opacity="0.6"/>
+        <ellipse cx="1000" cy="638" rx="10" ry="8" fill="#6a4828" opacity="0.7"/>
+
+        <!-- Small accent pots along pool edge -->
+        <ellipse cx="550" cy="400" rx="8" ry="3" fill="#C4713A"/>
+        <path d="M543,400 Q542,412 544,415 Q550,418 556,415 Q558,412 557,400 Z" fill="#C4713A"/>
+        <ellipse cx="550" cy="397" rx="9" ry="6" fill="#3a7030" opacity="0.7"/>
+
+        <ellipse cx="870" cy="400" rx="8" ry="3" fill="#C4713A"/>
+        <path d="M863,400 Q862,412 864,415 Q870,418 876,415 Q878,412 877,400 Z" fill="#C4713A"/>
+        <ellipse cx="870" cy="397" rx="9" ry="6" fill="#3a7030" opacity="0.7"/>
+      </g>
+
+      <!-- ===================== OUTDOOR DINING TABLE ===================== -->
+      <g filter="url(#softShadow)" opacity="0.9">
+        <!-- Table -->
+        <ellipse cx="710" cy="770" rx="80" ry="35" fill="#C9B99A" stroke="#B0A090" stroke-width="2"/>
+        <ellipse cx="710" cy="768" rx="78" ry="33" fill="#D4C4A8"/>
+        <!-- Place settings -->
+        <circle cx="680" cy="760" r="10" fill="#E8DDD0" stroke="#C4B298" stroke-width="1"/>
+        <circle cx="740" cy="760" r="10" fill="#E8DDD0" stroke="#C4B298" stroke-width="1"/>
+        <circle cx="710" cy="748" r="10" fill="#E8DDD0" stroke="#C4B298" stroke-width="1"/>
+        <!-- Table umbrella pole -->
+        <line x1="710" y1="750" x2="710" y2="720" stroke="#A09080" stroke-width="3"/>
+        <path d="M680,718 Q710,705 740,718" fill="#4a7838" opacity="0.8"/>
+        <!-- Chairs around table -->
+        <ellipse cx="640" cy="770" rx="18" ry="14" fill="#D4C4A8" stroke="#C4B298" stroke-width="1.5"/>
+        <ellipse cx="780" cy="770" rx="18" ry="14" fill="#D4C4A8" stroke="#C4B298" stroke-width="1.5"/>
+        <ellipse cx="710" cy="810" rx="18" ry="14" fill="#D4C4A8" stroke="#C4B298" stroke-width="1.5"/>
+        <ellipse cx="670" cy="748" rx="16" ry="12" fill="#D4C4A8" stroke="#C4B298" stroke-width="1.5"/>
+        <ellipse cx="750" cy="748" rx="16" ry="12" fill="#D4C4A8" stroke="#C4B298" stroke-width="1.5"/>
+      </g>
+
+      <!-- ===================== LABELS / ANNOTATIONS ===================== -->
+      <g font-family="Georgia, serif">
+
+        <!-- Pool slide label -->
+        <line x1="590" y1="250" x2="540" y2="270" stroke="#C4713A" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="440" y="258" width="100" height="26" rx="3" fill="rgba(26,20,16,0.75)"/>
+        <text x="490" y="275" text-anchor="middle" font-size="9" fill="#C4713A" letter-spacing="1.5">POOL SLIDE</text>
+
+        <!-- Spa label -->
+        <line x1="1120" y1="430" x2="1155" y2="390" stroke="#C4713A" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="1148" y="376" width="45" height="26" rx="3" fill="rgba(26,20,16,0.75)"/>
+        <text x="1170" y="393" text-anchor="middle" font-size="9" fill="#C4713A" letter-spacing="1.5">SPA</text>
+
+        <!-- Sauna label -->
+        <line x1="1107" y1="583" x2="1160" y2="570" stroke="#C4713A" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="1153" y="556" width="55" height="26" rx="3" fill="rgba(26,20,16,0.75)"/>
+        <text x="1180" y="573" text-anchor="middle" font-size="9" fill="#C4713A" letter-spacing="1.5">SAUNA</text>
+
+        <!-- BBQ Kitchen label -->
+        <line x1="330" y1="540" x2="330" y2="510" stroke="#C4713A" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="248" y="496" width="164" height="26" rx="3" fill="rgba(26,20,16,0.75)"/>
+        <text x="330" y="513" text-anchor="middle" font-size="9" fill="#C4713A" letter-spacing="1.5">OUTDOOR KITCHEN</text>
+
+        <!-- Lounging area label -->
+        <rect x="448" y="696" width="118" height="26" rx="3" fill="rgba(26,20,16,0.75)"/>
+        <text x="507" y="713" text-anchor="middle" font-size="9" fill="#C4713A" letter-spacing="1.5">LOUNGING TERRACE</text>
+
+        <!-- Pool dimensions -->
+        <!-- Horizontal arrow -->
+        <line x1="435" y1="680" x2="985" y2="680" stroke="#E8DDD0" stroke-width="0.8" opacity="0.5" stroke-dasharray="3,3"/>
+        <line x1="435" y1="675" x2="435" y2="685" stroke="#E8DDD0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="985" y1="675" x2="985" y2="685" stroke="#E8DDD0" stroke-width="1.5" opacity="0.5"/>
+        <text x="710" y="676" text-anchor="middle" font-size="9" fill="#E8DDD0" opacity="0.5">← 11 metres →</text>
+      </g>
+
+      <!-- ===================== TITLE CARD ===================== -->
+      <rect x="840" y="740" width="340" height="70" rx="4" fill="rgba(26,20,16,0.82)"/>
+      <rect x="840" y="740" width="340" height="3" rx="2" fill="#C4713A"/>
+      <text x="1010" y="762" text-anchor="middle" font-size="10" fill="#C4713A" letter-spacing="3" font-family="Georgia, serif">CONCEPT DESIGN</text>
+      <text x="1010" y="778" text-anchor="middle" font-size="13" fill="#E8DDD0" letter-spacing="1" font-family="Georgia, serif">Mediterranean Outdoor Retreat</text>
+      <text x="1010" y="795" text-anchor="middle" font-size="9" fill="#8a7060" letter-spacing="2" font-family="Georgia, serif">Foxterra-Inspired · Travertine &amp; Limestone</text>
+
+      <!-- Compass rose (simple) -->
+      <g transform="translate(1155, 365)">
+        <circle r="22" fill="rgba(26,20,16,0.7)" stroke="#C4713A" stroke-width="1"/>
+        <text y="-10" text-anchor="middle" font-size="9" fill="#E8DDD0" font-family="Georgia, serif">N</text>
+        <text y="15" text-anchor="middle" font-size="7" fill="#8a7060" font-family="Georgia, serif">S</text>
+        <text x="-12" y="4" text-anchor="middle" font-size="7" fill="#8a7060" font-family="Georgia, serif">W</text>
+        <text x="12" y="4" text-anchor="middle" font-size="7" fill="#8a7060" font-family="Georgia, serif">E</text>
+        <line y1="-16" y2="16" stroke="#C4713A" stroke-width="1.5"/>
+        <line x1="-16" x2="16" stroke="#8a7060" stroke-width="1"/>
+        <polygon points="0,-16 3,-4 -3,-4" fill="#C4713A"/>
+      </g>
+
+    </svg>
+  </div>
+
+  <!-- LEGEND & MATERIALS -->
+  <div class="legend-section">
+    <div class="legend-card">
+      <h3>Material Palette</h3>
+      <div class="legend-item">
+        <div class="swatch" style="background:#E8DDD0;"></div>
+        Travertine — Terrace &amp; Pool Coping
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#C9B99A;"></div>
+        Limestone — Retaining Wall &amp; Features
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#28A8E0;"></div>
+        Pool Water — Salt Chlorinated Blue
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#C4713A;"></div>
+        Terracotta — Pots, Accents &amp; Trim
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#A07848;"></div>
+        Hardwood Timber — Pergola &amp; Sauna
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#4a8038;"></div>
+        Greenery — Lavender, Olives &amp; Climbers
+      </div>
+    </div>
+
+    <div class="legend-card">
+      <h3>Design Notes</h3>
+      <div class="legend-item">
+        <div class="swatch" style="background:#3BC0F0; border-radius:50%;"></div>
+        Pool Slide integrates into existing bank — no excavation of bank required; slide carved into terrace wall
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#D4C4A8; border-radius:50%;"></div>
+        Travertine terrace lays directly on existing lawn level — raised slightly to create visual separation
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#C4713A; border-radius:50%;"></div>
+        Pergola over kitchen provides shade and defines the alfresco zone without enclosing it
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:#8B6040; border-radius:50%;"></div>
+        Sauna positioned to capture morning sun and allow easy access to spa pool beside it
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURE BREAKDOWN -->
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="icon">🏊</div>
+      <h4>Swimming Pool</h4>
+      <p>11m × 5m salt pool with travertine coping, underwater LED lighting, and mosaic waterline tile. Steps at house end. Pool slide entry from bank wall.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🌊</div>
+      <h4>Pool Slide</h4>
+      <p>Curved limestone-clad slide built into the existing bank terrace wall. Water-fed for continuous flow. Timber platform entry at top of bank with handrail.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">♨️</div>
+      <h4>Spa Pool</h4>
+      <p>1.8m circular hydrotherapy spa, set into travertine terrace. Bench seating for 4–5, jet system, integrated heating. Adjacent to sauna for contrast therapy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🌡️</div>
+      <h4>Outdoor Sauna</h4>
+      <p>Thermally modified timber sauna with stone base, double-glazed window, cedar interior. Bench capacity 6. Positioned to step straight into spa or rinse shower.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🍳</div>
+      <h4>Outdoor Kitchen</h4>
+      <p>L-shaped limestone island with integrated gas grill, sink with hot/cold, outdoor fridge, and stone bench. Shaded by hardwood pergola with climbing greenery.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🪨</div>
+      <h4>Travertine Terrace</h4>
+      <p>Large-format (600×600) travertine pavers in honed finish throughout. Wraps pool, spa, and kitchen zones. Mediterranean warmth — durable, non-slip, frost-resistant.</p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Concept visualisation only — for illustrative purposes. Subject to site survey, council consent, and engineering review.<br>
+    Foxterra Design &amp; Mediterranean inspiration applied throughout. All dimensions approximate.
+  </div>
+
+</div>
+</body>
+</html>

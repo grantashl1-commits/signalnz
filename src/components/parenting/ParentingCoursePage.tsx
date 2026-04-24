@@ -7,7 +7,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, type WeeklySchedule } from "@/data/parenting-course";
+import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, TODDLER_SLEEP_SCHEDULES, type WeeklySchedule } from "@/data/parenting-course";
 import type { CourseModule, CourseLesson } from "@/data/connect-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
 import BabySleepSchedule from "@/components/parenting/BabySleepSchedule";
@@ -150,6 +150,13 @@ export default function ParentingCoursePage() {
     return total > 0 ? Math.round((done / total) * 100) : 0;
   }, [completedActivities, course]);
 
+  const [sleepScheduleTab, setSleepScheduleTab] = useState<TabId>("babies");
+
+  const openSleepSchedule = (tab: TabId) => {
+    setSleepScheduleTab(tab);
+    setView("sleep-schedule");
+  };
+
   const goBack = () => {
     if (view === "lesson") setView("lessons");
     else if (view === "lessons" || view === "sleep-schedule") { setView("modules"); setSelectedModule(null); }
@@ -265,7 +272,7 @@ export default function ParentingCoursePage() {
               {/* Sleep schedule card for babies tab */}
               {activeTab === "babies" && !searchQuery && (
                 <motion.button
-                  onClick={() => setView("sleep-schedule")}
+                  onClick={() => openSleepSchedule("babies")}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="w-full text-left p-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-indigo-500/10 to-violet-400/5 mb-4 hover:border-primary/40 active:scale-[0.99] transition-all"
@@ -277,6 +284,27 @@ export default function ParentingCoursePage() {
                     <div className="flex-1">
                       <h3 className="font-display text-sm font-bold text-foreground">Week-by-Week Sleep & Feed Guide</h3>
                       <p className="font-body text-xs text-muted-foreground mt-1">Structured daily schedules from birth to 6 months with feed amounts</p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+                  </div>
+                </motion.button>
+              )}
+
+              {/* Sleep schedule card for toddlers tab */}
+              {activeTab === "toddlers" && !searchQuery && (
+                <motion.button
+                  onClick={() => openSleepSchedule("toddlers")}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="w-full text-left p-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-violet-500/10 to-purple-400/5 mb-4 hover:border-primary/40 active:scale-[0.99] transition-all"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-violet-500/15 flex items-center justify-center shrink-0">
+                      <Clock className="h-5 w-5 text-violet-500" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-display text-sm font-bold text-foreground">Toddler Sleep Routines</h3>
+                      <p className="font-body text-xs text-muted-foreground mt-1">Age-by-age sleep schedules from 18 months to 3 years</p>
                     </div>
                     <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
                   </div>
@@ -384,9 +412,19 @@ export default function ParentingCoursePage() {
               <button onClick={goBack} className="flex items-center gap-1 font-body text-xs text-muted-foreground mb-4 hover:text-foreground">
                 <ArrowLeft className="h-3 w-3" /> Back
               </button>
-              <h2 className="font-display text-xl font-bold text-foreground mb-1">Week-by-Week Sleep & Feed Guide</h2>
-              <p className="font-body text-sm text-muted-foreground mb-5">Structured daily routines with sleep and feeding guidance from birth to 6 months</p>
-              <BabySleepSchedule />
+              {sleepScheduleTab === "toddlers" ? (
+                <>
+                  <h2 className="font-display text-xl font-bold text-foreground mb-1">Toddler Sleep Routines</h2>
+                  <p className="font-body text-sm text-muted-foreground mb-5">Age-by-age sleep schedules from 18 months to 3 years with tips for common challenges</p>
+                  <BabySleepSchedule schedules={TODDLER_SLEEP_SCHEDULES} />
+                </>
+              ) : (
+                <>
+                  <h2 className="font-display text-xl font-bold text-foreground mb-1">Week-by-Week Sleep & Feed Guide</h2>
+                  <p className="font-body text-sm text-muted-foreground mb-5">Structured daily routines with sleep and feeding guidance from birth to 6 months</p>
+                  <BabySleepSchedule />
+                </>
+              )}
             </motion.div>
           )}
 

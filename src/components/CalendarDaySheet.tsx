@@ -86,12 +86,14 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
   const saveMoods = () => {
     haptic("success");
     setMoods(dateStr, selectedMoods);
+    onCycleUpdate?.();
     setPanel("main");
   };
 
   const saveSymptoms = () => {
     haptic("success");
     setSymptomsNew(dateStr, selectedSymptoms);
+    onCycleUpdate?.();
     setPanel("main");
   };
 
@@ -102,6 +104,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
       setWeight(dateStr, unit === "lbs" ? val * 0.453592 : val);
       setWeightUnit(unit);
     }
+    onCycleUpdate?.();
     setPanel("main");
   };
 
@@ -144,6 +147,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
       }
     }
 
+    onCycleUpdate?.();
     setPanel("main");
   };
 

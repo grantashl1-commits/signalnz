@@ -75,8 +75,8 @@ export const SUPPLEMENT_GUIDE: Record<string, { name: string; reason: string }[]
 export function getTodayInsight(phase: Phase, cycleMode: string, goalSlug?: string): NutritionInsight {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
 
-  // Build pool
-  const pool: NutritionInsight[] = [...PHASE_INSIGHTS[phase]];
+  const phaseInsights = PHASE_INSIGHTS[phase] || PHASE_INSIGHTS.follicular;
+  const pool: NutritionInsight[] = [...phaseInsights];
   if (cycleMode === "perimenopause" || cycleMode === "post_menopause") {
     pool.push(...PERIMENOPAUSE_INSIGHTS);
   }
@@ -84,5 +84,6 @@ export function getTodayInsight(phase: Phase, cycleMode: string, goalSlug?: stri
     pool.push(EXERCISE_GOAL_INSIGHTS[goalSlug]);
   }
 
+  if (pool.length === 0) return { text: "Eat whole, nourishing foods today." };
   return pool[dayOfYear % pool.length];
 }

@@ -299,6 +299,15 @@ export default function JournalPage() {
     if (saved) {
       setPostSaveEntry(saved);
       if (listenedToday && saveEntryType === "standard") advanceDay();
+      await journalSync.saveVaultEntry({
+        id: `je-${saved.id}`,
+        entryId: saved.id,
+        category: "journal-entries",
+        title: saved.title || saved.content?.slice(0, 60) || saved.date,
+        preview: (saved.content || "").slice(0, 150),
+        date: saved.date,
+        timestamp: saved.timestamp,
+      });
     }
     setView("list");
     setCurrentMood(null);
@@ -325,6 +334,15 @@ export default function JournalPage() {
       setPostSaveEntry(saved);
       setInlineSaved(true);
       setTimeout(() => setInlineSaved(false), 3000);
+      await journalSync.saveVaultEntry({
+        id: `je-${saved.id}`,
+        entryId: saved.id,
+        category: "journal-entries",
+        title: saved.title || saved.content?.slice(0, 60) || saved.date,
+        preview: (saved.content || "").slice(0, 150),
+        date: saved.date,
+        timestamp: saved.timestamp,
+      });
     }
     setInlineSaving(false);
     setInlineText("");
@@ -491,7 +509,7 @@ export default function JournalPage() {
                   )}
 
                   {/* ── AI Metaphor CTA ── */}
-                  {postSaveEntry && !postSaveEntry.stoic_lens && postSaveEntry.stoic_seq_day && reading && (
+                  {postSaveEntry && !postSaveEntry.stoic_lens && reading && (
                     <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 p-5 space-y-3">
                       <div className="flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-primary" />

@@ -3,10 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Moon, Sun, Baby, Milk, Clock, Brain, Heart, BookOpen } from "lucide-react";
 import { BABY_SLEEP_SCHEDULES, type WeeklySchedule } from "@/data/parenting-course";
 
-export default function BabySleepSchedule() {
+interface Props {
+  schedules?: WeeklySchedule[];
+}
+
+export default function BabySleepSchedule({ schedules = BABY_SLEEP_SCHEDULES }: Props) {
   const [weekIdx, setWeekIdx] = useState(0);
   const [showTips, setShowTips] = useState(false);
-  const schedule = BABY_SLEEP_SCHEDULES[weekIdx];
+  const schedule = schedules[weekIdx];
 
   const isNightRow = (time: string) =>
     time.includes("PM") && parseInt(time) >= 7 && parseInt(time) !== 12 ||
@@ -30,7 +34,7 @@ export default function BabySleepSchedule() {
           <p className="font-body text-xs text-muted-foreground">{schedule.ageRange}</p>
         </div>
         <button
-          onClick={() => setWeekIdx(Math.min(BABY_SLEEP_SCHEDULES.length - 1, weekIdx + 1))}
+          onClick={() => setWeekIdx(Math.min(schedules.length - 1, weekIdx + 1))}
           disabled={weekIdx === BABY_SLEEP_SCHEDULES.length - 1}
           className="p-2 rounded-full bg-secondary disabled:opacity-30"
         >
@@ -205,7 +209,7 @@ export default function BabySleepSchedule() {
 
       {/* Week dots indicator */}
       <div className="flex justify-center gap-1.5 pt-2">
-        {BABY_SLEEP_SCHEDULES.map((_, i) => (
+        {schedules.map((_, i) => (
           <button
             key={i}
             onClick={() => setWeekIdx(i)}

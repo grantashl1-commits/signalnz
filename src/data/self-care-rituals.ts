@@ -284,12 +284,15 @@ export interface Habit {
 
 // localStorage helpers
 export function getHabits(): Habit[] {
-  const val = localStorage.getItem("mindcast_habits");
-  return val ? JSON.parse(val) : [];
+  try {
+    const val = localStorage.getItem("mindcast_habits");
+    return val ? JSON.parse(val) : [];
+  } catch { return []; }
 }
 
 export function saveHabits(habits: Habit[]): void {
   localStorage.setItem("mindcast_habits", JSON.stringify(habits));
+  window.dispatchEvent(new StorageEvent("storage", { key: "mindcast_habits" }));
 }
 
 export function addHabit(habit: Habit): void {

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk '{print $1}')",
+      "Bash(xargs -I{} git show {}:src/pages/Nutrition.tsx)",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(node -e \"require\\('C:/Users/grant/OneDrive/Documents/GitHub/signalnz/src/data/parenting-course.ts'\\)\")",
+      "Bash(node_modules/.bin/esbuild src/data/parenting-course.ts --bundle=false)",
+      "Bash(npx esbuild *)"
+    ]
+  }
+}

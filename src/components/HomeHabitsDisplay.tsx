@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { getHabits, CATEGORY_DOT_CLASSES, type Habit, type HabitFrequencyType } from "@/data/self-care-rituals";
@@ -7,7 +7,18 @@ import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 import { Link } from "react-router-dom";
 
 export default function HomeHabitsDisplay() {
-  const habits = useMemo(() => getHabits(), []);
+  const [habits, setHabits] = useState<Habit[]>(() => getHabits());
+
+  useEffect(() => {
+    const handler = () => setHabits(getHabits());
+    window.addEventListener("storage", handler);
+    // Also refresh on focus in case the user added habits in Practice
+    window.addEventListener("focus", handler);
+    return () => {
+      window.removeEventListener("storage", handler);
+      window.removeEventListener("focus", handler);
+    };
+  }, []);
   const { completedIds, toggle: toggleHabit } = useHabitCompletions();
 
   const completedCount = habits.filter(h => completedIds.has(h.id)).length;
