@@ -61,7 +61,7 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
       await supabase.from("connect_messages").insert({
         connection_id: connectionId,
         sender_role: senderRole,
-        content: `💜 ${phrase.phrase}`,
+        content: phrase.phrase,
         metadata: {
           type: "appreciation",
           phrase_id: phrase.id,
