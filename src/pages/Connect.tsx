@@ -55,8 +55,8 @@ export default function Connect() {
   useEffect(() => {
     if (!user) return;
     supabase
-      .from("partner_connections_safe")
-      .select("*")
+      .from("partner_connections")
+      .select("id, partner_name, join_code")
       .eq("member_user_id", user.id)
       .eq("status", "linked")
       .maybeSingle()
