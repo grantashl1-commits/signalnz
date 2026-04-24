@@ -449,10 +449,11 @@ export default function Connect() {
                         </div>
                       )}
                       {isAppreciation ? (
-                        <div className="text-center py-1">
-                          <p className="text-sm font-semibold">{msg.content}</p>
+                        <div className="text-center py-1 flex flex-col items-center gap-1">
+                          <YochSentHeart className="w-6 h-6 text-primary mb-0.5" />
+                          <p className="text-sm font-semibold">{msg.content.replace(/^💜\s*/, "")}</p>
                           {msg.metadata?.subtext && (
-                            <p className="text-[10px] text-muted-foreground mt-1 italic">{msg.metadata.subtext}</p>
+                            <p className="text-[10px] text-muted-foreground italic">{msg.metadata.subtext}</p>
                           )}
                         </div>
                       ) : msg.sender_role === "ai" ? (
