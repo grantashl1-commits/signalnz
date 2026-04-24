@@ -167,12 +167,11 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
   // Streak (look back up to 90 days across all data)
   const streak = useMemo(() => {
     const dateSet = new Set(logs.map(l => l.session_date));
-    // For streak we need data beyond this month - just use what we have
     let s = 0;
     for (let i = 0; i < 90; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().split("T")[0];
+      const ds = nzDateStr(d);
       if (dateSet.has(ds)) s++;
       else if (i > 0) break; // allow today to not have one yet
       else break;
