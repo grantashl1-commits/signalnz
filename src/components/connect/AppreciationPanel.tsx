@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Star, Shield, Eye, Ear, Hand, Sparkles, Sun, Moon, Flower2, Send } from "lucide-react";
+import { motion } from "framer-motion";
+import { Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
+import { YOCH_ICON_MAP, YochSentHeart } from "./YochAppreciationIcons";
 
 /* ─── Research-backed phrases ───
  * Sourced from Gottman's "turning toward" research, NVC needs,
