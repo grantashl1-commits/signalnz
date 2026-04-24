@@ -69,7 +69,9 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
         },
       });
       setSent((prev) => new Set(prev).add(phrase.id));
-      toast.success("Sent 💜");
+      toast.success("Sent", {
+        icon: <YochSentHeart className="w-5 h-5 text-primary" />,
+      });
     } catch {
       toast.error("Couldn't send — try again");
     }
