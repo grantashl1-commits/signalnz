@@ -25,8 +25,8 @@ serve(async (req) => {
       });
     }
 
-    const gatewayUrl = Deno.env.get("AI_GATEWAY_URL") || "https://ai-gateway.lovable.dev";
-    const gatewayKey = Deno.env.get("AI_GATEWAY_API_KEY");
+    const gatewayUrl = "https://ai.gateway.lovable.dev";
+    const gatewayKey = Deno.env.get("LOVABLE_API_KEY") || Deno.env.get("AI_GATEWAY_API_KEY");
 
     let systemPrompt: string;
     let userPrompt: string = journal_entry;
