@@ -15,7 +15,9 @@
       "Bash(echo \"exit: $?\")",
       "Bash(node -e ' *)",
       "Bash(python3 *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
+      "Bash(xargs grep *)"
     ]
   }
 }

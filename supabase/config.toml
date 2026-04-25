@@ -51,5 +51,8 @@ verify_jwt = false
 [functions.stripe-webhook]
 verify_jwt = false
 
+[functions.send-email]
+verify_jwt = false
+
 [functions.connect-ai]
 verify_jwt = false

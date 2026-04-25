@@ -84,9 +84,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (event === "SIGNED_IN" && newSession?.user) {
           linkReferral(newSession.user.id);
-          // Identify user in analytics & error monitoring
           identifyUser(newSession.user.id, { email: newSession.user.email });
           setSentryUser(newSession.user.id, newSession.user.email);
+
+          // Send welcome email on first signup (created within last 3 minutes)
+          const u = newSession.user;
+          const sentKey = `welcome_sent_${u.id}`;
+          const createdMsAgo = Date.now() - new Date(u.created_at).getTime();
+          if (createdMsAgo < 3 * 60 * 1000 && !localStorage.getItem(sentKey)) {
+            localStorage.setItem(sentKey, "1");
+            const firstName = (u.user_metadata?.full_name as string | undefined)
+              ?.split(" ")[0];
+            supabase.functions.invoke("send-email", {
+              body: { type: "welcome", to: u.email, name: firstName },
+            }).catch(() => {});
+          }
         }
         if (event === "SIGNED_OUT") {
           resetUser();
