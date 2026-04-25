@@ -129,9 +129,11 @@ export default function MyWeekTab() {
           .maybeSingle();
         if (data?.plan_data) {
           const restoredPlan = data.plan_data as AIMealPlan;
-          setAiPlan(restoredPlan);
-          saveAIMealPlan(restoredPlan);
-          setStep("plan");
+          if (Array.isArray(restoredPlan?.days) && restoredPlan.days.length > 0) {
+            setAiPlan(restoredPlan);
+            saveAIMealPlan(restoredPlan);
+            setStep("plan");
+          }
         }
       } catch (e) {
         console.error("Failed to restore plan from Supabase:", e);
@@ -303,7 +305,7 @@ export default function MyWeekTab() {
       const dateStr = date.toISOString().split("T")[0];
 
       // Check if we have AI plan data for this cycle day
-      const aiDay = aiPlan?.days.find(d => d.cycleDay === cycleDay);
+      const aiDay = aiPlan?.days?.find(d => d.cycleDay === cycleDay);
 
       if (aiDay) {
         days.push({
