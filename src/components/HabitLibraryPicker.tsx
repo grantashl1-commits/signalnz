@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, HelpCircle, Search, Plus, ExternalLink } from "lucide-react";
+import { X, Check, HelpCircle, Search, Plus, ExternalLink, Sparkles } from "lucide-react";
 import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, getHabits, type Habit, type HabitCategory } from "@/data/self-care-rituals";
 import { haptic } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 interface HabitLibraryPickerProps {
   open: boolean;
@@ -26,7 +27,15 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
   const [expandedInfo, setExpandedInfo] = useState<string | null>(null);
   const [customName, setCustomName] = useState("");
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
   const existingHabits = getHabits();
+
+  const wellnessStackIds: string[] = category === "supplements" ? (() => {
+    try {
+      const stored = localStorage.getItem("signal_wellness_stack");
+      return stored ? JSON.parse(stored) as string[] : [];
+    } catch { return []; }
+  })() : [];
 
   const isAlreadyAdded = (name: string) =>
     existingHabits.some(h => h.name === name);
@@ -179,6 +188,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
 
   // All other categories: grouped by subcategory
   const libraryHabits = getLibraryHabitsForCategory(category);
+  const wellnessStackHabits = libraryHabits.filter(h => wellnessStackIds.includes(h.id));
   const filteredHabits = libraryHabits.filter(h =>
     h.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -211,7 +221,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
         <button
           onClick={() => handleInstantAdd(habit.name, habit.id, {
             duration: habit.frequency,
-            notes: habit.description,
+            notes: habit.rdi ? `${habit.rdi.amount} — ${habit.rdi.timing}` : habit.description,
           })}
           disabled={added}
           className={`touch-btn w-full flex flex-col items-center gap-1 rounded-card p-2.5 text-center transition-all border-t-2 ${
@@ -301,6 +311,27 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
             </p>
           )}
 
+          {/* Your wellness stack — quick-add items built in /nutrition */}
+          {category === "supplements" && wellnessStackHabits.length > 0 && (
+            <div className="mt-3">
+              <p className="font-hand text-xs font-bold text-primary/80 mb-2 uppercase tracking-wider">Your wellness stack</p>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {wellnessStackHabits.map(renderHabitCard)}
+              </div>
+            </div>
+          )}
+
+          {/* CTA to build/update wellness stack */}
+          {category === "supplements" && (
+            <button
+              onClick={() => { onClose(); navigate("/nutrition?tab=supplements"); }}
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-[14px] py-2.5 min-h-[44px] font-body text-xs font-medium bg-primary/8 text-primary active:bg-primary/15 transition-all border border-primary/20"
+            >
+              <Sparkles className="h-3.5 w-3.5 flex-shrink-0" />
+              {wellnessStackHabits.length > 0 ? "Update your personalised stack" : "Build your personalised stack"}
+            </button>
+          )}
+
           {/* Grouped by subcategory */}
           {grouped.map(group => (
             <div key={group.key} className="mt-4">
@@ -341,6 +372,14 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
 
                     {habit.note && (
                       <p className="font-display text-[11px] italic text-muted-foreground">{habit.note}</p>
+                    )}
+
+                    {habit.rdi && (
+                      <div className="rounded-[10px] bg-primary/8 px-3 py-2">
+                        <p className="font-hand text-[10px] font-bold text-primary mb-0.5">Recommended dose</p>
+                        <p className="font-body text-[11px] text-foreground font-medium">{habit.rdi.amount} {habit.rdi.unit}</p>
+                        <p className="font-body text-[10px] text-muted-foreground">{habit.rdi.timing}</p>
+                      </div>
                     )}
                     
                     {/* NZ Brands with link */}

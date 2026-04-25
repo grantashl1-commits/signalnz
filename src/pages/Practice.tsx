@@ -36,6 +36,19 @@ function getLast28Days(): string[] {
   });
 }
 
+function getLast7Days(): string[] {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().split("T")[0];
+  });
+}
+
+function shortDayLabel(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][d.getDay()];
+}
+
 function generateSummaryText(
   habits: { id: string; name: string }[],
   history: Record<string, Set<string>>
@@ -198,6 +211,124 @@ function HabitHeatmap({ habits, history, loading, phaseColor, copiedSummary, onC
   );
 }
 
+// ─── HabitInsights ────────────────────────────────────────────────────────────
+
+interface InsightsProps {
+  habits: Habit[];
+  history: Record<string, Set<string>>;
+  phaseColor: string;
+}
+
+function HabitInsights({ habits, history, phaseColor }: InsightsProps) {
+  const [tab, setTab] = useState<"week" | "month">("week");
+  const todayStr = new Date().toISOString().split("T")[0];
+  const total = habits.length;
+
+  const last7 = useMemo(getLast7Days, []);
+  const last28 = useMemo(getLast28Days, []);
+
+  const weekData = useMemo(() =>
+    last7.map(day => ({
+      label: shortDayLabel(day),
+      pct: total > 0 ? Math.round(((history[day]?.size ?? 0) / total) * 100) : 0,
+      isToday: day === todayStr,
+    })),
+    [last7, history, total, todayStr]
+  );
+
+  const monthData = useMemo(() =>
+    [0, 1, 2, 3].map(i => {
+      const weekDays = last28.slice(i * 7, (i + 1) * 7);
+      const completedTotal = weekDays.reduce((s, d) => s + (history[d]?.size ?? 0), 0);
+      const possibleTotal = total * 7;
+      return {
+        label: i === 3 ? "This wk" : `${3 - i}w ago`,
+        pct: possibleTotal > 0 ? Math.round((completedTotal / possibleTotal) * 100) : 0,
+        isToday: i === 3,
+      };
+    }),
+    [last28, history, total]
+  );
+
+  if (total === 0) return null;
+
+  const activeData = tab === "week" ? weekData : monthData;
+  const thisWeekAvg = weekData.reduce((s, d) => s + d.pct, 0) / 7;
+  const lastWeekPcts = last28.slice(0, 7).map(day =>
+    total > 0 ? Math.round(((history[day]?.size ?? 0) / total) * 100) : 0
+  );
+  const lastWeekAvg = lastWeekPcts.reduce((s, n) => s + n, 0) / 7;
+  const trend = Math.round(thisWeekAvg - lastWeekAvg);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="mt-6 rounded-[22px] bg-card shadow-soft p-6"
+    >
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="font-display text-lg font-bold text-foreground">Insights</h3>
+        <div className="flex rounded-full bg-secondary p-0.5 gap-0.5">
+          {(["week", "month"] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-3 py-1 rounded-full font-body text-xs font-medium transition-all ${
+                tab === t ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {t === "week" ? "7 days" : "4 weeks"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-end gap-1.5">
+        {activeData.map((item, i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-1">
+            {item.pct > 0 ? (
+              <span className="font-body text-[9px] text-muted-foreground">{item.pct}%</span>
+            ) : (
+              <span className="font-body text-[9px] text-transparent select-none">0</span>
+            )}
+            <div className="w-full" style={{ height: 64, display: "flex", alignItems: "flex-end" }}>
+              <motion.div
+                className="w-full rounded-t-[4px]"
+                initial={{ height: 0 }}
+                animate={{ height: `${Math.max((item.pct / 100) * 64, item.pct > 0 ? 3 : 0)}px` }}
+                transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                style={{ backgroundColor: item.isToday ? phaseColor : `${phaseColor}55` }}
+              />
+            </div>
+            <span className={`font-body text-[10px] ${item.isToday ? "font-bold text-foreground" : "text-muted-foreground"}`}>
+              {item.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 flex gap-3">
+        <div className="flex-1 rounded-[14px] bg-secondary/60 p-3 text-center">
+          <p className="font-display text-xl font-bold text-foreground">{Math.round(thisWeekAvg)}%</p>
+          <p className="font-body text-[10px] text-muted-foreground mt-0.5">This week</p>
+        </div>
+        {lastWeekAvg > 0 && (
+          <div className="flex-1 rounded-[14px] bg-secondary/60 p-3 text-center">
+            <p
+              className="font-display text-xl font-bold"
+              style={{ color: trend >= 0 ? phaseColor : "hsl(var(--muted-foreground))" }}
+            >
+              {trend >= 0 ? `+${trend}` : trend}%
+            </p>
+            <p className="font-body text-[10px] text-muted-foreground mt-0.5">vs last week</p>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 const TIMING_SECTIONS: { key: HabitTiming; label: string; icon: typeof Sun }[] = [
   { key: "morning", label: "Morning", icon: Sun },
   { key: "afternoon", label: "Afternoon", icon: Sunset },
@@ -247,6 +378,15 @@ export default function PracticePage() {
       next.has(timing) ? next.delete(timing) : next.add(timing);
       return next;
     });
+  };
+
+  const handleCopy = async () => {
+    const text = generateSummaryText(habits, history);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedSummary(true);
+      setTimeout(() => setCopiedSummary(false), 2500);
+    } catch {}
   };
 
   const getHabitTiming = (habit: Habit): HabitTiming => {
@@ -464,6 +604,11 @@ export default function PracticePage() {
                               >
                                 {catInfo?.label || "Habit"}
                               </span>
+                              {habit.category === "supplements" && habit.notes && (
+                                <p className="font-body text-[11px] text-muted-foreground/70 leading-snug line-clamp-1 mt-0.5">
+                                  {habit.notes}
+                                </p>
+                              )}
                             </div>
 
                             <button
@@ -495,6 +640,21 @@ export default function PracticePage() {
 
         {/* ═══ HABIT WISDOM CAROUSEL ═══ */}
         <HabitCarousel />
+
+        {/* ═══ INSIGHTS + CONSISTENCY ═══ */}
+        {habits.length > 0 && (
+          <>
+            <HabitInsights habits={habits} history={history} phaseColor={phaseColor} />
+            <HabitHeatmap
+              habits={habits}
+              history={history}
+              loading={historyLoading}
+              phaseColor={phaseColor}
+              copiedSummary={copiedSummary}
+              onCopy={handleCopy}
+            />
+          </>
+        )}
 
         {/* Sleep tracking moved to Cycle page check-in */}
 
