@@ -439,7 +439,11 @@ export function getSavedPreferences(): PrepPreferences | null {
 const AI_PLAN_KEY = "signal_ai_meal_plan";
 
 export function saveAIMealPlan(plan: AIMealPlan): void {
-  localStorage.setItem(AI_PLAN_KEY, JSON.stringify(plan));
+  try {
+    localStorage.setItem(AI_PLAN_KEY, JSON.stringify(plan));
+  } catch (e) {
+    console.error("saveAIMealPlan: localStorage quota exceeded, skipping local save", e);
+  }
 }
 
 export function getAIMealPlan(): AIMealPlan | null {

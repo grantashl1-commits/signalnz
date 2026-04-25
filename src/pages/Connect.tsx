@@ -1,21 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Send, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3 } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
-import ReactMarkdown from "react-markdown";
 import AppreciationPanel from "@/components/connect/AppreciationPanel";
-import { YochSentHeart } from "@/components/connect/YochAppreciationIcons";
 import ConnectCourseView from "@/components/connect/ConnectCourseView";
-import PrivateReflection, { type ReflectionCard } from "@/components/connect/PrivateReflection";
+import PrivateReflection from "@/components/connect/PrivateReflection";
 import SharedRoom from "@/components/connect/SharedRoom";
 import WeeklyCheckIn from "@/components/connect/WeeklyCheckIn";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
-type SpaceTab = "chat" | "reflect" | "shared" | "course" | "checkin" | "appreciate";
+type SpaceTab = "reflect" | "shared" | "course" | "checkin";
 type Message = { id: string; sender_role: string; content: string; created_at: string; metadata?: any };
 
 // Simple hash for PIN (not crypto-grade, but fine for a 4-digit PIN check)
@@ -42,15 +40,9 @@ export default function Connect() {
   const [connectionId, setConnectionId] = useState<string | null>(null);
   const [isPartnerSession, setIsPartnerSession] = useState(false);
   const [partnerDisplayName, setPartnerDisplayName] = useState("");
-  const [myCards, setMyCards] = useState<ReflectionCard[]>([]);
-  const [theirCards, setTheirCards] = useState<ReflectionCard[]>([]);
-
-  // Chat state
+  // Shared state
   const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [chatInput, setChatInput] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Check for existing connection on load
   useEffect(() => {
@@ -101,11 +93,6 @@ export default function Connect() {
 
     return () => { supabase.removeChannel(channel); };
   }, [connectionId]);
-
-  // Auto-scroll chat
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   // Generate a random 6-char invite code
   const generateCode = () => {
@@ -226,41 +213,17 @@ export default function Connect() {
     toast.success("Connected! 💜");
   };
 
-  // ─── Send a chat message ───
-  const sendMessage = async () => {
-    if (!chatInput.trim() || !connectionId) return;
-    const text = chatInput.trim();
-    setChatInput("");
+  // ─── Send a direct partner message (no AI coaching) ───
+  const sendDirectMessage = async (text: string) => {
+    if (!text.trim() || !connectionId) return;
     const role = isPartnerSession ? "partner" : "member";
-
-    // Optimistic local add
     const tempId = crypto.randomUUID();
-    setMessages((prev) => [...prev, { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() }]);
-
+    setMessages(prev => [...prev, { id: tempId, sender_role: role, content: text, created_at: new Date().toISOString() }]);
     await supabase.from("connect_messages").insert({
       connection_id: connectionId,
       sender_role: role,
       content: text,
     });
-
-    // Ask AI for coaching response
-    setAiLoading(true);
-    try {
-      const recentHistory = messages.slice(-10).map((m) => `${m.sender_role}: ${m.content}`).join("\n");
-      const { data, error } = await supabase.functions.invoke("connect-ai", {
-        body: { message: text, history: recentHistory, connection_id: connectionId },
-      });
-      if (!error && data?.response) {
-        await supabase.from("connect_messages").insert({
-          connection_id: connectionId,
-          sender_role: "ai",
-          content: data.response,
-        });
-      }
-    } catch {
-      // Silent fail — AI is optional
-    }
-    setAiLoading(false);
   };
 
 
@@ -403,9 +366,7 @@ export default function Connect() {
               { key: "reflect" as SpaceTab, label: "Reflect", icon: PenLine },
               { key: "shared" as SpaceTab, label: "Shared", icon: Users },
               { key: "course" as SpaceTab, label: "Course", icon: BookOpen },
-              { key: "chat" as SpaceTab, label: "Coach", icon: Bot },
               { key: "checkin" as SpaceTab, label: "Check-in", icon: BarChart3 },
-              { key: "appreciate" as SpaceTab, label: "Appreciate", icon: YochSentHeart },
             ]).map((tab) => (
               <button
                 key={tab.key}
@@ -424,129 +385,35 @@ export default function Connect() {
         </div>
 
         {/* Tab content */}
-        {spaceTab === "chat" && (
-          <>
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-              {messages.length === 0 && (
-                <div className="text-center py-12">
-                  <Bot className="w-10 h-10 text-primary/30 mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground font-medium mb-1">Your coaching space</p>
-                  <p className="text-xs text-muted-foreground/60 max-w-xs mx-auto">
-                    Ask anything about your relationship, communication, or goals.
-                    Your AI coach draws from relationship science and NLP.
-                  </p>
-                </div>
-              )}
-
-              {messages.map((msg) => {
-                const isAppreciation = msg.metadata?.type === "appreciation";
-                return (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.sender_role === "ai" ? "justify-start" : "justify-end"}`}
-                  >
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
-                        isAppreciation
-                          ? "bg-gradient-to-br from-primary/10 to-violet-500/10 border border-primary/20 text-foreground"
-                          : msg.sender_role === "ai"
-                          ? "bg-card border border-border text-foreground"
-                          : msg.sender_role === "partner"
-                          ? "bg-primary/20 text-foreground ml-8"
-                          : "bg-primary text-primary-foreground ml-8"
-                      }`}
-                    >
-                      {msg.sender_role === "ai" && (
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <Bot className="w-3 h-3 text-primary" />
-                          <span className="text-[10px] font-semibold text-primary">Coach</span>
-                        </div>
-                      )}
-                      {isAppreciation ? (
-                        <div className="text-center py-1 flex flex-col items-center gap-1">
-                          <YochSentHeart className="w-6 h-6 text-primary mb-0.5" />
-                          <p className="text-sm font-semibold">{msg.content.replace(/^💜\s*/, "")}</p>
-                          {msg.metadata?.subtext && (
-                            <p className="text-[10px] text-muted-foreground italic">{msg.metadata.subtext}</p>
-                          )}
-                        </div>
-                      ) : msg.sender_role === "ai" ? (
-                        <div className="prose prose-sm text-sm [&_p]:mb-1 [&_ul]:mt-1">
-                          <ReactMarkdown>{msg.content}</ReactMarkdown>
-                        </div>
-                      ) : (
-                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                      )}
-                      <p className={`text-[9px] mt-1 ${msg.sender_role === "ai" ? "text-muted-foreground/40" : "opacity-60"}`}>
-                        {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {aiLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-card border border-border rounded-2xl px-4 py-3 flex items-center gap-2">
-                    <Bot className="w-3 h-3 text-primary" />
-                    <div className="flex gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div ref={chatEndRef} />
-            </div>
-
-            {/* Input */}
-            <div className="flex-none px-4 py-3 border-t border-border bg-background" style={{ paddingBottom: "calc(0.75rem + var(--safe-bottom))" }}>
-              <div className="flex items-end gap-2">
-                <textarea
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-                  }}
-                  placeholder="Ask your coach anything..."
-                  rows={1}
-                  className="flex-1 resize-none rounded-2xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors min-h-[44px] max-h-[120px]"
-                />
-                <button
-                  onClick={sendMessage}
-                  disabled={!chatInput.trim() || aiLoading}
-                  className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 disabled:opacity-40 transition-opacity"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </>
-        )}
-
         {spaceTab === "reflect" && (
           <div className="flex-1 overflow-y-auto">
             <PrivateReflection
               connectionId={connectionId}
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
-              onCardsSent={(cards) => { setMyCards(cards); setSpaceTab("shared"); }}
+              onCardsSent={() => setSpaceTab("shared")}
             />
+            {/* Appreciation — always accessible below the reflection form */}
+            <div className="px-4 pb-8 pt-2">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 h-px bg-border" />
+                <span className="font-hand text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider whitespace-nowrap">Say something kind</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+              <AppreciationPanel connectionId={connectionId} senderRole={senderRole} />
+            </div>
           </div>
         )}
 
         {spaceTab === "shared" && (
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 flex flex-col min-h-0">
             <SharedRoom
               connectionId={connectionId}
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               myName={isPartnerSession ? partnerDisplayName : "You"}
-              myCards={myCards}
-              theirCards={theirCards}
+              messages={messages}
+              onSendMessage={sendDirectMessage}
             />
           </div>
         )}
@@ -569,12 +436,6 @@ export default function Connect() {
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
             />
-          </div>
-        )}
-
-        {spaceTab === "appreciate" && (
-          <div className="flex-1 overflow-y-auto">
-            <AppreciationPanel connectionId={connectionId} senderRole={senderRole} />
           </div>
         )}
       </div>

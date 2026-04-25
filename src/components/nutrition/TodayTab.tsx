@@ -131,10 +131,10 @@ export default function TodayTab() {
   const meals = useMemo(() => {
     if (aiToday) {
       return [
-        { slot: "breakfast", label: "Breakfast", name: aiToday.breakfast.name, recipe: findRecipeByName(aiToday.breakfast.name), aiMeal: aiToday.breakfast },
-        { slot: "lunch", label: "Lunch", name: aiToday.lunch.name, recipe: findRecipeByName(aiToday.lunch.name), aiMeal: aiToday.lunch },
-        { slot: "dinner", label: "Dinner", name: aiToday.dinner.name, recipe: findRecipeByName(aiToday.dinner.name), aiMeal: aiToday.dinner },
-      ];
+        { slot: "breakfast", label: "Breakfast", name: aiToday.breakfast?.name ?? "", recipe: findRecipeByName(aiToday.breakfast?.name ?? ""), aiMeal: aiToday.breakfast },
+        { slot: "lunch", label: "Lunch", name: aiToday.lunch?.name ?? "", recipe: findRecipeByName(aiToday.lunch?.name ?? ""), aiMeal: aiToday.lunch },
+        { slot: "dinner", label: "Dinner", name: aiToday.dinner?.name ?? "", recipe: findRecipeByName(aiToday.dinner?.name ?? ""), aiMeal: aiToday.dinner },
+      ].filter(m => m.name);
     }
     if (!dayPlan) return [];
     return [

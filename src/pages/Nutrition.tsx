@@ -10,7 +10,7 @@ import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import DiscoverTab from "@/components/nutrition/DiscoverTab";
 import { ShoppingListPanel } from "@/components/ShoppingList";
 import { Dumbbell, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
 
@@ -40,7 +40,10 @@ type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
-  const [activeTab, setActiveTab] = useState<TabId>("today");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabId>(
+    (searchParams.get("tab") as TabId | null) ?? "today"
+  );
   const navigate = useNavigate();
 
   const bodyGoals = useMemo<string[]>(() => {

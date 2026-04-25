@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.connect-ai]
 verify_jwt = false
+
+[functions.connect-reflect]
+verify_jwt = false

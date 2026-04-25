@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Sparkles, Loader2, ArrowRight, CheckCircle2, RotateCcw } from "lucide-react";
+import {
+  Lock, Sparkles, Loader2, ArrowRight, CheckCircle2,
+  RotateCcw, Copy, Check, Heart, Lightbulb, Compass,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
@@ -12,25 +15,26 @@ export interface ReflectionCard {
   shared: boolean;
 }
 
-const CARD_LABELS: Record<string, string> = {
-  what_happened: "what happened",
-  how_i_felt: "how I felt",
-  what_i_need: "what I need",
-  what_i_want_to_say: "what I want to say",
-};
+interface ReflectResult {
+  message_to_send: string;
+  validation: string;
+  insight: string;
+  anticipate: string;
+}
 
 interface Props {
   connectionId: string;
   partnerRole: "member" | "partner";
   partnerName: string;
-  onCardsSent: (cards: ReflectionCard[]) => void;
+  onCardsSent: () => void;
 }
 
 export default function PrivateReflection({ connectionId, partnerRole, partnerName, onCardsSent }: Props) {
   const [entry, setEntry] = useState("");
   const [loading, setLoading] = useState(false);
-  const [cards, setCards] = useState<ReflectionCard[] | null>(null);
+  const [result, setResult] = useState<ReflectResult | null>(null);
   const [sent, setSent] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const organise = async () => {
     if (!entry.trim()) return;
@@ -40,46 +44,64 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
       const { data, error } = await supabase.functions.invoke("connect-reflect", {
         body: { journal_entry: entry, mode: "partnership", action: "reflect" },
       });
-      if (error) throw error;
-      if (data.error) throw new Error(data.error);
 
-      setCards([
-        { key: "what_happened", label: CARD_LABELS.what_happened, text: data.what_happened, shared: false },
-        { key: "how_i_felt", label: CARD_LABELS.how_i_felt, text: data.how_i_felt, shared: false },
-        { key: "what_i_need", label: CARD_LABELS.what_i_need, text: data.what_i_need, shared: false },
-        { key: "what_i_want_to_say", label: CARD_LABELS.what_i_want_to_say, text: data.what_i_want_to_say, shared: false },
-      ]);
+      if (error || !data) throw error ?? new Error("No response received");
+      if (data.error) throw new Error(data.error);
+      if (!data.message_to_send) throw new Error("Incomplete response — please try again");
+
+      setResult(data as ReflectResult);
+      haptic("light");
     } catch (e: any) {
+      console.error("connect-reflect:", e);
       toast.error("Something went wrong — let's try again");
     } finally {
       setLoading(false);
     }
   };
 
-  const toggleShare = (key: string) => {
-    setCards(prev => prev!.map(c => c.key === key ? { ...c, shared: !c.shared } : c));
+  const handleCopy = async () => {
+    if (!result) return;
+    try {
+      await navigator.clipboard.writeText(result.message_to_send);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      haptic("light");
+    } catch {}
   };
 
   const sendToRoom = async () => {
-    const shared = cards!.filter(c => c.shared);
-    if (shared.length === 0) {
-      toast.error("Toggle at least one card to share");
-      return;
-    }
+    if (!result) return;
     haptic("medium");
 
-    // Save reflection to DB
-    await (supabase.from("connect_reflections" as any) as any).insert({
-      connection_id: connectionId,
-      partner_role: partnerRole,
-      raw_entry: entry,
-      cards: cards,
-      shared_keys: shared.map(c => c.key),
-    });
+    const sharedCard: ReflectionCard = {
+      key: "what_happened",
+      label: "what I want to say",
+      text: result.message_to_send,
+      shared: true,
+    };
 
-    onCardsSent(shared);
+    const allCards: ReflectionCard[] = [
+      sharedCard,
+      { key: "how_i_felt", label: "how I felt", text: result.validation, shared: false },
+      { key: "what_i_need", label: "insight", text: result.insight, shared: false },
+      { key: "what_i_want_to_say", label: "anticipate", text: result.anticipate, shared: false },
+    ];
+
+    try {
+      await (supabase.from("connect_reflections" as any) as any).insert({
+        connection_id: connectionId,
+        partner_role: partnerRole,
+        raw_entry: entry,
+        cards: allCards,
+        shared_keys: ["what_happened"],
+      });
+    } catch (e) {
+      console.error("Failed to save reflection:", e);
+    }
+
+    onCardsSent();
     setSent(true);
-    toast.success(`${shared.length} card(s) sent to the shared space 💜`);
+    toast.success(`Message sent to ${partnerName} 💜`);
   };
 
   if (sent) {
@@ -87,13 +109,13 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
       <div className="text-center py-12 px-4">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
           <CheckCircle2 className="w-12 h-12 text-primary mx-auto mb-4 opacity-60" />
-          <p className="font-display text-lg font-bold text-foreground mb-2">Cards shared</p>
-          <p className="text-sm text-muted-foreground mb-6">
-            When {partnerName} has also shared, the shared space will open.
+          <p className="font-display text-lg font-bold text-foreground mb-2">Message sent</p>
+          <p className="font-body text-sm text-muted-foreground mb-6">
+            When {partnerName} responds, you'll see it in the Shared space.
           </p>
           <button
-            onClick={() => { setCards(null); setEntry(""); setSent(false); }}
-            className="text-xs text-muted-foreground flex items-center gap-1.5 mx-auto hover:text-foreground"
+            onClick={() => { setResult(null); setEntry(""); setSent(false); }}
+            className="font-body text-xs text-muted-foreground flex items-center gap-1.5 mx-auto hover:text-foreground transition-colors"
           >
             <RotateCcw className="w-3 h-3" /> Write another reflection
           </button>
@@ -103,29 +125,30 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
   }
 
   return (
-    <div className="px-4 py-4">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="px-4 py-4 space-y-4">
+      <div className="flex items-center gap-2">
         <Lock className="w-4 h-4 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground font-medium">Private — only you can see this</span>
+        <span className="font-body text-xs text-muted-foreground">Private — only you can see this</span>
       </div>
 
       <AnimatePresence mode="wait">
-        {!cards ? (
-          <motion.div key="write" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <p className="text-sm text-muted-foreground mb-3 italic">
-              Write freely about what's on your mind about your relationship. The AI will organise your thoughts into shareable cards.
+        {!result ? (
+          /* ── Write view ── */
+          <motion.div key="write" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+            <p className="font-display text-sm italic text-muted-foreground leading-relaxed">
+              Write freely about what's on your mind. The AI will help you find the right words and give you private insights.
             </p>
             <textarea
               value={entry}
               onChange={e => setEntry(e.target.value)}
               placeholder="Write honestly — no one else will see this raw entry..."
-              className="w-full min-h-[200px] rounded-2xl bg-card border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors resize-none"
+              className="w-full min-h-[200px] rounded-[18px] bg-card border border-border px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors resize-none leading-relaxed"
             />
-            <div className="mt-4 flex justify-center">
+            <div className="flex justify-center">
               <button
                 onClick={organise}
                 disabled={!entry.trim() || loading}
-                className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-full font-body text-sm font-semibold flex items-center gap-2 disabled:opacity-40 active:opacity-80 transition-opacity"
               >
                 {loading ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Finding the right words...</>
@@ -136,48 +159,111 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
             </div>
           </motion.div>
         ) : (
-          <motion.div key="cards" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="space-y-3">
-              {cards.map((card, i) => (
-                <motion.div
-                  key={card.key}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-4 rounded-2xl border border-border bg-card"
+          /* ── Result view ── */
+          <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+
+            {/* Message to send */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="rounded-[18px] border-2 border-primary/25 bg-primary/5 p-4"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span className="font-hand text-[10px] font-bold uppercase tracking-wider text-primary">Message to {partnerName}</span>
+                <span className="font-body text-[9px] text-muted-foreground bg-secondary/80 px-2 py-0.5 rounded-full">NVC structured</span>
+              </div>
+              <p className="font-body text-sm text-foreground/85 leading-relaxed">{result.message_to_send}</p>
+              <div className="flex items-center gap-3 mt-3 pt-3 border-t border-primary/15">
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-1.5 font-body text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{card.label}</span>
-                    <button
-                      onClick={() => toggleShare(card.key)}
-                      className={`text-xs px-3 py-1 rounded-full transition-all ${
-                        card.shared
-                          ? "bg-primary/20 text-primary font-semibold"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {card.shared ? "sharing ✓" : `share with ${partnerName}`}
-                    </button>
-                  </div>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{card.text}</p>
-                </motion.div>
-              ))}
+                  {copied ? <Check className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? "Copied" : "Copy text"}
+                </button>
+                <span className="text-border">·</span>
+                <span className="font-body text-[10px] text-muted-foreground/60 italic">Send this to {partnerName} using the button below</span>
+              </div>
+            </motion.div>
+
+            {/* Private insights header */}
+            <div className="flex items-center gap-1.5 px-1 pt-1">
+              <Lock className="w-3 h-3 text-muted-foreground/60" />
+              <span className="font-hand text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Just for you</span>
             </div>
 
-            <div className="flex gap-3 mt-6 justify-center">
+            {/* Validation */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="rounded-[16px] p-4"
+              style={{ backgroundColor: "hsl(330 35% 96%)", border: "1px solid hsl(330 25% 88%)" }}
+            >
+              <div className="flex items-center gap-1.5 mb-2">
+                <Heart className="w-3.5 h-3.5" style={{ color: "hsl(330 55% 55%)" }} />
+                <span className="font-hand text-[10px] font-bold uppercase tracking-wider" style={{ color: "hsl(330 55% 55%)" }}>
+                  How you're feeling
+                </span>
+              </div>
+              <p className="font-body text-sm text-foreground/80 leading-relaxed">{result.validation}</p>
+            </motion.div>
+
+            {/* Insight */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="rounded-[16px] p-4"
+              style={{ backgroundColor: "hsl(284 25% 96%)", border: "1px solid hsl(284 20% 88%)" }}
+            >
+              <div className="flex items-center gap-1.5 mb-2">
+                <Lightbulb className="w-3.5 h-3.5 text-primary" />
+                <span className="font-hand text-[10px] font-bold uppercase tracking-wider text-primary/70">
+                  Why you might be reacting this way
+                </span>
+              </div>
+              <p className="font-body text-sm text-foreground/80 leading-relaxed">{result.insight}</p>
+            </motion.div>
+
+            {/* Anticipate */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="rounded-[16px] p-4"
+              style={{ backgroundColor: "hsl(38 40% 96%)", border: "1px solid hsl(38 30% 88%)" }}
+            >
+              <div className="flex items-center gap-1.5 mb-2">
+                <Compass className="w-3.5 h-3.5" style={{ color: "hsl(38 65% 48%)" }} />
+                <span className="font-hand text-[10px] font-bold uppercase tracking-wider" style={{ color: "hsl(38 65% 48%)" }}>
+                  What to expect next
+                </span>
+              </div>
+              <p className="font-body text-sm text-foreground/80 leading-relaxed">{result.anticipate}</p>
+            </motion.div>
+
+            {/* Actions */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.25 }}
+              className="flex gap-3 pt-1"
+            >
               <button
-                onClick={() => setCards(null)}
-                className="px-5 py-2.5 rounded-full text-sm text-muted-foreground border border-border hover:text-foreground"
+                onClick={() => setResult(null)}
+                className="font-body px-4 py-2.5 rounded-full text-sm text-muted-foreground border border-border hover:text-foreground transition-colors flex-shrink-0"
               >
-                Back to writing
+                ← Rewrite
               </button>
               <button
                 onClick={sendToRoom}
-                className="bg-primary text-primary-foreground px-5 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2"
+                className="flex-1 bg-primary text-primary-foreground px-5 py-2.5 rounded-full font-body text-sm font-semibold flex items-center justify-center gap-2 active:opacity-80 transition-opacity"
               >
-                Send to shared space <ArrowRight className="w-4 h-4" />
+                Send to {partnerName} <ArrowRight className="w-4 h-4" />
               </button>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
