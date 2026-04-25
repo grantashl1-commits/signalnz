@@ -6,6 +6,7 @@ import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
 import { BAKING_RECIPES } from "@/data/baking-recipes";
 import { Recipe } from "@/data/meal-plans";
+import { KIDS_RECIPE_BANK, KidsRecipe } from "@/data/kids-recipes";
 import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
@@ -29,7 +30,7 @@ const PHASE_TINT: Record<Phase, string> = {
   luteal: "rgba(155, 137, 180, 0.06)",
 };
 
-const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Baking", "Snacks", "TCM", "Ayurveda"] as const;
+const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Baking", "Snacks", "TCM", "Ayurveda", "Kids"] as const;
 const TAG_FILTERS = ["High Protein", "Gut Health", "Anti-Inflammatory", "Vegan", "Iron-Rich", "Magnesium"] as const;
 
 interface AIGeneratedRecipe {
@@ -52,6 +53,7 @@ export default function DiscoverTab() {
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
   const [mealType, setMealType] = useState<string>("All");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
   const [showFridge, setShowFridge] = useState(false);
   const [ingredientInput, setIngredientInput] = useState("");
   const [aiRecipes, setAiRecipes] = useState<AIGeneratedRecipe[]>([]);
@@ -110,6 +112,19 @@ export default function DiscoverTab() {
       return true;
     });
   }, [allRecipes, phaseFilter, mealType, search]);
+
+  // Kids recipe filtering
+  const filteredKids = useMemo(() => {
+    if (mealType !== "Kids") return [];
+    return KIDS_RECIPE_BANK.filter(r => {
+      if (!search) return true;
+      const q = search.toLowerCase();
+      return r.name.toLowerCase().includes(q) ||
+        r.ingredients.some(i => i.toLowerCase().includes(q)) ||
+        r.protein.toLowerCase().includes(q) ||
+        r.tags.some(t => t.toLowerCase().includes(q));
+    });
+  }, [mealType, search]);
 
   // Fridge recipe generation
   const generateFromFridge = async (text: string, imageBase64?: string) => {
@@ -248,19 +263,21 @@ export default function DiscoverTab() {
 
       {/* Filters */}
       <div className="space-y-2">
-        {/* Phase pills */}
-        <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-          <button onClick={() => { haptic("light"); setPhaseFilter("all"); }}
-            className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${phaseFilter === "all" ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}>
-            All phases
-          </button>
-          {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(p => (
-            <button key={p} onClick={() => { haptic("light"); setPhaseFilter(p); }}
-              className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${phaseFilter === p ? `phase-${p}` : `phase-${p}-light`}`}>
-              {PHASE_SHORT[p]}
+        {/* Phase pills — hidden for Kids */}
+        {mealType !== "Kids" && (
+          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
+            <button onClick={() => { haptic("light"); setPhaseFilter("all"); }}
+              className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${phaseFilter === "all" ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}>
+              All phases
             </button>
-          ))}
-        </div>
+            {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(p => (
+              <button key={p} onClick={() => { haptic("light"); setPhaseFilter(p); }}
+                className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${phaseFilter === p ? `phase-${p}` : `phase-${p}-light`}`}>
+                {PHASE_SHORT[p]}
+              </button>
+            ))}
+          </div>
+        )}
         {/* Meal type pills */}
         <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
           {MEAL_TYPE_FILTERS.map(t => (
@@ -275,37 +292,173 @@ export default function DiscoverTab() {
       {/* Results count */}
       {search && (
         <p className="font-body text-[11px] text-muted-foreground">
-          {filtered.length} recipe{filtered.length !== 1 ? "s" : ""} found
+          {mealType === "Kids" ? filteredKids.length : filtered.length} recipe{(mealType === "Kids" ? filteredKids.length : filtered.length) !== 1 ? "s" : ""} found
         </p>
       )}
 
-      {/* Recipe grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {filtered.slice(0, 20).map((recipe, i) => (
-          <RecipeCard
-            key={recipe.id}
-            recipe={recipe}
-            isSaved={isSaved(recipe.id)}
-            onToggleSave={() => toggleSave(recipe.id)}
-            onSelect={() => { if (guardExpand()) setSelectedRecipe(recipe); }}
-            index={i}
-          />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="text-center py-8">
-          <p className="font-hand text-sm text-muted-foreground">No recipes found.</p>
-        </div>
+      {/* Kids recipe grid */}
+      {mealType === "Kids" && (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            {filteredKids.slice(0, 30).map((recipe, i) => (
+              <KidsRecipeCard key={recipe.id} recipe={recipe} onSelect={() => setSelectedKidsRecipe(recipe)} index={i} />
+            ))}
+          </div>
+          {filteredKids.length === 0 && (
+            <div className="text-center py-8">
+              <p className="font-hand text-sm text-muted-foreground">No kids recipes found.</p>
+            </div>
+          )}
+        </>
       )}
 
-      {/* Recipe detail bottom sheet */}
+      {/* Adult recipe grid */}
+      {mealType !== "Kids" && (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.slice(0, 20).map((recipe, i) => (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                isSaved={isSaved(recipe.id)}
+                onToggleSave={() => toggleSave(recipe.id)}
+                onSelect={() => { if (guardExpand()) setSelectedRecipe(recipe); }}
+                index={i}
+              />
+            ))}
+          </div>
+          {filtered.length === 0 && (
+            <div className="text-center py-8">
+              <p className="font-hand text-sm text-muted-foreground">No recipes found.</p>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Recipe detail bottom sheets */}
       <AnimatePresence>
         {selectedRecipe && (
           <RecipeDetailSheet recipe={selectedRecipe} isSaved={isSaved(selectedRecipe.id)} onToggleSave={() => toggleSave(selectedRecipe.id)} onClose={() => setSelectedRecipe(null)} />
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {selectedKidsRecipe && (
+          <KidsRecipeDetailSheet recipe={selectedKidsRecipe} onClose={() => setSelectedKidsRecipe(null)} />
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+/* ── Kids Recipe Card ── */
+const PROTEIN_COLORS: Record<string, string> = {
+  chicken: "#E2A84B", beef: "#B25C3A", fish: "#4A90B8", tofu: "#6BAE75",
+  beans: "#8B6B4A", lentils: "#C4894B", eggs: "#E8C84A", cheese: "#D4A843",
+  pork: "#D47A6A", shrimp: "#E8866A", none: "#9B89B4",
+};
+
+function KidsRecipeCard({ recipe, onSelect, index = 0 }: { recipe: KidsRecipe; onSelect: () => void; index?: number }) {
+  const color = PROTEIN_COLORS[recipe.protein] || "#9B89B4";
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, duration: 0.25 }}>
+      <button onClick={() => { haptic("light"); onSelect(); }} className="touch-card w-full text-left card-warm overflow-hidden">
+        <div className="px-3 py-3 space-y-2">
+          <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">{recipe.name}</h3>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="rounded-full px-2 py-0.5 font-hand text-[10px] font-bold capitalize"
+              style={{ backgroundColor: `${color}18`, color }}>
+              {recipe.protein === "none" ? "plant-based" : recipe.protein}
+            </span>
+            <span className="font-body text-[9px] text-muted-foreground">{recipe.prepTime}</span>
+          </div>
+          {recipe.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {recipe.tags.slice(0, 2).map(tag => (
+                <span key={tag} className="font-body text-[9px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded-full">{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </button>
+    </motion.div>
+  );
+}
+
+/* ── Kids Recipe Detail Sheet ── */
+function KidsRecipeDetailSheet({ recipe, onClose }: { recipe: KidsRecipe; onClose: () => void }) {
+  const [servings, setServings] = useState(recipe.serves);
+  const scale = servings / recipe.serves;
+  const color = PROTEIN_COLORS[recipe.protein] || "#9B89B4";
+
+  const scaleIngredient = (ing: string): string => {
+    if (scale === 1) return ing;
+    const match = ing.match(/^([\d.½⅓⅔¼¾]+)/);
+    if (match) {
+      const num = parseFloat(match[1]) * scale;
+      return ing.replace(match[1], num % 1 === 0 ? String(num) : num.toFixed(1));
+    }
+    return ing;
+  };
+
+  return (
+    <>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/40 z-50" onClick={onClose} />
+      <motion.div
+        initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+        transition={{ type: "spring", damping: 28, stiffness: 300 }}
+        className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-[20px] border-t border-border"
+        style={{ maxHeight: "90vh", overflowY: "auto" }}
+      >
+        <div className="bottom-sheet-handle" />
+        <div className="absolute top-4 right-4 z-10">
+          <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
+            <X className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </div>
+        <div className="p-5 pt-10 space-y-4">
+          <div>
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              <span className="rounded-full px-2.5 py-0.5 font-hand text-[10px] font-bold capitalize"
+                style={{ backgroundColor: `${color}18`, color }}>
+                {recipe.protein === "none" ? "plant-based" : recipe.protein}
+              </span>
+              {recipe.tags.map(tag => (
+                <span key={tag} className="rounded-full px-2.5 py-0.5 font-body text-[10px] text-muted-foreground bg-secondary">{tag}</span>
+              ))}
+            </div>
+            <h2 className="font-display text-xl font-bold italic text-foreground">{recipe.name}</h2>
+            <p className="font-body text-sm text-muted-foreground mt-1">{recipe.prepTime}</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="font-body text-sm text-muted-foreground">Serves</span>
+            <button onClick={() => setServings(Math.max(1, servings - 1))} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground font-bold">−</button>
+            <span className="font-body text-sm font-bold text-foreground w-6 text-center">{servings}</span>
+            <button onClick={() => setServings(servings + 1)} className="touch-btn w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground font-bold">+</button>
+          </div>
+
+          <div>
+            <p className="font-hand text-sm font-bold mb-2" style={{ color }}>Ingredients</p>
+            <ul className="space-y-1">
+              {recipe.ingredients.map((ing, j) => (
+                <li key={j} className="font-body text-xs text-foreground flex items-start gap-2">
+                  <span className="text-muted-foreground/40 mt-1">•</span>{scaleIngredient(ing)}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-hand text-sm font-bold mb-2" style={{ color }}>Method</p>
+            <ol className="space-y-1">
+              {recipe.method.map((step, j) => (
+                <li key={j} className="font-body text-xs text-muted-foreground">{j + 1}. {step}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </motion.div>
+    </>
   );
 }
 

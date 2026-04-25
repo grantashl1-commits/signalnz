@@ -392,9 +392,10 @@ export default function MyWeekTab() {
   const headerLabel = `${dominantPhase.charAt(0).toUpperCase() + dominantPhase.slice(1)} Week`;
   const dateRangeLabel = `${formatDateShort(monday)} – ${formatDateShort(sunday)}`;
 
-  const getMealName = (meal: string | AIMeal): string => {
+  const getMealName = (meal: string | AIMeal | null | undefined): string => {
+    if (!meal) return "—";
     const raw = typeof meal === "string" ? meal : meal.name;
-    return raw.replace(/^Signal\s+/i, "");
+    return (raw || "").replace(/^Signal\s+/i, "");
   };
 
   return (
@@ -539,7 +540,7 @@ export default function MyWeekTab() {
                       </p>
                       <p className="font-body text-sm text-foreground">
                         <span className="font-semibold text-muted-foreground w-[70px] inline-block">Dinner</span> {getMealName(day.dinner)}
-                        {typeof day.dinner !== "string" && day.dinner.isLeftover && (
+                        {typeof day.dinner !== "string" && (day.dinner as AIMeal | undefined)?.isLeftover && (
                           <span className="text-muted-foreground italic"> (leftover)</span>
                         )}
                       </p>
