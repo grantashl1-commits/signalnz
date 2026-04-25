@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import { useAndroidBack } from "@/hooks/useAndroidBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ArrowLeft, Search, Check, BookOpen, X, Sparkles } from "lucide-react";
@@ -333,6 +334,7 @@ export default function JournalPage() {
     if (saved) {
       setPostSaveEntry(saved);
       setInlineSaved(true);
+      setInlineText("");
       setTimeout(() => setInlineSaved(false), 3000);
       await journalSync.saveVaultEntry({
         id: `je-${saved.id}`,
@@ -343,9 +345,10 @@ export default function JournalPage() {
         date: saved.date,
         timestamp: saved.timestamp,
       });
+    } else {
+      toast.error("Couldn't save entry — please sign in and try again.");
     }
     setInlineSaving(false);
-    setInlineText("");
   };
 
   const handleLensGenerated = (lens: StoicLens) => {

@@ -7,7 +7,15 @@
       "Bash(npx vite *)",
       "Bash(node -e \"require\\('C:/Users/grant/OneDrive/Documents/GitHub/signalnz/src/data/parenting-course.ts'\\)\")",
       "Bash(node_modules/.bin/esbuild src/data/parenting-course.ts --bundle=false)",
-      "Bash(npx esbuild *)"
+      "Bash(npx esbuild *)",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "Bash(node -e \"const fs = require\\('fs'\\); const content = fs.readFileSync\\('src/data/parenting-course.ts', 'utf8'\\); console.log\\('File length:', content.length, 'chars'\\); const reactSlider = \\(content.match\\(/reaction_slider/g\\) || []\\).length; const flipCard = \\(content.match\\(/flip_card/g\\) || []\\).length; const knowledgeCheck = \\(content.match\\(/knowledge_check/g\\) || []\\).length; console.log\\('reaction_slider:', reactSlider, 'flip_card:', flipCard, 'knowledge_check:', knowledgeCheck\\);\")",
+      "Bash(node --input-type=module --eval ' *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(node -e ' *)",
+      "Bash(python3 *)",
+      "Bash(node *)"
     ]
   }
 }

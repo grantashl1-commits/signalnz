@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Copy, Check } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
@@ -10,11 +10,10 @@ import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 
 import HabitCarousel from "@/components/HabitCarousel";
 import {
-  getHabits, addHabit, removeHabit,
   HABIT_CATEGORIES,
-  SELF_CARE_RITUALS,
   type Habit, type HabitCategory,
 } from "@/data/self-care-rituals";
+import { useHabitList } from "@/hooks/useHabitList";
 import { HABIT_LIBRARY, type HabitTiming } from "@/data/habit-library";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
@@ -217,7 +216,7 @@ export default function PracticePage() {
   const todayStr = new Date().toISOString().split("T")[0];
   const phaseColor = PHASE_COLORS[currentPhase] || PHASE_COLORS.follicular;
 
-  const [habits, setHabits] = useState(getHabits());
+  const { habits, removeHabit: removeHabitSync, refreshHabits } = useHabitList();
   const [showLibraryPicker, setShowLibraryPicker] = useState(false);
   const [showCategoryChooser, setShowCategoryChooser] = useState(false);
   const [libraryPickerCategory, setLibraryPickerCategory] = useState<HabitCategory>("self-care");
@@ -227,10 +226,6 @@ export default function PracticePage() {
   // Phase 5B — Supabase-backed completions
   const { completedIds, toggle: toggleHabit, history, historyLoading } = useHabitCompletions();
 
-  const refreshHabits = useCallback(() => {
-    setHabits(getHabits());
-  }, []);
-
   const handleToggle = (habitId: string) => {
     haptic("light");
     toggleHabit(habitId);
@@ -238,8 +233,7 @@ export default function PracticePage() {
 
   const handleDelete = (habitId: string) => {
     haptic("medium");
-    removeHabit(habitId);
-    refreshHabits();
+    removeHabitSync(habitId);
   };
 
   const openPicker = (category: HabitCategory) => {

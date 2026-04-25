@@ -64,6 +64,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m1-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Take a moment to reflect before we begin.",
+            "content": {
+              "question": "How comfortable are you with emotional vulnerability in your relationship right now?",
+              "options": [
+                { "emoji": "😰", "label": "Very uncomfortable" },
+                { "emoji": "😕", "label": "A bit guarded" },
+                { "emoji": "😐", "label": "Neutral" },
+                { "emoji": "🙂", "label": "Fairly open" },
+                { "emoji": "🌟", "label": "Very open" }
+              ]
+            }
+          },
+          {
             "id": "m1-l1-a1",
             "type": "carousel",
             "title": "Decoding Attachment Styles",
@@ -95,6 +111,20 @@ export const CONNECT_COURSE: CourseModule[] = [
             "saveToVault": false
           },
           {
+            "id": "m1-l1-a1b",
+            "type": "flip_card",
+            "title": "Key Attachment Concepts",
+            "instruction": "Flip each card to explore the core ideas behind attachment theory.",
+            "content": {
+              "cards": [
+                { "front": "Secure Base", "back": "A secure attachment figure provides a safe haven in times of stress and a secure base from which to explore the world. In adult relationships, partners fulfil this role for each other — offering comfort without smothering independence.", "emoji": "🏡", "tag": "Secure" },
+                { "front": "Anxious Activation", "back": "When an anxiously attached person senses emotional distance from their partner, their attachment system 'activates' — generating urgency, protest behaviours, and preoccupation. They may text repeatedly or read into silences.", "emoji": "⚡", "tag": "Anxious" },
+                { "front": "Deactivation Strategy", "back": "Avoidant attachment uses deactivation — suppressing emotional needs, dismissing attachment feelings, and creating distance to avoid perceived engulfment. Independence becomes armour rather than a healthy preference.", "emoji": "🔇", "tag": "Avoidant" },
+                { "front": "Earned Security", "back": "Through therapy, sustained personal work, or a consistently loving relationship, people can shift toward secure attachment even if their early experiences were insecure. Security can be earned over time — a hopeful and well-researched finding.", "emoji": "🌱", "tag": "Growth" }
+              ]
+            }
+          },
+          {
             "id": "m1-l1-a2",
             "type": "single_choice",
             "title": "My Relational Blueprint",
@@ -124,6 +154,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Be honest and non-judgmental with yourself. This is about self-discovery.",
             "saveToVault": true
+          },
+          {
+            "id": "m1-l1-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about attachment styles.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "Which attachment style is most associated with comfort in both intimacy AND independence?",
+                  "options": ["Anxious", "Avoidant", "Disorganised", "Secure"],
+                  "correct": 3,
+                  "explanation": "Securely attached people feel comfortable with closeness and are also able to function independently — they don't fear abandonment or engulfment."
+                },
+                {
+                  "question": "What is the core fear driving anxiously attached individuals?",
+                  "options": ["Loss of independence", "Abandonment and rejection", "Being controlled", "Emotional overwhelm"],
+                  "correct": 1,
+                  "explanation": "Anxious attachment is driven by fear of abandonment — the persistent worry that their partner will leave or doesn't love them as much as they do."
+                },
+                {
+                  "question": "Which term describes the ability to develop secure attachment in adulthood through positive relationships or therapy?",
+                  "options": ["Earned security", "Attachment transfer", "Relational reset", "Style switching"],
+                  "correct": 0,
+                  "explanation": "Earned security is the well-documented phenomenon where adults who had insecure childhoods develop secure attachment through therapy or loving relationships."
+                },
+                {
+                  "question": "Avoidant attachment is primarily characterised by which strategy?",
+                  "options": ["Hyperactivation of the attachment system", "Deactivation — suppressing emotional needs and creating distance", "Disorganised pursuit and withdrawal", "Consistent emotional openness"],
+                  "correct": 1,
+                  "explanation": "Avoidant attachment uses deactivation strategies — suppressing needs and distancing — to manage the discomfort of emotional closeness."
+                }
+              ]
+            }
           }
         ]
       },
@@ -300,6 +366,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m2-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Take a moment to reflect before we begin.",
+            "content": {
+              "question": "How well do you feel you notice your partner's bids for connection throughout the day?",
+              "options": [
+                { "emoji": "😔", "label": "I miss most of them" },
+                { "emoji": "😕", "label": "I catch some but miss a lot" },
+                { "emoji": "😐", "label": "About half and half" },
+                { "emoji": "🙂", "label": "I notice quite a few" },
+                { "emoji": "🌟", "label": "I'm very attuned to them" }
+              ]
+            }
+          },
+          {
             "id": "m2-l1-a1",
             "type": "fill_blanks",
             "title": "The Essence of a Bid",
@@ -340,6 +422,20 @@ export const CONNECT_COURSE: CourseModule[] = [
             "saveToVault": false
           },
           {
+            "id": "m2-l1-a2b",
+            "type": "flip_card",
+            "title": "Bids & Responses: Key Concepts",
+            "instruction": "Flip each card to deepen your understanding of emotional bids.",
+            "content": {
+              "cards": [
+                { "front": "Emotional Bid", "back": "Any attempt by one partner to gain attention, affection, support, or engagement from the other. Bids can be verbal ('Did you see that?') or non-verbal (a sigh, a touch, leaning in). Gottman found that masters of relationships respond positively to bids 86% of the time.", "emoji": "📣", "tag": "Foundation" },
+                { "front": "Turning Toward", "back": "Responding positively to a partner's bid — giving attention, acknowledgment, or engagement. Doesn't need to be grand: a nod, eye contact, or 'Tell me more' counts. Couples who regularly turn toward bids build a robust emotional bank account.", "emoji": "↩️", "tag": "Connection" },
+                { "front": "Turning Away", "back": "Missing or ignoring a bid — often unintentionally. Distraction, multitasking, or simply not noticing a subtle bid. The impact on the bid-maker is the same regardless of intent: the bid went unmet, registering as rejection.", "emoji": "🚶", "tag": "Disconnection" },
+                { "front": "Emotional Bank Account", "back": "Gottman's metaphor for the accumulated trust and goodwill between partners. Turning toward bids makes deposits; turning away or against makes withdrawals. Relationships thrive when the account stays well in credit.", "emoji": "🏦", "tag": "Gottman" }
+              ]
+            }
+          },
+          {
             "id": "m2-l1-a3",
             "type": "open_response",
             "title": "My Partner's Secret Language",
@@ -350,6 +446,42 @@ export const CONNECT_COURSE: CourseModule[] = [
               "minWords": 40
             },
             "saveToVault": true
+          },
+          {
+            "id": "m2-l1-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about emotional bids.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "What is an 'emotional bid for connection'?",
+                  "options": ["A formal request for a serious conversation", "Any attempt to gain attention, affection, or engagement from a partner", "A complaint disguised as a question", "A demand for physical intimacy"],
+                  "correct": 1,
+                  "explanation": "An emotional bid is any attempt — verbal or non-verbal, subtle or overt — to gain connection from a partner. Even a sigh or a glance can be a bid."
+                },
+                {
+                  "question": "According to Gottman's research, what percentage of the time do 'masters' of relationships turn toward their partner's bids?",
+                  "options": ["About 50%", "About 67%", "About 86%", "About 95%"],
+                  "correct": 2,
+                  "explanation": "Masters responded positively to bids 86% of the time, compared to only 33% for 'disasters' — couples who later divorced or reported chronic unhappiness."
+                },
+                {
+                  "question": "Which of these is an example of 'turning against' a bid?",
+                  "options": ["Nodding vaguely while reading", "Saying 'I'm busy right now'", "Snapping 'Can't you see I'm trying to concentrate?'", "Continuing to watch TV"],
+                  "correct": 2,
+                  "explanation": "Turning against is an actively hostile response to a bid — it's more damaging than turning away because it introduces negativity and signals contempt."
+                },
+                {
+                  "question": "Why does Gottman describe the couple's accumulated positive interactions as an 'emotional bank account'?",
+                  "options": ["Because relationships cost money to maintain", "Because turning toward bids makes deposits that fund the couple through difficult times", "Because couples should keep a tally of who does more", "Because financial stress is the main cause of divorce"],
+                  "correct": 1,
+                  "explanation": "Each positive response to a bid is a deposit of trust and goodwill. This reserve is what allows couples to weather conflict without feeling the relationship is under threat."
+                }
+              ]
+            }
           }
         ]
       },
@@ -619,6 +751,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m3-l3-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we practise structured dialogue, reflect on where you are right now.",
+            "content": {
+              "question": "How easy do you find it to truly listen to your partner during a disagreement — without planning your rebuttal?",
+              "options": [
+                { "emoji": "😣", "label": "Very difficult — I'm always preparing to respond" },
+                { "emoji": "😕", "label": "Difficult — I catch myself drifting" },
+                { "emoji": "😐", "label": "Sometimes good, sometimes not" },
+                { "emoji": "🙂", "label": "Generally I manage to listen well" },
+                { "emoji": "🌟", "label": "I'm a genuinely present listener" }
+              ]
+            }
+          },
+          {
             "id": "m3-l3-a1",
             "type": "carousel",
             "title": "Rules of the Speaker-Listener",
@@ -643,6 +791,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m3-l3-a1b",
+            "type": "flip_card",
+            "title": "Communication Concepts: Key Terms",
+            "instruction": "Flip each card to reinforce the core concepts of constructive communication.",
+            "content": {
+              "cards": [
+                { "front": "Gentle Start-Up", "back": "Initiating a difficult conversation with 'I feel… about… and I need…' rather than 'You always/never…'. Research shows the first three minutes of a conflict conversation predict its entire trajectory — a gentle start prevents the cascade toward defensiveness.", "emoji": "🌸", "tag": "Gottman" },
+                { "front": "Speaker-Listener Technique", "back": "A structured dialogue tool where only the person holding 'the floor' speaks, and the listener's sole job is to paraphrase accurately before responding. It slows down emotional escalation by separating speaking from defending.", "emoji": "🎤", "tag": "Technique" },
+                { "front": "Active Listening", "back": "Listening to understand, not to respond. Involves reflecting feelings ('It sounds like you felt…'), validating ('That makes sense given…'), and asking clarifying questions. The goal is for your partner to feel heard — not agreed with, but genuinely heard.", "emoji": "👂", "tag": "Skill" },
+                { "front": "Flooding", "back": "When physiological arousal (heart rate above ~100 bpm) overwhelms the brain's capacity to process information calmly. Flooded partners cannot listen, think clearly, or problem-solve. A deliberate 20-minute break is the only effective intervention.", "emoji": "🌊", "tag": "Gottman" }
+              ]
+            }
           },
           {
             "id": "m3-l3-a2",
@@ -688,6 +850,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Start with easy topics to build confidence before tackling harder ones.",
             "saveToVault": true
+          },
+          {
+            "id": "m3-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about active listening and structured communication.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "In the Speaker-Listener Technique, what is the Listener's only job?",
+                  "options": ["To offer solutions as quickly as possible", "To paraphrase what the Speaker said and check for accuracy", "To prepare their counter-argument", "To agree with everything the Speaker says"],
+                  "correct": 1,
+                  "explanation": "The Listener's sole role is to accurately reflect back what they heard and check: 'Did I get that right?' Understanding comes before any response or problem-solving."
+                },
+                {
+                  "question": "What does research show about how conflict conversations begin?",
+                  "options": ["The middle of the conversation is most predictive of the outcome", "How a conflict starts predicts its entire trajectory up to 96% of the time", "Conflicts always improve once both people have vented", "The ending of a conversation matters most"],
+                  "correct": 1,
+                  "explanation": "Gottman's research found that the first three minutes of a conflict conversation predict its outcome with up to 96% accuracy — making a gentle start-up critically important."
+                },
+                {
+                  "question": "What is 'physiological flooding' and why does it matter in conflict?",
+                  "options": ["Feeling too many emotions at once, which requires talking through immediately", "Heart rate exceeding ~100 bpm, making rational listening nearly impossible", "The relief felt after a productive argument", "Crying during a disagreement"],
+                  "correct": 1,
+                  "explanation": "Flooding is when physiological arousal overwhelms calm processing. Once flooded, partners cannot listen accurately. A 20-minute break is needed before returning to conversation."
+                },
+                {
+                  "question": "Which of these is an example of active listening?",
+                  "options": ["'You're wrong about that — here's what actually happened'", "'I'll deal with it later, I'm busy'", "'So it sounds like you felt dismissed when I didn't ask about your day — is that right?'", "'Let's just move on, it's not worth arguing about'"],
+                  "correct": 2,
+                  "explanation": "Active listening involves reflecting both the content and the feeling behind what your partner said, then checking for accuracy — not advising, dismissing, or redirecting."
+                }
+              ]
+            }
           }
         ]
       }
@@ -769,6 +967,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m4-l2-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before exploring the antidotes, reflect on where you stand.",
+            "content": {
+              "question": "How often do you notice yourself using one of the Four Horsemen (criticism, contempt, defensiveness, stonewalling) during conflict?",
+              "options": [
+                { "emoji": "😬", "label": "Very often — it's a real pattern" },
+                { "emoji": "😕", "label": "Fairly often, especially under stress" },
+                { "emoji": "😐", "label": "Sometimes, depends on the issue" },
+                { "emoji": "🙂", "label": "Occasionally, but I catch myself" },
+                { "emoji": "🌟", "label": "Rarely — I use antidotes instinctively" }
+              ]
+            }
+          },
+          {
             "id": "m4-l2-a1",
             "type": "carousel",
             "title": "Antidotes at a Glance",
@@ -788,6 +1002,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m4-l2-a1b",
+            "type": "flip_card",
+            "title": "The Four Horsemen: Concepts",
+            "instruction": "Flip each card to understand the Horsemen and their antidotes.",
+            "content": {
+              "cards": [
+                { "front": "Criticism", "back": "Attacking your partner's character or personality rather than a specific behaviour. 'You're so selfish' (criticism) vs. 'I felt hurt when the plan changed without me' (complaint). The antidote is a gentle start-up using 'I feel… about… and I need…'", "emoji": "⚔️", "tag": "Horseman" },
+                { "front": "Contempt", "back": "The single strongest predictor of relationship failure. Includes eye-rolling, sarcasm, mockery, and name-calling — all communicate disgust and moral superiority. The antidote is building a culture of genuine appreciation and respect, expressed daily.", "emoji": "👁️", "tag": "Horseman" },
+                { "front": "Defensiveness", "back": "Responding to a complaint by counter-attacking or playing the victim: 'It's not my fault — you're the one who…'. This escalates conflict because it sends the message that the speaker's concern is invalid. The antidote is accepting even partial responsibility.", "emoji": "🛡️", "tag": "Horseman" },
+                { "front": "Stonewalling", "back": "Withdrawing emotionally and physically from interaction — going silent, leaving the room, giving the cold shoulder. Usually occurs after flooding. The antidote is a self-soothing time-out of at least 20 minutes, followed by re-engagement.", "emoji": "🪨", "tag": "Horseman" }
+              ]
+            }
           },
           {
             "id": "m4-l2-a2",
@@ -883,6 +1111,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "This isn't about perfection, but about consistent effort.",
             "saveToVault": true
+          },
+          {
+            "id": "m4-l3-a5",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about the Four Horsemen and their antidotes.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "Which of the Four Horsemen is the strongest predictor of relationship failure according to Gottman's research?",
+                  "options": ["Criticism", "Defensiveness", "Contempt", "Stonewalling"],
+                  "correct": 2,
+                  "explanation": "Contempt — expressing disgust, superiority, or moral disdain through eye-rolling, sarcasm, or mockery — is the single strongest predictor of divorce and relationship breakdown."
+                },
+                {
+                  "question": "What is the antidote to criticism?",
+                  "options": ["Staying silent until you calm down", "A gentle start-up using 'I feel… about… and I need…'", "Explaining your reasoning clearly and logically", "Asking your partner why they are upset"],
+                  "correct": 1,
+                  "explanation": "The antidote to criticism is a gentle start-up: expressing your own feelings about a specific situation and stating a positive need, rather than attacking your partner's character."
+                },
+                {
+                  "question": "What is the antidote to defensiveness?",
+                  "options": ["Leaving the room to cool down", "Explaining your intentions more clearly", "Accepting responsibility for at least part of the problem", "Asking your partner to stop raising the issue"],
+                  "correct": 2,
+                  "explanation": "Accepting even partial responsibility de-escalates defensiveness. It signals that you value the relationship over 'winning' the argument."
+                },
+                {
+                  "question": "Why does stonewalling occur, according to Gottman's research?",
+                  "options": ["Partners stonewall because they don't care about the relationship", "Stonewalling usually happens when someone is physiologically flooded and overwhelmed", "It is a deliberate manipulation tactic", "Stonewalling is always contemptuous in intent"],
+                  "correct": 1,
+                  "explanation": "Stonewalling typically occurs when someone is physiologically flooded — their heart rate and stress response overwhelm their ability to stay engaged. The antidote is a deliberate, time-limited self-soothing break."
+                }
+              ]
+            }
           }
         ]
       }
@@ -908,6 +1172,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "description": "Understand why conflict is normal, even healthy, and its potential benefits for relationships.",
         "estimatedMinutes": 15,
         "activities": [
+          {
+            "id": "m5-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore conflict, take a moment to reflect.",
+            "content": {
+              "question": "When conflict arises in your relationship, how do you typically feel going into it?",
+              "options": [
+                { "emoji": "😨", "label": "Dreading it — conflict feels dangerous" },
+                { "emoji": "😟", "label": "Anxious and unsure" },
+                { "emoji": "😐", "label": "Neutral — it depends on the issue" },
+                { "emoji": "🙂", "label": "Fairly calm — I can usually manage it" },
+                { "emoji": "💪", "label": "Confident — I see it as an opportunity" }
+              ]
+            }
+          },
           {
             "id": "m5-l1-a1",
             "type": "true_false",
@@ -950,6 +1230,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m5-l1-a2b",
+            "type": "flip_card",
+            "title": "Conflict & Resolution: Key Concepts",
+            "instruction": "Flip each card to build your conflict toolkit.",
+            "content": {
+              "cards": [
+                { "front": "Perpetual vs. Solvable Problems", "back": "Gottman's research found that 69% of relationship conflicts are perpetual — rooted in fundamental differences in personality, values, or needs — and will never be fully 'solved'. The goal is dialogue and management, not resolution. Only 31% of conflicts are truly solvable.", "emoji": "🔄", "tag": "Gottman" },
+                { "front": "Physiological Soothing", "back": "The practice of deliberately calming your own nervous system during or after conflict — through deep breathing, walking, music, or progressive relaxation. Research shows it takes at least 20 minutes for the body to return to baseline after flooding.", "emoji": "🌬️", "tag": "Self-Regulation" },
+                { "front": "Gridlock", "back": "When a perpetual problem has become entrenched and painful — partners feel rejected, judged, or unable to move forward. Gridlock signals that underlying dreams and values are not being heard. Dialogue about those dreams is the path through.", "emoji": "🔒", "tag": "Conflict" },
+                { "front": "Compromise Zone", "back": "In any conflict, there are flexible areas where compromise is possible and core areas that feel non-negotiable. Effective compromise honours both partners' core needs while finding flexibility in secondary concerns — a two-circle map of 'must have' vs. 'can give'.", "emoji": "⚖️", "tag": "Resolution" }
+              ]
+            }
           },
           {
             "id": "m5-l1-a3",
@@ -1097,6 +1391,42 @@ export const CONNECT_COURSE: CourseModule[] = [
               "minWords": 40
             },
             "saveToVault": true
+          },
+          {
+            "id": "m5-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about conflict, compromise, and physiological soothing.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "According to Gottman's research, what percentage of relationship conflicts are 'perpetual problems' — rooted in fundamental differences that will never fully resolve?",
+                  "options": ["About 30%", "About 50%", "About 69%", "About 85%"],
+                  "correct": 2,
+                  "explanation": "Gottman found approximately 69% of conflicts are perpetual — stemming from core personality and values differences. The goal is to manage them with dialogue and humour, not to 'solve' them."
+                },
+                {
+                  "question": "What is 'physiological flooding' in the context of conflict?",
+                  "options": ["Feeling flooded with positive emotions during makeup conversations", "A state of high physiological arousal (heart rate above ~100 bpm) that impairs rational thinking and listening", "The rush of relief after a conflict resolves", "Intense crying during an argument"],
+                  "correct": 1,
+                  "explanation": "Flooding is when your body's stress response overwhelms your capacity to think and listen calmly. It makes constructive conflict resolution impossible until the body returns to baseline."
+                },
+                {
+                  "question": "When taking a time-out during flooding, how long does research suggest you need before the body returns to baseline?",
+                  "options": ["About 5 minutes", "About 10 minutes", "At least 20 minutes", "At least 60 minutes"],
+                  "correct": 2,
+                  "explanation": "Research shows it takes at least 20 minutes of genuine rest (not ruminating on the argument) for the body's stress hormones to return to a level that allows calm, effective communication."
+                },
+                {
+                  "question": "Which of these is the most constructive approach to a perpetual problem?",
+                  "options": ["Avoid discussing it to keep the peace", "Keep arguing until one partner gives in", "Dialogue about the underlying dreams and values, and find ways to honour both", "Accept that the relationship is incompatible"],
+                  "correct": 2,
+                  "explanation": "Perpetual problems don't disappear, but couples can find a way to 'make peace' with them by understanding and honouring the deeper needs and dreams beneath each partner's position."
+                }
+              ]
+            }
           }
         ]
       }
@@ -1121,6 +1451,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "description": "Deconstruct what trust means in a relationship and how it's built and eroded.",
         "estimatedMinutes": 15,
         "activities": [
+          {
+            "id": "m6-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore trust, take a moment to reflect.",
+            "content": {
+              "question": "How safe do you feel being emotionally vulnerable with your partner right now?",
+              "options": [
+                { "emoji": "😰", "label": "Not safe at all — I guard myself carefully" },
+                { "emoji": "😕", "label": "Somewhat guarded" },
+                { "emoji": "😐", "label": "It depends on the topic" },
+                { "emoji": "🙂", "label": "Generally safe with most things" },
+                { "emoji": "🌟", "label": "Very safe — I can be fully open" }
+              ]
+            }
+          },
           {
             "id": "m6-l1-a1",
             "type": "true_false",
@@ -1156,6 +1502,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               "context": "Reliability and showing up are often the first pillars, leading to deeper emotional trust."
             },
             "saveToVault": false
+          },
+          {
+            "id": "m6-l1-a2b",
+            "type": "flip_card",
+            "title": "Trust & Commitment: Key Concepts",
+            "instruction": "Flip each card to explore what trust and commitment really mean.",
+            "content": {
+              "cards": [
+                { "front": "Anatomy of Trust", "back": "Gottman describes trust as multidimensional: it includes reliability (doing what you say), emotional safety (feeling you can be vulnerable), honesty (transparency about yourself), fidelity (sexual and emotional faithfulness), and benevolence (believing your partner has your best interests at heart).", "emoji": "🔐", "tag": "Gottman" },
+                { "front": "Dedication Commitment", "back": "Staying because you genuinely want to — because you're attracted to your partner, value the relationship, and share a future vision. Dedication commitment creates positive motivation to invest and grow. Research shows it's the most protective form of relationship commitment.", "emoji": "💛", "tag": "Commitment" },
+                { "front": "Constraint Commitment", "back": "Staying due to external barriers — finances, children, social pressure, fear of being alone. Not inherently bad, but when constraint is the primary reason for staying, resentment is likely to grow. Dedication commitment is the healthier counterpart.", "emoji": "⛓️", "tag": "Commitment" },
+                { "front": "Betrayal Recovery", "back": "Research by Esther Perel and others shows that relationship betrayals — including affairs — can sometimes become catalysts for deeper intimacy if both partners are willing to engage in honest, painful, and sustained repair work. Recovery requires accountability, grieving, and rebuilding.", "emoji": "🌿", "tag": "Repair" }
+              ]
+            }
           },
           {
             "id": "m6-l1-a3",
@@ -1298,6 +1658,42 @@ export const CONNECT_COURSE: CourseModule[] = [
               }
             },
             "saveToVault": false
+          },
+          {
+            "id": "m6-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about trust and commitment.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "Trust in a relationship involves which of the following dimensions?",
+                  "options": ["Only honesty and fidelity", "Reliability, emotional safety, honesty, fidelity, and benevolence", "Mainly financial transparency and legal commitment", "Romantic feelings and physical attraction"],
+                  "correct": 1,
+                  "explanation": "Trust is multidimensional. Gottman identifies at least five pillars: reliability (keeping commitments), emotional safety (vulnerability without judgment), honesty, fidelity, and benevolence (believing your partner has your best interests at heart)."
+                },
+                {
+                  "question": "What is the key difference between 'dedication commitment' and 'constraint commitment'?",
+                  "options": ["Dedication is based on external factors; constraint is internal", "Dedication means wanting to be in the relationship; constraint means staying due to barriers like finances or social pressure", "Dedication commitment always leads to marriage; constraint does not", "There is no meaningful difference between the two"],
+                  "correct": 1,
+                  "explanation": "Dedication commitment is positively motivated — you stay because you genuinely want to. Constraint commitment is based on external costs of leaving. Dedication is far more protective of long-term relationship satisfaction."
+                },
+                {
+                  "question": "Which of these behaviours best demonstrates trust-building in a relationship?",
+                  "options": ["Keeping secrets to avoid conflict", "Making promises even when you're unsure you can keep them", "Following through on small commitments consistently over time", "Only being vulnerable in therapy sessions"],
+                  "correct": 2,
+                  "explanation": "Trust is built through consistent follow-through on commitments — small and large. It's the accumulation of reliable behaviour over time that creates deep relational trust."
+                },
+                {
+                  "question": "According to relationship research, can trust be rebuilt after a serious betrayal?",
+                  "options": ["No — once trust is broken, the relationship is permanently damaged", "Yes, but only if the betrayal was minor", "Yes, with sustained effort: accountability, grieving, and deliberate rebuilding from both partners", "Only if both partners attend therapy immediately"],
+                  "correct": 2,
+                  "explanation": "Research by Gottman and Perel shows that trust can be rebuilt after betrayal through genuine accountability, allowing the hurt partner to grieve, and both partners engaging in a sustained process of rebuilding. It requires significant effort and willingness from both."
+                }
+              ]
+            }
           }
         ]
       }
@@ -1323,6 +1719,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "description": "Beyond sex: explore the various forms of intimacy that nourish a relationship.",
         "estimatedMinutes": 15,
         "activities": [
+          {
+            "id": "m7-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore intimacy and desire, take a moment to reflect.",
+            "content": {
+              "question": "How connected do you feel to your partner intimately right now — emotionally and physically?",
+              "options": [
+                { "emoji": "😔", "label": "Very disconnected — there's a real gap" },
+                { "emoji": "😕", "label": "Somewhat distant lately" },
+                { "emoji": "😐", "label": "Okay — neither close nor distant" },
+                { "emoji": "🙂", "label": "Fairly connected and warm" },
+                { "emoji": "🔥", "label": "Very connected — things feel alive" }
+              ]
+            }
+          },
           {
             "id": "m7-l1-a1",
             "type": "multiple_choice",
@@ -1383,6 +1795,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m7-l1-a2b",
+            "type": "flip_card",
+            "title": "Intimacy & Desire: Key Concepts",
+            "instruction": "Flip each card to deepen your understanding of intimacy and desire.",
+            "content": {
+              "cards": [
+                { "front": "Spontaneous vs. Responsive Desire", "back": "Spontaneous desire arises 'out of the blue' before any erotic context. Responsive desire emerges in response to stimulation or connection — desire follows engagement, not the other way around. Emily Nagoski's research shows both are equally normal and healthy, though responsive desire is more common in long-term relationships.", "emoji": "🌊", "tag": "Perel/Nagoski" },
+                { "front": "Erotic Intelligence", "back": "Esther Perel's concept: the ability to maintain desire and aliveness in long-term relationships by embracing mystery, playfulness, and the tension between closeness and distance. Desire needs space — not emotional distance, but a sense that your partner is a separate, fascinating person.", "emoji": "🔥", "tag": "Perel" },
+                { "front": "The Intimacy Paradox", "back": "Security and desire exist in tension. Deep intimacy and familiarity create safety — but desire thrives on novelty and the unknown. Perel's insight: 'The need for security and the need for adventure can exist in the same person, but rarely at the same moment.'", "emoji": "⚡", "tag": "Perel" },
+                { "front": "Non-Sexual Touch", "back": "Regular affectionate touch (hugging, hand-holding, cuddling) maintains physical connection independent of sexual frequency. Research shows couples who maintain daily non-sexual touch have lower cortisol levels, stronger immune function, and higher relationship satisfaction.", "emoji": "🤝", "tag": "Research" }
+              ]
+            }
           },
           {
             "id": "m7-l1-a3",
@@ -1509,6 +1935,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Keep it low-pressure and fun!",
             "saveToVault": true
+          },
+          {
+            "id": "m7-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about intimacy and desire.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "What is 'responsive desire' as described by sex researcher Emily Nagoski?",
+                  "options": ["Desire that arises spontaneously without any external trigger", "Desire that emerges in response to stimulation or connection rather than arising on its own", "The desire to respond quickly to a partner's advances", "Feeling obligated to be intimate even when not in the mood"],
+                  "correct": 1,
+                  "explanation": "Responsive desire is when arousal and desire emerge after erotic engagement begins, rather than before. It's very common — especially in long-term relationships — and equally as healthy as spontaneous desire."
+                },
+                {
+                  "question": "What does Esther Perel mean by 'erotic intelligence'?",
+                  "options": ["Having a high sex drive", "The ability to communicate about sexual preferences explicitly", "Maintaining desire and aliveness in long-term love through mystery, play, and embracing distance-within-closeness", "Understanding the biology of sexual response"],
+                  "correct": 2,
+                  "explanation": "Perel's concept of erotic intelligence involves keeping desire alive by preserving mystery and individuality — seeing your partner as a separate, fascinating person rather than a familiar extension of yourself."
+                },
+                {
+                  "question": "Which of these five forms of intimacy is described as the foundation on which all other forms rest?",
+                  "options": ["Physical intimacy", "Recreational intimacy", "Emotional intimacy", "Intellectual intimacy"],
+                  "correct": 2,
+                  "explanation": "Emotional intimacy — feeling truly understood and being brave enough to show your partner your authentic self — is described as foundational. Without it, other forms of intimacy tend to feel hollow or unsustainable."
+                },
+                {
+                  "question": "What does research show about the role of non-sexual affectionate touch in relationships?",
+                  "options": ["It only matters when sexual frequency is high", "It has no measurable effect on relationship quality", "It lowers cortisol, strengthens immune function, and is associated with higher relationship satisfaction", "It creates unrealistic expectations about physical intimacy"],
+                  "correct": 2,
+                  "explanation": "Regular non-sexual touch — hugging, hand-holding, cuddling — has measurable physiological and relational benefits: lower stress hormones, stronger immunity, and higher reported satisfaction."
+                }
+              ]
+            }
           }
         ]
       }
@@ -1584,6 +2046,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m8-l2-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore the dreams beneath your conflicts, take a moment to reflect.",
+            "content": {
+              "question": "How curious are you about the deeper values and dreams driving your partner's positions in your recurring conflicts?",
+              "options": [
+                { "emoji": "😤", "label": "Mostly frustrated — I just want resolution" },
+                { "emoji": "😕", "label": "Somewhat curious but often too stressed" },
+                { "emoji": "😐", "label": "I try, with mixed success" },
+                { "emoji": "🙂", "label": "Fairly curious and open to their perspective" },
+                { "emoji": "🌟", "label": "Very curious — I genuinely want to understand" }
+              ]
+            }
+          },
+          {
             "id": "m8-l2-a1",
             "type": "fill_blanks",
             "title": "The Core of Perpetual Problems",
@@ -1632,6 +2110,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m8-l2-a2b",
+            "type": "flip_card",
+            "title": "Dreams Within Conflict: Key Concepts",
+            "instruction": "Flip each card to understand the deeper territory beneath your conflicts.",
+            "content": {
+              "cards": [
+                { "front": "Dreams Within Conflict", "back": "Gottman's insight: beneath every perpetual problem lies a hidden dream, life value, or unmet need. When partners feel their dream is being dismissed or ridiculed, they become gridlocked. Unlocking the dream — expressing it and having it honoured — is how gridlock becomes dialogue.", "emoji": "💭", "tag": "Gottman" },
+                { "front": "Gridlock vs. Dialogue", "back": "Gridlock is when a perpetual problem becomes entrenched and painful — marked by feelings of rejection, entrenchment, and hopelessness. Dialogue is when both partners can discuss the problem with humour and acceptance, even without resolution. The shift from gridlock to dialogue requires revealing and honouring dreams.", "emoji": "🗣️", "tag": "Gottman" },
+                { "front": "Position vs. Need", "back": "In conflict, the position is what you say you want ('I need the house tidy!'). The underlying need is what you actually require ('I need to feel calm and safe in my home'). The same need can often be met in multiple ways — which is where compromise becomes possible.", "emoji": "🗺️", "tag": "Negotiation" },
+                { "front": "Existential Dream", "back": "Many relationship conflicts carry existential weight — dreams about freedom, safety, adventure, family, achievement, or legacy. When a conflict touches someone's core identity dream, the stakes feel enormous. Recognising this transforms irritation into empathy.", "emoji": "⭐", "tag": "Growth" }
+              ]
+            }
           },
           {
             "id": "m8-l2-a3",
@@ -1716,6 +2208,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Remember Rule #1: Understanding, not solving, is the goal here.",
             "saveToVault": true
+          },
+          {
+            "id": "m8-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about perpetual problems and dreams within conflict.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "What percentage of relationship conflicts are 'perpetual problems' according to Gottman's research?",
+                  "options": ["About 30%", "About 50%", "About 69%", "About 90%"],
+                  "correct": 2,
+                  "explanation": "Gottman found that approximately 69% of relationship conflicts are perpetual — they never fully resolve because they're rooted in fundamental personality and values differences."
+                },
+                {
+                  "question": "What lies beneath every perpetual problem, according to Gottman?",
+                  "options": ["A character flaw in one or both partners", "A hidden dream, core value, or unmet need", "A communication deficit that therapy can fix", "Incompatible personality types"],
+                  "correct": 1,
+                  "explanation": "Gottman's key insight is that beneath every perpetual conflict lies an unspoken dream, deeply held value, or unmet need. Making these visible — and honouring them — transforms gridlock into dialogue."
+                },
+                {
+                  "question": "What is the difference between a position and an underlying need in conflict?",
+                  "options": ["There is no meaningful difference — they are the same thing", "The position is what you say you want; the underlying need is what you actually require at a deeper level", "The position is always correct; the need is emotional and less important", "Positions are about logic; needs are about manipulation"],
+                  "correct": 1,
+                  "explanation": "Positions are surface-level demands ('I need the house clean'). Underlying needs are the deeper requirements ('I need to feel calm and safe in my home'). The same need can often be met in multiple ways, opening up compromise."
+                },
+                {
+                  "question": "What is the goal when dialoguing about a perpetual problem?",
+                  "options": ["To finally solve the problem once and for all", "To determine who is right and who should change", "To understand and honour each partner's underlying dream, even without full resolution", "To agree on a compromise position"],
+                  "correct": 2,
+                  "explanation": "The goal of dreaming within conflict dialogue is understanding and honouring — not solving. Couples can learn to live with their differences when both people feel their underlying dreams are respected."
+                }
+              ]
+            }
           }
         ]
       }
@@ -1860,6 +2388,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m9-l3-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore repair and healing, take a moment to reflect.",
+            "content": {
+              "question": "How easy do you currently find it to offer — or accept — a genuine apology in your relationship?",
+              "options": [
+                { "emoji": "😣", "label": "Very difficult — it feels like losing" },
+                { "emoji": "😕", "label": "Uncomfortable — I struggle with both" },
+                { "emoji": "😐", "label": "Manageable, but I could do better" },
+                { "emoji": "🙂", "label": "Fairly easy — I value repair" },
+                { "emoji": "🌟", "label": "I prioritise apology and forgiveness" }
+              ]
+            }
+          },
+          {
             "id": "m9-l3-a1",
             "type": "carousel",
             "title": "Stages of Grieving a Hurt",
@@ -1896,6 +2440,20 @@ export const CONNECT_COURSE: CourseModule[] = [
             "saveToVault": false
           },
           {
+            "id": "m9-l3-a1b",
+            "type": "flip_card",
+            "title": "Repair & Forgiveness: Key Concepts",
+            "instruction": "Flip each card to understand the building blocks of repair and healing.",
+            "content": {
+              "cards": [
+                { "front": "Repair Attempt", "back": "Any action — verbal or non-verbal — that interrupts a negative conflict spiral and attempts to reconnect. Can be as simple as 'I'm sorry, I said that badly.' Gottman found that the ability to send AND receive repair attempts is one of the strongest predictors of long-term relationship success.", "emoji": "🛠️", "tag": "Gottman" },
+                { "front": "Full Apology", "back": "A genuine apology has five components: expressing remorse ('I'm sorry'), taking responsibility ('I was wrong to…'), acknowledging the impact ('I can see that hurt you because…'), showing understanding of their perspective, and making a plan to prevent recurrence. 'I'm sorry you feel that way' is not an apology.", "emoji": "🤲", "tag": "Repair" },
+                { "front": "Forgiveness", "back": "Forgiveness is a choice to release resentment and choose peace — not for the other person's sake, but for your own. It doesn't mean forgetting, excusing, or immediately restoring trust. Research shows that people who forgive report better mental health, lower blood pressure, and stronger relationships.", "emoji": "🕊️", "tag": "Healing" },
+                { "front": "Grief in Relationships", "back": "When significant hurts occur, partners may need to grieve what the relationship was, or what they believed it to be. Applying Kübler-Ross's stages (denial, anger, bargaining, depression, acceptance) helps normalise the non-linear, time-consuming nature of healing from relational wounds.", "emoji": "🌊", "tag": "Healing" }
+              ]
+            }
+          },
+          {
             "id": "m9-l3-a2",
             "type": "short_answer",
             "title": "Rebuilding Trust Action",
@@ -1918,6 +2476,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Even small steps toward repair build significant goodwill.",
             "saveToVault": true
+          },
+          {
+            "id": "m9-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about repair, apology, and forgiveness.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "What is a 'repair attempt' in the context of conflict?",
+                  "options": ["Formally scheduling a conflict conversation", "Any action that interrupts a negative spiral and attempts to reconnect or de-escalate", "Letting a few days pass before discussing the argument", "Agreeing with your partner to end the fight"],
+                  "correct": 1,
+                  "explanation": "A repair attempt is any verbal or non-verbal action that breaks a negative conflict cycle — from a gentle touch to 'I'm sorry I said it that way.' The ability to send AND receive repair attempts is a key predictor of relationship success."
+                },
+                {
+                  "question": "Which of the following is NOT a component of a genuine apology?",
+                  "options": ["Expressing remorse", "Acknowledging the impact on your partner", "'I'm sorry you feel that way'", "Taking responsibility for your part"],
+                  "correct": 2,
+                  "explanation": "'I'm sorry you feel that way' places responsibility on the other person's reaction rather than acknowledging any wrongdoing. A genuine apology takes responsibility and acknowledges the impact of your actions."
+                },
+                {
+                  "question": "What does forgiveness actually mean, according to relationship research?",
+                  "options": ["Forgetting what happened and moving on as if it didn't occur", "Excusing the behaviour that caused harm", "Releasing resentment and choosing peace — not necessarily restoring trust immediately", "Immediately returning to normal in the relationship"],
+                  "correct": 2,
+                  "explanation": "Forgiveness is a choice to release resentment for your own wellbeing — not for the other person. It doesn't erase memory, excuse behaviour, or automatically restore trust. Trust rebuilding is a separate, slower process."
+                },
+                {
+                  "question": "Who can initiate a repair attempt during or after conflict?",
+                  "options": ["Only the person who caused the harm", "Only the person who feels hurt", "Either partner, regardless of who 'started it'", "Only a therapist or neutral third party"],
+                  "correct": 2,
+                  "explanation": "Either partner can initiate a repair attempt. Waiting for the 'at-fault' person to move first often prolongs disconnection. Any gesture that interrupts negativity and signals 'I value us over this fight' counts."
+                }
+              ]
+            }
           }
         ]
       }
@@ -1943,6 +2537,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "description": "Explore how couples build a unique internal world through shared values, rituals, and symbols.",
         "estimatedMinutes": 15,
         "activities": [
+          {
+            "id": "m10-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore shared meaning, take a moment to reflect.",
+            "content": {
+              "question": "How much of a sense of shared purpose and meaning do you currently feel in your relationship?",
+              "options": [
+                { "emoji": "😔", "label": "Very little — we're just getting through the days" },
+                { "emoji": "😕", "label": "Some, but it feels thin or routine" },
+                { "emoji": "😐", "label": "A moderate amount — some things feel shared" },
+                { "emoji": "🙂", "label": "Quite a lot — we have shared goals and rituals" },
+                { "emoji": "🌟", "label": "Very strong — our shared meaning is rich and alive" }
+              ]
+            }
+          },
           {
             "id": "m10-l1-a1",
             "type": "multiple_choice",
@@ -1998,6 +2608,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m10-l1-a2b",
+            "type": "flip_card",
+            "title": "Shared Meaning: Key Concepts",
+            "instruction": "Flip each card to explore how couples create a meaningful life together.",
+            "content": {
+              "cards": [
+                { "front": "Rituals of Connection", "back": "Predictable, cherished moments that anchor a relationship — morning coffee together, a weekly date night, birthday traditions, a goodbye kiss. Gottman's research found these micro-rituals to be among the strongest predictors of long-term satisfaction. They signal: 'Our relationship is a priority, every day.'", "emoji": "🕯️", "tag": "Gottman" },
+                { "front": "Shared Goals", "back": "Dreams you build toward together — saving for a home, raising children with intention, travelling, building something meaningful. Shared goals create a sense of 'we-ness' that transcends daily friction. When pulling in the same direction, individual sacrifices feel meaningful rather than resentful.", "emoji": "🎯", "tag": "Meaning" },
+                { "front": "Couple Mythology", "back": "Every couple creates a shared story — how you met, your inside jokes, how you've overcome challenges, who handles what. Couples who retell their story with warmth and fondness (even during hard times) are significantly more likely to stay together. Your narrative is a living, renewable resource.", "emoji": "📜", "tag": "Identity" },
+                { "front": "Shared Values", "back": "The non-negotiable principles you both hold — family, personal growth, adventure, service, creativity. When values align, decisions become easier. When they diverge, understanding each other's 'why' is essential — values clashes that go unexplained easily become identity wars.", "emoji": "💎", "tag": "Foundation" }
+              ]
+            }
           },
           {
             "id": "m10-l1-a3",
@@ -2109,6 +2733,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Celebrate your journey and look forward to your continuing growth!",
             "saveToVault": true
+          },
+          {
+            "id": "m10-l3-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about shared meaning and couple culture.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "What did Gottman's research identify as the single strongest predictor of long-term relationship satisfaction?",
+                  "options": ["Sexual compatibility", "Financial security", "Micro-rituals of connection practised consistently", "Agreeing on major life values"],
+                  "correct": 2,
+                  "explanation": "Gottman's research found that small, consistent rituals of connection — morning coffee together, a daily kiss goodbye, weekly date nights — are among the strongest predictors of long-term satisfaction. They signal daily prioritisation of the relationship."
+                },
+                {
+                  "question": "What is 'couple mythology'?",
+                  "options": ["Unrealistic beliefs couples hold about relationships", "The shared narrative a couple creates — their story, inside jokes, and how they've navigated challenges", "The myths about love that couples should dispel in therapy", "Stories couples tell others to appear happier than they are"],
+                  "correct": 1,
+                  "explanation": "Couple mythology is the couple's shared story — how they met, what they've overcome, their inside jokes and private language. Couples who recall their story with warmth and fondness are significantly more likely to stay together."
+                },
+                {
+                  "question": "Why do shared goals contribute to relationship wellbeing?",
+                  "options": ["Because they give couples something to argue about productively", "Because they create a sense of we-ness that makes individual sacrifices feel meaningful rather than resentful", "Because they distract couples from their problems", "Because shared goals are evidence of compatibility"],
+                  "correct": 1,
+                  "explanation": "When partners are pulling toward the same future vision, daily friction and sacrifice feel purposeful rather than draining. Shared goals create a sense of being a team with a common mission."
+                },
+                {
+                  "question": "What is the key difference between shared values that are aligned and those that diverge?",
+                  "options": ["Aligned values guarantee relationship success; divergent values mean incompatibility", "When values diverge, understanding each other's 'why' is essential to prevent values clashes becoming identity wars", "Shared values only matter in religious or cultural relationships", "Values alignment is less important than shared goals"],
+                  "correct": 1,
+                  "explanation": "Values divergence doesn't automatically doom a relationship — but unexplained values clashes can feel like attacks on identity. Understanding why something matters to your partner transforms a clash into a dialogue."
+                }
+              ]
+            }
           }
         ]
       }
@@ -2130,6 +2790,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "description": "Understand why anger deserves your respect and attention — and why suppressing it keeps you stuck.",
         "estimatedMinutes": 15,
         "activities": [
+          {
+            "id": "m11-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we explore anger and boundaries, take a moment to reflect.",
+            "content": {
+              "question": "How comfortable are you acknowledging and expressing anger in your close relationships?",
+              "options": [
+                { "emoji": "😶", "label": "I suppress it completely — anger feels dangerous" },
+                { "emoji": "😕", "label": "I tend to hold it in until I explode" },
+                { "emoji": "😐", "label": "Mixed — I express some but hold a lot back" },
+                { "emoji": "🙂", "label": "Generally okay — I can usually name and share it" },
+                { "emoji": "🌟", "label": "Comfortable — anger is information I use well" }
+              ]
+            }
+          },
           {
             "id": "m11-l1-a1",
             "type": "carousel",
@@ -2155,6 +2831,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m11-l1-a1b",
+            "type": "flip_card",
+            "title": "Anger & Boundaries: Key Concepts",
+            "instruction": "Flip each card to understand Harriet Lerner's core insights on anger and self-definition.",
+            "content": {
+              "cards": [
+                { "front": "Anger as Signal", "back": "Lerner's central insight: anger is not a problem to be managed or eliminated — it is information. Anger signals that something is wrong, a need is unmet, or a boundary is being crossed. The goal is to decode the message anger sends, then act with clarity rather than reactivity.", "emoji": "🚦", "tag": "Lerner" },
+                { "front": "De-Selfing", "back": "The gradual loss of self that occurs when you chronically prioritise others' needs, approval, and comfort over your own. De-selfed partners become experts on everyone around them while losing touch with their own thoughts, feelings, and desires. Resentment is an inevitable symptom.", "emoji": "👻", "tag": "Lerner" },
+                { "front": "Countermove", "back": "When you change a habitual pattern in a relationship — say no, set a boundary, express a need — the other person will push back to restore the old dynamic. This is a countermove. It doesn't mean you're wrong. It means the system is responding to change. Hold your position calmly.", "emoji": "↩️", "tag": "Lerner" },
+                { "front": "Self-Definition vs. Reactivity", "back": "The alternative to both silence and explosion is self-definition: clearly stating your position using 'I' language without attacking, defending, or over-explaining. 'I am not comfortable with that' is a complete sentence. You don't need the other person's agreement to define yourself.", "emoji": "🎯", "tag": "Lerner" }
+              ]
+            }
           },
           {
             "id": "m11-l1-a2",
@@ -2468,6 +3158,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Lerner: 'We cannot make another person change his or her steps to an old dance, but if we change our own steps, the dance no longer can continue in the same predictable pattern.'",
             "saveToVault": true
+          },
+          {
+            "id": "m11-l5-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about anger, boundaries, and self-definition.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "According to Harriet Lerner, what is the primary purpose of anger?",
+                  "options": ["To motivate the other person to change their behaviour", "To signal that something is wrong, a need is unmet, or a boundary is being violated", "To release pent-up frustration and feel better", "To establish dominance in the relationship"],
+                  "correct": 1,
+                  "explanation": "Lerner's central thesis is that anger is information — a signal worth listening to. The goal isn't to express or suppress anger, but to decode what it's telling you and respond with clarity."
+                },
+                {
+                  "question": "What does Lerner mean by 'de-selfing'?",
+                  "options": ["Losing your physical identity in a relationship", "The gradual erosion of self that happens when you chronically put others' needs before your own", "Selfishly prioritising your own needs over your partner's", "Becoming too emotionally dependent on a partner"],
+                  "correct": 1,
+                  "explanation": "De-selfing is the chronic sacrifice of your own thoughts, feelings, and needs to maintain harmony. It leads to resentment and eventually to either explosion or shutdown — and it ultimately hurts the relationship."
+                },
+                {
+                  "question": "What is a 'countermove' in the context of relationship change?",
+                  "options": ["A helpful adjustment your partner makes when you set a boundary", "A therapeutic technique for managing anger", "The other person's resistance when you change a habitual pattern — their attempt to restore the old dynamic", "A deliberate manipulation tactic"],
+                  "correct": 2,
+                  "explanation": "A countermove is the other person's often-unconscious attempt to restore the relationship's familiar (even if unhealthy) equilibrium when you change your behaviour. It's not evidence you're wrong — it's evidence change is happening."
+                },
+                {
+                  "question": "What is the alternative to both people-pleasing silence and reactive explosions, according to Lerner?",
+                  "options": ["Avoiding conflict entirely", "Letting a professional mediator handle disputes", "Self-definition: clearly stating your position with 'I' language, without attacking or over-explaining", "Giving ultimatums to force change"],
+                  "correct": 2,
+                  "explanation": "Lerner's 'third way' is self-definition — using calm, clear 'I' language to state your position and needs without attacking the other person or requiring their agreement. 'I am not comfortable with that' is a complete, powerful sentence."
+                }
+              ]
+            }
           }
         ]
       }
@@ -2560,6 +3286,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "estimatedMinutes": 15,
         "activities": [
           {
+            "id": "m12-l2-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before learning the ATTUNE framework, reflect on how you currently respond when your partner is upset.",
+            "content": {
+              "question": "When your partner is emotionally distressed, how naturally do you attune to what they're feeling rather than trying to fix or dismiss it?",
+              "options": [
+                { "emoji": "😬", "label": "I immediately try to fix or minimise — feelings make me uncomfortable" },
+                { "emoji": "😕", "label": "I try but often default to solutions or defensiveness" },
+                { "emoji": "😐", "label": "Hit and miss — depends on my own stress level" },
+                { "emoji": "🙂", "label": "Generally good at listening and empathising" },
+                { "emoji": "🌟", "label": "Attuning is my natural first response" }
+              ]
+            }
+          },
+          {
             "id": "m12-l2-a1",
             "type": "carousel",
             "title": "The A-TT-U-N-E Framework",
@@ -2594,6 +3336,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m12-l2-a1b",
+            "type": "flip_card",
+            "title": "A-TT-U-N-E: The Five Steps",
+            "instruction": "Flip each card to master the five components of emotional attunement.",
+            "content": {
+              "cards": [
+                { "front": "A — Attend", "back": "Give undivided attention. Turn off the screen, put away the phone. Show through your actions that what your partner is saying matters. Attention equals affection — and its absence is felt immediately as disconnection, regardless of intent.", "emoji": "👁️", "tag": "ATTUNE" },
+                { "front": "TT — Turn Toward", "back": "Physically orient toward your partner. Women especially equate emotional intimacy with face-to-face, eye-to-eye contact. Unless you're literally hunting together, turn your body toward her while you talk. This small physical shift signals genuine engagement.", "emoji": "↩️", "tag": "ATTUNE" },
+                { "front": "U — Understand", "back": "Ask questions to understand WHY this matters to your partner, not what solution you should offer. 'Tell me more.' 'Why is this so important to you?' Understanding is the goal — not agreement, not advice. You can only help if you truly understand.", "emoji": "🔍", "tag": "ATTUNE" },
+                { "front": "N & E — Nondefensively Listen & Empathise", "back": "Don't react, counter-attack, or justify. Any feeling is real to the person experiencing it. Then go one step further: try to FEEL how your partner feels. Empathy is not intellectual agreement — it's emotional resonance. 'That sounds really painful. I can see why you're hurt.'", "emoji": "❤️", "tag": "ATTUNE" }
+              ]
+            }
           },
           {
             "id": "m12-l2-a2",
@@ -2841,6 +3597,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Gottman: 'Men, you have the power to make or break a relationship. The bar stools of the world are filled with lonely men sitting in the rubble of their failed one-liners. We don't want that fate for you.'",
             "saveToVault": true
+          },
+          {
+            "id": "m12-l5-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about attunement, trustworthiness, and the science of lasting relationships.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "According to Gottman's research, what do women identify as their #1 requirement in a male partner?",
+                  "options": ["Physical attractiveness and fitness", "Financial security and ambition", "Trustworthiness — being who you say you are and doing what you say you'll do", "Sexual compatibility and frequency"],
+                  "correct": 2,
+                  "explanation": "Gottman's 40 years of Love Lab research found that the number one thing women look for is trustworthiness — reliability, accountability, and authenticity. It outranks appearance, income, and all other qualities."
+                },
+                {
+                  "question": "What does the 'A' in A-TT-U-N-E stand for, and what does it require?",
+                  "options": ["Agree — agreeing with your partner's perspective", "Attend — giving your undivided attention by putting away distractions", "Apologise — leading with an apology in every difficult conversation", "Affirm — affirming your love before every conversation"],
+                  "correct": 1,
+                  "explanation": "Attend means giving genuine, undivided attention — phone away, eyes engaged, body turned toward your partner. Attention is a fundamental act of affection; its absence registers as rejection."
+                },
+                {
+                  "question": "What is the 5:1 ratio, and why does it matter?",
+                  "options": ["Five hours of quality time for every one hour of conflict", "Five positive interactions for every one negative interaction — the ratio found in happy, stable relationships", "Five days of calm for every one argument", "Five times more sex than the national average"],
+                  "correct": 1,
+                  "explanation": "Gottman found that happy, stable couples maintain approximately 5 positive interactions for every 1 negative one. Unhappy couples are closer to 1:1. Every turn toward a bid, every expression of appreciation, every moment of humour is a deposit that funds the relationship through difficult times."
+                },
+                {
+                  "question": "What does Gottman's research show about 'masters' of relationships compared to 'disasters' regarding emotional bids?",
+                  "options": ["Masters respond to bids 100% of the time; disasters respond 0% of the time", "Masters turn toward bids 86% of the time; disasters turn toward bids only 33% of the time", "Masters avoid making bids to keep the relationship low-pressure", "Masters only respond to bids when they're in a good mood"],
+                  "correct": 1,
+                  "explanation": "Masters responded positively to their partner's bids for connection 86% of the time. Disasters responded only 33% of the time. These micro-moments of turning toward or away are the daily vote for or against the relationship."
+                }
+              ]
+            }
           }
         ]
       }
@@ -2862,6 +3654,22 @@ export const CONNECT_COURSE: CourseModule[] = [
         "description": "How marriages don't end with a bang — they bleed out slowly from everyday moments you think don't matter.",
         "estimatedMinutes": 15,
         "activities": [
+          {
+            "id": "m13-l1-a0",
+            "type": "reaction_slider",
+            "title": "Check In",
+            "instruction": "Before we look at how marriages end, take an honest moment to reflect.",
+            "content": {
+              "question": "How often do you dismiss or minimise a concern your partner raises as unimportant or an overreaction?",
+              "options": [
+                { "emoji": "😬", "label": "Very often — most of their complaints seem disproportionate" },
+                { "emoji": "😕", "label": "Fairly often — I tend to rationalise rather than listen" },
+                { "emoji": "😐", "label": "Sometimes — I catch myself doing this" },
+                { "emoji": "🙂", "label": "Rarely — I try to take their concerns seriously" },
+                { "emoji": "🌟", "label": "Almost never — I lead with curiosity" }
+              ]
+            }
+          },
           {
             "id": "m13-l1-a1",
             "type": "carousel",
@@ -2892,6 +3700,20 @@ export const CONNECT_COURSE: CourseModule[] = [
               ]
             },
             "saveToVault": false
+          },
+          {
+            "id": "m13-l1-a1b",
+            "type": "flip_card",
+            "title": "How Marriages End: Key Concepts",
+            "instruction": "Flip each card to understand the slow, invisible processes that erode relationships.",
+            "content": {
+              "cards": [
+                { "front": "Death by Paper Cuts", "back": "Marriages rarely end with a dramatic betrayal. They bleed out from 10,000 small moments: the dismissive response, the eye-roll, the promise not kept, the concern minimised. Each one is small. Their cumulative effect is catastrophic — and usually invisible to the person causing them.", "emoji": "✂️", "tag": "Fray" },
+                { "front": "It's Never About the Thing", "back": "The glass left by the sink, the fish sandwich, the forgotten anniversary — these aren't petty complaints. They're tests of whether you consider your partner in your daily decisions. Each 'small thing' is a vote: Does our relationship matter enough to influence your behaviour? Ignore enough of them and the answer becomes clear.", "emoji": "🐟", "tag": "Fray" },
+                { "front": "Intent vs. Impact", "back": "A fundamental truth: your partner's pain is real regardless of whether you intended to cause it. 'I didn't mean to hurt you, so you shouldn't be hurt' is not compassion — it's invalidation. The only question that matters is: how can I understand and address the impact?", "emoji": "👣", "tag": "Fray" },
+                { "front": "The Invalidation Triple Threat", "back": "The three forms of invalidation that kill relationships: (1) telling your partner their thoughts are wrong, (2) telling them their feelings are wrong, (3) attacking their character for persisting. Each round of invalidation erodes trust until your partner stops bringing things up — not because things are fine, but because they've given up.", "emoji": "⚡", "tag": "Fray" }
+              ]
+            }
           },
           {
             "id": "m13-l1-a2",
@@ -3214,6 +4036,42 @@ export const CONNECT_COURSE: CourseModule[] = [
             },
             "tip": "Fray: 'We bled out from 10,000 paper cuts. Quietly. Slowly. She knew something was wrong. I insisted everything was fine. This is how your marriage ends. But it doesn't have to be.'",
             "saveToVault": true
+          },
+          {
+            "id": "m13-l5-a4",
+            "type": "knowledge_check",
+            "title": "Knowledge Check",
+            "instruction": "Test your understanding before moving on.",
+            "content": {
+              "intro": "Let's check what you've learned about how marriages end — and how to prevent it.",
+              "passMark": 3,
+              "questions": [
+                {
+                  "question": "According to Matthew Fray, how do most marriages end?",
+                  "options": ["In a dramatic betrayal or single defining event", "Slowly and quietly, from the accumulated weight of thousands of small dismissed moments", "Because of fundamental incompatibility discovered too late", "Due to financial stress overwhelming the relationship"],
+                  "correct": 1,
+                  "explanation": "Fray's core insight is that marriages rarely end with a bang. They bleed out slowly from 10,000 paper cuts — small dismissals, unmet bids, minimised concerns — until one partner quietly stops trying to be heard."
+                },
+                {
+                  "question": "What does Fray mean when he says 'it's never about the thing'?",
+                  "options": ["Small issues are unimportant and should be ignored", "Surface complaints — the unwashed glass, the fish sandwich — are actually about whether you consider your partner in your daily choices and whether they matter enough to influence your behaviour", "Partners should address only the literal complaint, not read into it", "Small things only become big problems when discussed too much"],
+                  "correct": 1,
+                  "explanation": "The 'thing' is always symbolic. When a partner raises a complaint about a small behaviour, they are really asking: 'Do I matter to you? Does our relationship influence your decisions?' Repeatedly saying no — even unintentionally — has cumulative effects."
+                },
+                {
+                  "question": "Which of the Invalidation Triple Threat is described as the most damaging?",
+                  "options": ["Telling your partner their thoughts are wrong", "Telling your partner their feelings are wrong", "Attacking your partner's character when they persist in raising a concern", "Ignoring the concern entirely"],
+                  "correct": 2,
+                  "explanation": "Attacking character — 'You're too sensitive', 'You're crazy', 'You always overreact' — is the most damaging because it doesn't just dismiss a specific feeling or thought. It attacks who your partner IS as a person, compounding the original invalidation."
+                },
+                {
+                  "question": "What is the critical distinction Fray makes between being a 'good person' and being a 'good partner'?",
+                  "options": ["Good people are naturally good partners — character determines relationship quality", "Being a good partner requires skill and deliberate practice, just like any craft — good character alone is not sufficient", "Good partners are better people morally; it's the same thing", "Good people may be bad partners only if they've had traumatic experiences"],
+                  "correct": 1,
+                  "explanation": "Fray's key insight: 'I'm a good person, therefore I must be a good partner' is faulty logic. Being a good partner is a learnable skill requiring study and practice. Just as being kind doesn't make you a good surgeon, being good doesn't automatically make you a good spouse."
+                }
+              ]
+            }
           }
         ]
       }

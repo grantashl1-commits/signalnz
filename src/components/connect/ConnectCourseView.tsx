@@ -1,25 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Share2 } from "lucide-react";
+import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Sparkles } from "lucide-react";
 import { CONNECT_COURSE, type CourseModule, type CourseLesson } from "@/data/connect-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
-import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 
-const MODULE_COLORS = [
-  "from-rose-500/20 to-pink-400/10",
-  "from-violet-500/20 to-purple-400/10",
-  "from-sky-500/20 to-blue-400/10",
-  "from-amber-500/20 to-orange-400/10",
-  "from-emerald-500/20 to-teal-400/10",
-  "from-fuchsia-500/20 to-pink-400/10",
-  "from-cyan-500/20 to-sky-400/10",
-  "from-lime-500/20 to-green-400/10",
-  "from-indigo-500/20 to-violet-400/10",
-  "from-red-500/20 to-rose-400/10",
-];
 
 type View = "modules" | "lessons" | "lesson";
 
@@ -121,20 +108,49 @@ export default function ConnectCourseView({ connectionId, partnerRole, partnerNa
           <motion.div key="modules" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="text-center mb-5">
               <p className="font-display text-lg font-bold text-foreground">Couples Course</p>
-              <p className="text-xs text-muted-foreground mt-1">10 modules · work through together</p>
-              {totalProgress > 0 && (
-                <div className="mt-3 max-w-[200px] mx-auto">
-                  <Progress value={totalProgress} className="h-1.5" />
-                  <p className="text-[10px] text-muted-foreground mt-1">{totalProgress}% complete (you)</p>
-                </div>
-              )}
+              <p className="text-xs text-muted-foreground mt-1">{CONNECT_COURSE.length} modules · work through together</p>
             </div>
+
+            {/* XP + progress banner */}
+            {totalProgress > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-primary/8 to-primary/4 border border-primary/15 mb-4"
+              >
+                <div className="relative w-14 h-14 shrink-0">
+                  <svg viewBox="0 0 56 56" className="w-full h-full -rotate-90">
+                    <circle cx="28" cy="28" r="22" fill="none" stroke="hsl(var(--border))" strokeWidth="4" />
+                    <circle cx="28" cy="28" r="22" fill="none" stroke="hsl(var(--primary))" strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(totalProgress / 100) * (2 * Math.PI * 22)} ${2 * Math.PI * 22}`}
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center font-body text-xs font-bold text-foreground">
+                    {totalProgress}%
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="font-display text-sm font-bold text-foreground">Keep going together!</p>
+                  <p className="font-body text-xs text-muted-foreground mt-0.5">
+                    {completedActivities.size} activities completed
+                  </p>
+                  <div className="flex items-center gap-1 mt-1.5">
+                    <Sparkles className="h-3 w-3 text-amber-500" />
+                    <span className="font-body text-xs font-bold text-amber-600">
+                      {completedActivities.size * 10} XP earned
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             <div className="space-y-2.5">
               {CONNECT_COURSE.map((mod, i) => {
                 const myProgress = getModuleProgress(mod);
                 const theirProgress = getPartnerModuleProgress(mod);
                 const isUnlocked = i === 0 || getModuleProgress(CONNECT_COURSE[i - 1]) >= 60;
+                const circumference = 2 * Math.PI * 16;
 
                 return (
                   <motion.button
@@ -145,35 +161,47 @@ export default function ConnectCourseView({ connectionId, partnerRole, partnerNa
                     transition={{ delay: i * 0.04 }}
                     disabled={!isUnlocked}
                     className={`w-full text-left p-4 rounded-2xl border transition-all ${
-                      isUnlocked ? "border-border bg-card hover:border-primary/30" : "border-border/50 bg-card/50 opacity-60"
+                      isUnlocked ? "border-border bg-card hover:border-primary/30 active:scale-[0.99]" : "border-border/50 bg-card/50 opacity-60"
                     }`}
                   >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${MODULE_COLORS[i]} flex items-center justify-center shrink-0`}>
-                        {myProgress === 100 ? <CheckCircle2 className="h-4 w-4 text-primary" /> :
-                         isUnlocked ? <BookOpen className="h-4 w-4 text-primary" /> :
-                         <Lock className="h-4 w-4 text-muted-foreground" />}
+                    <div className="flex items-start gap-3.5">
+                      {/* Circular progress ring */}
+                      <div className="relative w-11 h-11 shrink-0">
+                        <svg viewBox="0 0 44 44" className="w-full h-full -rotate-90">
+                          <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+                          {isUnlocked && (
+                            <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--primary))" strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeDasharray={`${(myProgress / 100) * circumference} ${circumference}`}
+                              className="transition-all duration-700"
+                            />
+                          )}
+                        </svg>
+                        <span className="absolute inset-0 flex items-center justify-center">
+                          {!isUnlocked
+                            ? <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                            : myProgress === 100
+                              ? <CheckCircle2 className="h-4 w-4 text-primary" />
+                              : <BookOpen className="h-3.5 w-3.5 text-primary/60" />}
+                        </span>
                       </div>
+
                       <div className="flex-1 min-w-0">
                         <h3 className="font-display text-sm font-bold text-foreground">{mod.title}</h3>
-                        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{mod.subtitle}</p>
+                        <p className="font-body text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{mod.subtitle}</p>
                         <div className="flex items-center gap-3 mt-1.5">
-                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                          <span className="font-body text-[10px] text-muted-foreground flex items-center gap-1">
                             <Clock className="h-3 w-3" /> {mod.estimatedMinutes} min
                           </span>
-                          <span className="text-[10px] text-muted-foreground">{mod.lessons.length} lessons</span>
+                          <span className="font-body text-[10px] text-muted-foreground">{mod.lessons.length} lessons</span>
+                          {myProgress > 0 && myProgress < 100 && (
+                            <span className="font-body text-[10px] text-primary font-medium">{myProgress}%</span>
+                          )}
                         </div>
-                        {(myProgress > 0 || theirProgress > 0) && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <div className="flex-1">
-                              <Progress value={myProgress} className="h-1" />
-                              <p className="text-[9px] text-muted-foreground mt-0.5">You: {myProgress}%</p>
-                            </div>
-                            <div className="flex-1">
-                              <Progress value={theirProgress} className="h-1" />
-                              <p className="text-[9px] text-muted-foreground mt-0.5">{partnerName}: {theirProgress}%</p>
-                            </div>
-                          </div>
+                        {theirProgress > 0 && (
+                          <p className="font-body text-[10px] text-violet-500 mt-1">
+                            {partnerName}: {theirProgress}%
+                          </p>
                         )}
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground/40 mt-1 shrink-0" />
@@ -188,12 +216,12 @@ export default function ConnectCourseView({ connectionId, partnerRole, partnerNa
         {view === "lessons" && selectedModule && (
           <motion.div key="lessons" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <button onClick={() => { setView("modules"); setSelectedModule(null); }}
-              className="flex items-center gap-1 text-xs text-muted-foreground mb-4 hover:text-foreground">
+              className="flex items-center gap-1 font-body text-xs text-muted-foreground mb-4 hover:text-foreground">
               <ArrowLeft className="h-3 w-3" /> All modules
             </button>
-            <div className="mb-4">
+            <div className="mb-5">
               <h2 className="font-display text-lg font-bold text-foreground">{selectedModule.title}</h2>
-              <p className="text-xs text-muted-foreground mt-1">{selectedModule.description}</p>
+              <p className="font-body text-sm text-muted-foreground mt-1">{selectedModule.description}</p>
             </div>
             <div className="space-y-2">
               {selectedModule.lessons.map((lesson, i) => {
@@ -205,18 +233,20 @@ export default function ConnectCourseView({ connectionId, partnerRole, partnerNa
                     onClick={() => { haptic("medium"); setSelectedLesson(lesson); setView("lesson"); }}
                     initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="w-full text-left p-3.5 rounded-xl border border-border bg-card hover:border-primary/30 transition-all">
+                    className="w-full text-left p-4 rounded-xl border border-border bg-card hover:border-primary/30 active:scale-[0.99] transition-all">
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${done ? "bg-primary/20" : "bg-secondary"}`}>
-                        {done ? <CheckCircle2 className="h-4 w-4 text-primary" /> :
-                         <span className="text-xs font-bold text-muted-foreground">{i + 1}</span>}
+                        {done
+                          ? <CheckCircle2 className="h-4 w-4 text-primary" />
+                          : <span className="font-body text-xs font-bold text-muted-foreground">{i + 1}</span>}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-display text-sm font-bold text-foreground">{lesson.title}</h4>
+                        <p className="font-body text-xs text-muted-foreground mt-0.5 line-clamp-1">{lesson.description}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] text-muted-foreground">{lesson.activities.length} activities</span>
-                          {myDone > 0 && <span className="text-[10px] text-primary">You: {myDone}/{lesson.activities.length}</span>}
-                          {theirDone > 0 && <span className="text-[10px] text-violet-500">{partnerName}: {theirDone}/{lesson.activities.length}</span>}
+                          <span className="font-body text-[10px] text-muted-foreground">{lesson.activities.length} activities</span>
+                          {myDone > 0 && <span className="font-body text-[10px] text-primary">You: {myDone}/{lesson.activities.length}</span>}
+                          {theirDone > 0 && <span className="font-body text-[10px] text-violet-500">{partnerName}: {theirDone}/{lesson.activities.length}</span>}
                         </div>
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />

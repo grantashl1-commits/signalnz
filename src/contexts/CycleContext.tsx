@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 // ─── Types ─────────────────────────────────────────────────
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
@@ -97,9 +98,46 @@ export function CycleProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Sync cycle start date with Supabase profiles on auth state change
+  useEffect(() => {
+    const syncFromProfile = async (userId: string) => {
+      const local = readStartDate();
+      const { data } = await supabase
+        .from("profiles")
+        .select("last_period_date")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const cloudDate = (data as any)?.last_period_date as string | null;
+      if (cloudDate && !local) {
+        writeStartDate(cloudDate);
+        setStartDate(cloudDate);
+      }
+    };
+
+    // Check current session immediately
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) syncFromProfile(user.id);
+    });
+
+    // Also sync on future sign-ins
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) syncFromProfile(session.user.id);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const setCycleStartDate = useCallback((date: string) => {
     writeStartDate(date);
     setStartDate(date);
+    // Fire-and-forget save to Supabase profiles
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        supabase
+          .from("profiles")
+          .upsert({ user_id: user.id, last_period_date: date } as any, { onConflict: "user_id" })
+          .catch(() => {});
+      }
+    });
   }, []);
 
   const refresh = useCallback(() => {

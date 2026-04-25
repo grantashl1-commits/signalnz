@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, Component, type ReactNode } from "react";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import SignalPulse from "@/components/SignalPulse";
@@ -13,6 +13,28 @@ import { Dumbbell, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
+
+class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, { error: Error | null }> {
+  state = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="rounded-2xl bg-card p-8 text-center space-y-3 shadow-soft">
+          <p className="font-display text-base font-bold text-foreground">Something went wrong loading {this.props.tab}</p>
+          <p className="font-body text-xs text-muted-foreground">Try refreshing the page.</p>
+          <button
+            onClick={() => this.setState({ error: null })}
+            className="font-body text-xs text-primary underline"
+          >
+            Try again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
 
@@ -85,11 +107,11 @@ export default function NutritionPage() {
             </button>
           )}
 
-          {activeTab === "today" && <TodayTab />}
-          {activeTab === "myweek" && <MyWeekTab />}
-          {activeTab === "discover" && <DiscoverTab />}
-          {activeTab === "supplements" && <SupplementRecommender />}
-          {activeTab === "shop" && <ShoppingListPanel />}
+          {activeTab === "today" && <TabErrorBoundary tab="Today"><TodayTab /></TabErrorBoundary>}
+          {activeTab === "myweek" && <TabErrorBoundary tab="My Week"><MyWeekTab /></TabErrorBoundary>}
+          {activeTab === "discover" && <TabErrorBoundary tab="Discover"><DiscoverTab /></TabErrorBoundary>}
+          {activeTab === "supplements" && <TabErrorBoundary tab="Supplements"><SupplementRecommender /></TabErrorBoundary>}
+          {activeTab === "shop" && <TabErrorBoundary tab="Shop"><ShoppingListPanel /></TabErrorBoundary>}
         </div>
       </ContentSection>
     </div>

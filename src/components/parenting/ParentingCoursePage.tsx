@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion, Search, X, Wrench, BookMarked, Lightbulb } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { BookOpen, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion, Search, X, Wrench, BookMarked, Lightbulb, Sparkles } from "lucide-react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { haptic } from "@/hooks/use-mobile";
@@ -341,38 +340,89 @@ export default function ParentingCoursePage() {
                 </p>
               )}
 
+              {/* XP + course progress banner */}
+              {!searchQuery && totalProgress > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-primary/8 to-primary/4 border border-primary/15 mb-2"
+                >
+                  {/* Circular total progress */}
+                  <div className="relative w-14 h-14 shrink-0">
+                    <svg viewBox="0 0 56 56" className="w-full h-full -rotate-90">
+                      <circle cx="28" cy="28" r="22" fill="none" stroke="hsl(var(--border))" strokeWidth="4" />
+                      <circle cx="28" cy="28" r="22" fill="none" stroke="hsl(var(--primary))" strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeDasharray={`${(totalProgress / 100) * (2 * Math.PI * 22)} ${2 * Math.PI * 22}`}
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center font-body text-xs font-bold text-foreground">
+                      {totalProgress}%
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-display text-sm font-bold text-foreground">Keep going!</p>
+                    <p className="font-body text-xs text-muted-foreground mt-0.5">
+                      {completedActivities.size} activities completed
+                    </p>
+                    <div className="flex items-center gap-1 mt-1.5">
+                      <Sparkles className="h-3 w-3 text-amber-500" />
+                      <span className="font-body text-xs font-bold text-amber-600">
+                        {completedActivities.size * 10} XP earned
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Course modules */}
               <div className="grid gap-3">
                 {filteredCourse.map((mod, i) => {
                   const progress = getModuleProgress(mod);
                   const modAny = mod as any;
                   const sourceBooks: string[] | undefined = modAny.sourceBooks;
+                  const circumference = 2 * Math.PI * 16;
                   return (
                     <motion.button key={mod.id} onClick={() => openModule(mod)}
                       initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.04 }}
-                      className="w-full text-left p-5 rounded-2xl border border-border bg-card hover:border-primary/30 active:scale-[0.99] transition-all"
+                      className="w-full text-left p-4 rounded-2xl border border-border bg-card hover:border-primary/30 active:scale-[0.99] transition-all"
                     >
-                      <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${MODULE_COLORS[i % MODULE_COLORS.length]} flex items-center justify-center shrink-0`}>
-                          {progress === 100
-                            ? <CheckCircle2 className="h-5 w-5 text-primary" />
-                            : <BookOpen className="h-5 w-5 text-primary" />}
+                      <div className="flex items-start gap-3.5">
+                        {/* Circular progress ring */}
+                        <div className="relative w-11 h-11 shrink-0">
+                          <svg viewBox="0 0 44 44" className="w-full h-full -rotate-90">
+                            <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+                            <circle cx="22" cy="22" r="16" fill="none" stroke="hsl(var(--primary))" strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeDasharray={`${(progress / 100) * circumference} ${circumference}`}
+                              className="transition-all duration-700"
+                            />
+                          </svg>
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            {progress === 100
+                              ? <CheckCircle2 className="h-4 w-4 text-primary" />
+                              : <BookOpen className="h-3.5 w-3.5 text-primary/60" />}
+                          </span>
                         </div>
+
                         <div className="flex-1 min-w-0">
                           <h3 className="font-display text-sm font-bold text-foreground">{mod.title}</h3>
-                          <p className="font-body text-xs text-muted-foreground mt-1 line-clamp-2">{mod.subtitle}</p>
-                          <div className="flex items-center gap-3 mt-2">
+                          <p className="font-body text-xs text-muted-foreground mt-0.5 line-clamp-2">{mod.subtitle}</p>
+                          <div className="flex items-center gap-3 mt-1.5">
                             <span className="font-body text-[10px] text-muted-foreground flex items-center gap-1">
                               <Clock className="h-3 w-3" /> {mod.estimatedMinutes} min
                             </span>
                             <span className="font-body text-[10px] text-muted-foreground">
                               {mod.lessons.length} lessons
                             </span>
+                            {progress > 0 && progress < 100 && (
+                              <span className="font-body text-[10px] text-primary font-medium">{progress}%</span>
+                            )}
                           </div>
                           {/* Source book badges */}
                           {sourceBooks && sourceBooks.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
+                            <div className="flex flex-wrap gap-1 mt-1.5">
                               {sourceBooks.slice(0, 3).map(book => {
                                 const shortName = book.split("—")[0].trim();
                                 return (
@@ -387,7 +437,6 @@ export default function ParentingCoursePage() {
                               )}
                             </div>
                           )}
-                          {progress > 0 && <Progress value={progress} className="h-1 mt-2" />}
                         </div>
                         <ChevronRight className="h-4 w-4 text-muted-foreground/40 mt-1 shrink-0" />
                       </div>
