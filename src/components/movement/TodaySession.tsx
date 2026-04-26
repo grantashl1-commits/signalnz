@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Dumbbell, Check, Save, PenLine, Heart, Activity, Bluetooth, Plus, ChevronDown, Lightbulb, TrendingUp, Target } from "lucide-react";
+import { Clock, Dumbbell, Check, Save, PenLine, Heart, Activity, Bluetooth, Plus, ChevronDown, Lightbulb, TrendingUp, Target, Undo2, Play, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
+import { useProfile } from "@/hooks/useProfile";
+import { getMaxHR, getZoneForBPM, estimateCalories, HR_ZONES } from "@/data/workouts";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { TimerButton, isTimeBased, parseTimeFromReps } from "@/components/movement/IntervalTimer";
 
