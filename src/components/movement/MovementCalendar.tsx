@@ -135,7 +135,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
 
   // Compute stats
   const { dayCells, workoutCount, totalMinutes, zone2Days, totalCalories, elapsedDays, activityDays } = useMemo(() => {
-    const cells: { day: number; dateStr: string; hasWorkout: boolean; isToday: boolean; isPast: boolean; count: number }[] = [];
+    const cells: { day: number; dateStr: string; hasWorkout: boolean; isToday: boolean; isPast: boolean; count: number; hasZone2: boolean }[] = [];
     let wCount = 0, mins = 0, z2 = 0, cals = 0, actDays = 0, elapsed = 0;
 
     for (let d = 1; d <= daysInMonth; d++) {
@@ -146,6 +146,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
       const isPast = date < today && !isToday;
       const dayLogs = logsByDate[dateStr] || [];
       const hasWorkout = dayLogs.length > 0;
+      let hasZone2 = false;
 
       if (isPast || isToday) elapsed++;
       if (hasWorkout) {
@@ -160,9 +161,12 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
           }
         }
         // Successful Zone 2+ day requires ≥21 min in Z2 or higher
-        if (dayZ2Mins >= 21) z2++;
+        if (dayZ2Mins >= 21) {
+          z2++;
+          hasZone2 = true;
+        }
       }
-      cells.push({ day: d, dateStr, hasWorkout, isToday, isPast, count: dayLogs.length });
+      cells.push({ day: d, dateStr, hasWorkout, isToday, isPast, count: dayLogs.length, hasZone2 });
     }
     return { dayCells: cells, workoutCount: wCount, totalMinutes: mins, zone2Days: z2, totalCalories: cals, elapsedDays: elapsed, activityDays: actDays };
   }, [logsByDate, daysInMonth, viewYear, viewMonth, todayStr]);
