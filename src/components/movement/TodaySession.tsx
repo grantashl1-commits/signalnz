@@ -712,6 +712,11 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
                 {program?.title} · {todayWorkout.day_label}
               </p>
               <h3 className="font-display text-lg font-bold text-foreground mt-0.5">{todayWorkout.title}</h3>
+              {programProgress && (
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5">
+                  {programProgress.phaseTitle} · Session {Math.min(programProgress.done + 1, programProgress.total)} of {programProgress.total}
+                </p>
+              )}
               <div className="flex items-center gap-2 mt-1">
                 <Clock className="h-3 w-3 text-muted-foreground" />
                 <span className="font-body text-xs text-muted-foreground">{todayWorkout.estimated_duration_mins} min</span>
