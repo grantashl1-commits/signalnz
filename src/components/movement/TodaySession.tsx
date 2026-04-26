@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Dumbbell, Check, Save, PenLine, Heart, Activity, Bluetooth, Plus, ChevronDown, Lightbulb, TrendingUp, Target } from "lucide-react";
+import { Clock, Dumbbell, Check, Save, PenLine, Heart, Activity, Bluetooth, Plus, ChevronDown, Lightbulb, TrendingUp, Target, Undo2, Play, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
+import { useProfile } from "@/hooks/useProfile";
+import { getMaxHR, getZoneForBPM, estimateCalories, HR_ZONES } from "@/data/workouts";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { TimerButton, isTimeBased, parseTimeFromReps } from "@/components/movement/IntervalTimer";
 
@@ -342,8 +344,9 @@ interface Props {
 
 export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog, onSessionLogged }: Props) {
   const { user } = useAuth();
-  const { currentPhase } = useCycle();
+  const { currentPhase, currentCycleDay } = useCycle();
   const hr = useGlobalHeartRate();
+  const profile = useProfile();
   const { goalCategoryId, program, phases, fetchWorkoutExercises, getNextProgramWorkout } = useTrainingProgram();
 
   const [todayWorkout, setTodayWorkout] = useState<WorkoutTemplate | null>(null);
@@ -352,10 +355,22 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const [loading, setLoading] = useState(false);
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [sessionLogged, setSessionLogged] = useState(false);
+  const [loggedWorkoutLogId, setLoggedWorkoutLogId] = useState<string | null>(null);
   const [sessionLogging, setSessionLogging] = useState(false);
   const [sessionNotes, setSessionNotes] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [aiSession, setAiSession] = useState<any>(null);
+
+  // ── Live session timer + HR trace ──
+  // Auto-starts when user connects HR or checks the first exercise.
+  // Persists across renders via refs; computes a real duration & BPM trace
+  // so workout_logs gets accurate duration_minutes / avg_bpm / zone2_plus_percent.
+  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null);
+  const [elapsedSecs, setElapsedSecs] = useState(0);
+  const hrTraceRef = useRef<{ time: number; bpm: number }[]>([]);
+  const bpmRef = useRef(0);
+  const startedAtRef = useRef<number | null>(null);
+
   // NZ-safe local date — avoids UTC drift logging "today" as yesterday
   const todayStr = (() => {
     const parts = new Intl.DateTimeFormat("en-NZ", {
@@ -367,21 +382,68 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   })();
 
   const [todayLogCount, setTodayLogCount] = useState(0);
+  const [loggedTemplateIdsToday, setLoggedTemplateIdsToday] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("workout_logs")
-      .select("id")
+      .select("id, workout_template_id")
       .eq("user_id", user.id)
       .eq("session_date", todayStr)
       .eq("completed", true)
       .then(({ data }) => {
         const count = data?.length || 0;
         setTodayLogCount(count);
-        if (count > 0) setSessionLogged(true);
+        const ids = new Set<string>(
+          (data || []).map((d: any) => d.workout_template_id).filter(Boolean)
+        );
+        setLoggedTemplateIdsToday(ids);
       });
   }, [user, todayStr]);
+
+  // Reset "logged" pill when the displayed workout changes (e.g. moved to next session)
+  useEffect(() => {
+    if (!todayWorkout) return;
+    const isAlreadyLogged = loggedTemplateIdsToday.has(todayWorkout.id);
+    setSessionLogged(isAlreadyLogged);
+    if (!isAlreadyLogged) setLoggedWorkoutLogId(null);
+  }, [todayWorkout, loggedTemplateIdsToday]);
+
+  // Auto-start session timer when HR connects or first exercise is checked
+  useEffect(() => {
+    if (sessionStartedAt) return;
+    if (sessionLogged) return;
+    if (hr.connected || completedExercises.size > 0) {
+      const now = Date.now();
+      setSessionStartedAt(now);
+      startedAtRef.current = now;
+      hrTraceRef.current = [];
+    }
+  }, [hr.connected, completedExercises.size, sessionStartedAt, sessionLogged]);
+
+  // Tick elapsed time every second while session is running
+  useEffect(() => {
+    if (!sessionStartedAt || sessionLogged) return;
+    const id = window.setInterval(() => {
+      setElapsedSecs(Math.floor((Date.now() - sessionStartedAt) / 1000));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [sessionStartedAt, sessionLogged]);
+
+  // Sample BPM into the trace every 2s while running
+  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
+  useEffect(() => {
+    if (!sessionStartedAt || sessionLogged) return;
+    const id = window.setInterval(() => {
+      const bpm = bpmRef.current;
+      if (bpm <= 0 || !startedAtRef.current) return;
+      const t = Math.floor((Date.now() - startedAtRef.current) / 1000);
+      hrTraceRef.current.push({ time: t, bpm });
+    }, 2000);
+    return () => clearInterval(id);
+  }, [sessionStartedAt, sessionLogged]);
+
 
   // Resolve today's workout from cumulative programme progress (not day-of-week).
   // This keeps the user moving forward through the programme even if they skip
@@ -415,6 +477,17 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
   const allComplete = todayExercises.length > 0 && completedExercises.size === todayExercises.length;
 
+  // Compute the user's age from profile DOB (used for HR zone math).
+  const profileAge = (() => {
+    if (!profile.dateOfBirth) return 30;
+    const dob = new Date(profile.dateOfBirth);
+    const t = new Date();
+    let a = t.getFullYear() - dob.getFullYear();
+    if (t.getMonth() < dob.getMonth() || (t.getMonth() === dob.getMonth() && t.getDate() < dob.getDate())) a--;
+    return a;
+  })();
+  const profileWeight = profile.weightKg || 65;
+
   const handleLogSession = async () => {
     if (!user || sessionLogged || sessionLogging || !todayWorkout) return;
     setSessionLogging(true);
@@ -427,19 +500,66 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       completed: completedExercises.has(ex.id),
     }));
 
-    // Save HR session data if HR was connected
+    // ── Compute real session metrics from the live timer + HR trace ──
+    const trace = hrTraceRef.current;
+    const liveDurationSecs = sessionStartedAt
+      ? Math.floor((Date.now() - sessionStartedAt) / 1000)
+      : 0;
+    // Fallback to template estimate if the user never started the timer
+    const finalDurationMins = liveDurationSecs > 30
+      ? Math.max(1, Math.round(liveDurationSecs / 60))
+      : (todayWorkout.estimated_duration_mins || 0);
+
+    const maxHR = getMaxHR(profileAge);
+    const zoneMins = [0, 0, 0, 0, 0]; // each sample = 2 sec → 2/60 min
+    trace.forEach(d => {
+      const z = getZoneForBPM(d.bpm, maxHR);
+      zoneMins[z.zone - 1] += 2 / 60;
+    });
+    const totalSampleMins = zoneMins.reduce((s, m) => s + m, 0);
+    const avgBpm = trace.length > 0
+      ? Math.round(trace.reduce((s, d) => s + d.bpm, 0) / trace.length)
+      : (hr.connected && hr.bpm > 0 ? hr.bpm : null);
+    const maxBpm = trace.length > 0 ? Math.max(...trace.map(d => d.bpm)) : avgBpm;
+    const z2PlusPercent = totalSampleMins > 0
+      ? Math.round(((zoneMins[1] + zoneMins[2] + zoneMins[3] + zoneMins[4]) / totalSampleMins) * 100)
+      : null;
+    const calories = avgBpm && finalDurationMins > 0
+      ? estimateCalories(avgBpm, finalDurationMins, profileWeight, profileAge)
+      : null;
+
+    // ── Persist HR session (if any trace) ──
     let hrSessionId: string | null = null;
-    if (hr.connected && hr.bpm > 0) {
+    if (trace.length > 0 || (hr.connected && hr.bpm > 0)) {
       try {
+        const bpmTrace = trace
+          .filter((_, i) => i % 5 === 0 || i === trace.length - 1)
+          .map(d => ({
+            minute: parseFloat((d.time / 60).toFixed(2)),
+            bpm: d.bpm,
+            zone: getZoneForBPM(d.bpm, maxHR).zone,
+          }));
+        const zonesSummary = HR_ZONES.reduce((acc, z, i) => ({
+          ...acc,
+          [`z${z.zone}_mins`]: Math.round(zoneMins[i] * 10) / 10,
+        }), {} as Record<string, number>);
+
         const { data: hrData } = await (supabase as any)
           .from("hr_sessions")
           .insert({
             user_id: user.id,
             session_date: todayStr,
             workout_name: todayWorkout.title,
-            bpm_trace: [],
-            zones_summary: {},
+            duration_minutes: finalDurationMins,
+            bpm_trace: bpmTrace,
+            avg_bpm: avgBpm,
+            max_bpm: maxBpm,
+            calories,
+            zones_summary: zonesSummary,
+            zone2_plus_percent: z2PlusPercent,
             cycle_phase: currentPhase,
+            cycle_day: currentCycleDay,
+            notes: sessionNotes.trim() || null,
           })
           .select("id")
           .single();
@@ -447,38 +567,85 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       } catch {}
     }
 
-    const { error } = await (supabase as any)
+    const { data: insertedLog, error } = await (supabase as any)
       .from("workout_logs")
       .insert({
         user_id: user.id,
         workout_template_id: todayWorkout.id,
         exercises: exercisesPayload,
-        duration_minutes: todayWorkout.estimated_duration_mins,
+        duration_minutes: finalDurationMins,
         notes: sessionNotes.trim() || null,
         completed: true,
         cycle_phase: currentPhase,
         session_date: todayStr,
         hr_session_id: hrSessionId,
-        avg_bpm: hr.connected && hr.bpm > 0 ? hr.bpm : null,
-      });
+        avg_bpm: avgBpm,
+        max_bpm: maxBpm,
+        calories,
+        zone2_plus_percent: z2PlusPercent,
+      })
+      .select("id")
+      .single();
 
     setSessionLogging(false);
     if (error) {
       toast.error("Couldn't save session. Try again.");
     } else {
       setSessionLogged(true);
+      setLoggedWorkoutLogId(insertedLog?.id || null);
+      setLoggedTemplateIdsToday(prev => new Set(prev).add(todayWorkout.id));
       haptic("success");
-      toast.success("Session logged! 🎉");
+      const z2Note = z2PlusPercent != null
+        ? ` · ${Math.round((z2PlusPercent / 100) * finalDurationMins)} min Z2+`
+        : "";
+      toast.success(`Session logged · ${finalDurationMins} min${z2Note}`);
       onSessionLogged?.();
-      setTimeout(() => {
-        setTodayLogCount(c => c + 1);
-        setSessionLogged(false);
-        setCompletedExercises(new Set());
-        setSessionNotes("");
-        setShowNotes(false);
-      }, 2000);
+      // Reset live state, but keep sessionLogged=true so the pill reflects it.
+      setSessionStartedAt(null);
+      startedAtRef.current = null;
+      hrTraceRef.current = [];
+      setElapsedSecs(0);
+      setTodayLogCount(c => c + 1);
     }
   };
+
+  const handleUndoLog = async () => {
+    if (!loggedWorkoutLogId || !user) return;
+    haptic("light");
+    const logId = loggedWorkoutLogId;
+    // Optimistically clear UI
+    setSessionLogged(false);
+    setLoggedWorkoutLogId(null);
+    if (todayWorkout) {
+      setLoggedTemplateIdsToday(prev => {
+        const next = new Set(prev);
+        next.delete(todayWorkout.id);
+        return next;
+      });
+    }
+    const { error } = await (supabase as any)
+      .from("workout_logs")
+      .delete()
+      .eq("id", logId)
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Couldn't undo — try again.");
+      // Restore state on failure
+      setSessionLogged(true);
+      setLoggedWorkoutLogId(logId);
+    } else {
+      toast.success("Session removed");
+      setTodayLogCount(c => Math.max(0, c - 1));
+      onSessionLogged?.();
+    }
+  };
+
+  const formatElapsed = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
 
   // Load AI plan session — either from explicit "Start this session" or auto-detect from DB plan
   useEffect(() => {
@@ -747,6 +914,33 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             )
           )}
 
+          {/* ── Live session timer ── */}
+          {sessionStartedAt && !sessionLogged && (
+            <div className="flex items-center justify-between rounded-lg bg-primary/10 border border-primary/20 px-3 py-2">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                <span className="font-body text-xs text-primary font-medium">Session in progress</span>
+              </div>
+              <span className="font-display text-sm font-bold text-primary tabular-nums">{formatElapsed(elapsedSecs)}</span>
+            </div>
+          )}
+          {!sessionStartedAt && !sessionLogged && (
+            <button
+              onClick={() => {
+                haptic("medium");
+                const now = Date.now();
+                setSessionStartedAt(now);
+                startedAtRef.current = now;
+                hrTraceRef.current = [];
+              }}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2"
+            >
+              <Play className="h-3.5 w-3.5 text-primary" />
+              <span className="font-body text-xs text-primary font-medium">Start session timer</span>
+            </button>
+          )}
+
+
           {todayExercises.length > 0 && (
             <div className="space-y-1.5">
               <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -811,9 +1005,20 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-2 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-              <Check className="h-4 w-4 text-emerald-600" />
-              <span className="font-body text-sm text-emerald-600 font-medium">Session logged ✓</span>
+            <div className="flex items-center justify-between gap-2 py-2 px-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-600" />
+                <span className="font-body text-sm text-emerald-600 font-medium">Session logged</span>
+              </div>
+              {loggedWorkoutLogId && (
+                <button
+                  onClick={handleUndoLog}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md"
+                >
+                  <Undo2 className="h-3 w-3" />
+                  <span className="font-body text-xs">Undo</span>
+                </button>
+              )}
             </div>
           )}
         </div>
