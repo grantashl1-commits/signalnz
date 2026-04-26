@@ -135,7 +135,7 @@ export function CycleProvider({ children }: { children: ReactNode }) {
         supabase
           .from("profiles")
           .upsert({ user_id: user.id, last_period_date: date } as any, { onConflict: "user_id" })
-          .catch(() => {});
+          .then(() => {}, () => {});
       }
     });
   }, []);

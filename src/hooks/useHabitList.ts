@@ -62,7 +62,7 @@ export function useHabitList() {
     supabase
       .from("profiles")
       .upsert({ user_id: userId, habits: list as any } as any, { onConflict: "user_id" })
-      .catch(() => {});
+      .then(() => {}, () => {});
   };
 
   const removeHabit = useCallback((id: string) => {

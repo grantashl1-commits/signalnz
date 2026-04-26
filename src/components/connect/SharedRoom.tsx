@@ -140,7 +140,8 @@ export default function SharedRoom({ connectionId, partnerRole, partnerName, myN
 
           /* ── Reflection card ── */
           if (item.kind === "reflection" && item.reflection) {
-            const sharedCards = item.reflection.cards.filter(
+            const cardsArray = Array.isArray(item.reflection.cards) ? item.reflection.cards : [];
+            const sharedCards = cardsArray.filter(
               c => item.reflection!.shared_keys?.includes(c.key)
             );
             if (sharedCards.length === 0) return null;
