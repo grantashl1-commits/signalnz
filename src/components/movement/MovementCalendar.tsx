@@ -253,8 +253,8 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
               >
                 {cell.day}
               </span>
-              {/* Streak flame icon on workout days */}
-              {cell.hasWorkout && (
+              {/* Streak flame icon only on Zone 2+ days (≥21 min Z2) */}
+              {cell.hasZone2 && (
                 <img
                   src={streakFlame}
                   alt=""
