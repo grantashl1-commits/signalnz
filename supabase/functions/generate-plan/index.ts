@@ -14,12 +14,60 @@ function getMonthKey(): string {
 
 function getCyclePhaseGuidance(phase: string): string {
   const map: Record<string, string> = {
-    menstrual: "Prioritise gentle movement, yoga, stretching, walks. Lower intensity (RPE 3-5). Focus on iron-rich recovery.",
-    follicular: "Energy rising — progressive overload, heavier lifts welcome. Fresh fermented foods, complex carbs.",
-    ovulatory: "Peak performance window — push for PRs, HIIT, high-intensity circuits. Antioxidant-rich lighter meals.",
-    luteal: "Moderate steady-state. Complex carbs for serotonin, magnesium-rich foods. Reduce volume 10-20%.",
+    menstrual: "Modest down-regulation only. Keep lifting — drop loads ~10% if needed, RPE cap 7. Skip max-effort PRs. DO NOT skip strength sessions.",
+    follicular: "Estrogen rising — strongest neuromuscular window. Heaviest loads of the cycle, push progressive overload, attempt PRs.",
+    ovulatory: "Peak power output. Plyometrics, sprint intervals, max-effort lifts all green-lit.",
+    luteal: "Slightly higher fatigue + body temp. Keep strength work intact (Sims/Lyon both confirm). Reduce HIIT 10-15% only if symptomatic.",
   };
   return map[phase?.toLowerCase()] || map.follicular;
+}
+
+// Goal-driven prescription — overrides cycle when they conflict
+function getGoalPrescription(goal: string, weightKg: number, goalWeightKg: number, weeks: number): string {
+  const g = (goal || "").toLowerCase();
+  const deficitKg = Math.max(0, weightKg - goalWeightKg);
+  const kgPerWeek = weeks > 0 ? deficitKg / weeks : 0;
+  const aggressive = kgPerWeek >= 1.0;
+
+  if (g.includes("lose") || g.includes("weight") || g.includes("fat")) {
+    return `GOAL: AGGRESSIVE FAT LOSS — ${deficitKg.toFixed(1)}kg in ${weeks} weeks (~${kgPerWeek.toFixed(2)}kg/week).
+${aggressive ? "⚠️ AGGRESSIVE TARGET — programme MUST match. This is BFT/F45/Shred-style training, not yoga." : ""}
+PRESCRIPTION (Lyon + Sims + Schoenfeld + Maffetone):
+- 5-6 training days/week MINIMUM
+- Every session: 8-12 exercises, 3-4 sets, 45-60 minutes (BFT model)
+- Modality rotation across the week: Lower Strength → Upper Strength → Hypertrophy Circuit → Conditioning/HIIT → Full-Body Power → Zone-2 Cardio → Active Recovery
+- Compound lifts FIRST every session (squat/deadlift/press/row/hinge variants)
+- Supersets and tri-sets for time efficiency and EPOC
+- Finishers: 5-10min metcon, sled, sprint intervals, kettlebell complexes
+- Protein cue every plan: 1.6-2.2g/kg bodyweight (Lyon's muscle-centric medicine)
+- Minimum 10k steps/day non-exercise activity (NEAT)
+PHASE OVERRIDES THE GOAL ONLY DURING TRUE MENSTRUAL DAYS 1-2 — and even then, replace with mobility + walking, NOT a rest day.`;
+  }
+  if (g.includes("muscle") || g.includes("gain") || g.includes("strong")) {
+    return `GOAL: HYPERTROPHY / STRENGTH (Schoenfeld + Lyon protocols).
+- 4-5 training days/week (upper/lower or push/pull/legs split)
+- Every session: 6-9 exercises, 3-4 sets of 6-12 reps, 45-60 minutes
+- Compound lift first, then 4-6 accessory movements
+- Progressive overload: add load or reps every week
+- 10-20 hard sets per muscle group per week`;
+  }
+  if (g.includes("tone") || g.includes("define") || g.includes("sculpt")) {
+    return `GOAL: BODY RECOMPOSITION.
+- 4-5 sessions/week mixing strength + conditioning (BFT-style)
+- Every session: 7-10 exercises, 3-4 sets, 45 minutes
+- Alternate days: lower strength, upper strength, full-body circuit, HIIT, hypertrophy
+- Protein priority for muscle preservation`;
+  }
+  if (g.includes("endurance") || g.includes("cardio")) {
+    return `GOAL: CONDITIONING (Maffetone + Joyce).
+- 5-6 sessions/week
+- 2 strength (6-8 exercises × 3 sets), 2 zone-2 (45-60min), 2 intervals
+- Every session: 6+ exercises minimum when strength-focused`;
+  }
+  return `GOAL: GENERAL FITNESS.
+- 4-5 sessions/week
+- Every session: 6-8 exercises, 3 sets, 40-50 minutes
+- Mix strength, conditioning, mobility across the week`;
 }
 
 // Fetch and summarise key PDF names from reference-pdfs/movement bucket
