@@ -61,7 +61,7 @@ async function resolveUser(
   if (!email) return { email: null, name: undefined };
 
   const { data: userData } = await supabase.auth.admin.listUsers();
-  const user = userData?.users?.find((u) => u.email === email);
+  const user = userData?.users?.find((u: any) => u.email === email);
   let name: string | undefined;
 
   if (user) {
