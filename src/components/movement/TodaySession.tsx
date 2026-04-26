@@ -344,8 +344,9 @@ interface Props {
 
 export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog, onSessionLogged }: Props) {
   const { user } = useAuth();
-  const { currentPhase } = useCycle();
+  const { currentPhase, currentCycleDay } = useCycle();
   const hr = useGlobalHeartRate();
+  const profile = useProfile();
   const { goalCategoryId, program, phases, fetchWorkoutExercises, getNextProgramWorkout } = useTrainingProgram();
 
   const [todayWorkout, setTodayWorkout] = useState<WorkoutTemplate | null>(null);
@@ -354,10 +355,22 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const [loading, setLoading] = useState(false);
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [sessionLogged, setSessionLogged] = useState(false);
+  const [loggedWorkoutLogId, setLoggedWorkoutLogId] = useState<string | null>(null);
   const [sessionLogging, setSessionLogging] = useState(false);
   const [sessionNotes, setSessionNotes] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [aiSession, setAiSession] = useState<any>(null);
+
+  // ── Live session timer + HR trace ──
+  // Auto-starts when user connects HR or checks the first exercise.
+  // Persists across renders via refs; computes a real duration & BPM trace
+  // so workout_logs gets accurate duration_minutes / avg_bpm / zone2_plus_percent.
+  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null);
+  const [elapsedSecs, setElapsedSecs] = useState(0);
+  const hrTraceRef = useRef<{ time: number; bpm: number }[]>([]);
+  const bpmRef = useRef(0);
+  const startedAtRef = useRef<number | null>(null);
+
   // NZ-safe local date — avoids UTC drift logging "today" as yesterday
   const todayStr = (() => {
     const parts = new Intl.DateTimeFormat("en-NZ", {
@@ -369,21 +382,68 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   })();
 
   const [todayLogCount, setTodayLogCount] = useState(0);
+  const [loggedTemplateIdsToday, setLoggedTemplateIdsToday] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("workout_logs")
-      .select("id")
+      .select("id, workout_template_id")
       .eq("user_id", user.id)
       .eq("session_date", todayStr)
       .eq("completed", true)
       .then(({ data }) => {
         const count = data?.length || 0;
         setTodayLogCount(count);
-        if (count > 0) setSessionLogged(true);
+        const ids = new Set<string>(
+          (data || []).map((d: any) => d.workout_template_id).filter(Boolean)
+        );
+        setLoggedTemplateIdsToday(ids);
       });
   }, [user, todayStr]);
+
+  // Reset "logged" pill when the displayed workout changes (e.g. moved to next session)
+  useEffect(() => {
+    if (!todayWorkout) return;
+    const isAlreadyLogged = loggedTemplateIdsToday.has(todayWorkout.id);
+    setSessionLogged(isAlreadyLogged);
+    if (!isAlreadyLogged) setLoggedWorkoutLogId(null);
+  }, [todayWorkout, loggedTemplateIdsToday]);
+
+  // Auto-start session timer when HR connects or first exercise is checked
+  useEffect(() => {
+    if (sessionStartedAt) return;
+    if (sessionLogged) return;
+    if (hr.connected || completedExercises.size > 0) {
+      const now = Date.now();
+      setSessionStartedAt(now);
+      startedAtRef.current = now;
+      hrTraceRef.current = [];
+    }
+  }, [hr.connected, completedExercises.size, sessionStartedAt, sessionLogged]);
+
+  // Tick elapsed time every second while session is running
+  useEffect(() => {
+    if (!sessionStartedAt || sessionLogged) return;
+    const id = window.setInterval(() => {
+      setElapsedSecs(Math.floor((Date.now() - sessionStartedAt) / 1000));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [sessionStartedAt, sessionLogged]);
+
+  // Sample BPM into the trace every 2s while running
+  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
+  useEffect(() => {
+    if (!sessionStartedAt || sessionLogged) return;
+    const id = window.setInterval(() => {
+      const bpm = bpmRef.current;
+      if (bpm <= 0 || !startedAtRef.current) return;
+      const t = Math.floor((Date.now() - startedAtRef.current) / 1000);
+      hrTraceRef.current.push({ time: t, bpm });
+    }, 2000);
+    return () => clearInterval(id);
+  }, [sessionStartedAt, sessionLogged]);
+
 
   // Resolve today's workout from cumulative programme progress (not day-of-week).
   // This keeps the user moving forward through the programme even if they skip
