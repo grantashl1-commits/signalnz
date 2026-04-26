@@ -307,9 +307,11 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                         {log.session_date}
                       </p>
                     </div>
-                    <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <img src={streakFlame} alt="" className="w-3.5 h-3.5" width={14} height={14} />
-                    </div>
+                    {z2Mins >= 21 && (
+                      <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <img src={streakFlame} alt="" className="w-3.5 h-3.5" width={14} height={14} />
+                      </div>
+                    )}
                   </div>
 
                   {/* Stats row */}
