@@ -176,6 +176,56 @@ export function useTrainingProgram() {
     return (data as unknown as WorkoutExercise[]) || [];
   }, []);
 
+  /**
+   * Returns the user's next workout in the active program based on their
+   * cumulative `workout_logs` history. Walks every phase in order, then every
+   * workout (by session_number) within each phase. The next workout is the
+   * first one that does not yet appear in completed logs (counting duplicates
+   * so repeating a session moves you forward, not back to D1).
+   *
+   * Falls back to the very first workout if there are no logs yet.
+   * Returns `null` once the entire programme has been completed.
+   */
+  const getNextProgramWorkout = useCallback(async (): Promise<{
+    workout: WorkoutTemplate;
+    phase: ProgramPhase;
+    completedCount: number;
+    totalCount: number;
+  } | null> => {
+    if (!program || phases.length === 0) return null;
+
+    // Pull every workout in the programme in canonical order (phase, then session).
+    const allWorkouts: { workout: WorkoutTemplate; phase: ProgramPhase }[] = [];
+    for (const ph of phases) {
+      const wts = await fetchWorkouts(ph.id);
+      for (const wt of wts) allWorkouts.push({ workout: wt, phase: ph });
+    }
+    if (allWorkouts.length === 0) return null;
+
+    // Count how many sessions for THIS programme the user has completed.
+    const templateIds = allWorkouts.map(x => x.workout.id);
+    let completedCount = 0;
+    if (user) {
+      const { data } = await supabase
+        .from("workout_logs")
+        .select("workout_template_id")
+        .eq("user_id", user.id)
+        .eq("completed", true)
+        .in("workout_template_id", templateIds);
+      completedCount = data?.length || 0;
+    }
+
+    const totalCount = allWorkouts.length;
+    if (completedCount >= totalCount) {
+      // Programme finished — surface the final session so user can repeat or move on.
+      const last = allWorkouts[totalCount - 1];
+      return { workout: last.workout, phase: last.phase, completedCount, totalCount };
+    }
+
+    const next = allWorkouts[completedCount];
+    return { workout: next.workout, phase: next.phase, completedCount, totalCount };
+  }, [program, phases, fetchWorkouts, user]);
+
   return {
     goals,
     goalCategoryId,
@@ -185,5 +235,6 @@ export function useTrainingProgram() {
     selectGoal,
     fetchWorkouts,
     fetchWorkoutExercises,
+    getNextProgramWorkout,
   };
 }
