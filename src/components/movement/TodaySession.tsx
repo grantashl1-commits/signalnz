@@ -344,10 +344,11 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
   const { user } = useAuth();
   const { currentPhase } = useCycle();
   const hr = useGlobalHeartRate();
-  const { goalCategoryId, program, phases, fetchWorkouts, fetchWorkoutExercises } = useTrainingProgram();
+  const { goalCategoryId, program, phases, fetchWorkoutExercises, getNextProgramWorkout } = useTrainingProgram();
 
   const [todayWorkout, setTodayWorkout] = useState<WorkoutTemplate | null>(null);
   const [todayExercises, setTodayExercises] = useState<WorkoutExercise[]>([]);
+  const [programProgress, setProgramProgress] = useState<{ done: number; total: number; phaseTitle: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [sessionLogged, setSessionLogged] = useState(false);
@@ -382,23 +383,25 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       });
   }, [user, todayStr]);
 
+  // Resolve today's workout from cumulative programme progress (not day-of-week).
+  // This keeps the user moving forward through the programme even if they skip
+  // days, and never resets back to Wk1D1 unless every session has been logged.
   useEffect(() => {
     if (!goalCategoryId || !program || phases.length === 0) return;
     setLoading(true);
-    const dayOfWeek = new Date().getDay();
-    const sessionIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-    const currentPhaseObj = phases[0];
-    fetchWorkouts(currentPhaseObj.id).then(async (wts) => {
-      if (wts.length === 0) { setLoading(false); return; }
-      const nextIdx = (sessionIndex + todayLogCount) % wts.length;
-      const todayWt = wts[nextIdx];
-      setTodayWorkout(todayWt);
-      const exs = await fetchWorkoutExercises(todayWt.id);
+    getNextProgramWorkout().then(async (next) => {
+      if (!next) { setLoading(false); return; }
+      setTodayWorkout(next.workout);
+      setProgramProgress({
+        done: next.completedCount,
+        total: next.totalCount,
+        phaseTitle: next.phase.title,
+      });
+      const exs = await fetchWorkoutExercises(next.workout.id);
       setTodayExercises(exs);
       setLoading(false);
     });
-  }, [goalCategoryId, program, phases, fetchWorkouts, fetchWorkoutExercises, todayLogCount]);
+  }, [goalCategoryId, program, phases, fetchWorkoutExercises, getNextProgramWorkout, todayLogCount]);
 
   const toggleComplete = (id: string) => {
     haptic("light");
