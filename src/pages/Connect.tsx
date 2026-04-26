@@ -228,7 +228,8 @@ export default function Connect() {
 
 
   // ═══ PARTNER ENTRY (no account needed) ═══
-  if (!user) {
+  // Skip this block if we've already entered the connected space (partner session)
+  if (!user && view !== "space") {
     return (
       <div className="min-h-screen pb-24 px-6">
         <div className="flex flex-col items-center pt-16 max-w-sm mx-auto">
