@@ -14,12 +14,60 @@ function getMonthKey(): string {
 
 function getCyclePhaseGuidance(phase: string): string {
   const map: Record<string, string> = {
-    menstrual: "Prioritise gentle movement, yoga, stretching, walks. Lower intensity (RPE 3-5). Focus on iron-rich recovery.",
-    follicular: "Energy rising — progressive overload, heavier lifts welcome. Fresh fermented foods, complex carbs.",
-    ovulatory: "Peak performance window — push for PRs, HIIT, high-intensity circuits. Antioxidant-rich lighter meals.",
-    luteal: "Moderate steady-state. Complex carbs for serotonin, magnesium-rich foods. Reduce volume 10-20%.",
+    menstrual: "Modest down-regulation only. Keep lifting — drop loads ~10% if needed, RPE cap 7. Skip max-effort PRs. DO NOT skip strength sessions.",
+    follicular: "Estrogen rising — strongest neuromuscular window. Heaviest loads of the cycle, push progressive overload, attempt PRs.",
+    ovulatory: "Peak power output. Plyometrics, sprint intervals, max-effort lifts all green-lit.",
+    luteal: "Slightly higher fatigue + body temp. Keep strength work intact (Sims/Lyon both confirm). Reduce HIIT 10-15% only if symptomatic.",
   };
   return map[phase?.toLowerCase()] || map.follicular;
+}
+
+// Goal-driven prescription — overrides cycle when they conflict
+function getGoalPrescription(goal: string, weightKg: number, goalWeightKg: number, weeks: number): string {
+  const g = (goal || "").toLowerCase();
+  const deficitKg = Math.max(0, weightKg - goalWeightKg);
+  const kgPerWeek = weeks > 0 ? deficitKg / weeks : 0;
+  const aggressive = kgPerWeek >= 1.0;
+
+  if (g.includes("lose") || g.includes("weight") || g.includes("fat")) {
+    return `GOAL: AGGRESSIVE FAT LOSS — ${deficitKg.toFixed(1)}kg in ${weeks} weeks (~${kgPerWeek.toFixed(2)}kg/week).
+${aggressive ? "⚠️ AGGRESSIVE TARGET — programme MUST match. This is BFT/F45/Shred-style training, not yoga." : ""}
+PRESCRIPTION (Lyon + Sims + Schoenfeld + Maffetone):
+- 5-6 training days/week MINIMUM
+- Every session: 8-12 exercises, 3-4 sets, 45-60 minutes (BFT model)
+- Modality rotation across the week: Lower Strength → Upper Strength → Hypertrophy Circuit → Conditioning/HIIT → Full-Body Power → Zone-2 Cardio → Active Recovery
+- Compound lifts FIRST every session (squat/deadlift/press/row/hinge variants)
+- Supersets and tri-sets for time efficiency and EPOC
+- Finishers: 5-10min metcon, sled, sprint intervals, kettlebell complexes
+- Protein cue every plan: 1.6-2.2g/kg bodyweight (Lyon's muscle-centric medicine)
+- Minimum 10k steps/day non-exercise activity (NEAT)
+PHASE OVERRIDES THE GOAL ONLY DURING TRUE MENSTRUAL DAYS 1-2 — and even then, replace with mobility + walking, NOT a rest day.`;
+  }
+  if (g.includes("muscle") || g.includes("gain") || g.includes("strong")) {
+    return `GOAL: HYPERTROPHY / STRENGTH (Schoenfeld + Lyon protocols).
+- 4-5 training days/week (upper/lower or push/pull/legs split)
+- Every session: 6-9 exercises, 3-4 sets of 6-12 reps, 45-60 minutes
+- Compound lift first, then 4-6 accessory movements
+- Progressive overload: add load or reps every week
+- 10-20 hard sets per muscle group per week`;
+  }
+  if (g.includes("tone") || g.includes("define") || g.includes("sculpt")) {
+    return `GOAL: BODY RECOMPOSITION.
+- 4-5 sessions/week mixing strength + conditioning (BFT-style)
+- Every session: 7-10 exercises, 3-4 sets, 45 minutes
+- Alternate days: lower strength, upper strength, full-body circuit, HIIT, hypertrophy
+- Protein priority for muscle preservation`;
+  }
+  if (g.includes("endurance") || g.includes("cardio")) {
+    return `GOAL: CONDITIONING (Maffetone + Joyce).
+- 5-6 sessions/week
+- 2 strength (6-8 exercises × 3 sets), 2 zone-2 (45-60min), 2 intervals
+- Every session: 6+ exercises minimum when strength-focused`;
+  }
+  return `GOAL: GENERAL FITNESS.
+- 4-5 sessions/week
+- Every session: 6-8 exercises, 3 sets, 40-50 minutes
+- Mix strength, conditioning, mobility across the week`;
 }
 
 // Fetch and summarise key PDF names from reference-pdfs/movement bucket
@@ -137,23 +185,27 @@ async function generateWithAI(
                             warmup: { type: "string" },
                             exercises: {
                               type: "array",
+                              minItems: 6,
+                              description: "MINIMUM 6 exercises per training session, target 8-12 for fat-loss / BFT-style sessions. Compound lifts FIRST, then accessories, then finisher. Rest days are the ONLY exception.",
                               items: {
                                 type: "object",
                                 properties: {
                                   name: { type: "string" },
-                                  sets: { type: "number" },
+                                  sets: { type: "number", description: "MINIMUM 3 sets for any working exercise" },
                                   reps_or_duration: { type: "string" },
                                   rest_seconds: { type: "number" },
                                   rpe: { type: "string" },
                                   load_guidance: { type: "string", description: "e.g. 'moderate — aim for 60-70% 1RM'" },
-                                  form_cue: { type: "string" },
+                                  form_cue: { type: "string", description: "Coaching cue from the certified-PT persona, citing book where relevant" },
                                   progression: { type: "string", description: "How to progress week-over-week" },
+                                  block: { type: "string", description: "e.g. 'Compound A', 'Accessory B', 'Superset 1', 'Finisher'" },
                                 },
-                                required: ["name", "sets", "reps_or_duration"],
+                                required: ["name", "sets", "reps_or_duration", "rest_seconds", "rpe"],
                                 additionalProperties: false,
                               },
                             },
                             cooldown: { type: "string" },
+                            evidence_note: { type: "string", description: "Cite which reference book(s) inform this session design" },
                           },
                           required: ["day", "title", "exercises"],
                           additionalProperties: false,
@@ -251,46 +303,74 @@ serve(async (req) => {
     const phaseGuidance = getCyclePhaseGuidance(cyclePhase || "follicular");
 
     // ─── Build AI prompt ─────────────────────────
-    const systemPrompt = `You are Signal's AI Training Coach — an evidence-based, female-focused fitness program designer. You create personalised training plans informed by exercise science research.
+    const weightKg = Number(answers?.weight || profile?.weight_kg || 70);
+    const goalWeightKg = Number(answers?.goalWeight || profile?.goal_weight_kg || weightKg);
+    const weeksPlan = Number(answers?.weeksPlan || 8);
+    const goalPrescription = getGoalPrescription(answers?.goal || "", weightKg, goalWeightKg, weeksPlan);
 
-CORE PRINCIPLES:
-- Every plan must be cycle-phase aware (menstrual, follicular, ovulatory, luteal)
-- Progressive overload is fundamental — increase volume, load, or intensity week over week
-- Include RPE targets for every exercise
-- Include form cues and load guidance
-- Sessions should include warmup and cooldown
-- Rest days are part of the program
+    const systemPrompt = `You are a CERTIFIED PERSONAL TRAINER and strength coach (NSCA-CSCS equivalent) with 15 years of experience programming for women across all life stages. You have studied and internalised the full Signal reference library — including:
+• Gabrielle Lyon — *The Forever Strong Playbook* (muscle-centric medicine, protein 1.6-2.2 g/kg, heavy compound lifting)
+• Stacy Sims — *Next Level / Roar* (women are not small men; lift heavy through every cycle phase)
+• Brad Schoenfeld — *Science and Development of Muscle Hypertrophy* (10-20 hard sets/muscle/week, mechanical tension)
+• Phil Maffetone — *Total Heart Rate Training* (zone-2 base + targeted intervals)
+• David Joyce — *High-Performance Training for Sports* (periodisation, conditioning)
+• Steven Low — *Overcoming Gravity* (progressive calisthenics)
+• Kurt Brungardt — *The Complete Book of Butt and Legs*
+• Pat Manocchia — *Anatomy of Exercise* | Emma Ross — *The Female Body Bible* | Alissa Vitti — *In the FLO*
+• Plus: Hunt's *Beginners Guide to Weight Lifting*, Friel's *Total Heart Rate Training*
+
+You also know the modern boutique-fitness landscape: BFT (Body Fit Training), F45, Barry's, Shred app, Sweat — and you BEAT them on personalisation while matching their intensity.
+
+═══ NON-NEGOTIABLE RULES ═══
+1. **GOAL OVERRIDES CYCLE.** The user's goal is the priority. Cycle phase is a *modifier*, not a brake. Never reduce a fat-loss programme to "yoga and walking" because the user is in luteal — research (Sims, Lyon) is clear: keep lifting through every phase.
+2. **MINIMUM 6 EXERCISES per training session.** Fat-loss / BFT-style sessions: 8-12 exercises. NEVER 3 exercises.
+3. **MINIMUM 3 SETS per working exercise.** Compound lifts: 3-5 sets.
+4. **45-minute sessions** are the BFT/F45 standard — match this duration.
+5. **Compound movement FIRST** every session (squat / hinge / push / pull / carry).
+6. **Modality rotation across the week** — never two identical sessions back-to-back. Rotate: Lower Strength → Upper Strength → Hypertrophy Circuit → HIIT/Conditioning → Full-Body Power → Zone-2 → Active Recovery.
+7. **Every exercise needs**: name, sets (≥3), reps/duration, rest_seconds, RPE, load_guidance, form_cue (pull from a coaching book), progression note, block label.
+8. **Cite evidence** in each day's evidence_note (which book informs this session).
+9. **Progressive overload week-over-week** — explicit load/rep/set increase.
+10. Rest days are scheduled, but for aggressive fat-loss goals replace pure rest with 30-min walks or mobility.
 
 EQUIPMENT MAPPING:
-- "home-none": Bodyweight only — push-ups, squats, lunges, planks, burpees, mountain climbers, glute bridges
-- "home-some": Dumbbells, resistance bands, kettlebells, yoga mat — goblet squats, DB rows, banded walks
-- "gym": Full equipment — barbell, cables, machines, squat rack, bench press
+- "home-none" → Bodyweight + tempo manipulation (Steven Low calisthenics progressions, plyo, isometrics). Still hit 8+ exercises.
+- "home-some" → Dumbbells, bands, kettlebells, mat. Goblet squats, DB RDLs, KB swings, single-arm rows, Turkish get-ups.
+- "gym" → Full barbell, rack, cables, machines, sled. Back squat, deadlift, bench, overhead press, pull-ups, hip thrusts.
 
-EXPERIENCE MAPPING:
-- "this-week": Intermediate-advanced, can handle complex movements
-- "this-month": Intermediate, familiar with most exercises
-- "six-months": Beginner-intermediate, focus on technique first
-- "never": True beginner, bodyweight focus weeks 1-2, then introduce load
+EXPERIENCE:
+- "this-week" → Intermediate-advanced. Complex movements, heavier loads.
+- "this-month" → Intermediate. Most exercises familiar.
+- "six-months" → Beginner-intermediate. Technique focus weeks 1-2.
+- "never" → True beginner. Bodyweight wks 1-2, introduce load wk 3.
 
 ${evidenceContext}`;
 
-    const userPrompt = `Create a personalised training plan with these parameters:
+    const userPrompt = `Build a personalised, evidence-based training plan.
 
-USER PROFILE:
-- Height: ${answers?.height || profile?.height_cm || 165}cm
-- Weight: ${answers?.weight || profile?.weight_kg || 70}kg
-- Age: ${answers?.age || 30}
-- Goal: ${answers?.goal || "stronger"} ${answers?.goal === "lose-weight" ? `(target: ${answers?.goalWeight}kg over ${answers?.weeksPlan || 8} weeks)` : ""}
-- Days per week: ${answers?.daysPerWeek || 4}
-- Last workout: ${answers?.lastWorkout || "this-month"}
-- Equipment access: ${answers?.equipment || "home-some"}
-- Current cycle phase: ${cyclePhase || "follicular"}
+═══ USER PROFILE ═══
+• Height: ${answers?.height || profile?.height_cm || 165}cm
+• Weight: ${weightKg}kg → Target: ${goalWeightKg}kg
+• Age: ${answers?.age || 30}
+• Goal: ${answers?.goal || "stronger"}
+• Plan length: ${weeksPlan} weeks
+• Days/week: ${answers?.daysPerWeek || 5}
+• Experience: ${answers?.lastWorkout || "this-month"}
+• Equipment: ${answers?.equipment || "home-some"}
+• Current cycle phase: ${cyclePhase || "follicular"}
 
-CYCLE PHASE GUIDANCE: ${phaseGuidance}
+═══ GOAL-DRIVEN PRESCRIPTION (this is the spine of the plan) ═══
+${goalPrescription}
 
-Generate a ${answers?.weeksPlan || 8}-week plan with ${answers?.daysPerWeek || 4} training days per week.
-Each week should progressively build on the previous. Include specific exercises from our exercise database where possible.
-Adapt the intensity and exercise selection to match the user's cycle phase each week.`;
+═══ CYCLE PHASE MODIFIER (secondary; NEVER overrides goal) ═══
+${phaseGuidance}
+
+═══ DELIVERABLE ═══
+Return a ${weeksPlan}-week plan with ${answers?.daysPerWeek || 5} training days/week.
+EVERY training day MUST contain at minimum 6 exercises, each with at least 3 sets, RPE, rest, load guidance, form cue, progression, and a block label (Compound A / Accessory / Superset / Finisher).
+Periodise: Wk 1 Foundation → Wk 2-3 Build → Wk 4-5 Intensify → Wk 6 Deload → Wk 7-8 Peak (adjust if duration differs).
+Cite the reference book that informs each day's design.
+This must compete with — and beat — the Shred app and BFT for personalisation and depth.`;
 
     const plan = await generateWithAI(systemPrompt, userPrompt);
 
