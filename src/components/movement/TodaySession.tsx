@@ -1005,9 +1005,20 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-2 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-              <Check className="h-4 w-4 text-emerald-600" />
-              <span className="font-body text-sm text-emerald-600 font-medium">Session logged ✓</span>
+            <div className="flex items-center justify-between gap-2 py-2 px-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-600" />
+                <span className="font-body text-sm text-emerald-600 font-medium">Session logged</span>
+              </div>
+              {loggedWorkoutLogId && (
+                <button
+                  onClick={handleUndoLog}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md"
+                >
+                  <Undo2 className="h-3 w-3" />
+                  <span className="font-body text-xs">Undo</span>
+                </button>
+              )}
             </div>
           )}
         </div>
