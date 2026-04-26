@@ -914,6 +914,33 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
             )
           )}
 
+          {/* ── Live session timer ── */}
+          {sessionStartedAt && !sessionLogged && (
+            <div className="flex items-center justify-between rounded-lg bg-primary/10 border border-primary/20 px-3 py-2">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                <span className="font-body text-xs text-primary font-medium">Session in progress</span>
+              </div>
+              <span className="font-display text-sm font-bold text-primary tabular-nums">{formatElapsed(elapsedSecs)}</span>
+            </div>
+          )}
+          {!sessionStartedAt && !sessionLogged && (
+            <button
+              onClick={() => {
+                haptic("medium");
+                const now = Date.now();
+                setSessionStartedAt(now);
+                startedAtRef.current = now;
+                hrTraceRef.current = [];
+              }}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2"
+            >
+              <Play className="h-3.5 w-3.5 text-primary" />
+              <span className="font-body text-xs text-primary font-medium">Start session timer</span>
+            </button>
+          )}
+
+
           {todayExercises.length > 0 && (
             <div className="space-y-1.5">
               <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
