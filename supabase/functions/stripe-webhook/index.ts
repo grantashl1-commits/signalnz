@@ -47,7 +47,7 @@ async function sendEmail(supabaseUrl: string, payload: Record<string, unknown>) 
 
 // Look up user email + display name from Supabase auth/profile
 async function resolveUser(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   stripeCustomerId: string | null,
   stripe: Stripe,
   customerEmail?: string | null
@@ -146,7 +146,7 @@ serve(async (req) => {
 
       if (mode === "payment") {
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 5 });
-        const isTopup = lineItems.data.some((li) => li.price?.product === TOPUP_PRODUCT_ID);
+        const isTopup = lineItems.data.some((li: any) => li.price?.product === TOPUP_PRODUCT_ID);
 
         if (isTopup) {
           logStep("Processing top-up", { credits: TOPUP_CREDITS });
