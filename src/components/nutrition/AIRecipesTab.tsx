@@ -8,6 +8,7 @@ import { RecipeShoppingButton } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useProfile } from "@/hooks/useProfile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
