@@ -10,11 +10,14 @@ import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, TODDLER_SLEEP_SCHEDULES
 import type { CourseModule, CourseLesson } from "@/data/connect-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
 import BabySleepSchedule from "@/components/parenting/BabySleepSchedule";
+import BehaviourTab from "@/components/parenting/behaviour/BehaviourTab";
+import { Star as StarIcon } from "lucide-react";
 
 const TABS = [
   { id: "babies", label: "Babies", icon: Baby, course: BABY_COURSE },
   { id: "toddlers", label: "Toddlers", icon: Blocks, course: TODDLER_COURSE },
   { id: "kids-teens", label: "Kids & Teens", icon: GraduationCap, course: KIDS_TEENS_COURSE },
+  { id: "behaviour", label: "Behaviour", icon: StarIcon, course: [] as any },
 ] as const;
 
 type TabId = typeof TABS[number]["id"];
@@ -193,8 +196,13 @@ export default function ParentingCoursePage() {
           ))}
         </div>
 
+        {/* Behaviour tab — completely separate flow */}
+        {activeTab === "behaviour" && (
+          <BehaviourTab />
+        )}
+
         {/* Search + Toolkit bar (modules view only) */}
-        {view === "modules" && (
+        {activeTab !== "behaviour" && view === "modules" && (
           <div className="flex items-center gap-2 mb-4">
             {showSearch ? (
               <div className="flex-1 flex items-center gap-2 bg-card border border-border rounded-xl px-3 py-2">
@@ -265,6 +273,7 @@ export default function ParentingCoursePage() {
           )}
         </AnimatePresence>
 
+        {activeTab !== "behaviour" && (
         <AnimatePresence mode="wait">
           {view === "modules" && (
             <motion.div key={`modules-${activeTab}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -543,6 +552,7 @@ export default function ParentingCoursePage() {
             </motion.div>
           )}
         </AnimatePresence>
+        )}
       </ContentSection>
     </div>
   );
