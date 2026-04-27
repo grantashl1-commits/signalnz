@@ -709,6 +709,11 @@ export default function MyWeekTab() {
                                 )}
                               </div>
                             )}
+
+                            {/* Kids alternative — only when household has kids and meal is a main */}
+                            {prefs.kids > 0 && (key === "breakfast" || key === "lunch" || key === "dinner") && mealName && (
+                              <KidsDinnerAlt mealName={mealName} mealType={key as any} phase={day.phase} />
+                            )}
                           </div>
                         );
                       })}
