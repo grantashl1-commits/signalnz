@@ -330,9 +330,45 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         .eq("plan_type", "ai_training");
     }
     localStorage.removeItem("signal_ai_workout_plan");
+    localStorage.removeItem("signal_ai_active_session");
     setExistingPlan(null);
+    setExistingPlanId(null);
+    setPlanIsActive(false);
     setStep("height");
     toast.success("Plan removed");
+  }
+
+  // Toggle whether this AI plan should drive the Today screen.
+  async function handleToggleActive(next: boolean) {
+    haptic("light");
+    setPlanIsActive(next);
+    if (existingPlanId) {
+      const { error } = await (supabase as any)
+        .from("user_plans")
+        .update({ is_active: next })
+        .eq("id", existingPlanId);
+      if (error) {
+        setPlanIsActive(!next);
+        toast.error("Couldn't update plan status");
+        return;
+      }
+    }
+    if (!next) {
+      // Clear any session that was queued for Today
+      localStorage.removeItem("signal_ai_active_session");
+    }
+    toast.success(next ? "Plan active on Today" : "Plan paused — won't show on Today");
+  }
+
+  // Regenerate replaces the current plan with a fresh AI generation
+  async function handleRegenerate() {
+    haptic("medium");
+    if (!canGenerate) {
+      toast.error("You've already generated this month. Top up credits to regenerate.");
+      return;
+    }
+    // Re-run the generation with whatever defaults the user already had
+    handleGenerate();
   }
 
   if (loadingPlan) {
