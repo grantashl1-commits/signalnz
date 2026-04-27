@@ -747,25 +747,32 @@ function ChildSetup({ onCreate, onCancel }: {
         <p className="text-xs text-muted-foreground mt-1">Pick a buddy. Set the rules. Stay calm.</p>
       </div>
 
-      <div className="rounded-3xl p-5 border border-border bg-card text-center" style={{ background: `linear-gradient(135deg, ${accent}22, transparent)` }}>
-        <motion.img key={characterId} initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          src={character.image} alt="" className="w-32 h-32 mx-auto object-contain" />
-        <p className="font-display text-base font-semibold mt-2">{character.name}</p>
-        <p className="text-xs text-muted-foreground italic">{character.trait}</p>
-      </div>
-
       <div>
         <p className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wider">Choose a buddy</p>
         <div className="grid grid-cols-5 gap-2">
           {CHARACTER_LIST.map(c => (
             <button key={c.id} onClick={() => { setCharacterId(c.id); setAccent(c.defaultColor); }}
-              className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all ${
-                characterId === c.id ? "border-foreground scale-105" : "border-transparent opacity-70"
-              }`}>
-              <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+              className={`aspect-square rounded-2xl transition-all flex items-center justify-center ${
+                characterId === c.id
+                  ? "ring-2 ring-foreground scale-105"
+                  : "opacity-60 hover:opacity-90"
+              }`}
+              style={characterId === c.id ? { background: `${accent}1a` } : undefined}
+            >
+              <img src={c.image} alt={c.name} className="w-full h-full object-contain" />
             </button>
           ))}
         </div>
+        {/* Caption: name + trait of selected buddy */}
+        <motion.div
+          key={characterId}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mt-3"
+        >
+          <p className="font-display text-base font-semibold text-foreground">{character.name}</p>
+          <p className="text-xs text-muted-foreground italic mt-0.5">{character.trait}</p>
+        </motion.div>
       </div>
 
       <div>
