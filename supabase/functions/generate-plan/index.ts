@@ -390,6 +390,7 @@ This must compete with — and beat — the Shred app and BFT for personalisatio
         cycle_phase_at_generation: cyclePhase || "follicular",
         week_number: 1,
         current_session_index: 0,
+        is_active: true,
       }),
       supabase.from("plan_generations").insert({
         user_id: user.id,
