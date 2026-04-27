@@ -236,8 +236,8 @@ export default function BehaviourTab() {
             {/* Hero card */}
             <div className="relative rounded-3xl p-5 overflow-hidden border border-border" style={{ background: `linear-gradient(135deg, ${activeChild.accent_color}22, ${activeChild.accent_color}05)` }}>
               <div className="flex items-center gap-4">
-                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} className="relative w-24 h-24 rounded-2xl overflow-hidden bg-white/40 flex items-center justify-center shrink-0">
-                  <img src={character.image} alt={character.name} className="w-full h-full object-cover" />
+                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} className="relative w-24 h-24 flex items-center justify-center shrink-0">
+                  <img src={character.image} alt={character.name} className="w-full h-full object-contain" />
                 </motion.div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/50">Points</p>
