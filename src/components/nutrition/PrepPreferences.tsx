@@ -21,6 +21,7 @@ import {
 import { haptic } from "@/hooks/use-mobile";
 import { getDislikedRecipes, removeDislikedRecipe } from "@/lib/fitness-profile";
 import { findRecipeById } from "@/lib/recipe-index";
+import { useProfile } from "@/hooks/useProfile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
