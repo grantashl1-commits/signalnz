@@ -590,18 +590,27 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
           </div>
         ))}
 
-        {/* Remove plan */}
+        {/* Plan actions: regenerate + remove */}
         <div className="pt-4 space-y-3">
+          <button
+            onClick={handleRegenerate}
+            disabled={generating}
+            className="w-full flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-3 font-body text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
+          >
+            <RefreshCw className={cn("h-4 w-4", generating && "animate-spin")} />
+            {generating ? "Generating…" : "Regenerate AI plan"}
+          </button>
           <button
             onClick={handleRemovePlan}
             className="w-full flex items-center justify-center gap-2 rounded-full border border-destructive/30 text-destructive py-3 font-body text-sm font-medium hover:bg-destructive/5 transition-colors"
           >
             <Trash2 className="h-4 w-4" />
-            Remove plan
+            Change plan (remove this one)
           </button>
           {lastGeneratedAt && (
             <p className="text-center font-body text-[10px] text-muted-foreground">
               Generated {new Date(lastGeneratedAt).toLocaleDateString()} · 1 free plan per month
+              {!canGenerate && " · Regenerate uses 3 credits"}
             </p>
           )}
         </div>
