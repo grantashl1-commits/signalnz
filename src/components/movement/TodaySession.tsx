@@ -688,17 +688,8 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
       if (allDays.length === 0) return;
 
-      // Check if today's session was already logged
-      const { data: todayLogs } = await supabase
-        .from("workout_logs")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("session_date", todayStr)
-        .eq("completed", true);
-      
-      if (todayLogs && todayLogs.length > 0) return; // Already logged today
-
-      // Use session index to pick the right day (wraps around)
+      // Always surface the AI plan's current session — the logged-state UI
+      // (Finish & log session / Undo) handles already-logged days separately.
       const todayDay = allDays[sessionIndex % allDays.length];
       if (todayDay) {
         setAiSession(todayDay);
