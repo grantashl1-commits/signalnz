@@ -1,44 +1,46 @@
-// Tiny WebAudio chime / buzzer — no asset deps.
-let ctx: AudioContext | null = null;
-function getCtx() {
+// Custom sound effects for behaviour points
+import positiveUrl from "@/assets/parenting/positive.mp3";
+import negativeUrl from "@/assets/parenting/negative.mp3";
+
+let positiveAudio: HTMLAudioElement | null = null;
+let negativeAudio: HTMLAudioElement | null = null;
+
+function getAudio(kind: "positive" | "negative"): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
-  if (!ctx) {
-    try { ctx = new (window.AudioContext || (window as any).webkitAudioContext)(); } catch { return null; }
+  try {
+    if (kind === "positive") {
+      if (!positiveAudio) {
+        positiveAudio = new Audio(positiveUrl);
+        positiveAudio.preload = "auto";
+        positiveAudio.volume = 0.7;
+      }
+      return positiveAudio;
+    } else {
+      if (!negativeAudio) {
+        negativeAudio = new Audio(negativeUrl);
+        negativeAudio.preload = "auto";
+        negativeAudio.volume = 0.7;
+      }
+      return negativeAudio;
+    }
+  } catch {
+    return null;
   }
-  return ctx;
+}
+
+function play(kind: "positive" | "negative") {
+  const a = getAudio(kind);
+  if (!a) return;
+  try {
+    a.currentTime = 0;
+    void a.play().catch(() => {});
+  } catch {}
 }
 
 export function playChime() {
-  const c = getCtx();
-  if (!c) return;
-  const now = c.currentTime;
-  [880, 1320].forEach((freq, i) => {
-    const o = c.createOscillator();
-    const g = c.createGain();
-    o.type = "sine";
-    o.frequency.value = freq;
-    g.gain.setValueAtTime(0.0001, now + i * 0.08);
-    g.gain.exponentialRampToValueAtTime(0.18, now + i * 0.08 + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.45);
-    o.connect(g).connect(c.destination);
-    o.start(now + i * 0.08);
-    o.stop(now + i * 0.08 + 0.5);
-  });
+  play("positive");
 }
 
 export function playBuzz() {
-  const c = getCtx();
-  if (!c) return;
-  const now = c.currentTime;
-  const o = c.createOscillator();
-  const g = c.createGain();
-  o.type = "square";
-  o.frequency.setValueAtTime(180, now);
-  o.frequency.linearRampToValueAtTime(120, now + 0.25);
-  g.gain.setValueAtTime(0.0001, now);
-  g.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
-  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
-  o.connect(g).connect(c.destination);
-  o.start(now);
-  o.stop(now + 0.32);
+  play("negative");
 }
