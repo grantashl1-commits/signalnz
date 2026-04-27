@@ -192,6 +192,7 @@ export default function MyWeekTab() {
 
       // Pass user profile macro targets + movement goals to Edge Function
       const storedGoals: string[] = (() => {
+        if (profileMovementGoals && profileMovementGoals.length > 0) return profileMovementGoals;
         try { return JSON.parse(localStorage.getItem("signal_body_goals") || "[]"); } catch { return []; }
       })();
       const profileExtras = {
