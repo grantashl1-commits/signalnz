@@ -35,6 +35,7 @@ interface AIRecipesTabProps {
 }
 
 export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
+  const { movementGoals: profileGoals } = useProfile();
   const [filter, setFilter] = useState<Phase | "all">(phase);
   const [ingredientSearch, setIngredientSearch] = useState("");
   const [aiRecipes, setAiRecipes] = useState<AIGeneratedRecipe[]>([]);
