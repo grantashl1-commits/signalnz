@@ -22,6 +22,7 @@ import {
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
+import KidsDinnerAlt from "./KidsDinnerAlt";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -707,6 +708,11 @@ export default function MyWeekTab() {
                                   </p>
                                 )}
                               </div>
+                            )}
+
+                            {/* Kids alternative — only when household has kids and meal is a main */}
+                            {prefs.kids > 0 && (key === "breakfast" || key === "lunch" || key === "dinner") && mealName && (
+                              <KidsDinnerAlt mealName={mealName} mealType={key as any} phase={day.phase} />
                             )}
                           </div>
                         );
