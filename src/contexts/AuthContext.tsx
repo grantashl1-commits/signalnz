@@ -54,11 +54,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSubscription(defaultSub);
       return;
     }
-    try {
-      const { data, error } = await supabase.functions.invoke("check-subscription", {
+
+    // Retry once on transient runtime errors (503 cold-start)
+    const invokeOnce = () =>
+      supabase.functions.invoke("check-subscription", {
         headers: { Authorization: `Bearer ${currentSession.access_token}` },
       });
-      if (error) throw error;
+
+    try {
+      let { data, error } = await invokeOnce();
+      if (error) {
+        const msg = String((error as any)?.message ?? "");
+        const isTransient = msg.includes("503") || msg.toLowerCase().includes("temporarily unavailable");
+        if (isTransient) {
+          await new Promise((r) => setTimeout(r, 1500));
+          ({ data, error } = await invokeOnce());
+        }
+      }
+      if (error) {
+        // Keep previous subscription state instead of resetting — avoids UI flash/blank screens.
+        console.warn("[check-subscription] failed, keeping previous state:", error);
+        return;
+      }
       const productId = data?.product_id ?? null;
       setSubscription({
         subscribed: !!data?.subscribed,
@@ -66,8 +83,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         tier: (productId && TIERS_MAP[productId]) || "free",
         subscriptionEnd: data?.subscription_end ?? null,
       });
-    } catch {
-      setSubscription(defaultSub);
+    } catch (e) {
+      console.warn("[check-subscription] unexpected error:", e);
+      // Do not clobber existing subscription on transient failures.
     }
   }, []);
 
