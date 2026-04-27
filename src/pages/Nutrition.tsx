@@ -5,6 +5,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import { useProfile } from "@/hooks/useProfile";
 import TodayTab from "@/components/nutrition/TodayTab";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import DiscoverTab from "@/components/nutrition/DiscoverTab";
