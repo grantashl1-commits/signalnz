@@ -41,6 +41,7 @@ type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
+  const { movementGoals: profileGoals } = useProfile();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabId>(
     (searchParams.get("tab") as TabId | null) ?? "today"
@@ -48,11 +49,12 @@ export default function NutritionPage() {
   const navigate = useNavigate();
 
   const bodyGoals = useMemo<string[]>(() => {
+    if (profileGoals && profileGoals.length > 0) return profileGoals;
     try {
       const raw = localStorage.getItem("signal_body_goals");
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
-  }, []);
+  }, [profileGoals]);
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
