@@ -924,7 +924,24 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
                 <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                 <span className="font-body text-xs text-primary font-medium">Session in progress</span>
               </div>
-              <span className="font-display text-sm font-bold text-primary tabular-nums">{formatElapsed(elapsedSecs)}</span>
+              <div className="flex items-center gap-3">
+                <span className="font-display text-sm font-bold text-primary tabular-nums">{formatElapsed(elapsedSecs)}</span>
+                <button
+                  onClick={() => {
+                    if (!confirm("Cancel this session? Your timer and any unlogged progress will be discarded.")) return;
+                    haptic("medium");
+                    setSessionStartedAt(null);
+                    startedAtRef.current = null;
+                    hrTraceRef.current = [];
+                    setElapsedSecs(0);
+                    setCompletedExercises(new Set());
+                    toast.success("Session cancelled");
+                  }}
+                  className="font-body text-[11px] text-muted-foreground hover:text-destructive underline underline-offset-2"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
           {!sessionStartedAt && !sessionLogged && (
