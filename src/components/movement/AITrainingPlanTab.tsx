@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronDown, ChevronRight, Loader2, Trash2, Sparkles, Calendar, Clock, Play, Dumbbell } from "lucide-react";
+import { ChevronLeft, ChevronDown, ChevronRight, Loader2, Trash2, Sparkles, Calendar, Clock, Play, Dumbbell, RefreshCw, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
@@ -100,6 +100,8 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   const profileData = useProfile();
   const { heightCm, weightKg, dateOfBirth, fitnessLevel: profileFitnessLevel, movementGoals, goalWeightKg, equipmentPreference } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
+  const [existingPlanId, setExistingPlanId] = useState<string | null>(null);
+  const [planIsActive, setPlanIsActive] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
@@ -165,25 +167,31 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     if (!user) {
       // Check localStorage fallback
       const local = localStorage.getItem("signal_ai_workout_plan");
-      if (local) setExistingPlan(JSON.parse(local));
+      if (local) {
+        setExistingPlan(JSON.parse(local));
+        setPlanIsActive(true);
+      }
       setLoadingPlan(false);
       return;
     }
 
     const { data } = await supabase
       .from("user_plans")
-      .select("*")
+      .select("id, plan_data, generated_at, is_active")
       .eq("user_id", user.id)
       .eq("plan_type", "ai_training")
       .order("generated_at", { ascending: false })
       .limit(1);
 
     if (data && data.length > 0) {
-      setExistingPlan(data[0].plan_data);
-      setLastGeneratedAt(data[0].generated_at);
+      const row: any = data[0];
+      setExistingPlan(row.plan_data);
+      setExistingPlanId(row.id);
+      setPlanIsActive(row.is_active ?? true);
+      setLastGeneratedAt(row.generated_at);
 
       // Check if generated this month
-      const genDate = new Date(data[0].generated_at);
+      const genDate = new Date(row.generated_at);
       const now = new Date();
       const sameMonth = genDate.getMonth() === now.getMonth() && genDate.getFullYear() === now.getFullYear();
       setCanGenerate(!sameMonth);
@@ -322,9 +330,45 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         .eq("plan_type", "ai_training");
     }
     localStorage.removeItem("signal_ai_workout_plan");
+    localStorage.removeItem("signal_ai_active_session");
     setExistingPlan(null);
+    setExistingPlanId(null);
+    setPlanIsActive(false);
     setStep("height");
     toast.success("Plan removed");
+  }
+
+  // Toggle whether this AI plan should drive the Today screen.
+  async function handleToggleActive(next: boolean) {
+    haptic("light");
+    setPlanIsActive(next);
+    if (existingPlanId) {
+      const { error } = await (supabase as any)
+        .from("user_plans")
+        .update({ is_active: next })
+        .eq("id", existingPlanId);
+      if (error) {
+        setPlanIsActive(!next);
+        toast.error("Couldn't update plan status");
+        return;
+      }
+    }
+    if (!next) {
+      // Clear any session that was queued for Today
+      localStorage.removeItem("signal_ai_active_session");
+    }
+    toast.success(next ? "Plan active on Today" : "Plan paused — won't show on Today");
+  }
+
+  // Regenerate replaces the current plan with a fresh AI generation
+  async function handleRegenerate() {
+    haptic("medium");
+    if (!canGenerate) {
+      toast.error("You've already generated this month. Top up credits to regenerate.");
+      return;
+    }
+    // Re-run the generation with whatever defaults the user already had
+    handleGenerate();
   }
 
   if (loadingPlan) {
@@ -340,9 +384,46 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     return (
       <div className="space-y-6">
         <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 space-y-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <h2 className="font-display text-xl font-extrabold text-foreground">Your AI Training Plan</h2>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="font-display text-xl font-extrabold text-foreground">Your AI Training Plan</h2>
+            </div>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-1 font-body text-[10px] uppercase tracking-wider font-semibold",
+                planIsActive ? "bg-emerald-500/15 text-emerald-600" : "bg-muted text-muted-foreground",
+              )}
+            >
+              {planIsActive ? "Active" : "Paused"}
+            </span>
+          </div>
+
+          {/* Use on Today toggle */}
+          <div className="rounded-xl bg-card border border-border p-3 flex items-center gap-3">
+            <CheckCircle2 className={cn("h-5 w-5 shrink-0", planIsActive ? "text-emerald-600" : "text-muted-foreground/40")} />
+            <div className="flex-1 min-w-0">
+              <p className="font-display text-sm font-semibold text-foreground">Use this plan on Today</p>
+              <p className="font-body text-[11px] text-muted-foreground leading-snug">
+                {planIsActive ? "Your next session shows on the Today tab." : "Activate to surface sessions on Today."}
+              </p>
+            </div>
+            <button
+              onClick={() => handleToggleActive(!planIsActive)}
+              role="switch"
+              aria-checked={planIsActive}
+              className={cn(
+                "shrink-0 relative h-6 w-11 rounded-full transition-colors",
+                planIsActive ? "bg-primary" : "bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "absolute top-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform",
+                  planIsActive ? "translate-x-[22px]" : "translate-x-0.5",
+                )}
+              />
+            </button>
           </div>
 
           {existingPlan.title && (
@@ -509,18 +590,27 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
           </div>
         ))}
 
-        {/* Remove plan */}
+        {/* Plan actions: regenerate + remove */}
         <div className="pt-4 space-y-3">
+          <button
+            onClick={handleRegenerate}
+            disabled={generating}
+            className="w-full flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-3 font-body text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
+          >
+            <RefreshCw className={cn("h-4 w-4", generating && "animate-spin")} />
+            {generating ? "Generating…" : "Regenerate AI plan"}
+          </button>
           <button
             onClick={handleRemovePlan}
             className="w-full flex items-center justify-center gap-2 rounded-full border border-destructive/30 text-destructive py-3 font-body text-sm font-medium hover:bg-destructive/5 transition-colors"
           >
             <Trash2 className="h-4 w-4" />
-            Remove plan
+            Change plan (remove this one)
           </button>
           {lastGeneratedAt && (
             <p className="text-center font-body text-[10px] text-muted-foreground">
               Generated {new Date(lastGeneratedAt).toLocaleDateString()} · 1 free plan per month
+              {!canGenerate && " · Regenerate uses 3 credits"}
             </p>
           )}
         </div>

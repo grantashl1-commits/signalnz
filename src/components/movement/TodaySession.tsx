@@ -660,13 +660,16 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       if (!user) return;
       const { data } = await supabase
         .from("user_plans")
-        .select("plan_data, current_session_index")
+        .select("plan_data, current_session_index, is_active")
         .eq("user_id", user.id)
         .eq("plan_type", "ai_training")
         .order("generated_at", { ascending: false })
         .limit(1);
 
       if (!data || data.length === 0) return;
+
+      // Only surface this AI plan on Today if the user has activated it
+      if ((data[0] as any).is_active === false) return;
 
       const plan = (data[0] as any).plan_data as any;
       const sessionIndex = (data[0] as any).current_session_index || 0;
