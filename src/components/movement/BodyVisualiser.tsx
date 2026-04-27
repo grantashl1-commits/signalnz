@@ -383,6 +383,7 @@ function HistoryTimeline({ history }: { history: MeasurementEntry[] }) {
 // ── Body Goals Section (unchanged) ──
 const BODY_GOALS: { id: string; label: string; icon: LucideIcon }[] = [
   { id: "lose-weight", label: "Lose weight", icon: Flame },
+  { id: "maintain", label: "Maintain weight", icon: TrendingUp },
   { id: "gain-muscle", label: "Build muscle", icon: Dumbbell },
   { id: "tone-up", label: "Tone & define", icon: Star },
   { id: "flexibility", label: "Improve flexibility", icon: PersonStanding },

@@ -80,17 +80,19 @@ Deno.serve(async (req) => {
     const needsWork = (allPosts || []).filter((p: any) => {
       const text = p.post_title_description || "";
       // Raw book text (too long)
-      if (text.length > 600) return true;
+      if (text.length > 700) return true;
       // Missing proper structure
       if (!text.includes("**Takeaway:**")) return true;
-      // Title repeated verbatim in body
-      const lines = text.split("\n").filter((l: string) => l.trim());
-      if (lines.length >= 2) {
-        const titleText = lines[0].replace(/\*\*/g, "").trim();
-        if (titleText.length > 10 && lines.slice(1).join(" ").includes(titleText)) return true;
-      }
+      // Missing quote
+      if (!text.includes('*"')) return true;
       // Starts without a bold title
       if (!text.startsWith("**")) return true;
+      // Title repeated verbatim in body's first sentence
+      const lines = text.split("\n").filter((l: string) => l.trim());
+      if (lines.length >= 2) {
+        const titleText = lines[0].replace(/\*\*/g, "").trim().toLowerCase();
+        if (titleText.length > 10 && lines[1].toLowerCase().includes(titleText)) return true;
+      }
       return false;
     });
 
@@ -117,43 +119,42 @@ Deno.serve(async (req) => {
         const rawContent = post.post_title_description || "";
         const bookContext = getBookContext(bookTitle);
 
+        const authorName = bookTitle.split("—")[1]?.trim() || bookTitle.split("–")[1]?.trim() || "the author";
+
         const prompt = `You are a wellness content writer for "Signal", an app for women aged 25-50.
 
-YOUR TASK: Transform this raw book extract into a polished micro-insight.
+YOUR TASK: Transform this raw book extract into a polished micro-insight card.
 
-STEP 1 — UNDERSTAND THE SOURCE
+SOURCE
 Book: "${bookTitle}"
 ${bookContext ? `Book premise: ${bookContext}` : ""}
 Themes: ${themes}
 
-Raw extract (may be messy OCR text, raw paragraphs, or incomplete):
+Raw extract (may be messy OCR, raw paragraphs, or incomplete):
 """
 ${rawContent.substring(0, 800)}
 """
 
-STEP 2 — IDENTIFY THE SINGLE KEY IDEA
-Read the raw text carefully. What is the ONE practical insight or perspective shift a reader should take away? If the raw text is incoherent, use the book's known premise and themes to reconstruct a meaningful insight that this passage was likely about.
+IDENTIFY THE SINGLE KEY IDEA
+What is the ONE practical insight or perspective shift a reader should take away? If the raw text is incoherent, use the book's known premise and themes to reconstruct a meaningful insight.
 
-STEP 3 — WRITE THE MICRO-ARTICLE
-Use this exact markdown format:
+OUTPUT FORMAT — follow this exactly, no deviation:
 
-**[6-10 word title capturing the key insight]**
+**[6-10 word title that captures the key insight — do NOT use the title in the first sentence]**
 
-[2-3 short paragraphs. Warm, conversational, second person ("you"). Explain the idea, why it matters, and how to apply it. NO lists, NO numbered steps, NO exercise names, NO "see below" references. 120-180 words.]
+[Body: 2-3 tight paragraphs. 100-150 words total. Warm, conversational, second person ("you"). Explain the idea, why it matters, and how to apply it. No lists, no numbered steps, no exercise names, no "see below" references.]
 
-**Takeaway:** [One clear, actionable sentence that captures what to do or think differently.]
+**Takeaway:** [One clear, actionable statement — not a question — directly summarising the paragraph above.]
 
-*"[A real, well-known quote from ${bookTitle.split("—")[1]?.trim() || "the author"} that directly relates to this insight. If you're unsure of the exact quote, use a widely attributed quote from this author on this topic.]"*
+*"[A real, verbatim quote from ${authorName} that directly relates to this specific insight. Must be a quote ${authorName} actually said or wrote. Do NOT fabricate. If unsure of an exact match, use their most well-known quote on this general theme.]"*
 
-RULES:
-- Title, body, takeaway, and quote must ALL connect to the SAME idea
-- Do NOT repeat the title wording in the first sentence of the body
-- Total length: 150-250 words maximum
-- If the raw text makes no sense, infer the insight from the book's premise + themes
-- The takeaway must be a statement, not a question
-- The quote must feel intentional and relevant
-- No OCR artifacts, page numbers, copyright notices, or incomplete sentences
-- Write as if you deeply understand this book, not as if you're reformatting text`;
+QUALITY RULES:
+- ALL FOUR sections (title, body, takeaway, quote) must connect to the SAME idea
+- The quote MUST be from ${authorName} — not from anyone else
+- Body must be 100-150 words — count carefully
+- Do not start the body with the title's phrasing
+- Takeaway must follow directly from the body paragraph
+- No OCR artifacts, page numbers, copyright notices, or incomplete sentences`;
 
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,7 @@ import { type FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { format, subDays } from "date-fns";
+import { format, subDays, differenceInDays } from "date-fns";
 import { toast } from "sonner";
 import { pickDailyPosts } from "@/lib/feed-utils";
 
@@ -166,22 +166,36 @@ export default function HomePage() {
     staleTime: 1000 * 60 * 60 * 4,
   });
 
-  const todayStr = format(new Date(), "yyyy-MM-dd");
-  const displayPosts = allFeedPosts ? (() => {
-    const pinned = allFeedPosts.filter(p => [2, 3, 4].includes(p.post_number));
-    const picked = pickDailyPosts(allFeedPosts, todayStr);
-    const pinnedIds = new Set(pinned.map(p => p.id));
-    const rest = picked.filter(p => !pinnedIds.has(p.id));
-    return [...pinned, ...rest].slice(0, 10);
-  })() : MOCK_POSTS;
+  // Mirror the same user-anchor seeding as Feed.tsx so home + feed show identical posts
+  const userCreatedAt = user?.created_at;
+  const feedAnchor = useMemo(() => {
+    if (!userCreatedAt) return new Date();
+    return new Date(userCreatedAt);
+  }, [userCreatedAt]);
+
+  const todayFeedDayNum = useMemo(() => {
+    return differenceInDays(new Date(), feedAnchor) + 1;
+  }, [feedAnchor]);
+
+  const todaySeed = useMemo(() => {
+    const anchorStr = format(feedAnchor, "yyyyMMdd");
+    return `${anchorStr}-${todayFeedDayNum}`;
+  }, [feedAnchor, todayFeedDayNum]);
+
+  const displayPosts = allFeedPosts
+    ? pickDailyPosts(allFeedPosts, todaySeed)
+    : MOCK_POSTS;
 
   const shownPostIds = new Set(displayPosts.map((p: FeedPost) => p.id));
   const historySections: { date: Date; posts: FeedPost[] }[] = [];
   if (showFeedHistory && allFeedPosts) {
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
-      const pastStr = format(pastDate, "yyyy-MM-dd");
-      const pastPosts = pickDailyPosts(allFeedPosts, pastStr, 5, shownPostIds);
+      const dayNum = todayFeedDayNum - d;
+      if (dayNum < 1) break;
+      const anchorStr = format(feedAnchor, "yyyyMMdd");
+      const pastSeed = `${anchorStr}-${dayNum}`;
+      const pastPosts = pickDailyPosts(allFeedPosts, pastSeed, 5, shownPostIds);
       if (pastPosts.length > 0) {
         historySections.push({ date: pastDate, posts: pastPosts });
         pastPosts.forEach((p: FeedPost) => shownPostIds.add(p.id));

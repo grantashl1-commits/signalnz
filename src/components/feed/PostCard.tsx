@@ -32,39 +32,57 @@ function getThemeClass(theme: string): string {
   return THEME_COLORS[theme] || "bg-muted/50 text-muted-foreground";
 }
 
-/** Simple markdown-lite renderer: **bold**, *italic* */
-function renderMarkdownLite(text: string) {
+interface ParsedPost {
+  title: string | null;
+  body: string;
+  takeaway: string | null;
+  quote: string | null;
+}
+
+function parsePostContent(text: string): ParsedPost {
+  // Extract bold title on its own first line
+  const titleMatch = text.match(/^\*\*(.+?)\*\*/);
+  const title = titleMatch ? titleMatch[1].trim() : null;
+  const afterTitle = titleMatch ? text.slice(titleMatch[0].length).replace(/^\n+/, "") : text;
+
+  // Extract **Takeaway:** section
+  const takeawayMatch = afterTitle.match(/\*\*Takeaway:\*\*\s*(.+?)(?=\n\n\*"|^\*"|$)/s);
+  const takeaway = takeawayMatch ? takeawayMatch[1].replace(/\n/g, " ").trim() : null;
+
+  // Extract *"quote"* — allow optional attribution after the closing quote
+  const quoteMatch = afterTitle.match(/\*"(.+?)"\*/s);
+  const quote = quoteMatch ? quoteMatch[1].trim() : null;
+
+  // Body: everything between title and takeaway (or end)
+  let body = afterTitle;
+  if (takeawayMatch && takeawayMatch.index !== undefined) {
+    body = afterTitle.slice(0, takeawayMatch.index).trim();
+  } else if (quoteMatch && quoteMatch.index !== undefined) {
+    body = afterTitle.slice(0, quoteMatch.index).trim();
+  }
+
+  return { title, body: body.trim(), takeaway, quote };
+}
+
+function renderBody(text: string) {
   const parts: (string | JSX.Element)[] = [];
-  // Split by lines first for paragraph handling
   const lines = text.split("\n");
-  
   lines.forEach((line, lineIdx) => {
     if (lineIdx > 0) parts.push(<br key={`br-${lineIdx}`} />);
-    
-    // Process bold and italic
     const regex = /(\*\*(.+?)\*\*|\*"?(.+?)"?\*)/g;
     let lastIndex = 0;
     let match;
-    
     while ((match = regex.exec(line)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(line.slice(lastIndex, match.index));
-      }
+      if (match.index > lastIndex) parts.push(line.slice(lastIndex, match.index));
       if (match[2]) {
-        // Bold
         parts.push(<strong key={`b-${lineIdx}-${match.index}`} className="font-semibold text-foreground">{match[2]}</strong>);
       } else if (match[3]) {
-        // Italic (possibly a quote)
         parts.push(<em key={`i-${lineIdx}-${match.index}`} className="text-muted-foreground italic">{match[3]}</em>);
       }
       lastIndex = match.index + match[0].length;
     }
-    
-    if (lastIndex < line.length) {
-      parts.push(line.slice(lastIndex));
-    }
+    if (lastIndex < line.length) parts.push(line.slice(lastIndex));
   });
-  
   return parts;
 }
 
@@ -88,11 +106,15 @@ interface PostCardProps {
 export default function PostCard({ post, onLike, onJournal, isLiked = false }: PostCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(isLiked);
-  
-  const shouldTruncate = post.post_title_description.length > 300;
-  const displayText = expanded || !shouldTruncate
-    ? post.post_title_description
-    : post.post_title_description.slice(0, 300) + "...";
+
+  const parsed = parsePostContent(post.post_title_description);
+
+  // Truncate body only
+  const BODY_LIMIT = 280;
+  const shouldTruncate = parsed.body.length > BODY_LIMIT;
+  const displayBody = expanded || !shouldTruncate
+    ? parsed.body
+    : parsed.body.slice(0, BODY_LIMIT) + "...";
 
   const handleLike = () => {
     setLiked(!liked);
@@ -141,9 +163,16 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
           </div>
         )}
 
-        {/* Post body — keep readable with body font */}
-        <div className="font-body text-sm leading-relaxed text-foreground/90">
-          {renderMarkdownLite(displayText)}
+        {/* Title */}
+        {parsed.title && (
+          <h3 className="font-body text-base font-semibold text-foreground leading-snug">
+            {parsed.title}
+          </h3>
+        )}
+
+        {/* Body paragraph */}
+        <div className="font-body text-sm leading-relaxed text-foreground/85">
+          {renderBody(displayBody)}
         </div>
 
         {shouldTruncate && (
@@ -153,6 +182,23 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
           >
             {expanded ? "Show less" : "Read more"}
           </button>
+        )}
+
+        {/* Takeaway */}
+        {parsed.takeaway && (
+          <div className="rounded-xl px-3.5 py-2.5 bg-primary/8 border border-primary/15">
+            <p className="font-body text-xs leading-relaxed text-foreground/80">
+              <span className="font-semibold text-primary/90">Takeaway: </span>
+              {parsed.takeaway}
+            </p>
+          </div>
+        )}
+
+        {/* Quote */}
+        {parsed.quote && (
+          <p className="font-body text-xs italic text-muted-foreground border-l-2 border-primary/25 pl-3 leading-relaxed">
+            "{parsed.quote}"
+          </p>
         )}
 
         {/* Actions — dotted divider */}
@@ -169,7 +215,7 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
             <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
             <span>{liked ? "Resonated" : "This resonated"}</span>
           </button>
-          
+
           <button
             onClick={handleJournal}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all min-h-[40px] ml-auto"

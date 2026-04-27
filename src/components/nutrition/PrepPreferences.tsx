@@ -1,5 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
-import { Minus, Plus, Dumbbell, Eye, EyeOff, Check, Baby } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Minus, Plus, Dumbbell, Eye, EyeOff, Check, Baby, AlertTriangle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
 function SignalLoadingRing() {
@@ -29,8 +30,9 @@ const PHASE_HEX: Record<Phase, string> = {
 };
 
 const BODY_GOAL_LABELS: Record<string, string> = {
-  "lose-weight": "Lose weight",
-  "gain-muscle": "Build muscle",
+  "lose-weight": "Lose weight (calorie deficit)",
+  "maintain": "Maintain weight",
+  "gain-muscle": "Build muscle (calorie surplus)",
   "tone-up": "Tone & define",
   flexibility: "Improve flexibility",
   endurance: "Build endurance",
@@ -39,8 +41,17 @@ const BODY_GOAL_LABELS: Record<string, string> = {
   energy: "More energy",
 };
 
+const ADULT_DIET_OPTIONS = [
+  "Vegetarian",
+  "Vegan",
+  "Pescatarian",
+  "Gluten-free",
+  "Dairy-free",
+  "Keto",
+  "Paleo",
+];
+
 const KIDS_DIET_OPTIONS = [
-  "No restrictions",
   "Dairy-free",
   "Gluten-free",
   "Nut-free",
@@ -57,23 +68,35 @@ interface Props {
 }
 
 export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenerating }: Props) {
+  const navigate = useNavigate();
   const [breakfast, setBreakfast] = useState<BreakfastPref>(initialPrefs.breakfast);
   const [lunch, setLunch] = useState<LunchPref>(initialPrefs.lunch);
   const [dinner, setDinner] = useState<DinnerPref>(initialPrefs.dinner);
   const [prepDays, setPrepDays] = useState<string[]>(initialPrefs.prepDays);
   const [adults, setAdults] = useState(initialPrefs.adults);
   const [kids, setKids] = useState(initialPrefs.kids);
-  const [dietType, setDietType] = useState(initialPrefs.dietType || "");
+
+  // Multi-select diet types for adults — migrate from legacy single string
+  const [dietTypes, setDietTypes] = useState<string[]>(() => {
+    if (initialPrefs.dietTypes?.length) return initialPrefs.dietTypes;
+    if (initialPrefs.dietType && initialPrefs.dietType !== "No preference") return [initialPrefs.dietType];
+    return [];
+  });
+
+  // Multi-select diet types for kids — migrate from legacy single string
+  const [kidsDietTypes, setKidsDietTypes] = useState<string[]>(() => {
+    if (initialPrefs.kidsDietTypes?.length) return initialPrefs.kidsDietTypes;
+    if (initialPrefs.kidsDietType && initialPrefs.kidsDietType !== "No restrictions") return [initialPrefs.kidsDietType];
+    return [];
+  });
+
   const [allergies, setAllergies] = useState(initialPrefs.allergies || "");
   const [dislikes, setDislikes] = useState(initialPrefs.dislikes || "");
   const [calorieTarget, setCalorieTarget] = useState(initialPrefs.calorieTarget || "");
   const [showHiddenRecipes, setShowHiddenRecipes] = useState(false);
   const [dislikedRecipes, setDislikedRecipes] = useState<string[]>(getDislikedRecipes);
-  
-  // Kids dietary preferences
-  const [kidsDietType, setKidsDietType] = useState(initialPrefs.kidsDietType || "");
   const [kidsAllergies, setKidsAllergies] = useState(initialPrefs.kidsAllergies || "");
-  
+
   const phaseColor = PHASE_HEX[phase];
 
   const bodyGoals = useMemo<string[]>(() => {
@@ -82,6 +105,18 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
   }, []);
+
+  const hasMovementGoals = bodyGoals.length > 0;
+
+  const toggleDietType = (dt: string) => {
+    haptic("light");
+    setDietTypes(prev => prev.includes(dt) ? prev.filter(d => d !== dt) : [...prev, dt]);
+  };
+
+  const toggleKidsDietType = (dt: string) => {
+    haptic("light");
+    setKidsDietTypes(prev => prev.includes(dt) ? prev.filter(d => d !== dt) : [...prev, dt]);
+  };
 
   const togglePrepDay = (day: string) => {
     haptic("light");
@@ -97,13 +132,16 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
   const handleBuild = () => {
     const prefs: PrepPrefsType = {
       breakfast, lunch, dinner, prepDays, adults, kids,
-      dietType, allergies, dislikes, calorieTarget,
+      dietTypes: dietTypes.length > 0 ? dietTypes : undefined,
+      dietType: dietTypes[0] || "",   // legacy compat for edge function
+      allergies, dislikes, calorieTarget,
       cookingSkill: "confident",
       availableTime: "30",
       equipment: ["oven", "stovetop"],
       bodyGoal: bodyGoals[0] || "",
       bodyGoals,
-      kidsDietType: kids > 0 ? kidsDietType : "",
+      kidsDietTypes: kids > 0 && kidsDietTypes.length > 0 ? kidsDietTypes : undefined,
+      kidsDietType: kids > 0 ? (kidsDietTypes[0] || "") : "",  // legacy compat
       kidsAllergies: kids > 0 ? kidsAllergies : "",
     };
     savePreferences(prefs);
@@ -119,18 +157,36 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
         </p>
       </div>
 
-      {/* Body Goals */}
-      {bodyGoals.length > 0 && (
+      {/* Movement Goals — gate */}
+      {!hasMovementGoals ? (
+        <div className="rounded-xl border border-amber-400/40 bg-amber-50/60 dark:bg-amber-900/10 p-4 flex items-start gap-3">
+          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="font-body text-xs font-semibold text-foreground">
+              Set your movement goals first
+            </p>
+            <p className="font-body text-[10px] text-muted-foreground mt-0.5" style={{ fontWeight: 300 }}>
+              Your nutrition plan is built around your fitness goals — calorie targets, protein needs, and meal timing are all tailored to what you're working towards.
+            </p>
+            <button
+              onClick={() => navigate("/movement")}
+              className="mt-2 font-body text-xs font-semibold text-primary underline"
+            >
+              Go to Movement to set your goals →
+            </button>
+          </div>
+        </div>
+      ) : (
         <div className="rounded-xl border border-border bg-card p-3 flex items-start gap-3">
           <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
             <Dumbbell className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <p className="font-body text-xs font-semibold text-foreground">
-              Your movement goals: {bodyGoals.map(g => BODY_GOAL_LABELS[g] || g).join(", ")}
+              Movement goals: {bodyGoals.map(g => BODY_GOAL_LABELS[g] || g).join(", ")}
             </p>
             <p className="font-body text-[10px] text-muted-foreground mt-0.5" style={{ fontWeight: 300 }}>
-              We've set your nutrition plan to support these — you can override your calorie target below.
+              Your plan will be calibrated to these goals — calories, protein targets, and meal timing adjusted accordingly.
             </p>
           </div>
         </div>
@@ -241,21 +297,28 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             </p>
           </div>
           <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>
-            We'll tailor kids' meals based on these preferences.
+            Select all that apply — kids' meals will respect every choice.
           </p>
 
           <div className="space-y-2">
-            <label className="font-body text-xs text-foreground">Diet type</label>
+            <label className="font-body text-xs text-foreground">Diet restrictions</label>
             <div className="flex flex-wrap gap-2">
-              {KIDS_DIET_OPTIONS.map(dt => (
-                <button key={dt} onClick={() => { haptic("light"); setKidsDietType(kidsDietType === dt ? "" : dt); }}
-                  className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                    kidsDietType === dt ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-                  }`}>
-                  {dt}
-                </button>
-              ))}
+              {KIDS_DIET_OPTIONS.map(dt => {
+                const selected = kidsDietTypes.includes(dt);
+                return (
+                  <button key={dt} onClick={() => toggleKidsDietType(dt)}
+                    className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all flex items-center gap-1.5 ${
+                      selected ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                    }`}>
+                    {selected && <Check className="h-3 w-3" />}
+                    {dt}
+                  </button>
+                );
+              })}
             </div>
+            {kidsDietTypes.length === 0 && (
+              <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>No restrictions — all kids recipes included.</p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -269,21 +332,30 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
       {/* Dietary requirements */}
       <div className="space-y-3 pt-2 border-t border-border">
-        <p className="font-display text-sm font-bold italic" style={{ color: "hsl(var(--primary))" }}>Dietary Preferences</p>
-        
-        <div className="space-y-2">
-          <label className="font-body text-xs text-foreground">Diet type</label>
-          <div className="flex flex-wrap gap-2">
-            {["No preference", "Vegetarian", "Vegan", "Pescatarian", "Gluten-free", "Dairy-free", "Keto", "Paleo"].map(dt => (
-              <button key={dt} onClick={() => { haptic("light"); setDietType(dietType === dt ? "" : dt); }}
-                className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all ${
-                  dietType === dt ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+        <div>
+          <p className="font-display text-sm font-bold italic" style={{ color: "hsl(var(--primary))" }}>Your Dietary Preferences</p>
+          <p className="font-body text-[10px] text-muted-foreground mt-0.5 italic" style={{ fontWeight: 300 }}>
+            Select all that apply — your plan will respect every choice.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {ADULT_DIET_OPTIONS.map(dt => {
+            const selected = dietTypes.includes(dt);
+            return (
+              <button key={dt} onClick={() => toggleDietType(dt)}
+                className={`touch-btn rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  selected ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
                 }`}>
+                {selected && <Check className="h-3 w-3" />}
                 {dt}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
+        {dietTypes.length === 0 && (
+          <p className="font-body text-[10px] text-muted-foreground italic" style={{ fontWeight: 300 }}>No restrictions selected — all recipes included.</p>
+        )}
 
         <div className="space-y-1.5">
           <label className="font-body text-xs text-foreground">Allergies or intolerances</label>
@@ -299,10 +371,9 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
             className="w-full rounded-xl bg-card px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary" />
         </div>
 
-        {/* Calorie target removed — auto-calculated from movement goals */}
-        {bodyGoals.length > 0 && (
+        {hasMovementGoals && (
           <p className="font-body text-[10px] text-primary italic">
-            Calories are auto-calculated based on your movement goals.
+            Calories and protein targets are calibrated to your movement goals.
           </p>
         )}
       </div>
@@ -335,13 +406,15 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
       )}
 
       {/* Build button */}
-      <button onClick={handleBuild} disabled={isGenerating}
+      <button onClick={handleBuild} disabled={isGenerating || !hasMovementGoals}
         className="touch-btn w-full rounded-[14px] py-3.5 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary transition-all active:opacity-90 disabled:opacity-50">
         {isGenerating ? (
           <div className="flex flex-col items-center justify-center gap-3 py-2">
             <SignalLoadingRing />
             <span className="font-body text-xs text-primary-foreground/80">Generating your plan...</span>
           </div>
+        ) : !hasMovementGoals ? (
+          "Set movement goals to continue"
         ) : (
           "Build my AI plan →"
         )}

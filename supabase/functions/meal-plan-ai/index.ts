@@ -159,7 +159,7 @@ const PROTEIN_ALIASES: Record<string, string[]> = {
   none: ["vegan", "plant"],
 };
 
-function findKidsRecipe(adultRecipeName: string, mealType: string, kidsAllergies: string[], kidsDietType: string, exclude: string[], seed: number): KidsRecipe | null {
+function findKidsRecipe(adultRecipeName: string, mealType: string, kidsAllergies: string[], kidsDietTypes: string[], exclude: string[], seed: number): KidsRecipe | null {
   const lower = adultRecipeName.toLowerCase();
   let detectedProtein = "";
   for (const [protein, aliases] of Object.entries(PROTEIN_ALIASES)) {
@@ -178,14 +178,15 @@ function findKidsRecipe(adultRecipeName: string, mealType: string, kidsAllergies
         if (r.ingredients.join(" ").toLowerCase().includes(al)) return false;
       }
     }
-    if (kidsDietType) {
-      const dt = kidsDietType.toLowerCase();
-      if (dt.includes("vegan") && !r.tags.includes("vegan")) return false;
-      if (dt.includes("vegetarian") && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
-      if (dt.includes("dairy-free") && !r.tags.includes("dairy-free")) return false;
-      if (dt.includes("gluten-free") && !r.tags.includes("gluten-free")) return false;
-      if (dt.includes("nut-free") && !r.tags.includes("nut-free")) return false;
-      if (dt.includes("egg-free") && !r.tags.includes("egg-free")) return false;
+    // All selected kids diet types must be satisfied
+    for (const dt of kidsDietTypes) {
+      const dtl = dt.toLowerCase();
+      if (dtl.includes("vegan") && !r.tags.includes("vegan")) return false;
+      if (dtl.includes("vegetarian") && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
+      if (dtl.includes("dairy-free") && !r.tags.includes("dairy-free")) return false;
+      if (dtl.includes("gluten-free") && !r.tags.includes("gluten-free")) return false;
+      if (dtl.includes("nut-free") && !r.tags.includes("nut-free")) return false;
+      if (dtl.includes("egg-free") && !r.tags.includes("egg-free")) return false;
     }
     return true;
   });
@@ -207,36 +208,41 @@ function getPhaseForDay(cycleDay: number): string {
   return "luteal";
 }
 
-function filterRecipes(phase: string, mealType: string, dislikes: string[], dietType: string, exclude: string[]): Recipe[] {
+function filterRecipes(phase: string, mealType: string, dislikes: string[], dietTypes: string[], exclude: string[]): Recipe[] {
   return RECIPE_BANK.filter(r => {
-    if (!r.phase.includes(phase) && !r.phase.includes("menstrual") && !r.phase.includes("follicular") && !r.phase.includes("ovulatory") && !r.phase.includes("luteal")) return false;
-    // Prefer phase-specific, but allow universal snacks
     const phaseMatch = r.phase.includes(phase) || r.phase.length === 4;
     if (!phaseMatch) return false;
     if (!r.mealType.includes(mealType)) return false;
     if (exclude.includes(r.name)) return false;
-    // Filter dislikes
     const nameLower = r.name.toLowerCase();
     const ingredientsLower = r.ingredients.join(" ").toLowerCase();
     for (const d of dislikes) {
       const dl = d.toLowerCase().trim();
       if (dl && (nameLower.includes(dl) || ingredientsLower.includes(dl))) return false;
     }
-    // Filter diet type
-    if (dietType) {
-      const dt = dietType.toLowerCase();
-      if (dt.includes("vegan") && !r.tags.includes("vegan")) return false;
-      if (dt.includes("vegetarian") && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
-      if (dt.includes("keto") && !r.tags.includes("keto-friendly") && r.carbs > 20) return false;
+    // All selected diet types must be satisfied
+    for (const dt of dietTypes) {
+      const dtl = dt.toLowerCase();
+      if (dtl === "no preference") continue;
+      if (dtl === "vegan" && !r.tags.includes("vegan")) return false;
+      if (dtl === "vegetarian" && !r.tags.includes("vegan") && !r.tags.includes("vegetarian")) return false;
+      if (dtl === "pescatarian" && !r.tags.includes("vegan") && !r.tags.includes("vegetarian") && !nameLower.includes("fish") && !nameLower.includes("salmon") && !nameLower.includes("tuna") && !ingredientsLower.includes("fish") && !ingredientsLower.includes("salmon") && !ingredientsLower.includes("tuna") && r.tags.includes("dairy-free") === false && !r.ingredients.join("").toLowerCase().includes("egg")) {
+        // Pescatarian: allow fish, veg, and vegetarian — exclude land meat
+        const landMeat = ["chicken", "beef", "pork", "lamb", "turkey", "mince", "steak", "bacon"];
+        if (landMeat.some(m => ingredientsLower.includes(m))) return false;
+      }
+      if (dtl === "keto" && !r.tags.includes("keto-friendly") && r.carbs > 20) return false;
+      if (dtl === "dairy-free" && !r.tags.includes("dairy-free")) return false;
+      if (dtl === "gluten-free" && !r.tags.includes("gluten-free")) return false;
+      if (dtl === "paleo" && r.carbs > 35) return false;
     }
     return true;
   });
 }
 
-function pickRecipe(phase: string, mealType: string, dislikes: string[], dietType: string, used: string[], seed: number): Recipe | null {
-  const candidates = filterRecipes(phase, mealType, dislikes, dietType, used);
+function pickRecipe(phase: string, mealType: string, dislikes: string[], dietTypes: string[], used: string[], seed: number): Recipe | null {
+  const candidates = filterRecipes(phase, mealType, dislikes, dietTypes, used);
   if (candidates.length === 0) {
-    // Fallback: try any phase
     const fallback = RECIPE_BANK.filter(r => r.mealType.includes(mealType) && !used.includes(r.name));
     if (fallback.length === 0) return null;
     return fallback[seed % fallback.length];
@@ -244,8 +250,9 @@ function pickRecipe(phase: string, mealType: string, dislikes: string[], dietTyp
   return candidates[seed % candidates.length];
 }
 
-function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number, kidsCount: number, kidsDietType: string, kidsAllergies: string[]) {
+function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<string, any>, daySeed: number, kidsCount: number, kidsDietTypes: string[], kidsAllergies: string[]) {
   const phase = getPhaseForDay(cycleDay);
+  const goalGuidance = getGoalGuidance(prefs.bodyGoals || []);
 
   const meals: Record<string, any> = {};
   const mealKeys = ["breakfast", "morningSnack", "lunch", "afternoonSnack", "dinner"];
@@ -271,7 +278,7 @@ function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<stri
 
       // Add kids substitute for lunch and dinner
       if (kidsCount > 0 && (key === "lunch" || key === "dinner")) {
-        const kidsRecipe = findKidsRecipe(assigned.name, key, kidsAllergies, kidsDietType, usedKidsIds, daySeed + cycleDay);
+        const kidsRecipe = findKidsRecipe(assigned.name, key, kidsAllergies, kidsDietTypes, usedKidsIds, daySeed + cycleDay);
         if (kidsRecipe) {
           usedKidsIds.push(kidsRecipe.id);
           meals[`kids${key.charAt(0).toUpperCase() + key.slice(1)}`] = {
@@ -310,9 +317,71 @@ function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<stri
     dailyProtein: `~${totalProtein}g`,
     hydrationTarget: "2.0-2.5L",
     deficiencyFlags,
+    goalNote: goalGuidance.qualifiedNote,
+    calorieGuidance: goalGuidance.calorieNote,
+    proteinGuidance: goalGuidance.proteinNote,
     preWorkoutNote: "If training: eat 1.5 hours before. Include 30g carbs + 15g protein.",
     postWorkoutNote: "Within 60 min post-workout: 30g protein + 40g carbs.",
     ...meals,
+  };
+}
+
+// Resolve multiple diet types from prefs (handles legacy single string + new array)
+function resolveDietTypes(prefs: any): string[] {
+  if (Array.isArray(prefs.dietTypes) && prefs.dietTypes.length > 0) return prefs.dietTypes.filter((d: string) => d && d !== "No preference");
+  if (prefs.dietType && prefs.dietType !== "No preference") return [prefs.dietType];
+  return [];
+}
+
+function resolveKidsDietTypes(prefs: any): string[] {
+  if (Array.isArray(prefs.kidsDietTypes) && prefs.kidsDietTypes.length > 0) return prefs.kidsDietTypes.filter((d: string) => d && d !== "No restrictions");
+  if (prefs.kidsDietType && prefs.kidsDietType !== "No restrictions") return [prefs.kidsDietType];
+  return [];
+}
+
+// Goal-aware calorie and protein guidance
+function getGoalGuidance(bodyGoals: string[]): { calorieNote: string; proteinNote: string; qualifiedNote: string } {
+  const goals = bodyGoals || [];
+  if (goals.includes("lose-weight")) {
+    return {
+      calorieNote: "Aim for a 300-500 kcal daily deficit. Prioritise whole foods, fibre, and volume eating.",
+      proteinNote: "1.6-2.0g protein per kg body weight to preserve muscle during deficit.",
+      qualifiedNote: "Plan calibrated for fat loss: moderate calorie deficit, high protein, high fibre to manage hunger."
+    };
+  }
+  if (goals.includes("gain-muscle")) {
+    return {
+      calorieNote: "Aim for a 200-300 kcal daily surplus. Fuel workouts with carbs; recover with protein.",
+      proteinNote: "1.8-2.2g protein per kg body weight to maximise muscle protein synthesis.",
+      qualifiedNote: "Plan calibrated for muscle building: slight calorie surplus, elevated protein, carbs timed around training."
+    };
+  }
+  if (goals.includes("maintain")) {
+    return {
+      calorieNote: "Match intake to expenditure. Focus on food quality and nutrient density.",
+      proteinNote: "1.4-1.6g protein per kg body weight to maintain lean mass.",
+      qualifiedNote: "Plan calibrated for maintenance: balanced macros, nutrient-dense whole foods, sustainable habits."
+    };
+  }
+  if (goals.includes("tone-up")) {
+    return {
+      calorieNote: "Small deficit (200 kcal) combined with resistance training. Keep protein high.",
+      proteinNote: "1.6-2.0g protein per kg body weight to build and retain lean muscle.",
+      qualifiedNote: "Plan calibrated for body recomposition: moderate deficit, high protein, phased carb timing."
+    };
+  }
+  if (goals.includes("endurance")) {
+    return {
+      calorieNote: "Carbohydrate-focused fuelling: 5-7g carbs per kg on training days.",
+      proteinNote: "1.4-1.6g protein per kg body weight for muscle repair.",
+      qualifiedNote: "Plan calibrated for endurance: carb-forward meals, strategic protein for recovery, electrolyte support."
+    };
+  }
+  // Default / mixed goals
+  return {
+    calorieNote: "Balance macros to support your activity level and goals.",
+    proteinNote: "1.4-1.8g protein per kg body weight.",
+    qualifiedNote: "Plan calibrated for general health and performance: balanced whole-food macros aligned with your cycle."
   };
 }
 
@@ -320,7 +389,7 @@ function buildDayPlan(cycleDay: number, prefs: any, mealAssignments: Record<stri
 function assignMealsForWeek(dayStart: number, dayEnd: number, prefs: any, baseSeed: number): Record<string, any> {
   const assignments: Record<string, any> = {};
   const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
-  const dietType = prefs.dietType || "";
+  const dietTypes = resolveDietTypes(prefs);
   const totalDays = dayEnd - dayStart + 1;
 
   // Helper: pick N unique recipes for a meal type across phase changes
@@ -328,9 +397,8 @@ function assignMealsForWeek(dayStart: number, dayEnd: number, prefs: any, baseSe
     const results: Recipe[] = [];
     const usedNames: string[] = [];
     for (let i = 0; i < count; i++) {
-      // Try each day's phase to get phase-appropriate recipes
       const phase = getPhaseForDay(dayStart + (i % totalDays));
-      const recipe = pickRecipe(phase, mealType, dislikes, dietType, usedNames, seed + i * 17);
+      const recipe = pickRecipe(phase, mealType, dislikes, dietTypes, usedNames, seed + i * 17);
       if (recipe) {
         results.push(recipe);
         usedNames.push(recipe.name);
@@ -451,10 +519,12 @@ serve(async (req) => {
     const prefs = {
       ...(preferences || {}),
       userDietaryDislikes: userDietaryDislikes || [],
+      bodyGoals: body.bodyGoals || preferences?.bodyGoals || [],
     };
     const kidsCount = prefs.kids || 0;
-    const kidsDietType = prefs.kidsDietType || "";
+    const kidsDietTypes = resolveKidsDietTypes(prefs);
     const kidsAllergies = (prefs.kidsAllergies || "").split(",").map((s: string) => s.trim()).filter(Boolean);
+    const dietTypes = resolveDietTypes(prefs);
 
     const dayStart = startCycleDay || 1;
     const dayEnd = endCycleDay || Math.min(dayStart + 6, 28);
@@ -462,7 +532,7 @@ serve(async (req) => {
       const phase = getPhaseForDay(regenerateDay);
       const dislikes = [...(prefs.dislikes || "").split(",").map((s: string) => s.trim()), ...(prefs.userDietaryDislikes || [])].filter(Boolean);
       const currentName = existingPlan.days?.find((d: any) => d.cycleDay === regenerateDay)?.[regenerateMeal]?.name || "";
-      const recipe = pickRecipe(phase, regenerateMeal === "morningSnack" || regenerateMeal === "afternoonSnack" ? "snack" : regenerateMeal, dislikes, prefs.dietType || "", [currentName], Date.now());
+      const recipe = pickRecipe(phase, regenerateMeal === "morningSnack" || regenerateMeal === "afternoonSnack" ? "snack" : regenerateMeal, dislikes, dietTypes, [currentName], Date.now());
       if (recipe) {
         return new Response(JSON.stringify({ name: recipe.name, phase, mealType: regenerateMeal, prepTime: recipe.prepTime, serves: recipe.serves, calories: `~${recipe.calories} kcal`, protein: `~${recipe.protein}g`, ingredients: recipe.ingredients, method: recipe.method, nutritionalNote: recipe.nutritionalNote, keyNutrients: recipe.keyNutrients }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -476,7 +546,7 @@ serve(async (req) => {
 
     const plan: any[] = [];
     for (let d = dayStart; d <= dayEnd; d++) {
-      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13, kidsCount, kidsDietType, kidsAllergies));
+      plan.push(buildDayPlan(d, prefs, mealAssignments, baseSeed + d * 13, kidsCount, kidsDietTypes, kidsAllergies));
     }
 
     return new Response(JSON.stringify({ plan, mode }), {

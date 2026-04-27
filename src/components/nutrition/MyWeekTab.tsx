@@ -190,13 +190,17 @@ export default function MyWeekTab() {
 
       let allDays: AIPlannedDay[] = [];
 
-      // Phase 4A: pass user profile macro targets to Edge Function
+      // Pass user profile macro targets + movement goals to Edge Function
+      const storedGoals: string[] = (() => {
+        try { return JSON.parse(localStorage.getItem("signal_body_goals") || "[]"); } catch { return []; }
+      })();
       const profileExtras = {
         userCalorieTarget: calorieTarget ?? undefined,
         userProteinTargetG: proteinTargetG ?? undefined,
         userCarbTargetG: carbTargetG ?? undefined,
         userFatTargetG: fatTargetG ?? undefined,
         userDietaryDislikes: dietaryDislikes?.length ? dietaryDislikes : undefined,
+        bodyGoals: storedGoals,
       };
 
       // Run all 4 batches in parallel — reduces generation time from ~20s to ~5s on mobile

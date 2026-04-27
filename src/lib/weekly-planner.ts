@@ -17,7 +17,8 @@ export interface PrepPreferences {
   prepDays: string[];
   adults: number;
   kids: number;
-  dietType?: string;
+  dietType?: string;       // legacy single value — prefer dietTypes
+  dietTypes?: string[];    // multiple dietary preferences e.g. ["Vegan", "Gluten-free"]
   allergies?: string;
   dislikes?: string;
   calorieTarget?: string;
@@ -26,7 +27,8 @@ export interface PrepPreferences {
   equipment?: string[];
   bodyGoal?: string;
   bodyGoals?: string[];
-  kidsDietType?: string;
+  kidsDietType?: string;       // legacy single value — prefer kidsDietTypes
+  kidsDietTypes?: string[];    // multiple kids dietary preferences
   kidsAllergies?: string;
 }
 
