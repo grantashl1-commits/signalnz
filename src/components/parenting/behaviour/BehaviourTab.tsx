@@ -125,11 +125,23 @@ export default function BehaviourTab() {
     ];
     const behaviourPayload = DEFAULT_BEHAVIOURS.map((b, i) => ({ user_id: user.id, child_id: childId, name: b.name, penalty: b.penalty, reset_to_zero: b.reset_to_zero, sort_order: i }));
     const rewardPayload = DEFAULT_REWARDS.map(r => ({ user_id: user.id, child_id: childId, name: r.name, target_points: r.target_points }));
-    await Promise.all([
-      supabase.from("parenting_chores").insert(chorePayload),
+    const [{ data: insertedChores }] = await Promise.all([
+      supabase.from("parenting_chores").insert(chorePayload).select(),
       supabase.from("parenting_behaviours").insert(behaviourPayload),
       supabase.from("parenting_rewards").insert(rewardPayload),
     ]);
+    // Generate illustrations for each seeded chore in the background (non-blocking)
+    if (insertedChores) {
+      void Promise.all(
+        insertedChores.map(async (row: any) => {
+          try {
+            const { data } = await supabase.functions.invoke("chore-illustration", { body: { name: row.name } });
+            const url = (data as any)?.imageUrl;
+            if (url) await supabase.from("parenting_chores").update({ image_url: url }).eq("id", row.id);
+          } catch (e) { /* ignore */ }
+        })
+      ).then(() => loadAll());
+    }
   };
 
   const createChild = async (data: { name: string; character_id: CharacterId; accent_color: string; age: number | null }) => {
