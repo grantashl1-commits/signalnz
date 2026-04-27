@@ -1851,6 +1851,218 @@ export type Database = {
         }
         Relationships: []
       }
+      parenting_behaviours: {
+        Row: {
+          active: boolean
+          child_id: string | null
+          created_at: string
+          id: string
+          name: string
+          penalty: number
+          reset_to_zero: boolean
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          child_id?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          penalty?: number
+          reset_to_zero?: boolean
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          child_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          penalty?: number
+          reset_to_zero?: boolean
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parenting_behaviours_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "parenting_children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parenting_children: {
+        Row: {
+          accent_color: string
+          age: number | null
+          character_id: string
+          created_at: string
+          id: string
+          name: string
+          points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accent_color?: string
+          age?: number | null
+          character_id?: string
+          created_at?: string
+          id?: string
+          name: string
+          points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accent_color?: string
+          age?: number | null
+          character_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      parenting_chores: {
+        Row: {
+          active: boolean
+          category: string
+          child_id: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          points: number
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          child_id?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          points?: number
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          child_id?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          points?: number
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parenting_chores_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "parenting_children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parenting_rewards: {
+        Row: {
+          achieved: boolean
+          active: boolean
+          child_id: string
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          target_points: number
+          user_id: string
+        }
+        Insert: {
+          achieved?: boolean
+          active?: boolean
+          child_id: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          target_points: number
+          user_id: string
+        }
+        Update: {
+          achieved?: boolean
+          active?: boolean
+          child_id?: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          target_points?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parenting_rewards_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "parenting_children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parenting_transactions: {
+        Row: {
+          child_id: string
+          created_at: string
+          delta: number
+          id: string
+          kind: string
+          reason: string
+          source_id: string | null
+          user_id: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          delta: number
+          id?: string
+          kind: string
+          reason: string
+          source_id?: string | null
+          user_id: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          delta?: number
+          id?: string
+          kind?: string
+          reason?: string
+          source_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parenting_transactions_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "parenting_children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_connections: {
         Row: {
           created_at: string
