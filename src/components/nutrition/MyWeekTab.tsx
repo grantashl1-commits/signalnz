@@ -727,12 +727,11 @@ export default function MyWeekTab() {
                               </div>
                             )}
 
-<<<<<<< Updated upstream
-                            {/* Kids alternative — only when household has kids and meal is a main */}
-                            {prefs.kids > 0 && (key === "breakfast" || key === "lunch" || key === "dinner") && mealName && (
+                            {/* Kids alternative for breakfast or non-AI plans */}
+                            {prefs.kids > 0 && key === "breakfast" && mealName && (
                               <KidsDinnerAlt mealName={mealName} mealType={key as any} phase={day.phase} />
                             )}
-=======
+
                             {/* Kids meal toggle — only for lunch/dinner on AI plans with kids */}
                             {day.isAI && (key === "lunch" || key === "dinner") &&
                               (aiPlan?.prepPreferences?.kids ?? 0) > 0 &&
@@ -788,7 +787,6 @@ export default function MyWeekTab() {
                                 );
                               })()
                             }
->>>>>>> Stashed changes
                           </div>
                         );
                       })}
