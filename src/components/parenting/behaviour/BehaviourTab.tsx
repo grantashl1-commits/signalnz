@@ -415,14 +415,76 @@ function ChoreSection({ title, subtitle, items, onDone, accent, variant = "must"
                 ? "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.06] to-transparent"
                 : "border-border bg-card hover:bg-secondary/40"
             }`}>
-            <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
-              <Check className="h-4 w-4" style={{ color: accent }} />
-            </div>
+            {c.image_url ? (
+              <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-white" style={{ background: accent + "11" }}>
+                <img src={c.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+            ) : (
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
+                <Check className="h-4 w-4" style={{ color: accent }} />
+              </div>
+            )}
             <span className="flex-1 text-left text-sm font-medium text-foreground">{c.name}</span>
             <span className="text-xs font-mono font-semibold tabular-nums" style={{ color: accent }}>+{c.points}</span>
           </motion.button>
         ))}
       </div>
+    </section>
+  );
+}
+
+function WhyCard({ accent }: { accent: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="rounded-2xl border border-border bg-card overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2 p-3 text-left"
+      >
+        <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
+          <Info className="h-4 w-4" style={{ color: accent }} />
+        </div>
+        <span className="flex-1 font-display text-sm font-bold text-foreground">Why this works</span>
+        <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 space-y-3 text-xs leading-relaxed text-foreground/80">
+              <p>
+                <strong className="text-foreground">Experiences over things.</strong>{" "}
+                Picking the family movie, a friend over for a playdate, choosing a weekend
+                activity — these rewards build connection and shared memories. Toys lose their
+                shine within days; <em>"I picked the movie"</em> is told for years
+                <span className="text-muted-foreground"> (Faber & Mazlish; Clarke-Fields).</span>
+              </p>
+              <p>
+                <strong className="text-foreground">A neutral mechanism replaces nagging.</strong>{" "}
+                The app — not you — awards or deducts points. Your child can't argue with a counter.
+                You stay calm, the boundary stays firm
+                <span className="text-muted-foreground"> (Ockwell-Smith, <em>Gentle Discipline</em>; Leman, <em>Have a New Kid by Friday</em>).</span>
+              </p>
+              <p>
+                <strong className="text-foreground">Extrinsic rewards build intrinsic habits.</strong>{" "}
+                Brushing teeth and getting ready for school start as point-earners. Within weeks
+                they become <em>"things we just do"</em>. Graduate them off the chart and add
+                the next stretch (e.g. unpacking the lunchbox). The points scaffold the habit;
+                the habit eventually carries itself.
+              </p>
+              <p className="pt-2 border-t border-border text-muted-foreground italic">
+                Tip from our founder: when a chore becomes automatic, retire it together —
+                "You've mastered teeth-brushing, that one's free now" — and pick the next thing
+                you're working on. Kids feel proud, the chart stays fresh.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
