@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users,
+  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users, Printer, RefreshCw, Info, Loader2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ import { playChime, playBuzz } from "./sounds";
 import {
   DEFAULT_MUST_CHORES, DEFAULT_BONUS_CHORES, DEFAULT_BEHAVIOURS, DEFAULT_REWARDS,
 } from "./defaults";
+import { printWeeklyChart } from "./printChart";
 
 type Child = {
   id: string;
@@ -20,7 +21,7 @@ type Child = {
   age: number | null;
   points: number;
 };
-type Chore = { id: string; child_id: string | null; name: string; points: number; category: "must" | "bonus"; active: boolean };
+type Chore = { id: string; child_id: string | null; name: string; points: number; category: "must" | "bonus"; active: boolean; image_url?: string | null };
 type Behaviour = { id: string; child_id: string | null; name: string; penalty: number; reset_to_zero: boolean; active: boolean };
 type Reward = { id: string; child_id: string; name: string; target_points: number; achieved: boolean; active: boolean };
 type Tx = { id: string; child_id: string; delta: number; reason: string; kind: string; created_at: string };
