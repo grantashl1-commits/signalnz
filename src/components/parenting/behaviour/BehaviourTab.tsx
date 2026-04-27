@@ -294,6 +294,23 @@ export default function BehaviourTab() {
               </AnimatePresence>
             </div>
 
+            {/* Print button */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => printWeeklyChart({
+                  childName: activeChild.name,
+                  characterImage: character.image,
+                  accent: activeChild.accent_color,
+                  must: childChores.filter(c => c.category === "must"),
+                  bonus: childChores.filter(c => c.category === "bonus"),
+                })}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-card border border-border text-xs font-medium text-foreground hover:bg-secondary/40"
+              >
+                <Printer className="h-3.5 w-3.5" />
+                Print weekly chart (A4)
+              </button>
+            </div>
+
             {/* Must-do chores */}
             <ChoreSection title="Must-do chores" subtitle="Daily essentials" items={childChores.filter(c => c.category === "must")} onDone={onChoreDone} accent={activeChild.accent_color} />
 
@@ -322,6 +339,9 @@ export default function BehaviourTab() {
                 ))}
               </div>
             </section>
+
+            {/* Why this works */}
+            <WhyCard accent={activeChild.accent_color} />
           </motion.div>
         )}
 
