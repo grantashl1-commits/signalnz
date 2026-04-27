@@ -198,8 +198,8 @@ export default function BehaviourTab() {
                 isActive ? "bg-card border-foreground/20 shadow-sm" : "bg-secondary/40 border-transparent text-muted-foreground"
               }`}
             >
-              <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center" style={{ background: c.accent_color + "33" }}>
-                <img src={ch.image} alt="" className="w-full h-full object-cover" />
+              <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
+                <img src={ch.image} alt="" className="w-full h-full object-contain" />
               </div>
               <span className="text-xs font-semibold">{c.name}</span>
             </button>
