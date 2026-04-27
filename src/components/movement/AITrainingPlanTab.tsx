@@ -167,25 +167,31 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     if (!user) {
       // Check localStorage fallback
       const local = localStorage.getItem("signal_ai_workout_plan");
-      if (local) setExistingPlan(JSON.parse(local));
+      if (local) {
+        setExistingPlan(JSON.parse(local));
+        setPlanIsActive(true);
+      }
       setLoadingPlan(false);
       return;
     }
 
     const { data } = await supabase
       .from("user_plans")
-      .select("*")
+      .select("id, plan_data, generated_at, is_active")
       .eq("user_id", user.id)
       .eq("plan_type", "ai_training")
       .order("generated_at", { ascending: false })
       .limit(1);
 
     if (data && data.length > 0) {
-      setExistingPlan(data[0].plan_data);
-      setLastGeneratedAt(data[0].generated_at);
+      const row: any = data[0];
+      setExistingPlan(row.plan_data);
+      setExistingPlanId(row.id);
+      setPlanIsActive(row.is_active ?? true);
+      setLastGeneratedAt(row.generated_at);
 
       // Check if generated this month
-      const genDate = new Date(data[0].generated_at);
+      const genDate = new Date(row.generated_at);
       const now = new Date();
       const sameMonth = genDate.getMonth() === now.getMonth() && genDate.getFullYear() === now.getFullYear();
       setCanGenerate(!sameMonth);
