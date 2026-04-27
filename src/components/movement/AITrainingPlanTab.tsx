@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronDown, ChevronRight, Loader2, Trash2, Sparkles, Calendar, Clock, Play, Dumbbell } from "lucide-react";
+import { ChevronLeft, ChevronDown, ChevronRight, Loader2, Trash2, Sparkles, Calendar, Clock, Play, Dumbbell, RefreshCw, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
