@@ -173,10 +173,10 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
               Your nutrition plan is built around your fitness goals — calorie targets, protein needs, and meal timing are all tailored to what you're working towards.
             </p>
             <button
-              onClick={() => navigate("/movement")}
+              onClick={() => navigate("/account")}
               className="mt-2 font-body text-xs font-semibold text-primary underline"
             >
-              Go to Movement to set your goals →
+              Go to Account to set your goals →
             </button>
           </div>
         </div>
