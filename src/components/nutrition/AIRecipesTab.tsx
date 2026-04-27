@@ -8,6 +8,7 @@ import { RecipeShoppingButton } from "@/components/ShoppingList";
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useProfile } from "@/hooks/useProfile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -34,6 +35,7 @@ interface AIRecipesTabProps {
 }
 
 export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
+  const { movementGoals: profileGoals } = useProfile();
   const [filter, setFilter] = useState<Phase | "all">(phase);
   const [ingredientSearch, setIngredientSearch] = useState("");
   const [aiRecipes, setAiRecipes] = useState<AIGeneratedRecipe[]>([]);
@@ -60,9 +62,10 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
         };
       }
     } catch {}
-    // Also check body goals
+    // Also check body goals — prefer profile (Account), fallback to localStorage
     try {
-      const goals = JSON.parse(localStorage.getItem("signal_body_goals") || "[]");
+      const fromProfile = profileGoals && profileGoals.length > 0 ? profileGoals : null;
+      const goals = fromProfile ?? JSON.parse(localStorage.getItem("signal_body_goals") || "[]");
       return { dietary: "", allergies: "", dislikes: "", cookingSkill: "confident", equipment: [], calorieTarget: "", bodyGoal: goals[0] || "" };
     } catch {}
     return { dietary: "", allergies: "", dislikes: "", cookingSkill: "confident", equipment: [], calorieTarget: "", bodyGoal: "" };

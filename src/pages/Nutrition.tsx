@@ -5,6 +5,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import { useProfile } from "@/hooks/useProfile";
 import TodayTab from "@/components/nutrition/TodayTab";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import DiscoverTab from "@/components/nutrition/DiscoverTab";
@@ -40,6 +41,7 @@ type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
+  const { movementGoals: profileGoals } = useProfile();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabId>(
     (searchParams.get("tab") as TabId | null) ?? "today"
@@ -47,11 +49,12 @@ export default function NutritionPage() {
   const navigate = useNavigate();
 
   const bodyGoals = useMemo<string[]>(() => {
+    if (profileGoals && profileGoals.length > 0) return profileGoals;
     try {
       const raw = localStorage.getItem("signal_body_goals");
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
-  }, []);
+  }, [profileGoals]);
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
@@ -95,7 +98,7 @@ export default function NutritionPage() {
           {/* Nudge if no body goals set - below tabs */}
           {bodyGoals.length === 0 && (
             <button
-              onClick={() => navigate("/movement")}
+              onClick={() => navigate("/account")}
               className="w-full bg-card p-3 flex items-center gap-3 text-left transition-all active:bg-secondary/50"
               style={{ borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-soft)' }}
             >
@@ -104,7 +107,7 @@ export default function NutritionPage() {
               </div>
               <div className="flex-1">
                 <p className="font-body text-xs font-medium text-foreground">Want your meals to fuel your workouts?</p>
-                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your body goals in Movement first →</p>
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your movement goals in Account first →</p>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </button>

@@ -103,7 +103,7 @@ type Step = "prep" | "plan" | "shop" | "prepguide";
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
   const { user } = useAuth();
-  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes } = useProfile();
+  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, movementGoals: profileMovementGoals } = useProfile();
   const [weekOffset, setWeekOffset] = useState(0);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [aiPlan, setAiPlan] = useState<AIMealPlan | null>(getAIMealPlan);
@@ -192,6 +192,7 @@ export default function MyWeekTab() {
 
       // Pass user profile macro targets + movement goals to Edge Function
       const storedGoals: string[] = (() => {
+        if (profileMovementGoals && profileMovementGoals.length > 0) return profileMovementGoals;
         try { return JSON.parse(localStorage.getItem("signal_body_goals") || "[]"); } catch { return []; }
       })();
       const profileExtras = {

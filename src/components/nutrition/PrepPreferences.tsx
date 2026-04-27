@@ -21,6 +21,7 @@ import {
 import { haptic } from "@/hooks/use-mobile";
 import { getDislikedRecipes, removeDislikedRecipe } from "@/lib/fitness-profile";
 import { findRecipeById } from "@/lib/recipe-index";
+import { useProfile } from "@/hooks/useProfile";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -99,12 +100,15 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
   const phaseColor = PHASE_HEX[phase];
 
+  const { movementGoals: profileGoals } = useProfile();
+
   const bodyGoals = useMemo<string[]>(() => {
+    if (profileGoals && profileGoals.length > 0) return profileGoals;
     try {
       const raw = localStorage.getItem("signal_body_goals");
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
-  }, []);
+  }, [profileGoals]);
 
   const hasMovementGoals = bodyGoals.length > 0;
 
@@ -169,10 +173,10 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
               Your nutrition plan is built around your fitness goals — calorie targets, protein needs, and meal timing are all tailored to what you're working towards.
             </p>
             <button
-              onClick={() => navigate("/movement")}
+              onClick={() => navigate("/account")}
               className="mt-2 font-body text-xs font-semibold text-primary underline"
             >
-              Go to Movement to set your goals →
+              Go to Account to set your goals →
             </button>
           </div>
         </div>
