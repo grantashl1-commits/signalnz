@@ -100,6 +100,8 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   const profileData = useProfile();
   const { heightCm, weightKg, dateOfBirth, fitnessLevel: profileFitnessLevel, movementGoals, goalWeightKg, equipmentPreference } = profileData;
   const [existingPlan, setExistingPlan] = useState<any>(null);
+  const [existingPlanId, setExistingPlanId] = useState<string | null>(null);
+  const [planIsActive, setPlanIsActive] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
