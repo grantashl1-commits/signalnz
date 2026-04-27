@@ -100,12 +100,15 @@ export default function PrepPreferences({ initialPrefs, phase, onBuild, isGenera
 
   const phaseColor = PHASE_HEX[phase];
 
+  const { movementGoals: profileGoals } = useProfile();
+
   const bodyGoals = useMemo<string[]>(() => {
+    if (profileGoals && profileGoals.length > 0) return profileGoals;
     try {
       const raw = localStorage.getItem("signal_body_goals");
       return raw ? JSON.parse(raw) : [];
     } catch { return []; }
-  }, []);
+  }, [profileGoals]);
 
   const hasMovementGoals = bodyGoals.length > 0;
 
