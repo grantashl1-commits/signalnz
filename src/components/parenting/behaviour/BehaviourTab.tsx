@@ -567,17 +567,59 @@ function AdminPanel({ child, chores, behaviours, rewards, onChange, onEditChild 
   );
 }
 
+async function generateChoreImage(name: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke("chore-illustration", { body: { name } });
+    if (error) {
+      console.warn("chore-illustration failed:", error);
+      return null;
+    }
+    return (data as any)?.imageUrl || null;
+  } catch (e) {
+    console.warn("chore-illustration error:", e);
+    return null;
+  }
+}
+
 function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: string; onChange: () => void }) {
   const { user } = useAuth();
   const [name, setName] = useState("");
   const [points, setPoints] = useState(1);
   const [category, setCategory] = useState<"must" | "bonus">("must");
+  const [creating, setCreating] = useState(false);
+  const [regenIds, setRegenIds] = useState<Set<string>>(new Set());
 
   const add = async () => {
     if (!name.trim() || !user) return;
-    await supabase.from("parenting_chores").insert({ user_id: user.id, child_id: childId, name: name.trim(), points, category });
+    setCreating(true);
+    const choreName = name.trim();
+    // 1) Insert chore immediately so the parent sees it appear
+    const { data: inserted } = await supabase
+      .from("parenting_chores")
+      .insert({ user_id: user.id, child_id: childId, name: choreName, points, category })
+      .select()
+      .single();
     setName(""); setPoints(1);
     onChange();
+    // 2) Generate illustration in the background and patch row
+    if (inserted?.id) {
+      const url = await generateChoreImage(choreName);
+      if (url) {
+        await supabase.from("parenting_chores").update({ image_url: url }).eq("id", inserted.id);
+        onChange();
+      }
+    }
+    setCreating(false);
+  };
+
+  const regenerate = async (c: Chore) => {
+    setRegenIds(s => new Set(s).add(c.id));
+    const url = await generateChoreImage(c.name);
+    if (url) {
+      await supabase.from("parenting_chores").update({ image_url: url }).eq("id", c.id);
+      onChange();
+    }
+    setRegenIds(s => { const n = new Set(s); n.delete(c.id); return n; });
   };
 
   const remove = async (id: string) => {
@@ -599,29 +641,46 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
           <input type="number" min={1} max={20} value={points} onChange={e => setPoints(Number(e.target.value))}
             className="w-16 text-xs bg-secondary rounded-lg px-2 py-1.5 focus:outline-none" />
           <span className="text-xs text-muted-foreground">pts</span>
-          <button onClick={add} disabled={!name.trim()}
+          <button onClick={add} disabled={!name.trim() || creating}
             className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold disabled:opacity-40">
-            <Plus className="h-3 w-3" /> Add
+            {creating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
+            {creating ? "Adding…" : "Add"}
           </button>
         </div>
+        <p className="text-[10px] text-muted-foreground italic">A small illustration is generated automatically so kids who can't read yet can recognise the chore.</p>
       </div>
       <div className="space-y-1.5">
-        {chores.map(c => (
-          <div key={c.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border">
-            <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${c.category === "must" ? "bg-secondary" : "bg-amber-500/15 text-amber-700"}`}>
-              {c.category}
-            </span>
-            <span className="flex-1 text-sm">{c.name}</span>
-            <span className="text-xs font-mono">+{c.points}</span>
-            <button onClick={() => remove(c.id)} className="text-muted-foreground hover:text-rose-500">
-              <Trash2 className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        ))}
+        {chores.map(c => {
+          const regen = regenIds.has(c.id);
+          return (
+            <div key={c.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border">
+              {c.image_url ? (
+                <img src={c.image_url} alt="" className="w-9 h-9 rounded-lg object-cover bg-secondary/30 shrink-0" />
+              ) : (
+                <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                  <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+              )}
+              <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${c.category === "must" ? "bg-secondary" : "bg-amber-500/15 text-amber-700"}`}>
+                {c.category}
+              </span>
+              <span className="flex-1 text-sm truncate">{c.name}</span>
+              <span className="text-xs font-mono">+{c.points}</span>
+              <button onClick={() => regenerate(c)} disabled={regen} title="Regenerate illustration"
+                className="text-muted-foreground hover:text-foreground disabled:opacity-50">
+                {regen ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              </button>
+              <button onClick={() => remove(c.id)} className="text-muted-foreground hover:text-rose-500">
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
+
 
 function BehaviourEditor({ behaviours, childId, onChange }: { behaviours: Behaviour[]; childId: string; onChange: () => void }) {
   const { user } = useAuth();
