@@ -2647,6 +2647,7 @@ export type Database = {
           cycle_week: number | null
           generated_at: string
           id: string
+          is_active: boolean
           plan_data: Json
           plan_type: string
           user_id: string
@@ -2658,6 +2659,7 @@ export type Database = {
           cycle_week?: number | null
           generated_at?: string
           id?: string
+          is_active?: boolean
           plan_data?: Json
           plan_type: string
           user_id: string
@@ -2669,6 +2671,7 @@ export type Database = {
           cycle_week?: number | null
           generated_at?: string
           id?: string
+          is_active?: boolean
           plan_data?: Json
           plan_type?: string
           user_id?: string
