@@ -62,9 +62,10 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
         };
       }
     } catch {}
-    // Also check body goals
+    // Also check body goals — prefer profile (Account), fallback to localStorage
     try {
-      const goals = JSON.parse(localStorage.getItem("signal_body_goals") || "[]");
+      const fromProfile = profileGoals && profileGoals.length > 0 ? profileGoals : null;
+      const goals = fromProfile ?? JSON.parse(localStorage.getItem("signal_body_goals") || "[]");
       return { dietary: "", allergies: "", dislikes: "", cookingSkill: "confident", equipment: [], calorieTarget: "", bodyGoal: goals[0] || "" };
     } catch {}
     return { dietary: "", allergies: "", dislikes: "", cookingSkill: "confident", equipment: [], calorieTarget: "", bodyGoal: "" };
