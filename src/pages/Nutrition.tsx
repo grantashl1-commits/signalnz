@@ -98,7 +98,7 @@ export default function NutritionPage() {
           {/* Nudge if no body goals set - below tabs */}
           {bodyGoals.length === 0 && (
             <button
-              onClick={() => navigate("/movement")}
+              onClick={() => navigate("/account")}
               className="w-full bg-card p-3 flex items-center gap-3 text-left transition-all active:bg-secondary/50"
               style={{ borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-soft)' }}
             >
@@ -107,7 +107,7 @@ export default function NutritionPage() {
               </div>
               <div className="flex-1">
                 <p className="font-body text-xs font-medium text-foreground">Want your meals to fuel your workouts?</p>
-                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your body goals in Movement first →</p>
+                <p className="font-body text-[10px] text-muted-foreground mt-0.5">Set your movement goals in Account first →</p>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </button>
