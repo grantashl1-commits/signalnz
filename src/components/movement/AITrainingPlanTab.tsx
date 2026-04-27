@@ -384,9 +384,46 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     return (
       <div className="space-y-6">
         <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 space-y-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <h2 className="font-display text-xl font-extrabold text-foreground">Your AI Training Plan</h2>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="font-display text-xl font-extrabold text-foreground">Your AI Training Plan</h2>
+            </div>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-1 font-body text-[10px] uppercase tracking-wider font-semibold",
+                planIsActive ? "bg-emerald-500/15 text-emerald-600" : "bg-muted text-muted-foreground",
+              )}
+            >
+              {planIsActive ? "Active" : "Paused"}
+            </span>
+          </div>
+
+          {/* Use on Today toggle */}
+          <div className="rounded-xl bg-card border border-border p-3 flex items-center gap-3">
+            <CheckCircle2 className={cn("h-5 w-5 shrink-0", planIsActive ? "text-emerald-600" : "text-muted-foreground/40")} />
+            <div className="flex-1 min-w-0">
+              <p className="font-display text-sm font-semibold text-foreground">Use this plan on Today</p>
+              <p className="font-body text-[11px] text-muted-foreground leading-snug">
+                {planIsActive ? "Your next session shows on the Today tab." : "Activate to surface sessions on Today."}
+              </p>
+            </div>
+            <button
+              onClick={() => handleToggleActive(!planIsActive)}
+              role="switch"
+              aria-checked={planIsActive}
+              className={cn(
+                "shrink-0 relative h-6 w-11 rounded-full transition-colors",
+                planIsActive ? "bg-primary" : "bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "absolute top-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform",
+                  planIsActive ? "translate-x-[22px]" : "translate-x-0.5",
+                )}
+              />
+            </button>
           </div>
 
           {existingPlan.title && (
