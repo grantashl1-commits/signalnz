@@ -22,6 +22,7 @@ import {
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
+import KidsDinnerAlt from "./KidsDinnerAlt";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
