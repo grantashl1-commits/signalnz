@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users,
+  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users, Printer, RefreshCw, Info, Loader2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ import { playChime, playBuzz } from "./sounds";
 import {
   DEFAULT_MUST_CHORES, DEFAULT_BONUS_CHORES, DEFAULT_BEHAVIOURS, DEFAULT_REWARDS,
 } from "./defaults";
+import { printWeeklyChart } from "./printChart";
 
 type Child = {
   id: string;
@@ -20,7 +21,7 @@ type Child = {
   age: number | null;
   points: number;
 };
-type Chore = { id: string; child_id: string | null; name: string; points: number; category: "must" | "bonus"; active: boolean };
+type Chore = { id: string; child_id: string | null; name: string; points: number; category: "must" | "bonus"; active: boolean; image_url?: string | null };
 type Behaviour = { id: string; child_id: string | null; name: string; penalty: number; reset_to_zero: boolean; active: boolean };
 type Reward = { id: string; child_id: string; name: string; target_points: number; achieved: boolean; active: boolean };
 type Tx = { id: string; child_id: string; delta: number; reason: string; kind: string; created_at: string };
@@ -124,11 +125,23 @@ export default function BehaviourTab() {
     ];
     const behaviourPayload = DEFAULT_BEHAVIOURS.map((b, i) => ({ user_id: user.id, child_id: childId, name: b.name, penalty: b.penalty, reset_to_zero: b.reset_to_zero, sort_order: i }));
     const rewardPayload = DEFAULT_REWARDS.map(r => ({ user_id: user.id, child_id: childId, name: r.name, target_points: r.target_points }));
-    await Promise.all([
-      supabase.from("parenting_chores").insert(chorePayload),
+    const [{ data: insertedChores }] = await Promise.all([
+      supabase.from("parenting_chores").insert(chorePayload).select(),
       supabase.from("parenting_behaviours").insert(behaviourPayload),
       supabase.from("parenting_rewards").insert(rewardPayload),
     ]);
+    // Generate illustrations for each seeded chore in the background (non-blocking)
+    if (insertedChores) {
+      void Promise.all(
+        insertedChores.map(async (row: any) => {
+          try {
+            const { data } = await supabase.functions.invoke("chore-illustration", { body: { name: row.name } });
+            const url = (data as any)?.imageUrl;
+            if (url) await supabase.from("parenting_chores").update({ image_url: url }).eq("id", row.id);
+          } catch (e) { /* ignore */ }
+        })
+      ).then(() => loadAll());
+    }
   };
 
   const createChild = async (data: { name: string; character_id: CharacterId; accent_color: string; age: number | null }) => {
@@ -185,8 +198,8 @@ export default function BehaviourTab() {
                 isActive ? "bg-card border-foreground/20 shadow-sm" : "bg-secondary/40 border-transparent text-muted-foreground"
               }`}
             >
-              <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center" style={{ background: c.accent_color + "33" }}>
-                <img src={ch.image} alt="" className="w-full h-full object-cover" />
+              <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
+                <img src={ch.image} alt="" className="w-full h-full object-contain" />
               </div>
               <span className="text-xs font-semibold">{c.name}</span>
             </button>
@@ -223,8 +236,8 @@ export default function BehaviourTab() {
             {/* Hero card */}
             <div className="relative rounded-3xl p-5 overflow-hidden border border-border" style={{ background: `linear-gradient(135deg, ${activeChild.accent_color}22, ${activeChild.accent_color}05)` }}>
               <div className="flex items-center gap-4">
-                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} className="relative w-24 h-24 rounded-2xl overflow-hidden bg-white/40 flex items-center justify-center shrink-0">
-                  <img src={character.image} alt={character.name} className="w-full h-full object-cover" />
+                <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} className="relative w-24 h-24 flex items-center justify-center shrink-0">
+                  <img src={character.image} alt={character.name} className="w-full h-full object-contain" />
                 </motion.div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/50">Points</p>
@@ -293,6 +306,23 @@ export default function BehaviourTab() {
               </AnimatePresence>
             </div>
 
+            {/* Print button */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => printWeeklyChart({
+                  childName: activeChild.name,
+                  characterImage: character.image,
+                  accent: activeChild.accent_color,
+                  must: childChores.filter(c => c.category === "must"),
+                  bonus: childChores.filter(c => c.category === "bonus"),
+                })}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-card border border-border text-xs font-medium text-foreground hover:bg-secondary/40"
+              >
+                <Printer className="h-3.5 w-3.5" />
+                Print weekly chart (A4)
+              </button>
+            </div>
+
             {/* Must-do chores */}
             <ChoreSection title="Must-do chores" subtitle="Daily essentials" items={childChores.filter(c => c.category === "must")} onDone={onChoreDone} accent={activeChild.accent_color} />
 
@@ -321,6 +351,9 @@ export default function BehaviourTab() {
                 ))}
               </div>
             </section>
+
+            {/* Why this works */}
+            <WhyCard accent={activeChild.accent_color} />
           </motion.div>
         )}
 
@@ -394,14 +427,76 @@ function ChoreSection({ title, subtitle, items, onDone, accent, variant = "must"
                 ? "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.06] to-transparent"
                 : "border-border bg-card hover:bg-secondary/40"
             }`}>
-            <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
-              <Check className="h-4 w-4" style={{ color: accent }} />
-            </div>
+            {c.image_url ? (
+              <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-white" style={{ background: accent + "11" }}>
+                <img src={c.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+            ) : (
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
+                <Check className="h-4 w-4" style={{ color: accent }} />
+              </div>
+            )}
             <span className="flex-1 text-left text-sm font-medium text-foreground">{c.name}</span>
             <span className="text-xs font-mono font-semibold tabular-nums" style={{ color: accent }}>+{c.points}</span>
           </motion.button>
         ))}
       </div>
+    </section>
+  );
+}
+
+function WhyCard({ accent }: { accent: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="rounded-2xl border border-border bg-card overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2 p-3 text-left"
+      >
+        <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
+          <Info className="h-4 w-4" style={{ color: accent }} />
+        </div>
+        <span className="flex-1 font-display text-sm font-bold text-foreground">Why this works</span>
+        <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 space-y-3 text-xs leading-relaxed text-foreground/80">
+              <p>
+                <strong className="text-foreground">Experiences over things.</strong>{" "}
+                Picking the family movie, a friend over for a playdate, choosing a weekend
+                activity — these rewards build connection and shared memories. Toys lose their
+                shine within days; <em>"I picked the movie"</em> is told for years
+                <span className="text-muted-foreground"> (Faber & Mazlish; Clarke-Fields).</span>
+              </p>
+              <p>
+                <strong className="text-foreground">A neutral mechanism replaces nagging.</strong>{" "}
+                The app — not you — awards or deducts points. Your child can't argue with a counter.
+                You stay calm, the boundary stays firm
+                <span className="text-muted-foreground"> (Ockwell-Smith, <em>Gentle Discipline</em>; Leman, <em>Have a New Kid by Friday</em>).</span>
+              </p>
+              <p>
+                <strong className="text-foreground">Extrinsic rewards build intrinsic habits.</strong>{" "}
+                Brushing teeth and getting ready for school start as point-earners. Within weeks
+                they become <em>"things we just do"</em>. Graduate them off the chart and add
+                the next stretch (e.g. unpacking the lunchbox). The points scaffold the habit;
+                the habit eventually carries itself.
+              </p>
+              <p className="pt-2 border-t border-border text-muted-foreground italic">
+                Tip from our founder: when a chore becomes automatic, retire it together —
+                "You've mastered teeth-brushing, that one's free now" — and pick the next thing
+                you're working on. Kids feel proud, the chart stays fresh.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
@@ -484,17 +579,59 @@ function AdminPanel({ child, chores, behaviours, rewards, onChange, onEditChild 
   );
 }
 
+async function generateChoreImage(name: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke("chore-illustration", { body: { name } });
+    if (error) {
+      console.warn("chore-illustration failed:", error);
+      return null;
+    }
+    return (data as any)?.imageUrl || null;
+  } catch (e) {
+    console.warn("chore-illustration error:", e);
+    return null;
+  }
+}
+
 function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: string; onChange: () => void }) {
   const { user } = useAuth();
   const [name, setName] = useState("");
   const [points, setPoints] = useState(1);
   const [category, setCategory] = useState<"must" | "bonus">("must");
+  const [creating, setCreating] = useState(false);
+  const [regenIds, setRegenIds] = useState<Set<string>>(new Set());
 
   const add = async () => {
     if (!name.trim() || !user) return;
-    await supabase.from("parenting_chores").insert({ user_id: user.id, child_id: childId, name: name.trim(), points, category });
+    setCreating(true);
+    const choreName = name.trim();
+    // 1) Insert chore immediately so the parent sees it appear
+    const { data: inserted } = await supabase
+      .from("parenting_chores")
+      .insert({ user_id: user.id, child_id: childId, name: choreName, points, category })
+      .select()
+      .single();
     setName(""); setPoints(1);
     onChange();
+    // 2) Generate illustration in the background and patch row
+    if (inserted?.id) {
+      const url = await generateChoreImage(choreName);
+      if (url) {
+        await supabase.from("parenting_chores").update({ image_url: url }).eq("id", inserted.id);
+        onChange();
+      }
+    }
+    setCreating(false);
+  };
+
+  const regenerate = async (c: Chore) => {
+    setRegenIds(s => new Set(s).add(c.id));
+    const url = await generateChoreImage(c.name);
+    if (url) {
+      await supabase.from("parenting_chores").update({ image_url: url }).eq("id", c.id);
+      onChange();
+    }
+    setRegenIds(s => { const n = new Set(s); n.delete(c.id); return n; });
   };
 
   const remove = async (id: string) => {
@@ -516,29 +653,46 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
           <input type="number" min={1} max={20} value={points} onChange={e => setPoints(Number(e.target.value))}
             className="w-16 text-xs bg-secondary rounded-lg px-2 py-1.5 focus:outline-none" />
           <span className="text-xs text-muted-foreground">pts</span>
-          <button onClick={add} disabled={!name.trim()}
+          <button onClick={add} disabled={!name.trim() || creating}
             className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold disabled:opacity-40">
-            <Plus className="h-3 w-3" /> Add
+            {creating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
+            {creating ? "Adding…" : "Add"}
           </button>
         </div>
+        <p className="text-[10px] text-muted-foreground italic">A small illustration is generated automatically so kids who can't read yet can recognise the chore.</p>
       </div>
       <div className="space-y-1.5">
-        {chores.map(c => (
-          <div key={c.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border">
-            <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${c.category === "must" ? "bg-secondary" : "bg-amber-500/15 text-amber-700"}`}>
-              {c.category}
-            </span>
-            <span className="flex-1 text-sm">{c.name}</span>
-            <span className="text-xs font-mono">+{c.points}</span>
-            <button onClick={() => remove(c.id)} className="text-muted-foreground hover:text-rose-500">
-              <Trash2 className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        ))}
+        {chores.map(c => {
+          const regen = regenIds.has(c.id);
+          return (
+            <div key={c.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border">
+              {c.image_url ? (
+                <img src={c.image_url} alt="" className="w-9 h-9 rounded-lg object-cover bg-secondary/30 shrink-0" />
+              ) : (
+                <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                  <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+              )}
+              <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${c.category === "must" ? "bg-secondary" : "bg-amber-500/15 text-amber-700"}`}>
+                {c.category}
+              </span>
+              <span className="flex-1 text-sm truncate">{c.name}</span>
+              <span className="text-xs font-mono">+{c.points}</span>
+              <button onClick={() => regenerate(c)} disabled={regen} title="Regenerate illustration"
+                className="text-muted-foreground hover:text-foreground disabled:opacity-50">
+                {regen ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              </button>
+              <button onClick={() => remove(c.id)} className="text-muted-foreground hover:text-rose-500">
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
+
 
 function BehaviourEditor({ behaviours, childId, onChange }: { behaviours: Behaviour[]; childId: string; onChange: () => void }) {
   const { user } = useAuth();
@@ -664,25 +818,32 @@ function ChildSetup({ onCreate, onCancel }: {
         <p className="text-xs text-muted-foreground mt-1">Pick a buddy. Set the rules. Stay calm.</p>
       </div>
 
-      <div className="rounded-3xl p-5 border border-border bg-card text-center" style={{ background: `linear-gradient(135deg, ${accent}22, transparent)` }}>
-        <motion.img key={characterId} initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          src={character.image} alt="" className="w-32 h-32 mx-auto object-contain" />
-        <p className="font-display text-base font-semibold mt-2">{character.name}</p>
-        <p className="text-xs text-muted-foreground italic">{character.trait}</p>
-      </div>
-
       <div>
         <p className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wider">Choose a buddy</p>
         <div className="grid grid-cols-5 gap-2">
           {CHARACTER_LIST.map(c => (
             <button key={c.id} onClick={() => { setCharacterId(c.id); setAccent(c.defaultColor); }}
-              className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all ${
-                characterId === c.id ? "border-foreground scale-105" : "border-transparent opacity-70"
-              }`}>
-              <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+              className={`aspect-square rounded-2xl transition-all flex items-center justify-center ${
+                characterId === c.id
+                  ? "ring-2 ring-foreground scale-105"
+                  : "opacity-60 hover:opacity-90"
+              }`}
+              style={characterId === c.id ? { background: `${accent}1a` } : undefined}
+            >
+              <img src={c.image} alt={c.name} className="w-full h-full object-contain" />
             </button>
           ))}
         </div>
+        {/* Caption: name + trait of selected buddy */}
+        <motion.div
+          key={characterId}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mt-3"
+        >
+          <p className="font-display text-base font-semibold text-foreground">{character.name}</p>
+          <p className="text-xs text-muted-foreground italic mt-0.5">{character.trait}</p>
+        </motion.div>
       </div>
 
       <div>

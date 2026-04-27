@@ -59,3 +59,6 @@ verify_jwt = false
 
 [functions.connect-reflect]
 verify_jwt = false
+
+[functions.chore-illustration]
+verify_jwt = false
