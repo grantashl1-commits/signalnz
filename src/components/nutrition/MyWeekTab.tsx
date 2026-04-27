@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import MealPrepGuide from "./MealPrepGuide";
 import { useCycle } from "@/contexts/CycleContext";
@@ -14,6 +14,7 @@ import {
   AIMealPlan,
   AIPlannedDay,
   AIMeal,
+  KidsMeal,
   getAIMealPlan,
   saveAIMealPlan,
   clearAIMealPlan,
@@ -95,6 +96,8 @@ interface WeekDay {
   dinner: string | AIMeal;
   morningSnack?: string | AIMeal;
   afternoonSnack?: string | AIMeal;
+  kidsLunch?: KidsMeal;
+  kidsDinner?: KidsMeal;
   isToday: boolean;
   isAI: boolean;
 }
@@ -112,7 +115,19 @@ export default function MyWeekTab() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [regeneratingKey, setRegeneratingKey] = useState<string | null>(null);
   const [step, setStep] = useState<Step>(aiPlan ? "plan" : "prep");
+  // Tracks which lunch/dinner slots are showing the kids alternative view
+  const [kidsViewSlots, setKidsViewSlots] = useState<Set<string>>(new Set());
   const supabasePlanLoaded = useRef(false);
+
+  const toggleKidsView = useCallback((slotKey: string) => {
+    haptic("light");
+    setKidsViewSlots(prev => {
+      const next = new Set(prev);
+      if (next.has(slotKey)) next.delete(slotKey);
+      else next.add(slotKey);
+      return next;
+    });
+  }, []);
 
   // Phase 4B: try to restore latest nutrition plan from Supabase on mount
   useEffect(() => {
@@ -322,6 +337,8 @@ export default function MyWeekTab() {
           dinner: aiDay.dinner,
           morningSnack: aiDay.morningSnack,
           afternoonSnack: aiDay.afternoonSnack,
+          kidsLunch: aiDay.kidsLunch,
+          kidsDinner: aiDay.kidsDinner,
           isToday: dateStr === todayStr,
           isAI: true,
         });
@@ -710,10 +727,68 @@ export default function MyWeekTab() {
                               </div>
                             )}
 
+<<<<<<< Updated upstream
                             {/* Kids alternative — only when household has kids and meal is a main */}
                             {prefs.kids > 0 && (key === "breakfast" || key === "lunch" || key === "dinner") && mealName && (
                               <KidsDinnerAlt mealName={mealName} mealType={key as any} phase={day.phase} />
                             )}
+=======
+                            {/* Kids meal toggle — only for lunch/dinner on AI plans with kids */}
+                            {day.isAI && (key === "lunch" || key === "dinner") &&
+                              (aiPlan?.prepPreferences?.kids ?? 0) > 0 &&
+                              (key === "lunch" ? day.kidsLunch : day.kidsDinner) && (() => {
+                                const kidsMeal = key === "lunch" ? day.kidsLunch : day.kidsDinner;
+                                const slotKey = `${day.dateStr}-${key}`;
+                                const showingKids = kidsViewSlots.has(slotKey);
+                                return (
+                                  <div className="mt-3">
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); toggleKidsView(slotKey); }}
+                                      className="font-body text-xs text-primary flex items-center gap-1.5 py-1"
+                                    >
+                                      <Baby className="h-3 w-3" />
+                                      {showingKids ? "← Back to adult meal" : "My kids won't eat that →"}
+                                    </button>
+                                    {showingKids && kidsMeal && (
+                                      <div className="mt-2 bg-primary/5 rounded-xl p-3 space-y-2">
+                                        <div className="flex items-center gap-2">
+                                          <Baby className="h-3.5 w-3.5 text-primary/50 flex-shrink-0" />
+                                          <p className="font-body text-sm font-semibold text-foreground">{kidsMeal.name}</p>
+                                        </div>
+                                        <p className="font-body text-xs text-muted-foreground">
+                                          {kidsMeal.prepTime} · Serves {kidsMeal.serves}
+                                        </p>
+                                        {kidsMeal.proteinMatch && (
+                                          <p className="font-body text-xs italic text-muted-foreground">
+                                            Uses the same {kidsMeal.proteinMatch} as the adult meal
+                                          </p>
+                                        )}
+                                        <div>
+                                          <p className="font-body text-xs font-semibold text-foreground mb-1">Ingredients</p>
+                                          <ul className="space-y-0.5">
+                                            {kidsMeal.ingredients.map((ing, idx) => (
+                                              <li key={idx} className="font-body text-xs text-muted-foreground">• {ing}</li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                        <div>
+                                          <p className="font-body text-xs font-semibold text-foreground mb-1">Method</p>
+                                          <ol className="space-y-1 list-none">
+                                            {kidsMeal.method.map((s, idx) => (
+                                              <li key={idx} className="font-body text-xs text-muted-foreground flex gap-2">
+                                                <span className="font-semibold text-foreground flex-shrink-0">{idx + 1}.</span>
+                                                <span>{s.replace(/^\d+\.\s*/, "")}</span>
+                                              </li>
+                                            ))}
+                                          </ol>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })()
+                            }
+>>>>>>> Stashed changes
                           </div>
                         );
                       })}

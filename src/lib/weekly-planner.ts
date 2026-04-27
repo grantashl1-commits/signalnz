@@ -46,6 +46,17 @@ export interface AIMeal {
   leftoverFrom?: number; // cycle day reference
 }
 
+export interface KidsMeal {
+  name: string;
+  recipeId?: string;
+  prepTime: string;
+  serves: number;
+  ingredients: string[];
+  method: string[];
+  proteinMatch?: string;
+  isKidsMeal: boolean;
+}
+
 export interface AIPlannedDay {
   cycleDay: number;
   phase: Phase;
@@ -54,6 +65,8 @@ export interface AIPlannedDay {
   lunch: AIMeal;
   afternoonSnack: AIMeal;
   dinner: AIMeal;
+  kidsLunch?: KidsMeal;
+  kidsDinner?: KidsMeal;
 }
 
 export interface AIMealPlan {
