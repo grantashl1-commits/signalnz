@@ -532,7 +532,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
                                     <p className="font-display text-sm font-semibold text-foreground">{ex.name}</p>
                                     <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
                                       <span className="font-body text-xs text-primary font-medium">
-                                        {ex.sets}×{ex.reps_or_duration}
+                                        {ex.sets}×{formatRepsDuration(ex.reps_or_duration)}
                                       </span>
                                       {ex.rest_seconds && (
                                         <span className="font-body text-xs text-muted-foreground">
