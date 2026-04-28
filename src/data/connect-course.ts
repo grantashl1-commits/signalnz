@@ -1143,20 +1143,6 @@ export const CONNECT_COURSE: CourseModule[] = [
               "exampleDescription": "A photo of my partner's neatly made side of the bed, showing their effort to keep things tidy."
             },
             "saveToVault": true
-          },
-          {
-            "id": "m4-l2-a4",
-            "type": "token_appreciation",
-            "title": "The Token Appreciation Game",
-            "instruction": "A playful daily ritual: you each start with 5 tokens. Every time you notice something you appreciate about your partner, pass them a token with a two-level note — what they did, and why it mattered. Watch how quickly the small things add up.",
-            "content": {
-              "startingTokens": 5,
-              "promptWhat": "What did your partner do? Be specific.",
-              "promptWhy": "Why did it matter? How did it leave you feeling?",
-              "storageKey": "connect-token-appreciation-m4l2"
-            },
-            "tip": "Not a competition. If tokens aren't moving, notice for a week — resentment makes the brain skip past kindness.",
-            "saveToVault": true
           }
         ]
       },
