@@ -73,6 +73,7 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
     steps: script.steps,
     ttsScript,
     ttsIsSleep: isSleep,
+    ttsVoiceId: script.voiceId,
     ttsEvidenceSource: script.evidenceSource,
   };
 }
