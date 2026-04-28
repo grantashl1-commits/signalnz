@@ -1,4 +1,6 @@
 export const CALM_READER_VOICE_ID = "XrExE9yKIg1WjnnlVkGX";
+export const THEO_VOICE_ID = "UmQN7jS1Ee8B1czsUtQh";
+export const REGINA_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS";
 export const CALM_READER_VOICE_LABEL = "Signal Reader";
 // Bump this whenever voice routing or default settings change so cached
 // audio is regenerated under a fresh path.
@@ -146,10 +148,17 @@ export function removeScriptAudioOverride(scriptId: string) {
 }
 
 export function buildVersionedPracticeAudioPath(practiceId: string, voiceId?: string) {
+<<<<<<< Updated upstream
   // Namespace by voice id so the same script can be cached separately
   // when narrated by different voices.
   const voiceNamespace = voiceId ? voiceId.slice(0, 12) : "default";
   return `practices/${VOICE_CACHE_VERSION}/${voiceNamespace}/${practiceId}.mp3`;
+=======
+  if (!voiceId || voiceId === CALM_READER_VOICE_ID) {
+    return `practices/${VOICE_CACHE_VERSION}/${practiceId}.mp3`;
+  }
+  return `practices/voice-${voiceId}/${practiceId}.mp3`;
+>>>>>>> Stashed changes
 }
 
 export function pickPreferredReaderVoice(voices: SpeechSynthesisVoice[]) {

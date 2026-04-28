@@ -4,6 +4,7 @@
 // Voice: ElevenLabs Lily (pFZP5JQG7iQjIQuC4Bku) at 0.75 speed
 
 import type { MeditationScript } from "./meditation-scripts";
+import { THEO_VOICE_ID, REGINA_VOICE_ID } from "@/lib/script-audio";
 import {
   childhoodBlueprint,
   shameInventory,
@@ -396,6 +397,7 @@ Good night.`,
     { id: "s4", title: "Full Melt", body: "Wave of relaxation over entire body.", startTimeSec: 530, endTimeSec: 870 },
     { id: "s5", title: "Sleep", body: "Drift into peaceful sleep.", startTimeSec: 870, endTimeSec: 900 },
   ],
+  voiceId: THEO_VOICE_ID,
 };
 
 const nightRiver: MeditationScript = {
@@ -461,6 +463,7 @@ Good night.`,
     { id: "s4", title: "Release", body: "Worries drift away, body melts.", startTimeSec: 470, endTimeSec: 670 },
     { id: "s5", title: "Sleep", body: "Drift into peaceful dreams.", startTimeSec: 670, endTimeSec: 1200 },
   ],
+  voiceId: REGINA_VOICE_ID,
 };
 
 const breathIntoSleep: MeditationScript = {
@@ -525,6 +528,7 @@ Good night.`,
     { id: "s4", title: "Release", body: "Let go of counting, natural calm.", startTimeSec: 350, endTimeSec: 540 },
     { id: "s5", title: "Sleep", body: "Drift into sleep.", startTimeSec: 540, endTimeSec: 600 },
   ],
+  voiceId: REGINA_VOICE_ID,
 };
 
 // ═══════════════════════════════════════════════════════════

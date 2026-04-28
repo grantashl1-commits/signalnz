@@ -28,7 +28,15 @@
       "Bash(git revert *)",
       "mcp__claude_ai_Supabase__list_edge_functions",
       "mcp__claude_ai_Supabase__get_logs",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "WebSearch",
+      "WebFetch(domain:json2video.com)",
+      "WebFetch(domain:elevenlabs.io)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:www.webfuse.com)",
+      "WebFetch(domain:www.sheetxai.com)",
+      "WebFetch(domain:docs.eden.art)",
+      "WebFetch(domain:developer.signalwire.com)"
     ]
   }
 }

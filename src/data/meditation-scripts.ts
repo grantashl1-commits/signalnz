@@ -2,6 +2,8 @@
 // Original Signal content. Frameworks referenced for inspiration only.
 // Uses same structure as somatic-scripts.ts for player compatibility.
 
+import { THEO_VOICE_ID, REGINA_VOICE_ID } from "@/lib/script-audio";
+
 export type MeditationCategory = "meditation" | "reading" | "inner-work" | "sleep" | "phase-practice";
 export type CyclePhase = "menstrual" | "follicular" | "ovulatory" | "luteal";
 
@@ -26,6 +28,7 @@ export interface MeditationScript {
   tags: string[];
   evidenceSource: string;
   backgroundMusic?: "none" | "gentle" | "nature" | "binaural";
+  voiceId?: string;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -688,6 +691,7 @@ Welcome back.`,
     { id: "s5", title: "Deep Rest", body: "Rest in the space between. Pure awareness.", startTimeSec: 1380, endTimeSec: 1620 },
     { id: "s6", title: "Return", body: "Sankalpa once more. Gradually come back.", startTimeSec: 1620, endTimeSec: 1800 },
   ],
+  voiceId: THEO_VOICE_ID,
 };
 
 const sleep478: MeditationScript = {
@@ -732,6 +736,7 @@ Good night.`,
     { id: "s3", title: "Deepening", body: "Continue at your own pace. Each breath softer.", startTimeSec: 540, endTimeSec: 780 },
     { id: "s4", title: "Release into Sleep", body: "Let the counting fall away. Let sleep take you.", startTimeSec: 780, endTimeSec: 900 },
   ],
+  voiceId: THEO_VOICE_ID,
 };
 
 const sleepLettingGo: MeditationScript = {
@@ -783,6 +788,7 @@ Let sleep come when it's ready.`,
     { id: "s2", title: "Progressive Release", body: "Tense and release each muscle group from feet to face.", startTimeSec: 180, endTimeSec: 540 },
     { id: "s3", title: "Rest", body: "Lie completely soft. You did enough. You are enough.", startTimeSec: 540, endTimeSec: 720 },
   ],
+  voiceId: REGINA_VOICE_ID,
 };
 
 // ═══════════════════════════════════════════════════════════
