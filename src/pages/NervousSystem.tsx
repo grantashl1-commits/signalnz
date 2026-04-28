@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain, SlidersHorizontal, ChevronUp, X } from "lucide-react";
+import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headphones, Volume2, Brain, SlidersHorizontal, ChevronUp, X, Sparkles } from "lucide-react";
 import SleepTimer from "@/components/practice/SleepTimer";
 import { useSleepMusic } from "@/hooks/useSleepMusic";
 import { GatedFeature } from "@/components/FeatureGate";
@@ -603,6 +604,7 @@ export default function NervousSystemPage() {
   const { currentPhase } = useCycle();
   const { completed, streak, logCompletion } = useMindfulnessLogs();
   const sleepMusic = useSleepMusic();
+  const navigate = useNavigate();
 
   // Meditation scripts for the meditations tab
   const meditationScripts = useMemo(() => {
@@ -677,6 +679,29 @@ export default function NervousSystemPage() {
         </AtmosphericHero>
 
         <ContentSection className="px-5 md:px-4">
+          {/* Embodiment Course entry card */}
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            onClick={() => { haptic("medium"); navigate("/embodiment/course"); }}
+            className="w-full text-left mb-5 p-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-teal-500/10 to-emerald-400/5 hover:border-primary/40 active:scale-[0.99] transition-all"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-400/10 flex items-center justify-center shrink-0">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-body text-[10px] uppercase tracking-widest text-primary/60 mb-0.5">New Course</p>
+                <h3 className="font-display text-sm font-bold text-foreground">Nervous System Healing</h3>
+                <p className="font-body text-xs text-muted-foreground mt-1 line-clamp-2">
+                  Polyvagal theory, window of tolerance, coercive control, attachment, body signals & your personalised toolkit.
+                </p>
+                <p className="font-body text-[10px] text-primary mt-2">6 modules · 18 lessons · 70 activities →</p>
+              </div>
+            </div>
+          </motion.button>
+
           {/* 4-tab nav */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
             <div className="flex bg-muted/60 rounded-2xl p-1 max-w-lg mx-auto overflow-x-auto scrollbar-hide">
