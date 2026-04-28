@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users, Printer, RefreshCw, Info, Loader2,
+  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users, Printer, RefreshCw, Info, Loader2, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
