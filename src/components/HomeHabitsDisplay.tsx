@@ -76,7 +76,7 @@ export default function HomeHabitsDisplay() {
                   const supplementHabits = groupHabits.filter(h => h.category === "supplements");
                   const otherHabits = groupHabits.filter(h => h.category !== "supplements");
 
-                  const items: React.ReactNode[] = [];
+                  const items: ReactNode[] = [];
 
                   if (supplementHabits.length > 0) {
                     const allDone = supplementHabits.every(h => completedIds.has(h.id));
