@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { getHabits, CATEGORY_DOT_CLASSES, type Habit, type HabitFrequencyType } from "@/data/self-care-rituals";
