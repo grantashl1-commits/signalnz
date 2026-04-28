@@ -145,8 +145,11 @@ export function removeScriptAudioOverride(scriptId: string) {
   window.localStorage.setItem(SCRIPT_AUDIO_OVERRIDES_KEY, JSON.stringify(next));
 }
 
-export function buildVersionedPracticeAudioPath(practiceId: string) {
-  return `practices/${VOICE_CACHE_VERSION}/${practiceId}.mp3`;
+export function buildVersionedPracticeAudioPath(practiceId: string, voiceId?: string) {
+  // Namespace by voice id so the same script can be cached separately
+  // when narrated by different voices.
+  const voiceNamespace = voiceId ? voiceId.slice(0, 12) : "default";
+  return `practices/${VOICE_CACHE_VERSION}/${voiceNamespace}/${practiceId}.mp3`;
 }
 
 export function pickPreferredReaderVoice(voices: SpeechSynthesisVoice[]) {
