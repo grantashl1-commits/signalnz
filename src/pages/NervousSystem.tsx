@@ -43,7 +43,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 // ── Convert MeditationScript → PracticeConfig ──
+function addSleepPauses(script: string): string {
+  // Soften pacing for sleep readings: lengthen short pauses, add a beat
+  // after sentences, and turn paragraph breaks into longer rests.
+  // ElevenLabs honours ellipses and dashes as natural pauses.
+  return script
+    .replace(/\n{2,}/g, "\n\n... ... ...\n\n")
+    .replace(/([.!?])\s+(?=[A-Z])/g, "$1 ... ");
+}
+
 function toPracticeConfig(script: MeditationScript): PracticeConfig {
+  const isSleep = script.category === "sleep";
+  const ttsScript = isSleep && script.ttsScript ? addSleepPauses(script.ttsScript) : script.ttsScript;
   return {
     id: script.id,
     title: script.title,
@@ -60,6 +71,9 @@ function toPracticeConfig(script: MeditationScript): PracticeConfig {
       provider: "elevenlabs",
     },
     steps: script.steps,
+    ttsScript,
+    ttsIsSleep: isSleep,
+    ttsEvidenceSource: script.evidenceSource,
   };
 }
 
