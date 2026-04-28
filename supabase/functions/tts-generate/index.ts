@@ -114,14 +114,23 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { data: urlData } = supabase.storage
+    // Bucket is private — return a long-lived signed URL so the <audio> element can fetch it.
+    const { data: signed, error: signedErr } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(filePath);
+      .createSignedUrl(filePath, 60 * 60 * 24 * 7); // 7 days
+
+    if (signedErr || !signed?.signedUrl) {
+      console.error("Signed URL error:", signedErr);
+      return new Response(
+        JSON.stringify({ error: "Failed to sign audio URL", details: signedErr?.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     return new Response(
       JSON.stringify({
         practiceId,
-        audioUrl: urlData.publicUrl,
+        audioUrl: signed.signedUrl,
         message: "Audio generated and stored successfully",
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
