@@ -23,6 +23,23 @@ function parseRestSeconds(rest: string | null): number | null {
   return null;
 }
 
+/**
+ * Normalises "AMRAP" / "EMOM" prescriptions so they always include a duration.
+ * The AI plan generator sometimes returns bare "AMRAP", leaving the user with
+ * no time cap. Default to 60s for AMRAP and 60s rounds for EMOM if missing.
+ */
+export function formatRepsDuration(reps: string | null | undefined): string {
+  if (!reps) return "";
+  const r = String(reps).trim();
+  // Already has a number/time qualifier — leave it alone.
+  if (/\d/.test(r)) return r;
+  const upper = r.toUpperCase();
+  if (upper === "AMRAP") return "AMRAP in 60s";
+  if (upper === "EMOM") return "EMOM 60s rounds";
+  if (upper === "MAX" || upper === "MAX REPS") return "Max reps in 45s";
+  return r;
+}
+
 /* ── Evidence-based technique tips by keyword ── */
 const TECHNIQUE_TIPS: Record<string, { cue: string; why: string }[]> = {
   squat: [
