@@ -431,38 +431,78 @@ export default function BehaviourTab() {
 
 // ─── Sub-components ───────────────────────────────────
 
-function ChoreSection({ title, subtitle, items, onDone, accent, variant = "must" }: {
-  title: string; subtitle: string; items: Chore[]; onDone: (c: Chore) => void; accent: string; variant?: "must" | "bonus";
+function ChoreSection({ title, subtitle, items, onDone, onReorder, accent, variant = "must" }: {
+  title: string; subtitle: string; items: Chore[]; onDone: (c: Chore) => void; onReorder?: (c: Chore, dir: "up" | "down") => void; accent: string; variant?: "must" | "bonus";
 }) {
+  const [reordering, setReordering] = useState(false);
   if (!items.length) return null;
   return (
     <section>
       <div className="flex items-baseline justify-between mb-2 px-1">
         <h3 className="font-display text-sm font-bold text-foreground">{title}</h3>
-        <span className="text-[10px] text-muted-foreground">{subtitle}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-muted-foreground">{subtitle}</span>
+          {onReorder && (
+            <button
+              onClick={() => setReordering(r => !r)}
+              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border transition-colors ${
+                reordering ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {reordering ? "Done" : "Reorder"}
+            </button>
+          )}
+        </div>
       </div>
       <div className="space-y-1.5">
-        {items.map(c => (
-          <motion.button key={c.id}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => onDone(c)}
-            className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
-              variant === "bonus"
-                ? "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.06] to-transparent"
-                : "border-border bg-card hover:bg-secondary/40"
-            }`}>
-            {c.image_url ? (
-              <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-white" style={{ background: accent + "11" }}>
-                <img src={c.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
-              </div>
-            ) : (
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
-                <Check className="h-4 w-4" style={{ color: accent }} />
-              </div>
-            )}
-            <span className="flex-1 text-left text-sm font-medium text-foreground">{c.name}</span>
-            <span className="text-xs font-mono font-semibold tabular-nums" style={{ color: accent }}>+{c.points}</span>
-          </motion.button>
+        {items.map((c, i) => (
+          <motion.div key={c.id} layout className="relative">
+            <motion.button
+              whileTap={reordering ? undefined : { scale: 0.97 }}
+              onClick={() => !reordering && onDone(c)}
+              disabled={reordering}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                variant === "bonus"
+                  ? "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.06] to-transparent"
+                  : "border-border bg-card hover:bg-secondary/40"
+              } ${reordering ? "opacity-90 cursor-default" : ""}`}>
+              {c.image_url ? (
+                <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-white" style={{ background: accent + "11" }}>
+                  <img src={c.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                </div>
+              ) : (
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
+                  <Check className="h-4 w-4" style={{ color: accent }} />
+                </div>
+              )}
+              <span className="flex-1 text-left text-sm font-medium text-foreground">{c.name}</span>
+              {!reordering && (
+                <span className="text-xs font-mono font-semibold tabular-nums" style={{ color: accent }}>+{c.points}</span>
+              )}
+              {reordering && onReorder && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onReorder(c, "up"); }}
+                    disabled={i === 0}
+                    aria-label="Move up"
+                    className="w-9 h-9 min-w-[36px] rounded-lg border border-border flex items-center justify-center bg-card disabled:opacity-30"
+                  >
+                    <ArrowUp className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onReorder(c, "down"); }}
+                    disabled={i === items.length - 1}
+                    aria-label="Move down"
+                    className="w-9 h-9 min-w-[36px] rounded-lg border border-border flex items-center justify-center bg-card disabled:opacity-30"
+                  >
+                    <ArrowDown className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </motion.button>
+          </motion.div>
         ))}
       </div>
     </section>
