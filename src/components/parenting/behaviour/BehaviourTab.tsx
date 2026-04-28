@@ -105,6 +105,30 @@ export default function BehaviourTab() {
   const onChoreDone = (chore: Chore) =>
     addPoints(chore.points, chore.name, "chore", chore.id);
 
+  // Reorder chores within a category (must / bonus). Persists sort_order to DB.
+  const reorderChore = async (chore: Chore, direction: "up" | "down") => {
+    const siblings = chores
+      .filter(c => c.category === chore.category && (!c.child_id || c.child_id === activeChildId));
+    const idx = siblings.findIndex(c => c.id === chore.id);
+    const targetIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (idx < 0 || targetIdx < 0 || targetIdx >= siblings.length) return;
+    haptic("light");
+    const reordered = [...siblings];
+    [reordered[idx], reordered[targetIdx]] = [reordered[targetIdx], reordered[idx]];
+    // Optimistic update: rebuild full chores list preserving other categories
+    const reorderedIds = new Set(reordered.map(c => c.id));
+    setChores(prev => {
+      const others = prev.filter(c => !reorderedIds.has(c.id));
+      return [...others, ...reordered];
+    });
+    // Persist sort_order for the two swapped rows
+    await Promise.all(
+      reordered.map((c, i) =>
+        supabase.from("parenting_chores").update({ sort_order: i }).eq("id", c.id)
+      )
+    );
+  };
+
   const confirmPenalty = async () => {
     if (!pendingPenalty || !activeChild) return;
     const b = pendingPenalty;
