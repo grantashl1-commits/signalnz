@@ -655,7 +655,11 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       return;
     }
 
-    // Auto-detect today's session from saved AI plan using current_session_index
+    // Auto-detect today's session from saved AI plan.
+    // Selection rule (must match Home's `useTodayFocus`):
+    //   1. Try to match today's ISO weekday (Mon=1..Sun=7) against weeks[0].days[].day
+    //   2. Fall back to sequential pick among non-rest days using ISO weekday
+    //   3. Final fallback: current_session_index across all weeks
     async function loadTodayFromAIPlan() {
       if (!user) return;
       const { data } = await supabase
@@ -675,25 +679,51 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       const sessionIndex = (data[0] as any).current_session_index || 0;
       if (!plan?.weeks?.length) return;
 
-      // Flatten all training days across all weeks
-      const allDays: any[] = [];
-      for (const week of plan.weeks) {
-        if (!week.days) continue;
-        for (const day of week.days) {
-          if (day.session_type !== "rest" && !day.title?.toLowerCase().includes("rest") && day.exercises?.length > 0) {
-            allDays.push(day);
+      // ── Day-of-week match (aligns with Home's "Today's Focus") ──
+      const jsDay = new Date().getDay(); // 0=Sun..6=Sat
+      const isoDayOfWeek = jsDay === 0 ? 7 : jsDay; // 1=Mon..7=Sun
+      const week0 = plan.weeks[0];
+      let todayDay: any = null;
+
+      if (Array.isArray(week0?.days)) {
+        // 1. Direct match by `day` field
+        todayDay = week0.days.find((d: any) =>
+          d.day === isoDayOfWeek &&
+          d.session_type !== "rest" &&
+          !d.title?.toLowerCase().includes("rest") &&
+          d.exercises?.length > 0
+        );
+
+        // 2. Sequential fallback: cycle through training days by ISO weekday
+        if (!todayDay) {
+          const trainingDays = week0.days.filter(
+            (d: any) =>
+              d.session_type !== "rest" &&
+              !d.title?.toLowerCase().includes("rest") &&
+              d.exercises?.length > 0
+          );
+          if (trainingDays.length > 0) {
+            todayDay = trainingDays[(isoDayOfWeek - 1) % trainingDays.length];
           }
         }
       }
 
-      if (allDays.length === 0) return;
-
-      // Always surface the AI plan's current session — the logged-state UI
-      // (Finish & log session / Undo) handles already-logged days separately.
-      const todayDay = allDays[sessionIndex % allDays.length];
-      if (todayDay) {
-        setAiSession(todayDay);
+      // 3. Final fallback: flat session_index across all weeks
+      if (!todayDay) {
+        const allDays: any[] = [];
+        for (const week of plan.weeks) {
+          if (!week.days) continue;
+          for (const day of week.days) {
+            if (day.session_type !== "rest" && !day.title?.toLowerCase().includes("rest") && day.exercises?.length > 0) {
+              allDays.push(day);
+            }
+          }
+        }
+        if (allDays.length === 0) return;
+        todayDay = allDays[sessionIndex % allDays.length];
       }
+
+      if (todayDay) setAiSession(todayDay);
     }
 
     loadTodayFromAIPlan();
