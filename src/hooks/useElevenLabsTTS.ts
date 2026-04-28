@@ -35,26 +35,26 @@ export function useElevenLabsTTS({
   const attemptedRef = useRef(false);
   const effectiveVoiceId = voiceId || CALM_READER_VOICE_ID;
 
-  // Check if audio already exists in storage
+  // Check if audio already exists in storage (private bucket → signed URL)
   const checkCache = useCallback(async (): Promise<string | null> => {
     const overrideUrl = getScriptAudioOverride(practiceId);
     if (overrideUrl) return overrideUrl;
 
     const filePath = buildVersionedPracticeAudioPath(practiceId, effectiveVoiceId);
-    const { data } = supabase.storage
+
+    // Verify the object exists by listing the parent folder
+    const lastSlash = filePath.lastIndexOf("/");
+    const folder = filePath.slice(0, lastSlash);
+    const fileName = filePath.slice(lastSlash + 1);
+    const { data: list } = await supabase.storage
       .from("practice-audio")
-      .getPublicUrl(filePath);
+      .list(folder, { search: fileName, limit: 1 });
+    if (!list || list.length === 0) return null;
 
-    if (!data?.publicUrl) return null;
-
-    // HEAD request to verify the file actually exists
-    try {
-      const resp = await fetch(data.publicUrl, { method: "HEAD" });
-      if (resp.ok) return data.publicUrl;
-    } catch {
-      // File doesn't exist yet
-    }
-    return null;
+    const { data: signed } = await supabase.storage
+      .from("practice-audio")
+      .createSignedUrl(filePath, 60 * 60 * 24 * 7);
+    return signed?.signedUrl ?? null;
   }, [practiceId, effectiveVoiceId]);
 
   // Generate audio via edge function

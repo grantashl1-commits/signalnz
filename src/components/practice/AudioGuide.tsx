@@ -37,6 +37,10 @@ export function useAudioGuide({
       return;
     }
 
+    // Reset state for the new source
+    setLoaded(false);
+    setError(false);
+
     const audio = new Audio();
     audio.preload = "auto";
     audio.crossOrigin = "anonymous";
