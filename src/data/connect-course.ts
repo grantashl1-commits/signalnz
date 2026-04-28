@@ -120,9 +120,9 @@ export const CONNECT_COURSE: CourseModule[] = [
       },
       {
         "id": "module-1-lesson-1",
-        "title": "Unpacking Your Attachment Style",
-        "description": "Identify your primary attachment style and its impact on your relationships.",
-        "estimatedMinutes": 15,
+        "title": "Session 2 · Why We See Things Differently",
+        "description": "Compare your quiz results, understand why two loving people can experience the same moment so differently, and learn to honour what your partner values — even when you don't share it. Ends with your week's homework: the Token Appreciation Game.",
+        "estimatedMinutes": 30,
         "activities": [
           {
             "id": "m1-l1-a0",
@@ -139,6 +139,35 @@ export const CONNECT_COURSE: CourseModule[] = [
                 { "emoji": "🌟", "label": "Very open" }
               ]
             }
+          },
+          {
+            "id": "m1-l1-a0b",
+            "type": "carousel",
+            "title": "Why You See It Differently",
+            "instruction": "Most relationship pain isn't from one person being wrong — it's from two people running different operating systems. Swipe through.",
+            "content": {
+              "cards": [
+                { "title": "Same moment, two films", "body": "You both lived through the same conversation, but you each walked away with a different film of what happened. Neither is lying. Your nervous systems noticed different things, in line with your attachment patterns and history.", "icon": "lucide-film" },
+                { "title": "It doesn't have to matter to you", "body": "It only has to matter to them. Dismissing what your partner cares about — even gently, even reasonably — slowly tells them their inner world isn't safe with you.", "icon": "lucide-ear" },
+                { "title": "The slow drift", "body": "Relationships rarely end in one big betrayal. They end in thousands of small moments where one person said 'this hurts' and the other person said 'it shouldn't.'", "icon": "lucide-waves" },
+                { "title": "The shift", "body": "You don't have to agree it's a big deal. You only have to agree that it's a big deal to them — and act accordingly. That's the whole game.", "icon": "lucide-heart-handshake" }
+              ]
+            },
+            "tip": "Inspired by themes from Matthew Fray's writing on why partnerships unravel — and what to do instead.",
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l1-a0c",
+            "type": "open_response",
+            "title": "What My Partner Values (That I Don't Quite Get)",
+            "instruction": "Name one thing your partner cares about that you've privately dismissed, minimised, or rolled your eyes at. How might it feel to take it as seriously as they do — not because you suddenly agree, but because they're the one carrying it?",
+            "content": {
+              "prompt": "What's the small thing? What does it cost them when you brush past it? What would change if you treated it as important — full stop?",
+              "placeholder": "They care about... I usually respond by... If I treated it as important, I'd...",
+              "minWords": 60
+            },
+            "tip": "This is the heart of Session 2. The work isn't agreeing — it's letting their thing matter, just because they're the one it matters to.",
+            "saveToVault": true
           },
           {
             "id": "m1-l1-a1",
