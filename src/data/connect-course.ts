@@ -35,9 +35,9 @@ export const CONNECT_COURSE: CourseModule[] = [
     "lessons": [
       {
         "id": "module-1-lesson-0",
-        "title": "Know Yourself First",
-        "description": "Before exploring your relationship, take time to understand your own attachment patterns and how you naturally give and receive love.",
-        "estimatedMinutes": 15,
+        "title": "Session 1 · Knowing Yourselves & The Anatomy of Trust",
+        "description": "Mirroring a real first counselling session: discover your attachment pattern and love language, share your dream relationship with each other, and unpack what trust is actually made of.",
+        "estimatedMinutes": 35,
         "activities": [
           {
             "id": "m1-l0-a1",
@@ -54,14 +54,75 @@ export const CONNECT_COURSE: CourseModule[] = [
             "instruction": "Uncover how you naturally give and receive love — this helps you and your partner speak each other's language. Takes about 5 minutes.",
             "content": {},
             "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a3",
+            "type": "open_response",
+            "title": "Describe Your Dream Relationship",
+            "instruction": "Before comparing notes, write your own version. What does the relationship you most want actually look, sound, and feel like — on a regular Tuesday, not just a perfect anniversary?",
+            "content": {
+              "prompt": "Picture a normal day six months from now in the relationship you most want. How are you greeted in the morning? How do you handle a hard moment? What's said before bed? What do you feel in your body when you're together?",
+              "placeholder": "In my dream relationship, mornings feel like... When something hard happens, we...",
+              "minWords": 80
+            },
+            "tip": "Then read it aloud to each other. No debating, no fixing — just listening. This is the version of 'us' you're building toward.",
+            "saveToVault": true
+          },
+          {
+            "id": "m1-l0-a4",
+            "type": "carousel",
+            "title": "The Anatomy of Trust — BRAVING",
+            "instruction": "Brené Brown's research found trust isn't one big thing — it's a stack of small, specific behaviours. Swipe through each letter.",
+            "content": {
+              "cards": [
+                { "title": "B — Boundaries", "body": "You respect my boundaries, and when you're not clear about what's okay and not okay, you ask. You're willing to say no.", "icon": "lucide-shield" },
+                { "title": "R — Reliability", "body": "You do what you say you'll do. Over and over again. Not just once. This means staying aware of your competencies and limitations so you don't over-promise.", "icon": "lucide-check-circle" },
+                { "title": "A — Accountability", "body": "You own your mistakes, apologise, and make amends — without defensiveness or blame.", "icon": "lucide-hand" },
+                { "title": "V — Vault", "body": "What I share with you, you hold in confidence. And — just as importantly — you don't share things that aren't yours to share.", "icon": "lucide-lock" },
+                { "title": "I — Integrity", "body": "You choose courage over comfort. You choose what's right over what's fast, fun, or easy. You practise your values, not just profess them.", "icon": "lucide-compass" },
+                { "title": "N — Non-judgement", "body": "I can ask for what I need, and you can ask for what you need. We can talk about how we feel without judgement.", "icon": "lucide-heart-handshake" },
+                { "title": "G — Generosity", "body": "You extend the most generous interpretation possible to my words, intentions, and behaviours.", "icon": "lucide-gift" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a5",
+            "type": "reaction_slider",
+            "title": "BRAVING Self-Audit",
+            "instruction": "Honest gut check — across the seven elements above, how trustworthy are you being to your partner right now?",
+            "content": {
+              "question": "How am I showing up across BRAVING with my partner this season?",
+              "options": [
+                { "emoji": "🥀", "label": "Slipping in several" },
+                { "emoji": "🌱", "label": "Patchy" },
+                { "emoji": "🌿", "label": "Mostly steady" },
+                { "emoji": "🌸", "label": "Strong with one weak spot" },
+                { "emoji": "🌟", "label": "Solid across all seven" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a6",
+            "type": "short_answer",
+            "title": "One BRAVING Letter to Practise",
+            "instruction": "Pick the one letter (B, R, A, V, I, N, or G) you most want to strengthen this week. Name it, and one specific way you'll practise.",
+            "content": {
+              "prompt": "Which letter, and what's the one small action?",
+              "placeholder": "Reliability — I'll text by 5pm if I'm running late, every time.",
+              "minWords": 12
+            },
+            "tip": "Trust is rebuilt in tiny, repeated actions — not big declarations.",
+            "saveToVault": true
           }
         ]
       },
       {
         "id": "module-1-lesson-1",
-        "title": "Unpacking Your Attachment Style",
-        "description": "Identify your primary attachment style and its impact on your relationships.",
-        "estimatedMinutes": 15,
+        "title": "Session 2 · Why We See Things Differently",
+        "description": "Compare your quiz results, understand why two loving people can experience the same moment so differently, and learn to honour what your partner values — even when you don't share it. Ends with your week's homework: the Token Appreciation Game.",
+        "estimatedMinutes": 30,
         "activities": [
           {
             "id": "m1-l1-a0",
@@ -78,6 +139,35 @@ export const CONNECT_COURSE: CourseModule[] = [
                 { "emoji": "🌟", "label": "Very open" }
               ]
             }
+          },
+          {
+            "id": "m1-l1-a0b",
+            "type": "carousel",
+            "title": "Why You See It Differently",
+            "instruction": "Most relationship pain isn't from one person being wrong — it's from two people running different operating systems. Swipe through.",
+            "content": {
+              "cards": [
+                { "title": "Same moment, two films", "body": "You both lived through the same conversation, but you each walked away with a different film of what happened. Neither is lying. Your nervous systems noticed different things, in line with your attachment patterns and history.", "icon": "lucide-film" },
+                { "title": "It doesn't have to matter to you", "body": "It only has to matter to them. Dismissing what your partner cares about — even gently, even reasonably — slowly tells them their inner world isn't safe with you.", "icon": "lucide-ear" },
+                { "title": "The slow drift", "body": "Relationships rarely end in one big betrayal. They end in thousands of small moments where one person said 'this hurts' and the other person said 'it shouldn't.'", "icon": "lucide-waves" },
+                { "title": "The shift", "body": "You don't have to agree it's a big deal. You only have to agree that it's a big deal to them — and act accordingly. That's the whole game.", "icon": "lucide-heart-handshake" }
+              ]
+            },
+            "tip": "Inspired by themes from Matthew Fray's writing on why partnerships unravel — and what to do instead.",
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l1-a0c",
+            "type": "open_response",
+            "title": "What My Partner Values (That I Don't Quite Get)",
+            "instruction": "Name one thing your partner cares about that you've privately dismissed, minimised, or rolled your eyes at. How might it feel to take it as seriously as they do — not because you suddenly agree, but because they're the one carrying it?",
+            "content": {
+              "prompt": "What's the small thing? What does it cost them when you brush past it? What would change if you treated it as important — full stop?",
+              "placeholder": "They care about... I usually respond by... If I treated it as important, I'd...",
+              "minWords": 60
+            },
+            "tip": "This is the heart of Session 2. The work isn't agreeing — it's letting their thing matter, just because they're the one it matters to.",
+            "saveToVault": true
           },
           {
             "id": "m1-l1-a1",
@@ -190,6 +280,20 @@ export const CONNECT_COURSE: CourseModule[] = [
                 }
               ]
             }
+          },
+          {
+            "id": "m1-l1-a5",
+            "type": "token_appreciation",
+            "title": "Homework · The Token Appreciation Game",
+            "instruction": "Your between-sessions practice. You each start the day with 5 tokens. Every time you notice something you appreciate about your partner, pass them a token with a two-level note — what they did, and why it mattered. Say it out loud. Watch how quickly the small things add up — and how your brain starts looking for them.",
+            "content": {
+              "startingTokens": 5,
+              "promptWhat": "What did your partner do? Be specific.",
+              "promptWhy": "Why did it matter? How did it leave you feeling?",
+              "storageKey": "connect-token-appreciation-m1l1"
+            },
+            "tip": "Not a competition. If tokens aren't moving, just notice for a week first — resentment makes the brain skip past kindness.",
+            "saveToVault": true
           }
         ]
       },
@@ -1038,20 +1142,6 @@ export const CONNECT_COURSE: CourseModule[] = [
               "prompt": "Capture a moment or effort you want to acknowledge.",
               "exampleDescription": "A photo of my partner's neatly made side of the bed, showing their effort to keep things tidy."
             },
-            "saveToVault": true
-          },
-          {
-            "id": "m4-l2-a4",
-            "type": "token_appreciation",
-            "title": "The Token Appreciation Game",
-            "instruction": "A playful daily ritual: you each start with 5 tokens. Every time you notice something you appreciate about your partner, pass them a token with a two-level note — what they did, and why it mattered. Watch how quickly the small things add up.",
-            "content": {
-              "startingTokens": 5,
-              "promptWhat": "What did your partner do? Be specific.",
-              "promptWhy": "Why did it matter? How did it leave you feeling?",
-              "storageKey": "connect-token-appreciation-m4l2"
-            },
-            "tip": "Not a competition. If tokens aren't moving, notice for a week — resentment makes the brain skip past kindness.",
             "saveToVault": true
           }
         ]
