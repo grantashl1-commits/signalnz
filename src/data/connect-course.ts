@@ -280,6 +280,20 @@ export const CONNECT_COURSE: CourseModule[] = [
                 }
               ]
             }
+          },
+          {
+            "id": "m1-l1-a5",
+            "type": "token_appreciation",
+            "title": "Homework · The Token Appreciation Game",
+            "instruction": "Your between-sessions practice. You each start the day with 5 tokens. Every time you notice something you appreciate about your partner, pass them a token with a two-level note — what they did, and why it mattered. Say it out loud. Watch how quickly the small things add up — and how your brain starts looking for them.",
+            "content": {
+              "startingTokens": 5,
+              "promptWhat": "What did your partner do? Be specific.",
+              "promptWhy": "Why did it matter? How did it leave you feeling?",
+              "storageKey": "connect-token-appreciation-m1l1"
+            },
+            "tip": "Not a competition. If tokens aren't moving, just notice for a week first — resentment makes the brain skip past kindness.",
+            "saveToVault": true
           }
         ]
       },
