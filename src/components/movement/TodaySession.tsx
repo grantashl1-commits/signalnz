@@ -280,7 +280,7 @@ function AIExerciseRow({
         </div>
         <div className="flex-1 min-w-0">
           <p className={cn("font-body text-sm", done ? "text-muted-foreground line-through" : "text-foreground")}>{ex.name}</p>
-          <p className="font-body text-[10px] text-muted-foreground">{ex.sets}×{ex.reps_or_duration}{ex.rpe ? ` · RPE ${ex.rpe}` : ""}</p>
+          <p className="font-body text-[10px] text-muted-foreground">{ex.sets}×{formatRepsDuration(ex.reps_or_duration)}{ex.rpe ? ` · RPE ${ex.rpe}` : ""}</p>
         </div>
         <button
           onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); haptic("light"); }}
