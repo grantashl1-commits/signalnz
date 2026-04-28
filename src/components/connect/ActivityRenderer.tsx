@@ -18,6 +18,7 @@ const MediaUpload = lazy(() => import("./activities/MediaUpload"));
 const FlipCard = lazy(() => import("./activities/FlipCard"));
 const ReactionSlider = lazy(() => import("./activities/ReactionSlider"));
 const KnowledgeCheck = lazy(() => import("./activities/KnowledgeCheck"));
+const TokenAppreciation = lazy(() => import("./activities/TokenAppreciation"));
 const AttachmentQuiz = lazy(() => import("@/components/connect/AttachmentQuiz"));
 const LoveLanguagesQuiz = lazy(() => import("@/components/connect/LoveLanguagesQuiz"));
 
@@ -86,6 +87,7 @@ export default function ActivityRenderer({ activity, onComplete }: Props) {
           case "flip_card": return <FlipCard content={activity.content} onComplete={handle} />;
           case "reaction_slider": return <ReactionSlider content={activity.content} onComplete={handle} />;
           case "knowledge_check": return <KnowledgeCheck content={activity.content} onComplete={handle} />;
+          case "token_appreciation": return <TokenAppreciation content={activity.content} onComplete={handle} />;
           default:
             return (
               <div className="p-4 rounded-xl bg-secondary text-center">
