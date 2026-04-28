@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { getHabits, CATEGORY_DOT_CLASSES, type Habit, type HabitFrequencyType } from "@/data/self-care-rituals";
@@ -71,32 +71,81 @@ export default function HomeHabitsDisplay() {
                 {label}
               </p>
               <div className="space-y-0">
-                {groupHabits.map((habit) => {
-                  const done = completedIds.has(habit.id);
-                  const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
-                  return (
-                    <motion.button
-                      key={habit.id}
-                      onClick={() => handleToggle(habit.id)}
-                      className="flex-1 w-full flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div
-                        className="w-5 h-5 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
-                        style={{
-                          borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--border))',
-                          backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
+                {(() => {
+                  // Group all supplement habits into a single combined row
+                  const supplementHabits = groupHabits.filter(h => h.category === "supplements");
+                  const otherHabits = groupHabits.filter(h => h.category !== "supplements");
+
+                  const items: ReactNode[] = [];
+
+                  if (supplementHabits.length > 0) {
+                    const allDone = supplementHabits.every(h => completedIds.has(h.id));
+                    const dotClass = CATEGORY_DOT_CLASSES["supplements"] || "bg-primary";
+                    const names = supplementHabits.map(h => h.name).join(", ");
+                    items.push(
+                      <motion.button
+                        key="__supplements_group"
+                        onClick={() => {
+                          haptic("light");
+                          // Toggle all: if all done, uncheck all; otherwise check all that aren't done
+                          supplementHabits.forEach(h => {
+                            const isDone = completedIds.has(h.id);
+                            if (allDone) {
+                              if (isDone) toggleHabit(h.id);
+                            } else {
+                              if (!isDone) toggleHabit(h.id);
+                            }
+                          });
                         }}
+                        className="flex-1 w-full flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {done && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
-                      </div>
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
-                      <span className={`font-body text-sm flex-1 transition-all duration-200 ${done ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
-                        {habit.name}
-                      </span>
-                    </motion.button>
-                  );
-                })}
+                        <div
+                          className="w-5 h-5 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                          style={{
+                            borderColor: allDone ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                            backgroundColor: allDone ? 'hsl(var(--primary))' : 'transparent',
+                          }}
+                        >
+                          {allDone && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
+                        </div>
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
+                        <span className={`font-body text-sm flex-1 transition-all duration-200 ${allDone ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
+                          Supplements <span className="text-muted-foreground/70">({names})</span>
+                        </span>
+                      </motion.button>
+                    );
+                  }
+
+                  otherHabits.forEach((habit) => {
+                    const done = completedIds.has(habit.id);
+                    const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
+                    items.push(
+                      <motion.button
+                        key={habit.id}
+                        onClick={() => handleToggle(habit.id)}
+                        className="flex-1 w-full flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] transition-colors hover:bg-secondary/30 text-left"
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div
+                          className="w-5 h-5 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                          style={{
+                            borderColor: done ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                            backgroundColor: done ? 'hsl(var(--primary))' : 'transparent',
+                          }}
+                        >
+                          {done && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
+                        </div>
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dotClass}`} />
+                        <span className={`font-body text-sm flex-1 transition-all duration-200 ${done ? "line-through text-muted-foreground/60" : "text-foreground"}`}>
+                          {habit.name}
+                        </span>
+                      </motion.button>
+                    );
+                  });
+
+                  return items;
+                })()}
               </div>
             </div>
           );
