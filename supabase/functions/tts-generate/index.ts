@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { text, voiceId, practiceId, user_identifier } = await req.json();
+    const { text, voiceId, voiceSettings, practiceId, user_identifier } = await req.json();
 
     if (!text || !practiceId) {
       return new Response(
@@ -60,6 +60,15 @@ Deno.serve(async (req) => {
 
     const voice = voiceId || DEFAULT_VOICE_ID;
 
+    const defaultSettings = {
+      stability: 0.58,
+      similarity_boost: 0.74,
+      style: 0.2,
+      use_speaker_boost: true,
+      speed: 0.88,
+    };
+    const finalSettings = { ...defaultSettings, ...(voiceSettings || {}) };
+
     const ttsResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`,
       {
@@ -71,13 +80,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           text,
           model_id: "eleven_multilingual_v2",
-          voice_settings: {
-            stability: 0.58,
-            similarity_boost: 0.74,
-            style: 0.2,
-            use_speaker_boost: true,
-            speed: 0.88,
-          },
+          voice_settings: finalSettings,
         }),
       }
     );
@@ -93,7 +96,9 @@ Deno.serve(async (req) => {
 
     const audioBuffer = await ttsResponse.arrayBuffer();
 
-    const filePath = `practices/calm-reader-v2/${practiceId}.mp3`;
+    // Match the client-side cache path: practices/<version>/<voice-namespace>/<id>.mp3
+    const voiceNamespace = voice.slice(0, 12);
+    const filePath = `practices/voice-routed-v1/${voiceNamespace}/${practiceId}.mp3`;
     const { error: uploadError } = await supabase.storage
       .from("practice-audio")
       .upload(filePath, audioBuffer, {

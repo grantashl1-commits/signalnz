@@ -1,11 +1,20 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { buildVersionedPracticeAudioPath, CALM_READER_VOICE_ID, getScriptAudioOverride } from "@/lib/script-audio";
+import {
+  buildVersionedPracticeAudioPath,
+  CALM_READER_VOICE_ID,
+  getScriptAudioOverride,
+  type ElevenLabsVoiceSettings,
+} from "@/lib/script-audio";
 
 interface UseElevenLabsTTSOptions {
   practiceId: string;
   ttsScript: string;
   enabled?: boolean;
+  /** Override the ElevenLabs voice id. Defaults to Signal's calm reader. */
+  voiceId?: string;
+  /** Override the ElevenLabs voice_settings (stability, speed, etc.). */
+  voiceSettings?: ElevenLabsVoiceSettings;
 }
 
 /**
@@ -17,18 +26,21 @@ export function useElevenLabsTTS({
   practiceId,
   ttsScript,
   enabled = true,
+  voiceId,
+  voiceSettings,
 }: UseElevenLabsTTSOptions) {
   const [audioUrl, setAudioUrl] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const attemptedRef = useRef(false);
+  const effectiveVoiceId = voiceId || CALM_READER_VOICE_ID;
 
   // Check if audio already exists in storage
   const checkCache = useCallback(async (): Promise<string | null> => {
     const overrideUrl = getScriptAudioOverride(practiceId);
     if (overrideUrl) return overrideUrl;
 
-    const filePath = buildVersionedPracticeAudioPath(practiceId);
+    const filePath = buildVersionedPracticeAudioPath(practiceId, effectiveVoiceId);
     const { data } = supabase.storage
       .from("practice-audio")
       .getPublicUrl(filePath);
@@ -43,7 +55,7 @@ export function useElevenLabsTTS({
       // File doesn't exist yet
     }
     return null;
-  }, [practiceId]);
+  }, [practiceId, effectiveVoiceId]);
 
   // Generate audio via edge function
   const generate = useCallback(async () => {
@@ -77,7 +89,8 @@ export function useElevenLabsTTS({
           body: JSON.stringify({
             text: ttsScript,
             practiceId,
-            voiceId: CALM_READER_VOICE_ID,
+            voiceId: effectiveVoiceId,
+            voiceSettings,
             user_identifier,
           }),
         }
@@ -96,7 +109,7 @@ export function useElevenLabsTTS({
     } finally {
       setLoading(false);
     }
-  }, [practiceId, ttsScript, checkCache]);
+  }, [practiceId, ttsScript, checkCache, effectiveVoiceId, voiceSettings]);
 
   // Auto-check cache on mount
   useEffect(() => {

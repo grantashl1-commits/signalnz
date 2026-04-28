@@ -47,6 +47,12 @@ export interface PracticeConfig {
   locale?: string;
   backgroundAudioUrl?: string;
   ttsScript?: string;
+  /** ElevenLabs voice id override (per-script). */
+  ttsVoiceId?: string;
+  /** Marks this practice as a sleep reading — uses slower, sleep-tuned voice settings. */
+  ttsIsSleep?: boolean;
+  /** Free-text source/author used to auto-pick a voice when ttsVoiceId is absent. */
+  ttsEvidenceSource?: string;
 }
 
 // ── Breathwork Practices ────────────────────────────────────

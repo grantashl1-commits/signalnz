@@ -17,6 +17,7 @@ import { useAudioGuide } from "./AudioGuide";
 import { useSpeechGuide } from "@/hooks/useSpeechGuide";
 import { useElevenLabsTTS } from "@/hooks/useElevenLabsTTS";
 import { getSomaticScriptById } from "@/data/somatic-scripts";
+import { resolveScriptVoiceId, resolveVoiceSettings } from "@/lib/script-audio";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
@@ -32,9 +33,21 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Get the TTS script for this somatic practice
+  // Get the TTS script — prefer the script attached to the practice config
+  // (used by meditation & sleep readings), fall back to the somatic library.
   const somaticScript = getSomaticScriptById(practice.id);
-  const ttsScript = somaticScript?.ttsScript || somaticScript?.narration || "";
+  const ttsScript =
+    practice.ttsScript || somaticScript?.ttsScript || somaticScript?.narration || "";
+
+  // Resolve which ElevenLabs voice to use and which preset to apply.
+  const ttsVoiceId = resolveScriptVoiceId({
+    scriptId: practice.id,
+    explicitVoiceId: practice.ttsVoiceId,
+    evidenceSource: practice.ttsEvidenceSource,
+  });
+  const ttsVoiceSettings = resolveVoiceSettings({
+    isSleep: practice.ttsIsSleep,
+  });
 
   // ElevenLabs TTS generation hook
   const {
@@ -47,6 +60,8 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     practiceId: practice.id,
     ttsScript,
     enabled: practice.category === "somatic" && !!ttsScript,
+    voiceId: ttsVoiceId,
+    voiceSettings: ttsVoiceSettings,
   });
 
   // Use generated audio URL if available, otherwise fall back to practice config
