@@ -35,9 +35,9 @@ export const CONNECT_COURSE: CourseModule[] = [
     "lessons": [
       {
         "id": "module-1-lesson-0",
-        "title": "Know Yourself First",
-        "description": "Before exploring your relationship, take time to understand your own attachment patterns and how you naturally give and receive love.",
-        "estimatedMinutes": 15,
+        "title": "Session 1 · Knowing Yourselves & The Anatomy of Trust",
+        "description": "Mirroring a real first counselling session: discover your attachment pattern and love language, share your dream relationship with each other, and unpack what trust is actually made of.",
+        "estimatedMinutes": 35,
         "activities": [
           {
             "id": "m1-l0-a1",
@@ -54,6 +54,67 @@ export const CONNECT_COURSE: CourseModule[] = [
             "instruction": "Uncover how you naturally give and receive love — this helps you and your partner speak each other's language. Takes about 5 minutes.",
             "content": {},
             "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a3",
+            "type": "open_response",
+            "title": "Describe Your Dream Relationship",
+            "instruction": "Before comparing notes, write your own version. What does the relationship you most want actually look, sound, and feel like — on a regular Tuesday, not just a perfect anniversary?",
+            "content": {
+              "prompt": "Picture a normal day six months from now in the relationship you most want. How are you greeted in the morning? How do you handle a hard moment? What's said before bed? What do you feel in your body when you're together?",
+              "placeholder": "In my dream relationship, mornings feel like... When something hard happens, we...",
+              "minWords": 80
+            },
+            "tip": "Then read it aloud to each other. No debating, no fixing — just listening. This is the version of 'us' you're building toward.",
+            "saveToVault": true
+          },
+          {
+            "id": "m1-l0-a4",
+            "type": "carousel",
+            "title": "The Anatomy of Trust — BRAVING",
+            "instruction": "Brené Brown's research found trust isn't one big thing — it's a stack of small, specific behaviours. Swipe through each letter.",
+            "content": {
+              "cards": [
+                { "title": "B — Boundaries", "body": "You respect my boundaries, and when you're not clear about what's okay and not okay, you ask. You're willing to say no.", "icon": "lucide-shield" },
+                { "title": "R — Reliability", "body": "You do what you say you'll do. Over and over again. Not just once. This means staying aware of your competencies and limitations so you don't over-promise.", "icon": "lucide-check-circle" },
+                { "title": "A — Accountability", "body": "You own your mistakes, apologise, and make amends — without defensiveness or blame.", "icon": "lucide-hand" },
+                { "title": "V — Vault", "body": "What I share with you, you hold in confidence. And — just as importantly — you don't share things that aren't yours to share.", "icon": "lucide-lock" },
+                { "title": "I — Integrity", "body": "You choose courage over comfort. You choose what's right over what's fast, fun, or easy. You practise your values, not just profess them.", "icon": "lucide-compass" },
+                { "title": "N — Non-judgement", "body": "I can ask for what I need, and you can ask for what you need. We can talk about how we feel without judgement.", "icon": "lucide-heart-handshake" },
+                { "title": "G — Generosity", "body": "You extend the most generous interpretation possible to my words, intentions, and behaviours.", "icon": "lucide-gift" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a5",
+            "type": "reaction_slider",
+            "title": "BRAVING Self-Audit",
+            "instruction": "Honest gut check — across the seven elements above, how trustworthy are you being to your partner right now?",
+            "content": {
+              "question": "How am I showing up across BRAVING with my partner this season?",
+              "options": [
+                { "emoji": "🥀", "label": "Slipping in several" },
+                { "emoji": "🌱", "label": "Patchy" },
+                { "emoji": "🌿", "label": "Mostly steady" },
+                { "emoji": "🌸", "label": "Strong with one weak spot" },
+                { "emoji": "🌟", "label": "Solid across all seven" }
+              ]
+            },
+            "saveToVault": false
+          },
+          {
+            "id": "m1-l0-a6",
+            "type": "short_answer",
+            "title": "One BRAVING Letter to Practise",
+            "instruction": "Pick the one letter (B, R, A, V, I, N, or G) you most want to strengthen this week. Name it, and one specific way you'll practise.",
+            "content": {
+              "prompt": "Which letter, and what's the one small action?",
+              "placeholder": "Reliability — I'll text by 5pm if I'm running late, every time.",
+              "minWords": 12
+            },
+            "tip": "Trust is rebuilt in tiny, repeated actions — not big declarations.",
+            "saveToVault": true
           }
         ]
       },
