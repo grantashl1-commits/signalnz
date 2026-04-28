@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
+import { formatRepsDuration } from "@/components/movement/TodaySession";
 
 import goalStrongerIcon from "@/assets/icons/goal-stronger.png";
 import goalLeanIcon from "@/assets/icons/goal-lean.png";
