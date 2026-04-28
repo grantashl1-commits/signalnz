@@ -348,10 +348,10 @@ export default function BehaviourTab() {
             </div>
 
             {/* Must-do chores */}
-            <ChoreSection title="Must-do chores" subtitle="Daily essentials" items={childChores.filter(c => c.category === "must")} onDone={onChoreDone} accent={activeChild.accent_color} />
+            <ChoreSection title="Must-do chores" subtitle="Daily essentials" items={childChores.filter(c => c.category === "must")} onDone={onChoreDone} onReorder={reorderChore} accent={activeChild.accent_color} />
 
             {/* Bonus chores */}
-            <ChoreSection title="Bonus chores" subtitle="Extra effort earns extra points" items={childChores.filter(c => c.category === "bonus")} onDone={onChoreDone} accent={activeChild.accent_color} variant="bonus" />
+            <ChoreSection title="Bonus chores" subtitle="Extra effort earns extra points" items={childChores.filter(c => c.category === "bonus")} onDone={onChoreDone} onReorder={reorderChore} accent={activeChild.accent_color} variant="bonus" />
 
             {/* Bad behaviours */}
             <section>
