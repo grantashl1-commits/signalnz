@@ -1,37 +1,29 @@
-Route,Page Name,Auth Required?,Min Tier,Gate Type,RLS on DB Queries,Current Status,Risk Level,Action Required,Notes
-/,Home / Dashboard,No (but personalises for logged-in users),Free (level 0),Soft gate — shows limited content to guests,Yes — all queries scoped to user_id,OK — correct behaviour,Low,None,Free users get cycle phase card + daily signal. AI features prompt upgrade.
-/auth,Login / Signup,No (public),Public,No gate — this IS the auth page,N/A,OK,Low,None,Supabase magic link + email/password auth
-/cycle,Cycle Tracking,No (soft gate),Free (level 0),Soft gate — AI features inside gated with GatedFeature,Yes,OK,Low,None,Basic tracking free. AI cycle insights require credits.
-/nutrition,Nutrition,No (soft gate),Free (level 0),Soft gate — AI meal planning gated within,Yes,OK,Low,None,Shopping list and basic tracking free. AI generation gated.
-/movement,Movement,No (soft gate),Free (level 0),Soft gate — AI workout plan gated within,Yes,OK,Low,None,Manual logging free. AI plan generation requires Rooted+.
-/mindfulness,Mindfulness / Nervous System,No (soft gate),Free (level 0),Soft gate — some practices gated within,Yes,OK,Low,None,Basic breathwork free. Premium scripts and TTS gated.
-/journal,AI Journal,No (soft gate),Free (level 0),Soft gate — AI responses consume credits,Yes,OK,Low,None,Writing free. AI journaling requires credits. Memory Vault accessible.
-/modules,Modules / Learning,No (soft gate),Free (level 0),Content gated within by tier,Yes,OK,Low,None,Some modules free. Premium modules require subscription.
-/membership,Membership / Billing,No (auth soft),Free (level 0),Shows plans — Stripe checkout for upgrades,Yes,OK,Low,None,Public page showing tiers. Checkout requires Stripe session.
-/my-practice,My Practice (Habits + Practices),No (soft gate),Free (level 0),Habit tracking free. Premium practices gated.,Yes,OK,Low,None,Daily habits free for all. Somatic and advanced practices gated.
-/scripts,Mindfulness Scripts / Audio,No (soft gate),Free (level 0),Upload gated by file size. TTS requires credits.,Yes,OK,Low,None,Reading scripts free. TTS generation and upload require higher tier.
-/recommendations,Recommendations,No (soft gate),Free (level 0),AI recommendations consume credits,Yes,Needs review,Low,Verify gate is working — audit recommended,Check if free users can spam recommendations.
-/community,Community Feed,No (soft gate),Free (level 0),Posting may be gated within,Yes,OK,Low,None,Viewing free. AI-assisted posts gated.
-/account,Account Settings,Yes (auth redirect),Any (must be logged in),Hard gate — redirects to /auth if not logged in,Yes,OK,Low,Verify redirect works for logged-out users,GDPR delete + export options here.
-/feedback,Feedback,No,Free (level 0),Open form,Yes,OK,Low,None,Logged or anonymous feedback form.
-/coach,AI Coach,No (soft gate),Rooted+ (level 1),AI responses consume credits — shown to all but gated on use,Yes,Needs review,Medium,Confirm free users see upgrade prompt not blank screen,Coach page accessible but AI requires credits.
-/feed,Signal Feed / Blog,No,Free (level 0),Soft gate — AI curated for subscribers,Yes,OK,Low,None,Public feed. AI personalisation requires subscription.
-/connect,Connect (Relationship Hub),No (soft gate),Free (level 0),Course content gated,Yes,OK,Low,None,Overview free. Course modules gated.
-/connect/course,Connect Course,No (soft gate),Nourished+ (level 2) recommended,Course progress gated — check GatedPage,Yes,Needs review,Medium,Confirm course access gates are working correctly,Full course may need Nourished tier to access all modules.
-/parenting,Parenting Course,No (soft gate),Nourished+ (level 2) recommended,Course content gated,Yes,Needs review,Medium,Confirm course access gates are working,Similar to connect course.
-/embodiment/course,Embodiment Course,No (soft gate),Any subscriber,Course content gated,Yes,OK,Low,None,6-module course on nervous system healing.
-/terms,Terms of Service,No (public),Public,No gate,N/A,OK,Low,None,Static legal page
-/privacy-policy,Privacy Policy,No (public),Public,No gate,N/A,OK,Low,None,Static legal page — ensure NZ Privacy Act 2020 compliant
-/refund-policy,Refund Policy,No (public),Public,No gate,N/A,OK,Low,None,Static legal page
-/contact,Contact,No (public),Public,No gate,N/A,OK,Low,None,Contact form
-/admin,Admin Panel,NO GATE — CRITICAL SECURITY RISK,Admin only (should be role-based),UNPROTECTED — anyone can visit /admin,Depends on queries inside,CRITICAL RISK — FIX BEFORE LAUNCH,Critical,Add auth check: redirect to / if user is not admin. Add admin role check against profiles table.,Any user who knows the URL can access admin data and controls.
-/brand,Brand Guidelines,NO GATE — INTERNAL PAGE EXPOSED,Internal only,UNPROTECTED — publicly accessible,N/A,HIGH RISK — fix before launch,High,Add environment check or admin gate. Simplest fix: redirect to / for all users. Or add: if (!isDev) navigate('/'),Internal brand assets exposed to public.
-/animation-poc,Animation POC,NO GATE — INTERNAL PAGE EXPOSED,Internal only,UNPROTECTED — publicly accessible,N/A,HIGH RISK — fix before launch,High,Add environment check: only render in development. Add: if (import.meta.env.PROD) return <Navigate to="/" />,Dev/test page exposed in production.
-
-SECURITY FIXES NEEDED (in order of priority):
-1. CRITICAL: /admin — Add admin role check in src/pages/Admin.tsx. At top of component add: const { user } = useAuth(); const isAdmin = user?.email?.endsWith('@mindcast.co.nz'); if (!isAdmin) return <Navigate to="/" replace />; Better: check a profiles.is_admin column with RLS.
-2. HIGH: /brand — Add to src/pages/BrandGuidelines.tsx: if (import.meta.env.PROD) return <Navigate to="/" replace />;
-3. HIGH: /animation-poc — Add to src/pages/AnimationPOC.tsx: if (import.meta.env.PROD) return <Navigate to="/" replace />;
-4. MEDIUM: Review GatedPage/GatedFeature implementation for /connect/course and /parenting to ensure tier gates are correct.
-5. Check Supabase RLS policies are enabled on all tables: profiles, journal_entries, cycle_logs, workout_logs, habit_completions, nutrition_plans, community_posts.
-6. Run Supabase Security Advisor: https://supabase.com/dashboard/project/_/advisors/security
+"Route","Page Name","Auth Required","Min Tier","Gate Type","RLS on DB","Status","Risk","Action Required"
+"/","Home / Dashboard","No","Free (level 0)","Soft - personalises for logged-in users. AI features prompt upgrade.","Yes","OK","Low","None"
+"/auth","Login / Signup","No (public)","Public","This IS the auth page - Supabase magic link and password auth","N/A","OK","Low","None"
+"/cycle","Cycle Tracking","No","Free (level 0)","Soft - basic tracking free. AI cycle insights require credits.","Yes","OK","Low","None"
+"/nutrition","Nutrition","No","Free (level 0)","Soft - shopping list and basic tracking free. AI meal planning gated.","Yes","OK","Low","None"
+"/movement","Movement","No","Free (level 0)","Soft - manual logging free. AI workout plan requires Rooted+.","Yes","OK","Low","None"
+"/mindfulness","Mindfulness / Nervous System","No","Free (level 0)","Soft - basic breathwork free. Premium scripts and TTS gated.","Yes","OK","Low","None"
+"/journal","AI Journal","No","Free (level 0)","Soft - writing free. AI responses consume credits. Memory Vault accessible.","Yes","OK","Low","None"
+"/modules","Modules / Learning","No","Free (level 0)","Some modules free. Premium modules require subscription.","Yes","OK","Low","None"
+"/membership","Membership / Billing","No","Free (level 0)","Shows plans. Stripe checkout for upgrades.","Yes","OK","Low","None"
+"/my-practice","My Practice - Habits and Practices","No","Free (level 0)","Habit tracking free for all. Premium practices gated within.","Yes","OK","Low","None"
+"/scripts","Mindfulness Scripts / Audio","No","Free (level 0)","Reading scripts free. TTS generation and upload require higher tier. 50MB file size limit enforced.","Yes","OK","Low","None"
+"/recommendations","Recommendations","No","Free (level 0)","AI recommendations consume credits. Shown to all but gated on use.","Yes","Needs Review","Low","Verify free users see upgrade prompt not blank screen."
+"/community","Community Feed","No","Free (level 0)","Viewing free. AI-assisted posts gated within.","Yes","OK","Low","None"
+"/account","Account Settings","Yes (redirects to /auth)","Any logged-in user","Hard gate - redirects to /auth if not logged in. GDPR delete and export available.","Yes","OK","Low","Verify redirect works for logged-out users."
+"/feedback","Feedback","No","Free (level 0)","Open form - logged or anonymous.","Yes","OK","Low","None"
+"/coach","AI Coach","No","Rooted+ recommended","AI responses consume credits. Accessible to all but AI requires credits.","Yes","Needs Review","Medium","Confirm free users see upgrade prompt not blank or broken screen."
+"/feed","Signal Feed","No","Free (level 0)","Public feed. AI personalisation requires subscription.","Yes","OK","Low","None"
+"/connect","Connect - Relationship Hub","No","Free (level 0)","Overview free. Course modules gated within.","Yes","OK","Low","None"
+"/connect/course","Connect Course","No","Nourished+ recommended","Course progress gated via GatedPage component.","Yes","Needs Review","Medium","Log in as free user and confirm gate is working. All modules should be locked."
+"/parenting","Parenting Course","No","Nourished+ recommended","Course content gated within.","Yes","Needs Review","Medium","Same as Connect course - confirm tier gate is enforced."
+"/embodiment/course","Embodiment Course","No","Any subscriber","6-module course. Course access gated.","Yes","OK","Low","None"
+"/terms","Terms of Service","No (public)","Public","Static page - no gate needed.","N/A","OK","Low","None"
+"/privacy-policy","Privacy Policy","No (public)","Public","Static page - no gate needed.","N/A","OK","Low","None"
+"/refund-policy","Refund Policy","No (public)","Public","Static page - no gate needed.","N/A","OK","Low","None"
+"/contact","Contact","No (public)","Public","Contact form - open to all.","N/A","OK","Low","None"
+"/admin","Admin Panel","Yes (redirects to /auth)","Admin role in user_roles table","Hard gate - checks user_roles table server-side. Redirects to /auth if not logged in. Redirects to / if not admin.","Yes","SECURE","Low","Admin role now seeded via migration. Invite admin@mindcast.co.nz via Supabase Auth > Users."
+"/brand","Brand Guidelines","N/A (dev only)","Internal","Redirects to / in production via import.meta.env.PROD check. Dev only.","N/A","FIXED","Low","Deploy the latest code to confirm redirect is working in production."
+"/animation-poc","Animation POC","N/A (dev only)","Internal","Redirects to / in production via import.meta.env.PROD check. Dev only.","N/A","FIXED","Low","Deploy the latest code to confirm redirect is working in production."

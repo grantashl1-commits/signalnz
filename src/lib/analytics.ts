@@ -1,6 +1,6 @@
 import posthog from "posthog-js";
 
-const POSTHOG_KEY = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN || "phc_pyjtVgGaVJta3EAhHUkgJ7322ivqefqi7uTxvEodmErv";
+const POSTHOG_KEY = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
 const POSTHOG_HOST = import.meta.env.VITE_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
 
 let initialised = false;

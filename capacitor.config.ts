@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: 'nz.co.mindcast.signal',
   appName: 'Signal',
   webDir: 'dist',
-  server: {
-    url: 'https://9c072836-f23c-44b6-b233-7c8a036b1620.lovableproject.com?forceHideBadge=true',
-    cleartext: true,
-  },
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',

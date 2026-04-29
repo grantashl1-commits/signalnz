@@ -31,6 +31,7 @@ export default function ConnectCoursePage() {
   const { user, subscription } = useAuth();
   const { hasFeatureAccess } = useFeatureGate();
   const hasJournalAccess = hasFeatureAccess("journal_write");
+  const hasCourseAccess = hasFeatureAccess("connect_course");
   const [view, setView] = useState<View>("modules");
   const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(null);
@@ -145,6 +146,37 @@ export default function ConnectCoursePage() {
     const total = CONNECT_COURSE.reduce((s, m) => s + m.lessons.reduce((s2, l) => s2 + l.activities.length, 0), 0);
     return total > 0 ? Math.round((completedActivities.size / total) * 100) : 0;
   }, [completedActivities]);
+
+  if (!hasCourseAccess) {
+    return (
+      <div className="relative">
+        <AtmosphericHero size="sm">
+          <SignalPulse />
+          <div className="text-center relative z-10">
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">connect</p>
+            <h1 className="font-display text-[2rem] md:text-[2.5rem] font-extrabold text-primary-foreground leading-[1.02]">
+              Couples Course
+            </h1>
+          </div>
+        </AtmosphericHero>
+        <ContentSection className="px-4 max-w-3xl mx-auto pb-32">
+          <div className="text-center py-12 space-y-4">
+            <Lock className="h-10 w-10 text-muted-foreground/40 mx-auto" />
+            <h2 className="font-display text-xl font-bold text-foreground">Nourished plan required</h2>
+            <p className="font-body text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
+              The Connect couples course is included with the Nourished and Thriving plans. Upgrade to unlock all 10 modules and 30 lessons.
+            </p>
+            <a
+              href="/membership"
+              className="inline-block mt-4 px-6 py-3 rounded-full bg-primary text-primary-foreground font-display font-semibold text-sm"
+            >
+              View plans
+            </a>
+          </div>
+        </ContentSection>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">

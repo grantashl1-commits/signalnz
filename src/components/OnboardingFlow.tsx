@@ -507,8 +507,8 @@ export default function OnboardingFlow({ onComplete }: Props) {
         fitness_level: fitnessLevel,
         has_dietary_prefs: dietaryPrefs.length > 0,
       });
-    } catch (e) {
-      console.error("Onboarding save error:", e);
+    } catch {
+      // non-fatal — user still lands on home screen
     }
     setSaving(false);
     // Small delay so "Your Signal is ready." text is visible
@@ -599,6 +599,9 @@ export default function OnboardingFlow({ onComplete }: Props) {
               >
                 Get started <ArrowRight className="h-4 w-4" />
               </Button>
+              <p className="font-body text-[10px] text-white/35 text-center leading-relaxed pt-2">
+                Signal provides wellness information for educational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment.
+              </p>
             </motion.div>
           )}
 

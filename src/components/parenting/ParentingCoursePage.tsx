@@ -1,10 +1,11 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion, Search, X, Wrench, BookMarked, Lightbulb, Sparkles } from "lucide-react";
+import { BookOpen, CheckCircle2, ChevronRight, Clock, ArrowLeft, Baby, Blocks, GraduationCap, ExternalLink, MessageCircleQuestion, Search, X, Wrench, BookMarked, Lightbulb, Sparkles, Lock } from "lucide-react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { supabase } from "@/integrations/supabase/client";
 import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, TODDLER_SLEEP_SCHEDULES, type WeeklySchedule } from "@/data/parenting-course";
 import type { CourseModule, CourseLesson } from "@/data/connect-course";
@@ -47,6 +48,8 @@ type View = "modules" | "lessons" | "lesson" | "sleep-schedule";
 
 export default function ParentingCoursePage() {
   const { user } = useAuth();
+  const { hasFeatureAccess } = useFeatureGate();
+  const hasCourseAccess = hasFeatureAccess("parenting_course");
   const [activeTab, setActiveTab] = useState<TabId>("babies");
   const [view, setView] = useState<View>("modules");
   const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null);
@@ -163,6 +166,37 @@ export default function ParentingCoursePage() {
     if (view === "lesson") setView("lessons");
     else if (view === "lessons" || view === "sleep-schedule") { setView("modules"); setSelectedModule(null); }
   };
+
+  if (!hasCourseAccess) {
+    return (
+      <div className="relative">
+        <AtmosphericHero size="sm">
+          <SignalPulse />
+          <div className="text-center relative z-10">
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">parenting</p>
+            <h1 className="font-display text-[2rem] md:text-[2.5rem] font-extrabold text-primary-foreground leading-[1.02]">
+              Parenting Guides
+            </h1>
+          </div>
+        </AtmosphericHero>
+        <ContentSection className="px-4 max-w-3xl mx-auto pb-32">
+          <div className="text-center py-12 space-y-4">
+            <Lock className="h-10 w-10 text-muted-foreground/40 mx-auto" />
+            <h2 className="font-display text-xl font-bold text-foreground">Thriving plan required</h2>
+            <p className="font-body text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
+              The Parenting Guides are included with the Thriving plan. Upgrade to unlock evidence-based support for every stage from babies to teenagers.
+            </p>
+            <a
+              href="/membership"
+              className="inline-block mt-4 px-6 py-3 rounded-full bg-primary text-primary-foreground font-display font-semibold text-sm"
+            >
+              View plans
+            </a>
+          </div>
+        </ContentSection>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
