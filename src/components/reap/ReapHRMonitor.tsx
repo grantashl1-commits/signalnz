@@ -15,7 +15,7 @@
  *   available in Safari or Firefox).
  */
 
-import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
+import React, { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import {
   BarChart, Bar, Cell, XAxis, YAxis,
   ResponsiveContainer, Tooltip,
@@ -327,6 +327,58 @@ function ZoneSummaryBarChart({ zoneMins, height = 140 }: { zoneMins: number[]; h
   );
 }
 
+// ─── 11:59pm NZ Midnight Check ───────────────────────────────────────────────
+// Polls every 30 s. Fires a local notification at 23:59 NZ time, once per day.
+
+function useNZMidnightCheck(logRef: React.RefObject<DailyLog>) {
+  useEffect(() => {
+    // Request permission up front (browser requires a user gesture, but this
+    // is called from a hook so permission may already have been granted).
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
+    const interval = setInterval(() => {
+      const nzDate = getNZDateString();
+      const notifyKey = `reap_notified_${nzDate}`;
+
+      // Only fire once per NZ day
+      if (localStorage.getItem(notifyKey)) return;
+
+      const nzHHMM = new Date().toLocaleTimeString("en-NZ", {
+        timeZone: "Pacific/Auckland",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+
+      if (nzHHMM !== "23:59") return;
+
+      // Mark as notified immediately to prevent double-fire within the minute
+      localStorage.setItem(notifyKey, "1");
+
+      const log = logRef.current;
+      if (!log) return;
+
+      const survived = log.zone2PlusMins >= ZONE2_GOAL;
+
+      // Persist the final survived flag for the day
+      saveDailyLog({ ...log, survived });
+
+      if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+
+      new Notification(survived ? "You survived the Reap!" : "Eliminated.", {
+        body: survived
+          ? `${log.zone2PlusMins}/${ZONE2_GOAL} min in Zone 2+ — alive for another day.`
+          : `Only ${log.zone2PlusMins}/${ZONE2_GOAL} min in Zone 2+. You've been reaped.`,
+        tag: `reap-${nzDate}`, // deduplicates if service worker also fires one
+      });
+    }, 30_000);
+
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps — logRef is stable
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function ReapHRMonitor() {
@@ -355,6 +407,11 @@ export default function ReapHRMonitor() {
 
   const todayDate = getNZDateString();
   const [todayLog, setTodayLog] = useState<DailyLog>(() => loadDailyLog(todayDate));
+
+  // Keep a stable ref so the midnight check always reads the freshest log value
+  const todayLogRef = useRef(todayLog);
+  useEffect(() => { todayLogRef.current = todayLog; }, [todayLog]);
+  useNZMidnightCheck(todayLogRef);
 
   // Zone 2+ minutes accumulated in the current live session
   const sessionZ2Mins = hrData.filter(d => getZoneForBPM(d.bpm, maxHR).zone >= 2).length
@@ -603,6 +660,25 @@ export default function ReapHRMonitor() {
             not expose heart rate via Web Bluetooth.
           </p>
         </div>
+
+        {/* Notification permission — only shown when not yet granted */}
+        {typeof Notification !== "undefined" && Notification.permission !== "granted" && (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            background: "#181818", borderRadius: 12, padding: "12px 16px",
+            border: "1px solid #2a2a2a", marginBottom: 16,
+          }}>
+            <span style={{ fontSize: 12, color: "#888" }}>
+              Enable notifications for the 11:59pm survival check.
+            </span>
+            <button
+              onClick={() => Notification.requestPermission()}
+              style={{ ...btn("ghost"), width: "auto", height: 32, padding: "0 14px", fontSize: 12, borderRadius: 8 }}
+            >
+              Allow
+            </button>
+          </div>
+        )}
 
         {/* Connect button */}
         {!hr.connected ? (
