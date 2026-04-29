@@ -53,6 +53,9 @@ export interface PracticeConfig {
   ttsIsSleep?: boolean;
   /** Free-text source/author used to auto-pick a voice when ttsVoiceId is absent. */
   ttsEvidenceSource?: string;
+=======
+  voiceId?: string;
+>>>>>>> Stashed changes
 }
 
 // ── Breathwork Practices ────────────────────────────────────
