@@ -80,7 +80,7 @@ export default function HomeHabitsDisplay() {
 
                   if (supplementHabits.length > 0) {
                     const allDone = supplementHabits.every(h => completedIds.has(h.id));
-                    const dotClass = CATEGORY_DOT_CLASSES["supplements"] || "bg-primary";
+                    const dotClass = CATEGORY_DOT_CLASSES["supplements"] || "bg-muted-foreground/30";
                     const names = supplementHabits.map(h => h.name).join(", ");
                     items.push(
                       <motion.button
@@ -119,7 +119,7 @@ export default function HomeHabitsDisplay() {
 
                   otherHabits.forEach((habit) => {
                     const done = completedIds.has(habit.id);
-                    const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-primary";
+                    const dotClass = CATEGORY_DOT_CLASSES[habit.category] || "bg-muted-foreground/30";
                     items.push(
                       <motion.button
                         key={habit.id}

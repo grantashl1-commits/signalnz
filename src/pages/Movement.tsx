@@ -103,7 +103,8 @@ export default function MovementPage() {
         .eq("completed", true)
         .order("session_date", { ascending: false })
         .limit(20)
-        .then(({ data }) => {
+        .then(({ data, error }) => {
+          if (error) return;
           if (data) setSupabaseLogs(data as any);
         });
     });
@@ -237,12 +238,13 @@ export default function MovementPage() {
       completed: true,
     });
     setManualLogging(false);
-    if (!error) {
+    if (error) {
+      toast.error("Couldn't save workout — please try again.");
+    } else {
       setShowManualLog(false);
       setManualLog({ date: todayStr, type: "Strength", duration: 45, notes: "" });
-      // Refresh supabase logs
-      setActiveTab("today");
-      setTimeout(() => setActiveTab("log"), 50);
+      setLogRefreshKey(k => k + 1);
+      setActiveTab("log");
       toast.success("Workout logged!");
     }
   };

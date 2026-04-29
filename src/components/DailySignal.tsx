@@ -74,8 +74,7 @@ export default function DailySignalCard() {
         } else {
           throw new Error("No message returned");
         }
-      } catch (err) {
-        console.error("Daily signal AI error, using fallback:", err);
+      } catch {
         const fallback = FALLBACK_SIGNALS[info.phase];
         setSignal(fallback);
         setDailySignal(todayStr, fallback);

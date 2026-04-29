@@ -85,8 +85,7 @@ export function useHabitCompletions(): HabitCompletionsResult {
           todaySet.forEach((id) => { log[id] = true; });
           setHabitLog(todayStr, log);
         }
-      } catch (e) {
-        console.error("useHabitCompletions: failed to load from Supabase:", e);
+      } catch {
       } finally {
         setHistoryLoading(false);
       }
@@ -141,8 +140,7 @@ export function useHabitCompletions(): HabitCompletionsResult {
               { onConflict: "user_id,habit_id,completed_date" }
             );
         }
-      } catch (e) {
-        console.error("useHabitCompletions: toggle sync failed:", e);
+      } catch {
         // Roll back optimistic update on failure
         setCompletedIds((prev) => {
           const next = new Set(prev);

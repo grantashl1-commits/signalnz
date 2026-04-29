@@ -858,7 +858,7 @@ export default function AccountPage() {
               const doubleConfirm = window.prompt(
                 'Type "DELETE" to permanently delete your account:'
               );
-              if (doubleConfirm !== "DELETE") {
+              if (doubleConfirm?.toUpperCase() !== "DELETE") {
                 toast.info("Account deletion cancelled.");
                 return;
               }

@@ -55,9 +55,9 @@ export function parseIngredient(raw: string): ParsedIngredient {
 
   const name = words.slice(nameStart).join(" ").trim();
 
-  // Build a clean search term (strip minor descriptors)
+  // Build a clean search term (strip size and quality descriptors for grouping)
   const searchTerm = name
-    .replace(/^(fresh|dried|frozen|organic|raw|cooked|canned|tinned)\s+/i, "")
+    .replace(/^(fresh|dried|frozen|organic|raw|cooked|canned|tinned|large|medium|small|baby|mini|extra-large|xl|extra large)\s+/i, "")
     .replace(/\s*\(.*?\)\s*/g, "")
     .trim();
 
@@ -240,9 +240,10 @@ function normUnit(u: string): string {
   return MAP[s] || s;
 }
 
-/** Normalise ingredient name for grouping */
+/** Normalise ingredient name for grouping — strips size/quality descriptors */
 function normName(name: string): string {
   return name.toLowerCase()
+    .replace(/^(fresh|dried|frozen|organic|raw|cooked|canned|tinned|large|medium|small|baby|mini|extra-large|xl|extra large)\s+/i, "")
     .replace(/\s*\(.*?\)\s*/g, "")
     .replace(/[''`\-–—]/g, " ")
     .replace(/\s+/g, " ")

@@ -104,7 +104,6 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
         haptic("success");
       }
     } catch (e: any) {
-      console.error("Recipe generation failed:", e);
       toast.error(e?.message || "Failed to generate recipes. Please try again.");
     } finally {
       setGenerating(false);

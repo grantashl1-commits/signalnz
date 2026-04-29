@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Bluetooth, Activity, PenLine, Save, Check } from "lucide-react";
+import { toast } from "sonner";
 import {
   ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
   ReferenceArea, ReferenceLine, Tooltip,
@@ -395,10 +396,17 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     if (!error && data) {
       setSaved(true);
       setSavedId(data.id);
+      toast.success("Session saved to Signal");
+    } else {
+      toast.error("Couldn't save to Signal — session is stored locally");
     }
   };
 
   const handleClose = () => {
+    if (running) {
+      if (!window.confirm("End your session and exit? Data won't be saved.")) return;
+      handleStop();
+    }
     releaseWakeLock();
     onClose();
   };
@@ -691,11 +699,9 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
       <div className="max-w-lg mx-auto px-5 py-6 space-y-5">
         <div className="flex items-center justify-between">
           <p className="font-body text-sm text-muted-foreground">{workoutName}</p>
-          {!running && (
-            <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-              <X className="h-4 w-4 text-muted-foreground" />
-            </button>
-          )}
+          <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
+            <X className="h-4 w-4 text-muted-foreground" />
+          </button>
         </div>
 
         {/* Live BPM hero */}

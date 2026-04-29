@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Activity } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 const ALL_MUSCLES = [
   "CHEST", "ABS", "OBLIQUES", "QUADRICEPS", "BICEPS", "TRICEPS",
@@ -188,7 +189,7 @@ export default function BodyVisualisationCard() {
     setSaving(false);
 
     if (error) {
-      console.error("Save error:", error);
+      toast.error("Couldn't save measurements — please try again.");
       return;
     }
 

@@ -119,6 +119,10 @@ export default function ScriptsPage() {
       toast.error("Please log in before uploading audio.");
       return;
     }
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error("File too large — please use a recording under 50 MB.");
+      return;
+    }
 
     setUploadingId(scriptId);
 

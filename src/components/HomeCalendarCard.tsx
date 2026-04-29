@@ -94,8 +94,7 @@ function useImportedCalendar(today: Date) {
       setImportedEvents(events);
       localStorage.setItem("signal_calendar_url", url);
       localStorage.setItem("signal_calendar_cache", JSON.stringify({ events, fetched: Date.now() }));
-    } catch (e) {
-      console.error("Calendar import failed:", e);
+    } catch {
       toast.error("Could not fetch calendar", { description: "Check your URL and try again" });
     } finally {
       setImporting(false);

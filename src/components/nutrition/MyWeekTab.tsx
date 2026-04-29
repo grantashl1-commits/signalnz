@@ -151,8 +151,8 @@ export default function MyWeekTab() {
             setStep("plan");
           }
         }
-      } catch (e) {
-        console.error("Failed to restore plan from Supabase:", e);
+      } catch {
+        // silent fallback to localStorage plan
       }
     })();
   }, [user, aiPlan]);
@@ -184,8 +184,8 @@ export default function MyWeekTab() {
           plan_data: plan as any,
           cycle_phase_at_generation: currentPhase,
         });
-    } catch (e) {
-      console.error("Failed to save plan to Supabase:", e);
+    } catch {
+      // silent — plan is already persisted in localStorage
     }
   }, [user, currentCycleDay, currentPhase]);
 
@@ -260,7 +260,6 @@ export default function MyWeekTab() {
       // Phase 4B: persist to Supabase in background
       savePlanToSupabase(plan);
     } catch (e: any) {
-      console.error("AI plan generation failed:", e);
       toast.error(e.message || "Failed to generate plan. Please try again.");
     } finally {
       setIsGenerating(false);

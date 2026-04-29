@@ -113,8 +113,20 @@ function smartUnit(qty: number, unit: string, name: string): { qty: number; unit
     return { qty, unit };
   }
 
-  // ml → L
+  // ml: dry/bulk ingredients measured in ml → convert to grams (AI sometimes outputs ml for solids)
   if (u === "ml") {
+    const isDryBulkMl = /oat|seed|nut|walnut|almond|cashew|flour|rice|quinoa|lentil|chickpea|bean|sugar|cocoa|cacao|granola|coconut|sesame|flax|pumpkin|sunflower/i.test(lower);
+    if (isDryBulkMl) {
+      // Convert via cup equivalent: 250 ml ≈ 1 cup
+      let gPerCup = 150;
+      if (/flour/.test(lower)) gPerCup = 120;
+      if (/rice|quinoa|lentil|chickpea|bean|oat/.test(lower)) gPerCup = 185;
+      if (/sugar/.test(lower)) gPerCup = 200;
+      if (/coconut/.test(lower)) gPerCup = 85;
+      const grams = (qty / 250) * gPerCup;
+      if (grams >= 1000) return { qty: Math.round(grams / 100) / 10, unit: "kg" };
+      return { qty: Math.round(grams), unit: "g" };
+    }
     if (qty >= 1000) return { qty: Math.round(qty / 100) / 10, unit: "L" };
     return { qty, unit };
   }
@@ -230,8 +242,8 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           saveCheckedState(checked);
           saveCustomItems(custom);
         }
-      } catch (e) {
-        console.error("Failed to load shopping list from Supabase:", e);
+      } catch {
+        // silent fallback to localStorage
       }
     })();
   }, [user, weekKey]);
@@ -250,8 +262,8 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
             checked_items: checked,
             custom_items: custom,
           }, { onConflict: "user_id,week_key" });
-      } catch (e) {
-        console.error("Failed to sync shopping list to Supabase:", e);
+      } catch {
+        // silent — localStorage is the source of truth
       }
     }, 500);
   }, [user, weekKey]);
@@ -310,10 +322,13 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           const mapKey = parsed.searchTerm.toLowerCase();
           const cat = categoriseItem(parsed.name);
 
-          if (ingredientMap[mapKey]) {
-            ingredientMap[mapKey].totalQty += totalQty;
+          // Key includes unit so mismatched units (e.g. "g" vs "cup" for oats) don't corrupt each other
+          const unitKey = parsed.unit.toLowerCase() || "unit";
+          const fullKey = `${mapKey}::${unitKey}`;
+          if (ingredientMap[fullKey]) {
+            ingredientMap[fullKey].totalQty += totalQty;
           } else {
-            ingredientMap[mapKey] = {
+            ingredientMap[fullKey] = {
               name: parsed.name.charAt(0).toUpperCase() + parsed.name.slice(1),
               totalQty,
               unit: parsed.unit,
@@ -339,11 +354,11 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       seedItems.push({ name: "Sesame seeds", unit: "tbsp", qty: secondHalfDays });
     }
     seedItems.forEach(seed => {
-      const mapKey = seed.name.toLowerCase();
-      if (ingredientMap[mapKey]) {
-        ingredientMap[mapKey].totalQty += seed.qty;
+      const fullKey = `${seed.name.toLowerCase()}::${seed.unit}`;
+      if (ingredientMap[fullKey]) {
+        ingredientMap[fullKey].totalQty += seed.qty;
       } else {
-        ingredientMap[mapKey] = {
+        ingredientMap[fullKey] = {
           name: seed.name, totalQty: seed.qty, unit: seed.unit,
           category: "pantry", searchTerm: seed.name.toLowerCase(),
           isPantryStaple: false,
