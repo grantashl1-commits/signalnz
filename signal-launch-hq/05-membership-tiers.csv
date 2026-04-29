@@ -1,0 +1,25 @@
+Tier Name,Internal Level,Stripe Product ID,Monthly Price NZD,Annual Price NZD (if offered),AI Credits / Month,Credit Top-Up Option,Key Features,Excluded Features,Ideal Customer,Conversion Message,Upgrade From,Stripe Coupon Codes,Status
+Free,0,N/A (no Stripe product),NZD $0,NZD $0,0 (no AI credits),N/A — must upgrade for AI,"Cycle tracking (basic phase display), Manual movement logging, Basic habit tracker, Access to breathwork library (basic), Journal — write entries only (no AI responses), View community feed, View all courses (no AI or premium modules), Legal pages and contact","AI journal responses, AI cycle insights, AI meal planning, AI workout plans, AI coach, TTS audio generation, Script uploads, Premium course modules, Memory Vault AI, Connect course AI features, Credit top-ups",Someone exploring the app before committing. Also a re-engaged churned user.,You're using Signal on the free plan. Upgrade to Rooted to unlock AI-powered journaling and cycle insights for just NZD $X/month.,N/A — entry tier,"SIGNAL1MONTH (100% off first month), BETA2025 (3 months free)",Live — all new users land here
+Rooted,1,prod_UDBbsFCvpYtvUN,NZD $14.99,NZD $149.90 (2 months free),30 credits / month,Yes — NZD $4.99 for 50 credits,"Everything in Free, 30 AI credits refreshed monthly, AI Journal responses and insights, AI cycle phase guidance, AI-powered daily signal, Credit top-ups available, Memory Vault, Basic AI recommendations","Full AI meal planning (needs more credits), AI coach extended sessions (high credit use), Unlimited TTS audio generation, Premium course all-module access",Someone who journals regularly or wants AI-guided cycle syncing. Great entry into paid.,30 credits lets you journal with AI every day and get cycle guidance throughout the month.,Free,"FOUNDER50 (50% off forever), SIGNAL1MONTH",Live — Stripe product confirmed
+Nourished,2,prod_U9Pqh2vkb2wrNR,NZD $24.99,NZD $249.90 (2 months free),150 credits / month,Yes — NZD $4.99 for 50 credits,"Everything in Rooted, 150 AI credits refreshed monthly, AI meal planning and weekly nutrition guidance, AI workout plan generation, Full access to Connect and Parenting courses, Advanced AI coach sessions, Fridge-to-recipe AI, Smart shopping list AI sync","Unlimited credits (still capped at 150 — buy top-ups for more), Priority support (can add this)",Someone committed to their wellness journey across multiple pillars — food + movement + mindfulness + relationship.,150 credits powers daily AI journaling + weekly meal plans + cycle insights + movement guidance. The full Signal experience.,Rooted,"FOUNDER50 (50% off forever), SIGNAL1MONTH",Live — Stripe product confirmed
+Thriving,3,prod_U9Pr8k3iP6Bler,NZD $39.99,NZD $399.90 (2 months free),500 credits / month,Yes — NZD $4.99 for 50 credits,"Everything in Nourished, 500 AI credits refreshed monthly, Full unlimited access to all AI tools, All courses including Embodiment course, Priority support (add if desired), First access to new features",N/A — this is the top tier. Only limit is credit count.,A power user or a couple using Signal together (e.g. both partners using Connect course). Also wellness coaches using Signal as a client tool.,500 credits is more than enough for daily AI journaling + meal planning + movement + cycle + coach + course access every single day of the month.,Nourished,"FOUNDER50 (50% off forever), SIGNAL1MONTH",Live — Stripe product confirmed
+
+PRICING NOTES:
+- Current pricing above is a suggestion — verify live prices in Stripe Dashboard: https://dashboard.stripe.com/products
+- NZ market pricing: $14.99 / $24.99 / $39.99 NZD is competitive. Check competitors: Flo (USD $12.99), Natural Cycles (USD $13.99), Headspace (USD $12.99)
+- Annual discount: Offering 2 months free (17% off) is standard. Stripe supports annual price IDs alongside monthly.
+- Apple IAP note: If you add iOS in-app purchases, Apple takes 15-30% cut. Web-only subscriptions (current) avoid this. Recommendation: Keep web-only until you have significant iOS revenue.
+- Credit top-up: NZD $4.99 for 50 credits. Create as a one-time Stripe price. Currently in stripe-webhook edge function.
+- How to create annual plans: Go to Stripe Dashboard > Products > [each product] > Add another price > Recurring > Yearly
+
+STRIPE DASHBOARD LINKS:
+- All products: https://dashboard.stripe.com/products
+- Coupons: https://dashboard.stripe.com/coupons
+- Subscriptions: https://dashboard.stripe.com/subscriptions
+- Revenue overview: https://dashboard.stripe.com/revenue
+
+COUPON SETUP IN STRIPE:
+1. SIGNAL1MONTH: 100% off, applies to first invoice only, single use per customer
+2. FOUNDER50: 50% off forever (every invoice), multi-use but you control distribution
+3. BETA2025: 100% off for 3 months, single use per customer
+Go to: https://dashboard.stripe.com/coupons > + New and fill in the fields above

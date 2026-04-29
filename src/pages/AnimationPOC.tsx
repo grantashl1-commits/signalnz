@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import ExerciseRig from "@/components/movement/ExerciseRig";
 import { ANIMATION_REGISTRY } from "@/data/exercise-animations";
 
 export default function AnimationPOC() {
+  if (import.meta.env.PROD) return <Navigate to="/" replace />;
+
   const [selected, setSelected] = useState(ANIMATION_REGISTRY[0].key);
   const [playing, setPlaying] = useState(true);
   const animation = ANIMATION_REGISTRY.find((e) => e.key === selected)!;

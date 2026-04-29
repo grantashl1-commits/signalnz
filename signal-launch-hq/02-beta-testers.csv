@@ -1,0 +1,23 @@
+Tester Name,Email,Platform,Device,Status,Coupon Code,Discount %,Access Tier,Invite Date,Onboarded?,Feedback Received,NPS Score,Key Feedback Summary,Follow-up Needed,Notes
+[EXAMPLE] Sarah M,sarah@example.com,iOS,iPhone 15,Active,SIGNAL1MONTH,100%,Nourished,2026-05-01,Yes,Yes,9,"Love the cycle syncing and AI journal. Breathwork audio needs volume boost.",No,First cohort tester
+[EXAMPLE] James K,james@example.com,Android,Pixel 8,Active,FOUNDER50,50%,Rooted,2026-05-01,Yes,No,,No response after onboarding DM,Yes — send follow-up,First cohort tester
+[ADD YOUR TESTERS BELOW],,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+,,,,Invited,,,,,,,,,,
+
+HOW TO USE THIS TRACKER:
+- Status options: Invited | Active | Churned | Completed
+- Coupon Codes to create in Stripe Dashboard (Billing > Coupons):
+  * SIGNAL1MONTH — 100% off first month (1x use per customer)
+  * FOUNDER50 — 50% off forever (for your top advocates)
+  * BETA2025 — 3 months free (for press / influencer gifting)
+- Create Stripe Coupons at: https://dashboard.stripe.com/coupons
+- NPS Score: Ask testers to rate 1-10 'How likely are you to recommend Signal?'
+- Send onboarding DM template (in 06-marketing-content.csv)
+- Aim for 20-50 testers across iOS and Android before public launch
+- Follow up at: Day 3 (onboarding check), Day 14 (NPS survey), Day 30 (renewal decision)

@@ -36,7 +36,10 @@
       "WebFetch(domain:www.webfuse.com)",
       "WebFetch(domain:www.sheetxai.com)",
       "WebFetch(domain:docs.eden.art)",
-      "WebFetch(domain:developer.signalwire.com)"
+      "WebFetch(domain:developer.signalwire.com)",
+      "Bash(npm install *)",
+      "mcp__claude_ai_Airtable__list_bases",
+      "mcp__claude_ai_Airtable__create_table"
     ]
   }
 }

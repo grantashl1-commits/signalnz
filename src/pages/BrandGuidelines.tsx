@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, memo } from "react";
+import { Navigate } from "react-router-dom";
 import SignalRingAnimation from "@/components/SignalRingAnimation";
 
 import logoBotanicalDotsV1 from "@/assets/logo-explorations/signal-botanical-dots-v1.png";
@@ -117,6 +118,8 @@ function Divider() {
    MAIN PAGE
    ════════════════════════════════════════════════════════════════ */
 export default function BrandGuidelines() {
+  if (import.meta.env.PROD) return <Navigate to="/" replace />;
+
   const [active, setActive] = useState("cover");
   const observer = useRef<IntersectionObserver | null>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
