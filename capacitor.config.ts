@@ -25,8 +25,6 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
     },
-<<<<<<< Updated upstream
-=======
     StatusBar: {
       style: 'LIGHT',
       backgroundColor: '#F5F0EC',
@@ -34,7 +32,6 @@ const config: CapacitorConfig = {
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
->>>>>>> Stashed changes
   },
 };
 
