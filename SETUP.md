@@ -29,6 +29,7 @@ The email templates live in Edge Function code, not the database — so there's 
 Go to: **Stripe Dashboard → Developers → Webhooks → [your endpoint] → Edit**
 
 Tick all of these (some may already be on):
+
 - [ ] `checkout.session.completed`
 - [ ] `invoice.payment_succeeded`
 - [ ] `customer.subscription.updated`
