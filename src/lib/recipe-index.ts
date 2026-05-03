@@ -9,13 +9,14 @@ import { LIBRARY_RECIPES } from "@/data/pdf-library-recipes";
 import { STORAGE_PDF_RECIPES } from "@/data/storage-pdf-recipes";
 import { EXPANDED_RECIPES } from "@/data/pdf-expanded-recipes";
 import { PLANT_POWERED_RECIPES } from "@/data/plant-powered-recipes";
+import { PLANT_POWERED_PLUS_RECIPES } from "@/data/plant-powered-plus-recipes";
 import { TCM_AYURVEDA_RECIPES } from "@/data/tcm-ayurveda-recipes";
 import { MEAL_PLAN_RECIPES } from "@/data/meal-plan-recipes";
 import { BOWL_MEAL_RECIPES } from "@/data/bowl-meal-recipes";
 import { SNACK_DESSERT_RECIPES } from "@/data/snack-dessert-recipes";
 
 /** All meal recipes (not baking) */
-export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES, ...STORAGE_PDF_RECIPES, ...EXPANDED_RECIPES, ...PLANT_POWERED_RECIPES, ...TCM_AYURVEDA_RECIPES, ...MEAL_PLAN_RECIPES, ...BOWL_MEAL_RECIPES];
+export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES, ...STORAGE_PDF_RECIPES, ...EXPANDED_RECIPES, ...PLANT_POWERED_RECIPES, ...PLANT_POWERED_PLUS_RECIPES, ...TCM_AYURVEDA_RECIPES, ...MEAL_PLAN_RECIPES, ...BOWL_MEAL_RECIPES];
 
 /** All recipes including baking and snacks */
 export const ALL_RECIPES: Recipe[] = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES, ...SNACK_DESSERT_RECIPES];
