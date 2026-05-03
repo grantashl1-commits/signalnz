@@ -49,11 +49,15 @@ function RecipeCard({ recipe, onSelect, index = 0 }: {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, duration: 0.25 }}>
       <button onClick={() => { haptic("light"); onSelect(); }} className="touch-card w-full text-left card-warm overflow-hidden">
-        {recipe.image_url && (
-          <div className="w-full h-[80px] overflow-hidden bg-secondary">
-            <img src={recipe.image_url} alt={recipe.title} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-          </div>
-        )}
+        <div className="w-full overflow-hidden">
+          <RecipeImage
+            recipeName={recipe.title}
+            recipeId={recipe.id}
+            recipeImage={recipe.image_url || undefined}
+            variant="card"
+            height={100}
+          />
+        </div>
         <div className="px-3 pb-3 pt-2 space-y-1.5">
           <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">{recipe.title}</h3>
           <div className="flex items-center gap-1.5 flex-wrap">
