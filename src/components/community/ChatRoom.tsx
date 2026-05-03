@@ -25,11 +25,13 @@ interface DBMessage {
   user_id: string;
   group_id: string;
   content: string | null;
-  message_type: string;
+  message_type: string; // text | poll | event | image | voice
   metadata: any;
   created_at: string;
   is_removed: boolean;
 }
+
+const MEDIA_BUCKET = "community-media";
 
 const initialsFrom = (name?: string | null, fallback = "?") => {
   if (!name) return fallback;
