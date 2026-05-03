@@ -49,7 +49,11 @@
       "Bash(Head -50)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\grant\\\\OneDrive\\\\Documents\\\\GitHub\\\\signalnz\\\\src\\\\pages\" -Recurse -File)",
       "Bash(Select-Object -ExpandProperty Name)",
-      "Bash(findstr /i \"parent\")"
+      "Bash(findstr /i \"parent\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\grant\\\\OneDrive\\\\Documents\\\\GitHub\\\\signalnz\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(powershell -Command \"Get-Content 'supabase\\\\migrations\\\\20260405002701_017e72a4-85aa-41ea-88dd-16377099c31b.sql' | Select-Object -First 80\")",
+      "PowerShell(Import-Csv *)"
     ]
   }
 }
