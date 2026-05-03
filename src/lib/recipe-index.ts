@@ -14,12 +14,15 @@ import { TCM_AYURVEDA_RECIPES } from "@/data/tcm-ayurveda-recipes";
 import { MEAL_PLAN_RECIPES } from "@/data/meal-plan-recipes";
 import { BOWL_MEAL_RECIPES } from "@/data/bowl-meal-recipes";
 import { SNACK_DESSERT_RECIPES } from "@/data/snack-dessert-recipes";
+import { VEGAN_BASICS_RECIPES } from "@/data/vegan-basics-recipes";
+import { PROTEIN_15_RECIPES } from "@/data/protein-15-recipes";
+import { EXTRA_BATCH_MEAL_RECIPES, EXTRA_BATCH_SNACK_RECIPES } from "@/data/extra-batch-recipes";
 
 /** All meal recipes (not baking) */
-export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES, ...STORAGE_PDF_RECIPES, ...EXPANDED_RECIPES, ...PLANT_POWERED_RECIPES, ...PLANT_POWERED_PLUS_RECIPES, ...TCM_AYURVEDA_RECIPES, ...MEAL_PLAN_RECIPES, ...BOWL_MEAL_RECIPES];
+export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES, ...STORAGE_PDF_RECIPES, ...EXPANDED_RECIPES, ...PLANT_POWERED_RECIPES, ...PLANT_POWERED_PLUS_RECIPES, ...TCM_AYURVEDA_RECIPES, ...MEAL_PLAN_RECIPES, ...BOWL_MEAL_RECIPES, ...VEGAN_BASICS_RECIPES, ...PROTEIN_15_RECIPES, ...EXTRA_BATCH_MEAL_RECIPES];
 
 /** All recipes including baking and snacks */
-export const ALL_RECIPES: Recipe[] = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES, ...SNACK_DESSERT_RECIPES];
+export const ALL_RECIPES: Recipe[] = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES, ...SNACK_DESSERT_RECIPES, ...EXTRA_BATCH_SNACK_RECIPES];
 
 /** Lookup by exact recipeId — fast O(1) */
 const RECIPE_BY_ID = new Map<string, Recipe>();
