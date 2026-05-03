@@ -11,12 +11,14 @@ import { EXPANDED_RECIPES } from "@/data/pdf-expanded-recipes";
 import { PLANT_POWERED_RECIPES } from "@/data/plant-powered-recipes";
 import { TCM_AYURVEDA_RECIPES } from "@/data/tcm-ayurveda-recipes";
 import { MEAL_PLAN_RECIPES } from "@/data/meal-plan-recipes";
+import { BOWL_MEAL_RECIPES } from "@/data/bowl-meal-recipes";
+import { SNACK_DESSERT_RECIPES } from "@/data/snack-dessert-recipes";
 
 /** All meal recipes (not baking) */
-export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES, ...STORAGE_PDF_RECIPES, ...EXPANDED_RECIPES, ...PLANT_POWERED_RECIPES, ...TCM_AYURVEDA_RECIPES, ...MEAL_PLAN_RECIPES];
+export const ALL_MEAL_RECIPES: Recipe[] = [...RECIPES, ...PDF_RECIPES, ...LIBRARY_RECIPES, ...STORAGE_PDF_RECIPES, ...EXPANDED_RECIPES, ...PLANT_POWERED_RECIPES, ...TCM_AYURVEDA_RECIPES, ...MEAL_PLAN_RECIPES, ...BOWL_MEAL_RECIPES];
 
-/** All recipes including baking */
-export const ALL_RECIPES: Recipe[] = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES];
+/** All recipes including baking and snacks */
+export const ALL_RECIPES: Recipe[] = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES, ...SNACK_DESSERT_RECIPES];
 
 /** Lookup by exact recipeId — fast O(1) */
 const RECIPE_BY_ID = new Map<string, Recipe>();
