@@ -122,7 +122,19 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
   );
 }
 
-export default function AISessionCard({
+function ExerciseMuscle({ name, size = 18 }: { name: string; size?: number }) {
+  const [muscle, setMuscle] = useState<string>("");
+  useEffect(() => {
+    lookupExerciseMuscle(name).then(setMuscle);
+  }, [name]);
+  if (!muscle) return null;
+  return (
+    <div className="flex items-center gap-1 mt-0.5">
+      <MuscleIllustration targetMuscle={muscle} size={size} />
+      <span className="font-body text-[9px] text-muted-foreground capitalize">{muscle}</span>
+    </div>
+  );
+}
   session, trainingWeek, weekTheme, phase,
   completedExercises, onToggleExercise, onOpenExercise,
 }: AISessionCardProps) {
