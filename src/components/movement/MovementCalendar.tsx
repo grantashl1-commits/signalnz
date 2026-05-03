@@ -29,6 +29,14 @@ function deriveBodyTags(exercises: any[], notes?: string | null): string[] {
 }
 
 /* ── Types ── */
+interface ZonesSummary {
+  z1_mins?: number;
+  z2_mins?: number;
+  z3_mins?: number;
+  z4_mins?: number;
+  z5_mins?: number;
+}
+
 interface WorkoutLog {
   id: string;
   session_date: string;
@@ -39,7 +47,10 @@ interface WorkoutLog {
   exercises: any[];
   calories: number | null;
   avg_bpm: number | null;
+  max_bpm?: number | null;
   zone2_plus_percent: number | null;
+  hr_session_id?: string | null;
+  zones_summary?: ZonesSummary | null;
   template_title?: string;
   session_type?: string;
 }
@@ -52,6 +63,23 @@ const TAG_COLORS: Record<string, string> = {
   Flexibility: "bg-[hsl(var(--phase-luteal)/0.15)] text-[hsl(var(--phase-luteal))]",
   "Full Body": "bg-accent text-accent-foreground",
   General: "bg-secondary text-muted-foreground",
+};
+
+// Zone palette — matches HR_ZONES colour intent
+const ZONE_COLORS: Record<keyof ZonesSummary, string> = {
+  z1_mins: "hsl(var(--muted-foreground) / 0.4)", // recovery — soft grey
+  z2_mins: "hsl(160 60% 45%)",                    // aerobic base — green
+  z3_mins: "hsl(45 90% 55%)",                     // tempo — amber
+  z4_mins: "hsl(20 85% 55%)",                     // threshold — orange
+  z5_mins: "hsl(0 75% 55%)",                      // VO2 max — red
+};
+
+const ZONE_LABELS: Record<keyof ZonesSummary, string> = {
+  z1_mins: "Z1 Recovery",
+  z2_mins: "Z2 Aerobic",
+  z3_mins: "Z3 Tempo",
+  z4_mins: "Z4 Threshold",
+  z5_mins: "Z5 VO2",
 };
 
 // NZ-safe local date string (YYYY-MM-DD in Pacific/Auckland)
