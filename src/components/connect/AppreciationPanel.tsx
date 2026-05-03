@@ -46,9 +46,10 @@ export const APPRECIATION_PHRASES: AppreciationPhrase[] = [
 interface Props {
   connectionId: string;
   senderRole: "member" | "partner";
+  onSent?: () => void;
 }
 
-export default function AppreciationPanel({ connectionId, senderRole }: Props) {
+export default function AppreciationPanel({ connectionId, senderRole, onSent }: Props) {
   const [sending, setSending] = useState<string | null>(null);
   const [sent, setSent] = useState<Set<string>>(new Set());
 
@@ -69,9 +70,10 @@ export default function AppreciationPanel({ connectionId, senderRole }: Props) {
         },
       });
       setSent((prev) => new Set(prev).add(phrase.id));
-      toast.success("Sent", {
+      toast.success("Sent — view in Shared", {
         icon: <YochSentHeart className="w-5 h-5 text-primary" />,
       });
+      onSent?.();
     } catch {
       toast.error("Couldn't send — try again");
     }
