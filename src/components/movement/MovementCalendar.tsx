@@ -380,6 +380,43 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                     )}
                   </div>
 
+                  {/* Zone breakdown bar */}
+                  {log.zones_summary && (() => {
+                    const zones = log.zones_summary;
+                    const keys: (keyof ZonesSummary)[] = ["z1_mins", "z2_mins", "z3_mins", "z4_mins", "z5_mins"];
+                    const total = keys.reduce((s, k) => s + (zones[k] || 0), 0);
+                    if (total <= 0) return null;
+                    return (
+                      <div className="space-y-1">
+                        <div className="flex h-2 w-full overflow-hidden rounded-full bg-secondary/40">
+                          {keys.map(k => {
+                            const mins = zones[k] || 0;
+                            if (mins <= 0) return null;
+                            return (
+                              <div
+                                key={k}
+                                title={`${ZONE_LABELS[k]} · ${mins.toFixed(1)} min`}
+                                style={{ width: `${(mins / total) * 100}%`, backgroundColor: ZONE_COLORS[k] }}
+                              />
+                            );
+                          })}
+                        </div>
+                        <div className="flex flex-wrap gap-x-2 gap-y-0.5">
+                          {keys.map(k => {
+                            const mins = zones[k] || 0;
+                            if (mins <= 0) return null;
+                            return (
+                              <span key={k} className="flex items-center gap-1 font-body text-[9px] text-muted-foreground">
+                                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: ZONE_COLORS[k] }} />
+                                {ZONE_LABELS[k].split(" ")[0]} {mins.toFixed(0)}m
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   {/* Body-part tags */}
                   {bodyTags.length > 0 && (
                     <div className="flex flex-wrap gap-1">
