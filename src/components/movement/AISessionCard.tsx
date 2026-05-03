@@ -135,6 +135,8 @@ function ExerciseMuscle({ name, size = 18 }: { name: string; size?: number }) {
     </div>
   );
 }
+
+export default function AISessionCard({
   session, trainingWeek, weekTheme, phase,
   completedExercises, onToggleExercise, onOpenExercise,
 }: AISessionCardProps) {
