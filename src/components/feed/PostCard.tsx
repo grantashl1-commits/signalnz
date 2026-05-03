@@ -4,32 +4,41 @@ import { BookOpen, Heart, PenLine } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { haptic } from "@/hooks/use-mobile";
 
-const THEME_COLORS: Record<string, string> = {
-  "Hormones": "bg-[hsl(340,50%,55%)]/15 text-[hsl(340,50%,40%)]",
-  "Women's Health": "bg-[hsl(340,50%,55%)]/15 text-[hsl(340,50%,40%)]",
-  "Menopause": "bg-[hsl(340,50%,55%)]/15 text-[hsl(340,50%,40%)]",
-  "Fertility": "bg-[hsl(340,50%,55%)]/15 text-[hsl(340,50%,40%)]",
-  "Nutrition": "bg-[hsl(145,40%,45%)]/15 text-[hsl(145,40%,30%)]",
-  "Gut Health": "bg-[hsl(145,40%,45%)]/15 text-[hsl(145,40%,30%)]",
-  "Mindfulness": "bg-[hsl(210,50%,50%)]/15 text-[hsl(210,50%,35%)]",
-  "Sleep": "bg-[hsl(210,50%,50%)]/15 text-[hsl(210,50%,35%)]",
-  "Mental Health": "bg-[hsl(210,50%,50%)]/15 text-[hsl(210,50%,35%)]",
-  "Anxiety": "bg-[hsl(210,50%,50%)]/15 text-[hsl(210,50%,35%)]",
-  "Exercise": "bg-[hsl(25,70%,50%)]/15 text-[hsl(25,70%,35%)]",
-  "Fitness": "bg-[hsl(25,70%,50%)]/15 text-[hsl(25,70%,35%)]",
-  "Spirituality": "bg-[hsl(270,40%,55%)]/15 text-[hsl(270,40%,40%)]",
-  "Self-Care": "bg-[hsl(270,40%,55%)]/15 text-[hsl(270,40%,40%)]",
-  "Habits": "bg-[hsl(50,60%,45%)]/15 text-[hsl(50,60%,30%)]",
-  "Productivity": "bg-[hsl(50,60%,45%)]/15 text-[hsl(50,60%,30%)]",
-  "Relationships": "bg-[hsl(0,50%,55%)]/15 text-[hsl(0,50%,40%)]",
-  "Leadership": "bg-[hsl(0,50%,55%)]/15 text-[hsl(0,50%,40%)]",
-  "Career": "bg-[hsl(180,40%,45%)]/15 text-[hsl(180,40%,30%)]",
-  "Finance": "bg-[hsl(180,40%,45%)]/15 text-[hsl(180,40%,30%)]",
-  "Parenting": "bg-[hsl(30,50%,50%)]/15 text-[hsl(30,50%,35%)]",
-};
+function formatTag(tag: string): string {
+  return tag.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
-function getThemeClass(theme: string): string {
-  return THEME_COLORS[theme] || "bg-muted/50 text-muted-foreground";
+function getThemeClass(tag: string): string {
+  const t = tag.toLowerCase();
+  if (/hormone|menstrual|fertility|menopause|reproductive|ovulat|period|uterus|ivf|egg-retrieval/.test(t))
+    return "bg-[hsl(340,50%,55%)]/15 text-[hsl(340,50%,40%)]";
+  if (/women|female|feminist|sacred-feminin/.test(t))
+    return "bg-[hsl(340,50%,55%)]/15 text-[hsl(340,50%,40%)]";
+  if (/nutrition|diet|food|eating|gut|digestive|microbiome|protein|omega|plant-based|nourish|spices/.test(t))
+    return "bg-[hsl(145,40%,45%)]/15 text-[hsl(145,40%,30%)]";
+  if (/health|holistic|wellness|well-being|wellbeing|immune|chronic|disease|medical|healing|recovery|longevity/.test(t))
+    return "bg-[hsl(145,40%,45%)]/15 text-[hsl(145,40%,30%)]";
+  if (/sleep|insomnia|circadian|restorative/.test(t))
+    return "bg-[hsl(210,50%,50%)]/15 text-[hsl(210,50%,35%)]";
+  if (/mental|anxiety|depression|stress|emotion|mood|psycho|trauma|grief|shame|fear|burnout|addiction/.test(t))
+    return "bg-[hsl(210,50%,50%)]/15 text-[hsl(210,50%,35%)]";
+  if (/exercise|fitness|workout|strength|movement|cardio|sport|endurance|yoga|breath/.test(t))
+    return "bg-[hsl(25,70%,50%)]/15 text-[hsl(25,70%,35%)]";
+  if (/mindful|meditation|spiritual|conscious|present|soul|sacred|awakening|purpose|meaning/.test(t))
+    return "bg-[hsl(270,40%,55%)]/15 text-[hsl(270,40%,40%)]";
+  if (/self-care|self-love|self-compassion|self-worth|self-esteem|inner-peace|solitude/.test(t))
+    return "bg-[hsl(270,40%,55%)]/15 text-[hsl(270,40%,40%)]";
+  if (/habit|productiv|focus|routine|system|efficien|priorit|goal|discipline|motivation/.test(t))
+    return "bg-[hsl(50,60%,45%)]/15 text-[hsl(50,60%,30%)]";
+  if (/relationship|love|partner|intimacy|marriage|dating|attachment|connection|heartbreak/.test(t))
+    return "bg-[hsl(0,50%,55%)]/15 text-[hsl(0,50%,40%)]";
+  if (/family|parenting|child|parent|sibling|co-parent/.test(t))
+    return "bg-[hsl(30,50%,50%)]/15 text-[hsl(30,50%,35%)]";
+  if (/finance|money|wealth|invest|budget|financial|income|debt|saving/.test(t))
+    return "bg-[hsl(180,40%,45%)]/15 text-[hsl(180,40%,30%)]";
+  if (/career|leadership|work|business|management|professional|entrepreneur/.test(t))
+    return "bg-[hsl(180,40%,45%)]/15 text-[hsl(180,40%,30%)]";
+  return "bg-muted/50 text-muted-foreground";
 }
 
 interface ParsedPost {
@@ -157,7 +166,7 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
                 key={theme}
                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-medium tracking-wide ${getThemeClass(theme)}`}
               >
-                {theme}
+                {formatTag(theme)}
               </span>
             ))}
           </div>

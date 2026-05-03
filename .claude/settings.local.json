@@ -53,7 +53,8 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\grant\\\\OneDrive\\\\Documents\\\\GitHub\\\\signalnz\" -Directory)",
       "Bash(Select-Object Name)",
       "Bash(powershell -Command \"Get-Content 'supabase\\\\migrations\\\\20260405002701_017e72a4-85aa-41ea-88dd-16377099c31b.sql' | Select-Object -First 80\")",
-      "PowerShell(Import-Csv *)"
+      "PowerShell(Import-Csv *)",
+      "Bash(Get-Content *)"
     ]
   }
 }
