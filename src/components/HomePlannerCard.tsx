@@ -49,7 +49,7 @@ export default function HomePlannerCard() {
       const ve: VaultEntry = {
         id: Date.now().toString(),
         entryId: todo.id,
-        category: "look-what-youve-done",
+        category: "wins-firsts",
         title: todo.title,
         preview: `Completed ${todo.completed_at ? new Date(todo.completed_at).toLocaleDateString("en-NZ", { day: "numeric", month: "short" }) : "today"}`,
         date: new Date().toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" }),
