@@ -58,10 +58,13 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const [eventTitle, setEventTitle] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventLoc, setEventLoc] = useState("");
-  const [voted, setVoted] = useState<Record<string, number>>({});
-  const [rsvpd, setRsvpd] = useState<Set<string>>(new Set());
+  // votes: msgId -> { myChoice?: number, tallies: number[] }
+  const [votes, setVotes] = useState<Record<string, { myChoice?: number; tallies: number[] }>>({});
+  // rsvps: msgId -> { mine: boolean, count: number }
+  const [rsvps, setRsvps] = useState<Record<string, { mine: boolean; count: number }>>({});
   const [recording, setRecording] = useState(false);
-  const [localMedia, setLocalMedia] = useState<Record<string, { imageUrl?: string; audioUrl?: string }>>({});
+  // mediaUrls: msgId -> resolved signed URL (for image/audio)
+  const [mediaUrls, setMediaUrls] = useState<Record<string, string>>({});
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
