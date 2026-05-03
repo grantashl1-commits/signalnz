@@ -8,11 +8,19 @@ const corsHeaders = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Derive user from JWT — never trust body-supplied identifier
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "");
+
   try {
     const body = await req.json();
 
-    // Rate limiting using userIdentifier if provided
-    const uid = body.userIdentifier || body.entryId || "anon";
+    // Rate limiting using JWT-derived user id
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: { user } } = await sb.auth.getUser(token);
+    const userIdentifier = user?.id ?? null;
+    const uid = userIdentifier || body.entryId || "anon";
     const allowed = await checkRateLimit(uid);
     if (!allowed) {
       return new Response(JSON.stringify({

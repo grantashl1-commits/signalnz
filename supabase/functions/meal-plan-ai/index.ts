@@ -494,15 +494,20 @@ function assignMealsForWeek(dayStart: number, dayEnd: number, prefs: any, baseSe
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Derive user from JWT — never trust body-supplied identifier
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "");
+
   try {
     const body = await req.json();
     const { preferences, mode, lockedMeals, existingPlan, regenerateDay, regenerateMeal,
       startCycleDay, endCycleDay, userDietaryDislikes } = body;
 
     // Credit check: deterministic plan costs 1 credit (atomic)
-    const userIdentifier = body.userIdentifier;
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: { user } } = await sb.auth.getUser(token);
+    const userIdentifier = user?.id ?? null;
     if (userIdentifier) {
-      const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
       const { error: creditError } = await sb.rpc("deduct_ai_credits", {
         p_user_identifier: userIdentifier,
         p_cost: 1,

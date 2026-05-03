@@ -26,6 +26,10 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  // Derive user from JWT — never trust body-supplied identifier
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "");
+
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     if (!ELEVENLABS_API_KEY) {
@@ -35,12 +39,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { prompt, duration, user_identifier } = await req.json();
+    const { prompt, duration } = await req.json();
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+
+    const { data: { user } } = await supabase.auth.getUser(token);
+    const user_identifier = user?.id ?? null;
 
     // Rate limiting: 3 per minute (expensive audio generation)
     if (user_identifier) {

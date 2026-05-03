@@ -1,0 +1,49 @@
+# Signal — Apache security headers for Metaname hosting
+# Upload this file to your public_html root alongside index.html
+
+# Force HTTPS — redirects all HTTP requests to HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# SPA routing — send all requests to index.html (required for React Router)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+
+# Security headers
+<IfModule mod_headers.c>
+  # Tell browsers to always use HTTPS for the next year
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # Prevent this site being embedded in iframes on other domains (clickjacking)
+  Header always set X-Frame-Options "DENY"
+
+  # Stop browsers guessing the content type (MIME sniffing)
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Only send the page URL as referrer to same-origin requests
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Disable browser features that Signal doesn't use
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(self), payment=()"
+
+  # Content Security Policy — tighten what scripts/connections are allowed
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://us.i.posthog.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://us.i.posthog.com https://*.sentry.io https://api.resend.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; worker-src 'self' blob:; frame-ancestors 'none'"
+</IfModule>
+
+# Cache static assets aggressively (Vite fingerprints filenames)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Compress responses
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

@@ -24,9 +24,13 @@ function stripHtml(html: string): string {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Derive user from JWT — never trust body-supplied identifier
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "");
+
   try {
     const body = await req.json();
-    const { url, userIdentifier } = body;
+    const { url } = body;
 
     if (!url || !url.startsWith("http")) {
       return new Response(JSON.stringify({ error: "A valid URL is required." }), {
@@ -34,10 +38,12 @@ serve(async (req) => {
       });
     }
 
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: { user } } = await sb.auth.getUser(token);
+    const userIdentifier = user?.id ?? null;
+
     // Optional credit deduction (1 credit per import)
     if (userIdentifier) {
-      const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-
       const { data: rl } = await sb.rpc("check_rate_limit", {
         _user_id: userIdentifier, _function_name: "recipe-from-url", _max_per_minute: 10,
       });

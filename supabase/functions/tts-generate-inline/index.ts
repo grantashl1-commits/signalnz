@@ -32,6 +32,10 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Derive user from JWT — never trust body-supplied identifier
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "");
+
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     // Signal voice policy: only Regina (female, default) and Theo (male) are allowed.
@@ -47,7 +51,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { text, voiceId, user_identifier } = await req.json();
+    const { text, voiceId } = await req.json();
 
     if (!text) {
       return new Response(
@@ -60,6 +64,9 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+
+    const { data: { user } } = await supabase.auth.getUser(token);
+    const user_identifier = user?.id ?? null;
 
     // --- CACHE CHECK ---
     const voice = voiceId && ALLOWED_VOICES.has(voiceId) ? voiceId : DEFAULT_VOICE_ID;
