@@ -1,20 +1,27 @@
-export const CALM_READER_VOICE_ID = "XrExE9yKIg1WjnnlVkGX";
-export const THEO_VOICE_ID = "UmQN7jS1Ee8B1czsUtQh";
-export const REGINA_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS";
+// ── Signal voice policy ───────────────────────────────────────────────
+// Only TWO ElevenLabs voices are permitted across the entire app:
+//   • Regina (female) — the default reader for Signal
+//   • Theo   (male)   — used when the source author is male
+// Any other voice ID (legacy or accidental) is coerced back to Regina.
+
+export const REGINA_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS"; // female — default
+export const THEO_VOICE_ID = "UmQN7jS1Ee8B1czsUtQh";   // male
+
+// The "calm reader" alias = Regina. Kept so existing imports keep working.
+export const CALM_READER_VOICE_ID = REGINA_VOICE_ID;
 export const CALM_READER_VOICE_LABEL = "Signal Reader";
+
 // Bump this whenever voice routing or default settings change so cached
 // audio is regenerated under a fresh path.
-export const VOICE_CACHE_VERSION = "voice-routed-v1";
+export const VOICE_CACHE_VERSION = "regina-theo-v2";
 
-// ── ElevenLabs voice catalogue used by Signal ─────────────────────────
-// Female voices
-export const VOICE_LILY = "pFZP5JQG7iQjIQuC4Bku";       // warm, soothing — sleep & inner-work
-export const VOICE_MATILDA = "XrExE9yKIg1WjnnlVkGX";    // calm reader — default female
-export const VOICE_SARAH = "EXAVITQu4vr4xnSDxMaL";      // gentle female — meditation
-// Male voices
-export const VOICE_GEORGE = "JBFqnCBsd6RMkjVDRZzb";     // warm British male — default male
-export const VOICE_DANIEL = "onwK4e9ZLuTAKqWW03F9";     // measured British male
-export const VOICE_BRIAN = "nPczCjzI2devNBz1zQrb";      // grounded American male
+const ALLOWED_VOICE_IDS = new Set<string>([REGINA_VOICE_ID, THEO_VOICE_ID]);
+
+/** Coerce any incoming voice ID to one of the two allowed voices. */
+export function enforceAllowedVoice(voiceId?: string | null): string {
+  if (voiceId && ALLOWED_VOICE_IDS.has(voiceId)) return voiceId;
+  return REGINA_VOICE_ID;
+}
 
 export interface ElevenLabsVoiceSettings {
   stability: number;
@@ -43,54 +50,38 @@ export const SLEEP_VOICE_SETTINGS: ElevenLabsVoiceSettings = {
   speed: 0.75,
 };
 
-// Map known authors (matched against MeditationScript.evidenceSource) to a
-// preferred ElevenLabs voice. We try to mirror the author's gender so the
-// reader feels true to the source material.
-const AUTHOR_VOICE_MAP: Array<{ pattern: RegExp; voiceId: string; gender: "female" | "male" }> = [
-  // Female authors
-  { pattern: /bren[eé]\s*brown/i, voiceId: VOICE_SARAH, gender: "female" },
-  { pattern: /brianna\s*wiest/i, voiceId: VOICE_LILY, gender: "female" },
-  { pattern: /pooja\s*lakshmin/i, voiceId: VOICE_LILY, gender: "female" },
-  { pattern: /tara\s*brach/i, voiceId: VOICE_SARAH, gender: "female" },
-  { pattern: /kristin\s*neff/i, voiceId: VOICE_SARAH, gender: "female" },
-  { pattern: /stacy\s*sims/i, voiceId: VOICE_MATILDA, gender: "female" },
-  { pattern: /alanna\s*(janine\s*)?bird/i, voiceId: VOICE_LILY, gender: "female" },
-  // Male authors
-  { pattern: /matthew\s*fray/i, voiceId: VOICE_GEORGE, gender: "male" },
-  { pattern: /richard\s*miller/i, voiceId: VOICE_DANIEL, gender: "male" },
-  { pattern: /kabat[-\s]*zinn/i, voiceId: VOICE_DANIEL, gender: "male" },
-  { pattern: /thich\s*nhat\s*hanh/i, voiceId: VOICE_DANIEL, gender: "male" },
-  { pattern: /(porges|polyvagal)/i, voiceId: VOICE_GEORGE, gender: "male" },
-  { pattern: /(weil|andrew\s*weil)/i, voiceId: VOICE_GEORGE, gender: "male" },
-  { pattern: /marcus\s*aurelius|epictetus|seneca|stoic/i, voiceId: VOICE_DANIEL, gender: "male" },
-  { pattern: /jordan\s*peterson/i, voiceId: VOICE_BRIAN, gender: "male" },
+// Author → gender map. We only choose between Theo (male) and Regina (female).
+// Anything not matched falls through to Regina.
+const MALE_AUTHOR_PATTERNS: RegExp[] = [
+  /matthew\s*fray/i,
+  /richard\s*miller/i,
+  /kabat[-\s]*zinn/i,
+  /thich\s*nhat\s*hanh/i,
+  /(porges|polyvagal)/i,
+  /(weil|andrew\s*weil)/i,
+  /marcus\s*aurelius|epictetus|seneca|stoic/i,
+  /jordan\s*peterson/i,
 ];
 
 /**
  * Pick an ElevenLabs voice for a script.
  *
  * Resolution order:
- *   1. Explicit `voiceId` on the script (highest priority)
- *   2. Localstorage override for this script id
- *   3. Author match against `evidenceSource`
- *   4. Default Signal reader (Matilda)
+ *   1. Explicit `voiceId` on the script — coerced to Regina/Theo if not one already.
+ *   2. Author match against `evidenceSource` (male → Theo, otherwise Regina).
+ *   3. Regina (default).
  */
 export function resolveScriptVoiceId(opts: {
   scriptId?: string;
   explicitVoiceId?: string;
   evidenceSource?: string;
 }): string {
-  if (opts.explicitVoiceId) return opts.explicitVoiceId;
-  if (opts.scriptId) {
-    const override = getScriptAudioOverride(opts.scriptId);
-    // overrides store full URLs — only use when not a URL (kept as a future hook)
-    if (override && !/^https?:/i.test(override)) return override;
-  }
+  if (opts.explicitVoiceId) return enforceAllowedVoice(opts.explicitVoiceId);
+
   const src = opts.evidenceSource || "";
-  for (const entry of AUTHOR_VOICE_MAP) {
-    if (entry.pattern.test(src)) return entry.voiceId;
-  }
-  return CALM_READER_VOICE_ID;
+  if (MALE_AUTHOR_PATTERNS.some((p) => p.test(src))) return THEO_VOICE_ID;
+
+  return REGINA_VOICE_ID;
 }
 
 /**
