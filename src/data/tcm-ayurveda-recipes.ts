@@ -9,6 +9,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-ginger-congee",
     name: "Warming Ginger Congee",
+    image: "/images/recipes/meals/tcm-ginger-congee.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -23,6 +24,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-beetroot-carrot-soup",
     name: "Blood-Nourishing Beetroot & Carrot Soup",
+    image: "/images/recipes/meals/tcm-beetroot-carrot-soup.png",
     phase: "follicular",
     serves: 4,
     prepTime: "45 min",
@@ -37,6 +39,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-chicken-mushroom-stirfry",
     name: "Qi-Building Chicken & Mushroom Stir-fry",
+    image: "/images/recipes/meals/tcm-chicken-mushroom-stirfry.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -51,6 +54,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-salmon-greens-with-goji",
     name: "Liver & Kidney Nourishing Salmon with Greens and Goji",
+    image: "/images/recipes/meals/tcm-salmon-greens-with-goji.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -65,6 +69,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-pumpkin-ginger-millet",
     name: "Spleen Harmonizing Pumpkin & Ginger Millet Bowl",
+    image: "/images/recipes/meals/tcm-pumpkin-ginger-millet.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -79,6 +84,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-black-bean-kumara-salad",
     name: "Kidney Fortifying Black Bean & Kumara Salad",
+    image: "/images/recipes/meals/tcm-black-bean-kumara-salad.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
@@ -93,6 +99,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-tofu-veggie-broth",
     name: "Nourishing Tofu & Vegetable Broth",
+    image: "/images/recipes/meals/tcm-tofu-veggie-broth.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -107,6 +114,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-egg-spinach-omelette",
     name: "Qi & Blood Enriching Egg & Spinach Omelette",
+    image: "/images/recipes/meals/tcm-egg-spinach-omelette.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -121,6 +129,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-mung-bean-apple-dessert",
     name: "Cooling Mung Bean & Apple Dessert",
+    image: "/images/recipes/meals/tcm-mung-bean-apple-dessert.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -135,6 +144,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "tcm-five-spice-lamb-stirfry",
     name: "Five-Element Lamb & Veggie Stir-fry",
+    image: "/images/recipes/meals/tcm-five-spice-lamb-stirfry.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -149,6 +159,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-ginger-turmeric-oats",
     name: "Vata & Kapha Balancing Ginger Turmeric Oats",
+    image: "/images/recipes/meals/ayurveda-ginger-turmeric-oats.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "15 min",
@@ -163,6 +174,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-kitchari-follicular",
     name: "Tridoshic Kitchari (Follicular Focus)",
+    image: "/images/recipes/meals/ayurveda-kitchari-follicular.png",
     phase: "follicular",
     serves: 2,
     prepTime: "45 min",
@@ -177,6 +189,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-pitta-balancing-salad",
     name: "Cooling Pitta-Balancing Salad with Cucumber & Mint",
+    image: "/images/recipes/meals/ayurveda-pitta-balancing-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -191,6 +204,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-vata-pacifying-soup",
     name: "Vata Pacifying Kumara & Coconut Soup",
+    image: "/images/recipes/meals/ayurveda-vata-pacifying-soup.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -205,6 +219,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-golden-milk",
     name: "Vata & Kapha Pacifying Golden Milk",
+    image: "/images/recipes/meals/ayurveda-golden-milk.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
@@ -219,6 +234,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-lentil-dahl-spinach",
     name: "Kapha & Vata Reducing Lentil Dahl with Spinach",
+    image: "/images/recipes/meals/ayurveda-lentil-dahl-spinach.png",
     phase: "follicular",
     serves: 4,
     prepTime: "45 min",
@@ -233,6 +249,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-mint-coriander-chutney",
     name: "Pitta & Kapha Reducing Mint & Coriander Chutney",
+    image: "/images/recipes/meals/ayurveda-mint-coriander-chutney.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "10 min",
@@ -247,6 +264,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-gourd-sabzi",
     name: "Kapha Pacifying Courgette & Mung Dahl Sabzi",
+    image: "/images/recipes/meals/ayurveda-gourd-sabzi.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -261,6 +279,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-cinnamon-apple-digestive",
     name: "Agni-Stimulating Cinnamon Apple Bake",
+    image: "/images/recipes/meals/ayurveda-cinnamon-apple-digestive.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -275,6 +294,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-broccoli-ginger-stirfry",
     name: "Kapha & Vata Balancing Broccoli & Ginger Stir-fry",
+    image: "/images/recipes/meals/ayurveda-broccoli-ginger-stirfry.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -289,6 +309,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-cucumber-raita",
     name: "Pitta Calming Cucumber Raita",
+    image: "/images/recipes/meals/ayurveda-cucumber-raita.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -303,6 +324,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-masoor-dal-soup",
     name: "Light & Digestible Masoor Dal Soup",
+    image: "/images/recipes/meals/ayurveda-masoor-dal-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "35 min",
@@ -317,6 +339,7 @@ export const TCM_AYURVEDA_RECIPES: Recipe[] = [
   {
     id: "ayurveda-pumpkin-semolina-porridge",
     name: "Vata & Pitta Pacifying Pumpkin Semolina Porridge",
+    image: "/images/recipes/meals/ayurveda-pumpkin-semolina-porridge.png",
     phase: "luteal",
     serves: 1,
     prepTime: "20 min",

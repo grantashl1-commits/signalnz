@@ -771,6 +771,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-egg-pea-salad",
     name: "Egg and Pea Salad with Dill Dressing",
+    image: "/images/recipes/meals/p15-egg-pea-salad.png",
     phase: "follicular",
     serves: 2,
     prepTime: "5 mins",
@@ -783,6 +784,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-salmon-avocado-bulgur",
     name: "Salmon, Avocado and Bulgur Wheat Salad",
+    image: "/images/recipes/meals/p15-salmon-avocado-bulgur.png",
     phase: "follicular",
     serves: 2,
     prepTime: "10 mins",
@@ -795,6 +797,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-tuna-avocado-rice-bowl",
     name: "Tuna and Avocado Rice Bowl",
+    image: "/images/recipes/meals/p15-tuna-avocado-rice-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "10 mins",
@@ -807,6 +810,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-crispy-fish-cakes",
     name: "Crispy Fish Cakes with Sweet Chilli Mayo",
+    image: "/images/recipes/meals/p15-crispy-fish-cakes.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 mins",
@@ -819,6 +823,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-med-chicken-butter-beans",
     name: "Mediterranean Baked Chicken with Butter Bean Salad",
+    image: "/images/recipes/meals/p15-med-chicken-butter-beans.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 mins",
@@ -831,6 +836,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chipotle-chicken-lettuce-bowl",
     name: "Spiced Chipotle Chicken Lettuce Bowl",
+    image: "/images/recipes/meals/p15-chipotle-chicken-lettuce-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 mins",
@@ -843,6 +849,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chorizo-chicken-bean-bowl",
     name: "Paprika Chicken and Chorizo Bean Bowl",
+    image: "/images/recipes/meals/p15-chorizo-chicken-bean-bowl.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 mins",
@@ -855,6 +862,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-shredded-chicken-tabbouleh",
     name: "Shredded Chicken with Herb Tabbouleh Salad",
+    image: "/images/recipes/meals/p15-shredded-chicken-tabbouleh.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 mins",
@@ -867,6 +875,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-turkey-chipotle-sandwich",
     name: "Turkey and Chipotle Sourdough Sandwich",
+    image: "/images/recipes/meals/p15-turkey-chipotle-sandwich.png",
     phase: "follicular",
     serves: 2,
     prepTime: "10 mins",
@@ -879,6 +888,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chimichurri-steak-rice",
     name: "Chimichurri Steak with Rice and Rocket",
+    image: "/images/recipes/meals/p15-chimichurri-steak-rice.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "10 mins",
@@ -891,6 +901,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-meatballs-lentil-feta",
     name: "Beef Meatballs with Minty Lentil Salad and Feta",
+    image: "/images/recipes/meals/p15-meatballs-lentil-feta.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 mins",
@@ -903,6 +914,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-pb-strawberry-overnight-oats",
     name: "Strawberry Jam and Peanut Butter Overnight Oats",
+    image: "/images/recipes/meals/p15-pb-strawberry-overnight-oats.png",
     phase: "luteal",
     serves: 2,
     prepTime: "10 mins",
@@ -915,6 +927,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lemon-poppyseed-overnight-oats",
     name: "Lemon and Poppy Seed Overnight Oats",
+    image: "/images/recipes/meals/p15-lemon-poppyseed-overnight-oats.png",
     phase: "luteal",
     serves: 2,
     prepTime: "10 mins",
@@ -927,6 +940,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-apple-flaxseed-overnight-oats",
     name: "Apple and Flaxseed Overnight Oats",
+    image: "/images/recipes/meals/p15-apple-flaxseed-overnight-oats.png",
     phase: "luteal",
     serves: 2,
     prepTime: "10 mins",
@@ -939,6 +953,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-red-berry-overnight-oats",
     name: "Red Berry and Mixed Seed Overnight Oats",
+    image: "/images/recipes/meals/p15-red-berry-overnight-oats.png",
     phase: "luteal",
     serves: 2,
     prepTime: "10 mins",
@@ -951,6 +966,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-slow-cooked-chicken",
     name: "Slow-Cooked Shredded Chicken (Batch)",
+    image: "/images/recipes/meals/p15-slow-cooked-chicken.png",
     phase: "follicular",
     serves: 8,
     prepTime: "5 mins",
@@ -963,6 +979,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-slow-beef-mince-lentils",
     name: "Slow-Cooked Beef Mince and Lentils (Batch)",
+    image: "/images/recipes/meals/p15-slow-beef-mince-lentils.png",
     phase: "menstrual",
     serves: 8,
     prepTime: "5 mins",
@@ -975,6 +992,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-cashew-stew",
     name: "Spiced Chicken and Cashew Nut Stew",
+    image: "/images/recipes/meals/p15-chicken-cashew-stew.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -987,6 +1005,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chipotle-chicken-rice",
     name: "Chipotle Chicken with Rice",
+    image: "/images/recipes/meals/p15-chipotle-chicken-rice.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -999,6 +1018,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chipotle-chicken-wraps",
     name: "Chipotle Chicken Wraps",
+    image: "/images/recipes/meals/p15-chipotle-chicken-wraps.png",
     phase: "follicular",
     serves: 6,
     prepTime: "10 mins",
@@ -1011,6 +1031,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-red-lentil-soup",
     name: "Chicken and Red Lentil Soup",
+    image: "/images/recipes/meals/p15-chicken-red-lentil-soup.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -1023,6 +1044,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-pulled-pork-slaw",
     name: "Slow-Pulled Pork with Mustard Yoghurt Slaw",
+    image: "/images/recipes/meals/p15-pulled-pork-slaw.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 mins",
@@ -1035,6 +1057,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-leek-filo-pie",
     name: "Creamy Chicken and Leek Filo Pie",
+    image: "/images/recipes/meals/p15-chicken-leek-filo-pie.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -1047,6 +1070,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-beef-mince-veg-rice",
     name: "Beef Mince and Lentils with Roasted Vegetable Rice",
+    image: "/images/recipes/meals/p15-beef-mince-veg-rice.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -1059,6 +1083,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-mexican-beef-stew",
     name: "Mexican Beef and Kidney Bean Stew with Rice",
+    image: "/images/recipes/meals/p15-mexican-beef-stew.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -1071,6 +1096,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lamb-chickpea-tagine",
     name: "Lamb and Chickpea Tagine",
+    image: "/images/recipes/meals/p15-lamb-chickpea-tagine.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -1083,6 +1109,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lamb-lentil-coconut-curry",
     name: "Lamb and Lentil Coconut Curry with Rice",
+    image: "/images/recipes/meals/p15-lamb-lentil-coconut-curry.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",

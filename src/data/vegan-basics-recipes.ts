@@ -35,6 +35,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "chickpea-rice-salad",
     name: "Chickpea Rice Salad",
+    image: "/images/recipes/meals/chickpea-rice-salad.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -66,6 +67,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "chimichurri-black-bean-tacos",
     name: "Chimichurri Black Bean Tacos",
+    image: "/images/recipes/meals/chimichurri-black-bean-tacos.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -101,6 +103,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "chocolate-protein-fudge",
     name: "Chocolate Protein Fudge",
+    image: "/images/recipes/meals/chocolate-protein-fudge.png",
     phase: "luteal",
     serves: 8,
     prepTime: "10 min + 1 hr freeze",
@@ -159,6 +162,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "vegan-cottage-pie",
     name: "Vegan Cottage Pie",
+    image: "/images/recipes/meals/vegan-cottage-pie.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "1 hr",
@@ -192,6 +196,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "cranberry-walnut-chickpea-salad",
     name: "Cranberry, Walnut and Chickpea Salad",
+    image: "/images/recipes/meals/cranberry-walnut-chickpea-salad.png",
     phase: "luteal",
     serves: 1,
     prepTime: "10 min",
@@ -222,6 +227,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "curried-chickpea-sandwich",
     name: "Curried Chickpea Salad Sandwich",
+    image: "/images/recipes/meals/curried-chickpea-sandwich.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -282,6 +288,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "falafel-quinoa-avocado-bowl",
     name: "Falafel and Quinoa Bowl with Avocado Dressing",
+    image: "/images/recipes/meals/falafel-quinoa-avocado-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "20 min",
@@ -412,6 +419,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "kidney-bean-quesadilla",
     name: "Kidney Bean Melt Quesadilla",
+    image: "/images/recipes/meals/kidney-bean-quesadilla.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
@@ -439,6 +447,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "lemongrass-vegan-meatballs",
     name: "Lemongrass Vegan Meatballs in Red Thai Curry Sauce",
+    image: "/images/recipes/meals/lemongrass-vegan-meatballs.png",
     phase: "follicular",
     serves: 4,
     prepTime: "50 min",
@@ -475,6 +484,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "loaded-potatoes-mexican",
     name: "Mexican-Style Loaded Potatoes",
+    image: "/images/recipes/meals/loaded-potatoes-mexican.png",
     phase: "luteal",
     serves: 2,
     prepTime: "50 min",
@@ -510,6 +520,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "mexican-kidney-beans-rice",
     name: "Mexican Kidney Beans and Rice",
+    image: "/images/recipes/meals/mexican-kidney-beans-rice.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -601,6 +612,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "tempeh-roasted-potatoes",
     name: "One-Pan Tempeh and Roasted Potatoes",
+    image: "/images/recipes/meals/tempeh-roasted-potatoes.png",
     phase: "follicular",
     serves: 1,
     prepTime: "55 min",
