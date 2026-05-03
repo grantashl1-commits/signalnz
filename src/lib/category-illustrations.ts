@@ -149,6 +149,35 @@ const CATEGORY_ILLUSTRATIONS: { keywords: string[]; image: string }[] = [
     keywords: ["quinoa", "tabbouleh"],
     image: "/images/recipes/meals/quinoa-tabbouleh.png",
   },
+  // ── Meat & burger fallbacks (matched after more specific keywords above) ──
+  {
+    keywords: ["burger", "rissole", "patty", "smash"],
+    image: "/images/recipes/meals/kids-atk-smash-burgers.png",
+  },
+  {
+    keywords: ["roast chicken", "chicken thigh", "chicken breast", "chicken"],
+    image: "/images/recipes/meals/roast-chicken-roasted-veg.png",
+  },
+  {
+    keywords: ["fish pie"],
+    image: "/images/recipes/meals/kids-sp-fish-pie.png",
+  },
+  {
+    keywords: ["lamb kofta", "lamb cutlet", "lamb chop", "lamb"],
+    image: "/images/recipes/meals/kids-hp-lamb-kofta.png",
+  },
+  {
+    keywords: ["pulled pork", "san choy bau", "pork"],
+    image: "/images/recipes/meals/kids-hp-pork-san-choy-bau.png",
+  },
+  {
+    keywords: ["meatball", "beef stroganoff", "beef stew", "beef mince", "beef"],
+    image: "/images/recipes/meals/kids-beef-meatballs.png",
+  },
+  {
+    keywords: ["dumpling", "san choy", "stir fry", "stir-fry"],
+    image: "/images/recipes/meals/kids-pork-stir-fry.png",
+  },
 ];
 
 // TCM & Ayurveda recipe-specific illustrations
