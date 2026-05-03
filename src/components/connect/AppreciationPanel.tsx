@@ -70,9 +70,10 @@ export default function AppreciationPanel({ connectionId, senderRole, onSent }: 
         },
       });
       setSent((prev) => new Set(prev).add(phrase.id));
-      toast.success("Sent", {
+      toast.success("Sent — view in Shared", {
         icon: <YochSentHeart className="w-5 h-5 text-primary" />,
       });
+      onSent?.();
     } catch {
       toast.error("Couldn't send — try again");
     }
