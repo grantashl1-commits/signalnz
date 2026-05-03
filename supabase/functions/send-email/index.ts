@@ -6,6 +6,11 @@ import {
   renewalEmail,
   planChangedEmail,
   cancellationEmail,
+  dripCycleSyncingEmail,
+  dripFeedYourMindEmail,
+  dripJournalEmail,
+  dripParentingEmail,
+  dripOneMonthEmail,
 } from "./templates.ts";
 
 const corsHeaders = {
@@ -83,6 +88,21 @@ serve(async (req) => {
         break;
       case "cancelled":
         template = cancellationEmail(tier ?? "rooted", endDate ?? "", name);
+        break;
+      case "drip_cycle":
+        template = dripCycleSyncingEmail(name);
+        break;
+      case "drip_feed":
+        template = dripFeedYourMindEmail(name);
+        break;
+      case "drip_journal":
+        template = dripJournalEmail(name);
+        break;
+      case "drip_parenting":
+        template = dripParentingEmail(name);
+        break;
+      case "drip_one_month":
+        template = dripOneMonthEmail(name);
         break;
       default:
         return new Response(JSON.stringify({ error: `Unknown email type: ${type}` }), {
