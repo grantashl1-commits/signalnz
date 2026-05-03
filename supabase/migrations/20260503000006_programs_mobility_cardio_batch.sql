@@ -1,7 +1,7 @@
 -- Mobility, Cardio, Yoga, HIIT, and Mind-Body programs batch:
 -- Ashtanga Yoga, Relax into Stretch, Stretching Essentials, Somatic Exercise,
 -- The Shaolin Workout, The Female Body Bible, The Maffetone Method,
--- Total Heart Rate Training, BBG 1.0 (Kayla Itsines)
+-- Total Heart Rate Training, 28-Minute Women's HIIT Circuit Level 1
 
 -- ── EXERCISES ────────────────────────────────────────────────────────────────
 INSERT INTO exercises (id, name, body_part, target, category, difficulty, equipment, primary_muscles, secondary_muscles, is_low_impact, instructions, cues)
@@ -380,18 +380,18 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- ══════════════════════════════════════════════════════════════════
--- PROGRAM 9: BBG 1.0 — Kayla Itsines (Weeks Pre-1 to 12)
+-- PROGRAM 9: 28-Minute Women's HIIT Circuit — Level 1 (Beginner)
 -- ══════════════════════════════════════════════════════════════════
 INSERT INTO training_programs (id, title, goal_category_id, duration_weeks, sessions_per_week, intensity_level, equipment_needed, tags, description, who_its_for, evidence_basis)
 VALUES (
   'prog-bbg-1',
-  'BBG 1.0 — Bikini Body Guide (Weeks Pre-1 to 12)',
+  '28-Minute Women''s HIIT Circuit — Level 1 (Beginner)',
   'gc-002',
   14, 3, 6,
   ARRAY['bodyweight','bench','skipping rope','medicine ball'],
-  ARRAY['hiit','circuit','women','fat loss','bbg','kayla itsines','legs','arms','abs'],
-  'Kayla Itsines'' original Bikini Body Guide. AMRAP-style 28-minute circuits (4 × 7 min) done 3 days per week: Legs & Cardio on Monday, Arms & Abs on Wednesday, optional Full Body on Friday. Starts with a 2-week pre-training block before the 12-week main program.',
-  'Women looking for a high-intensity circuit training program they can do at home or in a gym with minimal equipment.',
+  ARRAY['hiit','circuit','women','fat loss','beginners','legs','arms','abs'],
+  'AMRAP-style 28-minute circuits (4 × 7 min) done 3 days per week: Legs & Cardio on Monday, Arms & Abs on Wednesday, optional Full Body on Friday. Starts with a 2-week pre-training block before the 12-week main program. Each 7-minute circuit is repeated twice with short rest between rounds.',
+  'Women new to high-intensity training who want a structured circuit program they can do at home or in a gym with minimal equipment.',
   'High-intensity resistance training (HIRT) with circuit format for cardiovascular and strength adaptation. Each circuit is repeated twice in AMRAP format within a 7-minute window.'
 )
 ON CONFLICT (id) DO NOTHING;
