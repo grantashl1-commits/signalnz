@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen, Dumbbell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
 import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
+import type { Workout } from "@/data/workouts";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
@@ -51,6 +52,28 @@ const QUICK_WORKOUTS: QuickWorkout[] = [
   { id: "rehab-lower", title: "Lower Body Rehab", description: "Knee, hip and ankle physiotherapy", duration: "20 min", intensity: "low", bodyFilter: "rehabilitation", exerciseFilters: { bodyParts: ["quadriceps", "hamstrings", "glutes", "calves", "adductors"], categories: ["rehabilitation"], limit: 8 } },
   { id: "rehab-back", title: "Back & Core Rehab", description: "Spinal stability and core activation", duration: "20 min", intensity: "low", bodyFilter: "rehabilitation", exerciseFilters: { bodyParts: ["lower back", "abdominals"], categories: ["rehabilitation"], limit: 8 } },
 ];
+
+// Tag each Stacy Sims workout with the body region it primarily targets so
+// the "All / Upper / Lower / Full Body / Rehabilitation" filter works on them.
+const SS_BODY_FILTER: Record<string, BodyFilter> = {
+  "ss-sit-protocols": "full-body",
+  "ss-pelvic-floor": "rehabilitation",
+  "ss-heavy-lifting": "full-body",
+  "ss-plyo-beginner": "lower",
+  "ss-plyo-intermediate": "lower",
+  "ss-plyo-advanced": "lower",
+  "ss-foam-rolling": "rehabilitation",
+  "ss-mobility": "rehabilitation",
+  "ss-core-stability": "full-body",
+  "ss-pep-plan": "rehabilitation",
+  "ss-roar-foam-rolling": "rehabilitation",
+  "ss-roar-bw-power": "full-body",
+  "ss-roar-plyo-power": "lower",
+  "ss-roar-mb-power": "full-body",
+  "ss-roar-kb-power": "full-body",
+  "ss-hiit-protocol": "full-body",
+  "ss-sit-roar": "full-body",
+};
 
 const INTENSITY_COLORS: Record<string, string> = {
   low: "text-emerald-500",
@@ -109,10 +132,24 @@ export default function LibraryTab() {
     return result;
   }, [exercises, filter, search]);
 
+  type UnifiedWorkout =
+    | { kind: "quick"; data: QuickWorkout; bodyFilter: BodyFilter }
+    | { kind: "ss"; data: Workout; bodyFilter: BodyFilter };
+
+  const allWorkouts: UnifiedWorkout[] = useMemo(() => {
+    const quick: UnifiedWorkout[] = QUICK_WORKOUTS.map(w => ({
+      kind: "quick", data: w, bodyFilter: w.bodyFilter,
+    }));
+    const ss: UnifiedWorkout[] = STACY_SIMS_WORKOUTS.map(w => ({
+      kind: "ss", data: w, bodyFilter: SS_BODY_FILTER[w.id] || "full-body",
+    }));
+    return [...quick, ...ss];
+  }, []);
+
   const filteredWorkouts = useMemo(() => {
-    if (filter === "all") return QUICK_WORKOUTS;
-    return QUICK_WORKOUTS.filter(w => w.bodyFilter === filter);
-  }, [filter]);
+    if (filter === "all") return allWorkouts;
+    return allWorkouts.filter(w => w.bodyFilter === filter);
+  }, [filter, allWorkouts]);
 
   const loadWorkoutExercises = async (workout: QuickWorkout) => {
     if (workoutExercises[workout.id]) return;
@@ -346,182 +383,200 @@ export default function LibraryTab() {
           )}
         </div>
       ) : (
-        <div className="space-y-3">
-          {filteredWorkouts.map((w, i) => {
-            const expanded = expandedWorkout === w.id;
-            const wExercises = workoutExercises[w.id] || [];
-            return (
-              <motion.div
-                key={w.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
-                className="overflow-hidden rounded-xl border border-border bg-card"
-              >
-                <button
-                  onClick={() => handleExpandWorkout(w)}
-                  className="flex w-full items-center gap-3 p-4 text-left"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-display text-sm font-bold text-foreground">{w.title}</h3>
-                      <span className={`font-body text-[9px] uppercase tracking-wider ${INTENSITY_COLORS[w.intensity]}`}>
-                        {w.intensity}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 font-body text-xs text-muted-foreground">{w.description}</p>
-                  </div>
-                  <span className="shrink-0 font-body text-xs text-muted-foreground">{w.duration}</span>
-                  <ChevronRight className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${expanded ? "rotate-90" : ""}`} />
-                </button>
-                {expanded && (
-                  <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
-                    {wExercises.length === 0 ? (
-                      <div className="flex items-center justify-center py-4">
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="space-y-1.5">
-                          {wExercises.map(ex => {
-                            const rx = getExercisePrescription(w.intensity, ex.category);
-                            return (
-                              <div key={ex.id} className="flex items-center gap-2.5 rounded-xl bg-secondary/50 p-2">
-                                <ExerciseDemonstration
-                                  exerciseName={ex.name}
-                                  imageUrl={ex.illustration_url}
-                                  size={36}
-                                  className="shrink-0 rounded-lg"
-                                />
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate font-body text-sm text-foreground">{ex.name}</p>
-                                  <div className="flex gap-2 mt-0.5">
-                                    <span className="font-body text-[10px] text-primary font-medium">
-                                      {rx.sets} × {rx.reps}
-                                    </span>
-                                    {rx.rest !== "—" && (
-                                      <span className="font-body text-[10px] text-muted-foreground">Rest {rx.rest}</span>
-                                    )}
-                                  </div>
-                                  {ex.target && (
-                                    <span className="font-body text-[9px] text-muted-foreground">{ex.target}</span>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+        <div className="space-y-2">
+          {filteredWorkouts.length === 0 && (
+            <p className="py-8 text-center font-body text-sm text-muted-foreground">
+              No workouts in this category.
+            </p>
+          )}
 
-                        {/* Start Workout button */}
-                        <button
-                          onClick={() => {
-                            haptic("medium");
-                            setActiveSession({ workout: w, exercises: wExercises });
-                          }}
-                          className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-primary-foreground font-body text-sm font-semibold transition-colors hover:bg-primary/90"
-                        >
-                          <Play className="h-4 w-4" />
-                          Start Workout
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {filteredWorkouts.map((uw, i) => {
+              const isQuick = uw.kind === "quick";
+              const id = isQuick ? uw.data.id : uw.data.id;
+              const title = isQuick ? uw.data.title : uw.data.name;
+              const description = isQuick ? uw.data.description : uw.data.description;
+              const duration = isQuick ? uw.data.duration : uw.data.duration;
+              const intensity = isQuick
+                ? uw.data.intensity
+                : uw.data.category === "walk-restore" ? "low" : "moderate";
+              const expanded = isQuick
+                ? expandedWorkout === id
+                : expandedSSId === id;
+              const wExercises = isQuick ? (workoutExercises[id] || []) : [];
+              const isSource = !isQuick;
 
-          {/* ── Source: Stacy Sims (ROAR / Next Level) ────────────────── */}
-          <div className="pt-4 mt-2">
-            <div className="flex items-center gap-2 mb-3 px-1">
-              <BookOpen className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="font-hand text-[11px] tracking-wide uppercase text-muted-foreground">
-                Source · Dr. Stacy Sims — ROAR & Next Level
-              </span>
-            </div>
-            <div className="space-y-2">
-              {STACY_SIMS_WORKOUTS.map((sw, i) => {
-                const expanded = expandedSSId === sw.id;
-                const intensity = sw.category === "walk-restore" ? "low" : "moderate";
-                return (
-                  <motion.div
-                    key={sw.id}
+              return (
+                <React.Fragment key={`${uw.kind}-${id}`}>
+                  <motion.button
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.03, 0.4) }}
-                    className="overflow-hidden rounded-xl border border-primary/15 bg-primary/[0.03]"
-                  >
-                    <button
-                      onClick={() => {
-                        haptic("light");
+                    onClick={() => {
+                      haptic("light");
+                      if (isQuick) {
+                        handleExpandWorkout(uw.data);
+                      } else {
                         if (!expanded && !guardExpand()) return;
-                        setExpandedSSId(expanded ? null : sw.id);
-                      }}
-                      className="flex w-full items-center gap-3 p-3.5 text-left"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-display text-sm font-bold text-foreground">{sw.name}</h3>
-                          <span className={`font-body text-[9px] uppercase tracking-wider ${INTENSITY_COLORS[intensity]}`}>
-                            {sw.equipment}
-                          </span>
-                        </div>
-                        <p className="mt-0.5 font-body text-xs text-muted-foreground line-clamp-2">{sw.description}</p>
-                      </div>
-                      <span className="shrink-0 font-body text-xs text-muted-foreground">{sw.duration}</span>
-                      <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${expanded ? "rotate-180" : ""}`} />
-                    </button>
-
-                    <AnimatePresence initial={false}>
-                      {expanded && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="border-t border-primary/15 px-4 pb-4 pt-3 space-y-3">
-                            {sw.progressionNotes && sw.progressionNotes.length > 0 && (
-                              <div>
-                                <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Progression</p>
-                                <ul className="space-y-1">
-                                  {sw.progressionNotes.map((note, idx) => (
-                                    <li key={idx} className="flex gap-1.5 font-body text-xs text-foreground/80">
-                                      <span className="text-primary">•</span>
-                                      <span>{note}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1.5">Exercises</p>
-                              <div className="space-y-2">
-                                {sw.exercises.map((ex, idx) => (
-                                  <div key={idx} className="rounded-lg bg-card/60 p-2.5">
-                                    <div className="flex items-baseline justify-between gap-2 flex-wrap">
-                                      <p className="font-body text-sm font-medium text-foreground">{ex.name}</p>
-                                      <span className="font-body text-[10px] text-primary font-medium">
-                                        {[ex.sets && `${ex.sets} sets`, ex.reps, ex.duration].filter(Boolean).join(" · ")}
-                                      </span>
-                                    </div>
-                                    {ex.section && (
-                                      <p className="mt-0.5 font-body text-[9px] uppercase tracking-wider text-muted-foreground">{ex.section}</p>
-                                    )}
-                                    <p className="mt-1 font-body text-xs text-foreground/75 leading-relaxed">{ex.formCue}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
+                        setExpandedSSId(expanded ? null : id);
+                      }
+                    }}
+                    className={`relative flex flex-col items-start text-left rounded-xl border p-3 min-h-[140px] transition-all hover:shadow-md ${
+                      isSource
+                        ? "border-primary/20 bg-primary/[0.04]"
+                        : "border-border bg-card"
+                    } ${expanded ? "ring-2 ring-primary/40" : ""}`}
+                  >
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      {isSource ? (
+                        <BookOpen className="h-3 w-3 text-primary/70 shrink-0" />
+                      ) : (
+                        <Dumbbell className="h-3 w-3 text-primary/70 shrink-0" />
                       )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
-            </div>
+                      <span className={`font-body text-[8px] uppercase tracking-wider font-bold ${INTENSITY_COLORS[intensity] || "text-muted-foreground"}`}>
+                        {intensity}
+                      </span>
+                    </div>
+                    <h3 className="font-display text-sm font-bold text-foreground leading-tight line-clamp-2">
+                      {title}
+                    </h3>
+                    <p className="mt-1 font-body text-[10px] text-muted-foreground line-clamp-2 flex-1">
+                      {description}
+                    </p>
+                    <div className="mt-2 flex items-center gap-1.5 w-full">
+                      <span className="font-body text-[10px] text-foreground/70">{duration}</span>
+                      <span className="font-body text-[9px] uppercase tracking-wider text-muted-foreground/70 capitalize ml-auto">
+                        {uw.bodyFilter.replace("-", " ")}
+                      </span>
+                      <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
+                    </div>
+                  </motion.button>
+
+                  <AnimatePresence initial={false}>
+                    {expanded && (
+                      <motion.div
+                        key={`exp-${uw.kind}-${id}`}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="col-span-2 md:col-span-3 lg:col-span-4 overflow-hidden"
+                      >
+                        <div className={`rounded-xl border p-4 space-y-3 ${
+                          isSource
+                            ? "border-primary/20 bg-primary/[0.04]"
+                            : "border-border bg-secondary/30"
+                        }`}>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h4 className="font-display text-base font-bold text-foreground">{title}</h4>
+                              <p className="font-body text-xs text-muted-foreground mt-0.5">{description}</p>
+                            </div>
+                            <span className="shrink-0 font-body text-xs text-muted-foreground">{duration}</span>
+                          </div>
+
+                          {isQuick && wExercises.length === 0 && (
+                            <div className="flex items-center justify-center py-4">
+                              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                            </div>
+                          )}
+
+                          {isQuick && wExercises.length > 0 && (
+                            <>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                                {wExercises.map(ex => {
+                                  const rx = getExercisePrescription(uw.data.intensity, ex.category);
+                                  return (
+                                    <div key={ex.id} className="flex items-center gap-2.5 rounded-xl bg-card p-2">
+                                      <ExerciseDemonstration
+                                        exerciseName={ex.name}
+                                        imageUrl={ex.illustration_url}
+                                        size={36}
+                                        className="shrink-0 rounded-lg"
+                                      />
+                                      <div className="min-w-0 flex-1">
+                                        <p className="truncate font-body text-sm text-foreground">{ex.name}</p>
+                                        <div className="flex gap-2 mt-0.5">
+                                          <span className="font-body text-[10px] text-primary font-medium">
+                                            {rx.sets} × {rx.reps}
+                                          </span>
+                                          {rx.rest !== "—" && (
+                                            <span className="font-body text-[10px] text-muted-foreground">Rest {rx.rest}</span>
+                                          )}
+                                        </div>
+                                        {ex.target && (
+                                          <span className="font-body text-[9px] text-muted-foreground">{ex.target}</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              <button
+                                onClick={() => {
+                                  haptic("medium");
+                                  setActiveSession({ workout: uw.data, exercises: wExercises });
+                                }}
+                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-primary-foreground font-body text-sm font-semibold transition-colors hover:bg-primary/90"
+                              >
+                                <Play className="h-4 w-4" />
+                                Start Workout
+                              </button>
+                            </>
+                          )}
+
+                          {!isQuick && (
+                            <>
+                              <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <BookOpen className="h-3 w-3" />
+                                <span className="font-hand">Source · Dr. Stacy Sims — ROAR & Next Level</span>
+                              </div>
+                              {uw.data.equipment && (
+                                <p className="font-body text-[11px] text-muted-foreground">
+                                  Equipment: <span className="text-foreground">{uw.data.equipment}</span>
+                                </p>
+                              )}
+                              {uw.data.progressionNotes && uw.data.progressionNotes.length > 0 && (
+                                <div>
+                                  <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Progression</p>
+                                  <ul className="space-y-1">
+                                    {uw.data.progressionNotes.map((note, idx) => (
+                                      <li key={idx} className="flex gap-1.5 font-body text-xs text-foreground/80">
+                                        <span className="text-primary">•</span>
+                                        <span>{note}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              <div>
+                                <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1.5">Exercises</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  {uw.data.exercises.map((ex, idx) => (
+                                    <div key={idx} className="rounded-lg bg-card/80 p-2.5">
+                                      <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                                        <p className="font-body text-sm font-medium text-foreground">{ex.name}</p>
+                                        <span className="font-body text-[10px] text-primary font-medium">
+                                          {[ex.sets && `${ex.sets} sets`, ex.reps, ex.duration].filter(Boolean).join(" · ")}
+                                        </span>
+                                      </div>
+                                      {ex.section && (
+                                        <p className="mt-0.5 font-body text-[9px] uppercase tracking-wider text-muted-foreground">{ex.section}</p>
+                                      )}
+                                      <p className="mt-1 font-body text-xs text-foreground/75 leading-relaxed">{ex.formCue}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
       )}
