@@ -507,7 +507,10 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         {messages.map((m) => {
           const isMe = m.user === "You";
           const dbRow = rows.find((r) => r.id === m.id);
-          const media = localMedia[m.id];
+          const dbType = dbRow?.message_type;
+          const mediaUrl = mediaUrls[m.id];
+          const isImage = dbType === "image";
+          const isVoice = dbType === "voice";
           return (
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
               {!isMe && (
@@ -523,70 +526,78 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "text" && (
                   <div className={`px-3.5 py-2.5 shadow-sm ${isMe ? "bg-primary rounded-[14px_14px_4px_14px]" : "bg-card border border-border rounded-[14px_14px_14px_4px]"}`}>
-                    {media?.imageUrl && (
-                      <img src={media.imageUrl} alt="Shared" className="rounded-lg mb-1.5 max-w-[200px]" loading="lazy" />
-                    )}
-                    {media?.audioUrl ? (
-                      <audio src={media.audioUrl} controls className="max-w-[200px] h-8" />
+                    {isImage ? (
+                      mediaUrl ? (
+                        <img src={mediaUrl} alt="Shared" className="rounded-lg max-w-[200px]" loading="lazy" />
+                      ) : (
+                        <span className={`font-body text-[11px] ${isMe ? "text-primary-foreground/70" : "text-muted-foreground"}`}>Loading image…</span>
+                      )
+                    ) : isVoice ? (
+                      mediaUrl ? (
+                        <audio src={mediaUrl} controls className="max-w-[220px] h-8" />
+                      ) : (
+                        <span className={`font-body text-[11px] ${isMe ? "text-primary-foreground/70" : "text-muted-foreground"}`}>Loading voice note…</span>
+                      )
                     ) : (
                       <span className={`font-display text-sm italic leading-relaxed ${isMe ? "text-primary-foreground" : "text-foreground"}`}>{m.text}</span>
                     )}
                   </div>
                 )}
 
-                {m.type === "poll" && (
-                  <div className="card-warm p-3.5 min-w-[210px] w-full">
-                    <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
-                      <HandDrawnChart size={12} color="hsl(var(--primary))" /> poll
-                    </p>
-                    <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
-                    {m.options?.map((opt, i) => {
-                      const total = (m.votes || []).reduce((a, b) => a + b, 0);
-                      const pct = total ? Math.round(((m.votes?.[i] || 0) / total) * 100) : 0;
-                      const hasVoted = voted[m.id] !== undefined;
-                      const myVote = voted[m.id] === i;
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            if (hasVoted) return;
-                            setVoted((v) => ({ ...v, [m.id]: i }));
-                            setRows((rs) => rs.map((r) => {
-                              if (r.id !== m.id) return r;
-                              const cur = Array.isArray(r.metadata?.votes) ? r.metadata.votes : (r.metadata?.options || []).map(() => 0);
-                              const nextVotes = cur.map((v: number, vi: number) => vi === i ? v + 1 : v);
-                              return { ...r, metadata: { ...(r.metadata || {}), votes: nextVotes } };
-                            }));
-                          }}
-                          className={`touch-btn flex items-center w-full mb-1 px-2.5 py-2 rounded-lg border relative overflow-hidden transition-all ${
-                            myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card active:bg-secondary/50"
-                          }`}
-                        >
-                          {hasVoted && <div className="absolute left-0 top-0 bottom-0 bg-primary/10 rounded-lg" style={{ width: `${pct}%` }} />}
-                          <span className="font-display text-[13px] italic text-foreground flex-1 relative text-left">{opt}</span>
-                          {hasVoted && <span className="font-body text-[11px] text-muted-foreground relative">{pct}%</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+                {m.type === "poll" && (() => {
+                  const v = votes[m.id] ?? { tallies: (m.options || []).map(() => 0) };
+                  const total = v.tallies.reduce((a, b) => a + b, 0);
+                  const hasVoted = v.myChoice !== undefined;
+                  return (
+                    <div className="card-warm p-3.5 min-w-[210px] w-full">
+                      <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
+                        <HandDrawnChart size={12} color="hsl(var(--primary))" /> poll
+                      </p>
+                      <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
+                      {m.options?.map((opt, i) => {
+                        const pct = total ? Math.round(((v.tallies[i] || 0) / total) * 100) : 0;
+                        const myVote = v.myChoice === i;
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => castVote(m.id, i)}
+                            disabled={hasVoted}
+                            className={`touch-btn flex items-center w-full mb-1 px-2.5 py-2 rounded-lg border relative overflow-hidden transition-all ${
+                              myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card active:bg-secondary/50"
+                            }`}
+                          >
+                            {hasVoted && <div className="absolute left-0 top-0 bottom-0 bg-primary/10 rounded-lg" style={{ width: `${pct}%` }} />}
+                            <span className="font-display text-[13px] italic text-foreground flex-1 relative text-left">{opt}</span>
+                            {hasVoted && <span className="font-body text-[11px] text-muted-foreground relative">{pct}%</span>}
+                          </button>
+                        );
+                      })}
+                      {hasVoted && (
+                        <p className="font-body text-[10px] text-muted-foreground mt-1">{total} {total === 1 ? "vote" : "votes"}</p>
+                      )}
+                    </div>
+                  );
+                })()}
 
-                {m.type === "event" && (
-                  <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
-                    <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
-                      <HandDrawnCalendar size={12} color="hsl(var(--primary))" /> event
-                    </p>
-                    <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
-                    {m.date && <p className="font-body text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
-                    {m.location && <p className="font-body text-[11px] text-muted-foreground mb-2">{m.location}</p>}
-                    <button
-                      onClick={() => toggleRSVP(m.id)}
-                      className="touch-btn font-display text-[13px] italic rounded-full px-4 py-2 bg-primary text-primary-foreground"
-                    >
-                      {rsvpd.has(m.id) ? `✓ Going (${m.going})` : `I'm going (${m.going})`}
-                    </button>
-                  </div>
-                )}
+                {m.type === "event" && (() => {
+                  const r = rsvps[m.id] ?? { mine: false, count: 0 };
+                  return (
+                    <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
+                      <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
+                        <HandDrawnCalendar size={12} color="hsl(var(--primary))" /> event
+                      </p>
+                      <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
+                      {m.date && <p className="font-body text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
+                      {m.location && <p className="font-body text-[11px] text-muted-foreground mb-2">{m.location}</p>}
+                      <button
+                        onClick={() => toggleRSVP(m.id)}
+                        className="touch-btn font-display text-[13px] italic rounded-full px-4 py-2 bg-primary text-primary-foreground"
+                      >
+                        {r.mine ? `✓ Going (${r.count})` : `I'm going (${r.count})`}
+                      </button>
+                    </div>
+                  );
+                })()}
 
                 {isMe && <span className="font-body text-[10px] text-muted-foreground mt-0.5">{m.time}</span>}
               </div>
