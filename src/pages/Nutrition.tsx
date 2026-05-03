@@ -14,6 +14,7 @@ import { Dumbbell, ArrowRight } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
+import MyRecipesTab from "@/components/nutrition/MyRecipesTab";
 
 class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, { error: Error | null }> {
   state = { error: null };
@@ -37,7 +38,7 @@ class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, {
   }
 }
 
-type TabId = "today" | "myweek" | "discover" | "supplements" | "shop";
+type TabId = "today" | "myweek" | "discover" | "myrecipes" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
@@ -60,6 +61,7 @@ export default function NutritionPage() {
     { id: "today", label: "Today" },
     { id: "myweek", label: "My Week" },
     { id: "discover", label: "Discover" },
+    { id: "myrecipes", label: "My Recipes" },
     { id: "supplements", label: "Supplements" },
     { id: "shop", label: "Shop" },
   ];
@@ -116,6 +118,7 @@ export default function NutritionPage() {
           {activeTab === "today" && <TabErrorBoundary tab="Today"><TodayTab /></TabErrorBoundary>}
           {activeTab === "myweek" && <TabErrorBoundary tab="My Week"><MyWeekTab /></TabErrorBoundary>}
           {activeTab === "discover" && <TabErrorBoundary tab="Discover"><DiscoverTab /></TabErrorBoundary>}
+          {activeTab === "myrecipes" && <TabErrorBoundary tab="My Recipes"><MyRecipesTab /></TabErrorBoundary>}
           {activeTab === "supplements" && <TabErrorBoundary tab="Supplements"><SupplementRecommender /></TabErrorBoundary>}
           {activeTab === "shop" && <TabErrorBoundary tab="Shop"><ShoppingListPanel /></TabErrorBoundary>}
         </div>

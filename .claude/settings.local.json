@@ -39,7 +39,17 @@
       "WebFetch(domain:developer.signalwire.com)",
       "Bash(npm install *)",
       "mcp__claude_ai_Airtable__list_bases",
-      "mcp__claude_ai_Airtable__create_table"
+      "mcp__claude_ai_Airtable__create_table",
+      "Bash(dir /b *.json)",
+      "Bash(dir /b /s src)",
+      "Bash(dir src *)",
+      "Bash(powershell -Command \"Expand-Archive -Path 'done-&-dusted.zip' -DestinationPath 'done-and-dusted-extracted' -Force\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\grant\\\\Downloads\\\\done-and-dusted-extracted\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(Head -50)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\grant\\\\OneDrive\\\\Documents\\\\GitHub\\\\signalnz\\\\src\\\\pages\" -Recurse -File)",
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(findstr /i \"parent\")"
     ]
   }
 }
