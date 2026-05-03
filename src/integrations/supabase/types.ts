@@ -1931,17 +1931,58 @@ export type Database = {
         }
         Relationships: []
       }
+      parenting_chore_completions: {
+        Row: {
+          child_id: string
+          chore_id: string
+          completed_date: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          child_id: string
+          chore_id: string
+          completed_date?: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          child_id?: string
+          chore_id?: string
+          completed_date?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parenting_chore_completions_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "parenting_children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parenting_chore_completions_chore_id_fkey"
+            columns: ["chore_id"]
+            isOneToOne: false
+            referencedRelation: "parenting_chores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parenting_chores: {
         Row: {
           active: boolean
           category: string
           child_id: string | null
+          color: string | null
           created_at: string
           icon: string | null
           id: string
           image_url: string | null
           name: string
           points: number
+          recurrence: string
           sort_order: number
           user_id: string
         }
@@ -1949,12 +1990,14 @@ export type Database = {
           active?: boolean
           category?: string
           child_id?: string | null
+          color?: string | null
           created_at?: string
           icon?: string | null
           id?: string
           image_url?: string | null
           name: string
           points?: number
+          recurrence?: string
           sort_order?: number
           user_id: string
         }
@@ -1962,12 +2005,14 @@ export type Database = {
           active?: boolean
           category?: string
           child_id?: string | null
+          color?: string | null
           created_at?: string
           icon?: string | null
           id?: string
           image_url?: string | null
           name?: string
           points?: number
+          recurrence?: string
           sort_order?: number
           user_id?: string
         }
