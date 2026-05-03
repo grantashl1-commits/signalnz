@@ -31,9 +31,9 @@ supabase secrets set CRON_SECRET=<generate a random 32-char string>
 supabase secrets set RESEND_WEBHOOK_SECRET=whsec_xxxxx
 ```
 
-After setting CRON_SECRET, update the pg_cron setting in Supabase SQL editor:
+After setting CRON_SECRET, store it in Supabase Vault via SQL editor:
 ```sql
-ALTER DATABASE postgres SET "app.settings.cron_secret" = '<your CRON_SECRET value>';
+SELECT vault.create_secret('your-cron-secret-value', 'cron_secret');
 ```
 
 ## Environment variables (.env — never commit this file)
