@@ -53,6 +53,28 @@ const QUICK_WORKOUTS: QuickWorkout[] = [
   { id: "rehab-back", title: "Back & Core Rehab", description: "Spinal stability and core activation", duration: "20 min", intensity: "low", bodyFilter: "rehabilitation", exerciseFilters: { bodyParts: ["lower back", "abdominals"], categories: ["rehabilitation"], limit: 8 } },
 ];
 
+// Tag each Stacy Sims workout with the body region it primarily targets so
+// the "All / Upper / Lower / Full Body / Rehabilitation" filter works on them.
+const SS_BODY_FILTER: Record<string, BodyFilter> = {
+  "ss-sit-protocols": "full-body",
+  "ss-pelvic-floor": "rehabilitation",
+  "ss-heavy-lifting": "full-body",
+  "ss-plyo-beginner": "lower",
+  "ss-plyo-intermediate": "lower",
+  "ss-plyo-advanced": "lower",
+  "ss-foam-rolling": "rehabilitation",
+  "ss-mobility": "rehabilitation",
+  "ss-core-stability": "full-body",
+  "ss-pep-plan": "rehabilitation",
+  "ss-roar-foam-rolling": "rehabilitation",
+  "ss-roar-bw-power": "full-body",
+  "ss-roar-plyo-power": "lower",
+  "ss-roar-mb-power": "full-body",
+  "ss-roar-kb-power": "full-body",
+  "ss-hiit-protocol": "full-body",
+  "ss-sit-roar": "full-body",
+};
+
 const INTENSITY_COLORS: Record<string, string> = {
   low: "text-emerald-500",
   moderate: "text-amber-500",
