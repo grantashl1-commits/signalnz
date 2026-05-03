@@ -162,6 +162,22 @@ function AddModal({ editing, onClose, onSave }: AddModalProps) {
       const { data, error } = await supabase.functions.invoke("recipe-from-url", {
         body: { url: urlInput.trim(), userIdentifier: user?.id },
       });
+      // Try to surface the friendly error message from the function body
+      const friendlyError =
+        (data && typeof data === "object" && "error" in data ? (data as any).error : null) ||
+        ((error as any)?.context?.body && (() => {
+          try {
+            const parsed = JSON.parse((error as any).context.body);
+            return parsed?.error;
+          } catch { return null; }
+        })());
+
+      if (friendlyError) {
+        toast.error(friendlyError === "No recipe found on this page"
+          ? "No recipe found on that page — try a direct link to a single recipe."
+          : friendlyError);
+        return;
+      }
       if (error) throw error;
       if (data?.recipe) {
         fillForm(data.recipe);
