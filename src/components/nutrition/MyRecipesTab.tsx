@@ -532,7 +532,7 @@ export default function MyRecipesTab() {
   const [editingRecipe, setEditingRecipe] = useState<UserRecipe | null>(null);
 
   const handleDelete = async (id: string) => {
-    haptic("heavy");
+    haptic("medium");
     try {
       await deleteRecipe(id);
       setSelectedRecipe(null);
