@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { Moon, Pause, Play, RotateCcw } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 
 const PRESETS = [
@@ -15,15 +15,9 @@ const PRESETS = [
 interface SleepTimerProps {
   /** Called when the timer reaches zero */
   onTimerEnd?: () => void;
-  /** Whether background music is playing */
-  musicPlaying?: boolean;
-  /** Toggle background music */
-  onToggleMusic?: () => void;
-  /** Whether music is loading */
-  musicLoading?: boolean;
 }
 
-export default function SleepTimer({ onTimerEnd, musicPlaying, onToggleMusic, musicLoading }: SleepTimerProps) {
+export default function SleepTimer({ onTimerEnd }: SleepTimerProps) {
   const [selectedSeconds, setSelectedSeconds] = useState<number | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [running, setRunning] = useState(false);
