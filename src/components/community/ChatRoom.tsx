@@ -76,6 +76,33 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
   const myInitials = useMemo(() => initialsFrom(myDisplayName, "ME"), [myDisplayName]);
 
+  // Helpers to fold raw vote/RSVP rows into our state shape
+  const applyVoteRows = (
+    rowsIn: Array<{ message_id: string; user_id: string; option_index: number }>,
+    optionCounts: Record<string, number>
+  ) => {
+    const next: Record<string, { myChoice?: number; tallies: number[] }> = {};
+    for (const v of rowsIn) {
+      const optsLen = optionCounts[v.message_id] ?? 0;
+      const cur = next[v.message_id] ?? { tallies: new Array(optsLen).fill(0) };
+      // grow tallies if needed
+      while (cur.tallies.length <= v.option_index) cur.tallies.push(0);
+      cur.tallies[v.option_index] = (cur.tallies[v.option_index] ?? 0) + 1;
+      if (v.user_id === user?.id) cur.myChoice = v.option_index;
+      next[v.message_id] = cur;
+    }
+    return next;
+  };
+
+  // Resolve signed URL for a media message and cache it
+  const resolveMediaUrl = async (msgId: string, path: string) => {
+    if (!path) return;
+    const { data } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrl(path, 60 * 60);
+    if (data?.signedUrl) {
+      setMediaUrls((prev) => (prev[msgId] ? prev : { ...prev, [msgId]: data.signedUrl }));
+    }
+  };
+
   // Load history + subscribe to realtime
   useEffect(() => {
     if (!group.id) return;
@@ -83,7 +110,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
     (async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data: msgs, error } = await supabase
         .from("community_messages")
         .select("id, user_id, group_id, content, message_type, metadata, created_at, is_removed")
         .eq("group_id", group.id)
@@ -91,11 +118,57 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         .order("created_at", { ascending: true })
         .limit(200);
       if (cancelled) return;
-      if (!error && data) {
-        setRows(data as DBMessage[]);
-        await hydrateAuthors(data.map((d) => d.user_id));
+      if (error || !msgs) { setLoading(false); return; }
+
+      setRows(msgs as DBMessage[]);
+      await hydrateAuthors((msgs as DBMessage[]).map((d) => d.user_id));
+
+      const ids = (msgs as DBMessage[]).map((m) => m.id);
+      const pollIds = (msgs as DBMessage[]).filter((m) => m.message_type === "poll").map((m) => m.id);
+      const eventIds = (msgs as DBMessage[]).filter((m) => m.message_type === "event").map((m) => m.id);
+      const optionCounts: Record<string, number> = {};
+      for (const m of msgs as DBMessage[]) {
+        if (m.message_type === "poll") {
+          optionCounts[m.id] = Array.isArray(m.metadata?.options) ? m.metadata.options.length : 0;
+        }
       }
+
+      // Votes
+      if (pollIds.length) {
+        const { data: vrows } = await supabase
+          .from("community_message_votes")
+          .select("message_id, user_id, option_index")
+          .in("message_id", pollIds);
+        if (!cancelled && vrows) setVotes(applyVoteRows(vrows as any, optionCounts));
+      }
+
+      // RSVPs
+      if (eventIds.length) {
+        const { data: rrows } = await supabase
+          .from("community_message_rsvps")
+          .select("message_id, user_id")
+          .in("message_id", eventIds);
+        if (!cancelled && rrows) {
+          const next: Record<string, { mine: boolean; count: number }> = {};
+          for (const r of rrows as Array<{ message_id: string; user_id: string }>) {
+            const cur = next[r.message_id] ?? { mine: false, count: 0 };
+            cur.count += 1;
+            if (r.user_id === user?.id) cur.mine = true;
+            next[r.message_id] = cur;
+          }
+          setRsvps(next);
+        }
+      }
+
+      // Resolve signed URLs for media messages already in history
+      for (const m of msgs as DBMessage[]) {
+        if ((m.message_type === "image" || m.message_type === "voice") && m.metadata?.path) {
+          resolveMediaUrl(m.id, m.metadata.path);
+        }
+      }
+
       setLoading(false);
+      void ids;
     })();
 
     const channel = supabase
@@ -108,6 +181,9 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           if (m.is_removed) return;
           setRows((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m]));
           if (!authorMap[m.user_id]) await hydrateAuthors([m.user_id]);
+          if ((m.message_type === "image" || m.message_type === "voice") && m.metadata?.path) {
+            resolveMediaUrl(m.id, m.metadata.path);
+          }
         }
       )
       .on(
@@ -118,6 +194,49 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           setRows((prev) => prev.map((p) => (p.id === m.id ? m : p)).filter((p) => !p.is_removed));
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_message_votes" },
+        (payload) => {
+          const newRow = (payload.new ?? payload.old) as { message_id: string; user_id: string; option_index: number };
+          if (!newRow?.message_id) return;
+          // Recompute the affected message's tally by refetching its votes
+          (async () => {
+            const { data } = await supabase
+              .from("community_message_votes")
+              .select("message_id, user_id, option_index")
+              .eq("message_id", newRow.message_id);
+            if (!data) return;
+            setRows((prev) => {
+              const target = prev.find((p) => p.id === newRow.message_id);
+              const optsLen = Array.isArray(target?.metadata?.options) ? target!.metadata.options.length : 0;
+              const next: Record<string, { myChoice?: number; tallies: number[] }> = applyVoteRows(
+                data as any,
+                { [newRow.message_id]: optsLen }
+              );
+              setVotes((prevVotes) => ({ ...prevVotes, [newRow.message_id]: next[newRow.message_id] ?? { tallies: new Array(optsLen).fill(0) } }));
+              return prev;
+            });
+          })();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_message_rsvps" },
+        (payload) => {
+          const row = (payload.new ?? payload.old) as { message_id: string; user_id: string };
+          if (!row?.message_id) return;
+          (async () => {
+            const { data } = await supabase
+              .from("community_message_rsvps")
+              .select("user_id")
+              .eq("message_id", row.message_id);
+            if (!data) return;
+            const mine = (data as Array<{ user_id: string }>).some((d) => d.user_id === user?.id);
+            setRsvps((prev) => ({ ...prev, [row.message_id]: { mine, count: data.length } }));
+          })();
+        }
+      )
       .subscribe();
 
     return () => {
@@ -125,7 +244,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [group.id]);
+  }, [group.id, user?.id]);
 
   const hydrateAuthors = async (userIds: string[]) => {
     const unique = Array.from(new Set(userIds)).filter((id) => id && !authorMap[id]);
