@@ -204,12 +204,12 @@ function NewEntryForm({ entryType, onSaved, onCancel }: { entryType: string; onS
     // Auto-vault certain entry types
     const AUTO_VAULT_TYPES: Record<string, string> = {
       "letter-future-self": "love-notes",
-      "tiny-win": "tiny-wins",
-      "funny-moment": "funny-moments",
+      "tiny-win": "wins-firsts",
+      "funny-moment": "joyful-moments",
       "gratitude-note": "remember",
       "lesson-learned": "lessons",
       "dream-entry": "remember",
-      "release": "hard-days",
+      "release": "hard-things",
     };
     const autoVaultCategory = AUTO_VAULT_TYPES[entryType];
 
