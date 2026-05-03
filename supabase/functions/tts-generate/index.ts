@@ -13,8 +13,11 @@ Deno.serve(async (req) => {
 
   try {
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
-    const DEFAULT_VOICE_ID =
-      Deno.env.get("ELEVENLABS_VOICE_ID_DEFAULT") || "XrExE9yKIg1WjnnlVkGX";
+    // Signal voice policy: only Regina (female, default) and Theo (male) are allowed.
+    const REGINA_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS";
+    const THEO_VOICE_ID = "UmQN7jS1Ee8B1czsUtQh";
+    const ALLOWED_VOICES = new Set([REGINA_VOICE_ID, THEO_VOICE_ID]);
+    const DEFAULT_VOICE_ID = REGINA_VOICE_ID;
 
     if (!ELEVENLABS_API_KEY) {
       return new Response(
