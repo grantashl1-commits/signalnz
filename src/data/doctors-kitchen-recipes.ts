@@ -343,6 +343,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-25",
     name: "The Red One",
+    image: "/images/recipes/meals/dk-25.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
