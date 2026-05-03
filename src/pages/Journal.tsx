@@ -356,6 +356,18 @@ export default function JournalPage() {
     if (postSaveEntry) updateStoicLens(postSaveEntry.id, lens);
   };
 
+  /** Reset the Write tab and advance to the next day's philosophy reading.
+   *  Triggered when the user finishes (Done) or discards (Skip) after saving. */
+  const resetWriteTab = useCallback(async () => {
+    haptic("light");
+    setPostSaveEntry(null);
+    setInlineText("");
+    setInlineSaved(false);
+    setCurrentMood(null);
+    // Advance the philosophy sequence to tomorrow's reading
+    await advanceDay();
+  }, [advanceDay]);
+
   const handleSaveToVault = useCallback(async (entry: JournalEntry) => {
     haptic("medium");
     const preview = Object.values(entry.prompts).filter(Boolean)[0] || "";
@@ -536,6 +548,13 @@ export default function JournalPage() {
                         onLensGenerated={handleLensGenerated}
                         onListen={handleListen}
                       />
+                      {/* Skip / discard the metaphor and move to tomorrow's reading */}
+                      <button
+                        onClick={resetWriteTab}
+                        className="w-full font-body text-xs text-muted-foreground hover:text-foreground transition-colors py-2"
+                      >
+                        Skip metaphor — next reading →
+                      </button>
                     </div>
                   )}
 
@@ -549,6 +568,15 @@ export default function JournalPage() {
                       <p className="font-display text-sm italic text-foreground/80 leading-relaxed">{postSaveEntry.stoic_lens.bridge_metaphor}</p>
                       <p className="font-body text-xs text-muted-foreground italic">{postSaveEntry.stoic_lens.stoic_principle}</p>
                       <p className="font-hand text-sm text-primary">{postSaveEntry.stoic_lens.carry_forward}</p>
+                      <p className="font-body text-[11px] text-muted-foreground/70 pt-2 border-t border-border/30">
+                        Saved to your Memory Vault. Tomorrow's reading awaits.
+                      </p>
+                      <button
+                        onClick={resetWriteTab}
+                        className="w-full rounded-xl bg-primary/10 border border-primary/20 px-4 py-3 font-body text-sm font-bold text-primary hover:bg-primary/15 active:scale-[0.98] transition-all"
+                      >
+                        Done — next reading →
+                      </button>
                     </div>
                   )}
                 </div>
