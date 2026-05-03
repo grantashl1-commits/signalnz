@@ -31,7 +31,9 @@ export default function AISessionLog({
   onOpenHR, onOpenTraining, onOpenManualLog, onSessionLogged,
 }: AISessionLogProps) {
   const { user } = useAuth();
-  const { currentPhase } = useCycle();
+  const { currentPhase, currentCycleDay } = useCycle();
+  const hr = useGlobalHeartRate();
+  const profile = useProfile();
   const [sessionNotes, setSessionNotes] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [sessionLogged, setSessionLogged] = useState(false);
@@ -60,6 +62,17 @@ export default function AISessionLog({
     ? session.main_block.flatMap((b: any) => b.exercises || [])
     : session.exercises || [];
 
+  // User profile for HR zone math + calorie estimation
+  const profileAge = (() => {
+    if (!profile.dateOfBirth) return 30;
+    const dob = new Date(profile.dateOfBirth);
+    const t = new Date();
+    let a = t.getFullYear() - dob.getFullYear();
+    if (t.getMonth() < dob.getMonth() || (t.getMonth() === dob.getMonth() && t.getDate() < dob.getDate())) a--;
+    return a;
+  })();
+  const profileWeight = profile.weightKg || 65;
+
   const handleLogSession = async () => {
     if (!user || sessionLogged || sessionLogging) return;
     setSessionLogging(true);
@@ -75,17 +88,66 @@ export default function AISessionLog({
       ? `${sessionNotes.trim()} | AI plan: ${session.name}`
       : `AI plan: ${session.name}`;
 
+    const finalDurationMins = session.durationMin || session.duration_minutes || null;
+
+    // ── Estimate metrics if HR is connected (single instantaneous reading) ──
+    const liveBpm = hr.connected && hr.bpm > 0 ? hr.bpm : null;
+    const maxHR = getMaxHR(profileAge);
+    const calories = liveBpm && finalDurationMins
+      ? estimateCalories(liveBpm, finalDurationMins, profileWeight, profileAge)
+      : null;
+
+    // Build a synthetic single-zone summary so workout history still shows zones
+    let hrSessionId: string | null = null;
+    let z2PlusPercent: number | null = null;
+    if (liveBpm && finalDurationMins) {
+      const z = getZoneForBPM(liveBpm, maxHR);
+      const zonesSummary = HR_ZONES.reduce((acc, zn, i) => ({
+        ...acc,
+        [`z${zn.zone}_mins`]: zn.zone === z.zone ? finalDurationMins : 0,
+      }), {} as Record<string, number>);
+      z2PlusPercent = z.zone >= 2 ? 100 : 0;
+
+      try {
+        const { data: hrData } = await (supabase as any)
+          .from("hr_sessions")
+          .insert({
+            user_id: user.id,
+            session_date: todayStr,
+            workout_name: session.name,
+            duration_minutes: finalDurationMins,
+            bpm_trace: [{ minute: 0, bpm: liveBpm, zone: z.zone }],
+            avg_bpm: liveBpm,
+            max_bpm: liveBpm,
+            calories,
+            zones_summary: zonesSummary,
+            zone2_plus_percent: z2PlusPercent,
+            cycle_phase: currentPhase,
+            cycle_day: currentCycleDay,
+            notes: sessionNotes.trim() || null,
+          })
+          .select("id")
+          .single();
+        if (hrData) hrSessionId = hrData.id;
+      } catch {}
+    }
+
     const { error } = await (supabase as any)
       .from("workout_logs")
       .insert({
         user_id: user.id,
         workout_template_id: null,
         exercises: exercisesPayload,
-        duration_minutes: session.durationMin || session.duration_minutes || null,
+        duration_minutes: finalDurationMins,
         notes: notesText,
         completed: true,
         cycle_phase: currentPhase,
         session_date: todayStr,
+        hr_session_id: hrSessionId,
+        avg_bpm: liveBpm,
+        max_bpm: liveBpm,
+        calories,
+        zone2_plus_percent: z2PlusPercent,
       });
 
     setSessionLogging(false);
