@@ -49,7 +49,7 @@ interface Props {
   onSent?: () => void;
 }
 
-export default function AppreciationPanel({ connectionId, senderRole }: Props) {
+export default function AppreciationPanel({ connectionId, senderRole, onSent }: Props) {
   const [sending, setSending] = useState<string | null>(null);
   const [sent, setSent] = useState<Set<string>>(new Set());
 
