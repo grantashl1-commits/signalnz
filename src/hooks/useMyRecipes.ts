@@ -31,7 +31,7 @@ export function useMyRecipes() {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    setRecipes((data as UserRecipe[]) || []);
+    setRecipes(((data as unknown) as UserRecipe[]) || []);
     setLoading(false);
   }, [user]);
 
