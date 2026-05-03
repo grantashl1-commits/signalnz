@@ -356,6 +356,18 @@ export default function JournalPage() {
     if (postSaveEntry) updateStoicLens(postSaveEntry.id, lens);
   };
 
+  /** Reset the Write tab and advance to the next day's philosophy reading.
+   *  Triggered when the user finishes (Done) or discards (Skip) after saving. */
+  const resetWriteTab = useCallback(async () => {
+    haptic("light");
+    setPostSaveEntry(null);
+    setInlineText("");
+    setInlineSaved(false);
+    setCurrentMood(null);
+    // Advance the philosophy sequence to tomorrow's reading
+    await advanceDay();
+  }, [advanceDay]);
+
   const handleSaveToVault = useCallback(async (entry: JournalEntry) => {
     haptic("medium");
     const preview = Object.values(entry.prompts).filter(Boolean)[0] || "";
