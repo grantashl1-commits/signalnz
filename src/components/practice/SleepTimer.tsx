@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { Moon, Pause, Play, RotateCcw } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 
 const PRESETS = [
@@ -15,15 +15,9 @@ const PRESETS = [
 interface SleepTimerProps {
   /** Called when the timer reaches zero */
   onTimerEnd?: () => void;
-  /** Whether background music is playing */
-  musicPlaying?: boolean;
-  /** Toggle background music */
-  onToggleMusic?: () => void;
-  /** Whether music is loading */
-  musicLoading?: boolean;
 }
 
-export default function SleepTimer({ onTimerEnd, musicPlaying, onToggleMusic, musicLoading }: SleepTimerProps) {
+export default function SleepTimer({ onTimerEnd }: SleepTimerProps) {
   const [selectedSeconds, setSelectedSeconds] = useState<number | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [running, setRunning] = useState(false);
@@ -172,39 +166,6 @@ export default function SleepTimer({ onTimerEnd, musicPlaying, onToggleMusic, mu
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Background music toggle */}
-      {onToggleMusic && (
-        <div className="mt-4 pt-3 border-t border-indigo-400/10">
-          <button
-            onClick={() => { haptic("light"); onToggleMusic(); }}
-            disabled={musicLoading}
-            className="w-full flex items-center justify-between rounded-xl bg-indigo-500/10 border border-indigo-400/15 px-4 py-3 hover:bg-indigo-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
-          >
-            <div className="flex items-center gap-2.5">
-              {musicPlaying ? (
-                <Volume2 className="h-4 w-4 text-indigo-300" />
-              ) : (
-                <VolumeX className="h-4 w-4 text-indigo-400/50" />
-              )}
-              <span className="font-body text-xs text-indigo-200">
-                {musicLoading ? "Generating ambient sounds…" : "Background music"}
-              </span>
-            </div>
-            <div
-              className={`w-9 h-5 rounded-full transition-colors relative ${
-                musicPlaying ? "bg-indigo-500" : "bg-indigo-500/20"
-              }`}
-            >
-              <motion.div
-                className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm"
-                animate={{ left: musicPlaying ? 18 : 2 }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              />
-            </div>
-          </button>
-        </div>
-      )}
     </motion.div>
   );
 }
