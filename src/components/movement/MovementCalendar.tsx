@@ -111,7 +111,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
       if (!user) { setLoading(false); return; }
       supabase
         .from("workout_logs")
-        .select("id, session_date, workout_template_id, duration_minutes, notes, completed, exercises, calories, avg_bpm, zone2_plus_percent")
+        .select("id, session_date, workout_template_id, duration_minutes, notes, completed, exercises, calories, avg_bpm, max_bpm, zone2_plus_percent, hr_session_id")
         .eq("user_id", user.id)
         .eq("completed", true)
         .gte("session_date", monthStart)
@@ -133,11 +133,25 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
             }
           }
 
+          // Fetch zone summaries for all linked hr_sessions
+          const hrSessionIds = [...new Set(data.filter((d: any) => d.hr_session_id).map((d: any) => d.hr_session_id))];
+          let hrMap: Record<string, ZonesSummary> = {};
+          if (hrSessionIds.length > 0) {
+            const { data: hrSessions } = await (supabase as any)
+              .from("hr_sessions")
+              .select("id, zones_summary")
+              .in("id", hrSessionIds);
+            if (hrSessions) {
+              for (const h of hrSessions) hrMap[h.id] = (h.zones_summary || {}) as ZonesSummary;
+            }
+          }
+
           const enriched: WorkoutLog[] = data.map((d: any) => ({
             ...d,
             exercises: d.exercises || [],
             template_title: d.workout_template_id ? templateMap[d.workout_template_id]?.title : undefined,
             session_type: d.workout_template_id ? templateMap[d.workout_template_id]?.session_type : undefined,
+            zones_summary: d.hr_session_id ? hrMap[d.hr_session_id] : null,
           }));
 
           setLogs(enriched);
