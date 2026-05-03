@@ -46,6 +46,7 @@ export const APPRECIATION_PHRASES: AppreciationPhrase[] = [
 interface Props {
   connectionId: string;
   senderRole: "member" | "partner";
+  onSent?: () => void;
 }
 
 export default function AppreciationPanel({ connectionId, senderRole }: Props) {
