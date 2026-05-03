@@ -1,7 +1,7 @@
 // ── AI-Generated Mindfulness Scripts ────────────────────────
 // Created from reference PDFs: Brianna Wiest (Human Element),
 // Thich Nhat Hanh, Herbert Benson, Eckhart Tolle, Beyond Addiction
-// Voice: ElevenLabs Lily (pFZP5JQG7iQjIQuC4Bku) at 0.75 speed
+// Voice: routed via resolveScriptVoiceId — Regina (female) by default, Theo (male) when male-authored.
 
 import type { MeditationScript } from "./meditation-scripts";
 import { THEO_VOICE_ID, REGINA_VOICE_ID } from "@/lib/script-audio";
