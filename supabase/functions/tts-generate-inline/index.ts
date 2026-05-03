@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     );
 
     // --- CACHE CHECK ---
-    const voice = voiceId || DEFAULT_VOICE_ID;
+    const voice = voiceId && ALLOWED_VOICES.has(voiceId) ? voiceId : DEFAULT_VOICE_ID;
     const textHash = await hashText(`${voice}:calm-reader-v2:${text}`);
     const cachePath = `inline/calm-reader-v2/${textHash}.mp3`;
     const { data: urlData } = supabase.storage
