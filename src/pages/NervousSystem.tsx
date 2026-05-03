@@ -806,10 +806,15 @@ export default function NervousSystemPage() {
               {tab === "sleep" && (
                 <>
                   <SleepTimer
-                    onTimerEnd={sleepMusic.stop}
-                    musicPlaying={sleepMusic.playing}
-                    onToggleMusic={sleepMusic.toggle}
-                    musicLoading={sleepMusic.loading}
+                    onTimerEnd={() => {
+                      // Stop any background music
+                      sleepMusic.stop();
+                      // Stop any currently playing meditation/sleep reading
+                      if (activePractice) {
+                        handleClose();
+                      }
+                      haptic("light");
+                    }}
                   />
                   {sleepScripts.map((s, i) => (
                     <MeditationCard key={s.id} script={s} index={i} isDone={completed.has(s.id)} onSelect={handleSelectMeditation} isSleep />
