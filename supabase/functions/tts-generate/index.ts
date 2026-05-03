@@ -61,7 +61,8 @@ Deno.serve(async (req) => {
       }
     }
 
-    const voice = voiceId || DEFAULT_VOICE_ID;
+    // Coerce any incoming voice ID to one of the two allowed voices.
+    const voice = voiceId && ALLOWED_VOICES.has(voiceId) ? voiceId : DEFAULT_VOICE_ID;
 
     const defaultSettings = {
       stability: 0.58,
