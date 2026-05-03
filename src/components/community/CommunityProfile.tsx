@@ -223,7 +223,16 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
       {/* Profile fields */}
       {FIELDS.map((f, idx) => {
         const vis = visibility[f.key];
-        const ACCENT_COLORS = ["#B8A0C4", "#7AAFA0", "#D4A843", "#C49A9A"];
+        // Lavender → deep-purple gradient, one shade per field
+        const ACCENT_COLORS = [
+          "hsl(265 45% 82%)",
+          "hsl(265 48% 74%)",
+          "hsl(265 50% 66%)",
+          "hsl(265 52% 58%)",
+          "hsl(265 55% 50%)",
+          "hsl(265 58% 44%)",
+          "hsl(265 62% 38%)",
+        ];
         const accent = ACCENT_COLORS[idx % ACCENT_COLORS.length];
         return (
           <div
