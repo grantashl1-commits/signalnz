@@ -401,7 +401,7 @@ export default function Connect() {
                 <span className="font-hand text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider whitespace-nowrap">Say something kind</span>
                 <div className="flex-1 h-px bg-border" />
               </div>
-              <AppreciationPanel connectionId={connectionId} senderRole={senderRole} />
+              <AppreciationPanel connectionId={connectionId} senderRole={senderRole} onSent={() => setSpaceTab("shared")} />
             </div>
           </div>
         )}
