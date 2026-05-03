@@ -7,20 +7,28 @@ import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
 
 const VAULT_CATEGORIES = [
   { key: "journal-entries", label: "Journal Entries", desc: "Your saved journal reflections", color: "#5C4A9E", icon: BookOpen },
-  { key: "funny-moments", label: "Funny Moments", desc: "The things that made you laugh out loud", color: "#C4876B", icon: Smile },
-  { key: "tiny-wins", label: "Tiny Wins", desc: "Small victories that deserve to be remembered", color: "#D4A84B", icon: Star },
-  { key: "firsts", label: "Firsts", desc: "The first time you did something brave or new", color: "#7F5B87", icon: Zap },
-  { key: "hard-days", label: "Hard Things I Survived", desc: "Proof of your resilience", color: "#C4526E", icon: HeartHandshake },
-  { key: "lessons", label: "Lessons", desc: "Wisdom earned through experience", color: "#5C4A9E", icon: BookMarked },
+  { key: "wins-firsts", label: "Wins & Firsts", desc: "Small victories, brave firsts, and proof of how far you've come", color: "#D4A84B", icon: Star },
+  { key: "joyful-moments", label: "Joyful Moments", desc: "The funny, the beautiful — days that felt like magic", color: "#C4876B", icon: Smile },
+  { key: "hard-things", label: "Hard Things & Plot Twists", desc: "What you survived, and the unexpected turns that changed everything", color: "#C4526E", icon: HeartHandshake },
+  { key: "lessons", label: "Lessons & Insights", desc: "Wisdom earned through experience and from the feed", color: "#5C4A9E", icon: BookMarked },
   { key: "love-notes", label: "Love Notes to Self", desc: "Words of kindness you wrote for yourself", color: "#C47A8A", icon: Heart },
   { key: "remember", label: "Things I Want to Remember", desc: "Moments, feelings, and details worth keeping", color: "#9B89B4", icon: Flower2 },
-  { key: "plot-twists", label: "Plot Twists", desc: "The unexpected turns that changed everything", color: "#6B8DA6", icon: Shuffle },
-  { key: "beautiful-days", label: "Beautiful Days", desc: "Days that felt like magic", color: "#D4A84B", icon: Sun },
   { key: "body-whispers", label: "Body Whispers", desc: "Notes from your cycle — what your body wanted you to know", color: "#C4526E", icon: Flower2 },
-  { key: "knowledge-hub", label: "Knowledge Hub", desc: "Insights from the feed you want to reflect on", color: "#5B7F87", icon: BookOpen },
   { key: "connect-course", label: "Connect Course", desc: "Reflections and insights from your couples course journey", color: "#7F5BA6", icon: Users },
-  { key: "look-what-youve-done", label: "Look What You've Done", desc: "Just when you thought you hadn't achieved much — here's proof you have", color: "#8B7355", icon: Star },
 ];
+
+/** Map legacy category keys to the new consolidated keys. */
+const LEGACY_CATEGORY_MAP: Record<string, string> = {
+  "tiny-wins": "wins-firsts",
+  "firsts": "wins-firsts",
+  "look-what-youve-done": "wins-firsts",
+  "funny-moments": "joyful-moments",
+  "beautiful-days": "joyful-moments",
+  "hard-days": "hard-things",
+  "plot-twists": "hard-things",
+  "knowledge-hub": "lessons",
+};
+const normalizeCategory = (cat: string) => LEGACY_CATEGORY_MAP[cat] || cat;
 
 function VaultDrawer({ label }: { label: string }) {
   return (
