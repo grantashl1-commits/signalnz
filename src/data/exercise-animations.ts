@@ -427,6 +427,97 @@ const hipThrustUp: JointPose = {
   hipX: 95, hipY: 210, hipLX: 93, hipLY: 213, hipRX: 97, hipRY: 207,
 };
 
+// ── KETTLEBELL SWING ─────────────────────────────────────────────────
+const kbSwingBottom: JointPose = {
+  headX: 100, headY: 88,
+  neckX: 100, neckY: 100,
+  shoulderLX: 82, shoulderLY: 110, shoulderRX: 118, shoulderRY: 110,
+  hipX: 100, hipY: 160, hipLX: 88, hipLY: 163, hipRX: 112, hipRY: 163,
+  elbowLX: 92, elbowLY: 148, elbowRX: 108, elbowRY: 148,
+  handLX: 94, handLY: 172, handRX: 106, handRY: 172,
+  kneeLX: 86, kneeLY: 212, kneeRX: 114, kneeRY: 212,
+  footLX: 82, footLY: 270, footRX: 118, footRY: 270,
+};
+const kbSwingTop: JointPose = {
+  ...STANDING,
+  elbowLX: 78, elbowLY: 75, elbowRX: 122, elbowRY: 75,
+  handLX: 82, handLY: 58, handRX: 118, handRY: 58,
+};
+
+// ── JUMPING JACKS ────────────────────────────────────────────────────
+const jacksClose: JointPose = {
+  ...STANDING,
+  footLX: 93, footLY: 270, footRX: 107, footRY: 270,
+  kneeLX: 93, kneeLY: 205, kneeRX: 107, kneeRY: 205,
+  hipLX: 93, hipRX: 107,
+};
+const jacksOpen: JointPose = {
+  ...STANDING,
+  footLX: 65, footLY: 270, footRX: 135, footRY: 270,
+  kneeLX: 73, kneeLY: 205, kneeRX: 127, kneeRY: 205,
+  hipLX: 82, hipRX: 118,
+  elbowLX: 50, elbowLY: 38, elbowRX: 150, elbowRY: 38,
+  handLX: 48, handLY: 15, handRX: 152, handRY: 15,
+};
+
+// ── SPEED SKATER ─────────────────────────────────────────────────────
+const speedSkaterRight: JointPose = {
+  headX: 108, headY: 72,
+  neckX: 108, neckY: 86,
+  shoulderLX: 88, shoulderLY: 96, shoulderRX: 128, shoulderRY: 96,
+  hipX: 108, hipY: 162, hipLX: 96, hipLY: 165, hipRX: 120, hipRY: 165,
+  elbowLX: 92, elbowLY: 135, elbowRX: 130, elbowRY: 110,
+  handLX: 96, handLY: 185, handRX: 138, handRY: 92,
+  kneeLX: 125, kneeLY: 185, kneeRX: 110, kneeRY: 215,
+  footLX: 135, footLY: 220, footRX: 108, footRY: 260,
+};
+const speedSkaterLeft: JointPose = {
+  headX: 92, headY: 72,
+  neckX: 92, neckY: 86,
+  shoulderLX: 72, shoulderLY: 96, shoulderRX: 112, shoulderRY: 96,
+  hipX: 92, hipY: 162, hipLX: 80, hipLY: 165, hipRX: 104, hipRY: 165,
+  elbowLX: 70, elbowLY: 110, elbowRX: 108, elbowRY: 135,
+  handLX: 62, handLY: 92, handRX: 104, handRY: 185,
+  kneeLX: 90, kneeLY: 215, kneeRX: 75, kneeRY: 185,
+  footLX: 92, footLY: 260, footRX: 65, footRY: 220,
+};
+
+// ── BALL SLAM ────────────────────────────────────────────────────────
+const ballSlamTop: JointPose = {
+  ...STANDING,
+  elbowLX: 80, elbowLY: 28, elbowRX: 120, elbowRY: 28,
+  handLX: 90, handLY: 8, handRX: 110, handRY: 8,
+};
+const ballSlamDown: JointPose = {
+  headX: 100, headY: 88,
+  neckX: 100, neckY: 100,
+  shoulderLX: 82, shoulderLY: 110, shoulderRX: 118, shoulderRY: 110,
+  hipX: 100, hipY: 162, hipLX: 88, hipLY: 165, hipRX: 112, hipRY: 165,
+  elbowLX: 86, elbowLY: 150, elbowRX: 114, elbowRY: 150,
+  handLX: 90, handLY: 185, handRX: 110, handRY: 185,
+  kneeLX: 88, kneeLY: 210, kneeRX: 112, kneeRY: 210,
+  footLX: 85, footLY: 270, footRX: 115, footRY: 270,
+};
+
+// ── HALF GET UP (Turkish Get Up partial) ─────────────────────────────
+const halfGetUpDown: JointPose = {
+  ...SUPINE_BASE,
+  elbowRX: 50, elbowRY: 175,
+  handRX: 50, handRY: 142,
+  kneeRX: 125, kneeRY: 195,
+  footRX: 142, footRY: 248,
+};
+const halfGetUpUp: JointPose = {
+  headX: 58, headY: 172,
+  neckX: 65, neckY: 185,
+  shoulderLX: 68, shoulderLY: 196, shoulderRX: 60, shoulderRY: 178,
+  hipX: 102, hipY: 242, hipLX: 100, hipLY: 245, hipRX: 104, hipRY: 239,
+  elbowLX: 52, elbowLY: 258, elbowRX: 50, elbowRY: 148,
+  handLX: 45, handLY: 268, handRX: 50, handRY: 118,
+  kneeLX: 130, kneeLY: 212, kneeRX: 128, kneeRY: 200,
+  footLX: 148, footLY: 268, footRX: 145, footRY: 242,
+};
+
 // ── RUSSIAN TWIST ────────────────────────────────────────────────────
 const russianTwistA: JointPose = {
   headX: 60, headY: 180,
@@ -645,6 +736,43 @@ export const ANIMATION_REGISTRY: ExerciseAnimationDef[] = [
     keyframes: [burpeeStand, burpeeDown, burpeeStand],
     cycleDuration: 2400,
   },
+
+  // ── STACY SIMS ADDITIONS ──
+  {
+    key: "kettlebell-swing", name: "Kettlebell Swing", category: "lower-body",
+    movementType: "hinge", orientation: "standing", loopType: "ping-pong",
+    unilateral: false, holdable: false,
+    keyframes: [kbSwingBottom, kbSwingTop, kbSwingBottom],
+    cycleDuration: 2000,
+  },
+  {
+    key: "jumping-jacks", name: "Jumping Jacks", category: "core",
+    movementType: "locomotion", orientation: "standing", loopType: "ping-pong",
+    unilateral: false, holdable: false,
+    keyframes: [jacksClose, jacksOpen, jacksClose],
+    cycleDuration: 1400,
+  },
+  {
+    key: "speed-skater", name: "Speed Skater", category: "lower-body",
+    movementType: "locomotion", orientation: "standing", loopType: "loop",
+    unilateral: true, holdable: false,
+    keyframes: [speedSkaterRight, speedSkaterLeft, speedSkaterRight],
+    cycleDuration: 1800,
+  },
+  {
+    key: "ball-slam", name: "Ball Slam", category: "core",
+    movementType: "compound", orientation: "standing", loopType: "ping-pong",
+    unilateral: false, holdable: false,
+    keyframes: [ballSlamTop, ballSlamDown, ballSlamTop],
+    cycleDuration: 2000,
+  },
+  {
+    key: "half-get-up", name: "Half Get Up", category: "core",
+    movementType: "compound", orientation: "supine", loopType: "ping-pong",
+    unilateral: true, holdable: false,
+    keyframes: [halfGetUpDown, halfGetUpUp, halfGetUpDown],
+    cycleDuration: 3200,
+  },
 ];
 
 // Build a lookup map
@@ -819,6 +947,91 @@ const EXERCISE_NAME_MAP: Record<string, string> = {
   "Side-Lying Leg Lift Series": "fire-hydrant",
   "Side-Lying Leg Raise": "fire-hydrant",
   "Single-Leg Balance Eyes Closed": "step-up",
+
+  // ── Stacy Sims — SIT / Cardio ──
+  "Tabata Sprint": "mountain-climbers",
+  "40/20 Sprint": "mountain-climbers",
+  "30 On 30 Off Sprint": "mountain-climbers",
+  "Uphill Sprint": "step-up",
+  "Kettlebell Swing": "kettlebell-swing",
+  "HIIT Hard Effort": "mountain-climbers",
+  "SIT All-Out Sprint": "mountain-climbers",
+
+  // ── Stacy Sims — Heavy Lifting ──
+  "Squat": "goblet-squat",
+  "Overhead Squat": "goblet-squat",
+  "Deadlift": "romanian-deadlift",
+  "Bench Press": "chest-press-on-mat",
+  "Pendlay Row": "single-arm-dumbbell-row",
+
+  // ── Stacy Sims — Plyometrics ──
+  "Squat Jump": "goblet-squat",
+  "Jumping Jacks": "jumping-jacks",
+  "Side Hops": "reverse-lunge",
+  "Skipping": "step-up",
+  "Switch Leg Lunges": "reverse-lunge",
+  "Sumo Squat Jumps": "goblet-squat",
+  "Speed Skater": "speed-skater",
+  "Depth Jump": "step-up",
+  "Box Jump": "step-up",
+  "High-Knees Power Skip": "mountain-climbers",
+  "Single-Leg Jumping Lunge": "reverse-lunge",
+
+  // ── Stacy Sims — ROAR Body Weight ──
+  "Body Weight Squat": "goblet-squat",
+  "Pistol Squat": "goblet-squat",
+  "X Lunge": "reverse-lunge",
+  "Pushup Plank Jump": "burpees",
+
+  // ── Stacy Sims — Medicine Ball ──
+  "Medicine Ball Twist": "russian-twist",
+  "Wall Ball": "goblet-squat",
+  "Ball Slam": "ball-slam",
+  "Medicine Ball Clean": "romanian-deadlift",
+  "Medicine Ball Thruster": "goblet-squat",
+
+  // ── Stacy Sims — Kettlebell ──
+  "Kettlebell Single-Leg Deadlift": "romanian-deadlift",
+  "Hang High Pull": "single-arm-dumbbell-row",
+  "Snatch Pull and Push Press": "romanian-deadlift",
+  "Half Get Up": "half-get-up",
+  "Split Squat Kettlebell Pass": "reverse-lunge",
+
+  // ── Stacy Sims — Foam Rolling ──
+  "Plantar Roll": "step-up",
+  "Calf Smash": "step-up",
+  "Hamstring Roll": "glute-bridge",
+  "Quad Roll": "push-up",
+  "Anterior Hip Smash": "push-up",
+  "Adductor Smash": "fire-hydrant",
+  "Glute Smash": "donkey-kick",
+  "Lower-Back Smash": "bird-dog",
+  "IT Band Roll": "side-plank",
+
+  // ── Stacy Sims — Mobility ──
+  "SI Joint Glide": "dead-bug",
+  "Foam Roll with Lat Rotation": "bird-dog",
+  "Lat Gliding": "lateral-raise",
+  "Lateral Step and Reach": "reverse-lunge",
+  "Lateral Step and Step Behind": "lateral-band-walk",
+
+  // ── Stacy Sims — Core ──
+  "Windshield Wipers": "russian-twist",
+  "Shoulder Bridge": "glute-bridge",
+  "Superman": "bird-dog",
+  "Sweeping Side Plank": "side-plank",
+  "Mountain Climber": "mountain-climbers",
+
+  // ── Stacy Sims — Pelvic Floor ──
+  "Kegels": "glute-bridge",
+  "Elevator Abs": "dead-bug",
+  "Child's Pose Breathing": "bird-dog",
+
+  // ── Stacy Sims — PEP Plan ──
+  "Bridge with Alternating Hip Flexion": "glute-bridge",
+  "Plank with Knee Dips": "plank-shoulder-taps",
+  "Single Toe Raise": "step-up",
+  "Neutral Spine Sequence": "dead-bug",
 };
 
 /**

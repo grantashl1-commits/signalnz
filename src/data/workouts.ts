@@ -1,4 +1,5 @@
 import { Phase } from "@/lib/cycle-utils";
+import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 
 export type Suitability = "ideal" | "suitable" | "rest";
 export type WorkoutCategory = "strength" | "walk-restore";
@@ -535,6 +536,7 @@ export const WORKOUTS: Workout[] = [
   ...PHASE_WORKOUTS.follicular.filter(w => !PHASE_WORKOUTS.menstrual.includes(w)),
   ...PHASE_WORKOUTS.ovulatory.filter(w => w !== REST_WALK_RESTORE),
   ...PHASE_WORKOUTS.luteal.filter(w => w !== REST_WALK_RESTORE && w !== LUT_MOBILITY_FLOW),
+  ...STACY_SIMS_WORKOUTS,
 ];
 
 // Weekly schedule (follicular default)
