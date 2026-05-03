@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X, ChevronRight, Sparkles, Users, Printer, RefreshCw, Info, Loader2, ArrowUp, ArrowDown,
+  Star, Check, AlertTriangle, Trash2, Pencil, Plus, History, Settings, Gift, X,
+  ChevronRight, Sparkles, Users, Printer, RefreshCw, Info, Loader2, ArrowUp, ArrowDown, Trophy,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,6 +14,28 @@ import {
 } from "./defaults";
 import { printWeeklyChart } from "./printChart";
 
+export const CHORE_COLORS = [
+  "#E2A84B", "#6BAE75", "#5C4A9E", "#C4526E", "#4A90B8",
+  "#E8866A", "#8B9B5A", "#B25C8A", "#4A9B89", "#9B7A4A",
+] as const;
+
+function getWeekStart(): Date {
+  const d = new Date();
+  const day = d.getDay();
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
+
+function formatWeekRange(): string {
+  const start = getWeekStart();
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  const fmt = (d: Date) => d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return `${fmt(start)} – ${fmt(end)}`;
+}
+
 type Child = {
   id: string;
   name: string;
@@ -21,12 +44,21 @@ type Child = {
   age: number | null;
   points: number;
 };
-type Chore = { id: string; child_id: string | null; name: string; points: number; category: "must" | "bonus"; active: boolean; image_url?: string | null };
+type Chore = {
+  id: string;
+  child_id: string | null;
+  name: string;
+  points: number;
+  category: "must" | "bonus";
+  active: boolean;
+  image_url?: string | null;
+  color?: string | null;
+  recurrence?: string;
+};
 type Behaviour = { id: string; child_id: string | null; name: string; penalty: number; reset_to_zero: boolean; active: boolean };
 type Reward = { id: string; child_id: string; name: string; target_points: number; achieved: boolean; active: boolean };
 type Tx = { id: string; child_id: string; delta: number; reason: string; kind: string; created_at: string };
-
-type View = "dashboard" | "admin" | "history" | "setup";
+type View = "dashboard" | "admin" | "history" | "leaderboard" | "setup";
 
 export default function BehaviourTab() {
   const { user } = useAuth();
@@ -36,10 +68,10 @@ export default function BehaviourTab() {
   const [behaviours, setBehaviours] = useState<Behaviour[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [transactions, setTransactions] = useState<Tx[]>([]);
+  const [completions, setCompletions] = useState<Set<string>>(new Set());
   const [view, setView] = useState<View>("dashboard");
   const [loading, setLoading] = useState(true);
 
-  // Floating point feedback
   const [floaters, setFloaters] = useState<{ id: number; value: number; positive: boolean }[]>([]);
   const [confetti, setConfetti] = useState(false);
   const [pendingPenalty, setPendingPenalty] = useState<Behaviour | null>(null);
@@ -73,6 +105,20 @@ export default function BehaviourTab() {
       .then(({ data }) => setTransactions((data || []) as Tx[]));
   }, [activeChildId, children]);
 
+  // Load today's completions for active child (for recurring chore daily-reset)
+  const loadCompletions = useCallback(async () => {
+    if (!activeChildId) { setCompletions(new Set()); return; }
+    const today = new Date().toISOString().split("T")[0];
+    const { data } = await supabase
+      .from("parenting_chore_completions" as any)
+      .select("chore_id")
+      .eq("child_id", activeChildId)
+      .eq("completed_date", today);
+    setCompletions(new Set((data || []).map((r: any) => r.chore_id)));
+  }, [activeChildId]);
+
+  useEffect(() => { loadCompletions(); }, [loadCompletions]);
+
   // ─── Mutations ───
   const addPoints = async (delta: number, reason: string, kind: Tx["kind"], sourceId?: string, opts?: { reset?: boolean; silent?: boolean }) => {
     if (!user || !activeChild) return;
@@ -94,7 +140,6 @@ export default function BehaviourTab() {
     }).select().single();
     if (tx) setTransactions(prev => [tx as Tx, ...prev].slice(0, 100));
 
-    // Check reward unlock
     const justReached = rewards.find(r => !r.achieved && r.child_id === activeChild.id && newPoints >= r.target_points && activeChild.points < r.target_points);
     if (justReached) {
       setConfetti(true);
@@ -102,31 +147,37 @@ export default function BehaviourTab() {
     }
   };
 
-  const onChoreDone = (chore: Chore) =>
+  const onChoreDone = async (chore: Chore) => {
+    // Daily recurring chores: block if already completed today
+    if (chore.recurrence === "daily" && completions.has(chore.id)) return;
+
     addPoints(chore.points, chore.name, "chore", chore.id);
 
-  // Reorder chores within a category (must / bonus). Persists sort_order to DB.
+    // Log completion for recurring chores
+    if (chore.recurrence === "daily") {
+      const today = new Date().toISOString().split("T")[0];
+      await supabase.from("parenting_chore_completions" as any).upsert(
+        { chore_id: chore.id, child_id: activeChildId!, completed_date: today },
+        { onConflict: "chore_id,child_id,completed_date" }
+      );
+      setCompletions(prev => new Set(prev).add(chore.id));
+    }
+  };
+
   const reorderChore = async (chore: Chore, direction: "up" | "down") => {
-    const siblings = chores
-      .filter(c => c.category === chore.category && (!c.child_id || c.child_id === activeChildId));
+    const siblings = chores.filter(c => c.category === chore.category && (!c.child_id || c.child_id === activeChildId));
     const idx = siblings.findIndex(c => c.id === chore.id);
     const targetIdx = direction === "up" ? idx - 1 : idx + 1;
     if (idx < 0 || targetIdx < 0 || targetIdx >= siblings.length) return;
     haptic("light");
     const reordered = [...siblings];
     [reordered[idx], reordered[targetIdx]] = [reordered[targetIdx], reordered[idx]];
-    // Optimistic update: rebuild full chores list preserving other categories
     const reorderedIds = new Set(reordered.map(c => c.id));
     setChores(prev => {
       const others = prev.filter(c => !reorderedIds.has(c.id));
       return [...others, ...reordered];
     });
-    // Persist sort_order for the two swapped rows
-    await Promise.all(
-      reordered.map((c, i) =>
-        supabase.from("parenting_chores").update({ sort_order: i }).eq("id", c.id)
-      )
-    );
+    await Promise.all(reordered.map((c, i) => supabase.from("parenting_chores").update({ sort_order: i }).eq("id", c.id)));
   };
 
   const confirmPenalty = async () => {
@@ -140,7 +191,7 @@ export default function BehaviourTab() {
     }
   };
 
-  // ─── Onboarding (no children yet) ───
+  // ─── Onboarding ───
   const seedDefaultsForChild = async (childId: string) => {
     if (!user) return;
     const chorePayload = [
@@ -154,7 +205,6 @@ export default function BehaviourTab() {
       supabase.from("parenting_behaviours").insert(behaviourPayload),
       supabase.from("parenting_rewards").insert(rewardPayload),
     ]);
-    // Generate illustrations for each seeded chore in the background (non-blocking)
     if (insertedChores) {
       void Promise.all(
         insertedChores.map(async (row: any) => {
@@ -180,7 +230,6 @@ export default function BehaviourTab() {
     }
   };
 
-  // Active reward (the lowest unmet target)
   const activeReward = useMemo(() => {
     if (!activeChild) return null;
     return rewards
@@ -241,6 +290,7 @@ export default function BehaviourTab() {
       <div className="flex gap-1 p-1 bg-secondary/50 rounded-xl">
         {([
           { id: "dashboard", label: "Today", icon: Star },
+          { id: "leaderboard", label: "Week", icon: Trophy },
           { id: "history", label: "History", icon: History },
           { id: "admin", label: "Admin", icon: Settings },
         ] as const).map(t => (
@@ -270,7 +320,6 @@ export default function BehaviourTab() {
                       {activeChild.points}
                     </motion.div>
                     <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                    {/* Floaters land here */}
                     <AnimatePresence>
                       {floaters.map(f => (
                         <motion.span key={f.id}
@@ -287,7 +336,6 @@ export default function BehaviourTab() {
                 </div>
               </div>
 
-              {/* Reward bar */}
               {activeReward ? (
                 <div className="mt-4">
                   <div className="flex items-center justify-between text-xs mb-1.5">
@@ -312,7 +360,6 @@ export default function BehaviourTab() {
                 </button>
               )}
 
-              {/* Confetti burst */}
               <AnimatePresence>
                 {confetti && (
                   <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 pointer-events-none">
@@ -348,10 +395,27 @@ export default function BehaviourTab() {
             </div>
 
             {/* Must-do chores */}
-            <ChoreSection title="Must-do chores" subtitle="Daily essentials" items={childChores.filter(c => c.category === "must")} onDone={onChoreDone} onReorder={reorderChore} accent={activeChild.accent_color} />
+            <ChoreSection
+              title="Must-do chores"
+              subtitle="Daily essentials"
+              items={childChores.filter(c => c.category === "must")}
+              onDone={onChoreDone}
+              onReorder={reorderChore}
+              accent={activeChild.accent_color}
+              completedIds={completions}
+            />
 
             {/* Bonus chores */}
-            <ChoreSection title="Bonus chores" subtitle="Extra effort earns extra points" items={childChores.filter(c => c.category === "bonus")} onDone={onChoreDone} onReorder={reorderChore} accent={activeChild.accent_color} variant="bonus" />
+            <ChoreSection
+              title="Bonus chores"
+              subtitle="Extra effort earns extra points"
+              items={childChores.filter(c => c.category === "bonus")}
+              onDone={onChoreDone}
+              onReorder={reorderChore}
+              accent={activeChild.accent_color}
+              variant="bonus"
+              completedIds={completions}
+            />
 
             {/* Bad behaviours */}
             <section>
@@ -376,8 +440,13 @@ export default function BehaviourTab() {
               </div>
             </section>
 
-            {/* Why this works */}
             <WhyCard accent={activeChild.accent_color} />
+          </motion.div>
+        )}
+
+        {view === "leaderboard" && (
+          <motion.div key="leaderboard" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <LeaderboardView children={children} />
           </motion.div>
         )}
 
@@ -429,10 +498,104 @@ export default function BehaviourTab() {
   );
 }
 
-// ─── Sub-components ───────────────────────────────────
+// ─── Leaderboard ─────────────────────────────────────────
 
-function ChoreSection({ title, subtitle, items, onDone, onReorder, accent, variant = "must" }: {
-  title: string; subtitle: string; items: Chore[]; onDone: (c: Chore) => void; onReorder?: (c: Chore, dir: "up" | "down") => void; accent: string; variant?: "must" | "bonus";
+function LeaderboardView({ children }: { children: Child[] }) {
+  const [weeklyPts, setWeeklyPts] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      if (!children.length) { setLoading(false); return; }
+      const { data } = await supabase
+        .from("parenting_transactions")
+        .select("child_id, delta")
+        .in("child_id", children.map(c => c.id))
+        .gte("created_at", getWeekStart().toISOString())
+        .gt("delta", 0);
+      const map: Record<string, number> = {};
+      for (const tx of data || []) {
+        map[(tx as any).child_id] = (map[(tx as any).child_id] || 0) + (tx as any).delta;
+      }
+      setWeeklyPts(map);
+      setLoading(false);
+    };
+    load();
+  }, [children]);
+
+  const ranked = [...children].sort((a, b) => (weeklyPts[b.id] || 0) - (weeklyPts[a.id] || 0));
+
+  const RANK_STYLES = [
+    { bg: "bg-amber-500/15", text: "text-amber-600", label: "1st" },
+    { bg: "bg-secondary/60", text: "text-muted-foreground", label: "2nd" },
+    { bg: "bg-secondary/40", text: "text-muted-foreground", label: "3rd" },
+  ];
+
+  if (loading) return <div className="py-12 text-center"><Loader2 className="h-5 w-5 mx-auto animate-spin text-muted-foreground" /></div>;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between px-1">
+        <div>
+          <h3 className="font-display text-sm font-bold text-foreground flex items-center gap-1.5">
+            <Trophy className="h-4 w-4 text-amber-500" /> This week
+          </h3>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{formatWeekRange()}</p>
+        </div>
+        <p className="text-[10px] text-muted-foreground italic">Resets every Monday</p>
+      </div>
+
+      {ranked.map((child, i) => {
+        const ch = CHARACTERS[child.character_id];
+        const pts = weeklyPts[child.id] || 0;
+        const style = RANK_STYLES[i] || { bg: "bg-secondary/30", text: "text-muted-foreground", label: `${i + 1}th` };
+        return (
+          <motion.div
+            key={child.id}
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.06 }}
+            className={`flex items-center gap-3 p-3 rounded-xl border border-border ${i === 0 ? "bg-amber-500/[0.06] border-amber-500/20" : "bg-card"}`}
+          >
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${style.bg} ${style.text} shrink-0`}>
+              {style.label}
+            </span>
+            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0" style={{ background: `${child.accent_color}22` }}>
+              <img src={ch.image} alt="" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground">{child.name}</p>
+              <p className="text-[10px] text-muted-foreground">{child.points} pts total</p>
+            </div>
+            <div className="text-right">
+              <p className={`font-display text-xl font-extrabold ${i === 0 ? "text-amber-500" : "text-foreground"}`}>{pts}</p>
+              <p className="text-[10px] text-muted-foreground">this week</p>
+            </div>
+          </motion.div>
+        );
+      })}
+
+      {ranked.length === 0 && (
+        <div className="py-12 text-center">
+          <Trophy className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
+          <p className="text-sm text-muted-foreground">Add children to see the leaderboard</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Chore Section ───────────────────────────────────────
+
+function ChoreSection({ title, subtitle, items, onDone, onReorder, accent, variant = "must", completedIds = new Set() }: {
+  title: string;
+  subtitle: string;
+  items: Chore[];
+  onDone: (c: Chore) => void;
+  onReorder?: (c: Chore, dir: "up" | "down") => void;
+  accent: string;
+  variant?: "must" | "bonus";
+  completedIds?: Set<string>;
 }) {
   const [reordering, setReordering] = useState(false);
   if (!items.length) return null;
@@ -455,68 +618,87 @@ function ChoreSection({ title, subtitle, items, onDone, onReorder, accent, varia
         </div>
       </div>
       <div className="space-y-1.5">
-        {items.map((c, i) => (
-          <motion.div key={c.id} layout className="relative">
-            <motion.button
-              whileTap={reordering ? undefined : { scale: 0.97 }}
-              onClick={() => !reordering && onDone(c)}
-              disabled={reordering}
-              className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                variant === "bonus"
-                  ? "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.06] to-transparent"
-                  : "border-border bg-card hover:bg-secondary/40"
-              } ${reordering ? "opacity-90 cursor-default" : ""}`}>
-              {c.image_url ? (
-                <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-white" style={{ background: accent + "11" }}>
-                  <img src={c.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+        {items.map((c, i) => {
+          const isDoneToday = c.recurrence === "daily" && completedIds.has(c.id);
+          const isShared = !c.child_id;
+          return (
+            <motion.div key={c.id} layout className="relative">
+              <motion.button
+                whileTap={reordering || isDoneToday ? undefined : { scale: 0.97 }}
+                onClick={() => !reordering && !isDoneToday && onDone(c)}
+                disabled={reordering || isDoneToday}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                  isDoneToday
+                    ? "border-emerald-500/30 bg-emerald-500/[0.05] opacity-70"
+                    : variant === "bonus"
+                    ? "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.06] to-transparent"
+                    : "border-border bg-card hover:bg-secondary/40"
+                } ${reordering ? "opacity-90 cursor-default" : ""}`}
+                style={c.color && !isDoneToday ? { borderLeftColor: c.color, borderLeftWidth: "3px" } : {}}
+              >
+                {/* Illustration or icon */}
+                {c.image_url ? (
+                  <div className={`w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 ${isDoneToday ? "opacity-60" : ""}`} style={{ background: accent + "11" }}>
+                    <img src={c.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                ) : (
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: isDoneToday ? "#22c55e22" : (c.color ? c.color + "22" : accent + "22") }}>
+                    {isDoneToday
+                      ? <Check className="h-4 w-4 text-emerald-500" />
+                      : <Check className="h-4 w-4" style={{ color: c.color || accent }} />
+                    }
+                  </div>
+                )}
+
+                <div className="flex-1 min-w-0 text-left space-y-0.5">
+                  <span className={`text-sm font-medium ${isDoneToday ? "text-muted-foreground line-through" : "text-foreground"}`}>{c.name}</span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {isShared && !reordering && (
+                      <span className="text-[9px] bg-secondary px-1.5 py-0.5 rounded-full text-muted-foreground flex items-center gap-0.5">
+                        <Users className="h-2.5 w-2.5" /> for everyone
+                      </span>
+                    )}
+                    {c.recurrence === "daily" && !reordering && (
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${isDoneToday ? "bg-emerald-500/15 text-emerald-600" : "bg-secondary text-muted-foreground"}`}>
+                        {isDoneToday ? "✓ done today" : "daily"}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
-                  <Check className="h-4 w-4" style={{ color: accent }} />
-                </div>
-              )}
-              <span className="flex-1 text-left text-sm font-medium text-foreground">{c.name}</span>
-              {!reordering && (
-                <span className="text-xs font-mono font-semibold tabular-nums" style={{ color: accent }}>+{c.points}</span>
-              )}
-              {reordering && onReorder && (
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); onReorder(c, "up"); }}
-                    disabled={i === 0}
-                    aria-label="Move up"
-                    className="w-9 h-9 min-w-[36px] rounded-lg border border-border flex items-center justify-center bg-card disabled:opacity-30"
-                  >
-                    <ArrowUp className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); onReorder(c, "down"); }}
-                    disabled={i === items.length - 1}
-                    aria-label="Move down"
-                    className="w-9 h-9 min-w-[36px] rounded-lg border border-border flex items-center justify-center bg-card disabled:opacity-30"
-                  >
-                    <ArrowDown className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
-            </motion.button>
-          </motion.div>
-        ))}
+
+                {!reordering && (
+                  <span className={`text-xs font-mono font-semibold tabular-nums ${isDoneToday ? "text-muted-foreground/50" : ""}`} style={!isDoneToday ? { color: c.color || accent } : {}}>
+                    +{c.points}
+                  </span>
+                )}
+                {reordering && onReorder && (
+                  <div className="flex items-center gap-1">
+                    <button type="button" onClick={(e) => { e.stopPropagation(); onReorder(c, "up"); }} disabled={i === 0} aria-label="Move up"
+                      className="w-9 h-9 min-w-[36px] rounded-lg border border-border flex items-center justify-center bg-card disabled:opacity-30">
+                      <ArrowUp className="h-4 w-4" />
+                    </button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); onReorder(c, "down"); }} disabled={i === items.length - 1} aria-label="Move down"
+                      className="w-9 h-9 min-w-[36px] rounded-lg border border-border flex items-center justify-center bg-card disabled:opacity-30">
+                      <ArrowDown className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </motion.button>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
+// ─── Why card ────────────────────────────────────────────
+
 function WhyCard({ accent }: { accent: string }) {
   const [open, setOpen] = useState(false);
   return (
     <section className="rounded-2xl border border-border bg-card overflow-hidden">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-2 p-3 text-left"
-      >
+      <button onClick={() => setOpen(o => !o)} className="w-full flex items-center gap-2 p-3 text-left">
         <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: accent + "22" }}>
           <Info className="h-4 w-4" style={{ color: accent }} />
         </div>
@@ -525,37 +707,24 @@ function WhyCard({ accent }: { accent: string }) {
       </button>
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
             <div className="px-4 pb-4 space-y-3 text-xs leading-relaxed text-foreground/80">
               <p>
                 <strong className="text-foreground">Experiences over things.</strong>{" "}
-                Picking the family movie, a friend over for a playdate, choosing a weekend
-                activity — these rewards build connection and shared memories. Toys lose their
-                shine within days; <em>"I picked the movie"</em> is told for years
+                Picking the family movie, a friend over for a playdate, choosing a weekend activity — these rewards build connection and shared memories. Toys lose their shine within days; <em>"I picked the movie"</em> is told for years
                 <span className="text-muted-foreground"> (Faber & Mazlish; Clarke-Fields).</span>
               </p>
               <p>
                 <strong className="text-foreground">A neutral mechanism replaces nagging.</strong>{" "}
-                The app — not you — awards or deducts points. Your child can't argue with a counter.
-                You stay calm, the boundary stays firm
+                The app — not you — awards or deducts points. Your child can't argue with a counter. You stay calm, the boundary stays firm
                 <span className="text-muted-foreground"> (Ockwell-Smith, <em>Gentle Discipline</em>; Leman, <em>Have a New Kid by Friday</em>).</span>
               </p>
               <p>
                 <strong className="text-foreground">Extrinsic rewards build intrinsic habits.</strong>{" "}
-                Brushing teeth and getting ready for school start as point-earners. Within weeks
-                they become <em>"things we just do"</em>. Graduate them off the chart and add
-                the next stretch (e.g. unpacking the lunchbox). The points scaffold the habit;
-                the habit eventually carries itself.
+                Brushing teeth and getting ready for school start as point-earners. Within weeks they become <em>"things we just do"</em>. Graduate them off the chart and add the next stretch. The points scaffold the habit; the habit eventually carries itself.
               </p>
               <p className="pt-2 border-t border-border text-muted-foreground italic">
-                Tip from our founder: when a chore becomes automatic, retire it together —
-                "You've mastered teeth-brushing, that one's free now" — and pick the next thing
-                you're working on. Kids feel proud, the chart stays fresh.
+                Tip from our founder: when a chore becomes automatic, retire it together — "You've mastered teeth-brushing, that one's free now" — and pick the next thing you're working on. Kids feel proud, the chart stays fresh.
               </p>
             </div>
           </motion.div>
@@ -565,12 +734,14 @@ function WhyCard({ accent }: { accent: string }) {
   );
 }
 
+// ─── History ─────────────────────────────────────────────
+
 function HistoryView({ transactions }: { transactions: Tx[] }) {
   if (!transactions.length) {
     return (
       <div className="py-12 text-center">
         <History className="h-8 w-8 mx-auto text-muted-foreground/40 mb-3" />
-        <p className="text-sm text-muted-foreground">No activity yet today.</p>
+        <p className="text-sm text-muted-foreground">No activity yet.</p>
         <p className="text-xs text-muted-foreground/60 mt-1">Tap a chore on the Today tab to start.</p>
       </div>
     );
@@ -597,15 +768,11 @@ function HistoryView({ transactions }: { transactions: Tx[] }) {
   );
 }
 
+// ─── Admin ───────────────────────────────────────────────
+
 function AdminPanel({ child, chores, behaviours, rewards, onChange, onEditChild }: {
-  child: Child;
-  chores: Chore[];
-  behaviours: Behaviour[];
-  rewards: Reward[];
-  onChange: () => void;
-  onEditChild: () => void;
+  child: Child; chores: Chore[]; behaviours: Behaviour[]; rewards: Reward[]; onChange: () => void; onEditChild: () => void;
 }) {
-  const { user } = useAuth();
   const [tab, setTab] = useState<"chores" | "behaviours" | "rewards">("chores");
 
   const removeChild = async () => {
@@ -646,10 +813,7 @@ function AdminPanel({ child, chores, behaviours, rewards, onChange, onEditChild 
 async function generateChoreImage(name: string): Promise<string | null> {
   try {
     const { data, error } = await supabase.functions.invoke("chore-illustration", { body: { name } });
-    if (error) {
-      console.warn("chore-illustration failed:", error);
-      return null;
-    }
+    if (error) { console.warn("chore-illustration failed:", error); return null; }
     return (data as any)?.imageUrl || null;
   } catch (e) {
     console.warn("chore-illustration error:", e);
@@ -662,6 +826,8 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
   const [name, setName] = useState("");
   const [points, setPoints] = useState(1);
   const [category, setCategory] = useState<"must" | "bonus">("must");
+  const [recurrence, setRecurrence] = useState("none");
+  const [color, setColor] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [regenIds, setRegenIds] = useState<Set<string>>(new Set());
 
@@ -669,15 +835,13 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
     if (!name.trim() || !user) return;
     setCreating(true);
     const choreName = name.trim();
-    // 1) Insert chore immediately so the parent sees it appear
     const { data: inserted } = await supabase
       .from("parenting_chores")
-      .insert({ user_id: user.id, child_id: childId, name: choreName, points, category })
+      .insert({ user_id: user.id, child_id: childId, name: choreName, points, category, recurrence, color: color || null } as any)
       .select()
       .single();
-    setName(""); setPoints(1);
+    setName(""); setPoints(1); setRecurrence("none"); setColor(null);
     onChange();
-    // 2) Generate illustration in the background and patch row
     if (inserted?.id) {
       const url = await generateChoreImage(choreName);
       if (url) {
@@ -705,17 +869,24 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
 
   return (
     <div className="space-y-3">
-      <div className="p-3 rounded-xl bg-card border border-border space-y-2">
+      <div className="p-3 rounded-xl bg-card border border-border space-y-2.5">
         <input value={name} onChange={e => setName(e.target.value)} placeholder="New chore (e.g. Feed the dog)"
           className="w-full bg-transparent text-sm focus:outline-none" />
-        <div className="flex items-center gap-2">
+
+        {/* Category, points, recurrence row */}
+        <div className="flex items-center gap-2 flex-wrap">
           <select value={category} onChange={e => setCategory(e.target.value as any)}
             className="text-xs bg-secondary rounded-lg px-2 py-1.5 focus:outline-none">
             <option value="must">Must-do</option>
             <option value="bonus">Bonus</option>
           </select>
+          <select value={recurrence} onChange={e => setRecurrence(e.target.value)}
+            className="text-xs bg-secondary rounded-lg px-2 py-1.5 focus:outline-none">
+            <option value="none">Once</option>
+            <option value="daily">Daily reset</option>
+          </select>
           <input type="number" min={1} max={20} value={points} onChange={e => setPoints(Number(e.target.value))}
-            className="w-16 text-xs bg-secondary rounded-lg px-2 py-1.5 focus:outline-none" />
+            className="w-14 text-xs bg-secondary rounded-lg px-2 py-1.5 focus:outline-none" />
           <span className="text-xs text-muted-foreground">pts</span>
           <button onClick={add} disabled={!name.trim() || creating}
             className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold disabled:opacity-40">
@@ -723,13 +894,39 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
             {creating ? "Adding…" : "Add"}
           </button>
         </div>
-        <p className="text-[10px] text-muted-foreground italic">A small illustration is generated automatically so kids who can't read yet can recognise the chore.</p>
+
+        {/* Colour picker */}
+        <div className="space-y-1">
+          <p className="text-[10px] text-muted-foreground">Colour <span className="italic">(optional — shows as left border)</span></p>
+          <div className="flex gap-1.5 flex-wrap">
+            <button
+              onClick={() => setColor(null)}
+              title="No colour"
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${!color ? "border-foreground" : "border-transparent bg-secondary"}`}
+            >
+              <X className="h-2.5 w-2.5 text-muted-foreground" />
+            </button>
+            {CHORE_COLORS.map(col => (
+              <button key={col} onClick={() => setColor(col)}
+                className={`w-6 h-6 rounded-full border-2 transition-all ${color === col ? "border-foreground scale-110" : "border-transparent"}`}
+                style={{ background: col }} />
+            ))}
+          </div>
+        </div>
+
+        <p className="text-[10px] text-muted-foreground italic">
+          {recurrence === "daily"
+            ? "Daily chores show as done until midnight, then reset automatically."
+            : "A small illustration is generated automatically so kids who can't read yet can recognise the chore."}
+        </p>
       </div>
+
       <div className="space-y-1.5">
         {chores.map(c => {
           const regen = regenIds.has(c.id);
           return (
-            <div key={c.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border">
+            <div key={c.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border"
+              style={c.color ? { borderLeftColor: c.color, borderLeftWidth: "3px" } : {}}>
               {c.image_url ? (
                 <img src={c.image_url} alt="" className="w-9 h-9 rounded-lg object-cover bg-secondary/30 shrink-0" />
               ) : (
@@ -740,6 +937,9 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
               <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full ${c.category === "must" ? "bg-secondary" : "bg-amber-500/15 text-amber-700"}`}>
                 {c.category}
               </span>
+              {c.recurrence === "daily" && (
+                <span className="text-[9px] bg-blue-500/10 text-blue-600 px-1.5 py-0.5 rounded-full">daily</span>
+              )}
               <span className="flex-1 text-sm truncate">{c.name}</span>
               <span className="text-xs font-mono">+{c.points}</span>
               <button onClick={() => regenerate(c)} disabled={regen} title="Regenerate illustration"
@@ -756,7 +956,6 @@ function ChoreEditor({ chores, childId, onChange }: { chores: Chore[]; childId: 
     </div>
   );
 }
-
 
 function BehaviourEditor({ behaviours, childId, onChange }: { behaviours: Behaviour[]; childId: string; onChange: () => void }) {
   const { user } = useAuth();
@@ -862,6 +1061,8 @@ function RewardEditor({ rewards, childId, onChange }: { rewards: Reward[]; child
   );
 }
 
+// ─── Child Setup ─────────────────────────────────────────
+
 function ChildSetup({ onCreate, onCancel }: {
   onCreate: (data: { name: string; character_id: CharacterId; accent_color: string; age: number | null }) => Promise<void>;
   onCancel?: () => void;
@@ -888,9 +1089,7 @@ function ChildSetup({ onCreate, onCancel }: {
           {CHARACTER_LIST.map(c => (
             <button key={c.id} onClick={() => { setCharacterId(c.id); setAccent(c.defaultColor); }}
               className={`aspect-square rounded-2xl transition-all flex items-center justify-center ${
-                characterId === c.id
-                  ? "ring-2 ring-foreground scale-105"
-                  : "opacity-60 hover:opacity-90"
+                characterId === c.id ? "ring-2 ring-foreground scale-105" : "opacity-60 hover:opacity-90"
               }`}
               style={characterId === c.id ? { background: `${accent}1a` } : undefined}
             >
@@ -898,13 +1097,7 @@ function ChildSetup({ onCreate, onCancel }: {
             </button>
           ))}
         </div>
-        {/* Caption: name + trait of selected buddy */}
-        <motion.div
-          key={characterId}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mt-3"
-        >
+        <motion.div key={characterId} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="text-center mt-3">
           <p className="font-display text-base font-semibold text-foreground">{character.name}</p>
           <p className="text-xs text-muted-foreground italic mt-0.5">{character.trait}</p>
         </motion.div>
