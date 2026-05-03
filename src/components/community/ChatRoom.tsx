@@ -310,7 +310,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   }, [rows, authorMap, user?.id, myInitials]);
 
   const insertMessage = async (payload: {
-    message_type: "text" | "poll" | "event";
+    message_type: "text" | "poll" | "event" | "image" | "voice";
     content: string;
     metadata?: Record<string, any>;
   }) => {
