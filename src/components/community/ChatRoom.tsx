@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useState, useRef, useEffect, lazy, Suspense, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MOCK_MESSAGES, type ChatMessage } from "@/data/community-data";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import type { ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
-import { Play, Square } from "lucide-react";
+import { Square } from "lucide-react";
 
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
@@ -15,11 +17,37 @@ function Avatar({ initials, size = 28 }: { initials: string; size?: number }) {
 }
 
 interface ChatRoomProps {
-  group: { id: string; name?: string; suburb: string; city?: string | null; members_count?: number | null; [key: string]: any };
+  group: { id: string; name?: string; suburb: string; city?: string | null; members_count?: number | null; challenges?: string[]; [key: string]: any };
 }
 
+interface DBMessage {
+  id: string;
+  user_id: string;
+  group_id: string;
+  content: string | null;
+  message_type: string;
+  metadata: any;
+  created_at: string;
+  is_removed: boolean;
+}
+
+const initialsFrom = (name?: string | null, fallback = "?") => {
+  if (!name) return fallback;
+  const parts = name.trim().split(/\s+/).slice(0, 2);
+  return parts.map((p) => p[0]?.toUpperCase() ?? "").join("") || fallback;
+};
+
+const fmtTime = (iso: string) =>
+  new Date(iso).toLocaleTimeString("en-NZ", { hour: "numeric", minute: "2-digit", hour12: true });
+
 export default function ChatRoom({ group }: ChatRoomProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>(MOCK_MESSAGES);
+  const { user } = useAuth();
+  const { displayName: myDisplayName } = useProfile();
+
+  const [rows, setRows] = useState<DBMessage[]>([]);
+  const [authorMap, setAuthorMap] = useState<Record<string, { name: string; initials: string }>>({});
+  const [loading, setLoading] = useState(true);
+
   const [input, setInput] = useState("");
   const [checking, setChecking] = useState(false);
   const [blocked, setBlocked] = useState<{ reflection: string; suggested_rewrite?: string } | null>(null);
@@ -33,71 +61,217 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const [voted, setVoted] = useState<Record<string, number>>({});
   const [rsvpd, setRsvpd] = useState<Set<string>>(new Set());
   const [recording, setRecording] = useState(false);
+  const [localMedia, setLocalMedia] = useState<Record<string, { imageUrl?: string; audioUrl?: string }>>({});
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const [viewingMember, setViewingMember] = useState<{ userId: string; name: string } | null>(null);
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  const myInitials = useMemo(() => initialsFrom(myDisplayName, "ME"), [myDisplayName]);
 
-  const now = () => new Date().toLocaleTimeString("en-NZ", { hour: "numeric", minute: "2-digit", hour12: true });
+  // Load history + subscribe to realtime
+  useEffect(() => {
+    if (!group.id) return;
+    let cancelled = false;
+
+    (async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("community_messages")
+        .select("id, user_id, group_id, content, message_type, metadata, created_at, is_removed")
+        .eq("group_id", group.id)
+        .eq("is_removed", false)
+        .order("created_at", { ascending: true })
+        .limit(200);
+      if (cancelled) return;
+      if (!error && data) {
+        setRows(data as DBMessage[]);
+        await hydrateAuthors(data.map((d) => d.user_id));
+      }
+      setLoading(false);
+    })();
+
+    const channel = supabase
+      .channel(`community_messages:${group.id}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "community_messages", filter: `group_id=eq.${group.id}` },
+        async (payload) => {
+          const m = payload.new as DBMessage;
+          if (m.is_removed) return;
+          setRows((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m]));
+          if (!authorMap[m.user_id]) await hydrateAuthors([m.user_id]);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "community_messages", filter: `group_id=eq.${group.id}` },
+        (payload) => {
+          const m = payload.new as DBMessage;
+          setRows((prev) => prev.map((p) => (p.id === m.id ? m : p)).filter((p) => !p.is_removed));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [group.id]);
+
+  const hydrateAuthors = async (userIds: string[]) => {
+    const unique = Array.from(new Set(userIds)).filter((id) => id && !authorMap[id]);
+    if (!unique.length) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("user_id, display_name")
+      .in("user_id", unique);
+    if (!data) return;
+    setAuthorMap((prev) => {
+      const next = { ...prev };
+      for (const p of data as Array<{ user_id: string; display_name: string | null }>) {
+        const name = p.display_name || "Neighbour";
+        next[p.user_id] = { name, initials: initialsFrom(name) };
+      }
+      // anyone we couldn't resolve still gets a placeholder so we don't refetch
+      for (const id of unique) if (!next[id]) next[id] = { name: "Neighbour", initials: "?" };
+      return next;
+    });
+  };
+
+  // Auto-scroll on new messages
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [rows.length]);
+
+  // Map DB rows → render shape
+  const messages: ChatMessage[] = useMemo(() => {
+    return rows.map((r) => {
+      const isMe = r.user_id === user?.id;
+      const author = isMe
+        ? { name: "You", initials: myInitials }
+        : authorMap[r.user_id] ?? { name: "Neighbour", initials: "?" };
+      const meta = r.metadata || {};
+      const base: ChatMessage = {
+        id: r.id,
+        user: isMe ? "You" : author.name,
+        avatar: author.initials,
+        time: fmtTime(r.created_at),
+        type: (r.message_type === "poll" || r.message_type === "event" ? r.message_type : "text") as ChatMessage["type"],
+      };
+      if (base.type === "text") {
+        return { ...base, text: r.content || "" };
+      }
+      if (base.type === "poll") {
+        return {
+          ...base,
+          question: meta.question || r.content || "",
+          options: Array.isArray(meta.options) ? meta.options : [],
+          votes: Array.isArray(meta.votes) ? meta.votes : (meta.options || []).map(() => 0),
+        };
+      }
+      // event
+      return {
+        ...base,
+        title: meta.title || r.content || "",
+        date: meta.date || "",
+        location: meta.location || "",
+        going: typeof meta.going === "number" ? meta.going : 0,
+      };
+    });
+  }, [rows, authorMap, user?.id, myInitials]);
+
+  const insertMessage = async (payload: {
+    message_type: "text" | "poll" | "event";
+    content: string;
+    metadata?: Record<string, any>;
+  }) => {
+    if (!user) return null;
+    const { data, error } = await supabase
+      .from("community_messages")
+      .insert({
+        group_id: group.id,
+        user_id: user.id,
+        message_type: payload.message_type,
+        content: payload.content,
+        metadata: payload.metadata ?? {},
+      })
+      .select("id, user_id, group_id, content, message_type, metadata, created_at, is_removed")
+      .single();
+    if (error) {
+      console.error("[ChatRoom] insert failed", error);
+      return null;
+    }
+    // Optimistic add (realtime will dedupe)
+    setRows((prev) => (prev.some((p) => p.id === (data as any).id) ? prev : [...prev, data as DBMessage]));
+    return data as DBMessage;
+  };
 
   const send = async () => {
-    if (!input.trim()) return;
+    const text = input.trim();
+    if (!text || !user) return;
     setChecking(true);
     try {
-      const { data, error } = await supabase.functions.invoke("community-moderate", { body: { text: input } });
+      const { data, error } = await supabase.functions.invoke("community-moderate", { body: { text } });
       if (error) throw error;
-      if (!data.safe) { setBlocked(data); setChecking(false); return; }
+      if (data && !data.safe) { setBlocked(data); setChecking(false); return; }
     } catch { /* allow on error */ }
-    setMessages((m) => [...m, { id: Date.now().toString(), user: "You", avatar: "ME", time: now(), type: "text", text: input }]);
+    await insertMessage({ message_type: "text", content: text });
     setInput("");
     setChecking(false);
   };
 
-  const sendPoll = () => {
+  const sendPoll = async () => {
     if (!pollQ.trim()) return;
     const opts = pollOpts.filter((o) => o.trim());
     if (opts.length < 2) return;
-    setMessages((m) => [...m, { id: Date.now().toString(), user: "You", avatar: "ME", time: now(), type: "poll", question: pollQ, options: opts, votes: opts.map(() => 0) }]);
+    await insertMessage({
+      message_type: "poll",
+      content: pollQ.trim(),
+      metadata: { question: pollQ.trim(), options: opts, votes: opts.map(() => 0) },
+    });
     setPollQ(""); setPollOpts(["", ""]); setShowPoll(false);
   };
 
-  const sendEvent = () => {
+  const sendEvent = async () => {
     if (!eventTitle.trim()) return;
-    setMessages((m) => [...m, { id: Date.now().toString(), user: "You", avatar: "ME", time: now(), type: "event", title: eventTitle, date: eventDate, location: eventLoc, going: 0 }]);
+    await insertMessage({
+      message_type: "event",
+      content: eventTitle.trim(),
+      metadata: { title: eventTitle.trim(), date: eventDate, location: eventLoc, going: 0 },
+    });
     setEventTitle(""); setEventDate(""); setEventLoc(""); setShowEvent(false);
   };
 
+  // Note: voting/RSVP/image/voice still local to the device for now
+  // (full multi-user persistence for those is tracked separately).
   const toggleRSVP = (msgId: string) => {
     setRsvpd(prev => {
       const next = new Set(prev);
       if (next.has(msgId)) {
         next.delete(msgId);
-        setMessages(msgs => msgs.map(m => m.id === msgId ? { ...m, going: Math.max(0, (m.going || 1) - 1) } : m));
+        setRows(rs => rs.map(r => r.id !== msgId ? r : ({ ...r, metadata: { ...(r.metadata || {}), going: Math.max(0, ((r.metadata?.going ?? 1) - 1)) } })));
       } else {
         next.add(msgId);
-        setMessages(msgs => msgs.map(m => m.id === msgId ? { ...m, going: (m.going || 0) + 1 } : m));
+        setRows(rs => rs.map(r => r.id !== msgId ? r : ({ ...r, metadata: { ...(r.metadata || {}), going: ((r.metadata?.going ?? 0) + 1) } })));
       }
       return next;
     });
   };
 
-  const handleImage = () => {
-    fileRef.current?.click();
-  };
+  const handleImage = () => fileRef.current?.click();
 
   const onImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       const dataUrl = ev.target?.result as string;
-      setMessages(m => [...m, {
-        id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
-        type: "text", text: "[Image shared]", imageUrl: dataUrl,
-      } as any]);
+      const inserted = await insertMessage({ message_type: "text", content: "[Image shared]" });
+      if (inserted) setLocalMedia((prev) => ({ ...prev, [inserted.id]: { imageUrl: dataUrl } }));
     };
     reader.readAsDataURL(file);
     e.target.value = "";
@@ -109,45 +283,29 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       setRecording(false);
       return;
     }
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
+      mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
+      mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         const audioUrl = URL.createObjectURL(audioBlob);
-        setMessages(m => [...m, {
-          id: Date.now().toString(), user: "You", avatar: "ME", time: now(),
-          type: "text", text: "Voice note", audioUrl,
-        } as any]);
+        const inserted = await insertMessage({ message_type: "text", content: "Voice note" });
+        if (inserted) setLocalMedia((prev) => ({ ...prev, [inserted.id]: { audioUrl } }));
         stream.getTracks().forEach(t => t.stop());
       };
-
       mediaRecorder.start();
       setRecording(true);
-
-      // Auto-stop after 60 seconds
       setTimeout(() => {
-        if (mediaRecorder.state === "recording") {
-          mediaRecorder.stop();
-          setRecording(false);
-        }
+        if (mediaRecorder.state === "recording") { mediaRecorder.stop(); setRecording(false); }
       }, 60000);
-    } catch {
-      // Permission denied or not supported
-    }
+    } catch { /* permission denied */ }
   };
 
   return (
     <div className="flex flex-col" style={{ height: "calc(100vh - 280px)", minHeight: 400 }}>
-      {/* Hidden file input for images */}
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onImageSelected} />
 
       {/* Header */}
@@ -157,29 +315,47 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       </div>
 
       {/* Challenge banner */}
-      <div className="bg-amber-50 rounded-[10px] px-3 py-2 mb-3 flex-shrink-0">
-        <span className="font-body text-[10px] text-primary mr-1.5">Challenge</span>
-        <span className="font-display text-xs italic text-foreground/70">{group.challenges[0]}</span>
-      </div>
+      {group.challenges?.[0] && (
+        <div className="bg-amber-50 rounded-[10px] px-3 py-2 mb-3 flex-shrink-0">
+          <span className="font-body text-[10px] text-primary mr-1.5">Challenge</span>
+          <span className="font-display text-xs italic text-foreground/70">{group.challenges[0]}</span>
+        </div>
+      )}
 
-      {/* Messages — momentum scrolling */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto pr-0.5 scroll-y">
+        {loading && (
+          <p className="font-body text-[11px] text-muted-foreground text-center py-6">Loading conversation…</p>
+        )}
+        {!loading && messages.length === 0 && (
+          <p className="font-display text-sm italic text-muted-foreground text-center py-6">
+            No messages yet. Say something kind to break the ice.
+          </p>
+        )}
         {messages.map((m) => {
           const isMe = m.user === "You";
-          const msg = m as any;
+          const dbRow = rows.find((r) => r.id === m.id);
+          const media = localMedia[m.id];
           return (
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
-              {!isMe && <div className="cursor-pointer" onClick={() => setViewingMember({ userId: m.id, name: m.user })}><Avatar initials={m.avatar} /></div>}
+              {!isMe && (
+                <div
+                  className="cursor-pointer"
+                  onClick={() => dbRow && setViewingMember({ userId: dbRow.user_id, name: m.user })}
+                >
+                  <Avatar initials={m.avatar} />
+                </div>
+              )}
               <div className={`max-w-[78%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
                 {!isMe && <span className="font-body text-[10px] text-muted-foreground mb-0.5">{m.user} · {m.time}</span>}
 
                 {m.type === "text" && (
                   <div className={`px-3.5 py-2.5 shadow-sm ${isMe ? "bg-primary rounded-[14px_14px_4px_14px]" : "bg-card border border-border rounded-[14px_14px_14px_4px]"}`}>
-                    {msg.imageUrl && (
-                      <img src={msg.imageUrl} alt="Shared" className="rounded-lg mb-1.5 max-w-[200px]" loading="lazy" />
+                    {media?.imageUrl && (
+                      <img src={media.imageUrl} alt="Shared" className="rounded-lg mb-1.5 max-w-[200px]" loading="lazy" />
                     )}
-                    {msg.audioUrl ? (
-                      <audio src={msg.audioUrl} controls className="max-w-[200px] h-8" />
+                    {media?.audioUrl ? (
+                      <audio src={media.audioUrl} controls className="max-w-[200px] h-8" />
                     ) : (
                       <span className={`font-display text-sm italic leading-relaxed ${isMe ? "text-primary-foreground" : "text-foreground"}`}>{m.text}</span>
                     )}
@@ -203,7 +379,12 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                           onClick={() => {
                             if (hasVoted) return;
                             setVoted((v) => ({ ...v, [m.id]: i }));
-                            setMessages((msgs) => msgs.map((x) => x.id !== m.id ? x : { ...x, votes: (x.votes || []).map((v, vi) => vi === i ? v + 1 : v) }));
+                            setRows((rs) => rs.map((r) => {
+                              if (r.id !== m.id) return r;
+                              const cur = Array.isArray(r.metadata?.votes) ? r.metadata.votes : (r.metadata?.options || []).map(() => 0);
+                              const nextVotes = cur.map((v: number, vi: number) => vi === i ? v + 1 : v);
+                              return { ...r, metadata: { ...(r.metadata || {}), votes: nextVotes } };
+                            }));
                           }}
                           className={`touch-btn flex items-center w-full mb-1 px-2.5 py-2 rounded-lg border relative overflow-hidden transition-all ${
                             myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card active:bg-secondary/50"
@@ -228,11 +409,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                     {m.location && <p className="font-body text-[11px] text-muted-foreground mb-2">{m.location}</p>}
                     <button
                       onClick={() => toggleRSVP(m.id)}
-                      className={`touch-btn font-display text-[13px] italic rounded-full px-4 py-2 transition-colors ${
-                        rsvpd.has(m.id)
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-primary text-primary-foreground"
-                      }`}
+                      className="touch-btn font-display text-[13px] italic rounded-full px-4 py-2 bg-primary text-primary-foreground"
                     >
                       {rsvpd.has(m.id) ? `✓ Going (${m.going})` : `I'm going (${m.going})`}
                     </button>
@@ -263,8 +440,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           <div className="flex gap-2 flex-wrap">
             {blocked.suggested_rewrite && (
               <button
-                onClick={() => {
-                  setMessages((m) => [...m, { id: Date.now().toString(), user: "You", avatar: "ME", time: now(), type: "text", text: blocked.suggested_rewrite! }]);
+                onClick={async () => {
+                  await insertMessage({ message_type: "text", content: blocked.suggested_rewrite! });
                   setInput(""); setBlocked(null);
                 }}
                 className="touch-btn font-display text-[13px] italic text-primary-foreground bg-primary rounded-full px-4 py-2"
@@ -350,7 +527,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           />
           <button
             onClick={send}
-            disabled={checking || !input.trim()}
+            disabled={checking || !input.trim() || !user}
             className={`touch-btn w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
               input.trim() ? "bg-primary" : "bg-secondary"
             }`}
@@ -365,7 +542,6 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         <p className="font-body text-[10px] text-muted-foreground mt-1 text-center">Moderated for kindness, not censored for truth.</p>
       </div>
 
-      {/* Member profile sheet */}
       {viewingMember && (
         <Suspense fallback={null}>
           <MemberProfileSheet
