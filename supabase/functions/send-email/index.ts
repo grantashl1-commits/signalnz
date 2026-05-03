@@ -58,6 +58,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Require Authorization header — blocks unauthenticated external callers.
+  // supabase.functions.invoke() always attaches the session JWT or service role key automatically.
+  const authHeader = req.headers.get("Authorization") ?? "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const { type, to, name, tier, oldTier, nextBillingDate, endDate } = await req.json();
 

@@ -10,6 +10,14 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Require a valid session — rejects unauthenticated callers
+  const authHeader = req.headers.get("Authorization") ?? "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const { text } = await req.json();
 
@@ -45,7 +53,8 @@ Only flag: personal attacks, contempt, shaming, belittling. Allow: frustration, 
 
     if (!res.ok) {
       console.error("AI gateway error:", res.status);
-      return new Response(JSON.stringify({ safe: true }), {
+      // Fail closed — block the post rather than letting it through on error
+      return new Response(JSON.stringify({ safe: false, reflection: "Something went wrong — please try again." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -60,7 +69,8 @@ Only flag: personal attacks, contempt, shaming, belittling. Allow: frustration, 
     });
   } catch (error) {
     console.error("Moderation error:", error);
-    return new Response(JSON.stringify({ safe: true }), {
+    // Fail closed — block on any unexpected error
+    return new Response(JSON.stringify({ safe: false, reflection: "Something went wrong — please try again." }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

@@ -11,7 +11,7 @@ const RESEND_WEBHOOK_SECRET = Deno.env.get("RESEND_WEBHOOK_SECRET")!;
 
 // Verify Resend's svix signature to reject forged requests
 async function verifySignature(req: Request, rawBody: string): Promise<boolean> {
-  if (!RESEND_WEBHOOK_SECRET) return true; // skip in local dev if secret not set
+  if (!RESEND_WEBHOOK_SECRET) return false; // reject all events if secret not configured
 
   const msgId        = req.headers.get("svix-id") ?? "";
   const msgTimestamp = req.headers.get("svix-timestamp") ?? "";

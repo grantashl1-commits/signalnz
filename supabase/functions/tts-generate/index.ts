@@ -29,7 +29,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { text, voiceId, voiceSettings, practiceId, user_identifier } = await req.json();
+    // Derive user identity from the verified JWT — never trust body-supplied identifier
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user } } = await supabase.auth.getUser(token);
+    const user_identifier = user?.id ?? null;
+
+    const { text, voiceId, voiceSettings, practiceId } = await req.json();
 
     if (!text || !practiceId) {
       return new Response(

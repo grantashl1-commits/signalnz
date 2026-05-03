@@ -8,6 +8,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
+const CRON_SECRET = Deno.env.get("CRON_SECRET");
 const FROM_ADDRESS = "Signal <support@mindcast.co.nz>";
 
 const corsHeaders = {
@@ -43,6 +44,14 @@ async function sendEmail(to: string, subject: string, html: string) {
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Verify cron secret — prevents unauthenticated manual triggers
+  const incoming = (req.headers.get("x-cron-secret") ?? req.headers.get("Authorization") ?? "").replace("Bearer ", "");
+  if (!CRON_SECRET || incoming !== CRON_SECRET) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {

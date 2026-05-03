@@ -12,6 +12,15 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Verify the caller's JWT — userIdentifier is always derived from the token, never trusted from the body
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "");
+  if (!token) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -20,7 +29,16 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { prompt, mode, context, userIdentifier, insightProfile, recentSignals, isAMA, userData } = await req.json();
+    // Verify JWT and derive user ID — ignore any userIdentifier supplied in the body
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (!user || authError) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const userIdentifier = user.id;
+
+    const { prompt, mode, context, insightProfile, recentSignals, isAMA, userData } = await req.json();
 
     if (!prompt) {
       return new Response(
