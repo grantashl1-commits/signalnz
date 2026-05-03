@@ -175,7 +175,7 @@ const CATEGORY_ILLUSTRATIONS: { keywords: string[]; image: string }[] = [
     image: "/images/recipes/meals/kids-beef-meatballs.png",
   },
   {
-    keywords: ["dumpling", "san choy", "stir fry", "stir-fry"],
+    keywords: ["dumpling", "san choy"],
     image: "/images/recipes/meals/kids-pork-stir-fry.png",
   },
 ];
