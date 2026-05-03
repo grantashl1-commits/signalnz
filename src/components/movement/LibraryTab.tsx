@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ChevronRight, ChevronDown, Loader2, Play } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
 import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
+import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
@@ -65,6 +66,7 @@ export default function LibraryTab() {
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [expandedExerciseId, setExpandedExerciseId] = useState<string | null>(null);
+  const [expandedSSId, setExpandedSSId] = useState<string | null>(null);
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
   const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
@@ -428,6 +430,99 @@ export default function LibraryTab() {
               </motion.div>
             );
           })}
+
+          {/* ── Source: Stacy Sims (ROAR / Next Level) ────────────────── */}
+          <div className="pt-4 mt-2">
+            <div className="flex items-center gap-2 mb-3 px-1">
+              <BookOpen className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="font-hand text-[11px] tracking-wide uppercase text-muted-foreground">
+                Source · Dr. Stacy Sims — ROAR & Next Level
+              </span>
+            </div>
+            <div className="space-y-2">
+              {STACY_SIMS_WORKOUTS.map((sw, i) => {
+                const expanded = expandedSSId === sw.id;
+                const intensity = sw.category === "walk-restore" ? "low" : "moderate";
+                return (
+                  <motion.div
+                    key={sw.id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: Math.min(i * 0.03, 0.4) }}
+                    className="overflow-hidden rounded-xl border border-primary/15 bg-primary/[0.03]"
+                  >
+                    <button
+                      onClick={() => {
+                        haptic("light");
+                        if (!expanded && !guardExpand()) return;
+                        setExpandedSSId(expanded ? null : sw.id);
+                      }}
+                      className="flex w-full items-center gap-3 p-3.5 text-left"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-display text-sm font-bold text-foreground">{sw.name}</h3>
+                          <span className={`font-body text-[9px] uppercase tracking-wider ${INTENSITY_COLORS[intensity]}`}>
+                            {sw.equipment}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 font-body text-xs text-muted-foreground line-clamp-2">{sw.description}</p>
+                      </div>
+                      <span className="shrink-0 font-body text-xs text-muted-foreground">{sw.duration}</span>
+                      <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${expanded ? "rotate-180" : ""}`} />
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {expanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="border-t border-primary/15 px-4 pb-4 pt-3 space-y-3">
+                            {sw.progressionNotes && sw.progressionNotes.length > 0 && (
+                              <div>
+                                <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Progression</p>
+                                <ul className="space-y-1">
+                                  {sw.progressionNotes.map((note, idx) => (
+                                    <li key={idx} className="flex gap-1.5 font-body text-xs text-foreground/80">
+                                      <span className="text-primary">•</span>
+                                      <span>{note}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-body text-[9px] uppercase tracking-wider text-muted-foreground mb-1.5">Exercises</p>
+                              <div className="space-y-2">
+                                {sw.exercises.map((ex, idx) => (
+                                  <div key={idx} className="rounded-lg bg-card/60 p-2.5">
+                                    <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                                      <p className="font-body text-sm font-medium text-foreground">{ex.name}</p>
+                                      <span className="font-body text-[10px] text-primary font-medium">
+                                        {[ex.sets && `${ex.sets} sets`, ex.reps, ex.duration].filter(Boolean).join(" · ")}
+                                      </span>
+                                    </div>
+                                    {ex.section && (
+                                      <p className="mt-0.5 font-body text-[9px] uppercase tracking-wider text-muted-foreground">{ex.section}</p>
+                                    )}
+                                    <p className="mt-1 font-body text-xs text-foreground/75 leading-relaxed">{ex.formCue}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
     </div>
