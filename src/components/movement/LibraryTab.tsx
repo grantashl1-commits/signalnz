@@ -132,10 +132,24 @@ export default function LibraryTab() {
     return result;
   }, [exercises, filter, search]);
 
+  type UnifiedWorkout =
+    | { kind: "quick"; data: QuickWorkout; bodyFilter: BodyFilter }
+    | { kind: "ss"; data: Workout; bodyFilter: BodyFilter };
+
+  const allWorkouts: UnifiedWorkout[] = useMemo(() => {
+    const quick: UnifiedWorkout[] = QUICK_WORKOUTS.map(w => ({
+      kind: "quick", data: w, bodyFilter: w.bodyFilter,
+    }));
+    const ss: UnifiedWorkout[] = STACY_SIMS_WORKOUTS.map(w => ({
+      kind: "ss", data: w, bodyFilter: SS_BODY_FILTER[w.id] || "full-body",
+    }));
+    return [...quick, ...ss];
+  }, []);
+
   const filteredWorkouts = useMemo(() => {
-    if (filter === "all") return QUICK_WORKOUTS;
-    return QUICK_WORKOUTS.filter(w => w.bodyFilter === filter);
-  }, [filter]);
+    if (filter === "all") return allWorkouts;
+    return allWorkouts.filter(w => w.bodyFilter === filter);
+  }, [filter, allWorkouts]);
 
   const loadWorkoutExercises = async (workout: QuickWorkout) => {
     if (workoutExercises[workout.id]) return;
