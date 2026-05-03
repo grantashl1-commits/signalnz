@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen, Dumbbell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
 import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
+import type { Workout } from "@/data/workouts";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
