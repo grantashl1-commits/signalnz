@@ -5,6 +5,9 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
+import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { useProfile } from "@/hooks/useProfile";
+import { getMaxHR, getZoneForBPM, estimateCalories, HR_ZONES } from "@/data/workouts";
 import AISessionCard from "./AISessionCard";
 import type { Phase } from "@/lib/cycle-utils";
 
