@@ -8,6 +8,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "acai-bowl-granola",
     name: "Acai Bowl with Granola and Berries",
+    image: "/images/recipes/meals/acai-bowl-granola.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -33,6 +34,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "avocado-toast-hemp",
     name: "Avocado Toast on Rye with Hemp Seeds",
+    image: "/images/recipes/meals/avocado-toast-hemp.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -57,6 +59,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "avocado-toast-poached-egg",
     name: "Avocado Toast on Rye with Poached Egg",
+    image: "/images/recipes/meals/avocado-toast-poached-egg.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
@@ -82,6 +85,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "avocado-toast-poached-luteal",
     name: "Avocado Toast with Poached Egg",
+    image: "/images/recipes/meals/avocado-toast-poached-luteal.png",
     phase: "luteal",
     serves: 1,
     prepTime: "10 min",
@@ -107,6 +111,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "avocado-toast-sunflower",
     name: "Avocado Toast with Sunflower Seeds",
+    image: "/images/recipes/meals/avocado-toast-sunflower.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -131,6 +136,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "banana-oat-pancakes-tahini",
     name: "Banana Oat Pancakes with Tahini",
+    image: "/images/recipes/meals/banana-oat-pancakes-tahini.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
@@ -159,6 +165,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "banana-oat-pancakes-bacon",
     name: "Banana Oat Pancakes with Bacon",
+    image: "/images/recipes/meals/banana-oat-pancakes-bacon.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
@@ -187,6 +194,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "bircher-muesli-apple",
     name: "Bircher Muesli with Apple and Cinnamon",
+    image: "/images/recipes/meals/bircher-muesli-apple.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min + overnight",
@@ -213,6 +221,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "bircher-muesli-yoghurt",
     name: "Bircher Muesli with Yoghurt and Berries",
+    image: "/images/recipes/meals/bircher-muesli-yoghurt.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min + overnight",
@@ -237,6 +246,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "buckwheat-pancakes-maple",
     name: "Buckwheat Pancakes with Maple Syrup",
+    image: "/images/recipes/meals/buckwheat-pancakes-maple.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
@@ -264,6 +274,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "buckwheat-pancakes-bacon",
     name: "Buckwheat Pancakes with Bacon and Maple Syrup",
+    image: "/images/recipes/meals/buckwheat-pancakes-bacon.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -291,6 +302,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "buckwheat-porridge-banana",
     name: "Buckwheat Porridge with Banana",
+    image: "/images/recipes/meals/buckwheat-porridge-banana.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -316,6 +328,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "buckwheat-porridge-honey",
     name: "Buckwheat Porridge with Banana and Honey",
+    image: "/images/recipes/meals/buckwheat-porridge-honey.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -340,6 +353,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "buckwheat-waffles-berries",
     name: "Buckwheat Waffles with Berries",
+    image: "/images/recipes/meals/buckwheat-waffles-berries.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -366,6 +380,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "buckwheat-waffles-yoghurt",
     name: "Buckwheat Waffles with Berries and Yoghurt",
+    image: "/images/recipes/meals/buckwheat-waffles-yoghurt.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -393,6 +408,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chia-parfait-mango",
     name: "Chia Parfait with Mango and Coconut",
+    image: "/images/recipes/meals/chia-parfait-mango.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min + 2hr set",
@@ -417,6 +433,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chia-pudding-pomegranate",
     name: "Chia Pudding with Pomegranate and Walnuts",
+    image: "/images/recipes/meals/chia-pudding-pomegranate.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min + overnight",
@@ -440,6 +457,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "cinnamon-oat-granola-oatmilk",
     name: "Cinnamon Oat Granola with Oat Milk",
+    image: "/images/recipes/meals/cinnamon-oat-granola-oatmilk.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -464,6 +482,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "cinnamon-oat-granola-milk",
     name: "Cinnamon Oat Granola with Milk",
+    image: "/images/recipes/meals/cinnamon-oat-granola-milk.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -486,6 +505,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "eggs-benedict-salmon",
     name: "Eggs Benedict with Smoked Salmon",
+    image: "/images/recipes/meals/eggs-benedict-salmon.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -514,6 +534,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "fresh-fruit-salad-hemp",
     name: "Fresh Fruit Salad with Mint and Hemp Seeds",
+    image: "/images/recipes/meals/fresh-fruit-salad-hemp.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -537,6 +558,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "greek-yoghurt-berries",
     name: "Greek Yoghurt with Berries and Almonds",
+    image: "/images/recipes/meals/greek-yoghurt-berries.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "3 min",
@@ -559,6 +581,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "green-juice-almonds",
     name: "Green Juice and a Handful of Almonds",
+    image: "/images/recipes/meals/green-juice-almonds.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -585,6 +608,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "green-smoothie-protein",
     name: "Green Smoothie with Protein Powder",
+    image: "/images/recipes/meals/green-smoothie-protein.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -610,6 +634,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "green-smoothie-spinach",
     name: "Green Smoothie -- Spinach, Apple, Ginger, Flaxseed",
+    image: "/images/recipes/meals/green-smoothie-spinach.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -636,6 +661,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "omelette-feta-spinach",
     name: "Omelette with Feta and Spinach",
+    image: "/images/recipes/meals/omelette-feta-spinach.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -662,6 +688,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "poached-eggs-avocado",
     name: "Poached Eggs with Avocado and Tomato",
+    image: "/images/recipes/meals/poached-eggs-avocado.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -688,6 +715,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "rainbow-smoothie-hemp",
     name: "Rainbow Smoothie Bowl with Hemp Seeds",
+    image: "/images/recipes/meals/rainbow-smoothie-hemp.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -713,6 +741,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "rainbow-smoothie-acai",
     name: "Rainbow Smoothie Bowl -- Acai, Banana, Mixed Berries",
+    image: "/images/recipes/meals/rainbow-smoothie-acai.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -739,6 +768,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "scrambled-eggs-sourdough",
     name: "Scrambled Eggs on Sourdough with Spinach",
+    image: "/images/recipes/meals/scrambled-eggs-sourdough.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
@@ -764,6 +794,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "scrambled-eggs-salmon-avo",
     name: "Scrambled Eggs with Smoked Salmon and Avocado",
+    image: "/images/recipes/meals/scrambled-eggs-salmon-avo.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -789,6 +820,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "smoothie-cacao-chia",
     name: "Smoothie -- Banana, Almond Milk, Cacao, Chia",
+    image: "/images/recipes/meals/smoothie-cacao-chia.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -814,6 +846,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "smoothie-spinach-cacao",
     name: "Smoothie Bowl -- Spinach, Banana, Hemp Seeds, Cacao",
+    image: "/images/recipes/meals/smoothie-spinach-cacao.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -840,6 +873,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "sourdough-avo-microgreens",
     name: "Sourdough with Smashed Avocado and Microgreens",
+    image: "/images/recipes/meals/sourdough-avo-microgreens.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -865,6 +899,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "sourdough-avo-egg",
     name: "Sourdough with Smashed Avocado and Poached Egg",
+    image: "/images/recipes/meals/sourdough-avo-egg.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -890,6 +925,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "warm-oat-porridge-banana",
     name: "Warm Oat Porridge with Banana and Almond Butter",
+    image: "/images/recipes/meals/warm-oat-porridge-banana.png",
     phase: "luteal",
     serves: 1,
     prepTime: "10 min",
@@ -914,6 +950,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "warm-spiced-porridge-dates",
     name: "Warm Spiced Oat Porridge with Dates and Almonds",
+    image: "/images/recipes/meals/warm-spiced-porridge-dates.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
@@ -939,6 +976,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "warm-chia-pudding-pear",
     name: "Warm Chia Pudding with Poached Pear",
+    image: "/images/recipes/meals/warm-chia-pudding-pear.png",
     phase: "luteal",
     serves: 1,
     prepTime: "15 min",
@@ -965,6 +1003,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "avocado-mango-sushi",
     name: "Avocado and Mango Sushi Rolls",
+    image: "/images/recipes/meals/avocado-mango-sushi.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -993,6 +1032,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "baked-potato-hummus",
     name: "Baked Potato with Hummus and Salad",
+    image: "/images/recipes/meals/baked-potato-hummus.png",
     phase: "luteal",
     serves: 1,
     prepTime: "50 min",
@@ -1019,6 +1059,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "black-bean-tacos",
     name: "Black Bean Tacos with Avocado and Salsa",
+    image: "/images/recipes/meals/black-bean-tacos.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
@@ -1047,6 +1088,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "brown-rice-sushi-bowl",
     name: "Brown Rice Sushi Bowl with Edamame",
+    image: "/images/recipes/meals/brown-rice-sushi-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "20 min",
@@ -1076,6 +1118,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-caesar-wrap",
     name: "Chicken Caesar Wrap",
+    image: "/images/recipes/meals/chicken-caesar-wrap.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -1101,6 +1144,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-beetroot-salad",
     name: "Chicken and Beetroot Salad with Feta",
+    image: "/images/recipes/meals/chicken-beetroot-salad.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "20 min",
@@ -1127,6 +1171,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-pumpkin-salad",
     name: "Chicken and Pumpkin Salad",
+    image: "/images/recipes/meals/chicken-pumpkin-salad.png",
     phase: "luteal",
     serves: 1,
     prepTime: "30 min",
@@ -1153,6 +1198,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-pumpkin-soup",
     name: "Chicken and Pumpkin Soup",
+    image: "/images/recipes/meals/chicken-pumpkin-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -1181,6 +1227,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-sweet-potato-soup",
     name: "Chicken and Sweet Potato Soup",
+    image: "/images/recipes/meals/chicken-sweet-potato-soup.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -1209,6 +1256,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-veg-soup-sourdough",
     name: "Chicken and Vegetable Soup with Sourdough",
+    image: "/images/recipes/meals/chicken-veg-soup-sourdough.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -1238,6 +1286,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "grilled-chicken-caesar",
     name: "Grilled Chicken Caesar Salad",
+    image: "/images/recipes/meals/grilled-chicken-caesar.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "15 min",
@@ -1263,6 +1312,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "grilled-chicken-mango-salad",
     name: "Grilled Chicken and Mango Salad",
+    image: "/images/recipes/meals/grilled-chicken-mango-salad.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "15 min",
@@ -1290,6 +1340,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "grilled-chicken-quinoa-bowl",
     name: "Grilled Chicken and Quinoa Bowl",
+    image: "/images/recipes/meals/grilled-chicken-quinoa-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "20 min",
@@ -1317,6 +1368,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "hummus-roasted-veg-wrap",
     name: "Hummus and Roasted Veg Wrap",
+    image: "/images/recipes/meals/hummus-roasted-veg-wrap.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "20 min",
@@ -1342,6 +1394,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lamb-lentil-soup",
     name: "Lamb and Lentil Soup",
+    image: "/images/recipes/meals/lamb-lentil-soup.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "40 min",
@@ -1373,6 +1426,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lamb-lentil-stew",
     name: "Lamb and Lentil Stew",
+    image: "/images/recipes/meals/lamb-lentil-stew.png",
     phase: "luteal",
     serves: 4,
     prepTime: "45 min",
@@ -1403,6 +1457,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lamb-roasted-veg-wrap",
     name: "Lamb and Roasted Vegetable Wrap",
+    image: "/images/recipes/meals/lamb-roasted-veg-wrap.png",
     phase: "luteal",
     serves: 1,
     prepTime: "25 min",
@@ -1428,6 +1483,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lamb-kofta-wrap",
     name: "Lamb Kofta Wrap with Hummus",
+    image: "/images/recipes/meals/lamb-kofta-wrap.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -1457,6 +1513,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "large-leafy-salad-tahini",
     name: "Large Leafy Salad with Pumpkin Seeds, Sunflower Seeds, and Tahini",
+    image: "/images/recipes/meals/large-leafy-salad-tahini.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -1486,6 +1543,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lentil-spinach-salad",
     name: "Lentil and Spinach Salad",
+    image: "/images/recipes/meals/lentil-spinach-salad.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -1513,6 +1571,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "minestrone-soup",
     name: "Minestrone Soup",
+    image: "/images/recipes/meals/minestrone-soup.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -1544,6 +1603,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "minestrone-chicken",
     name: "Minestrone Soup with Shredded Chicken",
+    image: "/images/recipes/meals/minestrone-chicken.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -1574,6 +1634,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "miso-soup-tofu",
     name: "Miso Soup with Tofu and Wakame",
+    image: "/images/recipes/meals/miso-soup-tofu.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "10 min",
@@ -1600,6 +1661,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "miso-soup-rice-pickles",
     name: "Miso Soup with Rice and Pickled Veg",
+    image: "/images/recipes/meals/miso-soup-rice-pickles.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -1625,6 +1687,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "prawn-avocado-rolls",
     name: "Prawn and Avocado Rice Paper Rolls",
+    image: "/images/recipes/meals/prawn-avocado-rolls.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -1652,6 +1715,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "prawn-mango-salad",
     name: "Prawn and Mango Salad",
+    image: "/images/recipes/meals/prawn-mango-salad.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -1679,6 +1743,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "quinoa-beet-salad",
     name: "Quinoa and Roasted Beet Salad with Pumpkin Seeds",
+    image: "/images/recipes/meals/quinoa-beet-salad.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "30 min",
@@ -1706,6 +1771,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roast-chicken-avo-salad",
     name: "Roast Chicken and Avocado Salad",
+    image: "/images/recipes/meals/roast-chicken-avo-salad.png",
     phase: "luteal",
     serves: 1,
     prepTime: "10 min",
@@ -1732,6 +1798,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roast-chicken-hummus-plate",
     name: "Roast Chicken and Hummus Plate",
+    image: "/images/recipes/meals/roast-chicken-hummus-plate.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -1757,6 +1824,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roast-chicken-sandwich",
     name: "Roast Chicken Sandwich with Avocado",
+    image: "/images/recipes/meals/roast-chicken-sandwich.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -1782,6 +1850,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roasted-veg-quinoa-salad",
     name: "Roasted Veg and Quinoa Salad",
+    image: "/images/recipes/meals/roasted-veg-quinoa-salad.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1808,6 +1877,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roasted-chickpea-root-bowl",
     name: "Roasted Chickpea and Root Vegetable Bowl",
+    image: "/images/recipes/meals/roasted-chickpea-root-bowl.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -1837,6 +1907,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roasted-tomato-lentil-soup",
     name: "Roasted Tomato and Lentil Soup",
+    image: "/images/recipes/meals/roasted-tomato-lentil-soup.png",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -1865,6 +1936,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roasted-veg-frittata",
     name: "Roasted Veg Frittata (Vegan, Chickpea Flour)",
+    image: "/images/recipes/meals/roasted-veg-frittata.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -1893,6 +1965,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "salmon-rocket-salad",
     name: "Salmon and Rocket Salad",
+    image: "/images/recipes/meals/salmon-rocket-salad.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -1919,6 +1992,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "soba-noodle-sesame",
     name: "Soba Noodle Salad with Sesame Dressing",
+    image: "/images/recipes/meals/soba-noodle-sesame.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -1948,6 +2022,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "stuffed-sweet-potato-tahini",
     name: "Stuffed Sweet Potato with Tahini Slaw",
+    image: "/images/recipes/meals/stuffed-sweet-potato-tahini.png",
     phase: "luteal",
     serves: 1,
     prepTime: "40 min",
@@ -1976,6 +2051,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tuna-white-bean-salad",
     name: "Tuna and White Bean Salad",
+    image: "/images/recipes/meals/tuna-white-bean-salad.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -2001,6 +2077,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tuna-melt-sourdough",
     name: "Tuna Melt on Sourdough",
+    image: "/images/recipes/meals/tuna-melt-sourdough.png",
     phase: "luteal",
     serves: 1,
     prepTime: "10 min",
@@ -2026,6 +2103,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tuna-poke-bowl",
     name: "Tuna Poke Bowl with Edamame",
+    image: "/images/recipes/meals/tuna-poke-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -2054,6 +2132,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "turkey-avocado-wrap",
     name: "Turkey and Avocado Wrap",
+    image: "/images/recipes/meals/turkey-avocado-wrap.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -2079,6 +2158,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "vietnamese-rice-paper-rolls",
     name: "Vietnamese Rice Paper Rolls",
+    image: "/images/recipes/meals/vietnamese-rice-paper-rolls.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -2107,6 +2187,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "white-bean-kale-soup",
     name: "White Bean and Kale Soup",
+    image: "/images/recipes/meals/white-bean-kale-soup.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "25 min",
@@ -2135,6 +2216,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "beef-bolognese-pasta",
     name: "Beef Bolognese with Pasta",
+    image: "/images/recipes/meals/beef-bolognese-pasta.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "30 min",
@@ -2165,6 +2247,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "beef-mushroom-stroganoff",
     name: "Beef and Mushroom Stroganoff",
+    image: "/images/recipes/meals/beef-mushroom-stroganoff.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -2196,6 +2279,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "beef-veg-stirfry-noodles",
     name: "Beef and Vegetable Stir-fry with Noodles",
+    image: "/images/recipes/meals/beef-veg-stirfry-noodles.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -2225,6 +2309,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "baked-fish-lemon-butter",
     name: "Baked Fish with Lemon Butter and Greens",
+    image: "/images/recipes/meals/baked-fish-lemon-butter.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -2251,6 +2336,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-mushroom-pie",
     name: "Chicken and Mushroom Pie with Salad",
+    image: "/images/recipes/meals/chicken-mushroom-pie.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "45 min",
@@ -2283,6 +2369,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-stirfry-broccoli",
     name: "Chicken Stir-fry with Broccoli and Brown Rice",
+    image: "/images/recipes/meals/chicken-stirfry-broccoli.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -2311,6 +2398,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-thigh-curry",
     name: "Chicken Thigh Curry with Brown Rice",
+    image: "/images/recipes/meals/chicken-thigh-curry.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "35 min",
@@ -2341,6 +2429,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chicken-tikka-masala-rice",
     name: "Chicken Tikka Masala with Rice",
+    image: "/images/recipes/meals/chicken-tikka-masala-rice.png",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -2369,6 +2458,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "chickpea-shakshuka",
     name: "Chickpea Shakshuka with Crusty Bread",
+    image: "/images/recipes/meals/chickpea-shakshuka.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -2399,6 +2489,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "fish-pie-mashed",
     name: "Fish Pie with Mashed Potato",
+    image: "/images/recipes/meals/fish-pie-mashed.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -2428,6 +2519,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "grilled-fish-tacos",
     name: "Grilled Fish Tacos with Slaw",
+    image: "/images/recipes/meals/grilled-fish-tacos.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -2457,6 +2549,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "grilled-fish-capsicum-couscous",
     name: "Grilled Fish with Roasted Capsicum and Couscous",
+    image: "/images/recipes/meals/grilled-fish-capsicum-couscous.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -2484,6 +2577,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lamb-cutlets-roasted-veg",
     name: "Lamb Cutlets with Roasted Vegetables",
+    image: "/images/recipes/meals/lamb-cutlets-roasted-veg.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -2508,6 +2602,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lemon-herb-salmon",
     name: "Lemon Herb Salmon with Asparagus",
+    image: "/images/recipes/meals/lemon-herb-salmon.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -2535,6 +2630,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "lentil-bolognese-pasta",
     name: "Lentil Bolognese with Pasta",
+    image: "/images/recipes/meals/lentil-bolognese-pasta.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -2565,6 +2661,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "pan-seared-salmon-mash",
     name: "Pan-seared Salmon with Mashed Potato and Greens",
+    image: "/images/recipes/meals/pan-seared-salmon-mash.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "25 min",
@@ -2592,6 +2689,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "roast-chicken-roasted-veg",
     name: "Roast Chicken with Roasted Vegetables",
+    image: "/images/recipes/meals/roast-chicken-roasted-veg.png",
     phase: "luteal",
     serves: 4,
     prepTime: "60 min",
@@ -2620,6 +2718,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "salmon-mashed-kumara",
     name: "Salmon with Mashed Kumara and Greens",
+    image: "/images/recipes/meals/salmon-mashed-kumara.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -2645,6 +2744,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "salmon-roasted-veg-quinoa",
     name: "Salmon with Roasted Vegetables and Quinoa",
+    image: "/images/recipes/meals/salmon-roasted-veg-quinoa.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "25 min",
@@ -2670,6 +2770,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "salmon-teriyaki-stirfry",
     name: "Salmon Teriyaki with Stir-fried Vegetables",
+    image: "/images/recipes/meals/salmon-teriyaki-stirfry.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -2698,6 +2799,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "seared-tuna-quinoa",
     name: "Seared Tuna with Quinoa and Asian Greens",
+    image: "/images/recipes/meals/seared-tuna-quinoa.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 min",
@@ -2724,6 +2826,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "slow-cooked-beef-stew",
     name: "Slow-cooked Beef and Sweet Potato Stew",
+    image: "/images/recipes/meals/slow-cooked-beef-stew.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "2.5 hours",
@@ -2754,6 +2857,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "slow-cooked-beef-casserole",
     name: "Slow-cooked Beef Casserole with Root Vegetables",
+    image: "/images/recipes/meals/slow-cooked-beef-casserole.png",
     phase: "luteal",
     serves: 4,
     prepTime: "2.5 hours",
@@ -2784,6 +2888,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "slow-cooked-lamb-shanks",
     name: "Slow-cooked Lamb Shanks with Root Vegetables",
+    image: "/images/recipes/meals/slow-cooked-lamb-shanks.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "2.5 hours",
@@ -2814,6 +2919,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "slow-cooked-lamb-curry",
     name: "Slow-cooked Lamb Curry with Rice",
+    image: "/images/recipes/meals/slow-cooked-lamb-curry.png",
     phase: "luteal",
     serves: 4,
     prepTime: "1.5 hours",
@@ -2843,6 +2949,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "sweet-potato-burrito-bowl",
     name: "Sweet Potato and Black Bean Burrito Bowl",
+    image: "/images/recipes/meals/sweet-potato-burrito-bowl.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "25 min",
@@ -2872,6 +2979,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tempeh-broccoli-stirfry",
     name: "Tempeh and Broccoli Stir-fry",
+    image: "/images/recipes/meals/tempeh-broccoli-stirfry.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -2901,6 +3009,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tempeh-broccoli-ginger",
     name: "Tempeh Stir-fry with Broccoli and Ginger",
+    image: "/images/recipes/meals/tempeh-broccoli-ginger.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
@@ -2927,6 +3036,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tempeh-mushroom-stew",
     name: "Tempeh and Mushroom Stew with Crusty Bread",
+    image: "/images/recipes/meals/tempeh-mushroom-stew.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -2957,6 +3067,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "teriyaki-tempeh-rice",
     name: "Teriyaki Tempeh with Jasmine Rice",
+    image: "/images/recipes/meals/teriyaki-tempeh-rice.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -2984,6 +3095,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tofu-pumpkin-curry",
     name: "Tofu and Pumpkin Curry",
+    image: "/images/recipes/meals/tofu-pumpkin-curry.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -3014,6 +3126,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "tofu-thai-green-curry",
     name: "Tofu and Vegetable Thai Green Curry",
+    image: "/images/recipes/meals/tofu-thai-green-curry.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "25 min",
@@ -3043,6 +3156,7 @@ export const MEAL_PLAN_RECIPES: Recipe[] = [
   {
     id: "grilled-chicken-caesar-dinner",
     name: "Grilled Chicken Caesar Salad",
+    image: "/images/recipes/meals/grilled-chicken-caesar-dinner.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "15 min",

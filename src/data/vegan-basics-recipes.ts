@@ -4,6 +4,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "chickpea-pumpkin-pasta",
     name: "Chickpea and Pumpkin Pasta",
+    image: "/images/recipes/meals/chickpea-pumpkin-pasta.png",
     phase: "luteal",
     serves: 2,
     prepTime: "50 min",
@@ -124,6 +125,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "colourful-lentil-salad-bowl",
     name: "Colourful Lentil Salad Bowl",
+    image: "/images/recipes/meals/colourful-lentil-salad-bowl.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "20 min",
@@ -247,6 +249,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "curry-lentil-soup",
     name: "Curry Lentil Soup",
+    image: "/images/recipes/meals/curry-lentil-soup.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
@@ -307,6 +310,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "ginger-tofu-stir-fry",
     name: "Ginger Tofu Stir-Fry",
+    image: "/images/recipes/meals/ginger-tofu-stir-fry.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -339,6 +343,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "greek-lentil-meatballs",
     name: "Greek Lentil Meatballs with Tzatziki",
+    image: "/images/recipes/meals/greek-lentil-meatballs.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "50 min",
@@ -380,6 +385,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "healthy-nachos",
     name: "Healthy Nachos",
+    image: "/images/recipes/meals/healthy-nachos.png",
     phase: "luteal",
     serves: 1,
     prepTime: "15 min",
@@ -533,6 +539,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "miso-tofu-greens",
     name: "Miso Tofu and Greens",
+    image: "/images/recipes/meals/miso-tofu-greens.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -563,6 +570,7 @@ export const VEGAN_BASICS_RECIPES: Recipe[] = [
   {
     id: "moroccan-tofu-pizza",
     name: "Moroccan Tofu Pizza",
+    image: "/images/recipes/meals/moroccan-tofu-pizza.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "30 min",

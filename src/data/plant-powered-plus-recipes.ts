@@ -5,6 +5,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-ginger-green-refresher",
     name: "Ginger Green Refresher",
+    image: "/images/recipes/meals/pp-ginger-green-refresher.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -27,6 +28,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-citrus-golden-milk",
     name: "Citrus-Spiced Golden Milk",
+    image: "/images/recipes/meals/pp-citrus-golden-milk.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -51,6 +53,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-blue-zen-elixir",
     name: "The Blue Zen Elixir",
+    image: "/images/recipes/meals/pp-blue-zen-elixir.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "35 min",
@@ -72,6 +75,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-golden-green-smoothie",
     name: "Golden Green Kickstart Smoothie",
+    image: "/images/recipes/meals/pp-golden-green-smoothie.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -95,6 +99,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-citrus-berry-bliss",
     name: "Citrus Berry Belly Bliss Smoothie",
+    image: "/images/recipes/meals/pp-citrus-berry-bliss.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -119,6 +124,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-tropic-mint-kiwi",
     name: "Tropic Mint Kiwi Cooler",
+    image: "/images/recipes/meals/pp-tropic-mint-kiwi.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -142,6 +148,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-p3-biome-broth",
     name: "P3 Biome Broth",
+    image: "/images/recipes/meals/pp-p3-biome-broth.png",
     phase: "menstrual",
     serves: 10,
     prepTime: "1 hr 10 min",
@@ -171,6 +178,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-cannellini-parsnip-soup",
     name: "Creamy Cannellini and Parsnip Soup",
+    image: "/images/recipes/meals/pp-cannellini-parsnip-soup.png",
     phase: "menstrual",
     serves: 6,
     prepTime: "45 min",
@@ -201,6 +209,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-citrus-cannellini-stew",
     name: "Citrus-Kissed Cannellini Stew",
+    image: "/images/recipes/meals/pp-citrus-cannellini-stew.png",
     phase: "follicular",
     serves: 6,
     prepTime: "45 min",
@@ -235,6 +244,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-blueberry-chia-crisp",
     name: "Wild Blueberry Chia Crisp with Yogurt",
+    image: "/images/recipes/meals/pp-blueberry-chia-crisp.png",
     phase: "follicular",
     serves: 4,
     prepTime: "35 min",
@@ -267,6 +277,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-buckwheat-granola",
     name: "Cinnamon Crunch Buckwheat Granola",
+    image: "/images/recipes/meals/pp-buckwheat-granola.png",
     phase: "follicular",
     serves: 9,
     prepTime: "35 min",
@@ -298,6 +309,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-miso-veg-pasta",
     name: "Miso-Licious Vegetable Pasta",
+    image: "/images/recipes/meals/pp-miso-veg-pasta.png",
     phase: "follicular",
     serves: 4,
     prepTime: "45 min",
@@ -328,6 +340,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-herby-chickpea-quinoa",
     name: "Herby Chickpea Quinoa Salad",
+    image: "/images/recipes/meals/pp-herby-chickpea-quinoa.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -360,6 +373,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-garden-green-spud-salad",
     name: "Garden Green Spud Salad",
+    image: "/images/recipes/meals/pp-garden-green-spud-salad.png",
     phase: "follicular",
     serves: 6,
     prepTime: "50 min",
@@ -394,6 +408,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-edamame-guacamole",
     name: "Edamame Guacamole",
+    image: "/images/recipes/meals/pp-edamame-guacamole.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "10 min",
@@ -420,6 +435,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-citrus-herb-nut-mix",
     name: "Citrus and Herb Toasted Nut Mix",
+    image: "/images/recipes/meals/pp-citrus-herb-nut-mix.png",
     phase: "ovulatory",
     serves: 8,
     prepTime: "10 min",
@@ -447,6 +463,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-summer-garden-juice",
     name: "Summer Garden Blended Juice",
+    image: "/images/recipes/meals/pp-summer-garden-juice.png",
     phase: "ovulatory",
     serves: 3,
     prepTime: "7 min",
@@ -474,6 +491,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-mango-lassi",
     name: "Top Secret Mango Lassi",
+    image: "/images/recipes/meals/pp-mango-lassi.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -500,6 +518,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-pomegranate-lassi",
     name: "Spiced Pomegranate Lassi",
+    image: "/images/recipes/meals/pp-pomegranate-lassi.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -528,6 +547,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-miso-bowl",
     name: "Pre and Pro Miso Bowl",
+    image: "/images/recipes/meals/pp-miso-bowl.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -554,6 +574,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-cherry-chia-pudding",
     name: "Cherry Pie Chia Pudding",
+    image: "/images/recipes/meals/pp-cherry-chia-pudding.png",
     phase: "menstrual",
     serves: 3,
     prepTime: "40 min",
@@ -579,6 +600,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-avocado-dukkah-toast",
     name: "Avocado Toast with a Dukkah Twist",
+    image: "/images/recipes/meals/pp-avocado-dukkah-toast.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -606,6 +628,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-morning-sundae",
     name: "Morning Sundae Surprise",
+    image: "/images/recipes/meals/pp-morning-sundae.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -631,6 +654,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-citrus-kale-pasta",
     name: "Citrus Kale Pasta Salad",
+    image: "/images/recipes/meals/pp-citrus-kale-pasta.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",
@@ -658,6 +682,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-strawberry-spring-salad",
     name: "Double Strawberry Spring Salad",
+    image: "/images/recipes/meals/pp-strawberry-spring-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -683,6 +708,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-spiced-chickpea-beet-bowl",
     name: "Spiced Chickpea and Beet Yogurt Bowl",
+    image: "/images/recipes/meals/pp-spiced-chickpea-beet-bowl.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "15 min",
@@ -713,6 +739,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-panzanella-salad",
     name: "Springtime Panzanella Salad",
+    image: "/images/recipes/meals/pp-panzanella-salad.png",
     phase: "follicular",
     serves: 3,
     prepTime: "20 min",
@@ -744,6 +771,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-mulligatawny-soup",
     name: "Mulligatawny Soup",
+    image: "/images/recipes/meals/pp-mulligatawny-soup.png",
     phase: "luteal",
     serves: 4,
     prepTime: "45 min",
@@ -780,6 +808,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-cashew-citrus-bites",
     name: "Cashew Citrus Energy Bites",
+    image: "/images/recipes/meals/pp-cashew-citrus-bites.png",
     phase: "ovulatory",
     serves: 12,
     prepTime: "10 min",
@@ -809,6 +838,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-choc-berry-bites",
     name: "Chocolate-Drizzled Berry Bites",
+    image: "/images/recipes/meals/pp-choc-berry-bites.png",
     phase: "luteal",
     serves: 5,
     prepTime: "30 min",
@@ -836,6 +866,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-chili-lime-popcorn",
     name: "Smoked Chili Lime Popcorn",
+    image: "/images/recipes/meals/pp-chili-lime-popcorn.png",
     phase: "luteal",
     serves: 4,
     prepTime: "10 min",
@@ -864,6 +895,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-crispy-baked-tofu",
     name: "Crispy Baked Tofu",
+    image: "/images/recipes/meals/pp-crispy-baked-tofu.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -887,6 +919,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-best-tempeh",
     name: "The Best Tempeh",
+    image: "/images/recipes/meals/pp-best-tempeh.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -911,6 +944,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-boiled-eggs",
     name: "Soft / Medium / Hard-Boiled Eggs",
+    image: "/images/recipes/meals/pp-boiled-eggs.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -930,6 +964,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-pan-seared-salmon",
     name: "Easy Pan-Seared Salmon",
+    image: "/images/recipes/meals/pp-pan-seared-salmon.png",
     phase: "follicular",
     serves: 1,
     prepTime: "8 min",
@@ -951,6 +986,7 @@ export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
   {
     id: "pp-stovetop-shrimp",
     name: "Stovetop Shrimp",
+    image: "/images/recipes/meals/pp-stovetop-shrimp.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "7 min",

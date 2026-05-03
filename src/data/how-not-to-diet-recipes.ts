@@ -5,6 +5,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-1",
     name: "Spring Greens Soup with Roasted Asparagus",
+    image: "/images/recipes/meals/hntd-1.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -18,6 +19,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-2",
     name: "Chunky Gazpacho with Cumin",
+    image: "/images/recipes/meals/hntd-2.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",
@@ -31,6 +33,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-3",
     name: "Italian Escarole Soup",
+    image: "/images/recipes/meals/hntd-3.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -44,6 +47,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-4",
     name: "Red Bean and Butternut Caldo Verde",
+    image: "/images/recipes/meals/hntd-4.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -57,6 +61,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-5",
     name: "Borscht with Cabbage and Dill",
+    image: "/images/recipes/meals/hntd-5.png",
     phase: "menstrual",
     serves: 5,
     prepTime: "35 min",
@@ -70,6 +75,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-6",
     name: "Ribollita with White Beans and Kale",
+    image: "/images/recipes/meals/hntd-6.png",
     phase: "menstrual",
     serves: 6,
     prepTime: "35 min",
@@ -83,6 +89,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-7",
     name: "Hot and Sour Soup with Shiitakes and Greens",
+    image: "/images/recipes/meals/hntd-7.png",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
@@ -96,6 +103,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-8",
     name: "Three-Bean Soup with Turmeric and Lentils",
+    image: "/images/recipes/meals/hntd-8.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "30 min",
@@ -109,6 +117,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-9",
     name: "Ginger Carrot Soup",
+    image: "/images/recipes/meals/hntd-9.png",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
@@ -122,6 +131,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-10",
     name: "Cheesy Broccoli Soup",
+    image: "/images/recipes/meals/hntd-10.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -135,6 +145,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-11",
     name: "Ratatouille-Inspired French Lentil Soup",
+    image: "/images/recipes/meals/hntd-11.png",
     phase: "ovulatory",
     serves: 5,
     prepTime: "35 min",
@@ -148,6 +159,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-12",
     name: "My Minestrone",
+    image: "/images/recipes/meals/hntd-12.png",
     phase: "luteal",
     serves: 6,
     prepTime: "35 min",
@@ -161,6 +173,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-13",
     name: "Mushroom Barley Soup",
+    image: "/images/recipes/meals/hntd-13.png",
     phase: "luteal",
     serves: 6,
     prepTime: "60 min",
@@ -174,6 +187,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-14",
     name: "Corn Chowder",
+    image: "/images/recipes/meals/hntd-14.png",
     phase: "luteal",
     serves: 5,
     prepTime: "35 min",
@@ -187,6 +201,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-15",
     name: "Curried Lentil and Kale Soup",
+    image: "/images/recipes/meals/hntd-15.png",
     phase: "luteal",
     serves: 5,
     prepTime: "30 min",
@@ -200,6 +215,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-16",
     name: "Tuscan White Bean Soup with Roasted Fennel",
+    image: "/images/recipes/meals/hntd-16.png",
     phase: "follicular",
     serves: 5,
     prepTime: "35 min",
@@ -214,6 +230,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-17",
     name: "Summer Salad",
+    image: "/images/recipes/meals/hntd-17.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",
@@ -227,6 +244,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-18",
     name: "Waldorf Slaw",
+    image: "/images/recipes/meals/hntd-18.png",
     phase: "luteal",
     serves: 4,
     prepTime: "20 min",
@@ -240,6 +258,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-19",
     name: "Thai Green Papaya Salad",
+    image: "/images/recipes/meals/hntd-19.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "20 min",
@@ -253,6 +272,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-20",
     name: "Rye Berry Salad",
+    image: "/images/recipes/meals/hntd-20.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -266,6 +286,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-21",
     name: "Vegetable Chirashi Bowls",
+    image: "/images/recipes/meals/hntd-21.png",
     phase: "follicular",
     serves: 4,
     prepTime: "35 min",
@@ -279,6 +300,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-22",
     name: "Southwest Kale Salad with Cumin–Tomato Dressing",
+    image: "/images/recipes/meals/hntd-22.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "20 min",
@@ -292,6 +314,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-23",
     name: "Marrakech Sorghum Salad with Fresh Apricots and Mint",
+    image: "/images/recipes/meals/hntd-23.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "25 min",
@@ -305,6 +328,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-24",
     name: "Corn and Black-Eyed Pea Salad",
+    image: "/images/recipes/meals/hntd-24.png",
     phase: "ovulatory",
     serves: 5,
     prepTime: "20 min",
@@ -318,6 +342,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-25",
     name: "Barley Tabbouli Salad with Tahini Drizzle",
+    image: "/images/recipes/meals/hntd-25.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -331,6 +356,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-26",
     name: "Red Bean and Arugula Salad with Mango Balsamic Dressing",
+    image: "/images/recipes/meals/hntd-26.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "20 min",
@@ -344,6 +370,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-27",
     name: "Lettuce Cups with Curried Tempeh and Chickpeas",
+    image: "/images/recipes/meals/hntd-27.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -357,6 +384,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-28",
     name: "Watercress and Summer Fruit with Balsamic Syrup",
+    image: "/images/recipes/meals/hntd-28.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "10 min",
@@ -370,6 +398,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-29",
     name: "Roasted Potato Salad with Basil Pesto Dressing",
+    image: "/images/recipes/meals/hntd-29.png",
     phase: "luteal",
     serves: 5,
     prepTime: "35 min",
@@ -383,6 +412,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-30",
     name: "Chopped Salad Bowl",
+    image: "/images/recipes/meals/hntd-30.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",
@@ -396,6 +426,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-31",
     name: "Antipasto Vegetables with Tuscan White Bean Dressing",
+    image: "/images/recipes/meals/hntd-31.png",
     phase: "ovulatory",
     serves: 5,
     prepTime: "35 min",
@@ -409,6 +440,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-32",
     name: "Indonesian Gado-Gado",
+    image: "/images/recipes/meals/hntd-32.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -423,6 +455,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-33",
     name: "Cauliflower Alfredo Linguine with Roasted Asparagus",
+    image: "/images/recipes/meals/hntd-33.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -436,6 +469,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-34",
     name: "Pasta with Creamy Pumpkin Sauce",
+    image: "/images/recipes/meals/hntd-34.png",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
@@ -449,6 +483,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-35",
     name: "Zucchini Linguine with Mushroom–Lentil Bolognese",
+    image: "/images/recipes/meals/hntd-35.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -462,6 +497,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-36",
     name: "Penne Primavera",
+    image: "/images/recipes/meals/hntd-36.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "25 min",
@@ -475,6 +511,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-37",
     name: "Pesto-Tossed Spaghetti Squash Noodles and White Beans",
+    image: "/images/recipes/meals/hntd-37.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "40 min",
@@ -488,6 +525,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-38",
     name: "Pasta with Roasted Tomato Sauce",
+    image: "/images/recipes/meals/hntd-38.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "40 min",
@@ -501,6 +539,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-39",
     name: "Gemelli with Zucchini Meatballs and Avocado Chimichurri",
+    image: "/images/recipes/meals/hntd-39.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "40 min",
@@ -514,6 +553,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-40",
     name: "Pasta with Garlicky White Beans and Italian Kale",
+    image: "/images/recipes/meals/hntd-40.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -527,6 +567,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-41",
     name: "Root Vegetable Mac \'n Cheese",
+    image: "/images/recipes/meals/hntd-41.png",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -540,6 +581,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-42",
     name: "Green Bean and Mushroom Stroganoff",
+    image: "/images/recipes/meals/hntd-42.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -554,6 +596,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-43",
     name: "Three Sisters Stew",
+    image: "/images/recipes/meals/hntd-43.png",
     phase: "luteal",
     serves: 5,
     prepTime: "35 min",
@@ -567,6 +610,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-44",
     name: "Cheesy Cauliflower Potato Bake",
+    image: "/images/recipes/meals/hntd-44.png",
     phase: "luteal",
     serves: 5,
     prepTime: "45 min",
@@ -580,6 +624,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-45",
     name: "Ethiopian-Inspired Collard Greens and Beans",
+    image: "/images/recipes/meals/hntd-45.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "30 min",
@@ -593,6 +638,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-46",
     name: "Black Cumin–Rubbed Balsamic Roasted Cauliflower",
+    image: "/images/recipes/meals/hntd-46.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -606,6 +652,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-47",
     name: "Roasted Root Vegetables on Garlic-Braised Greens",
+    image: "/images/recipes/meals/hntd-47.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -619,6 +666,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-48",
     name: "Portobellos and Spinach on Cauliflower Mash with Miso–Mushroom Sauce",
+    image: "/images/recipes/meals/hntd-48.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -632,6 +680,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-49",
     name: "Jicama Nachos",
+    image: "/images/recipes/meals/hntd-49.png",
     phase: "ovulatory",
     serves: 5,
     prepTime: "20 min",
@@ -645,6 +694,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-50",
     name: "Cauliflower Piccata with Mushrooms and Potatoes",
+    image: "/images/recipes/meals/hntd-50.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -658,6 +708,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-51",
     name: "Balsamic Butternut, Brussels, and Beets",
+    image: "/images/recipes/meals/hntd-51.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "40 min",
@@ -671,6 +722,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-52",
     name: "Vegetable Tart",
+    image: "/images/recipes/meals/hntd-52.png",
     phase: "follicular",
     serves: 7,
     prepTime: "50 min",
@@ -684,6 +736,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-53",
     name: "Artichoke and Spinach Stuffed Portobellos",
+    image: "/images/recipes/meals/hntd-53.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -697,6 +750,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-54",
     name: "Bell Peppers Stuffed with Black Beans and Mushroom–Walnut Crumbles",
+    image: "/images/recipes/meals/hntd-54.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "45 min",
@@ -710,6 +764,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-55",
     name: "Roasted Kabocha with Kale–Cranberry Stuffing",
+    image: "/images/recipes/meals/hntd-55.png",
     phase: "luteal",
     serves: 5,
     prepTime: "50 min",
@@ -723,6 +778,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-56",
     name: "Cumin-Roasted Carrots with Chickpeas and Tomatoes",
+    image: "/images/recipes/meals/hntd-56.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "30 min",
@@ -736,6 +792,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-57",
     name: "Sage-Kissed Sweet Potato Wedges with Shallots",
+    image: "/images/recipes/meals/hntd-57.png",
     phase: "luteal",
     serves: 4,
     prepTime: "35 min",
@@ -750,6 +807,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-58",
     name: "Cottage Pie with Sweet Potato Mash",
+    image: "/images/recipes/meals/hntd-58.png",
     phase: "luteal",
     serves: 5,
     prepTime: "50 min",
@@ -763,6 +821,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-59",
     name: "Cornmeal-Crusted Buffalo Tempeh with White Bean Ranch",
+    image: "/images/recipes/meals/hntd-59.png",
     phase: "follicular",
     serves: 4,
     prepTime: "40 min",
@@ -776,6 +835,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-60",
     name: "Red Bean and Beet Cutlets",
+    image: "/images/recipes/meals/hntd-60.png",
     phase: "menstrual",
     serves: 6,
     prepTime: "45 min",
@@ -789,6 +849,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-61",
     name: "Persian-Inspired Black-Eyed Peas and Greens",
+    image: "/images/recipes/meals/hntd-61.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -802,6 +863,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-62",
     name: "Butternut–Black Bean Chili",
+    image: "/images/recipes/meals/hntd-62.png",
     phase: "luteal",
     serves: 5,
     prepTime: "45 min",
@@ -815,6 +877,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-63",
     name: "BBQ Tempeh with Sweet Potatoes and Collards",
+    image: "/images/recipes/meals/hntd-63.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "40 min",
@@ -828,6 +891,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-64",
     name: "Black Lentil Dal",
+    image: "/images/recipes/meals/hntd-64.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -841,6 +905,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-65",
     name: "West African Red Bean and Sweet Potato Stew",
+    image: "/images/recipes/meals/hntd-65.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "35 min",
@@ -854,6 +919,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-66",
     name: "Red Curry Chickpeas and Kabocha Squash",
+    image: "/images/recipes/meals/hntd-66.png",
     phase: "luteal",
     serves: 4,
     prepTime: "40 min",
@@ -867,6 +933,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-67",
     name: "Szechuan Tempeh and Broccoli",
+    image: "/images/recipes/meals/hntd-67.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -881,6 +948,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-68",
     name: "Vegetable Paella with Golden Barley",
+    image: "/images/recipes/meals/hntd-68.png",
     phase: "ovulatory",
     serves: 5,
     prepTime: "50 min",
@@ -894,6 +962,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-69",
     name: "Great Grain Tart",
+    image: "/images/recipes/meals/hntd-69.png",
     phase: "luteal",
     serves: 6,
     prepTime: "50 min",
@@ -907,6 +976,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-70",
     name: "Millet Risotto with Mushrooms, White Beans, and Spinach",
+    image: "/images/recipes/meals/hntd-70.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -920,6 +990,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-71",
     name: "Baked Grain Loaf with Umami Gravy",
+    image: "/images/recipes/meals/hntd-71.png",
     phase: "luteal",
     serves: 6,
     prepTime: "60 min",
@@ -933,6 +1004,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-72",
     name: "Turmeric Quinoa and Red Beans with Cauliflower and Chard",
+    image: "/images/recipes/meals/hntd-72.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -946,6 +1018,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-73",
     name: "Stuffed Winter Squash with Millet and Kale",
+    image: "/images/recipes/meals/hntd-73.png",
     phase: "luteal",
     serves: 3,
     prepTime: "50 min",
@@ -959,6 +1032,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-74",
     name: "Sorghum and Chickpeas with Broccoli and Tomatoes",
+    image: "/images/recipes/meals/hntd-74.png",
     phase: "follicular",
     serves: 4,
     prepTime: "35 min",
@@ -972,6 +1046,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-75",
     name: "Teff and Black Lentils over Berbere-Spiced Kale",
+    image: "/images/recipes/meals/hntd-75.png",
     phase: "menstrual",
     serves: 3,
     prepTime: "40 min",
@@ -985,6 +1060,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-76",
     name: "Grain-Stuffed Bell Peppers with Cheesy Tomato Sauce",
+    image: "/images/recipes/meals/hntd-76.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "45 min",
@@ -998,6 +1074,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-77",
     name: "Green Tea Quinoa and Peas with Roasted Asparagus",
+    image: "/images/recipes/meals/hntd-77.png",
     phase: "follicular",
     serves: 4,
     prepTime: "30 min",
@@ -1011,6 +1088,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-78",
     name: "Barley-Stuffed Cabbage Rolls",
+    image: "/images/recipes/meals/hntd-78.png",
     phase: "luteal",
     serves: 4,
     prepTime: "50 min",
@@ -1025,6 +1103,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-79",
     name: "Ful Medames",
+    image: "/images/recipes/meals/hntd-79.png",
     phase: "follicular",
     serves: 3,
     prepTime: "20 min",
@@ -1038,6 +1117,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-80",
     name: "Kale and Sweet Potato Hash",
+    image: "/images/recipes/meals/hntd-80.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -1051,6 +1131,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-81",
     name: "Stovetop Overnight Oats with Bananas and Pecans",
+    image: "/images/recipes/meals/hntd-81.png",
     phase: "luteal",
     serves: 4,
     prepTime: "10 min",
@@ -1064,6 +1145,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-82",
     name: "Quinoa Kitchari",
+    image: "/images/recipes/meals/hntd-82.png",
     phase: "luteal",
     serves: 4,
     prepTime: "30 min",
@@ -1077,6 +1159,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-83",
     name: "Chocolate-Covered Cherry BROL Bowl",
+    image: "/images/recipes/meals/hntd-83.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "10 min",
@@ -1090,6 +1173,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-84",
     name: "Millet Upma",
+    image: "/images/recipes/meals/hntd-84.png",
     phase: "luteal",
     serves: 4,
     prepTime: "25 min",
@@ -1103,6 +1187,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-85",
     name: "Chickpea–Cauliflower Scramble",
+    image: "/images/recipes/meals/hntd-85.png",
     phase: "follicular",
     serves: 4,
     prepTime: "20 min",
@@ -1116,6 +1201,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-86",
     name: "BROL Bowl with Sautéed Greens",
+    image: "/images/recipes/meals/hntd-86.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -1129,6 +1215,7 @@ export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [
   {
     id: "hntd-87",
     name: "Slow Cooker Apple Pie Oat Groats",
+    image: "/images/recipes/meals/hntd-87.png",
     phase: "luteal",
     serves: 4,
     prepTime: "10 min",
@@ -1146,6 +1233,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-88",
     name: "Fresh Berries with Chocolate Balsamic Syrup",
+    image: "/images/recipes/meals/hntd-88.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "10 min",
@@ -1159,6 +1247,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-89",
     name: "Stone Fruit Bowls",
+    image: "/images/recipes/meals/hntd-89.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",
@@ -1172,6 +1261,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-90",
     name: "Mango–Raspberry Chia Pudding",
+    image: "/images/recipes/meals/hntd-90.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -1185,6 +1275,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-91",
     name: "Crust-Free Pumpkin Pie",
+    image: "/images/recipes/meals/hntd-91.png",
     phase: "luteal",
     serves: 7,
     prepTime: "20 min",
@@ -1198,6 +1289,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-92",
     name: "Black Forest Chia Pudding",
+    image: "/images/recipes/meals/hntd-92.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -1211,6 +1303,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-93",
     name: "Baked Apples with Walnuts and Goji Berries",
+    image: "/images/recipes/meals/hntd-93.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 min",
@@ -1224,6 +1317,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-94",
     name: "Tropical Smoothie Bowls",
+    image: "/images/recipes/meals/hntd-94.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 min",
@@ -1237,6 +1331,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-95",
     name: "Ginger Roasted Pears",
+    image: "/images/recipes/meals/hntd-95.png",
     phase: "luteal",
     serves: 3,
     prepTime: "10 min",
@@ -1251,6 +1346,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-96",
     name: "Mushroom–Walnut Crumbles",
+    image: "/images/recipes/meals/hntd-96.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 min",
@@ -1264,6 +1360,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-97",
     name: "Basic BROL",
+    image: "/images/recipes/meals/hntd-97.png",
     phase: "luteal",
     serves: 4,
     prepTime: "45 min",
@@ -1277,6 +1374,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-98",
     name: "Fresh Tomato Salsa",
+    image: "/images/recipes/meals/hntd-98.png",
     phase: "ovulatory",
     serves: 6,
     prepTime: "15 min",
@@ -1290,6 +1388,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-99",
     name: "Brazil Nut Parm",
+    image: "/images/recipes/meals/hntd-99.png",
     phase: "follicular",
     serves: 4,
     prepTime: "5 min",
@@ -1303,6 +1402,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-100",
     name: "Umami Sauce Redux",
+    image: "/images/recipes/meals/hntd-100.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 min",
@@ -1316,6 +1416,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-101",
     name: "Basil Pesto",
+    image: "/images/recipes/meals/hntd-101.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "10 min",
@@ -1329,6 +1430,7 @@ export const HOW_NOT_TO_DIET_SNACK_RECIPES: Recipe[] = [
   {
     id: "hntd-102",
     name: "Salt-Free Hot Sauce",
+    image: "/images/recipes/meals/hntd-102.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 min",

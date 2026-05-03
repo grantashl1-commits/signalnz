@@ -4,6 +4,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-1",
     name: "Bagel with Cream Cheese and Turkey",
+    image: "/images/recipes/meals/glr-1.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -17,6 +18,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-2",
     name: "Tuna with Pecans and Olives",
+    image: "/images/recipes/meals/glr-2.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -30,6 +32,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-3",
     name: "Apple with Walnuts and Cheddar",
+    image: "/images/recipes/meals/glr-3.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -43,6 +46,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-4",
     name: "Full-Fat Yogurt with Fruit and Tahini",
+    image: "/images/recipes/meals/glr-4.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -56,6 +60,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-5",
     name: "Poached Eggs with Sautéed Greens",
+    image: "/images/recipes/meals/glr-5.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -69,6 +74,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-6",
     name: "Quinoa Porridge with Fried Egg",
+    image: "/images/recipes/meals/glr-6.png",
     phase: "luteal",
     serves: 1,
     prepTime: "15 min",
@@ -82,6 +88,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-7",
     name: "Sausage and Broiled Tomatoes",
+    image: "/images/recipes/meals/glr-7.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "20 min",
@@ -95,6 +102,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-8",
     name: "Scrambled Eggs with Goat Cheese",
+    image: "/images/recipes/meals/glr-8.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -108,6 +116,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-9",
     name: "Toast with Fried Egg",
+    image: "/images/recipes/meals/glr-9.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -121,6 +130,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-10",
     name: "Warm Lentils with Fried Egg",
+    image: "/images/recipes/meals/glr-10.png",
     phase: "luteal",
     serves: 1,
     prepTime: "15 min",
@@ -134,6 +144,7 @@ export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [
   {
     id: "glr-11",
     name: "Glucose-Healthy Protein Smoothie",
+    image: "/images/recipes/meals/glr-11.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -150,6 +161,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-12",
     name: "ACV Cinnamon Tea Drink",
+    image: "/images/recipes/meals/glr-12.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -163,6 +175,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-13",
     name: "ACV Salt and Cinnamon Water",
+    image: "/images/recipes/meals/glr-13.png",
     phase: "luteal",
     serves: 1,
     prepTime: "2 min",
@@ -176,6 +189,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-14",
     name: "ACV Liquid Aminos Water",
+    image: "/images/recipes/meals/glr-14.png",
     phase: "luteal",
     serves: 1,
     prepTime: "2 min",
@@ -189,6 +203,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-15",
     name: "ACV Ginger Lemon Hot Drink",
+    image: "/images/recipes/meals/glr-15.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -202,6 +217,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-16",
     name: "ACV Sparkling Water",
+    image: "/images/recipes/meals/glr-16.png",
     phase: "luteal",
     serves: 1,
     prepTime: "2 min",
@@ -215,6 +231,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-17",
     name: "ACV Fermented Vegetables",
+    image: "/images/recipes/meals/glr-17.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 min",
@@ -228,6 +245,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-18",
     name: "Mahnaz's Grandmother's Apple Cider Vinegar",
+    image: "/images/recipes/meals/glr-18.png",
     phase: "luteal",
     serves: 8,
     prepTime: "15 min active",
@@ -241,6 +259,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-19",
     name: "Apple Slices with Nut Butter",
+    image: "/images/recipes/meals/glr-19.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -254,6 +273,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-20",
     name: "Apple Slices with Cheese",
+    image: "/images/recipes/meals/glr-20.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -267,6 +287,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-21",
     name: "Bell Pepper Slices with Guacamole",
+    image: "/images/recipes/meals/glr-21.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -280,6 +301,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-22",
     name: "Celery with Nut Butter",
+    image: "/images/recipes/meals/glr-22.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -293,6 +315,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-23",
     name: "Greek Yogurt with Pecans",
+    image: "/images/recipes/meals/glr-23.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -306,6 +329,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-24",
     name: "Greek Yogurt with Nut Butter",
+    image: "/images/recipes/meals/glr-24.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -319,6 +343,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-25",
     name: "Baby Carrots with Hummus",
+    image: "/images/recipes/meals/glr-25.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "2 min",
@@ -332,6 +357,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-26",
     name: "Macadamia Nuts with Dark Chocolate",
+    image: "/images/recipes/meals/glr-26.png",
     phase: "luteal",
     serves: 1,
     prepTime: "2 min",
@@ -345,6 +371,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-27",
     name: "Pork Rinds",
+    image: "/images/recipes/meals/glr-27.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "0 min",
@@ -358,6 +385,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-28",
     name: "Hard-Boiled Egg with Hot Sauce",
+    image: "/images/recipes/meals/glr-28.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -371,6 +399,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-29",
     name: "Hunk of Cheese",
+    image: "/images/recipes/meals/glr-29.png",
     phase: "follicular",
     serves: 1,
     prepTime: "0 min",
@@ -384,6 +413,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-30",
     name: "Lightly Salted Coconut Slivers",
+    image: "/images/recipes/meals/glr-30.png",
     phase: "luteal",
     serves: 1,
     prepTime: "2 min",
@@ -397,6 +427,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-31",
     name: "Seeded Crackers with Cheese",
+    image: "/images/recipes/meals/glr-31.png",
     phase: "follicular",
     serves: 1,
     prepTime: "2 min",
@@ -410,6 +441,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-32",
     name: "Slice of Ham",
+    image: "/images/recipes/meals/glr-32.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "0 min",
@@ -423,6 +455,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-33",
     name: "Soft-Boiled Egg with Salt and Pepper",
+    image: "/images/recipes/meals/glr-33.png",
     phase: "follicular",
     serves: 1,
     prepTime: "10 min",
@@ -436,6 +469,7 @@ export const GLUCOSE_REVOLUTION_SNACK_RECIPES: Recipe[] = [
   {
     id: "glr-34",
     name: "Spoonful of Nut Butter",
+    image: "/images/recipes/meals/glr-34.png",
     phase: "luteal",
     serves: 1,
     prepTime: "0 min",

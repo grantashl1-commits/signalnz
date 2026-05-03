@@ -4,6 +4,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "fried-rice-bowl",
     name: "Fried Rice Bowl",
+    image: "/images/recipes/meals/fried-rice-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "6 min",
@@ -31,6 +32,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "lentil-veg-cottage-pie",
     name: "Lentil and Vegetable Cottage Pie",
+    image: "/images/recipes/meals/lentil-veg-cottage-pie.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "55 min",
@@ -64,6 +66,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "loaded-mediterranean-bowl",
     name: "Loaded Mediterranean Bowl",
+    image: "/images/recipes/meals/loaded-mediterranean-bowl.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "22 min",
@@ -93,6 +96,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "macro-lunch-bowl",
     name: "Macro Lunch Bowl",
+    image: "/images/recipes/meals/macro-lunch-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -120,6 +124,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "nourish-buddha-bowl",
     name: "Nourish Buddha Bowl",
+    image: "/images/recipes/meals/nourish-buddha-bowl.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "8 min",
@@ -149,6 +154,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "rainbow-crunch-quinoa-salad",
     name: "Rainbow Crunch Quinoa Salad",
+    image: "/images/recipes/meals/rainbow-crunch-quinoa-salad.png",
     phase: "follicular",
     serves: 4,
     prepTime: "22 min",
@@ -183,6 +189,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "sheet-pan-spring-veggies",
     name: "Sheet Pan Roasted Spring Veggies",
+    image: "/images/recipes/meals/sheet-pan-spring-veggies.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "40 min",
@@ -211,6 +218,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "taco-bowl",
     name: "Taco Bowl",
+    image: "/images/recipes/meals/taco-bowl.png",
     phase: "follicular",
     serves: 1,
     prepTime: "5 min",
@@ -239,6 +247,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "taco-crunch-bowl",
     name: "Taco Crunch Bowl",
+    image: "/images/recipes/meals/taco-crunch-bowl.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -271,6 +280,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "tahini-glow-bowl",
     name: "Tahini Glow Bowl",
+    image: "/images/recipes/meals/tahini-glow-bowl.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "25 min",
@@ -304,6 +314,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "turmeric-tahini-bowl",
     name: "Turmeric Tahini Bowl",
+    image: "/images/recipes/meals/turmeric-tahini-bowl.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "35 min",
@@ -337,6 +348,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "cashew-chicken-sheet-pan",
     name: "Cashew Chicken Sheet Pan",
+    image: "/images/recipes/meals/cashew-chicken-sheet-pan.png",
     phase: "follicular",
     serves: 4,
     prepTime: "35 min",
@@ -371,6 +383,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "green-goddess-sweet-potato-bowl",
     name: "Green Goddess Sweet Potato Bowl",
+    image: "/images/recipes/meals/green-goddess-sweet-potato-bowl.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "40 min",
@@ -406,6 +419,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "hummus-sweet-potato-bowl",
     name: "Hummus Sweet Potato Bowl",
+    image: "/images/recipes/meals/hummus-sweet-potato-bowl.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -432,6 +446,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "mexican-smash-tacos",
     name: "Mexican-Style Smash Tacos",
+    image: "/images/recipes/meals/mexican-smash-tacos.png",
     phase: "follicular",
     serves: 4,
     prepTime: "22 min",
@@ -467,6 +482,7 @@ export const BOWL_MEAL_RECIPES: Recipe[] = [
   {
     id: "sheet-pan-veggies-tofu-tahini",
     name: "Sheet Pan Roasted Veggies & Tofu with Tahini Sauce",
+    image: "/images/recipes/meals/sheet-pan-veggies-tofu-tahini.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "55 min",

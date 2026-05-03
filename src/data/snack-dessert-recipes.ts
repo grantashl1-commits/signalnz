@@ -144,6 +144,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "mixed-berry-chia-pudding",
     name: "Mixed Berry Chia Pudding",
+    image: "/images/recipes/meals/mixed-berry-chia-pudding.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",

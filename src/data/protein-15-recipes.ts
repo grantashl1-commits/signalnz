@@ -4,6 +4,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-salmon-burger",
     name: "Dill and Caper Cream Salmon Burger",
+    image: "/images/recipes/meals/p15-salmon-burger.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -16,6 +17,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-burger",
     name: "Asian-Style Spiced Chicken Burger",
+    image: "/images/recipes/meals/p15-chicken-burger.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -28,6 +30,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-open-steak-sandwich",
     name: "Open Steak and Blue Cheese Sandwich",
+    image: "/images/recipes/meals/p15-open-steak-sandwich.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -40,6 +43,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-thai-chicken-curry",
     name: "Thai Green Chicken Curry with Coconut and Chickpeas",
+    image: "/images/recipes/meals/p15-thai-chicken-curry.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -52,6 +56,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-thai-prawn-curry-quinoa",
     name: "Thai Prawn Curry with Spiced Quinoa",
+    image: "/images/recipes/meals/p15-thai-prawn-curry-quinoa.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 mins",
@@ -64,6 +69,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-prawn-tacos",
     name: "Prawn and Avocado Tacos",
+    image: "/images/recipes/meals/p15-prawn-tacos.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 mins",
@@ -76,6 +82,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-satay",
     name: "Chicken Satay Skewers with Peanut Sauce",
+    image: "/images/recipes/meals/p15-chicken-satay.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -88,6 +95,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-ginger-chicken-fried-rice",
     name: "Ginger and Oyster Sauce Chicken with Egg-Fried Rice",
+    image: "/images/recipes/meals/p15-ginger-chicken-fried-rice.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -100,6 +108,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-buffalo-chicken-bowl",
     name: "Buffalo-Style Peri-Peri Chicken Bowl",
+    image: "/images/recipes/meals/p15-buffalo-chicken-bowl.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -112,6 +121,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-cowboy-beef-burger",
     name: "Cowboy Beef Burger with Corn Relish",
+    image: "/images/recipes/meals/p15-cowboy-beef-burger.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -124,6 +134,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-hoisin-beef-stir-fry",
     name: "Hoisin Beef Noodle Stir-Fry",
+    image: "/images/recipes/meals/p15-hoisin-beef-stir-fry.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -136,6 +147,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-steak-black-bean-burritos",
     name: "Steak and Black Bean Burritos",
+    image: "/images/recipes/meals/p15-steak-black-bean-burritos.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -148,6 +160,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lamb-koftas",
     name: "Spiced Lamb Koftas with Tzatziki",
+    image: "/images/recipes/meals/p15-lamb-koftas.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -160,6 +173,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-baked-eggs-ham",
     name: "Baked Eggs with Creamed Spinach and Ham",
+    image: "/images/recipes/meals/p15-baked-eggs-ham.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -172,6 +186,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-butter-salmon-veg",
     name: "Garlic Parsley Butter Salmon with Potatoes",
+    image: "/images/recipes/meals/p15-butter-salmon-veg.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -184,6 +199,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-crumbed-cod-bean-mash",
     name: "Herb-Crumbed Cod with Cannellini Bean Mash",
+    image: "/images/recipes/meals/p15-crumbed-cod-bean-mash.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -196,6 +212,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-sea-bass-pomegranate-rice",
     name: "Pan-Seared Sea Bass with Herbed Pomegranate Rice",
+    image: "/images/recipes/meals/p15-sea-bass-pomegranate-rice.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -208,6 +225,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-coronation-chicken-chickpeas",
     name: "Coronation Chicken with Spinach and Chickpeas",
+    image: "/images/recipes/meals/p15-coronation-chicken-chickpeas.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -220,6 +238,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-garlic-butter-chicken-quinoa",
     name: "Garlic Butter Baked Chicken with Herbed Quinoa",
+    image: "/images/recipes/meals/p15-garlic-butter-chicken-quinoa.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -232,6 +251,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-crumbed-chicken-ratatouille",
     name: "Golden Sesame-Crumbed Chicken with Ratatouille",
+    image: "/images/recipes/meals/p15-crumbed-chicken-ratatouille.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -244,6 +264,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-pork-chops-cannellini",
     name: "Pan-Fried Pork Chops with Cannellini Beans and Greens",
+    image: "/images/recipes/meals/p15-pork-chops-cannellini.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 mins",
@@ -256,6 +277,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-beef-mushroom-cottage-pie",
     name: "Cheddar-Topped Beef and Mushroom Cottage Pie",
+    image: "/images/recipes/meals/p15-beef-mushroom-cottage-pie.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -268,6 +290,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-jacket-potato-chilli",
     name: "Jacket Potatoes with Beef and Bean Chilli",
+    image: "/images/recipes/meals/p15-jacket-potato-chilli.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -280,6 +303,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-sticky-steak-crushed-potato",
     name: "Sticky Soy Steak Stir-Fry with Crushed Potatoes",
+    image: "/images/recipes/meals/p15-sticky-steak-crushed-potato.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -292,6 +316,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-dukkah-steak-corn",
     name: "Dukkah-Crusted Sirloin with Chilli Butter Corn",
+    image: "/images/recipes/meals/p15-dukkah-steak-corn.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -304,6 +329,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-steak-parmesan-mash",
     name: "Steak with Parmesan Mash",
+    image: "/images/recipes/meals/p15-steak-parmesan-mash.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -316,6 +342,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-moroccan-lamb-squash",
     name: "Moroccan-Spiced Lamb with Butternut Squash and Herbed Couscous",
+    image: "/images/recipes/meals/p15-moroccan-lamb-squash.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -328,6 +355,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-duck-pancakes",
     name: "Slow-Rendered Duck Pancakes with Hoisin Sauce",
+    image: "/images/recipes/meals/p15-duck-pancakes.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -340,6 +368,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-three-cheese-pasta-salad",
     name: "Three Cheese Pasta Salad",
+    image: "/images/recipes/meals/p15-three-cheese-pasta-salad.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 mins",
@@ -352,6 +381,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-mushroom-chickpea-stroganoff",
     name: "Mushroom and Chickpea Stroganoff",
+    image: "/images/recipes/meals/p15-mushroom-chickpea-stroganoff.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 mins",
@@ -364,6 +394,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-smoked-salmon-broad-bean-pasta",
     name: "Hot-Smoked Salmon with Broad Beans and Lemon Pasta",
+    image: "/images/recipes/meals/p15-smoked-salmon-broad-bean-pasta.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -376,6 +407,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-thai-seafood-broth",
     name: "Thai Seafood Broth with Egg Noodles",
+    image: "/images/recipes/meals/p15-thai-seafood-broth.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "10 mins",
@@ -388,6 +420,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lemon-garlic-prawn-stir-fry",
     name: "Lemon and Garlic Prawn Stir-Fry with Egg Noodles",
+    image: "/images/recipes/meals/p15-lemon-garlic-prawn-stir-fry.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 mins",
@@ -400,6 +433,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-quick-chicken-ramen",
     name: "Quick Chicken Ramen",
+    image: "/images/recipes/meals/p15-quick-chicken-ramen.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -412,6 +446,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-pesto-pasta",
     name: "Chicken and Pesto Pasta with Sun-Dried Tomatoes",
+    image: "/images/recipes/meals/p15-chicken-pesto-pasta.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -424,6 +459,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-chicken-marsala-pasta",
     name: "Chicken Marsala Pasta with Mushrooms",
+    image: "/images/recipes/meals/p15-chicken-marsala-pasta.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -436,6 +472,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-harissa-chicken-pasta",
     name: "Harissa Chicken and Roasted Pepper Pasta",
+    image: "/images/recipes/meals/p15-harissa-chicken-pasta.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -448,6 +485,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lemon-oregano-chicken-orzo",
     name: "Lemon and Oregano Chicken with Orzo",
+    image: "/images/recipes/meals/p15-lemon-oregano-chicken-orzo.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -460,6 +498,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-smoky-chicken-pasta-bake",
     name: "Smoky Paprika Chicken and Broccoli Pasta Bake",
+    image: "/images/recipes/meals/p15-smoky-chicken-pasta-bake.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -472,6 +511,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-quick-beef-bolognese",
     name: "Quick Beef Bolognese with Herby Spaghetti",
+    image: "/images/recipes/meals/p15-quick-beef-bolognese.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -484,6 +524,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-curry-meatball-pasta",
     name: "Creamy Curry Meatball Pasta",
+    image: "/images/recipes/meals/p15-curry-meatball-pasta.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -496,6 +537,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-sesame-chickpea-cakes",
     name: "Sesame-Coated Chickpea Cakes with Coriander Lime Dip",
+    image: "/images/recipes/meals/p15-sesame-chickpea-cakes.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -508,6 +550,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-lentil-chickpea-halloumi",
     name: "Lentil, Chickpea and Broccoli with Golden Halloumi",
+    image: "/images/recipes/meals/p15-lentil-chickpea-halloumi.png",
     phase: "follicular",
     serves: 4,
     prepTime: "10 mins",
@@ -520,6 +563,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-quinoa-mushroom-tofu",
     name: "Quinoa with Ginger Mushrooms and Crispy Tofu",
+    image: "/images/recipes/meals/p15-quinoa-mushroom-tofu.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -532,6 +576,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-mixed-bean-chilli-bowl",
     name: "Spicy Mixed Bean Chilli Bowl",
+    image: "/images/recipes/meals/p15-mixed-bean-chilli-bowl.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 mins",
@@ -544,6 +589,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-tempeh-miso-roasted-veg",
     name: "Crispy Tempeh with Lemon Miso Dressing and Roasted Veg",
+    image: "/images/recipes/meals/p15-tempeh-miso-roasted-veg.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -556,6 +602,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-sweet-potato-lentil-goats-cheese",
     name: "Roasted Sweet Potato with Lentils and Goat's Cheese",
+    image: "/images/recipes/meals/p15-sweet-potato-lentil-goats-cheese.png",
     phase: "luteal",
     serves: 4,
     prepTime: "15 mins",
@@ -568,6 +615,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-butternut-lentil-stew",
     name: "Roasted Butternut Squash and Lentil Stew",
+    image: "/images/recipes/meals/p15-butternut-lentil-stew.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "15 mins",
@@ -580,6 +628,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-mushroom-lentil-bolognese",
     name: "Mushroom and Lentil Vegetable Bolognese",
+    image: "/images/recipes/meals/p15-mushroom-lentil-bolognese.png",
     phase: "menstrual",
     serves: 4,
     prepTime: "10 mins",
@@ -592,6 +641,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-aubergine-lentil-bake",
     name: "Aubergine and Lentil Bake with Egg Custard Topping",
+    image: "/images/recipes/meals/p15-aubergine-lentil-bake.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "15 mins",
@@ -604,6 +654,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-ratatouille-feta-omelette",
     name: "Ratatouille and Feta Baked Omelette",
+    image: "/images/recipes/meals/p15-ratatouille-feta-omelette.png",
     phase: "follicular",
     serves: 4,
     prepTime: "5 mins",
@@ -616,6 +667,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-spinach-olive-quiche",
     name: "Spinach, Olive and Feta Quiche",
+    image: "/images/recipes/meals/p15-spinach-olive-quiche.png",
     phase: "follicular",
     serves: 4,
     prepTime: "15 mins",
@@ -628,6 +680,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-soba-noodle-edamame",
     name: "Soba Noodle and Edamame Salad",
+    image: "/images/recipes/meals/p15-soba-noodle-edamame.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 mins",
@@ -640,6 +693,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-black-bean-mixed-veg-salad",
     name: "Black Bean and Mixed Veg Salad",
+    image: "/images/recipes/meals/p15-black-bean-mixed-veg-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "10 mins",
@@ -652,6 +706,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-spiced-chickpea-avocado-salad",
     name: "Crispy Spiced Chickpea and Avocado Salad",
+    image: "/images/recipes/meals/p15-spiced-chickpea-avocado-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 mins",
@@ -664,6 +719,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-spinach-lentil-beetroot-salad",
     name: "Spinach, Lentil and Beetroot Salad",
+    image: "/images/recipes/meals/p15-spinach-lentil-beetroot-salad.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 mins",
@@ -676,6 +732,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-scrambled-egg-salsa-wraps",
     name: "Scrambled Egg and Fresh Salsa Wraps",
+    image: "/images/recipes/meals/p15-scrambled-egg-salsa-wraps.png",
     phase: "follicular",
     serves: 2,
     prepTime: "10 mins",
@@ -688,6 +745,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-boiled-egg-hummus-wraps",
     name: "Boiled Egg and Hummus Wraps",
+    image: "/images/recipes/meals/p15-boiled-egg-hummus-wraps.png",
     phase: "follicular",
     serves: 2,
     prepTime: "10 mins",
@@ -700,6 +758,7 @@ export const PROTEIN_15_RECIPES: Recipe[] = [
   {
     id: "p15-soft-boiled-egg-quinoa",
     name: "Soft-Boiled Egg and Quinoa Salad",
+    image: "/images/recipes/meals/p15-soft-boiled-egg-quinoa.png",
     phase: "follicular",
     serves: 2,
     prepTime: "10 mins",
