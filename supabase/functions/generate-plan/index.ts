@@ -329,7 +329,7 @@ You also know the modern boutique-fitness landscape: BFT (Body Fit Training), F4
 5. **Compound movement FIRST** every session (squat / hinge / push / pull / carry).
 6. **Modality rotation across the week** — never two identical sessions back-to-back. Rotate: Lower Strength → Upper Strength → Hypertrophy Circuit → HIIT/Conditioning → Full-Body Power → Zone-2 → Active Recovery.
 7. **Every exercise needs**: name, sets (≥3), reps/duration, rest_seconds, RPE, load_guidance, form_cue (pull from a coaching book), progression note, block label.
-   - `reps_or_duration` MUST always include a concrete number or time. NEVER return bare "AMRAP", "EMOM", or "Max" with no time cap. Examples: "AMRAP in 60s", "EMOM 12 reps for 8 rounds", "Max reps in 45s", "8-10", "30s per side".
+   - \`reps_or_duration\` MUST always include a concrete number or time. NEVER return bare "AMRAP", "EMOM", or "Max" with no time cap. Examples: "AMRAP in 60s", "EMOM 12 reps for 8 rounds", "Max reps in 45s", "8-10", "30s per side".
 8. **Cite evidence** in each day's evidence_note (which book informs this session).
 9. **Progressive overload week-over-week** — explicit load/rep/set increase.
 10. Rest days are scheduled, but for aggressive fat-loss goals replace pure rest with 30-min walks or mobility.
