@@ -62,3 +62,5 @@ verify_jwt = false
 
 [functions.chore-illustration]
 verify_jwt = false
+[functions.recipe-from-url]
+verify_jwt = false
