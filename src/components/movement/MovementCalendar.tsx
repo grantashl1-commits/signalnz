@@ -29,6 +29,14 @@ function deriveBodyTags(exercises: any[], notes?: string | null): string[] {
 }
 
 /* ── Types ── */
+interface ZonesSummary {
+  z1_mins?: number;
+  z2_mins?: number;
+  z3_mins?: number;
+  z4_mins?: number;
+  z5_mins?: number;
+}
+
 interface WorkoutLog {
   id: string;
   session_date: string;
@@ -39,7 +47,10 @@ interface WorkoutLog {
   exercises: any[];
   calories: number | null;
   avg_bpm: number | null;
+  max_bpm?: number | null;
   zone2_plus_percent: number | null;
+  hr_session_id?: string | null;
+  zones_summary?: ZonesSummary | null;
   template_title?: string;
   session_type?: string;
 }
@@ -52,6 +63,23 @@ const TAG_COLORS: Record<string, string> = {
   Flexibility: "bg-[hsl(var(--phase-luteal)/0.15)] text-[hsl(var(--phase-luteal))]",
   "Full Body": "bg-accent text-accent-foreground",
   General: "bg-secondary text-muted-foreground",
+};
+
+// Zone palette — matches HR_ZONES colour intent
+const ZONE_COLORS: Record<keyof ZonesSummary, string> = {
+  z1_mins: "hsl(var(--muted-foreground) / 0.4)", // recovery — soft grey
+  z2_mins: "hsl(160 60% 45%)",                    // aerobic base — green
+  z3_mins: "hsl(45 90% 55%)",                     // tempo — amber
+  z4_mins: "hsl(20 85% 55%)",                     // threshold — orange
+  z5_mins: "hsl(0 75% 55%)",                      // VO2 max — red
+};
+
+const ZONE_LABELS: Record<keyof ZonesSummary, string> = {
+  z1_mins: "Z1 Recovery",
+  z2_mins: "Z2 Aerobic",
+  z3_mins: "Z3 Tempo",
+  z4_mins: "Z4 Threshold",
+  z5_mins: "Z5 VO2",
 };
 
 // NZ-safe local date string (YYYY-MM-DD in Pacific/Auckland)
@@ -83,7 +111,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
       if (!user) { setLoading(false); return; }
       supabase
         .from("workout_logs")
-        .select("id, session_date, workout_template_id, duration_minutes, notes, completed, exercises, calories, avg_bpm, zone2_plus_percent")
+        .select("id, session_date, workout_template_id, duration_minutes, notes, completed, exercises, calories, avg_bpm, max_bpm, zone2_plus_percent, hr_session_id")
         .eq("user_id", user.id)
         .eq("completed", true)
         .gte("session_date", monthStart)
@@ -105,11 +133,25 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
             }
           }
 
+          // Fetch zone summaries for all linked hr_sessions
+          const hrSessionIds = [...new Set(data.filter((d: any) => d.hr_session_id).map((d: any) => d.hr_session_id))];
+          let hrMap: Record<string, ZonesSummary> = {};
+          if (hrSessionIds.length > 0) {
+            const { data: hrSessions } = await (supabase as any)
+              .from("hr_sessions")
+              .select("id, zones_summary")
+              .in("id", hrSessionIds);
+            if (hrSessions) {
+              for (const h of hrSessions) hrMap[h.id] = (h.zones_summary || {}) as ZonesSummary;
+            }
+          }
+
           const enriched: WorkoutLog[] = data.map((d: any) => ({
             ...d,
             exercises: d.exercises || [],
             template_title: d.workout_template_id ? templateMap[d.workout_template_id]?.title : undefined,
             session_type: d.workout_template_id ? templateMap[d.workout_template_id]?.session_type : undefined,
+            zones_summary: d.hr_session_id ? hrMap[d.hr_session_id] : null,
           }));
 
           setLogs(enriched);
@@ -337,6 +379,43 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                       </span>
                     )}
                   </div>
+
+                  {/* Zone breakdown bar */}
+                  {log.zones_summary && (() => {
+                    const zones = log.zones_summary;
+                    const keys: (keyof ZonesSummary)[] = ["z1_mins", "z2_mins", "z3_mins", "z4_mins", "z5_mins"];
+                    const total = keys.reduce((s, k) => s + (zones[k] || 0), 0);
+                    if (total <= 0) return null;
+                    return (
+                      <div className="space-y-1">
+                        <div className="flex h-2 w-full overflow-hidden rounded-full bg-secondary/40">
+                          {keys.map(k => {
+                            const mins = zones[k] || 0;
+                            if (mins <= 0) return null;
+                            return (
+                              <div
+                                key={k}
+                                title={`${ZONE_LABELS[k]} · ${mins.toFixed(1)} min`}
+                                style={{ width: `${(mins / total) * 100}%`, backgroundColor: ZONE_COLORS[k] }}
+                              />
+                            );
+                          })}
+                        </div>
+                        <div className="flex flex-wrap gap-x-2 gap-y-0.5">
+                          {keys.map(k => {
+                            const mins = zones[k] || 0;
+                            if (mins <= 0) return null;
+                            return (
+                              <span key={k} className="flex items-center gap-1 font-body text-[9px] text-muted-foreground">
+                                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: ZONE_COLORS[k] }} />
+                                {ZONE_LABELS[k].split(" ")[0]} {mins.toFixed(0)}m
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Body-part tags */}
                   {bodyTags.length > 0 && (

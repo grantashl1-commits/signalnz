@@ -854,7 +854,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
           <button
             onClick={async () => {
-              // Log the AI session to workout_logs
+              // Log the AI session to workout_logs WITH HR session data
               if (user) {
                 const exercisesPayload = aiExercises.map((ex: any) => ({
                   exercise_name: ex.name,
@@ -862,17 +862,93 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
                   reps: ex.reps_or_duration || ex.reps,
                   completed: true,
                 }));
+
+                // ── Compute real session metrics from live timer + HR trace ──
+                const trace = hrTraceRef.current;
+                const liveDurationSecs = sessionStartedAt
+                  ? Math.floor((Date.now() - sessionStartedAt) / 1000)
+                  : 0;
+                const finalDurationMins = liveDurationSecs > 30
+                  ? Math.max(1, Math.round(liveDurationSecs / 60))
+                  : (aiSession.duration_minutes || 45);
+
+                const maxHR = getMaxHR(profileAge);
+                const zoneMins = [0, 0, 0, 0, 0];
+                trace.forEach(d => {
+                  const z = getZoneForBPM(d.bpm, maxHR);
+                  zoneMins[z.zone - 1] += 2 / 60;
+                });
+                const totalSampleMins = zoneMins.reduce((s, m) => s + m, 0);
+                const avgBpm = trace.length > 0
+                  ? Math.round(trace.reduce((s, d) => s + d.bpm, 0) / trace.length)
+                  : (hr.connected && hr.bpm > 0 ? hr.bpm : null);
+                const maxBpm = trace.length > 0 ? Math.max(...trace.map(d => d.bpm)) : avgBpm;
+                const z2PlusPercent = totalSampleMins > 0
+                  ? Math.round(((zoneMins[1] + zoneMins[2] + zoneMins[3] + zoneMins[4]) / totalSampleMins) * 100)
+                  : null;
+                const calories = avgBpm && finalDurationMins > 0
+                  ? estimateCalories(avgBpm, finalDurationMins, profileWeight, profileAge)
+                  : null;
+
+                // Persist HR session if any HR data captured
+                let hrSessionId: string | null = null;
+                if (trace.length > 0 || (hr.connected && hr.bpm > 0)) {
+                  try {
+                    const bpmTrace = trace
+                      .filter((_, i) => i % 5 === 0 || i === trace.length - 1)
+                      .map(d => ({
+                        minute: parseFloat((d.time / 60).toFixed(2)),
+                        bpm: d.bpm,
+                        zone: getZoneForBPM(d.bpm, maxHR).zone,
+                      }));
+                    const zonesSummary = HR_ZONES.reduce((acc, z, i) => ({
+                      ...acc,
+                      [`z${z.zone}_mins`]: Math.round(zoneMins[i] * 10) / 10,
+                    }), {} as Record<string, number>);
+
+                    const { data: hrData } = await (supabase as any)
+                      .from("hr_sessions")
+                      .insert({
+                        user_id: user.id,
+                        session_date: todayStr,
+                        workout_name: aiSession.title || "AI Session",
+                        duration_minutes: finalDurationMins,
+                        bpm_trace: bpmTrace,
+                        avg_bpm: avgBpm,
+                        max_bpm: maxBpm,
+                        calories,
+                        zones_summary: zonesSummary,
+                        zone2_plus_percent: z2PlusPercent,
+                        cycle_phase: currentPhase,
+                        cycle_day: currentCycleDay,
+                      })
+                      .select("id")
+                      .single();
+                    if (hrData) hrSessionId = hrData.id;
+                  } catch {}
+                }
+
                 await (supabase as any).from("workout_logs").insert({
                   user_id: user.id,
                   workout_template_id: null,
                   exercises: exercisesPayload,
-                  duration_minutes: aiSession.duration_minutes || 45,
+                  duration_minutes: finalDurationMins,
                   notes: `AI plan: ${aiSession.title || "Session"}`,
                   completed: true,
                   cycle_phase: currentPhase,
                   session_date: todayStr,
-                  avg_bpm: hr.connected && hr.bpm > 0 ? hr.bpm : null,
+                  hr_session_id: hrSessionId,
+                  avg_bpm: avgBpm,
+                  max_bpm: maxBpm,
+                  calories,
+                  zone2_plus_percent: z2PlusPercent,
                 });
+
+                // Reset live state
+                setSessionStartedAt(null);
+                startedAtRef.current = null;
+                hrTraceRef.current = [];
+                setElapsedSecs(0);
 
                 // Advance current_session_index in user_plans
                 const { data: planData } = await supabase
