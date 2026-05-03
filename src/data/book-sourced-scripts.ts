@@ -1,7 +1,7 @@
 // ── Book-Sourced Guided Practices ────────────────────────
 // Generated from 22 reference PDFs covering mindfulness, stoicism,
 // inner work, vulnerability, and body awareness.
-// Voice: ElevenLabs Lily (pFZP5JQG7iQjIQuC4Bku) at 0.75 speed
+// Voice: routed via resolveScriptVoiceId — Regina (female) for most, Theo (male) for male-authored sources.
 
 import type { MeditationScript } from "./meditation-scripts";
 
