@@ -5,6 +5,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "black-bean-fajita-rice",
     name: "One-Pot Black Bean Fajitas and Rice",
+    image: "/images/recipes/meals/black-bean-fajita-rice.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -34,6 +35,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "pb-maple-overnight-oats",
     name: "Peanut Butter and Maple Syrup Overnight Oats",
+    image: "/images/recipes/meals/pb-maple-overnight-oats.png",
     phase: "luteal",
     serves: 4,
     prepTime: "10 min + overnight",
@@ -61,6 +63,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "thai-edamame-quinoa-salad",
     name: "Spicy Thai Edamame and Quinoa Salad",
+    image: "/images/recipes/meals/thai-edamame-quinoa-salad.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -95,6 +98,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "tahini-tempeh-wraps",
     name: "Tahini Mustard Tempeh Wraps",
+    image: "/images/recipes/meals/tahini-tempeh-wraps.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -131,6 +135,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "egg-roll-bowl",
     name: "Vegan Egg Roll Bowl",
+    image: "/images/recipes/meals/egg-roll-bowl.png",
     phase: "follicular",
     serves: 4,
     prepTime: "25 min",
@@ -162,6 +167,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "white-bean-pasta-bake",
     name: "White Bean Pasta Bake",
+    image: "/images/recipes/meals/white-bean-pasta-bake.png",
     phase: "luteal",
     serves: 4,
     prepTime: "45 min",
@@ -196,6 +202,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "banana-cinnamon-pancakes",
     name: "Banana and Cinnamon Pancakes",
+    image: "/images/recipes/meals/banana-cinnamon-pancakes.png",
     phase: "follicular",
     serves: 1,
     prepTime: "15 min",
@@ -222,6 +229,7 @@ export const EXTRA_BATCH_MEAL_RECIPES: Recipe[] = [
   {
     id: "banana-breakfast-bites",
     name: "Banana Breakfast Bites",
+    image: "/images/recipes/meals/banana-breakfast-bites.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -253,6 +261,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "snickers-slice",
     name: "Snickers Slice",
+    image: "/images/recipes/meals/snickers-slice.png",
     phase: "luteal",
     serves: 24,
     prepTime: "30 min + chilling",
@@ -281,6 +290,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "caramel-slice",
     name: "Caramel Slice",
+    image: "/images/recipes/meals/caramel-slice.png",
     phase: "luteal",
     serves: 16,
     prepTime: "30 min + chilling",
@@ -308,6 +318,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "choc-hazelnut-freezer-pie",
     name: "Chocolate Hazelnut Freezer Pie",
+    image: "/images/recipes/meals/choc-hazelnut-freezer-pie.png",
     phase: "luteal",
     serves: 20,
     prepTime: "30 min + freeze",
@@ -337,6 +348,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "choc-chip-chickpea-cookies",
     name: "Chocolate Chip Chickpea Cookies",
+    image: "/images/recipes/meals/choc-chip-chickpea-cookies.png",
     phase: "luteal",
     serves: 8,
     prepTime: "20 min",
@@ -362,6 +374,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "pb-crumble-balls",
     name: "Chocolate Peanut Butter Crumble Balls",
+    image: "/images/recipes/meals/pb-crumble-balls.png",
     phase: "luteal",
     serves: 10,
     prepTime: "20 min + soak",
@@ -386,6 +399,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "choc-raspberry-ripple-cake",
     name: "Chocolate Raspberry Ripple Cake",
+    image: "/images/recipes/meals/choc-raspberry-ripple-cake.png",
     phase: "luteal",
     serves: 16,
     prepTime: "55 min",
@@ -418,6 +432,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "coconut-vanilla-ice-cream",
     name: "Coconut and Vanilla Ice Cream",
+    image: "/images/recipes/meals/coconut-vanilla-ice-cream.png",
     phase: "luteal",
     serves: 4,
     prepTime: "10 min + freeze",
@@ -440,6 +455,7 @@ export const EXTRA_BATCH_SNACK_RECIPES: Recipe[] = [
   {
     id: "cookie-dough-bliss-balls",
     name: "Cookie Dough Bliss Balls",
+    image: "/images/recipes/meals/cookie-dough-bliss-balls.png",
     phase: "luteal",
     serves: 6,
     prepTime: "20 min",

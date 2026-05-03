@@ -4,6 +4,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "easy-banana-cake",
     name: "Easy Banana Cake",
+    image: "/images/recipes/meals/easy-banana-cake.png",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -36,6 +37,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "choc-fudge-cookies-gf",
     name: "Gluten-Free Double Choc Fudge Cookies",
+    image: "/images/recipes/meals/choc-fudge-cookies-gf.png",
     phase: "luteal",
     serves: 12,
     prepTime: "20 min",
@@ -68,6 +70,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "hedgehog-slice",
     name: "Hedgehog Slice",
+    image: "/images/recipes/meals/hedgehog-slice.png",
     phase: "luteal",
     serves: 16,
     prepTime: "20 min",
@@ -96,6 +99,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "homemade-ferrero-rochers",
     name: "Homemade Ferrero Rochers",
+    image: "/images/recipes/meals/homemade-ferrero-rochers.png",
     phase: "luteal",
     serves: 3,
     prepTime: "15 min",
@@ -121,6 +125,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "lamington-bliss-balls",
     name: "Lamington Bliss Balls",
+    image: "/images/recipes/meals/lamington-bliss-balls.png",
     phase: "follicular",
     serves: 12,
     prepTime: "10 min",
@@ -144,6 +149,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "mixed-berry-chia-pudding",
     name: "Mixed Berry Chia Pudding",
+    image: "/images/recipes/meals/mixed-berry-chia-pudding.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
@@ -166,6 +172,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "no-bake-choc-banana-fudge",
     name: "No-Bake Choc Banana Fudge",
+    image: "/images/recipes/meals/no-bake-choc-banana-fudge.png",
     phase: "luteal",
     serves: 8,
     prepTime: "10 min",
@@ -192,6 +199,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "no-bake-muesli-bars",
     name: "No-Bake Muesli Bars",
+    image: "/images/recipes/meals/no-bake-muesli-bars.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "20 min",
@@ -218,6 +226,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "no-egg-choc-custard",
     name: "No-Egg Chocolate Custard",
+    image: "/images/recipes/meals/no-egg-choc-custard.png",
     phase: "luteal",
     serves: 2,
     prepTime: "10 min",
@@ -243,6 +252,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "orange-choc-avocado-mousse",
     name: "Orange & Chocolate Avocado Mousse",
+    image: "/images/recipes/meals/orange-choc-avocado-mousse.png",
     phase: "ovulatory",
     serves: 1,
     prepTime: "5 min",
@@ -266,6 +276,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "peanut-butter-mousse",
     name: "Peanut Butter Mousse",
+    image: "/images/recipes/meals/peanut-butter-mousse.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -294,6 +305,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "peanut-butter-rice-cups",
     name: "Peanut Butter Rice Cups",
+    image: "/images/recipes/meals/peanut-butter-rice-cups.png",
     phase: "luteal",
     serves: 12,
     prepTime: "20 min",
@@ -322,6 +334,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "secret-centre-choc-cookies",
     name: "Secret Centre Chocolate Cookies",
+    image: "/images/recipes/meals/secret-centre-choc-cookies.png",
     phase: "luteal",
     serves: 16,
     prepTime: "20 min",
@@ -348,6 +361,7 @@ export const SNACK_DESSERT_RECIPES: Recipe[] = [
   {
     id: "vegetable-coconut-curry-quinoa",
     name: "Vegetable Coconut Curry with Quinoa",
+    image: "/images/recipes/meals/vegetable-coconut-curry-quinoa.png",
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
