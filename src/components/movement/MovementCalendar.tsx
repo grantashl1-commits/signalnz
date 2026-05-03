@@ -65,13 +65,13 @@ const TAG_COLORS: Record<string, string> = {
   General: "bg-secondary text-muted-foreground",
 };
 
-// Zone palette — matches HR_ZONES colour intent
+// Zone palette — lavender-purple gradient (light → deep) for Z1→Z5
 const ZONE_COLORS: Record<keyof ZonesSummary, string> = {
-  z1_mins: "hsl(var(--muted-foreground) / 0.4)", // recovery — soft grey
-  z2_mins: "hsl(160 60% 45%)",                    // aerobic base — green
-  z3_mins: "hsl(45 90% 55%)",                     // tempo — amber
-  z4_mins: "hsl(20 85% 55%)",                     // threshold — orange
-  z5_mins: "hsl(0 75% 55%)",                      // VO2 max — red
+  z1_mins: "hsl(265 45% 88%)", // recovery — palest lavender
+  z2_mins: "hsl(265 50% 78%)", // aerobic base
+  z3_mins: "hsl(265 50% 66%)", // tempo
+  z4_mins: "hsl(265 55% 54%)", // threshold
+  z5_mins: "hsl(265 65% 42%)", // VO2 max — deepest purple
 };
 
 const ZONE_LABELS: Record<keyof ZonesSummary, string> = {
