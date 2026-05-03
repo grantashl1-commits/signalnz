@@ -54,7 +54,7 @@ const MUSCLE_IMAGE_MAP: Record<string, string> = {
   "transverse abdominis": "/images/stretches/pelvic-floor.png",
   // Thoracic spine / lats
   "thoracic spine": "/images/stretches/thoracic-spine.png",
-  "thoracic": "/images/stretches/thoracic-spine.png",
+  "thoracic spine area": "/images/stretches/thoracic-spine.png",
   "upper back": "/images/stretches/thoracic-spine.png",
   "lats": "/images/stretches/thoracic-spine.png",
   "latissimus": "/images/stretches/thoracic-spine.png",
