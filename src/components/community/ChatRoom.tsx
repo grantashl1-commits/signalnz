@@ -371,35 +371,84 @@ export default function ChatRoom({ group }: ChatRoomProps) {
     setEventTitle(""); setEventDate(""); setEventLoc(""); setShowEvent(false);
   };
 
-  // Note: voting/RSVP/image/voice still local to the device for now
-  // (full multi-user persistence for those is tracked separately).
-  const toggleRSVP = (msgId: string) => {
-    setRsvpd(prev => {
-      const next = new Set(prev);
-      if (next.has(msgId)) {
-        next.delete(msgId);
-        setRows(rs => rs.map(r => r.id !== msgId ? r : ({ ...r, metadata: { ...(r.metadata || {}), going: Math.max(0, ((r.metadata?.going ?? 1) - 1)) } })));
-      } else {
-        next.add(msgId);
-        setRows(rs => rs.map(r => r.id !== msgId ? r : ({ ...r, metadata: { ...(r.metadata || {}), going: ((r.metadata?.going ?? 0) + 1) } })));
+  // Toggle RSVP — persists to community_message_rsvps and syncs via realtime
+  const toggleRSVP = async (msgId: string) => {
+    if (!user) return;
+    const cur = rsvps[msgId] ?? { mine: false, count: 0 };
+    // Optimistic update
+    setRsvps((prev) => ({
+      ...prev,
+      [msgId]: { mine: !cur.mine, count: Math.max(0, cur.count + (cur.mine ? -1 : 1)) },
+    }));
+    if (cur.mine) {
+      const { error } = await supabase
+        .from("community_message_rsvps")
+        .delete()
+        .eq("message_id", msgId)
+        .eq("user_id", user.id);
+      if (error) {
+        console.error("[ChatRoom] cancel RSVP failed", error);
+        setRsvps((prev) => ({ ...prev, [msgId]: cur })); // rollback
       }
-      return next;
-    });
+    } else {
+      const { error } = await supabase
+        .from("community_message_rsvps")
+        .insert({ message_id: msgId, user_id: user.id });
+      if (error) {
+        console.error("[ChatRoom] RSVP failed", error);
+        setRsvps((prev) => ({ ...prev, [msgId]: cur })); // rollback
+      }
+    }
+  };
+
+  // Cast/change a vote — persists to community_message_votes
+  const castVote = async (msgId: string, optionIndex: number) => {
+    if (!user) return;
+    const target = rows.find((r) => r.id === msgId);
+    const optsLen = Array.isArray(target?.metadata?.options) ? target!.metadata.options.length : 0;
+    const cur = votes[msgId] ?? { tallies: new Array(optsLen).fill(0) as number[] };
+    if (cur.myChoice !== undefined) return; // one vote per user (UI lock)
+
+    // Optimistic
+    const optimisticTallies = [...cur.tallies];
+    while (optimisticTallies.length <= optionIndex) optimisticTallies.push(0);
+    optimisticTallies[optionIndex] = (optimisticTallies[optionIndex] ?? 0) + 1;
+    setVotes((prev) => ({ ...prev, [msgId]: { myChoice: optionIndex, tallies: optimisticTallies } }));
+
+    const { error } = await supabase
+      .from("community_message_votes")
+      .insert({ message_id: msgId, user_id: user.id, option_index: optionIndex });
+    if (error) {
+      console.error("[ChatRoom] vote failed", error);
+      setVotes((prev) => ({ ...prev, [msgId]: cur })); // rollback
+    }
   };
 
   const handleImage = () => fileRef.current?.click();
 
-  const onImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Upload media to private bucket, then insert a message that references its path
+  const uploadAndPostMedia = async (file: File | Blob, ext: string, kind: "image" | "voice") => {
+    if (!user) return;
+    const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error: upErr } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
+      contentType: file.type || (kind === "image" ? "image/*" : "audio/webm"),
+      upsert: false,
+    });
+    if (upErr) { console.error("[ChatRoom] media upload failed", upErr); return; }
+    const inserted = await insertMessage({
+      message_type: kind,
+      content: kind === "image" ? "[Image shared]" : "Voice note",
+      metadata: { path, content_type: file.type || (kind === "image" ? "image/*" : "audio/webm") },
+    });
+    if (inserted) await resolveMediaUrl(inserted.id, path);
+  };
+
+  const onImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (ev) => {
-      const dataUrl = ev.target?.result as string;
-      const inserted = await insertMessage({ message_type: "text", content: "[Image shared]" });
-      if (inserted) setLocalMedia((prev) => ({ ...prev, [inserted.id]: { imageUrl: dataUrl } }));
-    };
-    reader.readAsDataURL(file);
     e.target.value = "";
+    if (!file) return;
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    await uploadAndPostMedia(file, ext, "image");
   };
 
   const handleVoice = async () => {
@@ -416,9 +465,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const inserted = await insertMessage({ message_type: "text", content: "Voice note" });
-        if (inserted) setLocalMedia((prev) => ({ ...prev, [inserted.id]: { audioUrl } }));
+        await uploadAndPostMedia(audioBlob, "webm", "voice");
         stream.getTracks().forEach(t => t.stop());
       };
       mediaRecorder.start();
