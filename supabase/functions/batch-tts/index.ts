@@ -15,7 +15,8 @@ const corsHeaders = {
  * No credit deduction — this is an operational cost, not user-facing.
  */
 
-const VOICE_ID = "pFZP5JQG7iQjIQuC4Bku"; // Lily
+// Signal voice policy: Regina is the only female narrator used.
+const VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS"; // Regina
 
 async function generateOne(
   apiKey: string,
