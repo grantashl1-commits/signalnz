@@ -54,6 +54,30 @@ async function lookupStretch(name: string) {
   return result;
 }
 
+// Cache for exercise muscle lookups (AI plan main-block rows)
+const exerciseMuscleCache = new Map<string, string>();
+
+async function lookupExerciseMuscle(name: string): Promise<string> {
+  const key = name.toLowerCase();
+  if (exerciseMuscleCache.has(key)) return exerciseMuscleCache.get(key)!;
+
+  const searchTerms = key.replace(/[^a-z ]/g, "").split(" ").slice(0, 3).join(" ");
+  if (!searchTerms) {
+    exerciseMuscleCache.set(key, "");
+    return "";
+  }
+  const { data } = await supabase
+    .from("exercises")
+    .select("target, body_part")
+    .ilike("name", `%${searchTerms}%`)
+    .limit(1)
+    .maybeSingle();
+
+  const target = (data?.target || data?.body_part || "") as string;
+  exerciseMuscleCache.set(key, target);
+  return target;
+}
+
 interface AISessionCardProps {
   session: any;
   trainingWeek: number;
@@ -94,6 +118,20 @@ function StretchRow({ item, showGif }: { item: any; showGif?: boolean }) {
       <span className="font-body text-[10px] text-muted-foreground flex-shrink-0">
         {stretchData?.hold_duration || item.duration || item.hold_duration || ""}
       </span>
+    </div>
+  );
+}
+
+function ExerciseMuscle({ name, size = 18 }: { name: string; size?: number }) {
+  const [muscle, setMuscle] = useState<string>("");
+  useEffect(() => {
+    lookupExerciseMuscle(name).then(setMuscle);
+  }, [name]);
+  if (!muscle) return null;
+  return (
+    <div className="flex items-center gap-1 mt-0.5">
+      <MuscleIllustration targetMuscle={muscle} size={size} />
+      <span className="font-body text-[9px] text-muted-foreground capitalize">{muscle}</span>
     </div>
   );
 }
@@ -218,6 +256,7 @@ export default function AISessionCard({
                   {ex.form_cue && (
                     <p className="font-body text-[9px] italic text-muted-foreground mt-0.5 leading-tight">{sanitizeText(ex.form_cue)}</p>
                   )}
+                  <ExerciseMuscle name={sanitizeText(ex.name)} />
                 </div>
               </motion.div>
             );
@@ -257,6 +296,7 @@ export default function AISessionCard({
                     {(ex.formCue || ex.form_cue) && (
                       <p className="font-body text-[9px] italic text-muted-foreground mt-0.5">{sanitizeText(ex.formCue || ex.form_cue)}</p>
                     )}
+                    <ExerciseMuscle name={sanitizeText(ex.name)} />
                   </div>
                 </motion.div>
               </div>

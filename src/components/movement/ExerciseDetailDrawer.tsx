@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { X, Target } from "lucide-react";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { supabase } from "@/integrations/supabase/client";
 import type { Exercise } from "@/data/workouts";
 import type { Phase } from "@/lib/cycle-utils";
@@ -119,22 +120,29 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                   <Target className="h-3.5 w-3.5 text-primary" />
                   <p className="font-hand text-xs font-bold text-primary">Muscles targeted</p>
                 </div>
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex items-start gap-3">
                   {dbData?.target && (
-                    <span className="rounded-full px-3 py-1 text-[10px] font-body font-bold" style={{ backgroundColor: `${phaseColor}20`, color: phaseColor }}>
-                      {dbData.target}
-                    </span>
+                    <div className="flex-shrink-0">
+                      <MuscleIllustration targetMuscle={dbData.target} size={56} />
+                    </div>
                   )}
-                  {secondaryMuscles.map((m) => (
-                    <span key={m} className="rounded-full px-3 py-1 bg-secondary font-body text-[9px] text-muted-foreground">
-                      {m}
-                    </span>
-                  ))}
-                  {dbData?.equipment && (
-                    <span className="rounded-full px-3 py-1 bg-accent font-body text-[9px] text-muted-foreground">
-                      {dbData.equipment}
-                    </span>
-                  )}
+                  <div className="flex gap-2 flex-wrap flex-1">
+                    {dbData?.target && (
+                      <span className="rounded-full px-3 py-1 text-[10px] font-body font-bold" style={{ backgroundColor: `${phaseColor}20`, color: phaseColor }}>
+                        {dbData.target}
+                      </span>
+                    )}
+                    {secondaryMuscles.map((m) => (
+                      <span key={m} className="rounded-full px-3 py-1 bg-secondary font-body text-[9px] text-muted-foreground">
+                        {m}
+                      </span>
+                    ))}
+                    {dbData?.equipment && (
+                      <span className="rounded-full px-3 py-1 bg-accent font-body text-[9px] text-muted-foreground">
+                        {dbData.equipment}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
