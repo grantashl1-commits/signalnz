@@ -195,18 +195,9 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
 
         {/* Takeaway */}
         {parsed.takeaway && (
-          <div className="rounded-xl px-3.5 py-2.5 bg-primary/8 border border-primary/15">
-            <p className="font-body text-xs leading-relaxed text-foreground/80">
-              <span className="font-semibold text-primary/90">Takeaway: </span>
-              {parsed.takeaway}
-            </p>
-          </div>
-        )}
-
-        {/* Quote */}
-        {parsed.quote && (
-          <p className="font-body text-xs italic text-muted-foreground border-l-2 border-primary/25 pl-3 leading-relaxed">
-            "{parsed.quote}"
+          <p className="font-body text-xs text-muted-foreground border-l-2 border-primary/25 pl-3 leading-relaxed">
+            <span className="font-semibold text-primary/90">Takeaway: </span>
+            {parsed.takeaway}
           </p>
         )}
 
