@@ -5,6 +5,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-1",
     name: "Fig and Blackberry Porridge",
+    image: "/images/recipes/meals/dk-1.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 min",
@@ -18,6 +19,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-2",
     name: "Pear and Blueberry Baked Oats",
+    image: "/images/recipes/meals/dk-2.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -31,6 +33,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-3",
     name: "Mango and Pomegranate Porridge",
+    image: "/images/recipes/meals/dk-3.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 min",
@@ -44,6 +47,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-4",
     name: "Peach and Cardamom Baked Oats",
+    image: "/images/recipes/meals/dk-4.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -57,6 +61,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-5",
     name: "Pistachio and Pear Overnight Oats",
+    image: "/images/recipes/meals/dk-5.png",
     phase: "luteal",
     serves: 2,
     prepTime: "5 min",
@@ -70,6 +75,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-6",
     name: "Cinnamon Apple and Carrot Overnight Oats",
+    image: "/images/recipes/meals/dk-6.png",
     phase: "luteal",
     serves: 2,
     prepTime: "5 min",
@@ -84,6 +90,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-7",
     name: "Masala One-pan Breakfast",
+    image: "/images/recipes/meals/dk-7.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -97,6 +104,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-8",
     name: "Spicy Baked Beans",
+    image: "/images/recipes/meals/dk-8.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -110,6 +118,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-9",
     name: "Sriracha Sweet Potato Hash",
+    image: "/images/recipes/meals/dk-9.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -123,6 +132,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-10",
     name: "Breakfast Green Beans with Dill and Sumac",
+    image: "/images/recipes/meals/dk-10.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -136,6 +146,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-11",
     name: "Fiery Frittata",
+    image: "/images/recipes/meals/dk-11.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -149,6 +160,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-12",
     name: "Spring Green and Broad Bean Shakshuka",
+    image: "/images/recipes/meals/dk-12.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -162,6 +174,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-13",
     name: "Za'atar Frittata",
+    image: "/images/recipes/meals/dk-13.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -175,6 +188,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-14",
     name: "Sourdough and Veggie Sausage Bake",
+    image: "/images/recipes/meals/dk-14.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -188,6 +202,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-15",
     name: "Huevos Rancheros",
+    image: "/images/recipes/meals/dk-15.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -201,6 +216,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-16",
     name: "Fennel and Mustard Potatoes",
+    image: "/images/recipes/meals/dk-16.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -214,6 +230,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-17",
     name: "Spicy Salmon Kedgeree",
+    image: "/images/recipes/meals/dk-17.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -227,6 +244,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-18",
     name: "Breakfast Burritos",
+    image: "/images/recipes/meals/dk-18.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -241,6 +259,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-19",
     name: "Ginger Chicken Salad with Tahini Ranch Dressing",
+    image: "/images/recipes/meals/dk-19.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -254,6 +273,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-20",
     name: "Mixed Herb Salad with Paprika and Sumac",
+    image: "/images/recipes/meals/dk-20.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "15 min",
@@ -267,6 +287,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-21",
     name: "Roasted Carrot Salad with Allspice Cinnamon and Pistachio",
+    image: "/images/recipes/meals/dk-21.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -280,6 +301,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-22",
     name: "Green Leaves and Broad Beans with Preserved Lemon and Paprika",
+    image: "/images/recipes/meals/dk-22.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -293,6 +315,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-23",
     name: "Butter Bean Salad with Fried Garlic and Hazelnut Dressing",
+    image: "/images/recipes/meals/dk-23.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -306,6 +329,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-24",
     name: "Herb and Walnut Crumbed Fish with Pickled Red Cabbage",
+    image: "/images/recipes/meals/dk-24.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -332,6 +356,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-26",
     name: "Southern-style Succotash Salad",
+    image: "/images/recipes/meals/dk-26.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -345,6 +370,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-27",
     name: "Harissa Green Bean Salad",
+    image: "/images/recipes/meals/dk-27.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -358,6 +384,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-28",
     name: "Grilled Chicory Salad with Fennel Capers and Pecans",
+    image: "/images/recipes/meals/dk-28.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -371,6 +398,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-29",
     name: "Kimchi Slaw with Greens and Sriracha Mayo",
+    image: "/images/recipes/meals/dk-29.png",
     phase: "luteal",
     serves: 2,
     prepTime: "15 min",
@@ -384,6 +412,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-30",
     name: "Mixed Bean Salad with Spicy Tarragon and Oregano Dressing",
+    image: "/images/recipes/meals/dk-30.png",
     phase: "follicular",
     serves: 2,
     prepTime: "15 min",
@@ -398,6 +427,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-31",
     name: "Masala Rice with Sardines",
+    image: "/images/recipes/meals/dk-31.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -411,6 +441,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-32",
     name: "Wild Mushroom Barley and Beans",
+    image: "/images/recipes/meals/dk-32.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -424,6 +455,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-33",
     name: "Fragrant Jewelled Rice",
+    image: "/images/recipes/meals/dk-33.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "40 min",
@@ -437,6 +469,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-34",
     name: "Nasi Goreng",
+    image: "/images/recipes/meals/dk-34.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -450,6 +483,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-35",
     name: "Broad Bean Pea and Dill Rice",
+    image: "/images/recipes/meals/dk-35.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -463,6 +497,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-36",
     name: "Jamaican-style Rice and Peas",
+    image: "/images/recipes/meals/dk-36.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -476,6 +511,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-37",
     name: "Spinach and Watercress Risotto",
+    image: "/images/recipes/meals/dk-37.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -489,6 +525,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-38",
     name: "Pearl Barley Mint and Asparagus Risotto",
+    image: "/images/recipes/meals/dk-38.png",
     phase: "follicular",
     serves: 2,
     prepTime: "40 min",
@@ -502,6 +539,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-39",
     name: "Ginger and Tomato Pilau",
+    image: "/images/recipes/meals/dk-39.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -515,6 +553,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-40",
     name: "Leek Artichoke and Prawn Paella",
+    image: "/images/recipes/meals/dk-40.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
@@ -529,6 +568,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-41",
     name: "Massaman Cauliflower",
+    image: "/images/recipes/meals/dk-41.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -542,6 +582,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-42",
     name: "Smoky Glazed Pepper and Prawn Tacos with Caramelised Pineapple",
+    image: "/images/recipes/meals/dk-42.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -555,6 +596,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-43",
     name: "Spicy Garlic Mushrooms with Pomegranate",
+    image: "/images/recipes/meals/dk-43.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -568,6 +610,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-44",
     name: "Harissa Fennel Aubergine and Chickpeas",
+    image: "/images/recipes/meals/dk-44.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
@@ -581,6 +624,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-45",
     name: "Baked Spiced Celeriac with Hummus and Pomelo",
+    image: "/images/recipes/meals/dk-45.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -594,6 +638,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-46",
     name: "Roasted Masala Chickpeas with Green Bean Sambol",
+    image: "/images/recipes/meals/dk-46.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -607,6 +652,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-47",
     name: "Herb-baked Aubergine with Tenderstem Broccoli",
+    image: "/images/recipes/meals/dk-47.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -620,6 +666,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-48",
     name: "Roast Sea Bass and Asparagus with Tomatoes and Capers",
+    image: "/images/recipes/meals/dk-48.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -633,6 +680,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-49",
     name: "Black-eyed Peas with Sweetcorn Tarragon and Paprika",
+    image: "/images/recipes/meals/dk-49.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -646,6 +694,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-50",
     name: "Gochujang Tempeh with Baby Aubergine and Sesame",
+    image: "/images/recipes/meals/dk-50.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -659,6 +708,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-51",
     name: "Roasted Brassicas and Tofu with Chilli Miso Sauce",
+    image: "/images/recipes/meals/dk-51.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -672,6 +722,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-52",
     name: "Baked Sea Bass Fillets with Fennel Oregano and Lentils",
+    image: "/images/recipes/meals/dk-52.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -685,6 +736,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-53",
     name: "Cinnamon and Cumin Roasted Winter Vegetables with Baked Halloumi",
+    image: "/images/recipes/meals/dk-53.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -698,6 +750,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-54",
     name: "Sweet Masala Charred Greens and Peanuts",
+    image: "/images/recipes/meals/dk-54.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -711,6 +764,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-55",
     name: "Fennel Leek and Beans with Basil Pesto",
+    image: "/images/recipes/meals/dk-55.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -724,6 +778,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-56",
     name: "Spanish-style Beans with Marsala and an Almond Picada",
+    image: "/images/recipes/meals/dk-56.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -737,6 +792,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-57",
     name: "Ginger and Lemongrass Snapper with Mangetout and Peas",
+    image: "/images/recipes/meals/dk-57.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -751,6 +807,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-58",
     name: "Sri Lankan Polos Curry",
+    image: "/images/recipes/meals/dk-58.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -764,6 +821,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-59",
     name: "Butternut Korma",
+    image: "/images/recipes/meals/dk-59.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -777,6 +835,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-60",
     name: "Caribbean-style Black Bean Curry",
+    image: "/images/recipes/meals/dk-60.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -790,6 +849,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-61",
     name: "Pumpkin Peanut Curry",
+    image: "/images/recipes/meals/dk-61.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -803,6 +863,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-62",
     name: "Almond Chicken Curry",
+    image: "/images/recipes/meals/dk-62.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -816,6 +877,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-63",
     name: "Coconut Yellow Dhal with Tamarind and Curry Leaves",
+    image: "/images/recipes/meals/dk-63.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -829,6 +891,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-64",
     name: "Mango Pickle and Squash Curry",
+    image: "/images/recipes/meals/dk-64.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -842,6 +905,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-65",
     name: "Sambal Red Lentils",
+    image: "/images/recipes/meals/dk-65.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -855,6 +919,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-66",
     name: "Jerk-style Jackfruit and Sweet Potato Curry",
+    image: "/images/recipes/meals/dk-66.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -868,6 +933,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-67",
     name: "Split Green Peas with Kaffir Lime and Coconut",
+    image: "/images/recipes/meals/dk-67.png",
     phase: "luteal",
     serves: 2,
     prepTime: "40 min",
@@ -881,6 +947,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-68",
     name: "Tempeh Red Curry",
+    image: "/images/recipes/meals/dk-68.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -894,6 +961,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-69",
     name: "Malaysian-style Kari",
+    image: "/images/recipes/meals/dk-69.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "50 min",
@@ -907,6 +975,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-70",
     name: "Persian-style Brown Lentils with Mixed Green Herbs",
+    image: "/images/recipes/meals/dk-70.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -921,6 +990,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-71",
     name: "Cajun Crab Stew",
+    image: "/images/recipes/meals/dk-71.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "25 min",
@@ -934,6 +1004,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-72",
     name: "Chicken Gumbo",
+    image: "/images/recipes/meals/dk-72.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "40 min",
@@ -947,6 +1018,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-73",
     name: "Prawn Bouillabaisse",
+    image: "/images/recipes/meals/dk-73.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "35 min",
@@ -960,6 +1032,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-74",
     name: "Green Gumbo",
+    image: "/images/recipes/meals/dk-74.png",
     phase: "follicular",
     serves: 2,
     prepTime: "30 min",
@@ -973,6 +1046,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-75",
     name: "French Lentils with a Dijon and Red Wine Vinaigrette",
+    image: "/images/recipes/meals/dk-75.png",
     phase: "follicular",
     serves: 2,
     prepTime: "35 min",
@@ -986,6 +1060,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-76",
     name: "Rice Butter Bean and Wild Mushroom Stew",
+    image: "/images/recipes/meals/dk-76.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -999,6 +1074,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-77",
     name: "Tuscan Beans",
+    image: "/images/recipes/meals/dk-77.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -1012,6 +1088,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-78",
     name: "Walnut and White Bean Stew",
+    image: "/images/recipes/meals/dk-78.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -1025,6 +1102,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-79",
     name: "Harissa Lentil Stew with Feta and Honey",
+    image: "/images/recipes/meals/dk-79.png",
     phase: "luteal",
     serves: 2,
     prepTime: "35 min",
@@ -1038,6 +1116,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-80",
     name: "Ful Medames with Spinach and Garlic and Herb Dressing",
+    image: "/images/recipes/meals/dk-80.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -1051,6 +1130,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-81",
     name: "Korean-style Bean Stew",
+    image: "/images/recipes/meals/dk-81.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -1064,6 +1144,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-82",
     name: "Red Bean Giouvetsi",
+    image: "/images/recipes/meals/dk-82.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -1078,6 +1159,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-83",
     name: "Borlotti Bean Soup with Pesto",
+    image: "/images/recipes/meals/dk-83.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1091,6 +1173,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-84",
     name: "5-a-day Bean Soup",
+    image: "/images/recipes/meals/dk-84.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1104,6 +1187,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-85",
     name: "Haricot Bean Leek and Olive Soup",
+    image: "/images/recipes/meals/dk-85.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1117,6 +1201,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-86",
     name: "Green Masala Cauliflower Soup",
+    image: "/images/recipes/meals/dk-86.png",
     phase: "luteal",
     serves: 2,
     prepTime: "30 min",
@@ -1130,6 +1215,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-87",
     name: "Iranian-style Soup with Sumac and Fresh Green Herbs",
+    image: "/images/recipes/meals/dk-87.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1143,6 +1229,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-88",
     name: "Black Bean and Chipotle Soup",
+    image: "/images/recipes/meals/dk-88.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -1156,6 +1243,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-89",
     name: "Ultimate Garlic Broth with Sage and Greens",
+    image: "/images/recipes/meals/dk-89.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "50 min",
@@ -1169,6 +1257,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-90",
     name: "Korean-style Broth with Kimchi",
+    image: "/images/recipes/meals/dk-90.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -1182,6 +1271,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-91",
     name: "Fennel Brodo",
+    image: "/images/recipes/meals/dk-91.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1195,6 +1285,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-92",
     name: "Chicken and Mushroom Ramen",
+    image: "/images/recipes/meals/dk-92.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "35 min",
@@ -1208,6 +1299,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-93",
     name: "Asparagus Courgette and White Bean Broth with Pistou",
+    image: "/images/recipes/meals/dk-93.png",
     phase: "follicular",
     serves: 2,
     prepTime: "25 min",
@@ -1222,6 +1314,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-94",
     name: "Sesame Rice Noodles with Carrots and Peas",
+    image: "/images/recipes/meals/dk-94.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -1235,6 +1328,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-95",
     name: "Balsamic Sautéed Mushrooms with Rosemary",
+    image: "/images/recipes/meals/dk-95.png",
     phase: "luteal",
     serves: 2,
     prepTime: "20 min",
@@ -1248,6 +1342,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-96",
     name: "Bang Bang Cauliflower",
+    image: "/images/recipes/meals/dk-96.png",
     phase: "ovulatory",
     serves: 2,
     prepTime: "20 min",
@@ -1261,6 +1356,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-97",
     name: "Green Beans and Black-eyed Peas",
+    image: "/images/recipes/meals/dk-97.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -1274,6 +1370,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-98",
     name: "Spring Vegetables with Miso Butter and Teriyaki Rice",
+    image: "/images/recipes/meals/dk-98.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
@@ -1287,6 +1384,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-99",
     name: "Spicy Mushroom and Tofu Shawarmas with Cucumber Yoghurt",
+    image: "/images/recipes/meals/dk-99.png",
     phase: "luteal",
     serves: 2,
     prepTime: "25 min",
@@ -1300,6 +1398,7 @@ export const DOCTORS_KITCHEN_RECIPES: Recipe[] = [
   {
     id: "dk-100",
     name: "Asian-style Green Vegetables in Black Bean Sauce",
+    image: "/images/recipes/meals/dk-100.png",
     phase: "follicular",
     serves: 2,
     prepTime: "20 min",
