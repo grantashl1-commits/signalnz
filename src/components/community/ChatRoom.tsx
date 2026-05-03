@@ -25,11 +25,13 @@ interface DBMessage {
   user_id: string;
   group_id: string;
   content: string | null;
-  message_type: string;
+  message_type: string; // text | poll | event | image | voice
   metadata: any;
   created_at: string;
   is_removed: boolean;
 }
+
+const MEDIA_BUCKET = "community-media";
 
 const initialsFrom = (name?: string | null, fallback = "?") => {
   if (!name) return fallback;
@@ -58,10 +60,13 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const [eventTitle, setEventTitle] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventLoc, setEventLoc] = useState("");
-  const [voted, setVoted] = useState<Record<string, number>>({});
-  const [rsvpd, setRsvpd] = useState<Set<string>>(new Set());
+  // votes: msgId -> { myChoice?: number, tallies: number[] }
+  const [votes, setVotes] = useState<Record<string, { myChoice?: number; tallies: number[] }>>({});
+  // rsvps: msgId -> { mine: boolean, count: number }
+  const [rsvps, setRsvps] = useState<Record<string, { mine: boolean; count: number }>>({});
   const [recording, setRecording] = useState(false);
-  const [localMedia, setLocalMedia] = useState<Record<string, { imageUrl?: string; audioUrl?: string }>>({});
+  // mediaUrls: msgId -> resolved signed URL (for image/audio)
+  const [mediaUrls, setMediaUrls] = useState<Record<string, string>>({});
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -71,6 +76,34 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
   const myInitials = useMemo(() => initialsFrom(myDisplayName, "ME"), [myDisplayName]);
 
+  // Helpers to fold raw vote/RSVP rows into our state shape
+  const applyVoteRows = (
+    rowsIn: Array<{ message_id: string; user_id: string; option_index: number }>,
+    optionCounts: Record<string, number>
+  ) => {
+    const next: Record<string, { myChoice?: number; tallies: number[] }> = {};
+    for (const v of rowsIn) {
+      const optsLen = optionCounts[v.message_id] ?? 0;
+      const cur: { myChoice?: number; tallies: number[] } =
+        next[v.message_id] ?? { tallies: new Array(optsLen).fill(0) as number[] };
+      // grow tallies if needed
+      while (cur.tallies.length <= v.option_index) cur.tallies.push(0);
+      cur.tallies[v.option_index] = (cur.tallies[v.option_index] ?? 0) + 1;
+      if (v.user_id === user?.id) cur.myChoice = v.option_index;
+      next[v.message_id] = cur;
+    }
+    return next;
+  };
+
+  // Resolve signed URL for a media message and cache it
+  const resolveMediaUrl = async (msgId: string, path: string) => {
+    if (!path) return;
+    const { data } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrl(path, 60 * 60);
+    if (data?.signedUrl) {
+      setMediaUrls((prev) => (prev[msgId] ? prev : { ...prev, [msgId]: data.signedUrl }));
+    }
+  };
+
   // Load history + subscribe to realtime
   useEffect(() => {
     if (!group.id) return;
@@ -78,7 +111,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
     (async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data: msgs, error } = await supabase
         .from("community_messages")
         .select("id, user_id, group_id, content, message_type, metadata, created_at, is_removed")
         .eq("group_id", group.id)
@@ -86,11 +119,57 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         .order("created_at", { ascending: true })
         .limit(200);
       if (cancelled) return;
-      if (!error && data) {
-        setRows(data as DBMessage[]);
-        await hydrateAuthors(data.map((d) => d.user_id));
+      if (error || !msgs) { setLoading(false); return; }
+
+      setRows(msgs as DBMessage[]);
+      await hydrateAuthors((msgs as DBMessage[]).map((d) => d.user_id));
+
+      const ids = (msgs as DBMessage[]).map((m) => m.id);
+      const pollIds = (msgs as DBMessage[]).filter((m) => m.message_type === "poll").map((m) => m.id);
+      const eventIds = (msgs as DBMessage[]).filter((m) => m.message_type === "event").map((m) => m.id);
+      const optionCounts: Record<string, number> = {};
+      for (const m of msgs as DBMessage[]) {
+        if (m.message_type === "poll") {
+          optionCounts[m.id] = Array.isArray(m.metadata?.options) ? m.metadata.options.length : 0;
+        }
       }
+
+      // Votes
+      if (pollIds.length) {
+        const { data: vrows } = await supabase
+          .from("community_message_votes")
+          .select("message_id, user_id, option_index")
+          .in("message_id", pollIds);
+        if (!cancelled && vrows) setVotes(applyVoteRows(vrows as any, optionCounts));
+      }
+
+      // RSVPs
+      if (eventIds.length) {
+        const { data: rrows } = await supabase
+          .from("community_message_rsvps")
+          .select("message_id, user_id")
+          .in("message_id", eventIds);
+        if (!cancelled && rrows) {
+          const next: Record<string, { mine: boolean; count: number }> = {};
+          for (const r of rrows as Array<{ message_id: string; user_id: string }>) {
+            const cur = next[r.message_id] ?? { mine: false, count: 0 };
+            cur.count += 1;
+            if (r.user_id === user?.id) cur.mine = true;
+            next[r.message_id] = cur;
+          }
+          setRsvps(next);
+        }
+      }
+
+      // Resolve signed URLs for media messages already in history
+      for (const m of msgs as DBMessage[]) {
+        if ((m.message_type === "image" || m.message_type === "voice") && m.metadata?.path) {
+          resolveMediaUrl(m.id, m.metadata.path);
+        }
+      }
+
       setLoading(false);
+      void ids;
     })();
 
     const channel = supabase
@@ -103,6 +182,9 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           if (m.is_removed) return;
           setRows((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m]));
           if (!authorMap[m.user_id]) await hydrateAuthors([m.user_id]);
+          if ((m.message_type === "image" || m.message_type === "voice") && m.metadata?.path) {
+            resolveMediaUrl(m.id, m.metadata.path);
+          }
         }
       )
       .on(
@@ -113,6 +195,49 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           setRows((prev) => prev.map((p) => (p.id === m.id ? m : p)).filter((p) => !p.is_removed));
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_message_votes" },
+        (payload) => {
+          const newRow = (payload.new ?? payload.old) as { message_id: string; user_id: string; option_index: number };
+          if (!newRow?.message_id) return;
+          // Recompute the affected message's tally by refetching its votes
+          (async () => {
+            const { data } = await supabase
+              .from("community_message_votes")
+              .select("message_id, user_id, option_index")
+              .eq("message_id", newRow.message_id);
+            if (!data) return;
+            setRows((prev) => {
+              const target = prev.find((p) => p.id === newRow.message_id);
+              const optsLen = Array.isArray(target?.metadata?.options) ? target!.metadata.options.length : 0;
+              const next: Record<string, { myChoice?: number; tallies: number[] }> = applyVoteRows(
+                data as any,
+                { [newRow.message_id]: optsLen }
+              );
+              setVotes((prevVotes) => ({ ...prevVotes, [newRow.message_id]: next[newRow.message_id] ?? { tallies: new Array(optsLen).fill(0) } }));
+              return prev;
+            });
+          })();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_message_rsvps" },
+        (payload) => {
+          const row = (payload.new ?? payload.old) as { message_id: string; user_id: string };
+          if (!row?.message_id) return;
+          (async () => {
+            const { data } = await supabase
+              .from("community_message_rsvps")
+              .select("user_id")
+              .eq("message_id", row.message_id);
+            if (!data) return;
+            const mine = (data as Array<{ user_id: string }>).some((d) => d.user_id === user?.id);
+            setRsvps((prev) => ({ ...prev, [row.message_id]: { mine, count: data.length } }));
+          })();
+        }
+      )
       .subscribe();
 
     return () => {
@@ -120,7 +245,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [group.id]);
+  }, [group.id, user?.id]);
 
   const hydrateAuthors = async (userIds: string[]) => {
     const unique = Array.from(new Set(userIds)).filter((id) => id && !authorMap[id]);
@@ -185,7 +310,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   }, [rows, authorMap, user?.id, myInitials]);
 
   const insertMessage = async (payload: {
-    message_type: "text" | "poll" | "event";
+    message_type: "text" | "poll" | "event" | "image" | "voice";
     content: string;
     metadata?: Record<string, any>;
   }) => {
@@ -246,35 +371,84 @@ export default function ChatRoom({ group }: ChatRoomProps) {
     setEventTitle(""); setEventDate(""); setEventLoc(""); setShowEvent(false);
   };
 
-  // Note: voting/RSVP/image/voice still local to the device for now
-  // (full multi-user persistence for those is tracked separately).
-  const toggleRSVP = (msgId: string) => {
-    setRsvpd(prev => {
-      const next = new Set(prev);
-      if (next.has(msgId)) {
-        next.delete(msgId);
-        setRows(rs => rs.map(r => r.id !== msgId ? r : ({ ...r, metadata: { ...(r.metadata || {}), going: Math.max(0, ((r.metadata?.going ?? 1) - 1)) } })));
-      } else {
-        next.add(msgId);
-        setRows(rs => rs.map(r => r.id !== msgId ? r : ({ ...r, metadata: { ...(r.metadata || {}), going: ((r.metadata?.going ?? 0) + 1) } })));
+  // Toggle RSVP — persists to community_message_rsvps and syncs via realtime
+  const toggleRSVP = async (msgId: string) => {
+    if (!user) return;
+    const cur = rsvps[msgId] ?? { mine: false, count: 0 };
+    // Optimistic update
+    setRsvps((prev) => ({
+      ...prev,
+      [msgId]: { mine: !cur.mine, count: Math.max(0, cur.count + (cur.mine ? -1 : 1)) },
+    }));
+    if (cur.mine) {
+      const { error } = await supabase
+        .from("community_message_rsvps")
+        .delete()
+        .eq("message_id", msgId)
+        .eq("user_id", user.id);
+      if (error) {
+        console.error("[ChatRoom] cancel RSVP failed", error);
+        setRsvps((prev) => ({ ...prev, [msgId]: cur })); // rollback
       }
-      return next;
-    });
+    } else {
+      const { error } = await supabase
+        .from("community_message_rsvps")
+        .insert({ message_id: msgId, user_id: user.id });
+      if (error) {
+        console.error("[ChatRoom] RSVP failed", error);
+        setRsvps((prev) => ({ ...prev, [msgId]: cur })); // rollback
+      }
+    }
+  };
+
+  // Cast/change a vote — persists to community_message_votes
+  const castVote = async (msgId: string, optionIndex: number) => {
+    if (!user) return;
+    const target = rows.find((r) => r.id === msgId);
+    const optsLen = Array.isArray(target?.metadata?.options) ? target!.metadata.options.length : 0;
+    const cur = votes[msgId] ?? { tallies: new Array(optsLen).fill(0) as number[] };
+    if (cur.myChoice !== undefined) return; // one vote per user (UI lock)
+
+    // Optimistic
+    const optimisticTallies = [...cur.tallies];
+    while (optimisticTallies.length <= optionIndex) optimisticTallies.push(0);
+    optimisticTallies[optionIndex] = (optimisticTallies[optionIndex] ?? 0) + 1;
+    setVotes((prev) => ({ ...prev, [msgId]: { myChoice: optionIndex, tallies: optimisticTallies } }));
+
+    const { error } = await supabase
+      .from("community_message_votes")
+      .insert({ message_id: msgId, user_id: user.id, option_index: optionIndex });
+    if (error) {
+      console.error("[ChatRoom] vote failed", error);
+      setVotes((prev) => ({ ...prev, [msgId]: cur })); // rollback
+    }
   };
 
   const handleImage = () => fileRef.current?.click();
 
-  const onImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Upload media to private bucket, then insert a message that references its path
+  const uploadAndPostMedia = async (file: File | Blob, ext: string, kind: "image" | "voice") => {
+    if (!user) return;
+    const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error: upErr } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
+      contentType: file.type || (kind === "image" ? "image/*" : "audio/webm"),
+      upsert: false,
+    });
+    if (upErr) { console.error("[ChatRoom] media upload failed", upErr); return; }
+    const inserted = await insertMessage({
+      message_type: kind,
+      content: kind === "image" ? "[Image shared]" : "Voice note",
+      metadata: { path, content_type: file.type || (kind === "image" ? "image/*" : "audio/webm") },
+    });
+    if (inserted) await resolveMediaUrl(inserted.id, path);
+  };
+
+  const onImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (ev) => {
-      const dataUrl = ev.target?.result as string;
-      const inserted = await insertMessage({ message_type: "text", content: "[Image shared]" });
-      if (inserted) setLocalMedia((prev) => ({ ...prev, [inserted.id]: { imageUrl: dataUrl } }));
-    };
-    reader.readAsDataURL(file);
     e.target.value = "";
+    if (!file) return;
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    await uploadAndPostMedia(file, ext, "image");
   };
 
   const handleVoice = async () => {
@@ -291,9 +465,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
       mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const inserted = await insertMessage({ message_type: "text", content: "Voice note" });
-        if (inserted) setLocalMedia((prev) => ({ ...prev, [inserted.id]: { audioUrl } }));
+        await uploadAndPostMedia(audioBlob, "webm", "voice");
         stream.getTracks().forEach(t => t.stop());
       };
       mediaRecorder.start();
@@ -335,7 +507,10 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         {messages.map((m) => {
           const isMe = m.user === "You";
           const dbRow = rows.find((r) => r.id === m.id);
-          const media = localMedia[m.id];
+          const dbType = dbRow?.message_type;
+          const mediaUrl = mediaUrls[m.id];
+          const isImage = dbType === "image";
+          const isVoice = dbType === "voice";
           return (
             <div key={m.id} className={`flex gap-2 mb-3.5 items-start ${isMe ? "flex-row-reverse" : ""}`}>
               {!isMe && (
@@ -351,70 +526,78 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
                 {m.type === "text" && (
                   <div className={`px-3.5 py-2.5 shadow-sm ${isMe ? "bg-primary rounded-[14px_14px_4px_14px]" : "bg-card border border-border rounded-[14px_14px_14px_4px]"}`}>
-                    {media?.imageUrl && (
-                      <img src={media.imageUrl} alt="Shared" className="rounded-lg mb-1.5 max-w-[200px]" loading="lazy" />
-                    )}
-                    {media?.audioUrl ? (
-                      <audio src={media.audioUrl} controls className="max-w-[200px] h-8" />
+                    {isImage ? (
+                      mediaUrl ? (
+                        <img src={mediaUrl} alt="Shared" className="rounded-lg max-w-[200px]" loading="lazy" />
+                      ) : (
+                        <span className={`font-body text-[11px] ${isMe ? "text-primary-foreground/70" : "text-muted-foreground"}`}>Loading image…</span>
+                      )
+                    ) : isVoice ? (
+                      mediaUrl ? (
+                        <audio src={mediaUrl} controls className="max-w-[220px] h-8" />
+                      ) : (
+                        <span className={`font-body text-[11px] ${isMe ? "text-primary-foreground/70" : "text-muted-foreground"}`}>Loading voice note…</span>
+                      )
                     ) : (
                       <span className={`font-display text-sm italic leading-relaxed ${isMe ? "text-primary-foreground" : "text-foreground"}`}>{m.text}</span>
                     )}
                   </div>
                 )}
 
-                {m.type === "poll" && (
-                  <div className="card-warm p-3.5 min-w-[210px] w-full">
-                    <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
-                      <HandDrawnChart size={12} color="hsl(var(--primary))" /> poll
-                    </p>
-                    <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
-                    {m.options?.map((opt, i) => {
-                      const total = (m.votes || []).reduce((a, b) => a + b, 0);
-                      const pct = total ? Math.round(((m.votes?.[i] || 0) / total) * 100) : 0;
-                      const hasVoted = voted[m.id] !== undefined;
-                      const myVote = voted[m.id] === i;
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            if (hasVoted) return;
-                            setVoted((v) => ({ ...v, [m.id]: i }));
-                            setRows((rs) => rs.map((r) => {
-                              if (r.id !== m.id) return r;
-                              const cur = Array.isArray(r.metadata?.votes) ? r.metadata.votes : (r.metadata?.options || []).map(() => 0);
-                              const nextVotes = cur.map((v: number, vi: number) => vi === i ? v + 1 : v);
-                              return { ...r, metadata: { ...(r.metadata || {}), votes: nextVotes } };
-                            }));
-                          }}
-                          className={`touch-btn flex items-center w-full mb-1 px-2.5 py-2 rounded-lg border relative overflow-hidden transition-all ${
-                            myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card active:bg-secondary/50"
-                          }`}
-                        >
-                          {hasVoted && <div className="absolute left-0 top-0 bottom-0 bg-primary/10 rounded-lg" style={{ width: `${pct}%` }} />}
-                          <span className="font-display text-[13px] italic text-foreground flex-1 relative text-left">{opt}</span>
-                          {hasVoted && <span className="font-body text-[11px] text-muted-foreground relative">{pct}%</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+                {m.type === "poll" && (() => {
+                  const v = votes[m.id] ?? { tallies: (m.options || []).map(() => 0) };
+                  const total = v.tallies.reduce((a, b) => a + b, 0);
+                  const hasVoted = v.myChoice !== undefined;
+                  return (
+                    <div className="card-warm p-3.5 min-w-[210px] w-full">
+                      <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
+                        <HandDrawnChart size={12} color="hsl(var(--primary))" /> poll
+                      </p>
+                      <p className="font-display text-sm italic text-foreground mb-2">{m.question}</p>
+                      {m.options?.map((opt, i) => {
+                        const pct = total ? Math.round(((v.tallies[i] || 0) / total) * 100) : 0;
+                        const myVote = v.myChoice === i;
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => castVote(m.id, i)}
+                            disabled={hasVoted}
+                            className={`touch-btn flex items-center w-full mb-1 px-2.5 py-2 rounded-lg border relative overflow-hidden transition-all ${
+                              myVote ? "border-primary bg-primary/10" : hasVoted ? "border-border bg-primary/5" : "border-border bg-card active:bg-secondary/50"
+                            }`}
+                          >
+                            {hasVoted && <div className="absolute left-0 top-0 bottom-0 bg-primary/10 rounded-lg" style={{ width: `${pct}%` }} />}
+                            <span className="font-display text-[13px] italic text-foreground flex-1 relative text-left">{opt}</span>
+                            {hasVoted && <span className="font-body text-[11px] text-muted-foreground relative">{pct}%</span>}
+                          </button>
+                        );
+                      })}
+                      {hasVoted && (
+                        <p className="font-body text-[10px] text-muted-foreground mt-1">{total} {total === 1 ? "vote" : "votes"}</p>
+                      )}
+                    </div>
+                  );
+                })()}
 
-                {m.type === "event" && (
-                  <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
-                    <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
-                      <HandDrawnCalendar size={12} color="hsl(var(--primary))" /> event
-                    </p>
-                    <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
-                    {m.date && <p className="font-body text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
-                    {m.location && <p className="font-body text-[11px] text-muted-foreground mb-2">{m.location}</p>}
-                    <button
-                      onClick={() => toggleRSVP(m.id)}
-                      className="touch-btn font-display text-[13px] italic rounded-full px-4 py-2 bg-primary text-primary-foreground"
-                    >
-                      {rsvpd.has(m.id) ? `✓ Going (${m.going})` : `I'm going (${m.going})`}
-                    </button>
-                  </div>
-                )}
+                {m.type === "event" && (() => {
+                  const r = rsvps[m.id] ?? { mine: false, count: 0 };
+                  return (
+                    <div className="card-warm p-3.5 min-w-[230px] w-full border-l-[3px] border-l-primary">
+                      <p className="font-body text-[10px] text-primary mb-1 flex items-center gap-1">
+                        <HandDrawnCalendar size={12} color="hsl(var(--primary))" /> event
+                      </p>
+                      <p className="font-display text-[15px] font-bold italic text-foreground mb-0.5">{m.title}</p>
+                      {m.date && <p className="font-body text-[11px] text-muted-foreground mb-0.5">{m.date}</p>}
+                      {m.location && <p className="font-body text-[11px] text-muted-foreground mb-2">{m.location}</p>}
+                      <button
+                        onClick={() => toggleRSVP(m.id)}
+                        className="touch-btn font-display text-[13px] italic rounded-full px-4 py-2 bg-primary text-primary-foreground"
+                      >
+                        {r.mine ? `✓ Going (${r.count})` : `I'm going (${r.count})`}
+                      </button>
+                    </div>
+                  );
+                })()}
 
                 {isMe && <span className="font-body text-[10px] text-muted-foreground mt-0.5">{m.time}</span>}
               </div>
