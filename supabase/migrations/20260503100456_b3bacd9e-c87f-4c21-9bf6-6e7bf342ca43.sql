@@ -1,0 +1,1 @@
+DELETE FROM public.feed_posts;
