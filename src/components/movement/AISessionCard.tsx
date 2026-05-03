@@ -54,6 +54,30 @@ async function lookupStretch(name: string) {
   return result;
 }
 
+// Cache for exercise muscle lookups (AI plan main-block rows)
+const exerciseMuscleCache = new Map<string, string>();
+
+async function lookupExerciseMuscle(name: string): Promise<string> {
+  const key = name.toLowerCase();
+  if (exerciseMuscleCache.has(key)) return exerciseMuscleCache.get(key)!;
+
+  const searchTerms = key.replace(/[^a-z ]/g, "").split(" ").slice(0, 3).join(" ");
+  if (!searchTerms) {
+    exerciseMuscleCache.set(key, "");
+    return "";
+  }
+  const { data } = await supabase
+    .from("exercises")
+    .select("target, body_part")
+    .ilike("name", `%${searchTerms}%`)
+    .limit(1)
+    .maybeSingle();
+
+  const target = (data?.target || data?.body_part || "") as string;
+  exerciseMuscleCache.set(key, target);
+  return target;
+}
+
 interface AISessionCardProps {
   session: any;
   trainingWeek: number;
