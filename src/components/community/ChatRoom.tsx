@@ -84,7 +84,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
     const next: Record<string, { myChoice?: number; tallies: number[] }> = {};
     for (const v of rowsIn) {
       const optsLen = optionCounts[v.message_id] ?? 0;
-      const cur = next[v.message_id] ?? { tallies: new Array(optsLen).fill(0) };
+      const cur: { myChoice?: number; tallies: number[] } =
+        next[v.message_id] ?? { tallies: new Array(optsLen).fill(0) as number[] };
       // grow tallies if needed
       while (cur.tallies.length <= v.option_index) cur.tallies.push(0);
       cur.tallies[v.option_index] = (cur.tallies[v.option_index] ?? 0) + 1;
