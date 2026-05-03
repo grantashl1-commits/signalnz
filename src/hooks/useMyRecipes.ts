@@ -46,7 +46,7 @@ export function useMyRecipes() {
       .single();
     if (error) throw error;
     await fetch();
-    return data as UserRecipe;
+    return (data as unknown) as UserRecipe;
   }, [user, fetch]);
 
   const updateRecipe = useCallback(async (id: string, input: Partial<UserRecipeInput>): Promise<void> => {
