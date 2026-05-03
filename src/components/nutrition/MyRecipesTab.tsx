@@ -413,11 +413,15 @@ function RecipeDetailSheet({ recipe, onClose, onEdit, onDelete, onRate }: {
           </button>
         </div>
 
-        {recipe.image_url && (
-          <div className="w-full h-[180px] overflow-hidden bg-secondary">
-            <img src={recipe.image_url} alt={recipe.title} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = "none"; }} />
-          </div>
-        )}
+        <div className="w-full overflow-hidden">
+          <RecipeImage
+            recipeName={recipe.title}
+            recipeId={recipe.id}
+            recipeImage={recipe.image_url || undefined}
+            variant="detail"
+            height={220}
+          />
+        </div>
 
         <div className="p-5 pt-10 space-y-4">
           {/* Header */}
