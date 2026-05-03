@@ -296,6 +296,7 @@ export default function AISessionCard({
                     {(ex.formCue || ex.form_cue) && (
                       <p className="font-body text-[9px] italic text-muted-foreground mt-0.5">{sanitizeText(ex.formCue || ex.form_cue)}</p>
                     )}
+                    <ExerciseMuscle name={sanitizeText(ex.name)} />
                   </div>
                 </motion.div>
               </div>
