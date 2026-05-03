@@ -2939,6 +2939,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_recipes: {
+        Row: {
+          category: string
+          created_at: string
+          estimated_time: number | null
+          id: string
+          image_url: string | null
+          ingredients: string[]
+          instructions: string[]
+          rating: number | null
+          source_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          estimated_time?: number | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[]
+          instructions?: string[]
+          rating?: number | null
+          source_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          estimated_time?: number | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[]
+          instructions?: string[]
+          rating?: number | null
+          source_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_reports: {
         Row: {
           admin_notes: string | null
