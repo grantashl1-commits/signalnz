@@ -125,7 +125,8 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
     const map: Record<string, VaultEntry[]> = {};
     for (const c of VAULT_CATEGORIES) map[c.key] = [];
     for (const e of vault) {
-      if (map[e.category]) map[e.category].push(e);
+      const key = normalizeCategory(e.category);
+      if (map[key]) map[key].push(e);
     }
     return map;
   }, [vault]);
