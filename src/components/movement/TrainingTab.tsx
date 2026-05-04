@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Zap, Moon, Sprout, Sun } from "lucide-react";
-import GoalSelectionScreen from "./GoalSelectionScreen";
 import ProgramLibrary from "./ProgramLibrary";
 import ProgramOverview from "./ProgramOverview";
 import WorkoutSessionView from "./WorkoutSessionView";
