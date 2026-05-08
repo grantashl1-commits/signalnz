@@ -154,8 +154,8 @@ export default function TrainingTab() {
       {/* Program library */}
       {view === "goal-select" && (
         <ProgramLibrary
-          selectedGoalId={goalCategoryId}
-          onSelectProgram={handleSelectGoal}
+          selectedProgramId={program?.id ?? null}
+          onSelectProgram={(goalId) => handleSelectGoal(goalId)}
         />
       )}
 

@@ -19,8 +19,8 @@ interface ProgramRow {
 }
 
 interface Props {
-  selectedGoalId: string | null;
-  onSelectProgram: (goalCategoryId: string) => void;
+  selectedProgramId: string | null;
+  onSelectProgram: (goalCategoryId: string, programId: string) => void;
 }
 
 type LocationFilter = "all" | "home" | "gym";
@@ -44,7 +44,7 @@ function hasEquipment(eq: string[] | null): boolean {
   return true;
 }
 
-export default function ProgramLibrary({ selectedGoalId, onSelectProgram }: Props) {
+export default function ProgramLibrary({ selectedProgramId, onSelectProgram }: Props) {
   const [programs, setPrograms] = useState<ProgramRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [locFilter, setLocFilter] = useState<LocationFilter>("all");
@@ -166,7 +166,7 @@ export default function ProgramLibrary({ selectedGoalId, onSelectProgram }: Prop
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {filtered.map((p, i) => {
-            const selected = selectedGoalId === p.goal_category_id;
+            const selected = selectedProgramId === p.id;
             const gym = isGym(p.equipment_needed);
             const some = hasEquipment(p.equipment_needed);
             return (
@@ -175,7 +175,7 @@ export default function ProgramLibrary({ selectedGoalId, onSelectProgram }: Prop
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(i * 0.02, 0.3), duration: 0.25 }}
-                onClick={() => { haptic("medium"); onSelectProgram(p.goal_category_id); }}
+                onClick={() => { haptic("medium"); onSelectProgram(p.goal_category_id, p.id); }}
                 className={cn(
                   "rounded-2xl border p-3 text-left transition-all flex flex-col gap-2 min-h-[44px]",
                   selected
