@@ -69,7 +69,7 @@ export default function TrainingTab() {
     }
   }, [loading, goalCategoryId, program]);
 
-  const handleSelectGoal = async (goalId: string) => {
+  const handleSelectGoal = async (goalId: string, programId?: string) => {
     haptic("medium");
     // Clear any cached AI training plan so user starts fresh
     localStorage.removeItem("signal_ai_workout_plan");
@@ -79,7 +79,7 @@ export default function TrainingTab() {
     setWorkouts([]);
     setActiveWorkout(null);
     setActiveExercises([]);
-    await selectGoal(goalId);
+    await selectGoal(goalId, programId);
     // View will update via the effect above when program loads
   };
 
@@ -155,7 +155,7 @@ export default function TrainingTab() {
       {view === "goal-select" && (
         <ProgramLibrary
           selectedProgramId={program?.id ?? null}
-          onSelectProgram={(goalId) => handleSelectGoal(goalId)}
+          onSelectProgram={(goalId, programId) => handleSelectGoal(goalId, programId)}
         />
       )}
 

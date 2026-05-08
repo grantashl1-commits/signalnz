@@ -2304,6 +2304,7 @@ export type Database = {
           protein_target_g: number | null
           referral_code: string | null
           suburb: string | null
+          training_program_id: string | null
           updated_at: string
           user_id: string
           weight_kg: number | null
@@ -2337,6 +2338,7 @@ export type Database = {
           protein_target_g?: number | null
           referral_code?: string | null
           suburb?: string | null
+          training_program_id?: string | null
           updated_at?: string
           user_id: string
           weight_kg?: number | null
@@ -2370,6 +2372,7 @@ export type Database = {
           protein_target_g?: number | null
           referral_code?: string | null
           suburb?: string | null
+          training_program_id?: string | null
           updated_at?: string
           user_id?: string
           weight_kg?: number | null
@@ -2380,6 +2383,13 @@ export type Database = {
             columns: ["goal_category_id"]
             isOneToOne: false
             referencedRelation: "goal_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_training_program_id_fkey"
+            columns: ["training_program_id"]
+            isOneToOne: false
+            referencedRelation: "training_programs"
             referencedColumns: ["id"]
           },
         ]
