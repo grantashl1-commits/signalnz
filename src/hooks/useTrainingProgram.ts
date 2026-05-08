@@ -91,6 +91,7 @@ export interface WorkoutExercise {
 export function useTrainingProgram() {
   const { user } = useAuth();
   const [goalCategoryId, setGoalCategoryId] = useState<string | null>(null);
+  const [trainingProgramId, setTrainingProgramId] = useState<string | null>(null);
   const [goals, setGoals] = useState<GoalCategory[]>([]);
   const [program, setProgram] = useState<TrainingProgram | null>(null);
   const [phases, setPhases] = useState<ProgramPhase[]>([]);
@@ -107,55 +108,58 @@ export function useTrainingProgram() {
       });
   }, []);
 
-  // Fetch user's selected goal
+  // Fetch user's selected goal + program
   useEffect(() => {
     if (!user) { setLoading(false); return; }
     supabase
       .from("profiles")
-      .select("goal_category_id")
+      .select("goal_category_id, training_program_id")
       .eq("user_id", user.id)
       .maybeSingle()
       .then(({ data }) => {
         setGoalCategoryId((data as any)?.goal_category_id ?? null);
+        setTrainingProgramId((data as any)?.training_program_id ?? null);
         setLoading(false);
       });
   }, [user]);
 
-  // Fetch program when goal changes
+  // Fetch program — prefer explicit program_id, fallback to first program for goal
   useEffect(() => {
-    if (!goalCategoryId) { setProgram(null); setPhases([]); return; }
-    
-    supabase
-      .from("training_programs")
-      .select("*")
-      .eq("goal_category_id", goalCategoryId)
-      .limit(1)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          const prog = data as unknown as TrainingProgram;
-          setProgram(prog);
-          supabase
-            .from("program_phases")
-            .select("*")
-            .eq("program_id", prog.id)
-            .order("phase_number")
-            .then(({ data: phaseData }) => {
-              if (phaseData) setPhases(phaseData as unknown as ProgramPhase[]);
-            });
-        } else {
-          setProgram(null);
-          setPhases([]);
-        }
-      });
-  }, [goalCategoryId]);
+    if (!goalCategoryId && !trainingProgramId) { setProgram(null); setPhases([]); return; }
 
-  const selectGoal = useCallback(async (goalId: string) => {
+    const query = trainingProgramId
+      ? supabase.from("training_programs").select("*").eq("id", trainingProgramId).maybeSingle()
+      : supabase.from("training_programs").select("*").eq("goal_category_id", goalCategoryId!).limit(1).maybeSingle();
+
+    query.then(({ data }) => {
+      if (data) {
+        const prog = data as unknown as TrainingProgram;
+        setProgram(prog);
+        supabase
+          .from("program_phases")
+          .select("*")
+          .eq("program_id", prog.id)
+          .order("phase_number")
+          .then(({ data: phaseData }) => {
+            if (phaseData) setPhases(phaseData as unknown as ProgramPhase[]);
+          });
+      } else {
+        setProgram(null);
+        setPhases([]);
+      }
+    });
+  }, [goalCategoryId, trainingProgramId]);
+
+  const selectGoal = useCallback(async (goalId: string, programId?: string) => {
     if (!user) return;
     setGoalCategoryId(goalId);
+    setTrainingProgramId(programId ?? null);
     await supabase
       .from("profiles")
-      .upsert({ user_id: user.id, goal_category_id: goalId } as any, { onConflict: "user_id" });
+      .upsert(
+        { user_id: user.id, goal_category_id: goalId, training_program_id: programId ?? null } as any,
+        { onConflict: "user_id" }
+      );
   }, [user]);
 
   const fetchWorkouts = useCallback(async (phaseId: string): Promise<WorkoutTemplate[]> => {
