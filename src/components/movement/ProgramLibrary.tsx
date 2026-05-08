@@ -166,7 +166,7 @@ export default function ProgramLibrary({ selectedProgramId, onSelectProgram }: P
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {filtered.map((p, i) => {
-            const selected = selectedGoalId === p.goal_category_id;
+            const selected = selectedProgramId === p.id;
             const gym = isGym(p.equipment_needed);
             const some = hasEquipment(p.equipment_needed);
             return (
@@ -175,7 +175,7 @@ export default function ProgramLibrary({ selectedProgramId, onSelectProgram }: P
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(i * 0.02, 0.3), duration: 0.25 }}
-                onClick={() => { haptic("medium"); onSelectProgram(p.goal_category_id); }}
+                onClick={() => { haptic("medium"); onSelectProgram(p.goal_category_id, p.id); }}
                 className={cn(
                   "rounded-2xl border p-3 text-left transition-all flex flex-col gap-2 min-h-[44px]",
                   selected
