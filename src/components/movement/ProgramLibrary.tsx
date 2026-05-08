@@ -19,8 +19,8 @@ interface ProgramRow {
 }
 
 interface Props {
-  selectedGoalId: string | null;
-  onSelectProgram: (goalCategoryId: string) => void;
+  selectedProgramId: string | null;
+  onSelectProgram: (goalCategoryId: string, programId: string) => void;
 }
 
 type LocationFilter = "all" | "home" | "gym";
@@ -44,7 +44,7 @@ function hasEquipment(eq: string[] | null): boolean {
   return true;
 }
 
-export default function ProgramLibrary({ selectedGoalId, onSelectProgram }: Props) {
+export default function ProgramLibrary({ selectedProgramId, onSelectProgram }: Props) {
   const [programs, setPrograms] = useState<ProgramRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [locFilter, setLocFilter] = useState<LocationFilter>("all");
