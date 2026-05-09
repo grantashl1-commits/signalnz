@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CakeSlice, Search, BookOpen } from "lucide-react";
+import { X, CakeSlice, Search, BookOpen, ChevronDown, Baby } from "lucide-react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
@@ -274,9 +274,50 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                 <p className="font-display text-sm italic" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>
                   {selectedRecipe.phaseBenefit}
                 </p>
+
+                {selectedRecipe.kidAlternative && (
+                  <KidAlternativeNote text={selectedRecipe.kidAlternative} phaseColor={PHASE_HEX[selectedRecipe.phase]} />
+                )}
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── A version for the little ones ── */
+function KidAlternativeNote({ text, phaseColor }: { text: string; phaseColor: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl bg-secondary/40 border border-border/40 overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="touch-btn w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+      >
+        <span className="flex items-center gap-2">
+          <Baby className="h-3.5 w-3.5" style={{ color: phaseColor }} />
+          <span className="font-display text-xs italic" style={{ color: phaseColor }}>
+            A version for the little ones
+          </span>
+        </span>
+        <ChevronDown
+          className="h-3.5 w-3.5 text-muted-foreground transition-transform"
+          style={{ transform: open ? "rotate(180deg)" : undefined }}
+        />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <p className="font-body text-xs text-muted-foreground leading-relaxed px-4 pb-4">{text}</p>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

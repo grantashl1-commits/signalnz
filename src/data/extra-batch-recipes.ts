@@ -1,3 +1,7 @@
+/**
+ * ⚠️ ARCHIVED – replaced by src/data/nourish-recipes.ts.
+ * Preserved for reference only. DO NOT DELETE.
+ */
 import { Recipe } from "./meal-plans";
 
 /** Meal / breakfast recipes from the extra batch (recipes2.csv) */

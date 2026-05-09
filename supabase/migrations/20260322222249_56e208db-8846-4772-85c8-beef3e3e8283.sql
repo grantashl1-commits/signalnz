@@ -1,4 +1,4 @@
-CREATE TABLE public.dream_boards (
+CREATE TABLE IF NOT EXISTS public.dream_boards (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   board_data jsonb NOT NULL DEFAULT '[]'::jsonb,

@@ -1,5 +1,5 @@
 
-CREATE TABLE public.todos (
+CREATE TABLE IF NOT EXISTS public.todos (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   title TEXT NOT NULL,

@@ -2,7 +2,7 @@
 -- Behaviour management system tables
 
 -- Children profiles
-CREATE TABLE public.parenting_children (
+CREATE TABLE IF NOT EXISTS public.parenting_children (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
   name TEXT NOT NULL,
@@ -20,7 +20,7 @@ CREATE POLICY "own children update" ON public.parenting_children FOR UPDATE USIN
 CREATE POLICY "own children delete" ON public.parenting_children FOR DELETE USING (auth.uid() = user_id);
 
 -- Chores (templates per parent, optionally scoped per child)
-CREATE TABLE public.parenting_chores (
+CREATE TABLE IF NOT EXISTS public.parenting_chores (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
   child_id UUID REFERENCES public.parenting_children(id) ON DELETE CASCADE,
@@ -36,7 +36,7 @@ ALTER TABLE public.parenting_chores ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "own chores all" ON public.parenting_chores FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Bad behaviours
-CREATE TABLE public.parenting_behaviours (
+CREATE TABLE IF NOT EXISTS public.parenting_behaviours (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
   child_id UUID REFERENCES public.parenting_children(id) ON DELETE CASCADE,
@@ -51,7 +51,7 @@ ALTER TABLE public.parenting_behaviours ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "own behaviours all" ON public.parenting_behaviours FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Reward goals
-CREATE TABLE public.parenting_rewards (
+CREATE TABLE IF NOT EXISTS public.parenting_rewards (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
   child_id UUID NOT NULL REFERENCES public.parenting_children(id) ON DELETE CASCADE,
@@ -66,7 +66,7 @@ ALTER TABLE public.parenting_rewards ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "own rewards all" ON public.parenting_rewards FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Transactions (history)
-CREATE TABLE public.parenting_transactions (
+CREATE TABLE IF NOT EXISTS public.parenting_transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
   child_id UUID NOT NULL REFERENCES public.parenting_children(id) ON DELETE CASCADE,

@@ -63,7 +63,9 @@
       "Bash(bunx tsc *)",
       "Bash(awk 'NR==67287' /c/GitHub/signalnz/node_modules/typescript/lib/_tsc.js)",
       "Bash(awk NR==67287 {print length} *)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(grep -E \"^\\\\.env$|^\\\\.env\\\\b\" \"C:\\\\GitHub\\\\signalnz\\\\.gitignore\")",
+      "Bash(awk -F'<value of length ' '{print $1 \"<value of length \" length\\($2\\)-1 \">\"}')"
     ]
   }
 }

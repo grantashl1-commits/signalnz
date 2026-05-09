@@ -1,5 +1,5 @@
 
-CREATE TABLE public.community_profiles (
+CREATE TABLE IF NOT EXISTS public.community_profiles (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   career TEXT,

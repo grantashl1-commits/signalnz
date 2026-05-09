@@ -1,6 +1,6 @@
 
 -- Push notification device tokens
-CREATE TABLE public.push_tokens (
+CREATE TABLE IF NOT EXISTS public.push_tokens (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   token text NOT NULL,

@@ -1,5 +1,5 @@
 
-CREATE TABLE public.cycle_logs (
+CREATE TABLE IF NOT EXISTS public.cycle_logs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   log_date date NOT NULL,

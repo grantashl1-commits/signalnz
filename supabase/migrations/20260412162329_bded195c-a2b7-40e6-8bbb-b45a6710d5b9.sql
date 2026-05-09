@@ -1,5 +1,5 @@
 -- Rate limiting table
-CREATE TABLE public.rate_limits (
+CREATE TABLE IF NOT EXISTS public.rate_limits (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_identifier text NOT NULL,
   function_name text NOT NULL,

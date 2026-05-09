@@ -1,3 +1,7 @@
+/**
+ * ⚠️ ARCHIVED – replaced by src/data/nourish-recipes.ts.
+ * Preserved for reference only. DO NOT DELETE.
+ */
 import { Recipe } from "@/data/meal-plans";
 
 export const HOW_NOT_TO_DIET_RECIPES: Recipe[] = [

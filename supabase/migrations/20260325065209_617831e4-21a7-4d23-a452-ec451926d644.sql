@@ -1,5 +1,5 @@
 
-CREATE TABLE public.nps_responses (
+CREATE TABLE IF NOT EXISTS public.nps_responses (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   score INTEGER NOT NULL,

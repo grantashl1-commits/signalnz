@@ -1,6 +1,6 @@
 
 -- User insight profiles built from journal entries
-CREATE TABLE public.user_insight_profiles (
+CREATE TABLE IF NOT EXISTS public.user_insight_profiles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_identifier text NOT NULL UNIQUE,
   emotional_patterns jsonb DEFAULT '[]'::jsonb,
@@ -14,7 +14,7 @@ CREATE TABLE public.user_insight_profiles (
 );
 
 -- Signal memory — past signals stored for reference
-CREATE TABLE public.signal_memory (
+CREATE TABLE IF NOT EXISTS public.signal_memory (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_identifier text NOT NULL,
   signal_text text NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE public.signal_memory (
 );
 
 -- AI usage tracking
-CREATE TABLE public.ai_usage (
+CREATE TABLE IF NOT EXISTS public.ai_usage (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_identifier text NOT NULL,
   function_name text NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE public.ai_usage (
 );
 
 -- AI credits per user
-CREATE TABLE public.ai_credits (
+CREATE TABLE IF NOT EXISTS public.ai_credits (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_identifier text NOT NULL UNIQUE,
   credits_remaining int DEFAULT 20,

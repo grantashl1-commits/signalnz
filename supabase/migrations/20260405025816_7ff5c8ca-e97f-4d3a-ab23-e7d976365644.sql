@@ -1,5 +1,5 @@
 -- habit_logs table for streak/consistency tracking
-CREATE TABLE public.habit_logs (
+CREATE TABLE IF NOT EXISTS public.habit_logs (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   log_date DATE NOT NULL,
@@ -20,7 +20,7 @@ CREATE POLICY "Users can delete own habit logs" ON public.habit_logs FOR DELETE 
 CREATE INDEX idx_habit_logs_user_date ON public.habit_logs (user_id, log_date DESC);
 
 -- sleep_logs table for sleep tracking
-CREATE TABLE public.sleep_logs (
+CREATE TABLE IF NOT EXISTS public.sleep_logs (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   log_date DATE NOT NULL,

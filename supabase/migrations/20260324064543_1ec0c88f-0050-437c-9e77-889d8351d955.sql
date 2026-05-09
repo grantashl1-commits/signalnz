@@ -1,5 +1,5 @@
 
-CREATE TABLE public.stretches (
+CREATE TABLE IF NOT EXISTS public.stretches (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   name text NOT NULL,
   target_muscle text NOT NULL,

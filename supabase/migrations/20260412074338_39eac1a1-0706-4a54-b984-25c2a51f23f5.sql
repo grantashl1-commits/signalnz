@@ -1,6 +1,6 @@
 
 -- Membership features config table
-CREATE TABLE public.membership_features (
+CREATE TABLE IF NOT EXISTS public.membership_features (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   feature_key text NOT NULL UNIQUE,
   feature_label text NOT NULL,

@@ -1,5 +1,5 @@
 
-CREATE TABLE public.exercises (
+CREATE TABLE IF NOT EXISTS public.exercises (
   id text PRIMARY KEY,
   name text NOT NULL,
   body_part text,

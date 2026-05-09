@@ -1,5 +1,5 @@
 
-CREATE TABLE public.feed_posts (
+CREATE TABLE IF NOT EXISTS public.feed_posts (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   post_number integer NOT NULL,
   post_title_description text NOT NULL,

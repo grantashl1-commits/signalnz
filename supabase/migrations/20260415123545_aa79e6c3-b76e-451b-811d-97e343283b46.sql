@@ -1,6 +1,6 @@
 
 -- Table to track each partner's course progress independently
-CREATE TABLE public.connect_partner_progress (
+CREATE TABLE IF NOT EXISTS public.connect_partner_progress (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   connection_id uuid NOT NULL REFERENCES public.partner_connections(id) ON DELETE CASCADE,
   partner_role text NOT NULL DEFAULT 'member',

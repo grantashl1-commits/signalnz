@@ -788,7 +788,7 @@ export default function AccountPage() {
                   <p className="font-body text-[10px] text-muted-foreground/40 uppercase tracking-widest">refer a friend</p>
                   <p className="text-sm text-foreground/70 mt-0.5">{referralCode}</p>
                 </div>
-                <button onClick={() => { navigator.clipboard.writeText(`https://signalnz.lovable.app?ref=${referralCode}`); haptic("light"); toast.success("Link copied!"); }}
+                <button onClick={() => { navigator.clipboard.writeText(`https://YOUR_DOMAIN.com?ref=${referralCode}`); haptic("light"); toast.success("Link copied!"); }}
                   className="font-body text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground">copy</button>
               </div>
             </div>

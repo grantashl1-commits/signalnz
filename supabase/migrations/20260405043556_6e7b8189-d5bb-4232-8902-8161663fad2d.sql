@@ -1,6 +1,6 @@
 
 -- Create mindfulness_logs table for tracking meditation/reading completions
-CREATE TABLE public.mindfulness_logs (
+CREATE TABLE IF NOT EXISTS public.mindfulness_logs (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   practice_id TEXT NOT NULL,

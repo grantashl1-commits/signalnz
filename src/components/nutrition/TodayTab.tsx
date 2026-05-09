@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronUp, Sparkles, Baby } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
@@ -601,6 +601,11 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
           </>
         )}
 
+        {/* "A version for the little ones" — gentle, recipe-defined hint */}
+        {meal.recipe?.kidAlternative && (
+          <KidAlternativeNote text={meal.recipe.kidAlternative} phaseColor={phaseColor} />
+        )}
+
         {/* Kids alternative swap */}
         <KidsDinnerAlt mealName={meal.name} mealType={meal.slot as any} phase={phase} />
 
@@ -669,6 +674,43 @@ function ExpandedSnackDetail({ label, name, benefit, macros, isEaten, phaseColor
         </button>
       </div>
     </motion.div>
+  );
+}
+
+/* ── A version for the little ones ── */
+function KidAlternativeNote({ text, phaseColor }: { text: string; phaseColor: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl bg-secondary/40 border border-border/40 overflow-hidden">
+      <button
+        onClick={() => { haptic("light"); setOpen(!open); }}
+        className="touch-btn w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+      >
+        <span className="flex items-center gap-2">
+          <Baby className="h-3.5 w-3.5" style={{ color: phaseColor }} />
+          <span className="font-display text-xs italic" style={{ color: phaseColor }}>
+            A version for the little ones
+          </span>
+        </span>
+        <ChevronDown
+          className="h-3.5 w-3.5 text-muted-foreground transition-transform"
+          style={{ transform: open ? "rotate(180deg)" : undefined }}
+        />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <p className="font-body text-xs text-muted-foreground leading-relaxed px-4 pb-4">{text}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 

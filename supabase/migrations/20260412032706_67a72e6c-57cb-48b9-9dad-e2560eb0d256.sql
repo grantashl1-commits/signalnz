@@ -1,5 +1,5 @@
 
-CREATE TABLE public.plan_generations (
+CREATE TABLE IF NOT EXISTS public.plan_generations (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
   plan_type text NOT NULL DEFAULT 'ai_training',

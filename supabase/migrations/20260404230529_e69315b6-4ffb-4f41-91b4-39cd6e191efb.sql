@@ -2,7 +2,7 @@
 -- ══════════════════════════════════════════════════════
 -- 1. goal_categories
 -- ══════════════════════════════════════════════════════
-CREATE TABLE public.goal_categories (
+CREATE TABLE IF NOT EXISTS public.goal_categories (
   id TEXT NOT NULL PRIMARY KEY,
   slug TEXT NOT NULL UNIQUE,
   label TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE POLICY "Anyone can read goal_categories"
 -- ══════════════════════════════════════════════════════
 -- 2. training_programs
 -- ══════════════════════════════════════════════════════
-CREATE TABLE public.training_programs (
+CREATE TABLE IF NOT EXISTS public.training_programs (
   id TEXT NOT NULL PRIMARY KEY,
   goal_category_id TEXT NOT NULL REFERENCES public.goal_categories(id),
   title TEXT NOT NULL,
@@ -47,7 +47,7 @@ CREATE POLICY "Anyone can read training_programs"
 -- ══════════════════════════════════════════════════════
 -- 3. program_phases
 -- ══════════════════════════════════════════════════════
-CREATE TABLE public.program_phases (
+CREATE TABLE IF NOT EXISTS public.program_phases (
   id TEXT NOT NULL PRIMARY KEY,
   program_id TEXT NOT NULL REFERENCES public.training_programs(id),
   phase_number INTEGER NOT NULL,
@@ -69,7 +69,7 @@ CREATE POLICY "Anyone can read program_phases"
 -- ══════════════════════════════════════════════════════
 -- 4. workout_templates
 -- ══════════════════════════════════════════════════════
-CREATE TABLE public.workout_templates (
+CREATE TABLE IF NOT EXISTS public.workout_templates (
   id TEXT NOT NULL PRIMARY KEY,
   phase_id TEXT NOT NULL REFERENCES public.program_phases(id),
   day_label TEXT NOT NULL,
@@ -92,7 +92,7 @@ CREATE POLICY "Anyone can read workout_templates"
 -- ══════════════════════════════════════════════════════
 -- 5. workout_exercises
 -- ══════════════════════════════════════════════════════
-CREATE TABLE public.workout_exercises (
+CREATE TABLE IF NOT EXISTS public.workout_exercises (
   id TEXT NOT NULL PRIMARY KEY DEFAULT gen_random_uuid()::text,
   workout_template_id TEXT NOT NULL REFERENCES public.workout_templates(id),
   exercise_id TEXT NOT NULL REFERENCES public.exercises(id),

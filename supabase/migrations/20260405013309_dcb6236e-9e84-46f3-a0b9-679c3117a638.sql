@@ -1,4 +1,4 @@
-CREATE TABLE public.user_saved_recipes (
+CREATE TABLE IF NOT EXISTS public.user_saved_recipes (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   recipe_id text NOT NULL,
@@ -23,7 +23,7 @@ CREATE POLICY "Users can unsave recipes"
 CREATE INDEX idx_saved_recipes_user ON public.user_saved_recipes (user_id);
 
 -- Plant diversity tracker
-CREATE TABLE public.plant_diversity_log (
+CREATE TABLE IF NOT EXISTS public.plant_diversity_log (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   week_key text NOT NULL,

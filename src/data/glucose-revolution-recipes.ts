@@ -1,3 +1,7 @@
+/**
+ * ⚠️ ARCHIVED – replaced by src/data/nourish-recipes.ts.
+ * Preserved for reference only. DO NOT DELETE.
+ */
 import { Recipe } from "@/data/meal-plans";
 
 export const GLUCOSE_REVOLUTION_RECIPES: Recipe[] = [

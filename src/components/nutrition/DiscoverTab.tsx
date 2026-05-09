@@ -1,18 +1,15 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Camera, Heart, ChefHat, Loader2, X, Clock, Users, Zap, Filter } from "lucide-react";
+import { Search, Heart, ChevronDown, X, Baby } from "lucide-react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { ALL_MEAL_RECIPES } from "@/lib/recipe-index";
-import { BAKING_RECIPES } from "@/data/baking-recipes";
+import { ALL_RECIPES } from "@/lib/recipe-index";
 import { Recipe } from "@/data/meal-plans";
 import { KIDS_RECIPE_BANK, KidsRecipe } from "@/data/kids-recipes";
-import { RecipeShoppingButton, IngredientSearchLinks } from "@/components/ShoppingList";
+import { RecipeShoppingButton } from "@/components/ShoppingList";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
 import { useSavedRecipes } from "@/hooks/useSavedRecipes";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
 
@@ -33,32 +30,15 @@ const PHASE_TINT: Record<Phase, string> = {
 const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Baking", "Snacks", "TCM", "Ayurveda", "Kids"] as const;
 const TAG_FILTERS = ["High Protein", "Gut Health", "Anti-Inflammatory", "Vegan", "Iron-Rich", "Magnesium"] as const;
 
-interface AIGeneratedRecipe {
-  name: string;
-  prepTime: string;
-  serves: number;
-  ingredients: string[];
-  method: string[];
-  keyNutrients: string[];
-  nutritionalNote: string;
-  usedIngredients?: string[];
-  addedStaples?: string[];
-}
-
 export default function DiscoverTab() {
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase } = useCycle();
   const { toggleSave, isSaved } = useSavedRecipes();
-  const { guard: guardExpand, canExpand } = useGatedExpand("nutrition_browse");
+  const { guard: guardExpand } = useGatedExpand("nutrition_browse");
   const [search, setSearch] = useState("");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
   const [mealType, setMealType] = useState<string>("All");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
-  const [showFridge, setShowFridge] = useState(false);
-  const [ingredientInput, setIngredientInput] = useState("");
-  const [aiRecipes, setAiRecipes] = useState<AIGeneratedRecipe[]>([]);
-  const [generating, setGenerating] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Snack-like keywords for auto-tagging
   const SNACK_KEYWORDS = ["bliss ball", "bark", "nice cream", "energy ball", "slice", "mousse", "fudge", "custard", "rocher", "crumble ball"];
@@ -75,13 +55,8 @@ export default function DiscoverTab() {
     return "meal";
   };
 
-  // Combine all recipes
-  const allRecipes = useMemo(() => {
-    const combined = [...ALL_MEAL_RECIPES, ...BAKING_RECIPES];
-    // Deduplicate by id
-    const seen = new Set<string>();
-    return combined.filter(r => { if (seen.has(r.id)) return false; seen.add(r.id); return true; });
-  }, []);
+  // Single canonical source — covers meals, breakfast, baking, snacks
+  const allRecipes = ALL_RECIPES;
 
   // Get saved recipes
   const savedRecipes = useMemo(() => allRecipes.filter(r => isSaved(r.id)), [allRecipes, isSaved]);
@@ -126,114 +101,8 @@ export default function DiscoverTab() {
     });
   }, [mealType, search]);
 
-  // Fridge recipe generation
-  const generateFromFridge = async (text: string, imageBase64?: string) => {
-    if (!text.trim() && !imageBase64) return;
-    setGenerating(true);
-    setAiRecipes([]);
-    haptic("medium");
-    try {
-      const prefs = (() => {
-        try { return JSON.parse(localStorage.getItem("mindcast-prep-prefs") || "{}"); } catch { return {}; }
-      })();
-      const { data, error } = await supabase.functions.invoke("fridge-recipe", {
-        body: {
-          ingredients: text.trim() || undefined,
-          imageBase64: imageBase64 || undefined,
-          phase: currentPhase,
-          dietary: prefs.dietType || "",
-          allergies: prefs.allergies || "",
-        },
-      });
-      if (error) throw error;
-      if (data?.recipes?.length) {
-        setAiRecipes(data.recipes);
-        toast.success(`${data.recipes.length} recipes created!`);
-      }
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to generate recipes");
-    } finally {
-      setGenerating(false);
-    }
-  };
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { toast.error("Photo too large"); return; }
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = (reader.result as string).split(",")[1];
-      await generateFromFridge("", base64);
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  };
-
   return (
     <div className="space-y-5">
-      {/* Fridge CTA card */}
-      <button
-        onClick={() => setShowFridge(!showFridge)}
-        className="w-full rounded-2xl border-2 border-dashed border-[#5B2D72]/30 p-5 flex items-center gap-4 text-left transition-all active:scale-[0.98]"
-        style={{ background: "linear-gradient(135deg, #1A0F2E 0%, #261540 100%)" }}
-      >
-        <div className="w-12 h-12 rounded-xl bg-[#5B2D72]/30 flex items-center justify-center flex-shrink-0 relative">
-          <Camera className="h-5 w-5 text-[#5B2D72]" style={{ color: "#B794D0" }} />
-          <Zap className="h-3 w-3 absolute -top-1 -right-1" style={{ color: "#B794D0" }} />
-        </div>
-        <div className="flex-1">
-          <p className="font-display text-sm font-bold italic" style={{ color: "#FAF7F4" }}>What's in your fridge?</p>
-          <p className="font-body text-[11px] mt-1 leading-relaxed" style={{ color: "rgba(250,247,244,0.55)" }}>
-            Type ingredients or snap a photo — <span style={{ color: PHASE_HEX[currentPhase] }}>we'll create {PHASE_SHORT[currentPhase]}-phase recipes</span>
-          </p>
-        </div>
-      </button>
-
-      {/* Fridge input */}
-      <AnimatePresence>
-        {showFridge && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden space-y-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={ingredientInput}
-                onChange={e => setIngredientInput(e.target.value)}
-                placeholder="chicken, spinach, rice, feta..."
-                className="w-full rounded-xl bg-card pl-10 pr-24 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-                onKeyDown={e => { if (e.key === "Enter") generateFromFridge(ingredientInput); }}
-                disabled={generating}
-              />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                <button onClick={() => fileInputRef.current?.click()} disabled={generating} className="touch-btn rounded-lg p-2 bg-secondary text-muted-foreground">
-                  <Camera className="h-4 w-4" />
-                </button>
-                <button onClick={() => generateFromFridge(ingredientInput)} disabled={generating || !ingredientInput.trim()} className="touch-btn rounded-lg p-2 bg-primary text-primary-foreground disabled:opacity-40">
-                  {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChefHat className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handlePhotoUpload} className="hidden" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* AI generated results */}
-      {aiRecipes.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="font-display text-base italic text-foreground flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" /> {aiRecipes.length} recipes created
-            </h3>
-            <button onClick={() => setAiRecipes([])} className="touch-btn p-2 rounded-lg bg-secondary text-muted-foreground"><X className="h-4 w-4" /></button>
-          </div>
-          {aiRecipes.map((recipe, i) => (
-            <AIRecipeCard key={i} recipe={recipe} phaseColor={PHASE_HEX[currentPhase]} />
-          ))}
-        </div>
-      )}
-
       {/* Saved recipes section */}
       {savedRecipes.length > 0 && (
         <div className="space-y-3">
@@ -462,60 +331,6 @@ function KidsRecipeDetailSheet({ recipe, onClose }: { recipe: KidsRecipe; onClos
   );
 }
 
-/* ── AI Recipe Card with expandable details ── */
-function AIRecipeCard({ recipe, phaseColor }: { recipe: AIGeneratedRecipe; phaseColor: string }) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <div className="card-warm overflow-hidden">
-      <button onClick={() => { haptic("light"); setExpanded(!expanded); }} className="w-full text-left p-4 space-y-2">
-        <h4 className="font-display text-sm italic text-foreground">{recipe.name}</h4>
-        <div className="flex gap-2 font-body text-[10px] text-muted-foreground">
-          <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{recipe.prepTime}</span>
-          <span className="flex items-center gap-1"><Users className="h-3 w-3" />Serves {recipe.serves}</span>
-        </div>
-        <div className="flex flex-wrap gap-1">{recipe.keyNutrients?.slice(0, 3).map(n => (
-          <span key={n} className="rounded-full px-2 py-0.5 font-body text-[9px] font-bold uppercase bg-primary/10 text-primary">{n}</span>
-        ))}</div>
-        <p className="font-body text-[10px] text-primary font-medium">{expanded ? "Hide details ▲" : "View recipe ▼"}</p>
-      </button>
-      <AnimatePresence>
-        {expanded && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-            <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
-              {recipe.ingredients?.length > 0 && (
-                <div>
-                  <p className="font-body text-xs font-semibold text-foreground mb-1" style={{ color: phaseColor }}>Ingredients</p>
-                  <ul className="space-y-0.5">
-                    {recipe.ingredients.map((ing, idx) => (
-                      <li key={idx} className="font-body text-xs text-muted-foreground">• {ing}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {recipe.method?.length > 0 && (
-                <div>
-                  <p className="font-body text-xs font-semibold text-foreground mb-1" style={{ color: phaseColor }}>Method</p>
-                  <ol className="space-y-1">
-                    {recipe.method.map((step, idx) => (
-                      <li key={idx} className="font-body text-xs text-muted-foreground">
-                        <span className="font-semibold text-foreground">{idx + 1}.</span> {step.replace(/^\d+[\.\)]\s*/, "")}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-              {recipe.nutritionalNote && (
-                <p className="font-body text-xs italic text-muted-foreground">{recipe.nutritionalNote}</p>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
 function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
   recipe: Recipe; isSaved: boolean; onToggleSave: () => void; onSelect: () => void; index?: number;
 }) {
@@ -652,8 +467,47 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
           </div>
 
           <p className="font-display text-sm italic" style={{ color: phaseColor }}>{recipe.phaseBenefit}</p>
+
+          {recipe.kidAlternative && <KidAlternativeNote text={recipe.kidAlternative} phaseColor={phaseColor} />}
         </div>
       </motion.div>
     </>
+  );
+}
+
+/* ── A version for the little ones ── */
+function KidAlternativeNote({ text, phaseColor }: { text: string; phaseColor: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl bg-secondary/40 border border-border/40 overflow-hidden">
+      <button
+        onClick={() => { haptic("light"); setOpen(!open); }}
+        className="touch-btn w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+      >
+        <span className="flex items-center gap-2">
+          <Baby className="h-3.5 w-3.5" style={{ color: phaseColor }} />
+          <span className="font-display text-xs italic" style={{ color: phaseColor }}>
+            A version for the little ones
+          </span>
+        </span>
+        <ChevronDown
+          className="h-3.5 w-3.5 text-muted-foreground transition-transform"
+          style={{ transform: open ? "rotate(180deg)" : undefined }}
+        />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <p className="font-body text-xs text-muted-foreground leading-relaxed px-4 pb-4">{text}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

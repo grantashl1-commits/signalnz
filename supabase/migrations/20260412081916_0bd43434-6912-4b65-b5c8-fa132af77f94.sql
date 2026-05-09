@@ -1,6 +1,6 @@
 
 -- Partner connections table
-CREATE TABLE public.partner_connections (
+CREATE TABLE IF NOT EXISTS public.partner_connections (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   member_user_id UUID NOT NULL,
   partner_name TEXT,
@@ -40,7 +40,7 @@ CREATE POLICY "Anyone can read by join code"
   USING (true);
 
 -- Connect messages table (AI coaching chat)
-CREATE TABLE public.connect_messages (
+CREATE TABLE IF NOT EXISTS public.connect_messages (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   connection_id UUID NOT NULL REFERENCES public.partner_connections(id) ON DELETE CASCADE,
   sender_role TEXT NOT NULL DEFAULT 'member',

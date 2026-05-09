@@ -1,6 +1,6 @@
 
 -- Table for users to bookmark parenting situation scripts to "My Toolkit"
-CREATE TABLE public.saved_parenting_scripts (
+CREATE TABLE IF NOT EXISTS public.saved_parenting_scripts (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   script_id TEXT NOT NULL,

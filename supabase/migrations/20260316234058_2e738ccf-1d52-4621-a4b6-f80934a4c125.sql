@@ -1,6 +1,6 @@
 
 -- Create feedback table
-CREATE TABLE public.feedback (
+CREATE TABLE IF NOT EXISTS public.feedback (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   user_email TEXT,

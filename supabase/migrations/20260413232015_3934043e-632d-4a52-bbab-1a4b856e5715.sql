@@ -1,5 +1,5 @@
 
-CREATE TABLE public.attachment_quiz_results (
+CREATE TABLE IF NOT EXISTS public.attachment_quiz_results (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   answers JSONB NOT NULL DEFAULT '{}',

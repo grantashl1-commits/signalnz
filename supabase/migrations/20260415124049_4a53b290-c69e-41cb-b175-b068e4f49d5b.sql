@@ -1,6 +1,6 @@
 
 -- Reflection cards (private journal → AI organised → optional sharing)
-CREATE TABLE public.connect_reflections (
+CREATE TABLE IF NOT EXISTS public.connect_reflections (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   connection_id uuid NOT NULL REFERENCES public.partner_connections(id) ON DELETE CASCADE,
   partner_role text NOT NULL DEFAULT 'member',
@@ -27,7 +27,7 @@ CREATE POLICY "Anon select reflections" ON public.connect_reflections FOR SELECT
 CREATE POLICY "Anon update reflections" ON public.connect_reflections FOR UPDATE TO anon USING (true);
 
 -- Shared room responses (guided conversation)
-CREATE TABLE public.connect_shared_responses (
+CREATE TABLE IF NOT EXISTS public.connect_shared_responses (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   connection_id uuid NOT NULL REFERENCES public.partner_connections(id) ON DELETE CASCADE,
   reflection_id uuid REFERENCES public.connect_reflections(id) ON DELETE CASCADE,
@@ -51,7 +51,7 @@ CREATE POLICY "Anon insert responses" ON public.connect_shared_responses FOR INS
 CREATE POLICY "Anon select responses" ON public.connect_shared_responses FOR SELECT TO anon USING (true);
 
 -- Commitments (AI-generated next steps)
-CREATE TABLE public.connect_commitments (
+CREATE TABLE IF NOT EXISTS public.connect_commitments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   connection_id uuid NOT NULL REFERENCES public.partner_connections(id) ON DELETE CASCADE,
   next_step text NOT NULL,
@@ -72,7 +72,7 @@ CREATE POLICY "Anon insert commitments" ON public.connect_commitments FOR INSERT
 CREATE POLICY "Anon select commitments" ON public.connect_commitments FOR SELECT TO anon USING (true);
 
 -- Weekly check-ins
-CREATE TABLE public.connect_checkins (
+CREATE TABLE IF NOT EXISTS public.connect_checkins (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   connection_id uuid NOT NULL REFERENCES public.partner_connections(id) ON DELETE CASCADE,
   partner_role text NOT NULL DEFAULT 'member',

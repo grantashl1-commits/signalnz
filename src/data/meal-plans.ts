@@ -1,3 +1,10 @@
+/**
+ * ⚠️ ARCHIVED – the RECIPES export and per-phase meal plans here have been replaced
+ * by src/data/nourish-recipes.ts. Preserved for reference only. DO NOT DELETE.
+ *
+ * Note: the Recipe / NutritionInfo / RecipeCategory / Meal / DayPlan types are
+ * still active and consumed by nourish-recipes.ts and the rest of the app.
+ */
 import { Phase } from "@/lib/cycle-utils";
 
 export interface Meal {
@@ -298,6 +305,7 @@ export interface Recipe {
   phase: Phase;
   serves: number;
   prepTime: string;
+  cookTime?: string;
   keyNutrients: string[];
   ingredients: string[];
   method: string[];
@@ -306,6 +314,8 @@ export interface Recipe {
   image?: string;
   nutrition?: NutritionInfo;
   tags?: string[];
+  /** A gentle alternative for the little ones — used by the "version for the little ones" hint. */
+  kidAlternative?: string;
 }
 
 export const RECIPES: Recipe[] = [

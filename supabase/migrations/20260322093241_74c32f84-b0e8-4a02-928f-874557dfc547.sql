@@ -1,6 +1,6 @@
 
 -- Community groups table with approval workflow
-CREATE TABLE public.community_groups (
+CREATE TABLE IF NOT EXISTS public.community_groups (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,
   suburb text NOT NULL,
@@ -36,7 +36,7 @@ ON public.community_groups FOR INSERT TO authenticated
 WITH CHECK (created_by = auth.uid());
 
 -- Group memberships table
-CREATE TABLE public.community_memberships (
+CREATE TABLE IF NOT EXISTS public.community_memberships (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   group_id uuid NOT NULL REFERENCES public.community_groups(id) ON DELETE CASCADE,

@@ -1,6 +1,6 @@
 
 -- Journal entries table for cloud sync
-CREATE TABLE public.journal_entries (
+CREATE TABLE IF NOT EXISTS public.journal_entries (
   id TEXT NOT NULL PRIMARY KEY,
   user_id UUID NOT NULL,
   date TEXT NOT NULL,
@@ -28,7 +28,7 @@ CREATE POLICY "Users can manage own journal entries"
   WITH CHECK (auth.uid() = user_id);
 
 -- Vault entries table for cloud sync
-CREATE TABLE public.vault_entries (
+CREATE TABLE IF NOT EXISTS public.vault_entries (
   id TEXT NOT NULL PRIMARY KEY,
   user_id UUID NOT NULL,
   entry_id TEXT,
@@ -49,7 +49,7 @@ CREATE POLICY "Users can manage own vault entries"
   WITH CHECK (auth.uid() = user_id);
 
 -- Milestones table
-CREATE TABLE public.journal_milestones (
+CREATE TABLE IF NOT EXISTS public.journal_milestones (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
   milestone_type TEXT NOT NULL,

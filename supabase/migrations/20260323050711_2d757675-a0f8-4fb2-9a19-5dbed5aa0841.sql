@@ -1,6 +1,6 @@
 
 -- Weekly check-ins table
-CREATE TABLE public.weekly_checkins (
+CREATE TABLE IF NOT EXISTS public.weekly_checkins (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   week_start_date date NOT NULL,
@@ -24,7 +24,7 @@ CREATE POLICY "Users can update own checkins" ON public.weekly_checkins
   FOR UPDATE TO authenticated USING (auth.uid() = user_id);
 
 -- User goals table
-CREATE TABLE public.user_goals (
+CREATE TABLE IF NOT EXISTS public.user_goals (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   goal_type text NOT NULL DEFAULT 'custom',
@@ -41,7 +41,7 @@ CREATE POLICY "Users can manage own goals" ON public.user_goals
   FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Goal progress logs
-CREATE TABLE public.goal_progress (
+CREATE TABLE IF NOT EXISTS public.goal_progress (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   goal_id uuid REFERENCES public.user_goals(id) ON DELETE CASCADE NOT NULL,
   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
@@ -56,7 +56,7 @@ CREATE POLICY "Users can manage own progress" ON public.goal_progress
   FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Workout sessions table
-CREATE TABLE public.workout_sessions (
+CREATE TABLE IF NOT EXISTS public.workout_sessions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   workout_type text NOT NULL,
@@ -78,7 +78,7 @@ CREATE POLICY "Authenticated can view all sessions for community" ON public.work
   FOR SELECT TO authenticated USING (true);
 
 -- Generated AI plans
-CREATE TABLE public.generated_plans (
+CREATE TABLE IF NOT EXISTS public.generated_plans (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   plan_type text NOT NULL,

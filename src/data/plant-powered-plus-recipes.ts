@@ -1,3 +1,7 @@
+/**
+ * ⚠️ ARCHIVED – replaced by src/data/nourish-recipes.ts.
+ * Preserved for reference only. DO NOT DELETE.
+ */
 import { Recipe } from "./meal-plans";
 
 export const PLANT_POWERED_PLUS_RECIPES: Recipe[] = [
