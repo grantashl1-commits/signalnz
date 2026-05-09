@@ -255,7 +255,11 @@ export default function LibraryTab() {
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         </div>
       ) : view === "exercises" ? (
-        <div className="space-y-1.5">
+        <div className="space-y-5">
+          {/* From your training paths — every unique exercise across all SIGNAL paths */}
+          {filter === "all" && !search.trim() && <PathExercisesSection />}
+
+          <div className="space-y-1.5">
           {filtered.length === 0 && (
             <p className="py-8 text-center font-body text-sm text-muted-foreground">No exercises found.</p>
           )}
