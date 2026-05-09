@@ -74,7 +74,7 @@ export default function ConnectCourseView({ connectionId, partnerRole, partnerNa
       const responseText = typeof response === "string" ? response
         : response?.text || response?.answer || JSON.stringify(response);
       onShareToPartner(`📝 From "${selectedModule.title}" — ${activity?.title || "Activity"}:\n\n${responseText}`);
-      toast.success("Shared with your partner 💜");
+      toast.success("Shared with your partner. 💜");
     }
   }, [connectionId, partnerRole, selectedModule, selectedLesson, onShareToPartner]);
 

@@ -153,7 +153,7 @@ export default function LoveLanguagesQuiz({ onClose }: { onClose: () => void }) 
     }]);
 
     setSaving(false);
-    toast.success("Love Languages result saved!");
+    toast.success("Held — your Love Languages are in your profile.");
   }
 
   // ═══ RESULTS ═══

@@ -114,7 +114,7 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
     haptic("medium");
 
     if (!user) {
-      toast.error("Please sign in to save your profile");
+      toast.error("Come in first — then we can hold your profile.");
       return;
     }
 
@@ -143,10 +143,10 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
       localStorage.setItem("signal_community_profile", JSON.stringify(profileData));
 
       setSaved(true);
-      toast.success("Profile saved");
+      toast.success("Held.");
       setTimeout(() => setSaved(false), 3000);
     } catch (e: any) {
-      toast.error("Failed to save: " + (e.message || "Unknown error"));
+      toast.error("That didn't land — " + (e.message || "Unknown error"));
     }
   };
 

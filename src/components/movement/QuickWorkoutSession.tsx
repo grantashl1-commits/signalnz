@@ -113,7 +113,7 @@ export default function QuickWorkoutSession({ title, duration, intensity, exerci
   const handleStart = () => {
     haptic("medium");
     setRunning(true);
-    toast.success("Workout started!");
+    toast.success("Beginning, gently.");
   };
 
   const handlePause = () => {

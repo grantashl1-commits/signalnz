@@ -115,7 +115,7 @@ export default function AIRecipesTab({ phase, cycleDay }: AIRecipesTabProps) {
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
-      toast.error("Photo too large. Please use a smaller image.");
+      toast.error("That photo is a little big — try a smaller one.");
       return;
     }
 

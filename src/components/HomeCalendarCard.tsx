@@ -95,7 +95,7 @@ function useImportedCalendar(today: Date) {
       localStorage.setItem("signal_calendar_url", url);
       localStorage.setItem("signal_calendar_cache", JSON.stringify({ events, fetched: Date.now() }));
     } catch {
-      toast.error("Could not fetch calendar", { description: "Check your URL and try again" });
+      toast.error("The calendar didn't load — try again in a moment.", { description: "Check your URL and try again" });
     } finally {
       setImporting(false);
     }
@@ -164,7 +164,7 @@ export default function HomeCalendarCard() {
     saveManualEvents(weekKey, updated);
     setNewTitle("");
     setShowAddEvent(false);
-    toast.success("Event added");
+    toast.success("Held.");
   };
 
   const removeManualEvent = (id: string) => {
@@ -196,7 +196,7 @@ export default function HomeCalendarCard() {
 
   const handleCalendarExport = (type: "google" | "outlook" | "apple") => {
     const allCount = manualEvents.length + cal.importedEvents.length;
-    if (allCount === 0) { toast.info("No events to export"); return; }
+    if (allCount === 0) { toast.info("Nothing to carry across yet."); return; }
     if (type === "google" && manualEvents.length > 0) {
       const ev = manualEvents[0];
       const ws = startOfWeek(today, { weekStartsOn: 1 });
@@ -215,7 +215,7 @@ export default function HomeCalendarCard() {
       URL.revokeObjectURL(url);
     }
     setShowCalendarOptions(false);
-    toast.success("Calendar export ready");
+    toast.success("Your calendar is ready to carry across.");
   };
 
   // Build week dates

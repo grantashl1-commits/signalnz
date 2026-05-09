@@ -182,7 +182,7 @@ function AddModal({ editing, onClose, onSave }: AddModalProps) {
       if (data?.recipe) {
         fillForm(data.recipe);
         setMode("form");
-        toast.success("Recipe imported — check the details below");
+        toast.success("Held — take a look at the details below.");
       }
     } catch (e: any) {
       toast.error(e?.message || "Could not import recipe");
@@ -192,10 +192,10 @@ function AddModal({ editing, onClose, onSave }: AddModalProps) {
   };
 
   const handleSave = async () => {
-    if (!title.trim()) { toast.error("Recipe needs a title"); return; }
+    if (!title.trim()) { toast.error("Give your recipe a name first."); return; }
     const ingredients = ingredientsText.split("\n").map(s => s.trim()).filter(Boolean);
     const instructions = instructionsText.split("\n").map(s => s.trim()).filter(Boolean);
-    if (ingredients.length === 0) { toast.error("Add at least one ingredient"); return; }
+    if (ingredients.length === 0) { toast.error("Add at least one ingredient to begin."); return; }
     setSaving(true);
     haptic("medium");
     try {
@@ -552,19 +552,19 @@ export default function MyRecipesTab() {
     try {
       await deleteRecipe(id);
       setSelectedRecipe(null);
-      toast.success("Recipe deleted");
+      toast.success("Released.");
     } catch {
-      toast.error("Failed to delete recipe");
+      toast.error("That didn't land — try again in a moment.");
     }
   };
 
   const handleSave = async (input: UserRecipeInput) => {
     if (editingRecipe) {
       await updateRecipe(editingRecipe.id, input);
-      toast.success("Recipe updated");
+      toast.success("Held.");
     } else {
       await addRecipe(input);
-      toast.success("Recipe added");
+      toast.success("Held.");
     }
     setEditingRecipe(null);
     setShowAdd(false);
