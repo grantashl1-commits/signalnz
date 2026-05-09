@@ -104,9 +104,9 @@ export default function BoardEmptyState({ onAddNote, onAddImage, onStartRitual }
         </motion.div>
 
         <h2 className="font-display text-[32px] italic text-foreground/80 mb-2 tracking-tight">Dream Studio</h2>
-        <p className="font-hand text-[13px] font-bold text-primary/60 mb-3 tracking-wide">Build the life you are quietly imagining.</p>
+        <p className="font-hand text-[13px] font-bold text-primary/60 mb-3 tracking-wide">A quiet room for the life you're imagining.</p>
         <p className="font-body text-[13px] text-muted-foreground/60 leading-[1.8] mb-10 max-w-sm mx-auto">
-          Add images, goals, notes, and dreams to create a board that reflects the future you are calling in.
+          Lay down an image, a word, a longing. Let the board fill the way a season does — slowly, in its own time.
         </p>
 
         {/* Quick actions */}
@@ -115,13 +115,13 @@ export default function BoardEmptyState({ onAddNote, onAddImage, onStartRitual }
             onClick={onAddNote}
             className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-primary text-primary-foreground font-display text-[13px] italic shadow-[0_2px_16px_-4px_hsl(284_22%_44%/0.25)] hover:shadow-[0_4px_24px_-4px_hsl(284_22%_44%/0.35)] transition-all active:scale-[0.97]"
           >
-            <Type className="h-4 w-4" /> Add your first note
+            <Type className="h-4 w-4" /> Begin with a word
           </button>
           <button
             onClick={onAddImage}
             className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-[hsl(30_33%_99%)] border border-[hsl(25_25%_88%)] text-foreground/70 font-display text-[13px] italic shadow-[0_1px_8px_-2px_hsl(25_20%_50%/0.08)] hover:shadow-[0_3px_16px_-4px_hsl(25_20%_50%/0.14)] hover:border-primary/15 transition-all active:scale-[0.97]"
           >
-            <Image className="h-4 w-4 text-primary/50" /> Add dream image
+            <Image className="h-4 w-4 text-primary/50" /> Add an image
           </button>
         </div>
 

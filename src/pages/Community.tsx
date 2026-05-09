@@ -164,9 +164,9 @@ export default function CommunityPage() {
             joined.length === 0 ? (
               <div className="text-center pt-16">
                 <HandDrawnLeaf size={40} color="hsl(var(--primary))" className="mx-auto mb-3" />
-                <p className="font-display text-xl italic text-foreground mb-2">You haven't joined a community yet.</p>
+                <p className="font-display text-xl italic text-foreground mb-2">No room to belong to yet — let's find one.</p>
                 <button onClick={() => setSection("discover")} className="touch-btn font-display text-[15px] italic text-primary-foreground bg-primary rounded-full px-7 py-2.5 active:scale-[0.97]">
-                  Find my community
+                  Find your people
                 </button>
               </div>
             ) : (
