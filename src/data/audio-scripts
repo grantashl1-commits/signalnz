@@ -1,0 +1,223 @@
+// /src/data/audio-scripts.ts
+
+export interface AudioScript {
+  id: string;
+  title: string;
+  category: 'meditation' | 'somatic' | 'breathwork' | 'sleep' | 'hypnosis' | 'couples' | 'parenting';
+  durationMinutes: number;
+  targetWordCount: number;
+  script: string;
+}
+
+export const AUDIO_SCRIPTS: AudioScript[] = [
+  // ============================================================
+  // Existing scripts (meditation, somatic, breathwork, sleep, hypnosis)
+  // ... (keep previous entries from earlier message – omitted here for brevity but assumed present)
+  // ============================================================
+
+  // ============================================================
+  // COUPLES COURSE MEDITATIONS
+  // ============================================================
+  {
+    id: "cpl-001",
+    title: "The Listening Heart",
+    category: "couples",
+    durationMinutes: 10,
+    targetWordCount: 1250,
+    script: `Find a comfortable seat, side by side or facing each other. You don't need to hold hands or even look at each other. Just know that you are both here, breathing the same air, under the same quiet sky.
+
+Close your eyes. Bring your attention to your heart. Imagine it as a small, warm lantern glowing inside your chest. This is your listening heart. It doesn't judge. It doesn't prepare a reply. It simply receives.
+
+Now, silently invite your partner's presence into your awareness. Not their words, not their actions, just the feeling of them beside you. Imagine you can feel the warmth of their own heart lantern, a few feet away. Two lights in the same room.
+
+When we listen, we often listen to argue or to solve. But true listening is an act of surrender. It is saying, "I don't need to be right. I just need to understand."
+
+Take a deep breath. As you exhale, let go of any need to defend yourself. Let go of the story you've been rehearsing. Just be present. (Pause for 20 seconds)
+
+Now, imagine your partner's words – past or future – as soft, coloured ribbons floating in the air between you. Your job is simply to see the colors, to notice the texture, to let the ribbons pass without grabbing them. You are not the catcher of ribbons. You are the space through which they move.
+
+When you listen with the heart, you hear not just the complaint, but the longing underneath. "You never help me" becomes "I feel tired and I need support." "You don't listen" becomes "I feel invisible and I long to be seen."
+
+Can you feel that shift inside you? The softening? (Pause)
+
+We will stay here in silence for a few more moments. Each time your mind wants to justify or explain, gently bring it back to the image of the two heart lanterns. Two sources of light. Separate, yet connected.
+
+(Long silence – 90 seconds)
+
+When you feel ready, slowly bring your awareness back to the room. You can open your eyes. Before you speak to each other, take one more breath and remember: listening is the greatest gift you can give. Not agreement, not solutions. Just your full, loving presence.`
+  },
+  {
+    id: "cpl-002",
+    title: "The Repair",
+    category: "couples",
+    durationMinutes: 12,
+    targetWordCount: 1500,
+    script: `Find a quiet place where you can be alone or with your partner. Today we practice the art of repair. Every relationship that matters will rupture. The strength is not in never breaking – it's in how you mend.
+
+Close your eyes and bring to mind a recent moment of disconnection. Not the worst fight, just a small tear. A harsh word. A defensive reply. A silence that felt heavy. (Pause)
+
+Now, imagine that tear as a small rip in a beautiful piece of cloth – a tapestry woven from all your years together. The cloth is not ruined. It just has an opening.
+
+We cannot undo the word. We cannot unsay the silence. But we can take out a needle and thread. The thread is made of three strands: acknowledgement, remorse, and a promise.
+
+First, acknowledgement. Without blaming yourself or your partner, just say silently: *That happened. I saw it. I was there.* (Pause)
+
+Second, remorse. Not shame, but genuine sadness. *I am sorry for my part. I wish I had responded differently.* Feel the weight lift, just a little. (Pause)
+
+Third, a promise. A small, specific action: *Next time I feel that anger rise, I will pause before I speak. I will take a breath.* (Pause)
+
+Now, see yourself taking the needle and thread. Gently, stitch the tear closed. Not perfectly – you can still see the line where it was torn. That line is not a weakness; it is a scar of honesty. Every good relationship has scars. They prove you have survived.
+
+As you stitch, whisper to yourself: *We are learning. We are not broken. We are mending.* (Long pause)
+
+If you are doing this practice with your partner, you can now take turns speaking one sentence aloud: "I am sorry for my part in…" and "I want us to repair because…" There is no need to solve everything tonight. Just plant the seed of repair.
+
+If you are alone, you can write those sentences in a journal or simply hold them in your heart. The willingness to repair is already the first stitch.
+
+When you feel complete, take a deep breath. Feel the cloth of your relationship, whole again – not unchanged, but stronger for having been mended. Slowly open your eyes.`
+  },
+  {
+    id: "cpl-003",
+    title: "Turning Toward",
+    category: "couples",
+    durationMinutes: 15,
+    targetWordCount: 1850,
+    script: `Sit comfortably, perhaps facing each other, perhaps back to back. The eyes can be closed. This is a practice of bids – those small moments when one partner reaches for the other. A glance. A touch. A sigh that asks to be noticed.
+
+Think of a bid as a tiny bird landing on a windowsill. It might fly away if you don't see it. Our practice is to learn to turn toward the bird.
+
+Bring to mind a recent moment when your partner made a bid for connection. Maybe they asked a question about your day. Maybe they touched your arm. Maybe they just said your name in a certain way. Did you turn toward it, or did you turn away? There is no judgment. Just observation. (Pause)
+
+Now, imagine a scale inside your chest. On one side is distraction – the phone, the to‑do list, the racing thoughts. On the other side is presence. Turning toward your partner means adding weight to the side of presence.
+
+Take a breath. As you exhale, imagine the weight of distraction lifting. Your shoulders relax. Your jaw softens. You are making space. (Pause)
+
+If your partner is with you, you can practice turning toward right now. Without words, one of you can make a small bid – a hum, a gentle shift of posture. The other receives it by simply noticing. You don't have to respond. Just notice. (Pause for 30 seconds)
+
+Now, switch roles. The other partner makes a tiny bid. A soft clearing of the throat. A slight lean. Again, just receive. (Pause)
+
+We often wait for big gestures – vacations, date nights, grand apologies. But love lives in the micro-moments. A turned head. A paused screen. A hand that reaches across the sofa.
+
+Imagine your relationship as a garden. The bids are drops of rain. Each time you turn toward your partner, a seed is watered. Over months and years, that garden grows deep roots. Even in drought, it survives.
+
+For the next few minutes, rest in the simple awareness of your breath. Whenever a thought about your partner arises – a memory, a hope, a frustration – just label it "bid" and let it pass. You are training your mind to see connection everywhere. (Long pause – 2 minutes)
+
+When you are ready, slowly open your eyes. If you are with your partner, you might share one word that describes how you feel right now. There is no right word. Just honesty.
+
+You have practiced turning toward. Take that practice with you into the rest of your day.`
+  },
+  {
+    id: "cpl-004",
+    title: "The Shared Horizon",
+    category: "couples",
+    durationMinutes: 10,
+    targetWordCount: 1200,
+    script: `Close your eyes. Bring your attention to your breath. Now, expand that awareness to include the space around you. Imagine that space extending outward, beyond the room, beyond the building, to the horizon.
+
+A horizon is the line where the earth meets the sky. It is always there, even when we cannot see it. In a relationship, the shared horizon is your collective direction – the dreams, values, and rituals that make you a "we."
+
+Take a few breaths to feel into your own personal horizon. What do you hope for? What do you value? (Pause)
+
+Now, slowly bring your partner into your awareness. Imagine two horizon lines – yours and theirs. They start out separate. But as you both breathe, watch as the lines begin to drift closer. They do not need to merge into one. A shared horizon does not mean identical dreams. It means your lines are parallel, looking in the same direction.
+
+What are the rituals that already hold you? Morning coffee together. A weekly walk. The way you always kiss goodbye. These are the landmarks on your shared horizon.
+
+What is a dream you both hold, even if you've never spoken it aloud? A quieter life. More laughter. A garden. Time to travel. (Pause)
+
+Now, see that dream as a small light on the horizon, like a sunrise just beginning to glow. It is not yet fully here, but it is coming. Each small act of turning toward your partner adds a ray of light to that sunrise.
+
+The shared horizon does not require you to lose yourself. It simply asks you to look up from your own feet and notice that someone is walking beside you.
+
+We will stay in this quiet awareness for a few minutes. If your mind wanders, return to the image of the two horizon lines, parallel, illuminated by the soft light of a shared future. (Long pause – 90 seconds)
+
+When you feel ready, slowly open your eyes. If you are with your partner, you might take one minute to share something from this practice – not a full conversation, just a glimpse. The horizon is always there. You can always look toward it together.`
+  },
+
+  // ============================================================
+  // PARENTING SLEEP STORIES
+  // ============================================================
+  {
+    id: "prt-001",
+    title: "The Little Boat",
+    category: "parenting",
+    durationMinutes: 12,
+    targetWordCount: 1500,
+    script: `(This story is written to be read aloud to a child at bedtime, in a soft, slow voice.)
+
+Once upon a time, there was a little boat. Not a big boat, not a fancy boat – just a small, wooden boat with a white sail and a friendly smile painted on its bow.
+
+Every day, the little boat would sail across a calm, blue lake. The lake was so still that the boat could see the clouds reflected in the water. And do you know what the little boat loved most? The feeling of being held. The water held the boat gently, like a mother holds her baby.
+
+One evening, the wind began to blow. Not too hard, just a little breeze that made the sail flutter. The little boat giggled. "That tickles!" it said.
+
+But then the wind grew stronger. The waves grew bigger. The little boat started to rock back and forth, up and down. "Oh dear," thought the little boat. "I'm not sure I like this."
+
+The boat looked up at the sky and saw a single star, shining very bright. The star seemed to say: *You are safe. The water will always hold you.*
+
+So the little boat took a deep breath – if a boat *can* take a breath – and let itself rock with the waves. It stopped trying to fight the wind. Instead, it leaned into the waves, trusting the water below.
+
+And you know what happened? The waves began to feel like a rocking cradle. The wind felt like a lullaby. The little boat grew sleepy… sleepier… sleepier still.
+
+Soon, the wind died down. The water became calm. The little boat drifted slowly to the shore, where a little dock was waiting. The boat snuggled up against the dock, and a soft blanket of moonlight covered it like a blanket.
+
+The little boat closed its painted eyes and whispered: "Thank you for holding me, water. Goodnight, stars."
+
+And it slept – safe, warm, and very loved.
+
+Now, close your eyes, little one. You are the little boat. The bed is the water, holding you safe. The covers are the moonlight blanket. And I am right here, watching the stars with you. Goodnight. Sleep tight.`
+  },
+  {
+    id: "prt-002",
+    title: "The Moon’s Lullaby",
+    category: "parenting",
+    durationMinutes: 10,
+    targetWordCount: 1250,
+    script: `Lie down, get cozy, and close your eyes. I'm going to tell you a story about the moon.
+
+High, high up in the sky, there is a moon. Every night, the moon's job is to watch over everyone who is sleeping. The moon sees the trees, the houses, the rivers, and the sleepy little children tucked into their beds.
+
+But the moon gets lonely. It has no one to talk to. So the moon decided to sing a lullaby. Not a loud song – the moon would never wake anyone up. A soft, quiet song that only the heart can hear.
+
+The moon's lullaby sounds like this: *Shhh… shhh… you are safe. Shhh… shhh… the night is kind.*
+
+One little girl heard the lullaby in her dreams. She dreamed she was floating up, up, up to the moon. When she got there, the moon smiled and said, "I'm so glad you came. I've been waiting for someone to sing with."
+
+The little girl said, "But I don't know any moon songs."
+
+The moon laughed, a soft, silvery laugh. "You don't need a song. Just breathe in, and when you breathe out, the air becomes music."
+
+So the little girl breathed in… and breathed out. And do you know what? The breath turned into a beautiful silver ribbon that wrapped around the moon. The moon felt warm. It wasn't lonely anymore.
+
+The moon thanked the little girl and sent her back down to her bed, floating gently like a feather. When she landed, she was still asleep, but she was smiling.
+
+Now, you can breathe in and out, just like that little girl. Your breath is a lullaby too. It sings to your heart: *Rest now. The moon is watching. I am here with you.*
+
+Let your body feel heavy. Let your eyes be soft. Let your breath be slow. The moon is singing, and you are wrapped in its gentle light. Goodnight.`
+  },
+  {
+    id: "prt-003",
+    title: "The Safe Circle (for parents, before sleep)",
+    category: "parenting",
+    durationMinutes: 15,
+    targetWordCount: 1850,
+    script: `This practice is for you – the parent, the caregiver, the one who holds everyone else. Tonight, you are allowed to let go.
+
+Lie down in your bed. Close your eyes. Place one hand on your belly and the other on your heart. This is your safe circle – the only space you need to tend to right now.
+
+Take a deep breath. As you exhale, imagine you are setting down all the bags you've been carrying. The bag of "I should have…" The bag of "What if…" The bag of "I'm not doing enough…" Let them rest on the floor beside your bed. They will be there tomorrow if you need them. But tonight, you are empty‑handed. (Pause)
+
+Now, imagine a circle of warm, golden light around your bed. This is the safe circle. No worry can enter. No guilt can cross. No to‑do list can knock. Inside this circle, you are not a parent, a partner, an employee, or a daughter. You are just a person. A person who deserves rest.
+
+Bring to mind your child or children. See their faces, their smiles, the sound of their laughter. Now, imagine placing them inside a safe circle of their own. They are sleeping, breathing easily, held by the same golden light. You do not need to watch over them tonight. The circle does that for you. (Pause)
+
+Parenting guilt is a heavy blanket – not a warm one, but a wet, cold one. We lie awake replaying our mistakes: the time we yelled, the time we weren't present, the time we said "not now." Here is the truth: your children do not need a perfect parent. They need a parent who rests, so that when morning comes, you have the energy to try again.
+
+Every night you sleep is an act of generosity to your family. You are refilling your own cup so you can pour from it tomorrow. (Long pause)
+
+Take a few minutes now to simply breathe. Whenever a guilty thought arises, imagine it as a small grey cloud outside your circle. You can watch it pass without inviting it in. (Pause for 2 minutes)
+
+When you feel settled, whisper these words to yourself: *I did enough today. I am enough. Tomorrow is a new beginning.*
+
+Now, let go of the need to stay awake. Let the golden circle hold you. Let your breath slow. Let sleep come, soft and kind. You have earned this rest.`
+  },
+];

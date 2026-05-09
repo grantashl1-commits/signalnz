@@ -65,7 +65,11 @@
       "Bash(awk NR==67287 {print length} *)",
       "Bash(npx eslint *)",
       "Bash(grep -E \"^\\\\.env$|^\\\\.env\\\\b\" \"C:\\\\GitHub\\\\signalnz\\\\.gitignore\")",
-      "Bash(awk -F'<value of length ' '{print $1 \"<value of length \" length\\($2\\)-1 \">\"}')"
+      "Bash(awk -F'<value of length ' '{print $1 \"<value of length \" length\\($2\\)-1 \">\"}')",
+      "Bash(grep -E \"^[AMD]\\\\s+\\\\.env$\")",
+      "Bash(grep -E \"^\\\\+.*\\(SUPABASE_DB_PASSWORD|SUPABASE_ACCESS_TOKEN|sbp_[a-z0-9]|AIza[A-Za-z0-9_-]{30,}\\)\")",
+      "Bash(grep -cE \"^\\\\+.*\\(eyJ[A-Za-z0-9_-]{50,}\\\\.|sbp_|AIza[A-Za-z0-9_-]{30,}|SUPABASE_DB_PASSWORD=.+|SUPABASE_ACCESS_TOKEN=.+\\)\")",
+      "Bash(grep *)"
     ]
   }
 }
