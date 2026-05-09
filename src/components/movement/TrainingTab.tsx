@@ -348,12 +348,18 @@ function WeekRow({
   );
 }
 
-function SessionCard({ session }: { session: DaySession }) {
+function SessionCard({ session, focus }: { session: DaySession; focus: TrainingFocus }) {
+  const [timerOpen, setTimerOpen] = useState(false);
   const meta: string[] = [];
   if (typeof session.durationMin === "number" && session.durationMin > 0) {
     meta.push(`${session.durationMin} min`);
   }
   if (session.equipment) meta.push(session.equipment);
+
+  const runIntervals = focus === "run" ? parseRunStructure(session.structure) : [];
+  const playable = runIntervals.length >= 2;
+  const totalSec = runIntervals.reduce((s, i) => s + i.durationSec, 0);
+  const totalMin = Math.round(totalSec / 60);
 
   return (
     <div className="rounded-lg bg-secondary/40 border border-border/60 p-3 space-y-2">
