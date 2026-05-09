@@ -1,18 +1,6 @@
-<<<<<<< Updated upstream
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Loader2, Zap, Moon, Sprout, Sun } from "lucide-react";
-import ProgramLibrary from "./ProgramLibrary";
-import ProgramOverview from "./ProgramOverview";
-import WorkoutSessionView from "./WorkoutSessionView";
-import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
-import { haptic } from "@/hooks/use-mobile";
-import { useCycle } from "@/contexts/CycleContext";
-=======
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronDown } from "lucide-react";
->>>>>>> Stashed changes
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import {
