@@ -27,7 +27,6 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
-import TodaySession from "@/components/movement/TodaySession";
 import SelectedPathTodayCard from "@/components/movement/SelectedPathTodayCard";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
@@ -277,14 +276,6 @@ export default function MovementPage() {
 
           {/* Selected training path → next session card with HR connect */}
           <SelectedPathTodayCard onOpenHR={() => setShowHR(true)} />
-
-          {/* Today's session from training program */}
-          <TodaySession
-            onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
-            onOpenHR={() => setShowHR(true)}
-            onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
-            onSessionLogged={() => setLogRefreshKey(k => k + 1)}
-          />
 
         </div>
       )}
