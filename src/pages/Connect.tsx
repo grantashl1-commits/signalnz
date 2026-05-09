@@ -466,11 +466,10 @@ export default function Connect() {
 
             <h1 className="font-display text-3xl md:text-4xl text-foreground text-center mb-3">Signal Connect</h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm mb-2 leading-relaxed">
-              Two people. Two perspectives.{"\n"}One shared wellness journey.
+              Two people. One quiet space{"\n"}to be honest in, together.
             </p>
             <p className="text-xs text-muted-foreground/60 text-center max-w-xs mb-10">
-              Invite your partner into a private coaching space — they don't need a Signal account. 
-              Just share a code and PIN.
+              Invite them in — no account needed. Just a code and a PIN, held between you.
             </p>
 
             {/* Feature cards */}

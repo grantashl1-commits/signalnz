@@ -146,17 +146,17 @@ export default function CyclePage() {
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Rhythm</h1>
           {cycleMode === "cycling" && hasDateSet && (
             <p className="font-body text-sm text-primary-foreground/60">
-              Day {info.cycleDay} of {PHASE_SHORT[info.phase].toLowerCase()} · {daysUntil} days remaining
+              Day {info.cycleDay} of {PHASE_SHORT[info.phase].toLowerCase()} · {daysUntil} days held ahead
             </p>
           )}
           {cycleMode === "perimenopause" && (
             <p className="font-body text-sm text-primary-foreground/60">
-              navigating change — signal is here with you
+              moving with the change — held, gently
             </p>
           )}
           {cycleMode === "post-menopause" && (
             <p className="font-body text-sm text-primary-foreground/60">
-              strength, wisdom, and a new chapter
+              strength, softness, the next season
             </p>
           )}
         </div>

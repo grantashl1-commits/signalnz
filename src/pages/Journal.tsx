@@ -33,9 +33,9 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {
-  write: "Your story, one chapter at a time.",
-  insights: "Patterns, reflections, and memories.",
-  vision: "Visualise the life you're creating.",
+  write: "A page held for you.",
+  insights: "Patterns, gently noticed.",
+  vision: "The life you're shaping.",
 };
 
 const PHASE_COLORS: Record<string, string> = {
