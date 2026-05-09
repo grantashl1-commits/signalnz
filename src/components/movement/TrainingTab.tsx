@@ -441,6 +441,26 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
           {session.coachingNote}
         </p>
       )}
+
+      {playable && (
+        <button
+          onClick={(e) => { e.stopPropagation(); haptic("medium"); setTimerOpen(true); }}
+          className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-2.5 font-display text-xs font-semibold active:scale-[0.98] transition-transform"
+        >
+          <Play className="h-3.5 w-3.5" />
+          Start guided session · {totalMin} min
+        </button>
+      )}
+
+      <AnimatePresence>
+        {timerOpen && (
+          <IntervalTimer
+            intervals={runIntervals}
+            onClose={() => setTimerOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
