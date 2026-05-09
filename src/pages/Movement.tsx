@@ -375,8 +375,8 @@ export default function MovementPage() {
             >
               <Plus className="h-5 w-5 text-primary" />
               <div>
-                <p className="font-body text-sm font-medium text-foreground">Log a workout manually</p>
-                <p className="font-body text-xs text-muted-foreground mt-0.5">Add any session to your log.</p>
+                <p className="font-body text-sm font-medium text-foreground">Add a session by hand</p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">Anything that moved you today.</p>
               </div>
             </button>
           )}
@@ -387,8 +387,8 @@ export default function MovementPage() {
           {supabaseLogs.length === 0 && sessions.length === 0 && (
             <div className="card-warm p-8 text-center space-y-3">
               <Dumbbell className="h-8 w-8 text-muted-foreground/30 mx-auto" />
-              <p className="font-display text-base font-bold text-foreground">No workouts logged yet</p>
-              <p className="font-body text-xs text-muted-foreground">Complete a session or log one manually.</p>
+              <p className="font-display text-base font-bold text-foreground">Nothing here yet — and that's okay</p>
+              <p className="font-body text-xs text-muted-foreground">When you move, it will be held here.</p>
             </div>
           )}
         </div>
