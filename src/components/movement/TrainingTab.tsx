@@ -111,13 +111,14 @@ export default function TrainingTab() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-fr">
         {ENRICHED_PATHS.map((path, i) => (
           <motion.div
             key={path.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.05 * i, ease: "easeOut" }}
+            className="h-full"
           >
             <PathCard
               path={path}
