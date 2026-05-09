@@ -118,7 +118,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted?: () => void
         onSubmitted?.();
       }, 2500);
     } catch (err: any) {
-      toast.error(err.message || "Failed to submit feedback");
+      toast.error(err.message || "That didn't land — try again in a moment.");
     } finally {
       setSubmitting(false);
     }

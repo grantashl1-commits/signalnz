@@ -248,7 +248,7 @@ export default function TodayTab() {
     return (
       <div className="rounded-2xl bg-card p-8 text-center space-y-4 shadow-soft">
         <Sparkles className="h-10 w-10 mx-auto text-primary/40" />
-        <h3 className="font-display text-xl font-bold text-foreground">No meal plan yet</h3>
+        <h3 className="font-display text-xl font-bold text-foreground">No plan yet — let’s shape one</h3>
         <p className="font-body text-sm text-muted-foreground max-w-sm mx-auto">
           Complete your meal plan setup to see today's personalised meals here.
         </p>

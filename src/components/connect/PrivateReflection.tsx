@@ -47,7 +47,7 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
 
       if (error || !data) throw error ?? new Error("No response received");
       if (data.error) throw new Error(data.error);
-      if (!data.message_to_send) throw new Error("Incomplete response — please try again");
+      if (!data.message_to_send) throw new Error("That didn't come through fully — try again in a moment.");
 
       setResult(data as ReflectResult);
       haptic("light");

@@ -496,7 +496,7 @@ function CommunityStats({ userId }: { userId: string }) {
     return (
       <div className="card-warm p-5 text-center">
         <Activity className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
-        <p className="font-display text-sm italic text-muted-foreground/50">No community activity this week yet</p>
+        <p className="font-display text-sm italic text-muted-foreground/50">The room is quiet this week</p>
         <p className="font-body text-[10px] text-muted-foreground/30 mt-1">Log a workout to get started</p>
       </div>
     );

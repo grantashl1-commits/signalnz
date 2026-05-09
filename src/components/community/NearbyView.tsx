@@ -343,7 +343,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
         const geo = await reverseGeocode(latitude, longitude, MAPS_API_KEY);
         if (!geo) {
           toast({
-            title: "Couldn't determine your suburb",
+            title: "We couldn't place you on the map yet",
             description: "Please try again or check your connection.",
             variant: "destructive",
           });
@@ -367,7 +367,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
         } else {
           toast({
             title: "Location unavailable",
-            description: "Couldn't get your location. Make sure location services are enabled on your device.",
+            description: "Your location didn't come through. Check that location services are on, then try again.",
             variant: "destructive",
           });
         }
@@ -402,7 +402,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
 
     if (error) {
       toast({
-        title: "Failed to save location",
+        title: "That didn't land — try again in a moment",
         description: error.message,
         variant: "destructive",
       });
@@ -678,7 +678,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
       ) : filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center py-10 gap-2 text-center">
           <Leaf className="h-8 w-8 text-primary" />
-          <p className="font-display text-sm font-medium text-foreground">No one here yet</p>
+          <p className="font-display text-sm font-medium text-foreground">No one nearby yet — you're early</p>
           <p className="text-xs text-muted-foreground">
             Be the first in your suburb — invite others to join!
           </p>

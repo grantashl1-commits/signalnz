@@ -285,7 +285,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
         <div className="card-warm p-5 text-center space-y-3">
           <MapPin className="h-8 w-8 text-primary mx-auto" />
           <h3 className="font-display text-lg font-bold italic text-foreground">{selectedSuburb}</h3>
-          <p className="font-body text-sm text-muted-foreground">No group for {selectedSuburb} yet. Be the first!</p>
+          <p className="font-body text-sm text-muted-foreground">No group for {selectedSuburb} yet — you could begin one.</p>
           <button
             onClick={() => handleCreateSuburbGroup(selectedSuburb)}
             disabled={submitting}

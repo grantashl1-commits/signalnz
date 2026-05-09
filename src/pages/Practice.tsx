@@ -632,7 +632,7 @@ export default function PracticePage() {
             <div className="rounded-[22px] bg-card p-10 text-center shadow-soft">
               <SelfCareHandIcon size={48} color="hsl(var(--muted-foreground))" />
               <p className="font-body text-base text-muted-foreground mt-4">
-                No habits yet. Add your first ritual to get started.
+                Nothing here yet — choose a small ritual to begin.
               </p>
             </div>
           )}
