@@ -8,6 +8,7 @@ import { useGatedExpand } from "@/hooks/useGatedExpand";
 import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 import type { Workout } from "@/data/workouts";
+import { getAllPathExercises } from "@/lib/training-path-utils";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
@@ -254,7 +255,11 @@ export default function LibraryTab() {
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         </div>
       ) : view === "exercises" ? (
-        <div className="space-y-1.5">
+        <div className="space-y-5">
+          {/* From your training paths — every unique exercise across all SIGNAL paths */}
+          {filter === "all" && !search.trim() && <PathExercisesSection />}
+
+          <div className="space-y-1.5">
           {filtered.length === 0 && (
             <p className="py-8 text-center font-body text-sm text-muted-foreground">No exercises found.</p>
           )}
@@ -381,6 +386,7 @@ export default function LibraryTab() {
               Showing 50 of {filtered.length} exercises. Use search to narrow results.
             </p>
           )}
+          </div>
         </div>
       ) : (
         <div className="space-y-2">
@@ -583,3 +589,46 @@ export default function LibraryTab() {
     </div>
   );
 }
+
+/** Section listing every unique exercise that appears in any SIGNAL training path. */
+function PathExercisesSection() {
+  const [open, setOpen] = useState(false);
+  const items = useMemo(() => getAllPathExercises(), []);
+  const visible = open ? items : items.slice(0, 8);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl border border-primary/20 bg-primary/[0.04] p-4 space-y-3">
+      <div className="flex items-baseline justify-between gap-2">
+        <div>
+          <p className="font-hand text-xs uppercase tracking-[0.2em] text-primary">From your training paths</p>
+          <h3 className="font-display text-sm font-bold text-foreground mt-0.5">
+            Every move across the eight paths
+          </h3>
+        </div>
+        <span className="font-body text-[10px] text-muted-foreground shrink-0">{items.length} moves</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        {visible.map(({ name, paths }) => (
+          <div key={name} className="flex items-center gap-2 rounded-lg bg-card border border-border/60 p-2">
+            <ExerciseDemonstration exerciseName={name} size={36} className="shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="font-body text-[11px] font-semibold text-foreground truncate leading-tight">{name}</p>
+              <p className="font-body text-[9px] text-muted-foreground truncate">{paths[0]}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      {items.length > 8 && (
+        <button
+          onClick={() => { haptic("light"); setOpen(o => !o); }}
+          className="w-full font-body text-[11px] text-primary hover:underline"
+        >
+          {open ? "Show less" : `Show all ${items.length}`}
+        </button>
+      )}
+    </div>
+  );
+}
+

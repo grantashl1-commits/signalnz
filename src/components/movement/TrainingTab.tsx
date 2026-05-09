@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 import {
   SIGNAL_TRAINING_PATHS,
   type TrainingPath,
@@ -11,9 +12,33 @@ import {
   type TrainingWeek,
 } from "@/data/signal-training-paths";
 import { enrichAllTrainingPaths } from "@/lib/training-csv-enrichment";
-import { getExerciseImageForStructureLine } from "@/lib/exercise-image-lookup";
+import {
+  getSelectedPathId,
+  setSelectedPathId,
+} from "@/lib/training-path-utils";
+import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import { extractExerciseName } from "@/lib/exercise-image-lookup";
 
-const ENRICHED_PATHS = enrichAllTrainingPaths(SIGNAL_TRAINING_PATHS);
+// Hero illustrations for each focus
+import strengthArt from "@/assets/training-paths/strength.png";
+import muscleArt from "@/assets/training-paths/muscle.png";
+import cardioArt from "@/assets/training-paths/cardio.png";
+import runArt from "@/assets/training-paths/run.png";
+import pilatesArt from "@/assets/training-paths/pilates.png";
+import restoreArt from "@/assets/training-paths/restore.png";
+import stressReliefArt from "@/assets/training-paths/stress-relief.png";
+import glutePowerArt from "@/assets/training-paths/glute-power.png";
+
+const FOCUS_ART: Record<TrainingFocus, string> = {
+  strength: strengthArt,
+  muscle: muscleArt,
+  cardio: cardioArt,
+  run: runArt,
+  pilates: pilatesArt,
+  restore: restoreArt,
+  "stress-relief": stressReliefArt,
+  "glute-power": glutePowerArt,
+};
 
 const FOCUS_LABEL: Record<TrainingFocus, string> = {
   strength: "Strength",
@@ -22,28 +47,51 @@ const FOCUS_LABEL: Record<TrainingFocus, string> = {
   run: "Run",
   pilates: "Pilates",
   restore: "Restore",
-  "stress-relief": "Stress relief",
+  "stress-relief": "Stress Relief",
   "glute-power": "Glute Power",
 };
 
-function preview(text: string, max = 100): string {
-  const trimmed = text.trim();
-  if (trimmed.length <= max) return trimmed;
-  return trimmed.slice(0, max).replace(/\s+\S*$/, "") + "…";
-}
+/** Big punchy display title shown on each card, instead of the long
+ *  copywriting name. The full `path.name` becomes the subtitle. */
+const FOCUS_DISPLAY_TITLE: Record<TrainingFocus, string> = {
+  strength: "Strength",
+  muscle: "Muscle",
+  cardio: "Cardio",
+  run: "Run",
+  pilates: "Pilates",
+  restore: "Restore",
+  "stress-relief": "Stress Relief",
+  "glute-power": "Glute Power",
+};
+
+const ENRICHED_PATHS = enrichAllTrainingPaths(SIGNAL_TRAINING_PATHS);
 
 export default function TrainingTab() {
   const [selectedPath, setSelectedPath] = useState<TrainingPath | null>(null);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
+  const [activePathId, setActivePathId] = useState<string | null>(getSelectedPathId());
+
+  useEffect(() => {
+    const handler = () => setActivePathId(getSelectedPathId());
+    window.addEventListener("signal:training-path-changed", handler);
+    return () => window.removeEventListener("signal:training-path-changed", handler);
+  }, []);
 
   if (selectedPath) {
     return (
       <PathDetail
         path={selectedPath}
+        active={activePathId === selectedPath.id}
         expandedWeek={expandedWeek}
         onToggleWeek={(w) => {
           haptic("light");
           setExpandedWeek((prev) => (prev === w ? null : w));
+        }}
+        onChooseAsToday={() => {
+          haptic("light");
+          setSelectedPathId(selectedPath.id);
+          setActivePathId(selectedPath.id);
+          toast.success(`${FOCUS_DISPLAY_TITLE[selectedPath.focus]} is now your Today plan.`);
         }}
         onBack={() => {
           haptic("light");
@@ -59,20 +107,23 @@ export default function TrainingTab() {
       <div className="space-y-2">
         <p className="font-hand text-sm text-primary">A few paths home</p>
         <p className="font-editorial text-base italic text-foreground/80 leading-relaxed">
-          Choose one when you're ready. There's no wrong place to begin — your body already knows
-          how to move. We're just going to follow its lead.
+          Choose one when you're ready. Your Today tab follows whichever you pick.
         </p>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {ENRICHED_PATHS.map((path, i) => (
           <motion.div
             key={path.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.06 * i, ease: "easeOut" }}
+            transition={{ duration: 0.35, delay: 0.05 * i, ease: "easeOut" }}
           >
-            <PathCard path={path} onOpen={() => { haptic("light"); setSelectedPath(path); }} />
+            <PathCard
+              path={path}
+              active={activePathId === path.id}
+              onOpen={() => { haptic("light"); setSelectedPath(path); }}
+            />
           </motion.div>
         ))}
       </div>
@@ -80,45 +131,69 @@ export default function TrainingTab() {
   );
 }
 
-function PathCard({ path, onOpen }: { path: TrainingPath; onOpen: () => void }) {
+function PathCard({
+  path,
+  active,
+  onOpen,
+}: {
+  path: TrainingPath;
+  active: boolean;
+  onOpen: () => void;
+}) {
   return (
-    <article className="card-warm p-5 space-y-3 relative overflow-hidden">
-      <div className="space-y-1.5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-lg font-extrabold text-foreground leading-tight">
-            {path.name}
-          </h3>
-          <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-            {FOCUS_LABEL[path.focus]}
-          </span>
-        </div>
-        <p className="font-editorial text-sm italic text-primary/80">{path.subtitle}</p>
+    <button
+      onClick={onOpen}
+      className={cn(
+        "group relative w-full overflow-hidden rounded-2xl text-left bg-card border transition-all active:scale-[0.98]",
+        active
+          ? "border-primary ring-2 ring-primary/30 shadow-md"
+          : "border-border hover:shadow-md hover:border-primary/30",
+      )}
+    >
+      {active && (
+        <span className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 rounded-full bg-primary text-primary-foreground px-2 py-0.5 font-body text-[9px] uppercase tracking-wider font-bold">
+          <Check className="h-2.5 w-2.5" /> Today
+        </span>
+      )}
+      <div className="aspect-square w-full bg-gradient-to-br from-primary/5 via-transparent to-secondary/30 flex items-center justify-center overflow-hidden">
+        <img
+          src={FOCUS_ART[path.focus]}
+          alt={FOCUS_DISPLAY_TITLE[path.focus]}
+          loading="lazy"
+          width={768}
+          height={768}
+          className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+        />
       </div>
-
-      <p className="font-body text-sm text-muted-foreground leading-relaxed">
-        {preview(path.description, 100)}
-      </p>
-
-      <button
-        onClick={onOpen}
-        className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center active:scale-[0.97] transition-transform"
-      >
-        View this path
-      </button>
-    </article>
+      <div className="p-3 md:p-4 space-y-1.5">
+        <h3 className="font-display text-base md:text-lg font-extrabold text-foreground leading-tight">
+          {FOCUS_DISPLAY_TITLE[path.focus]}
+        </h3>
+        <p className="font-editorial text-[11px] md:text-xs italic text-primary/80 line-clamp-2 leading-snug">
+          {path.subtitle}
+        </p>
+        <p className="font-body text-[10px] md:text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+          {path.description.split(".")[0]}.
+        </p>
+      </div>
+    </button>
   );
 }
 
 function PathDetail({
   path,
+  active,
   expandedWeek,
   onToggleWeek,
   onBack,
+  onChooseAsToday,
 }: {
   path: TrainingPath;
+  active: boolean;
   expandedWeek: number | null;
   onToggleWeek: (week: number) => void;
   onBack: () => void;
+  onChooseAsToday: () => void;
 }) {
   return (
     <div className="space-y-6 pb-10">
@@ -131,17 +206,41 @@ function PathDetail({
       </button>
 
       <header className="space-y-3">
-        <span className="inline-block rounded-full bg-secondary px-2.5 py-1 font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-          {FOCUS_LABEL[path.focus]}
-        </span>
-        <h2 className="font-display text-2xl md:text-3xl font-extrabold text-foreground leading-tight">
-          {path.name}
-        </h2>
-        <p className="font-editorial text-base italic text-primary/80">{path.subtitle}</p>
+        <div className="flex items-start gap-4">
+          <img
+            src={FOCUS_ART[path.focus]}
+            alt={FOCUS_DISPLAY_TITLE[path.focus]}
+            className="h-24 w-24 md:h-32 md:w-32 object-contain shrink-0"
+          />
+          <div className="flex-1 min-w-0 space-y-2">
+            <span className="inline-block rounded-full bg-secondary px-2.5 py-1 font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+              {FOCUS_LABEL[path.focus]}
+            </span>
+            <h2 className="font-display text-2xl md:text-3xl font-extrabold text-foreground leading-tight">
+              {FOCUS_DISPLAY_TITLE[path.focus]}
+            </h2>
+            <p className="font-editorial text-sm md:text-base italic text-primary/80">
+              {path.name}
+            </p>
+          </div>
+        </div>
         <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
           {path.description}
         </p>
       </header>
+
+      <button
+        onClick={onChooseAsToday}
+        disabled={active}
+        className={cn(
+          "w-full h-12 rounded-full font-display text-sm font-semibold transition-all",
+          active
+            ? "bg-primary/15 text-primary border border-primary/30"
+            : "bg-primary text-primary-foreground active:scale-[0.97]",
+        )}
+      >
+        {active ? "✓ Following this path on Today" : "Follow this path on Today"}
+      </button>
 
       <section className="card-warm p-4 space-y-1.5">
         <p className="font-hand text-xs uppercase tracking-[0.2em] text-primary">Who it's for</p>
@@ -278,23 +377,24 @@ function SessionCard({ session }: { session: DaySession }) {
       )}
 
       {session.structure && session.structure.length > 0 && (
-        <ul className="space-y-2 pl-4 list-disc marker:text-primary/40">
+        <ul className="space-y-2">
           {session.structure.map((line, i) => {
-            const image = getExerciseImageForStructureLine(line);
+            const exerciseName = extractExerciseName(line);
             return (
               <li key={i} className="font-body text-xs text-foreground/85 leading-relaxed">
-                {image ? (
+                {exerciseName ? (
                   <span className="flex items-start gap-2">
-                    <img
-                      src={image}
-                      alt=""
-                      loading="lazy"
-                      className="h-10 w-10 rounded-md object-contain shrink-0 -ml-1"
+                    <ExerciseDemonstration
+                      exerciseName={exerciseName}
+                      size={40}
+                      className="shrink-0"
                     />
-                    <span className="flex-1">{line}</span>
+                    <span className="flex-1 pt-1">{line}</span>
                   </span>
                 ) : (
-                  line
+                  <span className="pl-1 before:content-['•'] before:text-primary/40 before:mr-2">
+                    {line}
+                  </span>
                 )}
               </li>
             );

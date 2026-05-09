@@ -28,6 +28,7 @@ import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
 import TodaySession from "@/components/movement/TodaySession";
+import SelectedPathTodayCard from "@/components/movement/SelectedPathTodayCard";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
@@ -50,7 +51,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress">("training");
+  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -178,8 +179,8 @@ export default function MovementPage() {
   };
 
   const TABS = [
-    { id: "training" as const, label: "Training" },
     { id: "today" as const, label: "Today" },
+    { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "progress" as const, label: "Progress" },
@@ -273,6 +274,9 @@ export default function MovementPage() {
             <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
+
+          {/* Selected training path → next session card with HR connect */}
+          <SelectedPathTodayCard onOpenHR={() => setShowHR(true)} />
 
           {/* Today's session from training program */}
           <TodaySession
