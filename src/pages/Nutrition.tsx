@@ -23,8 +23,8 @@ class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, {
     if (this.state.error) {
       return (
         <div className="rounded-2xl bg-card p-8 text-center space-y-3 shadow-soft">
-          <p className="font-display text-base font-bold text-foreground">Something went wrong loading {this.props.tab}</p>
-          <p className="font-body text-xs text-muted-foreground">Try refreshing the page.</p>
+          <p className="font-display text-base font-bold text-foreground">{this.props.tab} didn't come through</p>
+          <p className="font-body text-xs text-muted-foreground">Try refreshing — it usually lands.</p>
           <button
             onClick={() => this.setState({ error: null })}
             className="font-body text-xs text-primary underline"
@@ -75,7 +75,7 @@ export default function NutritionPage() {
           <p className="font-body text-section-label uppercase text-primary-foreground/40 mb-4">Nutrition</p>
           <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5">Nourish</h1>
           <p className="font-editorial text-quote italic text-primary-foreground/60 max-w-md mx-auto">
-            Eat for your cycle, not against it.
+            Eat with your cycle, in the shape of today.
           </p>
         </div>
       </AtmosphericHero>
