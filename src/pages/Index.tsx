@@ -370,7 +370,7 @@ export default function HomePage() {
                     style={{ boxShadow: "var(--shadow-soft)" }}
                   >
                     <History className="h-4 w-4" />
-                    <span>View past insights</span>
+                    <span>Look back over the days</span>
                     <ChevronDown className="h-4 w-4" />
                   </motion.button>
                 ) : (
@@ -393,14 +393,14 @@ export default function HomePage() {
                       className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
-                      <span>Load more days</span>
+                      <span>A little further back</span>
                     </button>
                   </>
                 )}
 
                 <div className="text-center py-4">
                   <p className="font-body text-xs text-muted-foreground/50">
-                    New insights every day at midnight
+                    Something new arrives each morning.
                   </p>
                 </div>
               </>
