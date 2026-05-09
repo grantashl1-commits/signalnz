@@ -310,8 +310,8 @@ export default function HomePage() {
                 <ShoppingBag className="h-4 w-4 text-primary" />
               </span>
               <div className="flex-1 min-w-0">
-                <p className="font-body text-sm font-semibold text-foreground leading-tight">Today is your meal prep day 🥗</p>
-                <p className="font-body text-xs text-muted-foreground mt-0.5">Your shopping list and weekly plan are ready — tap to view.</p>
+                <p className="font-body text-sm font-semibold text-foreground leading-tight">Today is the day you prep 🥗</p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">Your list and plan are waiting — a small kindness to your week.</p>
               </div>
               <ArrowRight className="h-4 w-4 text-primary flex-shrink-0" />
             </Link>
