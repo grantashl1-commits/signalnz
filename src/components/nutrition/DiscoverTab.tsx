@@ -27,7 +27,7 @@ const PHASE_TINT: Record<Phase, string> = {
   luteal: "rgba(155, 137, 180, 0.06)",
 };
 
-const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Baking", "Snacks", "TCM", "Ayurveda", "Kids"] as const;
+const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Kids"] as const;
 const TAG_FILTERS = ["High Protein", "Gut Health", "Anti-Inflammatory", "Vegan", "Iron-Rich", "Magnesium"] as const;
 
 export default function DiscoverTab() {
@@ -66,17 +66,9 @@ export default function DiscoverTab() {
     return allRecipes.filter(r => {
       if (phaseFilter !== "all" && r.phase !== phaseFilter) return false;
       if (mealType !== "All") {
-        if (mealType === "TCM") {
-          if (!r.tags?.includes("TCM")) return false;
-        } else if (mealType === "Ayurveda") {
-          if (!r.tags?.includes("Ayurveda")) return false;
-        } else {
-          const cat = getEffectiveCategory(r);
-          if (mealType === "Baking" && cat !== "baking") return false;
-          if (mealType === "Breakfast" && cat !== "breakfast") return false;
-          if (mealType === "Snacks" && cat !== "snack") return false;
-          if (mealType === "Lunch/Dinner" && cat !== "meal") return false;
-        }
+        const cat = getEffectiveCategory(r);
+        if (mealType === "Breakfast" && cat !== "breakfast") return false;
+        if (mealType === "Lunch/Dinner" && cat !== "meal") return false;
       }
       if (search) {
         const q = search.toLowerCase();

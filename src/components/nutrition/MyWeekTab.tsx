@@ -31,6 +31,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { buildDbMealPlanFull, regenerateMealFromDb } from "@/lib/build-db-meal-plan";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -199,112 +200,41 @@ export default function MyWeekTab() {
     }
   }, [user, currentCycleDay, currentPhase]);
 
-  // Generate full plan via AI
+  // Build full plan from the Nourish recipe library — no AI, no edge call.
   const handleBuildPlan = useCallback(async (preferences: PrepPrefsType) => {
     setPrefs(preferences);
     setIsGenerating(true);
     haptic("medium");
 
     try {
-      // Generate in 4 batches of 7 days to avoid timeouts
-      const batches = [
-        { start: 1, end: 7 },
-        { start: 8, end: 14 },
-        { start: 15, end: 21 },
-        { start: 22, end: 28 },
-      ];
-
-      let allDays: AIPlannedDay[] = [];
-
-      // Pass user profile macro targets + movement goals to Edge Function
-      const storedGoals: string[] = (() => {
-        if (profileMovementGoals && profileMovementGoals.length > 0) return profileMovementGoals;
-        try { return JSON.parse(localStorage.getItem("signal_body_goals") || "[]"); } catch { return []; }
-      })();
-      const profileExtras = {
-        userCalorieTarget: calorieTarget ?? undefined,
-        userProteinTargetG: proteinTargetG ?? undefined,
-        userCarbTargetG: carbTargetG ?? undefined,
-        userFatTargetG: fatTargetG ?? undefined,
-        userDietaryDislikes: dietaryDislikes?.length ? dietaryDislikes : undefined,
-        bodyGoals: storedGoals,
-      };
-
-      // Run all 4 batches in parallel — reduces generation time from ~20s to ~5s on mobile
-      const batchResults = await Promise.all(
-        batches.map(batch =>
-          supabase.functions.invoke("meal-plan-ai", {
-            body: {
-              preferences,
-              mode: "full",
-              lockedMeals: {},
-              startCycleDay: batch.start,
-              endCycleDay: batch.end,
-              ...profileExtras,
-            },
-          })
-        )
-      );
-
-      for (let i = 0; i < batchResults.length; i++) {
-        const { data, error } = batchResults[i];
-        const batch = batches[i];
-        if (error) throw error;
-        if (data?.error) throw new Error(data.error);
-        const days: AIPlannedDay[] = Array.isArray(data.plan) ? data.plan : [];
-        if (days.length === 0) throw new Error(`No meals generated for days ${batch.start}-${batch.end}`);
-        allDays = [...allDays, ...days];
-      }
-
-      const plan: AIMealPlan = {
-        days: allDays,
-        prepPreferences: preferences,
-        createdAt: Date.now(),
-        lockedMeals: {},
-      };
+      const plan = buildDbMealPlanFull(preferences);
+      if (!plan.days.length) throw new Error("No matching recipes — try widening your dietary filters.");
       setAiPlan(plan);
       saveAIMealPlan(plan);
       setStep("plan");
       toast.success("Your four-week plan is here.");
-
-      // Phase 4B: persist to Supabase in background
+      // Persist to Supabase in background
       savePlanToSupabase(plan);
     } catch (e: any) {
       toast.error(e.message || "The plan didn't come through — try again in a moment.");
     } finally {
       setIsGenerating(false);
     }
-  }, [calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, savePlanToSupabase]);
+  }, [savePlanToSupabase]);
 
-  // Regenerate single meal
+  // Swap a single meal slot for another DB recipe.
   const handleRegenerateMeal = useCallback(async (cycleDay: number, mealType: string) => {
     if (!aiPlan) return;
+    if (mealType !== "breakfast" && mealType !== "lunch" && mealType !== "dinner") return;
     const key = `${cycleDay}-${mealType}`;
     setRegeneratingKey(key);
     haptic("medium");
-
     try {
-      const { data, error } = await supabase.functions.invoke("meal-plan-ai", {
-        body: {
-          preferences: aiPlan.prepPreferences,
-          mode: "regenerate_meal",
-          existingPlan: aiPlan,
-          regenerateDay: cycleDay,
-          regenerateMeal: mealType,
-        },
-      });
-
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-
-      // Edge function returns the meal directly at data root, not data.plan
-      const newMeal = data as AIMeal;
-      const updatedDays = aiPlan.days.map(d => {
-        if (d.cycleDay === cycleDay) {
-          return { ...d, [mealType]: newMeal };
-        }
-        return d;
-      });
+      const newMeal = regenerateMealFromDb(aiPlan, cycleDay, mealType as "breakfast" | "lunch" | "dinner");
+      if (!newMeal) throw new Error("No alternative found");
+      const updatedDays = aiPlan.days.map(d =>
+        d.cycleDay === cycleDay ? { ...d, [mealType]: newMeal } : d
+      );
       const updated = { ...aiPlan, days: updatedDays };
       setAiPlan(updated);
       saveAIMealPlan(updated);
