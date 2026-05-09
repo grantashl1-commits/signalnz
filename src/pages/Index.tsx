@@ -335,7 +335,7 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-2">
               <Rss className="h-4 w-4 text-primary/60" />
               <p className="font-hand text-[10px] uppercase tracking-wider" style={{ color: 'hsl(var(--label-color))' }}>
-                feed your mind
+                a little to feed your mind
               </p>
             </div>
             {feedLoading ? (
