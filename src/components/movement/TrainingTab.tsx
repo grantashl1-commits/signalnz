@@ -334,7 +334,7 @@ function WeekRow({
               )}
               <div className="space-y-2.5">
                 {week.sessions.map((session) => (
-                  <SessionCard key={session.day} session={session} />
+                  <SessionCard key={session.day} session={session} focus={focus} />
                 ))}
               </div>
             </div>
