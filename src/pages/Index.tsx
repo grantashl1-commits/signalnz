@@ -42,10 +42,10 @@ const PHASE_HERO_IMAGE: Record<Phase, string> = {
 
 
 const PHASE_SUBTEXT: Record<Phase, string> = {
-  menstrual: "Your body is in its Menstrual phase — rest and restoration are your focus.",
-  follicular: "Your body is in its Follicular phase — energy and clarity are rising.",
-  ovulatory: "Your body is in its Ovulatory phase — you're at your peak.",
-  luteal: "Your body is in its Luteal phase — slow down and turn inward.",
+  menstrual: "Your body is asking for rest today. That counts as enough.",
+  follicular: "Something is returning. Let it begin small.",
+  ovulatory: "You're open and bright today. Let yourself be met.",
+  luteal: "Things are turning inward. Be tender with the small.",
 };
 
 const fadeUp = (delay: number) => ({
@@ -213,7 +213,7 @@ export default function HomePage() {
   }, []);
 
   const handleJournal = useCallback((post: FeedPost) => {
-    if (!user) { toast.error("Sign in to save to your journal"); return; }
+    if (!user) { toast.error("Come in first — then we can hold this for you."); return; }
     const journalPrompt = {
       id: `knowledge-${post.id}-${Date.now()}`, source: "feed",
       post_title: post.book_title_author, content: post.post_title_description,
@@ -222,9 +222,9 @@ export default function HomePage() {
     const existing = JSON.parse(localStorage.getItem("signal_knowledge_hub") || "[]");
     existing.unshift(journalPrompt);
     localStorage.setItem("signal_knowledge_hub", JSON.stringify(existing));
-    toast.success("Saved to Knowledge Hub", {
-      description: "Find it in your Memories tab to reflect on later",
-      action: { label: "Go to Journal", onClick: () => navigate("/journal") },
+    toast.success("Held.", {
+      description: "It's waiting in your Memories when you want to return.",
+      action: { label: "Open Journal", onClick: () => navigate("/journal") },
     });
   }, [user, navigate]);
 
@@ -264,7 +264,7 @@ export default function HomePage() {
               {!hasSetCycle && (
                 <motion.div {...fadeUp(0.5)} className="mb-6 md:mb-8">
                   <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                    Set up your cycle <ArrowRight className="h-4 w-4" />
+                    Tell me about your cycle <ArrowRight className="h-4 w-4" />
                   </Link>
                 </motion.div>
               )}
@@ -291,7 +291,7 @@ export default function HomePage() {
               </motion.p>
               <motion.div {...fadeUp(0.55)} className="mb-6">
                 <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                  Get started <ArrowRight className="h-4 w-4" />
+                  Come in <ArrowRight className="h-4 w-4" />
                 </Link>
               </motion.div>
             </>
@@ -310,8 +310,8 @@ export default function HomePage() {
                 <ShoppingBag className="h-4 w-4 text-primary" />
               </span>
               <div className="flex-1 min-w-0">
-                <p className="font-body text-sm font-semibold text-foreground leading-tight">Today is your meal prep day 🥗</p>
-                <p className="font-body text-xs text-muted-foreground mt-0.5">Your shopping list and weekly plan are ready — tap to view.</p>
+                <p className="font-body text-sm font-semibold text-foreground leading-tight">Today is the day you prep 🥗</p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">Your list and plan are waiting — a small kindness to your week.</p>
               </div>
               <ArrowRight className="h-4 w-4 text-primary flex-shrink-0" />
             </Link>
@@ -335,7 +335,7 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-2">
               <Rss className="h-4 w-4 text-primary/60" />
               <p className="font-hand text-[10px] uppercase tracking-wider" style={{ color: 'hsl(var(--label-color))' }}>
-                feed your mind
+                a little to feed your mind
               </p>
             </div>
             {feedLoading ? (
@@ -370,7 +370,7 @@ export default function HomePage() {
                     style={{ boxShadow: "var(--shadow-soft)" }}
                   >
                     <History className="h-4 w-4" />
-                    <span>View past insights</span>
+                    <span>Look back over the days</span>
                     <ChevronDown className="h-4 w-4" />
                   </motion.button>
                 ) : (
@@ -393,14 +393,14 @@ export default function HomePage() {
                       className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
-                      <span>Load more days</span>
+                      <span>A little further back</span>
                     </button>
                   </>
                 )}
 
                 <div className="text-center py-4">
                   <p className="font-body text-xs text-muted-foreground/50">
-                    New insights every day at midnight
+                    Something new arrives each morning.
                   </p>
                 </div>
               </>
