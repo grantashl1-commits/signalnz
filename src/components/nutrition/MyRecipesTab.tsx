@@ -28,14 +28,14 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
         <BookOpen className="h-6 w-6 text-muted-foreground" />
       </div>
       <div className="space-y-1">
-        <p className="font-display text-base italic text-foreground">Your recipe book is empty</p>
-        <p className="font-body text-xs text-muted-foreground">Save your favourite recipes or import from any website</p>
+        <p className="font-display text-base italic text-foreground">A blank recipe book, waiting</p>
+        <p className="font-body text-xs text-muted-foreground">Save the meals you return to — or pull one in from anywhere on the web.</p>
       </div>
       <button
         onClick={() => { haptic("medium"); onAdd(); }}
         className="touch-btn flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-5 py-3 font-body text-sm font-medium"
       >
-        <Plus className="h-4 w-4" /> Add your first recipe
+        <Plus className="h-4 w-4" /> Save your first recipe
       </button>
     </div>
   );
