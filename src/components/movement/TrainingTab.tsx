@@ -18,6 +18,9 @@ import {
 } from "@/lib/training-path-utils";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
+import { parseRunStructure, isRunSessionPlayable } from "@/lib/run-session-parser";
+import IntervalTimer from "@/components/movement/IntervalTimer";
+import { Timer, Play } from "lucide-react";
 
 // Hero illustrations for each focus
 import strengthArt from "@/assets/training-paths/strength.png";
