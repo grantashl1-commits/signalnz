@@ -578,7 +578,7 @@ export default function ParentingCoursePage() {
           {view === "lesson" && selectedLesson && (
             <motion.div key="lesson" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <LessonPlayer
-                lesson={selectedLesson}
+                lesson={selectedLesson as any}
                 onComplete={handleLessonComplete}
                 onBack={() => setView("lessons")}
                 onSaveProgress={handleSaveProgress}
