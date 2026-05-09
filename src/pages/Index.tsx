@@ -264,7 +264,7 @@ export default function HomePage() {
               {!hasSetCycle && (
                 <motion.div {...fadeUp(0.5)} className="mb-6 md:mb-8">
                   <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                    Set up your cycle <ArrowRight className="h-4 w-4" />
+                    Tell me about your cycle <ArrowRight className="h-4 w-4" />
                   </Link>
                 </motion.div>
               )}
