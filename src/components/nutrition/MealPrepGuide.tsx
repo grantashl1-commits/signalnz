@@ -64,7 +64,7 @@ export default function MealPrepGuide({ plan, weekNumber, weekDates, phase, onBa
     const title = prepTaskToTodoTitle(task);
     await addTodo(title);
     setAddedTasks(prev => new Set(prev).add(task.id));
-    toast.success("Added to your to-do list");
+    toast.success("Held — added to your to-do list.");
   };
 
   const handleAddAllForDay = async (tasks: PrepTask[]) => {

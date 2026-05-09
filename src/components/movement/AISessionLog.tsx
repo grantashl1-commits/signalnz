@@ -152,11 +152,11 @@ export default function AISessionLog({
 
     setSessionLogging(false);
     if (error) {
-      toast.error("Couldn't save session. Try again.");
+      toast.error("That didn't land — try again in a moment.");
     } else {
       setSessionLogged(true);
       haptic("success");
-      toast.success("AI session logged! 🎉");
+      toast.success("Held — your body remembers.");
       onSessionLogged?.();
     }
   };

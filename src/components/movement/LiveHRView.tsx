@@ -396,9 +396,9 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     if (!error && data) {
       setSaved(true);
       setSavedId(data.id);
-      toast.success("Session saved to Signal");
+      toast.success("Held — your body remembers.");
     } else {
-      toast.error("Couldn't save to Signal — session is stored locally");
+      toast.error("Held locally — we'll carry it across when the connection returns.");
     }
   };
 
@@ -577,7 +577,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
               <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
                 <Check className="h-3 w-3 text-emerald-600" />
               </div>
-              <span className="font-body text-sm text-emerald-600 font-medium">Session saved to Signal</span>
+              <span className="font-body text-sm text-emerald-600 font-medium">Held — your body remembers.</span>
             </div>
           )}
 

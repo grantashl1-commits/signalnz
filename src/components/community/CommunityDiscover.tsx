@@ -103,7 +103,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
   // Create suburb group request
   const handleCreateSuburbGroup = async (suburb: string) => {
-    if (!user) { toast.error("Please sign in to create a group"); return; }
+    if (!user) { toast.error("Come in first — then you can begin a group."); return; }
     setSubmitting(true);
     const { error } = await supabase.from("community_groups").insert({
       name: suburb,
@@ -114,9 +114,9 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
       description: `A community for ${suburb} neighbours — sharing skills, walks, coffee dates and whatever the neighbourhood needs.`,
     });
     if (error) {
-      toast.error("Failed to submit group request");
+      toast.error("That didn't land — try again in a moment.");
     } else {
-      toast.success("Group request submitted for approval!");
+      toast.success("Held — your group is on its way through approval.");
       fetchGroups();
     }
     setSubmitting(false);
@@ -124,7 +124,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
 
   // Create interest group request (under a suburb)
   const handleCreateInterestGroup = async () => {
-    if (!user) { toast.error("Please sign in"); return; }
+    if (!user) { toast.error("Come in first."); return; }
     if (!interestName.trim()) return;
     setSubmitting(true);
     const parentGroup = groups.find(g => g.id === interestParent);
@@ -139,9 +139,9 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
       description: interestDesc.trim() || `${interestName.trim()} — a community interest group.`,
     });
     if (error) {
-      toast.error("Failed to submit group request");
+      toast.error("That didn't land — try again in a moment.");
     } else {
-      toast.success("Interest group request submitted for approval!");
+      toast.success("Held — your interest group is on its way through approval.");
       setShowInterestForm(false);
       setInterestName("");
       setInterestDesc("");
@@ -189,7 +189,7 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
                 } catch {}
               } else {
                 await navigator.clipboard.writeText(window.location.origin);
-                toast.success("Link copied to clipboard!");
+                toast.success("Copied — share when you’re ready.");
               }
             }}
             className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3 font-display text-sm font-semibold active:scale-[0.97] transition-transform"

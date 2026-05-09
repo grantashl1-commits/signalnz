@@ -53,7 +53,7 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
       haptic("light");
     } catch (e: any) {
       console.error("connect-reflect:", e);
-      toast.error("Something went wrong — let's try again");
+      toast.error("Something didn't land — try again in a moment.");
     } finally {
       setLoading(false);
     }

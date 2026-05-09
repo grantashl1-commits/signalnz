@@ -536,7 +536,7 @@ export default function AttachmentQuiz({ onBack }: { onBack: () => void }) {
       self_esteem_score: res.selfEsteem,
     });
     setSaving(false);
-    toast.success("Results saved to your profile");
+    toast.success("Held — your reflection is in your profile.");
   };
 
   const retakeQuiz = () => {

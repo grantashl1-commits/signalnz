@@ -57,9 +57,9 @@ function WeeklyCheckin({ userId, onComplete }: { userId: string; onComplete: () 
       energy, sleep_quality: sleep, soreness: soreness.toLowerCase(), notes: notes || null,
     });
     if (error) {
-      toast.error("Couldn't save check-in");
+      toast.error("That didn't land — try again in a moment.");
     } else {
-      toast.success("Check-in saved");
+      toast.success("Held.");
       setAlreadyDone(true);
       onComplete();
     }
@@ -206,7 +206,7 @@ function GoalTracker({ userId }: { userId: string }) {
       goal_description: desc,
       target_date: targetDate || null,
     });
-    toast.success("Goal set!");
+    toast.success("Held.");
     setShowCreate(false);
     setNewGoalDesc("");
     fetchGoal();
@@ -221,7 +221,7 @@ function GoalTracker({ userId }: { userId: string }) {
       value: parseFloat(logValue),
       note: logNote || null,
     });
-    toast.success("Progress logged");
+    toast.success("Held.");
     setLogValue("");
     setLogNote("");
     fetchGoal();
@@ -397,8 +397,8 @@ function LogWorkout({ userId, onLogged }: { userId: string; onLogged: () => void
       duration_minutes: parseInt(duration) || 30,
       intensity,
     });
-    if (error) toast.error("Couldn't log session");
-    else { toast.success("Workout logged"); onLogged(); }
+    if (error) toast.error("That didn't land — try again in a moment.");
+    else { toast.success("Held — your body remembers."); onLogged(); }
     setSaving(false);
   };
 
@@ -564,9 +564,9 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setPlan({ type: planType, content: data.plan, date: new Date().toLocaleDateString() });
-      toast.success(`${planType === "training" ? "Training" : "Nutrition"} plan ready!`);
+      toast.success(`${planType === "training" ? "Training" : "Nutrition"} plan is ready.`);
     } catch (e: any) {
-      toast.error(e.message || "Failed to generate plan");
+      toast.error(e.message || "The plan didn't come through — try again in a moment.");
     }
     setGenerating(null);
   };

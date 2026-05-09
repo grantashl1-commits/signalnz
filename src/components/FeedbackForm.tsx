@@ -69,7 +69,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted?: () => void
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim()) {
-      toast.error("Please describe your feedback");
+      toast.error("Tell us what you noticed.");
       return;
     }
 
@@ -108,7 +108,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted?: () => void
       if (error) throw error;
 
       setSubmitted(true);
-      toast.success("Thank you! Your feedback has been submitted.");
+      toast.success("Thank you — held. We hear you.");
       setTimeout(() => {
         setDescription("");
         setCategory("feedback");

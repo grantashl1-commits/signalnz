@@ -258,7 +258,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Please sign in to generate a plan");
+        toast.error("Come in first — then we can shape a plan with you.");
         setGenerating(false);
         setStep("equipment");
         return;
@@ -289,7 +289,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
       if (resp.error) {
         const errMsg = typeof resp.error === 'object' ? (resp.error as any)?.message : String(resp.error);
         if (errMsg?.includes?.("insufficient_credits") || resp.data?.error === "insufficient_credits") {
-          toast.error("You've used your free plan this month. Extra plans cost 3 credits — top up in your account.");
+          toast.error("Your free plan for the month is taken. Another costs 3 credits — top up in your account when you're ready.");
           setStep("equipment");
           setGenerating(false);
           return;
@@ -315,13 +315,13 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
       setLastGeneratedAt(new Date().toISOString());
 
       if (resp.data?.is_first_free) {
-        toast.success("Your free AI training plan is ready! 🎉");
+        toast.success("Your training plan is here.");
       } else {
         toast.success(`Plan generated! (${resp.data?.credits_used || 3} credits used)`);
       }
     } catch (err: any) {
       console.error("Plan generation failed:", err);
-      toast.error("Failed to generate plan. Please try again.");
+      toast.error("The plan didn't come through — try again in a moment.");
       // Reload existing plan in case the edge function saved it despite the error
       await loadExistingPlan();
       if (!existingPlan) {
@@ -348,7 +348,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
     setExistingPlanId(null);
     setPlanIsActive(false);
     setStep("height");
-    toast.success("Plan removed");
+    toast.success("Released.");
   }
 
   // Toggle whether this AI plan should drive the Today screen.
@@ -362,7 +362,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
         .eq("id", existingPlanId);
       if (error) {
         setPlanIsActive(!next);
-        toast.error("Couldn't update plan status");
+        toast.error("That didn't land — try again in a moment.");
         return;
       }
     }
@@ -377,7 +377,7 @@ export default function AITrainingPlanTab({ onStartSession }: AITrainingPlanTabP
   async function handleRegenerate() {
     haptic("medium");
     if (!canGenerate) {
-      toast.error("You've already generated this month. Top up credits to regenerate.");
+      toast.error("You've already shaped one this month. Top up credits if you'd like another.");
       return;
     }
     // Re-run the generation with whatever defaults the user already had

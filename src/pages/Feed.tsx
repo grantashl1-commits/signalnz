@@ -111,12 +111,12 @@ export default function Feed() {
 
   const handleJournal = useCallback((post: FeedPost) => {
     if (!canSave) {
-      toast.error("Upgrade to save posts to your Knowledge Hub");
+      toast.error("This one's for members — come closer when you're ready.");
       navigate("/membership");
       return;
     }
     if (!user) {
-      toast.error("Sign in to save to your journal");
+      toast.error("Come in first — then we can hold this for you.");
       return;
     }
     const journalPrompt = {
@@ -132,7 +132,7 @@ export default function Feed() {
     existing.unshift(journalPrompt);
     localStorage.setItem("signal_knowledge_hub", JSON.stringify(existing));
     
-    toast.success("Saved to Knowledge Hub", {
+    toast.success("Held.", {
       description: "Find it in your Memories tab to reflect on later",
       action: {
         label: "Go to Journal",

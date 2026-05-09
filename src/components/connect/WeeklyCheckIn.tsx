@@ -59,7 +59,7 @@ export default function WeeklyCheckIn({ connectionId, partnerRole, partnerName }
     }, { onConflict: "connection_id,partner_role,week_key" });
 
     setSubmitted(true);
-    toast.success("Check-in saved 💜");
+    toast.success("Held. 💜");
   };
 
   return (

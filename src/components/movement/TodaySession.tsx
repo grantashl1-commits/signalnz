@@ -606,7 +606,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
 
     setSessionLogging(false);
     if (error) {
-      toast.error("Couldn't save session. Try again.");
+      toast.error("That didn't land — try again in a moment.");
     } else {
       setSessionLogged(true);
       setLoggedWorkoutLogId(insertedLog?.id || null);
@@ -646,12 +646,12 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
       .eq("id", logId)
       .eq("user_id", user.id);
     if (error) {
-      toast.error("Couldn't undo — try again.");
+      toast.error("That didn't undo — try again in a moment.");
       // Restore state on failure
       setSessionLogged(true);
       setLoggedWorkoutLogId(logId);
     } else {
-      toast.success("Session removed");
+      toast.success("Released.");
       setTodayLogCount(c => Math.max(0, c - 1));
       onSessionLogged?.();
     }
@@ -970,7 +970,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
               localStorage.removeItem("signal_ai_active_session");
               setAiSession(null);
               haptic("success");
-              toast.success("Session logged! 🎉");
+              toast.success("Held — your body remembers.");
               onSessionLogged?.();
             }}
             className="w-full h-11 rounded-full bg-primary text-primary-foreground font-display text-sm font-semibold flex items-center justify-center gap-2"
@@ -1049,7 +1049,7 @@ export default function TodaySession({ onOpenTraining, onOpenHR, onOpenManualLog
                     hrTraceRef.current = [];
                     setElapsedSecs(0);
                     setCompletedExercises(new Set());
-                    toast.success("Session cancelled");
+                    toast.success("Released.");
                   }}
                   className="font-body text-[11px] text-muted-foreground hover:text-destructive underline underline-offset-2"
                 >

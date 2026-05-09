@@ -363,7 +363,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
     );
     setSwapSheetOpen(false);
     setSwapTargetId(null);
-    toast.success("Exercise swapped for today");
+    toast.success("Swapped — for today.");
   };
 
   // ── Session logging ──
@@ -438,10 +438,10 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
 
     setSessionLogging(false);
     if (error) {
-      toast.error("Couldn't save session. Try again.");
+      toast.error("That didn't land — try again in a moment.");
     } else {
       setSessionLogged(true);
-      toast.success("Session logged!");
+      toast.success("Held — your body remembers.");
     }
   };
 

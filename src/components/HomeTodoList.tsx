@@ -57,7 +57,7 @@ export default function HomeTodoList() {
           date: ve.date, timestamp: ve.timestamp,
         } as any);
       }
-      toast.success("Saved to Look What You've Done ✨", {
+      toast.success("Held — and added to Look What You've Done ✨", {
         description: "Find it in your Memory Vault",
       });
     }

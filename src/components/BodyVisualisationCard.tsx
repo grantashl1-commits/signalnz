@@ -189,7 +189,7 @@ export default function BodyVisualisationCard() {
     setSaving(false);
 
     if (error) {
-      toast.error("Couldn't save measurements — please try again.");
+      toast.error("That didn't land — try again in a moment.");
       return;
     }
 
