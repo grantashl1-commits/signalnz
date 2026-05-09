@@ -26,6 +26,8 @@ export interface Module {
   description: string;
   estimatedMinutes: number;
   lessons: Lesson[];
+  /** Path to the watercolour module header illustration, served from public/. */
+  image?: string;
 }
 
 export const PARENTING_COURSE: Module[] = [
@@ -36,6 +38,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p1",
     title: "The Compass",
     subtitle: "Finding Your True North as a Parent",
+    image: "/images/parenting/module1-compass.png",
     description: "Before we talk about what to do in the chaos, we must know what we stand for. This module helps you uncover your deepest parenting values – the compass that guides you back when storms hit.",
     estimatedMinutes: 60,
     lessons: [
@@ -114,6 +117,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p2",
     title: "The Pause",
     subtitle: "Regulating Yourself First",
+    image: "/images/parenting/module2-pause.png",
     description: "You cannot pour from an empty cup. When you are flooded with anger, exhaustion, or frustration, you cannot respond gently. This module teaches you to recognise your own triggers and take a healing pause.",
     estimatedMinutes: 70,
     lessons: [
@@ -184,6 +188,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p3",
     title: "The Bridge",
     subtitle: "Connection Before Correction",
+    image: "/images/parenting/module3-bridge.png",
     description: "Children cannot learn when they feel threatened or shamed. This module teaches you to build a bridge of connection first – then guide behaviour from a place of safety.",
     estimatedMinutes: 75,
     lessons: [
@@ -254,6 +259,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p4",
     title: "The Fence",
     subtitle: "Holding Boundaries With Kindness",
+    image: "/images/parenting/module4-fence.png",
     description: "Boundaries are not punishments. They are fences that keep children safe and give them freedom to play within clear limits. This module teaches you how to say no without yelling – and mean it.",
     estimatedMinutes: 65,
     lessons: [
@@ -316,6 +322,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p5",
     title: "The Repair",
     subtitle: "Apologising and Reconnecting After Ruptures",
+    image: "/images/parenting/module5-repair.png",
     description: "You will lose your temper. You will say things you regret. That does not make you a bad parent – it makes you human. The magic is in the repair.",
     estimatedMinutes: 60,
     lessons: [
@@ -375,6 +382,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p6",
     title: "The Village",
     subtitle: "Co‑Parenting and Asking for Help",
+    image: "/images/parenting/module6-village.png",
     description: "You were never meant to do this alone. This module helps you communicate with your co‑parent (partner, ex‑partner, or other caregivers) and build a network of support.",
     estimatedMinutes: 70,
     lessons: [
@@ -427,6 +435,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p7",
     title: "The Rhythm",
     subtitle: "Routines Without Rigidity",
+    image: "/images/parenting/module7-rhythm.png",
     description: "Children thrive on predictability, but life is messy. This module helps you create flexible daily rhythms that reduce resistance and increase cooperation.",
     estimatedMinutes: 60,
     lessons: [
@@ -487,6 +496,7 @@ export const PARENTING_COURSE: Module[] = [
     id: "p8",
     title: "The Garden",
     subtitle: "Growing Yourself as a Parent",
+    image: "/images/parenting/module8-garden.png",
     description: "The most important gift you can give your child is your own ongoing growth. This final module helps you commit to self‑compassion, learning, and celebrating small wins.",
     estimatedMinutes: 60,
     lessons: [

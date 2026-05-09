@@ -15,15 +15,18 @@ const corsHeaders = {
  * No credit deduction — this is an operational cost, not user-facing.
  */
 
-// Signal voice policy: Regina is the only female narrator used.
-const VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS"; // Regina
+// Signal voice policy: only Regina (female) and Theo (male) are permitted.
+const REGINA_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS";
+const THEO_VOICE_ID = "UmQN7jS1Ee8B1czsUtQh";
+const ALLOWED_VOICES = new Set([REGINA_VOICE_ID, THEO_VOICE_ID]);
 
 async function generateOne(
   apiKey: string,
-  text: string
+  text: string,
+  voiceId: string
 ): Promise<ArrayBuffer> {
   const resp = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_44100_128`,
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
     {
       method: "POST",
       headers: {
@@ -80,9 +83,10 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { items, bucket_prefix } = await req.json() as {
+    const { items, bucket_prefix, voice_id } = await req.json() as {
       items: { id: string; text: string }[];
       bucket_prefix?: string;
+      voice_id?: string;
     };
 
     if (!items?.length) {
@@ -92,6 +96,8 @@ Deno.serve(async (req) => {
       );
     }
 
+    const resolvedVoiceId =
+      voice_id && ALLOWED_VOICES.has(voice_id) ? voice_id : REGINA_VOICE_ID;
     const prefix = bucket_prefix || "practices";
     const results: { id: string; status: string; url?: string }[] = [];
 
@@ -115,8 +121,8 @@ Deno.serve(async (req) => {
 
       // Generate
       try {
-        console.log(`Generating: ${item.id} (${item.text.length} chars)`);
-        const audio = await generateOne(ELEVENLABS_API_KEY, item.text);
+        console.log(`Generating: ${item.id} (${item.text.length} chars, voice ${resolvedVoiceId.slice(0,8)})`);
+        const audio = await generateOne(ELEVENLABS_API_KEY, item.text, resolvedVoiceId);
 
         const { error: uploadErr } = await supabase.storage
           .from("practice-audio")

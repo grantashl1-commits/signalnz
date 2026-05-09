@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, Heart, ArrowLeft, Sparkles } from "lucide-react";
-import { CONNECT_COURSE, type CourseModule, type CourseLesson } from "@/data/connect-course";
+import { COUPLES_COUNSELLING_COURSE as CONNECT_COURSE, type Module as CourseModule, type Lesson as CourseLesson } from "@/data/couples-counselling-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
 import { Progress } from "@/components/ui/progress";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -164,7 +164,7 @@ export default function ConnectCoursePage() {
             <Lock className="h-10 w-10 text-muted-foreground/40 mx-auto" />
             <h2 className="font-display text-xl font-bold text-foreground">Nourished plan required</h2>
             <p className="font-body text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
-              The Connect couples course is included with the Nourished and Thriving plans. Upgrade to unlock all 10 modules and 30 lessons.
+              The Connect couples course is included with the Nourished and Thriving plans. Upgrade to unlock all 8 modules.
             </p>
             <a
               href="/membership"
@@ -187,7 +187,7 @@ export default function ConnectCoursePage() {
           <h1 className="font-display text-[2rem] md:text-[2.5rem] font-extrabold text-primary-foreground leading-[1.02]">
             Couples Course
           </h1>
-          <p className="font-body text-sm text-primary-foreground/50 mt-2">10 modules · 30 lessons · 92 activities</p>
+          <p className="font-body text-sm text-primary-foreground/50 mt-2">{CONNECT_COURSE.length} modules · {CONNECT_COURSE.reduce((s, m) => s + m.lessons.length, 0)} lessons</p>
           {totalProgress > 0 && (
             <div className="mt-4 max-w-[200px] mx-auto">
               <Progress value={totalProgress} className="h-1.5" />
@@ -254,11 +254,13 @@ export default function ConnectCoursePage() {
               <div className="mb-5">
                 <h2 className="font-display text-xl font-bold text-foreground">{selectedModule.title}</h2>
                 <p className="font-body text-sm text-muted-foreground mt-1">{selectedModule.description}</p>
-                <div className="flex flex-wrap gap-1 mt-3">
-                  {selectedModule.sources.map(s => (
-                    <span key={s} className="px-2 py-0.5 rounded-full bg-primary/10 font-body text-[10px] text-primary">{s}</span>
-                  ))}
-                </div>
+                {(selectedModule as any).sources?.length ? (
+                  <div className="flex flex-wrap gap-1 mt-3">
+                    {(selectedModule as any).sources.map((s: string) => (
+                      <span key={s} className="px-2 py-0.5 rounded-full bg-primary/10 font-body text-[10px] text-primary">{s}</span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <div className="space-y-2">
                 {selectedModule.lessons.map((lesson, i) => {

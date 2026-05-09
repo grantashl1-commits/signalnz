@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, ArrowLeft, Sparkles } from "lucide-react";
-import { CONNECT_COURSE, type CourseModule, type CourseLesson } from "@/data/connect-course";
+import { COUPLES_COUNSELLING_COURSE as CONNECT_COURSE, type Module as CourseModule, type Lesson as CourseLesson } from "@/data/couples-counselling-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/hooks/use-mobile";

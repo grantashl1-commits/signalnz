@@ -114,7 +114,10 @@ export default function MyWeekTab() {
   const [prefs, setPrefs] = useState<PrepPrefsType>(getSavedPreferences() || DEFAULT_PREFS);
   const [isGenerating, setIsGenerating] = useState(false);
   const [regeneratingKey, setRegeneratingKey] = useState<string | null>(null);
-  const [step, setStep] = useState<Step>(aiPlan ? "plan" : "prep");
+  // AI meal plan generation is deprecated — every user now lands directly on
+  // the static cycle-aware plan. Manual recipe selection from the new
+  // nourish-recipes library will replace AI generation in a future iteration.
+  const [step, setStep] = useState<Step>("plan");
   // Tracks which lunch/dinner slots are showing the kids alternative view
   const [kidsViewSlots, setKidsViewSlots] = useState<Set<string>>(new Set());
   const supabasePlanLoaded = useRef(false);
@@ -363,16 +366,11 @@ export default function MyWeekTab() {
     return { days, monday, dominantPhase };
   }, [weekOffset, getCycleDayForDate, todayStr, aiPlan]);
 
-  if (step === "prep") {
-    return (
-      <PrepPreferences
-        initialPrefs={prefs}
-        phase={currentPhase}
-        onBuild={handleBuildPlan}
-        isGenerating={isGenerating}
-      />
-    );
-  }
+  // Note: the AI prep/build step has been removed. Users land directly on the
+  // static cycle plan. PrepPreferences and handleBuildPlan are retained as
+  // dead code only because legacy aiPlan data still renders for users who
+  // generated one before. A new manual recipe-picker will replace this whole
+  // flow in a follow-up.
 
   if (step === "shop" && aiPlan) {
     const currentWeek = Math.ceil(currentCycleDay / 7);
@@ -481,12 +479,14 @@ export default function MyWeekTab() {
               Back to this week
             </button>
           )}
-          <button
-            onClick={handleStartFresh}
-            className="font-body text-xs text-muted-foreground underline"
-          >
-            Rebuild plan
-          </button>
+          {aiPlan && (
+            <button
+              onClick={handleStartFresh}
+              className="font-body text-xs text-muted-foreground underline"
+            >
+              Clear AI plan
+            </button>
+          )}
           {aiPlan && (
             <button
               onClick={() => { haptic("light"); setStep("prepguide"); }}

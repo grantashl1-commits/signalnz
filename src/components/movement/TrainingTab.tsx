@@ -10,6 +10,7 @@ import {
   type DaySession,
   type TrainingWeek,
 } from "@/data/signal-training-paths";
+import { getExerciseImageForStructureLine } from "@/lib/exercise-image-lookup";
 
 const FOCUS_LABEL: Record<TrainingFocus, string> = {
   strength: "Strength",
@@ -263,15 +264,27 @@ function SessionCard({ session }: { session: DaySession }) {
       )}
 
       {session.structure && session.structure.length > 0 && (
-        <ul className="space-y-1 pl-4 list-disc marker:text-primary/40">
-          {session.structure.map((line, i) => (
-            <li
-              key={i}
-              className="font-body text-xs text-foreground/85 leading-relaxed"
-            >
-              {line}
-            </li>
-          ))}
+        <ul className="space-y-2 pl-4 list-disc marker:text-primary/40">
+          {session.structure.map((line, i) => {
+            const image = getExerciseImageForStructureLine(line);
+            return (
+              <li key={i} className="font-body text-xs text-foreground/85 leading-relaxed">
+                {image ? (
+                  <span className="flex items-start gap-2">
+                    <img
+                      src={image}
+                      alt=""
+                      loading="lazy"
+                      className="h-10 w-10 rounded-md object-contain shrink-0 -ml-1"
+                    />
+                    <span className="flex-1">{line}</span>
+                  </span>
+                ) : (
+                  line
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
 

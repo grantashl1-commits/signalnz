@@ -8,6 +8,7 @@
  */
 import { Recipe } from "@/data/meal-plans";
 import { NOURISH_RECIPES } from "@/data/nourish-recipes";
+import imageMaps from "@/data/image-maps.json";
 
 /** All recipes — single canonical source. */
 export const ALL_RECIPES: Recipe[] = NOURISH_RECIPES;
@@ -99,12 +100,52 @@ export function findRecipeByName(mealName: string): Recipe | undefined {
   return bestScore >= THRESHOLD ? bestRecipe : undefined;
 }
 
-/** Get recipe image or undefined (single source of truth for illustrations) */
+/**
+ * Slugify recipe name to match the conventions used by Lovable's image filenames
+ * (lowercase, hyphenated, no apostrophes/punctuation, "&"→"and").
+ */
+function slugifyRecipeName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[''`]/g, "")
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+const RECIPE_IMAGE_SLUGS = new Set<string>(Object.keys(imageMaps.recipes ?? {}));
+const recipeImageBySlug = imageMaps.recipes as Record<string, string>;
+
+/**
+ * Resolve the illustration path for a recipe.
+ * Order of preference:
+ *   1. Recipe entry's explicit `image` field (overrides everything)
+ *   2. Direct slug match against /public/images/recipes/<slug>.png
+ *   3. Fuzzy: any image slug that contains every keyword from the recipe name
+ */
 export function getRecipeImage(recipeIdOrName: string): string | undefined {
-  const byId = findRecipeById(recipeIdOrName);
-  if (byId) return byId.image;
-  const byName = findRecipeByName(recipeIdOrName);
-  return byName?.image;
+  const recipe = findRecipeById(recipeIdOrName) ?? findRecipeByName(recipeIdOrName);
+  if (!recipe) return undefined;
+  if (recipe.image) return recipe.image;
+
+  const directSlug = slugifyRecipeName(recipe.name);
+  if (recipeImageBySlug[directSlug]) return recipeImageBySlug[directSlug];
+
+  const recipeWords = keywords(recipe.name);
+  if (recipeWords.length === 0) return undefined;
+  let bestSlug: string | undefined;
+  let bestScore = 0;
+  for (const candidate of RECIPE_IMAGE_SLUGS) {
+    const candidateWords = candidate.split("-");
+    const matched = recipeWords.filter(w => candidateWords.includes(w)).length;
+    const score = (matched / recipeWords.length) * (matched / candidateWords.length);
+    if (matched === recipeWords.length && score > bestScore) {
+      bestScore = score;
+      bestSlug = candidate;
+    }
+  }
+  return bestSlug ? recipeImageBySlug[bestSlug] : undefined;
 }
 
 /** Get all recipes for a given cycle phase */
