@@ -386,6 +386,7 @@ export default function LibraryTab() {
               Showing 50 of {filtered.length} exercises. Use search to narrow results.
             </p>
           )}
+          </div>
         </div>
       ) : (
         <div className="space-y-2">
