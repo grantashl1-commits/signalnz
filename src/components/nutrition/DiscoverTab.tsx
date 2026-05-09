@@ -27,7 +27,7 @@ const PHASE_TINT: Record<Phase, string> = {
   luteal: "rgba(155, 137, 180, 0.06)",
 };
 
-const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Baking", "Snacks", "TCM", "Ayurveda", "Kids"] as const;
+const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Kids"] as const;
 const TAG_FILTERS = ["High Protein", "Gut Health", "Anti-Inflammatory", "Vegan", "Iron-Rich", "Magnesium"] as const;
 
 export default function DiscoverTab() {
