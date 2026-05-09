@@ -69,7 +69,11 @@
       "Bash(grep -E \"^[AMD]\\\\s+\\\\.env$\")",
       "Bash(grep -E \"^\\\\+.*\\(SUPABASE_DB_PASSWORD|SUPABASE_ACCESS_TOKEN|sbp_[a-z0-9]|AIza[A-Za-z0-9_-]{30,}\\)\")",
       "Bash(grep -cE \"^\\\\+.*\\(eyJ[A-Za-z0-9_-]{50,}\\\\.|sbp_|AIza[A-Za-z0-9_-]{30,}|SUPABASE_DB_PASSWORD=.+|SUPABASE_ACCESS_TOKEN=.+\\)\")",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "Bash(audio)",
+      "Bash(parent)",
+      "Bash(couple)",
+      "Bash(connect\" 2>&1)"
     ]
   }
 }
