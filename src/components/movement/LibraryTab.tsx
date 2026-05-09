@@ -8,6 +8,7 @@ import { useGatedExpand } from "@/hooks/useGatedExpand";
 import QuickWorkoutSession, { getExercisePrescription } from "@/components/movement/QuickWorkoutSession";
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 import type { Workout } from "@/data/workouts";
+import { getAllPathExercises } from "@/lib/training-path-utils";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
