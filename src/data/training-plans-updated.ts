@@ -17,12 +17,12 @@ export type TrainingFocus =
 export interface DaySession {
   day: number;
   name: string;
-  focus: string;
-  durationMin: number;
-  equipment: string;
-  feel: string;
+  focus?: string;
+  durationMin?: number;
+  equipment?: string;
+  feel?: string;
   structure: string[];
-  coachingNote: string;
+  coachingNote?: string;
 }
 
 export interface TrainingPath {

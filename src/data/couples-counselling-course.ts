@@ -5,7 +5,7 @@ export interface Activity {
   id: string;
   type: "carousel" | "fill_blanks" | "decision_point" | "open_response" | "conversation_challenge" | "true_false" | "reaction_slider" | "token_appreciation" | "comparison" | "image_upload" | "survey" | "sort" | "flip_card";
   title: string;
-  instruction: string;
+  instruction?: string;
   content: any;
   tip?: string;
   saveToVault?: boolean;
@@ -15,7 +15,7 @@ export interface Lesson {
   id: string;
   title: string;
   description: string;
-  estimatedMinutes: number;
+  estimatedMinutes?: number;
   activities: Activity[];
 }
 
