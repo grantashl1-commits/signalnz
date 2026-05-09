@@ -165,10 +165,10 @@ export default function MovementPage() {
   const sessions = getAllSessions();
 
   const WEEK_PHASE_NOTES: Record<number, string> = {
-    1: "Focus on consistency over intensity.",
-    2: "Push harder — your energy is building.",
-    3: "Peak performance week.",
-    4: "Honour how you feel. Drop intensity if needed.",
+    1: "Returning, gently. Showing up is the whole thing.",
+    2: "Something is building. Meet it where it is.",
+    3: "You're open and bright. Move in a way that feels like joy.",
+    4: "Turn inward. Soften the edges if you need to.",
   };
 
   const formatTime = (secs: number) => {
@@ -233,7 +233,7 @@ export default function MovementPage() {
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Movement</p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Move</h1>
           <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-            Train with your body, not against it.
+            With your body, in the shape of today.
           </p>
         </div>
       </AtmosphericHero>
@@ -375,8 +375,8 @@ export default function MovementPage() {
             >
               <Plus className="h-5 w-5 text-primary" />
               <div>
-                <p className="font-body text-sm font-medium text-foreground">Log a workout manually</p>
-                <p className="font-body text-xs text-muted-foreground mt-0.5">Add any session to your log.</p>
+                <p className="font-body text-sm font-medium text-foreground">Add a session by hand</p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">Anything that moved you today.</p>
               </div>
             </button>
           )}
@@ -387,8 +387,8 @@ export default function MovementPage() {
           {supabaseLogs.length === 0 && sessions.length === 0 && (
             <div className="card-warm p-8 text-center space-y-3">
               <Dumbbell className="h-8 w-8 text-muted-foreground/30 mx-auto" />
-              <p className="font-display text-base font-bold text-foreground">No workouts logged yet</p>
-              <p className="font-body text-xs text-muted-foreground">Complete a session or log one manually.</p>
+              <p className="font-display text-base font-bold text-foreground">Nothing here yet — and that's okay</p>
+              <p className="font-body text-xs text-muted-foreground">When you move, it will be held here.</p>
             </div>
           )}
         </div>
