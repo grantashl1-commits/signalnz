@@ -1,18 +1,6 @@
-<<<<<<< Updated upstream
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Loader2, Zap, Moon, Sprout, Sun } from "lucide-react";
-import ProgramLibrary from "./ProgramLibrary";
-import ProgramOverview from "./ProgramOverview";
-import WorkoutSessionView from "./WorkoutSessionView";
-import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
-import { haptic } from "@/hooks/use-mobile";
-import { useCycle } from "@/contexts/CycleContext";
-=======
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronDown } from "lucide-react";
->>>>>>> Stashed changes
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import {
@@ -43,73 +31,7 @@ export default function TrainingTab() {
   const [selectedPath, setSelectedPath] = useState<TrainingPath | null>(null);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
 
-<<<<<<< Updated upstream
-  const [view, setView] = useState<View>("goal-select");
-  const [selectedPhaseIdx, setSelectedPhaseIdx] = useState(0);
-  const [workouts, setWorkouts] = useState<WorkoutTemplate[]>([]);
-  const [activeWorkout, setActiveWorkout] = useState<WorkoutTemplate | null>(null);
-  const [activeExercises, setActiveExercises] = useState<WorkoutExercise[]>([]);
-  const [loadingSub, setLoadingSub] = useState(false);
-
-  // Determine initial view based on whether user has a goal
-  useEffect(() => {
-    if (loading) return;
-    if (goalCategoryId && program) {
-      setView("program");
-    } else {
-      setView("goal-select");
-    }
-  }, [loading, goalCategoryId, program]);
-
-  const handleSelectGoal = async (goalId: string, programId?: string) => {
-    haptic("medium");
-    // Clear any cached AI training plan so user starts fresh
-    localStorage.removeItem("signal_ai_workout_plan");
-    localStorage.removeItem("signal_ai_active_session");
-    // Reset UI state to beginning
-    setSelectedPhaseIdx(0);
-    setWorkouts([]);
-    setActiveWorkout(null);
-    setActiveExercises([]);
-    await selectGoal(goalId, programId);
-    // View will update via the effect above when program loads
-  };
-
-  const handleStartProgram = async () => {
-    haptic("medium");
-    if (phases.length === 0) return;
-    setLoadingSub(true);
-    const wts = await fetchWorkouts(phases[0].id);
-    setWorkouts(wts);
-    setSelectedPhaseIdx(0);
-    setView("phase-workouts");
-    setLoadingSub(false);
-  };
-
-  const handleSelectPhase = async (idx: number) => {
-    haptic("light");
-    setLoadingSub(true);
-    setSelectedPhaseIdx(idx);
-    const wts = await fetchWorkouts(phases[idx].id);
-    setWorkouts(wts);
-    setView("phase-workouts");
-    setLoadingSub(false);
-  };
-
-  const handleOpenWorkout = async (wt: WorkoutTemplate) => {
-    haptic("medium");
-    setLoadingSub(true);
-    const exs = await fetchWorkoutExercises(wt.id);
-    setActiveWorkout(wt);
-    setActiveExercises(exs);
-    setView("session");
-    setLoadingSub(false);
-  };
-
-  if (loading) {
-=======
   if (selectedPath) {
->>>>>>> Stashed changes
     return (
       <PathDetail
         path={selectedPath}
@@ -137,15 +59,6 @@ export default function TrainingTab() {
         </p>
       </div>
 
-<<<<<<< Updated upstream
-      {/* Program library */}
-      {view === "goal-select" && (
-        <ProgramLibrary
-          selectedProgramId={program?.id ?? null}
-          onSelectProgram={(goalId, programId) => handleSelectGoal(goalId, programId)}
-        />
-      )}
-=======
       <div className="grid gap-3">
         {SIGNAL_TRAINING_PATHS.map((path, i) => (
           <motion.div
@@ -161,7 +74,6 @@ export default function TrainingTab() {
     </div>
   );
 }
->>>>>>> Stashed changes
 
 function PathCard({ path, onOpen }: { path: TrainingPath; onOpen: () => void }) {
   return (
