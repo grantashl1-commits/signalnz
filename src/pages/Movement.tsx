@@ -278,14 +278,6 @@ export default function MovementPage() {
           {/* Selected training path → next session card with HR connect */}
           <SelectedPathTodayCard onOpenHR={() => setShowHR(true)} />
 
-          {/* Today's session from training program */}
-          <TodaySession
-            onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
-            onOpenHR={() => setShowHR(true)}
-            onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
-            onSessionLogged={() => setLogRefreshKey(k => k + 1)}
-          />
-
         </div>
       )}
 
