@@ -109,7 +109,7 @@ export default function Connect() {
       haptic("light");
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("Couldn't copy — try manually");
+      toast.error("Copying didn't land — try selecting it by hand.");
     }
   };
 
@@ -134,7 +134,7 @@ export default function Connect() {
     if (!user) return;
     const fullPin = pin.join("");
     if (fullPin.length !== 4 || !partnerName.trim()) {
-      toast.error("Enter your partner's name and a 4-digit PIN");
+      toast.error("Add your partner's name and a 4-digit PIN to begin.");
       return;
     }
     setLoading(true);
@@ -152,7 +152,7 @@ export default function Connect() {
       .single();
 
     if (error) {
-      toast.error("Something went wrong — try again");
+      toast.error("Something didn't land — try again in a moment.");
       setLoading(false);
       return;
     }
@@ -166,7 +166,7 @@ export default function Connect() {
   // ─── Partner enters join code ───
   const handlePartnerJoin = () => {
     if (joinCode.length !== 6) {
-      toast.error("Enter the 6-character code from your partner");
+      toast.error("Add the 6-character code your partner shared.");
       return;
     }
     haptic("light");
@@ -177,7 +177,7 @@ export default function Connect() {
   const handlePartnerPinVerify = async () => {
     const fullPin = pin.join("");
     if (fullPin.length !== 4) {
-      toast.error("Enter the 4-digit PIN");
+      toast.error("Add the 4-digit PIN.");
       return;
     }
     setLoading(true);
@@ -189,7 +189,7 @@ export default function Connect() {
     });
 
     if (error || !data || data.length === 0) {
-      toast.error(error ? "Code not found — check with your partner" : "PIN doesn't match — try again");
+      toast.error(error ? "That code didn't match — check with your partner." : "That PIN didn't match — try again gently.");
       setLoading(false);
       return;
     }
@@ -210,7 +210,7 @@ export default function Connect() {
     setView("space");
     setLoading(false);
     haptic("medium");
-    toast.success("Connected! 💜");
+    toast.success("Connected. 💜");
   };
 
   // ─── Send a direct partner message (no AI coaching) ───
@@ -349,7 +349,7 @@ export default function Connect() {
                 onClick={() => {
                   navigator.clipboard.writeText(generatedCode);
                   haptic("light");
-                  toast.success("Join code copied");
+                  toast.success("Copied — share when you’re ready.");
                 }}
                 className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 hover:bg-primary/15 transition"
                 title="Tap to copy your partner's join code"

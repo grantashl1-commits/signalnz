@@ -29,7 +29,7 @@ export default function AuthPage() {
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Welcome back!");
+        toast.success("Welcome back.");
         navigate("/account", { replace: true });
       } else {
         const { error } = await supabase.auth.signUp({
@@ -41,7 +41,7 @@ export default function AuthPage() {
         setSignupComplete(true);
       }
     } catch (err: any) {
-      toast.error(err.message || "Something went wrong");
+      toast.error(err.message || "Something didn't land — try again in a moment.");
     } finally {
       setLoading(false);
     }
@@ -49,14 +49,14 @@ export default function AuthPage() {
 
   const handleForgotPassword = async () => {
     if (!email) {
-      toast.error("Enter your email address first");
+      toast.error("Add your email first.");
       return;
     }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth?mode=reset`,
     });
     if (!error) {
-      toast.success("Password reset link sent — check your email");
+      toast.success("A reset link is on its way — check your email.");
     }
   };
 
@@ -68,15 +68,15 @@ export default function AuthPage() {
       });
       if (result.error) throw result.error;
       if (!result.redirected) {
-        toast.success("Welcome back!");
+        toast.success("Welcome back.");
         navigate("/account", { replace: true });
       }
     } catch (err: any) {
       console.error("Google OAuth error:", err);
       if (err.message?.includes("cancelled") || err.message?.includes("popup")) {
-        toast.error("Sign-in popup was blocked. Please allow popups for this site, or try again.");
+        toast.error("Your browser blocked the sign-in window. Allow popups, then try again.");
       } else {
-        toast.error(err.message || "Google sign-in failed");
+        toast.error(err.message || "Google sign-in didn't land — try again in a moment.");
       }
       setLoading(false);
     }

@@ -190,7 +190,7 @@ export default function MembershipPage() {
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
-      toast.success("Subscription activated!");
+      toast.success("You're in. Welcome.");
       refreshSubscription();
     }
   }, [searchParams, refreshSubscription]);
@@ -213,7 +213,7 @@ export default function MembershipPage() {
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (err: any) {
-      toast.error(err.message || "Could not start checkout");
+      toast.error(err.message || "Checkout didn't open — try again in a moment.");
     }
   };
 
@@ -227,13 +227,13 @@ export default function MembershipPage() {
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (err: any) {
-      toast.error(err.message || "Could not open portal");
+      toast.error(err.message || "That didn't open — try again in a moment.");
     }
   };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    toast.success("Signed out");
+    toast.success("Signed out. Until next time.");
   };
 
   const isCurrentTier = (key: string) => subscription.tier === key;
@@ -325,7 +325,7 @@ export default function MembershipPage() {
           onClick={() => {
             haptic("light");
             setIsAnnual(true);
-            toast.info("Annual billing is coming soon. Monthly plans are available now.");
+            toast.info("Annual is coming. For now, monthly is the way in.");
           }}
           className={`font-body text-sm font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
             isAnnual ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
@@ -499,7 +499,7 @@ export default function MembershipPage() {
                       return;
                     }
                     if (isAnnual) {
-                      toast.info("Annual billing is coming soon. Monthly plans are available now.");
+                      toast.info("Annual is coming. For now, monthly is the way in.");
                       setIsAnnual(false);
                       return;
                     }

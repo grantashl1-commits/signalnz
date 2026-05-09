@@ -265,12 +265,12 @@ export default function MyWeekTab() {
       setAiPlan(plan);
       saveAIMealPlan(plan);
       setStep("plan");
-      toast.success("Your personalised 4-week plan is ready!");
+      toast.success("Your four-week plan is here.");
 
       // Phase 4B: persist to Supabase in background
       savePlanToSupabase(plan);
     } catch (e: any) {
-      toast.error(e.message || "Failed to generate plan. Please try again.");
+      toast.error(e.message || "The plan didn't come through — try again in a moment.");
     } finally {
       setIsGenerating(false);
     }
@@ -308,9 +308,9 @@ export default function MyWeekTab() {
       const updated = { ...aiPlan, days: updatedDays };
       setAiPlan(updated);
       saveAIMealPlan(updated);
-      toast.success("Meal regenerated!");
+      toast.success("A new one — held.");
     } catch (e: any) {
-      toast.error(e.message || "Failed to regenerate meal");
+      toast.error(e.message || "That didn't land — try again in a moment.");
     } finally {
       setRegeneratingKey(null);
     }

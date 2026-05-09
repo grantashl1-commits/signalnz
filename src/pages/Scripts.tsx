@@ -116,11 +116,11 @@ export default function ScriptsPage() {
 
   const handleUpload = async (scriptId: string, file: File) => {
     if (!user) {
-      toast.error("Please log in before uploading audio.");
+      toast.error("Come in first, then upload your recording.");
       return;
     }
     if (file.size > 50 * 1024 * 1024) {
-      toast.error("File too large — please use a recording under 50 MB.");
+      toast.error("That file is a little big — try a recording under 50 MB.");
       return;
     }
 
@@ -143,9 +143,9 @@ export default function ScriptsPage() {
 
       setScriptAudioOverride(scriptId, data.audioUrl);
       setOverrideUrls((prev) => ({ ...prev, [scriptId]: data.audioUrl }));
-      toast.success("Audio uploaded. This script will now use your recording.");
+      toast.success("Held. Your voice will guide this one now.");
     } catch (error: any) {
-      toast.error(error.message || "Failed to upload audio");
+      toast.error(error.message || "The upload didn't land — try again in a moment.");
     } finally {
       setUploadingId(null);
     }

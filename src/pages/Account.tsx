@@ -155,11 +155,11 @@ export default function AccountPage() {
       });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
-    } catch (err: any) { toast.error(err.message || "Could not open portal"); }
+    } catch (err: any) { toast.error(err.message || "That didn't open — try again in a moment."); }
   };
 
-  const handleRefresh = async () => { setRefreshing(true); await refreshSubscription(); setRefreshing(false); toast.success("Subscription refreshed"); };
-  const handleSignOut = async () => { await supabase.auth.signOut(); toast.success("Signed out"); navigate("/"); };
+  const handleRefresh = async () => { setRefreshing(true); await refreshSubscription(); setRefreshing(false); toast.success("Refreshed."); };
+  const handleSignOut = async () => { await supabase.auth.signOut(); toast.success("Signed out. Until next time."); navigate("/"); };
 
   const saveBodyProfile = async () => {
     if (!user) return;
@@ -176,10 +176,10 @@ export default function AccountPage() {
     } as any, { onConflict: "user_id" });
     setSaving(false);
     if (!error) {
-      toast.success("Body profile updated");
+      toast.success("Held.");
       setBodyEditing(false);
       refetch();
-    } else toast.error("Failed to save");
+    } else toast.error("That didn't land — try again.");
   };
 
   const saveFoodProfile = async () => {
@@ -193,10 +193,10 @@ export default function AccountPage() {
     } as any, { onConflict: "user_id" });
     setSaving(false);
     if (!error) {
-      toast.success("Food preferences updated");
+      toast.success("Held.");
       setFoodEditing(false);
       refetch();
-    } else toast.error("Failed to save");
+    } else toast.error("That didn't land — try again.");
   };
 
   const saveCycleProfile = async () => {
@@ -210,10 +210,10 @@ export default function AccountPage() {
     } as any, { onConflict: "user_id" });
     setSaving(false);
     if (!error) {
-      toast.success("Cycle info updated");
+      toast.success("Held.");
       setCycleEditing(false);
       refetch();
-    } else toast.error("Failed to save");
+    } else toast.error("That didn't land — try again.");
   };
 
   if (loading || !user) return null;
@@ -274,8 +274,8 @@ export default function AccountPage() {
               <div className="flex items-center gap-2">
                 <input value={nameInput} onChange={(e) => setNameInput(e.target.value)} placeholder="Enter your name..." maxLength={50}
                   className="flex-1 rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30" autoFocus
-                  onKeyDown={(e) => { if (e.key === "Enter") { (async () => { setNameSaving(true); await updateDisplayName(nameInput); setNameEditing(false); setNameSaving(false); toast.success("Name updated"); })(); } }} />
-                <button onClick={async () => { setNameSaving(true); await updateDisplayName(nameInput); setNameEditing(false); setNameSaving(false); toast.success("Name updated"); }}
+                  onKeyDown={(e) => { if (e.key === "Enter") { (async () => { setNameSaving(true); await updateDisplayName(nameInput); setNameEditing(false); setNameSaving(false); toast.success("Held."); })(); } }} />
+                <button onClick={async () => { setNameSaving(true); await updateDisplayName(nameInput); setNameEditing(false); setNameSaving(false); toast.success("Held."); }}
                   disabled={nameSaving} className="inline-flex items-center gap-1 rounded-xl bg-primary px-3.5 py-2.5 font-body text-sm font-semibold text-primary-foreground">
                   <Check className="h-3.5 w-3.5" /> {nameSaving ? "..." : "Save"}
                 </button>
@@ -788,7 +788,7 @@ export default function AccountPage() {
                   <p className="font-body text-[10px] text-muted-foreground/40 uppercase tracking-widest">refer a friend</p>
                   <p className="text-sm text-foreground/70 mt-0.5">{referralCode}</p>
                 </div>
-                <button onClick={() => { navigator.clipboard.writeText(`https://YOUR_DOMAIN.com?ref=${referralCode}`); haptic("light"); toast.success("Link copied!"); }}
+                <button onClick={() => { navigator.clipboard.writeText(`https://YOUR_DOMAIN.com?ref=${referralCode}`); haptic("light"); toast.success("Copied — share when you’re ready."); }}
                   className="font-body text-[10px] border border-border rounded-full px-3 py-1.5 text-muted-foreground">copy</button>
               </div>
             </div>
@@ -834,9 +834,9 @@ export default function AccountPage() {
                 a.download = `signal-data-export-${new Date().toISOString().split("T")[0]}.json`;
                 a.click();
                 URL.revokeObjectURL(url);
-                toast.success("Data exported!", { id: "export" });
+                toast.success("Your export is ready.", { id: "export" });
               } catch {
-                toast.error("Export failed. Please try again.", { id: "export" });
+                toast.error("The export didn't land — try again in a moment.", { id: "export" });
               }
             }}
             className="flex items-center justify-between w-full py-2"
@@ -859,7 +859,7 @@ export default function AccountPage() {
                 'Type "DELETE" to permanently delete your account:'
               );
               if (doubleConfirm?.toUpperCase() !== "DELETE") {
-                toast.info("Account deletion cancelled.");
+                toast.info("Stayed put.");
                 return;
               }
               toast.loading("Deleting your account…", { id: "delete-account" });
@@ -868,10 +868,10 @@ export default function AccountPage() {
                 body: { confirm: "DELETE_MY_ACCOUNT" },
               }).then(({ error }) => {
                 if (error) {
-                  toast.error("Deletion failed. Please contact support.", { id: "delete-account" });
+                  toast.error("That didn't go through — please reach out to support.", { id: "delete-account" });
                   return;
                 }
-                toast.success("Account deleted.", { id: "delete-account" });
+                toast.success("Your account has been removed. Take care.", { id: "delete-account" });
                 supabase.auth.signOut();
                 navigate("/");
               });

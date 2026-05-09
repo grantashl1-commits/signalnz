@@ -71,7 +71,7 @@ export function useSleepMusic() {
       setPlaying(true);
     } catch (err) {
       console.error("Sleep music error:", err);
-      toast.error("Couldn't generate background music. Try again.");
+      toast.error("The music didn't come through — try again in a moment.");
     } finally {
       setLoading(false);
     }

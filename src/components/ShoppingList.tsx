@@ -196,7 +196,7 @@ export function ShoppingListPanel() {
           <button
             onClick={() => {
               haptic("medium");
-              toast("Generate a meal plan first from the My Week tab");
+              toast("Begin with a plan in 'My Week' first — then your list will follow.");
             }}
             className="touch-btn inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-3 min-h-[44px] font-body text-sm font-bold transition-all active:scale-[0.97]"
           >

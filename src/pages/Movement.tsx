@@ -214,13 +214,13 @@ export default function MovementPage() {
     });
     setManualLogging(false);
     if (error) {
-      toast.error("Couldn't save workout — please try again.");
+      toast.error("That didn't land — try again in a moment.");
     } else {
       setShowManualLog(false);
       setManualLog({ date: todayStr, type: "Strength", duration: 45, notes: "" });
       setLogRefreshKey(k => k + 1);
       setActiveTab("log");
-      toast.success("Workout logged!");
+      toast.success("Held — your body remembers.");
     }
   };
 

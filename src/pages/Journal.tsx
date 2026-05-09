@@ -346,7 +346,7 @@ export default function JournalPage() {
         timestamp: saved.timestamp,
       });
     } else {
-      toast.error("Couldn't save entry — please sign in and try again.");
+      toast.error("That didn't land — come in, then try again.");
     }
     setInlineSaving(false);
   };
