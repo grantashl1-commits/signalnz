@@ -233,7 +233,7 @@ export default function MovementPage() {
           <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Movement</p>
           <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Move</h1>
           <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-            Train with your body, not against it.
+            With your body, in the shape of today.
           </p>
         </div>
       </AtmosphericHero>
