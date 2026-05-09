@@ -15,7 +15,7 @@ export interface Lesson {
   id: string;
   title: string;
   description: string;
-  estimatedMinutes: number;
+  estimatedMinutes?: number;
   activities: Activity[];
 }
 
