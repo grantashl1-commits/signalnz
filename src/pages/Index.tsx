@@ -213,7 +213,7 @@ export default function HomePage() {
   }, []);
 
   const handleJournal = useCallback((post: FeedPost) => {
-    if (!user) { toast.error("Sign in to save to your journal"); return; }
+    if (!user) { toast.error("Come in first — then we can hold this for you."); return; }
     const journalPrompt = {
       id: `knowledge-${post.id}-${Date.now()}`, source: "feed",
       post_title: post.book_title_author, content: post.post_title_description,
@@ -222,9 +222,9 @@ export default function HomePage() {
     const existing = JSON.parse(localStorage.getItem("signal_knowledge_hub") || "[]");
     existing.unshift(journalPrompt);
     localStorage.setItem("signal_knowledge_hub", JSON.stringify(existing));
-    toast.success("Saved to Knowledge Hub", {
-      description: "Find it in your Memories tab to reflect on later",
-      action: { label: "Go to Journal", onClick: () => navigate("/journal") },
+    toast.success("Held.", {
+      description: "It's waiting in your Memories when you want to return.",
+      action: { label: "Open Journal", onClick: () => navigate("/journal") },
     });
   }, [user, navigate]);
 
