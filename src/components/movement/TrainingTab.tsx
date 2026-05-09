@@ -111,13 +111,14 @@ export default function TrainingTab() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-fr">
         {ENRICHED_PATHS.map((path, i) => (
           <motion.div
             key={path.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.05 * i, ease: "easeOut" }}
+            className="h-full"
           >
             <PathCard
               path={path}
@@ -144,7 +145,7 @@ function PathCard({
     <button
       onClick={onOpen}
       className={cn(
-        "group relative w-full overflow-hidden rounded-2xl text-left bg-card border transition-all active:scale-[0.98]",
+        "group relative w-full h-full flex flex-col overflow-hidden rounded-2xl text-left bg-card border transition-all active:scale-[0.98]",
         active
           ? "border-primary ring-2 ring-primary/30 shadow-md"
           : "border-border hover:shadow-md hover:border-primary/30",
@@ -155,7 +156,7 @@ function PathCard({
           <Check className="h-2.5 w-2.5" /> Today
         </span>
       )}
-      <div className="aspect-square w-full bg-gradient-to-br from-primary/5 via-transparent to-secondary/30 flex items-center justify-center overflow-hidden">
+      <div className="aspect-square w-full bg-gradient-to-br from-primary/5 via-transparent to-secondary/30 flex items-center justify-center overflow-hidden shrink-0">
         <img
           src={FOCUS_ART[path.focus]}
           alt={FOCUS_DISPLAY_TITLE[path.focus]}
@@ -165,14 +166,14 @@ function PathCard({
           className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      <div className="p-3 md:p-4 space-y-1.5">
-        <h3 className="font-display text-base md:text-lg font-extrabold text-foreground leading-tight">
+      <div className="p-3 md:p-4 space-y-1.5 flex-1 flex flex-col">
+        <h3 className="font-display text-base md:text-lg font-extrabold text-foreground leading-tight min-h-[1.5rem]">
           {FOCUS_DISPLAY_TITLE[path.focus]}
         </h3>
-        <p className="font-editorial text-[11px] md:text-xs italic text-primary/80 line-clamp-2 leading-snug">
+        <p className="font-editorial text-[11px] md:text-xs italic text-primary/80 line-clamp-2 leading-snug min-h-[2.25rem]">
           {path.subtitle}
         </p>
-        <p className="font-body text-[10px] md:text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+        <p className="font-body text-[10px] md:text-[11px] text-muted-foreground line-clamp-2 leading-relaxed min-h-[2rem]">
           {path.description.split(".")[0]}.
         </p>
       </div>
