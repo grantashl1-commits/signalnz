@@ -1,7 +1,11 @@
-# Environment variables — never commit secrets
-.env
-.env.*
-!.env.example
+# Environment variables.
+# .env IS committed for Lovable's build (contains only the public VITE_*
+# Supabase publishable values — RLS-protected, safe by design).
+# Real secrets (DB passwords, access tokens, API keys) belong in Supabase
+# function secrets or Lovable's secret manager — never in this file.
+# .env.local stays gitignored for personal overrides.
+.env.local
+.env.*.local
 
 # Logs
 logs
