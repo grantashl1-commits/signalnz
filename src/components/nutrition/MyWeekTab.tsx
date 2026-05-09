@@ -31,6 +31,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { buildDbMealPlanFull, regenerateMealFromDb } from "@/lib/build-db-meal-plan";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
