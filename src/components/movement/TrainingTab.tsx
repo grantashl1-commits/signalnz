@@ -257,6 +257,7 @@ function PathDetail({
             <WeekRow
               key={week.week}
               week={week}
+              focus={path.focus}
               expanded={expandedWeek === week.week}
               onToggle={() => onToggleWeek(week.week)}
             />
