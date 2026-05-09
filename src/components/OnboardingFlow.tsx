@@ -27,14 +27,14 @@ interface Props {
 const TOTAL_STEPS = 8;
 
 const MOVEMENT_GOALS = [
-  { id: "strength", label: "Build strength" },
-  { id: "fat_loss", label: "Lose fat / body recomp" },
-  { id: "cardio", label: "Improve fitness & cardio" },
-  { id: "stress", label: "Reduce stress & feel calmer" },
-  { id: "consistency", label: "Build consistency" },
-  { id: "mobility", label: "Flexibility & mobility" },
-  { id: "event", label: "Train for an event" },
-  { id: "recovery", label: "Recover from injury" },
+  { id: "strength", label: "Feel stronger in my body" },
+  { id: "fat_loss", label: "Soften how I sit in my body" },
+  { id: "cardio", label: "Find my breath again" },
+  { id: "stress", label: "Quiet a busy nervous system" },
+  { id: "consistency", label: "Return to myself, gently" },
+  { id: "mobility", label: "Move with more ease" },
+  { id: "event", label: "Build toward something specific" },
+  { id: "recovery", label: "Come back from injury, slowly" },
 ];
 
 const DIETARY_PREFERENCES = [
@@ -51,40 +51,40 @@ const DIETARY_PREFERENCES = [
 const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const FITNESS_LEVELS = [
-  { id: "beginner", label: "Beginner", desc: "New to structured training or returning after a break" },
-  { id: "intermediate", label: "Intermediate", desc: "Training 2–3× per week with some experience" },
-  { id: "advanced", label: "Advanced", desc: "Training 4–5× per week, comfortable with complex movements" },
+  { id: "beginner", label: "Beginning, or beginning again", desc: "New to this, or finding your way back after a pause" },
+  { id: "intermediate", label: "Somewhere in the middle", desc: "Moving a couple of times a week, mostly familiar" },
+  { id: "advanced", label: "Already in rhythm", desc: "Training often, comfortable with most movements" },
 ];
 
 const EQUIPMENT_OPTIONS = [
-  { id: "home-none", label: "At Home — No Equipment", desc: "Bodyweight workouts only" },
-  { id: "home-some", label: "At Home — Some Equipment", desc: "Dumbbells, bands, kettlebells, mat" },
-  { id: "gym", label: "Gym", desc: "Full gym access" },
+  { id: "home-none", label: "At home — just me", desc: "Bodyweight only. Your body is enough." },
+  { id: "home-some", label: "At home — a few things", desc: "Dumbbells, bands, kettlebells, a mat" },
+  { id: "gym", label: "Gym", desc: "Full setup whenever you're there" },
 ];
 
 const LOADING_MESSAGES = [
-  "Analysing your cycle phase...",
-  "Building your 4-week training plan...",
-  "Preparing your nutrition guide...",
-  "Personalising your habit recommendations...",
-  "Your Signal is ready.",
+  "Listening to where you are in your cycle…",
+  "Shaping a four-week rhythm around your body…",
+  "Preparing food that meets you where you are…",
+  "Choosing the smallest, kindest place to begin…",
+  "Your Signal is here.",
 ];
 
 const CYCLE_OPTIONS = [
   {
     id: "cycling",
-    title: "I still get my period",
-    desc: "Regular or semi-regular cycles",
+    title: "I still bleed",
+    desc: "Regular, or roughly so",
   },
   {
     id: "perimenopause",
-    title: "Irregular or perimenopause",
-    desc: "Cycles changing or unpredictable",
+    title: "Things are shifting",
+    desc: "Cycles uncertain, or in perimenopause",
   },
   {
     id: "post_menopause",
-    title: "I no longer get my period",
-    desc: "Post-menopause or no period",
+    title: "I no longer bleed",
+    desc: "Post-menopause, or no period",
   },
 ];
 
@@ -557,7 +557,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
             onClick={back}
             className="absolute top-10 left-6 flex items-center gap-1 text-white/70 hover:text-white transition-colors font-body text-sm z-20"
           >
-            <ArrowLeft className="h-4 w-4" /> Back
+            <ArrowLeft className="h-4 w-4" /> Back a step
           </button>
         )}
 
@@ -572,20 +572,20 @@ export default function OnboardingFlow({ onComplete }: Props) {
               <div className="space-y-3">
                 <h1 className="font-display text-4xl font-bold text-white tracking-wide uppercase">Signal</h1>
                 <p className="font-display text-lg text-white/90 italic leading-relaxed">
-                  Let's get to know you
+                  Tune into your inner self.
                 </p>
                 <p className="font-body text-sm text-white/60 leading-relaxed">
-                  This takes 3 minutes. Your answers build your personalised plan.
+                  A few quiet questions, about three minutes. Your answers shape the way we'll meet you.
                 </p>
               </div>
               <div className="space-y-3 pt-4 text-left">
                 <label className="font-body text-sm font-medium text-white/80 block">
-                  What should we call you?
+                  What would you like us to call you?
                 </label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Ash"
+                  placeholder="The name you answer to"
                   className="text-base h-12 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/40"
                   maxLength={50}
                   autoFocus
@@ -597,10 +597,10 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 disabled={!name.trim()}
                 className="w-full h-12 rounded-full font-display text-base font-semibold gap-2 bg-white text-primary hover:bg-white/90 disabled:opacity-40"
               >
-                Get started <ArrowRight className="h-4 w-4" />
+                Come in <ArrowRight className="h-4 w-4" />
               </Button>
               <p className="font-body text-[10px] text-white/35 text-center leading-relaxed pt-2">
-                Signal provides wellness information for educational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment.
+                Signal offers wellness guidance, not medical advice. For anything that needs a clinician, please reach for one.
               </p>
             </motion.div>
           )}
@@ -608,11 +608,11 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {/* ───── Step 1: Your Body ───── */}
           {step === 1 && (
             <motion.div key="body" {...slide} className="space-y-6 pt-8">
-              <StepHeading title="Your body" sub="Used to calculate your personalised targets — never shared." />
+              <StepHeading title="A little about your body" sub="Just enough to shape your numbers. Stays with you, never shared." />
 
               {/* Date of birth */}
               <div className="space-y-2">
-                <label className="font-body text-sm font-medium text-white/80">Date of birth</label>
+                <label className="font-body text-sm font-medium text-white/80">Your birthday</label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -623,7 +623,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                       )}
                     >
                       <CalendarDays className="mr-2 h-4 w-4 text-white/60" />
-                      {dob ? format(dob, "d MMMM yyyy") : "Select your birthday"}
+                      {dob ? format(dob, "d MMMM yyyy") : "Choose your day"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -646,7 +646,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               {/* Weight */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="font-body text-sm font-medium text-white/80">Current weight</label>
+                  <label className="font-body text-sm font-medium text-white/80">Where you are today</label>
                   <div className="flex rounded-lg overflow-hidden border border-white/20">
                     {(["kg", "lbs"] as const).map((u) => (
                       <button
@@ -721,7 +721,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               {/* Goal weight (optional) */}
               <div className="space-y-2">
                 <label className="font-body text-sm font-medium text-white/80">
-                  Goal weight <span className="text-white/40 font-normal">(optional)</span>
+                  Where you'd like to be <span className="text-white/40 font-normal">(only if it feels right)</span>
                 </label>
                 <Input
                   type="number"
@@ -733,7 +733,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               </div>
 
               <p className="font-body text-xs text-white/40 leading-relaxed">
-                Stored securely and only used to calculate your personalised targets. Update any time in Account settings.
+                Held privately, used only to shape your numbers. You can soften or change any of this any time.
               </p>
 
               <NextButton onClick={next} disabled={!dob || weightKg <= 0 || heightCm <= 0} />
@@ -743,7 +743,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {/* ───── Step 2: Your Cycle ───── */}
           {step === 2 && (
             <motion.div key="cycle" {...slide} className="space-y-6 pt-8 pb-8">
-              <StepHeading title="Your cycle" sub="This shapes your training and nutrition recommendations each week." />
+              <StepHeading title="Listening to your cycle" sub="This shapes how we move and eat alongside your body each week." />
 
               <div className="space-y-3">
                 {CYCLE_OPTIONS.map((opt) => (
@@ -789,7 +789,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                   >
                     <div className="space-y-2">
                       <label className="font-body text-sm font-medium text-white/80">
-                        When did your last period start?
+                        When did your last bleed begin?
                       </label>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -801,7 +801,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                             )}
                           >
                             <CalendarDays className="mr-2 h-4 w-4 text-white/60" />
-                            {lastPeriodDate ? format(lastPeriodDate, "PPP") : "Pick a date"}
+                            {lastPeriodDate ? format(lastPeriodDate, "PPP") : "Choose a day"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -819,7 +819,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
                     <div className="space-y-2">
                       <label className="font-body text-sm font-medium text-white/80">
-                        Average cycle length
+                        How long, on average, between bleeds
                       </label>
                       <div className="flex items-center gap-4">
                         <button
@@ -839,7 +839,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                           <Plus className="h-4 w-4" />
                         </button>
                       </div>
-                      <p className="font-body text-xs text-white/40 text-center">Not sure? 28 days is a great starting point.</p>
+                      <p className="font-body text-xs text-white/40 text-center">If you're not sure, 28 is a soft place to start.</p>
                     </div>
                   </motion.div>
                 )}
@@ -852,7 +852,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {/* ───── Step 3: Movement Goals ───── */}
           {step === 3 && (
             <motion.div key="movement" {...slide} className="space-y-6 pt-8">
-              <StepHeading title="What are you training for?" sub="Select all that apply. We'll build your plan around these." />
+              <StepHeading title="What's calling you to move?" sub="Choose anything that lands. We'll shape your weeks around it." />
 
               <div className="flex flex-wrap gap-2.5">
                 {MOVEMENT_GOALS.map((g) => (
@@ -872,7 +872,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               </div>
 
               {movementGoals.length === 0 && (
-                <p className="font-body text-xs text-white/40">Pick at least one to continue.</p>
+                <p className="font-body text-xs text-white/40">Choose at least one to keep going.</p>
               )}
 
               <NextButton onClick={next} disabled={movementGoals.length === 0} />
@@ -887,7 +887,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               {/* Calculated targets */}
               {macros && (
                 <div className="rounded-2xl bg-white/10 border border-white/15 p-4 space-y-3">
-                  <p className="font-body text-xs text-white/60 uppercase tracking-wide">Based on your goals, we suggest:</p>
+                  <p className="font-body text-xs text-white/60 uppercase tracking-wide">A starting place, shaped by what you've shared:</p>
                   <div className="grid grid-cols-4 gap-2">
                     {[
                       { label: "Calories", value: macros.calories, unit: "kcal" },
@@ -902,13 +902,13 @@ export default function OnboardingFlow({ onComplete }: Props) {
                       </div>
                     ))}
                   </div>
-                  <p className="font-body text-xs text-white/40">You can adjust these at any time in Account settings.</p>
+                  <p className="font-body text-xs text-white/40">Soften or shift these any time in Account.</p>
                 </div>
               )}
 
               {/* Dietary preferences */}
               <div className="space-y-2">
-                <label className="font-body text-sm font-medium text-white/80">Dietary preferences</label>
+                <label className="font-body text-sm font-medium text-white/80">How you eat</label>
                 <div className="flex flex-wrap gap-2">
                   {DIETARY_PREFERENCES.map((p) => (
                     <button
@@ -930,7 +930,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
               {/* Dislikes tag input */}
               <div className="space-y-2">
                 <label className="font-body text-sm font-medium text-white/80">
-                  Ingredients you dislike <span className="text-white/40 font-normal">(optional)</span>
+                  Foods your body would rather not see <span className="text-white/40 font-normal">(only if any come to mind)</span>
                 </label>
                 <div className="min-h-12 rounded-xl bg-white/10 border border-white/20 px-3 py-2 flex flex-wrap gap-2 items-center cursor-text"
                   onClick={() => document.getElementById("dislike-input")?.focus()}
@@ -949,17 +949,17 @@ export default function OnboardingFlow({ onComplete }: Props) {
                     onChange={(e) => setDislikeInput(e.target.value)}
                     onKeyDown={handleDislikeKeyDown}
                     onBlur={() => { if (dislikeInput.trim()) addDislike(dislikeInput); }}
-                    placeholder={dietaryDislikes.length === 0 ? "e.g. mushrooms, capsicum, tofu" : "Add more..."}
+                    placeholder={dietaryDislikes.length === 0 ? "mushrooms, capsicum, tofu…" : "Add another…"}
                     className="flex-1 min-w-24 bg-transparent border-none outline-none text-sm font-body text-white placeholder:text-white/30"
                   />
                 </div>
-                <p className="font-body text-xs text-white/40">Type an ingredient and press Enter or comma to add.</p>
+                <p className="font-body text-xs text-white/40">Press Enter or comma to add each one.</p>
               </div>
 
               {/* Meal prep day */}
               <div className="space-y-2">
                 <label className="font-body text-sm font-medium text-white/80">
-                  Preferred meal prep day <span className="text-white/40 font-normal">(optional)</span>
+                  A day to gather your week's food <span className="text-white/40 font-normal">(only if it helps)</span>
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {DAYS_OF_WEEK.map((day) => (
@@ -979,14 +979,14 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 </div>
               </div>
 
-              <NextButton onClick={next} label="Next" />
+              <NextButton onClick={next} label="Keep going" />
             </motion.div>
           )}
 
           {/* ───── Step 5: Fitness Level ───── */}
           {step === 5 && (
             <motion.div key="fitness" {...slide} className="space-y-6 pt-8">
-              <StepHeading title="Where are you starting from?" sub="Be honest — we'll meet you there." />
+              <StepHeading title="Where are you, today?" sub="Honestly, wherever that is. We'll meet you there." />
 
               <div className="space-y-3">
                 {FITNESS_LEVELS.map((lvl) => (
@@ -1028,7 +1028,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           {/* ───── Step 6: Equipment ───── */}
           {step === 6 && (
             <motion.div key="equipment" {...slide} className="space-y-6 pt-8">
-              <StepHeading title="What equipment do you have?" sub="We'll tailor your workouts to match." />
+              <StepHeading title="What do you have around you?" sub="We'll shape your sessions to match what's already there." />
 
               <div className="space-y-3">
                 {EQUIPMENT_OPTIONS.map((opt) => (
@@ -1063,7 +1063,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 ))}
               </div>
 
-              <NextButton onClick={next} disabled={!equipmentPref} label="Generate my plan" />
+              <NextButton onClick={next} disabled={!equipmentPref} label="Begin, gently" />
             </motion.div>
           )}
 
