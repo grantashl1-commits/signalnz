@@ -479,10 +479,12 @@ export const PARENTING_COURSE: Module[] = [
             type: "decision_point",
             title: "The Five‑Minute Warning",
             instruction: "Your child is deep in play. You need to leave for school. Which works better?",
-            options: [
-              { label: "‘We have to go NOW!’", outcome: "Shock transition. Child feels powerless, often results in meltdown." },
-              { label: "‘In five minutes, we will put our shoes on. Do you want to play two more minutes or three?’", outcome: "Warning + small choice = smooth transition.", isOptimal: true }
-            ]
+            content: {
+              options: [
+                { label: "'We have to go NOW!'", outcome: "Shock transition. Child feels powerless, often results in meltdown." },
+                { label: "'In five minutes, we will put our shoes on. Do you want to play two more minutes or three?'", outcome: "Warning + small choice = smooth transition.", isOptimal: true }
+              ]
+            }
           }
         ]
       }

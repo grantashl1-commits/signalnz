@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -63,21 +62,15 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const result = await supabase.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin },
       });
-      if (result.error) throw result.error;
-      if (!result.redirected) {
-        toast.success("Welcome back.");
-        navigate("/account", { replace: true });
-      }
+      if (error) throw error;
+      // Browser will redirect to Google
     } catch (err: any) {
       console.error("Google OAuth error:", err);
-      if (err.message?.includes("cancelled") || err.message?.includes("popup")) {
-        toast.error("Your browser blocked the sign-in window. Allow popups, then try again.");
-      } else {
-        toast.error(err.message || "Google sign-in didn't land — try again in a moment.");
-      }
+      toast.error(err.message || "Google sign-in didn't land — try again in a moment.");
       setLoading(false);
     }
   };
