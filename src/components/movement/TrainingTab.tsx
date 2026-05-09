@@ -18,6 +18,9 @@ import {
 } from "@/lib/training-path-utils";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
+import { parseRunStructure } from "@/lib/run-session-parser";
+import IntervalTimer from "@/components/movement/IntervalTimer";
+import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
 import strengthArt from "@/assets/training-paths/strength.png";
@@ -257,6 +260,7 @@ function PathDetail({
             <WeekRow
               key={week.week}
               week={week}
+              focus={path.focus}
               expanded={expandedWeek === week.week}
               onToggle={() => onToggleWeek(week.week)}
             />
@@ -274,10 +278,12 @@ function PathDetail({
 
 function WeekRow({
   week,
+  focus,
   expanded,
   onToggle,
 }: {
   week: TrainingWeek;
+  focus: TrainingFocus;
   expanded: boolean;
   onToggle: () => void;
 }) {
@@ -331,7 +337,7 @@ function WeekRow({
               )}
               <div className="space-y-2.5">
                 {week.sessions.map((session) => (
-                  <SessionCard key={session.day} session={session} />
+                  <SessionCard key={session.day} session={session} focus={focus} />
                 ))}
               </div>
             </div>
@@ -342,12 +348,18 @@ function WeekRow({
   );
 }
 
-function SessionCard({ session }: { session: DaySession }) {
+function SessionCard({ session, focus }: { session: DaySession; focus: TrainingFocus }) {
+  const [timerOpen, setTimerOpen] = useState(false);
   const meta: string[] = [];
   if (typeof session.durationMin === "number" && session.durationMin > 0) {
     meta.push(`${session.durationMin} min`);
   }
   if (session.equipment) meta.push(session.equipment);
+
+  const runIntervals = focus === "run" ? parseRunStructure(session.structure) : [];
+  const playable = runIntervals.length >= 2;
+  const totalSec = runIntervals.reduce((s, i) => s + i.durationSec, 0);
+  const totalMin = Math.round(totalSec / 60);
 
   return (
     <div className="rounded-lg bg-secondary/40 border border-border/60 p-3 space-y-2">
@@ -429,6 +441,26 @@ function SessionCard({ session }: { session: DaySession }) {
           {session.coachingNote}
         </p>
       )}
+
+      {playable && (
+        <button
+          onClick={(e) => { e.stopPropagation(); haptic("medium"); setTimerOpen(true); }}
+          className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-2.5 font-display text-xs font-semibold active:scale-[0.98] transition-transform"
+        >
+          <Play className="h-3.5 w-3.5" />
+          Start guided session · {totalMin} min
+        </button>
+      )}
+
+      <AnimatePresence>
+        {timerOpen && (
+          <IntervalTimer
+            intervals={runIntervals}
+            onClose={() => setTimerOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
