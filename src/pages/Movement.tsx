@@ -28,6 +28,7 @@ import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
 import TodaySession from "@/components/movement/TodaySession";
+import SelectedPathTodayCard from "@/components/movement/SelectedPathTodayCard";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
@@ -273,6 +274,9 @@ export default function MovementPage() {
             <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
+
+          {/* Selected training path → next session card with HR connect */}
+          <SelectedPathTodayCard onOpenHR={() => setShowHR(true)} />
 
           {/* Today's session from training program */}
           <TodaySession
