@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Zap, Moon, Sprout, Sun } from "lucide-react";
-import GoalSelectionScreen from "./GoalSelectionScreen";
+import ProgramLibrary from "./ProgramLibrary";
 import ProgramOverview from "./ProgramOverview";
 import WorkoutSessionView from "./WorkoutSessionView";
 import { useTrainingProgram, type WorkoutTemplate, type WorkoutExercise } from "@/hooks/useTrainingProgram";
@@ -69,7 +69,7 @@ export default function TrainingTab() {
     }
   }, [loading, goalCategoryId, program]);
 
-  const handleSelectGoal = async (goalId: string) => {
+  const handleSelectGoal = async (goalId: string, programId?: string) => {
     haptic("medium");
     // Clear any cached AI training plan so user starts fresh
     localStorage.removeItem("signal_ai_workout_plan");
@@ -79,7 +79,7 @@ export default function TrainingTab() {
     setWorkouts([]);
     setActiveWorkout(null);
     setActiveExercises([]);
-    await selectGoal(goalId);
+    await selectGoal(goalId, programId);
     // View will update via the effect above when program loads
   };
 
@@ -151,12 +151,11 @@ export default function TrainingTab() {
         </motion.div>
       )}
 
-      {/* Goal selection */}
+      {/* Program library */}
       {view === "goal-select" && (
-        <GoalSelectionScreen
-          goals={goals}
-          selectedGoalId={goalCategoryId}
-          onSelect={handleSelectGoal}
+        <ProgramLibrary
+          selectedProgramId={program?.id ?? null}
+          onSelectProgram={(goalId, programId) => handleSelectGoal(goalId, programId)}
         />
       )}
 

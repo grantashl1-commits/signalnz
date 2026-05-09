@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS training_program_id text REFERENCES public.training_programs(id);
