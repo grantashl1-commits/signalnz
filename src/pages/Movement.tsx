@@ -50,7 +50,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress">("training");
+  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress">("today");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -178,8 +178,8 @@ export default function MovementPage() {
   };
 
   const TABS = [
-    { id: "training" as const, label: "Training" },
     { id: "today" as const, label: "Today" },
+    { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "progress" as const, label: "Progress" },
