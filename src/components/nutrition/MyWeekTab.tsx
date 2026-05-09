@@ -1,12 +1,15 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby, Pencil, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import MealPrepGuide from "./MealPrepGuide";
 import { useCycle } from "@/contexts/CycleContext";
 import { Phase } from "@/lib/cycle-utils";
-import { PHASE_MEAL_PLANS } from "@/data/meal-plans";
-import { findRecipeByName } from "@/lib/recipe-index";
+import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
+import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
+import { useCustomMealPlan, type MealSlot } from "@/hooks/useCustomMealPlan";
+import RecipePickerSheet from "./RecipePickerSheet";
+import { buildCustomShoppingPlan } from "@/lib/build-custom-shopping-plan";
 import { haptic } from "@/hooks/use-mobile";
 import {
   formatDateShort,
@@ -121,6 +124,10 @@ export default function MyWeekTab() {
   // Tracks which lunch/dinner slots are showing the kids alternative view
   const [kidsViewSlots, setKidsViewSlots] = useState<Set<string>>(new Set());
   const supabasePlanLoaded = useRef(false);
+
+  // Manual meal picks — overrides the static plan per cycleDay/slot.
+  const { plan: customPlan, setMeal: setCustomMeal, removeMeal: removeCustomMeal, getMeal: getCustomMealId } = useCustomMealPlan();
+  const [picker, setPicker] = useState<{ cycleDay: number; slot: MealSlot; phase: Phase } | null>(null);
 
   const toggleKidsView = useCallback((slotKey: string) => {
     haptic("light");
@@ -346,12 +353,19 @@ export default function MyWeekTab() {
         });
       } else {
         const meals = getStaticMeals(cycleDay);
+        // Apply user's manual picks on top of the static plan.
+        const pickB = getCustomMealId(cycleDay, "breakfast");
+        const pickL = getCustomMealId(cycleDay, "lunch");
+        const pickD = getCustomMealId(cycleDay, "dinner");
+        const recB = pickB ? findRecipeById(pickB) : undefined;
+        const recL = pickL ? findRecipeById(pickL) : undefined;
+        const recD = pickD ? findRecipeById(pickD) : undefined;
         days.push({
           date, dateStr, dayName: DAY_NAMES[i], cycleDay,
           phase: meals.phase,
-          breakfast: meals.breakfast,
-          lunch: meals.lunch,
-          dinner: meals.dinner,
+          breakfast: recB?.name ?? meals.breakfast,
+          lunch: recL?.name ?? meals.lunch,
+          dinner: recD?.name ?? meals.dinner,
           isToday: dateStr === todayStr,
           isAI: false,
         });
@@ -364,7 +378,7 @@ export default function MyWeekTab() {
       .sort((a, b) => b[1] - a[1])[0][0];
 
     return { days, monday, dominantPhase };
-  }, [weekOffset, getCycleDayForDate, todayStr, aiPlan]);
+  }, [weekOffset, getCycleDayForDate, todayStr, aiPlan, customPlan, getCustomMealId]);
 
   // Note: the AI prep/build step has been removed. Users land directly on the
   // static cycle plan. PrepPreferences and handleBuildPlan are retained as
@@ -372,8 +386,15 @@ export default function MyWeekTab() {
   // generated one before. A new manual recipe-picker will replace this whole
   // flow in a follow-up.
 
-  if (step === "shop" && aiPlan) {
+  if (step === "shop") {
     const currentWeek = Math.ceil(currentCycleDay / 7);
+    // Use the legacy AI plan if it exists; otherwise synthesize a plan from
+    // the user's manual picks plus the static phase fallback so the shopping
+    // list reflects exactly what the visible week will be eating.
+    const planForShop = aiPlan ?? buildCustomShoppingPlan(
+      weekData.days.map(d => d.cycleDay),
+      customPlan
+    );
     return (
       <div className="space-y-4">
         <button
@@ -382,7 +403,7 @@ export default function MyWeekTab() {
         >
           ← Back to plan
         </button>
-        <SmartShoppingList plan={aiPlan} weekNumber={currentWeek} />
+        <SmartShoppingList plan={planForShop} weekNumber={currentWeek} />
       </div>
     );
   }
@@ -496,14 +517,12 @@ export default function MyWeekTab() {
               Prep guide
             </button>
           )}
-          {aiPlan && (
-            <button
-              onClick={() => { haptic("light"); setStep("shop"); }}
-              className="font-body text-xs text-primary underline"
-            >
-              Shopping list →
-            </button>
-          )}
+          <button
+            onClick={() => { haptic("light"); setStep("shop"); }}
+            className="font-body text-xs text-primary underline"
+          >
+            Shopping list →
+          </button>
         </div>
       </div>
 
@@ -621,6 +640,32 @@ export default function MyWeekTab() {
                                   )}
                                 </div>
                               </div>
+
+                              {/* Pick / reset for static plans */}
+                              {!day.isAI && (key === "breakfast" || key === "lunch" || key === "dinner") && (
+                                <div className="flex items-center gap-1 flex-shrink-0 mt-1">
+                                  {getCustomMealId(day.cycleDay, key as MealSlot) && (
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); haptic("light"); removeCustomMeal(day.cycleDay, key as MealSlot); }}
+                                      className="p-1.5 rounded-full hover:bg-secondary transition-colors"
+                                      title="Reset to static plan"
+                                    >
+                                      <RotateCcw className="h-3 w-3 text-muted-foreground" />
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      haptic("light");
+                                      setPicker({ cycleDay: day.cycleDay, slot: key as MealSlot, phase: day.phase });
+                                    }}
+                                    className="p-1.5 rounded-full hover:bg-secondary transition-colors"
+                                    title="Pick a recipe from the library"
+                                  >
+                                    <Pencil className="h-3 w-3 text-muted-foreground" />
+                                  </button>
+                                </div>
+                              )}
 
                               {/* Lock & Regenerate */}
                               {day.isAI && key !== "morningSnack" && key !== "afternoonSnack" && (
@@ -797,6 +842,20 @@ export default function MyWeekTab() {
           );
         })}
       </div>
+
+      <AnimatePresence>
+        {picker && (
+          <RecipePickerSheet
+            phase={picker.phase}
+            title={`Pick ${picker.slot} for cycle day ${picker.cycleDay}`}
+            onClose={() => setPicker(null)}
+            onPick={(recipe: Recipe) => {
+              setCustomMeal(picker.cycleDay, picker.slot, recipe.id);
+              setPicker(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
