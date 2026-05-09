@@ -165,10 +165,10 @@ export default function MovementPage() {
   const sessions = getAllSessions();
 
   const WEEK_PHASE_NOTES: Record<number, string> = {
-    1: "Focus on consistency over intensity.",
-    2: "Push harder — your energy is building.",
-    3: "Peak performance week.",
-    4: "Honour how you feel. Drop intensity if needed.",
+    1: "Returning, gently. Showing up is the whole thing.",
+    2: "Something is building. Meet it where it is.",
+    3: "You're open and bright. Move in a way that feels like joy.",
+    4: "Turn inward. Soften the edges if you need to.",
   };
 
   const formatTime = (secs: number) => {
