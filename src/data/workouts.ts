@@ -564,20 +564,20 @@ export const WEEKLY_SCHEDULE: { day: string; workoutId: string; label: string }[
 // Phase adjustment banners
 export const PHASE_MOVEMENT_REC: Record<Phase, { title: string; description: string }> = {
   menstrual: {
-    title: "Rest Is Productive",
-    description: "Your body is in its rest phase. All movement is optional today. Rest is productive.",
+    title: "Rest counts as movement",
+    description: "Your body is asking for stillness today. Anything you do is enough — even nothing.",
   },
   follicular: {
-    title: "Your Strength Window Is Open",
-    description: "Estrogen is rising which increases strength, stamina, and pain tolerance. Push harder.",
+    title: "Something is returning",
+    description: "Estrogen is rising. Strength, stamina, and patience are coming back. Meet them gently.",
   },
   ovulatory: {
-    title: "Peak Strength",
-    description: "Push if it feels good. You\u2019re at your physical peak.",
+    title: "You're open and bright",
+    description: "Energy is here if you want it. Move in a way that feels like joy, not effort.",
   },
   luteal: {
-    title: "Honour How You Feel",
-    description: "Drop intensity 20% if needed. Listen to your body.",
+    title: "Turn inward, be tender",
+    description: "Things are softening. Drop the intensity if you need to — your body knows.",
   },
 };
 
