@@ -275,10 +275,12 @@ function PathDetail({
 
 function WeekRow({
   week,
+  focus,
   expanded,
   onToggle,
 }: {
   week: TrainingWeek;
+  focus: TrainingFocus;
   expanded: boolean;
   onToggle: () => void;
 }) {
