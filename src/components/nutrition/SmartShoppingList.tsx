@@ -465,7 +465,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       <div className="space-y-4">
         <div className="card-warm p-6 text-center">
           <ShoppingCart className="h-8 w-8 text-muted-foreground/40 mx-auto mb-3" />
-          <p className="font-display text-sm italic text-foreground">Nothing here yet</p>
+          <p className="font-display text-sm italic text-foreground">Nothing on the list yet — your plan will fill it</p>
           <p className="font-body text-xs text-muted-foreground mt-1">
             Add ingredients from AI Recipes or type something in.
           </p>

@@ -741,7 +741,7 @@ function HistoryView({ transactions }: { transactions: Tx[] }) {
     return (
       <div className="py-12 text-center">
         <History className="h-8 w-8 mx-auto text-muted-foreground/40 mb-3" />
-        <p className="text-sm text-muted-foreground">No activity yet.</p>
+        <p className="text-sm text-muted-foreground">Nothing tracked here yet.</p>
         <p className="text-xs text-muted-foreground/60 mt-1">Tap a chore on the Today tab to start.</p>
       </div>
     );

@@ -211,7 +211,7 @@ function AddModal({ editing, onClose, onSave }: AddModalProps) {
       });
       onClose();
     } catch (e: any) {
-      toast.error(e?.message || "Failed to save recipe");
+      toast.error(e?.message || "That didn't land — try again in a moment.");
     } finally {
       setSaving(false);
     }

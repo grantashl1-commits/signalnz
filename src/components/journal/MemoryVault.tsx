@@ -270,7 +270,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
           ) : (
             !adding && grouped[cat.key]?.length === 0 && (
               <div className="rounded-xl border border-dashed border-border/50 p-4 mb-2 text-center">
-                <p className="font-display text-sm italic text-muted-foreground/50">No memories saved yet</p>
+                <p className="font-display text-sm italic text-muted-foreground/50">Nothing held here yet — write the first one</p>
               </div>
             )
           )}

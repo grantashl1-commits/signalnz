@@ -206,8 +206,8 @@ export default function BodyCompositionVisualizer({ defaultGender = "female" }: 
     } catch (e: any) {
       console.error("[BodyViz] error:", e);
       setError(e?.message?.includes("429") 
-        ? "Rate limit reached — please try again in a minute"
-        : "Body visualization unavailable — please try again");
+        ? "A little too quick — try again in a minute."
+        : "That didn't land — try again in a moment.");
     } finally {
       setLoading(false);
     }

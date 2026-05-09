@@ -501,7 +501,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         )}
         {!loading && messages.length === 0 && (
           <p className="font-display text-sm italic text-muted-foreground text-center py-6">
-            No messages yet. Say something kind to break the ice.
+            Nothing here yet. Say something kind — be the first.
           </p>
         )}
         {messages.map((m) => {
