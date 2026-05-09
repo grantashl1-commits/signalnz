@@ -1,1 +1,0 @@
-import{u as n}from"./useFeatureGate-CsN_4x4H-1777810718516.js";import{T as c,l as o}from"./index-CN9liy03-1777810718516.js";function g(a){const{getFeatureAccess:s,isLoggedIn:r}=n(),u=c(),e=s(a),t=e==="full";return{canExpand:t,guard:()=>t?!0:(o("medium"),u(r?"/membership":"/auth"),!1),access:e}}export{g as u};

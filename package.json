@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "mobile:sync": "vite build && cap sync",
+    "mobile:sync:android": "vite build && cap sync android",
+    "mobile:sync:ios": "vite build && cap sync ios"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",

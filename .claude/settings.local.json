@@ -75,7 +75,12 @@
       "Bash(couple)",
       "Bash(connect\" 2>&1)",
       "Bash(awk '-F;' -v pid=prog-__TRACKED_VAR__ '$10==pid {print $4}' /c/Users/grant/Downloads/workout_templates-export-2026-05-10_00-02-45.csv)",
-      "Bash(awk '-F;' -v pid=prog-__TRACKED_VAR__ '$2==pid {print \"Phase \"$3\" \\(\"$9\"-\"$10\"\\): \"$4}' /c/Users/grant/Downloads/program_phases-export-2026-05-10_00-04-23.csv)"
+      "Bash(awk '-F;' -v pid=prog-__TRACKED_VAR__ '$2==pid {print \"Phase \"$3\" \\(\"$9\"-\"$10\"\\): \"$4}' /c/Users/grant/Downloads/program_phases-export-2026-05-10_00-04-23.csv)",
+      "WebFetch(domain:signal.mindcast.co.nz)",
+      "Bash(awk -F'<value of length ' '{print $1 \"<value of length \" \\(length\\($2\\)>0 ? length\\($2\\)-1 : 0\\) \">\"}')",
+      "Bash(awk -F= '{ printf \"Line %d: keyname=[%s] \\(length %d\\)\\\\n\", NR, $1, length\\($1\\) }' /c/GitHub/signalnz/.env)",
+      "Bash(awk -F= 'NR<=10 { printf \"L%d: [%s] \\(key length %d, value length %d\\)\\\\n\", NR, $1, length\\($1\\), length\\($2\\) }' /c/GitHub/signalnz/.env)",
+      "Bash(awk *)"
     ]
   }
 }

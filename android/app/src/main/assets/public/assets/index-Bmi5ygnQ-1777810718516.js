@@ -1,1 +1,0 @@
-import{r as o}from"./index-CN9liy03-1777810718516.js";function i(t,[r,e]){return Math.min(e,Math.max(r,t))}var n=o.createContext(void 0);function c(t){const r=o.useContext(n);return t||r||"ltr"}export{i as c,c as u};
