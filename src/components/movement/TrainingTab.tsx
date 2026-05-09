@@ -59,15 +59,6 @@ export default function TrainingTab() {
         </p>
       </div>
 
-<<<<<<< Updated upstream
-      {/* Program library */}
-      {view === "goal-select" && (
-        <ProgramLibrary
-          selectedProgramId={program?.id ?? null}
-          onSelectProgram={(goalId, programId) => handleSelectGoal(goalId, programId)}
-        />
-      )}
-=======
       <div className="grid gap-3">
         {SIGNAL_TRAINING_PATHS.map((path, i) => (
           <motion.div
@@ -83,7 +74,6 @@ export default function TrainingTab() {
     </div>
   );
 }
->>>>>>> Stashed changes
 
 function PathCard({ path, onOpen }: { path: TrainingPath; onOpen: () => void }) {
   return (
