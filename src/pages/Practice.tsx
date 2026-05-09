@@ -6,6 +6,7 @@ import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
+import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 
 import HabitCarousel from "@/components/HabitCarousel";
@@ -629,10 +630,20 @@ export default function PracticePage() {
 
           {/* No habits state */}
           {habits.length === 0 && (
-            <div className="rounded-[22px] bg-card p-10 text-center shadow-soft">
-              <SelfCareHandIcon size={48} color="hsl(var(--muted-foreground))" />
-              <p className="font-body text-base text-muted-foreground mt-4">
-                Nothing here yet — choose a small ritual to begin.
+            <div className="rounded-[22px] bg-card p-10 text-center shadow-soft flex flex-col items-center">
+              <img
+                src={emptyHabitsTea}
+                alt=""
+                width={160}
+                height={160}
+                loading="lazy"
+                className="opacity-90"
+              />
+              <p className="font-display text-lg italic text-foreground mt-4 max-w-[260px] leading-snug">
+                This is where your evening tea ritual will begin to live.
+              </p>
+              <p className="font-hand text-base text-muted-foreground mt-2">
+                There's no rush.
               </p>
             </div>
           )}
