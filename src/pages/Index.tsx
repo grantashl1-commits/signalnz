@@ -42,10 +42,10 @@ const PHASE_HERO_IMAGE: Record<Phase, string> = {
 
 
 const PHASE_SUBTEXT: Record<Phase, string> = {
-  menstrual: "Your body is in its Menstrual phase — rest and restoration are your focus.",
-  follicular: "Your body is in its Follicular phase — energy and clarity are rising.",
-  ovulatory: "Your body is in its Ovulatory phase — you're at your peak.",
-  luteal: "Your body is in its Luteal phase — slow down and turn inward.",
+  menstrual: "Your body is asking for rest today. That counts as enough.",
+  follicular: "Something is returning. Let it begin small.",
+  ovulatory: "You're open and bright today. Let yourself be met.",
+  luteal: "Things are turning inward. Be tender with the small.",
 };
 
 const fadeUp = (delay: number) => ({
