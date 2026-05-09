@@ -57,7 +57,13 @@
       "Bash(Get-Content *)",
       "Bash(findstr /v \"node_modules android dist\")",
       "Bash(git -C \"C:\\\\Users\\\\grant\\\\OneDrive\\\\Documents\\\\GitHub\\\\signalnz\" log --oneline --all -- .env)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(python *)",
+      "Bash(bun --version)",
+      "Bash(bunx tsc *)",
+      "Bash(awk 'NR==67287' /c/GitHub/signalnz/node_modules/typescript/lib/_tsc.js)",
+      "Bash(awk NR==67287 {print length} *)",
+      "Bash(npx eslint *)"
     ]
   }
 }

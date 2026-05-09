@@ -24,11 +24,9 @@ import ExerciseRig from "@/components/movement/ExerciseRig";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import BodyVisualiser from "@/components/movement/BodyVisualiser";
 import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
-import AISessionLog from "@/components/movement/AISessionLog";
 import { getAnimationForExercise } from "@/data/exercise-animations";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
-import AITrainingPlanTab from "@/components/movement/AITrainingPlanTab";
 import TodaySession from "@/components/movement/TodaySession";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
@@ -36,7 +34,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useTrainingProgram } from "@/hooks/useTrainingProgram";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -53,7 +50,7 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "ai-plan" | "training" | "library" | "log" | "progress">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress">("training");
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -65,9 +62,6 @@ export default function MovementPage() {
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [sessionNotes, setSessionNotes] = useState<Record<string, string>>({});
-
-  // Training program context
-  const { goalCategoryId } = useTrainingProgram();
 
   // Supabase workout logs
   const [supabaseLogs, setSupabaseLogs] = useState<Array<{
@@ -124,24 +118,6 @@ export default function MovementPage() {
     [info.phase, bodyGoals],
   );
   const todayAssignment = weeklyRotation[scheduleIdx];
-
-  // ── AI-generated workout plan ──
-  const aiPlan = useMemo(() => {
-    try {
-      const raw = localStorage.getItem("signal_ai_workout_plan");
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return null;
-  }, [activeTab]);
-
-  const aiTodayWorkout = useMemo(() => {
-    if (!aiPlan?.weeks) return null;
-    const dayNum = dayOfWeek === 0 ? 7 : dayOfWeek; // 1=Mon...7=Sun
-    const weekData = aiPlan.weeks[trainingWeek - 1];
-    if (!weekData?.days) return null;
-    const dayData = weekData.days.find((d: any) => d.day === dayNum);
-    return dayData || null;
-  }, [aiPlan, trainingWeek, dayOfWeek]);
 
   // Phase-aware today workout — uses rotation, not static
   const phaseWorkouts = PHASE_WORKOUTS[info.phase];
@@ -202,9 +178,8 @@ export default function MovementPage() {
   };
 
   const TABS = [
-    { id: "today" as const, label: "Today" },
-    { id: "ai-plan" as const, label: "AI Training Plan" },
     { id: "training" as const, label: "Training" },
+    { id: "today" as const, label: "Today" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
     { id: "progress" as const, label: "Progress" },
@@ -307,32 +282,6 @@ export default function MovementPage() {
             onSessionLogged={() => setLogRefreshKey(k => k + 1)}
           />
 
-          {/* AI-Generated Today's Workout — only show if user has NO training program */}
-          {!goalCategoryId && aiTodayWorkout && (
-            <AISessionLog
-              session={aiTodayWorkout}
-              trainingWeek={trainingWeek}
-              weekTheme={aiPlan?.weeks?.[trainingWeek - 1]?.theme}
-              phase={info.phase}
-              completedExercises={completedExercises}
-              onToggleExercise={toggleExercise}
-              onOpenExercise={(ex) => {
-                haptic("light");
-                setDrawerExercise({
-                  name: ex.name,
-                  sets: String(ex.sets || ""),
-                  reps: ex.reps_or_duration || "",
-                  duration: "",
-                  formCue: ex.form_cue || "",
-                  section: "",
-                });
-              }}
-              onOpenHR={() => setShowHR(true)}
-              onOpenTraining={() => { haptic("light"); setActiveTab("training"); }}
-              onOpenManualLog={() => { setShowManualLog(true); setActiveTab("log"); }}
-              onSessionLogged={() => setLogRefreshKey(k => k + 1)}
-            />
-          )}
         </div>
       )}
 
@@ -445,18 +394,6 @@ export default function MovementPage() {
         </div>
       )}
 
-
-      {/* AI TRAINING PLAN TAB */}
-      {activeTab === "ai-plan" && (
-        <AITrainingPlanTab
-          onStartSession={(dayData) => {
-            // Store the AI session day data for the Today tab to pick up
-            localStorage.setItem("signal_ai_active_session", JSON.stringify(dayData));
-            setActiveTab("today");
-            toast.success(`Starting: ${dayData.title || "Session"}`);
-          }}
-        />
-      )}
 
       {/* PROGRESS TAB */}
       {activeTab === "progress" && <ProgressTab />}

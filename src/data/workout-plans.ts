@@ -1,7 +1,10 @@
 /**
- * Evidence-based 4-week workout plan library.
- * Static seed data for the "Lose Weight + Build Muscle" combo (most common).
- * Used as fallback when AI generation is unavailable, or as reference data.
+ * ⚠️ ARCHIVED – replaced by src/data/signal-training-paths.ts. Preserved for reference only.
+ * DO NOT DELETE.
+ *
+ * Original purpose: static seed data for the "Lose Weight + Build Muscle" combo,
+ * used as a fallback when AI generation was unavailable. The new SIGNAL Training Paths
+ * are the canonical source. Type exports remain available for any transitional code paths.
  */
 
 export interface WarmUpExercise {

@@ -1,6 +1,13 @@
+/**
+ * ⚠️ ARCHIVED – replaced by src/data/signal-training-paths.ts. Preserved for reference only.
+ * DO NOT DELETE.
+ *
+ * Original purpose: workouts adapted from Dr. Stacy Sims' "ROAR" and "Next Level"
+ * for peri/menopausal women. The SIGNAL Training Paths now carry the canonical content.
+ */
+
 import { Workout } from "@/data/workouts";
 
-// ── STACY SIMS WORKOUTS ──────────────────────────────────────────────
 // Source: "ROAR" and "Next Level" by Dr. Stacy Sims
 // Optimised for peri/menopausal women
 

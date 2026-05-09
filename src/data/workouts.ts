@@ -1,3 +1,14 @@
+/**
+ * ⚠️ ARCHIVED – replaced by src/data/signal-training-paths.ts. Preserved for reference only.
+ * DO NOT DELETE.
+ *
+ * Note: type exports (Workout, WorkoutCategory, Exercise, WorkoutSession, HRZone, BodyMeasurements)
+ * and utility functions (getLoggedWorkouts, logWorkout, saveWorkoutSession, getAllSessions,
+ * getMaxHR, getZoneForBPM, estimateCalories, training-week getters, measurement getters)
+ * remain in active use by Movement components. The data arrays themselves
+ * (WORKOUTS, PHASE_WORKOUTS, WEEKLY_SCHEDULE, TODAY_WORKOUT) are the archived content.
+ */
+
 import { Phase } from "@/lib/cycle-utils";
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 

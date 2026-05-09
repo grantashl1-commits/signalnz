@@ -1,3 +1,15 @@
+/**
+ * ⚠️ ARCHIVED – the AI Training Plan tab has been removed in the SIGNAL rebrand.
+ * Movement plans are now expressed as the seven SIGNAL Training Paths in
+ * src/data/signal-training-paths.ts, surfaced through src/components/movement/TrainingTab.tsx.
+ * Preserved for reference only. DO NOT DELETE.
+ *
+ * Note: this component is no longer imported anywhere. The Supabase edge function
+ * `generate-plan` it called is still referenced by Coach.tsx, OnboardingFlow.tsx,
+ * and BodyVisualiser.tsx; those touch points are out of scope for the Movement
+ * rebuild and will be addressed in a later pass.
+ */
+
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronDown, ChevronRight, Loader2, Trash2, Sparkles, Calendar, Clock, Play, Dumbbell, RefreshCw, CheckCircle2 } from "lucide-react";
