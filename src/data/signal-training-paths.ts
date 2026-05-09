@@ -12,7 +12,8 @@ export type TrainingFocus =
   | "run"
   | "pilates"
   | "restore"
-  | "stress-relief";
+  | "stress-relief"
+  | "glute-power";
 
 export interface DaySession {
   day: number;
@@ -23,6 +24,12 @@ export interface DaySession {
   equipment?: string;
   feel?: string;
   coachingNote?: string;
+  /** Gentle prep before the body's first effort. */
+  warmupNotes?: string;
+  /** What to do at the end so the body can land. */
+  cooldownNotes?: string;
+  /** Coach voice notes for the session as a whole — pacing, mindset, what to listen for. */
+  sessionNotes?: string;
 }
 
 export interface TrainingWeek {
@@ -30,6 +37,11 @@ export interface TrainingWeek {
   theme: string;
   sessions: DaySession[];
   progression?: string;
+  /** Phase intention drawn from the program's training phase (e.g. "Activation & Technique"). */
+  phaseGoal?: string;
+  /** Suggested perceived-effort band for this week. */
+  rpeMin?: number;
+  rpeMax?: number;
 }
 
 export interface TrainingPath {
@@ -679,6 +691,316 @@ export const SIGNAL_TRAINING_PATHS: TrainingPath[] = [
           { day: 6, name: "Rest", structure: ["Rest"] },
           { day: 7, name: "Reflect", durationMin: 0, feel: "Light", structure: ["Write: Where do you hold stress now, compared to 8 weeks ago? What has shifted?"], coachingNote:"You are not your stress. You are the space that holds it." }
         ]}
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // 8. GLUTE POWER – 12-WEEK FOUNDATION (NEW)
+  //    Drawn from program prog-001. Week 1 + week 5 hand-written
+  //    in SIGNAL voice as templates. Weeks 2–4, 6–8, 9–12 carry
+  //    the same structure with progressive load — flesh out the
+  //    structure[] lines as the SIGNAL voice for those weeks lands.
+  //    Session-level warmup/cooldown/sessionNotes are filled in at
+  //    runtime from training-csv-enrichment.json.
+  // ═══════════════════════════════════════════════════════════
+  {
+    id: "glute-power",
+    name: "The Anchor",
+    subtitle: "Coming home to your strongest centre",
+    focus: "glute-power",
+    description:
+      "Twelve weeks of patient, intentional work for the muscles that carry you through every day — the ones that have been quietly waiting to be noticed. We start small, with feeling. We build slowly, with weight. The work is not loud. The change is.",
+    whoItIsFor:
+      "The woman who wants strong, capable hips and glutes. New to focused glute work, or returning after years of generic gym programmes that never quite woke this part of her up.",
+    weeks: [
+      // ── Phase 1: Activation & Technique (weeks 1–4) ───────────
+      { week: 1, theme: "Activation — Learning the Patterns",
+        phaseGoal: "Establish mind-muscle connection, learn movement patterns, build foundational glute activation.",
+        rpeMin: 5, rpeMax: 6.5,
+        progression: "Tempo is slow (3-1-2 on most lifts). Light dumbbells. Focus entirely on form and feeling the working muscles.",
+        sessions: [
+          { day: 1, name: "Drive — Lower body, glute-led",
+            focus: "Hip extension, glute activation",
+            durationMin: 40, equipment: "Dumbbells (3–5 kg), mat",
+            feel: "Curious — like meeting a part of yourself for the first time",
+            structure: [
+              "8 min warm-up: cat-cow, deep squat hold, glute bridges, hip circles",
+              "Glute Bridge – 3×15 (tempo 2-2-2, squeeze at the top)",
+              "Goblet Squat – 3×12 (tempo 3-1-2)",
+              "Reverse Lunge – 3×10 per side",
+              "Single-Leg Glute Bridge – 3×10 per side",
+              "Clam – 2×15 per side (slow)",
+              "5 min stretch: pigeon, supine twist, child's pose"
+            ],
+            coachingNote: "If the bridge feels in your lower back instead of your glutes, slow down. The muscle you want is the one underneath. Tilt your pelvis a touch more, exhale at the top, and listen for the squeeze." },
+          { day: 2, name: "Walk & Breathe", focus: "Active recovery", durationMin: 30,
+            feel: "Easy and spacious",
+            structure: ["20 min walk at a nose-breathing pace", "10 min gentle stretching — hamstrings, hips, chest"],
+            coachingNote: "Movement does not have to be earned." },
+          { day: 3, name: "Hinge — Posterior chain",
+            focus: "Hip hinge pattern, hamstring/glute integration",
+            durationMin: 40, equipment: "Dumbbells (3–5 kg), mat",
+            feel: "Grounded — like you are pressing into the earth and being held",
+            structure: [
+              "8 min warm-up: leg swings, hip circles, body-weight squats",
+              "Romanian Deadlift – 3×12 (tempo 3-1-2)",
+              "Glute Bridge March – 3×10 per side",
+              "Sumo Squat – 3×12 (tempo 4-1-2)",
+              "Side-Lying Leg Lift – 2×15 per side",
+              "Bird Dog – 3×6 per side",
+              "5 min stretch: hamstring, supine twist"
+            ],
+            coachingNote: "The hinge is a movement you'll use every day — picking up a child, a basket, a life. Feel the stretch in your hamstrings before you stand. The lower back is along for the ride; it should not be doing the work." },
+          { day: 4, name: "Rest", durationMin: 0, feel: "Stillness", structure: ["Rest"],
+            coachingNote: "Your muscles grow while you are lying still." },
+          { day: 5, name: "Shape — Round and lift",
+            focus: "Glute shape, hip abduction and external rotation",
+            durationMin: 40, equipment: "Dumbbells (3–5 kg), resistance band, mat",
+            feel: "Connected — every rep talks to a muscle that has been quiet",
+            structure: [
+              "8 min warm-up: monster walks (band), inchworms, deep squat rotations",
+              "Hip Thrust – 3×12 (pause 1 sec at the top)",
+              "Curtsy Lunge – 3×10 per side",
+              "Fire Hydrant – 3×12 per side",
+              "Donkey Kick – 3×12 per side",
+              "Plank – 2×30 sec",
+              "5 min stretch: pigeon, lying figure-four"
+            ],
+            coachingNote: "These small movements look easy. They are not. The smaller the muscle, the more attention it needs. Slow down." },
+          { day: 6, name: "Walk", focus: "Active recovery", durationMin: 25, feel: "Peaceful",
+            structure: ["25 min walk", "Notice 5 things you see, 4 you hear, 3 you feel"],
+            coachingNote: "A walking meditation." },
+          { day: 7, name: "Rest", structure: ["Rest"], coachingNote: "One week down. Notice anything new in your body?" }
+        ]
+      },
+      { week: 2, theme: "Activation — Adding feeling, not weight",
+        phaseGoal: "Establish mind-muscle connection, learn movement patterns, build foundational glute activation.",
+        rpeMin: 5.5, rpeMax: 6.5,
+        progression: "Same load as week 1. Add one rep to working sets if all reps in week 1 felt solid. The goal this week is deeper connection, not heavier weight.",
+        sessions: [
+          { day: 1, name: "Drive (Week 2)", structure: ["Same as week 1 day 1, with one extra rep on each working set."], coachingNote: "TODO: SIGNAL voice for week 2 day 1" },
+          { day: 2, name: "Walk & Breathe", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 2)", structure: ["Same as week 1 day 3, with one extra rep on each working set."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 2)", structure: ["Same as week 1 day 5, with one extra rep on each working set."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["25 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 3, theme: "Activation — Steady deepening",
+        phaseGoal: "Establish mind-muscle connection, learn movement patterns, build foundational glute activation.",
+        rpeMin: 6, rpeMax: 7,
+        progression: "Add 1–2 kg to compound lifts (RDL, Goblet, Sumo) if form was perfect in week 2. Same reps.",
+        sessions: [
+          { day: 1, name: "Drive (Week 3)", structure: ["Drive routine, slightly heavier."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Breathe", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 3)", structure: ["Hinge routine, slightly heavier."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 3)", structure: ["Shape routine."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["25 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 4, theme: "Activation — Closing the phase",
+        phaseGoal: "Establish mind-muscle connection, learn movement patterns, build foundational glute activation.",
+        rpeMin: 6, rpeMax: 7,
+        progression: "Final week of the activation phase. Same load as week 3. Notice how much more you can feel.",
+        sessions: [
+          { day: 1, name: "Drive (Week 4)", structure: ["Drive routine."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Breathe", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 4)", structure: ["Hinge routine."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 4)", structure: ["Shape routine."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest. Look back at week 1. Notice the shift."] }
+        ]
+      },
+
+      // ── Phase 2: Load & Volume Build (weeks 5–8) ───────────
+      { week: 5, theme: "Load — The body is ready for more",
+        phaseGoal: "Increase training weight and add a fourth set to primary exercises.",
+        rpeMin: 6.5, rpeMax: 7.5,
+        progression: "Add a fourth set to the first two compound lifts each session. Reps drop to 8–10 on heavier lifts. Keep tempo controlled.",
+        sessions: [
+          { day: 1, name: "Drive — Heavier",
+            focus: "Heavier hip extension and squat",
+            durationMin: 45, equipment: "Dumbbells (5–8 kg) or barbell, mat",
+            feel: "Capable — the load is real now",
+            structure: [
+              "8 min warm-up + activation: glute bridges, monster walks",
+              "Glute Bridge or Hip Thrust – 4×10 (heavier)",
+              "Goblet or Barbell Squat – 4×8 (tempo 3-1-1)",
+              "Reverse Lunge – 3×10 per side (heavier)",
+              "Single-Leg Glute Bridge – 3×10 per side",
+              "Plank – 3×40 sec",
+              "5 min stretch"
+            ],
+            coachingNote: "The fourth set is a quiet promise to your future self. You are building a body that can carry, lift, and stand for years to come." },
+          { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + stretch"], coachingNote: "Recovery is not the absence of training; it is the place where the training becomes you." },
+          { day: 3, name: "Hinge — Heavier",
+            focus: "Heavier RDL, hamstring development",
+            durationMin: 45, equipment: "Dumbbells (5–8 kg) or barbell, mat",
+            feel: "Strong",
+            structure: [
+              "8 min warm-up",
+              "Romanian Deadlift – 4×8 (heavier, tempo 3-1-2)",
+              "Sumo Squat – 4×10",
+              "Glute Bridge March – 3×10 per side",
+              "Side-Lying Leg Lift – 3×15 per side",
+              "Bird Dog – 3×8 per side",
+              "5 min stretch"
+            ],
+            coachingNote: "The RDL teaches you the hinge with weight. Drive your hips back, not down. Your hamstrings will tell you when you've gone far enough." },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape — Volume work",
+            focus: "Higher rep glute shaping",
+            durationMin: 45, equipment: "Dumbbells, band, mat",
+            feel: "Burning — in the right places",
+            structure: [
+              "8 min warm-up + band activation",
+              "Hip Thrust – 4×12 (1 sec pause at top)",
+              "Curtsy Lunge – 3×12 per side",
+              "Fire Hydrant – 3×15 per side",
+              "Donkey Kick – 3×15 per side",
+              "Side Plank – 2×25 sec per side",
+              "5 min stretch"
+            ],
+            coachingNote: "The burn here is real. It is not a punishment; it is the muscle saying I am awake." },
+          { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk, slightly faster pace"] },
+          { day: 7, name: "Rest", structure: ["Rest"], coachingNote: "Notice your body climbing the stairs." }
+        ]
+      },
+      { week: 6, theme: "Load — Settling into the heavier rhythm",
+        phaseGoal: "Increase training weight and add a fourth set to primary exercises.",
+        rpeMin: 7, rpeMax: 8,
+        progression: "Same lifts as week 5, add 1–2 kg if last week's RPE was below 8. Sleep is part of the programme this week.",
+        sessions: [
+          { day: 1, name: "Drive (Week 6)", structure: ["Drive routine, week 5 + small load increase."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Restore", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 6)", structure: ["Hinge routine, week 5 + small load increase."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 6)", structure: ["Shape routine, week 5 + 2 reps."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 7, theme: "Load — Steady push",
+        phaseGoal: "Increase training weight and add a fourth set to primary exercises.",
+        rpeMin: 7, rpeMax: 8,
+        progression: "Steady week. Same load as week 6. Focus is consistency and recovery between sessions.",
+        sessions: [
+          { day: 1, name: "Drive (Week 7)", structure: ["Drive routine."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Restore", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 7)", structure: ["Hinge routine."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 7)", structure: ["Shape routine."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 8, theme: "Load — Closing the phase",
+        phaseGoal: "Increase training weight and add a fourth set to primary exercises.",
+        rpeMin: 7, rpeMax: 8.5,
+        progression: "Final week of load phase. Optional: try a top set 1–2 kg heavier than usual on Drive day if everything has been clicking.",
+        sessions: [
+          { day: 1, name: "Drive (Week 8)", structure: ["Drive routine, optional heavier top set."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Restore", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 8)", structure: ["Hinge routine."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 8)", structure: ["Shape routine."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest", structure: ["Look back at week 5. Feel the difference."] }
+        ]
+      },
+
+      // ── Phase 3: Intensification (weeks 9–12) ───────────
+      { week: 9, theme: "Intensification — Top sets and tempo",
+        phaseGoal: "Push to heavier loads on primary lifts. Add intensifiers (paused reps, drop sets) sparingly.",
+        rpeMin: 7.5, rpeMax: 8.5,
+        progression: "Top set on each compound: 1 set of 5–6 reps at heaviest sustainable load, then back-off sets at week 8 weight. Watch form like a hawk.",
+        sessions: [
+          { day: 1, name: "Drive — Top set",
+            structure: [
+              "Warm-up + activation",
+              "Hip Thrust top set – 1×5 heavy, 3×10 back-off",
+              "Squat top set – 1×6 heavy, 3×8 back-off",
+              "Reverse Lunge – 3×10 per side",
+              "Single-Leg Glute Bridge – 3×10 per side",
+              "Plank – 3×45 sec"
+            ],
+            coachingNote: "TODO: SIGNAL voice — name the moment of the top set." },
+          { day: 2, name: "Walk & Restore", structure: ["Walk + mobility"] },
+          { day: 3, name: "Hinge — Top set",
+            structure: [
+              "Warm-up",
+              "RDL top set – 1×6 heavy, 3×8 back-off",
+              "Sumo Squat – 4×10",
+              "Glute Bridge March – 3×10 per side",
+              "Side-Lying Leg Lift – 3×15 per side"
+            ],
+            coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape — Volume + finisher",
+            structure: [
+              "Hip Thrust – 4×10",
+              "Curtsy Lunge – 3×12 per side",
+              "Fire Hydrant + Donkey Kick superset – 3×12 each per side",
+              "Plank to side plank flow – 3×30 sec each side"
+            ],
+            coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk, optional 4×30 sec light pickups"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 10, theme: "Intensification — Steady the climb",
+        phaseGoal: "Push to heavier loads on primary lifts. Add intensifiers sparingly.",
+        rpeMin: 8, rpeMax: 9,
+        progression: "Same template as week 9. Slightly heavier top sets if last week's RPE was below 9.",
+        sessions: [
+          { day: 1, name: "Drive (Week 10)", structure: ["Top-set Drive routine."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Restore", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 10)", structure: ["Top-set Hinge routine."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 10)", structure: ["Shape volume + finisher."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 11, theme: "Intensification — One more honest week",
+        phaseGoal: "Push to heavier loads on primary lifts. Add intensifiers sparingly.",
+        rpeMin: 8, rpeMax: 9,
+        progression: "Hold week 10 load. Sleep, water, and protein matter more than the bar this week.",
+        sessions: [
+          { day: 1, name: "Drive (Week 11)", structure: ["Top-set Drive routine."], coachingNote: "TODO" },
+          { day: 2, name: "Walk & Restore", structure: ["Walk + stretch"] },
+          { day: 3, name: "Hinge (Week 11)", structure: ["Top-set Hinge routine."], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Shape (Week 11)", structure: ["Shape volume + finisher."], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest", structure: ["Rest"] }
+        ]
+      },
+      { week: 12, theme: "Carrying it forward",
+        phaseGoal: "Test, deload, reflect. Notice everything that has changed.",
+        rpeMin: 6, rpeMax: 8,
+        progression: "Optional 'test day' on day 1 — one heavy set on Hip Thrust or Squat to see what twelve weeks built. Then a soft, celebratory week.",
+        sessions: [
+          { day: 1, name: "Test or Celebrate",
+            structure: [
+              "Long warm-up",
+              "Optional: 1 heavy set on Hip Thrust or Squat (5 reps at 8/10 RPE)",
+              "3 working sets on each — lighter, every rep felt",
+              "Long stretch and a quiet sit"
+            ],
+            coachingNote: "TODO: SIGNAL voice — celebrate the woman she is now." },
+          { day: 2, name: "Walk", structure: ["30 min walk, no agenda"] },
+          { day: 3, name: "Light Hinge", structure: ["RDL 3×8 light, accessories at week 5 weight"], coachingNote: "TODO" },
+          { day: 4, name: "Rest", structure: ["Rest"] },
+          { day: 5, name: "Light Shape", structure: ["Shape routine, all lighter"], coachingNote: "TODO" },
+          { day: 6, name: "Walk", structure: ["30 min walk"] },
+          { day: 7, name: "Rest and reflect", structure: ["Rest. Write one sentence about what your body can do now that it could not in week 1."], coachingNote: "You started this twelve weeks ago. You came back, again and again. That is the real work." }
+        ]
+      }
     ]
   }
 ];

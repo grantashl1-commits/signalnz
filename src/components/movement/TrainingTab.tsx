@@ -10,7 +10,10 @@ import {
   type DaySession,
   type TrainingWeek,
 } from "@/data/signal-training-paths";
+import { enrichAllTrainingPaths } from "@/lib/training-csv-enrichment";
 import { getExerciseImageForStructureLine } from "@/lib/exercise-image-lookup";
+
+const ENRICHED_PATHS = enrichAllTrainingPaths(SIGNAL_TRAINING_PATHS);
 
 const FOCUS_LABEL: Record<TrainingFocus, string> = {
   strength: "Strength",
@@ -20,6 +23,7 @@ const FOCUS_LABEL: Record<TrainingFocus, string> = {
   pilates: "Pilates",
   restore: "Restore",
   "stress-relief": "Stress relief",
+  "glute-power": "Glute Power",
 };
 
 function preview(text: string, max = 100): string {
@@ -61,7 +65,7 @@ export default function TrainingTab() {
       </div>
 
       <div className="grid gap-3">
-        {SIGNAL_TRAINING_PATHS.map((path, i) => (
+        {ENRICHED_PATHS.map((path, i) => (
           <motion.div
             key={path.id}
             initial={{ opacity: 0, y: 8 }}
@@ -187,10 +191,20 @@ function WeekRow({
         <div className="flex-1 min-w-0">
           <p className="font-body text-[10px] text-primary uppercase tracking-[0.2em] font-semibold">
             Week {week.week}
+            {week.rpeMin != null && week.rpeMax != null && (
+              <span className="font-body normal-case tracking-normal text-muted-foreground/70 ml-2 font-medium">
+                · RPE {week.rpeMin}–{week.rpeMax}
+              </span>
+            )}
           </p>
           <h4 className="font-display text-base font-bold text-foreground mt-0.5 leading-snug">
             {week.theme}
           </h4>
+          {week.phaseGoal && (
+            <p className="font-editorial text-xs italic text-foreground/65 mt-1 leading-relaxed">
+              {week.phaseGoal}
+            </p>
+          )}
         </div>
         <ChevronDown
           className={cn(
@@ -286,6 +300,27 @@ function SessionCard({ session }: { session: DaySession }) {
             );
           })}
         </ul>
+      )}
+
+      {session.warmupNotes && (
+        <div className="mt-2 pl-3 border-l border-primary/20">
+          <p className="font-body text-[10px] text-primary/80 uppercase tracking-[0.18em] font-semibold">Warm up</p>
+          <p className="font-body text-xs text-foreground/75 leading-relaxed mt-0.5">{session.warmupNotes}</p>
+        </div>
+      )}
+
+      {session.sessionNotes && (
+        <div className="mt-2 pl-3 border-l border-primary/20">
+          <p className="font-body text-[10px] text-primary/80 uppercase tracking-[0.18em] font-semibold">During the session</p>
+          <p className="font-body text-xs text-foreground/75 leading-relaxed mt-0.5">{session.sessionNotes}</p>
+        </div>
+      )}
+
+      {session.cooldownNotes && (
+        <div className="mt-2 pl-3 border-l border-primary/20">
+          <p className="font-body text-[10px] text-primary/80 uppercase tracking-[0.18em] font-semibold">Land softly</p>
+          <p className="font-body text-xs text-foreground/75 leading-relaxed mt-0.5">{session.cooldownNotes}</p>
+        </div>
       )}
 
       {session.coachingNote && (
