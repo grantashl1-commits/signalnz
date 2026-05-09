@@ -291,7 +291,7 @@ export default function HomePage() {
               </motion.p>
               <motion.div {...fadeUp(0.55)} className="mb-6">
                 <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                  Get started <ArrowRight className="h-4 w-4" />
+                  Come in <ArrowRight className="h-4 w-4" />
                 </Link>
               </motion.div>
             </>
