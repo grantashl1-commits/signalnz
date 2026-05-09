@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -62,12 +63,13 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo: window.location.origin },
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
       });
-      if (error) throw error;
-      // Browser will redirect to Google
+      if (result.error) throw result.error;
+      if (result.redirected) return; // Browser is redirecting to Google
+      // Tokens received — session is set; navigate home
+      navigate("/account", { replace: true });
     } catch (err: any) {
       console.error("Google OAuth error:", err);
       toast.error(err.message || "Google sign-in didn't land — try again in a moment.");
