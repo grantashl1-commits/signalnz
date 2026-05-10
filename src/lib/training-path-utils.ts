@@ -7,6 +7,7 @@
  */
 import { SIGNAL_TRAINING_PATHS, type TrainingPath, type DaySession } from "@/data/signal-training-paths";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
+import { supabase } from "@/integrations/supabase/client";
 
 const SELECTED_PATH_KEY = "signal_selected_training_path";
 const COMPLETED_SESSIONS_KEY = "signal_path_completed_sessions";
@@ -57,6 +58,71 @@ export function markSessionCompleted(pathId: string, week: number, day: number) 
     localStorage.setItem(COMPLETED_SESSIONS_KEY, JSON.stringify(map));
     window.dispatchEvent(new Event("signal:training-path-changed"));
   } catch {}
+
+  // Carry through to the calendar / workout history.
+  void logSessionToCalendar(pathId, week, day);
+}
+
+/** Reset all completed sessions for a path so the user can start over from week 1 day 1. */
+export function resetPathProgress(pathId: string) {
+  const map = getCompletedMap();
+  const prefix = `${pathId}::`;
+  let changed = false;
+  for (const k of Object.keys(map)) {
+    if (k.startsWith(prefix)) { delete map[k]; changed = true; }
+  }
+  if (changed) {
+    try {
+      localStorage.setItem(COMPLETED_SESSIONS_KEY, JSON.stringify(map));
+      window.dispatchEvent(new Event("signal:training-path-changed"));
+    } catch {}
+  }
+}
+
+/** Insert a workout_logs row so the completed session shows on the calendar. */
+async function logSessionToCalendar(pathId: string, week: number, day: number) {
+  try {
+    const path = SIGNAL_TRAINING_PATHS.find(p => p.id === pathId);
+    const weekObj = path?.weeks.find(w => w.week === week);
+    const session = weekObj?.sessions.find(s => s.day === day);
+    if (!path || !session) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Local YYYY-MM-DD (NZ-safe enough for a session_date column).
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+    // Build a lightweight exercises array from structure for body-tag derivation.
+    const exercises = (session.structure || [])
+      .map(line => {
+        const name = extractExerciseName(line);
+        return name ? { exercise_name: name } : null;
+      })
+      .filter(Boolean) as { exercise_name: string }[];
+
+    // Avoid duplicate inserts on rapid double-tap.
+    const { data: existing } = await supabase
+      .from("workout_logs")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("session_date", dateStr)
+      .ilike("notes", `%${pathId}::w${week}::d${day}%`)
+      .limit(1);
+    if (existing && existing.length > 0) return;
+
+    await supabase.from("workout_logs").insert({
+      user_id: user.id,
+      session_date: dateStr,
+      duration_minutes: session.durationMin ?? null,
+      notes: `${path.name} · ${session.name} [${pathId}::w${week}::d${day}]`,
+      completed: true,
+      exercises,
+    });
+  } catch (e) {
+    console.warn("[training-path] failed to log session to calendar", e);
+  }
 }
 
 export interface NextSessionInfo {

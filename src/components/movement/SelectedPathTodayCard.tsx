@@ -14,6 +14,7 @@ import {
   getSelectedPath,
   getNextSession,
   markSessionCompleted,
+  resetPathProgress,
   type NextSessionInfo,
 } from "@/lib/training-path-utils";
 import type { TrainingFocus } from "@/data/signal-training-paths";
@@ -88,13 +89,19 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     );
   }
 
-  const { path, week, day, session, totalSessions, completedCount, finished } = info;
-  const progressPct = totalSessions ? Math.round((completedCount / totalSessions) * 100) : 0;
+  const { path, week, day, session, completedCount, finished } = info;
+  const showRestart = week > 1 || completedCount > 0;
 
   const handleComplete = () => {
     haptic("medium");
     markSessionCompleted(path.id, week, day);
-    toast.success("Held.");
+    toast.success("Marked as complete.");
+  };
+
+  const handleRestart = () => {
+    haptic("light");
+    resetPathProgress(path.id);
+    toast.success("Back to week 1.");
   };
 
   const handleConnectHR = async () => {
@@ -142,24 +149,14 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
                 Feels like: {session.feel}
               </p>
             )}
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="space-y-1">
-          <div className="flex items-baseline justify-between">
-            <span className="font-body text-[10px] uppercase tracking-wider text-muted-foreground">
-              {finished ? "Path complete" : `Days you've returned · ${completedCount} of ${totalSessions}`}
-            </span>
-            <span className="font-body text-[10px] text-primary font-semibold">{progressPct}%</span>
-          </div>
-          <div className="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
-            <motion.div
-              className="h-full bg-primary"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPct}%` }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            />
+            {showRestart && (
+              <button
+                onClick={handleRestart}
+                className="mt-1.5 font-body text-[10px] text-primary/70 hover:text-primary underline underline-offset-2"
+              >
+                Restart from week 1
+              </button>
+            )}
           </div>
         </div>
 
@@ -220,7 +217,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
             className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
           >
             <Check className="h-4 w-4" />
-            Mark held
+            Finish workout
           </button>
         </div>
       </div>
