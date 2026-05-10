@@ -44,6 +44,8 @@ export interface CourseModule {
   icon?: string;
   estimatedMinutes?: number;
   lessons: CourseLesson[];
+  /** Path to the watercolour module header illustration, served from public/. */
+  image?: string;
 }
 
 export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
@@ -52,6 +54,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-1",
+    image: "/images/couplescourse/tree-roots-hearts.png",
     title: "The Blueprint",
     subtitle: "Attachment & How You Love",
     description:
@@ -268,6 +271,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-2",
+    image: "/images/couplescourse/tea-and-coffee.png",
     title: "The Currency",
     subtitle: "Bids for Connection",
     description:
@@ -479,6 +483,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-3",
+    image: "/images/couplescourse/stone-ripples.png",
     title: "The Flood",
     subtitle: "When Your Nervous System Takes Over",
     description:
@@ -655,6 +660,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-4",
+    image: "/images/couplescourse/four-horses.png",
     title: "The Four Horsemen",
     subtitle: "Patterns That Destroy — and Their Antidotes",
     description:
@@ -864,6 +870,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-5",
+    image: "/images/couplescourse/heart-with-bandage.png",
     title: "The Repair",
     subtitle: "Apology, Forgiveness & Healing",
     description:
@@ -1104,6 +1111,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-6",
+    image: "/images/couplescourse/candle-and-moon.png",
     title: "The Fire",
     subtitle: "Intimacy & Desire",
     description:
@@ -1256,6 +1264,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-7",
+    image: "/images/couplescourse/two-figures-bridge.png",
     title: "The Bridge",
     subtitle: "Conflict as Connection",
     description:
@@ -1400,6 +1409,7 @@ export const SIGNAL_COUPLES_COURSE: CourseModule[] = [
   // ============================================================
   {
     id: "module-8",
+    image: "/images/couplescourse/two-silhouettes-sunrise.png",
     title: "The Horizon",
     subtitle: "Shared Meaning & Rituals",
     description:
