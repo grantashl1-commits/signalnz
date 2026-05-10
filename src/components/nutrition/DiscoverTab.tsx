@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart, ChevronDown, X, Baby } from "lucide-react";
+import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon } from "lucide-react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_RECIPES } from "@/lib/recipe-index";
@@ -27,8 +27,62 @@ const PHASE_TINT: Record<Phase, string> = {
   luteal: "rgba(155, 137, 180, 0.06)",
 };
 
-const MEAL_TYPE_FILTERS = ["All", "Lunch/Dinner", "Breakfast", "Kids"] as const;
-const TAG_FILTERS = ["High Protein", "Gut Health", "Anti-Inflammatory", "Vegan", "Iron-Rich", "Magnesium"] as const;
+const MEAL_TYPE_OPTIONS = ["All", "Breakfast", "Lunch/Dinner", "Snack", "Baking"] as const;
+const DIETARY_OPTIONS = ["Vegan", "Vegetarian", "Gluten-free", "Dairy-free", "Nut-free", "Egg-free"] as const;
+const PROTEIN_OPTIONS = ["Chicken", "Beef/Lamb", "Fish", "Tofu/Tempeh", "Eggs", "Legumes", "Plant-based"] as const;
+
+/** Detect dietary tags from a recipe's tags + ingredients heuristically. */
+function FilterSection({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-1.5">
+        <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">{title}</p>
+        {hint && <p className="font-body text-[10px] text-muted-foreground/70 italic">{hint}</p>}
+      </div>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
+    </div>
+  );
+}
+
+function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={() => { haptic("light"); onClick(); }}
+      className={`touch-btn rounded-full px-3 py-1.5 font-body text-xs font-medium transition-all whitespace-nowrap ${
+        active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function recipeDietaryTags(r: Recipe): Set<string> {
+  const tags = new Set<string>();
+  const tagSet = new Set((r.tags || []).map(t => t.toLowerCase()));
+  if (tagSet.has("vegan")) tags.add("Vegan");
+  if (tagSet.has("vegetarian") || tagSet.has("vegan")) tags.add("Vegetarian");
+  if (tagSet.has("gluten-free") || tagSet.has("gf")) tags.add("Gluten-free");
+  if (tagSet.has("dairy-free") || tagSet.has("df") || tagSet.has("vegan")) tags.add("Dairy-free");
+  const ing = r.ingredients.join(" ").toLowerCase();
+  if (!/\b(almond|peanut|cashew|hazelnut|walnut|pecan|pistachio|macadamia|brazil nut)\b/.test(ing)) tags.add("Nut-free");
+  if (!/\b(eggs?|omelette)\b/.test(ing)) tags.add("Egg-free");
+  return tags;
+}
+
+/** Detect primary protein source(s) from ingredients. */
+function recipeProteinSources(r: Recipe): Set<string> {
+  const text = (r.name + " " + r.ingredients.join(" ")).toLowerCase();
+  const out = new Set<string>();
+  if (/\b(chicken|poultry|turkey)\b/.test(text)) out.add("Chicken");
+  if (/\b(beef|mince|steak|lamb)\b/.test(text)) out.add("Beef/Lamb");
+  if (/\b(fish|salmon|tuna|sardine|mackerel|cod|prawn|shrimp)\b/.test(text)) out.add("Fish");
+  if (/\b(tofu|tempeh|edamame)\b/.test(text)) out.add("Tofu/Tempeh");
+  if (/\b(eggs?|omelette)\b/.test(text)) out.add("Eggs");
+  if (/\b(lentils?|chickpeas?|black beans?|kidney beans?|cannellini|legumes?|dhal|dal)\b/.test(text)) out.add("Legumes");
+  if (out.size === 0 || (r.tags || []).map(t => t.toLowerCase()).includes("vegan")) out.add("Plant-based");
+  return out;
+}
 
 export default function DiscoverTab() {
   const { currentPhase } = useCycle();
@@ -37,8 +91,34 @@ export default function DiscoverTab() {
   const [search, setSearch] = useState("");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
   const [mealType, setMealType] = useState<string>("All");
+  const [dietary, setDietary] = useState<Set<string>>(new Set());
+  const [protein, setProtein] = useState<Set<string>>(new Set());
+  const [kidFriendlyOnly, setKidFriendlyOnly] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
+
+  const activeFilterCount =
+    (phaseFilter !== "all" ? 1 : 0) +
+    (mealType !== "All" ? 1 : 0) +
+    dietary.size +
+    protein.size +
+    (kidFriendlyOnly ? 1 : 0);
+
+  const toggleSetItem = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
+    const next = new Set(set);
+    if (next.has(value)) next.delete(value);
+    else next.add(value);
+    setter(next);
+  };
+
+  const clearAllFilters = () => {
+    setPhaseFilter("all");
+    setMealType("All");
+    setDietary(new Set());
+    setProtein(new Set());
+    setKidFriendlyOnly(false);
+  };
 
   // Snack-like keywords for auto-tagging
   const SNACK_KEYWORDS = ["bliss ball", "bark", "nice cream", "energy ball", "slice", "mousse", "fudge", "custard", "rocher", "crumble ball"];
@@ -69,6 +149,19 @@ export default function DiscoverTab() {
         const cat = getEffectiveCategory(r);
         if (mealType === "Breakfast" && cat !== "breakfast") return false;
         if (mealType === "Lunch/Dinner" && cat !== "meal") return false;
+        if (mealType === "Snack" && cat !== "snack") return false;
+        if (mealType === "Baking" && cat !== "baking") return false;
+      }
+      if (kidFriendlyOnly && !r.kidAlternative) return false;
+      if (dietary.size > 0) {
+        const recipeDiet = recipeDietaryTags(r);
+        for (const want of dietary) if (!recipeDiet.has(want)) return false;
+      }
+      if (protein.size > 0) {
+        const recipeProt = recipeProteinSources(r);
+        let any = false;
+        for (const want of protein) if (recipeProt.has(want)) { any = true; break; }
+        if (!any) return false;
       }
       if (search) {
         const q = search.toLowerCase();
@@ -78,7 +171,7 @@ export default function DiscoverTab() {
       }
       return true;
     });
-  }, [allRecipes, phaseFilter, mealType, search]);
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, kidFriendlyOnly]);
 
   // Kids recipe filtering
   const filteredKids = useMemo(() => {
@@ -122,32 +215,112 @@ export default function DiscoverTab() {
         />
       </div>
 
-      {/* Filters */}
+      {/* Filter dropdown trigger */}
       <div className="space-y-2">
-        {/* Phase pills — hidden for Kids */}
-        {mealType !== "Kids" && (
-          <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-            <button onClick={() => { haptic("light"); setPhaseFilter("all"); }}
-              className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${phaseFilter === "all" ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"}`}>
-              All phases
-            </button>
-            {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(p => (
-              <button key={p} onClick={() => { haptic("light"); setPhaseFilter(p); }}
-                className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${phaseFilter === p ? `phase-${p}` : `phase-${p}-light`}`}>
-                {PHASE_SHORT[p]}
-              </button>
-            ))}
-          </div>
-        )}
-        {/* Meal type pills */}
-        <div className="scroll-snap-x flex gap-2 pb-1 -mx-1 px-1">
-          {MEAL_TYPE_FILTERS.map(t => (
-            <button key={t} onClick={() => { haptic("light"); setMealType(t); }}
-              className={`touch-btn scroll-snap-item rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${mealType === t ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}>
-              {t}
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={() => { haptic("light"); setFiltersOpen(o => !o); }}
+          className="touch-btn w-full flex items-center justify-between gap-2 rounded-xl border border-border bg-card px-4 py-3 min-h-[44px] font-body text-sm text-foreground transition-all"
+          aria-expanded={filtersOpen}
+        >
+          <span className="flex items-center gap-2">
+            <FilterIcon className="h-4 w-4 text-muted-foreground" />
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="rounded-full bg-primary text-primary-foreground px-2 py-0.5 font-body text-[10px] font-bold">
+                {activeFilterCount}
+              </span>
+            )}
+            {/* Quick "Kids only" toggle outside the dropdown for one-tap access */}
+            <span
+              role="checkbox"
+              aria-checked={kidFriendlyOnly}
+              onClick={(e) => { e.stopPropagation(); haptic("light"); setKidFriendlyOnly(v => !v); }}
+              className={`ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${kidFriendlyOnly ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
+            >
+              <Baby className="h-3 w-3" /> Kids
+            </span>
+          </span>
+          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
+        </button>
+
+        <AnimatePresence initial={false}>
+          {filtersOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+                {/* Cycle phase */}
+                <FilterSection title="Cycle phase">
+                  <FilterPill active={phaseFilter === "all"} onClick={() => setPhaseFilter("all")}>All phases</FilterPill>
+                  {(["menstrual", "follicular", "ovulatory", "luteal"] as Phase[]).map(p => (
+                    <button
+                      key={p}
+                      onClick={() => { haptic("light"); setPhaseFilter(p); }}
+                      className={`touch-btn rounded-full px-3 py-1.5 font-body text-xs font-medium transition-all whitespace-nowrap`}
+                      style={
+                        phaseFilter === p
+                          ? { backgroundColor: PHASE_HEX[p], color: "white" }
+                          : { backgroundColor: `${PHASE_HEX[p]}15`, color: PHASE_HEX[p] }
+                      }
+                    >
+                      {PHASE_SHORT[p]}
+                    </button>
+                  ))}
+                </FilterSection>
+
+                {/* Meal type */}
+                <FilterSection title="Meal type">
+                  {MEAL_TYPE_OPTIONS.map(t => (
+                    <FilterPill key={t} active={mealType === t} onClick={() => setMealType(t)}>{t}</FilterPill>
+                  ))}
+                </FilterSection>
+
+                {/* Dietary preferences */}
+                <FilterSection title="Dietary preferences" hint="Tap to add — multiple stack">
+                  {DIETARY_OPTIONS.map(d => (
+                    <FilterPill key={d} active={dietary.has(d)} onClick={() => toggleSetItem(dietary, d, setDietary)}>{d}</FilterPill>
+                  ))}
+                </FilterSection>
+
+                {/* Protein source */}
+                <FilterSection title="Protein source" hint="Tap to add — any match">
+                  {PROTEIN_OPTIONS.map(p => (
+                    <FilterPill key={p} active={protein.has(p)} onClick={() => toggleSetItem(protein, p, setProtein)}>{p}</FilterPill>
+                  ))}
+                </FilterSection>
+
+                {/* Kids */}
+                <FilterSection title="For the little ones">
+                  <FilterPill active={kidFriendlyOnly} onClick={() => setKidFriendlyOnly(v => !v)}>
+                    <Baby className="inline-block h-3 w-3 mr-1" />
+                    Only show recipes with a kid version
+                  </FilterPill>
+                </FilterSection>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-2 border-t border-border">
+                  <button
+                    onClick={() => { haptic("light"); clearAllFilters(); }}
+                    disabled={activeFilterCount === 0}
+                    className="font-body text-xs text-muted-foreground hover:text-foreground disabled:opacity-40"
+                  >
+                    Clear all
+                  </button>
+                  <button
+                    onClick={() => { haptic("light"); setFiltersOpen(false); }}
+                    className="touch-btn rounded-full bg-primary text-primary-foreground px-4 py-1.5 font-body text-xs font-bold"
+                  >
+                    Show {filtered.length} {filtered.length === 1 ? "recipe" : "recipes"}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Results count */}
