@@ -4267,9 +4267,11 @@ function withStructure(session: Session): Session {
 function normalisePath(path: TrainingPath): TrainingPath {
   return {
     ...path,
-    weeks: path.weeks.map(w => ({
+    weeks: (path.weeks ?? []).map(w => ({
       ...w,
-      sessions: w.sessions.map(withStructure),
+      sessions: Array.isArray((w as any).sessions)
+        ? (w as any).sessions.map(withStructure)
+        : [],
     })),
   };
 }
