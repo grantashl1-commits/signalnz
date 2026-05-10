@@ -35,6 +35,10 @@ export interface Session {
   warmup?: string[];
   supersets?: Superset[];
   coolDown?: string[];
+  /** Lowercase alias of coolDown — both are accepted by the renderer. */
+  cooldown?: string[];
+  /** Marks pure rest / walk-and-restore days so the renderer can skip the table layout. */
+  isRestDay?: boolean;
   /** Legacy flat-string structure used by some paths (Pilates, Rest & Restore, Glute Power weeks). */
   structure?: string[];
   coachingNote?: string;
@@ -80,11 +84,11 @@ export const strengthFromTheGroundUp: TrainingPath = {
   whoItIsFor:
     'For the woman who has been told to “push harder” but craves permission to go slowly. Whether you have never touched a dumbbell or are returning after injury or burnout, this plan meets you exactly where you are.',
   weeks: [
-    // Week 1 — Grounding (full week shown as example; remaining weeks follow same structure)
+    // Week 1 — Grounding (full week as provided by user)
     {
       week: 1,
       theme: 'Grounding – Learning the Patterns',
-      progression: 'RPE 6‑7. Light dumbbells (3‑5 kg). Tempo 3‑1‑2 on most lifts. Form first.',
+      progression: 'RPE 6‑7. Light dumbbells (3‑5 kg). Tempo 3‑1‑2. Form first.',
       sessions: [
         {
           day: 1,
@@ -93,17 +97,12 @@ export const strengthFromTheGroundUp: TrainingPath = {
           durationMin: 45,
           equipment: 'Dumbbells (3‑5 kg), mat, bench',
           feel: 'Curious and grounded',
-          warmup: [
-            'Cat‑cow – 8 reps',
-            'Deep squat hold – 30 sec',
-            'Standing shoulder circles – 10 each way',
-            'Glute bridges (bodyweight) – 10 reps'
-          ],
+          warmup: ['Cat‑cow – 8 reps', 'Deep squat hold – 30 sec', 'Standing shoulder circles – 10 each', 'Glute bridges – 10 reps'],
           supersets: [
             {
               exercises: [
                 { name: 'Goblet Squat', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Heels down, chest up, elbows inside knees' },
-                { name: 'Romanian Deadlift (DB)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Hinge at hips, soft knees, bar close to shins' }
+                { name: 'Romanian Deadlift (DB)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Hinge at hips, soft knees, DB close to shins' }
               ],
               rounds: 3,
               restAfterSuperset: 60
@@ -111,7 +110,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
             {
               exercises: [
                 { name: 'Glute Bridge (bodyweight)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Squeeze glutes at top, ribs down' },
-                { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Press lower back into mat, opposite arm + leg' }
+                { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Press lower back into mat' }
               ],
               rounds: 3,
               restAfterSuperset: 60
@@ -119,14 +118,14 @@ export const strengthFromTheGroundUp: TrainingPath = {
             {
               exercises: [
                 { name: 'Plank', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: 'Body straight, breathe' },
-                { name: 'Side Plank', sets: 3, reps: '20 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: 'Elbow under shoulder, hips lifted' }
+                { name: 'Side Plank', sets: 3, reps: '20 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: 'Elbow under shoulder' }
               ],
               rounds: 3,
               restAfterSuperset: 60
             }
           ],
-          cooldown: ['Child’s pose – 30 sec', 'Thread the needle – 30 sec per side', 'Supine twist – 30 sec per side'],
-          coachingNote: 'The tempo is your teacher. Three seconds down says “I am safe; I am in control.”'
+          cooldown: ["Child's pose – 30 sec", 'Thread the needle – 30 sec/side', 'Supine twist – 30 sec/side'],
+          coachingNote: 'The tempo is your teacher. Three seconds down says "I am safe; I am in control."'
         },
         {
           day: 2,
@@ -135,11 +134,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
           durationMin: 45,
           equipment: 'Dumbbells (3‑5 kg), mat',
           feel: 'Steady and capable',
-          warmup: [
-            'Arm circles – 10 forward/back',
-            'Band pull‑aparts (or T‑Y‑W raises) – 10 reps',
-            'Cat‑cow – 8 reps'
-          ],
+          warmup: ['Arm circles – 10 each', 'Band pull‑aparts – 10', 'Cat‑cow – 8'],
           supersets: [
             {
               exercises: [
@@ -151,7 +146,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
             },
             {
               exercises: [
-                { name: 'Overhead Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Keep ribs down, don’t arch back' },
+                { name: 'Overhead Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: "Keep ribs down, don't arch back" },
                 { name: 'Lateral Raise', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '2‑3 kg', notes: 'Lead with elbows, pour a pitcher' }
               ],
               rounds: 3,
@@ -160,14 +155,14 @@ export const strengthFromTheGroundUp: TrainingPath = {
             {
               exercises: [
                 { name: 'Bird Dog', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Opposite arm + leg, hips level' },
-                { name: 'Plank with Shoulder Tap', sets: 3, reps: '10 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: 'Don’t rock hips' }
+                { name: 'Plank with Shoulder Tap', sets: 3, reps: '10 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: "Don't rock hips" }
               ],
               rounds: 3,
               restAfterSuperset: 60
             }
           ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Your shoulders already know they’ve been carrying too much. Let’s put down what isn’t yours.'
+          cooldown: ["Child's pose", 'Thread the needle', 'Supine twist'],
+          coachingNote: "Your shoulders already know they've been carrying too much. Let's put down what isn't yours."
         },
         {
           day: 3,
@@ -176,17 +171,12 @@ export const strengthFromTheGroundUp: TrainingPath = {
           durationMin: 45,
           equipment: 'Dumbbells (3‑5 kg), bench',
           feel: 'Grounded and rooted',
-          warmup: [
-            'Leg swings (forward/side) – 10 each',
-            'Hip circles – 8 each direction',
-            'Bodyweight squats – 10 reps',
-            'Clam shells – 10 per side'
-          ],
+          warmup: ['Leg swings – 10 each', 'Hip circles – 8 each', 'Bodyweight squats – 10', 'Clam shells – 10/side'],
           supersets: [
             {
               exercises: [
                 { name: 'Sumo Squat', sets: 3, reps: 12, tempo: '4‑1‑2', weight: '3‑5 kg', notes: 'Wide stance, toes out, heels down' },
-                { name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Keep torso tall, back knee light touch' }
+                { name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Keep torso tall' }
               ],
               rounds: 3,
               restAfterSuperset: 60
@@ -201,14 +191,14 @@ export const strengthFromTheGroundUp: TrainingPath = {
             },
             {
               exercises: [
-                { name: 'Side Plank', sets: 3, reps: '20 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: 'Elbow under shoulder, hips lifted' },
-                { name: 'Marching Glute Bridge', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Slow, controlled march' }
+                { name: 'Side Plank', sets: 3, reps: '20 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: 'Elbow under shoulder' },
+                { name: 'Marching Glute Bridge', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Slow, controlled' }
               ],
               rounds: 3,
               restAfterSuperset: 60
             }
           ],
-          cooldown: ['Pigeon pose – 30 sec per side', 'Couch stretch (or kneeling hip flexor) – 30 sec per side', 'Supine hamstring stretch – 30 sec per side'],
+          cooldown: ['Pigeon pose – 30 sec/side', 'Couch stretch – 30 sec/side', 'Supine hamstring stretch'],
           coachingNote: 'Sumo squat wakes up your inner thighs and glutes. Go wide, keep your heels down, and breathe.'
         },
         {
@@ -218,39 +208,35 @@ export const strengthFromTheGroundUp: TrainingPath = {
           durationMin: 45,
           equipment: 'Dumbbells (3‑5 kg), mat',
           feel: 'Flowing and integrated',
-          warmup: [
-            'Inchworms – 5 reps',
-            'Thoracic rotations (on hands/knees) – 8 per side',
-            'Scapular push‑ups – 10 reps'
-          ],
+          warmup: ['Inchworms – 5', 'Thoracic rotations – 8/side', 'Scapular push‑ups – 10'],
           supersets: [
             {
               exercises: [
                 { name: 'Bent‑Over Row (both arms)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Hinge at hips, pull to lower ribs' },
-                { name: 'Floor Press (DB)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Lie on back, elbows at 45°, press up' }
+                { name: 'Floor Press (DB)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Elbows 45°, press up' }
               ],
               rounds: 3,
               restAfterSuperset: 60
             },
             {
               exercises: [
-                { name: 'Bicep Curl', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '3‑5 kg', notes: 'Elbows at ribs, don’t swing' },
-                { name: 'Tricep Overhead Extension', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'One or two hands, keep elbows in' }
+                { name: 'Bicep Curl', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '3‑5 kg', notes: "Elbows at ribs, don't swing" },
+                { name: 'Tricep Overhead Extension', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Keep elbows in' }
               ],
               rounds: 3,
               restAfterSuperset: 60
             },
             {
               exercises: [
-                { name: 'Plank', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: 'Core braced, body straight' },
+                { name: 'Plank', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: 'Core braced' },
                 { name: 'Bird Dog', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Slow, controlled' }
               ],
               rounds: 3,
               restAfterSuperset: 60
             }
           ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'You’re not building armour. You’re building a body that can carry you through life – and still feel soft.'
+          cooldown: ["Child's pose", 'Supine twist', 'Figure‑four stretch'],
+          coachingNote: "You're not building armour. You're building a body that can carry you through life – and still feel soft."
         },
         {
           day: 5,
@@ -259,12 +245,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
           durationMin: 45,
           equipment: 'Dumbbells (3‑5 kg), bench',
           feel: 'Rooted and powerful',
-          warmup: [
-            'Cat‑cow – 8 reps',
-            'Deep squat hold – 30 sec',
-            'Leg swings – 10 each leg',
-            'Glute bridges (bodyweight) – 10 reps'
-          ],
+          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Leg swings – 10', 'Glute bridges – 10'],
           supersets: [
             {
               exercises: [
@@ -277,22 +258,22 @@ export const strengthFromTheGroundUp: TrainingPath = {
             {
               exercises: [
                 { name: 'Step‑Up (onto bench)', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: 'Drive through front heel' },
-                { name: 'Seated Hip Abduction (band or machine)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Band', notes: 'Squeeze glute medius' }
+                { name: 'Seated Hip Abduction (band)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Band', notes: 'Squeeze glute medius' }
               ],
               rounds: 3,
               restAfterSuperset: 60
             },
             {
               exercises: [
-                { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Opposite arm + leg, slow' },
-                { name: 'Plank with Knee Dip', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: 'Lower knee toward floor, don’t touch' }
+                { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Opposite arm + leg' },
+                { name: 'Plank with Knee Dip', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: "Lower knee, don't touch" }
               ],
               rounds: 3,
               restAfterSuperset: 60
             }
           ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'The Romanian deadlift teaches you how to hinge – a movement you’ll use every day. Feel the stretch in your hamstrings, not your lower back.'
+          cooldown: ['Pigeon pose', 'Supine hamstring stretch', "Child's pose"],
+          coachingNote: "The Romanian deadlift teaches you how to hinge – a movement you'll use every day. Feel the stretch in your hamstrings, not your lower back."
         },
         {
           day: 6,
@@ -304,6 +285,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
           warmup: [],
           supersets: [],
           cooldown: [],
+          isRestDay: true,
           coachingNote: 'Your body rebuilds in the quiet. This is not a day to skip.'
         },
         {
@@ -316,6 +298,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
           warmup: [],
           supersets: [],
           cooldown: [],
+          isRestDay: true,
           coachingNote: 'One week down. Write one word that describes how you feel. That word is enough.'
         }
       ]

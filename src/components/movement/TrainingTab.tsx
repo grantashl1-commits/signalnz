@@ -387,8 +387,19 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
 
       {/* Rich render branch — when the session has supersets/warmup/coolDown, render
           structured tables. Falls back to flat structure[] for paths that haven't
-          adopted the new shape (Pilates, Rest & Restore, run, cardio circuit). */}
-      {(session.supersets && session.supersets.length > 0) || (session.warmup && session.warmup.length > 0) || (session.coolDown && session.coolDown.length > 0) ? (
+          adopted the new shape (Pilates, Rest & Restore, run, cardio circuit).
+          Pure rest days bypass the table layout via session.isRestDay. */}
+      {(() => {
+        const cooldownLines = session.cooldown ?? session.coolDown;
+        const hasRich =
+          !session.isRestDay &&
+          (
+            (session.supersets && session.supersets.length > 0) ||
+            (session.warmup && session.warmup.length > 0) ||
+            (cooldownLines && cooldownLines.length > 0)
+          );
+        return hasRich;
+      })() ? (
         <div className="space-y-3">
           {session.warmup && session.warmup.length > 0 && (
             <div className="rounded-lg bg-primary/[0.04] border border-primary/15 p-3">
@@ -442,18 +453,22 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
             </div>
           ))}
 
-          {session.coolDown && session.coolDown.length > 0 && (
-            <div className="rounded-lg bg-primary/[0.04] border border-primary/15 p-3">
-              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/80 font-semibold mb-1.5">Land softly</p>
-              <ul className="space-y-0.5">
-                {session.coolDown.map((c, i) => (
-                  <li key={i} className="font-body text-xs text-foreground/80 leading-relaxed pl-3 before:content-['◦'] before:text-primary/50 before:absolute before:-ml-3">
-                    {c}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {(() => {
+            const cooldownLines = session.cooldown ?? session.coolDown;
+            if (!cooldownLines || cooldownLines.length === 0) return null;
+            return (
+              <div className="rounded-lg bg-primary/[0.04] border border-primary/15 p-3">
+                <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/80 font-semibold mb-1.5">Land softly</p>
+                <ul className="space-y-0.5">
+                  {cooldownLines.map((c, i) => (
+                    <li key={i} className="font-body text-xs text-foreground/80 leading-relaxed pl-3 before:content-['◦'] before:text-primary/50 before:absolute before:-ml-3">
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })()}
         </div>
       ) : session.structure && session.structure.length > 0 && (
         <ul className="space-y-2">
