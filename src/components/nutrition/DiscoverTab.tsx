@@ -93,7 +93,7 @@ export default function DiscoverTab() {
   const [mealType, setMealType] = useState<string>("All");
   const [dietary, setDietary] = useState<Set<string>>(new Set());
   const [protein, setProtein] = useState<Set<string>>(new Set());
-  const [kidFriendlyOnly, setKidFriendlyOnly] = useState(false);
+  const [kidsMode, setKidsMode] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
@@ -103,7 +103,7 @@ export default function DiscoverTab() {
     (mealType !== "All" ? 1 : 0) +
     dietary.size +
     protein.size +
-    (kidFriendlyOnly ? 1 : 0);
+    (kidsMode ? 1 : 0);
 
   const toggleSetItem = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
     const next = new Set(set);
@@ -117,7 +117,7 @@ export default function DiscoverTab() {
     setMealType("All");
     setDietary(new Set());
     setProtein(new Set());
-    setKidFriendlyOnly(false);
+    setKidsMode(false);
   };
 
   // Snack-like keywords for auto-tagging
@@ -152,7 +152,8 @@ export default function DiscoverTab() {
         if (mealType === "Snack" && cat !== "snack") return false;
         if (mealType === "Baking" && cat !== "baking") return false;
       }
-      if (kidFriendlyOnly && !r.kidAlternative) return false;
+      // Kids mode swaps the data source to KIDS_RECIPE_BANK (rendered separately
+      // below). The adult recipe list stays unfiltered by kid-friendliness.
       if (dietary.size > 0) {
         const recipeDiet = recipeDietaryTags(r);
         for (const want of dietary) if (!recipeDiet.has(want)) return false;
@@ -171,11 +172,11 @@ export default function DiscoverTab() {
       }
       return true;
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, kidFriendlyOnly]);
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein]);
 
-  // Kids recipe filtering
+  // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
-    if (mealType !== "Kids") return [];
+    if (!kidsMode) return [];
     return KIDS_RECIPE_BANK.filter(r => {
       if (!search) return true;
       const q = search.toLowerCase();
@@ -233,9 +234,9 @@ export default function DiscoverTab() {
             {/* Quick "Kids only" toggle outside the dropdown for one-tap access */}
             <span
               role="checkbox"
-              aria-checked={kidFriendlyOnly}
-              onClick={(e) => { e.stopPropagation(); haptic("light"); setKidFriendlyOnly(v => !v); }}
-              className={`ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${kidFriendlyOnly ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
+              aria-checked={kidsMode}
+              onClick={(e) => { e.stopPropagation(); haptic("light"); setKidsMode(v => !v); }}
+              className={`ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${kidsMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
             >
               <Baby className="h-3 w-3" /> Kids
             </span>
@@ -294,10 +295,10 @@ export default function DiscoverTab() {
                 </FilterSection>
 
                 {/* Kids */}
-                <FilterSection title="For the little ones">
-                  <FilterPill active={kidFriendlyOnly} onClick={() => setKidFriendlyOnly(v => !v)}>
+                <FilterSection title="For the little ones" hint="Switches to the kids recipe library">
+                  <FilterPill active={kidsMode} onClick={() => setKidsMode(v => !v)}>
                     <Baby className="inline-block h-3 w-3 mr-1" />
-                    Only show recipes with a kid version
+                    Show kids recipes
                   </FilterPill>
                 </FilterSection>
 
@@ -326,12 +327,12 @@ export default function DiscoverTab() {
       {/* Results count */}
       {search && (
         <p className="font-body text-[11px] text-muted-foreground">
-          {mealType === "Kids" ? filteredKids.length : filtered.length} recipe{(mealType === "Kids" ? filteredKids.length : filtered.length) !== 1 ? "s" : ""} found
+          {kidsMode ? filteredKids.length : filtered.length} recipe{(kidsMode ? filteredKids.length : filtered.length) !== 1 ? "s" : ""} found
         </p>
       )}
 
       {/* Kids recipe grid */}
-      {mealType === "Kids" && (
+      {kidsMode && (
         <>
           <div className="grid grid-cols-2 gap-3">
             {filteredKids.slice(0, 30).map((recipe, i) => (
@@ -347,7 +348,7 @@ export default function DiscoverTab() {
       )}
 
       {/* Adult recipe grid */}
-      {mealType !== "Kids" && (
+      {!kidsMode && (
         <>
           <div className="grid grid-cols-2 gap-3">
             {filtered.slice(0, 20).map((recipe, i) => (
