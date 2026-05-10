@@ -29,7 +29,6 @@ import cardioArt from "@/assets/training-paths/cardio.png";
 import runArt from "@/assets/training-paths/run.png";
 import pilatesArt from "@/assets/training-paths/pilates.png";
 import restoreArt from "@/assets/training-paths/restore.png";
-import stressReliefArt from "@/assets/training-paths/stress-relief.png";
 import glutePowerArt from "@/assets/training-paths/glute-power.png";
 
 const FOCUS_ART: Record<TrainingFocus, string> = {
@@ -39,7 +38,6 @@ const FOCUS_ART: Record<TrainingFocus, string> = {
   run: runArt,
   pilates: pilatesArt,
   restore: restoreArt,
-  "stress-relief": stressReliefArt,
   "glute-power": glutePowerArt,
 };
 
@@ -50,7 +48,6 @@ const FOCUS_LABEL: Record<TrainingFocus, string> = {
   run: "Run",
   pilates: "Pilates",
   restore: "Restore",
-  "stress-relief": "Stress Relief",
   "glute-power": "Glute Power",
 };
 
@@ -63,7 +60,6 @@ const FOCUS_DISPLAY_TITLE: Record<TrainingFocus, string> = {
   run: "Run",
   pilates: "Pilates",
   restore: "Restore",
-  "stress-relief": "Stress Relief",
   "glute-power": "Glute Power",
 };
 

@@ -12,7 +12,6 @@ export type TrainingFocus =
   | "run"
   | "pilates"
   | "restore"
-  | "stress-relief"
   | "glute-power";
 
 export interface DaySession {
@@ -599,103 +598,7 @@ export const SIGNAL_TRAINING_PATHS: TrainingPath[] = [
   },
 
   // ═══════════════════════════════════════════════════════════
-  // 7. STRESS RELIEF – 8‑WEEK UNWINDING
-  // ═══════════════════════════════════════════════════════════
-  {
-    id: "stress-relief",
-    name: "The Unwinding",
-    subtitle: "Movement to release what you’ve been carrying",
-    focus: "stress-relief",
-    description:
-      "Stress lives in the body – in the jaw, the shoulders, the hips. This path is designed to release it. Short, gentle sessions that prioritise breath, mobility, and the kind of movement that softens rather than tightens.",
-    whoItIsFor:
-      "The woman who feels wound up, overwhelmed, or disconnected from her body.",
-    weeks: [
-      { week: 1, theme: "Beginning to Release", progression: "3 gentle sessions, 4 rest.",
-        sessions: [
-          { day: 1, name: "Mobility Flow", focus: "Releasing tension", durationMin: 25, equipment: "Mat", feel: "Unfurling", structure: ["5 min slow cat‑cow, thread the needle, deep squat hold","Flow 2 rounds: Cat‑Cow to Downward Dog, Low Lunge to Half Split, Pigeon Pose 2 min/side, Supine Twist 2 min/side","5 min legs up the wall, box breathing"], coachingNote:"This is an exhale. Let your jaw go slack." },
-          { day: 2, name: "Walk in Nature", focus: "Grounding", durationMin: 30, equipment: "None", feel: "Connected", structure: ["30 min walk outside – no phone, no music. Notice the air, the sounds, your feet."], coachingNote:"" },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breath & Gentle Strength", focus: "Reconnecting", durationMin: 20, equipment: "Mat", feel: "Grounded", structure: ["5 min diaphragmatic breathing","Circuit 2 rounds: Glute Bridge, Dead Bug, Bird Dog, Plank 20 sec, Child’s Pose","5 min body scan in savasana"], coachingNote:"" },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 2, theme: "Deepen the Release", progression: "Add 5 min to mobility, longer holds.",
-        sessions: [
-          { day: 1, name: "Mobility Flow (30 min)", durationMin: 30, feel: "Softer", structure: ["Same flow, hold each stretch 1 min longer. Add shoulder rolls and neck releases."] },
-          { day: 2, name: "Walk (30 min)", durationMin: 30, feel: "Peaceful", structure: ["Walk"] },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breath & Gentle Strength (25 min)", durationMin: 25, feel: "Present", structure: ["Same circuit, add 1 set. Add 2 min extra to body scan."] },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 3, theme: "Introduce Yin", progression: "One yin yoga session replaces mobility.",
-        sessions: [
-          { day: 1, name: "Yin Yoga", focus: "Deep fascial release", durationMin: 30, equipment: "Mat, pillows", feel: "Surrendering", structure: ["Dragon pose 3 min/side","Caterpillar (seated forward fold) 3 min","Swan (yin pigeon) 3 min/side","Supine Twist 3 min/side","Savasana 5 min"], coachingNote:"Yin is about time, not intensity. Let gravity do the work." },
-          { day: 2, name: "Walk (30 min)", durationMin: 30, feel: "Light", structure: ["Walk"] },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breath & Gentle Strength", durationMin: 25, feel: "Grounded", structure: ["Same as Week 2"] },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 4, theme: "Consolidation", progression: "Repeat Week 3. Notice what feels easier.",
-        sessions: [
-          { day: 1, name: "Yin Yoga", durationMin: 30, feel: "Familiar", structure: ["Same"] },
-          { day: 2, name: "Walk", durationMin: 30, feel: "Peaceful", structure: ["Walk"] },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breath & Gentle Strength", durationMin: 25, structure: ["Same"] },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 5, theme: "Add Flow", progression: "Introduce slow, mindful yoga flow.",
-        sessions: [
-          { day: 1, name: "Slow Yoga Flow", focus: "Mindful movement", durationMin: 30, equipment: "Mat", feel: "Flowing", structure: ["Sun salutation (slow) – 5 rounds","Warrior II – hold 5 breaths/side","Tree pose – 5 breaths/side","Seated forward fold – 2 min","Bridge – 1 min","Supine twist – 2 min/side","Savasana 5 min"], coachingNote:"Move at the speed of your breath. No rush." },
-          { day: 2, name: "Walk", durationMin: 30, feel: "Connected", structure: ["Walk"] },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breath & Gentle Strength", durationMin: 25, feel: "Steady", structure: ["Same"] },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 6, theme: "Deepen Flow", progression: "Add 2 more rounds to sun salutation, hold poses longer.",
-        sessions: [
-          { day: 1, name: "Slow Yoga Flow (35 min)", durationMin: 35, feel: "Flowing deeper", structure: ["Sun salutation 7 rounds, hold Warrior II 8 breaths, add Triangle pose"] },
-          { day: 2, name: "Walk", durationMin: 30, feel: "Peaceful", structure: ["Walk"] },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breath & Gentle Strength (Beathwork emphasis)", durationMin: 25, feel: "Centred", structure: ["Add 5 min of alternate nostril breathing before strength circuit"] },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 7, theme: "Integration", progression: "Combine yoga, breath, and walk in a single day.",
-        sessions: [
-          { day: 1, name: "Full Unwinding Practice", focus: "Release everything", durationMin: 45, equipment: "Mat", feel: "Complete", structure: ["10 min slow yoga flow","10 min yin poses (pigeon, supine twist)","10 min breathwork (box breathing, alternate nostril)","15 min walk in silence"], coachingNote:"" },
-          { day: 2, name: "Rest", structure: ["Rest"] },
-          { day: 3, name: "Gentle Walk + Breath", durationMin: 25, feel: "Calm", structure: ["20 min walk, 5 min breathwork"] },
-          { day: 4, name: "Rest", structure: ["Rest"] },
-          { day: 5, name: "Yin Yoga", durationMin: 30, feel: "Soft", structure: ["Your favourite yin poses"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Rest", structure: ["Rest"] }
-        ]},
-      { week: 8, theme: "Carrying It Forward", progression: "Choose your favourite sessions. Reflect.",
-        sessions: [
-          { day: 1, name: "Your Favourite Practice", durationMin: 30, feel: "Grateful", structure: ["Whatever feels most nourishing today."], coachingNote:"You have learned to release. That skill belongs to you now." },
-          { day: 2, name: "Walk", durationMin: 25, feel: "Free", structure: ["Walk with no agenda"] },
-          { day: 3, name: "Rest", structure: ["Rest"] },
-          { day: 4, name: "Breathwork", durationMin: 15, structure: ["Your favourite breath practice"] },
-          { day: 5, name: "Rest", structure: ["Rest"] },
-          { day: 6, name: "Rest", structure: ["Rest"] },
-          { day: 7, name: "Reflect", durationMin: 0, feel: "Light", structure: ["Write: Where do you hold stress now, compared to 8 weeks ago? What has shifted?"], coachingNote:"You are not your stress. You are the space that holds it." }
-        ]}
-    ]
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // 8. GLUTE POWER – 12-WEEK FOUNDATION (NEW)
+  // 7. GLUTE POWER – 12-WEEK FOUNDATION
   //    Drawn from program prog-001. Week 1 + week 5 hand-written
   //    in SIGNAL voice as templates. Weeks 2–4, 6–8, 9–12 carry
   //    the same structure with progressive load — flesh out the
