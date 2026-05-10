@@ -4231,6 +4231,7 @@ export type TrainingFocus =
   | "pilates"
   | "restore"
   | "hybrid"
+  | "stress-relief"
   | "glute-power";
 
 function flattenSupersetToLines(s: Superset): string[] {
