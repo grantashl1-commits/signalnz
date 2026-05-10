@@ -45,7 +45,7 @@ export interface SessionDay {
 
 export interface PlanWeek {
   week: number;
-  theme: "Foundation" | "Build" | "Peak" | "Deload";
+  theme: string;
   days: SessionDay[];
 }
 
