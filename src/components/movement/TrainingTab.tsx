@@ -463,7 +463,9 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                 ))}
               </div>
             </div>
-          ))}
+            </div>
+          );
+          })}
 
           {(() => {
             const cooldownLines = session.cooldown ?? session.coolDown;
