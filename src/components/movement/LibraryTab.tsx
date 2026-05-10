@@ -174,7 +174,6 @@ export default function LibraryTab() {
 
   const handleExpandWorkout = async (workout: QuickWorkout) => {
     haptic("light");
-    if (!guardExpand()) return;
     if (expandedWorkout === workout.id) {
       setExpandedWorkout(null);
       return;
@@ -276,7 +275,6 @@ export default function LibraryTab() {
                 <button
                   onClick={() => {
                     haptic("light");
-                    if (!isExpanded && !guardExpand()) return;
                     setExpandedExerciseId(isExpanded ? null : ex.id);
                   }}
                   className="flex w-full items-center gap-3 p-2.5 text-left"
@@ -423,7 +421,6 @@ export default function LibraryTab() {
                       if (isQuick) {
                         handleExpandWorkout(uw.data);
                       } else {
-                        if (!expanded && !guardExpand()) return;
                         setExpandedSSId(expanded ? null : id);
                       }
                     }}
