@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Lock, CheckCircle2, ChevronRight, Clock, Heart, ArrowLeft, Sparkles } from "lucide-react";
-import { COUPLES_COUNSELLING_COURSE as CONNECT_COURSE, type Module as CourseModule, type Lesson as CourseLesson } from "@/data/couples-counselling-course";
+import { SIGNAL_COUPLES_COURSE as CONNECT_COURSE, type CourseModule, type CourseLesson } from "@/data/signal-couples-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
 import { Progress } from "@/components/ui/progress";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";

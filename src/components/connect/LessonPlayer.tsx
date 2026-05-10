@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Lightbulb, Clock, BookOpen } from "lucide-react";
-import type { Lesson as CourseLesson } from "@/data/couples-counselling-course";
+import type { CourseLesson } from "@/data/signal-couples-course";
 import ActivityRenderer from "./ActivityRenderer";
 import LessonMilestone from "./LessonMilestone";
 import { haptic } from "@/hooks/use-mobile";
