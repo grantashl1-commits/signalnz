@@ -463,7 +463,6 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                 ))}
               </div>
             </div>
-            </div>
           );
           })}
 
