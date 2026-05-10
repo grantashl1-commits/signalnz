@@ -30,6 +30,7 @@ import runArt from "@/assets/training-paths/run.png";
 import pilatesArt from "@/assets/training-paths/pilates.png";
 import restoreArt from "@/assets/training-paths/restore.png";
 import glutePowerArt from "@/assets/training-paths/glute-power.png";
+import stressReliefArt from "@/assets/training-paths/stress-relief.png";
 
 const FOCUS_ART: Record<TrainingFocus, string> = {
   strength: strengthArt,
@@ -38,6 +39,8 @@ const FOCUS_ART: Record<TrainingFocus, string> = {
   run: runArt,
   pilates: pilatesArt,
   restore: restoreArt,
+  hybrid: strengthArt,
+  "stress-relief": stressReliefArt,
   "glute-power": glutePowerArt,
 };
 
@@ -48,6 +51,8 @@ const FOCUS_LABEL: Record<TrainingFocus, string> = {
   run: "Run",
   pilates: "Pilates",
   restore: "Restore",
+  hybrid: "Hybrid",
+  "stress-relief": "Stress Relief",
   "glute-power": "Glute Power",
 };
 
@@ -60,6 +65,8 @@ const FOCUS_DISPLAY_TITLE: Record<TrainingFocus, string> = {
   run: "Run",
   pilates: "Pilates",
   restore: "Restore",
+  hybrid: "Hybrid",
+  "stress-relief": "Stress Relief",
   "glute-power": "Glute Power",
 };
 
@@ -256,7 +263,7 @@ function PathDetail({
             <WeekRow
               key={week.week}
               week={week}
-              focus={path.focus}
+              focus={path.focus as TrainingFocus}
               expanded={expandedWeek === week.week}
               onToggle={() => onToggleWeek(week.week)}
             />

@@ -36,6 +36,7 @@ const FOCUS_ART: Record<TrainingFocus, string> = {
   run: runArt,
   pilates: pilatesArt,
   restore: restoreArt,
+  hybrid: strengthArt,
   "stress-relief": stressReliefArt,
   "glute-power": glutePowerArt,
 };
@@ -47,6 +48,7 @@ const FOCUS_TITLE: Record<TrainingFocus, string> = {
   run: "Run",
   pilates: "Pilates",
   restore: "Restore",
+  hybrid: "Hybrid",
   "stress-relief": "Stress Relief",
   "glute-power": "Glute Power",
 };
