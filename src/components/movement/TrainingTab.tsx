@@ -385,7 +385,77 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
         </p>
       )}
 
-      {session.structure && session.structure.length > 0 && (
+      {/* Rich render branch — when the session has supersets/warmup/coolDown, render
+          structured tables. Falls back to flat structure[] for paths that haven't
+          adopted the new shape (Pilates, Rest & Restore, run, cardio circuit). */}
+      {(session.supersets && session.supersets.length > 0) || (session.warmup && session.warmup.length > 0) || (session.coolDown && session.coolDown.length > 0) ? (
+        <div className="space-y-3">
+          {session.warmup && session.warmup.length > 0 && (
+            <div className="rounded-lg bg-primary/[0.04] border border-primary/15 p-3">
+              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/80 font-semibold mb-1.5">Warm up</p>
+              <ul className="space-y-0.5">
+                {session.warmup.map((w, i) => (
+                  <li key={i} className="font-body text-xs text-foreground/80 leading-relaxed pl-3 before:content-['◦'] before:text-primary/50 before:absolute before:-ml-3">
+                    {w}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {session.supersets && session.supersets.map((ss, ssIdx) => (
+            <div key={ssIdx} className="rounded-lg bg-card border border-border overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2 bg-secondary/40 border-b border-border">
+                <p className="font-body text-[10px] uppercase tracking-[0.18em] text-foreground/70 font-semibold">
+                  Superset {String.fromCharCode(65 + ssIdx)}
+                </p>
+                {ss.rounds && (
+                  <p className="font-body text-[10px] text-muted-foreground">
+                    {ss.rounds} rounds{ss.restAfterSuperset ? ` · rest ${ss.restAfterSuperset}s` : ""}
+                  </p>
+                )}
+              </div>
+              <div className="divide-y divide-border/50">
+                {ss.exercises.map((ex, exIdx) => (
+                  <div key={exIdx} className="flex items-start gap-3 px-3 py-2.5">
+                    <ExerciseDemonstration
+                      exerciseName={ex.name}
+                      size={40}
+                      className="shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-body text-sm font-medium text-foreground leading-tight">{ex.name}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-body text-[11px] text-muted-foreground">
+                        <span><span className="text-foreground/60">{ex.sets}</span>×<span className="text-foreground/60">{ex.reps}</span></span>
+                        {ex.tempo && <span>tempo <span className="text-foreground/60">{ex.tempo}</span></span>}
+                        {ex.weight && <span>load <span className="text-foreground/60">{ex.weight}</span></span>}
+                      </div>
+                      {ex.notes && (
+                        <p className="font-editorial text-[11px] italic text-foreground/65 mt-1 leading-relaxed">
+                          {ex.notes}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {session.coolDown && session.coolDown.length > 0 && (
+            <div className="rounded-lg bg-primary/[0.04] border border-primary/15 p-3">
+              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/80 font-semibold mb-1.5">Land softly</p>
+              <ul className="space-y-0.5">
+                {session.coolDown.map((c, i) => (
+                  <li key={i} className="font-body text-xs text-foreground/80 leading-relaxed pl-3 before:content-['◦'] before:text-primary/50 before:absolute before:-ml-3">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ) : session.structure && session.structure.length > 0 && (
         <ul className="space-y-2">
           {session.structure.map((line, i) => {
             const exerciseName = extractExerciseName(line);
