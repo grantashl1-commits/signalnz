@@ -421,11 +421,16 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
             </div>
           )}
 
-          {session.supersets && session.supersets.map((ss, ssIdx) => (
+          {session.supersets && session.supersets.map((ss, ssIdx) => {
+            const isPair = (ss.exercises?.length ?? 0) >= 2;
+            const blockLabel = isPair
+              ? `Superset ${String.fromCharCode(65 + ssIdx)}`
+              : `Main lift ${String.fromCharCode(65 + ssIdx)}`;
+            return (
             <div key={ssIdx} className="rounded-lg bg-card border border-border overflow-hidden">
               <div className="flex items-center justify-between px-3 py-2 bg-secondary/40 border-b border-border">
                 <p className="font-body text-[10px] uppercase tracking-[0.18em] text-foreground/70 font-semibold">
-                  Superset {String.fromCharCode(65 + ssIdx)}
+                  {blockLabel}
                 </p>
                 {ss.rounds && (
                   <p className="font-body text-[10px] text-muted-foreground">
@@ -458,7 +463,8 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                 ))}
               </div>
             </div>
-          ))}
+          );
+          })}
 
           {(() => {
             const cooldownLines = session.cooldown ?? session.coolDown;
