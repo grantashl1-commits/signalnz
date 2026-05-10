@@ -604,7 +604,7 @@ function PathExercisesSection() {
         <div>
           <p className="font-hand text-xs uppercase tracking-[0.2em] text-primary">From your training paths</p>
           <h3 className="font-display text-sm font-bold text-foreground mt-0.5">
-            Every move across the eight paths
+            Every move across the SIGNAL paths
           </h3>
         </div>
         <span className="font-body text-[10px] text-muted-foreground shrink-0">{items.length} moves</span>
