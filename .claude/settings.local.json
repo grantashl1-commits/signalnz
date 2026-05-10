@@ -80,7 +80,15 @@
       "Bash(awk -F'<value of length ' '{print $1 \"<value of length \" \\(length\\($2\\)>0 ? length\\($2\\)-1 : 0\\) \">\"}')",
       "Bash(awk -F= '{ printf \"Line %d: keyname=[%s] \\(length %d\\)\\\\n\", NR, $1, length\\($1\\) }' /c/GitHub/signalnz/.env)",
       "Bash(awk -F= 'NR<=10 { printf \"L%d: [%s] \\(key length %d, value length %d\\)\\\\n\", NR, $1, length\\($1\\), length\\($2\\) }' /c/GitHub/signalnz/.env)",
-      "Bash(awk *)"
+      "Bash(awk *)",
+      "Bash(sed -i '600,695d' /c/GitHub/signalnz/src/data/signal-training-paths.ts)",
+      "Bash(sed -i 's|// 8\\\\. GLUTE POWER – 12-WEEK FOUNDATION \\(NEW\\)|// 7. GLUTE POWER – 12-WEEK FOUNDATION|' /c/GitHub/signalnz/src/data/signal-training-paths.ts)",
+      "Bash(head -n 83 /c/GitHub/signalnz/src/data/signal-training-paths.ts)",
+      "Bash(cat \"/c/Users/grant/AppData/Local/Temp/week1-new.ts\")",
+      "Bash(tail -n +323 /c/GitHub/signalnz/src/data/signal-training-paths.ts)",
+      "Bash(cp /tmp/sptp-new.ts /c/GitHub/signalnz/src/data/signal-training-paths.ts)",
+      "Bash(head -n 82 /c/GitHub/signalnz/src/data/signal-training-paths.ts)",
+      "Bash(cp /tmp/sptp-fix.ts /c/GitHub/signalnz/src/data/signal-training-paths.ts)"
     ]
   }
 }
