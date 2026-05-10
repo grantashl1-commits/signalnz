@@ -59,7 +59,8 @@ export interface TrainingPath {
   id: string;
   name: string;
   subtitle: string;
-  focus: 'strength' | 'muscle' | 'cardio' | 'hybrid' | 'restore';
+  /** Free-form so paths can be cardio-hybrids, glute-power, run, pilates, etc. */
+  focus: string;
   description: string;
   whoItIsFor: string;
   weeks: Week[];
@@ -3867,6 +3868,427 @@ function normalisePath(path: TrainingPath): TrainingPath {
   };
 }
 
+// ═══════════════════════════════════════════════════════════
+// 7. LEARN TO RUN – 8-WEEK C25K-STYLE PROGRESSION
+// ═══════════════════════════════════════════════════════════
+export const learnToRun: TrainingPath = {
+  id: "learn-to-run",
+  name: "The Path That Becomes a Run",
+  subtitle: "For the woman who was told she wasn't a runner",
+  focus: "run",
+  description:
+    "Running is rhythm – the steady beat of your feet, the rise and fall of your breath, the quiet that settles when you simply move. This path meets you exactly where you are. If you can walk, you can begin.",
+  whoItIsFor:
+    "Anyone who wants to run – gently, slowly, and for the joy of it. No pace targets. No judgment.",
+  weeks: [
+    { week: 1, theme: "Introduction", progression: "3 run-walk days, 1 strength day, 3 rest days.",
+      sessions: [
+        { day: 1, name: "Run-Walk 1", focus: "Interval introduction", durationMin: 25, equipment: "Good shoes", feel: "Curious, not pressured", structure: ["5 min brisk walk", "Repeat 5×: 1 min light jog / 2 min walk", "5 min walk cool-down"], coachingNote: "One minute is not a test. It is an invitation." },
+        { day: 2, name: "Strength for Runners", focus: "Glutes, core, stability", durationMin: 30, equipment: "Mat, light dumbbells", feel: "Steady and supportive", structure: ["5 min warm-up: glute bridges, hip circles", "Circuit 3 rounds: Single-Leg Deadlift (BW) ×10/side, Step-Up ×10/side, Side Plank 25 sec/side, Dead Bug 10/side", "5 min stretch"], coachingNote: "Running is a single-leg sport. Build stability now." },
+        { day: 3, name: "Rest", durationMin: 0, structure: ["Rest"] },
+        { day: 4, name: "Run-Walk 2", focus: "Repeat intervals", durationMin: 25, equipment: "Good shoes", feel: "Beginning to trust", structure: ["5 min walk", "6×: 1 min jog / 90 sec walk", "5 min walk"] },
+        { day: 5, name: "Rest", durationMin: 0, structure: ["Rest"] },
+        { day: 6, name: "Run-Walk 3", focus: "Longer session", durationMin: 28, equipment: "Good shoes", feel: "Building", structure: ["5 min walk", "5×: 1 min jog / 2 min walk (consistency is the growth)", "5 min walk"] },
+        { day: 7, name: "Rest", durationMin: 0, structure: ["Rest"] }
+      ] },
+    { week: 2, theme: "Extending the Run", progression: "Increase run interval to 90 sec.",
+      sessions: [
+        { day: 1, name: "Run-Walk 4", durationMin: 28, equipment: "Good shoes", feel: "A little braver", structure: ["5 min walk", "5×: 90 sec jog / 2 min walk", "5 min walk"], coachingNote: "Ninety seconds. Your body is learning that it can do this." },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Steady", structure: ["Same as Week 1, add light dumbbells to Step-Up and Single-Leg Deadlift"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Run-Walk 5", durationMin: 28, equipment: "Good shoes", feel: "Flowing", structure: ["5 min walk", "6×: 90 sec jog / 90 sec walk", "5 min walk"] },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Run-Walk 6", durationMin: 30, equipment: "Good shoes", feel: "Building", structure: ["5 min walk", "5×: 90 sec jog / 2 min walk, then finish with 3 min jog", "5 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 3, theme: "Two Minutes and Beyond", progression: "Increase run interval to 2 min.",
+      sessions: [
+        { day: 1, name: "Run-Walk 7", durationMin: 30, equipment: "Good shoes", feel: "Finding rhythm", structure: ["5 min walk", "5×: 2 min jog / 2 min walk", "5 min walk"] },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Strong", structure: ["As Week 2, increase reps by 2 on each exercise"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Run-Walk 8", durationMin: 30, equipment: "Good shoes", feel: "Consistent", structure: ["5 min walk", "4×: 2 min jog / 90 sec walk, then 3 min jog", "5 min walk"] },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Run-Walk 9", durationMin: 32, equipment: "Good shoes", feel: "Enduring", structure: ["5 min walk", "4×: 3 min jog / 2 min walk", "5 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 4, theme: "Consolidation", progression: "Repeat Week 3; aim to feel smoother.",
+      sessions: [
+        { day: 1, name: "Run-Walk 10", durationMin: 30, equipment: "Good shoes", feel: "Familiar", structure: ["5 min walk", "5×: 2 min jog / 2 min walk", "5 min walk"] },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Solid", structure: ["Same as Week 3"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Run-Walk 11", durationMin: 30, equipment: "Good shoes", feel: "Smooth", structure: ["5 min walk", "4×: 2 min jog / 90 sec walk, then 3 min jog", "5 min walk"] },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Run-Walk 12", durationMin: 32, equipment: "Good shoes", feel: "Confident", structure: ["5 min walk", "4×: 3 min jog / 2 min walk", "5 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 5, theme: "Longer Intervals", progression: "Run intervals increase to 4-5 min.",
+      sessions: [
+        { day: 1, name: "Run-Walk 13", durationMin: 32, equipment: "Good shoes", feel: "Stronger", structure: ["5 min walk", "4×: 4 min jog / 2 min walk", "5 min walk"] },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Powerful", structure: ["Add Bulgarian Split Squat 3×8/side, Plank 3×45 sec to circuit"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Run-Walk 14", durationMin: 32, equipment: "Good shoes", feel: "Enduring", structure: ["5 min walk", "3×: 5 min jog / 2 min walk", "5 min walk"] },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Run-Walk 15", durationMin: 35, equipment: "Good shoes", feel: "Alive", structure: ["5 min walk", "3×: 5 min jog / 90 sec walk", "5 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 6, theme: "Almost There", progression: "Run intervals reach 8 min.",
+      sessions: [
+        { day: 1, name: "Run-Walk 16", durationMin: 35, equipment: "Good shoes", feel: "Determined", structure: ["5 min walk", "2×: 8 min jog / 3 min walk", "5 min walk"], coachingNote: "Eight minutes. You are a runner now." },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Strong", structure: ["Same as Week 5"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Run-Walk 17", durationMin: 35, equipment: "Good shoes", feel: "Smooth", structure: ["5 min walk", "2×: 10 min jog / 3 min walk", "5 min walk"], coachingNote: "Ten minutes without stopping. Let that sink in." },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Run-Walk 18", durationMin: 38, equipment: "Good shoes", feel: "Resilient", structure: ["5 min walk", "1×: 15 min jog continuous", "5 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 7, theme: "Continuous", progression: "Run 20-25 min continuous.",
+      sessions: [
+        { day: 1, name: "Run 1", durationMin: 35, equipment: "Good shoes", feel: "Free", structure: ["5 min walk", "Run 20 min continuous", "5 min walk"], coachingNote: "Twenty minutes. You have arrived." },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Capable", structure: ["Same circuit, aim for 4 rounds"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Run 2", durationMin: 35, equipment: "Good shoes", feel: "Smooth", structure: ["5 min walk", "Run 25 min continuous", "5 min walk"] },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Run 3", durationMin: 30, equipment: "Good shoes", feel: "Peaceful", structure: ["5 min walk", "Easy 20 min run – enjoy it", "5 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 8, theme: "Celebration", progression: "Run 30 min continuously (or your longest yet).",
+      sessions: [
+        { day: 1, name: "Celebration Run", durationMin: 40, equipment: "Good shoes", feel: "Triumphant", structure: ["5 min walk", "Run 30 min (or as long as feels good)", "5 min walk"], coachingNote: "Eight weeks ago, one minute felt long. Look at you now. This is who you are." },
+        { day: 2, name: "Strength for Runners", durationMin: 30, equipment: "Mat, dumbbells", feel: "Grateful", structure: ["Light session – your favourite exercises, 2 sets each"] },
+        { day: 3, name: "Rest", structure: ["Rest"] },
+        { day: 4, name: "Easy Run or Walk", durationMin: 30, equipment: "Good shoes", feel: "Peaceful", structure: ["Whatever your body wants – a gentle run or a long walk."] },
+        { day: 5, name: "Rest", structure: ["Rest"] },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Reflect", durationMin: 0, equipment: "None", feel: "Complete", structure: ["Write down how you feel. What has changed in your body, your mind, your sense of what is possible?"], coachingNote: "This path is yours forever. Run whenever you need to come home to yourself." }
+      ] }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════
+// 8. THE 8-MOVE CIRCUIT PATH – 8-WEEK CARDIO + ENDURANCE
+// ═══════════════════════════════════════════════════════════
+export const cardioCircuit: TrainingPath = {
+  id: "signal-circuit-progressive",
+  name: "The 8-Move Circuit Path",
+  subtitle: "Two rounds. Eight moves. Eight weeks of quiet power.",
+  focus: "cardio",
+  description:
+    "This is not random work. It is a conversation between you and your body – a steady climb from beginner-friendly reps and simple jumps to explosive intervals and long cardio bursts. Each workout lists 8 exercises. You complete the list once, rest 90 seconds, then do it again. The themes change every day so you never burn out the same muscles twice.",
+  whoItIsFor:
+    "The woman who wants clear structure, visible progress, and a workout that fits inside 30 minutes. She is ready to sweat, but she also wants to feel her heart grow stronger week by week.",
+  weeks: [
+    { week: 1, theme: "Easy Rhythm", progression: "All exercises bodyweight. Low reps. No plyometrics.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Easy)", durationMin: 25, equipment: "None (optional: skipping rope)", feel: "Conversational",
+          structure: ["Circuit – 2 rounds (rest 90 sec between rounds):", "1. Bodyweight Squats – 12 reps", "2. Stationary Lunges – 8 reps per leg", "3. Step Ups (low bench) – 8 reps per leg", "4. Knee Ups (marching in place) – 16 reps total", "5. Glute Bridges – 12 reps", "6. Toe Taps (light) – 12 reps", "7. Walking Lunges – 8 reps per leg", "8. Slow Mountain Climbers – 15 reps total"],
+          coachingNote: "Move slowly. Feel each rep. If you are not sweating, that is fine – this week is about learning the pattern." },
+        { day: 2, name: "Upper Body & Cardio (Easy)", durationMin: 25, equipment: "Optional: light dumbbells (1-3 kg)", feel: "Steady",
+          structure: ["Circuit – 2 rounds:", "1. Incline Push Ups (hands on bench) – 10 reps", "2. Tricep Dips (feet on floor) – 10 reps", "3. Arm Circles (small) – 20 reps forward + 20 back", "4. Plank – 20 seconds", "5. Bent-over Rows (no weight or water bottles) – 12 reps", "6. Shoulder Press (light) – 10 reps", "7. Bird Dog – 8 reps per side", "8. Jumping Jacks – 30 reps"],
+          coachingNote: "Keep your shoulders relaxed. Do not rush the plank – it is okay to drop to your knees." },
+        { day: 3, name: "Core & Cardio (Easy)", durationMin: 25, equipment: "None", feel: "Light burn",
+          structure: ["Circuit – 2 rounds:", "1. Standing Toe Taps – 12 reps per leg", "2. Dead Bug – 8 reps per side", "3. Straight Leg Raises – 10 reps total", "4. Seated Knee Tucks (on mat) – 12 reps", "5. Heel Taps (lying down) – 12 reps per side", "6. Marching in Place (high knees, slow) – 30 sec", "7. Side Plank (knee down) – 15 sec per side", "8. Bicycle Crunches (slow) – 10 reps per side"],
+          coachingNote: "This is not about speed. Keep your lower back pressed into the floor for all lying moves." },
+        { day: 4, name: "Rest or Easy Walk", structure: ["Rest, gentle stretching, or 20-30 min walk"] },
+        { day: 5, name: "Full Body (Easy Cardio Mix)", durationMin: 28, equipment: "Optional: skipping rope", feel: "Energised",
+          structure: ["Circuit – 2 rounds:", "1. Squat to Stand (slow) – 10 reps", "2. Push Ups (knees or incline) – 8 reps", "3. Reverse Lunges – 8 reps per leg", "4. Lying Tricep Extensions (no weight) – 10 reps", "5. Plank Shoulder Taps – 8 reps per side", "6. Butt Kicks (slow) – 20 reps total", "7. Supine Leg Lowering – 8 reps per leg", "8. Skipping (or imaginary skipping) – 40 reps"],
+          coachingNote: "You should finish feeling like you could do another round – but save that for next week." },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 2, theme: "Increase Reps Slightly", progression: "Add 3-5 reps per move. Introduce a light skipping rope.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Week 2)", durationMin: 28, equipment: "Skipping rope (optional)", feel: "Building rhythm",
+          structure: ["Circuit – 2 rounds:", "1. Squats – 15 reps", "2. Walking Lunges – 10 reps per leg", "3. Step Ups – 10 reps per leg", "4. Sumo Squats – 12 reps", "5. Donkey Kicks – 12 reps per leg", "6. Knee Ups (controlled) – 16 reps total", "7. Glute Bridge with 3 sec hold – 12 reps", "8. Skipping (easy pace) – 50 reps"],
+          coachingNote: "The skipping can be broken into 25 + 25. Land softly on the balls of your feet." },
+        { day: 2, name: "Upper Body & Cardio (Week 2)", durationMin: 28, equipment: "Light dumbbells (2-4 kg) or water bottles", feel: "Steady effort",
+          structure: ["Circuit – 2 rounds:", "1. Knee Push Ups – 12 reps", "2. Tricep Dips (feet on floor) – 12 reps", "3. Lateral Raises (light) – 10 reps", "4. Plank – 30 seconds", "5. Dumbbell Rows – 12 reps per side", "6. Overhead Press – 10 reps", "7. Arm Scissors (lying) – 20 reps total", "8. High Knees (slow to moderate) – 20 reps per leg"],
+          coachingNote: "Focus on lowering the weights slowly – that is where the strength builds." },
+        { day: 3, name: "Core & Cardio (Week 2)", durationMin: 28, equipment: "None or mat", feel: "Controlled",
+          structure: ["Circuit – 2 rounds:", "1. Plank – 30 sec", "2. Toe Taps (lying, legs up) – 14 reps", "3. Reverse Crunches – 12 reps", "4. Side Plank (knee allowed) – 20 sec per side", "5. Mountain Climbers (slow cadence) – 20 reps total", "6. Windshield Wipers (small range) – 12 reps total", "7. Leg Lowers (straight) – 10 reps", "8. Russian Twists (feet on floor) – 16 reps total (8/side)"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Week 2)", durationMin: 30, equipment: "Skipping rope, light weights", feel: "Balanced",
+          structure: ["Circuit – 2 rounds:", "1. Goblet Squats (hold one weight) – 12 reps", "2. Push Ups (knees or full) – 10 reps", "3. Reverse Lunges with Knee Drive – 8 reps per leg", "4. Tricep Kickbacks – 12 reps per arm", "5. Lying Leg Raises – 12 reps", "6. Plank Jacks – 15 reps total", "7. Box Step Overs (low bench) – 10 reps per leg", "8. Burpees (no push up, no jump) – 6 reps"],
+          coachingNote: "The burpees are slow – stand up, squat back, kick feet out, step back in, stand. No rush." },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 3, theme: "Introduce Tempo", progression: "Faster pace on cardio moves. First small jumps.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Tempo)", durationMin: 30, equipment: "Skipping rope, low bench", feel: "Moderate effort",
+          structure: ["Circuit – 2 rounds:", "1. Jumping Jacks – 40 reps", "2. Split Squats (stationary) – 10 reps per leg", "3. Alternating Reverse Lunges – 14 reps total", "4. Step Ups with Knee Lift – 10 reps per leg", "5. Skater Hops (small) – 12 reps per side", "6. Skipping – 80 reps", "7. Sumo Squats with Pulse – 12 reps + 8 pulses", "8. Calf Raises – 20 reps"],
+          coachingNote: "Skater hops = jump side to side like a speed skater. Keep the jump low. Land softly." },
+        { day: 2, name: "Upper Body & Cardio (Tempo)", durationMin: 30, equipment: "Light dumbbells (3-5 kg), bench", feel: "Building",
+          structure: ["Circuit – 2 rounds:", "1. Push Ups (full or knees) – 12 reps", "2. Tricep Dips (feet on floor) – 14 reps", "3. Bent Over Rows – 12 reps", "4. Plank with Arm Reach – 8 reps per side", "5. Dumbbell Punch (alternating) – 20 reps total", "6. Incline Push Ups (feet on bench) – 10 reps", "7. Bear Crawl (forward & back) – 4 crawls each way", "8. Fast Feet (in place) – 30 seconds"] },
+        { day: 3, name: "Core & Cardio (Tempo)", durationMin: 30, equipment: "Mat, skipping rope", feel: "Core fatigue",
+          structure: ["Circuit – 2 rounds:", "1. Plank – 40 seconds", "2. Bicycle Crunches – 16 reps per side", "3. Scissor Kicks – 20 reps total", "4. Hollow Body Hold – 20 seconds", "5. Mountain Climbers (moderate pace) – 30 reps total", "6. V-Ups (bent knees) – 12 reps", "7. Side Plank Dips – 8 reps per side", "8. Skipping (fast feet style) – 100 reps"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Tempo)", durationMin: 32, equipment: "Dumbbells (3-5 kg), skipping rope", feel: "Sweaty",
+          structure: ["Circuit – 2 rounds:", "1. Burpees (regular, no push up) – 8 reps", "2. Walking Lunges with Twist – 12 reps total (6/leg)", "3. Push Up to Downward Dog – 8 reps", "4. Squat to Overhead Press – 12 reps", "5. Plank Walk (hand to elbow) – 12 reps total", "6. Butt Kicks (fast) – 30 seconds", "7. Box Jumps (low bench, step down) – 8 reps", "8. Skipping – 120 reps"],
+          coachingNote: "Box jumps step down, do not jump down – your knees will thank you." },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 4, theme: "Consolidation with Small Jumps", progression: "Repeat Week 3 but reduce rest between rounds to 75 sec.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Week 4)", durationMin: 30, equipment: "Skipping rope", feel: "Stronger",
+          structure: ["Circuit – 2 rounds (rest 75 sec):", "1. Jump Squats (low jump) – 10 reps", "2. Alternating Jump Lunges (small) – 8 reps per leg", "3. Speed Skaters – 15 reps per side", "4. Step Ups with Hop (low bench) – 8 reps per leg", "5. Skipping – 120 reps", "6. Single Leg Glute Bridge – 10 reps per leg", "7. Lateral Lunges – 10 reps per side", "8. High Knees (in place) – 40 reps total"],
+          coachingNote: "The jump is small – think 'springy', not 'explosive'. Protect your knees." },
+        { day: 2, name: "Upper Body & Cardio (Week 4)", durationMin: 30, equipment: "Dumbbells (4-6 kg), bench", feel: "Controlled power",
+          structure: ["Circuit – 2 rounds (rest 75 sec):", "1. Decline Push Ups (feet on bench) – 10 reps", "2. Tricep Dips (feet elevated) – 12 reps", "3. Renegade Rows (knees down) – 6 reps per arm", "4. Plank Up-Downs – 10 reps total", "5. Dumbbell Floor Press – 12 reps", "6. Lateral Raises – 12 reps", "7. Arm Circles with small weight – 15 forward/back", "8. Jumping Jacks – 50 reps"] },
+        { day: 3, name: "Core & Cardio (Week 4)", durationMin: 30, equipment: "Mat, skipping rope", feel: "Deep core work",
+          structure: ["Circuit – 2 rounds:", "1. Plank with Knee Taps – 16 reps total", "2. Leg Lowers (straight, slow) – 12 reps", "3. Toe Taps (lying, legs vertical) – 20 reps", "4. Side Plank (full or knee) – 25 sec per side", "5. Cross Body Mountain Climbers – 20 reps total", "6. Russian Twists (feet up) – 20 reps total (10/side)", "7. Flutter Kicks – 30 seconds", "8. Skipping (alternating feet) – 150 reps"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Week 4)", durationMin: 32, equipment: "Dumbbells, skipping rope, bench", feel: "Complete",
+          structure: ["Circuit – 2 rounds:", "1. Burpee with Push Up – 8 reps", "2. Dumbbell Squat to Press – 12 reps", "3. Reverse Lunge with Bicep Curl – 10 reps per leg", "4. Tricep Dips (feet on floor) – 15 reps", "5. Plank Shoulder Taps – 16 reps total", "6. Box Step Over with Knee Drive – 10 reps per leg", "7. Tuck Jumps (low) – 8 reps", "8. Skipping – 150 reps"],
+          coachingNote: "Tuck jumps = jump and pull knees toward chest. Land like a cat – soft and quiet." },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 5, theme: "Plyometric Introduction", progression: "Add tuck jumps, broad jumps. Skipping to 200 reps.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Plyo Start)", durationMin: 32, equipment: "Skipping rope, low bench/box", feel: "Powerful",
+          structure: ["Circuit – 2 rounds:", "1. Broad Jumps (standing long jump) – 6 reps", "2. Tuck Jumps – 8 reps", "3. Alternating Jump Lunges – 12 reps total (6/leg)", "4. Box Jumps (step down) – 10 reps", "5. Skipping – 200 reps", "6. Single Leg Squat to Bench (touch and stand) – 8 reps per leg", "7. Lateral Hops over line – 15 reps per side", "8. Ice Skaters (large lateral jumps) – 10 reps per side"] },
+        { day: 2, name: "Upper Body & Cardio (Plyo Upper)", durationMin: 32, equipment: "Dumbbells, bench, medicine ball (optional)", feel: "Explosive push",
+          structure: ["Circuit – 2 rounds:", "1. Plyo Push Ups (clap or just explosive) – 6 reps", "2. Medicine Ball Slams (or squat jump toss) – 12 reps", "3. Tricep Dips with Leg Lift – 12 reps", "4. Commando Plank (fast) – 16 reps total", "5. Dumbbell Snatch (single arm) – 6 reps per arm", "6. Bear Crawl (fast) – 10 steps forward/back", "7. Mountain Climbers (fast) – 40 reps total", "8. Skipping (double unders or fast singles) – 150 reps"] },
+        { day: 3, name: "Core & Cardio (Plyo Core)", durationMin: 32, equipment: "Mat, skipping rope", feel: "Core endurance",
+          structure: ["Circuit – 2 rounds:", "1. Plank Jacks – 20 reps", "2. V-Up Tucks – 12 reps", "3. Leg Throw Downs – 10 reps per leg", "4. Side Plank with Knee Drive – 10 reps per side", "5. Mountain Climber Cross – 30 reps total", "6. Hollow Body Rocks – 15 rocks", "7. Russian Twist with Pulse – 20 reps per side", "8. Fast Feet + Sprint in Place – 20 sec fast feet, 10 sec sprint, repeat 2x"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Plyo Mix)", durationMin: 35, equipment: "Skipping rope, box/bench, light dumbbells", feel: "Full throttle",
+          structure: ["Circuit – 2 rounds:", "1. Burpee to Tuck Jump – 8 reps", "2. Dumbbell Thrusters (squat to press) – 12 reps", "3. Broad Jump Burpee (no push up) – 6 reps", "4. Decline Push Up to Side Plank – 6 reps per side", "5. Box Jump to Step Down – 10 reps", "6. Skater Hops with Touch – 16 reps total", "7. Plank to Pike – 10 reps", "8. Skipping – 250 reps (or 1 minute fast)"] },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 6, theme: "Increase Volume", progression: "Same structure, increase reps by 20%.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Week 6)", durationMin: 35, equipment: "Skipping rope, box", feel: "Hard endurance",
+          structure: ["Circuit – 2 rounds:", "1. Box Jumps (jump up, step down) – 12 reps", "2. Split Jumps (switch lunge jump) – 16 reps total (8/leg)", "3. Broad Jumps – 10 reps", "4. Single Leg Box Step Ups with Hop – 10 reps per leg", "5. Skipping (alternating fast/slow) – 300 reps total", "6. Cossack Squats – 12 reps per side", "7. Lateral Hops over bench – 20 reps total", "8. Sprint in Place (high knees) – 45 seconds"] },
+        { day: 2, name: "Upper Body & Cardio (Week 6)", durationMin: 35, equipment: "Dumbbells (5-8 kg), bench, medicine ball", feel: "Pushing limits",
+          structure: ["Circuit – 2 rounds:", "1. Explosive Push Ups (hands off) – 8 reps", "2. Medicine Ball Chest Pass (against wall) – 15 reps", "3. Tricep Dips (feet elevated on second bench) – 15 reps", "4. Renegade Rows (plank, no knees) – 8 reps per arm", "5. Dumbbell Cleans – 10 reps", "6. Plank with Row – 10 reps per arm", "7. Burpee to Pull Up (if no bar, burpee to jump) – 6 reps", "8. Skipping (double unders attempts) – 100 reps"] },
+        { day: 3, name: "Core & Cardio (Week 6)", durationMin: 35, equipment: "Mat, medicine ball (2-4 kg), skipping rope", feel: "Burning",
+          structure: ["Circuit – 2 rounds:", "1. Plank with Medicine Ball Rollout – 10 reps", "2. V-Up with Twist – 12 reps per side", "3. Leg Lift to Hip Lift – 12 reps", "4. Side Plank with Leg Abduction – 10 reps per side", "5. Mountain Climbers (fast, cross body) – 50 reps total", "6. Russian Twist with Weight – 30 reps total (15/side)", "7. Hollow Body Hold – 45 seconds", "8. Skipping (one foot then the other) – 200 reps"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Week 6 – Peak)", durationMin: 35, equipment: "Full set: skipping rope, dumbbells, bench, medicine ball", feel: "Exhausting but liberating",
+          structure: ["Circuit – 2 rounds:", "1. Burpee to Box Jump – 10 reps", "2. Thruster + Push Press – 15 reps", "3. Depth Jump to Broad Jump – 6 reps (soft landing)", "4. Dumbbell Snatch (alternating) – 8 reps per arm", "5. Plank to Tuck Jump – 12 reps", "6. Lunge Jump Switch + Hop – 12 reps total", "7. Med Ball Slam to Squat Jump – 10 reps", "8. Skipping – 300 reps (or 2 minutes non-stop)"] },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 7, theme: "Peak Week – Maximum Effort", progression: "Shortest rest (60 sec). Highest reps and hardest plyos.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Peak)", durationMin: 35, equipment: "Skipping rope, plyo box", feel: "Intense",
+          structure: ["Circuit – 2 rounds (rest 60 sec):", "1. Depth Jumps (from 20-30 cm) – 8 reps", "2. Tuck Jumps – 20 reps", "3. Broad Jump to Sprint (in place) – 6 reps", "4. Single Leg Box Jumps (low box) – 6 reps per leg", "5. Skipping – 300 reps (as fast as possible)", "6. Bulgarian Split Squats (jump optional) – 12 reps per leg", "7. Lateral Hops over bench – 30 reps total", "8. High Knees Sprint – 60 seconds"],
+          coachingNote: "Peak week is hard by design. If you need an extra 15 sec rest, take it – but keep moving." },
+        { day: 2, name: "Upper Body & Cardio (Peak)", durationMin: 35, equipment: "Dumbbells, medicine ball, bench", feel: "Explosive",
+          structure: ["Circuit – 2 rounds (rest 60 sec):", "1. Plyo Push Ups (clap or high) – 10 reps", "2. Medicine Ball Burpees (slam at bottom) – 12 reps", "3. Tricep Dips with Knee Raise – 20 reps", "4. Commando Plank (fast) – 30 reps total", "5. Dumbbell Clean to Press – 10 reps", "6. Plank with Single Arm Row – 12 reps per arm", "7. Mountain Climber Burpee (no jump) – 10 reps", "8. Skipping (double unders) – 100 reps or 2 min singles"] },
+        { day: 3, name: "Core & Cardio (Peak)", durationMin: 35, equipment: "Weighted ball (3-5 kg), skipping rope", feel: "Deep fatigue",
+          structure: ["Circuit – 2 rounds:", "1. Weighted Sit Ups (ball overhead) – 20 reps", "2. Hanging Knee Raises (or lying leg lifts) – 15 reps", "3. Plank with Feet on Bench – 1 minute", "4. Side Plank with Weighted Reach – 12 reps per side", "5. V-Up to Jackknife – 15 reps", "6. Russian Twist (heavy) – 30 reps per side", "7. Toe Touches (lying, legs up) – 30 reps", "8. Sprint Intervals: 20 sec on / 10 sec off, 8 rounds"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Peak – Finale)", durationMin: 38, equipment: "All available", feel: "Victorious",
+          structure: ["Circuit – 2 rounds (rest 75 sec – you earned it):", "1. Burpee Box Jump Over – 10 reps", "2. Dumbbell Snatch to Thruster – 8 reps per arm", "3. Broad Jump Burpee with Push Up – 8 reps", "4. Plyo Push Up to Side Plank – 8 reps per side", "5. Tuck Jump to Squat – 15 reps", "6. Lunge Jump to Knee Drive – 12 reps per leg", "7. Med Ball Slams (fast) – 20 reps", "8. Skipping (250 reps) + 50 Mountain Climbers (finisher)"],
+          coachingNote: "This is the hardest workout of the 8 weeks. Trust your fitness." },
+        { day: 6, name: "Rest", structure: ["Rest"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 8, theme: "Deload & Celebrate", progression: "Reduce volume by 30-40%. No plyometrics. Focus on enjoyment.",
+      sessions: [
+        { day: 1, name: "Lower Body & Cardio (Deload)", durationMin: 25, equipment: "Skipping rope (optional)", feel: "Easy flow",
+          structure: ["Circuit – 2 rounds (rest as needed):", "1. Bodyweight Squats – 12 reps", "2. Walking Lunges – 8 reps per leg", "3. Step Ups – 8 reps per leg (low bench)", "4. Glute Bridges – 15 reps", "5. Knee Ups (slow) – 20 reps total", "6. Skipping – 80 reps (easy pace)", "7. Calf Raises – 20 reps", "8. Slow Mountain Climbers – 20 reps total"],
+          coachingNote: "No jumps. No rush. Feel how easy these moves have become compared to Week 1." },
+        { day: 2, name: "Upper Body & Cardio (Deload)", durationMin: 25, equipment: "Light weights (2-4 kg) or none", feel: "Relaxed",
+          structure: ["Circuit – 2 rounds:", "1. Incline Push Ups – 12 reps", "2. Tricep Dips (feet on floor) – 12 reps", "3. Bent Over Rows (light) – 12 reps", "4. Plank – 30 seconds", "5. Arm Circles – 20 each direction", "6. Standing Shoulder Press – 10 reps", "7. Jumping Jacks – 40 reps", "8. Slow Bear Crawl – 8 steps"] },
+        { day: 3, name: "Core & Cardio (Deload)", durationMin: 25, equipment: "Mat", feel: "Gentle",
+          structure: ["Circuit – 2 rounds:", "1. Plank – 30 sec", "2. Dead Bug – 10 reps per side", "3. Straight Leg Raises – 12 reps", "4. Bird Dog – 10 reps per side", "5. Seated Knee Tucks – 15 reps", "6. Heel Taps – 15 reps per side", "7. Bicycle Crunches (slow) – 12 reps per side", "8. Marching in Place – 1 minute"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Full Body (Deload – Fun Day)", durationMin: 25, equipment: "Skipping rope (optional)", feel: "Playful",
+          structure: ["Circuit – 2 rounds:", "1. Squat to Stand – 10 reps", "2. Knee Push Ups – 10 reps", "3. Reverse Lunges – 8 reps per leg", "4. Tricep Extensions (no weight) – 12 reps", "5. Plank Shoulder Taps – 10 reps total", "6. Butt Kicks – 30 seconds", "7. Toe Taps (standing) – 20 reps per leg", "8. Skipping or Dancing – 2 minutes"],
+          coachingNote: "Pick your favourite music for the last set. You made it through 8 weeks. That is a win." },
+        { day: 6, name: "Reflect & Stretch", structure: ["Write down three things your body can do now that it could not do in Week 1. Then 15 minutes of full-body stretching."] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════
+// 9. THE ANCHOR – 8-WEEK GLUTE POWER (rewritten in new shape)
+// ═══════════════════════════════════════════════════════════
+export const glutePower: TrainingPath = {
+  id: "glute-power",
+  name: "The Anchor",
+  subtitle: "Coming home to your strongest centre",
+  focus: "glute-power",
+  description:
+    "Eight weeks of patient, intentional work for the muscles that carry you through every day — the ones that have been quietly waiting to be noticed. We start small, with feeling. We build slowly, with weight. The work is not loud. The change is.",
+  whoItIsFor:
+    "The woman who wants strong, capable hips and glutes. New to focused glute work, or returning after years of generic gym programmes that never quite woke this part of her up.",
+  weeks: [
+    { week: 1, theme: "Activation — Learning the Patterns", phaseGoal: "Establish mind-muscle connection. Light weights, slow tempo, deep feeling.", rpeMin: 5, rpeMax: 6.5,
+      progression: "Tempo 3-1-2 on most lifts. Light dumbbells (3-5 kg). Form before load.",
+      sessions: [
+        { day: 1, name: "Drive — Hip extension led", durationMin: 40, equipment: "Dumbbells (3-5 kg), mat", feel: "Curious", coachingNote: "If the bridge feels in your lower back instead of your glutes, slow down. The muscle you want is the one underneath.",
+          warmup: ["Cat-cow x 8", "Glute bridges x 12", "Hip circles x 10/side", "Deep squat hold 30 sec"],
+          supersets: [
+            { rounds: 3, exercises: [
+              { name: "Glute Bridge", sets: 3, reps: 15, tempo: "2-2-2", notes: "squeeze at the top" },
+              { name: "Goblet Squat", sets: 3, reps: 12, tempo: "3-1-2" },
+            ] },
+            { rounds: 3, exercises: [
+              { name: "Reverse Lunge", sets: 3, reps: "10 per side" },
+              { name: "Single-Leg Glute Bridge", sets: 3, reps: "10 per side" },
+              { name: "Clam (slow)", sets: 2, reps: "15 per side" },
+            ] },
+          ],
+          coolDown: ["Pigeon 1 min/side", "Supine twist 1 min/side", "Child's pose 1 min"] },
+        { day: 2, name: "Walk & Breathe", durationMin: 30, equipment: "None", feel: "Easy and spacious", structure: ["20 min walk at a nose-breathing pace", "10 min gentle stretching — hamstrings, hips, chest"] },
+        { day: 3, name: "Hinge — Posterior chain", durationMin: 40, equipment: "Dumbbells (3-5 kg), mat", feel: "Grounded", coachingNote: "The hinge is a movement you'll use every day. Feel the stretch in your hamstrings, not your lower back.",
+          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
+          supersets: [
+            { rounds: 3, exercises: [
+              { name: "Romanian Deadlift", sets: 3, reps: 12, tempo: "3-1-2" },
+              { name: "Glute Bridge March", sets: 3, reps: "10 per side" },
+              { name: "Sumo Squat", sets: 3, reps: 12, tempo: "4-1-2" },
+            ] },
+            { rounds: 2, exercises: [
+              { name: "Side-Lying Leg Lift", sets: 2, reps: "15 per side" },
+              { name: "Bird Dog", sets: 3, reps: "6 per side" },
+            ] },
+          ],
+          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
+        { day: 4, name: "Rest", durationMin: 0, structure: ["Rest"], coachingNote: "Your muscles grow while you are lying still." },
+        { day: 5, name: "Shape — Round and lift", durationMin: 40, equipment: "Dumbbells, resistance band, mat", feel: "Connected",
+          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
+          supersets: [
+            { rounds: 3, exercises: [
+              { name: "Hip Thrust", sets: 3, reps: 12, tempo: "1 sec pause at top" },
+              { name: "Curtsy Lunge", sets: 3, reps: "10 per side" },
+            ] },
+            { rounds: 3, exercises: [
+              { name: "Fire Hydrant", sets: 3, reps: "12 per side" },
+              { name: "Donkey Kick", sets: 3, reps: "12 per side" },
+              { name: "Plank", sets: 2, reps: "30 sec" },
+            ] },
+          ],
+          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"],
+          coachingNote: "These small movements look easy. They are not. The smaller the muscle, the more attention it needs." },
+        { day: 6, name: "Walk", durationMin: 25, structure: ["25 min walk", "Notice 5 things you see, 4 you hear, 3 you feel"], feel: "Peaceful" },
+        { day: 7, name: "Rest", structure: ["Rest"], coachingNote: "One week down. Notice anything new in your body?" }
+      ] },
+    { week: 2, theme: "Deeper Connection — Same load, more feeling", phaseGoal: "Build mind-muscle connection. Add 1 rep to working sets if form felt solid.", rpeMin: 5.5, rpeMax: 6.5,
+      progression: "Same weights, +1 rep on each working set. Goal: deeper connection, not heavier weight.",
+      sessions: [
+        { day: 1, name: "Drive (Week 2)", durationMin: 40, structure: ["Drive routine, +1 rep on each working set"], coachingNote: "Notice how much more you can feel this week." },
+        { day: 2, name: "Walk & Breathe", durationMin: 30, structure: ["Walk + stretch"] },
+        { day: 3, name: "Hinge (Week 2)", durationMin: 40, structure: ["Hinge routine, +1 rep on each working set"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Shape (Week 2)", durationMin: 40, structure: ["Shape routine, +1 rep on each working set"] },
+        { day: 6, name: "Walk", durationMin: 25, structure: ["25 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 3, theme: "First Load Increase", phaseGoal: "Add 1-2 kg to compound lifts if Week 2 form was solid.", rpeMin: 6, rpeMax: 7,
+      progression: "Add 1-2 kg to RDL, Goblet Squat, Sumo Squat, Hip Thrust. Same reps.",
+      sessions: [
+        { day: 1, name: "Drive (heavier)", durationMin: 42, structure: ["Drive routine, +1-2 kg on Glute Bridge & Goblet Squat"] },
+        { day: 2, name: "Walk", durationMin: 30, structure: ["Walk + stretch"] },
+        { day: 3, name: "Hinge (heavier)", durationMin: 42, structure: ["Hinge routine, +1-2 kg on RDL & Sumo Squat"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Shape (heavier)", durationMin: 42, structure: ["Shape routine, +1-2 kg on Hip Thrust"] },
+        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 4, theme: "Activation Phase Close", phaseGoal: "Hold Week 3 load. Notice what's changed from Week 1.", rpeMin: 6, rpeMax: 7,
+      progression: "Same load as Week 3. Final week of activation phase.",
+      sessions: [
+        { day: 1, name: "Drive (Week 4)", durationMin: 42, structure: ["Drive routine"] },
+        { day: 2, name: "Walk", durationMin: 30, structure: ["Walk + stretch"] },
+        { day: 3, name: "Hinge (Week 4)", durationMin: 42, structure: ["Hinge routine"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Shape (Week 4)", durationMin: 42, structure: ["Shape routine"] },
+        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest. Look back at Week 1. Notice the shift."] }
+      ] },
+    { week: 5, theme: "Load Phase — The body is ready", phaseGoal: "Increase weight, add a fourth set to primary lifts.", rpeMin: 6.5, rpeMax: 7.5,
+      progression: "Add a fourth set to the first two compound lifts each session. Reps drop to 8-10 on heavier lifts. Tempo controlled.",
+      sessions: [
+        { day: 1, name: "Drive — Heavier", durationMin: 45, equipment: "Dumbbells (5-8 kg) or barbell", feel: "Capable",
+          warmup: ["Glute bridges x 12", "Monster walks 10 each direction"],
+          supersets: [
+            { rounds: 4, exercises: [
+              { name: "Glute Bridge or Hip Thrust", sets: 4, reps: 10, weight: "heavier" },
+              { name: "Goblet or Barbell Squat", sets: 4, reps: 8, tempo: "3-1-1" },
+            ] },
+            { rounds: 3, exercises: [
+              { name: "Reverse Lunge", sets: 3, reps: "10 per side", weight: "heavier" },
+              { name: "Single-Leg Glute Bridge", sets: 3, reps: "10 per side" },
+              { name: "Plank", sets: 3, reps: "40 sec" },
+            ] },
+          ],
+          coolDown: ["Pigeon", "Hamstring stretch"],
+          coachingNote: "The fourth set is a quiet promise to your future self." },
+        { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + stretch"], coachingNote: "Recovery is where the training becomes you." },
+        { day: 3, name: "Hinge — Heavier", durationMin: 45, equipment: "Dumbbells (5-8 kg) or barbell", feel: "Strong",
+          supersets: [
+            { rounds: 4, exercises: [
+              { name: "Romanian Deadlift", sets: 4, reps: 8, tempo: "3-1-2", weight: "heavier" },
+              { name: "Sumo Squat", sets: 4, reps: 10 },
+            ] },
+            { rounds: 3, exercises: [
+              { name: "Glute Bridge March", sets: 3, reps: "10 per side" },
+              { name: "Side-Lying Leg Lift", sets: 3, reps: "15 per side" },
+              { name: "Bird Dog", sets: 3, reps: "8 per side" },
+            ] },
+          ],
+          coolDown: ["Hamstring stretch", "Supine twist"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Shape — Volume", durationMin: 45, equipment: "Dumbbells, band, mat", feel: "Burning in the right places",
+          supersets: [
+            { rounds: 4, exercises: [
+              { name: "Hip Thrust", sets: 4, reps: 12, tempo: "1 sec pause at top" },
+              { name: "Curtsy Lunge", sets: 3, reps: "12 per side" },
+            ] },
+            { rounds: 3, exercises: [
+              { name: "Fire Hydrant", sets: 3, reps: "15 per side" },
+              { name: "Donkey Kick", sets: 3, reps: "15 per side" },
+              { name: "Side Plank", sets: 2, reps: "25 sec per side" },
+            ] },
+          ],
+          coachingNote: "The burn is real. It is the muscle saying I am awake." },
+        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk, slightly faster pace"] },
+        { day: 7, name: "Rest", structure: ["Rest"], coachingNote: "Notice your body climbing the stairs." }
+      ] },
+    { week: 6, theme: "Settling into the heavier rhythm", phaseGoal: "Same lifts as Week 5, +1-2 kg if last week's RPE was below 8.", rpeMin: 7, rpeMax: 8,
+      progression: "Sleep is part of the programme this week.",
+      sessions: [
+        { day: 1, name: "Drive (Week 6)", durationMin: 45, structure: ["Drive routine, Week 5 + small load increase"] },
+        { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + stretch"] },
+        { day: 3, name: "Hinge (Week 6)", durationMin: 45, structure: ["Hinge routine, Week 5 + small load increase"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Shape (Week 6)", durationMin: 45, structure: ["Shape routine, Week 5 + 2 reps"] },
+        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 7, theme: "Intensification — Top sets", phaseGoal: "Push to heavier loads on primary lifts.", rpeMin: 7.5, rpeMax: 8.5,
+      progression: "Top set on each compound: 1 set of 5-6 reps at heaviest sustainable load, then back-off sets at Week 6 weight.",
+      sessions: [
+        { day: 1, name: "Drive — Top set", durationMin: 50, structure: ["Hip Thrust top set 1×5 heavy, 3×10 back-off", "Squat top set 1×6 heavy, 3×8 back-off", "Reverse Lunge 3×10/side", "Single-Leg Glute Bridge 3×10/side", "Plank 3×45 sec"], coachingNote: "Watch form like a hawk." },
+        { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + mobility"] },
+        { day: 3, name: "Hinge — Top set", durationMin: 50, structure: ["RDL top set 1×6 heavy, 3×8 back-off", "Sumo Squat 4×10", "Glute Bridge March 3×10/side", "Side-Lying Leg Lift 3×15/side"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Shape — Volume + finisher", durationMin: 50, structure: ["Hip Thrust 4×10", "Curtsy Lunge 3×12/side", "Fire Hydrant + Donkey Kick superset 3×12 each per side", "Plank to side plank flow 3×30 sec each side"] },
+        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk, optional 4×30 sec light pickups"] },
+        { day: 7, name: "Rest", structure: ["Rest"] }
+      ] },
+    { week: 8, theme: "Test, Deload, Reflect", phaseGoal: "Notice everything that has changed.", rpeMin: 6, rpeMax: 8,
+      progression: "Optional test day on Day 1 — one heavy set on Hip Thrust or Squat. Then a soft, celebratory week.",
+      sessions: [
+        { day: 1, name: "Test or Celebrate", durationMin: 40, structure: ["Long warm-up", "Optional: 1 heavy set on Hip Thrust or Squat (5 reps at 8/10 RPE)", "3 working sets on each — lighter, every rep felt", "Long stretch and a quiet sit"], coachingNote: "Celebrate the woman you are now." },
+        { day: 2, name: "Walk", durationMin: 30, structure: ["30 min walk, no agenda"] },
+        { day: 3, name: "Light Hinge", durationMin: 35, structure: ["RDL 3×8 light, accessories at Week 5 weight"] },
+        { day: 4, name: "Rest", structure: ["Rest"] },
+        { day: 5, name: "Light Shape", durationMin: 35, structure: ["Shape routine, all lighter"] },
+        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
+        { day: 7, name: "Rest and reflect", durationMin: 0, structure: ["Rest. Write one sentence about what your body can do now that it could not in Week 1."], coachingNote: "You came back, again and again. That is the real work." }
+      ] }
+  ]
+};
+
 /**
  * Canonical list of every SIGNAL training path. Order shapes the cards
  * shown on the /movement Training tab.
@@ -3874,6 +4296,9 @@ function normalisePath(path: TrainingPath): TrainingPath {
 export const SIGNAL_TRAINING_PATHS: TrainingPath[] = [
   strengthFromTheGroundUp,
   theForge,
+  learnToRun,
   pilatesPlan as unknown as TrainingPath,
+  cardioCircuit,
   restAndRestore,
+  glutePower,
 ].map(normalisePath);
