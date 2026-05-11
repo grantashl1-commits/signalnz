@@ -71,7 +71,7 @@ function pool(
   prefs: PrepPreferences
 ): Recipe[] {
   const avoid = parseAvoid(prefs);
-  const all = NOURISH_RECIPES.filter((r) => r.category === category);
+  const all = ALL_RECIPES.filter((r) => r.category === category);
   let phaseMatch = all.filter(
     (r) =>
       r.phase === phase &&
