@@ -8,10 +8,16 @@
  */
 import { Recipe } from "@/data/meal-plans";
 import { NOURISH_RECIPES } from "@/data/nourish-recipes";
+import { SIGNAL_REWRITES } from "@/data/signal-rewrites";
 import imageMaps from "@/data/image-maps.json";
 
-/** All recipes — single canonical source. */
-export const ALL_RECIPES: Recipe[] = NOURISH_RECIPES;
+/** All recipes — handcrafted nourish library + 216 SIGNAL rewrites. */
+const _seen = new Set<string>();
+export const ALL_RECIPES: Recipe[] = [...NOURISH_RECIPES, ...SIGNAL_REWRITES].filter(r => {
+  if (_seen.has(r.id)) return false;
+  _seen.add(r.id);
+  return true;
+});
 
 /**
  * Backwards-compatible alias.
