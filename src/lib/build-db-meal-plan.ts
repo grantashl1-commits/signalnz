@@ -7,7 +7,7 @@
  */
 import { Phase } from "./cycle-utils";
 import { Recipe } from "@/data/meal-plans";
-import { NOURISH_RECIPES } from "@/data/nourish-recipes";
+import { ALL_RECIPES } from "@/lib/recipe-index";
 import { KIDS_RECIPE_BANK, KidsRecipe } from "@/data/kids-recipes";
 import {
   PrepPreferences,
