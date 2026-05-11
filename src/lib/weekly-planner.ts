@@ -450,12 +450,13 @@ export function getSavedPreferences(): PrepPreferences | null {
   return val ? JSON.parse(val) : null;
 }
 
-// ─── AI Plan Persistence ──────────────────────────────────
-const AI_PLAN_KEY = "signal_ai_meal_plan";
+// ─── Meal Plan Persistence ────────────────────────────────
+const MEAL_PLAN_KEY = "signal_meal_plan";
+const LEGACY_MEAL_PLAN_KEY = "signal_ai_meal_plan";
 
 export function saveAIMealPlan(plan: AIMealPlan): void {
   try {
-    localStorage.setItem(AI_PLAN_KEY, JSON.stringify(plan));
+    localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(plan));
   } catch (e) {
     console.error("saveAIMealPlan: localStorage quota exceeded, skipping local save", e);
   }
@@ -463,11 +464,21 @@ export function saveAIMealPlan(plan: AIMealPlan): void {
 
 export function getAIMealPlan(): AIMealPlan | null {
   try {
-    const val = localStorage.getItem(AI_PLAN_KEY);
+    let val = localStorage.getItem(MEAL_PLAN_KEY);
+    if (!val) {
+      // One-time migration from the legacy key
+      const legacy = localStorage.getItem(LEGACY_MEAL_PLAN_KEY);
+      if (legacy) {
+        localStorage.setItem(MEAL_PLAN_KEY, legacy);
+        localStorage.removeItem(LEGACY_MEAL_PLAN_KEY);
+        val = legacy;
+      }
+    }
     return val ? JSON.parse(val) : null;
   } catch { return null; }
 }
 
 export function clearAIMealPlan(): void {
-  localStorage.removeItem(AI_PLAN_KEY);
+  localStorage.removeItem(MEAL_PLAN_KEY);
+  localStorage.removeItem(LEGACY_MEAL_PLAN_KEY);
 }
