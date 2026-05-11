@@ -216,7 +216,21 @@ export default function DiscoverTab() {
         />
       </div>
 
-      {/* Filter dropdown trigger */}
+      {/* Quick dietary chips — always visible for one-tap filtering */}
+      <div className="scroll-snap-x flex gap-1.5 -mx-1 px-1 overflow-x-auto">
+        {DIETARY_OPTIONS.map(d => (
+          <button
+            key={d}
+            onClick={() => { haptic("light"); toggleSetItem(dietary, d, setDietary); }}
+            className={`scroll-snap-item flex-shrink-0 touch-btn rounded-full px-3 py-1.5 font-body text-xs font-medium transition-all whitespace-nowrap ${
+              dietary.has(d) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+            }`}
+          >
+            {d}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-2">
         <button
           onClick={() => { haptic("light"); setFiltersOpen(o => !o); }}
