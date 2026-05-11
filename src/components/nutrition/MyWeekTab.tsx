@@ -387,7 +387,7 @@ export default function MyWeekTab() {
             <p className="font-body text-xs text-muted-foreground mt-0.5">{PHASE_FOCUS[dominantPhase]}</p>
             {aiPlan && (
               <p className="font-body text-[10px] text-muted-foreground mt-0.5">
-                AI plan · Week {Math.min(4, Math.max(1, weekOffset + Math.ceil(currentCycleDay / 7)))} of 4
+                Week {Math.min(4, Math.max(1, weekOffset + Math.ceil(currentCycleDay / 7)))} of 4
               </p>
             )}
           </div>
@@ -401,7 +401,7 @@ export default function MyWeekTab() {
         </div>
 
         <div className="flex items-center justify-center gap-2 mt-1">
-          {/* Week quick-nav for AI plans */}
+          {/* Week quick-nav */}
           {aiPlan && (
             <div className="flex items-center gap-1">
               {[0, 1, 2, 3].map(w => {
@@ -435,7 +435,7 @@ export default function MyWeekTab() {
               onClick={handleStartFresh}
               className="font-body text-xs text-muted-foreground underline"
             >
-              Clear AI plan
+              Clear plan
             </button>
           )}
           {aiPlan && (
