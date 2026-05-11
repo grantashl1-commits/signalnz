@@ -7,7 +7,7 @@
  */
 import { Phase } from "./cycle-utils";
 import { Recipe } from "@/data/meal-plans";
-import { NOURISH_RECIPES } from "@/data/nourish-recipes";
+import { ALL_RECIPES } from "@/lib/recipe-index";
 import { KIDS_RECIPE_BANK, KidsRecipe } from "@/data/kids-recipes";
 import {
   PrepPreferences,
@@ -71,7 +71,7 @@ function pool(
   prefs: PrepPreferences
 ): Recipe[] {
   const avoid = parseAvoid(prefs);
-  const all = NOURISH_RECIPES.filter((r) => r.category === category);
+  const all = ALL_RECIPES.filter((r) => r.category === category);
   let phaseMatch = all.filter(
     (r) =>
       r.phase === phase &&
