@@ -799,6 +799,11 @@ export default function MyWeekTab() {
                             {/* AI Meal details */}
                             {aiMeal && !aiMeal.isLeftover && (
                               <div className="mt-2 space-y-2">
+                                {aiMeal.nutritionalNote && (
+                                  <p className="font-body text-[11px] italic text-muted-foreground leading-snug">
+                                    Why this one — {aiMeal.nutritionalNote}
+                                  </p>
+                                )}
                                 {aiMeal.keyNutrients && aiMeal.keyNutrients.length > 0 && (
                                   <div className="flex flex-wrap gap-1">
                                     {aiMeal.keyNutrients.map(n => (
