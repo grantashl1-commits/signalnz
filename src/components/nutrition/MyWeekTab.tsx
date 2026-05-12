@@ -498,6 +498,14 @@ export default function MyWeekTab() {
       <h2 className="font-display text-2xl font-bold italic text-foreground">{headerLabel}</h2>
             <p className="font-body text-sm mt-0.5" style={{ color: phaseColor }}>{dateRangeLabel}</p>
             <p className="font-body text-xs text-muted-foreground mt-0.5">{PHASE_FOCUS[dominantPhase]}</p>
+            {(calorieTarget || proteinTargetG) && (
+              <p className="font-body text-[10px] text-muted-foreground/80 mt-0.5">
+                Targets:{" "}
+                {calorieTarget ? `${calorieTarget} kcal` : ""}
+                {calorieTarget && proteinTargetG ? " · " : ""}
+                {proteinTargetG ? `${proteinTargetG} g protein` : ""}
+              </p>
+            )}
             {aiPlan && (
               <p className="font-body text-[10px] text-muted-foreground mt-0.5">
                 Week {Math.min(4, Math.max(1, weekOffset + Math.ceil(currentCycleDay / 7)))} of 4
