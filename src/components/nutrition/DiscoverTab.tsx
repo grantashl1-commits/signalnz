@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon } from "lucide-react";
+import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon, CalendarPlus, Check } from "lucide-react";
+import { toast } from "sonner";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_RECIPES } from "@/lib/recipe-index";
@@ -12,6 +13,8 @@ import { haptic } from "@/hooks/use-mobile";
 import { useSavedRecipes } from "@/hooks/useSavedRecipes";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
+import { addRecipeToMyWeek } from "@/lib/add-to-my-week";
+import type { MealSlot } from "@/hooks/useCustomMealPlan";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
