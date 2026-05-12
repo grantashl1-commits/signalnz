@@ -433,12 +433,14 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     if (!customInput.trim()) return;
     haptic("light");
     const parsed = parseIngredient(customInput.trim());
+    const nzName = toNZName(parsed.name);
+    const nzSearch = toNZName(parsed.searchTerm);
     const newItem: AggregatedItem = {
-      name: parsed.name.charAt(0).toUpperCase() + parsed.name.slice(1),
+      name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
       totalQty: parseQty(parsed.quantity) || 1,
       unit: parsed.unit,
-      category: categoriseItem(parsed.name),
-      searchTerm: parsed.searchTerm,
+      category: categoriseItem(nzName),
+      searchTerm: nzSearch,
       isCustom: true,
     };
     setCustomItems(prev => [...prev, newItem]);
