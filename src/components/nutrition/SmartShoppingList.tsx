@@ -249,6 +249,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(getCheckedState);
   const [customItems, setCustomItems] = useState<AggregatedItem[]>(getCustomItems);
   const [customInput, setCustomInput] = useState("");
+  const [hidePantry, setHidePantry] = useState<boolean>(() => {
+    try { return localStorage.getItem("shopping_hide_pantry") === "1"; } catch { return false; }
+  });
   const supermarket = getSupermarket();
   const pantryStaples = useMemo(() => getPantryStaples(), []);
   const weekKey = getWeekKey();
@@ -541,6 +544,29 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           style={{ fontSize: "16px" }} />
       </div>
 
+      {/* Pantry skip toggle */}
+      <button
+        onClick={() => {
+          haptic("light");
+          setHidePantry(v => {
+            const next = !v;
+            try { localStorage.setItem("shopping_hide_pantry", next ? "1" : "0"); } catch {}
+            return next;
+          });
+        }}
+        className="touch-btn w-full flex items-center justify-between rounded-xl border border-border bg-card px-3 py-2 min-h-[40px]"
+      >
+        <span className="font-body text-xs text-foreground">
+          Hide pantry staples
+          <span className="ml-2 font-body text-[10px] text-muted-foreground">(things you've marked as already at home)</span>
+        </span>
+        <span className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${hidePantry ? "" : "bg-secondary"}`}
+          style={hidePantry ? { backgroundColor: weekPhaseColor } : {}}>
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-card shadow transition-transform ${hidePantry ? "translate-x-4" : "translate-x-0.5"}`} />
+        </span>
+      </button>
+
+
       {/* Progress */}
       <div className="flex items-center gap-2">
         <div className="flex-1 h-1.5 rounded-full bg-secondary overflow-hidden">
@@ -552,9 +578,10 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
 
       {/* Categories */}
       {categoryOrder.filter(cat => categories[cat]?.length).map(cat => {
-        const items = categories[cat].filter(item =>
-          search ? item.name.toLowerCase().includes(search.toLowerCase()) : true
-        );
+        const items = categories[cat].filter(item => {
+          if (hidePantry && item.isPantryStaple) return false;
+          return search ? item.name.toLowerCase().includes(search.toLowerCase()) : true;
+        });
         if (items.length === 0) return null;
         const isExpanded = expandedCats[cat] !== false;
         const catChecked = items.filter(i => checkedItems[`${cat}:${i.name}`]).length;

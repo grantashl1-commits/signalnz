@@ -291,9 +291,33 @@ export function buildDbMealPlan(
   return days;
 }
 
+/**
+ * If prefs.dinner === "double", auto-fill next day's lunch as a leftover
+ * pointing to the previous night's dinner. Skips locked slots is N/A here
+ * because this runs at build-time before any locks exist.
+ */
+function applyLeftoversAutoFill(days: AIPlannedDay[], prefs: PrepPreferences): AIPlannedDay[] {
+  if (prefs.dinner !== "double") return days;
+  const byDay = new Map(days.map(d => [d.cycleDay, d]));
+  for (const d of days) {
+    const prev = byDay.get(d.cycleDay - 1);
+    if (!prev?.dinner || prev.dinner.isLeftover) continue;
+    // Replace today's lunch with a leftover-from-yesterday-dinner marker
+    d.lunch = {
+      ...prev.dinner,
+      mealType: "lunch",
+      isLeftover: true,
+      leftoverFrom: prev.cycleDay,
+      nutritionalNote: `Leftover from Day ${prev.cycleDay} dinner — same nourishment, no extra prep.`,
+    };
+  }
+  return days;
+}
+
 export function buildDbMealPlanFull(prefs: PrepPreferences): AIMealPlan {
+  const built = buildDbMealPlan(prefs, 1, 28);
   return {
-    days: buildDbMealPlan(prefs, 1, 28),
+    days: applyLeftoversAutoFill(built, prefs),
     prepPreferences: prefs,
     createdAt: Date.now(),
     lockedMeals: {},

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon } from "lucide-react";
+import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon, CalendarPlus, Check } from "lucide-react";
+import { toast } from "sonner";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_RECIPES } from "@/lib/recipe-index";
@@ -12,6 +13,8 @@ import { haptic } from "@/hooks/use-mobile";
 import { useSavedRecipes } from "@/hooks/useSavedRecipes";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
+import { addRecipeToMyWeek } from "@/lib/add-to-my-week";
+import type { MealSlot } from "@/hooks/useCustomMealPlan";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -574,7 +577,9 @@ function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
 function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
   recipe: Recipe; isSaved: boolean; onToggleSave: () => void; onClose: () => void;
 }) {
+  const { currentCycleDay, getCycleDayForDate } = useCycle();
   const [servings, setServings] = useState(recipe.serves);
+  const [showAddToWeek, setShowAddToWeek] = useState(false);
   const scale = servings / recipe.serves;
   const phaseColor = PHASE_HEX[recipe.phase];
 
@@ -650,10 +655,27 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
               <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Ingredients</p>
-              <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { haptic("light"); setShowAddToWeek(v => !v); }}
+                  className="touch-btn flex items-center gap-1.5 rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium bg-primary/10 text-primary"
+                >
+                  <CalendarPlus className="h-3.5 w-3.5" />
+                  Add to my week
+                </button>
+                <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
+              </div>
             </div>
+            <AddToWeekPicker
+              recipe={recipe}
+              isOpen={showAddToWeek}
+              currentCycleDay={currentCycleDay}
+              getCycleDayForDate={getCycleDayForDate}
+              phaseColor={phaseColor}
+              onPicked={() => setShowAddToWeek(false)}
+            />
             <ul className="space-y-1">
               {recipe.ingredients.map((ing, j) => (
                 <li key={j} className="font-body text-xs text-foreground flex items-start gap-2">
@@ -717,5 +739,113 @@ function KidAlternativeNote({ text, phaseColor }: { text: string; phaseColor: st
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+/* ── Add to my week — inline day × slot picker ── */
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const SLOT_LABELS: { key: MealSlot; label: string }[] = [
+  { key: "breakfast", label: "Breakfast" },
+  { key: "lunch", label: "Lunch" },
+  { key: "dinner", label: "Dinner" },
+];
+
+function AddToWeekPicker({
+  recipe,
+  isOpen,
+  currentCycleDay,
+  getCycleDayForDate,
+  phaseColor,
+  onPicked,
+}: {
+  recipe: Recipe;
+  isOpen: boolean;
+  currentCycleDay: number;
+  getCycleDayForDate: (d: Date) => number;
+  phaseColor: string;
+  onPicked: () => void;
+}) {
+  // Build the next 7 days (Mon → Sun of current week)
+  const days = useMemo(() => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
+    monday.setHours(0, 0, 0, 0);
+    return Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return {
+        date: d,
+        cycleDay: getCycleDayForDate(d),
+        label: DAY_LABELS[i],
+        isToday: d.toDateString() === today.toDateString(),
+      };
+    });
+  }, [getCycleDayForDate]);
+
+  const [picked, setPicked] = useState<{ cycleDay: number; slot: MealSlot } | null>(null);
+
+  const handlePick = (cycleDay: number, slot: MealSlot) => {
+    haptic("medium");
+    const result = addRecipeToMyWeek(recipe, cycleDay, slot);
+    setPicked({ cycleDay, slot });
+    toast.success(
+      result.addedToAIPlan
+        ? `Held for ${slot} — your plan will reflect it.`
+        : `Held for ${slot}.`
+    );
+    setTimeout(() => {
+      setPicked(null);
+      onPicked();
+    }, 900);
+  };
+
+  return (
+    <AnimatePresence initial={false}>
+      {isOpen && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="overflow-hidden"
+        >
+          <div className="rounded-2xl bg-secondary/40 p-3 mb-3 space-y-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.15em] font-semibold text-muted-foreground">
+              Choose a day & meal
+            </p>
+            <div className="space-y-1.5">
+              {days.map(d => (
+                <div key={d.cycleDay} className="flex items-center gap-2">
+                  <div className="w-12 flex-shrink-0">
+                    <p className="font-body text-xs font-semibold text-foreground">
+                      {d.label}{d.isToday && <span className="ml-1 text-[9px] text-muted-foreground">today</span>}
+                    </p>
+                    <p className="font-body text-[9px] text-muted-foreground">D{d.cycleDay}</p>
+                  </div>
+                  <div className="flex gap-1 flex-1">
+                    {SLOT_LABELS.map(s => {
+                      const isPicked = picked?.cycleDay === d.cycleDay && picked?.slot === s.key;
+                      return (
+                        <button
+                          key={s.key}
+                          onClick={() => handlePick(d.cycleDay, s.key)}
+                          className="touch-btn flex-1 flex items-center justify-center gap-1 rounded-full bg-card px-2 py-1.5 min-h-[36px] font-body text-[11px] font-medium text-foreground transition-all"
+                          style={isPicked ? { backgroundColor: phaseColor, color: "white" } : {}}
+                        >
+                          {isPicked ? <Check className="h-3 w-3" /> : null}
+                          {s.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
