@@ -22,6 +22,7 @@ import {
   saveAIMealPlan,
   clearAIMealPlan,
   getSavedPreferences,
+  savePreferences,
   DEFAULT_PREFS,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
