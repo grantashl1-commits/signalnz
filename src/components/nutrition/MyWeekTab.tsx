@@ -384,6 +384,27 @@ export default function MyWeekTab() {
   // generated one before. A new manual recipe-picker will replace this whole
   // flow in a follow-up.
 
+  if (step === "prep") {
+    return (
+      <div className="space-y-4">
+        {aiPlan && (
+          <button
+            onClick={() => { haptic("light"); setStep("plan"); }}
+            className="font-body text-xs text-muted-foreground underline"
+          >
+            ← Back to plan
+          </button>
+        )}
+        <PrepPreferences
+          initialPrefs={prefs}
+          phase={currentPhase}
+          onBuild={handleBuildPlan}
+          isGenerating={isGenerating}
+        />
+      </div>
+    );
+  }
+
   if (step === "shop") {
     const currentWeek = Math.ceil(currentCycleDay / 7);
     // Use the legacy AI plan if it exists; otherwise synthesize a plan from
