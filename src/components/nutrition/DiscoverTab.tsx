@@ -741,3 +741,111 @@ function KidAlternativeNote({ text, phaseColor }: { text: string; phaseColor: st
     </div>
   );
 }
+
+/* ── Add to my week — inline day × slot picker ── */
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const SLOT_LABELS: { key: MealSlot; label: string }[] = [
+  { key: "breakfast", label: "Breakfast" },
+  { key: "lunch", label: "Lunch" },
+  { key: "dinner", label: "Dinner" },
+];
+
+function AddToWeekPicker({
+  recipe,
+  isOpen,
+  currentCycleDay,
+  getCycleDayForDate,
+  phaseColor,
+  onPicked,
+}: {
+  recipe: Recipe;
+  isOpen: boolean;
+  currentCycleDay: number;
+  getCycleDayForDate: (d: Date) => number;
+  phaseColor: string;
+  onPicked: () => void;
+}) {
+  // Build the next 7 days (Mon → Sun of current week)
+  const days = useMemo(() => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
+    monday.setHours(0, 0, 0, 0);
+    return Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return {
+        date: d,
+        cycleDay: getCycleDayForDate(d),
+        label: DAY_LABELS[i],
+        isToday: d.toDateString() === today.toDateString(),
+      };
+    });
+  }, [getCycleDayForDate]);
+
+  const [picked, setPicked] = useState<{ cycleDay: number; slot: MealSlot } | null>(null);
+
+  const handlePick = (cycleDay: number, slot: MealSlot) => {
+    haptic("medium");
+    const result = addRecipeToMyWeek(recipe, cycleDay, slot);
+    setPicked({ cycleDay, slot });
+    toast.success(
+      result.addedToAIPlan
+        ? `Held for ${slot} — your plan will reflect it.`
+        : `Held for ${slot}.`
+    );
+    setTimeout(() => {
+      setPicked(null);
+      onPicked();
+    }, 900);
+  };
+
+  return (
+    <AnimatePresence initial={false}>
+      {isOpen && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="overflow-hidden"
+        >
+          <div className="rounded-2xl bg-secondary/40 p-3 mb-3 space-y-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.15em] font-semibold text-muted-foreground">
+              Choose a day & meal
+            </p>
+            <div className="space-y-1.5">
+              {days.map(d => (
+                <div key={d.cycleDay} className="flex items-center gap-2">
+                  <div className="w-12 flex-shrink-0">
+                    <p className="font-body text-xs font-semibold text-foreground">
+                      {d.label}{d.isToday && <span className="ml-1 text-[9px] text-muted-foreground">today</span>}
+                    </p>
+                    <p className="font-body text-[9px] text-muted-foreground">D{d.cycleDay}</p>
+                  </div>
+                  <div className="flex gap-1 flex-1">
+                    {SLOT_LABELS.map(s => {
+                      const isPicked = picked?.cycleDay === d.cycleDay && picked?.slot === s.key;
+                      return (
+                        <button
+                          key={s.key}
+                          onClick={() => handlePick(d.cycleDay, s.key)}
+                          className="touch-btn flex-1 flex items-center justify-center gap-1 rounded-full bg-card px-2 py-1.5 min-h-[36px] font-body text-[11px] font-medium text-foreground transition-all"
+                          style={isPicked ? { backgroundColor: phaseColor, color: "white" } : {}}
+                        >
+                          {isPicked ? <Check className="h-3 w-3" /> : null}
+                          {s.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
