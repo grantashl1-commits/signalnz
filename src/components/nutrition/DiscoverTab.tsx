@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon } from "lucide-react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
