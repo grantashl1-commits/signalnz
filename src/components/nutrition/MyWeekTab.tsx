@@ -22,6 +22,7 @@ import {
   saveAIMealPlan,
   clearAIMealPlan,
   getSavedPreferences,
+  savePreferences,
   DEFAULT_PREFS,
 } from "@/lib/weekly-planner";
 import PrepPreferences from "./PrepPreferences";
@@ -111,7 +112,7 @@ type Step = "prep" | "plan" | "shop" | "prepguide";
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
   const { user } = useAuth();
-  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, movementGoals: profileMovementGoals } = useProfile();
+  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryPreferences, dietaryDislikes, mealPrepDay, movementGoals: profileMovementGoals } = useProfile();
   const [weekOffset, setWeekOffset] = useState(0);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [aiPlan, setAiPlan] = useState<AIMealPlan | null>(getAIMealPlan);
@@ -167,6 +168,35 @@ export default function MyWeekTab() {
       }
     })();
   }, [user, aiPlan]);
+
+  // Seed planner prefs from the user's Profile/Account on first load if they
+  // haven't customised them yet. Profile is the source of truth for dietary
+  // preferences, dislikes, and the chosen meal-prep day.
+  const profileSeeded = useRef(false);
+  useEffect(() => {
+    if (profileSeeded.current) return;
+    if (getSavedPreferences()) { profileSeeded.current = true; return; }
+    // Wait until profile actually has data
+    if (!dietaryPreferences && !dietaryDislikes && !mealPrepDay) return;
+    profileSeeded.current = true;
+
+    const titleCase = (s: string) =>
+      s.split(/[-\s]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join("-");
+    const ADULT_OPTS = ["Vegetarian", "Vegan", "Pescatarian", "Gluten-free", "Dairy-free", "Keto", "Paleo"];
+    const seededDietTypes = (dietaryPreferences || [])
+      .map(titleCase)
+      .filter(d => ADULT_OPTS.includes(d));
+
+    const seeded: PrepPrefsType = {
+      ...DEFAULT_PREFS,
+      ...(seededDietTypes.length ? { dietTypes: seededDietTypes, dietType: seededDietTypes[0] } : {}),
+      ...(dietaryDislikes?.length ? { dislikes: dietaryDislikes.join(", ") } : {}),
+      ...(mealPrepDay ? { prepDays: [mealPrepDay] } : {}),
+      ...(calorieTarget ? { calorieTarget: String(calorieTarget) } : {}),
+    };
+    setPrefs(seeded);
+    savePreferences(seeded);
+  }, [dietaryPreferences, dietaryDislikes, mealPrepDay, calorieTarget]);
 
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -354,6 +384,27 @@ export default function MyWeekTab() {
   // generated one before. A new manual recipe-picker will replace this whole
   // flow in a follow-up.
 
+  if (step === "prep") {
+    return (
+      <div className="space-y-4">
+        {aiPlan && (
+          <button
+            onClick={() => { haptic("light"); setStep("plan"); }}
+            className="font-body text-xs text-muted-foreground underline"
+          >
+            ← Back to plan
+          </button>
+        )}
+        <PrepPreferences
+          initialPrefs={prefs}
+          phase={currentPhase}
+          onBuild={handleBuildPlan}
+          isGenerating={isGenerating}
+        />
+      </div>
+    );
+  }
+
   if (step === "shop") {
     const currentWeek = Math.ceil(currentCycleDay / 7);
     // Use the legacy AI plan if it exists; otherwise synthesize a plan from
@@ -460,6 +511,15 @@ export default function MyWeekTab() {
               })}
             </div>
           )}
+          {!aiPlan && (
+            <button
+              onClick={() => { haptic("light"); setStep("prep"); }}
+              className="font-body text-xs text-primary underline flex items-center gap-1"
+            >
+              <Pencil className="h-3 w-3" />
+              Set up my plan
+            </button>
+          )}
           {weekOffset !== 0 && !aiPlan && (
             <button
               onClick={() => { haptic("light"); setWeekOffset(0); setExpandedDay(null); }}
@@ -484,6 +544,16 @@ export default function MyWeekTab() {
               </button>
             );
           })()}
+          {aiPlan && (
+            <button
+              onClick={() => { haptic("light"); setStep("prep"); }}
+              className="font-body text-xs text-primary underline flex items-center gap-1"
+              title="Adjust adults, kids, dietary preferences and prep day"
+            >
+              <Pencil className="h-3 w-3" />
+              Plan settings
+            </button>
+          )}
           {aiPlan && (
             <button
               onClick={handleStartFresh}
