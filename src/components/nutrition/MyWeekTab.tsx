@@ -511,6 +511,15 @@ export default function MyWeekTab() {
               })}
             </div>
           )}
+          {!aiPlan && (
+            <button
+              onClick={() => { haptic("light"); setStep("prep"); }}
+              className="font-body text-xs text-primary underline flex items-center gap-1"
+            >
+              <Pencil className="h-3 w-3" />
+              Set up my plan
+            </button>
+          )}
           {weekOffset !== 0 && !aiPlan && (
             <button
               onClick={() => { haptic("light"); setWeekOffset(0); setExpandedDay(null); }}
