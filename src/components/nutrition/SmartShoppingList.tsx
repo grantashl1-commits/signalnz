@@ -578,9 +578,10 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
 
       {/* Categories */}
       {categoryOrder.filter(cat => categories[cat]?.length).map(cat => {
-        const items = categories[cat].filter(item =>
-          search ? item.name.toLowerCase().includes(search.toLowerCase()) : true
-        );
+        const items = categories[cat].filter(item => {
+          if (hidePantry && item.isPantryStaple) return false;
+          return search ? item.name.toLowerCase().includes(search.toLowerCase()) : true;
+        });
         if (items.length === 0) return null;
         const isExpanded = expandedCats[cat] !== false;
         const catChecked = items.filter(i => checkedItems[`${cat}:${i.name}`]).length;
