@@ -230,9 +230,33 @@ export default function MyWeekTab() {
     }
   }, [user, currentCycleDay, currentPhase]);
 
+  // Mirror planner prefs back into the user's Profile so Account stays the
+  // single source of truth for dietary preferences, dislikes and prep day.
+  const mirrorPrefsToProfile = useCallback(async (p: PrepPrefsType) => {
+    if (!user) return;
+    try {
+      const update: Record<string, any> = {
+        user_id: user.id,
+        dietary_preferences: p.dietTypes?.length ? p.dietTypes.map(s => s.toLowerCase()) : null,
+        dietary_dislikes: p.dislikes
+          ? p.dislikes.split(",").map(s => s.trim()).filter(Boolean)
+          : null,
+        meal_prep_day: p.prepDays?.[0] ?? null,
+      };
+      if (p.calorieTarget && !isNaN(Number(p.calorieTarget))) {
+        update.calorie_target = Number(p.calorieTarget);
+      }
+      await supabase.from("profiles").upsert(update, { onConflict: "user_id" });
+    } catch {
+      // silent — localStorage planner prefs still work
+    }
+  }, [user]);
+
   // Build full plan from the Nourish recipe library — no AI, no edge call.
   const handleBuildPlan = useCallback(async (preferences: PrepPrefsType) => {
     setPrefs(preferences);
+    savePreferences(preferences);
+    mirrorPrefsToProfile(preferences);
     setIsGenerating(true);
     haptic("medium");
 
