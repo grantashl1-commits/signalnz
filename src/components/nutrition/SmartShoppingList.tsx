@@ -23,12 +23,45 @@ const PHASE_HEX: Record<Phase, string> = {
 };
 
 const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  produce: ["onion", "garlic", "ginger", "tomato", "spinach", "kale", "broccoli", "capsicum", "pepper", "carrot", "potato", "sweet potato", "kumara", "zucchini", "mushroom", "avocado", "banana", "apple", "berry", "berries", "lemon", "lime", "mango", "kiwi", "cucumber", "asparagus", "bok choy", "pumpkin", "beetroot", "cabbage", "spring onion", "coriander", "parsley", "mint", "basil", "chilli", "pear", "orange", "fruit", "lettuce", "celery"],
-  protein: ["chicken", "beef", "lamb", "pork", "fish", "salmon", "tuna", "prawn", "tofu", "tempeh", "egg", "turkey", "lentil", "chickpea", "bean", "edamame"],
-  dairy: ["milk", "yoghurt", "yogurt", "cream", "cheese", "butter"],
-  pantry: ["coconut milk", "coconut oil", "olive oil", "sesame oil", "tamari", "miso", "mirin", "maple syrup", "honey", "vinegar", "soy", "stock", "tomato paste", "canned", "peanut butter", "almond butter", "tahini", "chocolate", "cacao", "vanilla", "flour", "sugar", "rice", "pasta", "noodle", "oat", "quinoa", "bread", "wrap"],
+  produce: ["onion", "garlic", "ginger", "tomato", "spinach", "kale", "silverbeet", "broccoli", "broccolini", "capsicum", "pepper", "carrot", "potato", "kumara", "kūmara", "courgette", "zucchini", "eggplant", "aubergine", "mushroom", "avocado", "banana", "apple", "berry", "berries", "lemon", "lime", "mango", "kiwifruit", "kiwi", "cucumber", "asparagus", "bok choy", "pak choi", "pumpkin", "beetroot", "cabbage", "rocket", "spring onion", "coriander", "parsley", "mint", "basil", "chilli", "pear", "orange", "fruit", "lettuce", "celery", "leek", "fennel", "radish"],
+  protein: ["chicken", "beef", "mince", "lamb", "pork", "fish", "salmon", "tuna", "prawn", "tofu", "tempeh", "egg", "turkey", "lentil", "chickpea", "bean", "edamame"],
+  dairy: ["milk", "yoghurt", "yogurt", "cream", "cheese", "butter", "feta", "haloumi"],
+  pantry: ["coconut milk", "coconut oil", "olive oil", "sesame oil", "tamari", "soy sauce", "miso", "mirin", "maple syrup", "honey", "vinegar", "soy", "stock", "tomato paste", "canned", "tinned", "peanut butter", "almond butter", "tahini", "chocolate", "cacao", "vanilla", "flour", "sugar", "rice", "pasta", "noodle", "oat", "quinoa", "bread", "wrap", "wholemeal"],
   frozen: ["frozen"],
 };
+
+/**
+ * Translate common US/UK ingredient names to NZ supermarket wording.
+ * Applied to both display name and search term so Woolworths NZ links resolve.
+ */
+const NZ_SYNONYMS: Array<[RegExp, string]> = [
+  [/\bbell pepper(s)?\b/gi, "capsicum"],
+  [/\bcilantro\b/gi, "coriander"],
+  [/\bscallion(s)?\b/gi, "spring onion"],
+  [/\bgreen onion(s)?\b/gi, "spring onion"],
+  [/\barugula\b/gi, "rocket"],
+  [/\baubergine\b/gi, "eggplant"],
+  [/\bcourgette(s)?\b/gi, "zucchini"],
+  [/\bgarbanzo(s)?\b/gi, "chickpea"],
+  [/\bsweet potato(es)?\b/gi, "kūmara"],
+  [/\byogurt\b/gi, "yoghurt"],
+  [/\bzucchini squash\b/gi, "zucchini"],
+  [/\bswiss chard\b/gi, "silverbeet"],
+  [/\bsnow pea(s)?\b/gi, "mangetout"],
+  [/\bground beef\b/gi, "beef mince"],
+  [/\bground lamb\b/gi, "lamb mince"],
+  [/\bground turkey\b/gi, "turkey mince"],
+  [/\bgreen bean(s)?\b/gi, "green beans"],
+  [/\bgarbanzo bean(s)?\b/gi, "chickpeas"],
+  [/\bbok ?choy\b/gi, "bok choy"],
+  [/\beggplant\b/gi, "eggplant"],
+];
+
+function toNZName(name: string): string {
+  let n = name;
+  for (const [re, rep] of NZ_SYNONYMS) n = n.replace(re, rep);
+  return n;
+}
 
 function categoriseItem(name: string): string {
   const lower = name.toLowerCase();
@@ -317,10 +350,13 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
         if (!meal || meal.isLeftover) return;
         (meal.ingredients || []).forEach(ingStr => {
           const parsed = parseIngredient(ingStr);
+          // Translate to NZ supermarket wording so the list reads kiwi.
+          const nzName = toNZName(parsed.name);
+          const nzSearch = toNZName(parsed.searchTerm);
           const baseQty = parseQty(parsed.quantity);
           const totalQty = baseQty * servingMultiplier / (meal.serves || 2);
-          const mapKey = parsed.searchTerm.toLowerCase();
-          const cat = categoriseItem(parsed.name);
+          const mapKey = nzSearch.toLowerCase();
+          const cat = categoriseItem(nzName);
 
           // Key includes unit so mismatched units (e.g. "g" vs "cup" for oats) don't corrupt each other
           const unitKey = parsed.unit.toLowerCase() || "unit";
@@ -329,12 +365,12 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
             ingredientMap[fullKey].totalQty += totalQty;
           } else {
             ingredientMap[fullKey] = {
-              name: parsed.name.charAt(0).toUpperCase() + parsed.name.slice(1),
+              name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
               totalQty,
               unit: parsed.unit,
               category: cat,
-              searchTerm: parsed.searchTerm,
-              isPantryStaple: isPantryStaple(parsed.name),
+              searchTerm: nzSearch,
+              isPantryStaple: isPantryStaple(nzName),
             };
           }
         });
@@ -397,12 +433,14 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     if (!customInput.trim()) return;
     haptic("light");
     const parsed = parseIngredient(customInput.trim());
+    const nzName = toNZName(parsed.name);
+    const nzSearch = toNZName(parsed.searchTerm);
     const newItem: AggregatedItem = {
-      name: parsed.name.charAt(0).toUpperCase() + parsed.name.slice(1),
+      name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
       totalQty: parseQty(parsed.quantity) || 1,
       unit: parsed.unit,
-      category: categoriseItem(parsed.name),
-      searchTerm: parsed.searchTerm,
+      category: categoriseItem(nzName),
+      searchTerm: nzSearch,
       isCustom: true,
     };
     setCustomItems(prev => [...prev, newItem]);
