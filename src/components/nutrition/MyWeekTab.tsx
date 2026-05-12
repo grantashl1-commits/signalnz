@@ -253,6 +253,44 @@ export default function MyWeekTab() {
     setStep("prep");
   };
 
+  // Rebuild the entire 4-week plan from the full recipe library, keeping
+  // current preferences and any meals the user has locked.
+  const handleRegenerateWeek = useCallback(async () => {
+    setIsGenerating(true);
+    haptic("medium");
+    try {
+      const fresh = buildDbMealPlanFull(prefs);
+      if (!fresh.days.length) throw new Error("No matching recipes — try widening your dietary filters.");
+
+      // Preserve locked meals from the existing plan
+      const locked = aiPlan?.lockedMeals || {};
+      if (aiPlan && Object.values(locked).some(Boolean)) {
+        const oldByDay = new Map(aiPlan.days.map(d => [d.cycleDay, d]));
+        fresh.days = fresh.days.map(d => {
+          const old = oldByDay.get(d.cycleDay);
+          if (!old) return d;
+          const next = { ...d };
+          (["breakfast", "lunch", "dinner"] as const).forEach(slot => {
+            if (locked[`${d.cycleDay}-${slot}`]) (next as any)[slot] = (old as any)[slot];
+          });
+          return next;
+        });
+        fresh.lockedMeals = { ...locked };
+      }
+
+      setAiPlan(fresh);
+      saveAIMealPlan(fresh);
+      setStep("plan");
+      toast.success("Your week — held anew.");
+      savePlanToSupabase(fresh);
+    } catch (e: any) {
+      toast.error(e.message || "That didn't land — try again in a moment.");
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [prefs, aiPlan, savePlanToSupabase]);
+
+
   // Build week data
   const weekData = useMemo(() => {
     const monday = getMondayOfWeek(new Date(), weekOffset);
@@ -428,6 +466,19 @@ export default function MyWeekTab() {
               className="font-body text-xs text-muted-foreground underline"
             >
               Back to this week
+            </button>
+          )}
+          {aiPlan && (
+            <button
+              onClick={handleRegenerateWeek}
+              disabled={isGenerating}
+              className="font-body text-xs text-primary underline flex items-center gap-1 disabled:opacity-50"
+              title="Rebuild from the full recipe library"
+            >
+              {isGenerating
+                ? <Loader2 className="h-3 w-3 animate-spin" />
+                : <RefreshCw className="h-3 w-3" />}
+              Regenerate week
             </button>
           )}
           {aiPlan && (
