@@ -655,10 +655,27 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
               <p className="font-hand text-sm font-bold" style={{ color: phaseColor }}>Ingredients</p>
-              <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { haptic("light"); setShowAddToWeek(v => !v); }}
+                  className="touch-btn flex items-center gap-1.5 rounded-full px-3 py-2 min-h-[40px] font-body text-xs font-medium bg-primary/10 text-primary"
+                >
+                  <CalendarPlus className="h-3.5 w-3.5" />
+                  Add to my week
+                </button>
+                <RecipeShoppingButton recipeId={recipe.id} recipeName={recipe.name} ingredients={recipe.ingredients} />
+              </div>
             </div>
+            <AddToWeekPicker
+              recipe={recipe}
+              isOpen={showAddToWeek}
+              currentCycleDay={currentCycleDay}
+              getCycleDayForDate={getCycleDayForDate}
+              phaseColor={phaseColor}
+              onPicked={() => setShowAddToWeek(false)}
+            />
             <ul className="space-y-1">
               {recipe.ingredients.map((ing, j) => (
                 <li key={j} className="font-body text-xs text-foreground flex items-start gap-2">
