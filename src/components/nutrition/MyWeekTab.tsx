@@ -468,19 +468,22 @@ export default function MyWeekTab() {
               Back to this week
             </button>
           )}
-          {aiPlan && (
-            <button
-              onClick={handleRegenerateWeek}
-              disabled={isGenerating}
-              className="font-body text-xs text-primary underline flex items-center gap-1 disabled:opacity-50"
-              title="Rebuild from the full recipe library"
-            >
-              {isGenerating
-                ? <Loader2 className="h-3 w-3 animate-spin" />
-                : <RefreshCw className="h-3 w-3" />}
-              Regenerate week
-            </button>
-          )}
+          {aiPlan && (() => {
+            const heldCount = Object.values(lockedMeals).filter(Boolean).length;
+            return (
+              <button
+                onClick={handleRegenerateWeek}
+                disabled={isGenerating}
+                className="font-body text-xs text-primary underline flex items-center gap-1 disabled:opacity-50"
+                title={heldCount > 0 ? `Rebuilds the plan, keeping your ${heldCount} held meal${heldCount === 1 ? "" : "s"}` : "Rebuild from the full recipe library"}
+              >
+                {isGenerating
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <RefreshCw className="h-3 w-3" />}
+                Regenerate week{heldCount > 0 ? ` · ${heldCount} held` : ""}
+              </button>
+            );
+          })()}
           {aiPlan && (
             <button
               onClick={handleStartFresh}
@@ -595,14 +598,27 @@ export default function MyWeekTab() {
                         const staticRecipe = !isAIMeal ? findRecipeByName(mealName) : null;
 
                         return (
-                          <div key={key} className="space-y-1">
+                          <div
+                            key={key}
+                            className={`space-y-1 rounded-xl transition-colors ${isLocked ? "bg-secondary/60 px-3 py-2 -mx-1" : ""}`}
+                          >
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex items-start gap-3 flex-1 min-w-0">
                                 {(staticRecipe?.image || mealName) && (
                                   <RecipeImage recipeName={mealName} recipeImage={staticRecipe?.image} variant="thumb" />
                                 )}
                                 <div className="min-w-0 flex-1">
-                                  <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: dayPhaseColor }}>{label}</p>
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <p className="font-body text-xs uppercase tracking-[0.15em] font-semibold" style={{ color: dayPhaseColor }}>{label}</p>
+                                    {isLocked && (
+                                      <span
+                                        className="font-body text-[9px] font-bold uppercase tracking-wider rounded-full px-1.5 py-0.5 flex items-center gap-0.5"
+                                        style={{ backgroundColor: `${dayPhaseColor}20`, color: dayPhaseColor }}
+                                      >
+                                        <Lock className="h-2.5 w-2.5" /> Held
+                                      </span>
+                                    )}
+                                  </div>
                                   <p className="font-body text-sm text-foreground mt-0.5">{mealName.replace(/^Signal\s+/i, "")}</p>
                                   {aiMeal && (
                                     <p className="font-body text-xs text-muted-foreground mt-0.5">
