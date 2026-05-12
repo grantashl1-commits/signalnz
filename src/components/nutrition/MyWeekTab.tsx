@@ -111,7 +111,7 @@ type Step = "prep" | "plan" | "shop" | "prepguide";
 export default function MyWeekTab() {
   const { currentPhase, currentCycleDay, getCycleDayForDate } = useCycle();
   const { user } = useAuth();
-  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryDislikes, movementGoals: profileMovementGoals } = useProfile();
+  const { calorieTarget, proteinTargetG, carbTargetG, fatTargetG, dietaryPreferences, dietaryDislikes, mealPrepDay, movementGoals: profileMovementGoals } = useProfile();
   const [weekOffset, setWeekOffset] = useState(0);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [aiPlan, setAiPlan] = useState<AIMealPlan | null>(getAIMealPlan);
