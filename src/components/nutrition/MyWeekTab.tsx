@@ -169,6 +169,35 @@ export default function MyWeekTab() {
     })();
   }, [user, aiPlan]);
 
+  // Seed planner prefs from the user's Profile/Account on first load if they
+  // haven't customised them yet. Profile is the source of truth for dietary
+  // preferences, dislikes, and the chosen meal-prep day.
+  const profileSeeded = useRef(false);
+  useEffect(() => {
+    if (profileSeeded.current) return;
+    if (getSavedPreferences()) { profileSeeded.current = true; return; }
+    // Wait until profile actually has data
+    if (!dietaryPreferences && !dietaryDislikes && !mealPrepDay) return;
+    profileSeeded.current = true;
+
+    const titleCase = (s: string) =>
+      s.split(/[-\s]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join("-");
+    const ADULT_OPTS = ["Vegetarian", "Vegan", "Pescatarian", "Gluten-free", "Dairy-free", "Keto", "Paleo"];
+    const seededDietTypes = (dietaryPreferences || [])
+      .map(titleCase)
+      .filter(d => ADULT_OPTS.includes(d));
+
+    const seeded: PrepPrefsType = {
+      ...DEFAULT_PREFS,
+      ...(seededDietTypes.length ? { dietTypes: seededDietTypes, dietType: seededDietTypes[0] } : {}),
+      ...(dietaryDislikes?.length ? { dislikes: dietaryDislikes.join(", ") } : {}),
+      ...(mealPrepDay ? { prepDays: [mealPrepDay] } : {}),
+      ...(calorieTarget ? { calorieTarget: String(calorieTarget) } : {}),
+    };
+    setPrefs(seeded);
+    savePreferences(seeded);
+  }, [dietaryPreferences, dietaryDislikes, mealPrepDay, calorieTarget]);
+
   const todayStr = new Date().toISOString().split("T")[0];
 
   // Lock state
