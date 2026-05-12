@@ -350,10 +350,13 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
         if (!meal || meal.isLeftover) return;
         (meal.ingredients || []).forEach(ingStr => {
           const parsed = parseIngredient(ingStr);
+          // Translate to NZ supermarket wording so the list reads kiwi.
+          const nzName = toNZName(parsed.name);
+          const nzSearch = toNZName(parsed.searchTerm);
           const baseQty = parseQty(parsed.quantity);
           const totalQty = baseQty * servingMultiplier / (meal.serves || 2);
-          const mapKey = parsed.searchTerm.toLowerCase();
-          const cat = categoriseItem(parsed.name);
+          const mapKey = nzSearch.toLowerCase();
+          const cat = categoriseItem(nzName);
 
           // Key includes unit so mismatched units (e.g. "g" vs "cup" for oats) don't corrupt each other
           const unitKey = parsed.unit.toLowerCase() || "unit";
@@ -362,12 +365,12 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
             ingredientMap[fullKey].totalQty += totalQty;
           } else {
             ingredientMap[fullKey] = {
-              name: parsed.name.charAt(0).toUpperCase() + parsed.name.slice(1),
+              name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
               totalQty,
               unit: parsed.unit,
               category: cat,
-              searchTerm: parsed.searchTerm,
-              isPantryStaple: isPantryStaple(parsed.name),
+              searchTerm: nzSearch,
+              isPantryStaple: isPantryStaple(nzName),
             };
           }
         });
