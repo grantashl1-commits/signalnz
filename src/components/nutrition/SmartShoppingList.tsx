@@ -249,6 +249,9 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(getCheckedState);
   const [customItems, setCustomItems] = useState<AggregatedItem[]>(getCustomItems);
   const [customInput, setCustomInput] = useState("");
+  const [hidePantry, setHidePantry] = useState<boolean>(() => {
+    try { return localStorage.getItem("shopping_hide_pantry") === "1"; } catch { return false; }
+  });
   const supermarket = getSupermarket();
   const pantryStaples = useMemo(() => getPantryStaples(), []);
   const weekKey = getWeekKey();
