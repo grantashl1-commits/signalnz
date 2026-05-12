@@ -577,7 +577,9 @@ function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
 function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
   recipe: Recipe; isSaved: boolean; onToggleSave: () => void; onClose: () => void;
 }) {
+  const { currentCycleDay, getCycleDayForDate } = useCycle();
   const [servings, setServings] = useState(recipe.serves);
+  const [showAddToWeek, setShowAddToWeek] = useState(false);
   const scale = servings / recipe.serves;
   const phaseColor = PHASE_HEX[recipe.phase];
 
