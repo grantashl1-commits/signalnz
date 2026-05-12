@@ -230,9 +230,33 @@ export default function MyWeekTab() {
     }
   }, [user, currentCycleDay, currentPhase]);
 
+  // Mirror planner prefs back into the user's Profile so Account stays the
+  // single source of truth for dietary preferences, dislikes and prep day.
+  const mirrorPrefsToProfile = useCallback(async (p: PrepPrefsType) => {
+    if (!user) return;
+    try {
+      const update: Record<string, any> = {
+        user_id: user.id,
+        dietary_preferences: p.dietTypes?.length ? p.dietTypes.map(s => s.toLowerCase()) : null,
+        dietary_dislikes: p.dislikes
+          ? p.dislikes.split(",").map(s => s.trim()).filter(Boolean)
+          : null,
+        meal_prep_day: p.prepDays?.[0] ?? null,
+      };
+      if (p.calorieTarget && !isNaN(Number(p.calorieTarget))) {
+        update.calorie_target = Number(p.calorieTarget);
+      }
+      await (supabase as any).from("profiles").upsert(update, { onConflict: "user_id" });
+    } catch {
+      // silent — localStorage planner prefs still work
+    }
+  }, [user]);
+
   // Build full plan from the Nourish recipe library — no AI, no edge call.
   const handleBuildPlan = useCallback(async (preferences: PrepPrefsType) => {
     setPrefs(preferences);
+    savePreferences(preferences);
+    mirrorPrefsToProfile(preferences);
     setIsGenerating(true);
     haptic("medium");
 
@@ -474,6 +498,14 @@ export default function MyWeekTab() {
       <h2 className="font-display text-2xl font-bold italic text-foreground">{headerLabel}</h2>
             <p className="font-body text-sm mt-0.5" style={{ color: phaseColor }}>{dateRangeLabel}</p>
             <p className="font-body text-xs text-muted-foreground mt-0.5">{PHASE_FOCUS[dominantPhase]}</p>
+            {(calorieTarget || proteinTargetG) && (
+              <p className="font-body text-[10px] text-muted-foreground/80 mt-0.5">
+                Targets:{" "}
+                {calorieTarget ? `${calorieTarget} kcal` : ""}
+                {calorieTarget && proteinTargetG ? " · " : ""}
+                {proteinTargetG ? `${proteinTargetG} g protein` : ""}
+              </p>
+            )}
             {aiPlan && (
               <p className="font-body text-[10px] text-muted-foreground mt-0.5">
                 Week {Math.min(4, Math.max(1, weekOffset + Math.ceil(currentCycleDay / 7)))} of 4
@@ -767,6 +799,11 @@ export default function MyWeekTab() {
                             {/* AI Meal details */}
                             {aiMeal && !aiMeal.isLeftover && (
                               <div className="mt-2 space-y-2">
+                                {aiMeal.nutritionalNote && (
+                                  <p className="font-body text-[11px] italic text-muted-foreground leading-snug">
+                                    Why this one — {aiMeal.nutritionalNote}
+                                  </p>
+                                )}
                                 {aiMeal.keyNutrients && aiMeal.keyNutrients.length > 0 && (
                                   <div className="flex flex-wrap gap-1">
                                     {aiMeal.keyNutrients.map(n => (
