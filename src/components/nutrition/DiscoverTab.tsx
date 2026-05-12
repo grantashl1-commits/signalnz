@@ -143,7 +143,7 @@ export default function DiscoverTab() {
 
   // Filter
   const filtered = useMemo(() => {
-    return allRecipes.filter(r => {
+    const list = allRecipes.filter(r => {
       if (phaseFilter !== "all" && r.phase !== phaseFilter) return false;
       if (mealType !== "All") {
         const cat = getEffectiveCategory(r);
@@ -152,8 +152,6 @@ export default function DiscoverTab() {
         if (mealType === "Snack" && cat !== "snack") return false;
         if (mealType === "Baking" && cat !== "baking") return false;
       }
-      // Kids mode swaps the data source to KIDS_RECIPE_BANK (rendered separately
-      // below). The adult recipe list stays unfiltered by kid-friendliness.
       if (dietary.size > 0) {
         const recipeDiet = recipeDietaryTags(r);
         for (const want of dietary) if (!recipeDiet.has(want)) return false;
@@ -172,7 +170,24 @@ export default function DiscoverTab() {
       }
       return true;
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein]);
+
+    // Default ordering: current phase first (so today's recipes lead),
+    // then the remaining phases in cycle order, alphabetical within each phase.
+    const phaseOrder: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
+    const rotated = [currentPhase, ...phaseOrder.filter(p => p !== currentPhase)];
+    const phaseRank = new Map(rotated.map((p, i) => [p, i]));
+    return list.sort((a, b) => {
+      const pa = phaseRank.get(a.phase) ?? 99;
+      const pb = phaseRank.get(b.phase) ?? 99;
+      if (pa !== pb) return pa - pb;
+      return a.name.localeCompare(b.name);
+    });
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, currentPhase]);
+
+  // Pagination — "Load more" reveals another batch.
+  const PAGE_SIZE = 20;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode]);
 
   // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
