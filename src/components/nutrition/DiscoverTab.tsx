@@ -380,7 +380,7 @@ export default function DiscoverTab() {
       {!kidsMode && (
         <>
           <div className="grid grid-cols-2 gap-3">
-            {filtered.slice(0, 20).map((recipe, i) => (
+            {filtered.slice(0, visibleCount).map((recipe, i) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
@@ -391,6 +391,19 @@ export default function DiscoverTab() {
               />
             ))}
           </div>
+          {filtered.length > visibleCount && (
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <p className="font-body text-[11px] text-muted-foreground">
+                Showing {visibleCount} of {filtered.length}
+              </p>
+              <button
+                onClick={() => { haptic("light"); setVisibleCount(c => c + PAGE_SIZE); }}
+                className="touch-btn rounded-full bg-primary text-primary-foreground px-5 py-2 font-body text-xs font-bold"
+              >
+                Load more
+              </button>
+            </div>
+          )}
           {filtered.length === 0 && (
             <div className="text-center py-8">
               <p className="font-hand text-sm text-muted-foreground">No recipes found.</p>
