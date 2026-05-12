@@ -468,19 +468,22 @@ export default function MyWeekTab() {
               Back to this week
             </button>
           )}
-          {aiPlan && (
-            <button
-              onClick={handleRegenerateWeek}
-              disabled={isGenerating}
-              className="font-body text-xs text-primary underline flex items-center gap-1 disabled:opacity-50"
-              title="Rebuild from the full recipe library"
-            >
-              {isGenerating
-                ? <Loader2 className="h-3 w-3 animate-spin" />
-                : <RefreshCw className="h-3 w-3" />}
-              Regenerate week
-            </button>
-          )}
+          {aiPlan && (() => {
+            const heldCount = Object.values(lockedMeals).filter(Boolean).length;
+            return (
+              <button
+                onClick={handleRegenerateWeek}
+                disabled={isGenerating}
+                className="font-body text-xs text-primary underline flex items-center gap-1 disabled:opacity-50"
+                title={heldCount > 0 ? `Rebuilds the plan, keeping your ${heldCount} held meal${heldCount === 1 ? "" : "s"}` : "Rebuild from the full recipe library"}
+              >
+                {isGenerating
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <RefreshCw className="h-3 w-3" />}
+                Regenerate week{heldCount > 0 ? ` · ${heldCount} held` : ""}
+              </button>
+            );
+          })()}
           {aiPlan && (
             <button
               onClick={handleStartFresh}
