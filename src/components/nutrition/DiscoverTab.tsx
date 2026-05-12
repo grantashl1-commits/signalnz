@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon } from "lucide-react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
@@ -143,7 +143,7 @@ export default function DiscoverTab() {
 
   // Filter
   const filtered = useMemo(() => {
-    return allRecipes.filter(r => {
+    const list = allRecipes.filter(r => {
       if (phaseFilter !== "all" && r.phase !== phaseFilter) return false;
       if (mealType !== "All") {
         const cat = getEffectiveCategory(r);
@@ -152,8 +152,6 @@ export default function DiscoverTab() {
         if (mealType === "Snack" && cat !== "snack") return false;
         if (mealType === "Baking" && cat !== "baking") return false;
       }
-      // Kids mode swaps the data source to KIDS_RECIPE_BANK (rendered separately
-      // below). The adult recipe list stays unfiltered by kid-friendliness.
       if (dietary.size > 0) {
         const recipeDiet = recipeDietaryTags(r);
         for (const want of dietary) if (!recipeDiet.has(want)) return false;
@@ -172,7 +170,24 @@ export default function DiscoverTab() {
       }
       return true;
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein]);
+
+    // Default ordering: current phase first (so today's recipes lead),
+    // then the remaining phases in cycle order, alphabetical within each phase.
+    const phaseOrder: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
+    const rotated = [currentPhase, ...phaseOrder.filter(p => p !== currentPhase)];
+    const phaseRank = new Map(rotated.map((p, i) => [p, i]));
+    return list.sort((a, b) => {
+      const pa = phaseRank.get(a.phase) ?? 99;
+      const pb = phaseRank.get(b.phase) ?? 99;
+      if (pa !== pb) return pa - pb;
+      return a.name.localeCompare(b.name);
+    });
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, currentPhase]);
+
+  // Pagination — "Load more" reveals another batch.
+  const PAGE_SIZE = 20;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode]);
 
   // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
@@ -365,7 +380,7 @@ export default function DiscoverTab() {
       {!kidsMode && (
         <>
           <div className="grid grid-cols-2 gap-3">
-            {filtered.slice(0, 20).map((recipe, i) => (
+            {filtered.slice(0, visibleCount).map((recipe, i) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
@@ -376,6 +391,19 @@ export default function DiscoverTab() {
               />
             ))}
           </div>
+          {filtered.length > visibleCount && (
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <p className="font-body text-[11px] text-muted-foreground">
+                Showing {visibleCount} of {filtered.length}
+              </p>
+              <button
+                onClick={() => { haptic("light"); setVisibleCount(c => c + PAGE_SIZE); }}
+                className="touch-btn rounded-full bg-primary text-primary-foreground px-5 py-2 font-body text-xs font-bold"
+              >
+                Load more
+              </button>
+            </div>
+          )}
           {filtered.length === 0 && (
             <div className="text-center py-8">
               <p className="font-hand text-sm text-muted-foreground">No recipes found.</p>
