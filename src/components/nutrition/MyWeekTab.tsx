@@ -470,6 +470,19 @@ export default function MyWeekTab() {
           )}
           {aiPlan && (
             <button
+              onClick={handleRegenerateWeek}
+              disabled={isGenerating}
+              className="font-body text-xs text-primary underline flex items-center gap-1 disabled:opacity-50"
+              title="Rebuild from the full recipe library"
+            >
+              {isGenerating
+                ? <Loader2 className="h-3 w-3 animate-spin" />
+                : <RefreshCw className="h-3 w-3" />}
+              Regenerate week
+            </button>
+          )}
+          {aiPlan && (
+            <button
               onClick={handleStartFresh}
               className="font-body text-xs text-muted-foreground underline"
             >
