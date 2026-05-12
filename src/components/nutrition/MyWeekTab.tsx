@@ -246,7 +246,7 @@ export default function MyWeekTab() {
       if (p.calorieTarget && !isNaN(Number(p.calorieTarget))) {
         update.calorie_target = Number(p.calorieTarget);
       }
-      await supabase.from("profiles").upsert(update, { onConflict: "user_id" });
+      await (supabase as any).from("profiles").upsert(update, { onConflict: "user_id" });
     } catch {
       // silent — localStorage planner prefs still work
     }
