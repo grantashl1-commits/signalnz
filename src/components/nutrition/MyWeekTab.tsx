@@ -537,6 +537,16 @@ export default function MyWeekTab() {
           })()}
           {aiPlan && (
             <button
+              onClick={() => { haptic("light"); setStep("prep"); }}
+              className="font-body text-xs text-primary underline flex items-center gap-1"
+              title="Adjust adults, kids, dietary preferences and prep day"
+            >
+              <Pencil className="h-3 w-3" />
+              Plan settings
+            </button>
+          )}
+          {aiPlan && (
+            <button
               onClick={handleStartFresh}
               className="font-body text-xs text-muted-foreground underline"
             >
