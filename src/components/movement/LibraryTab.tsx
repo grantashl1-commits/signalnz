@@ -115,6 +115,23 @@ export default function LibraryTab() {
   const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
   const { equipmentPreference } = useProfile();
+  const [picksTick, setPicksTick] = useState(0);
+
+  useEffect(() => {
+    const handler = () => setPicksTick(t => t + 1);
+    window.addEventListener("signal:library-picks-changed", handler);
+    return () => window.removeEventListener("signal:library-picks-changed", handler);
+  }, []);
+
+  const handleAddToPlan = (ex: DBExercise, e: React.MouseEvent) => {
+    e.stopPropagation();
+    haptic("light");
+    const pick: LibraryPick = {
+      id: ex.id, name: ex.name, illustration_url: ex.illustration_url, target: ex.target,
+    };
+    const added = togglePickToday(pick);
+    toast.success(added ? "Added to today." : "Removed from today.");
+  };
 
   useEffect(() => {
     const fetchExercises = async () => {
