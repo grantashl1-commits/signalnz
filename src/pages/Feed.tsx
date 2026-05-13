@@ -236,6 +236,7 @@ export default function Feed() {
                       onLike={handleLike}
                       onJournal={handleJournal}
                       likedPosts={likedPosts}
+                      heldPosts={heldPosts}
                     />
                   ))}
 
