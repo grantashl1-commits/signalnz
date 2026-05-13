@@ -75,6 +75,24 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   const [carryDays, setCarryDays] = useState(0);
   const [carryFrom, setCarryFrom] = useState<string | null>(null);
   const [hrSummary, setHrSummary] = useState<HRZoneSummary | null>(null);
+  const [pref, setPref] = useState(getWarmupCooldownPref());
+  const [picks, setPicks] = useState<LibraryPick[]>(getPicksForToday());
+
+  useEffect(() => {
+    const refreshPicks = () => setPicks(getPicksForToday());
+    window.addEventListener("signal:library-picks-changed", refreshPicks);
+    return () => window.removeEventListener("signal:library-picks-changed", refreshPicks);
+  }, []);
+
+  const togglePref = (k: "warmup" | "cooldown") => {
+    haptic("light");
+    const next = { ...pref, [k]: !pref[k] };
+    setPref(next);
+    setWarmupCooldownPref(next);
+  };
+
+  const warmup = currentPhase ? getWarmup(currentPhase) : null;
+  const cooldown = currentPhase ? getCooldown(currentPhase) : null;
 
   useEffect(() => {
     const refresh = () => {
