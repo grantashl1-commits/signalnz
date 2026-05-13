@@ -26,6 +26,37 @@ export function setSelectedPathId(id: string | null) {
     else localStorage.removeItem(SELECTED_PATH_KEY);
     window.dispatchEvent(new Event("signal:training-path-changed"));
   } catch {}
+  // Mirror to profile for cross-device parity (fire-and-forget).
+  void mirrorPathToProfile(id);
+}
+
+async function mirrorPathToProfile(id: string | null) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase
+      .from("profiles")
+      .upsert({ user_id: user.id, training_path_id: id } as any, { onConflict: "user_id" });
+  } catch {}
+}
+
+/** Hydrate the local selected-path cache from the user's profile if local is empty. */
+export async function hydrateSelectedPathFromProfile(): Promise<void> {
+  try {
+    if (getSelectedPathId()) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("training_path_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const remote = (data as any)?.training_path_id as string | null;
+    if (remote) {
+      localStorage.setItem(SELECTED_PATH_KEY, remote);
+      window.dispatchEvent(new Event("signal:training-path-changed"));
+    }
+  } catch {}
 }
 
 export function getSelectedPath(): TrainingPath | null {
