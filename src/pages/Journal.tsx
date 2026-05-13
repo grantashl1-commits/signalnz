@@ -21,6 +21,7 @@ import { useJournalSync } from "@/hooks/useJournalSync";
 import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } from "@/lib/journal-store";
 import DreamStudio from "@/components/journal/DreamStudio";
 import StoicAudioPlayer from "@/components/StoicAudioPlayer";
+import PhasePromptChips from "@/components/journal/PhasePromptChips";
 
 type Tab = "write" | "insights" | "vision";
 type View = "list" | "write" | "detail" | "gratitude" | "one-line";
