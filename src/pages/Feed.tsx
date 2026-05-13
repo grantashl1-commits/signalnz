@@ -14,6 +14,7 @@ import FeedTeaserCards from "@/components/feed/FeedTeaserCards";
 import type { FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useFeedReadProgress } from "@/hooks/use-feed-read-progress";
 
 import { pickDailyPosts } from "@/lib/feed-utils";
 
@@ -33,6 +34,24 @@ export default function Feed() {
       return saved ? new Set(JSON.parse(saved)) : new Set();
     } catch { return new Set(); }
   });
+
+  const { readPosts, markRead } = useFeedReadProgress();
+
+  const [heldVersion, setHeldVersion] = useState(0);
+  const heldPosts = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("signal_knowledge_hub");
+      const list = raw ? JSON.parse(raw) : [];
+      const ids = new Set<string>();
+      for (const e of list) {
+        const m = typeof e?.id === "string" ? e.id.match(/^knowledge-(.+?)-\d+$/) : null;
+        if (m) ids.add(m[1]);
+      }
+      return ids;
+    } catch { return new Set<string>(); }
+  }, [heldVersion]);
+
+
 
   // Fetch ALL posts once (they're small text records)
   const { data: allPosts, isLoading } = useQuery({
@@ -131,6 +150,7 @@ export default function Feed() {
     const existing = JSON.parse(localStorage.getItem("signal_knowledge_hub") || "[]");
     existing.unshift(journalPrompt);
     localStorage.setItem("signal_knowledge_hub", JSON.stringify(existing));
+    setHeldVersion((v) => v + 1);
     
     toast.success("Held.", {
       description: "Find it in your Memories tab to reflect on later",
@@ -187,7 +207,10 @@ export default function Feed() {
                 posts={todayPosts}
                 onLike={handleLike}
                 onJournal={handleJournal}
+                onRead={markRead}
                 likedPosts={likedPosts}
+                readPosts={readPosts}
+                heldPosts={heldPosts}
               />
 
               {/* Expand to see history */}
@@ -213,6 +236,7 @@ export default function Feed() {
                       onLike={handleLike}
                       onJournal={handleJournal}
                       likedPosts={likedPosts}
+                      heldPosts={heldPosts}
                     />
                   ))}
 

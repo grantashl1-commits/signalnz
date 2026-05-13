@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Heart, PenLine } from "lucide-react";
+import { BookOpen, Heart, Bookmark, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { haptic } from "@/hooks/use-mobile";
 
@@ -109,14 +109,43 @@ interface PostCardProps {
   post: FeedPost;
   onLike?: (postId: string) => void;
   onJournal?: (post: FeedPost) => void;
+  onRead?: (postId: string) => void;
   isLiked?: boolean;
+  isRead?: boolean;
+  isHeld?: boolean;
 }
 
-export default function PostCard({ post, onLike, onJournal, isLiked = false }: PostCardProps) {
+export default function PostCard({ post, onLike, onJournal, onRead, isLiked = false, isRead = false, isHeld = false }: PostCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(isLiked);
+  const [held, setHeld] = useState(isHeld);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const parsed = parsePostContent(post.post_title_description);
+
+  // Mark as read once it's been visible long enough
+  useEffect(() => {
+    if (isRead || !onRead || !cardRef.current) return;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.intersectionRatio >= 0.6) {
+            if (!timer) timer = setTimeout(() => onRead(post.id), 1200);
+          } else if (timer) {
+            clearTimeout(timer);
+            timer = null;
+          }
+        }
+      },
+      { threshold: [0, 0.6, 1] }
+    );
+    obs.observe(cardRef.current);
+    return () => {
+      obs.disconnect();
+      if (timer) clearTimeout(timer);
+    };
+  }, [isRead, onRead, post.id]);
 
   // Truncate body only
   const BODY_LIMIT = 280;
@@ -133,17 +162,23 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
 
   const handleJournal = () => {
     haptic("medium");
+    setHeld(true);
     onJournal?.(post);
   };
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className="relative bg-card text-card-foreground border-0 overflow-hidden"
       style={{ borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-soft)" }}
     >
+      {/* Read indicator — soft accent bar on the left edge */}
+      {isRead && (
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary/30" aria-hidden />
+      )}
       {/* Journal-style ruled lines background */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
         backgroundImage: `repeating-linear-gradient(transparent, transparent 27px, hsl(var(--foreground)) 28px)`,
@@ -218,10 +253,15 @@ export default function PostCard({ post, onLike, onJournal, isLiked = false }: P
 
           <button
             onClick={handleJournal}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all min-h-[40px] ml-auto"
+            disabled={held}
+            className={`ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold transition-all min-h-[40px] shadow-sm ${
+              held
+                ? "bg-primary/15 text-primary"
+                : "bg-primary text-primary-foreground hover:brightness-110 active:scale-[0.98]"
+            }`}
           >
-            <PenLine className="h-4 w-4" />
-            <span>Reflect on this</span>
+            {held ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+            <span>{held ? "Held" : "Hold this"}</span>
           </button>
         </div>
       </div>
