@@ -1,15 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
-import { format } from "date-fns";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { format, subDays } from "date-fns";
 
 const KEY_PREFIX = "signal_feed_read_";
+const KEEP_DAYS = 14;
 
+function dayKey(d: Date) {
+  return KEY_PREFIX + format(d, "yyyy-MM-dd");
+}
 function todayKey() {
-  return KEY_PREFIX + format(new Date(), "yyyy-MM-dd");
+  return dayKey(new Date());
 }
 
-function readSet(): Set<string> {
+function readSet(key: string): Set<string> {
   try {
-    const raw = localStorage.getItem(todayKey());
+    const raw = localStorage.getItem(key);
     return raw ? new Set(JSON.parse(raw)) : new Set();
   } catch {
     return new Set();
@@ -17,15 +21,17 @@ function readSet(): Set<string> {
 }
 
 export function useFeedReadProgress() {
-  const [read, setRead] = useState<Set<string>>(() => readSet());
+  const [read, setRead] = useState<Set<string>>(() => readSet(todayKey()));
+  const [tick, setTick] = useState(0);
 
-  // Cleanup older day keys (keep only today)
+  // Cleanup keys older than KEEP_DAYS
   useEffect(() => {
-    const keep = todayKey();
+    const keep = new Set<string>();
+    for (let i = 0; i < KEEP_DAYS; i++) keep.add(dayKey(subDays(new Date(), i)));
     try {
       for (let i = localStorage.length - 1; i >= 0; i--) {
         const k = localStorage.key(i);
-        if (k && k.startsWith(KEY_PREFIX) && k !== keep) {
+        if (k && k.startsWith(KEY_PREFIX) && !keep.has(k)) {
           localStorage.removeItem(k);
         }
       }
@@ -42,7 +48,24 @@ export function useFeedReadProgress() {
       } catch {}
       return next;
     });
+    setTick((t) => t + 1);
   }, []);
 
-  return { readPosts: read, markRead };
+  // Last-7-days stats: number of posts read, and number of distinct days returned
+  const weekStats = useMemo(() => {
+    let postsRead = 0;
+    const daysReturned = new Set<string>();
+    for (let i = 0; i < 7; i++) {
+      const k = dayKey(subDays(new Date(), i));
+      const s = readSet(k);
+      if (s.size > 0) {
+        postsRead += s.size;
+        daysReturned.add(k);
+      }
+    }
+    return { postsRead, daysReturned: daysReturned.size };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tick, read]);
+
+  return { readPosts: read, markRead, weekStats };
 }
