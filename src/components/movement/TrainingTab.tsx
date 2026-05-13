@@ -114,12 +114,24 @@ export default function TrainingTab() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="space-y-2">
-        <p className="font-hand text-sm text-primary">A few paths home</p>
-        <p className="font-editorial text-base italic text-foreground/80 leading-relaxed">
-          Choose one when you're ready. Your Today tab follows whichever you pick.
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-2">
+          <p className="font-hand text-sm text-primary">A few paths home</p>
+          <p className="font-editorial text-base italic text-foreground/80 leading-relaxed">
+            Choose one when you're ready. Your Today tab follows whichever you pick.
+          </p>
+        </div>
+        <button
+          onClick={() => { haptic("light"); setSettingsOpen(true); }}
+          aria-label="Edit plan settings"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 min-h-[40px] font-body text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+          Plan settings
+        </button>
       </div>
+
+      <PlanSettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-fr">
         {ENRICHED_PATHS.map((path, i) => (
