@@ -22,6 +22,8 @@ import { loadDreamBoard, saveDreamBoard, type JournalEntry, type DreamElement } 
 import DreamStudio from "@/components/journal/DreamStudio";
 import StoicAudioPlayer from "@/components/StoicAudioPlayer";
 import PhasePromptChips from "@/components/journal/PhasePromptChips";
+import WeeklyJournalRhythm from "@/components/journal/WeeklyJournalRhythm";
+import RecentlyHeldStrip from "@/components/journal/RecentlyHeldStrip";
 
 type Tab = "write" | "insights" | "vision";
 type View = "list" | "write" | "detail" | "gratitude" | "one-line";
@@ -451,6 +453,12 @@ export default function JournalPage() {
               {tab === "write" && view === "list" && (
                 <div className="space-y-6 md:space-y-8">
 
+                  {/* Weekly rhythm — days returned, words held */}
+                  <WeeklyJournalRhythm
+                    entries={entries}
+                    onQuickOneLine={() => { haptic("light"); setView("one-line"); }}
+                  />
+
                   {/* Rotating prompt */}
                   <div className="text-center px-4 min-h-[60px] flex items-center justify-center">
                     <AnimatePresence mode="wait">
@@ -501,6 +509,12 @@ export default function JournalPage() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Recently held — one-tap continuity */}
+                  <RecentlyHeldStrip
+                    entries={entries}
+                    onOpen={(e) => { haptic("light"); setSelectedEntry(e); setView("detail"); }}
+                  />
 
                   {/* ── Daily Philosophy ── */}
                   {reading && (
