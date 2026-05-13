@@ -294,7 +294,9 @@ export default function LibraryTab() {
 
           <div className="space-y-1.5">
           {filtered.length === 0 && (
-            <p className="py-8 text-center font-body text-sm text-muted-foreground">No exercises found.</p>
+            <p className="py-8 text-center font-editorial text-sm italic text-muted-foreground">
+              Nothing matches yet — try a softer filter.
+            </p>
           )}
           {filtered.slice(0, 50).map((ex, i) => {
             const isExpanded = expandedExerciseId === ex.id;
