@@ -29,6 +29,8 @@ import HormoneEducationHub from "@/components/cycle/HormoneEducationHub";
 import PerimenopauseMode from "@/components/cycle/PerimenopauseMode";
 import CycleInsights from "@/components/cycle/CycleInsights";
 import IrregularPeriodSupport from "@/components/cycle/IrregularPeriodSupport";
+import QuickLogPills from "@/components/cycle/QuickLogPills";
+import Last28DaysMiniDashboard from "@/components/cycle/Last28DaysMiniDashboard";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
