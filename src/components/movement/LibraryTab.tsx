@@ -133,8 +133,12 @@ export default function LibraryTab() {
       );
     }
 
+    if (matchKit && equipmentPreference) {
+      result = result.filter(e => exerciseMatchesKit(e.equipment, equipmentPreference));
+    }
+
     return result;
-  }, [exercises, filter, search]);
+  }, [exercises, filter, search, matchKit, equipmentPreference]);
 
   type UnifiedWorkout =
     | { kind: "quick"; data: QuickWorkout; bodyFilter: BodyFilter }
