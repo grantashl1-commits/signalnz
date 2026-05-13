@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Heart, PenLine } from "lucide-react";
+import { BookOpen, Heart, Bookmark, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { haptic } from "@/hooks/use-mobile";
 
