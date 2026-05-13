@@ -200,6 +200,16 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
         </div>
 
+        {/* Carryover hint — gentle, never guilt-laden */}
+        {carryDays >= 1 && carryFrom && (
+          <div className="rounded-lg bg-secondary/40 border border-border/60 px-3 py-2 flex items-start gap-2">
+            <Clock className="h-3.5 w-3.5 text-primary/70 mt-0.5 shrink-0" />
+            <p className="font-editorial text-xs italic text-foreground/75 leading-relaxed">
+              Picked up from {carryFrom}. Same session, whenever you're ready.
+            </p>
+          </div>
+        )}
+
         {/* Phase-aware load microcopy */}
         {currentPhase && (
           <div className="rounded-lg bg-primary/[0.06] border border-primary/15 px-3 py-2">
@@ -209,6 +219,33 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
             <p className="font-editorial text-xs italic text-foreground/75 leading-relaxed">
               {PHASE_LOAD_NOTE[currentPhase]}
             </p>
+          </div>
+        )}
+
+        {/* HR-zone summary after a session ends */}
+        {hrSummary && (
+          <div className="rounded-lg bg-card border border-primary/20 p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/70 font-semibold">
+                Time in zones
+              </p>
+              <p className="font-body text-[10px] text-muted-foreground">
+                avg {hrSummary.avgBpm} · max {hrSummary.maxBpm} bpm
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              {hrSummary.zones.filter(z => z.seconds > 0).map(z => (
+                <div key={z.name} className="flex items-center gap-2">
+                  <span className="w-16 font-body text-[11px] text-foreground/80">{z.name}</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-secondary overflow-hidden">
+                    <div className="h-full bg-primary/70" style={{ width: `${z.pct}%` }} />
+                  </div>
+                  <span className="w-14 text-right font-body text-[10px] text-muted-foreground tabular-nums">
+                    {fmtMinSec(z.seconds)}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
