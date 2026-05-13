@@ -344,7 +344,8 @@ export default function LibraryTab() {
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-body text-sm font-medium text-foreground truncate">{ex.name}</p>
-                    <div className="mt-0.5 flex items-center gap-2">
+                    <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+                      <PhaseBadge phase={suggestPhaseForExercise(ex).phase} size="sm" />
                       {ex.target && (
                         <span className="font-body text-[9px] uppercase tracking-wider text-primary">{ex.target}</span>
                       )}
@@ -362,6 +363,23 @@ export default function LibraryTab() {
                       )}
                     </div>
                   </div>
+                  {(() => {
+                    const picked = isPickedToday(ex.id);
+                    void picksTick;
+                    return (
+                      <button
+                        onClick={(e) => handleAddToPlan(ex, e)}
+                        aria-label={picked ? "Remove from today" : "Add to today"}
+                        className={`shrink-0 h-9 w-9 rounded-full flex items-center justify-center border transition-colors ${
+                          picked
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-card border-border text-muted-foreground hover:text-primary hover:border-primary"
+                        }`}
+                      >
+                        {picked ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                      </button>
+                    );
+                  })()}
                   <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                 </button>
 
