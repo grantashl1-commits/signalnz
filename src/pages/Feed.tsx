@@ -150,6 +150,7 @@ export default function Feed() {
     const existing = JSON.parse(localStorage.getItem("signal_knowledge_hub") || "[]");
     existing.unshift(journalPrompt);
     localStorage.setItem("signal_knowledge_hub", JSON.stringify(existing));
+    setHeldVersion((v) => v + 1);
     
     toast.success("Held.", {
       description: "Find it in your Memories tab to reflect on later",
