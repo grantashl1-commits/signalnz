@@ -176,12 +176,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     }
   };
 
-  // Auto-start recording the moment HR is connected on this card.
-  useEffect(() => {
-    if (hr.connected && !hr.recording) hr.startSession();
-    // we intentionally do not stop on unmount — finishing the workout ends it.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hr.connected]);
+
+
 
   return (
     <motion.section
