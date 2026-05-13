@@ -8,6 +8,7 @@ import { JournalSection, DottedDivider, CelestialHeader } from "@/components/Jou
 import HomePlannerCard from "@/components/HomePlannerCard";
 import HomeCalendarCard from "@/components/HomeCalendarCard";
 import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
+import HomeWeekAtAGlance from "@/components/HomeWeekAtAGlance";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
