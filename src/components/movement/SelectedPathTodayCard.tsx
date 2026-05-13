@@ -269,6 +269,57 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
         )}
 
+        {/* Warm-up / cool-down toggle row */}
+        {expanded && (warmup || cooldown) && (
+          <div className="flex flex-wrap gap-2">
+            {warmup && (
+              <button
+                onClick={() => togglePref("warmup")}
+                aria-pressed={pref.warmup}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 min-h-[36px] border font-body text-[11px] transition-colors ${
+                  pref.warmup
+                    ? "bg-primary/10 border-primary/40 text-primary"
+                    : "bg-card border-border text-muted-foreground"
+                }`}
+              >
+                <Flame className="h-3.5 w-3.5" />
+                Warm-up · {warmup.durationMin} min
+              </button>
+            )}
+            {cooldown && (
+              <button
+                onClick={() => togglePref("cooldown")}
+                aria-pressed={pref.cooldown}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 min-h-[36px] border font-body text-[11px] transition-colors ${
+                  pref.cooldown
+                    ? "bg-primary/10 border-primary/40 text-primary"
+                    : "bg-card border-border text-muted-foreground"
+                }`}
+              >
+                <Wind className="h-3.5 w-3.5" />
+                Cool-down · {cooldown.durationMin} min
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Warm-up sequence */}
+        {expanded && pref.warmup && warmup && (
+          <div className="rounded-lg border border-border/60 bg-secondary/30 p-3 space-y-1.5">
+            <p className="font-hand text-[11px] uppercase tracking-[0.18em] text-primary/80">
+              {warmup.title}
+            </p>
+            <ul className="space-y-1">
+              {warmup.moves.map((m, i) => (
+                <li key={i} className="font-body text-[11px] text-foreground/80 leading-relaxed flex gap-1.5">
+                  <span className="text-primary/60">·</span>
+                  <span>{m}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Structure preview */}
         {expanded && session.structure && session.structure.length > 0 && (
           <ul className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
@@ -287,6 +338,48 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
             })}
           </ul>
         )}
+
+        {/* Picks added from Library */}
+        {expanded && picks.length > 0 && (
+          <div className="rounded-lg border border-primary/20 bg-primary/[0.04] p-3 space-y-2">
+            <p className="font-hand text-[11px] uppercase tracking-[0.18em] text-primary/80">
+              Added from Library
+            </p>
+            <ul className="space-y-1.5">
+              {picks.map(p => (
+                <li key={p.id} className="flex items-center gap-2">
+                  <ExerciseDemonstration exerciseName={p.name} imageUrl={p.illustration_url ?? undefined} size={32} className="shrink-0" />
+                  <span className="flex-1 font-body text-[12px] text-foreground/85 truncate">{p.name}</span>
+                  <button
+                    onClick={() => { haptic("light"); removePickToday(p.id); }}
+                    aria-label="Remove"
+                    className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Cool-down sequence */}
+        {expanded && pref.cooldown && cooldown && (
+          <div className="rounded-lg border border-border/60 bg-secondary/30 p-3 space-y-1.5">
+            <p className="font-hand text-[11px] uppercase tracking-[0.18em] text-primary/80">
+              {cooldown.title}
+            </p>
+            <ul className="space-y-1">
+              {cooldown.moves.map((m, i) => (
+                <li key={i} className="font-body text-[11px] text-foreground/80 leading-relaxed flex gap-1.5">
+                  <span className="text-primary/60">·</span>
+                  <span>{m}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
 
         {session.coachingNote && expanded && (
           <p className="font-body text-xs text-foreground/70 italic leading-relaxed border-l-2 border-primary/30 pl-3">
