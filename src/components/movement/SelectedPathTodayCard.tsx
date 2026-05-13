@@ -170,6 +170,18 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
         </div>
 
+        {/* Phase-aware load microcopy */}
+        {currentPhase && (
+          <div className="rounded-lg bg-primary/[0.06] border border-primary/15 px-3 py-2">
+            <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/70 font-semibold mb-0.5">
+              Why today
+            </p>
+            <p className="font-editorial text-xs italic text-foreground/75 leading-relaxed">
+              {PHASE_LOAD_NOTE[currentPhase]}
+            </p>
+          </div>
+        )}
+
         {/* Structure preview */}
         {expanded && session.structure && session.structure.length > 0 && (
           <ul className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
