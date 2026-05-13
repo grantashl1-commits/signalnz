@@ -425,8 +425,8 @@ export default function LibraryTab() {
       ) : (
         <div className="space-y-2">
           {filteredWorkouts.length === 0 && (
-            <p className="py-8 text-center font-body text-sm text-muted-foreground">
-              Nothing here in this category yet.
+            <p className="py-8 text-center font-editorial text-sm italic text-muted-foreground">
+              Quiet here. Try another body region.
             </p>
           )}
 
