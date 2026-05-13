@@ -78,8 +78,10 @@ export default function TrainingTab() {
   const [selectedPath, setSelectedPath] = useState<TrainingPath | null>(null);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [activePathId, setActivePathId] = useState<string | null>(getSelectedPathId());
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
+    void hydrateSelectedPathFromProfile();
     const handler = () => setActivePathId(getSelectedPathId());
     window.addEventListener("signal:training-path-changed", handler);
     return () => window.removeEventListener("signal:training-path-changed", handler);
