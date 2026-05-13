@@ -60,7 +60,7 @@ export default function ShoppingPreviewStrip({ phaseColor }: Props) {
           <li key={i} className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: phaseColor }} />
             <span className="font-body text-sm text-foreground/90 truncate flex-1">
-              {m.displayQuantity ? `${m.displayQuantity} · ` : ""}{m.name}
+              {m.totalQuantity ? `${m.totalQuantity}${m.unit ? " " + m.unit : ""} · ` : ""}{m.name}
             </span>
           </li>
         ))}
