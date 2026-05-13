@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from "react";
+import { summariseSamples, type HRSample, type HRZoneSummary } from "@/lib/hr-zones";
 
 interface HeartRateState {
   connected: boolean;
@@ -12,6 +13,12 @@ interface HeartRateContextValue extends HeartRateState {
   connect: () => Promise<void>;
   disconnect: () => void;
   isSupported: boolean;
+  /** Begin recording bpm samples for a workout. */
+  startSession: () => void;
+  /** Stop recording and return a zone summary (or null if no samples). */
+  endSession: (hrMax?: number) => HRZoneSummary | null;
+  /** True while a session is being recorded. */
+  recording: boolean;
 }
 
 const HeartRateContext = createContext<HeartRateContextValue | null>(null);
@@ -27,6 +34,9 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
 
   const deviceRef = useRef<any>(null);
   const characteristicRef = useRef<any>(null);
+  const samplesRef = useRef<HRSample[]>([]);
+  const [recording, setRecording] = useState(false);
+  const recordingRef = useRef(false);
 
   const isSupported = typeof navigator !== "undefined" && "bluetooth" in (navigator as any);
 
@@ -37,6 +47,23 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
     const is16Bit = flags & 0x1;
     const bpm = is16Bit ? value.getUint16(1, true) : value.getUint8(1);
     setState(prev => ({ ...prev, bpm }));
+    if (recordingRef.current && bpm > 0) {
+      samplesRef.current.push({ t: Date.now(), bpm });
+    }
+  }, []);
+
+  const startSession = useCallback(() => {
+    samplesRef.current = [];
+    recordingRef.current = true;
+    setRecording(true);
+  }, []);
+
+  const endSession = useCallback((hrMax = 190): HRZoneSummary | null => {
+    recordingRef.current = false;
+    setRecording(false);
+    const summary = summariseSamples(samplesRef.current, hrMax);
+    samplesRef.current = [];
+    return summary;
   }, []);
 
   const connect = useCallback(async () => {
@@ -100,7 +127,7 @@ export function HeartRateProvider({ children }: { children: ReactNode }) {
   // The connection persists across navigation
 
   return (
-    <HeartRateContext.Provider value={{ ...state, connect, disconnect, isSupported }}>
+    <HeartRateContext.Provider value={{ ...state, connect, disconnect, isSupported, startSession, endSession, recording }}>
       {children}
     </HeartRateContext.Provider>
   );
