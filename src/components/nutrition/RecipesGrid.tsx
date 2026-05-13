@@ -252,6 +252,21 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                   ))}
                 </div>
 
+                {/* Add to my week — quick slot picker */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-body text-[10px] uppercase tracking-wide text-muted-foreground">Add to today as</span>
+                  {(["breakfast", "lunch", "dinner"] as MealSlot[]).map((slot) => (
+                    <button
+                      key={slot}
+                      onClick={() => handleAddToWeek(selectedRecipe, slot)}
+                      className="touch-btn inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-body text-[11px] bg-secondary hover:bg-secondary/80 text-foreground transition-all"
+                    >
+                      <Plus className="h-3 w-3" />
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-hand text-sm font-bold" style={{ color: PHASE_HEX[selectedRecipe.phase] }}>
