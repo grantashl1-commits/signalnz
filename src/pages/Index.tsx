@@ -335,6 +335,7 @@ export default function HomePage() {
       {/* ═══ SECTION 2 — PLANNER + HABITS ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+          {user && <HomeWeekAtAGlance />}
           {user && <HomePlannerCard />}
           {user && <HomeCalendarCard />}
           {user && <HomeHabitsDisplay />}
