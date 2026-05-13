@@ -242,12 +242,12 @@ export default function HomeCalendarCard() {
       <div className="relative p-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
+          <a href="/planner" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
             <CalendarIcon className="w-4 h-4 text-primary/60" />
             <p className="font-hand text-[11px] text-muted-foreground/50 uppercase tracking-wider">
               My Calendar
             </p>
-          </div>
+          </a>
           <div className="flex items-center gap-3">
             {cal.icsUrl && (
               <button onClick={cal.clearCalendar} className="font-hand text-[10px] text-muted-foreground/40 hover:text-destructive transition-colors">
