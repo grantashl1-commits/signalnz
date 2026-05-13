@@ -16,6 +16,8 @@ import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
 import { extractPlantsFromIngredients } from "@/lib/plant-extractor";
 import PlantVine from "@/components/nutrition/PlantVine";
+import WeeklyNourishmentSummary from "@/components/nutrition/WeeklyNourishmentSummary";
+import ShoppingPreviewStrip from "@/components/nutrition/ShoppingPreviewStrip";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -268,6 +270,9 @@ export default function TodayTab() {
           {aiToday && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
         </div>
 
+        {/* This week, nourished — gentle weekly summary */}
+        <WeeklyNourishmentSummary phaseColor={phaseColor} />
+
         {/* Protein ring */}
         {nutritionTarget && (
           <div className="rounded-[18px] bg-card p-5 shadow-soft space-y-3">
@@ -346,6 +351,9 @@ export default function TodayTab() {
             />
           )}
         </AnimatePresence>
+
+        {/* Shopping basket preview — link to full list */}
+        <ShoppingPreviewStrip phaseColor={phaseColor} />
 
         {/* Snacks + Seed Cycling — 3-column row like meals */}
         <div>
