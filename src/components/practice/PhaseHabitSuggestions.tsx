@@ -75,7 +75,7 @@ export default function PhaseHabitSuggestions({ phase, phaseColor }: Props) {
       <div className="space-y-2">
         {suggestions.map((lib) => {
           const added = isAdded(lib.name);
-          const note = lib.phaseNotes?.[phase];
+          const note = lib.rdi?.phaseNotes?.[phase];
           return (
             <div
               key={lib.id}
