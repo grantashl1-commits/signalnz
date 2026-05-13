@@ -8,6 +8,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
+import PhaseHabitSuggestions from "@/components/practice/PhaseHabitSuggestions";
 
 import HabitCarousel from "@/components/HabitCarousel";
 import {
@@ -526,6 +527,9 @@ export default function PracticePage() {
             </motion.button>
           </>
         )}
+
+        {/* ═══ FOR YOUR PHASE — gentle suggestions ═══ */}
+        <PhaseHabitSuggestions phase={currentPhase} phaseColor={phaseColor} />
 
         {/* ═══ HABITS BY TIME OF DAY ═══ */}
         <div className="space-y-6">
