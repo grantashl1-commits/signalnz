@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen, Dumbbell } from "lucide-react";
+import { Search, ChevronRight, ChevronDown, Loader2, Play, BookOpen, Dumbbell, Plus, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { haptic } from "@/hooks/use-mobile";
@@ -10,6 +10,10 @@ import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 import type { Workout } from "@/data/workouts";
 import { getAllPathExercises } from "@/lib/training-path-utils";
 import { useProfile } from "@/hooks/useProfile";
+import PhaseBadge from "@/components/PhaseBadge";
+import { suggestPhaseForExercise } from "@/lib/exercise-phase-suggest";
+import { togglePickToday, isPickedToday, type LibraryPick } from "@/lib/library-picks";
+import { toast } from "sonner";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
