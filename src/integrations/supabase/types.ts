@@ -2277,6 +2277,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          body_focus_areas: string[] | null
           calorie_target: number | null
           carb_target_g: number | null
           created_at: string
@@ -2304,6 +2305,8 @@ export type Database = {
           protein_target_g: number | null
           referral_code: string | null
           suburb: string | null
+          training_days_per_week: number | null
+          training_path_id: string | null
           training_program_id: string | null
           updated_at: string
           user_id: string
@@ -2311,6 +2314,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          body_focus_areas?: string[] | null
           calorie_target?: number | null
           carb_target_g?: number | null
           created_at?: string
@@ -2338,6 +2342,8 @@ export type Database = {
           protein_target_g?: number | null
           referral_code?: string | null
           suburb?: string | null
+          training_days_per_week?: number | null
+          training_path_id?: string | null
           training_program_id?: string | null
           updated_at?: string
           user_id: string
@@ -2345,6 +2351,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          body_focus_areas?: string[] | null
           calorie_target?: number | null
           carb_target_g?: number | null
           created_at?: string
@@ -2372,6 +2379,8 @@ export type Database = {
           protein_target_g?: number | null
           referral_code?: string | null
           suburb?: string | null
+          training_days_per_week?: number | null
+          training_path_id?: string | null
           training_program_id?: string | null
           updated_at?: string
           user_id?: string
