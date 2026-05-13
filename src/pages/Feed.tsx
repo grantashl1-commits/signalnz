@@ -14,6 +14,7 @@ import FeedTeaserCards from "@/components/feed/FeedTeaserCards";
 import type { FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useFeedReadProgress } from "@/hooks/use-feed-read-progress";
 
 import { pickDailyPosts } from "@/lib/feed-utils";
 
