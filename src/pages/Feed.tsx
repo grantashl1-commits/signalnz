@@ -35,6 +35,22 @@ export default function Feed() {
     } catch { return new Set(); }
   });
 
+  const { readPosts, markRead } = useFeedReadProgress();
+
+  const heldPosts = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("signal_knowledge_hub");
+      const list = raw ? JSON.parse(raw) : [];
+      const ids = new Set<string>();
+      for (const e of list) {
+        const m = typeof e?.id === "string" ? e.id.match(/^knowledge-(.+?)-\d+$/) : null;
+        if (m) ids.add(m[1]);
+      }
+      return ids;
+    } catch { return new Set<string>(); }
+  }, [allPosts]);
+
+
   // Fetch ALL posts once (they're small text records)
   const { data: allPosts, isLoading } = useQuery({
     queryKey: ["feed-posts-all"],
