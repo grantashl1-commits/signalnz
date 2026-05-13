@@ -468,6 +468,15 @@ export default function JournalPage() {
                     </AnimatePresence>
                   </div>
 
+                  {/* Phase-aware prompt chips */}
+                  <PhasePromptChips
+                    phase={currentPhase as "menstrual" | "follicular" | "ovulatory" | "luteal"}
+                    onPick={(mood, seed) => {
+                      setCurrentMood(mood === "default" ? null : mood);
+                      if (seed) setInlineText((prev) => (prev?.trim() ? prev : seed + "\n\n"));
+                    }}
+                  />
+
                   {/* Inline journal textarea + save */}
                   <div className="card-warm p-4 space-y-3">
                     <textarea
@@ -479,14 +488,16 @@ export default function JournalPage() {
                       style={{ caretColor: "hsl(14, 100%, 64%)", fontSize: "18px" }}
                     />
                     <div className="flex items-center justify-between">
-                      <span className="font-body text-xs text-muted-foreground">{inlineWordCount} words</span>
+                      <span className="font-body text-xs text-muted-foreground">
+                        {inlineWordCount} words{currentMood ? ` · ${currentMood}` : ""}
+                      </span>
                       <button
                         onClick={handleInlineSave}
                         disabled={!inlineText.trim() || inlineSaving}
                         className="touch-btn rounded-xl bg-primary px-5 py-2.5 min-h-[44px] font-body text-sm font-bold text-primary-foreground active:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
                       >
                         {inlineSaved ? <Check className="h-4 w-4" /> : null}
-                        {inlineSaving ? "Saving…" : inlineSaved ? "Saved" : "Save entry"}
+                        {inlineSaving ? "Holding…" : inlineSaved ? "Held" : "Save entry"}
                       </button>
                     </div>
                   </div>
