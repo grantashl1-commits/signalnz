@@ -15,6 +15,7 @@ import type { FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useFeedReadProgress } from "@/hooks/use-feed-read-progress";
+import WeeklyFeedRhythm, { pickTopThemes } from "@/components/feed/WeeklyFeedRhythm";
 
 import { pickDailyPosts } from "@/lib/feed-utils";
 
@@ -35,7 +36,8 @@ export default function Feed() {
     } catch { return new Set(); }
   });
 
-  const { readPosts, markRead } = useFeedReadProgress();
+  const { readPosts, markRead, weekStats } = useFeedReadProgress();
+  const [activeTheme, setActiveTheme] = useState<string | null>(null);
 
   const [heldVersion, setHeldVersion] = useState(0);
   const heldPosts = useMemo(() => {
@@ -101,7 +103,11 @@ export default function Feed() {
     return `${anchorStr}-${dayNum}`;
   }, [todayDayNum, feedAnchor]);
 
-  const todayPosts = allPosts ? pickDailyPosts(allPosts, getDaySeed(0)) : [];
+  const todayPostsAll = allPosts ? pickDailyPosts(allPosts, getDaySeed(0)) : [];
+  const topThemes = useMemo(() => pickTopThemes(todayPostsAll), [todayPostsAll]);
+  const todayPosts = activeTheme
+    ? todayPostsAll.filter((p) => (p.themes || []).includes(activeTheme))
+    : todayPostsAll;
 
   // Build history sections, excluding already-shown posts
   const historySections: { date: Date; posts: FeedPost[]; dayNum: number }[] = [];
@@ -201,6 +207,16 @@ export default function Feed() {
             </div>
           ) : (
             <>
+              {/* Weekly rhythm + theme filter */}
+              <WeeklyFeedRhythm
+                postsRead={weekStats.postsRead}
+                daysReturned={weekStats.daysReturned}
+                heldCount={heldPosts.size}
+                topThemes={topThemes}
+                activeTheme={activeTheme}
+                onThemeClick={(t) => setActiveTheme((cur) => (cur === t ? null : t))}
+              />
+
               {/* Today's posts */}
               <DaySection
                 date={new Date()}
