@@ -405,7 +405,7 @@ export default function LibraryTab() {
 
                         {!ex.instructions && (!ex.cues || ex.cues.length === 0) && (
                           <p className="font-body text-xs text-muted-foreground italic">
-                            No detailed instructions available for this exercise.
+                            Notes still being written for this one. Trust the picture.
                           </p>
                         )}
                       </div>
