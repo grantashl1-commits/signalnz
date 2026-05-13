@@ -250,7 +250,16 @@ export default function CyclePage() {
         {activeTab === "today" && (
           <div className="space-y-8 md:space-y-10">
             {hasDateSet && cycleMode !== "post-menopause" && (
-              <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
+              <>
+                <QuickLogPills
+                  dateStr={todayStr}
+                  phase={info.phase}
+                  onOpenFull={() => setShowSymptomTracker(true)}
+                  onChange={() => setRefreshKey((k) => k + 1)}
+                />
+                <Last28DaysMiniDashboard key={refreshKey} cycleStartDate={lastPeriod} />
+                <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
+              </>
             )}
 
             {cycleMode === "perimenopause" && (
