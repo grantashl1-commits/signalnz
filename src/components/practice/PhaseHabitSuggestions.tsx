@@ -20,9 +20,9 @@ const PHASE_LABEL: Record<Phase, string> = {
   luteal: "your inward turn",
 };
 
-/** Pick up to 3 library habits with a phaseNote for the current phase. */
+/** Pick up to 3 library habits with a phase-specific note for the current phase. */
 function pickPhaseHabits(phase: Phase): LibraryHabit[] {
-  const matched = HABIT_LIBRARY.filter(h => h.phaseNotes && h.phaseNotes[phase]);
+  const matched = HABIT_LIBRARY.filter(h => h.rdi?.phaseNotes?.[phase]);
   // Stable rotation using day-of-year so it shifts gently across days
   const day = Math.floor(Date.now() / 86_400_000);
   const start = matched.length ? day % matched.length : 0;
