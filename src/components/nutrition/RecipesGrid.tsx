@@ -33,6 +33,13 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
   const [search, setSearch] = useState("");
   const { isSupported, isActive, toggle } = useWakeLock();
   const { guard: guardExpand } = useGatedExpand("nutrition_browse");
+  const { currentCycleDay } = useCycle();
+
+  const handleAddToWeek = (recipe: Recipe, slot: MealSlot) => {
+    haptic("light");
+    addRecipeToMyWeek(recipe, currentCycleDay, slot);
+    toast({ description: `Held for today's ${slot}.` });
+  };
 
   const filtered = recipes.filter((r) => {
     const matchesPhase = phaseFilter === "all" || r.phase === phaseFilter;
