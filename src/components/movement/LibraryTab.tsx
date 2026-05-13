@@ -16,6 +16,20 @@ type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 const UPPER_PARTS = new Set(["chest", "shoulders", "biceps", "triceps", "lats", "middle back", "traps", "forearms", "neck"]);
 const LOWER_PARTS = new Set(["quadriceps", "hamstrings", "glutes", "calves", "abductors", "adductors", "hip flexors"]);
 
+const GYM_KIT = new Set(["barbell", "cable_machine", "cable machine", "bench", "squat_rack", "squat rack", "leg_press_machine", "leg_press", "hip_abduction_machine"]);
+const HOME_KIT = new Set(["dumbbells", "dumbbell", "resistance_bands", "resistance bands", "resistance_band", "mat", "foam_roller", "foam roller", "reformer", "jump_rope", "jump rope", "kettlebell"]);
+
+/** Returns true when an exercise's equipment list fits the user's preference tier. */
+function exerciseMatchesKit(equipment: string[] | null, pref: string): boolean {
+  if (!equipment || equipment.length === 0) return true;
+  const eq = equipment.map(e => e.toLowerCase());
+  if (eq.every(e => e === "none" || e === "bodyweight")) return true;
+  if (pref === "gym") return true; // gym has it all
+  if (pref === "home-some") return !eq.some(e => GYM_KIT.has(e));
+  // "none" / bodyweight only
+  return !eq.some(e => GYM_KIT.has(e) || HOME_KIT.has(e));
+}
+
 interface DBExercise {
   id: string;
   name: string;
