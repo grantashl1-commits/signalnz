@@ -111,6 +111,13 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     return () => window.removeEventListener("signal:training-path-changed", refresh);
   }, []);
 
+  // Auto-start recording the moment HR is connected on this card.
+  // Must be declared BEFORE any early return to keep hook order stable.
+  useEffect(() => {
+    if (hr.connected && !hr.recording) hr.startSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hr.connected]);
+
   if (!info) {
     return (
       <Link
