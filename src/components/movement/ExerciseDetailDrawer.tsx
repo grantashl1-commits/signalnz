@@ -176,6 +176,22 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
               </div>
             )}
 
+            {/* Phase-aware why-this-exercise */}
+            <div
+              className="rounded-xl px-4 py-3 border"
+              style={{
+                backgroundColor: `${phaseColor}10`,
+                borderColor: `${phaseColor}33`,
+              }}
+            >
+              <p className="font-hand text-xs font-bold mb-1" style={{ color: phaseColor }}>
+                Why this exercise — {phase} phase
+              </p>
+              <p className="font-editorial text-sm italic text-foreground/80 leading-relaxed">
+                {whyThisExercise(dbData?.target ?? exercise.name, phase)}
+              </p>
+            </div>
+
             {/* Coaching cue */}
             {exercise.formCue && (
               <div className="bg-card border border-border rounded-xl p-4">
