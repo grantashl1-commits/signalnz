@@ -8,8 +8,10 @@ import { motion } from "framer-motion";
 import { Heart, Bluetooth, Check, ChevronRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { useCycle } from "@/contexts/CycleContext";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import type { Phase } from "@/lib/cycle-utils";
 import {
   getSelectedPath,
   getNextSession,
