@@ -352,6 +352,9 @@ export default function TodayTab() {
           )}
         </AnimatePresence>
 
+        {/* Shopping basket preview — link to full list */}
+        <ShoppingPreviewStrip phaseColor={phaseColor} />
+
         {/* Snacks + Seed Cycling — 3-column row like meals */}
         <div>
           <div className="flex items-center justify-between mb-3">
