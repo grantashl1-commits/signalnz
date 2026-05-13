@@ -8,6 +8,7 @@ import SignalPulse from "@/components/SignalPulse";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
+import PhaseHabitSuggestions from "@/components/practice/PhaseHabitSuggestions";
 
 import HabitCarousel from "@/components/HabitCarousel";
 import {
