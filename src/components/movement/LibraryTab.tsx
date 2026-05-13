@@ -9,6 +9,7 @@ import QuickWorkoutSession, { getExercisePrescription } from "@/components/movem
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 import type { Workout } from "@/data/workouts";
 import { getAllPathExercises } from "@/lib/training-path-utils";
+import { useProfile } from "@/hooks/useProfile";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
