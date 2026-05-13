@@ -20,6 +20,35 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
+/** Phase-aware "why this exercise" microcopy keyed by the muscle/target it works. */
+function whyThisExercise(target: string | null | undefined, phase: Phase): string {
+  const t = (target || "").toLowerCase();
+  const isCore = /core|abdom|oblique|spine|back/.test(t);
+  const isGlute = /glute|hip/.test(t);
+  const isLeg = /quad|hamstring|calf|leg/.test(t);
+  const isUpper = /chest|shoulder|back|lat|tricep|bicep|arm/.test(t);
+  const isCardio = /cardio|heart/.test(t);
+
+  if (phase === "menstrual") {
+    if (isCore || isGlute) return "Gentle activation here keeps blood flowing and softens cramping.";
+    if (isCardio) return "A light pulse — enough to lift the fog without taxing reserves.";
+    return "Move quietly today. This one supports without asking too much.";
+  }
+  if (phase === "follicular") {
+    if (isLeg || isGlute) return "Your body is primed to build strength here right now.";
+    if (isUpper) return "Energy is climbing — a great window to push the upper body.";
+    return "Estrogen is rising. Strength gains land more easily this week.";
+  }
+  if (phase === "ovulatory") {
+    if (isLeg || isGlute || isUpper) return "Peak power day. Lift heavier, jump higher — your body can take it.";
+    return "You're at your strongest. Use it.";
+  }
+  // luteal
+  if (isCore || isGlute) return "Steady volume here calms the nervous system in the second half.";
+  if (isCardio) return "Zone 2 over intervals this week — kinder to a busier body.";
+  return "Volume eases back. Move with steadiness, not force.";
+}
+
 interface ExerciseDB {
   name: string;
   body_part: string | null;
@@ -146,6 +175,22 @@ export default function ExerciseDetailDrawer({ exercise, open, onClose, phase }:
                 </div>
               </div>
             )}
+
+            {/* Phase-aware why-this-exercise */}
+            <div
+              className="rounded-xl px-4 py-3 border"
+              style={{
+                backgroundColor: `${phaseColor}10`,
+                borderColor: `${phaseColor}33`,
+              }}
+            >
+              <p className="font-hand text-xs font-bold mb-1" style={{ color: phaseColor }}>
+                Why this exercise — {phase} phase
+              </p>
+              <p className="font-editorial text-sm italic text-foreground/80 leading-relaxed">
+                {whyThisExercise(dbData?.target ?? exercise.name, phase)}
+              </p>
+            </div>
 
             {/* Coaching cue */}
             {exercise.formCue && (

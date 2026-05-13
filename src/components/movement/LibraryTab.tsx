@@ -9,11 +9,26 @@ import QuickWorkoutSession, { getExercisePrescription } from "@/components/movem
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 import type { Workout } from "@/data/workouts";
 import { getAllPathExercises } from "@/lib/training-path-utils";
+import { useProfile } from "@/hooks/useProfile";
 
 type BodyFilter = "all" | "full-body" | "upper" | "lower" | "rehabilitation";
 
 const UPPER_PARTS = new Set(["chest", "shoulders", "biceps", "triceps", "lats", "middle back", "traps", "forearms", "neck"]);
 const LOWER_PARTS = new Set(["quadriceps", "hamstrings", "glutes", "calves", "abductors", "adductors", "hip flexors"]);
+
+const GYM_KIT = new Set(["barbell", "cable_machine", "cable machine", "bench", "squat_rack", "squat rack", "leg_press_machine", "leg_press", "hip_abduction_machine"]);
+const HOME_KIT = new Set(["dumbbells", "dumbbell", "resistance_bands", "resistance bands", "resistance_band", "mat", "foam_roller", "foam roller", "reformer", "jump_rope", "jump rope", "kettlebell"]);
+
+/** Returns true when an exercise's equipment list fits the user's preference tier. */
+function exerciseMatchesKit(equipment: string[] | null, pref: string): boolean {
+  if (!equipment || equipment.length === 0) return true;
+  const eq = equipment.map(e => e.toLowerCase());
+  if (eq.every(e => e === "none" || e === "bodyweight")) return true;
+  if (pref === "gym") return true; // gym has it all
+  if (pref === "home-some") return !eq.some(e => GYM_KIT.has(e));
+  // "none" / bodyweight only
+  return !eq.some(e => GYM_KIT.has(e) || HOME_KIT.has(e));
+}
 
 interface DBExercise {
   id: string;
@@ -85,6 +100,7 @@ const INTENSITY_COLORS: Record<string, string> = {
 export default function LibraryTab() {
   const [filter, setFilter] = useState<BodyFilter>("all");
   const [search, setSearch] = useState("");
+  const [matchKit, setMatchKit] = useState(false);
   const [exercises, setExercises] = useState<DBExercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
@@ -94,6 +110,7 @@ export default function LibraryTab() {
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
   const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
+  const { equipmentPreference } = useProfile();
 
   useEffect(() => {
     const fetchExercises = async () => {
@@ -130,8 +147,12 @@ export default function LibraryTab() {
       );
     }
 
+    if (matchKit && equipmentPreference) {
+      result = result.filter(e => exerciseMatchesKit(e.equipment, equipmentPreference));
+    }
+
     return result;
-  }, [exercises, filter, search]);
+  }, [exercises, filter, search, matchKit, equipmentPreference]);
 
   type UnifiedWorkout =
     | { kind: "quick"; data: QuickWorkout; bodyFilter: BodyFilter }
@@ -221,13 +242,26 @@ export default function LibraryTab() {
           <button
             key={f.id}
             onClick={() => { haptic("light"); setFilter(f.id); }}
-            className={`shrink-0 rounded-full px-3.5 py-2 font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
+            className={`shrink-0 rounded-full px-3.5 py-2 min-h-[44px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
               filter === f.id ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
             }`}
           >
             {f.label}
           </button>
         ))}
+        {equipmentPreference && (
+          <button
+            onClick={() => { haptic("light"); setMatchKit(m => !m); }}
+            aria-pressed={matchKit}
+            className={`shrink-0 rounded-full px-3.5 py-2 min-h-[44px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${
+              matchKit
+                ? "bg-primary/10 border-primary text-primary"
+                : "bg-card border-border text-muted-foreground"
+            }`}
+          >
+            Match my kit
+          </button>
+        )}
       </div>
 
       <div className="flex gap-1 bg-secondary rounded-lg p-0.5">
@@ -260,7 +294,9 @@ export default function LibraryTab() {
 
           <div className="space-y-1.5">
           {filtered.length === 0 && (
-            <p className="py-8 text-center font-body text-sm text-muted-foreground">No exercises found.</p>
+            <p className="py-8 text-center font-editorial text-sm italic text-muted-foreground">
+              Nothing matches yet — try a softer filter.
+            </p>
           )}
           {filtered.slice(0, 50).map((ex, i) => {
             const isExpanded = expandedExerciseId === ex.id;
@@ -369,7 +405,7 @@ export default function LibraryTab() {
 
                         {!ex.instructions && (!ex.cues || ex.cues.length === 0) && (
                           <p className="font-body text-xs text-muted-foreground italic">
-                            No detailed instructions available for this exercise.
+                            Notes still being written for this one. Trust the picture.
                           </p>
                         )}
                       </div>
@@ -389,8 +425,8 @@ export default function LibraryTab() {
       ) : (
         <div className="space-y-2">
           {filteredWorkouts.length === 0 && (
-            <p className="py-8 text-center font-body text-sm text-muted-foreground">
-              Nothing here in this category yet.
+            <p className="py-8 text-center font-editorial text-sm italic text-muted-foreground">
+              Quiet here. Try another body region.
             </p>
           )}
 
