@@ -181,6 +181,7 @@ export default function PlanSettingsSheet({ open, onClose }: Props) {
           </button>
         </div>
       </div>
+      </div>
     </BottomSheet>
   );
 }
