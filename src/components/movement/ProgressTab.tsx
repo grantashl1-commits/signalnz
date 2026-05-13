@@ -3,6 +3,7 @@ import { Camera, ArrowLeftRight, ExternalLink, X, Maximize2 } from "lucide-react
 import { haptic } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import PatternTrendsCard from "./PatternTrendsCard";
 
 type PhotoView = "front" | "side" | "back" | "3d";
 
@@ -152,6 +153,9 @@ export default function ProgressTab() {
         className="hidden"
         onChange={handleFileChange}
       />
+
+      {/* Movement-pattern volume trends */}
+      <PatternTrendsCard />
 
       {/* 3D Body Visualiser Banner */}
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 space-y-3">
