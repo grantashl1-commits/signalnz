@@ -31,6 +31,9 @@ import CycleInsights from "@/components/cycle/CycleInsights";
 import IrregularPeriodSupport from "@/components/cycle/IrregularPeriodSupport";
 import QuickLogPills from "@/components/cycle/QuickLogPills";
 import Last28DaysMiniDashboard from "@/components/cycle/Last28DaysMiniDashboard";
+import PhaseCountdownBanner from "@/components/cycle/PhaseCountdownBanner";
+import WhatsComingNext from "@/components/cycle/WhatsComingNext";
+import PhaseLearnCard from "@/components/cycle/PhaseLearnCard";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -251,6 +254,7 @@ export default function CyclePage() {
           <div className="space-y-8 md:space-y-10">
             {hasDateSet && cycleMode !== "post-menopause" && (
               <>
+                <PhaseCountdownBanner cycleDay={info.cycleDay} phase={info.phase} />
                 <QuickLogPills
                   dateStr={todayStr}
                   phase={info.phase}
@@ -258,6 +262,7 @@ export default function CyclePage() {
                   onChange={() => setRefreshKey((k) => k + 1)}
                 />
                 <Last28DaysMiniDashboard key={refreshKey} cycleStartDate={lastPeriod} />
+                <WhatsComingNext cycleDay={info.cycleDay} />
                 <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
               </>
             )}
@@ -424,6 +429,9 @@ export default function CyclePage() {
         {/* ═══ LEARN TAB ═══ */}
         {activeTab === "learn" && (
           <div className="space-y-8">
+            {hasDateSet && cycleMode !== "post-menopause" && (
+              <PhaseLearnCard phase={info.phase} cycleDay={info.cycleDay} />
+            )}
             <HormoneEducationHub />
           </div>
         )}
