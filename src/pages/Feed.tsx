@@ -37,6 +37,7 @@ export default function Feed() {
 
   const { readPosts, markRead } = useFeedReadProgress();
 
+  const [heldVersion, setHeldVersion] = useState(0);
   const heldPosts = useMemo(() => {
     try {
       const raw = localStorage.getItem("signal_knowledge_hub");
@@ -48,7 +49,8 @@ export default function Feed() {
       }
       return ids;
     } catch { return new Set<string>(); }
-  }, [allPosts]);
+  }, [heldVersion]);
+
 
 
   // Fetch ALL posts once (they're small text records)
