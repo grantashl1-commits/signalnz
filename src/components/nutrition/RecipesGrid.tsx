@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CakeSlice, Search, BookOpen, ChevronDown, Baby } from "lucide-react";
+import { X, CakeSlice, Search, BookOpen, ChevronDown, Baby, Plus } from "lucide-react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
@@ -10,6 +10,9 @@ import { useWakeLock } from "@/hooks/useWakeLock";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "@/hooks/use-toast";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
+import { useCycle } from "@/contexts/CycleContext";
+import { addRecipeToMyWeek } from "@/lib/add-to-my-week";
+import type { MealSlot } from "@/hooks/useCustomMealPlan";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -30,6 +33,13 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
   const [search, setSearch] = useState("");
   const { isSupported, isActive, toggle } = useWakeLock();
   const { guard: guardExpand } = useGatedExpand("nutrition_browse");
+  const { currentCycleDay } = useCycle();
+
+  const handleAddToWeek = (recipe: Recipe, slot: MealSlot) => {
+    haptic("light");
+    addRecipeToMyWeek(recipe, currentCycleDay, slot);
+    toast({ description: `Held for today's ${slot}.` });
+  };
 
   const filtered = recipes.filter((r) => {
     const matchesPhase = phaseFilter === "all" || r.phase === phaseFilter;
@@ -239,6 +249,21 @@ export default function RecipesGrid({ recipes, currentPhase, showBakingHeader = 
                     >
                       {n}
                     </span>
+                  ))}
+                </div>
+
+                {/* Add to my week — quick slot picker */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-body text-[10px] uppercase tracking-wide text-muted-foreground">Add to today as</span>
+                  {(["breakfast", "lunch", "dinner"] as MealSlot[]).map((slot) => (
+                    <button
+                      key={slot}
+                      onClick={() => handleAddToWeek(selectedRecipe, slot)}
+                      className="touch-btn inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-body text-[11px] bg-secondary hover:bg-secondary/80 text-foreground transition-all"
+                    >
+                      <Plus className="h-3 w-3" />
+                      {slot}
+                    </button>
                   ))}
                 </div>
 
