@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronDown, Check } from "lucide-react";
+import { ChevronLeft, ChevronDown, Check, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -15,11 +15,13 @@ import { enrichAllTrainingPaths } from "@/lib/training-csv-enrichment";
 import {
   getSelectedPathId,
   setSelectedPathId,
+  hydrateSelectedPathFromProfile,
 } from "@/lib/training-path-utils";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import { parseRunStructure } from "@/lib/run-session-parser";
 import IntervalTimer from "@/components/movement/IntervalTimer";
+import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
@@ -76,8 +78,10 @@ export default function TrainingTab() {
   const [selectedPath, setSelectedPath] = useState<TrainingPath | null>(null);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [activePathId, setActivePathId] = useState<string | null>(getSelectedPathId());
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
+    void hydrateSelectedPathFromProfile();
     const handler = () => setActivePathId(getSelectedPathId());
     window.addEventListener("signal:training-path-changed", handler);
     return () => window.removeEventListener("signal:training-path-changed", handler);
@@ -110,12 +114,24 @@ export default function TrainingTab() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="space-y-2">
-        <p className="font-hand text-sm text-primary">A few paths home</p>
-        <p className="font-editorial text-base italic text-foreground/80 leading-relaxed">
-          Choose one when you're ready. Your Today tab follows whichever you pick.
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-2">
+          <p className="font-hand text-sm text-primary">A few paths home</p>
+          <p className="font-editorial text-base italic text-foreground/80 leading-relaxed">
+            Choose one when you're ready. Your Today tab follows whichever you pick.
+          </p>
+        </div>
+        <button
+          onClick={() => { haptic("light"); setSettingsOpen(true); }}
+          aria-label="Edit plan settings"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 min-h-[40px] font-body text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+          Plan settings
+        </button>
       </div>
+
+      <PlanSettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-fr">
         {ENRICHED_PATHS.map((path, i) => (

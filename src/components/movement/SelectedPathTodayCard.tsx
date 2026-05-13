@@ -8,8 +8,10 @@ import { motion } from "framer-motion";
 import { Heart, Bluetooth, Check, ChevronRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+import { useCycle } from "@/contexts/CycleContext";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import type { Phase } from "@/lib/cycle-utils";
 import {
   getSelectedPath,
   getNextSession,
@@ -54,8 +56,16 @@ const FOCUS_TITLE: Record<TrainingFocus, string> = {
   "glute-power": "Glute Power",
 };
 
+const PHASE_LOAD_NOTE: Record<Phase, string> = {
+  menstrual: "Lighter today — your body is reseting. Honour the slow.",
+  follicular: "Energy is climbing. A good day to ask a little more of yourself.",
+  ovulatory: "Peak power window. Lift heavier or push the pace if it calls.",
+  luteal: "Volume eases back. Steady and strong, no chasing PRs.",
+};
+
 export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => void }) {
   const hr = useGlobalHeartRate();
+  const { currentPhase } = useCycle();
   const [info, setInfo] = useState<NextSessionInfo | null>(null);
   const [expanded, setExpanded] = useState(true);
 
@@ -159,6 +169,18 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
             )}
           </div>
         </div>
+
+        {/* Phase-aware load microcopy */}
+        {currentPhase && (
+          <div className="rounded-lg bg-primary/[0.06] border border-primary/15 px-3 py-2">
+            <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/70 font-semibold mb-0.5">
+              Why today
+            </p>
+            <p className="font-editorial text-xs italic text-foreground/75 leading-relaxed">
+              {PHASE_LOAD_NOTE[currentPhase]}
+            </p>
+          </div>
+        )}
 
         {/* Structure preview */}
         {expanded && session.structure && session.structure.length > 0 && (
