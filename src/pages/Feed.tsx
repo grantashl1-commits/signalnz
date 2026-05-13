@@ -207,7 +207,10 @@ export default function Feed() {
                 posts={todayPosts}
                 onLike={handleLike}
                 onJournal={handleJournal}
+                onRead={markRead}
                 likedPosts={likedPosts}
+                readPosts={readPosts}
+                heldPosts={heldPosts}
               />
 
               {/* Expand to see history */}
