@@ -270,6 +270,9 @@ export default function TodayTab() {
           {aiToday && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
         </div>
 
+        {/* This week, nourished — gentle weekly summary */}
+        <WeeklyNourishmentSummary phaseColor={phaseColor} />
+
         {/* Protein ring */}
         {nutritionTarget && (
           <div className="rounded-[18px] bg-card p-5 shadow-soft space-y-3">
