@@ -124,7 +124,7 @@ export default function TrainingTab() {
         <button
           onClick={() => { haptic("light"); setSettingsOpen(true); }}
           aria-label="Edit plan settings"
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 min-h-[40px] font-body text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 min-h-[44px] font-body text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <Pencil className="h-3.5 w-3.5" />
           Plan settings
