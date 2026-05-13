@@ -242,13 +242,26 @@ export default function LibraryTab() {
           <button
             key={f.id}
             onClick={() => { haptic("light"); setFilter(f.id); }}
-            className={`shrink-0 rounded-full px-3.5 py-2 font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
+            className={`shrink-0 rounded-full px-3.5 py-2 min-h-[44px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
               filter === f.id ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
             }`}
           >
             {f.label}
           </button>
         ))}
+        {equipmentPreference && (
+          <button
+            onClick={() => { haptic("light"); setMatchKit(m => !m); }}
+            aria-pressed={matchKit}
+            className={`shrink-0 rounded-full px-3.5 py-2 min-h-[44px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${
+              matchKit
+                ? "bg-primary/10 border-primary text-primary"
+                : "bg-card border-border text-muted-foreground"
+            }`}
+          >
+            Match my kit
+          </button>
+        )}
       </div>
 
       <div className="flex gap-1 bg-secondary rounded-lg p-0.5">
