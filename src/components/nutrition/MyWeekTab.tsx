@@ -28,6 +28,8 @@ import {
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
 import KidsDinnerAlt from "./KidsDinnerAlt";
+import WeekAtAGlance from "./WeekAtAGlance";
+import TodayQuickLogStrip from "./TodayQuickLogStrip";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
