@@ -86,6 +86,7 @@ const INTENSITY_COLORS: Record<string, string> = {
 export default function LibraryTab() {
   const [filter, setFilter] = useState<BodyFilter>("all");
   const [search, setSearch] = useState("");
+  const [matchKit, setMatchKit] = useState(false);
   const [exercises, setExercises] = useState<DBExercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
@@ -95,6 +96,7 @@ export default function LibraryTab() {
   const [workoutExercises, setWorkoutExercises] = useState<Record<string, DBExercise[]>>({});
   const [activeSession, setActiveSession] = useState<{ workout: QuickWorkout; exercises: DBExercise[] } | null>(null);
   const { guard: guardExpand } = useGatedExpand("movement_browse");
+  const { equipmentPreference } = useProfile();
 
   useEffect(() => {
     const fetchExercises = async () => {
