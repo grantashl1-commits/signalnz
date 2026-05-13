@@ -5,7 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Bluetooth, Check, ChevronRight, Sparkles, Clock } from "lucide-react";
+import { Heart, Bluetooth, Check, ChevronRight, Sparkles, Clock, Flame, Wind, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useCycle } from "@/contexts/CycleContext";
@@ -24,6 +24,8 @@ import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { noteOffered, daysSinceOffered, offeredWeekday, clearOffered } from "@/lib/session-carryover";
 import { fmtMinSec, type HRZoneSummary } from "@/lib/hr-zones";
+import { getWarmup, getCooldown, getWarmupCooldownPref, setWarmupCooldownPref } from "@/lib/warmup-cooldown";
+import { getPicksForToday, removePickToday, type LibraryPick } from "@/lib/library-picks";
 
 import strengthArt from "@/assets/training-paths/strength.png";
 import muscleArt from "@/assets/training-paths/muscle.png";
