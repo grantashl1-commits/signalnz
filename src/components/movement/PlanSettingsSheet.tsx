@@ -93,7 +93,12 @@ export default function PlanSettingsSheet({ open, onClose }: Props) {
   };
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Plan settings">
+    <BottomSheet isOpen={open} onClose={onClose}>
+      <div className="px-5 pt-5 pb-2 flex items-center justify-between">
+        <h2 className="font-display text-xl font-extrabold text-foreground">Plan settings</h2>
+        <button onClick={onClose} className="text-muted-foreground"><X className="h-5 w-5" /></button>
+      </div>
+      <div className="px-5">
       <div className="space-y-6 pb-2">
         <p className="font-editorial text-sm italic text-muted-foreground">
           Shape your weeks. We'll thread these through every Movement page.
