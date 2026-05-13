@@ -16,6 +16,8 @@ import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
 import { extractPlantsFromIngredients } from "@/lib/plant-extractor";
 import PlantVine from "@/components/nutrition/PlantVine";
+import WeeklyNourishmentSummary from "@/components/nutrition/WeeklyNourishmentSummary";
+import ShoppingPreviewStrip from "@/components/nutrition/ShoppingPreviewStrip";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
