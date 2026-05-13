@@ -28,6 +28,8 @@ import {
 import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
 import KidsDinnerAlt from "./KidsDinnerAlt";
+import WeekAtAGlance from "./WeekAtAGlance";
+import TodayQuickLogStrip from "./TodayQuickLogStrip";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -612,6 +614,22 @@ export default function MyWeekTab() {
         </div>
       </div>
 
+      {/* Week-level summary — meals logged, plant variety, seed days, held/picked */}
+      <WeekAtAGlance
+        days={days.map(d => ({ dateStr: d.dateStr, cycleDay: d.cycleDay, isToday: d.isToday }))}
+        phaseColor={phaseColor}
+        heldCount={Object.values(lockedMeals).filter(Boolean).length}
+        pickedCount={days.reduce((acc, d) => {
+          let n = 0;
+          (["breakfast", "lunch", "dinner"] as MealSlot[]).forEach(s => {
+            if (getCustomMealId(d.cycleDay, s)) n++;
+          });
+          return acc + n;
+        }, 0)}
+        onOpenShopping={() => { haptic("light"); setStep("shop"); }}
+        onOpenPrepGuide={aiPlan ? () => { haptic("light"); setStep("prepguide"); } : undefined}
+      />
+
       {/* Day cards */}
       <div className="space-y-3">
         {days.map((day, i) => {
@@ -678,6 +696,9 @@ export default function MyWeekTab() {
                     : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   }
                 </div>
+                {day.isToday && (
+                  <TodayQuickLogStrip dateStr={day.dateStr} phaseColor={dayPhaseColor} />
+                )}
               </button>
 
               <AnimatePresence>
