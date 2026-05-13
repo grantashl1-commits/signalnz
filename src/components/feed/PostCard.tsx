@@ -253,10 +253,15 @@ export default function PostCard({ post, onLike, onJournal, onRead, isLiked = fa
 
           <button
             onClick={handleJournal}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all min-h-[40px] ml-auto"
+            disabled={held}
+            className={`ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold transition-all min-h-[40px] shadow-sm ${
+              held
+                ? "bg-primary/15 text-primary"
+                : "bg-primary text-primary-foreground hover:brightness-110 active:scale-[0.98]"
+            }`}
           >
-            <PenLine className="h-4 w-4" />
-            <span>Reflect on this</span>
+            {held ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+            <span>{held ? "Held" : "Hold this"}</span>
           </button>
         </div>
       </div>
