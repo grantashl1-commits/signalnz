@@ -22,6 +22,7 @@ import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import { parseRunStructure } from "@/lib/run-session-parser";
 import IntervalTimer from "@/components/movement/IntervalTimer";
 import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
+import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
@@ -79,6 +80,7 @@ export default function TrainingTab() {
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [activePathId, setActivePathId] = useState<string | null>(getSelectedPathId());
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const returnedDays = useWeeklyConsistency();
 
   useEffect(() => {
     void hydrateSelectedPathFromProfile();
@@ -120,6 +122,11 @@ export default function TrainingTab() {
           <p className="font-editorial text-base italic text-foreground/80 leading-relaxed">
             Choose one when you're ready. Your Today tab follows whichever you pick.
           </p>
+          {returnedDays > 0 && (
+            <p className="font-body text-[11px] text-muted-foreground">
+              {returnedDays} {returnedDays === 1 ? "day" : "days"} you returned this week.
+            </p>
+          )}
         </div>
         <button
           onClick={() => { haptic("light"); setSettingsOpen(true); }}
