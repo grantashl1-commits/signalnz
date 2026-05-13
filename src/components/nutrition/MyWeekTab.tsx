@@ -696,6 +696,9 @@ export default function MyWeekTab() {
                     : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   }
                 </div>
+                {day.isToday && (
+                  <TodayQuickLogStrip dateStr={day.dateStr} phaseColor={dayPhaseColor} />
+                )}
               </button>
 
               <AnimatePresence>
