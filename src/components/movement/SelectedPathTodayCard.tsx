@@ -56,8 +56,16 @@ const FOCUS_TITLE: Record<TrainingFocus, string> = {
   "glute-power": "Glute Power",
 };
 
+const PHASE_LOAD_NOTE: Record<Phase, string> = {
+  menstrual: "Lighter today — your body is reseting. Honour the slow.",
+  follicular: "Energy is climbing. A good day to ask a little more of yourself.",
+  ovulatory: "Peak power window. Lift heavier or push the pace if it calls.",
+  luteal: "Volume eases back. Steady and strong, no chasing PRs.",
+};
+
 export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => void }) {
   const hr = useGlobalHeartRate();
+  const { currentPhase } = useCycle();
   const [info, setInfo] = useState<NextSessionInfo | null>(null);
   const [expanded, setExpanded] = useState(true);
 
