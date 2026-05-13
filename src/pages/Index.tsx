@@ -262,8 +262,20 @@ export default function HomePage() {
               <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-6 md:mb-8">
                 Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
               </motion.p>
+              {/* ── Hero micro-actions: one tap into the day ── */}
+              <motion.div {...fadeUp(0.5)} className="flex flex-wrap items-center justify-center gap-2 mb-6 md:mb-8">
+                <Link to="/journal" className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors">
+                  write a line
+                </Link>
+                <Link to="/breathwork" className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors">
+                  one breath
+                </Link>
+                <Link to="/cycle" className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors">
+                  log how you feel
+                </Link>
+              </motion.div>
               {!hasSetCycle && (
-                <motion.div {...fadeUp(0.5)} className="mb-6 md:mb-8">
+                <motion.div {...fadeUp(0.55)} className="mb-6 md:mb-8">
                   <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
                     Tell me about your cycle <ArrowRight className="h-4 w-4" />
                   </Link>
