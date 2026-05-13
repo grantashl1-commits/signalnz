@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronDown, Check } from "lucide-react";
+import { ChevronLeft, ChevronDown, Check, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -15,11 +15,13 @@ import { enrichAllTrainingPaths } from "@/lib/training-csv-enrichment";
 import {
   getSelectedPathId,
   setSelectedPathId,
+  hydrateSelectedPathFromProfile,
 } from "@/lib/training-path-utils";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import { parseRunStructure } from "@/lib/run-session-parser";
 import IntervalTimer from "@/components/movement/IntervalTimer";
+import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
