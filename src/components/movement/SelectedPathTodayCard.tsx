@@ -5,7 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Bluetooth, Check, ChevronRight, Sparkles } from "lucide-react";
+import { Heart, Bluetooth, Check, ChevronRight, Sparkles, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useCycle } from "@/contexts/CycleContext";
@@ -22,6 +22,8 @@ import {
 import type { TrainingFocus } from "@/data/signal-training-paths";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import { noteOffered, daysSinceOffered, offeredWeekday, clearOffered } from "@/lib/session-carryover";
+import { fmtMinSec, type HRZoneSummary } from "@/lib/hr-zones";
 
 import strengthArt from "@/assets/training-paths/strength.png";
 import muscleArt from "@/assets/training-paths/muscle.png";
@@ -68,11 +70,21 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   const { currentPhase } = useCycle();
   const [info, setInfo] = useState<NextSessionInfo | null>(null);
   const [expanded, setExpanded] = useState(true);
+  const [carryDays, setCarryDays] = useState(0);
+  const [carryFrom, setCarryFrom] = useState<string | null>(null);
+  const [hrSummary, setHrSummary] = useState<HRZoneSummary | null>(null);
 
   useEffect(() => {
     const refresh = () => {
       const path = getSelectedPath();
-      setInfo(path ? getNextSession(path) : null);
+      const next = path ? getNextSession(path) : null;
+      setInfo(next);
+      if (next) {
+        const key = `${next.path.id}::w${next.week}::d${next.day}`;
+        noteOffered(key);
+        setCarryDays(daysSinceOffered(key));
+        setCarryFrom(offeredWeekday(key));
+      }
     };
     refresh();
     window.addEventListener("signal:training-path-changed", refresh);
@@ -101,11 +113,20 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
 
   const { path, week, day, session, completedCount, finished } = info;
   const showRestart = week > 1 || completedCount > 0;
+  const sessionKey = `${path.id}::w${week}::d${day}`;
 
   const handleComplete = () => {
     haptic("medium");
+    // Capture HR summary if we were recording.
+    if (hr.recording) {
+      const summary = hr.endSession();
+      if (summary && summary.totalSeconds > 30) {
+        setHrSummary(summary);
+      }
+    }
     markSessionCompleted(path.id, week, day);
-    toast.success("Marked as complete.");
+    clearOffered(sessionKey);
+    toast.success("Held.");
   };
 
   const handleRestart = () => {
@@ -120,11 +141,20 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     else {
       try {
         await hr.connect();
+        // Begin recording for zone summary
+        if (!hr.recording) hr.startSession();
       } catch (e: any) {
         toast.error(e?.message || "Could not connect monitor.");
       }
     }
   };
+
+  // Auto-start recording the moment HR is connected on this card.
+  useEffect(() => {
+    if (hr.connected && !hr.recording) hr.startSession();
+    // we intentionally do not stop on unmount — finishing the workout ends it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hr.connected]);
 
   return (
     <motion.section
