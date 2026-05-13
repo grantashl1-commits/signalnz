@@ -528,6 +528,9 @@ export default function PracticePage() {
           </>
         )}
 
+        {/* ═══ FOR YOUR PHASE — gentle suggestions ═══ */}
+        <PhaseHabitSuggestions phase={currentPhase} phaseColor={phaseColor} />
+
         {/* ═══ HABITS BY TIME OF DAY ═══ */}
         <div className="space-y-6">
           {TIMING_SECTIONS.map(section => {
