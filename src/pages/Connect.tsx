@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3 } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3, Circle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,6 +11,9 @@ import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import PrivateReflection from "@/components/connect/PrivateReflection";
 import SharedRoom from "@/components/connect/SharedRoom";
 import WeeklyCheckIn from "@/components/connect/WeeklyCheckIn";
+import ConnectIntroHero from "@/components/connect/ConnectIntroHero";
+import ConnectExtras from "@/components/connect/ConnectExtras";
+import { useConnectPresence, type PartnerActivity } from "@/hooks/useConnectPresence";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
 type SpaceTab = "reflect" | "shared" | "course" | "checkin";
