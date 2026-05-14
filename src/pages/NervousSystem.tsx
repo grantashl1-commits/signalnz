@@ -12,6 +12,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
+import MindfulnessStreakStrip from "@/components/practice/MindfulnessStreakStrip";
 import BreathworkPlayer from "@/components/practice/BreathworkPlayer";
 import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
 import fasciaReleaseImg from "@/assets/somatic/morning-fascia-release.png";
@@ -694,6 +695,7 @@ export default function NervousSystemPage() {
         </AtmosphericHero>
 
         <ContentSection className="px-5 md:px-4">
+          <MindfulnessStreakStrip />
           {/* Embodiment Course entry card */}
           <motion.button
             initial={{ opacity: 0, y: 10 }}

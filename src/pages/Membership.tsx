@@ -60,6 +60,7 @@ const TIERS = [
     annualSavings: "",
     accent: undefined,
     creditLabel: "5 AI credits/mo",
+    tagline: "A first quiet listen. See if she meets you.",
     sections: [
       {
         title: "Included",
@@ -86,6 +87,7 @@ const TIERS = [
     annualSavings: "$36/yr",
     accent: "#C8647A",
     creditLabel: "30 AI credits/mo",
+    tagline: "A daily companion. Small, steady, returning.",
     sections: [
       {
         title: "Everything in Free, plus",
@@ -116,6 +118,7 @@ const TIERS = [
     annualSavings: "$76/yr",
     accent: undefined,
     creditLabel: "150 AI credits/mo",
+    tagline: "A deeper practice. Body, food, breath, partner.",
     sections: [
       {
         title: "Everything in Rooted, plus",
@@ -152,6 +155,7 @@ const TIERS = [
     annualSavings: "$156/yr",
     accent: undefined,
     creditLabel: "500 AI credits/mo",
+    tagline: "Full access. Held, curated, in community.",
     sections: [
       {
         title: "Everything in Nourished, plus",
@@ -465,6 +469,13 @@ export default function MembershipPage() {
                     <span className="font-body text-[11px] font-semibold text-foreground">{t.creditLabel}</span>
                   </div>
                 </div>
+
+                {/* Emotional tagline */}
+                {(t as any).tagline && (
+                  <p className="font-editorial italic text-[13px] leading-snug text-foreground/80 mt-3 mb-1">
+                    {(t as any).tagline}
+                  </p>
+                )}
 
                 {/* Feature sections */}
                 <div className="space-y-3 flex-1">

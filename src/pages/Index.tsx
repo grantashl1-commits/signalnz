@@ -9,6 +9,8 @@ import HomePlannerCard from "@/components/HomePlannerCard";
 import HomeCalendarCard from "@/components/HomeCalendarCard";
 import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import HomeWeekAtAGlance from "@/components/HomeWeekAtAGlance";
+import HomeMoodPulse from "@/components/home/HomeMoodPulse";
+import HomeReturnRibbon from "@/components/home/HomeReturnRibbon";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -397,6 +399,8 @@ export default function HomePage() {
       {/* ═══ SECTION 2 — PLANNER + HABITS ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+          {user && <HomeMoodPulse />}
+          {user && <HomeReturnRibbon />}
           {user && <HomeWeekAtAGlance />}
           {user && <HomePlannerCard />}
           {user && <HomeCalendarCard />}
