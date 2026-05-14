@@ -205,7 +205,34 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
         </div>
       )}
 
+      {/* View toggle: Categories / Themes */}
+      {totalMemories > 0 && (
+        <div className="flex items-center gap-1 bg-muted/60 rounded-2xl p-1 max-w-[280px]">
+          <button
+            onClick={() => setViewMode("categories")}
+            className={`flex-1 py-2 rounded-xl font-display text-[12px] italic transition-all ${
+              viewMode === "categories" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            Categories
+          </button>
+          <button
+            onClick={() => setViewMode("themes")}
+            className={`flex-1 py-2 rounded-xl font-display text-[12px] italic transition-all flex items-center justify-center gap-1 ${
+              viewMode === "themes" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            <Sparkles className="h-3 w-3" />
+            Themes
+          </button>
+        </div>
+      )}
+
+      {/* Themes view */}
+      {viewMode === "themes" && totalMemories > 0 && <ThemesView vault={vault} />}
+
       {/* Categories */}
+      {viewMode === "categories" && (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
       {VAULT_CATEGORIES.map((cat) => (
         <div key={cat.key} className="min-w-0">
