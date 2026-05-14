@@ -12,6 +12,7 @@ import NearbyView from "@/components/community/NearbyView";
 import ChatRoom from "@/components/community/ChatRoom";
 import ChallengesPanel from "@/components/community/ChallengesPanel";
 import CommunityProfile from "@/components/community/CommunityProfile";
+import CommunityActivityTicker from "@/components/community/CommunityActivityTicker";
 import { haptic } from "@/hooks/use-mobile";
 
 const TABS = [
@@ -148,6 +149,9 @@ export default function CommunityPage() {
           ))}
         </div>
       </div>
+
+      {/* What's happening — recent activity across joined or top-active groups */}
+      <CommunityActivityTicker joinedGroupIds={joined} />
 
       {/* Content */}
       <AnimatePresence mode="wait">
