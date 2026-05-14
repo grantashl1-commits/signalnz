@@ -319,6 +319,15 @@ export default function TodayTab() {
           )}
         </div>
 
+        {/* Phase-aligned snack idea — one-tap "Add to today" */}
+        <PhaseSuggestionCard
+          phase={currentPhase}
+          phaseColor={phaseColor}
+          alreadyLogged={!!eaten["morning-snack"]}
+          onAdd={() => markEaten("morning-snack")}
+          suggestion={snacks.morning}
+        />
+
         {/* 3-column meal cards */}
         <div>
           <h3 className="font-display text-card-title font-bold text-foreground mb-3">Meals</h3>
