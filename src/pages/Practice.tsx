@@ -362,9 +362,17 @@ export default function PracticePage() {
   // Phase 5B — Supabase-backed completions
   const { completedIds, toggle: toggleHabit, history, historyLoading } = useHabitCompletions();
 
+  const [sproutId, setSproutId] = useState<string | null>(null);
+
   const handleToggle = (habitId: string) => {
+    const wasComplete = completedIds.has(habitId);
     haptic("light");
     toggleHabit(habitId);
+    if (!wasComplete) {
+      setSproutId(habitId);
+      setTimeout(() => setSproutId(prev => (prev === habitId ? null : prev)), 1200);
+      toast("Held.", { duration: 1800 });
+    }
   };
 
   const handleDelete = (habitId: string) => {
