@@ -559,6 +559,7 @@ export default function Connect() {
                 {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</> : <>Create Connect space <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
+            )}
           </motion.div>
         )}
 
