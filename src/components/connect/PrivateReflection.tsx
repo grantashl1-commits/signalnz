@@ -7,6 +7,26 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
+import { useCycle } from "@/contexts/CycleContext";
+
+const PHASE_PROMPTS: Record<string, { lead: string; placeholder: string }> = {
+  menstrual: {
+    lead: "Share something you're carrying that you haven't named yet.",
+    placeholder: "What feels heavy right now? What do you wish they knew without you having to say it…",
+  },
+  follicular: {
+    lead: "Name something you're noticing — a small spark, a wish, a curiosity.",
+    placeholder: "What's drawing your attention this week? What would you like more of between you…",
+  },
+  ovulatory: {
+    lead: "Say the warm thing first. The one you usually swallow.",
+    placeholder: "What do you appreciate? What do you want them to feel from you today…",
+  },
+  luteal: {
+    lead: "Write what's been quietly building. The thing you keep almost saying.",
+    placeholder: "What's been on your mind that you haven't found the words for yet…",
+  },
+};
 
 export interface ReflectionCard {
   key: string;
