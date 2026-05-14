@@ -482,42 +482,48 @@ export default function Connect() {
             exit={{ opacity: 0, y: -10 }}
             className="flex flex-col items-center px-6 pt-12 pb-12"
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, type: "spring", damping: 20 }}
-              className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8"
-            >
-              <Heart className="w-10 h-10 text-primary" strokeWidth={1.5} />
-            </motion.div>
+            {/* Two-figure illustration leads, not the PIN */}
+            <ConnectIntroHero className="w-full max-w-xs h-44 mb-6" />
 
-            <h1 className="font-display text-3xl md:text-4xl text-foreground text-center mb-3">Signal Connect</h1>
+            <h1 className="font-display text-3xl md:text-4xl text-foreground text-center mb-3">
+              A private space for you<br />and one person you love
+            </h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm mb-2 leading-relaxed">
-              Two people. One quiet space{"\n"}to be honest in, together.
+              Somewhere quiet to be honest, together. No feed, no audience — just the two of you.
             </p>
-            <p className="text-xs text-muted-foreground/60 text-center max-w-xs mb-10">
-              Invite them in — no account needed. Just a code and a PIN, held between you.
+            <p className="text-xs text-muted-foreground/60 text-center max-w-xs mb-8">
+              They don't need an account. You'll set a small code and a PIN, held only between you.
             </p>
 
-            {/* Feature cards */}
-            <div className="w-full max-w-sm space-y-3 mb-10">
-              {[
-                { icon: Users, title: "No account needed", desc: "Your partner joins with a code and 4-digit PIN — that's it" },
-                { icon: Bot, title: "AI relationship coach", desc: "Trained on relationship science, NLP, and communication tools" },
-                { icon: MessageSquare, title: "Private shared space", desc: "A safe place to reflect, communicate, and grow together" },
-              ].map((f) => (
-                <div key={f.title} className="flex items-start gap-4 p-4 rounded-2xl bg-card border border-border">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <f.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{f.title}</p>
-                    <p className="text-xs text-muted-foreground">{f.desc}</p>
-                  </div>
+            {!setupRevealed && (
+              <>
+                {/* Soft promise cards */}
+                <div className="w-full max-w-sm space-y-3 mb-8">
+                  {[
+                    { icon: MessageSquare, title: "Find the words first", desc: "Write what's hard. The space helps you say it kindly." },
+                    { icon: Heart, title: "Small acts, often", desc: "Appreciations, weekly check-ins, rituals to do together." },
+                    { icon: Bot, title: "Quiet guidance", desc: "Drawn from attachment science and gentle communication tools." },
+                  ].map((f) => (
+                    <div key={f.title} className="flex items-start gap-4 p-4 rounded-2xl bg-card border border-border">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <f.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{f.title}</p>
+                        <p className="text-xs text-muted-foreground">{f.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
+                <button
+                  onClick={() => { haptic("light"); setSetupRevealed(true); }}
+                  className="bg-primary text-primary-foreground px-7 py-3.5 rounded-full text-sm font-semibold flex items-center gap-2 active:opacity-80"
+                >
+                  Begin — invite the one you love <ArrowRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
+            {setupRevealed && (
 
             {/* Setup form */}
             <div className="w-full max-w-sm space-y-4">
