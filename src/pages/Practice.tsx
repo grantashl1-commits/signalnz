@@ -9,6 +9,9 @@ import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import PhaseHabitSuggestions from "@/components/practice/PhaseHabitSuggestions";
+import MiniWeekStrip from "@/components/practice/MiniWeekStrip";
+import WeeklyRitualReview from "@/components/practice/WeeklyRitualReview";
+import { toast } from "sonner";
 
 import HabitCarousel from "@/components/HabitCarousel";
 import {
