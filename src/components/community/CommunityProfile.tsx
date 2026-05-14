@@ -178,6 +178,77 @@ export default function CommunityProfile({ locationEnabled, onToggleLocation }: 
         </p>
       </div>
 
+      {/* Your community presence — preview of how others see you */}
+      {(() => {
+        const visibleFields = FIELDS.filter((f) => visibility[f.key] && (form[f.key] || "").trim());
+        const offerSnippet = (form.offer || "").trim();
+        const lookingSnippet = (form.looking_for || "").trim();
+        const suggested = FIELDS.filter((f) => !((form[f.key] || "").trim())).slice(0, 3);
+        return (
+          <div className="card-warm p-5 border-l-[3px] border-l-primary">
+            <div className="flex items-center gap-1.5 mb-3">
+              <HandDrawnSparkle size={14} color="hsl(var(--primary))" />
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground">Your community presence</p>
+            </div>
+            <div className="flex items-start gap-3 mb-3">
+              <div
+                className="w-12 h-12 rounded-full border flex items-center justify-center overflow-hidden flex-shrink-0"
+                style={{ borderColor: "hsl(var(--primary) / 0.3)", background: "hsl(var(--primary) / 0.05)" }}
+              >
+                {displayPhoto ? (
+                  <img src={displayPhoto} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <HandDrawnCamera size={20} color="hsl(var(--primary))" />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-base italic font-semibold text-foreground truncate">
+                  {displayName || "Your name"}
+                </p>
+                <p className="font-body text-[11px] text-muted-foreground">
+                  {locationEnabled && suburb ? suburb : "Location hidden"}
+                  {" · "}
+                  {visibleFields.length} {visibleFields.length === 1 ? "thing" : "things"} shared
+                </p>
+              </div>
+            </div>
+            {offerSnippet && (
+              <div className="mb-2">
+                <p className="font-body text-[10px] uppercase tracking-wider text-primary mb-0.5">Offers</p>
+                <p className="font-display text-[13px] italic text-foreground/80 line-clamp-2 leading-relaxed">
+                  {offerSnippet}
+                </p>
+              </div>
+            )}
+            {lookingSnippet && visibility.looking_for && (
+              <div className="mb-2">
+                <p className="font-body text-[10px] uppercase tracking-wider text-primary mb-0.5">Looking for</p>
+                <p className="font-display text-[13px] italic text-foreground/80 line-clamp-2 leading-relaxed">
+                  {lookingSnippet}
+                </p>
+              </div>
+            )}
+            {suggested.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-border/60">
+                <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Add to feel more found
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {suggested.map((f) => (
+                    <span
+                      key={f.key}
+                      className="font-body text-[11px] px-2.5 py-1 rounded-full bg-secondary/60 text-muted-foreground"
+                    >
+                      + {f.label.replace(/\?$/, "").split(" ").slice(0, 4).join(" ")}…
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Who sees this? explainer */}
       <div className="card-warm p-4 bg-secondary/50 border-primary/10">
         <p className="font-body text-xs font-medium text-foreground mb-3">Who sees your answers?</p>
