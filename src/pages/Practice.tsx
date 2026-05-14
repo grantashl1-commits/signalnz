@@ -764,6 +764,7 @@ export default function PracticePage() {
           category={libraryPickerCategory}
           onClose={() => setShowLibraryPicker(false)}
           onAdded={refreshHabits}
+          currentPhase={currentPhase}
         />
         </div>
       </div>
