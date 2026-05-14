@@ -524,9 +524,8 @@ export default function Connect() {
               </>
             )}
             {setupRevealed && (
-
-            {/* Setup form */}
-            <div className="w-full max-w-sm space-y-4">
+              /* Setup form */
+              <div className="w-full max-w-sm space-y-4">
               <input
                 value={partnerName}
                 onChange={(e) => setPartnerName(e.target.value)}
