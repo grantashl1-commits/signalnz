@@ -92,7 +92,6 @@ export default function CyclePage() {
   const handleModeSelect = (mode: CycleMode) => {
     updateCycleMode(mode);
     localStorage.setItem("cycleModeSelected", "true");
-    setShowModeSelector(false);
   };
 
   const calendarDays = useMemo(() => {
@@ -124,11 +123,8 @@ export default function CyclePage() {
 
   return (
     <div className="relative">
-      {(showModeSelector || needsModeSelection) && (
-        <CycleModeSelector
-          onSelect={handleModeSelect}
-          onClose={needsModeSelection ? undefined : () => setShowModeSelector(false)}
-        />
+      {needsModeSelection && (
+        <CycleModeSelector onSelect={handleModeSelect} />
       )}
 
       {showSymptomTracker && (
