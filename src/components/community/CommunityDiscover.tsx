@@ -3,6 +3,8 @@ import { MapPin, Loader2, Clock, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { useCycle } from "@/contexts/CycleContext";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -41,6 +43,8 @@ interface CommunityDiscoverProps {
 
 export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverProps) {
   const { user } = useAuth();
+  const { suburb: mySuburb } = useProfile();
+  const { currentPhase } = useCycle();
   const [filter, setFilter] = useState("");
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [searching, setSearching] = useState(false);
