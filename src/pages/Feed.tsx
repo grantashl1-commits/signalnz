@@ -247,6 +247,23 @@ export default function Feed() {
                 onThemeClick={(t) => setActiveTheme((cur) => (cur === t ? null : t))}
               />
 
+              {/* Tune your feed */}
+              <button
+                onClick={() => setTuneOpen(true)}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-card hover:bg-card/80 transition-all min-h-[48px]"
+                style={{ boxShadow: "var(--shadow-soft)" }}
+              >
+                <span className="flex items-center gap-2 font-body text-sm text-foreground/80">
+                  <Sliders className="h-4 w-4 text-primary" />
+                  Tune your feed
+                </span>
+                <span className="font-hand text-xs text-muted-foreground/60">
+                  {Object.keys(themeWeights).length > 0
+                    ? `${Object.keys(themeWeights).length} tuned`
+                    : "set your themes"}
+                </span>
+              </button>
+
               {/* Today's posts */}
               <DaySection
                 date={new Date()}
@@ -259,7 +276,7 @@ export default function Feed() {
                 heldPosts={heldPosts}
               />
 
-              {/* Expand to see history */}
+              {/* Expand to see history — grouped by week */}
               {!showHistory ? (
                 <motion.button
                   initial={{ opacity: 0 }}
@@ -269,31 +286,64 @@ export default function Feed() {
                   style={{ boxShadow: "var(--shadow-soft)" }}
                 >
                   <History className="h-4 w-4" />
-                  <span>View past insights</span>
+                  <span>Look back over the weeks</span>
                   <ChevronDown className="h-4 w-4" />
                 </motion.button>
               ) : (
                 <>
-                  {historySections.map((section) => (
-                    <DaySection
-                      key={format(section.date, "yyyy-MM-dd")}
-                      date={section.date}
-                      posts={section.posts}
-                      onLike={handleLike}
-                      onJournal={handleJournal}
-                      likedPosts={likedPosts}
-                      heldPosts={heldPosts}
-                    />
-                  ))}
+                  {historyWeeks.map(({ weekStart, days }) => {
+                    const key = format(weekStart, "yyyy-MM-dd");
+                    const expanded = expandedWeeks.has(key);
+                    const visibleDays = expanded ? days : days.slice(0, 1);
+                    const totalPosts = days.reduce((n, d) => n + d.posts.length, 0);
+                    const shownPosts = visibleDays.reduce((n, d) => n + d.posts.length, 0);
+                    return (
+                      <section key={key} className="space-y-4">
+                        <div className="flex items-center gap-3 px-1">
+                          <div className="h-px flex-1 border-b border-dotted border-foreground/15" />
+                          <span className="font-display italic text-base text-foreground/80">
+                            Week of {format(weekStart, "d MMM")}
+                          </span>
+                          <div className="h-px flex-1 border-b border-dotted border-foreground/15" />
+                        </div>
+
+                        {visibleDays.map((section) => (
+                          <DaySection
+                            key={format(section.date, "yyyy-MM-dd")}
+                            date={section.date}
+                            posts={section.posts}
+                            onLike={handleLike}
+                            onJournal={handleJournal}
+                            likedPosts={likedPosts}
+                            heldPosts={heldPosts}
+                          />
+                        ))}
+
+                        {totalPosts > shownPosts && (
+                          <button
+                            onClick={() => toggleWeek(key)}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
+                          >
+                            {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                            <span>
+                              {expanded
+                                ? "Hold this week close"
+                                : `Open the rest of the week (${totalPosts - shownPosts} more)`}
+                            </span>
+                          </button>
+                        )}
+                      </section>
+                    );
+                  })}
 
                   {/* Load more */}
                   {todayDayNum > historyDays && (
                     <button
-                      onClick={() => setHistoryDays((d) => d + 7)}
+                      onClick={() => setHistoryDays((d) => d + 28)}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
-                      <span>Load more days</span>
+                      <span>A little further back</span>
                     </button>
                   )}
                 </>
