@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Heart, Bookmark, Check } from "lucide-react";
+import { BookOpen, Heart, Bookmark, Check, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { haptic } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 function formatTag(tag: string): string {
   return tag.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -164,6 +165,111 @@ export default function PostCard({ post, onLike, onJournal, onRead, isLiked = fa
     haptic("medium");
     setHeld(true);
     onJournal?.(post);
+  };
+
+  const buildShareText = () => {
+    const lines: string[] = [];
+    if (parsed.title) lines.push(parsed.title);
+    if (parsed.takeaway) lines.push("", parsed.takeaway);
+    else if (parsed.body) lines.push("", parsed.body.split("\n")[0]);
+    if (parsed.quote) lines.push("", `“${parsed.quote}”`);
+    lines.push("", `— ${post.book_title_author}`, "via Signal");
+    return lines.join("\n");
+  };
+
+  const generateShareImage = async (): Promise<Blob | null> => {
+    const W = 1080, H = 1080;
+    const canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    // Warm Stone background
+    ctx.fillStyle = "#F5F0EC";
+    ctx.fillRect(0, 0, W, H);
+    // Soft border
+    ctx.strokeStyle = "rgba(60,40,30,0.12)";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(40, 40, W - 80, H - 80);
+
+    const wrap = (text: string, x: number, y: number, maxW: number, lineH: number, font: string, color: string) => {
+      ctx.font = font;
+      ctx.fillStyle = color;
+      const words = text.split(/\s+/);
+      let line = "";
+      let cy = y;
+      for (const w of words) {
+        const test = line ? line + " " + w : w;
+        if (ctx.measureText(test).width > maxW && line) {
+          ctx.fillText(line, x, cy);
+          line = w;
+          cy += lineH;
+        } else {
+          line = test;
+        }
+      }
+      if (line) ctx.fillText(line, x, cy);
+      return cy + lineH;
+    };
+
+    let y = 180;
+    if (parsed.title) {
+      y = wrap(parsed.title, 100, y, W - 200, 70, "600 56px Georgia, serif", "#2A2018");
+      y += 40;
+    }
+    const body = parsed.takeaway || parsed.body.split("\n")[0] || "";
+    if (body) {
+      y = wrap(body, 100, y, W - 200, 50, "400 36px Georgia, serif", "rgba(42,32,24,0.78)");
+      y += 30;
+    }
+    if (parsed.quote) {
+      y = wrap(`"${parsed.quote}"`, 100, y, W - 200, 46, "italic 32px Georgia, serif", "rgba(42,32,24,0.6)");
+    }
+
+    // footer
+    ctx.font = "500 28px Inter, sans-serif";
+    ctx.fillStyle = "rgba(42,32,24,0.65)";
+    ctx.fillText(`— ${post.book_title_author}`, 100, H - 140);
+    ctx.font = "600 22px Inter, sans-serif";
+    ctx.fillStyle = "rgba(42,32,24,0.45)";
+    ctx.fillText("via Signal", 100, H - 100);
+
+    return await new Promise((r) => canvas.toBlob((b) => r(b), "image/png"));
+  };
+
+  const handleShare = async () => {
+    haptic("light");
+    const text = buildShareText();
+    const blob = await generateShareImage();
+    const file = blob ? new File([blob], "wisdom.png", { type: "image/png" }) : null;
+    const nav = navigator as any;
+    try {
+      if (file && nav.canShare && nav.canShare({ files: [file] })) {
+        await nav.share({ files: [file], text });
+        return;
+      }
+      if (nav.share) {
+        await nav.share({ text });
+        return;
+      }
+    } catch { /* user cancelled — fall through */ }
+
+    // Clipboard fallback
+    try {
+      await navigator.clipboard.writeText(text);
+      if (blob) {
+        // Also offer the image as a download
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = "signal-wisdom.png"; a.click();
+        URL.revokeObjectURL(url);
+        toast.success("Held — copied + image saved.");
+      } else {
+        toast.success("Held — copied to clipboard.");
+      }
+    } catch {
+      toast.error("Couldn't share — try again in a moment.");
+    }
   };
 
   return (
