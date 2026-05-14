@@ -835,6 +835,14 @@ export default function ChatRoom({ group }: ChatRoomProps) {
               {b.icon} {b.label}
             </button>
           ))}
+          <button
+            onClick={sendWarmth}
+            disabled={!user || rows.length === 0}
+            className="touch-btn font-body text-[11px] bg-primary/10 border border-primary/20 rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1 text-primary disabled:opacity-50"
+            title="Send warmth to the latest message"
+          >
+            <IconWarmth size={13} /> send warmth
+          </button>
         </div>
         <div className="flex gap-2 items-end">
           <textarea
