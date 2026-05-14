@@ -30,7 +30,10 @@ export default function Feed() {
   const canSave = getFeatureAccess("feed_save") === "full";
 
   const [showHistory, setShowHistory] = useState(false);
-  const [historyDays, setHistoryDays] = useState(7);
+  const [historyDays, setHistoryDays] = useState(28); // 4 weeks worth
+  const [tuneOpen, setTuneOpen] = useState(false);
+  const [themeWeights, setThemeWeights] = useState<ThemeWeights>(() => loadThemeWeights());
+  const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
 
   const [likedPosts, setLikedPosts] = useState<Set<string>>(() => {
     try {
@@ -106,19 +109,23 @@ export default function Feed() {
     return `${anchorStr}-${dayNum}`;
   }, [todayDayNum, feedAnchor]);
 
-  const todayPostsAll = allPosts ? pickDailyPosts(allPosts, getDaySeed(0)) : [];
+  const todayPostsAll = allPosts ? pickDailyPosts(allPosts, getDaySeed(0), 5, undefined, themeWeights) : [];
   const topThemes = useMemo(() => pickTopThemes(todayPostsAll), [todayPostsAll]);
   const todayPosts = activeTheme
     ? todayPostsAll.filter((p) => (p.themes || []).includes(activeTheme))
     : todayPostsAll;
 
-  // Build history sections, excluding already-shown posts
+  // Today read-completion → triggers "You're held today" celebration
+  const todayReadCount = todayPosts.filter((p) => readPosts.has(p.id)).length;
+  const todayComplete = todayPosts.length > 0 && todayReadCount === todayPosts.length;
+
+  // Build history sections, then group them into weeks (Mon-start)
   const historySections: { date: Date; posts: FeedPost[]; dayNum: number }[] = [];
   if (showHistory && allPosts) {
     const shownIds = new Set(todayPosts.map(p => p.id));
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
-      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d), 5, shownIds);
+      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d), 5, shownIds, themeWeights);
       const dayNum = todayDayNum - d;
       if (pastPosts.length > 0 && dayNum >= 1) {
         historySections.push({ date: pastDate, posts: pastPosts, dayNum });
@@ -126,6 +133,26 @@ export default function Feed() {
       }
     }
   }
+
+  // Group day sections by week (Mon-anchored)
+  const historyWeeks = useMemo(() => {
+    const groups = new Map<string, { weekStart: Date; days: typeof historySections }>();
+    for (const s of historySections) {
+      const ws = startOfWeek(s.date, { weekStartsOn: 1 });
+      const key = format(ws, "yyyy-MM-dd");
+      if (!groups.has(key)) groups.set(key, { weekStart: ws, days: [] });
+      groups.get(key)!.days.push(s);
+    }
+    return [...groups.values()].sort((a, b) => b.weekStart.getTime() - a.weekStart.getTime());
+  }, [historySections.length, historyDays, showHistory]);
+
+  const toggleWeek = (key: string) => {
+    setExpandedWeeks((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key); else next.add(key);
+      return next;
+    });
+  };
 
   const handleLike = useCallback((postId: string) => {
     setLikedPosts((prev) => {
