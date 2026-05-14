@@ -358,6 +358,14 @@ export default function PostCard({ post, onLike, onJournal, onRead, isLiked = fa
           </button>
 
           <button
+            onClick={handleShare}
+            title="Share this wisdom"
+            className="ml-1 flex items-center justify-center w-10 h-10 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          >
+            <Share2 className="h-4 w-4" />
+          </button>
+
+          <button
             onClick={handleJournal}
             disabled={held}
             className={`ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold transition-all min-h-[40px] shadow-sm ${
