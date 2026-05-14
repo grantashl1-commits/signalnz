@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { HandDrawnPin, HandDrawnCheck, HandDrawnCross } from "@/components/BotanicalElements";
+import { HandDrawnPin, HandDrawnCheck, HandDrawnCross, HandDrawnVillage } from "@/components/BotanicalElements";
 
 interface LocationOptInProps {
   onAccept: () => void;
@@ -31,6 +31,22 @@ export default function LocationOptIn({ onAccept, onDecline }: LocationOptInProp
             Discover neighbours using the app in your area. Your exact address is{" "}
             <strong className="text-primary font-semibold">never shared</strong> — only your suburb is shown to others.
           </p>
+        </div>
+
+        {/* Why we ask — warm framing before the privacy table */}
+        <div className="rounded-2xl p-5 mb-4 border border-primary/15 bg-primary/5">
+          <div className="flex items-start gap-3">
+            <HandDrawnVillage size={36} color="hsl(var(--primary))" className="flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-display text-[15px] italic text-foreground leading-relaxed mb-1.5">
+                Why we ask
+              </p>
+              <p className="font-display text-[14px] italic text-foreground/80 leading-relaxed">
+                The women walking the same path are often closer than you think — sometimes a few streets away.
+                A suburb is enough to find each other, and small enough to keep you safe.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="rounded-2xl p-5 mb-5 border border-border/60" style={{ backgroundColor: "#FAF7F2" }}>
