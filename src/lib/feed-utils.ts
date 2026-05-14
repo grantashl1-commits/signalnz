@@ -1,5 +1,6 @@
 export interface FeedPostSource {
   book_title_author: string;
+  themes?: string[];
 }
 
 export const DEFAULT_DAILY_FEED_COUNT = 5;
@@ -31,9 +32,26 @@ export function pickDailyPosts<T extends FeedPostSource>(
   dateSeed: string,
   targetCount = DEFAULT_DAILY_FEED_COUNT,
   excludeIds?: Set<string>,
+  themeWeights?: Record<string, number>,
 ): T[] {
   const seedNum = hashSeed(dateSeed);
-  const shuffled = seededShuffle(allPosts, seedNum);
+  let shuffled = seededShuffle(allPosts, seedNum);
+
+  // Apply user theme weights as a stable score boost — keeps determinism per day
+  // by sorting only ties broken by weight, leaving the seeded order intact otherwise.
+  if (themeWeights && Object.keys(themeWeights).length > 0) {
+    shuffled = shuffled
+      .map((p, idx) => {
+        const themes = (p as any).themes as string[] | undefined;
+        let score = 0;
+        if (themes) for (const t of themes) score += themeWeights[t] || 0;
+        return { p, idx, score };
+      })
+      // Higher score first; original seeded index breaks ties to preserve daily stability
+      .sort((a, b) => b.score - a.score || a.idx - b.idx)
+      .map((x) => x.p);
+  }
+
   const picked: T[] = [];
   const usedBooks = new Set<string>();
 
