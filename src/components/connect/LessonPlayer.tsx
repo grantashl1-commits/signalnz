@@ -5,6 +5,7 @@ import type { CourseLesson } from "@/data/signal-couples-course";
 import ActivityRenderer from "./ActivityRenderer";
 import LessonMilestone from "./LessonMilestone";
 import { haptic } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 interface Props {
   lesson: CourseLesson;
@@ -45,6 +46,7 @@ export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgres
 
   const handleMilestoneContinue = () => {
     setShowMilestone(false);
+    toast("Held.", { description: "This one's yours now." });
     onComplete(lesson.id);
   };
 
