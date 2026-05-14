@@ -12,6 +12,11 @@ import {
   Target, TrendingUp, ChevronRight, Plus, Check, Calendar
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
+import QuickAskBar from "@/components/coach/QuickAskBar";
+import GoalNudgeBanner from "@/components/coach/GoalNudgeBanner";
+import WeeklyFocusCard from "@/components/coach/WeeklyFocusCard";
+import PatternsInsightCard from "@/components/coach/PatternsInsightCard";
+import CreditsFillBar from "@/components/coach/CreditsFillBar";
 
 // ── Helper ──
 function getWeekStart(): string {
