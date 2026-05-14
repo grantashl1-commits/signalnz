@@ -119,6 +119,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
   const [adding, setAdding] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newPreview, setNewPreview] = useState("");
+  const [viewMode, setViewMode] = useState<"categories" | "themes">("categories");
 
   const resurfacing = useMemo(() => getResurfacingMemories(vault), [vault]);
 
