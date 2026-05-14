@@ -472,6 +472,8 @@ export default function PracticePage() {
           </motion.div>
         ) : (
           <>
+            <MiniWeekStrip history={history} totalHabits={totalHabits} phaseColor={phaseColor} />
+            <WeeklyRitualReview habits={habits} history={history} phaseColor={phaseColor} />
             <motion.div
               {...fadeUp(0.1)}
               className="rounded-[22px] bg-card p-6 shadow-soft mb-6"
