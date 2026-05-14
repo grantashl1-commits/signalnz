@@ -77,15 +77,17 @@ const BreathworkIcon = ({ id }: { id: string }) => {
 
 // ── Breathwork Cards (no evidence badge, with show more) ──
 function BreathworkCards({
+  practices,
   onSelect,
 }: {
+  practices: PracticeConfig[];
   onSelect: (p: PracticeConfig) => void;
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const { guard: guardExpand } = useGatedExpand("breathwork_browse");
 
-  const visible = showAll ? BREATHWORK_PRACTICES : BREATHWORK_PRACTICES.slice(0, 4);
+  const visible = showAll ? practices : practices.slice(0, 4);
 
   return (
     <div className="space-y-3">
