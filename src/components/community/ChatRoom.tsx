@@ -4,7 +4,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import type { ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
+import { REACTIONS, IconWarmth, type ReactionKey } from "@/components/community/ReactionIcons";
 import { Square } from "lucide-react";
+import { toast } from "sonner";
+import { haptic } from "@/hooks/use-mobile";
 
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
