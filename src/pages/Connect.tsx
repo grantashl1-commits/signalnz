@@ -405,6 +405,14 @@ export default function Connect() {
         {/* Tab content */}
         {spaceTab === "reflect" && (
           <div className="flex-1 overflow-y-auto">
+            {partnerOnline && (partnerActivity === "reflecting" || partnerActivity === "writing") && (
+              <div className="mx-4 mt-3 flex items-center gap-2 px-3 py-2 rounded-full bg-primary/8 border border-primary/15">
+                <Circle className="w-2 h-2 fill-emerald-500 text-emerald-500 animate-pulse" />
+                <p className="text-[11px] text-foreground/75">
+                  {partnerDisplayName} is writing on their side too…
+                </p>
+              </div>
+            )}
             <PrivateReflection
               connectionId={connectionId}
               partnerRole={senderRole}
