@@ -15,6 +15,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
 import MyRecipesTab from "@/components/nutrition/MyRecipesTab";
+import NourishStreakBadge from "@/components/nutrition/NourishStreakBadge";
 
 class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, { error: Error | null }> {
   state = { error: null };
@@ -82,6 +83,7 @@ export default function NutritionPage() {
 
       <ContentSection className="px-5 md:px-4 pb-24">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+          <NourishStreakBadge />
           {/* Tabs - first item */}
           <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
             {TABS.map((tab) => (
