@@ -440,6 +440,11 @@ export default function JournalPage() {
                 </button>
               ))}
             </div>
+            {tab === "write" && (
+              <div className="mt-3">
+                <StreakBadge entries={entries} />
+              </div>
+            )}
           </div>
 
           <AnimatePresence mode="wait">
