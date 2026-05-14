@@ -84,6 +84,9 @@ export default function AccountPage() {
   const [nameEditing, setNameEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useStateLocal(false);
+  const [deleteOpen, setDeleteOpen] = useStateLocal(false);
+  const [deleteConfirm, setDeleteConfirm] = useStateLocal("");
+  const [deleting, setDeleting] = useStateLocal(false);
 
   // Supermarket
   const [supermarket, setSupermarket] = useState<SupermarketPreference>(getSupermarket());
@@ -849,33 +852,7 @@ export default function AccountPage() {
           </button>
 
           <button
-            onClick={() => {
-              haptic("medium");
-              const confirmed = window.confirm(
-                "This will permanently delete your account and ALL your data. This action cannot be undone.\n\nAre you sure?"
-              );
-              if (!confirmed || !session) return;
-              const doubleConfirm = window.prompt(
-                'Type "DELETE" to permanently delete your account:'
-              );
-              if (doubleConfirm?.toUpperCase() !== "DELETE") {
-                toast.info("Stayed put.");
-                return;
-              }
-              toast.loading("Deleting your account…", { id: "delete-account" });
-              supabase.functions.invoke("gdpr-delete", {
-                headers: { Authorization: `Bearer ${session.access_token}` },
-                body: { confirm: "DELETE_MY_ACCOUNT" },
-              }).then(({ error }) => {
-                if (error) {
-                  toast.error("That didn't go through — please reach out to support.", { id: "delete-account" });
-                  return;
-                }
-                toast.success("Your account has been removed. Take care.", { id: "delete-account" });
-                supabase.auth.signOut();
-                navigate("/");
-              });
-            }}
+            onClick={() => { haptic("medium"); setDeleteConfirm(""); setDeleteOpen(true); }}
             className="flex items-center justify-between w-full py-2"
           >
             <span className="text-sm text-destructive flex items-center gap-2">
