@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Rss, BookOpen, ChevronDown, History } from "lucide-react";
-import { format, subDays, differenceInDays } from "date-fns";
+import { Rss, BookOpen, ChevronDown, ChevronUp, History, Sliders } from "lucide-react";
+import { format, subDays, differenceInDays, startOfWeek } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
@@ -16,6 +16,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useFeedReadProgress } from "@/hooks/use-feed-read-progress";
 import WeeklyFeedRhythm, { pickTopThemes } from "@/components/feed/WeeklyFeedRhythm";
+import TuneFeedSheet from "@/components/feed/TuneFeedSheet";
+import HeldTodayCelebration from "@/components/feed/HeldTodayCelebration";
+import { loadThemeWeights, type ThemeWeights } from "@/lib/feed-theme-weights";
 
 import { pickDailyPosts } from "@/lib/feed-utils";
 
@@ -27,7 +30,10 @@ export default function Feed() {
   const canSave = getFeatureAccess("feed_save") === "full";
 
   const [showHistory, setShowHistory] = useState(false);
-  const [historyDays, setHistoryDays] = useState(7);
+  const [historyDays, setHistoryDays] = useState(28); // 4 weeks worth
+  const [tuneOpen, setTuneOpen] = useState(false);
+  const [themeWeights, setThemeWeights] = useState<ThemeWeights>(() => loadThemeWeights());
+  const [expandedWeeks, setExpandedWeeks] = useState<Set<string>>(new Set());
 
   const [likedPosts, setLikedPosts] = useState<Set<string>>(() => {
     try {
@@ -103,19 +109,23 @@ export default function Feed() {
     return `${anchorStr}-${dayNum}`;
   }, [todayDayNum, feedAnchor]);
 
-  const todayPostsAll = allPosts ? pickDailyPosts(allPosts, getDaySeed(0)) : [];
+  const todayPostsAll = allPosts ? pickDailyPosts(allPosts, getDaySeed(0), 5, undefined, themeWeights) : [];
   const topThemes = useMemo(() => pickTopThemes(todayPostsAll), [todayPostsAll]);
   const todayPosts = activeTheme
     ? todayPostsAll.filter((p) => (p.themes || []).includes(activeTheme))
     : todayPostsAll;
 
-  // Build history sections, excluding already-shown posts
+  // Today read-completion → triggers "You're held today" celebration
+  const todayReadCount = todayPosts.filter((p) => readPosts.has(p.id)).length;
+  const todayComplete = todayPosts.length > 0 && todayReadCount === todayPosts.length;
+
+  // Build history sections, then group them into weeks (Mon-start)
   const historySections: { date: Date; posts: FeedPost[]; dayNum: number }[] = [];
   if (showHistory && allPosts) {
     const shownIds = new Set(todayPosts.map(p => p.id));
     for (let d = 1; d <= historyDays; d++) {
       const pastDate = subDays(new Date(), d);
-      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d), 5, shownIds);
+      const pastPosts = pickDailyPosts(allPosts, getDaySeed(d), 5, shownIds, themeWeights);
       const dayNum = todayDayNum - d;
       if (pastPosts.length > 0 && dayNum >= 1) {
         historySections.push({ date: pastDate, posts: pastPosts, dayNum });
@@ -123,6 +133,26 @@ export default function Feed() {
       }
     }
   }
+
+  // Group day sections by week (Mon-anchored)
+  const historyWeeks = useMemo(() => {
+    const groups = new Map<string, { weekStart: Date; days: typeof historySections }>();
+    for (const s of historySections) {
+      const ws = startOfWeek(s.date, { weekStartsOn: 1 });
+      const key = format(ws, "yyyy-MM-dd");
+      if (!groups.has(key)) groups.set(key, { weekStart: ws, days: [] });
+      groups.get(key)!.days.push(s);
+    }
+    return [...groups.values()].sort((a, b) => b.weekStart.getTime() - a.weekStart.getTime());
+  }, [historySections.length, historyDays, showHistory]);
+
+  const toggleWeek = (key: string) => {
+    setExpandedWeeks((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key); else next.add(key);
+      return next;
+    });
+  };
 
   const handleLike = useCallback((postId: string) => {
     setLikedPosts((prev) => {
@@ -217,6 +247,23 @@ export default function Feed() {
                 onThemeClick={(t) => setActiveTheme((cur) => (cur === t ? null : t))}
               />
 
+              {/* Tune your feed */}
+              <button
+                onClick={() => setTuneOpen(true)}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-card hover:bg-card/80 transition-all min-h-[48px]"
+                style={{ boxShadow: "var(--shadow-soft)" }}
+              >
+                <span className="flex items-center gap-2 font-body text-sm text-foreground/80">
+                  <Sliders className="h-4 w-4 text-primary" />
+                  Tune your feed
+                </span>
+                <span className="font-hand text-xs text-muted-foreground/60">
+                  {Object.keys(themeWeights).length > 0
+                    ? `${Object.keys(themeWeights).length} tuned`
+                    : "set your themes"}
+                </span>
+              </button>
+
               {/* Today's posts */}
               <DaySection
                 date={new Date()}
@@ -229,7 +276,7 @@ export default function Feed() {
                 heldPosts={heldPosts}
               />
 
-              {/* Expand to see history */}
+              {/* Expand to see history — grouped by week */}
               {!showHistory ? (
                 <motion.button
                   initial={{ opacity: 0 }}
@@ -239,31 +286,64 @@ export default function Feed() {
                   style={{ boxShadow: "var(--shadow-soft)" }}
                 >
                   <History className="h-4 w-4" />
-                  <span>View past insights</span>
+                  <span>Look back over the weeks</span>
                   <ChevronDown className="h-4 w-4" />
                 </motion.button>
               ) : (
                 <>
-                  {historySections.map((section) => (
-                    <DaySection
-                      key={format(section.date, "yyyy-MM-dd")}
-                      date={section.date}
-                      posts={section.posts}
-                      onLike={handleLike}
-                      onJournal={handleJournal}
-                      likedPosts={likedPosts}
-                      heldPosts={heldPosts}
-                    />
-                  ))}
+                  {historyWeeks.map(({ weekStart, days }) => {
+                    const key = format(weekStart, "yyyy-MM-dd");
+                    const expanded = expandedWeeks.has(key);
+                    const visibleDays = expanded ? days : days.slice(0, 1);
+                    const totalPosts = days.reduce((n, d) => n + d.posts.length, 0);
+                    const shownPosts = visibleDays.reduce((n, d) => n + d.posts.length, 0);
+                    return (
+                      <section key={key} className="space-y-4">
+                        <div className="flex items-center gap-3 px-1">
+                          <div className="h-px flex-1 border-b border-dotted border-foreground/15" />
+                          <span className="font-display italic text-base text-foreground/80">
+                            Week of {format(weekStart, "d MMM")}
+                          </span>
+                          <div className="h-px flex-1 border-b border-dotted border-foreground/15" />
+                        </div>
+
+                        {visibleDays.map((section) => (
+                          <DaySection
+                            key={format(section.date, "yyyy-MM-dd")}
+                            date={section.date}
+                            posts={section.posts}
+                            onLike={handleLike}
+                            onJournal={handleJournal}
+                            likedPosts={likedPosts}
+                            heldPosts={heldPosts}
+                          />
+                        ))}
+
+                        {totalPosts > shownPosts && (
+                          <button
+                            onClick={() => toggleWeek(key)}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
+                          >
+                            {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                            <span>
+                              {expanded
+                                ? "Hold this week close"
+                                : `Open the rest of the week (${totalPosts - shownPosts} more)`}
+                            </span>
+                          </button>
+                        )}
+                      </section>
+                    );
+                  })}
 
                   {/* Load more */}
                   {todayDayNum > historyDays && (
                     <button
-                      onClick={() => setHistoryDays((d) => d + 7)}
+                      onClick={() => setHistoryDays((d) => d + 28)}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-muted-foreground hover:text-foreground font-body text-xs transition-colors"
                     >
                       <ChevronDown className="h-3.5 w-3.5" />
-                      <span>Load more days</span>
+                      <span>A little further back</span>
                     </button>
                   )}
                 </>
@@ -280,6 +360,14 @@ export default function Feed() {
           </div>
         </div>
       </ContentSection>
+
+      <TuneFeedSheet
+        isOpen={tuneOpen}
+        onClose={() => setTuneOpen(false)}
+        extraThemes={topThemes}
+        onChange={(w) => setThemeWeights({ ...w })}
+      />
+      <HeldTodayCelebration complete={todayComplete} />
     </div>
   );
 }
