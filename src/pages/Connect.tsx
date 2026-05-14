@@ -46,6 +46,7 @@ export default function Connect() {
   // Shared state
   const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [setupRevealed, setSetupRevealed] = useState(false);
 
   // Check for existing connection on load
   useEffect(() => {
