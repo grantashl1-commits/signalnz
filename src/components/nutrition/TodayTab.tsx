@@ -301,6 +301,13 @@ export default function TodayTab() {
                 Perimenopause: aim for 30g+ protein per meal to overcome anabolic resistance.
               </p>
             )}
+            {/* Phase macro guidance */}
+            <p className="font-body text-[11px] italic" style={{ color: phaseColor }}>
+              {currentPhase === "menstrual" && "Menstrual: iron-rich, warming carbs, gentle on the system."}
+              {currentPhase === "follicular" && "Follicular: lighter carbs, fresh greens, fermented foods."}
+              {currentPhase === "ovulatory" && "Ovulatory: lighter carbs, higher protein, antioxidant-rich."}
+              {currentPhase === "luteal" && "Luteal: complex carbs, magnesium, sustaining fats for steadiness."}
+            </p>
           </div>
         )}
 
