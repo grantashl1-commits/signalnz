@@ -24,6 +24,7 @@ import StoicAudioPlayer from "@/components/StoicAudioPlayer";
 import PhasePromptChips from "@/components/journal/PhasePromptChips";
 import WeeklyJournalRhythm from "@/components/journal/WeeklyJournalRhythm";
 import RecentlyHeldStrip from "@/components/journal/RecentlyHeldStrip";
+import StreakBadge from "@/components/journal/StreakBadge";
 
 type Tab = "write" | "insights" | "vision";
 type View = "list" | "write" | "detail" | "gratitude" | "one-line";
