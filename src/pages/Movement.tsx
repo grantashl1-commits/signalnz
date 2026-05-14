@@ -25,6 +25,7 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
 import SelectedPathTodayCard from "@/components/movement/SelectedPathTodayCard";
+import MovementWeekStrip from "@/components/movement/MovementWeekStrip";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
@@ -258,6 +259,7 @@ export default function MovementPage() {
       {/* TODAY TAB */}
       {activeTab === "today" && (
         <div className="space-y-8 md:space-y-10">
+          <MovementWeekStrip />
           {/* Phase + training week context */}
           <div className="card-warm p-4 md:p-5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
