@@ -630,6 +630,9 @@ export default function MyWeekTab() {
         onOpenPrepGuide={aiPlan ? () => { haptic("light"); setStep("prepguide"); } : undefined}
       />
 
+      {/* Last 4 weeks summary */}
+      <Last4WeeksSummary phaseColor={phaseColor} />
+
       {/* Day cards */}
       <div className="space-y-3">
         {days.map((day, i) => {
@@ -984,3 +987,62 @@ export default function MyWeekTab() {
     </div>
   );
 }
+
+function Last4WeeksSummary({ phaseColor }: { phaseColor: string }) {
+  const stats = useMemo(() => {
+    const dates: string[] = [];
+    for (let i = 0; i < 28; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      dates.push(d.toISOString().split("T")[0]);
+    }
+    let totalMeals = 0;
+    let proteinMatched = 0;
+    let prepDays = 0;
+    const uniqueRecipes = new Set<string>();
+    dates.forEach((d) => {
+      let dailyMeals = 0;
+      (["breakfast", "lunch", "dinner"] as const).forEach((s) => {
+        if (typeof window !== "undefined" && localStorage.getItem(`eaten:${d}:${s}`) === "true") {
+          totalMeals++;
+          dailyMeals++;
+          // Cumulative recipe variety from logged eaten meals stored at meta key (best-effort)
+          const meta = localStorage.getItem(`eatenMeta:${d}:${s}`);
+          if (meta) uniqueRecipes.add(meta.toLowerCase());
+        }
+      });
+      if (dailyMeals >= 3) prepDays++;
+      // If user has a protein log key for the date treat as protein matched
+      if (localStorage.getItem(`proteinHit:${d}`) === "true") proteinMatched++;
+    });
+    const variety = uniqueRecipes.size || Math.max(1, Math.round(totalMeals / 3));
+    const prepHitRate = Math.round((prepDays / 28) * 100);
+    const proteinConsistency = Math.round((proteinMatched / 28) * 100);
+    return { variety, prepHitRate, proteinConsistency, totalMeals };
+  }, []);
+
+  return (
+    <div className="rounded-[18px] bg-card shadow-soft p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-display text-card-title font-bold text-foreground">Last 4 weeks</h3>
+        <span className="font-body text-[10px] text-muted-foreground">28 days</span>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        <MiniStat value={String(stats.variety)} label="unique recipes" sub="variety" color={phaseColor} />
+        <MiniStat value={`${stats.proteinConsistency}%`} label="protein on target" sub="consistency" color={phaseColor} />
+        <MiniStat value={`${stats.prepHitRate}%`} label="full-day meals" sub="prep hit rate" color={phaseColor} />
+      </div>
+    </div>
+  );
+}
+
+function MiniStat({ value, label, sub, color }: { value: string; label: string; sub: string; color: string }) {
+  return (
+    <div className="rounded-[14px] bg-secondary/40 p-3 text-center">
+      <p className="font-display text-xl font-bold text-foreground leading-none">{value}</p>
+      <p className="font-body text-[10px] text-muted-foreground mt-1 leading-tight">{label}</p>
+      <p className="font-body text-[9px] mt-0.5" style={{ color }}>{sub}</p>
+    </div>
+  );
+}
+

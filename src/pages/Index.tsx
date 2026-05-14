@@ -103,7 +103,43 @@ export default function HomePage() {
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
-  
+  const todayStr = new Date().toISOString().split("T")[0];
+  const [prepDismissed, setPrepDismissed] = useState(() =>
+    typeof window !== "undefined" && localStorage.getItem(`prep_dismissed_${todayStr}`) === "true"
+  );
+
+  // Cycle-silence nudge: no mood/symptom/period log in last 3 days
+  const cycleSilent = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    for (let i = 0; i < 3; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const ds = d.toISOString().split("T")[0];
+      if (
+        localStorage.getItem(`mindcast_moods_${ds}`) ||
+        localStorage.getItem(`mindcast_symptoms_${ds}`) ||
+        localStorage.getItem(`mindcast_symptoms_new_${ds}`) ||
+        localStorage.getItem(`mindcast_weight_${ds}`)
+      ) return false;
+    }
+    return true;
+  }, [todayStr]);
+
+  // Rotating micro-actions (3 of 6, rotates by day)
+  const microActions = useMemo(() => {
+    const all = [
+      { label: "write a line", to: "/journal" },
+      { label: "one breath", to: "/breathwork" },
+      { label: "log how you feel", to: "/cycle" },
+      { label: "plan your week", to: "/planner" },
+      { label: "a 2-minute reset", to: "/practice" },
+      { label: "save a wisdom", to: "/feed" },
+    ];
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+    const start = (dayOfYear * 3) % all.length;
+    return [0, 1, 2].map((i) => all[(start + i) % all.length]);
+  }, []);
+
 
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";

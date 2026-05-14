@@ -276,6 +276,8 @@ export default function SupplementRecommender() {
 
   return (
     <div className="space-y-4">
+      {stack.length > 0 && <DailyStackCheckoff stackIds={stack} />}
+
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="h-4 w-4 text-primary" />
         <h3 className="font-body text-xs uppercase tracking-widest font-medium" style={{ color: 'hsl(var(--label-color))' }}>
@@ -424,3 +426,94 @@ export default function SupplementRecommender() {
     </div>
   );
 }
+
+function DailyStackCheckoff({ stackIds }: { stackIds: string[] }) {
+  const todayStr = new Date().toISOString().split("T")[0];
+  const items = useMemo(() => ALL_SUPPLEMENTS.filter(s => stackIds.includes(s.id)), [stackIds]);
+
+  const [doneToday, setDoneToday] = useState<Set<string>>(() => {
+    try {
+      const raw = localStorage.getItem(`supplements_done_${todayStr}`);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch { return new Set(); }
+  });
+
+  const persist = (next: Set<string>) => {
+    localStorage.setItem(`supplements_done_${todayStr}`, JSON.stringify(Array.from(next)));
+  };
+
+  const toggle = (id: string) => {
+    haptic("medium");
+    const next = new Set(doneToday);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setDoneToday(next);
+    persist(next);
+    // Update streak: streak = consecutive days with at least one supplement done
+    if (next.size > 0) {
+      const streakKey = "supplements_streak";
+      const lastKey = "supplements_streak_last";
+      const last = localStorage.getItem(lastKey);
+      let streak = parseInt(localStorage.getItem(streakKey) || "0", 10);
+      if (last !== todayStr) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yStr = yesterday.toISOString().split("T")[0];
+        streak = last === yStr ? streak + 1 : 1;
+        localStorage.setItem(streakKey, String(streak));
+        localStorage.setItem(lastKey, todayStr);
+      }
+    }
+  };
+
+  const streak = parseInt(typeof window !== "undefined" ? localStorage.getItem("supplements_streak") || "0" : "0", 10);
+  const lastDate = typeof window !== "undefined" ? localStorage.getItem("supplements_streak_last") : null;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = yesterday.toISOString().split("T")[0];
+  const activeStreak = lastDate === todayStr || lastDate === yStr ? streak : 0;
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="rounded-[18px] bg-card shadow-soft p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="font-display text-card-title font-bold text-foreground">Today's stack</h3>
+        {activeStreak > 0 && (
+          <span className="font-hand text-xs text-primary font-bold">
+            {activeStreak} day{activeStreak === 1 ? "" : "s"} in a row
+          </span>
+        )}
+      </div>
+      <div className="space-y-2">
+        {items.map((s) => {
+          const done = doneToday.has(s.id);
+          return (
+            <button
+              key={s.id}
+              onClick={() => toggle(s.id)}
+              className="touch-btn w-full flex items-center gap-3 p-2 rounded-xl text-left active:bg-secondary/50 transition-all"
+            >
+              <div
+                className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                style={{
+                  backgroundColor: done ? "hsl(var(--primary))" : "transparent",
+                  border: "1.5px solid hsl(var(--primary))",
+                }}
+              >
+                {done && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
+              </div>
+              <span className={`font-body text-sm flex-1 ${done ? "text-muted-foreground line-through" : "text-foreground"}`}>
+                {s.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <p className="font-body text-[10px] text-muted-foreground italic">
+        Don't break the chain — small daily acts of care.
+      </p>
+    </div>
+  );
+}
+

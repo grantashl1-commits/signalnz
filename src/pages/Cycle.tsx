@@ -5,7 +5,7 @@ import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { ChevronLeft, ChevronRight, Pencil, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 
 import { CymatiSketch, MoonPhaseRow, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
@@ -15,7 +15,7 @@ import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
-  getPeriodEnd,
+  getPeriodEnd, getLoggedWorkouts,
 } from "@/lib/cycle-utils";
 import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
@@ -55,7 +55,6 @@ export default function CyclePage() {
   const [dateEditValue, setDateEditValue] = useState(lastPeriod);
   const [refreshKey, setRefreshKey] = useState(0);
   const [popover, setPopover] = useState<{ dateStr: string; cycleDay: number | null; type: "mood" | "weight" } | null>(null);
-  const [showModeSelector, setShowModeSelector] = useState(false);
   const [showSymptomTracker, setShowSymptomTracker] = useState(false);
 
   // Only show mode selector if user hasn't completed onboarding AND hasn't manually selected
@@ -93,7 +92,6 @@ export default function CyclePage() {
   const handleModeSelect = (mode: CycleMode) => {
     updateCycleMode(mode);
     localStorage.setItem("cycleModeSelected", "true");
-    setShowModeSelector(false);
   };
 
   const calendarDays = useMemo(() => {
@@ -125,11 +123,8 @@ export default function CyclePage() {
 
   return (
     <div className="relative">
-      {(showModeSelector || needsModeSelection) && (
-        <CycleModeSelector
-          onSelect={handleModeSelect}
-          onClose={needsModeSelection ? undefined : () => setShowModeSelector(false)}
-        />
+      {needsModeSelection && (
+        <CycleModeSelector onSelect={handleModeSelect} />
       )}
 
       {showSymptomTracker && (
@@ -169,18 +164,28 @@ export default function CyclePage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-        {/* Mode switcher */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="font-hand text-xs text-muted-foreground">mode:</span>
-            <span className="font-hand text-xs font-bold text-foreground capitalize">{cycleMode.replace("-", " ")}</span>
+        {/* Mode switcher — inline top-bar toggle */}
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <span className="font-hand text-xs text-muted-foreground shrink-0">mode:</span>
+          <div className="flex gap-1 rounded-full bg-secondary/60 p-1 flex-1 min-w-0">
+            {(["cycling", "perimenopause", "post-menopause"] as CycleMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => {
+                  haptic("light");
+                  if (m !== cycleMode) {
+                    updateCycleMode(m);
+                    localStorage.setItem("cycleModeSelected", "true");
+                  }
+                }}
+                className={`touch-tab flex-1 rounded-full px-2 py-1.5 min-h-[32px] font-body text-[11px] font-medium transition-all whitespace-nowrap ${
+                  cycleMode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
+                }`}
+              >
+                {m === "post-menopause" ? "Post" : m === "perimenopause" ? "Peri" : "Cycling"}
+              </button>
+            ))}
           </div>
-          <button
-            onClick={() => { haptic("light"); setShowModeSelector(true); }}
-            className="touch-btn p-2 rounded-full bg-secondary/60 min-w-[36px] min-h-[36px] flex items-center justify-center"
-          >
-            <Settings className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
         </div>
 
         {/* Date picker */}
@@ -263,7 +268,15 @@ export default function CyclePage() {
                 />
                 <Last28DaysMiniDashboard key={refreshKey} cycleStartDate={lastPeriod} />
                 <WhatsComingNext cycleDay={info.cycleDay} />
-                <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
+                <details className="group">
+                  <summary className="cursor-pointer font-display text-sm italic text-muted-foreground flex items-center gap-2 py-2 list-none">
+                    <span className="inline-block group-open:rotate-90 transition-transform">▸</span>
+                    More about this phase
+                  </summary>
+                  <div className="mt-4">
+                    <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
+                  </div>
+                </details>
               </>
             )}
 
@@ -334,6 +347,7 @@ export default function CyclePage() {
                 const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
                 const periodEnd = getPeriodEnd(monthKey);
                 const isPeriodEnd = periodEnd === dateStr;
+                const hasTraining = getLoggedWorkouts(dateStr).length > 0;
 
                 return (
                   <button
@@ -372,8 +386,16 @@ export default function CyclePage() {
                           <circle cx="8" cy="8" r="2" fill="#9B89B4" />
                         </svg>
                       )}
+                      {/* Symptom dot — amber */}
+                      {indicators.hasSymptoms && (
+                        <div className="rounded-full" style={{ width: 5, height: 5, backgroundColor: "#D49B4A" }} title="symptoms logged" />
+                      )}
+                      {/* Training dot — sage */}
+                      {hasTraining && (
+                        <div className="rounded-full" style={{ width: 5, height: 5, backgroundColor: "#7A9B6E" }} title="movement logged" />
+                      )}
                       {/* Phase dot — mauve (non-period days) */}
-                      {phase && !isPeriod && !isPeriodEnd && (
+                      {phase && !isPeriod && !isPeriodEnd && !indicators.hasSymptoms && !hasTraining && (
                         <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#9B89B4" }} />
                       )}
                     </div>
