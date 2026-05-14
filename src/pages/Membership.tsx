@@ -60,6 +60,7 @@ const TIERS = [
     annualSavings: "",
     accent: undefined,
     creditLabel: "5 AI credits/mo",
+    tagline: "A first quiet listen. See if she meets you.",
     sections: [
       {
         title: "Included",
@@ -86,6 +87,7 @@ const TIERS = [
     annualSavings: "$36/yr",
     accent: "#C8647A",
     creditLabel: "30 AI credits/mo",
+    tagline: "A daily companion. Small, steady, returning.",
     sections: [
       {
         title: "Everything in Free, plus",
@@ -116,6 +118,7 @@ const TIERS = [
     annualSavings: "$76/yr",
     accent: undefined,
     creditLabel: "150 AI credits/mo",
+    tagline: "A deeper practice. Body, food, breath, partner.",
     sections: [
       {
         title: "Everything in Rooted, plus",
@@ -152,6 +155,7 @@ const TIERS = [
     annualSavings: "$156/yr",
     accent: undefined,
     creditLabel: "500 AI credits/mo",
+    tagline: "Full access. Held, curated, in community.",
     sections: [
       {
         title: "Everything in Nourished, plus",
