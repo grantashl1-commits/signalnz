@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
+import { HandDrawnSparkle } from "@/components/BotanicalElements";
 
 interface CommunityProfileProps {
   locationEnabled: boolean;
