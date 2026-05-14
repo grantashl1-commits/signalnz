@@ -174,7 +174,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           .in("message_id", ids);
         if (!cancelled && rxRows) {
           const next: Record<string, Record<string, { count: number; mine: boolean }>> = {};
-          for (const r of rxRows as Array<{ message_id: string; user_id: string; reaction: string }>) {
+          const rows = rxRows as unknown as Array<{ message_id: string; user_id: string; reaction: string }>;
+          for (const r of rows) {
             const m = next[r.message_id] ?? (next[r.message_id] = {});
             const cur = m[r.reaction] ?? { count: 0, mine: false };
             cur.count += 1;
