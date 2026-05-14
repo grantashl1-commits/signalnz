@@ -10,23 +10,22 @@ const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
 export default function MovementWeekStrip() {
   const { perDay, total } = useMemo(() => {
-    const logs = getLoggedWorkouts() as Array<{ date: string; duration?: number; durationMinutes?: number }>;
     const perDay: number[] = Array(7).fill(0);
     const today = new Date();
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - today.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
     let total = 0;
-    logs.forEach((l) => {
-      if (!l.date) return;
-      const d = new Date(l.date);
-      const diff = Math.floor((d.getTime() - startOfWeek.getTime()) / 86400000);
-      if (diff >= 0 && diff < 7) {
-        const m = (l.duration ?? l.durationMinutes ?? 30) as number;
-        perDay[diff] += m;
-        total += m;
-      }
-    });
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(startOfWeek);
+      d.setDate(startOfWeek.getDate() + i);
+      const ds = d.toISOString().split("T")[0];
+      const list = getLoggedWorkouts(ds);
+      // Approximate 30 minutes per logged workout (no duration in localStorage shape).
+      const min = list.length * 30;
+      perDay[i] = min;
+      total += min;
+    }
     return { perDay, total };
   }, []);
 
