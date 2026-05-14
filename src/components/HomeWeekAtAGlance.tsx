@@ -8,12 +8,29 @@
  *
  * Days without dots aren't framed as failure — empty days are simply quiet.
  */
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useWeekAtAGlance } from "@/hooks/use-week-at-a-glance";
+import { getDayIndicators } from "@/lib/cycle-utils";
 
 export default function HomeWeekAtAGlance() {
   const days = useWeekAtAGlance();
+
+  const cycleLogged = useMemo(() => {
+    if (!days) return new Set<string>();
+    const out = new Set<string>();
+    days.forEach((d) => {
+      try {
+        const ind = getDayIndicators(d.date, null);
+        if (ind.hasMood || ind.hasSymptoms || ind.hasNotes || ind.hasWeight || ind.isPeriodDay) {
+          out.add(d.date);
+        }
+      } catch {}
+    });
+    return out;
+  }, [days]);
+
   if (!days) {
     return (
       <div className="rounded-[20px] bg-card p-5 animate-pulse h-[112px]" style={{ boxShadow: "var(--shadow-soft)" }} />
@@ -23,7 +40,19 @@ export default function HomeWeekAtAGlance() {
   const movedCount = days.filter((d) => d.moved).length;
   const stillCount = days.filter((d) => d.rested).length;
   const wroteCount = days.filter((d) => d.wrote).length;
-  const anyActivity = movedCount + stillCount + wroteCount > 0;
+  const cycleCount = days.filter((d) => cycleLogged.has(d.date)).length;
+  const anyActivity = movedCount + stillCount + wroteCount + cycleCount > 0;
+
+  // Per-day total activity for the sparkline (0–4)
+  const sparkline = days.map((d) => {
+    let n = 0;
+    if (d.moved) n++;
+    if (d.rested) n++;
+    if (d.wrote) n++;
+    if (cycleLogged.has(d.date)) n++;
+    return n;
+  });
+  const sparkMax = Math.max(1, ...sparkline);
 
   return (
     <motion.div
@@ -45,7 +74,7 @@ export default function HomeWeekAtAGlance() {
       </div>
 
       <div className="grid grid-cols-7 gap-1">
-        {days.map((d) => (
+        {days.map((d, i) => (
           <div key={d.date} className="flex flex-col items-center gap-1.5">
             <span className={`font-hand text-[10px] ${d.isToday ? "text-primary font-semibold" : "text-muted-foreground/50"}`}>
               {d.weekday}
@@ -56,21 +85,41 @@ export default function HomeWeekAtAGlance() {
               }`}
               style={{ background: "hsl(var(--secondary) / 0.4)" }}
             >
-              <div className="flex gap-[2px]">
+              <div className="flex flex-wrap justify-center gap-[2px] max-w-[18px]">
                 {d.moved && <span className="w-[5px] h-[5px] rounded-full bg-primary/70" title="moved" />}
                 {d.rested && <span className="w-[5px] h-[5px] rounded-full bg-accent" title="still" />}
                 {d.wrote && <span className="w-[5px] h-[5px] rounded-full bg-foreground/40" title="wrote" />}
+                {cycleLogged.has(d.date) && (
+                  <span className="w-[5px] h-[5px] rounded-full" style={{ background: "#9B89B4" }} title="cycle log" />
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Consistency sparkline */}
+      <div className="mt-3 flex items-end gap-1 h-5">
+        {sparkline.map((v, i) => (
+          <div
+            key={i}
+            className="flex-1 rounded-sm transition-all"
+            style={{
+              height: `${Math.max(10, (v / sparkMax) * 100)}%`,
+              background: v > 0 ? "hsl(var(--primary) / 0.5)" : "hsl(var(--secondary))",
+              opacity: v > 0 ? 0.4 + (v / sparkMax) * 0.6 : 0.5,
+            }}
+            title={`${v} kindnesses`}
+          />
+        ))}
+      </div>
+
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-3 text-[10px] font-body text-muted-foreground/70">
-          <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary/70" /> moved · {movedCount}</span>
+        <div className="flex items-center gap-2 text-[10px] font-body text-muted-foreground/70 flex-wrap">
+          <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary/70" /> trained · {movedCount}</span>
           <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-accent" /> still · {stillCount}</span>
           <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-foreground/40" /> wrote · {wroteCount}</span>
+          <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#9B89B4" }} /> cycle · {cycleCount}</span>
         </div>
         <Link to="/account" className="font-hand text-[11px] text-primary/70 hover:text-primary transition-colors">
           see the shape →
