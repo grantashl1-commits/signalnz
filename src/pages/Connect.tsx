@@ -410,6 +410,7 @@ export default function Connect() {
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               onCardsSent={() => setSpaceTab("shared")}
+              onActivity={broadcastActivity}
             />
             {/* Appreciation — always accessible below the reflection form */}
             <div className="px-4 pb-8 pt-2">
