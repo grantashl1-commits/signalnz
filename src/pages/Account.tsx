@@ -882,6 +882,67 @@ export default function AccountPage() {
           <LogOut className="h-5 w-5 text-destructive flex-shrink-0" />
           <p className="font-display text-sm italic text-destructive">Sign out</p>
         </button>
+
+        {/* Warm delete sheet */}
+        <Sheet open={deleteOpen} onOpenChange={(o) => { if (!deleting) setDeleteOpen(o); }}>
+          <SheetContent side="bottom" className="rounded-t-2xl">
+            <SheetHeader className="pb-2 text-left">
+              <SheetTitle className="font-display text-xl italic">Before you go</SheetTitle>
+            </SheetHeader>
+            <div className="space-y-4 pt-2 pb-2">
+              <p className="font-body text-sm text-muted-foreground leading-relaxed">
+                This will quietly remove your account and everything you've held here — entries, cycles,
+                practices, all of it. There's no undo.
+              </p>
+              <p className="font-body text-sm text-foreground/80 leading-relaxed">
+                If something feels off, we'd rather hear it. <button onClick={() => { setDeleteOpen(false); setTimeout(() => setFeedbackOpen(true), 200); }} className="underline text-primary">Tell us first</button>.
+              </p>
+              <div>
+                <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Type DELETE to confirm
+                </p>
+                <input
+                  value={deleteConfirm}
+                  onChange={(e) => setDeleteConfirm(e.target.value)}
+                  placeholder="DELETE"
+                  className="w-full rounded-xl bg-background border border-border px-3.5 py-2.5 font-body text-sm focus:outline-none focus:ring-2 focus:ring-destructive/30"
+                />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button
+                  onClick={() => { setDeleteOpen(false); toast("Stayed put."); }}
+                  disabled={deleting}
+                  className="flex-1 rounded-xl bg-secondary px-4 py-3 font-body text-sm font-semibold text-foreground"
+                >
+                  Stay
+                </button>
+                <button
+                  disabled={deleting || deleteConfirm.trim().toUpperCase() !== "DELETE" || !session}
+                  onClick={async () => {
+                    if (!session) return;
+                    setDeleting(true);
+                    toast.loading("Letting you go…", { id: "delete-account" });
+                    const { error } = await supabase.functions.invoke("gdpr-delete", {
+                      headers: { Authorization: `Bearer ${session.access_token}` },
+                      body: { confirm: "DELETE_MY_ACCOUNT" },
+                    });
+                    if (error) {
+                      toast.error("That didn't go through — please reach out to support.", { id: "delete-account" });
+                      setDeleting(false);
+                      return;
+                    }
+                    toast.success("You've been removed. Take care.", { id: "delete-account" });
+                    await supabase.auth.signOut();
+                    navigate("/");
+                  }}
+                  className="flex-1 rounded-xl bg-destructive px-4 py-3 font-body text-sm font-semibold text-destructive-foreground disabled:opacity-40"
+                >
+                  {deleting ? "Letting go…" : "Delete account"}
+                </button>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </ContentSection>
     </div>
   );
