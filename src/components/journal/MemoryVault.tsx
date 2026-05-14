@@ -4,6 +4,7 @@ import { Trash2, Plus, X, Sparkles, BookOpen, Lock, Heart, Smile, Star, Zap, Boo
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
+import ThemesView from "./ThemesView";
 
 const VAULT_CATEGORIES = [
   { key: "journal-entries", label: "Journal Entries", desc: "Your saved journal reflections", color: "#5C4A9E", icon: BookOpen },
