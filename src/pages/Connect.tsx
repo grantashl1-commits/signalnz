@@ -425,15 +425,24 @@ export default function Connect() {
         )}
 
         {spaceTab === "shared" && (
-          <div className="flex-1 flex flex-col min-h-0">
-            <SharedRoom
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+            <ConnectExtras
               connectionId={connectionId}
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               myName={isPartnerSession ? partnerDisplayName : "You"}
-              messages={messages}
-              onSendMessage={sendDirectMessage}
+              onOpenCourse={() => setSpaceTab("course")}
             />
+            <div className="flex-1 flex flex-col min-h-[400px]">
+              <SharedRoom
+                connectionId={connectionId}
+                partnerRole={senderRole}
+                partnerName={partnerDisplayName}
+                myName={isPartnerSession ? partnerDisplayName : "You"}
+                messages={messages}
+                onSendMessage={sendDirectMessage}
+              />
+            </div>
           </div>
         )}
 
