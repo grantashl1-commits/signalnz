@@ -262,6 +262,29 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           })();
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_message_reactions" },
+        (payload) => {
+          const row = (payload.new ?? payload.old) as { message_id: string; user_id: string; reaction: string };
+          if (!row?.message_id) return;
+          (async () => {
+            const { data } = await supabase
+              .from("community_message_reactions" as any)
+              .select("user_id, reaction")
+              .eq("message_id", row.message_id);
+            if (!data) return;
+            const tally: Record<string, { count: number; mine: boolean }> = {};
+            for (const r of data as unknown as Array<{ user_id: string; reaction: string }>) {
+              const cur = tally[r.reaction] ?? { count: 0, mine: false };
+              cur.count += 1;
+              if (r.user_id === user?.id) cur.mine = true;
+              tally[r.reaction] = cur;
+            }
+            setReactions((prev) => ({ ...prev, [row.message_id]: tally }));
+          })();
+        }
+      )
       .subscribe();
 
     return () => {
