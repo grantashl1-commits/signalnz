@@ -12,6 +12,11 @@ import {
   Target, TrendingUp, ChevronRight, Plus, Check, Calendar
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
+import QuickAskBar from "@/components/coach/QuickAskBar";
+import GoalNudgeBanner from "@/components/coach/GoalNudgeBanner";
+import WeeklyFocusCard from "@/components/coach/WeeklyFocusCard";
+import PatternsInsightCard from "@/components/coach/PatternsInsightCard";
+import CreditsFillBar from "@/components/coach/CreditsFillBar";
 
 // ── Helper ──
 function getWeekStart(): string {
@@ -641,33 +646,60 @@ function PlanGenerator({ userId, session }: { userId: string; session: any }) {
         )}
       </AnimatePresence>
 
-      {/* History */}
+      {/* Conversation thread */}
       {history.length > 0 && (
         <div>
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="flex items-center gap-2 font-body text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 font-body text-[11px] text-muted-foreground hover:text-foreground transition-colors mb-3"
           >
             <Calendar className="h-3 w-3" />
-            Previous plans ({history.length})
+            Your coaching thread ({history.length})
             <ChevronRight className={`h-3 w-3 transition-transform ${showHistory ? "rotate-90" : ""}`} />
           </button>
           <AnimatePresence>
             {showHistory && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden space-y-2 mt-2">
-                {history.map((h) => (
-                  <button
-                    key={h.id}
-                    onClick={() => setPlan({ type: h.plan_type, content: h.plan_content, date: new Date(h.generated_at).toLocaleDateString() })}
-                    className="w-full text-left card-warm p-3 hover:shadow-sm transition-shadow"
-                  >
-                    <div className="flex items-center gap-2">
-                      {h.plan_type === "training" ? <Dumbbell className="h-3 w-3 text-primary" /> : <Salad className="h-3 w-3 text-primary" />}
-                      <span className="font-display text-xs italic text-foreground capitalize">{h.plan_type} plan</span>
-                      <span className="font-body text-[10px] text-muted-foreground ml-auto">{new Date(h.generated_at).toLocaleDateString()}</span>
-                    </div>
-                  </button>
-                ))}
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="relative pl-5">
+                  {/* vertical thread line */}
+                  <div className="absolute left-1.5 top-2 bottom-2 w-px bg-primary/15" />
+                  <div className="space-y-3">
+                    {history.map((h) => {
+                      const date = new Date(h.generated_at);
+                      const excerpt = String(h.plan_content || "")
+                        .replace(/[#*_>`-]+/g, " ")
+                        .replace(/\s+/g, " ")
+                        .trim()
+                        .slice(0, 110);
+                      const isCurrent = plan && plan.content === h.plan_content;
+                      return (
+                        <div key={h.id} className="relative">
+                          <span className={`absolute -left-[18px] top-3 w-2.5 h-2.5 rounded-full border-2 border-background ${isCurrent ? "bg-primary" : "bg-primary/40"}`} />
+                          <button
+                            onClick={() => setPlan({ type: h.plan_type, content: h.plan_content, date: date.toLocaleDateString() })}
+                            className={`w-full text-left card-warm p-3 hover:shadow-sm transition-shadow ${isCurrent ? "ring-1 ring-primary/30" : ""}`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              {h.plan_type === "training" ? <Dumbbell className="h-3 w-3 text-primary" /> : <Salad className="h-3 w-3 text-primary" />}
+                              <span className="font-display text-xs italic font-bold text-foreground capitalize">{h.plan_type}</span>
+                              <span className="font-body text-[10px] text-muted-foreground ml-auto">
+                                {date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                              </span>
+                            </div>
+                            <p className="font-display text-[11px] italic text-muted-foreground line-clamp-2 leading-snug">
+                              {excerpt}…
+                            </p>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -700,8 +732,23 @@ export default function CoachPage() {
       </AtmosphericHero>
 
       <div className="max-w-2xl mx-auto px-4 pb-32 space-y-6 mt-6">
+        {/* Goal nudge banner — surfaces the active goal weekly */}
+        <GoalNudgeBanner userId={user.id} key={`nudge-${refreshKey}`} />
+
+        {/* Quick ask — one-tap chips + free text */}
+        <QuickAskBar userId={user.id} />
+
+        {/* Credits as a gentle fill-bar */}
+        <CreditsFillBar />
+
         {/* Weekly Check-In */}
         <WeeklyCheckin userId={user.id} onComplete={() => setRefreshKey((k) => k + 1)} />
+
+        {/* This week's focus — personalised after check-in */}
+        <WeeklyFocusCard userId={user.id} refreshKey={refreshKey} />
+
+        {/* Your patterns — unlocks at 4+ check-ins */}
+        <PatternsInsightCard userId={user.id} refreshKey={refreshKey} />
 
         {/* Goal Tracker */}
         <GoalTracker userId={user.id} key={`goal-${refreshKey}`} />
@@ -714,7 +761,7 @@ export default function CoachPage() {
 
         {/* AI Plan Generator */}
         <div>
-          <h2 className="font-display text-xl italic font-bold text-foreground mb-4">Generate My Plan</h2>
+          <h2 className="font-display text-xl italic font-bold text-foreground mb-4">Your coaching thread</h2>
           <PlanGenerator userId={user.id} session={session} />
         </div>
       </div>
