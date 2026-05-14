@@ -347,6 +347,7 @@ export default function CyclePage() {
                 const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
                 const periodEnd = getPeriodEnd(monthKey);
                 const isPeriodEnd = periodEnd === dateStr;
+                const hasTraining = getLoggedWorkouts(dateStr).length > 0;
 
                 return (
                   <button
@@ -385,8 +386,16 @@ export default function CyclePage() {
                           <circle cx="8" cy="8" r="2" fill="#9B89B4" />
                         </svg>
                       )}
+                      {/* Symptom dot — amber */}
+                      {indicators.hasSymptoms && (
+                        <div className="rounded-full" style={{ width: 5, height: 5, backgroundColor: "#D49B4A" }} title="symptoms logged" />
+                      )}
+                      {/* Training dot — sage */}
+                      {hasTraining && (
+                        <div className="rounded-full" style={{ width: 5, height: 5, backgroundColor: "#7A9B6E" }} title="movement logged" />
+                      )}
                       {/* Phase dot — mauve (non-period days) */}
-                      {phase && !isPeriod && !isPeriodEnd && (
+                      {phase && !isPeriod && !isPeriodEnd && !indicators.hasSymptoms && !hasTraining && (
                         <div className="rounded-full" style={{ width: 6, height: 6, backgroundColor: "#9B89B4" }} />
                       )}
                     </div>
