@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Rss, BookOpen, ChevronDown, History } from "lucide-react";
-import { format, subDays, differenceInDays } from "date-fns";
+import { Rss, BookOpen, ChevronDown, ChevronUp, History, Sliders } from "lucide-react";
+import { format, subDays, differenceInDays, startOfWeek } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
@@ -16,6 +16,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useFeedReadProgress } from "@/hooks/use-feed-read-progress";
 import WeeklyFeedRhythm, { pickTopThemes } from "@/components/feed/WeeklyFeedRhythm";
+import TuneFeedSheet from "@/components/feed/TuneFeedSheet";
+import HeldTodayCelebration from "@/components/feed/HeldTodayCelebration";
+import { loadThemeWeights, type ThemeWeights } from "@/lib/feed-theme-weights";
 
 import { pickDailyPosts } from "@/lib/feed-utils";
 
