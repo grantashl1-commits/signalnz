@@ -158,13 +158,22 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
         {!result ? (
           /* ── Write view ── */
           <motion.div key="write" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
-            <p className="font-display text-sm italic text-muted-foreground leading-relaxed">
-              Write freely about what's on your mind. The AI will help you find the right words and give you private insights.
-            </p>
+            {/* Phase-aware seed prompt */}
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Sparkles className="w-3 h-3 text-primary" />
+                <span className="font-hand text-[10px] font-bold uppercase tracking-wider text-primary/70">
+                  A {currentPhase} prompt
+                </span>
+              </div>
+              <p className="font-display text-sm text-foreground/85 leading-relaxed">{phasePrompt.lead}</p>
+            </div>
             <textarea
               value={entry}
-              onChange={e => setEntry(e.target.value)}
-              placeholder="Write honestly — no one else will see this raw entry..."
+              onChange={e => { setEntry(e.target.value); onActivity?.("writing"); }}
+              onFocus={() => onActivity?.("reflecting")}
+              onBlur={() => onActivity?.("idle")}
+              placeholder={phasePrompt.placeholder}
               className="w-full min-h-[200px] rounded-[18px] bg-card border border-border px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors resize-none leading-relaxed"
             />
             <div className="flex justify-center">
