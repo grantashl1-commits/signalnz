@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Link2, ArrowRight, Copy, Check, Users, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3 } from "lucide-react";
+import { Heart, Link2, ArrowRight, Copy, Check, Users, Bot, ArrowLeft, Loader2, MessageSquare, BookOpen, PenLine, BarChart3, Circle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,6 +11,9 @@ import ConnectCourseView from "@/components/connect/ConnectCourseView";
 import PrivateReflection from "@/components/connect/PrivateReflection";
 import SharedRoom from "@/components/connect/SharedRoom";
 import WeeklyCheckIn from "@/components/connect/WeeklyCheckIn";
+import ConnectIntroHero from "@/components/connect/ConnectIntroHero";
+import ConnectExtras from "@/components/connect/ConnectExtras";
+import { useConnectPresence, type PartnerActivity } from "@/hooks/useConnectPresence";
 
 type ConnectView = "intro" | "create" | "join" | "partner-pin" | "space";
 type SpaceTab = "reflect" | "shared" | "course" | "checkin";
@@ -43,6 +46,11 @@ export default function Connect() {
   // Shared state
   const [spaceTab, setSpaceTab] = useState<SpaceTab>("reflect");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [setupRevealed, setSetupRevealed] = useState(false);
+
+  // Presence (must run before any conditional return — hooks rule)
+  const myRole: "member" | "partner" = isPartnerSession ? "partner" : "member";
+  const { partnerOnline, partnerActivity, broadcastActivity } = useConnectPresence(connectionId, myRole);
 
   // Check for existing connection on load
   useEffect(() => {
@@ -342,7 +350,16 @@ export default function Connect() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">Signal Connect</p>
-              <p className="text-[10px] text-muted-foreground">with {partnerDisplayName}</p>
+              <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${partnerOnline ? "bg-emerald-500" : "bg-muted-foreground/30"}`} />
+                {partnerOnline
+                  ? partnerActivity === "reflecting" || partnerActivity === "writing"
+                    ? `${partnerDisplayName} is reflecting…`
+                    : partnerActivity === "checking-in"
+                      ? `${partnerDisplayName} is checking in…`
+                      : `${partnerDisplayName} is here`
+                  : `with ${partnerDisplayName}`}
+              </p>
             </div>
             {!isPartnerSession && generatedCode && (
               <button
@@ -388,11 +405,20 @@ export default function Connect() {
         {/* Tab content */}
         {spaceTab === "reflect" && (
           <div className="flex-1 overflow-y-auto">
+            {partnerOnline && (partnerActivity === "reflecting" || partnerActivity === "writing") && (
+              <div className="mx-4 mt-3 flex items-center gap-2 px-3 py-2 rounded-full bg-primary/8 border border-primary/15">
+                <Circle className="w-2 h-2 fill-emerald-500 text-emerald-500 animate-pulse" />
+                <p className="text-[11px] text-foreground/75">
+                  {partnerDisplayName} is writing on their side too…
+                </p>
+              </div>
+            )}
             <PrivateReflection
               connectionId={connectionId}
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               onCardsSent={() => setSpaceTab("shared")}
+              onActivity={broadcastActivity}
             />
             {/* Appreciation — always accessible below the reflection form */}
             <div className="px-4 pb-8 pt-2">
@@ -407,15 +433,24 @@ export default function Connect() {
         )}
 
         {spaceTab === "shared" && (
-          <div className="flex-1 flex flex-col min-h-0">
-            <SharedRoom
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+            <ConnectExtras
               connectionId={connectionId}
               partnerRole={senderRole}
               partnerName={partnerDisplayName}
               myName={isPartnerSession ? partnerDisplayName : "You"}
-              messages={messages}
-              onSendMessage={sendDirectMessage}
+              onOpenCourse={() => setSpaceTab("course")}
             />
+            <div className="flex-1 flex flex-col min-h-[400px]">
+              <SharedRoom
+                connectionId={connectionId}
+                partnerRole={senderRole}
+                partnerName={partnerDisplayName}
+                myName={isPartnerSession ? partnerDisplayName : "You"}
+                messages={messages}
+                onSendMessage={sendDirectMessage}
+              />
+            </div>
           </div>
         )}
 
@@ -455,45 +490,50 @@ export default function Connect() {
             exit={{ opacity: 0, y: -10 }}
             className="flex flex-col items-center px-6 pt-12 pb-12"
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, type: "spring", damping: 20 }}
-              className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8"
-            >
-              <Heart className="w-10 h-10 text-primary" strokeWidth={1.5} />
-            </motion.div>
+            {/* Two-figure illustration leads, not the PIN */}
+            <ConnectIntroHero className="w-full max-w-xs h-44 mb-6" />
 
-            <h1 className="font-display text-3xl md:text-4xl text-foreground text-center mb-3">Signal Connect</h1>
+            <h1 className="font-display text-3xl md:text-4xl text-foreground text-center mb-3">
+              A private space for you<br />and one person you love
+            </h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm mb-2 leading-relaxed">
-              Two people. One quiet space{"\n"}to be honest in, together.
+              Somewhere quiet to be honest, together. No feed, no audience — just the two of you.
             </p>
-            <p className="text-xs text-muted-foreground/60 text-center max-w-xs mb-10">
-              Invite them in — no account needed. Just a code and a PIN, held between you.
+            <p className="text-xs text-muted-foreground/60 text-center max-w-xs mb-8">
+              They don't need an account. You'll set a small code and a PIN, held only between you.
             </p>
 
-            {/* Feature cards */}
-            <div className="w-full max-w-sm space-y-3 mb-10">
-              {[
-                { icon: Users, title: "No account needed", desc: "Your partner joins with a code and 4-digit PIN — that's it" },
-                { icon: Bot, title: "AI relationship coach", desc: "Trained on relationship science, NLP, and communication tools" },
-                { icon: MessageSquare, title: "Private shared space", desc: "A safe place to reflect, communicate, and grow together" },
-              ].map((f) => (
-                <div key={f.title} className="flex items-start gap-4 p-4 rounded-2xl bg-card border border-border">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <f.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{f.title}</p>
-                    <p className="text-xs text-muted-foreground">{f.desc}</p>
-                  </div>
+            {!setupRevealed && (
+              <>
+                {/* Soft promise cards */}
+                <div className="w-full max-w-sm space-y-3 mb-8">
+                  {[
+                    { icon: MessageSquare, title: "Find the words first", desc: "Write what's hard. The space helps you say it kindly." },
+                    { icon: Heart, title: "Small acts, often", desc: "Appreciations, weekly check-ins, rituals to do together." },
+                    { icon: Bot, title: "Quiet guidance", desc: "Drawn from attachment science and gentle communication tools." },
+                  ].map((f) => (
+                    <div key={f.title} className="flex items-start gap-4 p-4 rounded-2xl bg-card border border-border">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <f.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{f.title}</p>
+                        <p className="text-xs text-muted-foreground">{f.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-
-            {/* Setup form */}
-            <div className="w-full max-w-sm space-y-4">
+                <button
+                  onClick={() => { haptic("light"); setSetupRevealed(true); }}
+                  className="bg-primary text-primary-foreground px-7 py-3.5 rounded-full text-sm font-semibold flex items-center gap-2 active:opacity-80"
+                >
+                  Begin — invite the one you love <ArrowRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
+            {setupRevealed && (
+              /* Setup form */
+              <div className="w-full max-w-sm space-y-4">
               <input
                 value={partnerName}
                 onChange={(e) => setPartnerName(e.target.value)}
@@ -526,6 +566,7 @@ export default function Connect() {
                 {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</> : <>Create Connect space <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
+            )}
           </motion.div>
         )}
 

@@ -7,6 +7,26 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
+import { useCycle } from "@/contexts/CycleContext";
+
+const PHASE_PROMPTS: Record<string, { lead: string; placeholder: string }> = {
+  menstrual: {
+    lead: "Share something you're carrying that you haven't named yet.",
+    placeholder: "What feels heavy right now? What do you wish they knew without you having to say it…",
+  },
+  follicular: {
+    lead: "Name something you're noticing — a small spark, a wish, a curiosity.",
+    placeholder: "What's drawing your attention this week? What would you like more of between you…",
+  },
+  ovulatory: {
+    lead: "Say the warm thing first. The one you usually swallow.",
+    placeholder: "What do you appreciate? What do you want them to feel from you today…",
+  },
+  luteal: {
+    lead: "Write what's been quietly building. The thing you keep almost saying.",
+    placeholder: "What's been on your mind that you haven't found the words for yet…",
+  },
+};
 
 export interface ReflectionCard {
   key: string;
@@ -27,9 +47,12 @@ interface Props {
   partnerRole: "member" | "partner";
   partnerName: string;
   onCardsSent: () => void;
+  onActivity?: (activity: "reflecting" | "writing" | "idle") => void;
 }
 
-export default function PrivateReflection({ connectionId, partnerRole, partnerName, onCardsSent }: Props) {
+export default function PrivateReflection({ connectionId, partnerRole, partnerName, onCardsSent, onActivity }: Props) {
+  const { currentPhase } = useCycle();
+  const phasePrompt = PHASE_PROMPTS[currentPhase] || PHASE_PROMPTS.luteal;
   const [entry, setEntry] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ReflectResult | null>(null);
@@ -135,13 +158,22 @@ export default function PrivateReflection({ connectionId, partnerRole, partnerNa
         {!result ? (
           /* ── Write view ── */
           <motion.div key="write" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
-            <p className="font-display text-sm italic text-muted-foreground leading-relaxed">
-              Write freely about what's on your mind. The AI will help you find the right words and give you private insights.
-            </p>
+            {/* Phase-aware seed prompt */}
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Sparkles className="w-3 h-3 text-primary" />
+                <span className="font-hand text-[10px] font-bold uppercase tracking-wider text-primary/70">
+                  A {currentPhase} prompt
+                </span>
+              </div>
+              <p className="font-display text-sm text-foreground/85 leading-relaxed">{phasePrompt.lead}</p>
+            </div>
             <textarea
               value={entry}
-              onChange={e => setEntry(e.target.value)}
-              placeholder="Write honestly — no one else will see this raw entry..."
+              onChange={e => { setEntry(e.target.value); onActivity?.("writing"); }}
+              onFocus={() => onActivity?.("reflecting")}
+              onBlur={() => onActivity?.("idle")}
+              placeholder={phasePrompt.placeholder}
               className="w-full min-h-[200px] rounded-[18px] bg-card border border-border px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/30 transition-colors resize-none leading-relaxed"
             />
             <div className="flex justify-center">

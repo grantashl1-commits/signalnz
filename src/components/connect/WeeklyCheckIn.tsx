@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Gift } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
@@ -27,6 +29,7 @@ export default function WeeklyCheckIn({ connectionId, partnerRole, partnerName }
   const [appreciation, setAppreciation] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
+  const [shareWithPartner, setShareWithPartner] = useState(true);
 
   // Load previous check-ins
   useEffect(() => {
@@ -58,16 +61,30 @@ export default function WeeklyCheckIn({ connectionId, partnerRole, partnerName }
       week_key: weekKey,
     }, { onConflict: "connection_id,partner_role,week_key" });
 
+    if (shareWithPartner && appreciation.trim()) {
+      await supabase.from("connect_messages").insert({
+        connection_id: connectionId,
+        sender_role: partnerRole,
+        content: `🎁 A gift from this week's check-in:\n\n"${appreciation.trim()}"`,
+        metadata: { type: "checkin_share", week_key: weekKey },
+      });
+    }
+
     setSubmitted(true);
-    toast.success("Held. 💜");
+    toast.success(shareWithPartner && appreciation.trim() ? `Sent to ${partnerName} 💜` : "Held. 💜");
   };
 
   return (
     <div className="px-4 py-4 space-y-6">
       <div className="text-center">
-        <p className="font-display text-lg font-bold text-foreground">Weekly check-in</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          {submitted ? "You've checked in this week" : "Rate this week (1–10)"}
+        <div className="inline-flex items-center gap-2 mb-1">
+          <Gift className="w-4 h-4 text-primary" />
+          <p className="font-display text-lg font-bold text-foreground">A gift to each other</p>
+        </div>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">
+          {submitted
+            ? "You've offered this week's check-in. Held."
+            : `A small honest portrait of the week — and one thing you want ${partnerName} to know.`}
         </p>
       </div>
 
@@ -102,12 +119,21 @@ export default function WeeklyCheckIn({ connectionId, partnerRole, partnerName }
         </div>
 
         {!submitted && (
-          <button
-            onClick={submit}
-            className="w-full bg-primary text-primary-foreground py-2.5 rounded-full text-sm font-semibold"
-          >
-            Save check-in
-          </button>
+          <>
+            <div className="flex items-center justify-between gap-3 px-1 py-2 rounded-xl bg-muted/40">
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-foreground">Send the appreciation to {partnerName}</p>
+                <p className="text-[10px] text-muted-foreground">Your scores stay private — only the warm part is shared.</p>
+              </div>
+              <Switch checked={shareWithPartner} onCheckedChange={setShareWithPartner} />
+            </div>
+            <button
+              onClick={submit}
+              className="w-full bg-primary text-primary-foreground py-2.5 rounded-full text-sm font-semibold"
+            >
+              {shareWithPartner && appreciation.trim() ? `Send the gift` : "Save check-in"}
+            </button>
+          </>
         )}
       </div>
 
