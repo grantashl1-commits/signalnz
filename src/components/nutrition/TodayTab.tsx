@@ -785,3 +785,45 @@ function MacroRing({ consumed, targets, phaseColor }: {
     </div>
   );
 }
+
+function PhaseSuggestionCard({
+  phase, phaseColor, suggestion, alreadyLogged, onAdd,
+}: {
+  phase: Phase;
+  phaseColor: string;
+  suggestion: { name: string; benefit: string };
+  alreadyLogged: boolean;
+  onAdd: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-[18px] bg-card shadow-soft p-4"
+      style={{ borderLeft: `3px solid ${phaseColor}` }}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="font-body text-[10px] uppercase tracking-[0.15em] font-medium" style={{ color: phaseColor }}>
+            {PHASE_SHORT[phase]} pick
+          </p>
+          <p className="font-display text-sm font-bold text-foreground mt-1 leading-snug">{suggestion.name}</p>
+          <p className="font-body text-[11px] text-muted-foreground mt-1 leading-relaxed">{suggestion.benefit}</p>
+        </div>
+        <button
+          onClick={() => { if (!alreadyLogged) onAdd(); }}
+          disabled={alreadyLogged}
+          className="touch-btn shrink-0 rounded-full px-3 py-2 min-h-[36px] font-body text-[11px] font-semibold transition-all"
+          style={{
+            backgroundColor: alreadyLogged ? `${phaseColor}20` : phaseColor,
+            color: alreadyLogged ? phaseColor : "#fff",
+            opacity: alreadyLogged ? 0.7 : 1,
+          }}
+        >
+          {alreadyLogged ? "Held ✓" : "Add to today"}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
