@@ -268,7 +268,15 @@ export default function CyclePage() {
                 />
                 <Last28DaysMiniDashboard key={refreshKey} cycleStartDate={lastPeriod} />
                 <WhatsComingNext cycleDay={info.cycleDay} />
-                <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
+                <details className="group">
+                  <summary className="cursor-pointer font-display text-sm italic text-muted-foreground flex items-center gap-2 py-2 list-none">
+                    <span className="inline-block group-open:rotate-90 transition-transform">▸</span>
+                    More about this phase
+                  </summary>
+                  <div className="mt-4">
+                    <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
+                  </div>
+                </details>
               </>
             )}
 
