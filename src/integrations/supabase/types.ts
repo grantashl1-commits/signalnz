@@ -176,6 +176,45 @@ export type Database = {
         }
         Relationships: []
       }
+      breathwork_logs: {
+        Row: {
+          category: string
+          created_at: string
+          cycle_phase: string | null
+          date: string
+          duration_minutes: number
+          id: string
+          mood: number | null
+          practice_key: string
+          practice_title: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          cycle_phase?: string | null
+          date?: string
+          duration_minutes?: number
+          id?: string
+          mood?: number | null
+          practice_key: string
+          practice_title?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          cycle_phase?: string | null
+          date?: string
+          duration_minutes?: number
+          id?: string
+          mood?: number | null
+          practice_key?: string
+          practice_title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenge_answers: {
         Row: {
           answer: string
