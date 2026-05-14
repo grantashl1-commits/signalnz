@@ -360,6 +360,14 @@ export default function Feed() {
           </div>
         </div>
       </ContentSection>
+
+      <TuneFeedSheet
+        isOpen={tuneOpen}
+        onClose={() => setTuneOpen(false)}
+        extraThemes={topThemes}
+        onChange={(w) => setThemeWeights({ ...w })}
+      />
+      <HeldTodayCelebration complete={todayComplete} />
     </div>
   );
 }
