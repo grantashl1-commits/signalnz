@@ -4,6 +4,7 @@ import { Trash2, Plus, X, Sparkles, BookOpen, Lock, Heart, Smile, Star, Zap, Boo
 import { haptic } from "@/hooks/use-mobile";
 import { loadVault, saveVault, getResurfacingMemories, type VaultEntry } from "@/lib/journal-store";
 import { HandDrawnBook, WildStar } from "@/components/BotanicalElements";
+import ThemesView from "./ThemesView";
 
 const VAULT_CATEGORIES = [
   { key: "journal-entries", label: "Journal Entries", desc: "Your saved journal reflections", color: "#5C4A9E", icon: BookOpen },
@@ -118,6 +119,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
   const [adding, setAdding] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newPreview, setNewPreview] = useState("");
+  const [viewMode, setViewMode] = useState<"categories" | "themes">("categories");
 
   const resurfacing = useMemo(() => getResurfacingMemories(vault), [vault]);
 
@@ -203,7 +205,34 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
         </div>
       )}
 
+      {/* View toggle: Categories / Themes */}
+      {totalMemories > 0 && (
+        <div className="flex items-center gap-1 bg-muted/60 rounded-2xl p-1 max-w-[280px]">
+          <button
+            onClick={() => setViewMode("categories")}
+            className={`flex-1 py-2 rounded-xl font-display text-[12px] italic transition-all ${
+              viewMode === "categories" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            Categories
+          </button>
+          <button
+            onClick={() => setViewMode("themes")}
+            className={`flex-1 py-2 rounded-xl font-display text-[12px] italic transition-all flex items-center justify-center gap-1 ${
+              viewMode === "themes" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            <Sparkles className="h-3 w-3" />
+            Themes
+          </button>
+        </div>
+      )}
+
+      {/* Themes view */}
+      {viewMode === "themes" && totalMemories > 0 && <ThemesView vault={vault} />}
+
       {/* Categories */}
+      {viewMode === "categories" && (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
       {VAULT_CATEGORIES.map((cat) => (
         <div key={cat.key} className="min-w-0">
@@ -277,6 +306,7 @@ export default function MemoryVault({ vault, onSaveVaultEntry, onRemoveVaultEntr
         </div>
       ))}
       </div>
+      )}
 
       {/* Printed Journal — bottom */}
       <PrintedJournalCard />
