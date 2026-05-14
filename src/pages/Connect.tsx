@@ -350,7 +350,16 @@ export default function Connect() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">Signal Connect</p>
-              <p className="text-[10px] text-muted-foreground">with {partnerDisplayName}</p>
+              <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${partnerOnline ? "bg-emerald-500" : "bg-muted-foreground/30"}`} />
+                {partnerOnline
+                  ? partnerActivity === "reflecting" || partnerActivity === "writing"
+                    ? `${partnerDisplayName} is reflecting…`
+                    : partnerActivity === "checking-in"
+                      ? `${partnerDisplayName} is checking in…`
+                      : `${partnerDisplayName} is here`
+                  : `with ${partnerDisplayName}`}
+              </p>
             </div>
             {!isPartnerSession && generatedCode && (
               <button
