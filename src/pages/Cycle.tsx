@@ -169,18 +169,28 @@ export default function CyclePage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-        {/* Mode switcher */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="font-hand text-xs text-muted-foreground">mode:</span>
-            <span className="font-hand text-xs font-bold text-foreground capitalize">{cycleMode.replace("-", " ")}</span>
+        {/* Mode switcher — inline top-bar toggle */}
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <span className="font-hand text-xs text-muted-foreground shrink-0">mode:</span>
+          <div className="flex gap-1 rounded-full bg-secondary/60 p-1 flex-1 min-w-0">
+            {(["cycling", "perimenopause", "post-menopause"] as CycleMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => {
+                  haptic("light");
+                  if (m !== cycleMode) {
+                    updateCycleMode(m);
+                    localStorage.setItem("cycleModeSelected", "true");
+                  }
+                }}
+                className={`touch-tab flex-1 rounded-full px-2 py-1.5 min-h-[32px] font-body text-[11px] font-medium transition-all whitespace-nowrap ${
+                  cycleMode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
+                }`}
+              >
+                {m === "post-menopause" ? "Post" : m === "perimenopause" ? "Peri" : "Cycling"}
+              </button>
+            ))}
           </div>
-          <button
-            onClick={() => { haptic("light"); setShowModeSelector(true); }}
-            className="touch-btn p-2 rounded-full bg-secondary/60 min-w-[36px] min-h-[36px] flex items-center justify-center"
-          >
-            <Settings className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
         </div>
 
         {/* Date picker */}
