@@ -168,6 +168,36 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
   const suburbGroups = filtered.filter(g => g.group_type === "suburb");
   const interestGroups = filtered.filter(g => g.group_type === "interest");
 
+  // Three-bucket sectioning for the rendered list:
+  //   • Near you   — suburb groups matching the user's profile suburb (or all when unknown)
+  //   • Same phase — interest groups whose name/description mentions current cycle phase
+  //   • Interests  — remaining interest groups
+  const matchSuburb = (s: string | null | undefined) =>
+    mySuburb && s ? s.toLowerCase().includes(mySuburb.toLowerCase()) : false;
+
+  const phaseKeyword = (currentPhase || "").toLowerCase();
+  const matchPhase = (g: CommunityGroup) => {
+    if (!phaseKeyword) return false;
+    const hay = `${g.name} ${g.description ?? ""}`.toLowerCase();
+    return hay.includes(phaseKeyword);
+  };
+
+  const nearYouGroups = mySuburb
+    ? suburbGroups.filter((g) => matchSuburb(g.suburb) || matchSuburb(g.city))
+    : suburbGroups;
+  const otherSuburbGroups = mySuburb
+    ? suburbGroups.filter((g) => !nearYouGroups.includes(g))
+    : [];
+  const samePhaseGroups = interestGroups.filter(matchPhase);
+  const otherInterestGroups = interestGroups.filter((g) => !samePhaseGroups.includes(g));
+
+  const sections = [
+    { id: "near", label: mySuburb ? `Near you · ${mySuburb}` : "Suburbs", items: nearYouGroups },
+    { id: "phase", label: phaseKeyword ? `Same phase · ${phaseKeyword}` : "Same phase", items: samePhaseGroups },
+    { id: "interests", label: "Interests", items: otherInterestGroups },
+    { id: "other-suburbs", label: "Other suburbs", items: otherSuburbGroups },
+  ].filter((s) => s.items.length > 0);
+
   return (
     <div className="space-y-3">
       {/* Empty state when no groups at all */}
