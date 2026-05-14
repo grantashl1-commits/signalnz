@@ -471,6 +471,57 @@ export default function ChatRoom({ group }: ChatRoomProps) {
     }
   };
 
+  // Toggle a reaction on a message — persists to community_message_reactions
+  const toggleReaction = async (msgId: string, reaction: ReactionKey) => {
+    if (!user) return;
+    haptic("light");
+    const cur = reactions[msgId]?.[reaction] ?? { count: 0, mine: false };
+    // Optimistic
+    setReactions((prev) => {
+      const m = { ...(prev[msgId] ?? {}) };
+      m[reaction] = { count: Math.max(0, cur.count + (cur.mine ? -1 : 1)), mine: !cur.mine };
+      return { ...prev, [msgId]: m };
+    });
+    if (cur.mine) {
+      const { error } = await supabase
+        .from("community_message_reactions" as any)
+        .delete()
+        .eq("message_id", msgId)
+        .eq("user_id", user.id)
+        .eq("reaction", reaction);
+      if (error) {
+        console.error("[ChatRoom] reaction remove failed", error);
+        setReactions((prev) => ({ ...prev, [msgId]: { ...(prev[msgId] ?? {}), [reaction]: cur } }));
+      }
+    } else {
+      const { error } = await supabase
+        .from("community_message_reactions" as any)
+        .insert({ message_id: msgId, user_id: user.id, reaction } as any);
+      if (error) {
+        console.error("[ChatRoom] reaction add failed", error);
+        setReactions((prev) => ({ ...prev, [msgId]: { ...(prev[msgId] ?? {}), [reaction]: cur } }));
+      }
+    }
+  };
+
+  // Send warmth — adds a "warmth" reaction to the latest message from someone else.
+  const sendWarmth = async () => {
+    if (!user) return;
+    const latestOther = [...rows].reverse().find((r) => r.user_id !== user.id);
+    if (!latestOther) {
+      toast("Nothing here yet to hold.");
+      return;
+    }
+    const cur = reactions[latestOther.id]?.warmth;
+    if (cur?.mine) {
+      toast("Already sent.");
+      return;
+    }
+    await toggleReaction(latestOther.id, "warmth");
+    haptic("medium");
+    toast.success("Warmth sent.");
+  };
+
   const handleImage = () => fileRef.current?.click();
 
   // Upload media to private bucket, then insert a message that references its path
