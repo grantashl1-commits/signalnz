@@ -470,6 +470,13 @@ export default function MembershipPage() {
                   </div>
                 </div>
 
+                {/* Emotional tagline */}
+                {(t as any).tagline && (
+                  <p className="font-editorial italic text-[13px] leading-snug text-foreground/80 mt-3 mb-1">
+                    {(t as any).tagline}
+                  </p>
+                )}
+
                 {/* Feature sections */}
                 <div className="space-y-3 flex-1">
                   {t.sections.map((section) => (
