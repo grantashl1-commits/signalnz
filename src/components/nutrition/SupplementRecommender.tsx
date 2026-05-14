@@ -276,6 +276,8 @@ export default function SupplementRecommender() {
 
   return (
     <div className="space-y-4">
+      {stack.length > 0 && <DailyStackCheckoff stackIds={stack} />}
+
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="h-4 w-4 text-primary" />
         <h3 className="font-body text-xs uppercase tracking-widest font-medium" style={{ color: 'hsl(var(--label-color))' }}>
