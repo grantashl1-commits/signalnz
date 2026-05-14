@@ -218,11 +218,12 @@ export default function HomeCalendarCard() {
     toast.success("Your calendar is ready to carry across.");
   };
 
-  // Build week dates
+  // Build week dates with ISO date strings for deep-linking
   const weekDates = DAYS_OF_WEEK.map((d, i) => {
     const date = new Date(today);
     date.setDate(today.getDate() + (i - adjustedDay));
-    return { day: d, date: date.getDate(), isToday: i === adjustedDay };
+    const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    return { day: d, date: date.getDate(), isToday: i === adjustedDay, iso };
   });
 
   return (
@@ -308,9 +309,14 @@ export default function HomeCalendarCard() {
 
         {/* Weekly grid with combined day/date headers */}
         <div className="grid grid-cols-7 gap-[2px]">
-          {/* Column headers — day + date combined */}
-          {weekDates.map(({ day, date, isToday }, i) => (
-            <div key={i} className="flex flex-col items-center pb-2">
+          {/* Column headers — day + date combined, tap to open in Cycle */}
+          {weekDates.map(({ day, date, isToday, iso }, i) => (
+            <a
+              key={i}
+              href={`/cycle?date=${iso}`}
+              className="flex flex-col items-center pb-2 hover:opacity-80 transition-opacity"
+              title="Open in Cycle"
+            >
               <span className="font-hand text-[9px] text-muted-foreground/40 leading-none">{day}</span>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center font-hand text-[11px] mt-0.5 ${
                 isToday
@@ -319,7 +325,7 @@ export default function HomeCalendarCard() {
               }`}>
                 {date}
               </div>
-            </div>
+            </a>
           ))}
 
           {/* Event cells — imported + manual */}

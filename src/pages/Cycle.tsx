@@ -1,6 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -44,6 +44,7 @@ const PHASE_HEX: Record<Phase, string> = {
 
 export default function CyclePage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const cycle = useCycle();
   const { getFeatureAccess } = useFeatureGate();
   const { cycleMode, updateCycleMode, onboardingComplete, cycleStatus } = useProfile();
@@ -56,6 +57,20 @@ export default function CyclePage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [popover, setPopover] = useState<{ dateStr: string; cycleDay: number | null; type: "mood" | "weight" } | null>(null);
   const [showSymptomTracker, setShowSymptomTracker] = useState(false);
+
+  // Deep-link from Home calendar: ?date=YYYY-MM-DD opens the day sheet
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      setActiveTab("calendar");
+      setSelectedDate(dateParam);
+      const [y, m] = dateParam.split("-").map(Number);
+      setCalendarMonth(new Date(y, m - 1, 1));
+      const next = new URLSearchParams(searchParams);
+      next.delete("date");
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Only show mode selector if user hasn't completed onboarding AND hasn't manually selected
   const needsModeSelection = !localStorage.getItem("cycleModeSelected") && !onboardingComplete && !cycleStatus;

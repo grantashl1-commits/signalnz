@@ -114,11 +114,29 @@ export default function HomePlannerCard() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-primary/60" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="4" />
-                <path d="M8 12.5l2.5 2.5 5-5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider">To-Do</p>
+              {(() => {
+                const total = active.length + justDone.length;
+                const pct = total === 0 ? 0 : Math.round((justDone.length / total) * 100);
+                const r = 7;
+                const c = 2 * Math.PI * r;
+                const dash = (pct / 100) * c;
+                return (
+                  <div className="relative w-4 h-4">
+                    <svg viewBox="0 0 18 18" className="w-4 h-4 -rotate-90">
+                      <circle cx="9" cy="9" r={r} fill="none" stroke="hsl(var(--secondary))" strokeWidth="2" />
+                      <circle
+                        cx="9" cy="9" r={r} fill="none"
+                        stroke="hsl(var(--primary))" strokeWidth="2"
+                        strokeDasharray={`${dash} ${c}`} strokeLinecap="round"
+                        className="transition-all duration-500"
+                      />
+                    </svg>
+                  </div>
+                );
+              })()}
+              <p className="font-hand text-[10px] text-muted-foreground/40 uppercase tracking-wider">
+                To-Do{active.length + justDone.length > 0 && ` · ${justDone.length}/${active.length + justDone.length}`}
+              </p>
             </div>
             <button
               onClick={() => setShowInput(!showInput)}
