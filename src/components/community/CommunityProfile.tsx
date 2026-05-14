@@ -36,7 +36,7 @@ interface ProfileData {
 
 export default function CommunityProfile({ locationEnabled, onToggleLocation }: CommunityProfileProps) {
   const { user } = useAuth();
-  const { avatarUrl } = useProfile();
+  const { avatarUrl, displayName, suburb } = useProfile();
   const [profileData, setProfileData] = useState<ProfileData>({
     photo: null,
     form: {},
