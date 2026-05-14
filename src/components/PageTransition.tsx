@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const NAV_ORDER = [
   "/",
@@ -49,6 +50,17 @@ interface Props {
 export default function PageTransition({ children, previousPath }: Props) {
   const location = useLocation();
   const direction = getDirection(previousPath, location.pathname);
+
+  // Track last visited route for "pick up where you left off" on home
+  useEffect(() => {
+    if (location.pathname === "/" || location.pathname === "/home") return;
+    try {
+      localStorage.setItem(
+        "signal_last_route",
+        JSON.stringify({ to: location.pathname, at: Date.now() })
+      );
+    } catch {}
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="popLayout" custom={direction}>
