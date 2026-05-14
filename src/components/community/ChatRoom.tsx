@@ -4,7 +4,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import type { ChatMessage } from "@/data/community-data";
 import { HandDrawnChart, HandDrawnCalendar, HandDrawnImage, HandDrawnMic, HandDrawnSend, HandDrawnHand } from "@/components/BotanicalElements";
+import { REACTIONS, IconWarmth, type ReactionKey } from "@/components/community/ReactionIcons";
 import { Square } from "lucide-react";
+import { toast } from "sonner";
+import { haptic } from "@/hooks/use-mobile";
 
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
@@ -67,6 +70,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const [recording, setRecording] = useState(false);
   // mediaUrls: msgId -> resolved signed URL (for image/audio)
   const [mediaUrls, setMediaUrls] = useState<Record<string, string>>({});
+  // reactions: msgId -> reactionKey -> { count, mine }
+  const [reactions, setReactions] = useState<Record<string, Record<string, { count: number; mine: boolean }>>>({});
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -161,7 +166,26 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         }
       }
 
-      // Resolve signed URLs for media messages already in history
+      // Reactions
+      if (ids.length) {
+        const { data: rxRows } = await supabase
+          .from("community_message_reactions" as any)
+          .select("message_id, user_id, reaction")
+          .in("message_id", ids);
+        if (!cancelled && rxRows) {
+          const next: Record<string, Record<string, { count: number; mine: boolean }>> = {};
+          const rows = rxRows as unknown as Array<{ message_id: string; user_id: string; reaction: string }>;
+          for (const r of rows) {
+            const m = next[r.message_id] ?? (next[r.message_id] = {});
+            const cur = m[r.reaction] ?? { count: 0, mine: false };
+            cur.count += 1;
+            if (r.user_id === user?.id) cur.mine = true;
+            m[r.reaction] = cur;
+          }
+          setReactions(next);
+        }
+      }
+
       for (const m of msgs as DBMessage[]) {
         if ((m.message_type === "image" || m.message_type === "voice") && m.metadata?.path) {
           resolveMediaUrl(m.id, m.metadata.path);
@@ -235,6 +259,29 @@ export default function ChatRoom({ group }: ChatRoomProps) {
             if (!data) return;
             const mine = (data as Array<{ user_id: string }>).some((d) => d.user_id === user?.id);
             setRsvps((prev) => ({ ...prev, [row.message_id]: { mine, count: data.length } }));
+          })();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "community_message_reactions" },
+        (payload) => {
+          const row = (payload.new ?? payload.old) as { message_id: string; user_id: string; reaction: string };
+          if (!row?.message_id) return;
+          (async () => {
+            const { data } = await supabase
+              .from("community_message_reactions" as any)
+              .select("user_id, reaction")
+              .eq("message_id", row.message_id);
+            if (!data) return;
+            const tally: Record<string, { count: number; mine: boolean }> = {};
+            for (const r of data as unknown as Array<{ user_id: string; reaction: string }>) {
+              const cur = tally[r.reaction] ?? { count: 0, mine: false };
+              cur.count += 1;
+              if (r.user_id === user?.id) cur.mine = true;
+              tally[r.reaction] = cur;
+            }
+            setReactions((prev) => ({ ...prev, [row.message_id]: tally }));
           })();
         }
       )
@@ -424,6 +471,57 @@ export default function ChatRoom({ group }: ChatRoomProps) {
     }
   };
 
+  // Toggle a reaction on a message — persists to community_message_reactions
+  const toggleReaction = async (msgId: string, reaction: ReactionKey) => {
+    if (!user) return;
+    haptic("light");
+    const cur = reactions[msgId]?.[reaction] ?? { count: 0, mine: false };
+    // Optimistic
+    setReactions((prev) => {
+      const m = { ...(prev[msgId] ?? {}) };
+      m[reaction] = { count: Math.max(0, cur.count + (cur.mine ? -1 : 1)), mine: !cur.mine };
+      return { ...prev, [msgId]: m };
+    });
+    if (cur.mine) {
+      const { error } = await supabase
+        .from("community_message_reactions" as any)
+        .delete()
+        .eq("message_id", msgId)
+        .eq("user_id", user.id)
+        .eq("reaction", reaction);
+      if (error) {
+        console.error("[ChatRoom] reaction remove failed", error);
+        setReactions((prev) => ({ ...prev, [msgId]: { ...(prev[msgId] ?? {}), [reaction]: cur } }));
+      }
+    } else {
+      const { error } = await supabase
+        .from("community_message_reactions" as any)
+        .insert({ message_id: msgId, user_id: user.id, reaction } as any);
+      if (error) {
+        console.error("[ChatRoom] reaction add failed", error);
+        setReactions((prev) => ({ ...prev, [msgId]: { ...(prev[msgId] ?? {}), [reaction]: cur } }));
+      }
+    }
+  };
+
+  // Send warmth — adds a "warmth" reaction to the latest message from someone else.
+  const sendWarmth = async () => {
+    if (!user) return;
+    const latestOther = [...rows].reverse().find((r) => r.user_id !== user.id);
+    if (!latestOther) {
+      toast("Nothing here yet to hold.");
+      return;
+    }
+    const cur = reactions[latestOther.id]?.warmth;
+    if (cur?.mine) {
+      toast("Already sent.");
+      return;
+    }
+    await toggleReaction(latestOther.id, "warmth");
+    haptic("medium");
+    toast.success("Warmth sent.");
+  };
+
   const handleImage = () => fileRef.current?.click();
 
   // Upload media to private bucket, then insert a message that references its path
@@ -599,6 +697,48 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                   );
                 })()}
 
+                {/* Reactions strip — picker + active counts */}
+                {(() => {
+                  const tally = reactions[m.id] ?? {};
+                  const warmth = tally.warmth;
+                  return (
+                    <div className={`flex items-center gap-1 mt-1 flex-wrap ${isMe ? "justify-end" : "justify-start"}`}>
+                      {REACTIONS.map(({ key, label, Icon }) => {
+                        const r = tally[key];
+                        const mine = r?.mine;
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => toggleReaction(m.id, key)}
+                            aria-label={label}
+                            className={`touch-btn h-7 px-2 rounded-full border flex items-center gap-1 transition-colors ${
+                              mine
+                                ? "bg-primary/10 border-primary/40 text-primary"
+                                : "bg-card/60 border-border text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            <Icon size={13} />
+                            {r && r.count > 0 && (
+                              <span className="font-body text-[10px]">{r.count}</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                      {warmth && warmth.count > 0 && (
+                        <span
+                          className={`h-7 px-2 rounded-full border flex items-center gap-1 ${
+                            warmth.mine ? "bg-primary/10 border-primary/40 text-primary" : "bg-card/60 border-border text-muted-foreground"
+                          }`}
+                          title="Warmth sent"
+                        >
+                          <IconWarmth size={13} />
+                          <span className="font-body text-[10px]">{warmth.count}</span>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {isMe && <span className="font-body text-[10px] text-muted-foreground mt-0.5">{m.time}</span>}
               </div>
             </div>
@@ -695,6 +835,14 @@ export default function ChatRoom({ group }: ChatRoomProps) {
               {b.icon} {b.label}
             </button>
           ))}
+          <button
+            onClick={sendWarmth}
+            disabled={!user || rows.length === 0}
+            className="touch-btn font-body text-[11px] bg-primary/10 border border-primary/20 rounded-full px-2.5 py-1.5 flex-shrink-0 scroll-snap-item flex items-center gap-1 text-primary disabled:opacity-50"
+            title="Send warmth to the latest message"
+          >
+            <IconWarmth size={13} /> send warmth
+          </button>
         </div>
         <div className="flex gap-2 items-end">
           <textarea
