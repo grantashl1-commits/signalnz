@@ -47,9 +47,12 @@ interface Props {
   partnerRole: "member" | "partner";
   partnerName: string;
   onCardsSent: () => void;
+  onActivity?: (activity: "reflecting" | "writing" | "idle") => void;
 }
 
-export default function PrivateReflection({ connectionId, partnerRole, partnerName, onCardsSent }: Props) {
+export default function PrivateReflection({ connectionId, partnerRole, partnerName, onCardsSent, onActivity }: Props) {
+  const { currentPhase } = useCycle();
+  const phasePrompt = PHASE_PROMPTS[currentPhase] || PHASE_PROMPTS.luteal;
   const [entry, setEntry] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ReflectResult | null>(null);
