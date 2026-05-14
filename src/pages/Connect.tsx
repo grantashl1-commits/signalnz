@@ -48,6 +48,10 @@ export default function Connect() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [setupRevealed, setSetupRevealed] = useState(false);
 
+  // Presence (must run before any conditional return — hooks rule)
+  const myRole: "member" | "partner" = isPartnerSession ? "partner" : "member";
+  const { partnerOnline, partnerActivity, broadcastActivity } = useConnectPresence(connectionId, myRole);
+
   // Check for existing connection on load
   useEffect(() => {
     if (!user) return;
