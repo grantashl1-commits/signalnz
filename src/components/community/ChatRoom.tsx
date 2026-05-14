@@ -697,6 +697,48 @@ export default function ChatRoom({ group }: ChatRoomProps) {
                   );
                 })()}
 
+                {/* Reactions strip — picker + active counts */}
+                {(() => {
+                  const tally = reactions[m.id] ?? {};
+                  const warmth = tally.warmth;
+                  return (
+                    <div className={`flex items-center gap-1 mt-1 flex-wrap ${isMe ? "justify-end" : "justify-start"}`}>
+                      {REACTIONS.map(({ key, label, Icon }) => {
+                        const r = tally[key];
+                        const mine = r?.mine;
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => toggleReaction(m.id, key)}
+                            aria-label={label}
+                            className={`touch-btn h-7 px-2 rounded-full border flex items-center gap-1 transition-colors ${
+                              mine
+                                ? "bg-primary/10 border-primary/40 text-primary"
+                                : "bg-card/60 border-border text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            <Icon size={13} />
+                            {r && r.count > 0 && (
+                              <span className="font-body text-[10px]">{r.count}</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                      {warmth && warmth.count > 0 && (
+                        <span
+                          className={`h-7 px-2 rounded-full border flex items-center gap-1 ${
+                            warmth.mine ? "bg-primary/10 border-primary/40 text-primary" : "bg-card/60 border-border text-muted-foreground"
+                          }`}
+                          title="Warmth sent"
+                        >
+                          <IconWarmth size={13} />
+                          <span className="font-body text-[10px]">{warmth.count}</span>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {isMe && <span className="font-body text-[10px] text-muted-foreground mt-0.5">{m.time}</span>}
               </div>
             </div>
