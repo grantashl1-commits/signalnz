@@ -23,7 +23,7 @@ const CATEGORY_TITLES: Record<HabitCategory, string> = {
   movement: "Movement",
 };
 
-export default function HabitLibraryPicker({ open, category, onClose, onAdded }: HabitLibraryPickerProps) {
+export default function HabitLibraryPicker({ open, category, onClose, onAdded, currentPhase }: HabitLibraryPickerProps) {
   const [justAdded, setJustAdded] = useState<Set<string>>(new Set());
   const [expandedInfo, setExpandedInfo] = useState<string | null>(null);
   const [customName, setCustomName] = useState("");
