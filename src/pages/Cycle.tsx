@@ -15,7 +15,7 @@ import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
-  getPeriodEnd,
+  getPeriodEnd, getLoggedWorkouts,
 } from "@/lib/cycle-utils";
 import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
