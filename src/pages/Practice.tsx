@@ -9,6 +9,9 @@ import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import PhaseHabitSuggestions from "@/components/practice/PhaseHabitSuggestions";
+import MiniWeekStrip from "@/components/practice/MiniWeekStrip";
+import WeeklyRitualReview from "@/components/practice/WeeklyRitualReview";
+import { toast } from "sonner";
 
 import HabitCarousel from "@/components/HabitCarousel";
 import {
@@ -359,9 +362,17 @@ export default function PracticePage() {
   // Phase 5B — Supabase-backed completions
   const { completedIds, toggle: toggleHabit, history, historyLoading } = useHabitCompletions();
 
+  const [sproutId, setSproutId] = useState<string | null>(null);
+
   const handleToggle = (habitId: string) => {
+    const wasComplete = completedIds.has(habitId);
     haptic("light");
     toggleHabit(habitId);
+    if (!wasComplete) {
+      setSproutId(habitId);
+      setTimeout(() => setSproutId(prev => (prev === habitId ? null : prev)), 1200);
+      toast("Held.", { duration: 1800 });
+    }
   };
 
   const handleDelete = (habitId: string) => {
@@ -461,6 +472,8 @@ export default function PracticePage() {
           </motion.div>
         ) : (
           <>
+            <MiniWeekStrip history={history} totalHabits={totalHabits} phaseColor={phaseColor} />
+            <WeeklyRitualReview habits={habits} history={history} phaseColor={phaseColor} />
             <motion.div
               {...fadeUp(0.1)}
               className="rounded-[22px] bg-card p-6 shadow-soft mb-6"
@@ -580,7 +593,7 @@ export default function PracticePage() {
                               onClick={() => handleToggle(habit.id)}
                               className="touch-btn flex-shrink-0"
                             >
-                              <span className={`h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
+                              <span className={`relative h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
                                 done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
                               }`}>
                                 <AnimatePresence>
@@ -592,6 +605,19 @@ export default function PracticePage() {
                                     >
                                       <WildStar size={16} color="hsl(var(--primary))" />
                                     </motion.div>
+                                  )}
+                                </AnimatePresence>
+                                <AnimatePresence>
+                                  {sproutId === habit.id && (
+                                    <motion.span
+                                      initial={{ y: 0, opacity: 0, scale: 0.6 }}
+                                      animate={{ y: -22, opacity: 1, scale: 1 }}
+                                      exit={{ y: -32, opacity: 0 }}
+                                      transition={{ duration: 0.9, ease: "easeOut" }}
+                                      className="absolute -top-1 left-1/2 -translate-x-1/2 pointer-events-none"
+                                    >
+                                      <Leaf className="h-4 w-4" style={{ color: phaseColor }} />
+                                    </motion.span>
                                   )}
                                 </AnimatePresence>
                               </span>
@@ -738,6 +764,7 @@ export default function PracticePage() {
           category={libraryPickerCategory}
           onClose={() => setShowLibraryPicker(false)}
           onAdded={refreshHabits}
+          currentPhase={currentPhase}
         />
         </div>
       </div>

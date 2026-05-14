@@ -13,6 +13,7 @@ interface HabitLibraryPickerProps {
   category: HabitCategory;
   onClose: () => void;
   onAdded: () => void;
+  currentPhase?: "menstrual" | "follicular" | "ovulatory" | "luteal";
 }
 
 const CATEGORY_TITLES: Record<HabitCategory, string> = {
@@ -22,7 +23,7 @@ const CATEGORY_TITLES: Record<HabitCategory, string> = {
   movement: "Movement",
 };
 
-export default function HabitLibraryPicker({ open, category, onClose, onAdded }: HabitLibraryPickerProps) {
+export default function HabitLibraryPicker({ open, category, onClose, onAdded, currentPhase }: HabitLibraryPickerProps) {
   const [justAdded, setJustAdded] = useState<Set<string>>(new Set());
   const [expandedInfo, setExpandedInfo] = useState<string | null>(null);
   const [customName, setCustomName] = useState("");
@@ -310,6 +311,24 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded }:
               {SUPPLEMENT_DISCLAIMER}
             </p>
           )}
+
+          {/* Recommended for your phase — top 3 from library tagged for current phase */}
+          {currentPhase && (() => {
+            const phaseHabits = libraryHabits
+              .filter(h => h.rdi?.phaseNotes?.[currentPhase])
+              .slice(0, 3);
+            if (phaseHabits.length === 0) return null;
+            return (
+              <div className="mt-3">
+                <p className="font-hand text-xs font-bold text-bloom mb-2 uppercase tracking-wider">
+                  Recommended for your {currentPhase} phase
+                </p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {phaseHabits.map(renderHabitCard)}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Your wellness stack — quick-add items built in /nutrition */}
           {category === "supplements" && wellnessStackHabits.length > 0 && (
