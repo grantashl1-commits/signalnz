@@ -5,7 +5,7 @@ import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { GatedFeature } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
 import SignalPulse from "@/components/SignalPulse";
-import { ChevronLeft, ChevronRight, Pencil, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 
 import { CymatiSketch, MoonPhaseRow, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
@@ -55,7 +55,6 @@ export default function CyclePage() {
   const [dateEditValue, setDateEditValue] = useState(lastPeriod);
   const [refreshKey, setRefreshKey] = useState(0);
   const [popover, setPopover] = useState<{ dateStr: string; cycleDay: number | null; type: "mood" | "weight" } | null>(null);
-  const [showModeSelector, setShowModeSelector] = useState(false);
   const [showSymptomTracker, setShowSymptomTracker] = useState(false);
 
   // Only show mode selector if user hasn't completed onboarding AND hasn't manually selected
