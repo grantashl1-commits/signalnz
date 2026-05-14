@@ -593,7 +593,7 @@ export default function PracticePage() {
                               onClick={() => handleToggle(habit.id)}
                               className="touch-btn flex-shrink-0"
                             >
-                              <span className={`h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
+                              <span className={`relative h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
                                 done ? "border-primary bg-primary/15" : "border-border hover:border-primary/40"
                               }`}>
                                 <AnimatePresence>
@@ -605,6 +605,19 @@ export default function PracticePage() {
                                     >
                                       <WildStar size={16} color="hsl(var(--primary))" />
                                     </motion.div>
+                                  )}
+                                </AnimatePresence>
+                                <AnimatePresence>
+                                  {sproutId === habit.id && (
+                                    <motion.span
+                                      initial={{ y: 0, opacity: 0, scale: 0.6 }}
+                                      animate={{ y: -22, opacity: 1, scale: 1 }}
+                                      exit={{ y: -32, opacity: 0 }}
+                                      transition={{ duration: 0.9, ease: "easeOut" }}
+                                      className="absolute -top-1 left-1/2 -translate-x-1/2 pointer-events-none"
+                                    >
+                                      <Leaf className="h-4 w-4" style={{ color: phaseColor }} />
+                                    </motion.span>
                                   )}
                                 </AnimatePresence>
                               </span>
