@@ -630,6 +630,9 @@ export default function MyWeekTab() {
         onOpenPrepGuide={aiPlan ? () => { haptic("light"); setStep("prepguide"); } : undefined}
       />
 
+      {/* Last 4 weeks summary */}
+      <Last4WeeksSummary phaseColor={phaseColor} />
+
       {/* Day cards */}
       <div className="space-y-3">
         {days.map((day, i) => {
