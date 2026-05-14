@@ -166,7 +166,25 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         }
       }
 
-      // Resolve signed URLs for media messages already in history
+      // Reactions
+      if (ids.length) {
+        const { data: rxRows } = await supabase
+          .from("community_message_reactions" as any)
+          .select("message_id, user_id, reaction")
+          .in("message_id", ids);
+        if (!cancelled && rxRows) {
+          const next: Record<string, Record<string, { count: number; mine: boolean }>> = {};
+          for (const r of rxRows as Array<{ message_id: string; user_id: string; reaction: string }>) {
+            const m = next[r.message_id] ?? (next[r.message_id] = {});
+            const cur = m[r.reaction] ?? { count: 0, mine: false };
+            cur.count += 1;
+            if (r.user_id === user?.id) cur.mine = true;
+            m[r.reaction] = cur;
+          }
+          setReactions(next);
+        }
+      }
+
       for (const m of msgs as DBMessage[]) {
         if ((m.message_type === "image" || m.message_type === "voice") && m.metadata?.path) {
           resolveMediaUrl(m.id, m.metadata.path);
