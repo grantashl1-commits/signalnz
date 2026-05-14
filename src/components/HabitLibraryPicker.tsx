@@ -13,6 +13,7 @@ interface HabitLibraryPickerProps {
   category: HabitCategory;
   onClose: () => void;
   onAdded: () => void;
+  currentPhase?: "menstrual" | "follicular" | "ovulatory" | "luteal";
 }
 
 const CATEGORY_TITLES: Record<HabitCategory, string> = {
