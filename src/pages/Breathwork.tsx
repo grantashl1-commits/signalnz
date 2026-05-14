@@ -180,7 +180,7 @@ function BreathworkCards({
           </div>
         </motion.div>
       ))}
-      {!showAll && BREATHWORK_PRACTICES.length > 4 && (
+      {!showAll && practices.length > 4 && (
         <button
           onClick={() => setShowAll(true)}
           className="w-full text-center font-body text-xs text-primary py-2"
