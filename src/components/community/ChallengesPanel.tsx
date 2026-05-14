@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { HandDrawnVillage } from "@/components/BotanicalElements";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import { haptic } from "@/hooks/use-mobile";
 
 interface ChallengesPanelProps {
   joined: string[];
@@ -21,35 +23,101 @@ const DEFAULT_QUESTIONS = [
   "What services or skills can you offer?",
 ];
 
-function ChallengeItem({ text }: { text: string }) {
+interface Group {
+  id: string;
+  name?: string;
+  suburb: string;
+  challenges: string[];
+  questions: string[];
+}
+
+function ChallengeItem({ text, group }: { text: string; group: Group }) {
+  const { user } = useAuth();
   const [done, setDone] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+  const [shareText, setShareText] = useState(`I did it: ${text}`);
+  const [sending, setSending] = useState(false);
+
+  const handleMarkDone = () => {
+    haptic("medium");
+    setDone(true);
+    setShareText(`I did it: ${text}`);
+    setShowShare(true);
+  };
+
+  const shareToGroup = async () => {
+    if (!user || !shareText.trim()) return;
+    setSending(true);
+    const { error } = await supabase.from("community_messages").insert({
+      group_id: group.id,
+      user_id: user.id,
+      message_type: "text",
+      content: shareText.trim(),
+      metadata: { kind: "challenge_done", challenge: text },
+    });
+    setSending(false);
+    if (error) {
+      toast.error("That didn't land — try again.");
+      return;
+    }
+    toast.success("Held — shared with the village.");
+    setShowShare(false);
+  };
+
   return (
-    <div className={`card-warm p-3.5 mb-2 border-l-[3px] ${done ? "border-l-primary" : "border-l-primary"}`}>
+    <div className="card-warm p-3.5 mb-2 border-l-[3px] border-l-primary">
       <div className="flex justify-between items-start gap-2.5">
         <p className={`font-display text-sm italic leading-relaxed flex-1 ${done ? "text-muted-foreground" : "text-foreground"}`}>{text}</p>
         <button
-          onClick={() => setDone((d) => !d)}
-          className={`touch-btn font-body text-[11px] rounded-full px-3 py-1.5 flex-shrink-0 ${
-            done ? "text-primary bg-primary/10" : "text-primary bg-primary/10"
-          }`}
+          onClick={done ? () => setShowShare((s) => !s) : handleMarkDone}
+          className="touch-btn font-body text-[11px] rounded-full px-3 py-1.5 flex-shrink-0 text-primary bg-primary/10"
         >
-          {done ? "Done" : "Mark done"}
+          {done ? "Share" : "Mark done"}
         </button>
       </div>
+      {showShare && done && (
+        <div className="mt-3 pt-3 border-t border-border/60 space-y-2">
+          <p className="font-body text-[10px] uppercase tracking-wider text-muted-foreground">
+            Share with {group.name || group.suburb}
+          </p>
+          <textarea
+            rows={2}
+            value={shareText}
+            onChange={(e) => setShareText(e.target.value)}
+            className="w-full font-display text-[13px] italic text-foreground bg-secondary/30 border border-border rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 leading-relaxed"
+            style={{ fontSize: "16px" }}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={shareToGroup}
+              disabled={sending || !shareText.trim()}
+              className="touch-btn font-display text-[12px] italic text-primary-foreground bg-primary rounded-full px-3.5 py-1.5 disabled:opacity-50"
+            >
+              {sending ? "Sending…" : "Send to group"}
+            </button>
+            <button
+              onClick={() => setShowShare(false)}
+              className="touch-btn font-body text-[11px] text-muted-foreground rounded-full px-3 py-1.5"
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
   const { user } = useAuth();
-  const [myGroups, setMyGroups] = useState<any[]>([]);
+  const [myGroups, setMyGroups] = useState<Group[]>([]);
 
   useEffect(() => {
     loadGroups();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joined, user]);
 
   const loadGroups = async () => {
-    // Combine localStorage joined IDs with DB memberships
     const groupIds = new Set(joined);
 
     if (user) {
@@ -103,7 +171,7 @@ export default function ChallengesPanel({ joined }: ChallengesPanelProps) {
       {myGroups.map((g) => (
         <div key={g.id} className="mb-5">
           <h3 className="font-display text-lg font-bold italic text-foreground mb-2.5">{g.name || g.suburb}</h3>
-          {g.challenges.map((c: string, i: number) => <ChallengeItem key={i} text={c} />)}
+          {g.challenges.map((c: string, i: number) => <ChallengeItem key={i} text={c} group={g} />)}
 
           <div className="mt-3">
             <p className="font-body text-[11px] text-muted-foreground mb-2">Community questions</p>
