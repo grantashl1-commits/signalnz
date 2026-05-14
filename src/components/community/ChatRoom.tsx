@@ -70,6 +70,8 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const [recording, setRecording] = useState(false);
   // mediaUrls: msgId -> resolved signed URL (for image/audio)
   const [mediaUrls, setMediaUrls] = useState<Record<string, string>>({});
+  // reactions: msgId -> reactionKey -> { count, mine }
+  const [reactions, setReactions] = useState<Record<string, Record<string, { count: number; mine: boolean }>>>({});
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
