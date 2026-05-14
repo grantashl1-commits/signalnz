@@ -411,10 +411,38 @@ function SomaticCards({
 }
 
 // ── MAIN PAGE ──
+// Restorative practices auto-surface to top in luteal/menstrual.
+const RESTORATIVE_KEYS = new Set(["four-seven-eight", "coherent-breathing"]);
+
 export default function BreathworkPage() {
   const [section, setSection] = useState<"breathwork" | "somatic">("breathwork");
   const [activePractice, setActivePractice] = useState<PracticeConfig | null>(null);
   const [showFasciaRelease, setShowFasciaRelease] = useState(false);
+  const [useCase, setUseCase] = useState<BreathworkUseCase>("all");
+  const [moodSheet, setMoodSheet] = useState<{ logId: string; title: string } | null>(null);
+
+  const { currentPhase } = useCycle();
+  const {
+    streak, weekMinutes, weekSessions, weeklyByDay, logPractice, updateMood,
+  } = useBreathworkLogs();
+
+  const practiceStartRef = useRef<{ key: string; title: string; category: string; startedAt: number } | null>(null);
+
+  const sortedBreathwork = useMemo(() => {
+    let list = [...BREATHWORK_PRACTICES];
+    if (useCase !== "all") {
+      const allowed = USE_CASE_PRACTICE_KEYS[useCase];
+      list = list.filter(p => allowed.includes(p.id));
+    }
+    if (currentPhase === "luteal" || currentPhase === "menstrual") {
+      list.sort((a, b) => {
+        const ar = RESTORATIVE_KEYS.has(a.id) ? 0 : 1;
+        const br = RESTORATIVE_KEYS.has(b.id) ? 0 : 1;
+        return ar - br;
+      });
+    }
+    return list;
+  }, [useCase, currentPhase]);
 
   const sections = [
     { id: "breathwork" as const, label: "Breathwork" },
@@ -424,6 +452,45 @@ export default function BreathworkPage() {
   const subtitles = {
     breathwork: "Breathwork & regulation.",
     somatic: "Somatic practices.",
+  };
+
+  const beginPractice = (p: PracticeConfig) => {
+    practiceStartRef.current = {
+      key: p.id,
+      title: p.title,
+      category: p.category,
+      startedAt: Date.now(),
+    };
+    setActivePractice(p);
+  };
+
+  const beginFasciaRelease = () => {
+    practiceStartRef.current = {
+      key: "morning-fascia-release",
+      title: "Morning Fascia Release",
+      category: "somatic",
+      startedAt: Date.now(),
+    };
+    setShowFasciaRelease(true);
+  };
+
+  const handlePracticeClose = async (clearActive: () => void) => {
+    const start = practiceStartRef.current;
+    practiceStartRef.current = null;
+    clearActive();
+    if (!start) return;
+    const elapsedMin = (Date.now() - start.startedAt) / 60000;
+    if (elapsedMin < 0.5) return; // ignore taps that bail in <30s
+    const id = await logPractice({
+      practice_key: start.key,
+      practice_title: start.title,
+      category: start.category,
+      duration_minutes: elapsedMin,
+      cycle_phase: currentPhase,
+    });
+    if (id) {
+      setMoodSheet({ logId: id, title: start.title });
+    }
   };
 
   return (
@@ -463,19 +530,39 @@ export default function BreathworkPage() {
         </div>
       </div>
 
+      {/* Streak + this-week mini log */}
+      <BreathworkStreakHeader
+        streak={streak}
+        weekMinutes={weekMinutes}
+        weekSessions={weekSessions}
+        weeklyByDay={weeklyByDay}
+      />
+
+      {/* Use-case chips (breathwork only) */}
+      {section === "breathwork" && (
+        <UseCaseChips active={useCase} onChange={setUseCase} />
+      )}
+
+      {/* Phase-aware hint */}
+      {section === "breathwork" && (currentPhase === "luteal" || currentPhase === "menstrual") && (
+        <p className="font-display text-xs italic text-bloom/80 mb-3 px-1">
+          Restorative practices surface first in your {currentPhase} phase.
+        </p>
+      )}
+
       <AnimatePresence mode="wait">
         <motion.div
-          key={section}
+          key={section + useCase}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.15 }}
         >
           {section === "breathwork" && (
-            <BreathworkCards onSelect={setActivePractice} />
+            <BreathworkCards practices={sortedBreathwork} onSelect={beginPractice} />
           )}
           {section === "somatic" && (
-            <SomaticCards onSelect={setActivePractice} onFasciaRelease={() => setShowFasciaRelease(true)} />
+            <SomaticCards onSelect={beginPractice} onFasciaRelease={beginFasciaRelease} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -487,18 +574,29 @@ export default function BreathworkPage() {
       {activePractice?.mode === "timed-breath" && (
         <BreathworkPlayer
           practice={activePractice}
-          onClose={() => setActivePractice(null)}
+          onClose={() => handlePracticeClose(() => setActivePractice(null))}
         />
       )}
       {activePractice?.mode === "narrated-sequence" && (
         <SomaticPlayer
           practice={activePractice}
-          onClose={() => setActivePractice(null)}
+          onClose={() => handlePracticeClose(() => setActivePractice(null))}
         />
       )}
       {showFasciaRelease && (
-        <FasciaReleasePlayer onClose={() => setShowFasciaRelease(false)} />
+        <FasciaReleasePlayer onClose={() => handlePracticeClose(() => setShowFasciaRelease(false))} />
       )}
+
+      <PostPracticeMoodSheet
+        open={!!moodSheet}
+        practiceTitle={moodSheet?.title ?? ""}
+        onSubmit={async (mood) => {
+          if (moodSheet) await updateMood(moodSheet.logId, mood);
+          setMoodSheet(null);
+          toast("Held.", { duration: 1600 });
+        }}
+        onSkip={() => setMoodSheet(null)}
+      />
       </ContentSection>
     </div>
     </div>
