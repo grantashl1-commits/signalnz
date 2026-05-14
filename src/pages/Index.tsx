@@ -298,17 +298,17 @@ export default function HomePage() {
               <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-6 md:mb-8">
                 Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
               </motion.p>
-              {/* ── Hero micro-actions: one tap into the day ── */}
+              {/* ── Hero micro-actions: rotating, one tap into the day ── */}
               <motion.div {...fadeUp(0.5)} className="flex flex-wrap items-center justify-center gap-2 mb-6 md:mb-8">
-                <Link to="/journal" className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors">
-                  write a line
-                </Link>
-                <Link to="/breathwork" className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors">
-                  one breath
-                </Link>
-                <Link to="/cycle" className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors">
-                  log how you feel
-                </Link>
+                {microActions.map((a) => (
+                  <Link
+                    key={a.label}
+                    to={a.to}
+                    className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors"
+                  >
+                    {a.label}
+                  </Link>
+                ))}
               </motion.div>
               {!hasSetCycle && (
                 <motion.div {...fadeUp(0.55)} className="mb-6 md:mb-8">
@@ -350,20 +350,46 @@ export default function HomePage() {
 
       <PeriodDueReminder />
 
-      {/* ═══ PREP DAY REMINDER ═══ */}
-      {todayIsPrepDay && (
+      {/* ═══ CYCLE-SILENCE NUDGE ═══ */}
+      {user && hasSetCycle && cycleSilent && (
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.4 }} className="px-5 md:px-8 pt-4">
+          <div className="max-w-2xl mx-auto">
+            <Link to="/cycle" className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 bg-accent/40 border border-accent hover:bg-accent/55 transition-colors">
+              <div className="flex-1 min-w-0">
+                <p className="font-display italic text-[15px] text-foreground leading-tight">Your cycle wants to be heard.</p>
+                <p className="font-body text-xs text-muted-foreground mt-0.5">A small log — a mood, a symptom, a word — is enough.</p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-foreground/60 flex-shrink-0" />
+            </Link>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ═══ PREP DAY REMINDER (dismissible) ═══ */}
+      {todayIsPrepDay && !prepDismissed && (
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.4 }} className="px-5 md:px-8 pt-4">
           <div className="max-w-2xl mx-auto">
-            <Link to="/nutrition" className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 bg-primary/10 border border-primary/20 hover:bg-primary/15 transition-colors">
-              <span className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <ShoppingBag className="h-4 w-4 text-primary" />
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="font-body text-sm font-semibold text-foreground leading-tight">Today is the day you prep 🥗</p>
-                <p className="font-body text-xs text-muted-foreground mt-0.5">Your list and plan are waiting — a small kindness to your week.</p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-primary flex-shrink-0" />
-            </Link>
+            <div className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 bg-primary/10 border border-primary/20">
+              <Link to="/nutrition" className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+                <span className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
+                  <ShoppingBag className="h-4 w-4 text-primary" />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-body text-sm font-semibold text-foreground leading-tight">Today is the day you prep 🥗</p>
+                  <p className="font-body text-xs text-muted-foreground mt-0.5">Your list and plan are waiting — a small kindness to your week.</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-primary flex-shrink-0" />
+              </Link>
+              <button
+                onClick={() => {
+                  localStorage.setItem(`prep_dismissed_${todayStr}`, "true");
+                  setPrepDismissed(true);
+                }}
+                className="flex-shrink-0 font-hand text-[11px] text-muted-foreground/70 hover:text-foreground transition-colors px-2 py-1 border-l border-primary/20"
+              >
+                not today
+              </button>
+            </div>
           </div>
         </motion.div>
       )}
