@@ -1,6 +1,7 @@
-import { useState, memo } from "react";
+import { useState, memo, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, Clock } from "lucide-react";
+import { toast } from "sonner";
 import fasciaReleaseImg from "@/assets/somatic/morning-fascia-release.png";
 import FasciaReleasePlayer from "@/components/practice/FasciaReleasePlayer";
 import { BotanicalSprig } from "@/components/BotanicalElements";
@@ -18,6 +19,10 @@ import {
 } from "@/data/practices";
 import BreathworkPlayer from "@/components/practice/BreathworkPlayer";
 import SomaticPlayer from "@/components/practice/SomaticPlayer";
+import BreathworkStreakHeader from "@/components/practice/BreathworkStreakHeader";
+import UseCaseChips, { USE_CASE_PRACTICE_KEYS, type BreathworkUseCase } from "@/components/practice/UseCaseChips";
+import PostPracticeMoodSheet from "@/components/practice/PostPracticeMoodSheet";
+import { useBreathworkLogs } from "@/hooks/useBreathworkLogs";
 
 const cardVariant = {
   hidden: { opacity: 0, y: 12 },
