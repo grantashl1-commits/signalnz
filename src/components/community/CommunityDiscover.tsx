@@ -364,79 +364,85 @@ export default function CommunityDiscover({ onJoin, joined }: CommunityDiscoverP
         </div>
       ) : (
         <>
-          {[...suburbGroups, ...interestGroups].map((g) => {
-            const isJoined = joined.includes(g.id);
-            const parentName = g.parent_group_id ? groups.find(p => p.id === g.parent_group_id)?.name : null;
-            return (
-              <div key={g.id} className="card-warm p-5">
-                <div className="flex justify-between items-start mb-2 gap-2">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-display text-xl font-bold italic text-foreground mb-1">{g.name}</h3>
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                      <span className="font-body text-xs text-muted-foreground">{g.city || g.suburb}</span>
-                      <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
-                        {g.members_count || 0} {(g.members_count || 0) === 1 ? "member" : "members"}
-                      </span>
-                      {g.group_type === "interest" && parentName && (
-                        <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">
-                          {parentName}
-                        </span>
-                      )}
-                    </div>
-                    {/* Stacked avatar placeholders when members exist */}
-                    {(g.members_count || 0) > 0 && (
-                      <div className="flex -space-x-2 mt-2">
-                        {Array.from({ length: Math.min(g.members_count || 0, 4) }).map((_, ai) => (
-                          <div
-                            key={ai}
-                            className="w-7 h-7 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center"
-                          >
-                            <span className="font-body text-[9px] font-semibold text-primary">
-                              {String.fromCharCode(65 + ai)}
+          {sections.map((section) => (
+            <div key={section.id} className="space-y-2.5">
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground pt-2 px-1">
+                {section.label}
+              </p>
+              {section.items.map((g) => {
+                const isJoined = joined.includes(g.id);
+                const parentName = g.parent_group_id ? groups.find(p => p.id === g.parent_group_id)?.name : null;
+                return (
+                  <div key={g.id} className="card-warm p-5">
+                    <div className="flex justify-between items-start mb-2 gap-2">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-display text-xl font-bold italic text-foreground mb-1">{g.name}</h3>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                          <span className="font-body text-xs text-muted-foreground">{g.city || g.suburb}</span>
+                          <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                            {g.members_count || 0} {(g.members_count || 0) === 1 ? "member" : "members"}
+                          </span>
+                          {g.group_type === "interest" && parentName && (
+                            <span className="font-body text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent-foreground">
+                              {parentName}
                             </span>
-                          </div>
-                        ))}
-                        {(g.members_count || 0) > 4 && (
-                          <div className="w-7 h-7 rounded-full bg-secondary border-2 border-card flex items-center justify-center">
-                            <span className="font-body text-[9px] font-medium text-muted-foreground">+{(g.members_count || 0) - 4}</span>
+                          )}
+                        </div>
+                        {(g.members_count || 0) > 0 && (
+                          <div className="flex -space-x-2 mt-2">
+                            {Array.from({ length: Math.min(g.members_count || 0, 4) }).map((_, ai) => (
+                              <div
+                                key={ai}
+                                className="w-7 h-7 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center"
+                              >
+                                <span className="font-body text-[9px] font-semibold text-primary">
+                                  {String.fromCharCode(65 + ai)}
+                                </span>
+                              </div>
+                            ))}
+                            {(g.members_count || 0) > 4 && (
+                              <div className="w-7 h-7 rounded-full bg-secondary border-2 border-card flex items-center justify-center">
+                                <span className="font-body text-[9px] font-medium text-muted-foreground">+{(g.members_count || 0) - 4}</span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
+                      {isJoined ? (
+                        <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary flex-shrink-0 mt-1">Joined</span>
+                      ) : (
+                        <button
+                          onClick={() => onJoin(g.id)}
+                          className="touch-btn font-body text-sm font-medium text-primary border border-primary rounded-full px-5 h-9 active:scale-[0.97] flex-shrink-0 mt-1 hover:bg-primary/5 transition-colors"
+                        >
+                          Join
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3.5">{g.description}</p>
+
+                    {g.challenges.length > 0 && (
+                      <div className="bg-secondary/50 rounded-xl p-3.5 mb-2.5">
+                        <p className="font-body text-[11px] text-primary mb-1.5">Active challenges</p>
+                        {g.challenges.slice(0, 2).map((c: string, i: number) => (
+                          <p key={i} className="font-display text-[13px] italic text-foreground/70 leading-relaxed mb-1">{c}</p>
+                        ))}
+                      </div>
                     )}
-                  </div>
-                  {isJoined ? (
-                    <span className="font-body text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary flex-shrink-0 mt-1">Joined</span>
-                  ) : (
-                    <button
-                      onClick={() => onJoin(g.id)}
-                      className="touch-btn font-body text-sm font-medium text-primary border border-primary rounded-full px-5 h-9 active:scale-[0.97] flex-shrink-0 mt-1 hover:bg-primary/5 transition-colors"
-                    >
-                      Join
-                    </button>
-                  )}
-                </div>
 
-                <p className="font-display text-[13px] italic text-muted-foreground leading-relaxed mb-3.5">{g.description}</p>
-
-                {g.challenges.length > 0 && (
-                  <div className="bg-secondary/50 rounded-xl p-3.5 mb-2.5">
-                    <p className="font-body text-[11px] text-primary mb-1.5">Active challenges</p>
-                    {g.challenges.slice(0, 2).map((c: string, i: number) => (
-                      <p key={i} className="font-display text-[13px] italic text-foreground/70 leading-relaxed mb-1">{c}</p>
+                    {g.questions.slice(0, 2).map((q: string, i: number) => (
+                      <div key={i} className="flex gap-1.5 items-start mb-1">
+                        <span className="text-primary text-xs flex-shrink-0 mt-0.5">·</span>
+                        <span className="font-body text-[11px] text-muted-foreground leading-relaxed">{q}</span>
+                      </div>
                     ))}
                   </div>
-                )}
-
-                {g.questions.slice(0, 2).map((q: string, i: number) => (
-                  <div key={i} className="flex gap-1.5 items-start mb-1">
-                    <span className="text-primary text-xs flex-shrink-0 mt-0.5">·</span>
-                    <span className="font-body text-[11px] text-muted-foreground leading-relaxed">{q}</span>
-                  </div>
-                ))}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          ))}
         </>
       )}
 
