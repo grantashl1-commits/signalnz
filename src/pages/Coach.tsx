@@ -732,8 +732,23 @@ export default function CoachPage() {
       </AtmosphericHero>
 
       <div className="max-w-2xl mx-auto px-4 pb-32 space-y-6 mt-6">
+        {/* Goal nudge banner — surfaces the active goal weekly */}
+        <GoalNudgeBanner userId={user.id} key={`nudge-${refreshKey}`} />
+
+        {/* Quick ask — one-tap chips + free text */}
+        <QuickAskBar userId={user.id} />
+
+        {/* Credits as a gentle fill-bar */}
+        <CreditsFillBar />
+
         {/* Weekly Check-In */}
         <WeeklyCheckin userId={user.id} onComplete={() => setRefreshKey((k) => k + 1)} />
+
+        {/* This week's focus — personalised after check-in */}
+        <WeeklyFocusCard userId={user.id} refreshKey={refreshKey} />
+
+        {/* Your patterns — unlocks at 4+ check-ins */}
+        <PatternsInsightCard userId={user.id} refreshKey={refreshKey} />
 
         {/* Goal Tracker */}
         <GoalTracker userId={user.id} key={`goal-${refreshKey}`} />
@@ -746,7 +761,7 @@ export default function CoachPage() {
 
         {/* AI Plan Generator */}
         <div>
-          <h2 className="font-display text-xl italic font-bold text-foreground mb-4">Generate My Plan</h2>
+          <h2 className="font-display text-xl italic font-bold text-foreground mb-4">Your coaching thread</h2>
           <PlanGenerator userId={user.id} session={session} />
         </div>
       </div>
