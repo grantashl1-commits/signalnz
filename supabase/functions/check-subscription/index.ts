@@ -61,6 +61,19 @@ serve(async (req) => {
     }
     const user = userData.user;
 
+    // Manual override: comped accounts get full tier without Stripe lookup.
+    const overrideProduct = EMAIL_TIER_OVERRIDES[(user.email ?? "").toLowerCase()];
+    if (overrideProduct) {
+      return new Response(JSON.stringify({
+        subscribed: true,
+        product_id: overrideProduct,
+        subscription_end: null,
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
