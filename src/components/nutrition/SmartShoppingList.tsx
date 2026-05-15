@@ -413,12 +413,13 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       seedItems.push({ name: "Sesame seeds", unit: "tbsp", qty: secondHalfDays });
     }
     seedItems.forEach(seed => {
-      const fullKey = `${seed.name.toLowerCase()}::${seed.unit}`;
+      const base = toBase(seed.qty, seed.unit, seed.name);
+      const fullKey = `${seed.name.toLowerCase()}::${base.unit}`;
       if (ingredientMap[fullKey]) {
-        ingredientMap[fullKey].totalQty += seed.qty;
+        ingredientMap[fullKey].totalQty += base.qty;
       } else {
         ingredientMap[fullKey] = {
-          name: seed.name, totalQty: seed.qty, unit: seed.unit,
+          name: seed.name, totalQty: base.qty, unit: base.unit,
           category: "pantry", searchTerm: seed.name.toLowerCase(),
           isPantryStaple: false,
         };
