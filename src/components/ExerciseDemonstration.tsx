@@ -38,11 +38,26 @@ export default function ExerciseDemonstration({
         className={`overflow-hidden rounded-xl bg-accent/30 flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        <MuscleIllustration
-          targetMuscle={target}
-          size={Math.round(size * 0.85)}
-          className="opacity-90"
-        />
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={exerciseName}
+            loading="lazy"
+            width={size}
+            height={size}
+            className="h-full w-full object-contain"
+            onError={(e) => {
+              // Hide broken DB image and let the anatomy fallback show through
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
+          />
+        ) : (
+          <MuscleIllustration
+            targetMuscle={target}
+            size={Math.round(size * 0.85)}
+            className="opacity-90"
+          />
+        )}
       </div>
       {label}
     </div>
