@@ -16,7 +16,8 @@ const UNITS = new Set([
   "oz", "ounce", "ounces", "lb", "lbs", "pound", "pounds",
   "g", "gram", "grams", "kg", "kilogram", "kilograms",
   "ml", "millilitre", "millilitres", "l", "litre", "litres",
-  "can", "cans", "bunch", "bunches", "handful", "handfuls",
+  "can", "cans", "tin", "tins", "jar", "jars", "packet", "packets", "pack", "packs",
+  "bunch", "bunches", "handful", "handfuls",
   "clove", "cloves", "slice", "slices", "piece", "pieces",
   "pinch", "dash", "sprig", "sprigs", "head", "heads",
 ]);
