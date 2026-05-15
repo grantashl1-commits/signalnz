@@ -379,16 +379,18 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           const mapKey = nzSearch.toLowerCase();
           const cat = categoriseItem(nzName);
 
-          // Key includes unit so mismatched units (e.g. "g" vs "cup" for oats) don't corrupt each other
-          const unitKey = parsed.unit.toLowerCase() || "unit";
+          // Normalise into base unit (g | ml | count) so g/ml/tbsp/cup variants
+          // for the same ingredient combine into one row.
+          const base = toBase(totalQty, parsed.unit, nzName);
+          const unitKey = base.unit || "unit";
           const fullKey = `${mapKey}::${unitKey}`;
           if (ingredientMap[fullKey]) {
-            ingredientMap[fullKey].totalQty += totalQty;
+            ingredientMap[fullKey].totalQty += base.qty;
           } else {
             ingredientMap[fullKey] = {
               name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
-              totalQty,
-              unit: parsed.unit,
+              totalQty: base.qty,
+              unit: base.unit,
               category: cat,
               searchTerm: nzSearch,
               isPantryStaple: isPantryStaple(nzName),
