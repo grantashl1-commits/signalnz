@@ -13,6 +13,14 @@ const MEMBERSHIP_PRODUCT_IDS = new Set([
   "prod_U9Pr8k3iP6Bler",
 ]);
 
+// Manual tier overrides keyed by lowercased email. These users always receive
+// the mapped product/tier regardless of Stripe state (e.g. comped accounts).
+const THRIVING_PRODUCT_ID = "prod_U9Pr8k3iP6Bler";
+const EMAIL_TIER_OVERRIDES: Record<string, string> = {
+  "taliasmayall@gmail.com": THRIVING_PRODUCT_ID,
+  "leanne.bats@gmail.com": THRIVING_PRODUCT_ID,
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
