@@ -7,6 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const MEMBERSHIP_PRODUCT_IDS = new Set([
+  "prod_UDBbsFCvpYtvUN",
+  "prod_U9Pqh2vkb2wrNR",
+  "prod_U9Pr8k3iP6Bler",
+]);
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -61,15 +67,22 @@ serve(async (req) => {
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
       status: "active",
-      limit: 1,
+      limit: 20,
     });
 
-    const hasActiveSub = subscriptions.data.length > 0;
+    const membershipSub = subscriptions.data.find((sub) =>
+      sub.items.data.some((item) => {
+        const productId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
+        return !!productId && MEMBERSHIP_PRODUCT_IDS.has(productId);
+      })
+    );
+
+    const hasActiveSub = !!membershipSub;
     let productId = null;
     let subscriptionEnd = null;
 
     if (hasActiveSub) {
-      const sub = subscriptions.data[0];
+      const sub = membershipSub!;
       try {
         const endMs = typeof sub.current_period_end === "number"
           ? sub.current_period_end * 1000
@@ -78,7 +91,13 @@ serve(async (req) => {
           subscriptionEnd = new Date(endMs).toISOString();
         }
       } catch { /* leave null */ }
-      productId = sub.items.data[0].price.product;
+      const membershipItem = sub.items.data.find((item) => {
+        const itemProductId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
+        return !!itemProductId && MEMBERSHIP_PRODUCT_IDS.has(itemProductId);
+      });
+      productId = membershipItem
+        ? (typeof membershipItem.price.product === "string" ? membershipItem.price.product : membershipItem.price.product?.id) ?? null
+        : null;
     }
 
     return new Response(JSON.stringify({
