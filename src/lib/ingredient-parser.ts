@@ -16,7 +16,8 @@ const UNITS = new Set([
   "oz", "ounce", "ounces", "lb", "lbs", "pound", "pounds",
   "g", "gram", "grams", "kg", "kilogram", "kilograms",
   "ml", "millilitre", "millilitres", "l", "litre", "litres",
-  "can", "cans", "bunch", "bunches", "handful", "handfuls",
+  "can", "cans", "tin", "tins", "jar", "jars", "packet", "packets", "pack", "packs",
+  "bunch", "bunches", "handful", "handfuls",
   "clove", "cloves", "slice", "slices", "piece", "pieces",
   "pinch", "dash", "sprig", "sprigs", "head", "heads",
 ]);
@@ -27,7 +28,16 @@ export function parseIngredient(raw: string): ParsedIngredient {
   let text = raw.trim();
 
   // Remove prep instructions
-  const cleaned = text.replace(PREP_WORDS, "").trim();
+  let cleaned = text.replace(PREP_WORDS, "").trim();
+
+  // Pull a "(400 g)" / "(2 cups)" parenthetical out as a fallback quantity hint
+  let parenQty = "";
+  let parenUnit = "";
+  const parenMatch = cleaned.match(/\(([\d.½⅓⅔¼¾⅛/\s-]+)\s*(g|gram|grams|kg|ml|l|cup|cups|tbsp|tsp|oz|lb)\b[^)]*\)/i);
+  if (parenMatch) {
+    parenQty = parenMatch[1].trim();
+    parenUnit = parenMatch[2].toLowerCase();
+  }
 
   // Match quantity (number, fraction, or range) at start
   const qtyMatch = cleaned.match(/^([\d½⅓⅔¼¾⅛]+(?:\s*[-–]\s*[\d½⅓⅔¼¾⅛]+)?(?:\s*\/\s*\d+)?)\s*/);
@@ -53,7 +63,28 @@ export function parseIngredient(raw: string): ParsedIngredient {
     }
   }
 
-  const name = words.slice(nameStart).join(" ").trim();
+  let name = words.slice(nameStart).join(" ").trim();
+
+  // If no leading qty/unit was found but a "(400 g)" parenthetical was present,
+  // promote that parenthetical to be the canonical quantity + unit.
+  if (!quantity && parenQty) {
+    quantity = parenQty;
+    unit = parenUnit;
+    name = name.replace(/\s*\([^)]*\)\s*/g, " ").trim();
+  } else if (quantity && unit === "" && parenQty && parenUnit) {
+    // e.g. "1 tin (400 g) tomatoes" → prefer the gram weight for shopping totals
+    quantity = parenQty;
+    unit = parenUnit;
+    name = name.replace(/\s*\([^)]*\)\s*/g, " ").trim();
+  }
+
+  // Guard: a name that is *only* a descriptor like "tinned" / "canned" /
+  // "fresh" with no following noun is meaningless. Fall back to the raw
+  // string so the shopping list never shows a row called "Tinned".
+  const onlyDescriptor = /^(fresh|dried|frozen|organic|raw|cooked|canned|tinned|large|medium|small|baby|mini)$/i;
+  if (!name || onlyDescriptor.test(name)) {
+    name = raw.replace(/^[\d½⅓⅔¼¾⅛.\-–\s]+/, "").trim() || raw;
+  }
 
   // Build a clean search term (strip size and quality descriptors for grouping)
   const searchTerm = name
@@ -233,7 +264,8 @@ function normUnit(u: string): string {
     tsp: "tsp", teaspoon: "tsp",
     cup: "cup", g: "g", gram: "g", kg: "kg", kilogram: "kg",
     ml: "ml", millilitre: "ml", l: "l", litre: "l",
-    can: "can", bunch: "bunch", handful: "handful",
+    can: "can", tin: "can", jar: "can", packet: "can", pack: "can",
+    bunch: "bunch", handful: "handful",
     clove: "clove", slice: "slice", piece: "piece",
     pinch: "pinch", dash: "dash", sprig: "sprig", head: "head",
   };
