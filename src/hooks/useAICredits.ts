@@ -12,12 +12,16 @@ export function useAICredits(): AICredits & { refresh: () => void } {
   const [tier, setTier] = useState("free");
   const [loading, setLoading] = useState(true);
 
+  const applyFallback = () => {
+    setCreditsRemaining(5);
+    setTier("free");
+  };
+
   const fetchCredits = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setCreditsRemaining(5);
-        setTier("free");
+        applyFallback();
         setLoading(false);
         return;
       }
@@ -32,11 +36,10 @@ export function useAICredits(): AICredits & { refresh: () => void } {
         setCreditsRemaining(data.credits_remaining ?? 0);
         setTier(data.tier ?? "free");
       } else {
-        setCreditsRemaining(5);
-        setTier("free");
+        applyFallback();
       }
     } catch {
-      // Default values
+      applyFallback();
     } finally {
       setLoading(false);
     }
