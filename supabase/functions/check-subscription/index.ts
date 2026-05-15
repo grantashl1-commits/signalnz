@@ -13,6 +13,14 @@ const MEMBERSHIP_PRODUCT_IDS = new Set([
   "prod_U9Pr8k3iP6Bler",
 ]);
 
+// Manual tier overrides keyed by lowercased email. These users always receive
+// the mapped product/tier regardless of Stripe state (e.g. comped accounts).
+const THRIVING_PRODUCT_ID = "prod_U9Pr8k3iP6Bler";
+const EMAIL_TIER_OVERRIDES: Record<string, string> = {
+  "taliasmayall@gmail.com": THRIVING_PRODUCT_ID,
+  "leanne.bats@gmail.com": THRIVING_PRODUCT_ID,
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -52,6 +60,19 @@ serve(async (req) => {
       });
     }
     const user = userData.user;
+
+    // Manual override: comped accounts get full tier without Stripe lookup.
+    const overrideProduct = EMAIL_TIER_OVERRIDES[(user.email ?? "").toLowerCase()];
+    if (overrideProduct) {
+      return new Response(JSON.stringify({
+        subscribed: true,
+        product_id: overrideProduct,
+        subscription_end: null,
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
