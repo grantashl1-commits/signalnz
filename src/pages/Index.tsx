@@ -282,20 +282,19 @@ export default function HomePage() {
                 {greeting}, {firstName || "you"}.
               </motion.p>
               <motion.div
-                key={info.phase}
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
                 className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
               >
                 <img
-                  src={PHASE_HERO_IMAGE[info.phase]}
-                  alt={`${PHASE_SHORT[info.phase]} phase illustration`}
+                  src={welcomeHero}
+                  alt="Tune into your signal"
                   className="w-full h-auto object-contain drop-shadow-md"
                 />
               </motion.div>
               <motion.p {...fadeUp(0.35)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-3" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
-                {PHASE_SUBTEXT[info.phase]}
+                Your body already knows. It's time to tune into the signal.
               </motion.p>
               <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-6 md:mb-8">
                 Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
