@@ -7,14 +7,14 @@ interface Props {
   showLabel?: boolean;
   /** Optional explicit target muscle override — used as a hint for the anatomy figure. */
   targetMuscle?: string | null;
-  /** Legacy prop kept for back-compat — accepted but ignored. */
+  /** Pencil-sketch / red-muscle illustration from the exercise DB. Preferred when present. */
   imageUrl?: string | null;
 }
 
 /**
- * Unified exercise illustration. Always renders the gray muscle-anatomy figure
- * (the "DB" style used across the exercise library) so every surface — Today,
- * Training paths, Library, Quick workouts — looks identical.
+ * Unified exercise illustration. Prefers the pencil-sketch red-muscle artwork
+ * from the exercise DB (`imageUrl`) and falls back to the gray anatomy figure
+ * when no DB illustration exists.
  */
 export default function ExerciseDemonstration({
   exerciseName,
@@ -22,6 +22,7 @@ export default function ExerciseDemonstration({
   className = "",
   showLabel = false,
   targetMuscle,
+  imageUrl,
 }: Props) {
   const target = targetMuscle || guessTargetFromName(exerciseName);
 
