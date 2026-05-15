@@ -234,7 +234,8 @@ function normUnit(u: string): string {
     tsp: "tsp", teaspoon: "tsp",
     cup: "cup", g: "g", gram: "g", kg: "kg", kilogram: "kg",
     ml: "ml", millilitre: "ml", l: "l", litre: "l",
-    can: "can", bunch: "bunch", handful: "handful",
+    can: "can", tin: "can", jar: "can", packet: "can", pack: "can",
+    bunch: "bunch", handful: "handful",
     clove: "clove", slice: "slice", piece: "piece",
     pinch: "pinch", dash: "dash", sprig: "sprig", head: "head",
   };
