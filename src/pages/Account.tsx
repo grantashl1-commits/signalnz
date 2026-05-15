@@ -20,8 +20,18 @@ import {
 import { getHabits, getHabitLog } from "@/data/self-care-rituals";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 
-const TIER_COLORS: Record<string, string> = { free: "text-muted-foreground", nourished: "text-primary", thriving: "text-primary" };
-const TIER_LABELS: Record<string, string> = { free: "Free", nourished: "Nourished", thriving: "Thriving" };
+const TIER_COLORS: Record<string, string> = {
+  free: "text-muted-foreground",
+  rooted: "text-primary",
+  nourished: "text-primary",
+  thriving: "text-primary",
+};
+const TIER_LABELS: Record<string, string> = {
+  free: "Free",
+  rooted: "Rooted",
+  nourished: "Nourished",
+  thriving: "Thriving",
+};
 
 const MOVEMENT_GOALS = [
   { id: "strength", label: "Build strength" },
