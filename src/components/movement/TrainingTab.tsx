@@ -468,6 +468,7 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                   <div key={exIdx} className="flex items-start gap-3 px-3 py-2.5">
                     <ExerciseDemonstration
                       exerciseName={ex.name}
+                      imageUrl={lookupIllustration(ex.name)}
                       size={40}
                       className="shrink-0"
                     />
