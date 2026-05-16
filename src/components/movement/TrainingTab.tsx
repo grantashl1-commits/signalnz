@@ -23,6 +23,7 @@ import { parseRunStructure } from "@/lib/run-session-parser";
 import IntervalTimer from "@/components/movement/IntervalTimer";
 import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
+import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
