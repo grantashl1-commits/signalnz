@@ -376,6 +376,7 @@ function WeekRow({
 }
 
 function SessionCard({ session, focus }: { session: DaySession; focus: TrainingFocus }) {
+  const lookupIllustration = useExerciseIllustrations();
   const [timerOpen, setTimerOpen] = useState(false);
   const meta: string[] = [];
   if (typeof session.durationMin === "number" && session.durationMin > 0) {
