@@ -519,6 +519,7 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                   <span className="flex items-start gap-2">
                     <ExerciseDemonstration
                       exerciseName={exerciseName}
+                      imageUrl={lookupIllustration(exerciseName)}
                       size={40}
                       className="shrink-0"
                     />
