@@ -23,6 +23,7 @@ import { parseRunStructure } from "@/lib/run-session-parser";
 import IntervalTimer from "@/components/movement/IntervalTimer";
 import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
+import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
@@ -375,6 +376,7 @@ function WeekRow({
 }
 
 function SessionCard({ session, focus }: { session: DaySession; focus: TrainingFocus }) {
+  const lookupIllustration = useExerciseIllustrations();
   const [timerOpen, setTimerOpen] = useState(false);
   const meta: string[] = [];
   if (typeof session.durationMin === "number" && session.durationMin > 0) {
@@ -466,6 +468,7 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                   <div key={exIdx} className="flex items-start gap-3 px-3 py-2.5">
                     <ExerciseDemonstration
                       exerciseName={ex.name}
+                      imageUrl={lookupIllustration(ex.name)}
                       size={40}
                       className="shrink-0"
                     />
@@ -516,6 +519,7 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                   <span className="flex items-start gap-2">
                     <ExerciseDemonstration
                       exerciseName={exerciseName}
+                      imageUrl={lookupIllustration(exerciseName)}
                       size={40}
                       className="shrink-0"
                     />
