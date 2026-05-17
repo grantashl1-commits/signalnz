@@ -25,6 +25,11 @@ export default function ExerciseDemonstration({
   targetMuscle,
   imageUrl,
 }: Props) {
+  // Auto-resolve from the shared exercise DB lookup when caller didn't pass one.
+  // Ensures every screen (training paths, AI sessions, today, drawers) gets the
+  // same pencil-sketch red-muscle illustrations as the Library.
+  const lookup = useExerciseIllustrations();
+  const resolvedImageUrl = imageUrl ?? lookup(exerciseName) ?? null;
   const target = targetMuscle || guessTargetFromName(exerciseName);
 
   const label = showLabel && size >= 64 ? (
