@@ -6,7 +6,68 @@ let cache: Record<string, string> | null = null;
 let inflight: Promise<Record<string, string>> | null = null;
 
 function normalize(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return name
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[‐‑‒–—―]/g, "-")
+    .replace(/&/g, " and ")
+    .replace(/\bdb\b/g, "dumbbell")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function getCandidateNames(name: string): string[] {
+  const raw = name.trim();
+  const base = normalize(raw);
+  const stripped = normalize(raw.replace(/\(.*?\)/g, " "));
+  const candidates = new Set<string>([base, stripped]);
+
+  const aliasEntries: Array<[boolean, string]> = [
+    [/\bpush ?up\b/.test(base), "push up"],
+    [/\bdecline push up\b/.test(base), "push up"],
+    [/\bpush up to downward dog\b/.test(base), "push up"],
+    [/\bsingle arm dumbbell row\b/.test(base), "single arm dumbbell row"],
+    [/\bsingle arm row\b/.test(base), "single arm dumbbell row"],
+    [/\bdumbbell row\b/.test(base), "single arm dumbbell row"],
+    [/\bdb row\b/.test(raw.toLowerCase()), "single arm dumbbell row"],
+    [/\bpendlay row\b/.test(base), "pendlay row"],
+    [/\brenegade row\b/.test(base), "renegade row"],
+    [/\bplank with shoulder tap\b/.test(base), "plank shoulder taps"],
+    [/\bplank with shoulder taps\b/.test(base), "plank shoulder taps"],
+    [/\bplank shoulder tap\b/.test(base), "plank shoulder taps"],
+    [/\bplank\b/.test(base) && /\bshoulder\b/.test(base) && /\btap/.test(base), "plank shoulder taps"],
+    [/\bplank with knee dip\b/.test(base), "plank to knee tap"],
+    [/\bplank with knee dips\b/.test(base), "plank to knee tap"],
+    [/\bplank\b/.test(base) && /\bknee\b/.test(base) && /\b(dip|dips|tap|taps)\b/.test(base), "plank to knee tap"],
+    [/\bside plank\b/.test(base), "side plank"],
+    [/\bforearm plank\b/.test(base), "forearm plank"],
+    [/\bplank with row\b/.test(base), "renegade row"],
+    [/\bplank\b/.test(base) && /\brow\b/.test(base), "renegade row"],
+    [/\bplank\b/.test(base), "plank"],
+  ];
+
+  for (const [matches, alias] of aliasEntries) {
+    if (matches) candidates.add(alias);
+  }
+
+  return Array.from(candidates).filter(Boolean);
+}
+
+function resolveFromMap(map: Record<string, string>, name: string): string | undefined {
+  const candidates = getCandidateNames(name);
+
+  for (const candidate of candidates) {
+    if (map[candidate]) return map[candidate];
+  }
+
+  const entries = Object.entries(map);
+  for (const candidate of candidates) {
+    const matched = entries.find(([key]) => key.startsWith(`${candidate} `) || candidate.startsWith(`${key} `));
+    if (matched) return matched[1];
+  }
+
+  return undefined;
 }
 
 async function loadMap(): Promise<Record<string, string>> {
@@ -52,6 +113,6 @@ export function useExerciseIllustrations() {
   }, []);
   return (name: string | null | undefined): string | undefined => {
     if (!name) return undefined;
-    return map[normalize(name)];
+    return resolveFromMap(map, name);
   };
 }
