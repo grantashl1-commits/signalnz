@@ -44,9 +44,9 @@ export default function ExerciseDemonstration({
         className={`overflow-hidden rounded-xl bg-accent/30 flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        {imageUrl ? (
+        {resolvedImageUrl ? (
           <img
-            src={imageUrl}
+            src={resolvedImageUrl}
             alt={exerciseName}
             loading="lazy"
             width={size}
