@@ -1,4 +1,5 @@
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
+import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 
 interface Props {
   exerciseName: string;
