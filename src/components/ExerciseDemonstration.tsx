@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
+import { getExerciseImageByName } from "@/lib/exercise-image-lookup";
 
 interface Props {
   exerciseName: string;
@@ -29,8 +31,14 @@ export default function ExerciseDemonstration({
   // Ensures every screen (training paths, AI sessions, today, drawers) gets the
   // same pencil-sketch red-muscle illustrations as the Library.
   const lookup = useExerciseIllustrations();
-  const resolvedImageUrl = imageUrl ?? lookup(exerciseName) ?? null;
+  const [imageFailed, setImageFailed] = useState(false);
+  const localImageUrl = getExerciseImageByName(exerciseName) ?? null;
+  const resolvedImageUrl = !imageFailed ? (imageUrl ?? lookup(exerciseName) ?? localImageUrl) : localImageUrl;
   const target = targetMuscle || guessTargetFromName(exerciseName);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [exerciseName, imageUrl]);
 
   const label = showLabel && size >= 64 ? (
     <div className="absolute bottom-0 left-0 right-0 rounded-b-xl bg-gradient-to-t from-foreground/80 to-transparent px-1 py-0.5">
@@ -53,8 +61,12 @@ export default function ExerciseDemonstration({
             height={size}
             className="h-full w-full object-contain"
             onError={(e) => {
-              // Hide broken DB image and let the anatomy fallback show through
-              (e.currentTarget as HTMLImageElement).style.display = "none";
+              const currentSrc = (e.currentTarget as HTMLImageElement).currentSrc;
+              if (localImageUrl && currentSrc !== new URL(localImageUrl, window.location.origin).href) {
+                setImageFailed(true);
+                return;
+              }
+              setImageFailed(true);
             }}
           />
         ) : (
