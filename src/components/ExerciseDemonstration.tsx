@@ -1,4 +1,5 @@
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
+import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 
 interface Props {
   exerciseName: string;
@@ -24,6 +25,11 @@ export default function ExerciseDemonstration({
   targetMuscle,
   imageUrl,
 }: Props) {
+  // Auto-resolve from the shared exercise DB lookup when caller didn't pass one.
+  // Ensures every screen (training paths, AI sessions, today, drawers) gets the
+  // same pencil-sketch red-muscle illustrations as the Library.
+  const lookup = useExerciseIllustrations();
+  const resolvedImageUrl = imageUrl ?? lookup(exerciseName) ?? null;
   const target = targetMuscle || guessTargetFromName(exerciseName);
 
   const label = showLabel && size >= 64 ? (
@@ -38,9 +44,9 @@ export default function ExerciseDemonstration({
         className={`overflow-hidden rounded-xl bg-accent/30 flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        {imageUrl ? (
+        {resolvedImageUrl ? (
           <img
-            src={imageUrl}
+            src={resolvedImageUrl}
             alt={exerciseName}
             loading="lazy"
             width={size}
