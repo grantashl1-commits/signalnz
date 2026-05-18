@@ -212,6 +212,17 @@ export default function IntervalTimer({ intervals, onClose, onComplete, accentCo
   const [muted, setMuted] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const accent = accentColor || "hsl(var(--primary))";
+  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
+
+  // Keep screen awake while timer is running
+  useEffect(() => {
+    if (running && !finished) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+    return () => { releaseWakeLock(); };
+  }, [running, finished, requestWakeLock, releaseWakeLock]);
 
   const current = intervals[currentIdx];
   const totalIntervals = intervals.length;
