@@ -24,6 +24,7 @@ import IntervalTimer from "@/components/movement/IntervalTimer";
 import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
+import { useSwipe } from "@/hooks/useSwipe";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
@@ -226,6 +227,23 @@ function PathDetail({
   onBack: () => void;
   onChooseAsToday: () => void;
 }) {
+  const total = path.weeks.length;
+  const weekSwipe = useSwipe({
+    onSwipeLeft: () => {
+      if (!total) return;
+      const next = expandedWeek == null ? 1 : Math.min(total, expandedWeek + 1);
+      if (next === expandedWeek) return;
+      haptic("light");
+      onToggleWeek(next);
+    },
+    onSwipeRight: () => {
+      if (!total) return;
+      const prev = expandedWeek == null ? total : Math.max(1, expandedWeek - 1);
+      if (prev === expandedWeek) return;
+      haptic("light");
+      onToggleWeek(prev);
+    },
+  });
   return (
     <div className="space-y-6 pb-10">
       <button
@@ -278,10 +296,13 @@ function PathDetail({
         <p className="font-body text-sm text-foreground leading-relaxed">{path.whoItIsFor}</p>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-2" {...weekSwipe.bind}>
         <h3 className="font-display text-sm font-bold text-foreground uppercase tracking-wider">
           Eight weeks, one slow returning
         </h3>
+        <p className="font-hand text-[11px] text-muted-foreground md:hidden">
+          tip — swipe left or right to step between weeks
+        </p>
         <div className="space-y-2">
           {path.weeks.map((week) => (
             <WeekRow

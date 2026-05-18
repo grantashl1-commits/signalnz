@@ -4,6 +4,7 @@ interface WakeLockState {
   isSupported: boolean;
   isActive: boolean;
   toggle: () => Promise<void>;
+  request: () => Promise<void>;
   release: () => Promise<void>;
 }
 
@@ -62,5 +63,5 @@ export function useWakeLock(): WakeLockState {
     };
   }, []);
 
-  return { isSupported, isActive, toggle, release };
+  return { isSupported, isActive, toggle, request: requestLock, release };
 }

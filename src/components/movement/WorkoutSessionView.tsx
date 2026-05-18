@@ -17,6 +17,7 @@ import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { TimerButton, WorkoutIntervalButton, isTimeBased, StructuredIntervalButton, type StructuredInterval } from "@/components/movement/IntervalTimer";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
 import {
   HR_ZONES, getZoneForBPM, getMaxHR, estimateCalories,
@@ -220,6 +221,17 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
   const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
   // Session started state
   const [sessionStarted, setSessionStarted] = useState(false);
+
+  // Keep screen awake during an active workout session
+  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
+  useEffect(() => {
+    if (sessionStarted) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+    return () => { releaseWakeLock(); };
+  }, [sessionStarted, requestWakeLock, releaseWakeLock]);
 
   // ── Inline HR tracking ──
   const [hrRunning, setHrRunning] = useState(false);

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, X, Timer, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
+import { useWakeLock } from "@/hooks/useWakeLock";
 
 // ── Audio beep using Web Audio API ──────────────────────────────────────────
 
@@ -211,6 +212,17 @@ export default function IntervalTimer({ intervals, onClose, onComplete, accentCo
   const [muted, setMuted] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const accent = accentColor || "hsl(var(--primary))";
+  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
+
+  // Keep screen awake while timer is running
+  useEffect(() => {
+    if (running && !finished) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+    return () => { releaseWakeLock(); };
+  }, [running, finished, requestWakeLock, releaseWakeLock]);
 
   const current = intervals[currentIdx];
   const totalIntervals = intervals.length;
