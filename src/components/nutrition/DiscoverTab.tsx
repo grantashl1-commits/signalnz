@@ -179,6 +179,10 @@ export default function DiscoverTab() {
         for (const want of protein) if (recipeProt.has(want)) { any = true; break; }
         if (!any) return false;
       }
+      if (lunchboxMode) {
+        const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
+        if (!isLunchboxOrFreezer(text, r.tags || [])) return false;
+      }
       if (search) {
         const q = search.toLowerCase();
         return r.name.toLowerCase().includes(q) ||
