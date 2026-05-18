@@ -49,6 +49,14 @@ export default function BreathworkPlayer({ practice, onClose }: Props) {
     enabled: practice.audio.enabled || !!ttsAudioUrl,
     muted,
     playing,
+    mediaMetadata: {
+      title: practice.title,
+      artist: "SIGNAL",
+      album: practice.subtitle || "Breathwork",
+      artworkUrl: practice.illustrationUrl,
+    },
+    onMediaPlay: () => setPlaying(true),
+    onMediaPause: () => setPlaying(false),
   });
 
   // Auto-generate TTS on mount if script exists but no cached audio
