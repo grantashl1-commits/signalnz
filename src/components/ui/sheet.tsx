@@ -49,21 +49,60 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  /** Disable the built-in swipe-down-to-dismiss gesture on bottom sheets. */
+  disableSwipeDismiss?: boolean;
+}
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = "right", className, children, ...props }, ref) => (
-    <SheetPortal>
-      <SheetOverlay />
-      <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
-        {children}
-        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </SheetPrimitive.Close>
-      </SheetPrimitive.Content>
-    </SheetPortal>
-  ),
+  ({ side = "right", className, children, disableSwipeDismiss, ...props }, ref) => {
+    // Swipe-down-to-dismiss for bottom sheets (mobile)
+    const touchStartY = React.useRef<number | null>(null);
+    const enableSwipe = side === "bottom" && !disableSwipeDismiss;
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+      if (!enableSwipe || e.touches.length !== 1) return;
+      touchStartY.current = e.touches[0].clientY;
+    };
+    const handleTouchEnd = (e: React.TouchEvent) => {
+      if (!enableSwipe || touchStartY.current == null) return;
+      const dy = e.changedTouches[0].clientY - touchStartY.current;
+      touchStartY.current = null;
+      // Only dismiss if user swiped down meaningfully AND the sheet
+      // is scrolled to top (so we don't fight inner scroll).
+      const target = e.currentTarget as HTMLElement;
+      if (dy > 80 && target.scrollTop <= 0) {
+        // Find the closest close button and trigger it
+        const closeBtn = target.querySelector<HTMLButtonElement>("[data-sheet-close]");
+        closeBtn?.click();
+      }
+    };
+
+    return (
+      <SheetPortal>
+        <SheetOverlay />
+        <SheetPrimitive.Content
+          ref={ref}
+          className={cn(sheetVariants({ side }), className)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          {...props}
+        >
+          {enableSwipe && (
+            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-muted-foreground/30 md:hidden" aria-hidden />
+          )}
+          {children}
+          <SheetPrimitive.Close
+            data-sheet-close
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </SheetPrimitive.Close>
+        </SheetPrimitive.Content>
+      </SheetPortal>
+    );
+  },
 );
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
