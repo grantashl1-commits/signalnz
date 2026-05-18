@@ -97,6 +97,7 @@ export default function DiscoverTab() {
   const [dietary, setDietary] = useState<Set<string>>(new Set());
   const [protein, setProtein] = useState<Set<string>>(new Set());
   const [kidsMode, setKidsMode] = useState(false);
+  const [lunchboxMode, setLunchboxMode] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
@@ -106,7 +107,8 @@ export default function DiscoverTab() {
     (mealType !== "All" ? 1 : 0) +
     dietary.size +
     protein.size +
-    (kidsMode ? 1 : 0);
+    (kidsMode ? 1 : 0) +
+    (lunchboxMode ? 1 : 0);
 
   const toggleSetItem = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
     const next = new Set(set);
@@ -121,6 +123,18 @@ export default function DiscoverTab() {
     setDietary(new Set());
     setProtein(new Set());
     setKidsMode(false);
+    setLunchboxMode(false);
+  };
+
+  // Heuristic: lunchbox-ready or freezer-friendly
+  const isLunchboxOrFreezer = (
+    text: string,
+    tags: string[] = []
+  ): boolean => {
+    const tagSet = new Set(tags.map(t => t.toLowerCase()));
+    if (tagSet.has("lunchbox") || tagSet.has("freezer-friendly") || tagSet.has("freezer")) return true;
+    const t = text.toLowerCase();
+    return /\b(lunchbox|pack for lunch|freezer|freeze\b|freeze for|freeze \d|store in (the )?freezer|no-bake)\b/.test(t);
   };
 
   // Snack-like keywords for auto-tagging
