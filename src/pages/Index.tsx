@@ -102,6 +102,7 @@ export default function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { displayName, onboardingComplete, loading: profileLoading, refetch, mealPrepDay } = useProfile();
+  const queryClient = useQueryClient();
   const { currentPhase, currentCycleDay } = useCycle();
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
