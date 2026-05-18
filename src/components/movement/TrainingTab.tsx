@@ -296,26 +296,7 @@ function PathDetail({
         <p className="font-body text-sm text-foreground leading-relaxed">{path.whoItIsFor}</p>
       </section>
 
-      <section
-        className="space-y-2"
-        {...useSwipe({
-          onSwipeLeft: () => {
-            const total = path.weeks.length;
-            if (!total) return;
-            const next = expandedWeek == null ? 1 : Math.min(total, expandedWeek + 1);
-            haptic("light");
-            onToggleWeek(next === expandedWeek ? next : next);
-            // Ensure expand (not toggle off) — caller toggles, so re-call if it closed
-          },
-          onSwipeRight: () => {
-            const total = path.weeks.length;
-            if (!total) return;
-            const prev = expandedWeek == null ? total : Math.max(1, expandedWeek - 1);
-            haptic("light");
-            onToggleWeek(prev === expandedWeek ? prev : prev);
-          },
-        }).bind}
-      >
+      <section className="space-y-2" {...weekSwipe.bind}>
         <h3 className="font-display text-sm font-bold text-foreground uppercase tracking-wider">
           Eight weeks, one slow returning
         </h3>
