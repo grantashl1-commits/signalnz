@@ -74,6 +74,14 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     enabled: practice.audio.enabled,
     muted,
     playing,
+    mediaMetadata: {
+      title: practice.title,
+      artist: "SIGNAL",
+      album: practice.subtitle || practice.category,
+      artworkUrl: practice.illustrationUrl,
+    },
+    onMediaPlay: () => setPlaying(true),
+    onMediaPause: () => setPlaying(false),
     onTimeUpdate: (t) => {
       for (let i = steps.length - 1; i >= 0; i--) {
         const step = steps[i];
