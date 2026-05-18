@@ -17,6 +17,7 @@ import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { TimerButton, WorkoutIntervalButton, isTimeBased, StructuredIntervalButton, type StructuredInterval } from "@/components/movement/IntervalTimer";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import type { WorkoutTemplate, WorkoutExercise } from "@/hooks/useTrainingProgram";
 import {
   HR_ZONES, getZoneForBPM, getMaxHR, estimateCalories,
