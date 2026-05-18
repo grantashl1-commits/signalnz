@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, X, Timer, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
+import { useWakeLock } from "@/hooks/useWakeLock";
 
 // ── Audio beep using Web Audio API ──────────────────────────────────────────
 
