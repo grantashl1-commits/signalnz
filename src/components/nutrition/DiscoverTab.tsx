@@ -203,17 +203,22 @@ export default function DiscoverTab() {
       if (pa !== pb) return pa - pb;
       return a.name.localeCompare(b.name);
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, currentPhase]);
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, lunchboxMode, currentPhase]);
 
   // Pagination — "Load more" reveals another batch.
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode]);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode, lunchboxMode]);
 
   // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
     if (!kidsMode) return [];
     return KIDS_RECIPE_BANK.filter(r => {
+      if (lunchboxMode) {
+        const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
+        const includesLunchSlot = r.mealType.includes("lunch");
+        if (!isLunchboxOrFreezer(text, r.tags) && !includesLunchSlot) return false;
+      }
       if (!search) return true;
       const q = search.toLowerCase();
       return r.name.toLowerCase().includes(q) ||
@@ -221,7 +226,7 @@ export default function DiscoverTab() {
         r.protein.toLowerCase().includes(q) ||
         r.tags.some(t => t.toLowerCase().includes(q));
     });
-  }, [mealType, search]);
+  }, [kidsMode, lunchboxMode, search]);
 
   return (
     <div className="space-y-5">
