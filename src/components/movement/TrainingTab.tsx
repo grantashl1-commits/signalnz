@@ -25,6 +25,7 @@ import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { useSwipe } from "@/hooks/useSwipe";
+import PullToRefresh from "@/components/PullToRefresh";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
