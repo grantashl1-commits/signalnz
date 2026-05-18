@@ -119,6 +119,12 @@ export default function TrainingTab() {
 
   return (
     <div className="space-y-6 pb-8">
+      <PullToRefresh
+        onRefresh={async () => {
+          await hydrateSelectedPathFromProfile();
+          setActivePathId(getSelectedPathId());
+        }}
+      />
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-2">
           <p className="font-hand text-sm text-primary">A few paths home</p>
