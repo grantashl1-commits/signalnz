@@ -18,18 +18,69 @@ export function useIsMobile() {
   return !!isMobile;
 }
 
-// Haptic feedback utility
-export function haptic(type: "light" | "medium" | "success" = "light") {
+// Haptic feedback utility — uses native Capacitor Haptics when running
+// in the iOS/Android shell, falls back to navigator.vibrate on web.
+export type HapticType = "light" | "medium" | "heavy" | "success" | "warning" | "error" | "selection";
+
+export function haptic(type: HapticType = "light") {
+  // Native path (Capacitor)
+  try {
+    const cap = (window as any).Capacitor;
+    if (cap?.isNativePlatform?.()) {
+      import("@capacitor/haptics")
+        .then(({ Haptics, ImpactStyle, NotificationType }) => {
+          switch (type) {
+            case "light":
+              Haptics.impact({ style: ImpactStyle.Light });
+              break;
+            case "medium":
+              Haptics.impact({ style: ImpactStyle.Medium });
+              break;
+            case "heavy":
+              Haptics.impact({ style: ImpactStyle.Heavy });
+              break;
+            case "success":
+              Haptics.notification({ type: NotificationType.Success });
+              break;
+            case "warning":
+              Haptics.notification({ type: NotificationType.Warning });
+              break;
+            case "error":
+              Haptics.notification({ type: NotificationType.Error });
+              break;
+            case "selection":
+              Haptics.selectionStart().then(() => Haptics.selectionEnd());
+              break;
+          }
+        })
+        .catch(() => {});
+      return;
+    }
+  } catch {
+    /* ignore — fall through to web */
+  }
+
+  // Web fallback
   if (!("vibrate" in navigator)) return;
   switch (type) {
     case "light":
+    case "selection":
       navigator.vibrate(8);
       break;
     case "medium":
       navigator.vibrate(20);
       break;
+    case "heavy":
+      navigator.vibrate(35);
+      break;
     case "success":
       navigator.vibrate([10, 50, 10]);
+      break;
+    case "warning":
+      navigator.vibrate([15, 60, 15, 60]);
+      break;
+    case "error":
+      navigator.vibrate([40, 60, 40]);
       break;
   }
 }
