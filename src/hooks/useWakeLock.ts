@@ -63,5 +63,5 @@ export function useWakeLock(): WakeLockState {
     };
   }, []);
 
-  return { isSupported, isActive, toggle, release };
+  return { isSupported, isActive, toggle, request: requestLock, release };
 }
