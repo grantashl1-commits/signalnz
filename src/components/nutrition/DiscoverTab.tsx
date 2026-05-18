@@ -97,6 +97,7 @@ export default function DiscoverTab() {
   const [dietary, setDietary] = useState<Set<string>>(new Set());
   const [protein, setProtein] = useState<Set<string>>(new Set());
   const [kidsMode, setKidsMode] = useState(false);
+  const [lunchboxMode, setLunchboxMode] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
@@ -106,7 +107,8 @@ export default function DiscoverTab() {
     (mealType !== "All" ? 1 : 0) +
     dietary.size +
     protein.size +
-    (kidsMode ? 1 : 0);
+    (kidsMode ? 1 : 0) +
+    (lunchboxMode ? 1 : 0);
 
   const toggleSetItem = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
     const next = new Set(set);
@@ -121,6 +123,18 @@ export default function DiscoverTab() {
     setDietary(new Set());
     setProtein(new Set());
     setKidsMode(false);
+    setLunchboxMode(false);
+  };
+
+  // Heuristic: lunchbox-ready or freezer-friendly
+  const isLunchboxOrFreezer = (
+    text: string,
+    tags: string[] = []
+  ): boolean => {
+    const tagSet = new Set(tags.map(t => t.toLowerCase()));
+    if (tagSet.has("lunchbox") || tagSet.has("freezer-friendly") || tagSet.has("freezer")) return true;
+    const t = text.toLowerCase();
+    return /\b(lunchbox|pack for lunch|freezer|freeze\b|freeze for|freeze \d|store in (the )?freezer|no-bake)\b/.test(t);
   };
 
   // Snack-like keywords for auto-tagging
@@ -165,6 +179,10 @@ export default function DiscoverTab() {
         for (const want of protein) if (recipeProt.has(want)) { any = true; break; }
         if (!any) return false;
       }
+      if (lunchboxMode) {
+        const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
+        if (!isLunchboxOrFreezer(text, r.tags || [])) return false;
+      }
       if (search) {
         const q = search.toLowerCase();
         return r.name.toLowerCase().includes(q) ||
@@ -185,17 +203,22 @@ export default function DiscoverTab() {
       if (pa !== pb) return pa - pb;
       return a.name.localeCompare(b.name);
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, currentPhase]);
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, lunchboxMode, currentPhase]);
 
   // Pagination — "Load more" reveals another batch.
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode]);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode, lunchboxMode]);
 
   // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
     if (!kidsMode) return [];
     return KIDS_RECIPE_BANK.filter(r => {
+      if (lunchboxMode) {
+        const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
+        const includesLunchSlot = r.mealType.includes("lunch");
+        if (!isLunchboxOrFreezer(text, r.tags) && !includesLunchSlot) return false;
+      }
       if (!search) return true;
       const q = search.toLowerCase();
       return r.name.toLowerCase().includes(q) ||
@@ -203,7 +226,7 @@ export default function DiscoverTab() {
         r.protein.toLowerCase().includes(q) ||
         r.tags.some(t => t.toLowerCase().includes(q));
     });
-  }, [mealType, search]);
+  }, [kidsMode, lunchboxMode, search]);
 
   return (
     <div className="space-y-5">
@@ -263,7 +286,7 @@ export default function DiscoverTab() {
                 {activeFilterCount}
               </span>
             )}
-            {/* Quick "Kids only" toggle outside the dropdown for one-tap access */}
+            {/* Quick toggles outside the dropdown for one-tap access */}
             <span
               role="checkbox"
               aria-checked={kidsMode}
@@ -271,6 +294,14 @@ export default function DiscoverTab() {
               className={`ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${kidsMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
             >
               <Baby className="h-3 w-3" /> Kids
+            </span>
+            <span
+              role="checkbox"
+              aria-checked={lunchboxMode}
+              onClick={(e) => { e.stopPropagation(); haptic("light"); setLunchboxMode(v => !v); }}
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${lunchboxMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
+            >
+              🥪 Lunchbox & freezer
             </span>
           </span>
           <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
@@ -334,6 +365,13 @@ export default function DiscoverTab() {
                   </FilterPill>
                 </FilterSection>
 
+                {/* Lunchbox & freezer */}
+                <FilterSection title="Lunchbox & freezer" hint="Pack-ahead and freezer-friendly only">
+                  <FilterPill active={lunchboxMode} onClick={() => setLunchboxMode(v => !v)}>
+                    🥪 Lunchbox & freezer-friendly
+                  </FilterPill>
+                </FilterSection>
+
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-2 border-t border-border">
                   <button
@@ -367,10 +405,23 @@ export default function DiscoverTab() {
       {kidsMode && (
         <>
           <div className="grid grid-cols-2 gap-3">
-            {filteredKids.slice(0, 30).map((recipe, i) => (
+            {filteredKids.slice(0, visibleCount).map((recipe, i) => (
               <KidsRecipeCard key={recipe.id} recipe={recipe} onSelect={() => setSelectedKidsRecipe(recipe)} index={i} />
             ))}
           </div>
+          {filteredKids.length > visibleCount && (
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <p className="font-body text-[11px] text-muted-foreground">
+                Showing {visibleCount} of {filteredKids.length}
+              </p>
+              <button
+                onClick={() => { haptic("light"); setVisibleCount(c => c + PAGE_SIZE); }}
+                className="touch-btn rounded-full bg-primary text-primary-foreground px-5 py-2 font-body text-xs font-bold"
+              >
+                Load more
+              </button>
+            </div>
+          )}
           {filteredKids.length === 0 && (
             <div className="text-center py-8">
               <p className="font-hand text-sm text-muted-foreground">No kids recipes found.</p>
