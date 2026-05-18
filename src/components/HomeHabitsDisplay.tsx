@@ -33,7 +33,8 @@ export default function HomeHabitsDisplay() {
   }, [habits]);
 
   const handleToggle = (habitId: string) => {
-    haptic("light");
+    // Success haptic when marking complete; light tap when un-checking
+    haptic(completedIds.has(habitId) ? "light" : "success");
     toggleHabit(habitId);
   };
 
@@ -86,7 +87,7 @@ export default function HomeHabitsDisplay() {
                       <motion.button
                         key="__supplements_group"
                         onClick={() => {
-                          haptic("light");
+                          haptic(allDone ? "light" : "success");
                           // Toggle all: if all done, uncheck all; otherwise check all that aren't done
                           supplementHabits.forEach(h => {
                             const isDone = completedIds.has(h.id);

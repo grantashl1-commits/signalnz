@@ -22,7 +22,8 @@ import NPSSurvey from "@/components/NPSSurvey";
 import DaySection from "@/components/feed/DaySection";
 import { type FeedPost } from "@/components/feed/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PullToRefresh from "@/components/PullToRefresh";
 import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, differenceInDays } from "date-fns";
 import { toast } from "sonner";
@@ -101,6 +102,7 @@ export default function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { displayName, onboardingComplete, loading: profileLoading, refetch, mealPrepDay } = useProfile();
+  const queryClient = useQueryClient();
   const { currentPhase, currentCycleDay } = useCycle();
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
@@ -271,6 +273,14 @@ export default function HomePage() {
 
   return (
     <div className="relative">
+      <PullToRefresh
+        onRefresh={async () => {
+          await Promise.all([
+            refetch?.(),
+            queryClient.invalidateQueries({ queryKey: ["home-feed"] }).catch(() => {}),
+          ]);
+        }}
+      />
       <NPSSurvey />
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">

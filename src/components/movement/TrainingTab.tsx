@@ -25,6 +25,7 @@ import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { useSwipe } from "@/hooks/useSwipe";
+import PullToRefresh from "@/components/PullToRefresh";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
@@ -118,6 +119,12 @@ export default function TrainingTab() {
 
   return (
     <div className="space-y-6 pb-8">
+      <PullToRefresh
+        onRefresh={async () => {
+          await hydrateSelectedPathFromProfile();
+          setActivePathId(getSelectedPathId());
+        }}
+      />
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-2">
           <p className="font-hand text-sm text-primary">A few paths home</p>
