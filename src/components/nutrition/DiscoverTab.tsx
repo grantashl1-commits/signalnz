@@ -365,6 +365,13 @@ export default function DiscoverTab() {
                   </FilterPill>
                 </FilterSection>
 
+                {/* Lunchbox & freezer */}
+                <FilterSection title="Lunchbox & freezer" hint="Pack-ahead and freezer-friendly only">
+                  <FilterPill active={lunchboxMode} onClick={() => setLunchboxMode(v => !v)}>
+                    🥪 Lunchbox & freezer-friendly
+                  </FilterPill>
+                </FilterSection>
+
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-2 border-t border-border">
                   <button
