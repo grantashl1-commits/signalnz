@@ -271,6 +271,14 @@ export default function HomePage() {
 
   return (
     <div className="relative">
+      <PullToRefresh
+        onRefresh={async () => {
+          await Promise.all([
+            refetch?.(),
+            queryClient.invalidateQueries({ queryKey: ["home-feed"] }).catch(() => {}),
+          ]);
+        }}
+      />
       <NPSSurvey />
       {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
       <AtmosphericHero size="lg">
