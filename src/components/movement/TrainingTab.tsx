@@ -227,6 +227,23 @@ function PathDetail({
   onBack: () => void;
   onChooseAsToday: () => void;
 }) {
+  const total = path.weeks.length;
+  const weekSwipe = useSwipe({
+    onSwipeLeft: () => {
+      if (!total) return;
+      const next = expandedWeek == null ? 1 : Math.min(total, expandedWeek + 1);
+      if (next === expandedWeek) return;
+      haptic("light");
+      onToggleWeek(next);
+    },
+    onSwipeRight: () => {
+      if (!total) return;
+      const prev = expandedWeek == null ? total : Math.max(1, expandedWeek - 1);
+      if (prev === expandedWeek) return;
+      haptic("light");
+      onToggleWeek(prev);
+    },
+  });
   return (
     <div className="space-y-6 pb-10">
       <button
