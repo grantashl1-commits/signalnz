@@ -286,7 +286,7 @@ export default function DiscoverTab() {
                 {activeFilterCount}
               </span>
             )}
-            {/* Quick "Kids only" toggle outside the dropdown for one-tap access */}
+            {/* Quick toggles outside the dropdown for one-tap access */}
             <span
               role="checkbox"
               aria-checked={kidsMode}
@@ -294,6 +294,14 @@ export default function DiscoverTab() {
               className={`ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${kidsMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
             >
               <Baby className="h-3 w-3" /> Kids
+            </span>
+            <span
+              role="checkbox"
+              aria-checked={lunchboxMode}
+              onClick={(e) => { e.stopPropagation(); haptic("light"); setLunchboxMode(v => !v); }}
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${lunchboxMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
+            >
+              🥪 Lunchbox & freezer
             </span>
           </span>
           <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
