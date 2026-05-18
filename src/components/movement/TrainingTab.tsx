@@ -24,6 +24,7 @@ import IntervalTimer from "@/components/movement/IntervalTimer";
 import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
+import { useSwipe } from "@/hooks/useSwipe";
 import { Play } from "lucide-react";
 
 // Hero illustrations for each focus
