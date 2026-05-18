@@ -4,6 +4,7 @@ interface WakeLockState {
   isSupported: boolean;
   isActive: boolean;
   toggle: () => Promise<void>;
+  request: () => Promise<void>;
   release: () => Promise<void>;
 }
 
