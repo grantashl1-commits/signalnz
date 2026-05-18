@@ -33,7 +33,8 @@ export default function HomeHabitsDisplay() {
   }, [habits]);
 
   const handleToggle = (habitId: string) => {
-    haptic("light");
+    // Success haptic when marking complete; light tap when un-checking
+    haptic(completedIds.has(habitId) ? "light" : "success");
     toggleHabit(habitId);
   };
 
