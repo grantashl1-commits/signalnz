@@ -222,6 +222,17 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
   // Session started state
   const [sessionStarted, setSessionStarted] = useState(false);
 
+  // Keep screen awake during an active workout session
+  const { request: requestWakeLock, release: releaseWakeLock } = useWakeLock();
+  useEffect(() => {
+    if (sessionStarted) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+    return () => { releaseWakeLock(); };
+  }, [sessionStarted, requestWakeLock, releaseWakeLock]);
+
   // ── Inline HR tracking ──
   const [hrRunning, setHrRunning] = useState(false);
   const [hrElapsed, setHrElapsed] = useState(0);
