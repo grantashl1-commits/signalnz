@@ -154,23 +154,42 @@ function AddModal({ editing, onClose, onSave }: AddModalProps) {
     if (r.instructions) setInstructionsText(r.instructions.join("\n"));
   };
 
+  const extractImportError = async (response?: Response | null, data?: unknown, error?: unknown) => {
+    const dataError = data && typeof data === "object" && "error" in data ? (data as { error?: string }).error : null;
+    if (dataError) return dataError;
+
+    if (response) {
+      try {
+        const payload = await response.clone().json();
+        if (payload && typeof payload === "object" && "error" in payload && typeof payload.error === "string") {
+          return payload.error;
+        }
+      } catch {
+        try {
+          const text = await response.clone().text();
+          if (text) return text;
+        } catch {
+          // no-op
+        }
+      }
+    }
+
+    if (error && typeof error === "object" && "message" in error && typeof error.message === "string") {
+      return error.message;
+    }
+
+    return null;
+  };
+
   const handleImport = async () => {
     if (!urlInput.trim()) return;
     setImporting(true);
     haptic("medium");
     try {
-      const { data, error } = await supabase.functions.invoke("recipe-from-url", {
-        body: { url: urlInput.trim(), userIdentifier: user?.id },
+      const { data, error, response } = await supabase.functions.invoke("recipe-from-url", {
+        body: { url: urlInput.trim() },
       });
-      // Try to surface the friendly error message from the function body
-      const friendlyError =
-        (data && typeof data === "object" && "error" in data ? (data as any).error : null) ||
-        ((error as any)?.context?.body && (() => {
-          try {
-            const parsed = JSON.parse((error as any).context.body);
-            return parsed?.error;
-          } catch { return null; }
-        })());
+      const friendlyError = await extractImportError(response, data, error);
 
       if (friendlyError) {
         toast.error(friendlyError === "No recipe found on this page"
