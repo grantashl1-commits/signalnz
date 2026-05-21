@@ -135,7 +135,7 @@ Rules:
 
     if (!aiRes.ok) {
       if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiRes.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up in Settings." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (aiRes.status === 402) return new Response(JSON.stringify({ error: "The AI service is temporarily over capacity. Please try again shortly — your credits are safe." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       throw new Error("AI extraction failed");
     }
 
