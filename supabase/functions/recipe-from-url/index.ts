@@ -65,22 +65,40 @@ serve(async (req) => {
       }
     }
 
-    // Fetch the webpage
-    let html: string;
+    // Fetch the webpage — try direct first with a realistic browser UA, then
+    // fall back to Jina Reader (r.jina.ai) which bypasses Cloudflare/bot walls
+    // and returns clean markdown.
+    const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+    let html = "";
+    let usedReader = false;
     try {
       const pageRes = await fetch(url, {
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; SignalNZ/1.0)" },
+        headers: {
+          "User-Agent": BROWSER_UA,
+          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Accept-Language": "en-NZ,en;q=0.9",
+        },
         signal: AbortSignal.timeout(10000),
       });
-      if (!pageRes.ok) throw new Error(`Page returned ${pageRes.status}`);
+      if (!pageRes.ok) throw new Error(`status ${pageRes.status}`);
       html = await pageRes.text();
-    } catch (e) {
-      return new Response(JSON.stringify({ error: "Could not fetch that URL. Try copying the recipe text manually." }), {
-        status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    } catch (_e) {
+      try {
+        const readerRes = await fetch(`https://r.jina.ai/${url}`, {
+          headers: { "User-Agent": BROWSER_UA, "Accept": "text/plain" },
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!readerRes.ok) throw new Error(`reader status ${readerRes.status}`);
+        html = await readerRes.text();
+        usedReader = true;
+      } catch (_e2) {
+        return new Response(JSON.stringify({ error: "Could not fetch that URL. Try copying the recipe text manually." }), {
+          status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
-    const pageText = stripHtml(html).slice(0, 12000); // cap at 12k chars
+    const pageText = (usedReader ? html : stripHtml(html)).slice(0, 12000);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
