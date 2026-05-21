@@ -6,7 +6,6 @@ import { useMyRecipes, UserRecipe, UserRecipeInput } from "@/hooks/useMyRecipes"
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
 
 const CATEGORIES = ["Breakfast", "Lunch", "Dinner", "Snack", "Baking", "Other"] as const;
 type Category = typeof CATEGORIES[number];
@@ -128,7 +127,6 @@ interface AddModalProps {
 }
 
 function AddModal({ editing, onClose, onSave }: AddModalProps) {
-  const { user } = useAuth();
   const [mode, setMode] = useState<AddMode>(editing ? "form" : "url");
   const [urlInput, setUrlInput] = useState(editing?.source_url || "");
   const [importing, setImporting] = useState(false);
