@@ -250,13 +250,14 @@ export const PHASE_RITUAL_SUGGESTIONS: Record<Phase, PhaseRitualSuggestion[]> = 
   ],
 };
 
-export type HabitCategory = "supplements" | "nutrition" | "movement" | "self-care";
+export type HabitCategory = "supplements" | "nutrition" | "movement" | "self-care" | "ritual20";
 
 export const HABIT_CATEGORIES: { id: HabitCategory; label: string; color: string }[] = [
   { id: "supplements", label: "Supplements", color: "hsl(var(--sage-mist))" },
   { id: "nutrition", label: "Nutrition", color: "hsl(var(--petal-gold))" },
   { id: "movement", label: "Movement", color: "hsl(var(--coral-flame))" },
   { id: "self-care", label: "Self Care", color: "hsl(var(--bloom-blush))" },
+  { id: "ritual20", label: "RITUAL20", color: "hsl(var(--bloom))" },
 ];
 
 export const CATEGORY_DOT_CLASSES: Record<string, string> = {
@@ -264,6 +265,7 @@ export const CATEGORY_DOT_CLASSES: Record<string, string> = {
   nutrition: "bg-petal-gold",
   movement: "bg-coral",
   "self-care": "bg-bloom",
+  ritual20: "bg-bloom",
   wellness: "bg-bloom",
   mindset: "bg-bloom",
   custom: "bg-sketch",
