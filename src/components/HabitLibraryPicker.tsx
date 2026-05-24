@@ -189,6 +189,139 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
     );
   }
 
+  // RITUAL20 — curated BYRÉ morning + evening ritual challenge
+  if (category === "ritual20") {
+    const filtered = RITUAL20_ITEMS.filter(r =>
+      r.name.toLowerCase().includes(search.toLowerCase())
+    );
+    const grouped = RITUAL20_GROUPS.map(g => ({
+      ...g,
+      items: filtered.filter(r => r.group === g.key),
+    })).filter(g => g.items.length > 0);
+
+    const handleAddAll = (groupKey: Ritual20Group) => {
+      const items = RITUAL20_ITEMS.filter(r => r.group === groupKey);
+      haptic("medium");
+      items.forEach(item => {
+        if (isAlreadyAdded(item.name) || isJustAdded(item.id)) return;
+        const habit: Habit = {
+          id: `ritual20-${item.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name: item.name,
+          category: "ritual20",
+          duration: item.duration,
+          timing: item.timing,
+          notes: item.notes,
+          createdAt: new Date().toISOString(),
+        };
+        addHabit(habit);
+        setJustAdded(prev => new Set(prev).add(item.id));
+      });
+      onAdded();
+    };
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          className="fixed inset-0 z-[70] bg-foreground/40"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          onClick={onClose}
+        />
+        <motion.div
+          className="bottom-sheet z-[71]"
+          initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+          transition={{ type: "spring", damping: 30, stiffness: 300 }}
+          style={{ maxHeight: "88vh" }}
+        >
+          <div className="bottom-sheet-handle" />
+          <div className="px-5 pb-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-body text-[10px] uppercase tracking-[0.25em] text-bloom mb-1">20-day challenge</p>
+                <h2 className="font-display text-lg italic font-bold text-foreground">RITUAL20.</h2>
+                <p className="font-hand text-sm text-bloom">The woman you want to become has rituals.</p>
+              </div>
+              <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="relative mt-3">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search RITUAL20..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full rounded-xl bg-secondary pl-10 pr-4 py-2.5 font-body text-[16px] text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:ring-1 focus:ring-bloom"
+              />
+            </div>
+          </div>
+
+          <div className="overflow-y-auto px-5 pb-6" style={{ maxHeight: "62vh" }}>
+            {grouped.map(group => {
+              const isMorning = group.key.startsWith("morning");
+              const GroupIcon = isMorning ? Sun : Moon;
+              return (
+                <div key={group.key} className="mt-5">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div className="flex items-start gap-2 flex-1 min-w-0">
+                      <GroupIcon className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: isMorning ? "#c4845a" : "#7f5b87" }} strokeWidth={1.5} />
+                      <div className="min-w-0">
+                        <p className="font-hand text-[12px] font-bold text-foreground uppercase tracking-wider leading-tight">{group.label}</p>
+                        <p className="font-display text-[11px] italic text-muted-foreground leading-snug mt-0.5">{group.tagline}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleAddAll(group.key)}
+                      className="touch-btn flex-shrink-0 rounded-full px-3 py-1 font-hand text-[11px] font-bold text-bloom bg-bloom/10 border border-bloom/30 active:bg-bloom/20"
+                    >
+                      + Add all
+                    </button>
+                  </div>
+                  <div className="space-y-1.5">
+                    {group.items.map(item => {
+                      const added = isAlreadyAdded(item.name) || isJustAdded(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => handleInstantAdd(item.name, item.id, {
+                            duration: item.duration,
+                            timing: item.timing,
+                            notes: item.notes,
+                          })}
+                          disabled={added}
+                          className={`touch-btn w-full text-left rounded-card px-3.5 py-3 flex items-center gap-3 border transition-all ${
+                            added
+                              ? "bg-bloom/10 border-bloom/40 opacity-70"
+                              : "bg-card border-border hover:border-bloom/40 shadow-sm"
+                          }`}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="font-display text-sm font-semibold text-foreground leading-snug">
+                              {item.name}
+                            </p>
+                            <p className="font-body text-[11px] text-muted-foreground leading-snug line-clamp-2 mt-0.5">
+                              {item.notes}
+                            </p>
+                            <p className="font-hand text-[10px] text-bloom mt-1">{item.duration} • {item.timing}</p>
+                          </div>
+                          <span className={`flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center ${
+                            added ? "bg-bloom text-card" : "bg-bloom/15 text-bloom"
+                          }`}>
+                            {added ? <Check className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
   // All other categories: grouped by subcategory
   const libraryHabits = getLibraryHabitsForCategory(category);
   const wellnessStackHabits = libraryHabits.filter(h => wellnessStackIds.includes(h.id));
