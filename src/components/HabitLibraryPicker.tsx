@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, HelpCircle, Search, Plus, ExternalLink, Sparkles } from "lucide-react";
+import { X, Check, HelpCircle, Search, Plus, ExternalLink, Sparkles, Sun, Moon } from "lucide-react";
 import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, getHabits, type Habit, type HabitCategory } from "@/data/self-care-rituals";
+import { RITUAL20_ITEMS, RITUAL20_GROUPS, type Ritual20Group } from "@/data/ritual20";
 import { haptic } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +22,7 @@ const CATEGORY_TITLES: Record<HabitCategory, string> = {
   "self-care": "Self Care",
   nutrition: "Nutrition",
   movement: "Movement",
+  ritual20: "RITUAL20",
 };
 
 export default function HabitLibraryPicker({ open, category, onClose, onAdded, currentPhase }: HabitLibraryPickerProps) {
