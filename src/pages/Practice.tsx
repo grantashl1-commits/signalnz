@@ -732,6 +732,7 @@ export default function PracticePage() {
                         nutrition:   { icon: Salad, tint: "bg-[hsl(142_30%_95%)]", border: "border-[hsl(142_35%_78%)]" },
                         movement:    { icon: Zap, tint: "bg-[hsl(35_40%_95%)]", border: "border-[hsl(35_45%_78%)]" },
                         "self-care": { icon: Sparkles, tint: "bg-[hsl(330_30%_96%)]", border: "border-[hsl(330_35%_80%)]" },
+                        ritual20:    { icon: Sun, tint: "bg-[hsl(28_35%_94%)]", border: "border-[hsl(28_40%_78%)]" },
                       };
                       return HABIT_CATEGORIES.map(cat => {
                         const meta = CATEGORY_META[cat.id] || CATEGORY_META["self-care"];
