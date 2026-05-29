@@ -155,14 +155,15 @@ function snackMeal(phase: Phase, slot: "morning" | "afternoon"): AIMeal {
 function buildSlotPicks(
   category: Recipe["category"],
   prefs: PrepPreferences,
-  pref: "batch" | "rotate" | "variety" | "double" | "fresh" | "mix"
+  pref: "batch" | "rotate" | "variety" | "double" | "fresh" | "mix",
+  excludeIdsByPhase?: Record<Phase, Set<string>>
 ): Record<Phase, Recipe[]> {
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const out = {} as Record<Phase, Recipe[]>;
   for (const phase of phases) {
     const days =
       phase === "menstrual" ? 5 : phase === "follicular" ? 8 : phase === "ovulatory" ? 1 : 14;
-    const p = pool(category, phase, prefs);
+    const p = pool(category, phase, prefs, excludeIdsByPhase?.[phase]);
     if (p.length === 0) {
       out[phase] = [];
       continue;
