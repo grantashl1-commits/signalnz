@@ -100,7 +100,7 @@ export default function TodayTab() {
     return stored;
   });
 
-  const { addPlant, count: plantCount, plants } = usePlantTracker();
+  const { addPlant } = usePlantTracker();
 
   const cycleMode = useMemo(() => {
     try { return localStorage.getItem("signal_cycle_mode") || "cycling"; } catch { return "cycling"; }
