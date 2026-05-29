@@ -11,6 +11,7 @@ import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import HomeWeekAtAGlance from "@/components/HomeWeekAtAGlance";
 import HomeMoodPulse from "@/components/home/HomeMoodPulse";
 import HomeReturnRibbon from "@/components/home/HomeReturnRibbon";
+import HomeTodoList from "@/components/HomeTodoList";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
@@ -361,20 +362,6 @@ export default function HomePage() {
 
       <PeriodDueReminder />
 
-      {/* ═══ CYCLE-SILENCE NUDGE ═══ */}
-      {user && hasSetCycle && cycleSilent && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.4 }} className="px-5 md:px-8 pt-4">
-          <div className="max-w-2xl mx-auto">
-            <Link to="/cycle" className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 bg-accent/40 border border-accent hover:bg-accent/55 transition-colors">
-              <div className="flex-1 min-w-0">
-                <p className="font-display italic text-[15px] text-foreground leading-tight">Your cycle wants to be heard.</p>
-                <p className="font-body text-xs text-muted-foreground mt-0.5">A small log — a mood, a symptom, a word — is enough.</p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-foreground/60 flex-shrink-0" />
-            </Link>
-          </div>
-        </motion.div>
-      )}
 
       {/* ═══ PREP DAY REMINDER (dismissible) ═══ */}
       {todayIsPrepDay && !prepDismissed && (
@@ -405,15 +392,12 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {/* ═══ SECTION 2 — PLANNER + HABITS ═══ */}
+      {/* ═══ SECTION 2 — HABITS, TO-DO, CALENDAR ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
-          {user && <HomeMoodPulse />}
-          {user && <HomeReturnRibbon />}
-          {user && <HomeWeekAtAGlance />}
-          {user && <HomePlannerCard />}
-          {user && <HomeCalendarCard />}
           {user && <HomeHabitsDisplay />}
+          {user && <HomeTodoList />}
+          {user && <HomeCalendarCard />}
         </div>
       </ContentSection>
 
