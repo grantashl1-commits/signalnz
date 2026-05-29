@@ -232,7 +232,7 @@ export default function DiscoverTab() {
       if (lunchboxMode) {
         const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
         const includesLunchSlot = r.mealType.includes("lunch");
-        if (!isLunchboxOrFreezer(text, r.tags) && !includesLunchSlot) return false;
+        if (!isLunchboxOrFreezer(text, r.tags, r.name) && !includesLunchSlot) return false;
       }
       if (!search) return true;
       const q = search.toLowerCase();
