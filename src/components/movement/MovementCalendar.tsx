@@ -433,21 +433,8 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                     );
                   })()}
 
-                  {/* Body-part tags */}
-                  {bodyTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {bodyTags.map(tag => (
-                        <span key={tag} className={`rounded-full px-2 py-0.5 text-[9px] font-medium ${TAG_COLORS[tag] || TAG_COLORS.General}`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {log.notes && (
-                    <p className="font-body text-xs text-muted-foreground italic">"{log.notes}"</p>
-                  )}
                 </div>
+
               );
             })}
           </div>
