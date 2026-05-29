@@ -25,6 +25,7 @@ import ExerciseDetailDrawer from "@/components/movement/ExerciseDetailDrawer";
 import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
 import SelectedPathTodayCard from "@/components/movement/SelectedPathTodayCard";
+import { getSelectedPath, getNextSession } from "@/lib/training-path-utils";
 import MovementWeekStrip from "@/components/movement/MovementWeekStrip";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
@@ -184,7 +185,15 @@ export default function MovementPage() {
   ];
 
   if (showHR) {
-    return <LiveHRView workoutName={todayWorkoutData?.name || "Workout"} onClose={() => setShowHR(false)} />;
+    // Prefer the active training-path session name so the HR session attaches
+    // to today's workout. Falls back to "Workout" when no path/session is set.
+    let liveName = todayWorkoutData?.name || "Workout";
+    try {
+      const path = getSelectedPath();
+      const next = path ? getNextSession(path) : null;
+      if (next?.session?.name) liveName = next.session.name;
+    } catch {}
+    return <LiveHRView workoutName={liveName} onClose={() => setShowHR(false)} />;
   }
 
   // Helper: find which phase a workout belongs to (for library "all" view)
