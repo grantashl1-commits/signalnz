@@ -310,8 +310,6 @@ export default function LibraryTab() {
         </div>
       ) : view === "exercises" ? (
         <div className="space-y-5">
-          {/* From your training paths — every unique exercise across all SIGNAL paths */}
-          {filter === "all" && !search.trim() && <PathExercisesSection />}
 
           <div className="space-y-1.5">
           {filtered.length === 0 && (
