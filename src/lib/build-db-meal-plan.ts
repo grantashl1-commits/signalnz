@@ -248,7 +248,23 @@ export function buildDbMealPlan(
 ): AIPlannedDay[] {
   const breakfastPicks = buildSlotPicks("breakfast", prefs, prefs.breakfast);
   const lunchPicks = buildSlotPicks("meal", prefs, prefs.lunch);
-  const dinnerPicks = buildSlotPicks("meal", prefs, prefs.dinner);
+
+  // If the user wants variety (not batch lunch / not double dinner), keep
+  // lunch and dinner pools disjoint so the same recipe never shows up as
+  // both lunch and dinner across the cycle.
+  const wantsDistinct = prefs.lunch !== "batch" && prefs.dinner !== "double";
+  const dinnerExclude: Record<Phase, Set<string>> = {
+    menstrual: new Set(),
+    follicular: new Set(),
+    ovulatory: new Set(),
+    luteal: new Set(),
+  };
+  if (wantsDistinct) {
+    (Object.keys(lunchPicks) as Phase[]).forEach((ph) => {
+      lunchPicks[ph].forEach((r) => dinnerExclude[ph].add(r.id));
+    });
+  }
+  const dinnerPicks = buildSlotPicks("meal", prefs, prefs.dinner, dinnerExclude);
 
   const days: AIPlannedDay[] = [];
   const phaseDayCounter: Record<Phase, number> = {
