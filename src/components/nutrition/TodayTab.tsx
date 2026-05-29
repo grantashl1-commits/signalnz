@@ -187,12 +187,6 @@ export default function TodayTab() {
     setPortionScale(prev => ({ ...prev, [slot]: val }));
   };
 
-  const mealsLoggedToday = useMemo(() => {
-    return Object.values(eaten).filter(Boolean).length;
-  }, [eaten]);
-
-  const dayOfWeek = new Date().getDay(); // 0=Sun
-  const adjustedDow = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Mon=0
 
   // Calculate daily macro totals from eaten meals
   const dailyMacros = useMemo(() => {
