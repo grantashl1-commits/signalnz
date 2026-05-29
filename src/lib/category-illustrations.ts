@@ -5,6 +5,47 @@
  */
 
 const CATEGORY_ILLUSTRATIONS: { keywords: string[]; image: string }[] = [
+  // ── Snacks & small bites (matched first so they win over generic keywords) ──
+  {
+    keywords: ["apple slice", "apple with", "apple and almond", "apple almond"],
+    image: "/images/recipes/meals/snack-apple-almond-butter.png",
+  },
+  {
+    keywords: ["banana with tahini", "banana tahini"],
+    image: "/images/recipes/meals/snack-banana-tahini-cinnamon.png",
+  },
+  {
+    keywords: ["berries with hemp", "fresh berries", "berry bowl"],
+    image: "/images/recipes/meals/snack-berries-hemp-seeds.png",
+  },
+  {
+    keywords: ["edamame"],
+    image: "/images/recipes/meals/snack-edamame-sesame.png",
+  },
+  {
+    keywords: ["dates stuffed", "stuffed date", "medjool"],
+    image: "/images/recipes/meals/snack-dates-almond-butter.png",
+  },
+  {
+    keywords: ["cacao", "hot chocolate", "hot cocoa"],
+    image: "/images/recipes/meals/signal-adaptogen-hot-cacao.png",
+  },
+  {
+    keywords: ["dark chocolate", "chocolate and walnut", "chocolate & walnut"],
+    image: "/images/recipes/meals/snack-dark-chocolate-walnuts.png",
+  },
+  {
+    keywords: ["cucumber", "raita"],
+    image: "/images/recipes/meals/snack-cucumber-avocado-rolls.png",
+  },
+  {
+    keywords: ["yoghurt", "yogurt", "parfait"],
+    image: "/images/recipes/meals/greek-yoghurt-berries.png",
+  },
+  {
+    keywords: ["berry", "berries", "blueberr", "raspberr", "strawberr"],
+    image: "/images/recipes/meals/coconut-berry-smoothie.png",
+  },
   {
     keywords: ["oat", "porridge", "muesli", "granola", "bircher", "overnight"],
     image: "/images/recipes/meals/peanut-butter-maple-overnight-oats.png",
