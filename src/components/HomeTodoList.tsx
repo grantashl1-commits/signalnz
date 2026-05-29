@@ -129,7 +129,7 @@ export default function HomeTodoList() {
         </div>
       ) : active.length === 0 && justDone.length === 0 && !showInput ? (
         <div className="py-3 text-center">
-          <p className="font-display text-sm italic text-muted-foreground/50">
+          <p className="font-body text-sm text-muted-foreground/60">
             Nothing on your list — what a beautiful feeling ✨
           </p>
         </div>
