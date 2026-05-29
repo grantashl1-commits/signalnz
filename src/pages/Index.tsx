@@ -11,6 +11,7 @@ import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import HomeWeekAtAGlance from "@/components/HomeWeekAtAGlance";
 import HomeMoodPulse from "@/components/home/HomeMoodPulse";
 import HomeReturnRibbon from "@/components/home/HomeReturnRibbon";
+import HomeTodoList from "@/components/HomeTodoList";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
