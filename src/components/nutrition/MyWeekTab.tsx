@@ -614,24 +614,6 @@ export default function MyWeekTab() {
         </div>
       </div>
 
-      {/* Week-level summary — meals logged, plant variety, seed days, held/picked */}
-      <WeekAtAGlance
-        days={days.map(d => ({ dateStr: d.dateStr, cycleDay: d.cycleDay, isToday: d.isToday }))}
-        phaseColor={phaseColor}
-        heldCount={Object.values(lockedMeals).filter(Boolean).length}
-        pickedCount={days.reduce((acc, d) => {
-          let n = 0;
-          (["breakfast", "lunch", "dinner"] as MealSlot[]).forEach(s => {
-            if (getCustomMealId(d.cycleDay, s)) n++;
-          });
-          return acc + n;
-        }, 0)}
-        onOpenShopping={() => { haptic("light"); setStep("shop"); }}
-        onOpenPrepGuide={aiPlan ? () => { haptic("light"); setStep("prepguide"); } : undefined}
-      />
-
-      {/* Last 4 weeks summary */}
-      <Last4WeeksSummary phaseColor={phaseColor} />
 
       {/* Day cards */}
       <div className="space-y-3">
