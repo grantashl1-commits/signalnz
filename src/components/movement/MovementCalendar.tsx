@@ -333,18 +333,38 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
           <p className="font-body text-[10px] text-muted-foreground uppercase tracking-[0.15em] mb-2">Workout history</p>
           <div className="space-y-2">
             {logs.map(log => {
-              const title = log.template_title
-                || (log.exercises?.[0]?.exercise_name ? `${log.exercises[0].exercise_name} session` : "Logged workout");
-              const bodyTags = deriveBodyTags(log.exercises, log.notes);
+              // Parse notes pattern: "<Path Name> · <Session Label> [pathId::wN::dM]"
+              // e.g. "The Forge · Lower Body B [the-forge::w1::d4]"
+              let pathTitle: string | null = null;
+              let sessionLabel: string | null = null;
+              if (log.notes) {
+                const stripped = log.notes.replace(/\s*\[[^\]]+\]\s*$/, "").trim();
+                const parts = stripped.split("·").map(s => s.trim()).filter(Boolean);
+                if (parts.length >= 2) {
+                  pathTitle = parts[0];
+                  sessionLabel = parts.slice(1).join(" · ");
+                } else if (parts.length === 1) {
+                  pathTitle = parts[0];
+                }
+              }
+              const title = pathTitle || log.template_title || "Logged workout";
+              const subtitle = sessionLabel || log.session_type || null;
+
+              const hasHR = !!(log.hr_session_id || log.avg_bpm || (log.zones_summary && Object.values(log.zones_summary).some(v => (v || 0) > 0)));
               const z2Mins = log.zone2_plus_percent && log.duration_minutes
                 ? Math.round((log.zone2_plus_percent / 100) * log.duration_minutes)
-                : 0;
+                : (log.zones_summary
+                    ? Math.round((log.zones_summary.z2_mins || 0) + (log.zones_summary.z3_mins || 0) + (log.zones_summary.z4_mins || 0) + (log.zones_summary.z5_mins || 0))
+                    : 0);
 
               return (
                 <div key={log.id} className="card-warm p-3 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <p className="font-body text-sm font-medium text-foreground truncate">{title}</p>
+                      {subtitle && (
+                        <p className="font-body text-xs text-muted-foreground mt-0.5 truncate">{subtitle}</p>
+                      )}
                       <p className="font-body text-[9px] text-muted-foreground mt-0.5">
                         {log.session_date}
                       </p>
@@ -356,29 +376,25 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                     )}
                   </div>
 
-                  {/* Stats row */}
+                  {/* Stats row — HR-rich if a monitor was connected, otherwise just total mins */}
                   <div className="flex items-center gap-3 text-[10px]">
-                    {log.duration_minutes && (
+                    {log.duration_minutes != null && (
                       <span className="flex items-center gap-0.5 text-muted-foreground">
                         <Clock className="h-3 w-3" /> {log.duration_minutes} min
                       </span>
                     )}
-                    {log.calories && log.calories > 0 && (
-                      <span className="flex items-center gap-0.5 text-destructive">
-                        <Flame className="h-3 w-3" /> {log.calories} cal
-                      </span>
-                    )}
-                    {z2Mins > 0 && (
+                    {hasHR && z2Mins > 0 && (
                       <span className="flex items-center gap-0.5 text-primary">
                         <Zap className="h-3 w-3" /> {z2Mins} min Z2+
                       </span>
                     )}
-                    {log.avg_bpm && (
-                      <span className="text-muted-foreground">
-                        ♥ {log.avg_bpm} bpm
+                    {hasHR && log.calories != null && log.calories > 0 && (
+                      <span className="flex items-center gap-0.5 text-destructive">
+                        <Flame className="h-3 w-3" /> {log.calories} cal
                       </span>
                     )}
                   </div>
+
 
                   {/* Zone breakdown bar */}
                   {log.zones_summary && (() => {
@@ -417,21 +433,8 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
                     );
                   })()}
 
-                  {/* Body-part tags */}
-                  {bodyTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {bodyTags.map(tag => (
-                        <span key={tag} className={`rounded-full px-2 py-0.5 text-[9px] font-medium ${TAG_COLORS[tag] || TAG_COLORS.General}`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {log.notes && (
-                    <p className="font-body text-xs text-muted-foreground italic">"{log.notes}"</p>
-                  )}
                 </div>
+
               );
             })}
           </div>
