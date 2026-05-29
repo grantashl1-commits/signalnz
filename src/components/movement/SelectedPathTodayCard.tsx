@@ -323,24 +323,30 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
         )}
 
-        {/* Structure preview */}
-        {expanded && session.structure && session.structure.length > 0 && (
-          <ul className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
-            {session.structure.map((line, i) => {
-              const name = extractExerciseName(line);
-              return (
-                <li key={i} className="flex items-start gap-2 font-body text-xs text-foreground/85">
-                  {name ? (
-                    <ExerciseDemonstration exerciseName={name} size={36} className="shrink-0" />
-                  ) : (
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-                  )}
-                  <span className="flex-1 pt-1 leading-relaxed">{line}</span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {/* Structure preview — warm-up & cool-down live in their own toggle panels above/below */}
+        {expanded && session.structure && session.structure.length > 0 && (() => {
+          const mainLines = session.structure.filter(
+            l => !/^\s*(warm[\s-]?up|cool[\s-]?down)\s*:/i.test(l),
+          );
+          if (mainLines.length === 0) return null;
+          return (
+            <ul className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+              {mainLines.map((line, i) => {
+                const name = extractExerciseName(line);
+                return (
+                  <li key={i} className="flex items-start gap-2 font-body text-xs text-foreground/85">
+                    {name ? (
+                      <ExerciseDemonstration exerciseName={name} size={36} className="shrink-0" />
+                    ) : (
+                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
+                    )}
+                    <span className="flex-1 pt-1 leading-relaxed">{line}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          );
+        })()}
 
         {/* Picks added from Library */}
         {expanded && picks.length > 0 && (
@@ -398,30 +404,18 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           <ChevronRight className={`h-3 w-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
         </button>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-2">
-          <button
-            onClick={handleConnectHR}
-            disabled={hr.connected}
-            className="flex-1 h-11 rounded-full bg-secondary text-foreground font-body text-sm font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-60 active:scale-[0.97] transition-transform"
-          >
-            {hr.connected ? (
-              <>
-                <Heart className="h-4 w-4 text-rose-500 fill-rose-500" />
-                {hr.bpm ? `${hr.bpm} bpm` : "Monitor connected"}
-              </>
-            ) : (
-              <>
-                <Bluetooth className="h-4 w-4" />
-                Connect HR monitor
-              </>
-            )}
-          </button>
+        {/* Actions — HR lives in the floating pulse icon; finish stays primary. */}
+        <div className="flex flex-col gap-2">
+          {hr.connected && (
+            <div className="inline-flex items-center justify-center gap-2 font-body text-[11px] text-muted-foreground">
+              <Heart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" />
+              <span>{hr.bpm ? `${hr.bpm} bpm · recording` : "Monitor connected"}</span>
+            </div>
+          )}
           <button
             onClick={handleComplete}
-            className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+            className="w-full h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center active:scale-[0.97] transition-transform"
           >
-            <Check className="h-4 w-4" />
             Finish workout
           </button>
         </div>
