@@ -184,7 +184,18 @@ export default function MovementPage() {
   ];
 
   if (showHR) {
-    return <LiveHRView workoutName={todayWorkoutData?.name || "Workout"} onClose={() => setShowHR(false)} />;
+    // Prefer the active training-path session name so the HR session attaches
+    // to today's workout. Falls back to "Workout" when no path/session is set.
+    let liveName = todayWorkoutData?.name || "Workout";
+    try {
+      // dynamic import via require to avoid reshuffling top-level imports
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const tp = require("@/lib/training-path-utils");
+      const path = tp.getSelectedPath?.();
+      const next = path ? tp.getNextSession?.(path) : null;
+      if (next?.session?.name) liveName = next.session.name;
+    } catch {}
+    return <LiveHRView workoutName={liveName} onClose={() => setShowHR(false)} />;
   }
 
   // Helper: find which phase a workout belongs to (for library "all" view)
