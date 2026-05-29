@@ -196,7 +196,7 @@ export default function DiscoverTab() {
       }
       if (lunchboxMode) {
         const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
-        if (!isLunchboxOrFreezer(text, r.tags || [])) return false;
+        if (!isLunchboxOrFreezer(text, r.tags || [], r.name)) return false;
       }
       if (search) {
         const q = search.toLowerCase();
