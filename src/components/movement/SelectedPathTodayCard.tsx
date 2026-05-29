@@ -5,7 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Bluetooth, Check, ChevronRight, Sparkles, Clock, Flame, Wind, X } from "lucide-react";
+import { Heart, ChevronRight, Sparkles, Clock, Flame, Wind, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useCycle } from "@/contexts/CycleContext";
@@ -162,19 +162,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     toast.success("Back to week 1.");
   };
 
-  const handleConnectHR = async () => {
-    haptic("light");
-    if (onOpenHR) onOpenHR();
-    else {
-      try {
-        await hr.connect();
-        // Begin recording for zone summary
-        if (!hr.recording) hr.startSession();
-      } catch (e: any) {
-        toast.error(e?.message || "Could not connect monitor.");
-      }
-    }
-  };
+  // HR is now driven by the floating pulse icon in Movement.tsx.
 
 
 
