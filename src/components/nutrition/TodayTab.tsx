@@ -260,18 +260,12 @@ export default function TodayTab() {
 
   return (
     <div className="relative">
-      {/* Plant vine on right side */}
-      <PlantVine mealsLoggedToday={mealsLoggedToday} plantCount={plantCount} dayOfWeek={adjustedDow} plants={plants} />
-
       <div className="space-y-6 relative z-10">
         {/* Header — no phase/day subtitle */}
         <div>
           <h2 className="font-display text-card-title font-bold italic text-foreground">Today's Nourishment</h2>
           {aiToday && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
         </div>
-
-        {/* This week, nourished — gentle weekly summary */}
-        <WeeklyNourishmentSummary phaseColor={phaseColor} />
 
         {/* Protein ring */}
         {nutritionTarget && (
@@ -301,7 +295,6 @@ export default function TodayTab() {
                 Perimenopause: aim for 30g+ protein per meal to overcome anabolic resistance.
               </p>
             )}
-            {/* Phase macro guidance */}
             <p className="font-body text-[11px] italic" style={{ color: phaseColor }}>
               {currentPhase === "menstrual" && "Menstrual: iron-rich, warming carbs, gentle on the system."}
               {currentPhase === "follicular" && "Follicular: lighter carbs, fresh greens, fermented foods."}
@@ -311,25 +304,14 @@ export default function TodayTab() {
           </div>
         )}
 
-        {/* Daily insight */}
-        <div className="rounded-[18px] p-4 shadow-soft" style={{ backgroundColor: `${phaseColor}08`, borderLeft: `3px solid ${phaseColor}` }}>
-          <p className="font-display text-sm italic text-foreground leading-relaxed">"{todayInsight.text}"</p>
-          {todayInsight.source && (
-            <p className="font-body text-[10px] text-muted-foreground mt-2">— {todayInsight.source}</p>
-          )}
-        </div>
-
-        {/* Phase-aligned snack idea — one-tap "Add to today" */}
-        <PhaseSuggestionCard
-          phase={currentPhase}
-          phaseColor={phaseColor}
-          alreadyLogged={!!eaten["morning-snack"]}
-          onAdd={() => markEaten("morning-snack")}
-          suggestion={snacks.morning}
-        />
-
-        {/* 3-column meal cards */}
+        {/* Meals — quote acts as the header */}
         <div>
+          <div className="rounded-[18px] p-4 shadow-soft mb-4" style={{ backgroundColor: `${phaseColor}08`, borderLeft: `3px solid ${phaseColor}` }}>
+            <p className="font-display text-sm italic text-foreground leading-relaxed">"{todayInsight.text}"</p>
+            {todayInsight.source && (
+              <p className="font-body text-[10px] text-muted-foreground mt-2">— {todayInsight.source}</p>
+            )}
+          </div>
           <h3 className="font-display text-card-title font-bold text-foreground mb-3">Meals</h3>
           <div className="grid grid-cols-3 gap-2">
             {meals.map((meal) => (
