@@ -129,13 +129,28 @@ export default function DiscoverTab() {
   // Heuristic: lunchbox-ready or freezer-friendly
   const isLunchboxOrFreezer = (
     text: string,
-    tags: string[] = []
+    tags: string[] = [],
+    name = "",
   ): boolean => {
     const tagSet = new Set(tags.map(t => t.toLowerCase()));
-    if (tagSet.has("lunchbox") || tagSet.has("freezer-friendly") || tagSet.has("freezer")) return true;
+    if (
+      tagSet.has("lunchbox") ||
+      tagSet.has("freezer-friendly") ||
+      tagSet.has("freezer") ||
+      tagSet.has("make-ahead") ||
+      tagSet.has("batch") ||
+      tagSet.has("meal-prep") ||
+      tagSet.has("portable") ||
+      tagSet.has("no-bake")
+    ) return true;
     const t = text.toLowerCase();
-    return /\b(lunchbox|pack for lunch|freezer|freeze\b|freeze for|freeze \d|store in (the )?freezer|no-bake)\b/.test(t);
+    const n = name.toLowerCase();
+    // Name-based: anything obviously portable / batch-bake / freezable
+    if (/\b(bliss ball|energy ball|protein ball|bar\b|bars\b|slice\b|slices\b|muffin|loaf|wrap|sandwich|pinwheel|fritter|patties|patty|fudge|brownie|cookie|biscuit|frittata|quiche|pie\b|tart|nice cream|popsicle|granola|overnight oat|chia pudding|hummus|dip|pesto|sauce|soup|stew|chilli|chili|curry|dahl|dhal|dal|lasagne|lasagna|bolognese|risotto|casserole|bake\b|tray bake|sheet pan|meatball|nuggets|tenders|salad jar)\b/.test(n)) return true;
+    // Method/ingredient text-based
+    return /\b(lunchbox|pack for lunch|pack into|portable|freezer|freeze\b|freezes? well|freeze for|freeze \d|store in (the )?freezer|store in (the )?fridge|keeps? \d|make[- ]ahead|batch cook|meal prep|no[- ]bake)\b/.test(t);
   };
+
 
   // Snack-like keywords for auto-tagging
   const SNACK_KEYWORDS = ["bliss ball", "bark", "nice cream", "energy ball", "slice", "mousse", "fudge", "custard", "rocher", "crumble ball"];
