@@ -83,7 +83,7 @@ export default function NutritionPage() {
 
       <ContentSection className="px-5 md:px-4 pb-24">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
-          <NourishStreakBadge />
+          
           {/* Tabs - first item */}
           <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
             {TABS.map((tab) => (
