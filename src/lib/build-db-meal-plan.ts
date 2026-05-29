@@ -68,7 +68,8 @@ function parseAvoid(prefs: PrepPreferences): string[] {
 function pool(
   category: Recipe["category"],
   phase: Phase,
-  prefs: PrepPreferences
+  prefs: PrepPreferences,
+  excludeIds: Set<string> = new Set()
 ): Recipe[] {
   const avoid = parseAvoid(prefs);
   const all = ALL_RECIPES.filter((r) => r.category === category);
@@ -76,14 +77,18 @@ function pool(
     (r) =>
       r.phase === phase &&
       matchesDiet(r, prefs.dietTypes) &&
-      avoidIngredients(r, avoid)
+      avoidIngredients(r, avoid) &&
+      !excludeIds.has(r.id)
   );
   if (phaseMatch.length === 0) {
     phaseMatch = all.filter(
-      (r) => matchesDiet(r, prefs.dietTypes) && avoidIngredients(r, avoid)
+      (r) =>
+        matchesDiet(r, prefs.dietTypes) &&
+        avoidIngredients(r, avoid) &&
+        !excludeIds.has(r.id)
     );
   }
-  // last-resort: ignore diet filter rather than crash
+  // last-resort: ignore diet/exclude filter rather than crash
   if (phaseMatch.length === 0) phaseMatch = all.filter((r) => r.phase === phase);
   if (phaseMatch.length === 0) phaseMatch = all;
   return phaseMatch;
@@ -150,14 +155,15 @@ function snackMeal(phase: Phase, slot: "morning" | "afternoon"): AIMeal {
 function buildSlotPicks(
   category: Recipe["category"],
   prefs: PrepPreferences,
-  pref: "batch" | "rotate" | "variety" | "double" | "fresh" | "mix"
+  pref: "batch" | "rotate" | "variety" | "double" | "fresh" | "mix",
+  excludeIdsByPhase?: Record<Phase, Set<string>>
 ): Record<Phase, Recipe[]> {
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const out = {} as Record<Phase, Recipe[]>;
   for (const phase of phases) {
     const days =
       phase === "menstrual" ? 5 : phase === "follicular" ? 8 : phase === "ovulatory" ? 1 : 14;
-    const p = pool(category, phase, prefs);
+    const p = pool(category, phase, prefs, excludeIdsByPhase?.[phase]);
     if (p.length === 0) {
       out[phase] = [];
       continue;
@@ -242,7 +248,23 @@ export function buildDbMealPlan(
 ): AIPlannedDay[] {
   const breakfastPicks = buildSlotPicks("breakfast", prefs, prefs.breakfast);
   const lunchPicks = buildSlotPicks("meal", prefs, prefs.lunch);
-  const dinnerPicks = buildSlotPicks("meal", prefs, prefs.dinner);
+
+  // If the user wants variety (not batch lunch / not double dinner), keep
+  // lunch and dinner pools disjoint so the same recipe never shows up as
+  // both lunch and dinner across the cycle.
+  const wantsDistinct = prefs.lunch !== "batch" && prefs.dinner !== "double";
+  const dinnerExclude: Record<Phase, Set<string>> = {
+    menstrual: new Set(),
+    follicular: new Set(),
+    ovulatory: new Set(),
+    luteal: new Set(),
+  };
+  if (wantsDistinct) {
+    (Object.keys(lunchPicks) as Phase[]).forEach((ph) => {
+      lunchPicks[ph].forEach((r) => dinnerExclude[ph].add(r.id));
+    });
+  }
+  const dinnerPicks = buildSlotPicks("meal", prefs, prefs.dinner, dinnerExclude);
 
   const days: AIPlannedDay[] = [];
   const phaseDayCounter: Record<Phase, number> = {
