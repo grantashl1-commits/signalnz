@@ -43,7 +43,7 @@ export default function DaySection({
       {isToday && total > 0 && (
         <div className="px-1 space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-hand text-xs text-muted-foreground/70">
+            <span className="font-body text-xs text-muted-foreground/70">
               {readCount === 0
                 ? "A fresh page"
                 : readCount === total

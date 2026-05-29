@@ -251,14 +251,14 @@ export default function HomeCalendarCard() {
           </a>
           <div className="flex items-center gap-3">
             {cal.icsUrl && (
-              <button onClick={cal.clearCalendar} className="font-hand text-[10px] text-muted-foreground/40 hover:text-destructive transition-colors">
+              <button onClick={cal.clearCalendar} className="font-body text-[10px] text-muted-foreground/40 hover:text-destructive transition-colors">
                 disconnect
               </button>
             )}
             {!cal.icsUrl && (
               <button
                 onClick={() => { haptic("light"); cal.setShowImportInput(!cal.showImportInput); }}
-                className="flex items-center gap-1 font-hand text-[10px] text-primary/50 hover:text-primary transition-colors"
+                className="flex items-center gap-1 font-body text-[10px] text-primary/50 hover:text-primary transition-colors"
               >
                 <Download className="h-3 w-3" />
                 import
@@ -277,7 +277,7 @@ export default function HomeCalendarCard() {
               className="overflow-hidden mb-3"
             >
               <div className="rounded-xl bg-secondary/30 p-3 space-y-2">
-                <p className="font-hand text-[11px] text-foreground/60">
+                <p className="font-body text-[11px] text-foreground/60">
                   Paste your calendar's ICS/subscription URL
                 </p>
                 <p className="font-body text-[10px] text-muted-foreground/50 leading-snug">
@@ -297,7 +297,7 @@ export default function HomeCalendarCard() {
                   {cal.importing ? (
                     <Loader2 className="h-4 w-4 animate-spin text-primary/50" />
                   ) : (
-                    <button onClick={handleImportCalendar} className="font-hand text-[11px] text-primary font-semibold px-2">
+                    <button onClick={handleImportCalendar} className="font-body text-[11px] text-primary font-semibold px-2">
                       Import
                     </button>
                   )}
@@ -317,8 +317,8 @@ export default function HomeCalendarCard() {
               className="flex flex-col items-center pb-2 hover:opacity-80 transition-opacity"
               title="Open in Cycle"
             >
-              <span className="font-hand text-[9px] text-muted-foreground/40 leading-none">{day}</span>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center font-hand text-[11px] mt-0.5 ${
+              <span className="font-body text-[9px] text-muted-foreground/40 leading-none">{day}</span>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center font-body text-[11px] mt-0.5 ${
                 isToday
                   ? "bg-primary/15 text-primary font-semibold ring-1 ring-primary/30"
                   : "text-muted-foreground/35"
@@ -336,14 +336,14 @@ export default function HomeCalendarCard() {
               <div key={colIdx} className="min-h-[60px] space-y-1 border-t border-dotted border-foreground/8 pt-1.5">
                 {imported.map((ev, i) => (
                   <div key={`i-${i}`} className="rounded-lg bg-primary/6 px-1.5 py-1">
-                    <p className="font-hand text-[8px] text-primary/50 leading-none mb-0.5">{ev.time}</p>
-                    <p className="font-hand text-[9px] text-foreground/60 leading-snug break-words">{ev.summary}</p>
+                    <p className="font-body text-[8px] text-primary/50 leading-none mb-0.5">{ev.time}</p>
+                    <p className="font-body text-[9px] text-foreground/60 leading-snug break-words">{ev.summary}</p>
                   </div>
                 ))}
                 {manual.map((ev) => (
                   <div key={ev.id} className="rounded-lg bg-accent/30 px-1.5 py-1 group relative">
-                    <p className="font-hand text-[8px] text-primary/50 leading-none mb-0.5">{ev.time}</p>
-                    <p className="font-hand text-[9px] text-foreground/60 leading-snug break-words">{ev.title}</p>
+                    <p className="font-body text-[8px] text-primary/50 leading-none mb-0.5">{ev.time}</p>
+                    <p className="font-body text-[9px] text-foreground/60 leading-snug break-words">{ev.title}</p>
                     <button
                       onClick={() => removeManualEvent(ev.id)}
                       className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -370,7 +370,7 @@ export default function HomeCalendarCard() {
                 <select
                   value={newDayIdx}
                   onChange={(e) => setNewDayIdx(Number(e.target.value))}
-                  className="font-hand text-[11px] bg-transparent border-b border-dotted border-foreground/15 outline-none text-foreground/60 w-14"
+                  className="font-body text-[11px] bg-transparent border-b border-dotted border-foreground/15 outline-none text-foreground/60 w-14"
                 >
                   {DAYS_OF_WEEK.map((d, i) => (
                     <option key={i} value={i}>{d}</option>
@@ -380,7 +380,7 @@ export default function HomeCalendarCard() {
                   type="time"
                   value={newTime}
                   onChange={(e) => setNewTime(e.target.value)}
-                  className="font-hand text-[11px] bg-transparent border-b border-dotted border-foreground/15 w-16 outline-none text-foreground/60"
+                  className="font-body text-[11px] bg-transparent border-b border-dotted border-foreground/15 w-16 outline-none text-foreground/60"
                 />
                 <input
                   type="text"
@@ -388,7 +388,7 @@ export default function HomeCalendarCard() {
                   onChange={(e) => setNewTitle(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addManualEvent()}
                   placeholder="What's happening?"
-                  className="flex-1 min-w-[100px] font-hand text-[12px] bg-transparent border-b border-dotted border-foreground/15 outline-none placeholder:text-muted-foreground/25 text-foreground/70"
+                  className="flex-1 min-w-[100px] font-body text-[12px] bg-transparent border-b border-dotted border-foreground/15 outline-none placeholder:text-muted-foreground/25 text-foreground/70"
                   autoFocus
                 />
                 <button onClick={addManualEvent} className="p-1 text-primary">
@@ -403,14 +403,14 @@ export default function HomeCalendarCard() {
         <div className="flex items-center justify-between mt-3">
           <button
             onClick={() => { haptic("light"); setShowAddEvent(!showAddEvent); }}
-            className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 font-body text-[11px] text-primary/50 hover:text-primary transition-colors"
           >
             <Plus className="h-3 w-3" />
             add event
           </button>
           <button
             onClick={() => { haptic("light"); setShowCalendarOptions(!showCalendarOptions); }}
-            className="flex items-center gap-1.5 font-hand text-[11px] text-primary/50 hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 font-body text-[11px] text-primary/50 hover:text-primary transition-colors"
           >
             <CalendarIcon className="w-3 h-3" />
             add to calendar
@@ -448,7 +448,7 @@ export default function HomeCalendarCard() {
 
         {cal.importedEvents.length === 0 && manualEvents.length === 0 && !cal.icsUrl && !cal.showImportInput && !showAddEvent && (
           <div className="text-center py-2 mt-1">
-            <p className="font-hand text-[12px] italic text-muted-foreground/35">
+            <p className="font-body text-[12px] italic text-muted-foreground/35">
               Connect your calendar or add events to plan your week
             </p>
           </div>
@@ -457,7 +457,7 @@ export default function HomeCalendarCard() {
         {cal.importing && (
           <div className="flex items-center justify-center gap-2 py-3">
             <Loader2 className="h-4 w-4 animate-spin text-primary/40" />
-            <p className="font-hand text-[11px] text-muted-foreground/40">Fetching events...</p>
+            <p className="font-body text-[11px] text-muted-foreground/40">Fetching events...</p>
           </div>
         )}
       </div>
