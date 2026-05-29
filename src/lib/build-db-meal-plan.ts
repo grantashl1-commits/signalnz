@@ -68,7 +68,8 @@ function parseAvoid(prefs: PrepPreferences): string[] {
 function pool(
   category: Recipe["category"],
   phase: Phase,
-  prefs: PrepPreferences
+  prefs: PrepPreferences,
+  excludeIds: Set<string> = new Set()
 ): Recipe[] {
   const avoid = parseAvoid(prefs);
   const all = ALL_RECIPES.filter((r) => r.category === category);
@@ -76,14 +77,18 @@ function pool(
     (r) =>
       r.phase === phase &&
       matchesDiet(r, prefs.dietTypes) &&
-      avoidIngredients(r, avoid)
+      avoidIngredients(r, avoid) &&
+      !excludeIds.has(r.id)
   );
   if (phaseMatch.length === 0) {
     phaseMatch = all.filter(
-      (r) => matchesDiet(r, prefs.dietTypes) && avoidIngredients(r, avoid)
+      (r) =>
+        matchesDiet(r, prefs.dietTypes) &&
+        avoidIngredients(r, avoid) &&
+        !excludeIds.has(r.id)
     );
   }
-  // last-resort: ignore diet filter rather than crash
+  // last-resort: ignore diet/exclude filter rather than crash
   if (phaseMatch.length === 0) phaseMatch = all.filter((r) => r.phase === phase);
   if (phaseMatch.length === 0) phaseMatch = all;
   return phaseMatch;
