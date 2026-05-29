@@ -391,15 +391,12 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {/* ═══ SECTION 2 — PLANNER + HABITS ═══ */}
+      {/* ═══ SECTION 2 — HABITS, TO-DO, CALENDAR ═══ */}
       <ContentSection className="px-5 md:px-8">
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
-          {user && <HomeMoodPulse />}
-          {user && <HomeReturnRibbon />}
-          {user && <HomeWeekAtAGlance />}
-          {user && <HomePlannerCard />}
-          {user && <HomeCalendarCard />}
           {user && <HomeHabitsDisplay />}
+          {user && <HomeTodoList />}
+          {user && <HomeCalendarCard />}
         </div>
       </ContentSection>
 
