@@ -115,6 +115,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
 
   // Use browser speech when no recorded/generated audio is available.
   // Falls back if there's no TTS script, or if TTS generation failed.
+  const hasTTSPath = !!ttsScript;
   const ttsBlocked = hasTTSPath && !ttsError;
   const { supported: speechSupported, isSpeaking } = useSpeechGuide({
     steps,
