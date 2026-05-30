@@ -113,11 +113,12 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     },
   });
 
-  // Speech synthesis fallback — only when no TTS script exists (i.e. no ElevenLabs path)
-  const hasTTSPath = !!ttsScript;
+  // Use browser speech when no recorded/generated audio is available.
+  // Falls back if there's no TTS script, or if TTS generation failed.
+  const ttsBlocked = hasTTSPath && !ttsError;
   const { supported: speechSupported, isSpeaking } = useSpeechGuide({
     steps,
-    playing: playing && !hasAudio && !hasTTSPath,
+    playing: playing && !hasAudio && !ttsBlocked,
     muted,
     activeStepIdx,
     onStepComplete: (nextIdx) => setActiveStepIdx(nextIdx),
@@ -129,7 +130,7 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
     pitch: 0.88,
   });
 
-  const usingSpeech = !hasAudio && !hasTTSPath && speechSupported;
+  const usingSpeech = !hasAudio && !ttsBlocked && speechSupported;
 
   // Elapsed timer (works even without audio)
   useEffect(() => {
