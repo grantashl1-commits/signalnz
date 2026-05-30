@@ -59,10 +59,26 @@ export default function SomaticPlayer({ practice, onClose }: Props) {
   } = useElevenLabsTTS({
     practiceId: practice.id,
     ttsScript,
-    enabled: practice.category === "somatic" && !!ttsScript,
+    enabled: !!ttsScript,
     voiceId: ttsVoiceId,
     voiceSettings: ttsVoiceSettings,
   });
+
+  // Auto-generate narration on first play if we have a script but no audio yet
+  const autoGenRef = useRef(false);
+  useEffect(() => {
+    if (
+      playing &&
+      ttsScript &&
+      !hasGeneratedAudio &&
+      !ttsLoading &&
+      !ttsError &&
+      !autoGenRef.current
+    ) {
+      autoGenRef.current = true;
+      generateTTS();
+    }
+  }, [playing, ttsScript, hasGeneratedAudio, ttsLoading, ttsError, generateTTS]);
 
   // Use generated audio URL if available, otherwise fall back to practice config
   const effectiveAudioUrl = hasGeneratedAudio
