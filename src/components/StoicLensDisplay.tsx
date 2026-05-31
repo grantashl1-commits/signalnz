@@ -173,15 +173,6 @@ export default function StoicLensDisplay({
         <span className="font-display text-lg italic text-foreground">The Stoic Lens</span>
       </div>
 
-      {!listenedToday && reading && onListen && (
-        <button
-          onClick={() => { haptic("medium"); onListen(); }}
-          className="touch-btn flex items-center gap-2 rounded-xl bg-secondary px-4 py-3 font-display text-sm italic text-foreground active:scale-[0.97]"
-        >
-          <Play className="h-4 w-4" /> Listen · Day {reading.seq_day}
-        </button>
-      )}
-
       <p className="font-body text-sm text-muted-foreground leading-relaxed">
         Let Signal weave a metaphor connecting your words to today's philosophy — drawing from the Dao, ancient fables, and timeless wisdom traditions.
       </p>
@@ -195,28 +186,6 @@ export default function StoicLensDisplay({
         Uses what you wrote + Day {reading?.seq_day}'s reading to create something made just for today.
       </p>
 
-      {/* Written passage toggle */}
-      {reading?.reflection && (
-        <div className="pt-2 border-t border-border/30">
-          <button
-            onClick={() => setShowPassage(!showPassage)}
-            className="flex items-center gap-2 font-body text-[11px] text-primary hover:underline"
-          >
-            <BookOpen className="h-3 w-3" />
-            {showPassage ? "Hide passage" : "Read today's passage"}
-            {showPassage ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-          </button>
-          {showPassage && (
-            <div className="mt-3 space-y-2">
-              <blockquote className="font-display text-sm italic text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-4">
-                "{reading.quote}"
-                <footer className="font-body text-[10px] text-muted-foreground/60 mt-1 not-italic">— {reading.author}, {reading.source}</footer>
-              </blockquote>
-              <p className="font-body text-sm text-foreground/80 leading-relaxed">{reading.reflection}</p>
-            </div>
-          )}
-        </div>
-      )}
 
     </motion.div>
   );
