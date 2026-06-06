@@ -572,8 +572,8 @@ export default function LiveHRView() {
         <div className="max-w-lg mx-auto px-5 py-8 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-xl italic font-bold text-foreground">Heart rate monitor.</h2>
-            <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-              <X className="h-5 w-5 text-muted-foreground" />
+            <button onClick={handleDismiss} className="touch-btn p-2 rounded-full bg-secondary" aria-label="Close">
+              <ChevronDown className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
 
