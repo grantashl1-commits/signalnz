@@ -56,7 +56,7 @@ export default function MovementPage() {
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [workoutComplete, setWorkoutComplete] = useState(false);
-  const [showHR, setShowHR] = useState(false);
+  // showHR retained as a no-op for legacy refs (overlay is now global).
   const trainingWeek = currentWeekNumber;
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
