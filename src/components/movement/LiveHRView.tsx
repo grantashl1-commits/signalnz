@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bluetooth, Activity, PenLine, Save, Check } from "lucide-react";
+import { Bluetooth, Activity, PenLine, Save, Check, ChevronDown, StopCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
@@ -20,10 +20,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/hooks/use-mobile";
 
-interface LiveHRViewProps {
-  workoutName?: string;
-  onClose: () => void;
-}
+/**
+ * LiveHRView is rendered globally from <LiveHRRoot /> and driven entirely
+ * by HeartRateContext. The "↓" header button minimizes (the session keeps
+ * recording in the background); the "End session" button stops recording.
+ */
 
 // ─── HR Line Chart ─────────────────────────────────────────────────────────────
 
@@ -178,13 +179,19 @@ function ZonePill({ zone }: { zone: typeof HR_ZONES[0] }) {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
+export default function LiveHRView() {
   const hr = useGlobalHeartRate();
   const { currentPhase: cyclePhase, currentCycleDay } = useCycle();
   const { user } = useAuth();
   const profile = useProfile();
   const wakeLock = useWakeLock();
   const releaseWakeLock = wakeLock.release;
+
+  // Live session lives in HeartRateContext (persists when minimized)
+  const workoutName = hr.live.workoutName;
+  const running = hr.live.active;
+  const elapsed = hr.liveElapsed;
+  const hrData = hr.live.samples;
 
   // Derive age from profile date_of_birth
   const profileAge = useMemo(() => {
@@ -213,9 +220,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     if (profileAge && profileWeight) setAgeSet(true);
   }, [profileAge, profileWeight]);
 
-  const [running, setRunning] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-  const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
   const [summary, setSummary] = useState<WorkoutSession | null>(null);
 
   // Session save state
@@ -225,55 +229,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const [saved, setSaved] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
 
-  const intervalRef = useRef<number | null>(null);
-  const sampleIntervalRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const elapsedRef = useRef<number>(0);
-  const bpmRef = useRef<number>(0);
-
   const maxHR = getMaxHR(age);
   const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
 
   const zone2PlusMins = hrData.filter((d) => getZoneForBPM(d.bpm, maxHR).zone >= 2).length * 2 / 60;
   const zone2Goal = 21;
   const zone2Reached = zone2PlusMins >= zone2Goal;
-
-  useEffect(() => { elapsedRef.current = elapsed; }, [elapsed]);
-  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
-
-  // Timer
-  useEffect(() => {
-    if (running) {
-      startTimeRef.current = Date.now() - elapsedRef.current * 1000;
-      intervalRef.current = window.setInterval(() => {
-        setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
-      }, 1000);
-    }
-    return () => {
-      if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    };
-  }, [running]);
-
-  // HR sampling every 2 seconds
-  useEffect(() => {
-    if (!running) {
-      if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-      return;
-    }
-    const addSample = () => {
-      const bpm = bpmRef.current;
-      if (bpm <= 0) return;
-      const secsFromStart = startTimeRef.current > 0
-        ? Math.floor((Date.now() - startTimeRef.current) / 1000)
-        : elapsedRef.current;
-      setHrData((prev) => [...prev, { time: secsFromStart, bpm }]);
-    };
-    addSample();
-    sampleIntervalRef.current = window.setInterval(addSample, 2000);
-    return () => {
-      if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-    };
-  }, [running]);
 
   const handleSetAge = () => {
     setUserAge(age);
@@ -284,23 +245,21 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const handleStart = () => {
     haptic("medium");
     wakeLock.toggle();
-    setElapsed(0);
-    elapsedRef.current = 0;
-    setHrData([]);
+    setSummary(null);
     setSaved(false);
     setSavedId(null);
-    setRunning(true);
+    hr.startLive();
   };
 
   const handleStop = () => {
     haptic("success");
-    setRunning(false);
+    const { samples, durationSecs } = hr.stopLive();
     releaseWakeLock();
-    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
 
-    const finalHrData = hrData.length > 0 ? hrData : (hr.bpm > 0 ? [{ time: elapsed, bpm: hr.bpm }] : []);
-    const derivedDurationSecs = elapsed > 0 ? elapsed
+    const finalHrData = samples.length > 0
+      ? samples
+      : (hr.bpm > 0 ? [{ time: durationSecs, bpm: hr.bpm }] : []);
+    const derivedDurationSecs = durationSecs > 0 ? durationSecs
       : finalHrData.length > 1 ? finalHrData[finalHrData.length - 1].time
       : finalHrData.length === 1 ? 2 : 0;
 
@@ -402,14 +361,28 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     }
   };
 
-  const handleClose = () => {
+  // X / chevron button → minimize the overlay; session keeps recording.
+  const handleMinimize = () => {
+    hr.minimizeLive();
+  };
+
+  // Called when user is fully done with the summary view.
+  const handleCloseSummary = () => {
+    releaseWakeLock();
+    setSummary(null);
+    hr.endLive();
+  };
+
+  // Used in the pre-start / connect view to fully dismiss.
+  const handleDismiss = () => {
     if (running) {
-      if (!window.confirm("End your session and exit? Data won't be saved.")) return;
-      handleStop();
+      hr.minimizeLive();
+      return;
     }
     releaseWakeLock();
-    onClose();
+    hr.endLive();
   };
+
 
   const formatTime = (secs: number) => {
     const h = Math.floor(secs / 3600);
@@ -440,8 +413,8 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
         <div className="max-w-lg mx-auto px-5 py-8 space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-xl italic font-bold text-foreground">Session complete.</h2>
-            <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-              <X className="h-5 w-5 text-muted-foreground" />
+            <button onClick={handleCloseSummary} className="touch-btn p-2 rounded-full bg-secondary" aria-label="Close">
+              <ChevronDown className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
 
@@ -582,7 +555,7 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
           )}
 
           <button
-            onClick={handleClose}
+            onClick={handleCloseSummary}
             className="touch-btn w-full rounded-[14px] py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary"
           >
             Done →
@@ -599,8 +572,8 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
         <div className="max-w-lg mx-auto px-5 py-8 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-xl italic font-bold text-foreground">Heart rate monitor.</h2>
-            <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-              <X className="h-5 w-5 text-muted-foreground" />
+            <button onClick={handleDismiss} className="touch-btn p-2 rounded-full bg-secondary" aria-label="Close">
+              <ChevronDown className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
 
@@ -699,8 +672,9 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
       <div className="max-w-lg mx-auto px-5 py-6 space-y-5">
         <div className="flex items-center justify-between">
           <p className="font-body text-sm text-muted-foreground">{workoutName}</p>
-          <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-            <X className="h-4 w-4 text-muted-foreground" />
+          <button onClick={handleMinimize} className="touch-btn p-2 rounded-full bg-secondary inline-flex items-center gap-1" aria-label="Minimize — keep recording in background">
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <span className="font-body text-[10px] uppercase tracking-wider text-muted-foreground pr-1">Minimize</span>
           </button>
         </div>
 
@@ -770,9 +744,20 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
             Start session →
           </button>
         ) : (
-          <button onClick={handleStop} className="touch-btn w-full rounded-[14px] py-4 min-h-[56px] font-body text-base font-bold text-primary-foreground bg-primary">
-            End session →
-          </button>
+          <div className="space-y-2">
+            <button
+              onClick={handleStop}
+              className="touch-btn w-full rounded-[14px] py-4 min-h-[56px] font-body text-base font-bold text-primary-foreground bg-primary inline-flex items-center justify-center gap-2"
+            >
+              <StopCircle className="h-5 w-5" /> End session →
+            </button>
+            <button
+              onClick={handleMinimize}
+              className="touch-btn w-full rounded-[14px] py-2.5 font-body text-xs text-muted-foreground hover:text-foreground"
+            >
+              Keep recording in the background ↓
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -17,7 +17,7 @@ import {
   type WorkoutCategory, type Exercise, type WorkoutSession,
 } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
-import LiveHRView from "@/components/movement/LiveHRView";
+// LiveHRView is rendered globally from <LiveHRRoot /> in App.tsx
 import MovementCalendar from "@/components/movement/MovementCalendar";
 import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
@@ -56,7 +56,7 @@ export default function MovementPage() {
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
   const [workoutComplete, setWorkoutComplete] = useState(false);
-  const [showHR, setShowHR] = useState(false);
+  // showHR retained as a no-op for legacy refs (overlay is now global).
   const trainingWeek = currentWeekNumber;
   const [drawerExercise, setDrawerExercise] = useState<Exercise | null>(null);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
@@ -184,17 +184,18 @@ export default function MovementPage() {
     { id: "progress" as const, label: "Progress" },
   ];
 
-  if (showHR) {
-    // Prefer the active training-path session name so the HR session attaches
-    // to today's workout. Falls back to "Workout" when no path/session is set.
+  // Helper: open the live HR overlay with today's session name. The overlay is
+  // rendered globally (<LiveHRRoot />) so it persists across navigation when
+  // the user minimizes it.
+  const openLiveHR = () => {
     let liveName = todayWorkoutData?.name || "Workout";
     try {
       const path = getSelectedPath();
       const next = path ? getNextSession(path) : null;
       if (next?.session?.name) liveName = next.session.name;
     } catch {}
-    return <LiveHRView workoutName={liveName} onClose={() => setShowHR(false)} />;
-  }
+    globalHR.openLive(liveName);
+  };
 
   // Helper: find which phase a workout belongs to (for library "all" view)
   const getWorkoutPhase = (workoutId: string): Phase | null => {
@@ -282,16 +283,48 @@ export default function MovementPage() {
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
+          {/* Active live HR session banner (lets the user re-open or log a
+              separate workout instead of attaching to the current one) */}
+          {globalHR.live.active && (
+            <div className="card-warm p-4 border-2 border-primary/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-primary/60 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
+                </span>
+                <p className="font-hand text-sm text-primary">Session in progress</p>
+              </div>
+              <p className="font-body text-sm text-foreground">
+                {globalHR.live.workoutName} ·{" "}
+                <span className="tabular-nums">{globalHR.bpm || "—"} bpm</span>
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={globalHR.restoreLive}
+                  className="touch-btn flex-1 rounded-[12px] py-2.5 font-body text-sm font-bold text-primary-foreground bg-primary"
+                >
+                  Open current session →
+                </button>
+                <button
+                  onClick={() => setActiveTab("log")}
+                  className="touch-btn flex-1 rounded-[12px] py-2.5 font-body text-sm font-medium text-primary border border-primary/40 bg-card"
+                >
+                  Log a separate workout
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Selected training path → next session card with HR connect */}
-          <SelectedPathTodayCard onOpenHR={() => setShowHR(true)} />
+          <SelectedPathTodayCard onOpenHR={openLiveHR} />
 
         </div>
       )}
 
-      {/* Floating HR indicator when connected but modal closed */}
-      {!showHR && globalHR.connected && (
+      {/* Floating HR indicator when connected — opens / restores the live overlay */}
+      {globalHR.connected && !globalHR.live.open && (
         <button
-          onClick={() => setShowHR(true)}
+          onClick={openLiveHR}
           className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
         >
           <Heart className="h-4 w-4 text-primary-foreground" />
@@ -407,7 +440,7 @@ export default function MovementPage() {
       {/* Floating HR button — only when not connected (avoid dupes with TodaySession's inline control) */}
       {(activeTab === "today" || activeTab === "library") && !globalHR.connected && (
         <button
-          onClick={() => setShowHR(true)}
+          onClick={openLiveHR}
           aria-label="Open heart-rate session"
           className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-40 touch-btn h-14 w-14 rounded-full bg-primary shadow-lg flex items-center justify-center"
         >

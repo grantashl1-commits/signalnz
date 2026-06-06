@@ -17,6 +17,7 @@ import { SignalPanelProvider } from "@/hooks/useSignalPanel";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CycleProvider } from "@/contexts/CycleContext";
 import { HeartRateProvider } from "@/contexts/HeartRateContext";
+import LiveHRRoot from "@/components/movement/LiveHRRoot";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 // Eagerly load the home page (critical path)
@@ -187,6 +188,7 @@ const App = () => {
                     } />
                   </Routes>
                 </Suspense>
+                <LiveHRRoot />
               </SignalPanelProvider>
               </HeartRateProvider>
               </CycleProvider>
