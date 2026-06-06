@@ -188,6 +188,7 @@ const App = () => {
                     } />
                   </Routes>
                 </Suspense>
+                <LiveHRRoot />
               </SignalPanelProvider>
               </HeartRateProvider>
               </CycleProvider>
