@@ -296,6 +296,93 @@ export default function LiveHRView() {
   };
 
   const handleSaveToSupabase = async (notes: string) => {
+    if (!user || !summary || saving) return;
+    setSaving(true);
+
+    // Downsample bpm_trace to every 10 seconds for storage
+    const bpmTrace = summary.hrData
+      .filter((_, i) => i % 5 === 0 || i === summary.hrData.length - 1)
+      .map((d) => ({
+        minute: parseFloat((d.time / 60).toFixed(2)),
+        bpm: d.bpm,
+        zone: getZoneForBPM(d.bpm, maxHR).zone,
+      }));
+
+    const zonesSummary = HR_ZONES.reduce((acc, z, i) => ({
+      ...acc,
+      [`z${z.zone}_mins`]: Math.round(summary.zoneMins[i] * 10) / 10,
+    }), {} as Record<string, number>);
+
+    const { data, error } = await (supabase as any)
+      .from("hr_sessions")
+      .insert({
+        user_id: user.id,
+        workout_name: workoutName,
+        duration_minutes: parseFloat((summary.duration / 60).toFixed(1)),
+        bpm_trace: bpmTrace,
+        avg_bpm: summary.avgHR,
+        max_bpm: summary.maxHR,
+        calories: summary.caloriesBurnt,
+        zones_summary: zonesSummary,
+        zone2_plus_percent: summary.zone2PlusPercent,
+        cycle_phase: summary.phase,
+        cycle_day: summary.cycleDay,
+        notes: notes.trim() || null,
+      })
+      .select("id")
+      .single();
+
+    // Also create a workout_log entry so it shows on calendar & My Log
+    let hrSessionId: string | null = null;
+    if (!error && data) {
+      hrSessionId = data.id;
+      await (supabase as any)
+        .from("workout_logs")
+        .insert({
+          user_id: user.id,
+          session_date: summary.date,
+          workout_template_id: null,
+          exercises: [],
+          duration_minutes: Math.round(summary.duration / 60),
+          notes: notes.trim() || null,
+          completed: true,
+          cycle_phase: summary.phase,
+          hr_session_id: hrSessionId,
+        });
+    }
+
+    setSaving(false);
+    if (!error && data) {
+      setSaved(true);
+      setSavedId(data.id);
+      toast.success("Held — your body remembers.");
+    } else {
+      toast.error("Held locally — we'll carry it across when the connection returns.");
+    }
+  };
+
+  // X / chevron button → minimize the overlay; session keeps recording.
+  const handleMinimize = () => {
+    hr.minimizeLive();
+  };
+
+  // Called when user is fully done with the summary view.
+  const handleCloseSummary = () => {
+    releaseWakeLock();
+    setSummary(null);
+    hr.endLive();
+  };
+
+  // Used in the pre-start / connect view to fully dismiss.
+  const handleDismiss = () => {
+    if (running) {
+      hr.minimizeLive();
+      return;
+    }
+    releaseWakeLock();
+    hr.endLive();
+  };
+
 
   const formatTime = (secs: number) => {
     const h = Math.floor(secs / 3600);
