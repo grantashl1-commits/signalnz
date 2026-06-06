@@ -269,7 +269,7 @@ export default function CyclePage() {
                 </summary>
                 <div className="mt-4 space-y-6">
                   <CycleInsights cycleStartDate={lastPeriod} />
-                  <InsightsTab />
+
                 </div>
               </details>
             )}
