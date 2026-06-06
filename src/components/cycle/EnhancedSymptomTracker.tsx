@@ -146,12 +146,12 @@ export default function EnhancedSymptomTracker({ dateStr, phase, onClose, onSave
           {/* Mood scale */}
           <div>
             <p className="font-hand text-sm font-bold mb-2" style={{ color }}>mood</p>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               {MOOD_LABELS.map((label, i) => (
                 <button
                   key={label}
                   onClick={() => { haptic("light"); setMood(i); }}
-                  className={`touch-btn flex-1 rounded-xl py-2.5 min-h-[44px] font-hand text-xs transition-all ${
+                  className={`touch-btn flex-1 min-w-0 rounded-xl px-1 py-2.5 min-h-[44px] font-hand text-[11px] leading-tight transition-all whitespace-nowrap ${
                     mood === i ? "text-card font-bold" : "bg-secondary text-muted-foreground"
                   }`}
                   style={mood === i ? { backgroundColor: color } : {}}

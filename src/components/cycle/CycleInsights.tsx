@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { getPhaseFromDay, Phase } from "@/lib/cycle-utils";
+import { getPhaseFromDay, getPeriodEnd, getPeriodLength, Phase } from "@/lib/cycle-utils";
+import { getStructuredSymptoms } from "@/lib/cycle-symptom-utils";
 
 interface Props {
   cycleStartDate: string;
@@ -46,6 +47,60 @@ export default function CycleInsights({ cycleStartDate }: Props) {
     return rows;
   }, [cycleStartDate]);
 
+  // ─── Statistics (last 12 months) ───
+  const stats = useMemo(() => {
+    if (!cycleStartDate) return null;
+
+    const lengths = cycles.filter((c) => !c.inProgress).map((c) => c.length);
+    const completed = lengths.length;
+    const avgCycle = completed ? Math.round(lengths.reduce((a, b) => a + b, 0) / completed) : null;
+    const shortest = completed ? Math.min(...lengths) : null;
+    const longest = completed ? Math.max(...lengths) : null;
+
+    // Average menstruation length from recorded period ends (last 12 months)
+    const periodLengths: number[] = [];
+    const now = new Date();
+    for (let m = 0; m < 12; m++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const endDate = getPeriodEnd(monthKey);
+      if (!endDate) continue;
+      // Match against any cycle row whose start month matches
+      const matchingCycle = cycles.find(
+        (c) => c.start.getFullYear() === d.getFullYear() && c.start.getMonth() === d.getMonth(),
+      );
+      if (matchingCycle) {
+        const len = getPeriodLength(matchingCycle.start.toISOString().split("T")[0], endDate);
+        if (len > 0 && len <= 14) periodLengths.push(len);
+      }
+    }
+    const avgMenstruation = periodLengths.length
+      ? Math.round(periodLengths.reduce((a, b) => a + b, 0) / periodLengths.length)
+      : null;
+
+    const firstCycle = cycles[cycles.length - 1]?.start ?? new Date(cycleStartDate);
+    const lastPeriod = new Date(cycleStartDate);
+    return { firstCycle, lastPeriod, shortest, longest, avgMenstruation, avgCycle };
+  }, [cycleStartDate, cycles]);
+
+  // ─── Mood findings (last 90 days) ───
+  const moodStats = useMemo(() => {
+    const counts = [0, 0, 0, 0]; // low, below avg, stable, elevated
+    let total = 0;
+    const today = new Date();
+    for (let i = 0; i < 90; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      const data = getStructuredSymptoms(dateStr);
+      if (data && typeof data.mood === "number") {
+        counts[data.mood] = (counts[data.mood] || 0) + 1;
+        total++;
+      }
+    }
+    return { counts, total };
+  }, [cycleStartDate]);
+
   if (!cycleStartDate) {
     return (
       <div className="card-warm p-5 text-center">
@@ -59,6 +114,72 @@ export default function CycleInsights({ cycleStartDate }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Statistics */}
+      {stats && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-warm p-5"
+        >
+          <p className="font-hand text-sm font-bold text-primary mb-1">statistics</p>
+          <p className="font-body text-[11px] text-muted-foreground mb-4 leading-relaxed">
+            A snapshot from your last 12 months.
+          </p>
+
+          <div className="space-y-2">
+            <StatRow label="Start of your first recorded cycle" value={fmt(stats.firstCycle)} />
+            <StatRow label="Date of last period" value={fmt(stats.lastPeriod)} />
+            <StatRow label="Shortest cycle" value={stats.shortest ? `${stats.shortest} d` : "—"} />
+            <StatRow label="Longest cycle" value={stats.longest ? `${stats.longest} d` : "—"} />
+            <StatRow label="Average menstruation length" value={stats.avgMenstruation ? `${stats.avgMenstruation} d` : "—"} />
+            <StatRow label="Average cycle length" value={stats.avgCycle ? `${stats.avgCycle} d` : "—"} />
+          </div>
+        </motion.div>
+      )}
+
+      {/* Mood findings */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.04 }}
+        className="card-warm p-5"
+      >
+        <p className="font-hand text-sm font-bold text-primary mb-1">mood findings</p>
+        <p className="font-body text-[11px] text-muted-foreground mb-4 leading-relaxed">
+          {moodStats.total > 0
+            ? `Based on ${moodStats.total} mood ${moodStats.total === 1 ? "entry" : "entries"} from the last 90 days.`
+            : "Log your mood from the calendar tab to see your patterns appear here."}
+        </p>
+
+        {moodStats.total > 0 && (
+          <div className="space-y-2">
+            {[
+              { label: "low", colour: "#C4526E" },
+              { label: "below avg", colour: "#C47A8A" },
+              { label: "stable", colour: "#9B89B4" },
+              { label: "elevated", colour: "#5C4A9E" },
+            ].map((m, i) => {
+              const count = moodStats.counts[i] || 0;
+              const pct = Math.round((count / moodStats.total) * 100);
+              return (
+                <div key={m.label} className="flex items-center gap-2">
+                  <span className="font-hand text-[11px] text-muted-foreground w-20 shrink-0">{m.label}</span>
+                  <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${pct}%`, backgroundColor: m.colour, opacity: 0.75 }}
+                    />
+                  </div>
+                  <span className="font-body text-[10px] text-muted-foreground w-12 text-right tabular-nums">
+                    {count} · {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </motion.div>
+
       {/* Cycle lengths table */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -170,6 +291,15 @@ export default function CycleInsights({ cycleStartDate }: Props) {
           ))}
         </div>
       </motion.div>
+    </div>
+  );
+}
+
+function StatRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-2 border-b border-border/40 last:border-b-0">
+      <span className="font-body text-xs text-muted-foreground leading-snug">{label}</span>
+      <span className="font-body text-sm text-foreground font-medium tabular-nums whitespace-nowrap">{value}</span>
     </div>
   );
 }
