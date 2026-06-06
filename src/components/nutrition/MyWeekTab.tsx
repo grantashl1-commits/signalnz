@@ -606,6 +606,36 @@ export default function MyWeekTab() {
             </button>
           )}
           <button
+            onClick={() => {
+              haptic("light");
+              const phaseLabel = days[0]?.phase ? days[0].phase.charAt(0).toUpperCase() + days[0].phase.slice(1) : "";
+              const start = days[0]?.date;
+              const end = days[days.length - 1]?.date;
+              const fmt = (d: Date) => d.toLocaleDateString("en-NZ", { day: "numeric", month: "long" });
+              const weekLabel = start && end ? `${fmt(start)} – ${fmt(end)}` : "Week";
+              exportWeekPdf(
+                days.map(d => ({
+                  dayName: d.dayName,
+                  dateLabel: d.date.toLocaleDateString("en-NZ", { day: "numeric", month: "long" }),
+                  cycleDay: d.cycleDay,
+                  phaseLabel: d.phase,
+                  breakfast: d.breakfast,
+                  morningSnack: d.morningSnack || PHASE_SNACKS[d.phase].morning,
+                  lunch: d.lunch,
+                  afternoonSnack: d.afternoonSnack || PHASE_SNACKS[d.phase].afternoon,
+                  dinner: d.dinner,
+                })),
+                { weekLabel, phaseLabel }
+              );
+              toast.success("Week PDF ready.");
+            }}
+            className="font-body text-xs text-primary underline flex items-center gap-1"
+            title="Download a printable PDF of this week"
+          >
+            <Download className="h-3 w-3" />
+            Download PDF
+          </button>
+          <button
             onClick={() => { haptic("light"); setStep("shop"); }}
             className="font-body text-xs text-primary underline"
           >
