@@ -114,6 +114,72 @@ export default function CycleInsights({ cycleStartDate }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Statistics */}
+      {stats && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-warm p-5"
+        >
+          <p className="font-hand text-sm font-bold text-primary mb-1">statistics</p>
+          <p className="font-body text-[11px] text-muted-foreground mb-4 leading-relaxed">
+            A snapshot from your last 12 months.
+          </p>
+
+          <div className="space-y-2">
+            <StatRow label="Start of your first recorded cycle" value={fmt(stats.firstCycle)} />
+            <StatRow label="Date of last period" value={fmt(stats.lastPeriod)} />
+            <StatRow label="Shortest cycle" value={stats.shortest ? `${stats.shortest} d` : "—"} />
+            <StatRow label="Longest cycle" value={stats.longest ? `${stats.longest} d` : "—"} />
+            <StatRow label="Average menstruation length" value={stats.avgMenstruation ? `${stats.avgMenstruation} d` : "—"} />
+            <StatRow label="Average cycle length" value={stats.avgCycle ? `${stats.avgCycle} d` : "—"} />
+          </div>
+        </motion.div>
+      )}
+
+      {/* Mood findings */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.04 }}
+        className="card-warm p-5"
+      >
+        <p className="font-hand text-sm font-bold text-primary mb-1">mood findings</p>
+        <p className="font-body text-[11px] text-muted-foreground mb-4 leading-relaxed">
+          {moodStats.total > 0
+            ? `Based on ${moodStats.total} mood ${moodStats.total === 1 ? "entry" : "entries"} from the last 90 days.`
+            : "Log your mood from the calendar tab to see your patterns appear here."}
+        </p>
+
+        {moodStats.total > 0 && (
+          <div className="space-y-2">
+            {[
+              { label: "low", colour: "#C4526E" },
+              { label: "below avg", colour: "#C47A8A" },
+              { label: "stable", colour: "#9B89B4" },
+              { label: "elevated", colour: "#5C4A9E" },
+            ].map((m, i) => {
+              const count = moodStats.counts[i] || 0;
+              const pct = Math.round((count / moodStats.total) * 100);
+              return (
+                <div key={m.label} className="flex items-center gap-2">
+                  <span className="font-hand text-[11px] text-muted-foreground w-20 shrink-0">{m.label}</span>
+                  <div className="flex-1 h-3 bg-secondary rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${pct}%`, backgroundColor: m.colour, opacity: 0.75 }}
+                    />
+                  </div>
+                  <span className="font-body text-[10px] text-muted-foreground w-12 text-right tabular-nums">
+                    {count} · {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </motion.div>
+
       {/* Cycle lengths table */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
