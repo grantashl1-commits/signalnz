@@ -179,29 +179,6 @@ export default function CyclePage() {
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
-        {/* Mode switcher — inline top-bar toggle */}
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <span className="font-hand text-xs text-muted-foreground shrink-0">mode:</span>
-          <div className="flex gap-1 rounded-full bg-secondary/60 p-1 flex-1 min-w-0">
-            {(["cycling", "perimenopause", "post-menopause"] as CycleMode[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => {
-                  haptic("light");
-                  if (m !== cycleMode) {
-                    updateCycleMode(m);
-                    localStorage.setItem("cycleModeSelected", "true");
-                  }
-                }}
-                className={`touch-tab flex-1 rounded-full px-2 py-1.5 min-h-[32px] font-body text-[11px] font-medium transition-all whitespace-nowrap ${
-                  cycleMode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
-                }`}
-              >
-                {m === "post-menopause" ? "Post" : m === "perimenopause" ? "Peri" : "Cycling"}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Date picker */}
         {!hasDateSet && cycleMode !== "post-menopause" && (
@@ -273,27 +250,9 @@ export default function CyclePage() {
         {activeTab === "today" && (
           <div className="space-y-8 md:space-y-10">
             {hasDateSet && cycleMode !== "post-menopause" && (
-              <>
-                <PhaseCountdownBanner cycleDay={info.cycleDay} phase={info.phase} />
-                <QuickLogPills
-                  dateStr={todayStr}
-                  phase={info.phase}
-                  onOpenFull={() => setShowSymptomTracker(true)}
-                  onChange={() => setRefreshKey((k) => k + 1)}
-                />
-                <Last28DaysMiniDashboard key={refreshKey} cycleStartDate={lastPeriod} />
-                <WhatsComingNext cycleDay={info.cycleDay} />
-                <details className="group">
-                  <summary className="cursor-pointer font-display text-sm italic text-muted-foreground flex items-center gap-2 py-2 list-none">
-                    <span className="inline-block group-open:rotate-90 transition-transform">▸</span>
-                    More about this phase
-                  </summary>
-                  <div className="mt-4">
-                    <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
-                  </div>
-                </details>
-              </>
+              <PhaseCountdownBanner cycleDay={info.cycleDay} phase={info.phase} />
             )}
+
 
             {cycleMode === "perimenopause" && (
               <PerimenopauseMode onNavigateToTraining={() => navigate("/movement")} />
