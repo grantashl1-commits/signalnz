@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby, Pencil, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby, Pencil, RotateCcw, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import MealPrepGuide from "./MealPrepGuide";
 import { useCycle } from "@/contexts/CycleContext";
@@ -29,7 +29,7 @@ import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
 import KidsDinnerAlt from "./KidsDinnerAlt";
 import WeekAtAGlance from "./WeekAtAGlance";
-import TodayQuickLogStrip from "./TodayQuickLogStrip";
+import { exportWeekPdf } from "@/lib/export-week-pdf";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -681,9 +681,6 @@ export default function MyWeekTab() {
                     : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   }
                 </div>
-                {day.isToday && (
-                  <TodayQuickLogStrip dateStr={day.dateStr} phaseColor={dayPhaseColor} />
-                )}
               </button>
 
               <AnimatePresence>
