@@ -62,8 +62,16 @@ export default function StoicLensDisplay({
 
       clearInterval(interval);
 
-      if (fnError || !data) {
-        setError("Something didn't connect today. Your reflection is saved. Try again, or just sit with what you wrote.");
+      const apiError = (data as any)?.error;
+      if (fnError || apiError || !data?.bridge_metaphor) {
+        const msg = String(apiError || fnError?.message || "");
+        if (msg.includes("credits") || msg.includes("402")) {
+          setError("Signal's wisdom well is empty for the moment — credits need a top-up before a new reflection can be woven. Your words are safely held.");
+        } else if (msg.includes("Rate") || msg.includes("429") || msg.includes("Too many")) {
+          setError("A few too many reflections at once — take a breath, then try again in a moment.");
+        } else {
+          setError("Something didn't connect today. Your reflection is saved. Try again, or just sit with what you wrote.");
+        }
       } else {
         const generatedLens: StoicLens = {
           seq_day: reading.seq_day,
