@@ -106,9 +106,11 @@ Deno.serve(async (req) => {
 
     const audioBuffer = await ttsResponse.arrayBuffer();
 
-    // Match the client-side cache path: practices/<version>/<voice-namespace>/<id>.mp3
+    // Match the client-side cache path in buildVersionedPracticeAudioPath()
+    // (src/lib/script-audio.ts) — keep VOICE_CACHE_VERSION in sync.
+    const VOICE_CACHE_VERSION = "regina-theo-v2";
     const voiceNamespace = voice.slice(0, 12);
-    const filePath = `practices/voice-routed-v1/${voiceNamespace}/${practiceId}.mp3`;
+    const filePath = `practices/${VOICE_CACHE_VERSION}/${voiceNamespace}/${practiceId}.mp3`;
     const { error: uploadError } = await supabase.storage
       .from("practice-audio")
       .upload(filePath, audioBuffer, {
