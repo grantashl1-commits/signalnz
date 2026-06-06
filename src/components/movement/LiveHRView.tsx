@@ -744,9 +744,20 @@ export default function LiveHRView() {
             Start session →
           </button>
         ) : (
-          <button onClick={handleStop} className="touch-btn w-full rounded-[14px] py-4 min-h-[56px] font-body text-base font-bold text-primary-foreground bg-primary">
-            End session →
-          </button>
+          <div className="space-y-2">
+            <button
+              onClick={handleStop}
+              className="touch-btn w-full rounded-[14px] py-4 min-h-[56px] font-body text-base font-bold text-primary-foreground bg-primary inline-flex items-center justify-center gap-2"
+            >
+              <StopCircle className="h-5 w-5" /> End session →
+            </button>
+            <button
+              onClick={handleMinimize}
+              className="touch-btn w-full rounded-[14px] py-2.5 font-body text-xs text-muted-foreground hover:text-foreground"
+            >
+              Keep recording in the background ↓
+            </button>
+          </div>
         )}
       </div>
     </div>
