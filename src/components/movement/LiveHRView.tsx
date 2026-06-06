@@ -555,7 +555,7 @@ export default function LiveHRView() {
           )}
 
           <button
-            onClick={handleClose}
+            onClick={handleCloseSummary}
             className="touch-btn w-full rounded-[14px] py-3 min-h-[52px] font-body text-sm font-bold text-primary-foreground bg-primary"
           >
             Done →
