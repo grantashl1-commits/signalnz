@@ -63,13 +63,26 @@ function FilterPill({ active, onClick, children }: { active: boolean; onClick: (
 function recipeDietaryTags(r: Recipe): Set<string> {
   const tags = new Set<string>();
   const tagSet = new Set((r.tags || []).map(t => t.toLowerCase()));
+  const ing = r.ingredients.join(" ").toLowerCase();
+
+  // Vegan / vegetarian: trust tags
   if (tagSet.has("vegan")) tags.add("Vegan");
   if (tagSet.has("vegetarian") || tagSet.has("vegan")) tags.add("Vegetarian");
-  if (tagSet.has("gluten-free") || tagSet.has("gf")) tags.add("Gluten-free");
-  if (tagSet.has("dairy-free") || tagSet.has("df") || tagSet.has("vegan")) tags.add("Dairy-free");
-  const ing = r.ingredients.join(" ").toLowerCase();
-  if (!/\b(almond|peanut|cashew|hazelnut|walnut|pecan|pistachio|macadamia|brazil nut)\b/.test(ing)) tags.add("Nut-free");
-  if (!/\b(eggs?|omelette)\b/.test(ing)) tags.add("Egg-free");
+
+  // Gluten-free: detect by absence of gluten-containing ingredients (most recipes lack the tag)
+  const glutenStripped = ing
+    .replace(/gluten[-\s]?free\s+\w+/g, "")
+    .replace(/\b(tamari|coconut aminos)\b/g, "");
+  const hasGluten = /\b(wheat\b|bread\b|breadcrumb|pasta|spaghetti|noodle|udon|ramen|couscous|barley|rye\b|bulgur|farro|seitan|panko|tortilla|wrap\b|pita|pastry|cracker|flour|soy sauce|teriyaki|hoisin)/.test(glutenStripped);
+  if (tagSet.has("gluten-free") || tagSet.has("gf") || !hasGluten) tags.add("Gluten-free");
+
+  // Dairy-free: strip plant milks first, then check for dairy
+  const dairyStripped = ing.replace(/\b(oat|almond|soy|coconut|cashew|rice|hemp|pea)\s*milk\b/g, "");
+  const hasDairy = /\b(milk|cheese|butter\b|yogurt|yoghurt|cream\b|paneer|ghee|parmesan|feta|mozzarella|ricotta|halloumi|labneh|cottage cheese|sour cream|kefir|buttermilk)/.test(dairyStripped);
+  if (tagSet.has("dairy-free") || tagSet.has("df") || tagSet.has("vegan") || !hasDairy) tags.add("Dairy-free");
+
+  if (!/\b(almond|peanut|cashew|hazelnut|walnut|pecan|pistachio|macadamia|brazil nut|pine nut|nut butter)\b/.test(ing)) tags.add("Nut-free");
+  if (!/\b(eggs?|omelette|frittata)\b/.test(ing)) tags.add("Egg-free");
   return tags;
 }
 
@@ -272,21 +285,6 @@ export default function DiscoverTab() {
         />
       </div>
 
-      {/* Quick dietary chips — always visible for one-tap filtering */}
-      <div className="scroll-snap-x flex gap-1.5 -mx-1 px-1 overflow-x-auto">
-        {DIETARY_OPTIONS.map(d => (
-          <button
-            key={d}
-            onClick={() => { haptic("light"); toggleSetItem(dietary, d, setDietary); }}
-            className={`scroll-snap-item flex-shrink-0 touch-btn rounded-full px-3 py-1.5 font-body text-xs font-medium transition-all whitespace-nowrap ${
-              dietary.has(d) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-            }`}
-          >
-            {d}
-          </button>
-        ))}
-      </div>
-
       <div className="space-y-2">
         <button
           onClick={() => { haptic("light"); setFiltersOpen(o => !o); }}
@@ -301,23 +299,6 @@ export default function DiscoverTab() {
                 {activeFilterCount}
               </span>
             )}
-            {/* Quick toggles outside the dropdown for one-tap access */}
-            <span
-              role="checkbox"
-              aria-checked={kidsMode}
-              onClick={(e) => { e.stopPropagation(); haptic("light"); setKidsMode(v => !v); }}
-              className={`ml-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${kidsMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
-            >
-              <Baby className="h-3 w-3" /> Kids
-            </span>
-            <span
-              role="checkbox"
-              aria-checked={lunchboxMode}
-              onClick={(e) => { e.stopPropagation(); haptic("light"); setLunchboxMode(v => !v); }}
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-body text-[11px] font-medium transition-all ${lunchboxMode ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}
-            >
-              🥪 Lunchbox & freezer
-            </span>
           </span>
           <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
         </button>
