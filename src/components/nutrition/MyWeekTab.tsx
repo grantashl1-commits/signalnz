@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby, Pencil, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby, Pencil, RotateCcw, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import MealPrepGuide from "./MealPrepGuide";
 import { useCycle } from "@/contexts/CycleContext";
@@ -29,7 +29,7 @@ import PrepPreferences from "./PrepPreferences";
 import SmartShoppingList from "./SmartShoppingList";
 import KidsDinnerAlt from "./KidsDinnerAlt";
 import WeekAtAGlance from "./WeekAtAGlance";
-import TodayQuickLogStrip from "./TodayQuickLogStrip";
+import { exportWeekPdf } from "@/lib/export-week-pdf";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -606,6 +606,36 @@ export default function MyWeekTab() {
             </button>
           )}
           <button
+            onClick={() => {
+              haptic("light");
+              const phaseLabel = days[0]?.phase ? days[0].phase.charAt(0).toUpperCase() + days[0].phase.slice(1) : "";
+              const start = days[0]?.date;
+              const end = days[days.length - 1]?.date;
+              const fmt = (d: Date) => d.toLocaleDateString("en-NZ", { day: "numeric", month: "long" });
+              const weekLabel = start && end ? `${fmt(start)} – ${fmt(end)}` : "Week";
+              exportWeekPdf(
+                days.map(d => ({
+                  dayName: d.dayName,
+                  dateLabel: d.date.toLocaleDateString("en-NZ", { day: "numeric", month: "long" }),
+                  cycleDay: d.cycleDay,
+                  phaseLabel: d.phase,
+                  breakfast: d.breakfast,
+                  morningSnack: d.morningSnack || PHASE_SNACKS[d.phase].morning,
+                  lunch: d.lunch,
+                  afternoonSnack: d.afternoonSnack || PHASE_SNACKS[d.phase].afternoon,
+                  dinner: d.dinner,
+                })),
+                { weekLabel, phaseLabel }
+              );
+              toast.success("Week PDF ready.");
+            }}
+            className="font-body text-xs text-primary underline flex items-center gap-1"
+            title="Download a printable PDF of this week"
+          >
+            <Download className="h-3 w-3" />
+            Download PDF
+          </button>
+          <button
             onClick={() => { haptic("light"); setStep("shop"); }}
             className="font-body text-xs text-primary underline"
           >
@@ -681,9 +711,6 @@ export default function MyWeekTab() {
                     : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   }
                 </div>
-                {day.isToday && (
-                  <TodayQuickLogStrip dateStr={day.dateStr} phaseColor={dayPhaseColor} />
-                )}
               </button>
 
               <AnimatePresence>
