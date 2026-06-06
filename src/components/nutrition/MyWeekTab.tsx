@@ -625,7 +625,7 @@ export default function MyWeekTab() {
                   afternoonSnack: d.afternoonSnack || PHASE_SNACKS[d.phase].afternoon,
                   dinner: d.dinner,
                 })),
-                { weekLabel, phaseLabel }
+                { weekLabel, phaseLabel, adults: aiPlan?.prepPreferences?.adults ?? 1, kids: aiPlan?.prepPreferences?.kids ?? 0 }
               );
               toast.success("Week PDF ready.");
             }}

@@ -8,7 +8,13 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { AIMeal } from "./weekly-planner";
 import { findRecipeByName } from "./recipe-index";
-import type { Recipe } from "@/data/meal-plans";
+import {
+  CATEGORY_META,
+  CATEGORY_ORDER,
+  aggregateShoppingItems,
+  formatSmartQty,
+} from "./smart-shopping-core";
+import { parseIngredient } from "./ingredient-parser";
 
 // Warm Stone palette
 const COLORS = {
@@ -53,33 +59,6 @@ function resolveMeal(meal: string | AIMeal | null | undefined): ResolvedMeal | n
   return { name: meal.name, ingredients, method, serves: meal.serves || r?.serves, prepTime: meal.prepTime || r?.prepTime };
 }
 
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  Produce: ["onion","garlic","ginger","tomato","spinach","kale","silverbeet","broccoli","broccolini","capsicum","pepper","carrot","potato","kumara","kūmara","courgette","zucchini","eggplant","mushroom","avocado","banana","apple","berry","berries","lemon","lime","mango","kiwifruit","cucumber","asparagus","bok choy","pumpkin","beetroot","cabbage","rocket","spring onion","coriander","parsley","mint","basil","chilli","pear","orange","fruit","lettuce","celery","leek","fennel","radish","salad"],
-  "Meat & Seafood": ["chicken","beef","mince","lamb","pork","fish","salmon","tuna","prawn","turkey","cod","sausage","bacon"],
-  "Dairy & Eggs": ["milk","yoghurt","yogurt","cream","cheese","butter","feta","haloumi","egg"],
-  Pantry: ["coconut milk","coconut oil","olive oil","sesame oil","tamari","soy sauce","miso","mirin","maple syrup","honey","vinegar","stock","tomato paste","canned","tinned","peanut butter","almond butter","tahini","chocolate","cacao","vanilla","flour","sugar","rice","pasta","noodle","oat","quinoa","bread","wrap","wholemeal","lentil","chickpea","bean","seed","nut","spice","salt","pepper","cumin","paprika","turmeric","cinnamon"],
-  "Plant Protein": ["tofu","tempeh","edamame"],
-  Frozen: ["frozen"],
-};
-
-function categorise(name: string): string {
-  const l = name.toLowerCase();
-  for (const [cat, kws] of Object.entries(CATEGORY_KEYWORDS)) {
-    if (kws.some(k => l.includes(k))) return cat;
-  }
-  return "Other";
-}
-
-// Strip quantity prefix to dedupe ("250g oats" + "1 cup oats" → "oats")
-function ingredientBase(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/^[\d\s./¼½¾⅓⅔⅛⅜⅝⅞]+/, "")
-    .replace(/^(g|kg|ml|l|tbsp|tbs|tsp|cup|cups|oz|slice|slices|clove|cloves|piece|pieces|can|cans|packet|tablespoon|teaspoon|handful|pinch|dash|sprig|stick|bunch)\b\s*/i, "")
-    .replace(/,.*$/, "")
-    .replace(/\(.*?\)/g, "")
-    .trim();
-}
 
 function drawHeader(doc: jsPDF, title: string, subtitle?: string) {
   const pw = doc.internal.pageSize.getWidth();
@@ -126,12 +105,16 @@ function drawFooter(doc: jsPDF) {
 export interface WeekPdfMeta {
   weekLabel: string; // e.g. "5 – 11 June"
   phaseLabel: string;
+  /** Household size — drives quantity scaling so the printable list matches the in-app SmartShoppingList. */
+  adults?: number;
+  kids?: number;
 }
 
 export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pw = doc.internal.pageSize.getWidth();
   const ph = doc.internal.pageSize.getHeight();
+
 
   // ─── PAGE 1: Weekly grid ───
   drawHeader(doc, "Your Week", `${meta.phaseLabel} · ${meta.weekLabel}`);
@@ -289,49 +272,40 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     drawFooter(doc);
   }
 
-  // ─── LAST PAGE: Shopping list ───
-  // Aggregate all ingredients across all meals (Breakfast/Lunch/Dinner; snacks skipped)
-  const itemMap = new Map<string, { display: string; count: number; category: string }>();
+  // ─── LAST PAGE: Shopping list (uses the same logic as SmartShoppingList) ───
+  const adults = Math.max(1, meta.adults ?? 1);
+  const kids = Math.max(0, meta.kids ?? 0);
+  const servingMultiplier = adults + kids * 0.6;
+
+  // Collect resolved meals — all five slots, mirroring the in-app list.
+  const mealsForList: Array<{ ingredients: string[]; serves?: number } | null> = [];
   for (const day of days) {
-    for (const m of [day.breakfast, day.lunch, day.dinner]) {
+    for (const m of [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]) {
       const r = resolveMeal(m);
-      if (!r) continue;
-      for (const ing of r.ingredients) {
-        const base = ingredientBase(ing);
-        if (!base) continue;
-        const key = base;
-        const existing = itemMap.get(key);
-        if (existing) {
-          existing.count += 1;
-        } else {
-          itemMap.set(key, { display: ing, count: 1, category: categorise(base) });
-        }
+      if (r && r.ingredients.length) {
+        mealsForList.push({ ingredients: r.ingredients, serves: r.serves });
       }
     }
   }
 
-  // Group by category
-  const groups: Record<string, Array<{ display: string; count: number }>> = {};
-  for (const item of itemMap.values()) {
-    if (!groups[item.category]) groups[item.category] = [];
-    groups[item.category].push({ display: item.display, count: item.count });
-  }
-  const orderedCats = ["Produce", "Meat & Seafood", "Plant Protein", "Dairy & Eggs", "Pantry", "Frozen", "Other"]
-    .filter(c => groups[c]?.length);
+  const groups = aggregateShoppingItems(
+    { meals: mealsForList, servingMultiplier },
+    parseIngredient,
+  );
+  const orderedCats = CATEGORY_ORDER.filter(c => groups[c]?.length);
+  const totalItems = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
 
   doc.addPage();
-  drawHeader(doc, "Shopping List", `${meta.weekLabel} · ${itemMap.size} items`);
+  drawHeader(doc, "Shopping List", `${meta.weekLabel} · ${totalItems} items`);
 
-  let sy = 32;
+  const sy = 32;
   const colCount = 2;
   const colWidth = (pw - 30) / colCount;
   let col = 0;
-  let colStartY = sy;
   const colYs = [sy, sy];
 
   for (const cat of orderedCats) {
-    const items = groups[cat].sort((a, b) => a.display.localeCompare(b.display));
-    // Estimate height: header + items
+    const items = groups[cat].slice().sort((a, b) => a.name.localeCompare(b.name));
     const blockH = 8 + items.length * 4.2 + 4;
     if (colYs[col] + blockH > ph - 18 && col === 0) {
       col = 1;
@@ -345,7 +319,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text(cat.toUpperCase(), x + 2, yy + 4.2);
+    doc.text((CATEGORY_META[cat] || cat).toUpperCase(), x + 2, yy + 4.2);
     doc.setFontSize(8);
     doc.text(`${items.length}`, x + colWidth - 6, yy + 4.2, { align: "right" });
     yy += 8;
@@ -373,8 +347,9 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
       doc.setDrawColor(...COLORS.muted);
       doc.setLineWidth(0.2);
       doc.rect(xx + 1, yy - 3, 2.5, 2.5);
-      // text
-      const label = item.count > 1 ? `${item.display}  ×${item.count}` : item.display;
+      // text — "Item · 250 g" matches in-app formatting
+      const qtyLabel = formatSmartQty(item.totalQty, item.unit, item.name);
+      const label = qtyLabel ? `${item.name} · ${qtyLabel}` : item.name;
       const wrapped = doc.splitTextToSize(label, colWidth - 10);
       doc.text(wrapped, xx + 5.5, yy);
       yy += wrapped.length * 4;
@@ -387,3 +362,4 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
 
   doc.save(`signal-week-${meta.weekLabel.replace(/[^\w]+/g, "-").toLowerCase()}.pdf`);
 }
+
