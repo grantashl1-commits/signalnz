@@ -523,7 +523,7 @@ export default function MyWeekTab() {
           </button>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mt-1">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 mt-1 px-2">
           {/* Week quick-nav */}
           {aiPlan && (
             <div className="flex items-center gap-1">
