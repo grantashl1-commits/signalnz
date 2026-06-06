@@ -284,15 +284,15 @@ export default function MovementPage() {
           </div>
 
           {/* Selected training path → next session card with HR connect */}
-          <SelectedPathTodayCard onOpenHR={() => setShowHR(true)} />
+          <SelectedPathTodayCard onOpenHR={openLiveHR} />
 
         </div>
       )}
 
-      {/* Floating HR indicator when connected but modal closed */}
-      {!showHR && globalHR.connected && (
+      {/* Floating HR indicator when connected — opens / restores the live overlay */}
+      {globalHR.connected && !globalHR.live.open && (
         <button
-          onClick={() => setShowHR(true)}
+          onClick={openLiveHR}
           className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 shadow-lg animate-pulse"
         >
           <Heart className="h-4 w-4 text-primary-foreground" />
