@@ -105,12 +105,16 @@ function drawFooter(doc: jsPDF) {
 export interface WeekPdfMeta {
   weekLabel: string; // e.g. "5 – 11 June"
   phaseLabel: string;
+  /** Household size — drives quantity scaling so the printable list matches the in-app SmartShoppingList. */
+  adults?: number;
+  kids?: number;
 }
 
 export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pw = doc.internal.pageSize.getWidth();
   const ph = doc.internal.pageSize.getHeight();
+
 
   // ─── PAGE 1: Weekly grid ───
   drawHeader(doc, "Your Week", `${meta.phaseLabel} · ${meta.weekLabel}`);
