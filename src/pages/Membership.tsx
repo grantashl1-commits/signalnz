@@ -97,7 +97,7 @@ const TIERS = [
         title: "Unlocked",
         features: [
           "5 knowledge posts per day",
-          "Full cycle logging, phase guidance & AI insights",
+          "Full cycle logging & phase guidance",
           "Hormone Education Hub",
           "AI Signal, AMA & Give a Signal",
           "366-day Stoic readings & journal",
