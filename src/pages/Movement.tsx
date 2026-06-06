@@ -408,7 +408,7 @@ export default function MovementPage() {
       {/* Floating HR button — only when not connected (avoid dupes with TodaySession's inline control) */}
       {(activeTab === "today" || activeTab === "library") && !globalHR.connected && (
         <button
-          onClick={() => setShowHR(true)}
+          onClick={openLiveHR}
           aria-label="Open heart-rate session"
           className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-40 touch-btn h-14 w-14 rounded-full bg-primary shadow-lg flex items-center justify-center"
         >
