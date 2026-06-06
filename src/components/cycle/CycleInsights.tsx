@@ -27,6 +27,15 @@ function addDays(d: Date, n: number): Date {
   return x;
 }
 
+function StatRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-2 border-b border-border/40 last:border-b-0">
+      <span className="font-body text-xs text-muted-foreground leading-snug">{label}</span>
+      <span className="font-body text-sm text-foreground font-medium tabular-nums whitespace-nowrap">{value}</span>
+    </div>
+  );
+}
+
 export default function CycleInsights({ cycleStartDate }: Props) {
   const cycles = useMemo(() => {
     if (!cycleStartDate) return [];
@@ -291,15 +300,6 @@ export default function CycleInsights({ cycleStartDate }: Props) {
           ))}
         </div>
       </motion.div>
-    </div>
-  );
-}
-
-function StatRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3 py-2 border-b border-border/40 last:border-b-0">
-      <span className="font-body text-xs text-muted-foreground leading-snug">{label}</span>
-      <span className="font-body text-sm text-foreground font-medium tabular-nums whitespace-nowrap">{value}</span>
     </div>
   );
 }
