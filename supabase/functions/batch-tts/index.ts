@@ -20,10 +20,26 @@ const REGINA_VOICE_ID = "M7wzTk2Y1hGQyRzr9sbS";
 const THEO_VOICE_ID = "UmQN7jS1Ee8B1czsUtQh";
 const ALLOWED_VOICES = new Set([REGINA_VOICE_ID, THEO_VOICE_ID]);
 
+const DEFAULT_SETTINGS = {
+  stability: 0.58,
+  similarity_boost: 0.74,
+  style: 0.2,
+  use_speaker_boost: true,
+  speed: 0.88,
+};
+const SLEEP_SETTINGS = {
+  stability: 0.85,
+  similarity_boost: 0.78,
+  style: 0.05,
+  use_speaker_boost: false,
+  speed: 0.75,
+};
+
 async function generateOne(
   apiKey: string,
   text: string,
-  voiceId: string
+  voiceId: string,
+  voiceSettings: Record<string, number | boolean>
 ): Promise<ArrayBuffer> {
   const resp = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
@@ -36,13 +52,7 @@ async function generateOne(
       body: JSON.stringify({
         text,
         model_id: "eleven_multilingual_v2",
-        voice_settings: {
-          stability: 0.85,
-          similarity_boost: 0.6,
-          style: 0.15,
-          use_speaker_boost: false,
-          speed: 0.75,
-        },
+        voice_settings: voiceSettings,
       }),
     }
   );
@@ -83,10 +93,11 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { items, bucket_prefix, voice_id } = await req.json() as {
+    const { items, bucket_prefix, voice_id, is_sleep } = await req.json() as {
       items: { id: string; text: string }[];
       bucket_prefix?: string;
       voice_id?: string;
+      is_sleep?: boolean;
     };
 
     if (!items?.length) {
@@ -98,31 +109,28 @@ Deno.serve(async (req) => {
 
     const resolvedVoiceId =
       voice_id && ALLOWED_VOICES.has(voice_id) ? voice_id : REGINA_VOICE_ID;
+    const voiceSettings = is_sleep ? SLEEP_SETTINGS : DEFAULT_SETTINGS;
     const prefix = bucket_prefix || "practices";
     const results: { id: string; status: string; url?: string }[] = [];
 
     for (const item of items) {
       const filePath = `${prefix}/${item.id}.mp3`;
+      const fileName = `${item.id}.mp3`;
 
-      // Check if already cached
-      const { data: urlData } = supabase.storage
+      // Check if already cached (private bucket → use list)
+      const { data: existing } = await supabase.storage
         .from("practice-audio")
-        .getPublicUrl(filePath);
+        .list(prefix, { search: fileName, limit: 1 });
 
-      if (urlData?.publicUrl) {
-        try {
-          const head = await fetch(urlData.publicUrl, { method: "HEAD" });
-          if (head.ok) {
-            results.push({ id: item.id, status: "cached", url: urlData.publicUrl });
-            continue;
-          }
-        } catch { /* not cached */ }
+      if (existing && existing.length > 0) {
+        results.push({ id: item.id, status: "cached" });
+        continue;
       }
 
       // Generate
       try {
         console.log(`Generating: ${item.id} (${item.text.length} chars, voice ${resolvedVoiceId.slice(0,8)})`);
-        const audio = await generateOne(ELEVENLABS_API_KEY, item.text, resolvedVoiceId);
+        const audio = await generateOne(ELEVENLABS_API_KEY, item.text, resolvedVoiceId, voiceSettings);
 
         const { error: uploadErr } = await supabase.storage
           .from("practice-audio")
