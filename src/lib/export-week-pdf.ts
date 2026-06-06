@@ -272,49 +272,40 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     drawFooter(doc);
   }
 
-  // ─── LAST PAGE: Shopping list ───
-  // Aggregate all ingredients across all meals (Breakfast/Lunch/Dinner; snacks skipped)
-  const itemMap = new Map<string, { display: string; count: number; category: string }>();
+  // ─── LAST PAGE: Shopping list (uses the same logic as SmartShoppingList) ───
+  const adults = Math.max(1, meta.adults ?? 1);
+  const kids = Math.max(0, meta.kids ?? 0);
+  const servingMultiplier = adults + kids * 0.6;
+
+  // Collect resolved meals — all five slots, mirroring the in-app list.
+  const mealsForList: Array<{ ingredients: string[]; serves?: number } | null> = [];
   for (const day of days) {
-    for (const m of [day.breakfast, day.lunch, day.dinner]) {
+    for (const m of [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]) {
       const r = resolveMeal(m);
-      if (!r) continue;
-      for (const ing of r.ingredients) {
-        const base = ingredientBase(ing);
-        if (!base) continue;
-        const key = base;
-        const existing = itemMap.get(key);
-        if (existing) {
-          existing.count += 1;
-        } else {
-          itemMap.set(key, { display: ing, count: 1, category: categorise(base) });
-        }
+      if (r && r.ingredients.length) {
+        mealsForList.push({ ingredients: r.ingredients, serves: r.serves });
       }
     }
   }
 
-  // Group by category
-  const groups: Record<string, Array<{ display: string; count: number }>> = {};
-  for (const item of itemMap.values()) {
-    if (!groups[item.category]) groups[item.category] = [];
-    groups[item.category].push({ display: item.display, count: item.count });
-  }
-  const orderedCats = ["Produce", "Meat & Seafood", "Plant Protein", "Dairy & Eggs", "Pantry", "Frozen", "Other"]
-    .filter(c => groups[c]?.length);
+  const groups = aggregateShoppingItems(
+    { meals: mealsForList, servingMultiplier },
+    parseIngredient,
+  );
+  const orderedCats = CATEGORY_ORDER.filter(c => groups[c]?.length);
+  const totalItems = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
 
   doc.addPage();
-  drawHeader(doc, "Shopping List", `${meta.weekLabel} · ${itemMap.size} items`);
+  drawHeader(doc, "Shopping List", `${meta.weekLabel} · ${totalItems} items`);
 
-  let sy = 32;
+  const sy = 32;
   const colCount = 2;
   const colWidth = (pw - 30) / colCount;
   let col = 0;
-  let colStartY = sy;
   const colYs = [sy, sy];
 
   for (const cat of orderedCats) {
-    const items = groups[cat].sort((a, b) => a.display.localeCompare(b.display));
-    // Estimate height: header + items
+    const items = groups[cat].slice().sort((a, b) => a.name.localeCompare(b.name));
     const blockH = 8 + items.length * 4.2 + 4;
     if (colYs[col] + blockH > ph - 18 && col === 0) {
       col = 1;
@@ -328,7 +319,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text(cat.toUpperCase(), x + 2, yy + 4.2);
+    doc.text((CATEGORY_META[cat] || cat).toUpperCase(), x + 2, yy + 4.2);
     doc.setFontSize(8);
     doc.text(`${items.length}`, x + colWidth - 6, yy + 4.2, { align: "right" });
     yy += 8;
@@ -356,8 +347,9 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
       doc.setDrawColor(...COLORS.muted);
       doc.setLineWidth(0.2);
       doc.rect(xx + 1, yy - 3, 2.5, 2.5);
-      // text
-      const label = item.count > 1 ? `${item.display}  ×${item.count}` : item.display;
+      // text — "Item · 250 g" matches in-app formatting
+      const qtyLabel = formatSmartQty(item.totalQty, item.unit, item.name);
+      const label = qtyLabel ? `${item.name} · ${qtyLabel}` : item.name;
       const wrapped = doc.splitTextToSize(label, colWidth - 10);
       doc.text(wrapped, xx + 5.5, yy);
       yy += wrapped.length * 4;
@@ -370,3 +362,4 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
 
   doc.save(`signal-week-${meta.weekLabel.replace(/[^\w]+/g, "-").toLowerCase()}.pdf`);
 }
+
