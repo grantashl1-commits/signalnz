@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { getPhaseFromDay, Phase } from "@/lib/cycle-utils";
+import { getPhaseFromDay, getPeriodEnd, getPeriodLength, Phase } from "@/lib/cycle-utils";
+import { getStructuredSymptoms } from "@/lib/cycle-symptom-utils";
 
 interface Props {
   cycleStartDate: string;
