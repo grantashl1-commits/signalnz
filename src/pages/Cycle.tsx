@@ -250,27 +250,9 @@ export default function CyclePage() {
         {activeTab === "today" && (
           <div className="space-y-8 md:space-y-10">
             {hasDateSet && cycleMode !== "post-menopause" && (
-              <>
-                <PhaseCountdownBanner cycleDay={info.cycleDay} phase={info.phase} />
-                <QuickLogPills
-                  dateStr={todayStr}
-                  phase={info.phase}
-                  onOpenFull={() => setShowSymptomTracker(true)}
-                  onChange={() => setRefreshKey((k) => k + 1)}
-                />
-                <Last28DaysMiniDashboard key={refreshKey} cycleStartDate={lastPeriod} />
-                <WhatsComingNext cycleDay={info.cycleDay} />
-                <details className="group">
-                  <summary className="cursor-pointer font-display text-sm italic text-muted-foreground flex items-center gap-2 py-2 list-none">
-                    <span className="inline-block group-open:rotate-90 transition-transform">▸</span>
-                    More about this phase
-                  </summary>
-                  <div className="mt-4">
-                    <PhaseDashboard phase={info.phase} cycleDay={info.cycleDay} />
-                  </div>
-                </details>
-              </>
+              <PhaseCountdownBanner cycleDay={info.cycleDay} phase={info.phase} />
             )}
+
 
             {cycleMode === "perimenopause" && (
               <PerimenopauseMode onNavigateToTraining={() => navigate("/movement")} />
