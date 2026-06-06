@@ -672,8 +672,9 @@ export default function LiveHRView() {
       <div className="max-w-lg mx-auto px-5 py-6 space-y-5">
         <div className="flex items-center justify-between">
           <p className="font-body text-sm text-muted-foreground">{workoutName}</p>
-          <button onClick={handleClose} className="touch-btn p-2 rounded-full bg-secondary">
-            <X className="h-4 w-4 text-muted-foreground" />
+          <button onClick={handleMinimize} className="touch-btn p-2 rounded-full bg-secondary inline-flex items-center gap-1" aria-label="Minimize — keep recording in background">
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <span className="font-body text-[10px] uppercase tracking-wider text-muted-foreground pr-1">Minimize</span>
           </button>
         </div>
 
