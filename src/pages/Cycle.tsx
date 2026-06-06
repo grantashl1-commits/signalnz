@@ -9,7 +9,7 @@ import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 
 import { CymatiSketch, MoonPhaseRow, HandUnderline } from "@/components/BotanicalElements";
 import CalendarDaySheet from "@/components/CalendarDaySheet";
-import InsightsTab from "@/components/InsightsTab";
+
 import { useCycle } from "@/contexts/CycleContext";
 import {
   setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
@@ -269,7 +269,7 @@ export default function CyclePage() {
                 </summary>
                 <div className="mt-4 space-y-6">
                   <CycleInsights cycleStartDate={lastPeriod} />
-                  <InsightsTab />
+
                 </div>
               </details>
             )}
