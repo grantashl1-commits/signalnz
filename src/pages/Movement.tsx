@@ -184,17 +184,18 @@ export default function MovementPage() {
     { id: "progress" as const, label: "Progress" },
   ];
 
-  if (showHR) {
-    // Prefer the active training-path session name so the HR session attaches
-    // to today's workout. Falls back to "Workout" when no path/session is set.
+  // Helper: open the live HR overlay with today's session name. The overlay is
+  // rendered globally (<LiveHRRoot />) so it persists across navigation when
+  // the user minimizes it.
+  const openLiveHR = () => {
     let liveName = todayWorkoutData?.name || "Workout";
     try {
       const path = getSelectedPath();
       const next = path ? getNextSession(path) : null;
       if (next?.session?.name) liveName = next.session.name;
     } catch {}
-    return <LiveHRView workoutName={liveName} onClose={() => setShowHR(false)} />;
-  }
+    globalHR.openLive(liveName);
+  };
 
   // Helper: find which phase a workout belongs to (for library "all" view)
   const getWorkoutPhase = (workoutId: string): Phase | null => {
