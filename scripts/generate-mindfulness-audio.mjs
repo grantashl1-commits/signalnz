@@ -39,22 +39,27 @@ function voiceFor(evidenceSource, explicit) {
   return REGINA;
 }
 
-// Extract { id, category, evidenceSource, voiceId, ttsScript } from each file.
+// Extract scripts by splitting the file on `: MeditationScript = {` boundaries.
+// Each chunk is a single object literal — easy to scan with focused regexes.
 function extract(file) {
   const src = readFileSync(file, "utf8");
+  const chunks = src.split(/:\s*MeditationScript\s*=\s*\{/g).slice(1);
   const out = [];
-  // Match each top-level object literal that has id + category + ttsScript.
-  const rx = /id:\s*"([^"]+)",[\s\S]*?category:\s*"([^"]+)",[\s\S]*?(?:evidenceSource:\s*"([^"]*)",[\s\S]*?)?(?:voiceId:\s*(\w+),[\s\S]*?)?ttsScript:\s*`([\s\S]*?)`/g;
-  let m;
-  while ((m = rx.exec(src)) !== null) {
-    const [, id, category, evidenceSource, voiceIdRef, ttsScript] = m;
+  for (const chunk of chunks) {
+    const id = chunk.match(/^\s*id:\s*"([^"]+)"/m)?.[1];
+    const category = chunk.match(/^\s*category:\s*"([^"]+)"/m)?.[1];
+    const evidenceSource = chunk.match(/^\s*evidenceSource:\s*"([^"]*)"/m)?.[1] || "";
+    const voiceIdRef = chunk.match(/^\s*voiceId:\s*(\w+)/m)?.[1];
+    // ttsScript is a tagged template string. Match the first backtick block.
+    const tts = chunk.match(/ttsScript:\s*`([\s\S]*?)`\s*,/);
+    if (!id || !category || !tts) continue;
     out.push({
       id,
       category,
-      evidenceSource: evidenceSource || "",
+      evidenceSource,
       voiceId: voiceFor(evidenceSource, voiceIdRef),
       isSleep: category === "sleep",
-      text: ttsScript.trim(),
+      text: tts[1].trim(),
     });
   }
   return out;
