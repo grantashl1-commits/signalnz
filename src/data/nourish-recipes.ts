@@ -239,7 +239,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "Pinch sea salt and chilli flakes"
     ],
     method: [
-      "Toast the rye 2 slices bread. Mash the avocado with the ½ lemon juice and a pinch of salt.",
+      "Toast the 2 slices rye bread. Mash the avocado with the ½ lemon juice and a pinch of salt.",
       "Spread onto the toast. Sprinkle with 10g hemp seeds and chilli flakes."
     ],
     phaseBenefit:
@@ -443,7 +443,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Roast the foil‑wrapped beetroot at 200°C for 30 minutes until tender. Cook 40g quinoa in 120ml water.",
-      "Peel and slice the 1 medium beetroot. Toss rocket with 1 tbsp oil and vinegar. Top with 40g quinoa, beetroot, pumpkin 1 tbsp seeds, and feta."
+      "Peel and slice the 1 medium beetroot. Toss rocket with 1 tbsp oil and vinegar. Top with 40g quinoa, beetroot, 1 tbsp pumpkin seeds, and feta."
     ],
     phaseBenefit:
       "Beetroot supports blood production; quinoa offers complete protein. The deep red is the colour of restoration — your body is making new blood, and this salad honours that work.",
@@ -589,7 +589,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook 75g noodles according to packet, rinse under cold water. Cook 50g edamame if frozen.",
-      "Whisk 1 tbsp tamari, sesame oil, 1 tsp vinegar, ginger. Toss 75g noodles, edamame, carrot, 50g cucumber with dressing. Top with sesame 1 tsp seeds."
+      "Whisk 1 tbsp tamari, sesame oil, 1 tsp vinegar, ginger. Toss 75g noodles, edamame, carrot, 50g cucumber with dressing. Top with 1 tsp sesame seeds."
     ],
     phaseBenefit:
       "Soba noodles bring magnesium and buckwheat goodness; edamame adds phytoestrogens and zinc. Light, fast, and quietly energising.",
@@ -619,7 +619,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "1 tsp sesame seeds"
     ],
     method: [
-      "Season 120g tuna with tamari and sesame ½ tsp oil. Arrange 100g rice in a bowl. Top with tuna, 50g edamame, avocado, cucumber, 1 tsp ginger, nori, and sesame 1 tsp seeds."
+      "Season 120g tuna with tamari and ½ tsp sesame oil. Arrange 100g rice in a bowl. Top with tuna, 50g edamame, avocado, cucumber, 1 tsp ginger, nori, and 1 tsp sesame seeds."
     ],
     phaseBenefit:
       "Omega‑3‑rich tuna supports the hormones your body is building; edamame adds zinc and phytoestrogens. Fresh, vibrant, and full of life.",
@@ -644,7 +644,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "1 tbsp cranberry sauce"
     ],
     method: [
-      "Spread cranberry 1 tbsp sauce on the 1 wrap. Layer turkey, avocado, and 20g salad leaves. Roll tightly, slice in half."
+      "Spread 1 tbsp cranberry sauce on the 1 wrap. Layer turkey, avocado, and 20g salad leaves. Roll tightly, slice in half."
     ],
     phaseBenefit:
       "Lean turkey brings tryptophan and B6; avocado adds the healthy fats your body uses to build hormones. A quick, portable lunch for days on the go.",
@@ -698,7 +698,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "Fresh coriander"
     ],
     method: [
-      "Toss leaves with lime 1 tbsp juice and oil. Top with 120g prawns, mango, onion, cashews, and coriander."
+      "Toss leaves with 1 tbsp lime juice and oil. Top with 120g prawns, mango, onion, cashews, and coriander."
     ],
     phaseBenefit:
       "Prawns are rich in zinc — essential for egg development — and mango adds vitamin C. A light, sunny salad that feeds the building momentum inside you.",
@@ -893,7 +893,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Dip rice paper in warm water until pliable. Layer 4 large prawns, avocado, cucumber, 40g carrot, and herbs. Roll tightly.",
-      "Serve with sweet chilli 1 tbsp sauce."
+      "Serve with sweet 1 tbsp chilli sauce."
     ],
     phaseBenefit:
       "Light, fresh, and cool — exactly what your body craves at ovulation. Prawns bring zinc and iodine to support thyroid health and egg quality.",
@@ -921,7 +921,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "1 tbsp olive oil"
     ],
     method: [
-      "Cook 40g quinoa, let cool. Combine with 50g cucumber, tomatoes, herbs, and 1 onion. Dress with lemon 1 tbsp juice and oil."
+      "Cook 40g quinoa, let cool. Combine with 50g cucumber, tomatoes, herbs, and 1 onion. Dress with 1 tbsp lemon juice and oil."
     ],
     phaseBenefit:
       "Quinoa provides complete protein and zinc; fresh herbs bring folate — the nutrient your body needs for egg health. A celebration in a bowl.",
@@ -1155,7 +1155,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Bake sweet potato at 200°C for 35 min. Massage cabbage and carrot with tahini, lemon juice, and oil.",
-      "Split sweet 1 medium potato, fill with slaw, top with pumpkin 1 tbsp seeds."
+      "Split sweet 1 medium potato, fill with slaw, top with 1 tbsp pumpkin seeds."
     ],
     phaseBenefit:
       "Sweet potato is rich in B6 for progesterone; tahini adds calcium and magnesium. A bowl that holds you steady.",
@@ -1214,7 +1214,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook spaghetti. Sauté onion, garlic, carrot in oil. Add lentils, tomatoes, oregano, and 150ml water. Simmer 20 min until thick.",
-      "Serve sauce over 60g spaghetti, top with nutritional 1 tbsp yeast if using."
+      "Serve sauce over 60g spaghetti, top with 1 tbsp nutritional yeast if using."
     ],
     phaseBenefit:
       "Iron‑rich lentils with vitamin C from tomatoes for absorption. A plant‑based bolognese that builds you up from the inside.",
@@ -1301,7 +1301,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Boil eggs 7 min, cool, peel, halve. Arrange rice, eggs, avocado, and broccoli in a bowl.",
-      "Drizzle with 1 tsp tamari and sesame oil, sprinkle with sesame 1 tsp seeds."
+      "Drizzle with 1 tsp tamari and sesame oil, sprinkle with 1 tsp sesame seeds."
     ],
     phaseBenefit:
       "Eggs bring choline and complete protein; broccoli supports oestrogen metabolism. A simple bowl that builds.",
@@ -1415,8 +1415,8 @@ export const NOURISH_RECIPES: Recipe[] = [
       "Fresh coriander"
     ],
     method: [
-      "Cook 80g noodles. Whisk tamari, maple, peanut 1 tbsp butter, lime juice. Pan‑fry 100g tofu in sesame oil until golden.",
-      "Toss 80g noodles and 100g tofu with sauce. Top with bean 50g sprouts, peanuts, and coriander."
+      "Cook 80g noodles. Whisk tamari, maple, 1 tbsp peanut butter, lime juice. Pan‑fry 100g tofu in sesame oil until golden.",
+      "Toss 80g noodles and 100g tofu with sauce. Top with 50g bean sprouts, peanuts, and coriander."
     ],
     phaseBenefit:
       "Tofu’s phytoestrogens complement rising oestrogen. This is the noodle bowl that tastes like a Friday night but feeds your follicular phase.",
@@ -1509,7 +1509,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "1 sprig fresh thyme"
     ],
     method: [
-      "Brown beef in 1 tbsp oil. Sauté onion. Add garlic, sweet 150g potato, carrot, tomato 1 tbsp paste, stock, thyme. Bring to simmer.",
+      "Brown beef in 1 tbsp oil. Sauté onion. Add garlic, 150g sweet potato, carrot, 1 tbsp tomato paste, stock, thyme. Bring to simmer.",
       "Cover, cook on low heat 1½ hours until beef is tender. Season."
     ],
     phaseBenefit:
@@ -1854,7 +1854,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook spaghetti. Sauté onion, garlic, carrot in oil. Add lentils, tomatoes, oregano, and 150ml water. Simmer 20 min until thick.",
-      "Serve over 60g spaghetti, top with nutritional 1 tbsp yeast."
+      "Serve over 60g spaghetti, top with 1 tbsp nutritional yeast."
     ],
     phaseBenefit:
       "Plant‑based and iron‑rich — the tomatoes add vitamin C for absorption. A dinner that builds you up.",
@@ -1882,7 +1882,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Dip chicken in egg, then breadcrumbs. Pan‑fry in oil 4‑5 min each side until golden and cooked through.",
-      "Serve with sweet 200g potato mash and green beans, and a squeeze of lemon."
+      "Serve with 200g sweet potato mash and green beans, and a squeeze of lemon."
     ],
     phaseBenefit:
       "Lean protein with B6‑rich sweet potato — fuel for the building energy of this phase. Crispy, comforting, and satisfying.",
@@ -1996,7 +1996,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook quinoa. Toss vegetables in ½ tbsp oil, roast at 200°C 15 min. Grill chicken 6 min each side, slice.",
-      "Assemble bowl with 40g quinoa, chicken, veg, and 20g hummus. Drizzle with lemon 1 tbsp juice."
+      "Assemble bowl with 40g quinoa, chicken, veg, and 20g hummus. Drizzle with 1 tbsp lemon juice."
     ],
     phaseBenefit:
       "Quinoa and chicken together form a complete protein — ideal for the building follicular phase. The hummus adds zinc and fibre.",
@@ -2286,7 +2286,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "1 tsp sesame seeds"
     ],
     method: [
-      "Season 100g rice with vinegar. Arrange all toppings over rice. Drizzle 1 tsp tamari and sesame oil, scatter sesame 1 tsp seeds."
+      "Season 100g rice with vinegar. Arrange all toppings over rice. Drizzle 1 tsp tamari and sesame oil, scatter 1 tsp sesame seeds."
     ],
     phaseBenefit:
       "Colourful, light, and full of life — like the ovulatory phase. Edamame brings zinc; mango and avocado add antioxidants and healthy fats.",
@@ -2317,7 +2317,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "1 tsp fresh thyme"
     ],
     method: [
-      "Brown beef in 1 tbsp oil. Sauté onion. Add vegetables, tomato 1 tbsp paste, stock, thyme. Return beef.",
+      "Brown beef in 1 tbsp oil. Sauté onion. Add vegetables, 1 tbsp tomato paste, stock, thyme. Return beef.",
       "Cover, cook on low heat 2 hours until tender."
     ],
     phaseBenefit:
@@ -2402,7 +2402,7 @@ export const NOURISH_RECIPES: Recipe[] = [
       "80g egg noodles (dry weight), cooked"
     ],
     method: [
-      "Cook 80g noodles. Sear beef in 1 tsp butter, set aside. Sauté 50g onion and 100g mushrooms. Add stock, sour 2 tbsp cream, mustard.",
+      "Cook 80g noodles. Sear beef in 1 tsp butter, set aside. Sauté 50g onion and 100g mushrooms. Add stock, 2 tbsp sour cream, mustard.",
       "Return beef, warm through. Serve over 80g noodles."
     ],
     phaseBenefit:
@@ -2840,7 +2840,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Cook pasta. Sauté onion, garlic, mushrooms in oil. Add paprika, chickpeas, stock; simmer 10 min.",
-      "Stir in sour 2 tbsp cream off the heat. Toss with 80g pasta, top with parsley."
+      "Stir in 2 tbsp sour cream off the heat. Toss with 80g pasta, top with parsley."
     ],
     phaseBenefit:
       "Mushrooms bring B vitamins; chickpeas add magnesium to ease PMS. The creamy sauce answers the luteal craving without the crash.",
@@ -2933,7 +2933,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Brush cod with mustard, coat with breadcrumbs and thyme. Bake at 220°C for 12‑14 min.",
-      "Warm 100g beans in stock, mash roughly with olive 1 tsp oil. Serve fish on mash with lemon."
+      "Warm 100g beans in stock, mash roughly with 1 tsp olive oil. Serve fish on mash with lemon."
     ],
     phaseBenefit:
       "Cod is light and easily digestible; cannellini beans add plant protein and B vitamins. Clean, fresh, and building.",
@@ -2989,7 +2989,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     ],
     method: [
       "Marinate tempeh in teriyaki 10 min. Pan‑fry in sesame oil until caramelised.",
-      "Cook 50g rice. Steam broccoli. Serve 120g tempeh over rice with broccoli and sesame 1 tsp seeds."
+      "Cook 50g rice. Steam broccoli. Serve 120g tempeh over rice with broccoli and 1 tsp sesame seeds."
     ],
     phaseBenefit:
       "Tempeh is fermented soy — complete protein and live probiotics for the follicular gut‑hormone axis. Fast and full of life.",
