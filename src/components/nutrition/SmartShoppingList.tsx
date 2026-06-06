@@ -303,7 +303,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
   const allItems = Object.values(categories).flat();
   const totalItems = allItems.length;
   const checkedCount = Object.values(checkedItems).filter(Boolean).length;
-  const categoryOrder = ["produce", "protein", "dairy", "pantry", "frozen", "other"];
+  const categoryOrder = CATEGORY_ORDER;
 
   const handleCopy = async () => {
     haptic("medium");
