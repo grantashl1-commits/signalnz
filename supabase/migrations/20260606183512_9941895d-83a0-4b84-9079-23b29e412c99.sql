@@ -1,0 +1,1 @@
+DELETE FROM public.feed_posts WHERE id = '93436d0c-5b1d-4076-ab93-2757080e6b28';
