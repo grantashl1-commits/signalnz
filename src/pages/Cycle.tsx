@@ -393,10 +393,6 @@ export default function CyclePage() {
               />
             )}
 
-            {/* Month summary — below calendar */}
-            <p className="font-body text-xs text-muted-foreground font-light text-center">
-              {calendarMonth.toLocaleDateString("en-US", { month: "long" })}: {monthSummary.periodDays} period days · {monthSummary.symptomsLogged} symptoms logged · {monthSummary.moodsLogged} moods recorded
-            </p>
 
             {/* Daily check-in — accessible from calendar */}
             <button
