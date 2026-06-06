@@ -283,6 +283,38 @@ export default function MovementPage() {
             <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
           </div>
 
+          {/* Active live HR session banner (lets the user re-open or log a
+              separate workout instead of attaching to the current one) */}
+          {globalHR.live.active && (
+            <div className="card-warm p-4 border-2 border-primary/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-primary/60 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
+                </span>
+                <p className="font-hand text-sm text-primary">Session in progress</p>
+              </div>
+              <p className="font-body text-sm text-foreground">
+                {globalHR.live.workoutName} ·{" "}
+                <span className="tabular-nums">{globalHR.bpm || "—"} bpm</span>
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  onClick={globalHR.restoreLive}
+                  className="touch-btn flex-1 rounded-[12px] py-2.5 font-body text-sm font-bold text-primary-foreground bg-primary"
+                >
+                  Open current session →
+                </button>
+                <button
+                  onClick={() => setActiveTab("log")}
+                  className="touch-btn flex-1 rounded-[12px] py-2.5 font-body text-sm font-medium text-primary border border-primary/40 bg-card"
+                >
+                  Log a separate workout
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Selected training path → next session card with HR connect */}
           <SelectedPathTodayCard onOpenHR={openLiveHR} />
 
