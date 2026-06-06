@@ -459,12 +459,6 @@ export default function JournalPage() {
               {tab === "write" && view === "list" && (
                 <div className="space-y-6 md:space-y-8">
 
-                  {/* Weekly rhythm — days returned, words held */}
-                  <WeeklyJournalRhythm
-                    entries={entries}
-                    onQuickOneLine={() => { haptic("light"); setView("one-line"); }}
-                  />
-
                   {/* Rotating prompt */}
                   <div className="text-center px-4 min-h-[60px] flex items-center justify-center">
                     <AnimatePresence mode="wait">
@@ -482,14 +476,7 @@ export default function JournalPage() {
                     </AnimatePresence>
                   </div>
 
-                  {/* Phase-aware prompt chips */}
-                  <PhasePromptChips
-                    phase={currentPhase as "menstrual" | "follicular" | "ovulatory" | "luteal"}
-                    onPick={(mood, seed) => {
-                      setCurrentMood(mood === "default" ? null : mood);
-                      if (seed) setInlineText((prev) => (prev?.trim() ? prev : seed + "\n\n"));
-                    }}
-                  />
+
 
                   {/* Inline journal textarea + save */}
                   <div className="card-warm p-4 space-y-3">
