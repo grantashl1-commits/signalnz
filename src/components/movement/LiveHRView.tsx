@@ -179,13 +179,19 @@ function ZonePill({ zone }: { zone: typeof HR_ZONES[0] }) {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRViewProps) {
+export default function LiveHRView() {
   const hr = useGlobalHeartRate();
   const { currentPhase: cyclePhase, currentCycleDay } = useCycle();
   const { user } = useAuth();
   const profile = useProfile();
   const wakeLock = useWakeLock();
   const releaseWakeLock = wakeLock.release;
+
+  // Live session lives in HeartRateContext (persists when minimized)
+  const workoutName = hr.live.workoutName;
+  const running = hr.live.active;
+  const elapsed = hr.liveElapsed;
+  const hrData = hr.live.samples;
 
   // Derive age from profile date_of_birth
   const profileAge = useMemo(() => {
@@ -214,9 +220,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
     if (profileAge && profileWeight) setAgeSet(true);
   }, [profileAge, profileWeight]);
 
-  const [running, setRunning] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-  const [hrData, setHrData] = useState<{ time: number; bpm: number }[]>([]);
   const [summary, setSummary] = useState<WorkoutSession | null>(null);
 
   // Session save state
@@ -226,55 +229,12 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const [saved, setSaved] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
 
-  const intervalRef = useRef<number | null>(null);
-  const sampleIntervalRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const elapsedRef = useRef<number>(0);
-  const bpmRef = useRef<number>(0);
-
   const maxHR = getMaxHR(age);
   const currentZone = hr.bpm > 0 ? getZoneForBPM(hr.bpm, maxHR) : HR_ZONES[0];
 
   const zone2PlusMins = hrData.filter((d) => getZoneForBPM(d.bpm, maxHR).zone >= 2).length * 2 / 60;
   const zone2Goal = 21;
   const zone2Reached = zone2PlusMins >= zone2Goal;
-
-  useEffect(() => { elapsedRef.current = elapsed; }, [elapsed]);
-  useEffect(() => { bpmRef.current = hr.bpm; }, [hr.bpm]);
-
-  // Timer
-  useEffect(() => {
-    if (running) {
-      startTimeRef.current = Date.now() - elapsedRef.current * 1000;
-      intervalRef.current = window.setInterval(() => {
-        setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
-      }, 1000);
-    }
-    return () => {
-      if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    };
-  }, [running]);
-
-  // HR sampling every 2 seconds
-  useEffect(() => {
-    if (!running) {
-      if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-      return;
-    }
-    const addSample = () => {
-      const bpm = bpmRef.current;
-      if (bpm <= 0) return;
-      const secsFromStart = startTimeRef.current > 0
-        ? Math.floor((Date.now() - startTimeRef.current) / 1000)
-        : elapsedRef.current;
-      setHrData((prev) => [...prev, { time: secsFromStart, bpm }]);
-    };
-    addSample();
-    sampleIntervalRef.current = window.setInterval(addSample, 2000);
-    return () => {
-      if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
-    };
-  }, [running]);
 
   const handleSetAge = () => {
     setUserAge(age);
@@ -285,23 +245,21 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   const handleStart = () => {
     haptic("medium");
     wakeLock.toggle();
-    setElapsed(0);
-    elapsedRef.current = 0;
-    setHrData([]);
+    setSummary(null);
     setSaved(false);
     setSavedId(null);
-    setRunning(true);
+    hr.startLive();
   };
 
   const handleStop = () => {
     haptic("success");
-    setRunning(false);
+    const { samples, durationSecs } = hr.stopLive();
     releaseWakeLock();
-    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
-    if (sampleIntervalRef.current) { clearInterval(sampleIntervalRef.current); sampleIntervalRef.current = null; }
 
-    const finalHrData = hrData.length > 0 ? hrData : (hr.bpm > 0 ? [{ time: elapsed, bpm: hr.bpm }] : []);
-    const derivedDurationSecs = elapsed > 0 ? elapsed
+    const finalHrData = samples.length > 0
+      ? samples
+      : (hr.bpm > 0 ? [{ time: durationSecs, bpm: hr.bpm }] : []);
+    const derivedDurationSecs = durationSecs > 0 ? durationSecs
       : finalHrData.length > 1 ? finalHrData[finalHrData.length - 1].time
       : finalHrData.length === 1 ? 2 : 0;
 
@@ -338,79 +296,6 @@ export default function LiveHRView({ workoutName = "Workout", onClose }: LiveHRV
   };
 
   const handleSaveToSupabase = async (notes: string) => {
-    if (!user || !summary || saving) return;
-    setSaving(true);
-
-    // Downsample bpm_trace to every 10 seconds for storage
-    const bpmTrace = summary.hrData
-      .filter((_, i) => i % 5 === 0 || i === summary.hrData.length - 1)
-      .map((d) => ({
-        minute: parseFloat((d.time / 60).toFixed(2)),
-        bpm: d.bpm,
-        zone: getZoneForBPM(d.bpm, maxHR).zone,
-      }));
-
-    const zonesSummary = HR_ZONES.reduce((acc, z, i) => ({
-      ...acc,
-      [`z${z.zone}_mins`]: Math.round(summary.zoneMins[i] * 10) / 10,
-    }), {} as Record<string, number>);
-
-    const { data, error } = await (supabase as any)
-      .from("hr_sessions")
-      .insert({
-        user_id: user.id,
-        workout_name: workoutName,
-        duration_minutes: parseFloat((summary.duration / 60).toFixed(1)),
-        bpm_trace: bpmTrace,
-        avg_bpm: summary.avgHR,
-        max_bpm: summary.maxHR,
-        calories: summary.caloriesBurnt,
-        zones_summary: zonesSummary,
-        zone2_plus_percent: summary.zone2PlusPercent,
-        cycle_phase: summary.phase,
-        cycle_day: summary.cycleDay,
-        notes: notes.trim() || null,
-      })
-      .select("id")
-      .single();
-
-    // Also create a workout_log entry so it shows on calendar & My Log
-    let hrSessionId: string | null = null;
-    if (!error && data) {
-      hrSessionId = data.id;
-      await (supabase as any)
-        .from("workout_logs")
-        .insert({
-          user_id: user.id,
-          session_date: summary.date,
-          workout_template_id: null,
-          exercises: [],
-          duration_minutes: Math.round(summary.duration / 60),
-          notes: notes.trim() || null,
-          completed: true,
-          cycle_phase: summary.phase,
-          hr_session_id: hrSessionId,
-        });
-    }
-
-    setSaving(false);
-    if (!error && data) {
-      setSaved(true);
-      setSavedId(data.id);
-      toast.success("Held — your body remembers.");
-    } else {
-      toast.error("Held locally — we'll carry it across when the connection returns.");
-    }
-  };
-
-  const handleClose = () => {
-    if (running) {
-      if (!window.confirm("End your session and exit? Data won't be saved.")) return;
-      handleStop();
-    }
-    releaseWakeLock();
-    onClose();
-  };
 
   const formatTime = (secs: number) => {
     const h = Math.floor(secs / 3600);
