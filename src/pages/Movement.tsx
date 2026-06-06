@@ -17,7 +17,7 @@ import {
   type WorkoutCategory, type Exercise, type WorkoutSession,
 } from "@/data/workouts";
 import { haptic } from "@/hooks/use-mobile";
-import LiveHRView from "@/components/movement/LiveHRView";
+// LiveHRView is rendered globally from <LiveHRRoot /> in App.tsx
 import MovementCalendar from "@/components/movement/MovementCalendar";
 import ProgressTab from "@/components/movement/ProgressTab";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
