@@ -8,7 +8,13 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { AIMeal } from "./weekly-planner";
 import { findRecipeByName } from "./recipe-index";
-import type { Recipe } from "@/data/meal-plans";
+import {
+  CATEGORY_META,
+  CATEGORY_ORDER,
+  aggregateShoppingItems,
+  formatSmartQty,
+} from "./smart-shopping-core";
+import { parseIngredient } from "./ingredient-parser";
 
 // Warm Stone palette
 const COLORS = {
@@ -53,33 +59,6 @@ function resolveMeal(meal: string | AIMeal | null | undefined): ResolvedMeal | n
   return { name: meal.name, ingredients, method, serves: meal.serves || r?.serves, prepTime: meal.prepTime || r?.prepTime };
 }
 
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  Produce: ["onion","garlic","ginger","tomato","spinach","kale","silverbeet","broccoli","broccolini","capsicum","pepper","carrot","potato","kumara","kūmara","courgette","zucchini","eggplant","mushroom","avocado","banana","apple","berry","berries","lemon","lime","mango","kiwifruit","cucumber","asparagus","bok choy","pumpkin","beetroot","cabbage","rocket","spring onion","coriander","parsley","mint","basil","chilli","pear","orange","fruit","lettuce","celery","leek","fennel","radish","salad"],
-  "Meat & Seafood": ["chicken","beef","mince","lamb","pork","fish","salmon","tuna","prawn","turkey","cod","sausage","bacon"],
-  "Dairy & Eggs": ["milk","yoghurt","yogurt","cream","cheese","butter","feta","haloumi","egg"],
-  Pantry: ["coconut milk","coconut oil","olive oil","sesame oil","tamari","soy sauce","miso","mirin","maple syrup","honey","vinegar","stock","tomato paste","canned","tinned","peanut butter","almond butter","tahini","chocolate","cacao","vanilla","flour","sugar","rice","pasta","noodle","oat","quinoa","bread","wrap","wholemeal","lentil","chickpea","bean","seed","nut","spice","salt","pepper","cumin","paprika","turmeric","cinnamon"],
-  "Plant Protein": ["tofu","tempeh","edamame"],
-  Frozen: ["frozen"],
-};
-
-function categorise(name: string): string {
-  const l = name.toLowerCase();
-  for (const [cat, kws] of Object.entries(CATEGORY_KEYWORDS)) {
-    if (kws.some(k => l.includes(k))) return cat;
-  }
-  return "Other";
-}
-
-// Strip quantity prefix to dedupe ("250g oats" + "1 cup oats" → "oats")
-function ingredientBase(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/^[\d\s./¼½¾⅓⅔⅛⅜⅝⅞]+/, "")
-    .replace(/^(g|kg|ml|l|tbsp|tbs|tsp|cup|cups|oz|slice|slices|clove|cloves|piece|pieces|can|cans|packet|tablespoon|teaspoon|handful|pinch|dash|sprig|stick|bunch)\b\s*/i, "")
-    .replace(/,.*$/, "")
-    .replace(/\(.*?\)/g, "")
-    .trim();
-}
 
 function drawHeader(doc: jsPDF, title: string, subtitle?: string) {
   const pw = doc.internal.pageSize.getWidth();
