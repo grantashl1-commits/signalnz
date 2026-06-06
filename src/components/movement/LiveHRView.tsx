@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bluetooth, Activity, PenLine, Save, Check } from "lucide-react";
+import { Bluetooth, Activity, PenLine, Save, Check, ChevronDown, StopCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
@@ -20,10 +20,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/hooks/use-mobile";
 
-interface LiveHRViewProps {
-  workoutName?: string;
-  onClose: () => void;
-}
+/**
+ * LiveHRView is rendered globally from <LiveHRRoot /> and driven entirely
+ * by HeartRateContext. The "↓" header button minimizes (the session keeps
+ * recording in the background); the "End session" button stops recording.
+ */
 
 // ─── HR Line Chart ─────────────────────────────────────────────────────────────
 
