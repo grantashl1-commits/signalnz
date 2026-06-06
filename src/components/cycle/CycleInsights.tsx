@@ -47,6 +47,60 @@ export default function CycleInsights({ cycleStartDate }: Props) {
     return rows;
   }, [cycleStartDate]);
 
+  // ─── Statistics (last 12 months) ───
+  const stats = useMemo(() => {
+    if (!cycleStartDate) return null;
+
+    const lengths = cycles.filter((c) => !c.inProgress).map((c) => c.length);
+    const completed = lengths.length;
+    const avgCycle = completed ? Math.round(lengths.reduce((a, b) => a + b, 0) / completed) : null;
+    const shortest = completed ? Math.min(...lengths) : null;
+    const longest = completed ? Math.max(...lengths) : null;
+
+    // Average menstruation length from recorded period ends (last 12 months)
+    const periodLengths: number[] = [];
+    const now = new Date();
+    for (let m = 0; m < 12; m++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const endDate = getPeriodEnd(monthKey);
+      if (!endDate) continue;
+      // Match against any cycle row whose start month matches
+      const matchingCycle = cycles.find(
+        (c) => c.start.getFullYear() === d.getFullYear() && c.start.getMonth() === d.getMonth(),
+      );
+      if (matchingCycle) {
+        const len = getPeriodLength(matchingCycle.start.toISOString().split("T")[0], endDate);
+        if (len > 0 && len <= 14) periodLengths.push(len);
+      }
+    }
+    const avgMenstruation = periodLengths.length
+      ? Math.round(periodLengths.reduce((a, b) => a + b, 0) / periodLengths.length)
+      : null;
+
+    const firstCycle = cycles[cycles.length - 1]?.start ?? new Date(cycleStartDate);
+    const lastPeriod = new Date(cycleStartDate);
+    return { firstCycle, lastPeriod, shortest, longest, avgMenstruation, avgCycle };
+  }, [cycleStartDate, cycles]);
+
+  // ─── Mood findings (last 90 days) ───
+  const moodStats = useMemo(() => {
+    const counts = [0, 0, 0, 0]; // low, below avg, stable, elevated
+    let total = 0;
+    const today = new Date();
+    for (let i = 0; i < 90; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      const data = getStructuredSymptoms(dateStr);
+      if (data && typeof data.mood === "number") {
+        counts[data.mood] = (counts[data.mood] || 0) + 1;
+        total++;
+      }
+    }
+    return { counts, total };
+  }, [cycleStartDate]);
+
   if (!cycleStartDate) {
     return (
       <div className="card-warm p-5 text-center">
