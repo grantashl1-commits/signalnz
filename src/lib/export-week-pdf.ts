@@ -209,10 +209,10 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text(`${day.dayName} · ${day.dateLabel}`, 13, y + 5);
+      doc.text(safe(`${day.dayName} · ${day.dateLabel}`), 13, y + 5);
       doc.setFont("helvetica", "italic");
       doc.setFontSize(8);
-      doc.text(`${day.phaseLabel} · day ${day.cycleDay}`, pw - 13, y + 5, { align: "right" });
+      doc.text(safe(`${day.phaseLabel} · day ${day.cycleDay}`), pw - 13, y + 5, { align: "right" });
       y += 10;
 
       const mealsToRender: Array<{ label: string; meal: ResolvedMeal | null }> = [
