@@ -144,16 +144,17 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
 
   const head = [[
     "",
-    ...days.map(d => `${d.dayName.slice(0, 3)}\n${d.dateLabel}`),
+    ...days.map(d => safe(`${d.dayName.slice(0, 3)}\n${d.dateLabel}`)),
   ]];
   const body = slots.map(s => [
     s.label,
     ...days.map(d => {
       const m = d[s.key] as string | AIMeal | null | undefined;
       const r = resolveMeal(m);
-      return r?.name || "—";
+      return safe(r?.name || "—");
     }),
   ]);
+
 
   autoTable(doc, {
     head,
