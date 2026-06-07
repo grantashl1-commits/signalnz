@@ -348,7 +348,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text((CATEGORY_META[cat] || cat).toUpperCase(), x + 2, yy + 4.2);
+    doc.text(safe((CATEGORY_META[cat] || cat).toUpperCase()), x + 2, yy + 4.2);
     doc.setFontSize(8);
     doc.text(`${items.length}`, x + colWidth - 6, yy + 4.2, { align: "right" });
     yy += 8;
