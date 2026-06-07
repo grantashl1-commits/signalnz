@@ -25,6 +25,21 @@ const COLORS = {
   primary: [92, 74, 158] as [number, number, number], // #5C4A9E
 };
 
+/**
+ * jsPDF's built-in Helvetica only supports WinAnsi.
+ * Strip diacritics (e.g. "kūmara" → "kumara") so unsupported glyphs
+ * don't render as wrong characters or boxes.
+ */
+function safe(s: string): string {
+  if (!s) return "";
+  return s
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[–—]/g, "-")
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"');
+}
+
 export interface ExportDay {
   dayName: string;       // "Monday"
   dateLabel: string;     // "5 June"
