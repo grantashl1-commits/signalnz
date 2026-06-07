@@ -25,6 +25,21 @@ const COLORS = {
   primary: [92, 74, 158] as [number, number, number], // #5C4A9E
 };
 
+/**
+ * jsPDF's built-in Helvetica only supports WinAnsi.
+ * Strip diacritics (e.g. "kūmara" → "kumara") so unsupported glyphs
+ * don't render as wrong characters or boxes.
+ */
+function safe(s: string): string {
+  if (!s) return "";
+  return s
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[–—]/g, "-")
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"');
+}
+
 export interface ExportDay {
   dayName: string;       // "Monday"
   dateLabel: string;     // "5 June"
@@ -78,12 +93,12 @@ function drawHeader(doc: jsPDF, title: string, subtitle?: string) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
   doc.setTextColor(...COLORS.ink);
-  doc.text(title, pw - 14, 13, { align: "right" });
+  doc.text(safe(title), pw - 14, 13, { align: "right" });
   if (subtitle) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(...COLORS.muted);
-    doc.text(subtitle, pw - 14, 18, { align: "right" });
+    doc.text(safe(subtitle), pw - 14, 18, { align: "right" });
   }
   // hairline
   doc.setDrawColor(...COLORS.rule);
@@ -129,16 +144,17 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
 
   const head = [[
     "",
-    ...days.map(d => `${d.dayName.slice(0, 3)}\n${d.dateLabel}`),
+    ...days.map(d => safe(`${d.dayName.slice(0, 3)}\n${d.dateLabel}`)),
   ]];
   const body = slots.map(s => [
     s.label,
     ...days.map(d => {
       const m = d[s.key] as string | AIMeal | null | undefined;
       const r = resolveMeal(m);
-      return r?.name || "—";
+      return safe(r?.name || "—");
     }),
   ]);
+
 
   autoTable(doc, {
     head,
@@ -193,10 +209,10 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text(`${day.dayName} · ${day.dateLabel}`, 13, y + 5);
+      doc.text(safe(`${day.dayName} · ${day.dateLabel}`), 13, y + 5);
       doc.setFont("helvetica", "italic");
       doc.setFontSize(8);
-      doc.text(`${day.phaseLabel} · day ${day.cycleDay}`, pw - 13, y + 5, { align: "right" });
+      doc.text(safe(`${day.phaseLabel} · day ${day.cycleDay}`), pw - 13, y + 5, { align: "right" });
       y += 10;
 
       const mealsToRender: Array<{ label: string; meal: ResolvedMeal | null }> = [
@@ -205,63 +221,75 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
         { label: "Dinner", meal: resolveMeal(day.dinner) },
       ];
 
-      // Two-column layout: ingredients left, method right
-      const colW = (pw - 30) / 2;
+      // Single-column layout: ingredient names inline, then numbered method (with quantities)
+      const contentW = pw - 26;
       for (const { label, meal } of mealsToRender) {
         if (!meal) continue;
         // page break safety
-        if (y > ph - 50) {
+        if (y > ph - 55) {
           drawFooter(doc);
           doc.addPage();
           drawHeader(doc, "Recipes", "continued");
           y = 32;
         }
+
+        // Title row: LABEL on its own, meal name on next line — prevents overlap
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
+        doc.setFontSize(8.5);
         doc.setTextColor(...COLORS.primary);
-        doc.text(label.toUpperCase(), 13, y);
-        doc.setTextColor(...COLORS.ink);
-        doc.setFontSize(10);
-        doc.text(meal.name, 30, y);
+        doc.text(safe(label.toUpperCase()), 13, y);
         if (meal.serves || meal.prepTime) {
           doc.setFont("helvetica", "italic");
           doc.setFontSize(7.5);
           doc.setTextColor(...COLORS.muted);
-          const meta = [meal.prepTime, meal.serves ? `serves ${meal.serves}` : null].filter(Boolean).join(" · ");
-          doc.text(meta, pw - 13, y, { align: "right" });
+          const metaStr = [meal.prepTime, meal.serves ? `serves ${meal.serves}` : null].filter(Boolean).join(" · ");
+          doc.text(safe(metaStr), pw - 13, y, { align: "right" });
+        }
+        y += 4.5;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(...COLORS.ink);
+        const titleLines = doc.splitTextToSize(safe(meal.name), contentW);
+        doc.text(titleLines, 13, y);
+        y += titleLines.length * 4.6 + 1;
+
+        // Ingredient names inline (quantities live inside the method)
+        const names = meal.ingredients
+          .map(s => parseIngredient(s).name.trim())
+          .filter(Boolean);
+        if (names.length) {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(7);
+          doc.setTextColor(...COLORS.muted);
+          doc.text("INGREDIENTS", 13, y);
+          y += 3.2;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8.5);
+          doc.setTextColor(...COLORS.ink);
+          const ingLine = doc.splitTextToSize(safe(names.join(" · ")), contentW);
+          doc.text(ingLine, 13, y, { lineHeightFactor: 1.35 });
+          y += ingLine.length * 3.8 + 2;
+        }
+
+        // Method — full width, quantities written into each step
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.setTextColor(...COLORS.muted);
+        doc.text("METHOD", 13, y);
+        y += 3.2;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.setTextColor(...COLORS.ink);
+        const methLines = meal.method.length
+          ? meal.method.map((s, idx) => `${idx + 1}.  ${s}`)
+          : ["(method coming soon)"];
+        for (const line of methLines) {
+          const wrapped = doc.splitTextToSize(safe(line), contentW);
+          doc.text(wrapped, 13, y, { lineHeightFactor: 1.35 });
+          y += wrapped.length * 3.8 + 0.8;
         }
         y += 4;
-
-        // Ingredients column
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(7.5);
-        doc.setTextColor(...COLORS.muted);
-        doc.text("INGREDIENTS", 13, y);
-        // Method column
-        doc.text("METHOD", 13 + colW + 5, y);
-        y += 3.5;
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(...COLORS.ink);
-
-        const ingLines = meal.ingredients.length
-          ? meal.ingredients.map(s => `• ${s}`)
-          : ["• (no ingredients listed)"];
-        const methLines = meal.method.length
-          ? meal.method.map((s, idx) => `${idx + 1}. ${s}`)
-          : ["(method coming soon)"];
-
-        const ingWrapped = ingLines.flatMap(l => doc.splitTextToSize(l, colW - 4));
-        const methWrapped = methLines.flatMap(l => doc.splitTextToSize(l, colW - 4));
-
-        const startY = y;
-        doc.text(ingWrapped, 13, startY, { lineHeightFactor: 1.3 });
-        doc.text(methWrapped, 13 + colW + 5, startY, { lineHeightFactor: 1.3 });
-
-        const ingH = ingWrapped.length * 3.4;
-        const methH = methWrapped.length * 3.4;
-        y = startY + Math.max(ingH, methH) + 5;
       }
       // section divider
       doc.setDrawColor(...COLORS.rule);
@@ -271,6 +299,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     }
     drawFooter(doc);
   }
+
 
   // ─── LAST PAGE: Shopping list (uses the same logic as SmartShoppingList) ───
   const adults = Math.max(1, meta.adults ?? 1);
@@ -319,7 +348,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text((CATEGORY_META[cat] || cat).toUpperCase(), x + 2, yy + 4.2);
+    doc.text(safe((CATEGORY_META[cat] || cat).toUpperCase()), x + 2, yy + 4.2);
     doc.setFontSize(8);
     doc.text(`${items.length}`, x + colWidth - 6, yy + 4.2, { align: "right" });
     yy += 8;
@@ -350,7 +379,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
       // text — "Item · 250 g" matches in-app formatting
       const qtyLabel = formatSmartQty(item.totalQty, item.unit, item.name);
       const label = qtyLabel ? `${item.name} · ${qtyLabel}` : item.name;
-      const wrapped = doc.splitTextToSize(label, colWidth - 10);
+      const wrapped = doc.splitTextToSize(safe(label), colWidth - 10);
       doc.text(wrapped, xx + 5.5, yy);
       yy += wrapped.length * 4;
     }
