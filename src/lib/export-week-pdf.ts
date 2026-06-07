@@ -379,7 +379,7 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
       // text — "Item · 250 g" matches in-app formatting
       const qtyLabel = formatSmartQty(item.totalQty, item.unit, item.name);
       const label = qtyLabel ? `${item.name} · ${qtyLabel}` : item.name;
-      const wrapped = doc.splitTextToSize(label, colWidth - 10);
+      const wrapped = doc.splitTextToSize(safe(label), colWidth - 10);
       doc.text(wrapped, xx + 5.5, yy);
       yy += wrapped.length * 4;
     }
