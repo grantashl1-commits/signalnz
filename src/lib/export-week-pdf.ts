@@ -93,12 +93,12 @@ function drawHeader(doc: jsPDF, title: string, subtitle?: string) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
   doc.setTextColor(...COLORS.ink);
-  doc.text(title, pw - 14, 13, { align: "right" });
+  doc.text(safe(title), pw - 14, 13, { align: "right" });
   if (subtitle) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(...COLORS.muted);
-    doc.text(subtitle, pw - 14, 18, { align: "right" });
+    doc.text(safe(subtitle), pw - 14, 18, { align: "right" });
   }
   // hairline
   doc.setDrawColor(...COLORS.rule);
