@@ -41,7 +41,6 @@ const Account = lazy(() => import("./pages/Account"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Feedback = lazy(() => import("./pages/Feedback"));
 const BrandGuidelines = lazy(() => import("./pages/BrandGuidelines"));
-const AnimationPOC = lazy(() => import("./pages/AnimationPOC"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Coach = lazy(() => import("./pages/Coach"));
 const Feed = lazy(() => import("./pages/Feed"));
@@ -143,7 +142,6 @@ const App = () => {
                 <Suspense fallback={<RouteFallback />}>
                   <Routes>
                     <Route path="/brand" element={<BrandGuidelines />} />
-                    <Route path="/animation-poc" element={<AnimationPOC />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="*" element={
                       <Layout>
