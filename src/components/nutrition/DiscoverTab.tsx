@@ -30,7 +30,29 @@ const PHASE_TINT: Record<Phase, string> = {
   luteal: "rgba(155, 137, 180, 0.06)",
 };
 
-const MEAL_TYPE_OPTIONS = ["All", "Breakfast", "Lunch/Dinner", "Snack", "Baking"] as const;
+const MEAL_TYPE_OPTIONS = ["All", "Breakfast", "Lunch/Dinner", "Snack", "Baking", "Dessert"] as const;
+
+/** Name-based dessert detection (both libraries). Excludes pancakes/pikelets. */
+const DESSERT_NAME_RE = /\b(cake|cupcake|brownie|ice ?cream|nice cream|ice pop|popsicle|pudding|cheesecake|cobbler|crumble|tart|mousse|meringue|truffle|fudge|sorbet|custard|toffee|caramel)\b/i;
+function isDessertName(name: string): boolean {
+  const n = name.toLowerCase();
+  if (n.includes("pancake") || n.includes("pikelet")) return false;
+  return DESSERT_NAME_RE.test(n);
+}
+
+/** Does a kids recipe match the selected meal-type pill? */
+function kidsMatchesMealType(r: KidsRecipe, mealType: string): boolean {
+  if (mealType === "All") return true;
+  const mt = new Set<string>(r.mealType);
+  switch (mealType) {
+    case "Breakfast": return mt.has("breakfast");
+    case "Lunch/Dinner": return mt.has("lunch") || mt.has("dinner");
+    case "Snack": return mt.has("snack");
+    case "Baking": return mt.has("baking");
+    case "Dessert": return mt.has("dessert") || isDessertName(r.name);
+    default: return true;
+  }
+}
 const DIETARY_OPTIONS = ["Vegan", "Vegetarian", "Gluten-free", "Dairy-free", "Nut-free", "Egg-free"] as const;
 const PROTEIN_OPTIONS = ["Chicken", "Beef/Lamb", "Fish", "Tofu/Tempeh", "Eggs", "Legumes", "Plant-based"] as const;
 
@@ -60,7 +82,7 @@ function FilterPill({ active, onClick, children }: { active: boolean; onClick: (
   );
 }
 
-function recipeDietaryTags(r: Recipe): Set<string> {
+function recipeDietaryTags(r: { tags?: string[]; ingredients: string[] }): Set<string> {
   const tags = new Set<string>();
   const tagSet = new Set((r.tags || []).map(t => t.toLowerCase()));
   const ing = r.ingredients.join(" ").toLowerCase();
@@ -87,7 +109,7 @@ function recipeDietaryTags(r: Recipe): Set<string> {
 }
 
 /** Detect primary protein source(s) from ingredients. */
-function recipeProteinSources(r: Recipe): Set<string> {
+function recipeProteinSources(r: { name: string; tags?: string[]; ingredients: string[] }): Set<string> {
   const text = (r.name + " " + r.ingredients.join(" ")).toLowerCase();
   const out = new Set<string>();
   if (/\b(chicken|poultry|turkey)\b/.test(text)) out.add("Chicken");
@@ -196,6 +218,7 @@ export default function DiscoverTab() {
         if (mealType === "Lunch/Dinner" && cat !== "meal") return false;
         if (mealType === "Snack" && cat !== "snack") return false;
         if (mealType === "Baking" && cat !== "baking") return false;
+        if (mealType === "Dessert" && !isDessertName(r.name)) return false;
       }
       if (dietary.size > 0) {
         const recipeDiet = recipeDietaryTags(r);
@@ -242,19 +265,35 @@ export default function DiscoverTab() {
   const filteredKids = useMemo(() => {
     if (!kidsMode) return [];
     return KIDS_RECIPE_BANK.filter(r => {
+      // Meal type / category
+      if (mealType !== "All" && !kidsMatchesMealType(r, mealType)) return false;
+      // Dietary — same tag+ingredient heuristic used for the main library
+      if (dietary.size > 0) {
+        const diet = recipeDietaryTags(r);
+        for (const want of dietary) if (!diet.has(want)) return false;
+      }
+      // Protein source
+      if (protein.size > 0) {
+        const prot = recipeProteinSources(r);
+        let any = false;
+        for (const want of protein) if (prot.has(want)) { any = true; break; }
+        if (!any) return false;
+      }
       if (lunchboxMode) {
         const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
         const includesLunchSlot = r.mealType.includes("lunch");
         if (!isLunchboxOrFreezer(text, r.tags, r.name) && !includesLunchSlot) return false;
       }
-      if (!search) return true;
-      const q = search.toLowerCase();
-      return r.name.toLowerCase().includes(q) ||
-        r.ingredients.some(i => i.toLowerCase().includes(q)) ||
-        r.protein.toLowerCase().includes(q) ||
-        r.tags.some(t => t.toLowerCase().includes(q));
+      if (search) {
+        const q = search.toLowerCase();
+        return r.name.toLowerCase().includes(q) ||
+          r.ingredients.some(i => i.toLowerCase().includes(q)) ||
+          r.protein.toLowerCase().includes(q) ||
+          r.tags.some(t => t.toLowerCase().includes(q));
+      }
+      return true;
     });
-  }, [kidsMode, lunchboxMode, search]);
+  }, [kidsMode, mealType, dietary, protein, lunchboxMode, search]);
 
   return (
     <div className="space-y-5">
