@@ -272,22 +272,25 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
           y += ingLine.length * 3.8 + 2;
         }
 
-        // Method — full width, quantities written into each step
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(7);
-        doc.setTextColor(...COLORS.muted);
-        doc.text("METHOD", 13, y);
-        y += 3.2;
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8.5);
-        doc.setTextColor(...COLORS.ink);
-        const methLines = meal.method.length
-          ? meal.method.map((s, idx) => `${idx + 1}.  ${s}`)
-          : ["(method coming soon)"];
-        for (const line of methLines) {
-          const wrapped = doc.splitTextToSize(safe(line), contentW);
-          doc.text(wrapped, 13, y, { lineHeightFactor: 1.35 });
-          y += wrapped.length * 3.8 + 0.8;
+        // Method — full width, quantities written into each step.
+        // Simple assembly items (e.g. a snack like "Almonds & fresh berries")
+        // have no method; skip the heading entirely rather than printing a
+        // placeholder so the recipe still reads cleanly.
+        if (meal.method.length) {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(7);
+          doc.setTextColor(...COLORS.muted);
+          doc.text("METHOD", 13, y);
+          y += 3.2;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8.5);
+          doc.setTextColor(...COLORS.ink);
+          const methLines = meal.method.map((s, idx) => `${idx + 1}.  ${s}`);
+          for (const line of methLines) {
+            const wrapped = doc.splitTextToSize(safe(line), contentW);
+            doc.text(wrapped, 13, y, { lineHeightFactor: 1.35 });
+            y += wrapped.length * 3.8 + 0.8;
+          }
         }
         y += 4;
       }

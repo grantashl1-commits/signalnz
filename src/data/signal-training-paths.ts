@@ -414,7 +414,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
     {
       week: 4,
       theme: 'Load – Adding Intentional Weight',
-      progression: 'RPE 7. Increase dumbbells to 5‑8 kg. Tempo returns to 3‑1‑2. 3 rounds per superset.',
+      progression: 'RPE 7. Increase dumbbells to 5‑8 kg — a starting guide, not a ceiling. Tempo returns to 3‑1‑2. 3 rounds per superset. Progression rule: any session where you finish every rep with 2+ in reserve (below RPE 7), go up 1‑2 kg next time — including beyond 8 kg.',
       sessions: [
         {
           day: 1,
@@ -528,7 +528,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
     {
       week: 5,
       theme: 'Density – Doing More in Less Time',
-      progression: 'RPE 7. Same weight as Week 4. Reduce rest to 45 sec. Tempo 3‑1‑2.',
+      progression: 'RPE 7. Same weight as Week 4 — or heavier if 8 kg started to feel easy. Reduce rest to 45 sec. Tempo 3‑1‑2.',
       sessions: [
         {
           day: 1,
@@ -642,7 +642,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
     {
       week: 6,
       theme: 'Power – Expressing Strength',
-      progression: 'RPE 7‑8. Same weight as Week 5. Increase reps to 14‑15. Tempo 2‑1‑2 (explosive).',
+      progression: 'RPE 7‑8. Same weight as Week 5, or size up on the compounds if last week stayed below RPE 7. Increase reps to 14‑15. Tempo 2‑1‑2 (explosive).',
       sessions: [
         {
           day: 1,
@@ -756,7 +756,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
     {
       week: 7,
       theme: 'Variation – New Stimulus, Same Growth',
-      progression: 'RPE 7‑8. Same load as Week 6. Change exercises to avoid plateau.',
+      progression: 'RPE 7‑8. Same load as Week 6 — heavier on the lifts that feel ready. Change exercises to avoid plateau.',
       sessions: [
         {
           day: 1,
@@ -870,7 +870,7 @@ export const strengthFromTheGroundUp: TrainingPath = {
     {
       week: 8,
       theme: 'Integration – Becoming Unconscious Conscious',
-      progression: 'RPE 6‑7. Full body circuits. Choose exercises from previous weeks. Move with flow.',
+      progression: 'RPE 6‑7. Full body circuits. Choose exercises from previous weeks. Move with flow. Next cycle: restart at Week 1’s structure, but with the heavier weights you’ve earned — that’s how the strength keeps building.',
       sessions: [
         {
           day: 1,
