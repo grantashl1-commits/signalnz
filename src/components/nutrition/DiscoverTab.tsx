@@ -30,7 +30,7 @@ const PHASE_TINT: Record<Phase, string> = {
   luteal: "rgba(155, 137, 180, 0.06)",
 };
 
-const MEAL_TYPE_OPTIONS = ["All", "Breakfast", "Lunch/Dinner", "Snack", "Baking", "Dessert"] as const;
+const MEAL_TYPE_OPTIONS = ["All", "Breakfast", "Lunch", "Dinner", "Snack", "Baking", "Dessert"] as const;
 
 /** Name-based dessert detection (both libraries). Excludes pancakes/pikelets. */
 const DESSERT_NAME_RE = /\b(cake|cupcake|brownie|ice ?cream|nice cream|ice pop|popsicle|pudding|cheesecake|cobbler|crumble|tart|mousse|meringue|truffle|fudge|sorbet|custard|toffee|caramel)\b/i;
@@ -46,7 +46,8 @@ function kidsMatchesMealType(r: KidsRecipe, mealType: string): boolean {
   const mt = new Set<string>(r.mealType);
   switch (mealType) {
     case "Breakfast": return mt.has("breakfast");
-    case "Lunch/Dinner": return mt.has("lunch") || mt.has("dinner");
+    case "Lunch": return mt.has("lunch");
+    case "Dinner": return mt.has("dinner");
     case "Snack": return mt.has("snack");
     case "Baking": return mt.has("baking");
     case "Dessert": return mt.has("dessert") || isDessertName(r.name);
@@ -133,6 +134,7 @@ export default function DiscoverTab() {
   const [protein, setProtein] = useState<Set<string>>(new Set());
   const [kidsMode, setKidsMode] = useState(false);
   const [lunchboxMode, setLunchboxMode] = useState(false);
+  const [freezerMode, setFreezerMode] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
@@ -143,7 +145,8 @@ export default function DiscoverTab() {
     dietary.size +
     protein.size +
     (kidsMode ? 1 : 0) +
-    (lunchboxMode ? 1 : 0);
+    (lunchboxMode ? 1 : 0) +
+    (freezerMode ? 1 : 0);
 
   const toggleSetItem = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
     const next = new Set(set);
@@ -159,31 +162,27 @@ export default function DiscoverTab() {
     setProtein(new Set());
     setKidsMode(false);
     setLunchboxMode(false);
+    setFreezerMode(false);
   };
 
-  // Heuristic: lunchbox-ready or freezer-friendly
-  const isLunchboxOrFreezer = (
-    text: string,
-    tags: string[] = [],
-    name = "",
-  ): boolean => {
+  // Heuristic: portable / packable for a lunchbox
+  const isLunchbox = (text: string, tags: string[] = [], name = ""): boolean => {
     const tagSet = new Set(tags.map(t => t.toLowerCase()));
     if (
-      tagSet.has("lunchbox") ||
-      tagSet.has("freezer-friendly") ||
-      tagSet.has("freezer") ||
-      tagSet.has("make-ahead") ||
-      tagSet.has("batch") ||
-      tagSet.has("meal-prep") ||
-      tagSet.has("portable") ||
-      tagSet.has("no-bake")
+      tagSet.has("lunchbox") || tagSet.has("portable") || tagSet.has("make-ahead") ||
+      tagSet.has("batch") || tagSet.has("meal-prep") || tagSet.has("no-bake")
     ) return true;
-    const t = text.toLowerCase();
     const n = name.toLowerCase();
-    // Name-based: anything obviously portable / batch-bake / freezable
-    if (/\b(bliss ball|energy ball|protein ball|bar\b|bars\b|slice\b|slices\b|muffin|loaf|wrap|sandwich|pinwheel|fritter|patties|patty|fudge|brownie|cookie|biscuit|frittata|quiche|pie\b|tart|nice cream|popsicle|granola|overnight oat|chia pudding|hummus|dip|pesto|sauce|soup|stew|chilli|chili|curry|dahl|dhal|dal|lasagne|lasagna|bolognese|risotto|casserole|bake\b|tray bake|sheet pan|meatball|nuggets|tenders|salad jar)\b/.test(n)) return true;
-    // Method/ingredient text-based
-    return /\b(lunchbox|pack for lunch|pack into|portable|freezer|freeze\b|freezes? well|freeze for|freeze \d|store in (the )?freezer|store in (the )?fridge|keeps? \d|make[- ]ahead|batch cook|meal prep|no[- ]bake)\b/.test(t);
+    // Name-based: obviously portable / hand-held / batch-bake items
+    if (/\b(bliss ball|energy ball|protein ball|bar\b|bars\b|slice\b|slices\b|muffin|loaf|wrap|sandwich|pinwheel|fritter|patties|patty|cookie|biscuit|scone|pikelet|pancake|frittata|quiche|nuggets|tenders|granola|muesli|fruit leather|roll\b|quesadilla|toast\b|dip|hummus|pesto)\b/.test(n)) return true;
+    return /\b(lunchbox|pack for lunch|pack into|portable|make[- ]ahead|batch cook|meal prep|no[- ]bake)\b/.test(text.toLowerCase());
+  };
+
+  // Heuristic: freezer-friendly
+  const isFreezer = (text: string, tags: string[] = [], name = ""): boolean => {
+    const tagSet = new Set(tags.map(t => t.toLowerCase()));
+    if (tagSet.has("freezer") || tagSet.has("freezer-friendly") || tagSet.has("freeze")) return true;
+    return /\b(freezer|freeze\b|freezes? well|freeze for|freeze \d|store in (the )?freezer)\b/.test(text.toLowerCase());
   };
 
 
@@ -215,7 +214,7 @@ export default function DiscoverTab() {
       if (mealType !== "All") {
         const cat = getEffectiveCategory(r);
         if (mealType === "Breakfast" && cat !== "breakfast") return false;
-        if (mealType === "Lunch/Dinner" && cat !== "meal") return false;
+        if ((mealType === "Lunch" || mealType === "Dinner") && cat !== "meal") return false;
         if (mealType === "Snack" && cat !== "snack") return false;
         if (mealType === "Baking" && cat !== "baking") return false;
         if (mealType === "Dessert" && !isDessertName(r.name)) return false;
@@ -230,9 +229,10 @@ export default function DiscoverTab() {
         for (const want of protein) if (recipeProt.has(want)) { any = true; break; }
         if (!any) return false;
       }
-      if (lunchboxMode) {
-        const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
-        if (!isLunchboxOrFreezer(text, r.tags || [], r.name)) return false;
+      if (lunchboxMode || freezerMode) {
+        const packText = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
+        if (lunchboxMode && !isLunchbox(packText, r.tags || [], r.name)) return false;
+        if (freezerMode && !isFreezer(packText, r.tags || [], r.name)) return false;
       }
       if (search) {
         const q = search.toLowerCase();
@@ -254,12 +254,12 @@ export default function DiscoverTab() {
       if (pa !== pb) return pa - pb;
       return a.name.localeCompare(b.name);
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, lunchboxMode, currentPhase]);
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, lunchboxMode, freezerMode, currentPhase]);
 
   // Pagination — "Load more" reveals another batch.
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode, lunchboxMode]);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode, lunchboxMode, freezerMode]);
 
   // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
@@ -279,10 +279,10 @@ export default function DiscoverTab() {
         for (const want of protein) if (prot.has(want)) { any = true; break; }
         if (!any) return false;
       }
-      if (lunchboxMode) {
-        const text = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
-        const includesLunchSlot = r.mealType.includes("lunch");
-        if (!isLunchboxOrFreezer(text, r.tags, r.name) && !includesLunchSlot) return false;
+      if (lunchboxMode || freezerMode) {
+        const packText = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
+        if (lunchboxMode && !isLunchbox(packText, r.tags, r.name)) return false;
+        if (freezerMode && !isFreezer(packText, r.tags, r.name)) return false;
       }
       if (search) {
         const q = search.toLowerCase();
@@ -293,7 +293,7 @@ export default function DiscoverTab() {
       }
       return true;
     });
-  }, [kidsMode, mealType, dietary, protein, lunchboxMode, search]);
+  }, [kidsMode, mealType, dietary, protein, lunchboxMode, freezerMode, search]);
 
   return (
     <div className="space-y-5">
@@ -401,9 +401,12 @@ export default function DiscoverTab() {
                 </FilterSection>
 
                 {/* Lunchbox & freezer */}
-                <FilterSection title="Lunchbox & freezer" hint="Pack-ahead and freezer-friendly only">
+                <FilterSection title="Pack & store" hint="Tap to filter — combine as you like">
                   <FilterPill active={lunchboxMode} onClick={() => setLunchboxMode(v => !v)}>
-                    🥪 Lunchbox & freezer-friendly
+                    🥪 Lunchbox-friendly
+                  </FilterPill>
+                  <FilterPill active={freezerMode} onClick={() => setFreezerMode(v => !v)}>
+                    ❄️ Freezer-friendly
                   </FilterPill>
                 </FilterSection>
 
