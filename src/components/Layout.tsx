@@ -9,7 +9,6 @@ import { useRef, useEffect } from "react";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
-import SignalLogo from "@/components/SignalLogo";
 
 import PageTransition from "@/components/PageTransition";
 
@@ -58,8 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="flex-none z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
         <div className="mx-auto max-w-6xl flex items-center justify-between px-6 h-[72px]">
           <Link to="/" className="flex items-center gap-2.5 flex-shrink-0" aria-label="Signal home">
-            <SignalLogo size={30} color="hsl(var(--primary))" />
-            <span className="font-display text-[15px] font-semibold tracking-[0.2em] uppercase text-foreground">Signal</span>
+            <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-8 w-auto" />
           </Link>
 
           <nav className="relative flex items-center gap-1 rounded-full border border-border/70 bg-card/70 backdrop-blur-xl p-1 shadow-soft" aria-label="Primary">
@@ -104,8 +102,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <header className="flex-none z-30 md:hidden bg-background/80 backdrop-blur-xl" style={{ paddingTop: "var(--safe-top)" }}>
         <div className="flex items-center justify-between px-5 h-[52px]">
           <Link to="/" className="flex items-center gap-2" aria-label="Signal home">
-            <SignalLogo size={24} color="hsl(var(--primary))" />
-            <span className="font-display text-[13px] font-semibold tracking-[0.2em] uppercase text-foreground">Signal</span>
+            <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-7 w-auto" />
           </Link>
           <PhaseLens phase={info.phase} day={info.cycleDay} />
         </div>
