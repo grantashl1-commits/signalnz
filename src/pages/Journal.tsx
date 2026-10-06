@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { PenLine as PageIcon } from "lucide-react";
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { useAndroidBack } from "@/hooks/useAndroidBack";
@@ -6,8 +8,7 @@ import { Plus, ArrowLeft, Search, Check, BookOpen, X, Sparkles } from "lucide-re
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import { useDailyStoic, useJournalEntries2, type JournalEntryRow, type StoicLens } from "@/hooks/useStoicJournal";
@@ -412,22 +413,15 @@ export default function JournalPage() {
 
   return (
     <GatedFeature featureKey="journal_write">
-      <div className="relative">
-        <AtmosphericHero size="md">
-          <SignalPulse />
-          <div className="text-center relative z-10">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Journal</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Reflect</h1>
-            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-              {TAB_SUBTITLES[tab]}
-            </p>
-          </div>
-        </AtmosphericHero>
+      <div className="member-page member-page-reflect relative">
+        <PageHeading title="Reflect" label="Journal" icon={PageIcon} tone="reflect">
+          {TAB_SUBTITLES[tab]}
+        </PageHeading>
 
         <ContentSection className="px-5 md:px-4">
           {/* Tabs */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-md overflow-x-auto scrollbar-hide">
+            <div className="page-tabs flex border-b border-border pb-2 max-w-md overflow-x-auto scrollbar-hide">
               {TABS.map((t) => (
                 <button
                   key={t.id}
@@ -457,10 +451,10 @@ export default function JournalPage() {
             >
               {/* ═══ WRITE TAB ═══ */}
               {tab === "write" && view === "list" && (
-                <div className="space-y-6 md:space-y-8">
+                <div className="reflection-write-grid">
 
                   {/* Rotating prompt */}
-                  <div className="text-center px-4 min-h-[60px] flex items-center justify-center">
+                  <div className="journal-prompt border-l-2 border-reflect/50 pl-5 min-h-[60px] flex items-center">
                     <AnimatePresence mode="wait">
                       <motion.p
                         key={promptIdx}
@@ -479,7 +473,7 @@ export default function JournalPage() {
 
 
                   {/* Inline journal textarea + save */}
-                  <div className="card-warm p-4 space-y-3">
+                  <div className="journal-writing-surface bg-card border border-border rounded-lg p-5 md:p-7 space-y-4">
                     <textarea
                       value={inlineText}
                       onChange={(e) => setInlineText(e.target.value)}

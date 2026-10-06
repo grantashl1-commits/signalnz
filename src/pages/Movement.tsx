@@ -1,10 +1,11 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Activity as PageIcon } from "lucide-react";
 import { useState, useMemo, lazy, Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { Check, Dumbbell, Bluetooth, Activity, ChevronDown, ChevronRight, PenLine, Flame, Moon, Heart, Save, X, Plus } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import { CymatiSketch, SacredSpiral, PhaseIndicator } from "@/components/BotanicalElements";
@@ -233,31 +234,24 @@ export default function MovementPage() {
   };
 
     return (
-    <div className="relative">
+    <div className="member-page member-page-move relative">
       {/* ═══ HERO ═══ */}
-      <AtmosphericHero size="md">
-        <SignalPulse />
-        <div className="text-center relative z-10">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Movement</p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Move</h1>
-          <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-            With your body, in the shape of today.
-          </p>
-        </div>
-      </AtmosphericHero>
+      <PageHeading title="Move" label="Movement" icon={PageIcon} tone="move">
+          With your body, in the shape of today.
+        </PageHeading>
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 
       {/* Tab bar - sticky at top */}
       <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm -mx-5 px-5 py-2 md:-mx-4 md:px-4">
         <div className="relative">
-          <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+          <div className="page-tabs flex gap-1.5 overflow-x-auto no-scrollbar py-1 border-b border-border">
             {TABS.map(tab => (
               <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
                 className={`touch-tab flex-shrink-0 rounded-full px-4 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-secondary text-muted-foreground active:text-foreground"
+                    ? "bg-move/15 text-foreground"
+                    : "text-muted-foreground active:text-foreground"
                 }`}
               >{tab.label}</button>
             ))}
@@ -268,10 +262,10 @@ export default function MovementPage() {
 
       {/* TODAY TAB */}
       {activeTab === "today" && (
-        <div className="space-y-8 md:space-y-10">
+        <div className="movement-today-grid">
           <MovementWeekStrip />
           {/* Phase + training week context */}
-          <div className="card-warm p-4 md:p-5 relative overflow-hidden">
+          <div className="movement-phase-note p-4 md:p-5 border-l-2 border-move/50 bg-move/5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
               <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
             </div>

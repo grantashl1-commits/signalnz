@@ -1,10 +1,11 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Moon as PageIcon } from "lucide-react";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { GatedFeature } from "@/components/FeatureGate";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 
 import { CymatiSketch, MoonPhaseRow, HandUnderline } from "@/components/BotanicalElements";
@@ -137,7 +138,7 @@ export default function CyclePage() {
       ];
 
   return (
-    <div className="relative">
+    <div className="member-page member-page-cycle relative">
       {needsModeSelection && (
         <CycleModeSelector onSelect={handleModeSelect} />
       )}
@@ -152,30 +153,9 @@ export default function CyclePage() {
       )}
 
       {/* ═══ HERO — factual, not poetic ═══ */}
-      <AtmosphericHero size="md">
-        <SignalPulse />
-        <div className="text-center relative z-10">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">
-            {cycleMode === "perimenopause" ? "Perimenopause" : cycleMode === "post-menopause" ? "Post-menopause" : "Cycle"}
-          </p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Rhythm</h1>
-          {cycleMode === "cycling" && hasDateSet && (
-            <p className="font-body text-sm text-primary-foreground/60">
-              Day {info.cycleDay} of {PHASE_SHORT[info.phase].toLowerCase()} · {daysUntil} days held ahead
-            </p>
-          )}
-          {cycleMode === "perimenopause" && (
-            <p className="font-body text-sm text-primary-foreground/60">
-              moving with the change — held, gently
-            </p>
-          )}
-          {cycleMode === "post-menopause" && (
-            <p className="font-body text-sm text-primary-foreground/60">
-              strength, softness, the next season
-            </p>
-          )}
-        </div>
-      </AtmosphericHero>
+      <PageHeading title="Rhythm" label="Cycle" icon={PageIcon} tone="reflect">
+          {cycleMode === "cycling" && hasDateSet ? `Day ${info.cycleDay} of ${PHASE_SHORT[info.phase].toLowerCase()} · ${daysUntil} days held ahead` : cycleMode === "perimenopause" ? "moving with the change — held, gently" : cycleMode === "post-menopause" ? "strength, softness, the next season" : "Your rhythm, held gently."}
+        </PageHeading>
 
       <ContentSection className="px-5 md:px-4 space-y-8 md:space-y-10">
 

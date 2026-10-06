@@ -210,3 +210,6 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+## Member-page presentation
+- Use PageHeading and scoped member-page styles for homepage-led member screens; leave homepage and course AtmosphericHero layouts independent so page redesigns do not alter their presentation.
