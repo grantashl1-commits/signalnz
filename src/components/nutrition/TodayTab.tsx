@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Sparkles, Baby } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, PHASE_SHORT, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
-import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
-import { findRecipeByName } from "@/lib/recipe-index";
+import { type Recipe } from "@/data/meal-plans";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
-import { getAIMealPlan, type AIMeal } from "@/lib/weekly-planner";
+import { type AIMeal } from "@/lib/weekly-planner";
+import { getTodayMeals } from "@/lib/today-meals";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
@@ -51,13 +51,6 @@ const SNACK_MACROS: Record<Phase, { morning: { cal: number; p: number; c: number
 };
 
 const SEED_CYCLING_MACROS = { cal: 90, p: 3, c: 3, f: 7 };
-
-function getPlanDayForCycleDay(cycleDay: number) {
-  if (cycleDay <= 7) return { phase: "menstrual" as Phase, dayIndex: cycleDay - 1 };
-  if (cycleDay <= 14) return { phase: "follicular" as Phase, dayIndex: cycleDay - 8 };
-  if (cycleDay <= 21) return { phase: "ovulatory" as Phase, dayIndex: cycleDay - 15 };
-  return { phase: "luteal" as Phase, dayIndex: cycleDay - 22 };
-}
 
 function estimateMealMacros(recipe?: Recipe, aiMeal?: AIMeal): { cal: number; p: number; c: number; f: number } | null {
   if (aiMeal) {
@@ -118,31 +111,7 @@ export default function TodayTab() {
 
   const todayInsight = useMemo(() => getTodayInsight(currentPhase, cycleMode, goalSlug), [currentPhase, cycleMode, goalSlug]);
 
-  const aiPlan = useMemo(() => getAIMealPlan(), []);
-  const aiToday = useMemo(() => {
-    if (!aiPlan) return null;
-    return aiPlan.days.find(d => d.cycleDay === currentCycleDay) || null;
-  }, [aiPlan, currentCycleDay]);
-
-  const { phase: planPhase, dayIndex } = getPlanDayForCycleDay(currentCycleDay);
-  const plan = PHASE_MEAL_PLANS[planPhase];
-  const dayPlan = plan.days[Math.min(dayIndex, plan.days.length - 1)];
-
-  const meals = useMemo(() => {
-    if (aiToday) {
-      return [
-        { slot: "breakfast", label: "Breakfast", name: aiToday.breakfast?.name ?? "", recipe: findRecipeByName(aiToday.breakfast?.name ?? ""), aiMeal: aiToday.breakfast },
-        { slot: "lunch", label: "Lunch", name: aiToday.lunch?.name ?? "", recipe: findRecipeByName(aiToday.lunch?.name ?? ""), aiMeal: aiToday.lunch },
-        { slot: "dinner", label: "Dinner", name: aiToday.dinner?.name ?? "", recipe: findRecipeByName(aiToday.dinner?.name ?? ""), aiMeal: aiToday.dinner },
-      ].filter(m => m.name);
-    }
-    if (!dayPlan) return [];
-    return [
-      { slot: "breakfast", label: "Breakfast", name: dayPlan.breakfast },
-      { slot: "lunch", label: "Lunch", name: dayPlan.lunch },
-      { slot: "dinner", label: "Dinner", name: dayPlan.dinner },
-    ].map(s => ({ ...s, recipe: findRecipeByName(s.name), aiMeal: undefined as AIMeal | undefined }));
-  }, [dayPlan, aiToday]);
+  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay]);
 
   const phaseColor = PHASE_HEX[currentPhase];
   const snacks = PHASE_SNACKS[currentPhase];
@@ -238,7 +207,7 @@ export default function TodayTab() {
     return { cal: 1800, p: 100, c: 200, f: 60 };
   }, [nutritionTarget]);
 
-  if (!dayPlan && !aiToday) {
+  if (meals.length === 0) {
     return (
       <div className="rounded-2xl bg-card p-8 text-center space-y-4 shadow-soft">
         <Sparkles className="h-10 w-10 mx-auto text-primary/40" />
@@ -256,7 +225,7 @@ export default function TodayTab() {
         {/* Header — no phase/day subtitle */}
         <div>
           <h2 className="font-display text-card-title font-bold italic text-foreground">Today's Nourishment</h2>
-          {aiToday && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
+          {isAI && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
         </div>
 
         {/* Protein ring */}

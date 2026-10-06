@@ -31,6 +31,8 @@ const Breathwork = lazy(() => import("./pages/Breathwork"));
 const NervousSystem = lazy(() => import("./pages/NervousSystem"));
 const Journal = lazy(() => import("./pages/Journal"));
 const Modules = lazy(() => import("./pages/Modules"));
+const Explore = lazy(() => import("./pages/Explore"));
+const Landing = lazy(() => import("./pages/Landing"));
 const Membership = lazy(() => import("./pages/Membership"));
 const Practice = lazy(() => import("./pages/Practice"));
 const Scripts = lazy(() => import("./pages/Scripts"));
@@ -143,6 +145,7 @@ const App = () => {
                   <Routes>
                     <Route path="/brand" element={<BrandGuidelines />} />
                     <Route path="/auth" element={<Auth />} />
+                    <Route path="/welcome" element={<Landing />} />
                     <Route path="*" element={
                       <Layout>
                         <Suspense fallback={<RouteFallback />}>
@@ -156,6 +159,7 @@ const App = () => {
                             <Route path="/mindfulness" element={<NervousSystem />} />
                             <Route path="/journal" element={<Journal />} />
                             <Route path="/modules" element={<Modules />} />
+                            <Route path="/explore" element={<Explore />} />
                             <Route path="/membership" element={<Membership />} />
                             <Route path="/my-practice" element={<Practice />} />
                             <Route path="/scripts" element={<Scripts />} />

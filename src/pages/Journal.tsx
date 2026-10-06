@@ -33,7 +33,7 @@ type EntryType = "reflect" | "gratitude" | "one line";
 const TABS: { id: Tab; label: string }[] = [
   { id: "write", label: "Write" },
   { id: "insights", label: "Memory Vault" },
-  { id: "vision", label: "Vision Board" },
+  { id: "vision", label: "Goals" },
 ];
 
 const TAB_SUBTITLES: Record<Tab, string> = {

@@ -1,11 +1,11 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Moon, Dumbbell, BookOpen, User, UserCircle, MoreHorizontal, Utensils, Leaf, Brain, Users, X, Sparkles, Heart, Baby, ChevronDown } from "lucide-react";
+import { UserCircle } from "lucide-react";
+import { PRIMARY_NAV, PILLAR_COLOR, activePillar } from "@/lib/navigation";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT } from "@/lib/cycle-utils";
 import { useIsMobile, useKeyboardVisible, haptic } from "@/hooks/use-mobile";
-import { useRef, useEffect, useState } from "react";
-import SignalFloatingCTA from "@/components/signal/SignalFloatingCTA";
+import { useRef, useEffect } from "react";
 import SignalPanel from "@/components/signal/SignalPanel";
 import { useSignalPanel } from "@/hooks/useSignalPanel";
 import SignalAmbientDots from "@/components/SignalAmbientDots";
@@ -13,80 +13,26 @@ import SignalLogo from "@/components/SignalLogo";
 
 import PageTransition from "@/components/PageTransition";
 
-// Desktop nav categories
-const NAV_CATEGORIES = [
-  {
-    label: "Body",
-    items: [
-      { path: "/cycle", icon: Moon, label: "Cycle" },
-      { path: "/movement", icon: Dumbbell, label: "Movement" },
-      { path: "/nutrition", icon: Utensils, label: "Nutrition" },
-    ],
-  },
-  {
-    label: "Mind",
-    items: [
-      { path: "/my-practice", icon: Leaf, label: "Habits" },
-      { path: "/mindfulness", icon: Brain, label: "Mindfulness" },
-      { path: "/journal", icon: BookOpen, label: "Journal" },
-    ],
-  },
-  {
-    label: "Life",
-    items: [
-      { path: "/community", icon: Users, label: "Community" },
-      { path: "/connect", icon: Heart, label: "Connect" },
-      { path: "/parenting", icon: Baby, label: "Parenting" },
-    ],
-  },
-];
+const PHASE_COLOR = (phase: string) => `hsl(var(--phase-${phase}))`;
 
-const PRIMARY_TABS = [
-  { path: "/", label: "Home", icon: Home },
-  { path: "/nutrition", label: "Nourish", icon: Utensils },
-  { path: "/movement", label: "Move", icon: Dumbbell },
-  { path: "/cycle", label: "Cycle", icon: Moon },
-  { path: "more", label: "More", icon: MoreHorizontal },
-];
-
-const MORE_CATEGORIES = [
-  {
-    label: "Body",
-    items: [
-      { path: "/my-practice", label: "Habits", icon: Leaf },
-    ],
-  },
-  {
-    label: "Mind",
-    items: [
-      { path: "/mindfulness", label: "Mindfulness", icon: Brain },
-      { path: "/journal", label: "Journal", icon: BookOpen },
-    ],
-  },
-  {
-    label: "Life",
-    items: [
-      { path: "/community", label: "Community", icon: Users },
-      { path: "/connect", label: "Connect", icon: Heart },
-      { path: "/parenting", label: "Parenting", icon: Baby },
-    ],
-  },
-  {
-    label: "",
-    items: [
-      { path: "/account", label: "Account", icon: User },
-    ],
-  },
-];
-
-const ALL_MORE_PATHS = MORE_CATEGORIES.flatMap(c => c.items.map(i => i.path));
-
-const PHASE_BORDER: Record<string, string> = {
-  menstrual: "border-phase-menstrual",
-  follicular: "border-phase-follicular",
-  ovulatory: "border-phase-ovulatory",
-  luteal: "border-phase-luteal",
-};
+/** Cycle as a quiet lens: a small pill that opens the Cycle space. */
+function PhaseLens({ phase, day }: { phase: string; day: number }) {
+  return (
+    <Link
+      to="/cycle"
+      className="group flex items-center gap-2 rounded-full border border-border/70 bg-card/70 backdrop-blur-xl pl-2 pr-3 py-1.5 transition-colors hover:border-foreground/20"
+      aria-label={`Cycle: ${PHASE_SHORT[phase as keyof typeof PHASE_SHORT]} phase, day ${day}`}
+    >
+      <span className="relative flex h-2.5 w-2.5">
+        <span className="absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping" style={{ backgroundColor: PHASE_COLOR(phase), animationDuration: "2.4s" }} />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ backgroundColor: PHASE_COLOR(phase) }} />
+      </span>
+      <span className="text-[12px] font-medium text-foreground/80">
+        {PHASE_SHORT[phase as keyof typeof PHASE_SHORT]} <span className="text-muted-foreground">· day {day}</span>
+      </span>
+    </Link>
+  );
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -96,8 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const keyboardVisible = useKeyboardVisible();
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
   const navigate = useNavigate();
-  const [moreOpen, setMoreOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const pillar = activePillar(location.pathname);
 
   const previousPathRef = useRef(location.pathname);
   const previousPath = previousPathRef.current;
@@ -109,105 +54,60 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="fixed inset-0 flex flex-col bg-background overflow-hidden">
       <SignalAmbientDots />
 
-      {/* Desktop header — hidden on mobile */}
-      <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
-        <div className="container mx-auto flex items-center justify-between px-4 h-[52px]">
-          <Link to="/" className="flex items-center flex-shrink-0 mr-6">
-            <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-8" />
+      {/* Desktop header — floating glass bar */}
+      <header className="flex-none z-30 hidden md:block" style={{ paddingTop: "var(--safe-top)" }}>
+        <div className="mx-auto max-w-6xl flex items-center justify-between px-6 h-[72px]">
+          <Link to="/" className="flex items-center gap-2.5 flex-shrink-0" aria-label="Signal home">
+            <SignalLogo size={30} color="hsl(var(--primary))" />
+            <span className="font-display text-[15px] font-semibold tracking-[0.2em] uppercase text-foreground">Signal</span>
           </Link>
 
-          <nav className="flex items-center gap-1 flex-1 justify-center">
-            <Link
-              to="/"
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
-                location.pathname === "/"
-                  ? "bg-primary/15 text-primary font-semibold"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-              }`}
-            >
-              <Home className={`h-3.5 w-3.5 ${location.pathname === "/" ? "fill-primary" : ""}`} />
-              Home
-            </Link>
-            {NAV_CATEGORIES.map((cat) => {
-              const catActive = cat.items.some(i => location.pathname === i.path || location.pathname.startsWith(i.path));
-              const isOpen = openDropdown === cat.label;
+          <nav className="relative flex items-center gap-1 rounded-full border border-border/70 bg-card/70 backdrop-blur-xl p-1 shadow-soft" aria-label="Primary">
+            {PRIMARY_NAV.map((item) => {
+              const active = pillar === item.pillar;
               return (
-                <div key={cat.label} className="relative"
-                  onMouseEnter={() => setOpenDropdown(cat.label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium transition-colors ${
+                    active ? "text-background" : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  <button
-                    className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-body font-medium transition-all ${
-                      catActive
-                        ? "bg-primary/15 text-primary font-semibold"
-                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                    }`}
-                  >
-                    {cat.label}
-                    <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-                  </button>
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 4 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-card border border-border/20 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50"
-                      >
-                        {cat.items.map((item) => {
-                          const active = location.pathname === item.path || location.pathname.startsWith(item.path);
-                          return (
-                            <Link
-                              key={item.path}
-                              to={item.path}
-                              onClick={() => setOpenDropdown(null)}
-                              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
-                                active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
-                              }`}
-                            >
-                              <item.icon className="h-4 w-4" />
-                              {item.label}
-                            </Link>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                  {active && (
+                    <motion.span
+                      layoutId="desk-pill"
+                      className="absolute inset-0 rounded-full bg-foreground"
+                      transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                    />
+                  )}
+                  <item.icon className="relative z-10 h-4 w-4" strokeWidth={1.75} />
+                  <span className="relative z-10">{item.label}</span>
+                </Link>
               );
             })}
           </nav>
 
-          <div className="flex items-center gap-3 flex-shrink-0 ml-6">
-            <div className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${PHASE_BORDER[info.phase]}`}>
-              <span className="font-hand text-sm font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-                {PHASE_SHORT[info.phase].toLowerCase()} · day {info.cycleDay}
-              </span>
-            </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <PhaseLens phase={info.phase} day={info.cycleDay} />
             <Link
               to="/account"
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary/70 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Account"
+              className="flex items-center justify-center w-9 h-9 rounded-full border border-border/70 bg-card/70 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <UserCircle className="h-5 w-5" />
+              <UserCircle className="h-5 w-5" strokeWidth={1.5} />
             </Link>
           </div>
         </div>
       </header>
 
       {/* Mobile header */}
-      <header className="flex-none bg-background/95 backdrop-blur-xl border-b border-border/10 z-30 md:hidden" style={{ paddingTop: "var(--safe-top)" }}>
+      <header className="flex-none z-30 md:hidden bg-background/80 backdrop-blur-xl" style={{ paddingTop: "var(--safe-top)" }}>
         <div className="flex items-center justify-between px-5 h-[52px]">
-          <Link to="/" className="flex items-center">
-            <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-7" />
+          <Link to="/" className="flex items-center gap-2" aria-label="Signal home">
+            <SignalLogo size={24} color="hsl(var(--primary))" />
+            <span className="font-display text-[13px] font-semibold tracking-[0.2em] uppercase text-foreground">Signal</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <div className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${PHASE_BORDER[info.phase]}`}>
-              <span className="font-hand text-xs font-bold" style={{ color: `hsl(var(--phase-${info.phase}))` }}>
-                {PHASE_SHORT[info.phase].toLowerCase()} · day {info.cycleDay}
-              </span>
-            </div>
-          </div>
+          <PhaseLens phase={info.phase} day={info.cycleDay} />
         </div>
       </header>
 
@@ -235,71 +135,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       </main>
 
-      {/* Mobile bottom tab bar — 5 fixed tabs */}
+      {/* Mobile floating dock — Today · Eat · Move · Reflect · Explore */}
       {!keyboardVisible && (
         <nav
-          className="flex-none z-40 md:hidden select-none"
-          style={{
-            paddingBottom: "var(--safe-bottom)",
-            backgroundColor: 'hsl(var(--background) / 0.72)',
-            backdropFilter: 'blur(12px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-            borderTop: '0.5px solid rgba(91, 45, 114, 0.1)',
-          }}
+          className="flex-none z-40 md:hidden select-none px-3 pt-1.5"
+          style={{ paddingBottom: "calc(var(--safe-bottom) + 8px)" }}
+          aria-label="Primary"
         >
-          <div className="flex items-stretch max-w-lg mx-auto">
-            {PRIMARY_TABS.map(({ path, label, icon: Icon }) => {
-              const isMore = path === "more";
-              const isActive = isMore
-                ? moreOpen || ALL_MORE_PATHS.some(p => location.pathname === p || location.pathname.startsWith(p))
-                : path === "/" ? location.pathname === "/" : (location.pathname === path || location.pathname.startsWith(path));
+          <div className="relative flex items-stretch max-w-md mx-auto rounded-[22px] border border-border/60 bg-card/80 backdrop-blur-2xl shadow-elevated px-1.5 py-1.5">
+            {PRIMARY_NAV.map(({ path, label, icon: Icon, pillar: p }) => {
+              const isActive = pillar === p;
               return (
                 <button
                   key={path}
-                  onClick={() => {
-                    haptic("light");
-                    if (isMore) {
-                      setMoreOpen(v => !v);
-                    } else {
-                      setMoreOpen(false);
-                      navigate(path);
-                    }
-                  }}
-                  className="flex-1 flex flex-col items-center justify-center gap-0.5 pt-2 pb-1 min-h-[56px] relative select-none"
+                  onClick={() => { haptic("light"); navigate(path); }}
+                  className="flex-1 flex flex-col items-center justify-center gap-1 min-h-[52px] relative rounded-2xl"
+                  aria-current={isActive ? "page" : undefined}
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
-                  {/* Active pill background */}
                   {isActive && (
-                    <motion.div
-                      layoutId="tab-pill"
-                      className="absolute rounded-full"
-                      style={{
-                        width: 40,
-                        height: 28,
-                        top: 6,
-                        backgroundColor: 'hsl(var(--primary) / 0.15)',
-                      }}
-                      transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                    <motion.span
+                      layoutId="dock-pill"
+                      className="absolute inset-0 rounded-2xl bg-foreground"
+                      transition={{ type: "spring", stiffness: 480, damping: 38 }}
                     />
                   )}
-                  <motion.div
-                    animate={{ scale: isActive ? 1.05 : 1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                    className="relative z-10"
-                  >
-                    <Icon
-                      className="w-5 h-5 transition-colors duration-200"
-                      style={{
-                        color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.35)',
-                      }}
-                      strokeWidth={isActive ? 2 : 1.5}
-                    />
-                  </motion.div>
+                  <Icon
+                    className="relative z-10 w-[19px] h-[19px] transition-colors duration-200"
+                    style={{ color: isActive ? (p === "today" ? "hsl(var(--background))" : PILLAR_COLOR[p]) : "hsl(var(--foreground) / 0.45)" }}
+                    strokeWidth={isActive ? 2 : 1.6}
+                  />
                   <span
-                    className="text-[10px] font-body tracking-wide transition-colors duration-200 relative z-10"
-                    style={{
-                      color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.35)',
-                    }}
+                    className="relative z-10 text-[10px] font-medium tracking-wide transition-colors duration-200"
+                    style={{ color: isActive ? "hsl(var(--background))" : "hsl(var(--foreground) / 0.5)" }}
                   >
                     {label}
                   </span>
@@ -309,63 +177,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
       )}
-
-      {/* More menu overlay */}
-      <AnimatePresence>
-        {moreOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setMoreOpen(false)}
-            />
-            <motion.div
-              className="fixed bottom-0 left-0 right-0 z-30 md:hidden"
-              style={{ paddingBottom: "calc(56px + var(--safe-bottom))" }}
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 40, opacity: 0 }}
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-            >
-              <div className="mx-4 mb-2 bg-card rounded-2xl border border-border/20 shadow-2xl overflow-hidden">
-                {MORE_CATEGORIES.map((cat) => (
-                  <div key={cat.label || "other"}>
-                    {cat.label && (
-                      <div className="px-5 pt-3 pb-1">
-                        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{cat.label}</span>
-                      </div>
-                    )}
-                    {cat.items.map(({ path, label, icon: Icon }) => {
-                      const active = location.pathname === path || location.pathname.startsWith(path);
-                      return (
-                        <button
-                          key={path}
-                          onClick={() => {
-                            haptic("light");
-                            setMoreOpen(false);
-                            navigate(path);
-                          }}
-                          className={`w-full flex items-center gap-3 px-5 py-3 transition-colors ${
-                            active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary/50"
-                          }`}
-                          style={{ WebkitTapHighlightColor: "transparent" }}
-                        >
-                          <Icon className="w-5 h-5" strokeWidth={active ? 2 : 1.5} />
-                          <span className="text-sm font-medium">{label}</span>
-                          {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       {/* Give me a signal — panel only (no floating CTA) */}
       <SignalPanel

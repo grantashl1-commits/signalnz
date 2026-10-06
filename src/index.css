@@ -18,26 +18,26 @@
        ══════════════════════════════════════════════ */
 
     /* ── Color Palette ── */
-    --background: 30 33% 98%;          /* Pearl White  #FDFCFB */
-    --foreground: 280 20% 25%;         /* Deep text on pearl */
+    --background: 36 33% 97%;          /* Bone  #FAF7F2 */
+    --foreground: 290 22% 15%;         /* Aubergine ink #2D2030 */
 
-    --card: 22 27% 94%;                /* Warm Stone  #F5F0EC */
-    --card-foreground: 280 20% 25%;
+    --card: 40 50% 99.4%;              /* Paper #FFFEFC */
+    --card-foreground: 290 22% 15%;
 
-    --popover: 22 27% 94%;
-    --popover-foreground: 280 20% 25%;
+    --popover: 40 50% 99.4%;
+    --popover-foreground: 290 22% 15%;
 
-    --primary: 284 22% 44%;            /* Deep Violet  #7F5B87 */
+    --primary: 288 26% 37%;            /* Signal Plum  #6A4672 */
     --primary-foreground: 30 33% 98%;
 
     --primary-soft: 284 22% 53%;       /* Signal Purple #9974A1 */
     --primary-glow: 284 30% 64%;       /* Lavender      #AF92B6 */
 
-    --secondary: 22 27% 94%;           /* Warm Stone */
+    --secondary: 32 26% 93%;           /* Warm Stone */
     --secondary-foreground: 284 22% 44%;
 
-    --muted: 25 25% 85%;              /* Warm Sand    #D9C6B9 */
-    --muted-foreground: 284 16% 50%;
+    --muted: 30 20% 89%;              /* Warm Sand */
+    --muted-foreground: 290 9% 42%;
 
     --accent: 284 22% 53%;            /* Signal Purple */
     --accent-foreground: 30 33% 98%;
@@ -45,8 +45,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 20% 88%;             /* Softer border — reduced visibility */
-    --input: 25 20% 88%;
+    --border: 30 18% 87%;             /* Hairline */
+    --input: 30 18% 87%;
     --ring: 284 22% 53%;
 
     /* ── Radius ── */
@@ -57,9 +57,9 @@
     --radius-card: 1.25rem;  /* 20px */
 
     /* ── Shadows — floating card effect ── */
-    --shadow-soft: 0 2px 16px rgba(91, 45, 114, 0.07);
-    --shadow-medium: 0 4px 24px rgba(91, 45, 114, 0.10);
-    --shadow-elevated: 0 8px 40px rgba(91, 45, 114, 0.12);
+    --shadow-soft: 0 1px 2px rgba(45, 32, 48, 0.04), 0 8px 24px -12px rgba(45, 32, 48, 0.10);
+    --shadow-medium: 0 2px 4px rgba(45, 32, 48, 0.05), 0 16px 40px -16px rgba(45, 32, 48, 0.18);
+    --shadow-elevated: 0 4px 8px rgba(45, 32, 48, 0.06), 0 32px 64px -24px rgba(45, 32, 48, 0.28);
     --shadow-glow: 0 0 24px rgba(153, 116, 161, 0.2);
 
     /* ── Spacing scale (8pt grid) ── */
@@ -77,7 +77,7 @@
     --section-gap: 2rem;       /* 32px */
 
     /* ── Animation timing ── */
-    --ease-calm: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
     --duration-fast: 150ms;
     --duration-normal: 300ms;
     --duration-slow: 500ms;
@@ -96,6 +96,14 @@
     --sage-mist: 258 36% 70%;
     --lavender-dust: 284 30% 64%;
 
+    /* ── Evolved Signal accents (pillars) ── */
+    --aubergine: 290 30% 11%;        /* #1F1421 deep canvas */
+    --plum-glow: 300 35% 70%;
+    --eat: 92 20% 52%;               /* Sage olive */
+    --move: 16 52% 58%;              /* Clay */
+    --reflect: 284 30% 62%;          /* Lavender */
+    --goals: 38 52% 56%;             /* Antique gold */
+
     /* ── Sketch/hand-drawn ── */
     --sketch: 25 25% 55%;
 
@@ -110,16 +118,16 @@
     --sidebar-ring: 284 22% 53%;
 
     /* ── Typography ── */
-    --font-display: 'Reddit Sans', sans-serif;
-    --font-body: 'Reddit Sans', sans-serif;
-    --font-editorial: 'Cormorant Garamond', serif;
-    --font-hand: 'Caveat', cursive;
-    --font-mono: 'Reddit Sans', monospace;
+    --font-display: 'Inter Tight', system-ui, sans-serif;
+    --font-body: 'Inter Tight', system-ui, sans-serif;
+    --font-editorial: 'Instrument Serif', Georgia, serif;
+    --font-hand: 'Inter Tight', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
     /* ── Type scale ── */
     --label-size: 0.6875rem;       /* 11px — section labels */
     --label-tracking: 0.12em;
-    --label-color: 284 16% 69%;    /* #B8A8B8 muted */
+    --label-color: 290 10% 52%;
     --card-title-size: 1.25rem;    /* 20px */
     --body-size: 0.9375rem;        /* 15px */
     --body-line-height: 1.6;
@@ -317,6 +325,79 @@
   .sticky-sub-nav {
     @apply sticky top-0 z-20 bg-background/95 backdrop-blur-sm pb-2 -mt-2 pt-2;
   }
+}
+
+/* ── Evolved Signal: hero panel, aurora, grain ── */
+.atmo-hero {
+  background:
+    radial-gradient(120% 80% at 0% 0%, hsl(288 30% 26%) 0%, transparent 60%),
+    linear-gradient(160deg, hsl(290 30% 16%) 0%, hsl(var(--aubergine)) 100%);
+  color: hsl(var(--background));
+  box-shadow: var(--shadow-elevated);
+}
+.atmo-hero h1 {
+  font-family: var(--font-editorial) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.025em;
+  line-height: 0.95 !important;
+  font-size: clamp(3.25rem, 13vw, 6rem) !important;
+}
+.atmo-hero .font-editorial { color: hsl(36 33% 97% / 0.72); }
+
+.aurora { position: absolute; inset: -20%; z-index: 0; pointer-events: none; filter: blur(60px); }
+.aurora span {
+  position: absolute; border-radius: 9999px; mix-blend-mode: screen; opacity: 0.55;
+  animation: aurora-drift 22s var(--ease-calm) infinite alternate;
+}
+.aurora span:nth-child(1) { width: 55%; height: 60%; left: 5%; top: 15%; background: hsl(var(--primary)); }
+.aurora span:nth-child(2) { width: 45%; height: 50%; right: 5%; top: 30%; background: hsl(var(--move) / 0.55); animation-duration: 28s; animation-delay: -8s; }
+.aurora span:nth-child(3) { width: 40%; height: 45%; left: 35%; bottom: 0; background: hsl(var(--reflect) / 0.7); animation-duration: 34s; animation-delay: -14s; }
+@keyframes aurora-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(8%, -6%, 0) scale(1.15); }
+  100% { transform: translate3d(-6%, 8%, 0) scale(0.95); }
+}
+
+.grain {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.16; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Editorial display helper */
+.display-serif {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora span, .sketch-rotate, .sketch-rotate-fast { animation: none !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
+
+/* Landing page scrolls the window (Lenis), not the app shell. */
+html.landing-scroll, html.landing-scroll body, html.landing-scroll #root {
+  height: auto !important;
+  min-height: 100%;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  overscroll-behavior: auto;
+}
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* ── Animations ── */

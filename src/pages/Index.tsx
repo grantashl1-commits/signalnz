@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
@@ -11,13 +11,13 @@ import HomeHabitsDisplay from "@/components/HomeHabitsDisplay";
 import HomeWeekAtAGlance from "@/components/HomeWeekAtAGlance";
 import HomeMoodPulse from "@/components/home/HomeMoodPulse";
 import HomeReturnRibbon from "@/components/home/HomeReturnRibbon";
+import TodayBoard from "@/components/home/TodayBoard";
 import HomeTodoList from "@/components/HomeTodoList";
 import { WildStar } from "@/components/BotanicalElements";
 import { PeriodDueReminder } from "@/components/DailySignal";
 import { useCycle } from "@/contexts/CycleContext";
-import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { Phase } from "@/lib/cycle-utils";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { useProfile } from "@/hooks/useProfile";
 import NPSSurvey from "@/components/NPSSurvey";
 import DaySection from "@/components/feed/DaySection";
@@ -35,7 +35,6 @@ import menstrualHero from "@/assets/phases/menstrual-hero.png";
 import follicularHero from "@/assets/phases/follicular-hero.png";
 import ovulatoryHero from "@/assets/phases/ovulatory-hero.png";
 import lutealHero from "@/assets/phases/luteal-hero.png";
-import welcomeHero from "@/assets/phases/welcome-hero.png";
 
 const PHASE_HERO_IMAGE: Record<Phase, string> = {
   menstrual: menstrualHero,
@@ -100,13 +99,11 @@ function isTodayPrepDay(mealPrepDay: string | null): boolean {
 }
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { displayName, onboardingComplete, loading: profileLoading, refetch, mealPrepDay } = useProfile();
   const queryClient = useQueryClient();
-  const { currentPhase, currentCycleDay } = useCycle();
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
-  const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const [showOnboarding, setShowOnboarding] = useState(false);
   const todayStr = new Date().toISOString().split("T")[0];
   const [prepDismissed, setPrepDismissed] = useState(() =>
@@ -130,22 +127,6 @@ export default function HomePage() {
     return true;
   }, [todayStr]);
 
-  // Rotating micro-actions (3 of 6, rotates by day)
-  const microActions = useMemo(() => {
-    const all = [
-      { label: "write a line", to: "/journal" },
-      { label: "one breath", to: "/breathwork" },
-      { label: "log how you feel", to: "/cycle" },
-      { label: "plan your week", to: "/planner" },
-      { label: "a 2-minute reset", to: "/practice" },
-      { label: "save a wisdom", to: "/feed" },
-    ];
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    const start = (dayOfYear * 3) % all.length;
-    return [0, 1, 2].map((i) => all[(start + i) % all.length]);
-  }, []);
-
-
   useEffect(() => {
     const localDone = localStorage.getItem("signal_onboarding_complete") === "true";
     if (user && !profileLoading && onboardingComplete === false && !localDone) {
@@ -160,7 +141,6 @@ export default function HomePage() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const hasSetCycle = !!useCycle().cycleStartDate;
 
   const firstName = (() => {
     const meta = user?.user_metadata;
@@ -270,6 +250,8 @@ export default function HomePage() {
     });
   }, [user, navigate]);
 
+  // Visitors get the story first; members get their day.
+  if (!authLoading && !user) return <Navigate to="/welcome" replace />;
   if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 
   return (
@@ -283,82 +265,8 @@ export default function HomePage() {
         }}
       />
       <NPSSurvey />
-      {/* ═══ SECTION 1 — HERO / CONTEXT ═══ */}
-      <AtmosphericHero size="lg">
-        <SignalPulse />
-        <div className="text-center max-w-xl mx-auto relative z-10 px-4">
-          {user ? (
-            <>
-              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
-                {greeting}, {firstName || "you"}.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-                className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
-              >
-                <img
-                  src={welcomeHero}
-                  alt="Tune into your signal"
-                  className="w-full h-auto object-contain drop-shadow-md"
-                />
-              </motion.div>
-              <motion.p {...fadeUp(0.35)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-3" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
-                Your body already knows. It's time to tune into the signal.
-              </motion.p>
-              <motion.p {...fadeUp(0.45)} className="font-body text-section-label text-primary-foreground/60 uppercase mb-6 md:mb-8">
-                Day {info.cycleDay} · {PHASE_SHORT[info.phase]}
-              </motion.p>
-              {/* ── Hero micro-actions: rotating, one tap into the day ── */}
-              <motion.div {...fadeUp(0.5)} className="flex flex-wrap items-center justify-center gap-2 mb-6 md:mb-8">
-                {microActions.map((a) => (
-                  <Link
-                    key={a.label}
-                    to={a.to}
-                    className="rounded-full bg-card/15 backdrop-blur-sm border border-primary-foreground/20 px-3.5 py-1.5 font-hand text-[12px] text-primary-foreground/90 hover:bg-card/25 transition-colors"
-                  >
-                    {a.label}
-                  </Link>
-                ))}
-              </motion.div>
-              {!hasSetCycle && (
-                <motion.div {...fadeUp(0.55)} className="mb-6 md:mb-8">
-                  <Link to="/cycle" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                    Tell me about your cycle <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </motion.div>
-              )}
-            </>
-          ) : (
-            <>
-              <motion.p {...fadeUp(0.1)} className="font-body text-section-label uppercase text-primary-foreground/80 mb-4">
-                {greeting}.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-                className="mx-auto mb-5 w-[70%] max-w-[280px] md:w-[65%] md:max-w-[340px]"
-              >
-                <img
-                  src={welcomeHero}
-                  alt="Tune into your signal"
-                  className="w-full h-auto object-contain drop-shadow-md"
-                />
-              </motion.div>
-              <motion.p {...fadeUp(0.4)} className="text-[1.4rem] md:text-[1.85rem] italic font-medium text-primary-foreground leading-snug max-w-sm mx-auto mb-5" style={{ fontFamily: "'EB Garamond', Georgia, serif" }}>
-                Your body already knows. It's time to tune into the signal.
-              </motion.p>
-              <motion.div {...fadeUp(0.55)} className="mb-6">
-                <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-card/20 backdrop-blur-sm border border-primary-foreground/20 px-5 py-2.5 font-body text-sm font-semibold text-primary-foreground hover:bg-card/30 transition-colors">
-                  Come in <ArrowRight className="h-4 w-4" />
-                </Link>
-              </motion.div>
-            </>
-          )}
-        </div>
-      </AtmosphericHero>
+      {/* ═══ SECTION 1 — TODAY ═══ */}
+      <TodayBoard greeting={greeting} firstName={firstName} />
 
       <PeriodDueReminder />
 
