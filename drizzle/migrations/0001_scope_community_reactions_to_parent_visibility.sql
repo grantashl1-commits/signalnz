@@ -1,0 +1,3 @@
+ALTER POLICY "Authenticated read hearts" ON public.community_hearts TO authenticated USING (EXISTS (SELECT 1 FROM public.community_posts p WHERE p.id = community_hearts.post_id));
+CREATE POLICY "Hearts follow visible posts" ON public.community_hearts AS RESTRICTIVE FOR SELECT TO authenticated USING (EXISTS (SELECT 1 FROM public.community_posts p WHERE p.id = community_hearts.post_id));
+ALTER POLICY "Authenticated users can view votes" ON public.community_message_votes TO authenticated USING (EXISTS (SELECT 1 FROM public.community_messages m WHERE m.id = community_message_votes.message_id));
