@@ -480,7 +480,6 @@ export default function JournalPage() {
                       placeholder={getPlaceholder(currentPhase, currentMood)}
                       rows={5}
                       className="w-full resize-none bg-transparent font-hand text-lg text-foreground leading-relaxed placeholder:text-muted-foreground/30 focus:outline-none"
-                      style={{ caretColor: "hsl(14, 100%, 64%)", fontSize: "18px" }}
                     />
                     <div className="flex items-center justify-between">
                       <span className="font-body text-xs text-muted-foreground">
@@ -505,7 +504,7 @@ export default function JournalPage() {
 
                   {/* ── Daily Philosophy ── */}
                   {reading && (
-                    <div className="space-y-4">
+                    <div className="journal-philosophy space-y-4">
                       <div className="flex items-center gap-2">
                         <BookOpen className="h-4 w-4 text-primary" />
                         <span className="font-body text-[10px] uppercase tracking-[0.15em] text-primary">Today's Philosophy · Day {currentDay}</span>

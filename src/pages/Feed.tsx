@@ -199,7 +199,7 @@ export default function Feed() {
   }, [user, navigate, canSave]);
 
   return (
-    <div className="pb-28">
+    <div className="member-page member-page-feed pb-28">
       <PageHeading title="Feed Your Mind" label="Daily reading" icon={PageIcon} tone="goals">
           {feedAccess === "full" ? "5 insights a day — sourced from books that matter" : "Daily insights sourced from books that matter"}
         </PageHeading>
