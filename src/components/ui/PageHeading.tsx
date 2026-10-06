@@ -2,15 +2,9 @@ import { type ReactNode } from "react";
 import { type LucideIcon } from "lucide-react";
 
 type PageTone = "eat" | "move" | "reflect" | "goals";
-const tones: Record<PageTone, string> = {
-  eat: "text-eat bg-eat/10",
-  move: "text-move bg-move/10",
-  reflect: "text-reflect bg-reflect/10",
-  goals: "text-goals bg-goals/10",
-};
 
 /** Compact editorial heading shared by member pages, never the homepage. */
-export default function PageHeading({ title, label, children, icon: Icon, tone = "reflect" }: {
+export default function PageHeading({ title, label, children }: {
   title: string;
   label: string;
   children: ReactNode;
@@ -25,8 +19,16 @@ export default function PageHeading({ title, label, children, icon: Icon, tone =
           <h1 className="font-editorial text-4xl md:text-5xl font-normal leading-tight text-foreground">{title}</h1>
           <div className="mt-2 text-sm text-muted-foreground max-w-lg leading-relaxed">{children}</div>
         </div>
-        <span className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full ${tones[tone]}`} aria-hidden="true">
-          <Icon className="w-5 h-5" strokeWidth={1.5} />
+        <span className="relative shrink-0 w-20 h-20 md:w-28 md:h-28 text-primary pointer-events-none" aria-hidden="true">
+          <svg className="w-full h-full opacity-30" viewBox="0 0 400 400" fill="currentColor">
+            {[60, 95, 130, 165, 195].map((radius, ring) => {
+              const count = 14 + ring * 9;
+              return Array.from({ length: count }, (_, dot) => {
+                const angle = (2 * Math.PI * dot) / count;
+                return <circle key={`${ring}-${dot}`} cx={200 + radius * Math.cos(angle)} cy={200 + radius * Math.sin(angle)} r={Math.max(2.6 - ring * 0.35, 0.9)} />;
+              });
+            })}
+          </svg>
         </span>
       </div>
     </header>
