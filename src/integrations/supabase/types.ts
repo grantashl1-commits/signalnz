@@ -3949,6 +3949,15 @@ export type Database = {
           status: string
         }[]
       }
+      lookup_gift_code: {
+        Args: { p_code: string }
+        Returns: {
+          duration_months: number
+          is_expired: boolean
+          is_redeemed: boolean
+          tier: string
+        }[]
+      }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
