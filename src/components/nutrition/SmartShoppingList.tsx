@@ -336,7 +336,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     }).join("");
     const printWin = window.open("", "_blank");
     if (!printWin) return;
-    printWin.document.write(`<!DOCTYPE html><html><head><title>Shopping List</title><style>@page{size:A4;margin:12mm}body{font-family:'Montserrat',Arial,sans-serif;color:#1a1a1a;margin:0;padding:16px}h1{font-size:16px;font-weight:700;color:#5B2D72;margin-bottom:2px}.sub{font-size:10px;color:#666;margin-bottom:14px}.grid{column-count:3;column-gap:14px}@media print{.grid{column-count:3}body{padding:0}}</style></head><body><h1>Signal Shopping List</h1><p class="sub">Week ${weekNumber} &middot; ${formatDateShort(monday)} &ndash; ${formatDateShort(sunday)}</p><div class="grid">${tableHtml}</div><p style="margin-top:14px;font-size:8px;color:#aaa;text-align:center">signalnz.lovable.app</p></body></html>`);
+    printWin.document.write(`<!DOCTYPE html><html><head><title>Shopping List</title><style>@page{size:A4;margin:12mm}body{font-family:'Montserrat',Arial,sans-serif;color:#1a1a1a;margin:0;padding:16px}h1{font-size:16px;font-weight:700;color:#5B2D72;margin-bottom:2px}.sub{font-size:10px;color:#666;margin-bottom:14px}.grid{column-count:3;column-gap:14px}@media print{.grid{column-count:3}body{padding:0}}</style></head><body><h1>Signal Shopping List</h1><p class="sub">Week ${weekNumber} &middot; ${formatDateShort(monday)} &ndash; ${formatDateShort(sunday)}</p><div class="grid">${tableHtml}</div><p style="margin-top:14px;font-size:8px;color:#aaa;text-align:center">signal.mindcast.co.nz</p></body></html>`);
     printWin.document.close();
     printWin.print();
   };

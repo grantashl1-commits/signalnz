@@ -9,8 +9,8 @@ const PILLARS = [
   {
     n: "01",
     word: "Eat",
-    line: "1,200+ recipes, tuned to your phase.",
-    points: ["A week of meals in one tap", "A shopping list that writes itself", "Cook from what's in your fridge", "A kids' version of every dinner"],
+    line: "690 recipes, tuned to your phase.",
+    points: ["A week of meals in one tap", "A shopping list that writes itself", "Cook from what's in your fridge", "370 kid-friendly recipes & lunchbox ideas"],
     color: "var(--eat)",
     art: [{ src: "/landing/meal-salmon.webp" }, { src: "/landing/meal-miso.webp" }, { src: "/landing/meal-yoghurt.webp" }] as Art[],
   },

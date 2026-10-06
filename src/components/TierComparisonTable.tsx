@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { motion } from "framer-motion";
 import { Check, X, Lock, Eye, PenOff } from "lucide-react";
 import { useFeatureGate, FEATURE_ACCESS, type FeatureTier, type FeatureAccess } from "@/hooks/useFeatureGate";
@@ -194,8 +195,8 @@ export default function TierComparisonTable() {
         </thead>
         <tbody>
           {COMPARISON_DATA.map((group) => (
-            <>
-              <tr key={`cat-${group.category}`}>
+            <Fragment key={`cat-${group.category}`}>
+              <tr>
                 <td
                   colSpan={5}
                   className="font-display text-sm italic text-foreground pt-4 pb-2 border-b border-border/30"
@@ -227,7 +228,7 @@ export default function TierComparisonTable() {
                   </tr>
                 );
               })}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>
