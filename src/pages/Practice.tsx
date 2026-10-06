@@ -1,10 +1,11 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Sprout as PageIcon } from "lucide-react";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, X, ChevronDown, Sun, Moon as MoonIcon, Sunset, Leaf, Pill, Salad, Zap, Sparkles, Copy, Check } from "lucide-react";
 import { WildStar } from "@/components/BotanicalElements";
 import { GatedFeature } from "@/components/FeatureGate";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
 import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
@@ -417,19 +418,12 @@ export default function PracticePage() {
 
   return (
     <div>
-      <div className="max-w-2xl mx-auto">
+      <div className="member-page member-page-habits max-w-5xl mx-auto">
 
         {/* ═══ HERO BANNER ═══ */}
-        <AtmosphericHero size="md">
-          <SignalPulse />
-          <div className="text-center relative z-10">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Daily</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Habits</h1>
-            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-              Small rituals, returned to. Held by the season you're in.
-            </p>
-          </div>
-        </AtmosphericHero>
+        <PageHeading title="Habits" label="Daily" icon={PageIcon} tone="goals">
+          Small rituals, returned to. Held by the season you’re in.
+        </PageHeading>
 
         <div className="px-5 md:px-8 pb-8 md:pb-12">
 

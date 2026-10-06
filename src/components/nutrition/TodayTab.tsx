@@ -16,6 +16,7 @@ import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
 import { extractPlantsFromIngredients } from "@/lib/plant-extractor";
 import ShoppingPreviewStrip from "@/components/nutrition/ShoppingPreviewStrip";
+import { Button } from "@/components/ui/button";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -221,16 +222,16 @@ export default function TodayTab() {
 
   return (
     <div className="relative">
-      <div className="space-y-6 relative z-10">
+      <div className="nourishment-grid relative z-10">
         {/* Header — no phase/day subtitle */}
-        <div>
-          <h2 className="font-display text-card-title font-bold italic text-foreground">Today's Nourishment</h2>
+        <div className="nourishment-header">
+          <h2 className="font-editorial text-2xl font-normal text-foreground">Today's nourishment</h2>
           {isAI && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
         </div>
 
         {/* Protein ring */}
         {nutritionTarget && (
-          <div className="rounded-[18px] bg-card p-5 shadow-soft space-y-3">
+          <div className="nourishment-protein rounded-lg border border-border bg-card p-5 space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-body text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">Daily Protein Target</p>
@@ -266,15 +267,15 @@ export default function TodayTab() {
         )}
 
         {/* Meals — quote acts as the header */}
-        <div>
-          <div className="rounded-[18px] p-4 shadow-soft mb-4" style={{ backgroundColor: `${phaseColor}08`, borderLeft: `3px solid ${phaseColor}` }}>
+        <div className="nourishment-meals">
+          <div className="p-4 border-l-2 border-eat/60 bg-eat/5 mb-4">
             <p className="font-display text-sm italic text-foreground leading-relaxed">"{todayInsight.text}"</p>
             {todayInsight.source && (
               <p className="font-body text-[10px] text-muted-foreground mt-2">— {todayInsight.source}</p>
             )}
           </div>
           <h3 className="font-display text-card-title font-bold text-foreground mb-3">Meals</h3>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="meal-grid">
             {meals.map((meal) => (
               <CompactMealCard
                 key={meal.slot}
@@ -297,9 +298,9 @@ export default function TodayTab() {
 
         {/* Expanded meal detail */}
         <AnimatePresence>
-          {expandedMeal && (
-            <ExpandedMealDetail
-              meal={meals.find(m => m.slot === expandedMeal)!}
+          {meals.filter(m => m.slot === expandedMeal).map(selectedMeal => (
+            <div className="nourishment-detail" key={selectedMeal.slot}><ExpandedMealDetail
+              meal={selectedMeal}
               isEaten={!!eaten[expandedMeal]}
               phaseColor={phaseColor}
               phase={currentPhase}
@@ -307,15 +308,15 @@ export default function TodayTab() {
               onMarkEaten={() => markEaten(expandedMeal)}
               onScaleChange={(v) => setScale(expandedMeal, v)}
               onClose={() => setExpandedMeal(null)}
-            />
-          )}
+            /></div>
+          ))}
         </AnimatePresence>
 
         {/* Shopping basket preview — link to full list */}
-        <ShoppingPreviewStrip phaseColor={phaseColor} />
+        <div className="nourishment-shopping"><ShoppingPreviewStrip phaseColor={phaseColor} /></div>
 
         {/* Snacks + Seed Cycling — 3-column row like meals */}
-        <div>
+        <div className="nourishment-snacks">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-display text-card-title font-bold text-foreground">Snacks</h3>
             <div className="flex items-center gap-2">
@@ -401,7 +402,7 @@ export default function TodayTab() {
         </AnimatePresence>
 
         {/* Macro summary ring */}
-        <MacroRing consumed={dailyMacros} targets={macroTargets} phaseColor={phaseColor} />
+        <div className="nourishment-macros"><MacroRing consumed={dailyMacros} targets={macroTargets} phaseColor={phaseColor} /></div>
 
         {/* Plant vine tracker is rendered as side decoration + summary card at week end */}
       </div>
@@ -418,23 +419,25 @@ function CompactMealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEate
   const macros = estimateMealMacros(recipe, aiMeal);
 
   return (
-    <div className="rounded-[14px] bg-card shadow-soft overflow-hidden">
-      <RecipeImage recipeName={name} recipeImage={recipe?.image} height={80} variant="card" />
-      <div className="p-2 space-y-1.5">
-        <p className="font-body text-[9px] uppercase tracking-wider font-medium" style={{ color: phaseColor }}>{label}</p>
-        <p className="font-display text-[11px] italic text-foreground leading-tight line-clamp-2">{name}</p>
+    <div className="meal-summary">
+      <RecipeImage recipeName={name} recipeImage={recipe?.image} height={120} variant="card" />
+      <div className="meal-summary-body space-y-1.5">
+        <p className="font-mono text-[10px] font-medium text-eat">{label}{isEaten ? " · Held" : ""}</p>
+        <p className="meal-summary-name font-body text-foreground">{name}</p>
         
         {macros && (
-          <p className="font-body text-[8px] text-muted-foreground">{Math.round(macros.cal * scale)} cal</p>
+          <p className="meal-summary-meta">{Math.round(macros.cal * scale)} cal · {Math.round(macros.p * scale)}g protein</p>
         )}
 
-        <button
+        <Button
+          variant="ghost"
+          aria-expanded={isExpanded}
           onClick={onToggleExpand}
-          className="w-full touch-btn rounded-lg py-1.5 font-body text-[10px] font-medium transition-all"
-          style={{ backgroundColor: `${phaseColor}10`, color: phaseColor }}
+          className="min-h-11 text-xs text-primary px-0 hover:bg-eat/10"
         >
-          {isExpanded ? "Close" : "Expand"}
-        </button>
+          {isExpanded ? "Close recipe" : "View recipe"}
+          <ChevronDown className={`h-4 w-4 ${isExpanded ? "rotate-180" : ""}`} />
+        </Button>
       </div>
     </div>
   );

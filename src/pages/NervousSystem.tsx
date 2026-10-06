@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Wind as PageIcon } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -5,8 +7,7 @@ import { Moon, Clock, Check, Play, Wind, BookOpen, CircleDot, ChevronDown, Headp
 import SleepTimer from "@/components/practice/SleepTimer";
 import { useSleepMusic } from "@/hooks/useSleepMusic";
 import { GatedFeature } from "@/components/FeatureGate";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
@@ -682,17 +683,10 @@ export default function NervousSystemPage() {
 
   return (
     <div>
-      <div className="relative">
-        <AtmosphericHero size="md">
-          <SignalPulse />
-          <div className="text-center relative z-10 px-6">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Mindfulness</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Still</h1>
-            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-              {TAB_SUBTITLES[tab]}
-            </p>
-          </div>
-        </AtmosphericHero>
+      <div className="member-page member-page-still relative">
+        <PageHeading title="Still" label="Mindfulness" icon={PageIcon} tone="reflect">
+          {TAB_SUBTITLES[tab]}
+        </PageHeading>
 
         <ContentSection className="px-5 md:px-4">
           <MindfulnessStreakStrip />
@@ -702,10 +696,10 @@ export default function NervousSystemPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             onClick={() => { haptic("medium"); navigate("/embodiment/course"); }}
-            className="w-full text-left mb-5 p-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-teal-500/10 to-emerald-400/5 hover:border-primary/40 active:scale-[0.99] transition-all"
+            className="w-full text-left mb-5 p-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-reflect/10 to-eat/5 hover:border-primary/40 active:scale-[0.99] transition-all"
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-400/10 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-reflect/20 to-eat/10 flex items-center justify-center shrink-0">
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
@@ -721,7 +715,7 @@ export default function NervousSystemPage() {
 
           {/* 4-tab nav */}
           <div className="sticky top-0 md:static z-20 bg-background/95 backdrop-blur-sm pb-3 -mx-5 px-5 md:mx-0 md:px-0 pt-2 md:pt-0">
-            <div className="flex bg-muted/60 rounded-2xl p-1 max-w-lg mx-auto overflow-x-auto scrollbar-hide">
+            <div className="page-tabs flex border-b border-border pb-2 overflow-x-auto scrollbar-hide">
               {TABS.map((t) => {
                 const TabIcon = t.icon;
                 return (

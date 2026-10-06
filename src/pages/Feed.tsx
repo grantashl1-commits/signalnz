@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { BookOpen as PageIcon } from "lucide-react";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -7,8 +9,7 @@ import { format, subDays, differenceInDays, startOfWeek } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import DaySection from "@/components/feed/DaySection";
 import FeedTeaserCards from "@/components/feed/FeedTeaserCards";
 import type { FeedPost } from "@/components/feed/PostCard";
@@ -199,22 +200,9 @@ export default function Feed() {
 
   return (
     <div className="pb-28">
-      <AtmosphericHero>
-        <SignalPulse />
-        <div className="text-center space-y-2 relative z-10">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Rss className="h-5 w-5 text-primary" />
-          </div>
-          <h1 className="font-display text-2xl md:text-3xl italic text-foreground">
-            Feed Your Mind
-          </h1>
-          <p className="font-body text-sm text-muted-foreground">
-            {feedAccess === "full"
-              ? "5 insights a day — sourced from books that matter"
-              : "Daily insights sourced from books that matter"}
-          </p>
-        </div>
-      </AtmosphericHero>
+      <PageHeading title="Feed Your Mind" label="Daily reading" icon={PageIcon} tone="goals">
+          {feedAccess === "full" ? "5 insights a day — sourced from books that matter" : "Daily insights sourced from books that matter"}
+        </PageHeading>
 
       <ContentSection>
         <div className="max-w-lg mx-auto space-y-6">

@@ -121,7 +121,7 @@ interface ContentSectionProps {
 export function ContentSection({ children, className = "" }: ContentSectionProps) {
   return (
     <section className={`relative ${className}`} style={{ paddingTop: 'var(--section-gap)', paddingBottom: 'var(--section-gap)' }}>
-      <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
+      <div className="relative z-10 max-w-5xl mx-auto">{children}</div>
     </section>
   );
 }

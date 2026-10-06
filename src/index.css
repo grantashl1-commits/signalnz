@@ -528,3 +528,39 @@ a img {
 .scroll-x-container::-webkit-scrollbar {
   display: none;
 }
+
+/* Homepage-led member pages: paper surfaces and pillar-specific utility. */
+.member-page { letter-spacing: 0; }
+.member-page h2, .member-page h3 { letter-spacing: 0; }
+.member-page .card-warm { border: 1px solid hsl(var(--border) / 0.65); border-radius: 8px; }
+.member-page .page-tabs .touch-tab { min-height: 44px; border-radius: 8px; }
+.member-page .page-tabs .touch-tab:hover { background-color: hsl(var(--secondary)); }
+.nourishment-grid, .movement-today-grid, .reflection-write-grid { display: grid; gap: 24px; }
+.nourishment-grid > *, .movement-today-grid > *, .reflection-write-grid > * { min-width: 0; }
+.nourishment-header, .nourishment-meals { grid-column: 1 / -1; }
+.nourishment-meals .meal-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.meal-summary { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: center; border: 1px solid hsl(var(--border)); border-radius: 8px; overflow: hidden; background: hsl(var(--card)); }
+.meal-summary > div:first-child { min-height: 120px; }
+.meal-summary .meal-summary-body { padding: 14px; }
+.meal-summary-name { font-size: 16px; line-height: 1.4; min-height: 44px; }
+.meal-summary-meta { font-family: var(--font-mono); font-size: 10px; color: hsl(var(--muted-foreground)); }
+.journal-writing-surface textarea { min-height: 220px; caret-color: hsl(var(--primary)); }
+.member-page-reflect .journal-prompt { grid-column: 1 / -1; }
+.member-page-reflect .reflection-write-grid > .space-y-4 { align-self: start; }
+@media (min-width: 768px) {
+  .nourishment-grid { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; }
+  .nourishment-header { grid-row: 1; }
+  .nourishment-meals { grid-column: 1; grid-row: 2 / span 3; }
+  .nourishment-protein { grid-column: 2; grid-row: 2; }
+  .nourishment-shopping { grid-column: 2; grid-row: 3; }
+  .nourishment-snacks { grid-column: 2; grid-row: 4; }
+  .nourishment-detail { grid-column: 1 / -1; }
+  .nourishment-macros { grid-column: 2; }
+  .movement-today-grid { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; }
+  .movement-today-grid > :first-child { grid-column: 1 / -1; }
+  .movement-phase-note { grid-column: 2; grid-row: 2; }
+  .movement-today-grid > :last-child { grid-column: 1; grid-row: 2 / span 2; }
+  .reflection-write-grid { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; }
+  .journal-writing-surface { grid-column: 1; grid-row: 2; }
+  .reflection-write-grid > .space-y-4 { grid-column: 2; grid-row: 2 / span 2; }
+}

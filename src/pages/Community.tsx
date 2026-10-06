@@ -1,10 +1,11 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Users as PageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 import { GatedPage } from "@/components/FeatureGate";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotanicalSprig, HandDrawnVillage, HandDrawnLeaf } from "@/components/BotanicalElements";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
-import SignalPulse from "@/components/SignalPulse";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { supabase } from "@/integrations/supabase/client";
 import LocationOptIn from "@/components/community/LocationOptIn";
 import CommunityDiscover from "@/components/community/CommunityDiscover";
@@ -114,16 +115,9 @@ export default function CommunityPage() {
       </AnimatePresence>
 
       {/* ═══ HERO ═══ */}
-      <AtmosphericHero size="md">
-        <SignalPulse />
-        <div className="text-center relative z-10">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Community</p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Village</h1>
-          <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md mx-auto">
-            Two doors out — to the women near you, and the ones who share what you're carrying.
-          </p>
-        </div>
-      </AtmosphericHero>
+      <PageHeading title="Village" label="Community" icon={PageIcon} tone="eat">
+          Two doors out — to the women near you, and the ones who share what you’re carrying.
+        </PageHeading>
 
       <ContentSection className="px-5 md:px-4">
       

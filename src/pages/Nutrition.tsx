@@ -1,8 +1,10 @@
+import { Button } from "@/components/ui/button";
+import PageHeading from "@/components/ui/PageHeading";
+import { Utensils as PageIcon } from "lucide-react";
 import { useState, useMemo, Component, type ReactNode } from "react";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
-import SignalPulse from "@/components/SignalPulse";
-import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
+import { ContentSection } from "@/components/AtmosphericSection";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import { useProfile } from "@/hooks/useProfile";
@@ -68,34 +70,29 @@ export default function NutritionPage() {
   ];
 
   return (
+    <div className="member-page member-page-eat relative">
     <div className="relative">
-    <div className="relative">
-      <AtmosphericHero size="md">
-        <div className="absolute inset-0 z-0"><SignalPulse /></div>
-        <div className="text-center relative z-10">
-          <p className="eyebrow text-primary-foreground/50 mb-4">Food & meal planning</p>
-          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5">Eat</h1>
-          <p className="font-editorial text-quote italic text-primary-foreground/60 max-w-md mx-auto">
-            Eat with your cycle, in the shape of today.
-          </p>
-        </div>
-      </AtmosphericHero>
+      <PageHeading title="Eat" label="Food & meal planning" icon={PageIcon} tone="eat">
+          Eat with your cycle, in the shape of today.
+        </PageHeading>
 
       <ContentSection className="px-5 md:px-4 pb-24">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
+        <div className="space-y-6">
           
           {/* Tabs - first item */}
-          <div className="scroll-snap-x flex gap-1 rounded-full bg-secondary p-1 -mx-1 px-1">
+          <div className="page-tabs scroll-snap-x flex gap-1 border-b border-border pb-2">
             {TABS.map((tab) => (
-              <button
+              <Button
+                variant="ghost"
+                aria-pressed={activeTab === tab.id}
                 key={tab.id}
                 onClick={() => { haptic("light"); setActiveTab(tab.id); }}
-                className={`touch-tab scroll-snap-item flex-shrink-0 rounded-full px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                  activeTab === tab.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground active:text-foreground"
+                className={`touch-tab scroll-snap-item flex-shrink-0 rounded-lg px-3 py-2.5 min-h-[44px] font-body text-xs font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.id ? "bg-eat/15 text-foreground" : "text-muted-foreground active:text-foreground"
                 }`}
               >
                 {tab.label}
-              </button>
+              </Button>
             ))}
           </div>
 
