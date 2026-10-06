@@ -14,6 +14,7 @@ import {
   setHabitLog,
   toggleHabitForDate,
 } from "@/data/self-care-rituals";
+import { toLocalDateStr } from "@/lib/local-date";
 
 /** Returns a set of habitIds completed on a given date, from Supabase rows */
 function rowsToDateMap(
@@ -40,7 +41,7 @@ export interface HabitCompletionsResult {
 
 export function useHabitCompletions(): HabitCompletionsResult {
   const { user } = useAuth();
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const supabaseLoaded = useRef(false);
 
   // Initialise from localStorage for zero-latency first render
@@ -62,7 +63,7 @@ export function useHabitCompletions(): HabitCompletionsResult {
       try {
         const fromDate = new Date();
         fromDate.setDate(fromDate.getDate() - 28);
-        const fromStr = fromDate.toISOString().split("T")[0];
+        const fromStr = toLocalDateStr(fromDate);
 
         const { data, error } = await (supabase as any)
           .from("habit_completions")

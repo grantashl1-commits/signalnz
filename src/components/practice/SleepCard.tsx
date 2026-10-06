@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Moon, Star } from "lucide-react";
 import { useCycle } from "@/contexts/CycleContext";
 import TimeDrumPicker from "./TimeDrumPicker";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface SleepData {
   bedtime: string;
@@ -46,7 +47,7 @@ interface Props {
 export default function SleepCard({ phaseColor }: Props) {
   const { currentPhase } = useCycle();
   const cycleMode = localStorage.getItem("cycle_mode") || "cycling";
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const [data, setData] = useState<SleepData | null>(getSleepData(todayStr));
   const [editing, setEditing] = useState(!data);
 

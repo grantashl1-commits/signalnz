@@ -5,6 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export function useWeeklyConsistency() {
   const [days, setDays] = useState<number | null>(null);
@@ -17,7 +18,7 @@ export function useWeeklyConsistency() {
         if (!user) { setDays(0); return; }
         const since = new Date();
         since.setDate(since.getDate() - 6);
-        const sinceStr = since.toISOString().slice(0, 10);
+        const sinceStr = toLocalDateStr(since);
         const { data } = await supabase
           .from("workout_logs")
           .select("session_date")

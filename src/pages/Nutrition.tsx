@@ -11,7 +11,7 @@ import { useProfile } from "@/hooks/useProfile";
 import TodayTab from "@/components/nutrition/TodayTab";
 import MyWeekTab from "@/components/nutrition/MyWeekTab";
 import DiscoverTab from "@/components/nutrition/DiscoverTab";
-import { ShoppingListPanel } from "@/components/ShoppingList";
+import WeekShoppingList from "@/components/nutrition/WeekShoppingList";
 import { Dumbbell, ArrowRight } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -119,7 +119,7 @@ export default function NutritionPage() {
           {activeTab === "discover" && <TabErrorBoundary tab="Discover"><DiscoverTab /></TabErrorBoundary>}
           {activeTab === "myrecipes" && <TabErrorBoundary tab="My Recipes"><MyRecipesTab /></TabErrorBoundary>}
           {activeTab === "supplements" && <TabErrorBoundary tab="Supplements"><SupplementRecommender /></TabErrorBoundary>}
-          {activeTab === "shop" && <TabErrorBoundary tab="Shop"><ShoppingListPanel /></TabErrorBoundary>}
+          {activeTab === "shop" && <TabErrorBoundary tab="Shop"><WeekShoppingList /></TabErrorBoundary>}
         </div>
       </ContentSection>
     </div>

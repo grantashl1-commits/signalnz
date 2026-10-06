@@ -6,6 +6,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Flame } from "lucide-react";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const TRACKED_KEYS = [
   "mindcast_moods_",
@@ -19,7 +20,7 @@ function countReturnDays(): number {
   for (let i = 0; i < 60; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const ds = d.toISOString().split("T")[0];
+    const ds = toLocalDateStr(d);
     const found = TRACKED_KEYS.some((k) => localStorage.getItem(k + ds));
     // also count journal entries for that day
     const entriesRaw = localStorage.getItem("signal_journal_entries");
@@ -29,7 +30,7 @@ function countReturnDays(): number {
         const entries = JSON.parse(entriesRaw) as Array<{ created_at?: string | number }>;
         hasJournal = entries.some((e) => {
           const t = e.created_at ? new Date(e.created_at) : null;
-          return t && t.toISOString().split("T")[0] === ds;
+          return t && toLocalDateStr(t) === ds;
         });
       } catch {}
     }

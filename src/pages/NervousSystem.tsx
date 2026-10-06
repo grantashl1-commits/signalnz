@@ -43,6 +43,7 @@ import {
 } from "@/data/generated-mindfulness-scripts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { toLocalDateStr } from "@/lib/local-date";
 
 // ── Convert MeditationScript → PracticeConfig ──
 function addSleepPauses(script: string): string {
@@ -251,13 +252,13 @@ function useMindfulnessLogs() {
 
   useEffect(() => {
     if (!user) return;
-    const today = new Date().toISOString().split("T")[0];
+    const today = toLocalDateStr(new Date());
     supabase
       .from("mindfulness_logs")
       .select("practice_id, duration_sec, log_date")
       .eq("user_id", user.id)
       .eq("completed", true)
-      .gte("log_date", new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0])
+      .gte("log_date", toLocalDateStr(new Date(Date.now() - 7 * 86400000)))
       .then(({ data }) => {
         if (!data) return;
         const todayDone = new Set(data.filter((d) => d.log_date === today).map((d) => d.practice_id));
@@ -265,7 +266,7 @@ function useMindfulnessLogs() {
         const days = new Set(data.map((d) => d.log_date));
         let s = 0;
         for (let i = 0; i < 30; i++) {
-          const d = new Date(Date.now() - i * 86400000).toISOString().split("T")[0];
+          const d = toLocalDateStr(new Date(Date.now() - i * 86400000));
           if (days.has(d)) s++;
           else if (i > 0) break;
         }
@@ -275,7 +276,7 @@ function useMindfulnessLogs() {
 
   const logCompletion = async (practiceId: string, durationSec: number, phase: string) => {
     if (!user) return;
-    const today = new Date().toISOString().split("T")[0];
+    const today = toLocalDateStr(new Date());
     const script = getMeditationById(practiceId);
     await supabase.from("mindfulness_logs").insert({
       user_id: user.id,

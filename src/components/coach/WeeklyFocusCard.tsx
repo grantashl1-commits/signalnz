@@ -4,6 +4,7 @@ import { Compass, Loader2, RefreshCw, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Focus {
   theme: string;
@@ -19,7 +20,7 @@ function weekStart(): string {
   const d = new Date();
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(d.getFullYear(), d.getMonth(), diff).toISOString().split("T")[0];
+  return toLocalDateStr(new Date(d.getFullYear(), d.getMonth(), diff));
 }
 
 export default function WeeklyFocusCard({ userId, refreshKey = 0 }: Props) {

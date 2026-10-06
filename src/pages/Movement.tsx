@@ -2,7 +2,7 @@ import PageHeading from "@/components/ui/PageHeading";
 import { Activity as PageIcon } from "lucide-react";
 import { useState, useMemo, lazy, Suspense, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { GatedFeature } from "@/components/FeatureGate";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { ContentSection } from "@/components/AtmosphericSection";
@@ -34,6 +34,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -50,7 +51,22 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  const [activeTab, setActiveTab] = useState<"today" | "training" | "library" | "log" | "progress">("today");
+  type MoveTab = "today" | "training" | "library" | "log" | "progress";
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") as MoveTab | null;
+  const [activeTab, setActiveTab] = useState<MoveTab>(
+    initialTab && ["today", "training", "library", "log", "progress"].includes(initialTab) ? initialTab : "today",
+  );
+
+  // Cards elsewhere ("Pick a path to begin") ask to switch tabs.
+  useEffect(() => {
+    const open = (e: Event) => {
+      const tab = (e as CustomEvent<MoveTab>).detail;
+      if (tab) setActiveTab(tab);
+    };
+    window.addEventListener("signal:open-tab", open);
+    return () => window.removeEventListener("signal:open-tab", open);
+  }, []);
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -74,7 +90,7 @@ export default function MovementPage() {
     exercises: any[];
   }>>([]);
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
 
   // Manual log form
   const [showManualLog, setShowManualLog] = useState(false);
@@ -159,7 +175,7 @@ export default function MovementPage() {
   const today = new Date();
   const mondayOffset = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
   const weekDays = Array.from({ length: 7 }, (_, i) => { const d = new Date(today); d.setDate(today.getDate() + mondayOffset + i); return d; });
-  const weekWorkouts = weekDays.map(d => getLoggedWorkouts(d.toISOString().split("T")[0]));
+  const weekWorkouts = weekDays.map(d => getLoggedWorkouts(toLocalDateStr(d)));
   const totalCompleted = weekWorkouts.filter(w => w.length > 0).length;
   const totalMinutes = weekWorkouts.flat().reduce((s, id) => s + (WORKOUTS.find(x => x.id === id)?.durationMin || 0), 0);
   const sessions = getAllSessions();

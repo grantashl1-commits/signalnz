@@ -13,6 +13,7 @@ import {
   DEFAULT_MUST_CHORES, DEFAULT_BONUS_CHORES, DEFAULT_BEHAVIOURS, DEFAULT_REWARDS,
 } from "./defaults";
 import { printWeeklyChart } from "./printChart";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export const CHORE_COLORS = [
   "#E2A84B", "#6BAE75", "#5C4A9E", "#C4526E", "#4A90B8",
@@ -108,7 +109,7 @@ export default function BehaviourTab() {
   // Load today's completions for active child (for recurring chore daily-reset)
   const loadCompletions = useCallback(async () => {
     if (!activeChildId) { setCompletions(new Set()); return; }
-    const today = new Date().toISOString().split("T")[0];
+    const today = toLocalDateStr(new Date());
     const { data } = await supabase
       .from("parenting_chore_completions" as any)
       .select("chore_id")
@@ -155,7 +156,7 @@ export default function BehaviourTab() {
 
     // Log completion for recurring chores
     if (chore.recurrence === "daily") {
-      const today = new Date().toISOString().split("T")[0];
+      const today = toLocalDateStr(new Date());
       await supabase.from("parenting_chore_completions" as any).upsert(
         { chore_id: chore.id, child_id: activeChildId!, completed_date: today },
         { onConflict: "chore_id,child_id,completed_date" }

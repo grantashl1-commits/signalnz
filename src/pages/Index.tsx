@@ -35,6 +35,7 @@ import menstrualHero from "@/assets/phases/menstrual-hero.png";
 import follicularHero from "@/assets/phases/follicular-hero.png";
 import ovulatoryHero from "@/assets/phases/ovulatory-hero.png";
 import lutealHero from "@/assets/phases/luteal-hero.png";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HERO_IMAGE: Record<Phase, string> = {
   menstrual: menstrualHero,
@@ -105,7 +106,7 @@ export default function HomePage() {
   const queryClient = useQueryClient();
   const todayIsPrepDay = isTodayPrepDay(mealPrepDay);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const [prepDismissed, setPrepDismissed] = useState(() =>
     typeof window !== "undefined" && localStorage.getItem(`prep_dismissed_${todayStr}`) === "true"
   );
@@ -116,7 +117,7 @@ export default function HomePage() {
     for (let i = 0; i < 3; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().split("T")[0];
+      const ds = toLocalDateStr(d);
       if (
         localStorage.getItem(`mindcast_moods_${ds}`) ||
         localStorage.getItem(`mindcast_symptoms_${ds}`) ||

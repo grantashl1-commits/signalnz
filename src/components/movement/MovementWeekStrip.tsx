@@ -5,6 +5,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { getLoggedWorkouts } from "@/lib/cycle-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -19,7 +20,7 @@ export default function MovementWeekStrip() {
     for (let i = 0; i < 7; i++) {
       const d = new Date(startOfWeek);
       d.setDate(startOfWeek.getDate() + i);
-      const ds = d.toISOString().split("T")[0];
+      const ds = toLocalDateStr(d);
       const list = getLoggedWorkouts(ds);
       // Approximate 30 minutes per logged workout (no duration in localStorage shape).
       const min = list.length * 30;

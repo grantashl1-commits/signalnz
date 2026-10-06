@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { getHabitLog } from "@/data/self-care-rituals";
 import { getCheckin } from "@/lib/cycle-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export interface SignalReadinessState {
   /** 0-5 how many data signals are active today */
@@ -48,7 +49,7 @@ const UNLOCK_THRESHOLD = 2; // Minimum signals needed
 function getFirstSeenDate(): string {
   let date = localStorage.getItem("signal_first_seen_date");
   if (!date) {
-    date = new Date().toISOString().split("T")[0];
+    date = toLocalDateStr(new Date());
     localStorage.setItem("signal_first_seen_date", date);
   }
   return date;
@@ -64,7 +65,7 @@ function getDaysSinceFirstSeen(): number {
 export function useSignalReadiness(): SignalReadinessState {
   const { user } = useAuth();
   const { cycleStartDate } = useCycle();
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
 
   // Re-check every 30 seconds for live updates as user completes tasks
   const [tick, setTick] = useState(0);

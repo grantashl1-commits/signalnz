@@ -6,6 +6,7 @@ import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { WeeklyPlan, formatDateShort } from "@/lib/weekly-planner";
 import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
 import { haptic } from "@/hooks/use-mobile";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -26,7 +27,7 @@ interface Props {
 export default function WeeklyPlanView({ plan, phase, onProceedToShop, onStartFresh, onPlanSaved, onSaveToToday }: Props) {
   const phaseColor = PHASE_HEX[phase];
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
 
   return (
     <div className="space-y-5">

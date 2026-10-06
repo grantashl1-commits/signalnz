@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { JournalEntryRow } from "@/hooks/useStoicJournal";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<string, string> = {
   menstrual: "#C4526E",
@@ -28,7 +29,7 @@ export default function PhaseHeatMap({ entries, onTapDay }: Props) {
     for (let i = 0; i < 28; i++) {
       const d = new Date(start);
       d.setDate(d.getDate() + i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(d);
       const entry = entries.find((e) => e.date === dateStr || e.created_at?.startsWith(dateStr));
       daysArr.push({
         date: dateStr,
@@ -70,7 +71,7 @@ export default function PhaseHeatMap({ entries, onTapDay }: Props) {
           const color = day.phase ? PHASE_HEX[day.phase] : undefined;
           const hasEntry = !!day.entry;
           const hasLens = !!(day.entry?.stoic_lens);
-          const isToday = day.date === new Date().toISOString().split("T")[0];
+          const isToday = day.date === toLocalDateStr(new Date());
 
           return (
             <motion.button

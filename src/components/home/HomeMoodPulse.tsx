@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const DOTS = [
   { key: "heavy", label: "heavy", color: "hsl(var(--muted-foreground))" },
@@ -13,7 +14,7 @@ const DOTS = [
 ] as const;
 
 export default function HomeMoodPulse() {
-  const todayKey = `mindcast_moods_${new Date().toISOString().split("T")[0]}`;
+  const todayKey = `mindcast_moods_${toLocalDateStr(new Date())}`;
   const [logged, setLogged] = useState<string | null>(null);
 
   useEffect(() => {

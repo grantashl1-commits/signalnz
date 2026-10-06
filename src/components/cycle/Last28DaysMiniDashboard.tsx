@@ -4,6 +4,7 @@ import {
   getMoods, getSymptomsNew, getCycleDayForDate, getPhaseFromDay,
   getDayIndicators, Phase,
 } from "@/lib/cycle-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -32,7 +33,7 @@ export default function Last28DaysMiniDashboard({ cycleStartDate }: Props) {
     for (let i = 27; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(d);
       const cycleDay = cycleStartDate ? getCycleDayForDate(cycleStartDate, d) : null;
       const phase = cycleDay ? getPhaseFromDay(cycleDay) : null;
       const moods = getMoods(dateStr);
@@ -56,7 +57,7 @@ export default function Last28DaysMiniDashboard({ cycleStartDate }: Props) {
   const moodsHeld = days.reduce((s, d) => s + d.moodCount, 0);
   const symptomsNoticed = days.reduce((s, d) => s + d.symptomCount, 0);
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
 
   return (
     <div className="card-warm p-5 space-y-4">

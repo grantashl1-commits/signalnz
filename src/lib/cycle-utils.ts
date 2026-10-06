@@ -1,3 +1,5 @@
+import { toLocalDateStr } from "@/lib/local-date";
+import { logPeriodStart, logPeriodEnd } from "@/lib/period-history";
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
 
 export interface PhaseInfo {
@@ -101,9 +103,9 @@ export function getLastPeriodStart(): string | null {
   return localStorage.getItem("cycleStartDate") || localStorage.getItem("mindcast_last_period");
 }
 
+/** Log a period start — kept in the period history (and synced), never overwritten. */
 export function setLastPeriodStart(date: string): void {
-  localStorage.setItem("cycleStartDate", date);
-  localStorage.setItem("mindcast_last_period", date); // backward compat
+  logPeriodStart(date);
 }
 
 // ─── Period End ────────────────────────────────────────────
@@ -113,6 +115,7 @@ export function getPeriodEnd(monthKey: string): string | null {
 
 export function setPeriodEnd(monthKey: string, date: string): void {
   localStorage.setItem(`periodEnd:${monthKey}`, date);
+  logPeriodEnd(date);
 }
 
 export function getPeriodLength(startDate: string, endDate: string): number {
@@ -123,12 +126,12 @@ export function getPeriodLength(startDate: string, endDate: string): number {
 
 // ─── Daily Check-in ────────────────────────────────────────
 export function getCheckin(): string | null {
-  const today = new Date().toISOString().split("T")[0];
+  const today = toLocalDateStr(new Date());
   return localStorage.getItem(`mindcast_checkin_${today}`);
 }
 
 export function setCheckin(feeling: string): void {
-  const today = new Date().toISOString().split("T")[0];
+  const today = toLocalDateStr(new Date());
   localStorage.setItem(`mindcast_checkin_${today}`, feeling);
 }
 
@@ -138,7 +141,7 @@ export function getCheckinStreak(): number {
   for (let i = 0; i < 90; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const key = d.toISOString().split("T")[0];
+    const key = toLocalDateStr(d);
     if (localStorage.getItem(`mindcast_checkin_${key}`)) {
       streak++;
     } else {
@@ -150,12 +153,12 @@ export function getCheckinStreak(): number {
 
 // ─── Water ─────────────────────────────────────────────────
 export function getWaterCount(): number {
-  const today = new Date().toISOString().split("T")[0];
+  const today = toLocalDateStr(new Date());
   return parseInt(localStorage.getItem(`mindcast_water_${today}`) || "0", 10);
 }
 
 export function setWaterCount(count: number): void {
-  const today = new Date().toISOString().split("T")[0];
+  const today = toLocalDateStr(new Date());
   localStorage.setItem(`mindcast_water_${today}`, count.toString());
 }
 
@@ -200,7 +203,7 @@ export function getWeightHistory(days: number = 7): { date: string; value: numbe
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const w = getWeight(dateStr);
     if (w !== null) results.push({ date: dateStr, value: w });
   }
@@ -275,7 +278,7 @@ export function getRecentSymptoms(days: number = 3): { date: string; symptoms: s
   for (let i = 0; i < days; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const symptoms = getSymptomsNew(dateStr);
     if (symptoms.length > 0) results.push({ date: dateStr, symptoms });
   }
@@ -288,7 +291,7 @@ export function getRecentMoods(days: number = 2): { date: string; moods: string[
   for (let i = 0; i < days; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const moods = getMoods(dateStr);
     if (moods.length > 0) results.push({ date: dateStr, moods });
   }
@@ -305,7 +308,7 @@ export function getMonthLogSummary(year: number, month: number): { periodDays: n
 
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
-    const dateStr = date.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(date);
     if (lastPeriod) {
       const cycleDay = getCycleDayForDate(lastPeriod, date);
       if (cycleDay >= 1 && cycleDay <= 5) periodDays++;
@@ -359,7 +362,7 @@ export function getSymptomFrequency(): Record<string, number> {
   const today = new Date();
 
   for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const symptoms = getSymptomsNew(dateStr);
     symptoms.forEach((s) => {
       freq[s] = (freq[s] || 0) + 1;
@@ -382,7 +385,7 @@ export function getMoodsByPhase(): Record<Phase, Record<string, number>> {
   const today = new Date();
 
   for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const moods = getMoods(dateStr);
     const cycleDay = getCycleDayForDate(lastPeriod, d);
     const phase = getPhaseFromDay(cycleDay);

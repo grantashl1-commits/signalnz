@@ -22,6 +22,7 @@ import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import { parseRunStructure } from "@/lib/run-session-parser";
 import IntervalTimer from "@/components/movement/IntervalTimer";
 import PlanSettingsSheet from "@/components/movement/PlanSettingsSheet";
+import GoalPathPicker from "@/components/movement/GoalPathPicker";
 import { useWeeklyConsistency } from "@/hooks/use-weekly-consistency";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { useSwipe } from "@/hooks/useSwipe";
@@ -148,6 +149,8 @@ export default function TrainingTab() {
       </div>
 
       <PlanSettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      <GoalPathPicker paths={ENRICHED_PATHS} onOpenPath={(p) => setSelectedPath(p)} />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-fr">
         {ENRICHED_PATHS.map((path, i) => (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { WildStar } from "@/components/BotanicalElements";
 import { Phase, getSeedsTaken, setSeedsTaken } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -16,7 +17,7 @@ interface SeedCyclingCardProps {
 }
 
 export default function SeedCyclingCard({ cycleDay, phase }: SeedCyclingCardProps) {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const [taken, setTaken] = useState(getSeedsTaken(todayStr));
   const isFirstHalf = cycleDay <= 14;
   const phaseColor = PHASE_HEX[phase];

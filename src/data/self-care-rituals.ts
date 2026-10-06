@@ -1,4 +1,5 @@
 import { Phase } from "@/lib/cycle-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export interface SelfCareRitual {
   id: string;
@@ -326,7 +327,7 @@ export function toggleHabitForDate(date: string, habitId: string): boolean {
 
 export function getWeekHabitData(weekDays: Date[]): { date: string; log: Record<string, boolean> }[] {
   return weekDays.map(d => {
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     return { date: dateStr, log: getHabitLog(dateStr) };
   });
 }

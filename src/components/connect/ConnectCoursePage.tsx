@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { supabase } from "@/integrations/supabase/client";
 import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const MODULE_COLORS = [
   "from-rose-500/20 to-pink-400/10",
@@ -109,7 +110,7 @@ export default function ConnectCoursePage() {
           category: "connect-course",
           title: `${selectedModule.title} — ${activity?.title || "Activity"}`,
           preview: responseText.slice(0, 200),
-          date: new Date().toISOString().split("T")[0],
+          date: toLocalDateStr(new Date()),
           timestamp: Date.now(),
         };
         const currentVault = loadVault();

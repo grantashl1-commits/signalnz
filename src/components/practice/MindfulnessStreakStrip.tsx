@@ -4,11 +4,12 @@
  */
 import { useEffect, useState } from "react";
 import { Flame } from "lucide-react";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const KEY_PREFIX = "signal_mindfulness_touch_";
 
 function todayKey() {
-  return KEY_PREFIX + new Date().toISOString().split("T")[0];
+  return KEY_PREFIX + toLocalDateStr(new Date());
 }
 
 function countStreak(): number {
@@ -17,7 +18,7 @@ function countStreak(): number {
   for (let i = 0; i < 60; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const ds = d.toISOString().split("T")[0];
+    const ds = toLocalDateStr(d);
     if (localStorage.getItem(KEY_PREFIX + ds)) count++;
     else if (i > 0) break;
   }

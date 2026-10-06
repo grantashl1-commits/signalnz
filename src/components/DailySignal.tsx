@@ -8,6 +8,7 @@ import {
   getRecentSymptoms, getRecentMoods, getDailySignal, setDailySignal,
   PHASE_LABELS, PHASE_SHORT,
 } from "@/lib/cycle-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E", follicular: "#5C4A9E", ovulatory: "#C47A8A", luteal: "#9B89B4",
@@ -31,7 +32,7 @@ const FALLBACK_SIGNALS: Record<Phase, string> = {
 export default function DailySignalCard() {
   const { currentPhase, currentCycleDay, cycleStartDate } = useCycle();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const [signal, setSignal] = useState<string>("");
   const [loading, setLoading] = useState(false);
 

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Sprout, Utensils, Flower2, ChefHat } from "lucide-react";
 import { getSeedsTaken } from "@/lib/cycle-utils";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   phaseColor: string;
@@ -14,7 +15,7 @@ function last7Dates(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split("T")[0];
+    return toLocalDateStr(d);
   });
 }
 

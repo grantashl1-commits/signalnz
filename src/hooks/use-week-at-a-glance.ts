@@ -7,6 +7,7 @@
  */
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export interface DayDot {
   date: string;             // yyyy-mm-dd
@@ -24,7 +25,7 @@ function lastNDates(n: number): string[] {
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    out.push(d.toISOString().slice(0, 10));
+    out.push(toLocalDateStr(d));
   }
   return out;
 }

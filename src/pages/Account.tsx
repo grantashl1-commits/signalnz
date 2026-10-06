@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import FeedbackForm from "@/components/FeedbackForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
 import { useEffect, useState, useMemo } from "react";
@@ -19,6 +19,7 @@ import {
 } from "@/lib/fitness-profile";
 import { getHabits, getHabitLog } from "@/data/self-care-rituals";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const TIER_COLORS: Record<string, string> = {
   free: "text-muted-foreground",
@@ -93,7 +94,9 @@ export default function AccountPage() {
   const [nameSaving, setNameSaving] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [feedbackOpen, setFeedbackOpen] = useStateLocal(false);
+  const [searchParams] = useSearchParams();
+  // /account?feedback=1 opens the feedback sheet directly (linked from Explore).
+  const [feedbackOpen, setFeedbackOpen] = useStateLocal(searchParams.get("feedback") === "1");
   const [deleteOpen, setDeleteOpen] = useStateLocal(false);
   const [deleteConfirm, setDeleteConfirm] = useStateLocal("");
   const [deleting, setDeleting] = useStateLocal(false);
@@ -659,7 +662,7 @@ export default function AccountPage() {
               for (let i = 6; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
-                last7.push(d.toISOString().split("T")[0]);
+                last7.push(toLocalDateStr(d));
               }
               const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -844,7 +847,7 @@ export default function AccountPage() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `signal-data-export-${new Date().toISOString().split("T")[0]}.json`;
+                a.download = `signal-data-export-${toLocalDateStr(new Date())}.json`;
                 a.click();
                 URL.revokeObjectURL(url);
                 toast.success("Your export is ready.", { id: "export" });
