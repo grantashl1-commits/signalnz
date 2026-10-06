@@ -14,11 +14,13 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Reddit Sans", "sans-serif"],
-        body: ["Reddit Sans", "sans-serif"],
-        editorial: ["Cormorant Garamond", "serif"],
-        hand: ["Caveat", "cursive"],
-        mono: ["Reddit Sans", "monospace"],
+        display: ["Inter Tight", "system-ui", "sans-serif"],
+        body: ["Inter Tight", "system-ui", "sans-serif"],
+        sans: ["Inter Tight", "system-ui", "sans-serif"],
+        serif: ["Instrument Serif", "Georgia", "serif"],
+        editorial: ["Instrument Serif", "Georgia", "serif"],
+        hand: ["Inter Tight", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       fontSize: {
         "display-xl": ["3.5rem", { lineHeight: "1.1", fontWeight: "800", letterSpacing: "-0.02em" }],
@@ -69,6 +71,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Evolved Signal pillars
+        aubergine: "hsl(var(--aubergine))",
+        eat: "hsl(var(--eat))",
+        move: "hsl(var(--move))",
+        reflect: "hsl(var(--reflect))",
+        goals: "hsl(var(--goals))",
         // Phase colours
         "phase-menstrual": "hsl(var(--phase-menstrual))",
         "phase-follicular": "hsl(var(--phase-follicular))",

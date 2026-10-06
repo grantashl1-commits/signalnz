@@ -60,11 +60,11 @@ export default function NutritionPage() {
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "today", label: "Today" },
-    { id: "myweek", label: "My Week" },
-    { id: "discover", label: "Discover" },
-    { id: "myrecipes", label: "My Recipes" },
+    { id: "myweek", label: "Plan" },
+    { id: "shop", label: "List" },
+    { id: "discover", label: "Recipes" },
+    { id: "myrecipes", label: "Saved" },
     { id: "supplements", label: "Supplements" },
-    { id: "shop", label: "Shop" },
   ];
 
   return (
@@ -73,8 +73,8 @@ export default function NutritionPage() {
       <AtmosphericHero size="md">
         <div className="absolute inset-0 z-0"><SignalPulse /></div>
         <div className="text-center relative z-10">
-          <p className="font-body text-section-label uppercase text-primary-foreground/40 mb-4">Nutrition</p>
-          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5">Nourish</h1>
+          <p className="eyebrow text-primary-foreground/50 mb-4">Food & meal planning</p>
+          <h1 className="font-display text-[2.5rem] md:text-[3.5rem] font-extrabold text-primary-foreground leading-[1.02] mb-5">Eat</h1>
           <p className="font-editorial text-quote italic text-primary-foreground/60 max-w-md mx-auto">
             Eat with your cycle, in the shape of today.
           </p>

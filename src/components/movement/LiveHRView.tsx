@@ -115,14 +115,14 @@ function HRLineChart({ data, maxHR, currentSecs, height = 160 }: HRLineChartProp
             type="number"
             domain={["dataMin", "dataMax"]}
             tickFormatter={(v) => `${Math.floor(v)}m`}
-            tick={{ fontSize: 9, fontFamily: "Montserrat", fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 9, fontFamily: "Inter Tight", fill: "hsl(var(--muted-foreground))" }}
             stroke="hsl(var(--border))"
             tickCount={5}
             allowDecimals
           />
           <YAxis
             domain={[Math.max(40, (Math.min(...chartData.map((d) => d.bpm)) - 10)), yMax]}
-            tick={{ fontSize: 9, fontFamily: "Montserrat", fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 9, fontFamily: "Inter Tight", fill: "hsl(var(--muted-foreground))" }}
             stroke="hsl(var(--border))"
             width={28}
             tickCount={5}
@@ -133,7 +133,7 @@ function HRLineChart({ data, maxHR, currentSecs, height = 160 }: HRLineChartProp
               border: "1px solid hsl(var(--border))",
               borderRadius: "8px",
               fontSize: 11,
-              fontFamily: "Montserrat",
+              fontFamily: "Inter Tight",
             }}
             formatter={(v: number) => [`${v} bpm`, ""]}
             labelFormatter={(l: number) => `${l.toFixed(1)} min`}
@@ -479,8 +479,8 @@ export default function LiveHRView() {
             <div className="h-32 rounded-2xl bg-card border border-border p-3">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={zoneChart} margin={{ top: 4, right: 5, bottom: 4, left: 0 }}>
-                  <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" />
-                  <YAxis tick={{ fontSize: 9, fontFamily: "Montserrat" }} stroke="hsl(var(--border))" width={28} unit="m" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "Inter Tight" }} stroke="hsl(var(--border))" />
+                  <YAxis tick={{ fontSize: 9, fontFamily: "Inter Tight" }} stroke="hsl(var(--border))" width={28} unit="m" />
                   <Bar dataKey="minutes" radius={[5, 5, 0, 0]}>
                     {zoneChart.map((entry, idx) => (
                       <Cell key={idx} fill={entry.color} stroke="hsl(var(--foreground) / 0.12)"

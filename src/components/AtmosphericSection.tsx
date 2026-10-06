@@ -1,5 +1,5 @@
-import { memo, useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { memo, useRef } from "react";
+import { motion } from "framer-motion";
 
 /* ── Animated Dot Pattern SVG — slow drifting atmospheric texture ── */
 let dotId = 0;
@@ -48,77 +48,67 @@ export const DotPattern = memo(function DotPattern({
   );
 });
 
-/* ── Atmospheric Hero Section — deep violet with animated dot grid ── */
+/* ── Atmospheric Hero Section — Evolved Signal ──
+   An inset aubergine panel: slow aurora light, film grain and the concentric
+   Signal ring motif. Heading <h1>s inside are set in the editorial serif. */
 interface AtmosphericHeroProps {
   children: React.ReactNode;
   className?: string;
   size?: "sm" | "md" | "lg";
 }
 
+const HERO_MIN_H: Record<NonNullable<AtmosphericHeroProps["size"]>, string> = {
+  sm: "min-h-[180px]",
+  md: "min-h-[220px] md:min-h-[260px]",
+  lg: "min-h-[360px] md:min-h-[440px]",
+};
+
 export function AtmosphericHero({
   children,
   className = "",
   size = "md",
 }: AtmosphericHeroProps) {
-  const heroStyle = {
-    minHeight: '220px',
-    paddingTop: '48px',
-    paddingBottom: '32px',
-    paddingLeft: '24px',
-    paddingRight: '24px',
-    background: "linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(284 22% 40%) 100%)",
-  };
-
   return (
-    <section
-      className={`relative overflow-hidden -mx-5 md:-mx-4 ${className}`}
-      style={heroStyle}
-    >
-      {/* Radial dot cluster overlay — concentric brand motif for depth */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        viewBox="0 0 400 400"
-        preserveAspectRatio="xMidYMid slice"
-        style={{ opacity: 0.04 }}
-        aria-hidden="true"
+    <div className="px-3 pt-3 md:px-6 md:pt-5">
+      <motion.section
+        initial={{ opacity: 0, scale: 0.985 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className={`atmo-hero relative isolate overflow-hidden rounded-[28px] md:rounded-[36px] flex flex-col justify-center px-6 py-10 md:py-14 ${HERO_MIN_H[size]} ${className}`}
       >
-        {[40, 70, 100, 130, 160].map((r, ri) => {
-          const dotCount = 10 + ri * 8;
-          const dotR = 2.5 - ri * 0.3;
-          return Array.from({ length: dotCount }, (_, di) => {
-            const angle = (2 * Math.PI * di) / dotCount - Math.PI / 2;
-            return (
-              <circle
-                key={`${ri}-${di}`}
-                cx={200 + r * Math.cos(angle)}
-                cy={200 + r * Math.sin(angle)}
-                r={Math.max(dotR, 0.8)}
-                fill="hsl(30 33% 98%)"
-                opacity={0.8 - ri * 0.12}
-              />
-            );
-          });
-        })}
-      </svg>
+        <div className="aurora" aria-hidden="true">
+          <span /><span /><span />
+        </div>
 
-      {/* Soft radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 60% 50% at 50% 40%, hsl(284 30% 64% / 0.12), transparent)",
-        }}
-      />
+        {/* Concentric Signal ring motif */}
+        <svg
+          className="absolute -right-24 -top-24 w-[420px] h-[420px] pointer-events-none sketch-rotate"
+          viewBox="0 0 400 400"
+          style={{ opacity: 0.09 }}
+          aria-hidden="true"
+        >
+          {[60, 95, 130, 165, 195].map((r, ri) => {
+            const dotCount = 14 + ri * 9;
+            return Array.from({ length: dotCount }, (_, di) => {
+              const angle = (2 * Math.PI * di) / dotCount;
+              return (
+                <circle
+                  key={`${ri}-${di}`}
+                  cx={200 + r * Math.cos(angle)}
+                  cy={200 + r * Math.sin(angle)}
+                  r={Math.max(2.6 - ri * 0.35, 0.9)}
+                  fill="hsl(36 33% 97%)"
+                />
+              );
+            });
+          })}
+        </svg>
 
-      <div className="relative z-10 max-w-3xl mx-auto">{children}</div>
+        <div className="grain" aria-hidden="true" />
 
-      {/* Bottom vignette — soft dissolve into page content */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none z-10"
-        style={{
-          background: "linear-gradient(to bottom, transparent 0%, hsl(var(--background) / 0.15) 40%, hsl(var(--background) / 0.6) 70%, hsl(var(--background)) 100%)",
-        }}
-      />
-    </section>
+        <div className="relative z-10 max-w-3xl mx-auto w-full">{children}</div>
+      </motion.section>
+    </div>
   );
 }
 

@@ -393,14 +393,14 @@ export default function BoardElement({
             onChange={(e) => onUpdate({ content: e.target.value })}
             onBlur={() => setEditing(false)}
             className="w-full flex-1 bg-transparent text-[14px] text-foreground/80 resize-none focus:outline-none leading-[1.85]"
-            style={{ fontSize: "16px", fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
+            style={{ fontSize: "16px", fontFamily: "'Inter Tight', sans-serif", fontWeight: 400 }}
             autoFocus
           />
         ) : (
           <p
             onDoubleClick={startEditing}
             className={`text-[14px] leading-[1.85] cursor-text select-none flex-1 ${element.content ? "text-foreground/80" : "text-muted-foreground/25"}`}
-            style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
+            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 400 }}
           >
             {element.content || "Double-click to write..."}
           </p>
