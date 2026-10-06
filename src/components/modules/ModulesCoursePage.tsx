@@ -12,6 +12,7 @@ import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { supabase } from "@/integrations/supabase/client";
+import { loadCourseProgress, saveCourseActivity, type CourseProgressRow } from "@/lib/course-progress";
 import { loadVault, saveVault, type VaultEntry } from "@/lib/journal-store";
 import { toLocalDateStr } from "@/lib/local-date";
 
@@ -40,9 +41,8 @@ export default function ModulesCoursePage() {
 
   useEffect(() => {
     if (!user) return;
-    (supabase.from("connect_course_progress" as any).select("activity_id, lesson_id, completed")
-      .eq("user_id", user.id).eq("completed", true) as any)
-      .then(({ data }: { data: any[] | null }) => {
+    loadCourseProgress(user.id)
+      .then((data: CourseProgressRow[]) => {
         if (!data) return;
         const acts = new Set(data.map((r: any) => r.activity_id));
         // Filter to only Learning-module activities
@@ -74,15 +74,14 @@ export default function ModulesCoursePage() {
 
     const activity = selectedLesson.activities.find(a => a.id === activityId);
 
-    await (supabase.from("connect_course_progress" as any) as any).upsert({
-      user_id: user.id,
+    await saveCourseActivity(user.id, {
       module_id: selectedModule.id,
       lesson_id: selectedLesson.id,
       activity_id: activityId,
       activity_type: activity?.type || "unknown",
       response,
       completed: true,
-    }, { onConflict: "user_id,activity_id" });
+    });
 
     if (saveToVaultFlag && hasJournalAccess) {
       const responseText = typeof response === "string" ? response
@@ -268,6 +267,7 @@ export default function ModulesCoursePage() {
                   onComplete={handleLessonComplete}
                   onBack={() => setView("lessons")}
                   onSaveProgress={handleSaveProgress}
+                  initialCompleted={completedActivities}
                 />
               </motion.div>
             )}

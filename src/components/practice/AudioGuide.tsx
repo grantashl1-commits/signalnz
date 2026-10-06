@@ -46,6 +46,21 @@ export function useAudioGuide({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  // Callers pass inline callbacks, which change identity every render. Keep
+  // the latest ones in refs so the audio element is only rebuilt when the URL
+  // changes — otherwise every timeupdate re-render tore down and recreated
+  // the element (restarting playback, and looping forever on a 404).
+  const onTimeUpdateRef = useRef(onTimeUpdate);
+  const onEndedRef = useRef(onEnded);
+  const onErrorRef = useRef(onError);
+  const onMediaPlayRef = useRef(onMediaPlay);
+  const onMediaPauseRef = useRef(onMediaPause);
+  onTimeUpdateRef.current = onTimeUpdate;
+  onEndedRef.current = onEnded;
+  onErrorRef.current = onError;
+  onMediaPlayRef.current = onMediaPlay;
+  onMediaPauseRef.current = onMediaPause;
+
   // ── Wake-lock helpers ──
   const acquireWakeLock = useCallback(async () => {
     if (wakeLockRef.current) return;
@@ -103,12 +118,12 @@ export function useAudioGuide({
     const handleError = () => {
       setError(true);
       setLoaded(false);
-      onError?.();
+      onErrorRef.current?.();
     };
     const handleTimeUpdate = () => {
       const t = audio.currentTime;
       setCurrentTime(t);
-      onTimeUpdate?.(t);
+      onTimeUpdateRef.current?.(t);
       // Sync Media Session position
       if ("mediaSession" in navigator && audio.duration && isFinite(audio.duration)) {
         try {
@@ -125,7 +140,7 @@ export function useAudioGuide({
     const handleDurationChange = () => setDuration(audio.duration || 0);
     const handleEnded = () => {
       releaseWakeLock();
-      onEnded?.();
+      onEndedRef.current?.();
     };
 
     audio.addEventListener("canplaythrough", handleCanPlay);
@@ -148,7 +163,7 @@ export function useAudioGuide({
       audioRef.current = null;
       releaseWakeLock();
     };
-  }, [audioUrl, enabled, onEnded, onError, onTimeUpdate, releaseWakeLock]);
+  }, [audioUrl, enabled, releaseWakeLock]);
 
   // ── Media Session API ──
   useEffect(() => {
@@ -173,12 +188,12 @@ export function useAudioGuide({
           a.play().catch(() => {});
           acquireWakeLock();
         }
-        onMediaPlay?.();
+        onMediaPlayRef.current?.();
       });
       navigator.mediaSession.setActionHandler("pause", () => {
         audioRef.current?.pause();
         releaseWakeLock();
-        onMediaPause?.();
+        onMediaPauseRef.current?.();
       });
       navigator.mediaSession.setActionHandler("seekbackward", (d: any) => {
         const a = audioRef.current;
@@ -214,8 +229,6 @@ export function useAudioGuide({
     mediaMetadata?.artist,
     mediaMetadata?.album,
     mediaMetadata?.artworkUrl,
-    onMediaPause,
-    onMediaPlay,
     acquireWakeLock,
     releaseWakeLock,
   ]);
