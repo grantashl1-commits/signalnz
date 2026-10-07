@@ -316,6 +316,10 @@ export interface Recipe {
   tags?: string[];
   /** A gentle alternative for the little ones — used by the "version for the little ones" hint. */
   kidAlternative?: string;
+  /** Main protein source, used for variety and filters. */
+  protein?: string;
+  /** Meal slots this recipe suits, when set explicitly. */
+  mealType?: string[];
 }
 
 export const RECIPES: Recipe[] = [
