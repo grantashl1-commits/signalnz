@@ -9,4 +9,6 @@
 - [x] Limit community media to its uploader and people with access to its post or chat, including metadata-path attachments.
 - [ ] Check GitHub for new pull requests: blocked by unavailable GitHub connection; automatic sync remains enabled.
 - [x] Resolve recipe merge conflicts and archive unused malformed training notes without changing active training paths.
-- [ ] Tighten reference document downloads: awaiting approval of who can access them.
+- [ ] Tighten reference document downloads: awaiting approval of who can access them.- [ ] Make transparent-background illustrations full colour (no white-filled figures) in YOCH style.
+- [ ] Audit every illustration across the site for YOCH style.
+- [ ] Check every recipe image matches its recipe title.
