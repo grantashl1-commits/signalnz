@@ -1,3 +1,4 @@
+import RECIPE_IMAGE_FILES from "@/data/recipe-image-files.json";
 /**
  * Category-level illustration mapper.
  * Maps any meal/recipe name to one of the existing hand-drawn PNG illustrations,
@@ -265,6 +266,9 @@ export function getCategoryIllustration(name: string, id?: string): string {
     return TCM_AYURVEDA_ILLUSTRATIONS[id];
   }
 
+  const exact = findRecipeImageByTitle(name, id);
+  if (exact) return exact;
+
   const lower = name.toLowerCase();
 
   // Try more-specific multi-word matches first, then single-word
@@ -275,4 +279,34 @@ export function getCategoryIllustration(name: string, id?: string): string {
   }
 
   return DEFAULT_ILLUSTRATION;
+}
+
+const FILES = RECIPE_IMAGE_FILES as Record<string, string>;
+const STOP = new Set(["with", "and", "the", "for", "your", "from", "style"]);
+function titleSlug(s: string): string {
+  return s.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+function tokens(s: string): string[] {
+  return titleSlug(s).split("-").filter((t) => t.length > 2 && !STOP.has(t));
+}
+const FILE_TOKENS = Object.entries(FILES).map(([base, path]) => ({ path, toks: new Set(tokens(base)) }));
+
+/** Find an illustration drawn for this specific dish: exact title match, then close title match. */
+export function findRecipeImageByTitle(name: string, id?: string): string | null {
+  const s = titleSlug(name);
+  if (FILES[s]) return FILES[s];
+  if (id && FILES[id]) return FILES[id];
+  const t = tokens(name);
+  if (!t.length) return null;
+  let best: string | null = null;
+  let bestScore = 0;
+  for (const f of FILE_TOKENS) {
+    if (!f.toks.size) continue;
+    const hit = t.filter((x) => f.toks.has(x)).length;
+    // Must cover most of the title and most of the file name, so a picture never shows a different dish.
+    const score = Math.min(hit / t.length, hit / f.toks.size);
+    if (score > bestScore) { bestScore = score; best = f.path; }
+  }
+  return bestScore >= 0.6 ? best : null;
 }
