@@ -6,5 +6,7 @@
 - [x] Restrict community hearts and poll votes to parent visibility and verify policies.
 - [ ] Protect spatial_ref_sys: blocked by extension ownership; Cloud owner intervention required.
 - [x] Limit exercise illustration downloads to signed-in members; verify policy.
-- [ ] Limit community media to its uploader and people with access to its post or chat; awaiting confirmation of sharing change.
-- [ ] Check GitHub for new pull requests and synced updates.
+- [x] Limit community media to its uploader and people with access to its post or chat, including metadata-path attachments.
+- [ ] Check GitHub for new pull requests: blocked by unavailable GitHub connection; automatic sync remains enabled.
+- [x] Resolve recipe merge conflicts and archive unused malformed training notes without changing active training paths.
+- [ ] Tighten reference document downloads: awaiting approval of who can access them.

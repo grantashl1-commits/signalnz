@@ -1489,7 +1489,6 @@ export const NOURISH_RECIPES: Recipe[] = [
   // DINNERS (50+)
   // ═══════════════════════════════════════════════════════════
 
-<<<<<<< Updated upstream
   {
     id: "dinner-m1",
     name: "Slow‑Cooked Beef & Sweet Potato Stew",
@@ -1722,110 +1721,11 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["vegan", "menstrual", "anti-inflammatory"],
     kidAlternative: "Serve plain rice with a little coconut milk and plain tofu — leave out the curry paste."
   },
-=======
-  // dinner-recipes.ts
-// Signal Dinner Library – 75+ whole‑food, sugar‑free recipes (serves 1 unless noted)
-
-export const DINNER_RECIPES = [
-  // ═══════════════════════════════════════════════════════════════════════════
-  // VEGAN DINNERS (34 recipes)
-  // ═══════════════════════════════════════════════════════════════════════════
->>>>>>> Stashed changes
 
   {
-<<<<<<< Updated upstream
-    id: "dinner-f1",
-    name: "Lemon Herb Salmon with Asparagus",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Omega‑3", "Folate", "Protein"],
-    ingredients: [
-      "130g salmon fillet",
-      "80g asparagus spears, trimmed",
-      "1 tbsp olive oil",
-      "1 lemon, juiced and zested",
-      "1 garlic clove, minced",
-      "Fresh dill"
-    ],
-    method: [
-      "Place salmon and asparagus on a lined tray. Drizzle with 1 tbsp oil, lemon zest, garlic, and dill.",
-      "Bake at 200°C for 12‑15 min. Squeeze fresh lemon over before serving."
-    ],
-    phaseBenefit:
-      "Salmon’s omega‑3s support oestrogen synthesis; asparagus is rich in folate — the vitamin your body uses to build new cells. A dinner that feels like spring.",
-    nutrition: { calories: 420, protein: 34, carbs: 8, fat: 28, fibre: 4 },
-    category: "meal",
-    tags: ["pescatarian", "follicular", "omega-3"],
-    kidAlternative: "Serve salmon alongside plain pasta with butter — asparagus may be a stretch, but offer a piece."
-  },
-  {
-    id: "dinner-f2",
-    name: "Chicken Stir‑Fry with Broccoli & Brown Rice",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Lean protein", "Sulforaphane", "Complex carbs"],
-    ingredients: [
-      "120g chicken breast, sliced",
-      "1 tbsp sesame oil",
-      "100g broccoli florets",
-      "80g carrot, julienned",
-      "1 garlic clove, minced",
-      "1 tsp grated ginger",
-      "1 tbsp tamari",
-      "50g brown rice (dry weight), cooked"
-    ],
-    method: [
-      "Cook rice. Stir‑fry chicken in oil, set aside. Add garlic, ginger, broccoli, carrot; cook 3 min.",
-      "Return chicken, add 1 tbsp tamari, toss. Serve over 50g rice."
-    ],
-    phaseBenefit:
-      "Lean protein with cruciferous broccoli — your body can use the sulforaphane to process oestrogen efficiently. Fast, fresh, and full of energy.",
-    nutrition: { calories: 480, protein: 34, carbs: 50, fat: 14, fibre: 6 },
-    category: "meal",
-    tags: ["follicular", "high-protein"],
-    kidAlternative: "Serve chicken, rice, and steamed broccoli separately with a drizzle of soy sauce."
-  },
-  {
-    id: "dinner-f3",
-    name: "Baked Fish with Lemon Butter & Greens",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "18 min",
-    keyNutrients: ["Omega‑3", "Vitamin D", "Lean protein"],
-    ingredients: [
-      "150g firm white fish fillet",
-      "1 tbsp butter, melted",
-      "1 lemon, juiced",
-      "80g green beans, trimmed",
-      "1 tsp olive oil",
-      "Fresh dill",
-      "Salt and pepper"
-    ],
-    method: [
-      "Place fish in a small baking dish. Pour melted 1 tbsp butter and lemon juice over. Sprinkle with dill.",
-      "Bake at 200°C for 15 min. Steam beans 4 min, toss with oil. Serve with fish."
-    ],
-    phaseBenefit:
-      "White fish is lean and easily digestible — perfect for the building follicular phase. The greens add folate and iron.",
-    nutrition: { calories: 350, protein: 32, carbs: 10, fat: 20, fibre: 4 },
-    category: "meal",
-    tags: ["pescatarian", "follicular", "omega-3"],
-    kidAlternative: "Serve fish with tartare sauce and plain green beans on the side."
-  },
-  {
-    id: "dinner-f4",
-    name: "Lamb Cutlets with Roasted Vegetables",
-    phase: "follicular",
-=======
     id: "dinner-chickpea-pumpkin-curry",
     name: "Chickpea & Pumpkin Curry",
     phase: "luteal",
->>>>>>> Stashed changes
     serves: 1,
     prepTime: "5 min",
     cookTime: "25 min",
@@ -1846,29 +1746,9 @@ export const DINNER_RECIPES = [
     prepTime: "5 min",
     cookTime: "25 min",
     keyNutrients: ["Iron", "Fibre", "Plant protein"],
-<<<<<<< Updated upstream
-    ingredients: [
-      "60g dried brown lentils",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "50g carrot, grated",
-      "200g tinned diced tomatoes",
-      "1 tsp dried oregano",
-      "60g wholemeal spaghetti (dry weight)",
-      "1 tbsp nutritional yeast (optional)"
-    ],
-    method: [
-      "Cook spaghetti. Sauté onion, garlic, carrot in oil. Add lentils, tomatoes, oregano, and 150ml water. Simmer 20 min until thick.",
-      "Serve over 60g spaghetti, top with 1 tbsp nutritional yeast."
-    ],
-    phaseBenefit:
-      "Plant‑based and iron‑rich — the tomatoes add vitamin C for absorption. A dinner that builds you up.",
-=======
     ingredients: ["60g dried brown lentils", "1 tsp olive oil", "50g brown onion, chopped", "1 garlic clove, minced", "50g carrot, grated", "200g tinned diced tomatoes", "1 tsp dried oregano", "60g wholemeal spaghetti (dry weight)"],
     method: ["Cook 60g spaghetti. Sauté 50g onion, 1 garlic clove and 50g carrot in 1 tsp oil. Add 60g lentils, 200g tomatoes, 1 tsp oregano and 150ml water. Simmer 20 minutes until thick. Serve sauce over spaghetti."],
     phaseBenefit: "Iron‑rich lentils with vitamin C from tomatoes for absorption. A plant‑based bolognese that builds you up from the inside.",
->>>>>>> Stashed changes
     nutrition: { calories: 480, protein: 24, carbs: 68, fat: 8, fibre: 14 },
     category: "meal",
     tags: ["vegan", "dairy-free", "gluten-free-option", "follicular", "iron"],
@@ -1880,711 +1760,27 @@ export const DINNER_RECIPES = [
     phase: "menstrual",
     serves: 1,
     prepTime: "10 min",
-<<<<<<< Updated upstream
-    cookTime: "20 min",
-    keyNutrients: ["Protein", "B6", "Complex carbs"],
-    ingredients: [
-      "120g chicken breast, butterflied",
-      "1 large egg, beaten",
-      "30g breadcrumbs",
-      "1 tbsp olive oil",
-      "200g sweet potato, boiled and mashed with 1 tsp butter",
-      "80g green beans, steamed",
-      "Lemon wedge"
-    ],
-    method: [
-      "Dip chicken in egg, then breadcrumbs. Pan‑fry in oil 4‑5 min each side until golden and cooked through.",
-      "Serve with 200g sweet potato mash and green beans, and a squeeze of lemon."
-    ],
-    phaseBenefit:
-      "Lean protein with B6‑rich sweet potato — fuel for the building energy of this phase. Crispy, comforting, and satisfying.",
-    nutrition: { calories: 500, protein: 36, carbs: 48, fat: 16, fibre: 8 },
-=======
     cookTime: "40 min",
     keyNutrients: ["Iron", "B vitamins", "Comfort"],
     ingredients: ["50g dried brown lentils, cooked", "80g mushrooms, sliced", "50g brown onion, chopped", "1 garlic clove, minced", "1 tsp tomato paste", "100ml vegetable stock", "½ tsp dried thyme", "200g potato, boiled and mashed with 1 tsp butter"],
     method: ["Sauté 50g onion and 80g mushrooms. Add 1 garlic clove, 50g cooked lentils, 1 tsp tomato paste, 100ml stock and ½ tsp thyme; simmer 10 minutes. Transfer to a small baking dish, top with 200g mashed potato. Bake at 200°C for 20 minutes until golden."],
     phaseBenefit: "Lentils bring iron; mushrooms add B vitamins. Deeply nourishing comfort food for days when your body asks for rest.",
     nutrition: { calories: 420, protein: 20, carbs: 56, fat: 12, fibre: 12 },
->>>>>>> Stashed changes
     category: "meal",
     tags: ["vegan", "dairy-free-option", "gluten-free-option", "menstrual", "iron"],
     protein: "lentils"
   },
   {
-<<<<<<< Updated upstream
-    id: "dinner-f7",
-    name: "Grilled Fish Tacos with Slaw",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "8 min",
-    keyNutrients: ["Omega‑3", "Vitamin C", "Lean protein"],
-    ingredients: [
-      "120g firm white fish fillet",
-      "½ tsp ground cumin",
-      "2 small corn tortillas",
-      "50g red cabbage, shredded",
-      "30g carrot, grated",
-      "1 tbsp Greek yoghurt",
-      "1 tsp lime juice",
-      "Fresh coriander"
-    ],
-    method: [
-      "Season fish with cumin, grill 3‑4 min each side. Warm tortillas.",
-      "Mix 50g cabbage and carrot with 1 tbsp yoghurt and lime juice. Flake fish into 2 small tortillas, top with slaw and coriander."
-    ],
-    phaseBenefit:
-      "Light, fresh protein with vitamin C from cabbage — energising for the follicular phase. A dinner that feels like summer.",
-    nutrition: { calories: 360, protein: 28, carbs: 32, fat: 12, fibre: 6 },
-    category: "meal",
-    tags: ["pescatarian", "follicular", "omega-3"],
-    kidAlternative: "Serve fish pieces, tortillas, and raw veg separately — let them build their own."
-  },
-  {
-    id: "dinner-f8",
-    name: "Tempeh & Broccoli Stir‑Fry",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Probiotics", "Phytoestrogens", "Protein"],
-    ingredients: [
-      "120g tempeh, cubed",
-      "1 tbsp sesame oil",
-      "100g broccoli florets",
-      "80g carrot, julienned",
-      "1 garlic clove, minced",
-      "1 tsp grated ginger",
-      "1 tbsp tamari",
-      "50g brown rice (dry weight), cooked"
-    ],
-    method: [
-      "Cook rice. Warm oil, cook tempeh until golden. Add garlic, ginger, broccoli, carrot; stir‑fry 3 min.",
-      "Add 1 tbsp tamari, toss, serve over 50g rice."
-    ],
-    phaseBenefit:
-      "Fermented tempeh feeds your gut while feeding your muscles. Broccoli helps your body handle rising oestrogen. A dinner that works as hard as you do.",
-    nutrition: { calories: 520, protein: 28, carbs: 54, fat: 20, fibre: 10 },
-    category: "meal",
-    tags: ["vegan", "follicular", "probiotic"],
-    kidAlternative: "Swap tempeh for cubed tofu and serve with plain rice."
-  },
-  {
-    id: "dinner-f9",
-    name: "Miso‑Glazed Tofu with Soba Noodles",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "20 min",
-    keyNutrients: ["Probiotics", "Phytoestrogens", "Complete protein"],
-    ingredients: [
-      "120g firm tofu, pressed and cubed",
-      "1 tbsp white miso paste",
-      "1 tsp mirin (or honey)",
-      "1 tsp tamari",
-      "75g soba noodles",
-      "1 head bok choy, halved lengthwise",
-      "1 tsp sesame oil",
-      "1 tsp sesame seeds"
-    ],
-    method: [
-      "Mix miso, mirin, tamari into a glaze. Coat tofu. Bake at 200°C for 15‑18 min.",
-      "Cook soba noodles. Steam bok choy 3 min. Serve tofu over noodles with bok choy, drizzle sesame oil, scatter seeds."
-    ],
-    phaseBenefit:
-      "Miso feeds the gut bacteria that metabolise oestrogen; tofu adds phytoestrogens. This bowl supports your follicular rise with every bite.",
-    nutrition: { calories: 480, protein: 24, carbs: 56, fat: 16, fibre: 8 },
-    category: "meal",
-    tags: ["vegan", "follicular", "probiotic"],
-    kidAlternative: "Serve plain soba noodles with a few cubes of plain tofu — kids often enjoy the noodles alone."
-  },
-  {
-    id: "dinner-f10",
-    name: "Chicken & Quinoa Bowl with Roasted Veg",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Complete protein", "Iron", "B vitamins"],
-    ingredients: [
-      "120g chicken breast",
-      "40g quinoa, rinsed",
-      "100g mixed vegetables (capsicum, zucchini, red onion), diced",
-      "1 tbsp olive oil",
-      "1 tbsp lemon juice",
-      "20g hummus"
-    ],
-    method: [
-      "Cook quinoa. Toss vegetables in ½ tbsp oil, roast at 200°C 15 min. Grill chicken 6 min each side, slice.",
-      "Assemble bowl with 40g quinoa, chicken, veg, and 20g hummus. Drizzle with 1 tbsp lemon juice."
-    ],
-    phaseBenefit:
-      "Quinoa and chicken together form a complete protein — ideal for the building follicular phase. The hummus adds zinc and fibre.",
-    nutrition: { calories: 480, protein: 38, carbs: 40, fat: 16, fibre: 8 },
-    category: "meal",
-    tags: ["follicular", "high-protein"],
-    kidAlternative: "Serve components separately — kids love dipping chicken and veg into hummus."
-  },
-
-  // ── OVULATORY DINNERS ──
-  {
-    id: "dinner-o1",
-    name: "Grilled Asparagus & Quinoa Salad",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "12 min",
-    keyNutrients: ["Folate", "Zinc", "Complete protein"],
-    ingredients: [
-      "80g asparagus spears",
-      "40g quinoa, rinsed",
-      "50g cherry tomatoes, halved",
-      "50g cucumber, diced",
-      "1 tbsp tahini (15g)",
-      "1 tsp lemon juice",
-      "1 tbsp olive oil"
-    ],
-    method: [
-      "Cook 40g quinoa. Grill asparagus until tender. Toss quinoa, asparagus, 50g tomatoes, cucumber with 1 tbsp tahini, lemon juice, and 1 tbsp oil."
-    ],
-    phaseBenefit:
-      "Asparagus is rich in folate — essential for egg development. Quinoa adds complete protein and zinc. Light, fresh, and exactly right for this phase.",
-    nutrition: { calories: 380, protein: 14, carbs: 38, fat: 20, fibre: 8 },
-    category: "meal",
-    tags: ["vegan", "ovulatory", "folate"],
-    kidAlternative: "Serve quinoa and grilled asparagus separately — kids may enjoy the asparagus 'soldiers'."
-  },
-  {
-    id: "dinner-o2",
-    name: "Seared Tuna with Quinoa & Asian Greens",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "10 min",
-    keyNutrients: ["Omega‑3", "Protein", "Iron"],
-    ingredients: [
-      "130g tuna steak",
-      "40g quinoa, rinsed",
-      "80g Asian greens (bok choy, choy sum)",
-      "1 tsp tamari",
-      "1 tsp sesame oil",
-      "½ tsp grated ginger",
-      "1 tsp sesame seeds",
-      "Lime wedge"
-    ],
-    method: [
-      "Cook quinoa. Sear tuna 2 min each side (pink in the middle), slice.",
-      "Stir‑fry greens in sesame oil and ginger 2 min. Serve tuna over quinoa and greens, drizzle with tamari, scatter seeds, squeeze lime."
-    ],
-    phaseBenefit:
-      "Tuna is packed with omega‑3 and protein; Asian greens add iron. Fast, fresh, and celebratory — like the ovulatory phase itself.",
-    nutrition: { calories: 460, protein: 40, carbs: 34, fat: 16, fibre: 5 },
-    category: "meal",
-    tags: ["pescatarian", "ovulatory", "omega-3"],
-    kidAlternative: "Serve tuna (cooked through if preferred) alongside plain rice and cucumber sticks."
-  },
-  {
-    id: "dinner-o3",
-    name: "Grilled Fish with Roasted Capsicum & Couscous",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Vitamin C", "Lean protein", "Complex carbs"],
-    ingredients: [
-      "150g firm white fish fillet",
-      "1 red capsicum, roasted and sliced",
-      "50g couscous (dry weight)",
-      "1 tbsp olive oil",
-      "1 tbsp lemon juice",
-      "1 tbsp fresh parsley, chopped"
-    ],
-    method: [
-      "Roast capsicum under grill until charred, peel and slice. Pour boiling water over couscous, cover 5 min, fluff.",
-      "Grill fish 3‑4 min each side. Toss couscous with capsicum, oil, lemon, and parsley. Serve with fish."
-    ],
-    phaseBenefit:
-      "Light and fresh; capsicum is packed with vitamin C for antioxidant protection. The couscous cooks in minutes — a meal that honours your peak energy.",
-    nutrition: { calories: 440, protein: 32, carbs: 44, fat: 14, fibre: 6 },
-    category: "meal",
-    tags: ["pescatarian", "ovulatory", "light"],
-    kidAlternative: "Serve plain couscous with a little butter, alongside the fish and capsicum strips."
-  },
-  {
-    id: "dinner-o4",
-    name: "Salmon Teriyaki with Stir‑Fried Vegetables",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "5 min + 10 min marinate",
-    cookTime: "12 min",
-    keyNutrients: ["Omega‑3", "Protein", "Antioxidants"],
-    ingredients: [
-      "130g salmon fillet",
-      "1 tbsp teriyaki sauce",
-      "80g bok choy, halved",
-      "50g red capsicum, sliced",
-      "50g carrot, julienned",
-      "1 tsp sesame oil",
-      "50g jasmine rice (dry weight), cooked"
-    ],
-    method: [
-      "Marinate salmon in teriyaki 10 min. Cook rice.",
-      "Pan‑fry salmon 4 min each side. Stir‑fry vegetables in sesame oil 3 min. Serve together."
-    ],
-    phaseBenefit:
-      "Salmon’s omega‑3s support fertility at the ovulatory peak; colourful vegetables add antioxidants that protect egg quality.",
-    nutrition: { calories: 480, protein: 32, carbs: 46, fat: 18, fibre: 4 },
-    category: "meal",
-    tags: ["pescatarian", "ovulatory", "omega-3"],
-    kidAlternative: "Serve rice with plain pan‑fried salmon and a few vegetable pieces on the side."
-  },
-  {
-    id: "dinner-o5",
-    name: "Stuffed Capsicums with Quinoa & Black Beans",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "25 min",
-    keyNutrients: ["Folate", "Zinc", "Antioxidants"],
-    ingredients: [
-      "1 large red capsicum, halved",
-      "40g quinoa, cooked",
-      "50g tinned black beans, drained",
-      "20g corn kernels",
-      "½ tsp ground cumin",
-      "15g grated cheese"
-    ],
-    method: [
-      "Mix 40g quinoa, beans, corn, and ½ tsp cumin. Fill 1 large capsicum halves. Top with 15g cheese.",
-      "Bake at 190°C for 25 min until tender."
-    ],
-    phaseBenefit:
-      "Colourful vegetables protect egg quality with antioxidants; quinoa adds zinc. A dinner that looks as vibrant as you feel.",
-    nutrition: { calories: 320, protein: 16, carbs: 44, fat: 10, fibre: 10 },
-    category: "meal",
-    tags: ["vegetarian", "ovulatory", "zinc"],
-    kidAlternative: "Serve the filling and cheese on top of plain rice instead of inside a capsicum."
-  },
-  {
-    id: "dinner-o6",
-    name: "Prawn & Mango Tacos",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "5 min",
-    keyNutrients: ["Zinc", "Vitamin C", "Lean protein"],
-    ingredients: [
-      "120g raw prawns, peeled",
-      "1 tsp olive oil",
-      "1 garlic clove, minced",
-      "Pinch smoked paprika",
-      "2 small corn tortillas",
-      "30g avocado, sliced",
-      "40g mango, diced",
-      "1 tbsp Greek yoghurt",
-      "1 tsp lime juice"
-    ],
-    method: [
-      "Cook prawns in oil with garlic and paprika 2‑3 min each side. Warm tortillas.",
-      "Fill 2 small tortillas with 120g prawns, avocado, and mango. Top with a dollop of 1 tbsp yoghurt and a squeeze of lime."
-    ],
-    phaseBenefit:
-      "Prawns are rich in zinc — the mineral that triggers ovulation — and the mango adds vitamin C. Light, fresh, and exactly right.",
-    nutrition: { calories: 380, protein: 26, carbs: 34, fat: 14, fibre: 6 },
-    category: "meal",
-    tags: ["pescatarian", "ovulatory", "zinc"],
-    kidAlternative: "Serve prawns, avocado, and mango as finger food — let them dip into yoghurt."
-  },
-  {
-    id: "dinner-o7",
-    name: "Zucchini Fritters with Tzatziki",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "10 min",
-    keyNutrients: ["Zinc", "B vitamins", "Probiotics"],
-    ingredients: [
-      "1 medium zucchini (about 150g), grated and squeezed dry",
-      "20g chickpea flour",
-      "1 large egg",
-      "1 tbsp fresh dill, chopped",
-      "1 tsp olive oil",
-      "50g Greek yoghurt",
-      "50g cucumber, grated",
-      "1 small garlic clove, minced"
-    ],
-    method: [
-      "Mix 1 medium zucchini, flour, 1 large egg, and dill. Form two fritters. Fry in 1 tsp oil until golden.",
-      "Make tzatziki with 50g yoghurt, cucumber, and garlic. Serve fritters with tzatziki."
-    ],
-    phaseBenefit:
-      "Chickpea flour brings protein and folate; yoghurt adds probiotics. Light, satisfying, and easy to digest — perfect for ovulation.",
-    nutrition: { calories: 300, protein: 16, carbs: 22, fat: 16, fibre: 5 },
-    category: "meal",
-    tags: ["vegetarian", "ovulatory", "zinc"],
-    kidAlternative: "Small fritters + dipping sauce = instant kid‑pleaser."
-  },
-  {
-    id: "dinner-o8",
-    name: "Mushroom Risotto",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "30 min",
-    keyNutrients: ["B vitamins", "Complex carbs", "Zinc"],
-    ingredients: [
-      "60g arborio rice",
-      "1 tsp olive oil",
-      "50g brown onion, finely chopped",
-      "1 garlic clove, minced",
-      "100g mixed mushrooms, sliced",
-      "350ml vegetable stock, warmed",
-      "1 tbsp nutritional yeast (or Parmesan)",
-      "Fresh parsley"
-    ],
-    method: [
-      "Sauté onion, garlic, and mushrooms in oil until golden. Add rice, stir 1 min.",
-      "Gradually add stock, stirring, until rice is creamy and tender (about 20 min). Stir in nutritional yeast and parsley."
-    ],
-    phaseBenefit:
-      "Mushrooms are rich in B vitamins and zinc; the creamy rice is comforting without being heavy. A bowl of slow, deliberate nourishment.",
-    nutrition: { calories: 420, protein: 12, carbs: 58, fat: 14, fibre: 4 },
-    category: "meal",
-    tags: ["vegan", "ovulatory", "zinc"],
-    kidAlternative: "Plain risotto with Parmesan — most kids love creamy rice."
-  },
-  {
-    id: "dinner-o9",
-    name: "Thai Seafood Broth with Rice Noodles",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Zinc", "Iodine", "Protein"],
-    ingredients: [
-      "80g raw prawns",
-      "80g firm white fish, cubed",
-      "1 tsp sesame oil",
-      "1 garlic clove, minced",
-      "1 tsp grated ginger",
-      "1 tsp fish sauce (or tamari)",
-      "1 tsp lime juice",
-      "300ml fish or vegetable stock",
-      "60g flat rice noodles (dry weight)",
-      "Fresh coriander"
-    ],
-    method: [
-      "Cook 60g noodles. Sauté garlic and 1 tsp ginger in 1 tsp oil. Add stock, 80g fish sauce, lime juice. Bring to simmer.",
-      "Add fish and prawns, cook 4‑5 min until just done. Pour over noodles, top with coriander."
-    ],
-    phaseBenefit:
-      "Zinc from prawns and iodine from the broth support thyroid and ovulatory health. Light, fragrant, and deeply nourishing.",
-    nutrition: { calories: 420, protein: 32, carbs: 44, fat: 10, fibre: 2 },
-    category: "meal",
-    tags: ["pescatarian", "ovulatory", "zinc"],
-    kidAlternative: "Serve plain rice noodles with mild broth and a few pieces of fish."
-  },
-  {
-    id: "dinner-o10",
-    name: "Rainbow Sushi Bowl",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "15 min",
-    cookTime: "0 min (use pre‑cooked rice)",
-    keyNutrients: ["Antioxidants", "Zinc", "Folate"],
-    ingredients: [
-      "100g cooked sushi rice (about 40g dry)",
-      "30g avocado, sliced",
-      "40g mango, sliced",
-      "50g cucumber, diced",
-      "50g edamame (shelled)",
-      "1 tsp rice wine vinegar",
-      "1 tsp tamari",
-      "½ tsp sesame oil",
-      "1 tsp pickled ginger",
-      "½ nori sheet, sliced",
-      "1 tsp sesame seeds"
-    ],
-    method: [
-      "Season 100g rice with vinegar. Arrange all toppings over rice. Drizzle 1 tsp tamari and sesame oil, scatter 1 tsp sesame seeds."
-    ],
-    phaseBenefit:
-      "Colourful, light, and full of life — like the ovulatory phase. Edamame brings zinc; mango and avocado add antioxidants and healthy fats.",
-    nutrition: { calories: 420, protein: 14, carbs: 56, fat: 16, fibre: 8 },
-    category: "meal",
-    tags: ["vegan", "ovulatory", "zinc"],
-    kidAlternative: "Serve rice with separate piles of toppings — let them build their own bowl."
-  },
-
-  // ── LUTEAL DINNERS ──
-  {
-    id: "dinner-l1",
-    name: "Slow‑Cooked Beef Casserole with Root Veg",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "2 hr",
-    keyNutrients: ["Iron", "Protein", "Complex carbs"],
-    ingredients: [
-      "120g beef chuck, cubed",
-      "1 tbsp olive oil",
-      "50g brown onion, chopped",
-      "100g potato, cubed",
-      "80g carrot, chopped",
-      "80g parsnip, chopped",
-      "1 tbsp tomato paste",
-      "300ml beef stock",
-      "1 tsp fresh thyme"
-    ],
-    method: [
-      "Brown beef in 1 tbsp oil. Sauté onion. Add vegetables, 1 tbsp tomato paste, stock, thyme. Return beef.",
-      "Cover, cook on low heat 2 hours until tender."
-    ],
-    phaseBenefit:
-      "Ultimate luteal comfort food. Beef brings iron; root vegetables ground you with slow, steady energy. Let it cook while you rest.",
-    nutrition: { calories: 480, protein: 32, carbs: 40, fat: 18, fibre: 8 },
-    category: "meal",
-    tags: ["luteal", "iron", "comfort"],
-    kidAlternative: "Serve beef and veg over mashed potato — a deconstructed stew."
-  },
-  {
-    id: "dinner-l2",
-    name: "Salmon with Kumara Mash & Greens",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "20 min",
-    keyNutrients: ["Omega‑3", "B6", "Beta‑carotene"],
-    ingredients: [
-      "130g salmon fillet",
-      "200g kumara (orange sweet potato), boiled and mashed with 1 tsp butter",
-      "80g green beans, steamed",
-      "1 tsp olive oil",
-      "Lemon wedge"
-    ],
-    method: [
-      "Boil kumara 12 min, mash with butter. Pan‑fry salmon 4 min each side.",
-      "Steam beans 4 min. Serve salmon on mash with beans and lemon."
-    ],
-    phaseBenefit:
-      "Kumara brings B6 for progesterone; salmon’s omega‑3s soothe the inflammation that rises before your period. A grounding, golden plate.",
-    nutrition: { calories: 520, protein: 34, carbs: 44, fat: 20, fibre: 8 },
-    category: "meal",
-    tags: ["pescatarian", "luteal", "omega-3"],
-    kidAlternative: "Serve salmon, mash, and beans separately — comfort food for all ages."
-  },
-  {
-    id: "dinner-l3",
-    name: "Chicken Tikka Masala with Rice",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min + 10 min marinate",
-    cookTime: "25 min",
-    keyNutrients: ["Protein", "B6", "Anti‑inflammatory"],
-    ingredients: [
-      "120g chicken breast, cubed",
-      "2 tbsp Greek yoghurt",
-      "1 tbsp tikka masala paste",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "100ml tomato passata",
-      "50g basmati rice (dry weight), cooked",
-      "Fresh coriander"
-    ],
-    method: [
-      "Marinate chicken in yoghurt and half the paste for 10 min. Cook rice.",
-      "Cook chicken in oil until golden. Add onion, remaining paste, and passata. Simmer 15 min. Serve over rice with coriander."
-    ],
-    phaseBenefit:
-      "Warming spices aid digestion; chicken provides protein. The creamy sauce satisfies the luteal‑phase craving for comfort.",
-    nutrition: { calories: 500, protein: 34, carbs: 52, fat: 14, fibre: 4 },
-    category: "meal",
-    tags: ["luteal", "protein"],
-    kidAlternative: "Serve plain rice with a small amount of mild chicken — skip the spices if needed."
-  },
-  {
-    id: "dinner-l4",
-    name: "Beef & Mushroom Stroganoff",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "20 min",
-    keyNutrients: ["Protein", "Iron", "B vitamins"],
-    ingredients: [
-      "120g beef scotch fillet, sliced",
-      "1 tsp butter",
-      "100g mushrooms, sliced",
-      "50g brown onion, sliced",
-      "1 garlic clove, minced",
-      "100ml beef stock",
-      "2 tbsp sour cream",
-      "1 tsp Dijon mustard",
-      "80g egg noodles (dry weight), cooked"
-    ],
-    method: [
-      "Cook 80g noodles. Sear beef in 1 tsp butter, set aside. Sauté 50g onion and 100g mushrooms. Add stock, 2 tbsp sour cream, mustard.",
-      "Return beef, warm through. Serve over 80g noodles."
-    ],
-    phaseBenefit:
-      "Rich and comforting; beef brings iron and B12. The mushrooms add B vitamins — all supporting your body through the pre‑menstrual days.",
-    nutrition: { calories: 520, protein: 34, carbs: 44, fat: 22, fibre: 4 },
-    category: "meal",
-    tags: ["luteal", "iron"],
-    kidAlternative: "Serve plain noodles with a few slices of beef and a mild cream sauce."
-  },
-  {
-    id: "dinner-l5",
-    name: "Fish Pie with Mashed Potato",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "30 min",
-    keyNutrients: ["Omega‑3", "Protein", "Complex carbs"],
-    ingredients: [
-      "100g mixed fish (salmon and white fish), cubed",
-      "200g potato, boiled and mashed with 1 tsp butter",
-      "100ml milk",
-      "1 tsp butter",
-      "1 tsp plain flour",
-      "30g frozen peas",
-      "30g leek, sliced",
-      "Salt, pepper, dill"
-    ],
-    method: [
-      "Make a white sauce: melt 1 tsp butter, stir in flour, add milk gradually until thickened.",
-      "Add fish, peas, and sautéed leek to the sauce. Pour into a small dish, top with mash. Bake at 200°C for 15 min until golden."
-    ],
-    phaseBenefit:
-      "Comforting and packed with omega‑3 — salmon eases inflammation, and the potato mash satisfies the luteal need for warmth.",
-    nutrition: { calories: 480, protein: 30, carbs: 44, fat: 18, fibre: 6 },
-    category: "meal",
-    tags: ["pescatarian", "luteal", "comfort"],
-    kidAlternative: "Serve mashed potato and white fish separately — the pie deconstruction works well for kids."
-  },
-  {
-    id: "dinner-l6",
-    name: "Roast Chicken with Roasted Vegetables",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "50 min",
-    keyNutrients: ["Protein", "B6", "Complex carbs"],
-    ingredients: [
-      "1 chicken thigh and 1 drumstick (skin on, about 200g total)",
-      "150g potato, cubed",
-      "80g carrot, chopped",
-      "80g kumara, cubed",
-      "50g brown onion, quartered",
-      "1 tbsp olive oil",
-      "1 tsp dried rosemary",
-      "Salt and pepper"
-    ],
-    method: [
-      "Toss all vegetables with 1 tbsp oil and rosemary. Place in a small roasting dish with chicken.",
-      "Roast at 200°C for 45‑50 min until chicken is cooked through and vegetables are golden."
-    ],
-    phaseBenefit:
-      "Classic comfort food. Chicken provides protein and B6; the roasted root vegetables offer the slow carbs your luteal body craves.",
-    nutrition: { calories: 560, protein: 38, carbs: 44, fat: 24, fibre: 8 },
-    category: "meal",
-    tags: ["luteal", "protein"],
-    kidAlternative: "Serve chicken and roasted veg separately — kids love roast kumara."
-  },
-  {
-    id: "dinner-l7",
-    name: "Slow‑Cooked Lamb Curry",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "1 hr 30 min",
-    keyNutrients: ["Iron", "Protein", "Anti‑inflammatory"],
-    ingredients: [
-      "150g lamb shoulder, cubed",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "1 tsp mild curry powder",
-      "½ tsp ground turmeric",
-      "150ml light coconut milk",
-      "50g basmati rice (dry weight), cooked",
-      "Fresh coriander"
-    ],
-    method: [
-      "Brown lamb in oil. Sauté onion, garlic, spices. Add coconut milk and lamb. Cover, simmer 1½ hours until tender.",
-      "Serve over 50g rice with coriander."
-    ],
-    phaseBenefit:
-      "Lamb brings haem iron; turmeric is anti‑inflammatory. The slow cooking makes the nutrients deeply available — and fills your home with warmth.",
-    nutrition: { calories: 540, protein: 34, carbs: 48, fat: 22, fibre: 4 },
-    category: "meal",
-    tags: ["luteal", "iron"],
-    kidAlternative: "Serve plain rice with a little mild lamb — the coconut flavour is usually kid‑friendly."
-  },
-  {
-    id: "dinner-l8",
-    name: "Lentil & Vegetable Casserole",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "30 min",
-    keyNutrients: ["Magnesium", "B6", "Iron"],
-    ingredients: [
-      "60g dried brown lentils",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "80g carrot, diced",
-      "80g celery, diced",
-      "200g tinned diced tomatoes",
-      "150ml vegetable stock",
-      "1 tsp dried thyme",
-      "Salt and pepper"
-    ],
-    method: [
-      "Sauté onion, carrot, celery in oil. Add garlic, lentils, tomatoes, stock, thyme. Simmer 25 min until thick."
-    ],
-    phaseBenefit:
-      "Warming, sustaining, and rich in magnesium and B6 — everything your luteal body needs. A simple, hearty bowl.",
-    nutrition: { calories: 360, protein: 18, carbs: 50, fat: 6, fibre: 16 },
-    category: "meal",
-    tags: ["vegan", "luteal", "magnesium"],
-    kidAlternative: "Serve over rice or with crusty bread — the texture is approachable for most kids."
-  },
-  {
-    id: "dinner-l9",
-=======
     id: "dinner-black-bean-chilli",
->>>>>>> Stashed changes
     name: "Black Bean Chilli with Rice",
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
     cookTime: "25 min",
     keyNutrients: ["Magnesium", "Iron", "B6"],
-<<<<<<< Updated upstream
-    ingredients: [
-      "100g tinned black beans, drained",
-      "100g tinned kidney beans, drained",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "200g tinned diced tomatoes",
-      "½ tsp ground cumin",
-      "½ tsp smoked paprika",
-      "50g brown rice (dry weight), cooked"
-    ],
-    method: [
-      "Cook rice. Sauté onion and garlic in oil. Add beans, tomatoes, cumin, paprika. Simmer 20 min.",
-      "Serve over 50g rice."
-    ],
-    phaseBenefit:
-      "Black beans and kidney beans bring magnesium and iron; the warming spices aid digestion. A grounding, satisfying bowl.",
-=======
     ingredients: ["100g tinned black beans, drained", "100g tinned kidney beans, drained", "1 tsp olive oil", "50g brown onion, chopped", "1 garlic clove, minced", "200g tinned diced tomatoes", "½ tsp ground cumin", "½ tsp smoked paprika", "50g brown rice (dry weight), cooked"],
     method: ["Cook 50g rice. Sauté 50g onion and 1 garlic clove in 1 tsp oil. Add 100g black beans, 100g kidney beans, 200g tomatoes, ½ tsp cumin and ½ tsp paprika. Simmer 20 minutes. Serve over rice."],
     phaseBenefit: "Black beans and kidney beans bring magnesium and iron; the warming spices aid digestion. A grounding, satisfying bowl.",
->>>>>>> Stashed changes
     nutrition: { calories: 460, protein: 20, carbs: 66, fat: 8, fibre: 18 },
     category: "meal",
     tags: ["vegan", "dairy-free", "gluten-free", "luteal", "magnesium"],
@@ -2598,176 +1794,15 @@ export const DINNER_RECIPES = [
     prepTime: "5 min",
     cookTime: "25 min",
     keyNutrients: ["Magnesium", "Iron", "Anti‑inflammatory"],
-<<<<<<< Updated upstream
-    ingredients: [
-      "60g dried yellow lentils",
-      "1 tsp coconut oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "½ tsp ground turmeric",
-      "½ tsp ground cumin",
-      "150ml light coconut milk",
-      "50g baby spinach",
-      "50g basmati rice (dry weight), cooked"
-    ],
-    method: [
-      "Cook rice. Sauté onion and garlic in oil. Add turmeric, cumin, lentils, coconut milk. Simmer 20 min.",
-      "Stir in 50g spinach until wilted. Serve over 50g rice."
-    ],
-    phaseBenefit:
-      "Comforting and packed with magnesium — the luteal phase's most‑needed mineral. The coconut milk wraps around you like a soft blanket.",
-=======
     ingredients: ["60g dried yellow lentils (split moong dal)", "1 tsp coconut oil", "50g brown onion, chopped", "1 garlic clove, minced", "½ tsp ground turmeric", "½ tsp ground cumin", "150ml light coconut milk", "50g baby spinach", "50g basmati rice (dry weight), cooked"],
     method: ["Cook 50g rice. Sauté 50g onion and 1 garlic clove in 1 tsp coconut oil. Add ½ tsp turmeric, ½ tsp cumin, 60g lentils and 150ml coconut milk. Simmer 20 minutes. Stir in 50g spinach until wilted. Serve over rice."],
     phaseBenefit: "Comforting and packed with magnesium — the luteal phase's most‑needed mineral. The coconut milk wraps around you like a soft blanket.",
->>>>>>> Stashed changes
     nutrition: { calories: 480, protein: 20, carbs: 60, fat: 16, fibre: 14 },
     category: "meal",
     tags: ["vegan", "dairy-free", "gluten-free", "luteal", "magnesium"],
     protein: "lentils"
   },
   {
-<<<<<<< Updated upstream
-    id: "dinner-l11",
-    name: "Tempeh & Mushroom Stew with Crusty Bread",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Probiotics", "B vitamins", "Magnesium"],
-    ingredients: [
-      "100g tempeh, cubed",
-      "1 tsp olive oil",
-      "100g mushrooms, sliced",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "200ml vegetable stock",
-      "1 tbsp tamari",
-      "1 tbsp tomato paste",
-      "½ tsp dried thyme",
-      "1 thick slice of crusty bread (about 50g)"
-    ],
-    method: [
-      "Brown tempeh in oil. Sauté onion, garlic, mushrooms. Add stock, tamari, tomato paste, thyme. Simmer 15 min.",
-      "Return tempeh, cook 5 min. Serve with crusty bread."
-    ],
-    phaseBenefit:
-      "Mushrooms bring B vitamins; tempeh adds protein and probiotics. A warming stew for cooler evenings, with bread to mop up every drop.",
-    nutrition: { calories: 420, protein: 24, carbs: 36, fat: 16, fibre: 8 },
-    category: "meal",
-    tags: ["vegan", "luteal", "magnesium"],
-    kidAlternative: "Serve the stew with plain bread — the mushroom flavour is mild and comforting."
-  },
-  {
-    id: "dinner-l12",
-    name: "Tofu & Pumpkin Curry",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Phytoestrogens", "Beta‑carotene", "B6"],
-    ingredients: [
-      "120g firm tofu, cubed",
-      "150g pumpkin, cubed",
-      "1 tsp coconut oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "1 tsp mild curry powder",
-      "150ml light coconut milk",
-      "50g brown rice (dry weight), cooked"
-    ],
-    method: [
-      "Cook rice. Sauté onion and garlic in oil, add curry powder. Add pumpkin and coconut milk, simmer 20 min.",
-      "Add tofu, cook 5 min. Serve over rice."
-    ],
-    phaseBenefit:
-      "Pumpkin brings beta‑carotene and B6 — both needed for progesterone production. Tofu adds gentle phytoestrogens. A warm, golden curry.",
-    nutrition: { calories: 500, protein: 22, carbs: 56, fat: 20, fibre: 10 },
-    category: "meal",
-    tags: ["vegan", "luteal", "protein"],
-    kidAlternative: "Serve rice with plain tofu and a little coconut milk — leave out the curry powder."
-  },
-  {
-    id: "dinner-l13",
-    name: "Veg Lasagne with Cashew Béchamel",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "15 min",
-    cookTime: "35 min",
-    keyNutrients: ["Magnesium", "Protein", "Complex carbs"],
-    ingredients: [
-      "2 sheets pre‑cooked lasagne (about 40g total)",
-      "30g cashews, soaked 20 min, blended with 60ml water to make cream",
-      "80g mushrooms, sliced",
-      "80g spinach",
-      "100ml tomato passata",
-      "1 tsp nutritional yeast",
-      "Salt and pepper"
-    ],
-    method: [
-      "Sauté 80g mushrooms and spinach until soft. Layer in a small dish: 100ml passata, 2 lasagne sheet, vegetables, cashew cream.",
-      "Repeat, finish with passata. Bake at 180°C for 30 min."
-    ],
-    phaseBenefit:
-      "Cashews deliver magnesium; mushrooms add B vitamins. A warming, nurturing bake that feeds the luteal body everything it's asking for.",
-    nutrition: { calories: 420, protein: 18, carbs: 40, fat: 20, fibre: 8 },
-    category: "meal",
-    tags: ["vegan", "luteal", "magnesium"],
-    kidAlternative: "Make a simpler version with just pasta, tomato sauce, and grated cheese."
-  },
-
-  // ── MORE DINNERS to reach 50+ ──
-  {
-    id: "dinner-x1",
-    name: "Chicken Thighs with Paprika & Kumara",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "35 min",
-    keyNutrients: ["Protein", "B6", "Iron"],
-    ingredients: [
-      "2 boneless chicken thighs (about 150g)",
-      "150g kumara, cubed",
-      "1 tbsp olive oil",
-      "1 tsp smoked paprika",
-      "1 garlic clove, minced",
-      "Salt and pepper"
-    ],
-    method: [
-      "Toss chicken and 150g kumara with oil, paprika, garlic, salt, and pepper.",
-      "Roast at 200°C for 35 min until chicken is cooked through and kumara is tender."
-    ],
-    phaseBenefit:
-      "Chicken thighs bring iron; kumara adds B6 for progesterone support. One tray, minimal washing up — a dinner that respects your energy.",
-    nutrition: { calories: 480, protein: 34, carbs: 36, fat: 22, fibre: 6 },
-    category: "meal",
-    tags: ["luteal", "protein"],
-    kidAlternative: "Serve chicken and kumara separately — kids love roasted kumara wedges."
-  },
-  {
-    id: "dinner-x2",
-    name: "Pork Chops with Cannellini Beans & Greens",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Protein", "B vitamins", "Fibre"],
-    ingredients: [
-      "1 pork chop (about 150g)",
-      "1 tsp olive oil",
-      "100g tinned cannellini beans, drained",
-      "50g Swiss chard or spinach",
-      "1 garlic clove, minced",
-      "Lemon wedge"
-    ],
-    method: [
-      "Season pork chop, pan‑fry in oil 4‑5 min each side. Rest.",
-      "In the same pan, sauté garlic, add 100g beans and greens. Warm through. Serve with pork and lemon."
-    ],
-    phaseBenefit:
-      "Pork and beans provide sustained protein and B vitamins for luteal energy and mood. Quick and satisfying.",
-    nutrition: { calories: 460, protein: 38, carbs: 28, fat: 20, fibre: 8 },
-=======
     id: "dinner-tempeh-broccoli-stirfry",
     name: "Tempeh & Broccoli Stir‑Fry with Brown Rice",
     phase: "follicular",
@@ -2779,7 +1814,6 @@ export const DINNER_RECIPES = [
     method: ["Cook 50g brown rice. Heat 1 tbsp sesame oil, cook 120g tempeh until golden. Add 1 garlic clove, 1 tsp ginger, 100g broccoli and 80g carrot; stir‑fry 3 minutes. Add 1 tbsp tamari, toss, and serve over rice."],
     phaseBenefit: "Fermented tempeh feeds your microbiome while it feeds your muscles. Broccoli’s sulforaphane helps your body process oestrogen — a perfect follicular‑phase meal.",
     nutrition: { calories: 520, protein: 28, carbs: 54, fat: 20, fibre: 10 },
->>>>>>> Stashed changes
     category: "meal",
     tags: ["vegan", "dairy-free", "gluten-free-option", "follicular", "probiotic"],
     protein: "tempeh"
@@ -2790,34 +1824,12 @@ export const DINNER_RECIPES = [
     phase: "menstrual",
     serves: 1,
     prepTime: "5 min",
-<<<<<<< Updated upstream
-    cookTime: "30 min",
-    keyNutrients: ["Haem iron", "Zinc", "Warming spices"],
-    ingredients: [
-      "120g lamb leg steak, diced",
-      "1 tsp olive oil",
-      "100g butternut squash, cubed",
-      "¼ tsp ground cinnamon",
-      "¼ tsp ground cumin",
-      "¼ tsp ground coriander",
-      "50g couscous (dry weight)",
-      "Fresh mint"
-    ],
-    method: [
-      "Toss lamb and squash with oil and spices. Roast at 200°C for 25‑30 min.",
-      "Cook 50g couscous. Serve lamb and 100g squash over couscous with fresh mint."
-    ],
-    phaseBenefit:
-      "Lamb brings haem iron; warming spices ease cramping. The butternut adds beta‑carotene — gentle nourishment for bleeding days.",
-    nutrition: { calories: 480, protein: 32, carbs: 44, fat: 18, fibre: 6 },
-=======
     cookTime: "20 min",
     keyNutrients: ["Anti‑inflammatory", "Protein", "Phytoestrogens"],
     ingredients: ["120g firm tofu, cubed", "1 tsp coconut oil", "1 tbsp green curry paste", "150ml light coconut milk", "80g mixed vegetables (capsicum, zucchini, green beans), sliced", "50g jasmine rice (dry weight), cooked", "Fresh Thai basil (or regular basil)"],
     method: ["Cook 50g rice. Sauté 1 tbsp curry paste in 1 tsp coconut oil for 1 minute. Add 150ml coconut milk and 80g vegetables, simmer 10 minutes. Add 120g tofu, cook 5 minutes. Serve over rice with basil."],
     phaseBenefit: "Coconut milk brings warming fats; green curry paste is packed with anti‑inflammatory ginger and lemongrass. This curry eases your cramping while it fills your belly.",
     nutrition: { calories: 480, protein: 20, carbs: 50, fat: 22, fibre: 6 },
->>>>>>> Stashed changes
     category: "meal",
     tags: ["vegan", "dairy-free", "gluten-free", "menstrual", "anti-inflammatory"],
     protein: "tofu"
@@ -2845,31 +1857,11 @@ export const DINNER_RECIPES = [
     serves: 1,
     prepTime: "5 min",
     cookTime: "20 min",
-<<<<<<< Updated upstream
-    keyNutrients: ["Omega‑3", "Vitamin D", "Protein"],
-    ingredients: [
-      "130g salmon fillet",
-      "150g baby potatoes, halved and boiled",
-      "80g broccolini",
-      "1 tbsp butter",
-      "1 garlic clove, minced",
-      "1 tbsp chopped parsley",
-      "Lemon wedge"
-    ],
-    method: [
-      "Boil potatoes 12 min. Pan‑fry salmon 4 min each side. Steam broccolini 4 min.",
-      "Melt 1 tbsp butter with garlic and 1 tbsp parsley, drizzle over 150g potatoes, broccolini, and salmon. Serve with lemon."
-    ],
-    phaseBenefit:
-      "Salmon’s omega‑3s support oestrogen synthesis; the potatoes and butter make this feel like a restaurant meal — but it’s just you, caring for yourself.",
-    nutrition: { calories: 520, protein: 36, carbs: 40, fat: 22, fibre: 6 },
-=======
     keyNutrients: ["Probiotics", "Phytoestrogens", "Protein"],
     ingredients: ["120g firm tofu, cubed", "1 tbsp white miso paste", "1 tsp mirin or rice vinegar", "1 tsp tamari", "75g soba noodles", "1 head bok choy, halved", "1 tsp sesame oil", "1 spring onion, sliced"],
     method: ["Mix 1 tbsp miso, 1 tsp mirin and 1 tsp tamari into a glaze. Coat 120g tofu. Bake at 200°C for 20 minutes. Cook 75g soba noodles. Steam bok choy for 3 minutes. Serve tofu over noodles with bok choy, drizzle with 1 tsp sesame oil, top with spring onion."],
     phaseBenefit: "Miso feeds the gut bacteria that metabolise oestrogen; tofu adds phytoestrogens. This bowl supports your follicular rise with every bite.",
     nutrition: { calories: 480, protein: 24, carbs: 56, fat: 16, fibre: 8 },
->>>>>>> Stashed changes
     category: "meal",
     tags: ["vegan", "dairy-free", "gluten-free-option", "follicular", "probiotic"],
     protein: "tofu"
@@ -2962,136 +1954,17 @@ export const DINNER_RECIPES = [
     prepTime: "5 min",
     cookTime: "20 min",
     keyNutrients: ["Plant protein", "Magnesium", "B vitamins"],
-<<<<<<< Updated upstream
-    ingredients: [
-      "80g dried pasta (penne or tagliatelle)",
-      "100g mushrooms, sliced",
-      "80g tinned chickpeas, drained",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "½ tsp smoked paprika",
-      "100ml vegetable stock",
-      "2 tbsp sour cream (or plant‑based alternative)",
-      "Fresh parsley"
-    ],
-    method: [
-      "Cook pasta. Sauté onion, garlic, mushrooms in oil. Add paprika, chickpeas, stock; simmer 10 min.",
-      "Stir in 2 tbsp sour cream off the heat. Toss with 80g pasta, top with parsley."
-    ],
-    phaseBenefit:
-      "Mushrooms bring B vitamins; chickpeas add magnesium to ease PMS. The creamy sauce answers the luteal craving without the crash.",
-=======
     ingredients: ["80g pasta (dry weight)", "100g mushrooms, sliced", "80g tinned chickpeas, drained", "1 tsp olive oil", "50g brown onion, chopped", "1 garlic clove, minced", "½ tsp smoked paprika", "100ml vegetable stock", "2 tbsp sour cream (or plant‑based)"],
     method: ["Cook 80g pasta. Sauté 50g onion, 1 garlic clove and 100g mushrooms in 1 tsp oil. Add ½ tsp paprika, 80g chickpeas and 100ml stock; simmer 10 minutes. Stir in 2 tbsp sour cream off the heat. Toss with pasta."],
     phaseBenefit: "Mushrooms bring B vitamins; chickpeas add magnesium to ease PMS. The creamy sauce answers the luteal craving without the crash.",
->>>>>>> Stashed changes
     nutrition: { calories: 500, protein: 20, carbs: 60, fat: 18, fibre: 10 },
     category: "meal",
     tags: ["vegetarian", "gluten-free-option", "luteal", "magnesium"],
     protein: "chickpeas"
   },
   {
-<<<<<<< Updated upstream
-    id: "dinner-x7",
-    name: "Lamb & Lentil Stew",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "40 min",
-    keyNutrients: ["Iron", "Protein", "Magnesium"],
-    ingredients: [
-      "100g lamb shoulder, diced",
-      "60g dried brown lentils",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "80g carrot, diced",
-      "200ml beef stock",
-      "100g tinned diced tomatoes",
-      "½ tsp ground cumin",
-      "Fresh parsley"
-    ],
-    method: [
-      "Brown lamb in oil. Sauté onion, garlic, carrot. Add lentils, stock, tomatoes, cumin. Simmer 35 min until lamb and lentils are tender.",
-      "Serve with fresh parsley."
-    ],
-    phaseBenefit:
-      "Hearty and sustaining; lamb provides iron and B12. The lentils add magnesium — a one‑pot meal that holds you steady.",
-    nutrition: { calories: 480, protein: 34, carbs: 40, fat: 18, fibre: 12 },
-    category: "meal",
-    tags: ["luteal", "iron"],
-    kidAlternative: "Serve over rice or with crusty bread — the lentils blend into the stew nicely."
-  },
-  {
-    id: "dinner-x8",
-    name: "Chicken & Chickpea Tagine",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "30 min",
-    keyNutrients: ["Protein", "Iron", "Fibre"],
-    ingredients: [
-      "120g chicken thigh, diced",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "½ tsp ground cinnamon",
-      "½ tsp ground cumin",
-      "¼ tsp ground turmeric",
-      "100g tinned chickpeas, drained",
-      "200g tinned diced tomatoes",
-      "50g couscous (dry weight)",
-      "Fresh coriander"
-    ],
-    method: [
-      "Sauté onion and garlic in oil. Add spices, chicken, chickpeas, tomatoes. Simmer 25 min.",
-      "Cook 50g couscous. Serve tagine over couscous with coriander."
-    ],
-    phaseBenefit:
-      "Chicken and chickpeas together deliver a broad amino acid profile to fuel follicular growth. The warming spices aid digestion.",
-    nutrition: { calories: 520, protein: 36, carbs: 52, fat: 14, fibre: 10 },
-    category: "meal",
-    tags: ["follicular", "protein"],
-    kidAlternative: "Serve over plain couscous — the cinnamon flavour is mild and often kid‑friendly."
-  },
-  {
-    id: "dinner-x9",
-    name: "Herb‑Crusted Cod with Cannellini Bean Mash",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "15 min",
-    keyNutrients: ["Lean protein", "Plant protein", "B vitamins"],
-    ingredients: [
-      "150g cod fillet",
-      "20g breadcrumbs",
-      "1 tsp dried thyme",
-      "1 tsp Dijon mustard",
-      "100g tinned cannellini beans, drained",
-      "1 tsp olive oil",
-      "50ml vegetable stock",
-      "Salt and pepper",
-      "Lemon wedge"
-    ],
-    method: [
-      "Brush cod with mustard, coat with breadcrumbs and thyme. Bake at 220°C for 12‑14 min.",
-      "Warm 100g beans in stock, mash roughly with 1 tsp olive oil. Serve fish on mash with lemon."
-    ],
-    phaseBenefit:
-      "Cod is light and easily digestible; cannellini beans add plant protein and B vitamins. Clean, fresh, and building.",
-    nutrition: { calories: 380, protein: 36, carbs: 32, fat: 10, fibre: 8 },
-    category: "meal",
-    tags: ["pescatarian", "follicular", "protein"],
-    kidAlternative: "Serve fish with plain mash — kids enjoy the crispy coating."
-  },
-  {
-    id: "dinner-x10",
-    name: "Creamy Coconut Chicken Curry",
-=======
     id: "dinner-tempeh-mushroom-stew",
     name: "Tempeh & Mushroom Stew with Crusty Bread",
->>>>>>> Stashed changes
     phase: "luteal",
     serves: 1,
     prepTime: "5 min",
@@ -4106,15 +2979,10 @@ export const TCM_AYURVEDA_RECIPES = [
       "50g baby spinach"
     ],
     method: [
-<<<<<<< Updated upstream
-      "Cook rice. Sauté onion and garlic in oil. Add curry powder, chicken, coconut milk. Simmer 20 min.",
-      "Serve over 50g rice with coriander."
-=======
       "Sauté 50g onion and 1 garlic clove in 1 tsp coconut oil for 3 minutes.",
       "Add 100g squash, 50g lentils, 1 tsp cumin, ½ tsp paprika and 200ml stock.",
       "Simmer for 25 minutes until lentils and squash are tender.",
       "Stir in 50g spinach until wilted. Season."
->>>>>>> Stashed changes
     ],
     phaseBenefit: "In TCM, this warming stew supports the Spleen and Stomach, grounding the body during the luteal phase. Lentils build Blood, and squash provides sweet, nourishing energy.",
     nutrition: { calories: 380, protein: 18, carbs: 50, fat: 12, fibre: 14 },
@@ -4139,15 +3007,10 @@ export const TCM_AYURVEDA_RECIPES = [
       "1 tsp tamari"
     ],
     method: [
-<<<<<<< Updated upstream
-      "Marinate tempeh in teriyaki 10 min. Pan‑fry in sesame oil until caramelised.",
-      "Cook 50g rice. Steam broccoli. Serve 120g tempeh over rice with broccoli and 1 tsp sesame seeds."
-=======
       "Toast 10g sesame seeds in a dry pan until golden, set aside.",
       "Heat 1 tsp sesame oil. Add 1 tsp ginger and 1 garlic clove, cook 30 seconds.",
       "Add 200g greens, stir‑fry for 2–3 minutes until wilted.",
       "Add 1 tsp tamari and toasted sesame seeds. Serve immediately."
->>>>>>> Stashed changes
     ],
     phaseBenefit: "In TCM, warm cooked greens are easier to digest during the luteal phase. Sesame seeds nourish the Liver and Kidney, and ginger warms the digestive system.",
     nutrition: { calories: 160, protein: 8, carbs: 12, fat: 10, fibre: 5 },
