@@ -3136,8 +3136,7 @@ export const KIDS_RECIPES = [
       "Heat ½ tsp coconut oil in a small pan.",
       "Pour batter to make 2 small pancakes. Cook 2 minutes each side until golden."
     ],
-    tags: ["gluten-free", "dairy-free", "nut-free"],
-    protein: "eggs"
+    tags: ["gluten-free", "dairy-free", "nut-free"]
   },
   {
     id: "kids-smoothie-bowl-berry",
@@ -3157,8 +3156,7 @@ export const KIDS_RECIPES = [
       "Blend 50g berries, 50g banana and 50ml oat milk until thick.",
       "Pour into a bowl. Top with 1 tbsp oats and ½ tbsp chia seeds."
     ],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-porridge-apple",
@@ -3170,8 +3168,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["40g rolled oats", "200ml oat milk", "½ apple (75g), grated", "¼ tsp cinnamon", "½ tbsp pumpkin seeds"],
     method: ["Simmer 40g oats with 200ml milk for 5 minutes. Stir in 75g grated apple and ¼ tsp cinnamon. Cook 3 minutes. Top with ½ tbsp pumpkin seeds."],
-    tags: ["vegan", "dairy-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "nut-free"]
   },
   {
     id: "kids-egg-cups-veg",
@@ -3183,8 +3180,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 egg", "1 tbsp finely chopped capsicum (10g)", "1 tbsp finely chopped spinach (10g)", "1 tsp grated cheese (optional)", "Pinch salt"],
     method: ["Preheat oven to 180°C. Whisk 1 egg. Stir in 10g capsicum, 10g spinach and cheese if using. Pour into a greased muffin cup. Bake 15 minutes until set."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-french-toast",
@@ -3196,8 +3192,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["2 slices wholegrain bread", "1 egg", "50ml oat milk", "¼ tsp cinnamon", "½ tsp coconut oil", "¼ banana, sliced (to serve)"],
     method: ["Whisk 1 egg, 50ml milk and ¼ tsp cinnamon. Dip bread slices. Fry in ½ tsp coconut oil 2 minutes each side. Serve with banana slices."],
-    tags: ["vegetarian", "dairy-free", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "dairy-free", "nut-free"]
   },
   {
     id: "kids-yoghurt-parfait",
@@ -3208,8 +3203,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["150g Greek yoghurt", "50g mixed berries", "2 tbsp sugar‑free granola"],
     method: ["Layer 150g yoghurt, 50g berries and 2 tbsp granola in a glass."],
-    tags: ["vegetarian", "gluten-free-option", "nut-free"],
-    protein: "yoghurt"
+    tags: ["vegetarian", "gluten-free-option", "nut-free"]
   },
   {
     id: "kids-banana-breakfast-bites",
@@ -3221,8 +3215,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 ripe banana (100g), mashed", "40g rolled oats", "1 egg", "¼ tsp cinnamon"],
     method: ["Mix 100g banana, 40g oats, 1 egg and ¼ tsp cinnamon. Drop 2 spoonfuls onto a lined tray. Bake at 180°C for 12 minutes."],
-    tags: ["vegetarian", "dairy-free", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "dairy-free", "nut-free"]
   },
   {
     id: "kids-chia-pudding",
@@ -3233,8 +3226,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["2 tbsp chia seeds (20g)", "200ml oat milk", "¼ tsp vanilla", "50g mixed berries"],
     method: ["Mix 20g chia seeds, 200ml milk and ¼ tsp vanilla. Refrigerate overnight. Top with 50g berries."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-breakfast-cookies",
@@ -3246,8 +3238,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["½ ripe banana (50g), mashed", "40g rolled oats", "1 tbsp peanut butter (15g)", "½ tbsp chia seeds"],
     method: ["Mix 50g banana, 40g oats, 15g peanut butter and ½ tbsp chia seeds. Form 2 balls, flatten. Bake at 180°C for 12 minutes."],
-    tags: ["vegan", "dairy-free", "gluten-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free"]
   },
   {
     id: "kids-scrambled-eggs-toast",
@@ -3259,8 +3250,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["2 eggs", "1 tbsp milk", "½ tsp butter", "1 slice wholegrain toast", "Pinch salt"],
     method: ["Whisk 2 eggs with 1 tbsp milk. Melt ½ tsp butter in a pan. Add eggs and scramble gently. Serve on toast."],
-    tags: ["vegetarian", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "nut-free"]
   },
   {
     id: "kids-fruit-salad",
@@ -3271,8 +3261,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["30g strawberries, sliced", "30g blueberries", "30g grapes, halved", "30g orange segments", "1 tbsp coconut flakes"],
     method: ["Combine all fruit in a bowl. Top with 1 tbsp coconut flakes."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-pb-banana-toast",
@@ -3283,8 +3272,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 slice wholegrain toast", "1 tbsp peanut butter (15g)", "½ banana (50g), sliced", "Pinch cinnamon"],
     method: ["Toast bread. Spread with 15g peanut butter. Top with 50g banana slices and cinnamon."],
-    tags: ["vegetarian", "dairy-free"],
-    protein: "none"
+    tags: ["vegetarian", "dairy-free"]
   },
   {
     id: "kids-baked-oatmeal",
@@ -3296,8 +3284,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["40g rolled oats", "100ml oat milk", "½ banana (50g), mashed", "1 tbsp raisins", "¼ tsp cinnamon"],
     method: ["Mix 40g oats, 100ml milk, 50g banana, 1 tbsp raisins and ¼ tsp cinnamon. Pour into a greased ramekin. Bake at 180°C for 20 minutes."],
-    tags: ["vegan", "dairy-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "nut-free"]
   },
   {
     id: "kids-avo-toast",
@@ -3308,8 +3295,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 slice wholegrain toast", "¼ avocado (30g), mashed", "Squeeze of lemon juice", "Pinch salt"],
     method: ["Toast bread. Mash 30g avocado with lemon juice and salt. Spread on toast."],
-    tags: ["vegan", "dairy-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "nut-free"]
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -3325,8 +3311,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g chicken breast, cut into nugget pieces", "1 egg", "15g almond flour", "15g wholemeal breadcrumbs", "¼ tsp paprika", "Pinch salt"],
     method: ["Preheat oven to 200°C. Beat 1 egg. Mix 15g almond flour, 15g breadcrumbs, ¼ tsp paprika and salt. Dip chicken in egg, then coating. Bake 12 minutes."],
-    tags: ["dairy-free", "nut-free-option"],
-    protein: "chicken"
+    tags: ["dairy-free", "nut-free-option"]
   },
   {
     id: "kids-fish-fingers",
@@ -3338,8 +3323,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g white fish fillet, cut into strips", "1 egg", "20g wholemeal breadcrumbs", "10g grated Parmesan", "¼ tsp garlic powder"],
     method: ["Preheat oven to 200°C. Beat 1 egg. Mix 20g breadcrumbs, 10g Parmesan and ¼ tsp garlic powder. Dip fish in egg, then coating. Bake 10 minutes."],
-    tags: ["nut-free"],
-    protein: "fish"
+    tags: ["nut-free"]
   },
   {
     id: "kids-beef-meatballs",
@@ -3351,8 +3335,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g beef mince", "15g carrot, grated", "20g zucchini, grated and squeezed", "1 egg", "15g breadcrumbs", "¼ tsp dried herbs"],
     method: ["Mix 100g mince, 15g carrot, 20g zucchini, 1 egg, 15g breadcrumbs and herbs. Roll into 3–4 balls. Bake at 200°C for 15 minutes."],
-    tags: ["nut-free", "dairy-free"],
-    protein: "beef"
+    tags: ["nut-free", "dairy-free"]
   },
   {
     id: "kids-chicken-fried-rice",
@@ -3364,8 +3347,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g cooked brown rice", "50g cooked chicken, diced", "30g frozen peas and corn", "1 egg", "1 tsp tamari", "½ tsp sesame oil"],
     method: ["Heat ½ tsp sesame oil. Scramble 1 egg, set aside. Add 100g rice, 50g chicken and 30g vegetables – stir‑fry 3 minutes. Add tamari and scrambled egg."],
-    tags: ["dairy-free", "nut-free"],
-    protein: "chicken"
+    tags: ["dairy-free", "nut-free"]
   },
   {
     id: "kids-pasta-bolognese",
@@ -3377,8 +3359,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g beef mince", "½ carrot (20g), grated", "½ zucchini (30g), grated", "100g passata", "60g spaghetti", "¼ tsp dried oregano"],
     method: ["Brown 100g mince. Add 20g carrot and 30g zucchini, cook 3 minutes. Add 100g passata and ¼ tsp oregano. Simmer 12 minutes. Serve over cooked spaghetti."],
-    tags: ["nut-free", "dairy-free"],
-    protein: "beef"
+    tags: ["nut-free", "dairy-free"]
   },
   {
     id: "kids-pizza-pita",
@@ -3390,8 +3371,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 wholemeal pita bread", "2 tbsp passata", "30g grated mozzarella", "2 tbsp diced capsicum", "1 tbsp sweetcorn", "1 slice ham (optional)"],
     method: ["Preheat oven to 200°C. Spread pita with 2 tbsp passata. Top with 30g cheese, capsicum, corn and ham if using. Bake 10 minutes until cheese melts."],
-    tags: ["nut-free"],
-    protein: "cheese"
+    tags: ["nut-free"]
   },
   {
     id: "kids-sausage-rolls",
@@ -3403,8 +3383,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 pork sausage (75g), casing removed", "15g carrot, grated", "15g zucchini, grated", "1 sheet wholemeal puff pastry (cut to size)", "1 egg (for glaze)"],
     method: ["Mix 75g sausage meat with 15g carrot and 15g zucchini. Place on pastry, roll up, seal. Brush with beaten egg. Bake at 200°C for 15 minutes."],
-    tags: ["nut-free"],
-    protein: "pork"
+    tags: ["nut-free"]
   },
   {
     id: "kids-fish-pie",
@@ -3416,8 +3395,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g white fish, cubed", "100g potato, boiled and mashed", "30g frozen peas", "50ml milk", "½ tsp butter", "10g grated cheese"],
     method: ["Place 100g fish and 30g peas in a small dish. Heat 50ml milk with ½ tsp butter, pour over fish. Top with mashed potato and cheese. Bake at 200°C for 20 minutes."],
-    tags: ["nut-free"],
-    protein: "fish"
+    tags: ["nut-free"]
   },
   {
     id: "kids-veg-frittata",
@@ -3429,8 +3407,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["2 eggs", "1 tbsp milk", "30g mixed vegetables (capsicum, zucchini, onion), diced", "15g grated cheese", "½ tsp butter"],
     method: ["Sauté 30g vegetables in ½ tsp butter for 3 minutes. Whisk 2 eggs with 1 tbsp milk, pour over vegetables. Top with 15g cheese. Cook on low 5 minutes, then grill until golden."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-tuna-pasta",
@@ -3442,8 +3419,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["60g pasta", "50g tinned tuna, drained", "30g frozen peas", "2 tbsp cream cheese (30g)", "2 tbsp milk"],
     method: ["Cook pasta. In a pan, heat 30g cream cheese and 2 tbsp milk until smooth. Add 50g tuna and 30g peas. Toss with pasta."],
-    tags: ["nut-free"],
-    protein: "tuna"
+    tags: ["nut-free"]
   },
   {
     id: "kids-chicken-quesadilla",
@@ -3455,8 +3431,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 wholemeal tortilla", "50g cooked chicken, shredded", "30g grated cheese", "1 tbsp corn kernels", "1 tbsp salsa (optional)"],
     method: ["Place tortilla in a dry pan. Top half with 50g chicken, 30g cheese and 1 tbsp corn. Fold over. Cook 2 minutes each side until golden and cheese melts."],
-    tags: ["nut-free"],
-    protein: "chicken"
+    tags: ["nut-free"]
   },
   {
     id: "kids-lentil-soup",
@@ -3468,8 +3443,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["40g red lentils", "200ml vegetable stock", "20g carrot, diced", "20g onion, diced", "½ tsp cumin", "1 tsp olive oil"],
     method: ["Sauté 20g carrot and 20g onion in 1 tsp oil for 3 minutes. Add 40g lentils, 200ml stock and ½ tsp cumin. Simmer 15–20 minutes until soft. Blend if desired."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "lentils"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-bean-burrito",
@@ -3481,8 +3455,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 wholemeal tortilla", "80g tinned black beans, mashed", "20g grated cheese", "1 tbsp corn", "1 tbsp salsa", "20g shredded lettuce"],
     method: ["Warm tortilla. Spread mashed beans. Top with 20g cheese, 1 tbsp corn, 1 tbsp salsa and 20g lettuce. Roll up tightly."],
-    tags: ["vegetarian", "nut-free"],
-    protein: "beans"
+    tags: ["vegetarian", "nut-free"]
   },
   {
     id: "kids-sweet-potato-fries",
@@ -3494,8 +3467,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 small sweet potato (150g), cut into fries", "1 tsp olive oil", "Pinch salt", "Pinch paprika"],
     method: ["Toss 150g sweet potato fries with 1 tsp oil, salt and paprika. Spread on a tray. Bake at 200°C for 20 minutes, turning halfway."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-mac-cheese",
@@ -3507,8 +3479,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["70g macaroni", "100ml milk", "40g grated cheddar", "½ tsp butter", "½ tsp flour", "Pinch mustard powder"],
     method: ["Cook macaroni. Melt ½ tsp butter, stir in ½ tsp flour, gradually add 100ml milk. Simmer until thick. Stir in 40g cheese and mustard. Toss with pasta."],
-    tags: ["vegetarian", "nut-free"],
-    protein: "cheese"
+    tags: ["vegetarian", "nut-free"]
   },
   {
     id: "kids-salmon-patties",
@@ -3520,8 +3491,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["80g tinned salmon, drained", "1 small potato (80g), cooked and mashed", "1 egg", "15g breadcrumbs", "1 tsp lemon juice"],
     method: ["Mix 80g salmon, 80g mashed potato, 1 egg, 15g breadcrumbs and 1 tsp lemon juice. Form 2 patties. Fry in a little oil 3 minutes each side."],
-    tags: ["nut-free", "dairy-free"],
-    protein: "salmon"
+    tags: ["nut-free", "dairy-free"]
   },
   {
     id: "kids-chicken-skewers",
@@ -3533,8 +3503,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g chicken thigh, cubed", "1 tbsp plain yoghurt", "½ tsp paprika", "½ tsp cumin", "Pinch salt"],
     method: ["Mix 100g chicken with 1 tbsp yoghurt, ½ tsp paprika, ½ tsp cumin and salt. Marinate 10 minutes. Thread onto a skewer. Grill or bake at 200°C for 10 minutes."],
-    tags: ["dairy-free-option", "nut-free"],
-    protein: "chicken"
+    tags: ["dairy-free-option", "nut-free"]
   },
   {
     id: "kids-tofu-nuggets",
@@ -3546,8 +3515,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g firm tofu, pressed and cubed", "1 tbsp tamari", "1 egg", "20g breadcrumbs", "10g nutritional yeast (optional)"],
     method: ["Toss 100g tofu in 1 tbsp tamari. Dip in beaten egg, then coat with 20g breadcrumbs and yeast. Bake at 200°C for 12 minutes."],
-    tags: ["vegetarian", "dairy-free", "nut-free"],
-    protein: "tofu"
+    tags: ["vegetarian", "dairy-free", "nut-free"]
   },
   {
     id: "kids-veg-nachos",
@@ -3559,8 +3527,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["40g corn chips (baked, no sugar)", "50g tinned kidney beans, mashed", "30g grated cheese", "1 tbsp corn", "1 tbsp diced tomato", "1 tbsp sour cream"],
     method: ["Arrange 40g chips on a tray. Top with 50g mashed beans, 30g cheese and 1 tbsp corn. Bake at 180°C for 5 minutes. Top with tomato and sour cream."],
-    tags: ["vegetarian", "gluten-free-option", "nut-free"],
-    protein: "beans"
+    tags: ["vegetarian", "gluten-free-option", "nut-free"]
   },
   {
     id: "kids-ham-cheese-pinwheels",
@@ -3572,8 +3539,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 wholemeal tortilla", "1 tbsp cream cheese", "1 slice ham (30g)", "20g grated cheese"],
     method: ["Spread tortilla with 1 tbsp cream cheese. Layer ham and grated cheese. Roll up tightly. Slice into 4 pinwheels."],
-    tags: ["nut-free"],
-    protein: "pork"
+    tags: ["nut-free"]
   },
   {
     id: "kids-egg-fried-rice",
@@ -3585,8 +3551,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g cooked brown rice", "1 egg", "30g frozen peas and corn", "1 tsp tamari", "½ tsp sesame oil"],
     method: ["Heat ½ tsp sesame oil. Scramble 1 egg, set aside. Add 100g rice and 30g vegetables – stir‑fry 2 minutes. Add tamari and scrambled egg."],
-    tags: ["vegetarian", "dairy-free", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "dairy-free", "nut-free"]
   },
   {
     id: "kids-baked-beans-toast",
@@ -3598,8 +3563,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g tinned baked beans (no added sugar)", "1 slice wholegrain toast", "10g grated cheese (optional)"],
     method: ["Heat 100g beans. Toast bread. Pour beans over toast. Top with cheese if using."],
-    tags: ["vegetarian", "nut-free"],
-    protein: "beans"
+    tags: ["vegetarian", "nut-free"]
   },
   {
     id: "kids-veg-rice-balls",
@@ -3611,8 +3575,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g cooked brown rice", "20g grated carrot", "20g finely chopped spinach", "1 egg", "15g breadcrumbs"],
     method: ["Mix 100g rice, 20g carrot, 20g spinach, 1 egg and 15g breadcrumbs. Form into 3 balls. Bake at 200°C for 10 minutes."],
-    tags: ["vegetarian", "dairy-free", "nut-free"],
-    protein: "eggs"
+    tags: ["vegetarian", "dairy-free", "nut-free"]
   },
   {
     id: "kids-chicken-wrap",
@@ -3623,8 +3586,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 wholemeal tortilla", "50g cooked chicken, shredded", "¼ avocado (30g), sliced", "20g shredded lettuce", "1 tbsp plain yoghurt"],
     method: ["Spread yoghurt on tortilla. Layer 50g chicken, 30g avocado and 20g lettuce. Roll up."],
-    tags: ["nut-free"],
-    protein: "chicken"
+    tags: ["nut-free"]
   },
   {
     id: "kids-mashed-potato-fish",
@@ -3636,8 +3598,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 potato (120g), boiled and mashed", "80g white fish fillet, baked", "30g frozen peas", "1 tbsp milk", "½ tsp butter"],
     method: ["Mash 120g potato with 1 tbsp milk and ½ tsp butter. Bake 80g fish at 200°C for 10 minutes. Serve fish on mash with 30g peas."],
-    tags: ["nut-free", "dairy-free-option"],
-    protein: "fish"
+    tags: ["nut-free", "dairy-free-option"]
   },
   {
     id: "kids-pork-meatballs",
@@ -3649,8 +3610,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["80g pork mince", "20g apple, grated", "15g breadcrumbs", "1 egg", "¼ tsp sage"],
     method: ["Mix 80g mince, 20g apple, 15g breadcrumbs, 1 egg and ¼ tsp sage. Roll into balls. Bake at 200°C for 15 minutes."],
-    tags: ["nut-free", "dairy-free"],
-    protein: "pork"
+    tags: ["nut-free", "dairy-free"]
   },
   {
     id: "kids-tomato-soup",
@@ -3662,8 +3622,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["150g tinned tomatoes", "50ml vegetable stock", "1 tbsp cream cheese (15g)", "½ tsp basil", "1 tsp olive oil"],
     method: ["Heat 1 tsp oil. Add 150g tomatoes and 50ml stock. Simmer 10 minutes. Blend. Stir in 15g cream cheese and ½ tsp basil."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -3678,8 +3637,7 @@ export const KIDS_RECIPES = [
     serves: 4,
     ingredients: ["4 medjool dates (60g), pitted", "40g rolled oats", "20g peanut butter", "1 tbsp cacao powder (optional)"],
     method: ["Blend 60g dates, 40g oats, 20g peanut butter and cacao if using. Roll into 4 balls."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free-option"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free-option"]
   },
   {
     id: "kids-veggie-sticks-hummus",
@@ -3690,8 +3648,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["30g carrot sticks", "30g cucumber sticks", "30g capsicum strips", "2 tbsp hummus (30g)"],
     method: ["Arrange vegetable sticks. Serve with 30g hummus for dipping."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "chickpeas"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-apple-cheese",
@@ -3702,8 +3659,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["½ apple (75g), sliced", "20g cheddar cheese, cubed"],
     method: ["Serve apple slices with cheese cubes."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "cheese"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-banana-chia-pops",
@@ -3714,8 +3670,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 banana (100g), cut in half", "2 tbsp Greek yoghurt", "1 tbsp chia seeds"],
     method: ["Dip banana halves in 2 tbsp yoghurt, then roll in 1 tbsp chia seeds. Freeze for 2 hours."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-trail-mix",
@@ -3726,8 +3681,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["10g almonds", "10g pumpkin seeds", "10g sunflower seeds", "1 tbsp dried cranberries (no sugar)"],
     method: ["Combine all ingredients in a small bag or bowl."],
-    tags: ["vegan", "dairy-free", "gluten-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free"]
   },
   {
     id: "kids-rice-cake-toppings",
@@ -3738,8 +3692,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 brown rice cake", "1 tbsp cream cheese or hummus", "Cucumber slices", "Cherry tomato half", "Carrot stick"],
     method: ["Spread rice cake with 1 tbsp cream cheese or hummus. Decorate with cucumber, tomato and carrot to make a face."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-fruit-kebabs",
@@ -3750,8 +3703,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["3 strawberries", "6 grapes", "½ banana (50g), sliced", "1 kiwi, sliced"],
     method: ["Thread fruit onto a small skewer in alternating colours."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-cheese-crackers",
@@ -3763,8 +3715,7 @@ export const KIDS_RECIPES = [
     serves: 4,
     ingredients: ["80g wholemeal flour", "40g cold butter", "60g grated cheddar", "1–2 tbsp cold water"],
     method: ["Rub 40g butter into 80g flour. Mix in 60g cheese. Add water to form dough. Roll thin, cut into shapes. Bake at 180°C for 12 minutes."],
-    tags: ["vegetarian", "nut-free"],
-    protein: "cheese"
+    tags: ["vegetarian", "nut-free"]
   },
   {
     id: "kids-yoghurt-frozen-bark",
@@ -3775,8 +3726,7 @@ export const KIDS_RECIPES = [
     serves: 2,
     ingredients: ["200g Greek yoghurt", "50g mixed berries", "1 tbsp honey or mashed banana (optional)"],
     method: ["Spread 200g yoghurt on a lined tray. Scatter 50g berries. Freeze for 3 hours. Break into pieces."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "yoghurt"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-pbj-roll-ups",
@@ -3787,8 +3737,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 wholemeal tortilla", "1 tbsp peanut butter (15g)", "½ banana (50g), sliced"],
     method: ["Spread tortilla with 15g peanut butter. Place 50g banana slices along one edge. Roll up tightly. Slice into rounds."],
-    tags: ["vegetarian", "dairy-free"],
-    protein: "none"
+    tags: ["vegetarian", "dairy-free"]
   },
   {
     id: "kids-oat-bars",
@@ -3799,8 +3748,7 @@ export const KIDS_RECIPES = [
     serves: 4,
     ingredients: ["100g dates, pitted", "80g rolled oats", "40g peanut butter", "20g chia seeds"],
     method: ["Blend 100g dates until pasty. Mix with 80g oats, 40g peanut butter and 20g chia seeds. Press into a small tin. Refrigerate 1 hour, slice."],
-    tags: ["vegan", "dairy-free", "gluten-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free"]
   },
   {
     id: "kids-avo-dip-tortillas",
@@ -3811,8 +3759,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["¼ avocado (30g), mashed", "1 tbsp plain yoghurt", "Squeeze lemon", "30g baked tortilla chips"],
     method: ["Mash 30g avocado with 1 tbsp yoghurt and lemon juice. Serve with chips for dipping."],
-    tags: ["vegetarian", "gluten-free-option", "nut-free"],
-    protein: "none"
+    tags: ["vegetarian", "gluten-free-option", "nut-free"]
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -3827,8 +3774,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 ripe banana (100g), sliced and frozen", "1 tbsp peanut butter (15g)", "1 tbsp milk (to blend)"],
     method: ["Blend frozen banana with 15g peanut butter and 1 tbsp milk until creamy. Eat immediately or freeze 30 minutes for firmer texture."],
-    tags: ["vegan", "dairy-free-option", "gluten-free", "nut-free-option"],
-    protein: "none"
+    tags: ["vegan", "dairy-free-option", "gluten-free", "nut-free-option"]
   },
   {
     id: "kids-chocolate-pudding",
@@ -3839,8 +3785,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["¼ avocado (30g)", "1 tbsp cacao powder (5g)", "2 dates (30g), pitted and soaked", "3 tbsp milk of choice"],
     method: ["Blend 30g avocado, 5g cacao, 30g dates and 3 tbsp milk until smooth and creamy."],
-    tags: ["vegan", "dairy-free-option", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free-option", "gluten-free", "nut-free"]
   },
   {
     id: "kids-date-fudge-bites",
@@ -3851,8 +3796,7 @@ export const KIDS_RECIPES = [
     serves: 4,
     ingredients: ["100g walnuts", "100g dates, pitted", "1 tbsp cacao powder", "Pinch salt"],
     method: ["Blend 100g walnuts, 100g dates, 1 tbsp cacao and salt until sticky. Roll into 4 balls."],
-    tags: ["vegan", "dairy-free", "gluten-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free"]
   },
   {
     id: "kids-berry-fools",
@@ -3863,8 +3807,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["100g Greek yoghurt", "50g mixed berries, mashed lightly", "1 tbsp crushed nuts (optional)"],
     method: ["Fold 50g mashed berries into 100g yoghurt. Top with crushed nuts if using."],
-    tags: ["vegetarian", "gluten-free", "nut-free-option"],
-    protein: "yoghurt"
+    tags: ["vegetarian", "gluten-free", "nut-free-option"]
   },
   {
     id: "kids-baked-apple",
@@ -3876,8 +3819,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 apple (150g)", "½ tsp cinnamon", "1 tsp coconut oil", "2 tbsp water"],
     method: ["Core 150g apple. Place in a small dish. Sprinkle with ½ tsp cinnamon, dot with 1 tsp coconut oil, add 2 tbsp water. Bake at 180°C for 20 minutes."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-frozen-berry-pops",
@@ -3888,8 +3830,7 @@ export const KIDS_RECIPES = [
     serves: 2,
     ingredients: ["150g Greek yoghurt", "50g mixed berries", "1 tbsp honey or mashed banana (optional)"],
     method: ["Blend 150g yoghurt and 50g berries. Pour into popsicle moulds. Freeze for 4 hours."],
-    tags: ["vegetarian", "gluten-free", "nut-free"],
-    protein: "yoghurt"
+    tags: ["vegetarian", "gluten-free", "nut-free"]
   },
   {
     id: "kids-pear-crumble",
@@ -3901,8 +3842,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["1 pear (150g), diced", "20g rolled oats", "10g almond meal", "½ tsp cinnamon", "1 tsp coconut oil"],
     method: ["Place 150g diced pear in a ramekin. Mix 20g oats, 10g almond meal, ½ tsp cinnamon and 1 tsp oil. Sprinkle over pear. Bake at 180°C for 20 minutes."],
-    tags: ["vegan", "dairy-free", "gluten-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free"]
   },
   {
     id: "kids-strawberry-chia-jam",
@@ -3914,8 +3854,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["50g strawberries, mashed", "1 tbsp chia seeds", "1 slice wholegrain toast"],
     method: ["Heat 50g strawberries in a pan until soft. Stir in 1 tbsp chia seeds. Cool. Spread on toast."],
-    tags: ["vegan", "dairy-free", "gluten-free-option", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free-option", "nut-free"]
   },
   {
     id: "kids-coconut-rice-pudding",
@@ -3927,8 +3866,7 @@ export const KIDS_RECIPES = [
     serves: 1,
     ingredients: ["30g white rice", "200ml coconut milk", "1 tbsp raisins", "¼ tsp cinnamon"],
     method: ["Simmer 30g rice in 200ml coconut milk for 20 minutes, stirring, until creamy. Stir in 1 tbsp raisins and ¼ tsp cinnamon."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   },
   {
     id: "kids-watermelon-pops",
@@ -3939,8 +3877,7 @@ export const KIDS_RECIPES = [
     serves: 2,
     ingredients: ["200g watermelon, blended", "Juice of ½ lime", "1 tbsp chia seeds (optional)"],
     method: ["Blend 200g watermelon with lime juice. Pour into popsicle moulds. Sprinkle with chia seeds. Freeze 4 hours."],
-    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"],
-    protein: "none"
+    tags: ["vegan", "dairy-free", "gluten-free", "nut-free"]
   }
 ];
 // baking-snacks-recipes.ts
