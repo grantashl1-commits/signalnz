@@ -126,7 +126,7 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
         </Tile>
 
         {/* Move */}
-        <Tile to="/movement" accent="var(--move)" icon={Dumbbell} eyebrow="Move" className="col-span-2" delay={0.1}>
+        <Tile to={session ? "/movement" : "/movement?tab=training"} accent="var(--move)" icon={Dumbbell} eyebrow="Move" className="col-span-2" delay={0.1}>
           {session ? (
             <>
               <p className="display-serif text-[1.75rem] leading-tight text-foreground">{session.session.name}</p>

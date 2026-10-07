@@ -65,7 +65,10 @@ export default function FeedbackDashboard() {
   useEffect(() => {
     if (!user) return;
     supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
-      .then(({ data }) => setIsAdmin(!!data));
+      .then(({ data }) => {
+        setIsAdmin(!!data);
+        if (!data) setLoading(false);
+      });
   }, [user]);
 
   useEffect(() => {

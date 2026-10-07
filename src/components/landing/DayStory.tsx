@@ -23,7 +23,7 @@ const STEPS = [
   {
     time: "5:40 pm",
     title: "Dinner — and the kids' version.",
-    body: "Every family dinner comes with a little-people swap, so you cook once and everyone eats.",
+    body: "Family dinners come with a little-people swap, so you cook once and everyone eats.",
     accent: "var(--goals)",
   },
   {

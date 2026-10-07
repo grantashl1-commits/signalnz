@@ -3,6 +3,7 @@
  * wants to add onto today's session. Keyed by ISO date so picks naturally
  * roll over each day.
  */
+import { toLocalDateStr } from "@/lib/local-date";
 const KEY = "signal_library_picks_v1";
 
 export interface LibraryPick {
@@ -15,7 +16,7 @@ export interface LibraryPick {
 type Store = Record<string, LibraryPick[]>; // date -> picks
 
 function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  return toLocalDateStr(new Date());
 }
 
 function read(): Store {

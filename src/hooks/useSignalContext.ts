@@ -6,6 +6,7 @@ import {
   PHASE_SHORT,
 } from "@/lib/cycle-utils";
 import { getHabits, getHabitLog } from "@/data/self-care-rituals";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export interface SignalContext {
   cycleDay: number;
@@ -33,7 +34,7 @@ function getTimeOfDay(): string {
 export function useSignalContext(): SignalContext {
   const { currentPhase, currentCycleDay } = useCycle();
   return useMemo(() => {
-    const todayStr = new Date().toISOString().split("T")[0];
+    const todayStr = toLocalDateStr(new Date());
     const habits = getHabits();
     const habitLog = getHabitLog(todayStr);
     const habitsCompleted = Object.values(habitLog).filter(Boolean).length;

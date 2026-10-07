@@ -2,6 +2,7 @@ import { Phase, getPhaseFromDay, getCycleInfo, getLastPeriodStart, PHASE_DAYS } 
 import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById, ALL_MEAL_RECIPES } from "./recipe-index";
 import { parseIngredient } from "./ingredient-parser";
+import { toLocalDateStr } from "@/lib/local-date";
 
 // ─── Types ─────────────────────────────────────────────────
 export type BreakfastPref = "batch" | "rotate" | "variety";
@@ -233,7 +234,7 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
     const afternoonSnack: PlannedMeal = { name: "Trail mix" };
 
     return {
-      date: date.toISOString().split("T")[0],
+      date: toLocalDateStr(date),
       dayName,
       breakfast,
       morningSnack,
@@ -248,7 +249,7 @@ export function generateWeeklyPlan(prefs: PrepPreferences): WeeklyPlan {
 
   return {
     weekLabel,
-    dateRange: { start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] },
+    dateRange: { start: toLocalDateStr(start), end: toLocalDateStr(end) },
     phase,
     cycleDay: info.cycleDay,
     phaseDay: info.day,

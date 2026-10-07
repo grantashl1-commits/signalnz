@@ -1,4 +1,5 @@
 import { AIMealPlan, AIMeal, AIPlannedDay, PrepPreferences } from "./weekly-planner";
+import { toLocalDateStr } from "@/lib/local-date";
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -160,7 +161,7 @@ export function generatePrepGuide(
           // Calculate prep date
           const servingDate = new Date(dateInfo.date + "T12:00:00");
           const prepDate = new Date(servingDate.getTime() - hint.hoursInAdvance * 3600000);
-          const prepDateStr = prepDate.toISOString().split("T")[0];
+          const prepDateStr = toLocalDateStr(prepDate);
 
           // Avoid duplicating batch items
           const isDuplicate = allTasks.some(t =>

@@ -10,6 +10,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { getMaxHR, getZoneForBPM, estimateCalories, HR_ZONES } from "@/data/workouts";
 import AISessionCard from "./AISessionCard";
 import type { Phase } from "@/lib/cycle-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface AISessionLogProps {
   session: any;
@@ -39,7 +40,7 @@ export default function AISessionLog({
   const [sessionLogged, setSessionLogged] = useState(false);
   const [sessionLogging, setSessionLogging] = useState(false);
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const sessionKey = `ai-session-${session.name}-${todayStr}`;
 
   // Check if today's AI session was already logged

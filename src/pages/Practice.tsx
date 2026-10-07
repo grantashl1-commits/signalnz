@@ -24,6 +24,7 @@ import { HABIT_LIBRARY, type HabitTiming } from "@/data/habit-library";
 import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "#C4526E",
@@ -38,7 +39,7 @@ function getLast28Days(): string[] {
   return Array.from({ length: 28 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (27 - i));
-    return d.toISOString().split("T")[0];
+    return toLocalDateStr(d);
   });
 }
 
@@ -46,7 +47,7 @@ function getLast7Days(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split("T")[0];
+    return toLocalDateStr(d);
   });
 }
 
@@ -227,7 +228,7 @@ interface InsightsProps {
 
 function HabitInsights({ habits, history, phaseColor }: InsightsProps) {
   const [tab, setTab] = useState<"week" | "month">("week");
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const total = habits.length;
 
   const last7 = useMemo(getLast7Days, []);
@@ -350,7 +351,7 @@ const fadeUp = (delay: number) => ({
 
 export default function PracticePage() {
   const { currentPhase, currentCycleDay } = useCycle();
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const phaseColor = PHASE_COLORS[currentPhase] || PHASE_COLORS.follicular;
 
   const { habits, removeHabit: removeHabitSync, refreshHabits } = useHabitList();
@@ -535,8 +536,6 @@ export default function PracticePage() {
           </>
         )}
 
-        {/* ═══ FOR YOUR PHASE — gentle suggestions ═══ */}
-        <PhaseHabitSuggestions phase={currentPhase} phaseColor={phaseColor} />
 
         {/* ═══ HABITS BY TIME OF DAY ═══ */}
         <div className="space-y-6">
@@ -672,6 +671,12 @@ export default function PracticePage() {
             </div>
           )}
         </div>
+
+        {/* Suggestions sit below the member's own habits so ticking comes first. */}
+        <div className="mt-8">
+          <PhaseHabitSuggestions phase={currentPhase} phaseColor={phaseColor} />
+        </div>
+
 
         {/* ═══ HABIT WISDOM CAROUSEL ═══ */}
         <HabitCarousel />

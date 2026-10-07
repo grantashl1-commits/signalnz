@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Check } from "lucide-react";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   type: "expressive" | "gratitude" | "future-self";
@@ -31,7 +32,7 @@ export default function JournalEditor({ type, onClose }: Props) {
   const wordCount = texts[promptIdx].split(/\s+/).filter(Boolean).length;
 
   const handleSave = () => {
-    const key = `mindcast_journal_${type}_${new Date().toISOString().split("T")[0]}`;
+    const key = `mindcast_journal_${type}_${toLocalDateStr(new Date())}`;
     localStorage.setItem(key, JSON.stringify(texts));
     setSaved(true);
     setTimeout(onClose, 1200);

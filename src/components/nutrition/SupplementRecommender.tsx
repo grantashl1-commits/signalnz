@@ -6,6 +6,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { HABIT_LIBRARY, type LibraryHabit } from "@/data/habit-library";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import { toLocalDateStr } from "@/lib/local-date";
 
 // Get all supplement habits from the library
 const ALL_SUPPLEMENTS = HABIT_LIBRARY.filter(h => h.category === "supplements");
@@ -428,7 +429,7 @@ export default function SupplementRecommender() {
 }
 
 function DailyStackCheckoff({ stackIds }: { stackIds: string[] }) {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const items = useMemo(() => ALL_SUPPLEMENTS.filter(s => stackIds.includes(s.id)), [stackIds]);
 
   const [doneToday, setDoneToday] = useState<Set<string>>(() => {
@@ -458,7 +459,7 @@ function DailyStackCheckoff({ stackIds }: { stackIds: string[] }) {
       if (last !== todayStr) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        const yStr = yesterday.toISOString().split("T")[0];
+        const yStr = toLocalDateStr(yesterday);
         streak = last === yStr ? streak + 1 : 1;
         localStorage.setItem(streakKey, String(streak));
         localStorage.setItem(lastKey, todayStr);
@@ -470,7 +471,7 @@ function DailyStackCheckoff({ stackIds }: { stackIds: string[] }) {
   const lastDate = typeof window !== "undefined" ? localStorage.getItem("supplements_streak_last") : null;
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  const yStr = yesterday.toISOString().split("T")[0];
+  const yStr = toLocalDateStr(yesterday);
   const activeStreak = lastDate === todayStr || lastDate === yStr ? streak : 0;
 
   if (items.length === 0) return null;

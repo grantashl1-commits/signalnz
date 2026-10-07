@@ -10,6 +10,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { TIERS } from "@/data/membership-tiers";
 
 const STRIPE_TIERS = {
   rooted: {
@@ -45,137 +46,6 @@ const CREDIT_COSTS = [
   { feature: "Give a Signal", credits: 1, icon: <Sparkles className="h-3.5 w-3.5" /> },
   { feature: "Connect Reflection", credits: 1, icon: <Heart className="h-3.5 w-3.5" /> },
   { feature: "AI Training Plan", credits: 3, icon: <Dumbbell className="h-3.5 w-3.5" /> },
-];
-
-const TIERS = [
-  {
-    name: "Free",
-    monthlyPrice: "$0",
-    annualPrice: "$0",
-    annualSub: "",
-    period: "forever",
-    annualPeriod: "forever",
-    popular: false,
-    key: "free" as const,
-    annualSavings: "",
-    accent: undefined,
-    creditLabel: "5 AI credits/mo",
-    tagline: "A first quiet listen. See if she meets you.",
-    sections: [
-      {
-        title: "Included",
-        features: [
-          "Cycle phase graph & log period",
-          "Browse recipes & exercises (titles only)",
-          "Journal writing (nothing saves)",
-          "Habit tracking",
-          "Browse community groups (view only)",
-          "Home screen with phase hero",
-        ],
-      },
-    ],
-  },
-  {
-    name: "Rooted",
-    monthlyPrice: "$9",
-    annualPrice: "$72",
-    annualSub: "just $6/mo",
-    period: "/mo",
-    annualPeriod: "/yr",
-    popular: false,
-    key: "rooted" as const,
-    annualSavings: "$36/yr",
-    accent: "#C8647A",
-    creditLabel: "30 AI credits/mo",
-    tagline: "A daily companion. Small, steady, returning.",
-    sections: [
-      {
-        title: "Everything in Free, plus",
-        features: [],
-      },
-      {
-        title: "Unlocked",
-        features: [
-          "5 knowledge posts per day",
-          "Full cycle logging & phase guidance",
-          "Hormone Education Hub",
-          "AI Signal, AMA & Give a Signal",
-          "366-day Stoic readings & journal",
-          "Save to Knowledge Hub",
-        ],
-      },
-    ],
-  },
-  {
-    name: "Nourished",
-    monthlyPrice: "$19",
-    annualPrice: "$152",
-    annualSub: "just $12.67/mo",
-    period: "/mo",
-    annualPeriod: "/yr",
-    popular: true,
-    key: "nourished" as const,
-    annualSavings: "$76/yr",
-    accent: undefined,
-    creditLabel: "150 AI credits/mo",
-    tagline: "A deeper practice. Body, food, breath, partner.",
-    sections: [
-      {
-        title: "Everything in Rooted, plus",
-        features: [],
-      },
-      {
-        title: "Unlocked",
-        features: [
-          "230+ full recipes, AI meal plans & smart shopping list",
-          "Fridge-to-recipe AI & 30-plant tracker",
-          "Meal prep guide, kids alternatives & supplements",
-          "Seed cycling guide",
-          "AI training plans, workout sessions & interval timer",
-          "Body visualiser, measurements & heart rate tracking",
-          "Journal with AI insights, Dream Studio & Memory Vault",
-          "Gratitude & one-line journal entries",
-          "Breathwork & nervous system players",
-          "Somatic release & morning fascia release",
-          "Connect: private reflection, shared room & 13-module course",
-          "Appreciation icons, weekly check-in & quizzes",
-        ],
-      },
-    ],
-  },
-  {
-    name: "Thriving",
-    monthlyPrice: "$39",
-    annualPrice: "$312",
-    annualSub: "just $26/mo",
-    period: "/mo",
-    annualPeriod: "/yr",
-    popular: false,
-    key: "thriving" as const,
-    annualSavings: "$156/yr",
-    accent: undefined,
-    creditLabel: "500 AI credits/mo",
-    tagline: "Full access. Held, curated, in community.",
-    sections: [
-      {
-        title: "Everything in Nourished, plus",
-        features: [],
-      },
-      {
-        title: "Unlocked",
-        features: [
-          "Community groups, chat & challenges",
-          "Nearby members map",
-          "Full guided mindfulness with audio",
-          "Sleep tracking & sleep music",
-          "Dosha quiz",
-          "Age-based parenting course (0–17)",
-          "Baby sleep schedules & parenting scripts",
-          "Personalised NZ recommendations",
-        ],
-      },
-    ],
-  },
 ];
 
 const cardVariant = {

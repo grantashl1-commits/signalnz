@@ -5,6 +5,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { toLocalDateStr } from "@/lib/local-date";
 
 export interface StoicReading {
   id: string;
@@ -83,7 +84,7 @@ export function useDailyStoic() {
       setCurrentDay(day);
 
       if (progress?.last_listened_at) {
-        const today = new Date().toISOString().split("T")[0];
+        const today = toLocalDateStr(new Date());
         const lastListened = progress.last_listened_at.split("T")[0];
         setListenedToday(lastListened === today);
       }
@@ -195,7 +196,7 @@ export function useJournalEntries2() {
       cycle_mode: entry.cycle_mode,
       stoic_seq_day: entry.stoic_seq_day,
       stoic_title: entry.stoic_title,
-      date: now.toISOString().split("T")[0],
+      date: toLocalDateStr(now),
       timestamp: now.getTime(),
       prompts: {},
       tags: [],

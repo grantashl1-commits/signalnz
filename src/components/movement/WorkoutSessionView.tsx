@@ -26,6 +26,7 @@ import {
   ComposedChart, Line, XAxis, YAxis, ResponsiveContainer,
   ReferenceArea, ReferenceLine,
 } from "recharts";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   template: WorkoutTemplate;
@@ -414,7 +415,7 @@ export default function WorkoutSessionView({ template, exercises, onBack, phaseN
           .from("hr_sessions")
           .insert({
             user_id: user.id,
-            session_date: new Date().toISOString().split("T")[0],
+            session_date: toLocalDateStr(new Date()),
             workout_name: template.title,
             avg_bpm: sessionAvgBPM,
             max_bpm: sessionMaxBPM,

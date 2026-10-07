@@ -5,11 +5,12 @@ import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { MOOD_ICONS, SYMPTOM_ICONS, MOODS, SYMPTOM_LIST, ScaleIcon, MoodFaceIcon, SpiralSymptomIcon, QuillIcon } from "@/components/TrackingIcons";
 import { useCycle } from "@/contexts/CycleContext";
+import { getCycleStats, addDays, daysBetween, removePeriod } from "@/lib/period-history";
 import {
   Phase, getPhaseFromDay, getCycleDayForDate, setLastPeriodStart,
   getMoods, setMoods, getSymptomsNew, setSymptomsNew,
   getWeight, setWeight, getWeightUnit, setWeightUnit, getWeightHistory,
-  getNotes, setNotes, getPeriodEnd, setPeriodEnd, getPeriodLength,
+  getNotes, setNotes, setPeriodEnd,
   PHASE_SHORT,
 } from "@/lib/cycle-utils";
 import { haptic } from "@/hooks/use-mobile";
@@ -52,10 +53,17 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
   const phase: Phase = cycleDay ? getPhaseFromDay(cycleDay) : "follicular";
   const phaseColor = PHASE_HEX[phase];
 
-  // Period tracking
-  const isPeriodDay = cycleDay !== null && cycleDay >= 1 && cycleDay <= 5;
+  // Period tracking — read from the full period history (every month)
+  // Bumped after start/end/remove so the sheet re-reads the history.
+  const [, setHistoryTick] = useState(0);
+  const stats = getCycleStats();
+  const containing = stats.periods.find(
+    (p) => dateStr >= p.start && dateStr <= (p.end ?? addDays(p.start, stats.avgPeriodLength - 1)),
+  );
+  const isPeriodDay = !!containing;
+  const periodDayNum = containing ? daysBetween(containing.start, dateStr) + 1 : null;
   const monthKey = dateStr.slice(0, 7);
-  const periodEnd = getPeriodEnd(monthKey);
+  const periodEnd = containing?.end ?? null;
 
   // Mood state
   const [selectedMoods, setSelectedMoods] = useState<string[]>(getMoods(dateStr));
@@ -74,12 +82,22 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
   const handleStartPeriod = () => {
     haptic("medium");
     setLastPeriodStart(dateStr);
+    setHistoryTick((t) => t + 1);
     onCycleUpdate?.();
   };
 
   const handleEndPeriod = () => {
     haptic("medium");
     setPeriodEnd(monthKey, dateStr);
+    setHistoryTick((t) => t + 1);
+    onCycleUpdate?.();
+  };
+
+  const handleRemovePeriod = () => {
+    if (!containing) return;
+    haptic("medium");
+    removePeriod(containing.start);
+    setHistoryTick((t) => t + 1);
     onCycleUpdate?.();
   };
 
@@ -151,7 +169,7 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
     setPanel("main");
   };
 
-  const periodLength = lastPeriod && periodEnd ? getPeriodLength(lastPeriod, periodEnd) : null;
+  const periodLength = containing?.end ? daysBetween(containing.start, containing.end) + 1 : null;
   const dateLabel = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return (
@@ -195,9 +213,9 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
               <div>
                 <p className="font-hand text-sm font-bold text-primary mb-3">period tracking</p>
                 <div className="grid grid-cols-2 gap-3">
-                  {isPeriodDay && cycleDay ? (
+                  {isPeriodDay && periodDayNum ? (
                     <div className="rounded-2xl px-4 py-3 min-h-[52px] flex items-center justify-center border-2" style={{ borderColor: "#C4526E", backgroundColor: "#C4526E" }}>
-                      <span className="font-body text-sm font-bold text-card">PERIOD DAY {cycleDay}</span>
+                      <span className="font-body text-sm font-bold text-card">PERIOD DAY {periodDayNum}</span>
                     </div>
                   ) : (
                     <PeriodToggleButton
@@ -216,6 +234,11 @@ export default function CalendarDaySheet({ dateStr, onClose, onCycleUpdate }: Pr
                   <p className="font-hand text-sm text-muted-foreground mt-2 text-center">
                     period lasted {periodLength} days
                   </p>
+                )}
+                {containing && containing.start === dateStr && (
+                  <button onClick={handleRemovePeriod} className="mt-2 w-full text-center text-[12px] text-muted-foreground underline underline-offset-2">
+                    Logged by mistake? Remove this period
+                  </button>
                 )}
               </div>
 

@@ -5,8 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import MealPrepGuide from "./MealPrepGuide";
 import { useCycle } from "@/contexts/CycleContext";
 import { Phase } from "@/lib/cycle-utils";
-import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
+import { type Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
+import { getPhasePlanDay } from "@/lib/today-meals";
 import { useCustomMealPlan, type MealSlot } from "@/hooks/useCustomMealPlan";
 import RecipePickerSheet from "./RecipePickerSheet";
 import { buildCustomShoppingPlan } from "@/lib/build-custom-shopping-plan";
@@ -35,6 +36,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { buildDbMealPlanFull, regenerateMealFromDb } from "@/lib/build-db-meal-plan";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -67,14 +69,8 @@ function getPhaseFromCycleDay(cycleDay: number): Phase {
 }
 
 function getStaticMeals(cycleDay: number) {
-  const phase = getPhaseFromCycleDay(cycleDay);
-  const plan = PHASE_MEAL_PLANS[phase];
-  const phaseRanges: Record<Phase, [number, number]> = {
-    menstrual: [1, 7], follicular: [8, 14], ovulatory: [15, 21], luteal: [22, 28],
-  };
-  const [start] = phaseRanges[phase];
-  const dayIndex = (cycleDay - start) % plan.days.length;
-  const dayPlan = plan.days[Math.max(0, dayIndex)];
+  // Shared with Today so both screens show the same meals for a cycle day.
+  const { phase, day: dayPlan } = getPhasePlanDay(cycleDay);
   return {
     phase,
     breakfast: dayPlan.breakfast.split(" — ")[0],
@@ -200,7 +196,7 @@ export default function MyWeekTab() {
     savePreferences(seeded);
   }, [dietaryPreferences, dietaryDislikes, mealPrepDay, calorieTarget]);
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
 
   // Lock state
   const lockedMeals = aiPlan?.lockedMeals || {};
@@ -356,7 +352,7 @@ export default function MyWeekTab() {
       const date = new Date(monday);
       date.setDate(monday.getDate() + i);
       const cycleDay = getCycleDayForDate(date);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(date);
 
       // Check if we have AI plan data for this cycle day
       const aiDay = aiPlan?.days?.find(d => d.cycleDay === cycleDay);
@@ -1003,7 +999,7 @@ function Last4WeeksSummary({ phaseColor }: { phaseColor: string }) {
     for (let i = 0; i < 28; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      dates.push(d.toISOString().split("T")[0]);
+      dates.push(toLocalDateStr(d));
     }
     let totalMeals = 0;
     let proteinMatched = 0;

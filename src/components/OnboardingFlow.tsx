@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import iconCream from "@/assets/icon-cream.png";
-import { setLastPeriodStart } from "@/lib/cycle-utils";
 import { useCycle } from "@/contexts/CycleContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -364,7 +363,6 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
       if (lastPeriodDate) {
         const dateStr = format(lastPeriodDate, "yyyy-MM-dd");
-        setLastPeriodStart(dateStr);
         setCycleStartDate(dateStr);
       }
 

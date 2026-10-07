@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { patternsForSession, PATTERN_LABEL, type MovementPattern } from "@/lib/movement-patterns";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const WEEKS = 8;
 
@@ -43,7 +44,7 @@ export function usePatternTrends() {
 
       const anchor = startOfISOWeek(new Date());
       anchor.setDate(anchor.getDate() - 7 * (WEEKS - 1));
-      const sinceISO = anchor.toISOString().slice(0, 10);
+      const sinceISO = toLocalDateStr(anchor);
 
       const { data } = await supabase
         .from("workout_logs")

@@ -14,6 +14,8 @@ import { useSavedRecipes } from "@/hooks/useSavedRecipes";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
 import { addRecipeToMyWeek } from "@/lib/add-to-my-week";
+import { adultFacets, kidsFacets } from "@/lib/recipe-catalog";
+import type { RecipeFacets } from "@/lib/recipe-facets";
 import type { MealSlot } from "@/hooks/useCustomMealPlan";
 
 const PHASE_HEX: Record<Phase, string> = {
@@ -83,14 +85,14 @@ function FilterPill({ active, onClick, children }: { active: boolean; onClick: (
   );
 }
 
-function recipeDietaryTags(r: { tags?: string[]; ingredients: string[] }): Set<string> {
+function recipeDietaryTags(r: { tags?: string[]; ingredients: string[] }, facets: RecipeFacets): Set<string> {
   const tags = new Set<string>();
   const tagSet = new Set((r.tags || []).map(t => t.toLowerCase()));
   const ing = r.ingredients.join(" ").toLowerCase();
 
-  // Vegan / vegetarian: trust tags
-  if (tagSet.has("vegan")) tags.add("Vegan");
-  if (tagSet.has("vegetarian") || tagSet.has("vegan")) tags.add("Vegetarian");
+  // Vegan / vegetarian: read from ingredients (tags were sparse — 41 of ~190 vegan recipes)
+  if (facets.vegan) tags.add("Vegan");
+  if (facets.vegetarian) tags.add("Vegetarian");
 
   // Gluten-free: detect by absence of gluten-containing ingredients (most recipes lack the tag)
   const glutenStripped = ing
@@ -102,9 +104,9 @@ function recipeDietaryTags(r: { tags?: string[]; ingredients: string[] }): Set<s
   // Dairy-free: strip plant milks first, then check for dairy
   const dairyStripped = ing.replace(/\b(oat|almond|soy|coconut|cashew|rice|hemp|pea)\s*milk\b/g, "");
   const hasDairy = /\b(milk|cheese|butter\b|yogurt|yoghurt|cream\b|paneer|ghee|parmesan|feta|mozzarella|ricotta|halloumi|labneh|cottage cheese|sour cream|kefir|buttermilk)/.test(dairyStripped);
-  if (tagSet.has("dairy-free") || tagSet.has("df") || tagSet.has("vegan") || !hasDairy) tags.add("Dairy-free");
+  if (tagSet.has("dairy-free") || tagSet.has("df") || facets.vegan || !hasDairy) tags.add("Dairy-free");
 
-  if (!/\b(almond|peanut|cashew|hazelnut|walnut|pecan|pistachio|macadamia|brazil nut|pine nut|nut butter)\b/.test(ing)) tags.add("Nut-free");
+  if (facets.nutFree) tags.add("Nut-free");
   if (!/\b(eggs?|omelette|frittata)\b/.test(ing)) tags.add("Egg-free");
   return tags;
 }
@@ -135,6 +137,8 @@ export default function DiscoverTab() {
   const [kidsMode, setKidsMode] = useState(false);
   const [lunchboxMode, setLunchboxMode] = useState(false);
   const [freezerMode, setFreezerMode] = useState(false);
+  const [quickMode, setQuickMode] = useState(false);
+  const [familyMode, setFamilyMode] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [selectedKidsRecipe, setSelectedKidsRecipe] = useState<KidsRecipe | null>(null);
@@ -146,7 +150,9 @@ export default function DiscoverTab() {
     protein.size +
     (kidsMode ? 1 : 0) +
     (lunchboxMode ? 1 : 0) +
-    (freezerMode ? 1 : 0);
+    (freezerMode ? 1 : 0) +
+    (quickMode ? 1 : 0) +
+    (familyMode ? 1 : 0);
 
   const toggleSetItem = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
     const next = new Set(set);
@@ -163,28 +169,21 @@ export default function DiscoverTab() {
     setKidsMode(false);
     setLunchboxMode(false);
     setFreezerMode(false);
+    setQuickMode(false);
+    setFamilyMode(false);
   };
 
-  // Heuristic: portable / packable for a lunchbox
-  const isLunchbox = (text: string, tags: string[] = [], name = ""): boolean => {
-    const tagSet = new Set(tags.map(t => t.toLowerCase()));
-    if (
-      tagSet.has("lunchbox") || tagSet.has("portable") || tagSet.has("make-ahead") ||
-      tagSet.has("batch") || tagSet.has("meal-prep") || tagSet.has("no-bake")
-    ) return true;
-    const n = name.toLowerCase();
-    // Name-based: obviously portable / hand-held / batch-bake items
-    if (/\b(bliss ball|energy ball|protein ball|bar\b|bars\b|slice\b|slices\b|muffin|loaf|wrap|sandwich|pinwheel|fritter|patties|patty|cookie|biscuit|scone|pikelet|pancake|frittata|quiche|nuggets|tenders|granola|muesli|fruit leather|roll\b|quesadilla|toast\b|dip|hummus|pesto)\b/.test(n)) return true;
-    return /\b(lunchbox|pack for lunch|pack into|portable|make[- ]ahead|batch cook|meal prep|no[- ]bake)\b/.test(text.toLowerCase());
-  };
+  const toggleDiet = (d: string) => toggleSetItem(dietary, d, setDietary);
 
-  // Heuristic: freezer-friendly
-  const isFreezer = (text: string, tags: string[] = [], name = ""): boolean => {
-    const tagSet = new Set(tags.map(t => t.toLowerCase()));
-    if (tagSet.has("freezer") || tagSet.has("freezer-friendly") || tagSet.has("freeze")) return true;
-    return /\b(freezer|freeze\b|freezes? well|freeze for|freeze \d|store in (the )?freezer)\b/.test(text.toLowerCase());
-  };
-
+  /** Curated starting points — each is just a preset of the filters below. */
+  const COLLECTIONS: { id: string; title: string; sub: string; image: string; active: boolean; apply: () => void }[] = [
+    { id: "vegan", title: "Plant-based", sub: "Every vegan recipe", image: "/images/recipes/meals/colourful-lentil-salad-bowl.png", active: dietary.has("Vegan") && !kidsMode, apply: () => { clearAllFilters(); setDietary(new Set(["Vegan"])); } },
+    { id: "lunch", title: "School lunches", sub: "Batch on Sunday, pack all week", image: "/images/recipes/meals/hummus-roasted-veg-wrap.png", active: kidsMode && lunchboxMode, apply: () => { clearAllFilters(); setKidsMode(true); setLunchboxMode(true); } },
+    { id: "family", title: "Cook once", sub: "Dinners with a kids' tweak", image: "/images/recipes/meals/chickpea-spinach-curry.png", active: familyMode, apply: () => { clearAllFilters(); setFamilyMode(true); setMealType("Dinner"); } },
+    { id: "freezer", title: "Make-ahead", sub: "Freezer & fridge friendly", image: "/images/recipes/meals/date-cacao-coconut-bliss-balls.png", active: freezerMode && !lunchboxMode, apply: () => { clearAllFilters(); setFreezerMode(true); } },
+    { id: "quick", title: "Under 30 min", sub: "For the busy nights", image: "/images/recipes/meals/ginger-tofu-stir-fry.png", active: quickMode, apply: () => { clearAllFilters(); setQuickMode(true); } },
+    { id: "kids", title: "Little ones", sub: "370 kid-approved recipes", image: "/images/recipes/meals/banana-cinnamon-pancakes.png", active: kidsMode && !lunchboxMode, apply: () => { clearAllFilters(); setKidsMode(true); } },
+  ];
 
   // Snack-like keywords for auto-tagging
   const SNACK_KEYWORDS = ["bliss ball", "bark", "nice cream", "energy ball", "slice", "mousse", "fudge", "custard", "rocher", "crumble ball"];
@@ -219,21 +218,21 @@ export default function DiscoverTab() {
         if (mealType === "Baking" && cat !== "baking") return false;
         if (mealType === "Dessert" && !isDessertName(r.name)) return false;
       }
+      const facets = adultFacets(r);
       if (dietary.size > 0) {
-        const recipeDiet = recipeDietaryTags(r);
+        const recipeDiet = recipeDietaryTags(r, facets);
         for (const want of dietary) if (!recipeDiet.has(want)) return false;
       }
+      if (quickMode && !(facets.minutes !== null && facets.minutes <= 30)) return false;
+      if (familyMode && !r.kidAlternative) return false;
       if (protein.size > 0) {
         const recipeProt = recipeProteinSources(r);
         let any = false;
         for (const want of protein) if (recipeProt.has(want)) { any = true; break; }
         if (!any) return false;
       }
-      if (lunchboxMode || freezerMode) {
-        const packText = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
-        if (lunchboxMode && !isLunchbox(packText, r.tags || [], r.name)) return false;
-        if (freezerMode && !isFreezer(packText, r.tags || [], r.name)) return false;
-      }
+      if (lunchboxMode && !facets.schoolLunch) return false;
+      if (freezerMode && !(facets.freezer || facets.makeAhead)) return false;
       if (search) {
         const q = search.toLowerCase();
         return r.name.toLowerCase().includes(q) ||
@@ -254,12 +253,12 @@ export default function DiscoverTab() {
       if (pa !== pb) return pa - pb;
       return a.name.localeCompare(b.name);
     });
-  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, lunchboxMode, freezerMode, currentPhase]);
+  }, [allRecipes, phaseFilter, mealType, search, dietary, protein, lunchboxMode, freezerMode, quickMode, familyMode, currentPhase]);
 
   // Pagination — "Load more" reveals another batch.
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode, lunchboxMode, freezerMode]);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [phaseFilter, mealType, search, dietary, protein, kidsMode, lunchboxMode, freezerMode, quickMode, familyMode]);
 
   // Kids recipe filtering — uses the separate KIDS_RECIPE_BANK library when kidsMode is on.
   const filteredKids = useMemo(() => {
@@ -267,11 +266,13 @@ export default function DiscoverTab() {
     return KIDS_RECIPE_BANK.filter(r => {
       // Meal type / category
       if (mealType !== "All" && !kidsMatchesMealType(r, mealType)) return false;
-      // Dietary — same tag+ingredient heuristic used for the main library
+      const facets = kidsFacets(r);
+      // Dietary — same ingredient-level facets used for the main library
       if (dietary.size > 0) {
-        const diet = recipeDietaryTags(r);
+        const diet = recipeDietaryTags(r, facets);
         for (const want of dietary) if (!diet.has(want)) return false;
       }
+      if (quickMode && !(facets.minutes !== null && facets.minutes <= 30)) return false;
       // Protein source
       if (protein.size > 0) {
         const prot = recipeProteinSources(r);
@@ -279,11 +280,8 @@ export default function DiscoverTab() {
         for (const want of protein) if (prot.has(want)) { any = true; break; }
         if (!any) return false;
       }
-      if (lunchboxMode || freezerMode) {
-        const packText = r.name + " " + r.method.join(" ") + " " + r.ingredients.join(" ");
-        if (lunchboxMode && !isLunchbox(packText, r.tags, r.name)) return false;
-        if (freezerMode && !isFreezer(packText, r.tags, r.name)) return false;
-      }
+      if (lunchboxMode && !facets.schoolLunch) return false;
+      if (freezerMode && !(facets.freezer || facets.makeAhead)) return false;
       if (search) {
         const q = search.toLowerCase();
         return r.name.toLowerCase().includes(q) ||
@@ -293,7 +291,7 @@ export default function DiscoverTab() {
       }
       return true;
     });
-  }, [kidsMode, mealType, dietary, protein, lunchboxMode, freezerMode, search]);
+  }, [kidsMode, mealType, dietary, protein, lunchboxMode, freezerMode, quickMode, search]);
 
   return (
     <div className="space-y-5">
@@ -324,6 +322,49 @@ export default function DiscoverTab() {
         />
       </div>
 
+      {/* Collections — curated starting points */}
+      <div className="-mx-5 px-5 md:mx-0 md:px-0">
+        <div className="scroll-snap-x flex gap-3 pb-1">
+          {COLLECTIONS.map(c => (
+            <button
+              key={c.id}
+              onClick={() => { haptic("light"); if (c.active) clearAllFilters(); else c.apply(); }}
+              aria-pressed={c.active}
+              className={`scroll-snap-item group relative w-[150px] flex-none overflow-hidden rounded-[22px] border p-4 text-left transition-all duration-300 ${
+                c.active ? "border-foreground bg-foreground text-background shadow-medium" : "border-border/70 bg-card text-foreground shadow-soft hover:-translate-y-0.5"
+              }`}
+            >
+              <img src={c.image} alt="" loading="lazy" className="mb-2 h-16 w-16 object-contain drop-shadow-sm" />
+              <p className="display-serif text-[1.35rem] leading-none">{c.title}</p>
+              <p className={`mt-1.5 text-[11px] leading-snug ${c.active ? "text-background/70" : "text-muted-foreground"}`}>{c.sub}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick chips — the filters busy people actually use */}
+      <div className="scroll-snap-x flex gap-1.5 -mx-1 px-1">
+        {[
+          { label: "Vegan", on: dietary.has("Vegan"), toggle: () => toggleDiet("Vegan") },
+          { label: "Kids", on: kidsMode, toggle: () => setKidsMode(v => !v) },
+          { label: "School lunch", on: lunchboxMode, toggle: () => { setLunchboxMode(v => !v); if (!lunchboxMode) setKidsMode(true); } },
+          { label: "Make-ahead", on: freezerMode, toggle: () => setFreezerMode(v => !v) },
+          { label: "Nut-free", on: dietary.has("Nut-free"), toggle: () => toggleDiet("Nut-free") },
+          { label: "≤ 30 min", on: quickMode, toggle: () => setQuickMode(v => !v) },
+        ].map(chip => (
+          <button
+            key={chip.label}
+            onClick={() => { haptic("light"); chip.toggle(); }}
+            aria-pressed={chip.on}
+            className={`scroll-snap-item flex-none rounded-full border px-3.5 py-2 text-[12px] font-medium transition-colors ${
+              chip.on ? "border-foreground bg-foreground text-background" : "border-border bg-card text-foreground/75 hover:text-foreground"
+            }`}
+          >
+            {chip.label}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-2">
         <button
           onClick={() => { haptic("light"); setFiltersOpen(o => !o); }}
@@ -332,7 +373,7 @@ export default function DiscoverTab() {
         >
           <span className="flex items-center gap-2">
             <FilterIcon className="h-4 w-4 text-muted-foreground" />
-            <span>Filters</span>
+            <span>More filters</span>
             {activeFilterCount > 0 && (
               <span className="rounded-full bg-primary text-primary-foreground px-2 py-0.5 font-body text-[10px] font-bold">
                 {activeFilterCount}
@@ -401,12 +442,15 @@ export default function DiscoverTab() {
                 </FilterSection>
 
                 {/* Lunchbox & freezer */}
-                <FilterSection title="Pack & store" hint="Tap to filter — combine as you like">
+                <FilterSection title="Pack & store" hint="School lunch = no reheating · packable · make-ahead">
                   <FilterPill active={lunchboxMode} onClick={() => setLunchboxMode(v => !v)}>
-                    🥪 Lunchbox-friendly
+                    School lunch
                   </FilterPill>
                   <FilterPill active={freezerMode} onClick={() => setFreezerMode(v => !v)}>
-                    ❄️ Freezer-friendly
+                    Make-ahead & freezer
+                  </FilterPill>
+                  <FilterPill active={familyMode} onClick={() => setFamilyMode(v => !v)}>
+                    Has a kids' tweak
                   </FilterPill>
                 </FilterSection>
 
@@ -519,6 +563,26 @@ export default function DiscoverTab() {
   );
 }
 
+/* ── Facet badges — what a busy parent scans for ── */
+function FacetBadges({ facets, max = 3 }: { facets: RecipeFacets; max?: number }) {
+  const badges: { label: string; tone: string }[] = [];
+  if (facets.vegan) badges.push({ label: "Vegan", tone: "hsl(var(--eat))" });
+  if (facets.schoolLunch) badges.push({ label: "Lunchbox", tone: "hsl(var(--goals))" });
+  else if (facets.freezer) badges.push({ label: "Freezes", tone: "hsl(var(--reflect))" });
+  if (!facets.nutFree) badges.push({ label: "Contains nuts", tone: "hsl(var(--muted-foreground))" });
+  if (badges.length === 0) return null;
+  return (
+    <div className="mt-1.5 flex flex-wrap gap-1">
+      {badges.slice(0, max).map(b => (
+        <span key={b.label} className="rounded-full border px-1.5 py-[1px] text-[9px] font-semibold uppercase tracking-wider"
+          style={{ color: b.tone, borderColor: `color-mix(in srgb, ${b.tone} 35%, transparent)` }}>
+          {b.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 /* ── Kids Recipe Card ── */
 const PROTEIN_COLORS: Record<string, string> = {
   chicken: "#E2A84B", beef: "#B25C3A", fish: "#4A90B8", tofu: "#6BAE75",
@@ -531,7 +595,8 @@ function KidsRecipeCard({ recipe, onSelect, index = 0 }: { recipe: KidsRecipe; o
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, duration: 0.25 }}>
       <button onClick={() => { haptic("light"); onSelect(); }} className="touch-card w-full text-left card-warm overflow-hidden">
-        <div className="px-3 py-3 space-y-2">
+        <RecipeImage recipeName={recipe.name} recipeId={recipe.id} recipeImage={recipe.image} height={75} variant="card" />
+        <div className="px-3 pb-3 pt-1.5 space-y-2">
           <h3 className="font-display text-[13px] italic text-foreground leading-tight line-clamp-2">{recipe.name}</h3>
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="rounded-full px-2 py-0.5 font-hand text-[10px] font-bold capitalize"
@@ -540,13 +605,7 @@ function KidsRecipeCard({ recipe, onSelect, index = 0 }: { recipe: KidsRecipe; o
             </span>
             <span className="font-body text-[9px] text-muted-foreground">{recipe.prepTime}</span>
           </div>
-          {recipe.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {recipe.tags.slice(0, 2).map(tag => (
-                <span key={tag} className="font-body text-[9px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded-full">{tag}</span>
-              ))}
-            </div>
-          )}
+          <FacetBadges facets={kidsFacets(recipe)} />
         </div>
       </button>
     </motion.div>
@@ -649,6 +708,7 @@ function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
               </span>
               <span className="font-body text-[9px] text-muted-foreground">{recipe.prepTime}</span>
             </div>
+            <FacetBadges facets={adultFacets(recipe)} max={2} />
           </div>
         </button>
         {/* Heart icon */}

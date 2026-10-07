@@ -2,6 +2,7 @@
  * Structured symptom tracking with severity ratings (0–3).
  * Stored in localStorage to match existing cycle-utils pattern.
  */
+import { toLocalDateStr } from "@/lib/local-date";
 
 export interface SymptomEntry {
   name: string;
@@ -40,7 +41,7 @@ export function getRecentStructuredCheckins(days: number = 7): { date: string; d
   for (let i = 0; i < days; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const data = getStructuredSymptoms(dateStr);
     if (data) results.push({ date: dateStr, data });
   }
@@ -59,7 +60,7 @@ export function getSymptomSeverityAggregates(
   const end = new Date(endDate);
 
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const checkin = getStructuredSymptoms(dateStr);
     if (!checkin) continue;
 

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { EASE } from "./primitives";
+import { Ink, type InkName } from "@/components/ink/Ink";
 
 const PHASES = [
   {
@@ -10,7 +11,7 @@ const PHASES = [
     mood: "Release & reset",
     eat: "Iron-rich, warming bowls — dhal, broths, dark greens.",
     move: "Walks, mobility and restore. Rest is training too.",
-    img: "/landing/menstrual.webp",
+    ink: "moon" as InkName,
   },
   {
     key: "follicular",
@@ -19,7 +20,7 @@ const PHASES = [
     mood: "Plan & begin",
     eat: "Fresh, light and protein-forward to fuel rising energy.",
     move: "Build — strength sessions and learning new skills.",
-    img: "/landing/follicular.webp",
+    ink: "seedling" as InkName,
   },
   {
     key: "ovulatory",
@@ -28,7 +29,7 @@ const PHASES = [
     mood: "Connect & speak up",
     eat: "Fibre and colour — cruciferous veg, berries, seeds.",
     move: "Peak — your strongest lifts and hardest intervals.",
-    img: "/landing/ovulatory.webp",
+    ink: "sun" as InkName,
   },
   {
     key: "luteal",
@@ -37,7 +38,7 @@ const PHASES = [
     mood: "Edit & complete",
     eat: "Complex carbs and magnesium for steadier moods.",
     move: "Steady — moderate strength, pilates, zone 2.",
-    img: "/landing/luteal.webp",
+    ink: "fallingLeaf" as InkName,
   },
 ];
 
@@ -122,7 +123,7 @@ export default function CycleLens() {
                   transition={{ duration: 0.6, ease: EASE }}
                   className="flex flex-col items-center"
                 >
-                  <img src={ph.img} alt="" aria-hidden="true" className="h-24 w-24 md:h-32 md:w-32 object-contain opacity-90" />
+                  <Ink name={ph.ink} draw weight={1.2} className="h-24 w-24 md:h-32 md:w-32 text-background/85" />
                   <p className="font-mono text-[11px] tracking-widest text-background/50 mt-2">{ph.days}</p>
                   <p className="display-serif text-[2.5rem] md:text-[3.5rem] leading-none" style={{ color: `hsl(var(--phase-${ph.key}))` }}>{ph.name}</p>
                   <p className="mt-1 text-[13px] italic text-background/60">{ph.mood}</p>

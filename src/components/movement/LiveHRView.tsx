@@ -19,6 +19,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/hooks/use-mobile";
+import { toLocalDateStr } from "@/lib/local-date";
 
 /**
  * LiveHRView is rendered globally from <LiveHRRoot /> and driven entirely
@@ -286,7 +287,7 @@ export default function LiveHRView() {
       zone2PlusPercent: z2Plus,
       phase: cyclePhase,
       cycleDay: currentCycleDay,
-      date: new Date().toISOString().split("T")[0],
+      date: toLocalDateStr(new Date()),
       hrData: finalHrData,
       caloriesBurnt: cals,
     };

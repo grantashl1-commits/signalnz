@@ -17,6 +17,7 @@ import { usePlantTracker } from "@/hooks/usePlantTracker";
 import { extractPlantsFromIngredients } from "@/lib/plant-extractor";
 import ShoppingPreviewStrip from "@/components/nutrition/ShoppingPreviewStrip";
 import { Button } from "@/components/ui/button";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -72,7 +73,7 @@ export default function TodayTab() {
   const { currentCycleDay, currentPhase } = useCycle();
   const [expandedMeal, setExpandedMeal] = useState<string | null>(null);
   const [portionScale, setPortionScale] = useState<Record<string, number>>({});
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const [seedsTaken, setSeedsState] = useState(getSeedsTaken(todayStr));
 
   // Snack tracking opt-out

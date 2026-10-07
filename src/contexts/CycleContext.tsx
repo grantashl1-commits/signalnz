@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logPeriodStart, pullPeriodHistory, PERIOD_HISTORY_EVENT } from "@/lib/period-history";
 
 // ─── Types ─────────────────────────────────────────────────
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
@@ -68,11 +69,6 @@ function readStartDate(): string | null {
   return localStorage.getItem(LS_KEY) || localStorage.getItem(LS_KEY_LEGACY);
 }
 
-function writeStartDate(date: string): void {
-  localStorage.setItem(LS_KEY, date);
-  localStorage.setItem(LS_KEY_LEGACY, date); // backward compat
-}
-
 // ─── Default fallback values (no period logged) ────────────
 const DEFAULT_CYCLE_DAY = 8;
 const DEFAULT_PHASE: Phase = "follicular";
@@ -101,7 +97,10 @@ export function CycleProvider({ children }: { children: ReactNode }) {
   // Sync cycle start date with Supabase profiles on auth state change
   useEffect(() => {
     const syncFromProfile = async (userId: string) => {
+      // Full period history first (every past month), then the legacy single date.
+      await pullPeriodHistory(userId);
       const local = readStartDate();
+      if (local) setStartDate(local);
       const { data } = await supabase
         .from("profiles")
         .select("last_period_date")
@@ -109,7 +108,7 @@ export function CycleProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
       const cloudDate = (data as any)?.last_period_date as string | null;
       if (cloudDate && !local) {
-        writeStartDate(cloudDate);
+        logPeriodStart(cloudDate);
         setStartDate(cloudDate);
       }
     };
@@ -127,17 +126,17 @@ export function CycleProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setCycleStartDate = useCallback((date: string) => {
-    writeStartDate(date);
-    setStartDate(date);
-    // Fire-and-forget save to Supabase profiles
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        supabase
-          .from("profiles")
-          .upsert({ user_id: user.id, last_period_date: date } as any, { onConflict: "user_id" })
-          .then(() => {}, () => {});
-      }
-    });
+    // Adds to the period history (local + Supabase cycle_logs/profile) instead
+    // of overwriting — previous months are kept.
+    logPeriodStart(date);
+    setStartDate(readStartDate());
+  }, []);
+
+  // Any period logged elsewhere (calendar day sheet, onboarding) updates the cycle.
+  useEffect(() => {
+    const onChange = () => setStartDate(readStartDate());
+    window.addEventListener(PERIOD_HISTORY_EVENT, onChange);
+    return () => window.removeEventListener(PERIOD_HISTORY_EVENT, onChange);
   }, []);
 
   const refresh = useCallback(() => {

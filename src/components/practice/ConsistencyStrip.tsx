@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 import { getHabits, getHabitLog } from "@/data/self-care-rituals";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   phaseColor: string;
@@ -11,7 +12,7 @@ function getLast7Days(): string[] {
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    days.push(d.toISOString().split("T")[0]);
+    days.push(toLocalDateStr(d));
   }
   return days;
 }
@@ -39,7 +40,7 @@ function calculateStreak(): { current: number; best: number } {
   for (let i = 0; i < 90; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = toLocalDateStr(d);
     const pct = getCompletionPct(dateStr);
 
     if (pct >= 80) {

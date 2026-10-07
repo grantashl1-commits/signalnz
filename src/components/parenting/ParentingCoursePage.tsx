@@ -7,6 +7,7 @@ import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
 import { supabase } from "@/integrations/supabase/client";
+import { loadCourseProgress, saveCourseActivity, type CourseProgressRow } from "@/lib/course-progress";
 import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, TODDLER_SLEEP_SCHEDULES, type WeeklySchedule } from "@/data/parenting-course";
 import type { CourseModule, CourseLesson } from "@/data/connect-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
@@ -66,9 +67,8 @@ export default function ParentingCoursePage() {
   // Load progress
   useEffect(() => {
     if (!user) return;
-    (supabase.from("connect_course_progress" as any).select("activity_id, lesson_id, completed")
-      .eq("user_id", user.id).eq("completed", true) as any)
-      .then(({ data }: { data: any[] | null }) => {
+    loadCourseProgress(user.id)
+      .then((data: CourseProgressRow[]) => {
         if (data) {
           setCompletedActivities(new Set(data.map(r => r.activity_id)));
           const lessonDone = new Set<string>();
@@ -126,15 +126,14 @@ export default function ParentingCoursePage() {
     setCompletedActivities(prev => new Set(prev).add(activityId));
     if (!user || !selectedModule || !selectedLesson) return;
     const activity = selectedLesson.activities.find(a => a.id === activityId);
-    await (supabase.from("connect_course_progress" as any) as any).upsert({
-      user_id: user.id,
+    await saveCourseActivity(user.id, {
       module_id: selectedModule.id,
       lesson_id: selectedLesson.id,
       activity_id: activityId,
       activity_type: activity?.type || "unknown",
       response,
       completed: true,
-    }, { onConflict: "user_id,activity_id" });
+    });
   }, [user, selectedModule, selectedLesson]);
 
   const handleLessonComplete = (lessonId: string) => {
@@ -582,6 +581,7 @@ export default function ParentingCoursePage() {
                 onComplete={handleLessonComplete}
                 onBack={() => setView("lessons")}
                 onSaveProgress={handleSaveProgress}
+                  initialCompleted={completedActivities}
               />
             </motion.div>
           )}

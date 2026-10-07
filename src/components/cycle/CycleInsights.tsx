@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { getPhaseFromDay, getPeriodEnd, getPeriodLength, Phase } from "@/lib/cycle-utils";
 import { getStructuredSymptoms } from "@/lib/cycle-symptom-utils";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   cycleStartDate: string;
@@ -79,7 +80,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
         (c) => c.start.getFullYear() === d.getFullYear() && c.start.getMonth() === d.getMonth(),
       );
       if (matchingCycle) {
-        const len = getPeriodLength(matchingCycle.start.toISOString().split("T")[0], endDate);
+        const len = getPeriodLength(toLocalDateStr(matchingCycle.start), endDate);
         if (len > 0 && len <= 14) periodLengths.push(len);
       }
     }
@@ -100,7 +101,7 @@ export default function CycleInsights({ cycleStartDate }: Props) {
     for (let i = 0; i < 90; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(d);
       const data = getStructuredSymptoms(dateStr);
       if (data && typeof data.mood === "number") {
         counts[data.mood] = (counts[data.mood] || 0) + 1;

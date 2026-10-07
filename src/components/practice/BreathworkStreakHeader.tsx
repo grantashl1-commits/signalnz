@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   streak: number;
@@ -11,7 +12,7 @@ interface Props {
 const DOW = ["S", "M", "T", "W", "T", "F", "S"];
 
 export default function BreathworkStreakHeader({ streak, weekMinutes, weekSessions, weeklyByDay }: Props) {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const maxMin = Math.max(1, ...weeklyByDay.map(d => d.minutes));
 
   return (

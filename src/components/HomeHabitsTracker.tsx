@@ -20,6 +20,7 @@ import { SUPPLEMENT_GUIDE } from "@/data/nutrition-insights";
 import { getWellnessStackSupplements } from "@/components/nutrition/SupplementRecommender";
 import { useCycle } from "@/contexts/CycleContext";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "#C4526E",
@@ -62,7 +63,7 @@ function getSmartNudges(
 }
 
 export default function HomeHabitsTracker({ phase }: { phase: string }) {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const [habits, setHabits] = useState<Habit[]>(getHabits());
   const phaseColor = PHASE_COLORS[phase] || PHASE_COLORS.follicular;
 

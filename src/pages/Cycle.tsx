@@ -13,10 +13,10 @@ import CalendarDaySheet from "@/components/CalendarDaySheet";
 
 import { useCycle } from "@/contexts/CycleContext";
 import {
-  setLastPeriodStart, getPhaseFromDay, getDaysUntilNextPhase,
+  getPhaseFromDay, getDaysUntilNextPhase,
   Phase, PHASE_LABELS, PHASE_SHORT, getCycleDayForDate,
   getDayIndicators, getMonthLogSummary, getMoods, getWeight, getWeightUnit,
-  getPeriodEnd, getLoggedWorkouts,
+  getLoggedWorkouts,
 } from "@/lib/cycle-utils";
 import CalendarMoodPopover, { getMoodDotColor } from "@/components/CalendarMoodPopover";
 import { haptic } from "@/hooks/use-mobile";
@@ -35,6 +35,9 @@ import Last28DaysMiniDashboard from "@/components/cycle/Last28DaysMiniDashboard"
 import PhaseCountdownBanner from "@/components/cycle/PhaseCountdownBanner";
 import WhatsComingNext from "@/components/cycle/WhatsComingNext";
 import PhaseLearnCard from "@/components/cycle/PhaseLearnCard";
+import CycleHistoryPanel from "@/components/cycle/CycleHistoryPanel";
+import { getCycleStats, periodDayKind, daysBetween, addDays, PERIOD_HISTORY_EVENT } from "@/lib/period-history";
+import { toLocalDateStr } from "@/lib/local-date";
 
 const PHASE_HEX: Record<Phase, string> = {
   menstrual: "#C4526E",
@@ -81,19 +84,17 @@ export default function CyclePage() {
   const phases: Phase[] = ["menstrual", "follicular", "ovulatory", "luteal"];
   const nextPhaseIdx = (phases.indexOf(info.phase) + 1) % 4;
   const nextPhase = PHASE_LABELS[phases[nextPhaseIdx]];
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const hasDateSet = !!lastPeriod;
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setLastPeriod(val);
-    setLastPeriodStart(val);
     cycle.setCycleStartDate(val);
   };
 
   const handleDateEditSave = () => {
     setLastPeriod(dateEditValue);
-    setLastPeriodStart(dateEditValue);
     cycle.setCycleStartDate(dateEditValue);
     setShowDateEdit(false);
     setRefreshKey((k) => k + 1);
@@ -121,6 +122,16 @@ export default function CyclePage() {
     for (let d = 1; d <= lastDay.getDate(); d++) days.push(new Date(year, month, d));
     return days;
   }, [calendarMonth]);
+
+  // Logged periods (every month) + predictions drive the calendar shading.
+  const [historyTick, setHistoryTick] = useState(0);
+  useEffect(() => {
+    const bump = () => setHistoryTick((t) => t + 1);
+    window.addEventListener(PERIOD_HISTORY_EVENT, bump);
+    return () => window.removeEventListener(PERIOD_HISTORY_EVENT, bump);
+  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const periodStats = useMemo(() => getCycleStats(), [historyTick, refreshKey, cycle.cycleStartDate]);
 
   const monthSummary = useMemo(() => {
     return getMonthLogSummary(calendarMonth.getFullYear(), calendarMonth.getMonth());
@@ -274,7 +285,7 @@ export default function CyclePage() {
               ))}
               {calendarDays.map((date, i) => {
                 if (!date) return <div key={`empty-${i}`} />;
-                const dateStr = date.toISOString().split("T")[0];
+                const dateStr = toLocalDateStr(date);
                 const isToday = dateStr === todayStr;
                 const cycleDay = lastPeriod ? getCycleDayForDate(lastPeriod, date) : null;
                 const phase = cycleDay ? getPhaseFromDay(cycleDay) : null;
@@ -291,16 +302,19 @@ export default function CyclePage() {
                   ? (wUnit === "lbs" ? `${Math.round(weightVal! / 0.453592)}lb` : `${Math.round(weightVal!)}kg`)
                   : displayWeight;
 
-                // Period day fading: day 1 = strongest, day 5 = lightest
-                const isPeriod = indicators.isPeriodDay && cycleDay !== null;
+                // Logged periods (any month) are filled; predicted ones are outlined.
+                const kind = periodDayKind(dateStr, periodStats, todayStr);
+                const isPeriod = kind === "period";
+                const isPredicted = kind === "predicted";
+                const containing = isPeriod
+                  ? periodStats.periods.find((p) => dateStr >= p.start && dateStr <= (p.end ?? addDays(p.start, periodStats.avgPeriodLength - 1)))
+                  : undefined;
+                const periodDay = containing ? daysBetween(containing.start, dateStr) + 1 : 0;
+                // Period day fading: day 1 = strongest, day 5+ = lightest
                 const periodOpacity = isPeriod
-                  ? cycleDay <= 2 ? 0.85 : cycleDay <= 3 ? 0.6 : cycleDay <= 4 ? 0.4 : 0.2
+                  ? periodDay <= 2 ? 0.85 : periodDay <= 3 ? 0.6 : periodDay <= 4 ? 0.4 : 0.2
                   : 0;
-
-                // Check if this date is a logged period end
-                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-                const periodEnd = getPeriodEnd(monthKey);
-                const isPeriodEnd = periodEnd === dateStr;
+                const isPeriodEnd = !!containing?.end && containing.end === dateStr;
                 const hasTraining = getLoggedWorkouts(dateStr).length > 0;
 
                 return (
@@ -313,6 +327,10 @@ export default function CyclePage() {
                         backgroundColor: `rgba(196, 82, 110, ${periodOpacity})`,
                         borderRadius: "12px",
                       } : {}),
+                      ...(isPredicted ? {
+                        border: "1.5px dashed rgba(196, 82, 110, 0.55)",
+                        borderRadius: "12px",
+                      } : {}),
                       ...(isToday ? {
                         outline: '2px solid hsl(284, 22%, 44%)',
                         outlineOffset: -2,
@@ -323,7 +341,7 @@ export default function CyclePage() {
                     {isToday && (
                       <div className="absolute left-1/2 -translate-x-1/2 rounded-full" style={{ top: 3, width: 4, height: 4, backgroundColor: 'hsl(284, 22%, 44%)' }} />
                     )}
-                    <span className={`font-body text-xs ${isPeriod && cycleDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
+                    <span className={`font-body text-xs ${isPeriod && periodDay <= 3 ? "text-white font-medium" : "text-foreground"}`}>{date.getDate()}</span>
                     <div className="flex justify-center gap-[3px] mt-0.5 flex-wrap">
                       {/* Period end marker */}
                       {isPeriodEnd && (
@@ -362,6 +380,15 @@ export default function CyclePage() {
                 );
               })}
             </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded" style={{ backgroundColor: "rgba(196, 82, 110, 0.85)" }} /> Period</span>
+              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded" style={{ border: "1.5px dashed rgba(196, 82, 110, 0.55)" }} /> Predicted</span>
+              <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ backgroundColor: "#D49B4A" }} /> Symptoms</span>
+              <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ backgroundColor: "#7A9B6E" }} /> Movement</span>
+            </div>
+
+            <CycleHistoryPanel onChange={handleCycleUpdate} />
 
             {popover && (
               <CalendarMoodPopover

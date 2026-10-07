@@ -10,6 +10,7 @@ import DayStory from "@/components/landing/DayStory";
 import Pillars from "@/components/landing/Pillars";
 import CycleLens from "@/components/landing/CycleLens";
 import { FinalCTA, Marquee, Principles } from "@/components/landing/Closing";
+import Pricing from "@/components/landing/Pricing";
 
 /** Lenis smooth scroll on the window, only while the landing page is mounted. */
 function useSmoothScroll(enabled: boolean) {
@@ -56,7 +57,7 @@ function LandingNav() {
         </Link>
         <nav className="flex items-center gap-1.5">
           <a href="#story" className="hidden md:inline-flex rounded-full px-4 py-2 text-[13px] opacity-80 hover:opacity-100">How it works</a>
-          <Link to="/membership" className="hidden md:inline-flex rounded-full px-4 py-2 text-[13px] opacity-80 hover:opacity-100">Membership</Link>
+          <a href="#pricing" className="hidden md:inline-flex rounded-full px-4 py-2 text-[13px] opacity-80 hover:opacity-100">Membership</a>
           <Link to="/auth" className="rounded-full px-4 py-2 text-[13px] opacity-80 hover:opacity-100">Sign in</Link>
           <Link
             to="/auth"
@@ -91,6 +92,7 @@ export default function Landing() {
         <Marquee />
         <CycleLens />
         <Principles />
+        <Pricing />
         <FinalCTA />
       </main>
     </div>

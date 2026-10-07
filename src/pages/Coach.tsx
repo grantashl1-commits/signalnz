@@ -17,13 +17,14 @@ import GoalNudgeBanner from "@/components/coach/GoalNudgeBanner";
 import WeeklyFocusCard from "@/components/coach/WeeklyFocusCard";
 import PatternsInsightCard from "@/components/coach/PatternsInsightCard";
 import CreditsFillBar from "@/components/coach/CreditsFillBar";
+import { toLocalDateStr } from "@/lib/local-date";
 
 // ── Helper ──
 function getWeekStart(): string {
   const d = new Date();
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(d.getFullYear(), d.getMonth(), diff).toISOString().split("T")[0];
+  return toLocalDateStr(new Date(d.getFullYear(), d.getMonth(), diff));
 }
 
 const ENERGY_LABELS = ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];

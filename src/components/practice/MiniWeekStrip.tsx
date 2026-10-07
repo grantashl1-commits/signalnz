@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   history: Record<string, Set<string>>;
@@ -10,7 +11,7 @@ function last7(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split("T")[0];
+    return toLocalDateStr(d);
   });
 }
 
@@ -18,7 +19,7 @@ const DOW = ["S", "M", "T", "W", "T", "F", "S"];
 
 export default function MiniWeekStrip({ history, totalHabits, phaseColor }: Props) {
   const days = last7();
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = toLocalDateStr(new Date());
   const completedDays = days.filter(d => (history[d]?.size ?? 0) > 0).length;
 
   return (

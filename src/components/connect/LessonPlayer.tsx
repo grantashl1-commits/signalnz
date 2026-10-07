@@ -12,11 +12,19 @@ interface Props {
   onComplete: (lessonId: string) => void;
   onBack: () => void;
   onSaveProgress: (activityId: string, response: any, saveToVault: boolean) => void;
+  /** Activities already completed (from saved progress) so reopening a lesson resumes. */
+  initialCompleted?: Set<string>;
 }
 
-export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgress }: Props) {
-  const [activityIdx, setActivityIdx] = useState(0);
-  const [completed, setCompleted] = useState<Set<string>>(new Set());
+export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgress, initialCompleted }: Props) {
+  const [completed, setCompleted] = useState<Set<string>>(
+    () => new Set(lesson.activities.filter((a) => initialCompleted?.has(a.id)).map((a) => a.id)),
+  );
+  // Resume at the first unfinished activity.
+  const [activityIdx, setActivityIdx] = useState(() => {
+    const i = lesson.activities.findIndex((a) => !initialCompleted?.has(a.id));
+    return i === -1 ? 0 : i;
+  });
   const [showMilestone, setShowMilestone] = useState(false);
 
   const activity = lesson.activities[activityIdx];

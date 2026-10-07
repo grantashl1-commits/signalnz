@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Leaf } from "lucide-react";
 import type { Habit } from "@/data/self-care-rituals";
+import { toLocalDateStr } from "@/lib/local-date";
 
 interface Props {
   habits: Habit[];
@@ -13,7 +14,7 @@ function last7(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split("T")[0];
+    return toLocalDateStr(d);
   });
 }
 

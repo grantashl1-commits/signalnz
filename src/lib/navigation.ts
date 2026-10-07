@@ -107,7 +107,7 @@ export const EXPLORE_GROUPS: ExploreGroup[] = [
     items: [
       { path: "/account", label: "Account", blurb: "Profile, goals and preferences.", icon: User },
       { path: "/membership", label: "Membership", blurb: "Your plan and what's included.", icon: Crown },
-      { path: "/feedback", label: "Feedback", blurb: "Tell us what would help.", icon: MessageSquare },
+      { path: "/account?feedback=1", label: "Feedback", blurb: "Tell us what would help.", icon: MessageSquare },
     ],
   },
 ];
