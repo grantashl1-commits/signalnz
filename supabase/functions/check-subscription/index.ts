@@ -92,7 +92,7 @@ serve(async (req) => {
     });
 
     const membershipSub = subscriptions.data.find((sub) =>
-      sub.items.data.some((item) => {
+      sub.items.data.some((item: Stripe.SubscriptionItem) => {
         const productId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
         return !!productId && MEMBERSHIP_PRODUCT_IDS.has(productId);
       })
@@ -112,7 +112,7 @@ serve(async (req) => {
           subscriptionEnd = new Date(endMs).toISOString();
         }
       } catch { /* leave null */ }
-      const membershipItem = sub.items.data.find((item) => {
+      const membershipItem = sub.items.data.find((item: Stripe.SubscriptionItem) => {
         const itemProductId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
         return !!itemProductId && MEMBERSHIP_PRODUCT_IDS.has(itemProductId);
       });
