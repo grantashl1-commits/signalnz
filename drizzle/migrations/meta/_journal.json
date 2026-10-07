@@ -15,6 +15,13 @@
       "when": 1791271328688,
       "tag": "0001_scope_community_reactions_to_parent_visibility",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791349347299,
+      "tag": "0002_restrict_exercise_illustration_downloads_to_members",
+      "breakpoints": true
     }
   ]
 }

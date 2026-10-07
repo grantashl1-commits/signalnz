@@ -1,5 +1,5 @@
 # Homepage-led page redesign
-- [ ] Restore original SIGNAL logo on the welcome page and regenerate homepage artwork in the YOCH reference style.
+- [x] Restore original SIGNAL logo on the welcome page and regenerate homepage artwork in the YOCH reference style; verify artwork and sign-in link.
 - [x] Capture homepage and representative existing pages; offer matching design directions.
 - [x] Apply selected direction across other pages without changing workflows.
 - [x] Verify representative pages and controls on desktop and mobile.
