@@ -3,7 +3,6 @@ import { Link, Navigate } from "react-router-dom";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import Lenis from "lenis";
 import { useAuth } from "@/contexts/AuthContext";
-import SignalLogo from "@/components/SignalLogo";
 import Hero from "@/components/landing/Hero";
 import NoiseToSignal from "@/components/landing/NoiseToSignal";
 import DayStory from "@/components/landing/DayStory";
@@ -52,8 +51,7 @@ function LandingNav() {
         }`}
       >
         <Link to="/welcome" className="flex items-center gap-2" aria-label="Signal">
-          <SignalLogo size={24} color={solid ? "hsl(var(--primary))" : "hsl(36 33% 97%)"} />
-          <span className="text-[13px] font-semibold uppercase tracking-[0.2em]">Signal</span>
+          <img src={solid ? "/logos/Signal-purple-no-tagline.png" : "/logos/Signal-cream-no-tagline.png"} alt="Signal" className="h-7 w-auto md:h-8" />
         </Link>
         <nav className="flex items-center gap-1.5">
           <a href="#story" className="hidden md:inline-flex rounded-full px-4 py-2 text-[13px] opacity-80 hover:opacity-100">How it works</a>

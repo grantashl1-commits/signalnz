@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { EASE, SignalRing, useRamp } from "./primitives";
-import { Ink } from "@/components/ink/Ink";
+import { yochArt } from "./yoch-art";
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -48,13 +48,7 @@ export default function Hero() {
         className="pointer-events-none absolute right-[-18%] top-[8%] h-[62vw] w-[62vw] max-h-[620px] max-w-[620px] md:right-[3%] md:top-[14%] md:h-[44vw] md:w-[44vw] text-background/80"
         aria-hidden="true"
       >
-        <Ink name="moon" draw delay={0.6} weight={0.9} className="absolute left-[30%] top-[18%] w-[48%]" />
-        <Ink name="sprig" draw delay={1.1} weight={1} className="absolute left-[2%] top-[42%] w-[30%] -rotate-12" />
-        <Ink name="flower" draw delay={1.4} weight={1} className="absolute right-[0%] top-[52%] w-[26%] rotate-6" />
-        <Ink name="star" draw delay={1.8} weight={1.2} className="absolute left-[18%] top-[6%] w-[10%]" />
-        <Ink name="sparkle" draw delay={2} weight={1.2} className="absolute right-[12%] top-[10%] w-[12%]" />
-        <Ink name="sun" draw delay={2.2} weight={1.2} className="absolute left-[46%] top-[74%] w-[16%]" />
-        <Ink name="star" draw delay={2.4} weight={1.4} className="absolute right-[30%] top-[2%] w-[6%]" />
+        <motion.img src={yochArt.embrace} alt="" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4, delay: 0.6 }} className="h-full w-full object-contain" />
       </motion.div>
 
       <div className="grain" aria-hidden="true" />

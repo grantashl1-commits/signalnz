@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { motion, type MotionValue, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { FadeUp } from "./primitives";
-import { Ink, type InkName } from "@/components/ink/Ink";
+import { yochArt } from "./yoch-art";
 
-type Art = { ink: InkName } | { src: string };
+type Art = { src: string };
 
 const PILLARS = [
   {
@@ -12,7 +12,7 @@ const PILLARS = [
     line: "690 recipes, tuned to your phase.",
     points: ["A week of meals in one tap", "A shopping list that writes itself", "Cook from what's in your fridge", "370 kid-friendly recipes & lunchbox ideas"],
     color: "var(--eat)",
-    art: [{ src: "/landing/meal-salmon.webp" }, { src: "/landing/meal-miso.webp" }, { src: "/landing/meal-yoghurt.webp" }] as Art[],
+    art: [{ src: yochArt.salmon }, { src: yochArt.miso }, { src: yochArt.yoghurt }] as Art[],
   },
   {
     n: "02",
@@ -20,7 +20,7 @@ const PILLARS = [
     line: "Training that knows your week.",
     points: ["Strength, pilates, running & restore", "Sessions sized to the time you have", "Intensity that follows your energy", "Live heart-rate when you want it"],
     color: "var(--move)",
-    art: [{ src: "/landing/move-pilates.webp" }, { src: "/landing/move-run.webp" }, { src: "/landing/move-restore.webp" }] as Art[],
+    art: [{ src: yochArt.pilates }, { src: yochArt.run }, { src: yochArt.restore }] as Art[],
   },
   {
     n: "03",
@@ -28,7 +28,7 @@ const PILLARS = [
     line: "A page that listens back.",
     points: ["One-line entries for busy days", "Mood & gratitude check-ins", "Gentle insights across your cycle", "A vault for what you want to keep"],
     color: "var(--reflect)",
-    art: [{ ink: "sprig" }, { ink: "moon" }, { ink: "bird" }] as Art[],
+    art: [{ src: yochArt.journal }, { src: yochArt.moon }, { src: yochArt.embrace }] as Art[],
   },
   {
     n: "04",
@@ -36,7 +36,7 @@ const PILLARS = [
     line: "Intentions you actually keep.",
     points: ["A vision board for the bigger picture", "Small habits that compound", "A weekly rhythm review", "Progress you can feel, not just see"],
     color: "var(--goals)",
-    art: [{ ink: "seedling" }, { ink: "sun" }, { ink: "star" }] as Art[],
+    art: [{ src: yochArt.intentions }, { src: yochArt.sun }, { src: yochArt.seedling }] as Art[],
   },
 ];
 
@@ -73,11 +73,7 @@ function Panel({ pillar, p, index, parallax = true }: { pillar: P; p: MotionValu
         <div className="relative hidden md:block h-[520px]">
           {pillar.art.map((art, i) => {
             const pos = ["left-0 top-6 w-[58%]", "right-0 top-0 w-[40%]", "right-[10%] bottom-0 w-[44%]"][i];
-            return "ink" in art ? (
-              <motion.div key={art.ink + i} style={{ y: parallax ? ys[i] : 0 }} className={`absolute aspect-square text-foreground/75 ${pos}`}>
-                <Ink name={art.ink} draw delay={i * 0.25} weight={i === 0 ? 0.9 : 1.1} className="h-full w-full" />
-              </motion.div>
-            ) : (
+            return (
               <motion.img
                 key={art.src}
                 src={art.src}
@@ -85,16 +81,12 @@ function Panel({ pillar, p, index, parallax = true }: { pillar: P; p: MotionValu
                 aria-hidden="true"
                 loading="lazy"
                 style={{ y: parallax ? ys[i] : 0 }}
-                className={`absolute object-contain drop-shadow-[0_30px_40px_rgba(31,20,33,0.12)] ${pos}`}
+                className={`absolute object-contain ${pos}`}
               />
             );
           })}
         </div>
-        {"ink" in pillar.art[0] ? (
-          <Ink name={pillar.art[0].ink} draw weight={1} className="md:hidden absolute right-[-4%] top-[-4%] w-[40vw] text-foreground/60" />
-        ) : (
-          <img src={pillar.art[0].src} alt="" aria-hidden="true" loading="lazy" className="md:hidden absolute right-[-8%] top-[-6%] w-[48vw] opacity-90" />
-        )}
+        <img src={pillar.art[0].src} alt="" aria-hidden="true" loading="lazy" className="md:hidden h-32 w-32 justify-self-end object-contain" />
       </div>
     </article>
   );
