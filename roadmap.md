@@ -9,6 +9,7 @@
 - [x] Limit community media to its uploader and people with access to its post or chat, including metadata-path attachments.
 - [ ] Check GitHub for new pull requests: blocked by unavailable GitHub connection; automatic sync remains enabled.
 - [x] Resolve recipe merge conflicts and archive unused malformed training notes without changing active training paths.
-- [ ] Tighten reference document downloads: awaiting approval of who can access them.- [ ] Make transparent-background illustrations full colour (no white-filled figures) in YOCH style.
-- [ ] Audit every illustration across the site for YOCH style.
-- [ ] Check every recipe image matches its recipe title.
+- [ ] Tighten reference document downloads: awaiting approval of who can access them.- [x] Make homepage transparent-background illustrations full colour in YOCH style.
+- [ ] Recolour white-filled illustrations elsewhere (stretches, symptoms, couples course, parenting): awaiting go-ahead.
+- [x] Recipes now use the picture drawn for that dish when one exists (131 of 324).
+- [ ] Draw new pictures for 193 recipes with no matching picture: awaiting go-ahead.
