@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { Check, Clock, Flame, ShoppingBasket } from "lucide-react";
 import { EASE } from "./primitives";
+import { yochArt } from "./yoch-art";
 
 /**
  * Pinned phone + captions: a single day with Signal, told in four beats.
@@ -51,7 +52,7 @@ function Screen({ step }: { step: number }) {
           <>
             <p className="display-serif text-[26px] leading-none text-foreground">Good morning, Aroha.</p>
             <div className={`${card} flex items-center gap-3`}>
-              <img src="/landing/meal-bircher.webp" alt="" className="h-16 w-16 object-contain" />
+              <img src={yochArt.bircher} alt="" className="h-16 w-16 object-contain" />
               <div className="min-w-0">
                 <p className="text-[8px] font-semibold uppercase tracking-wider text-eat">Breakfast · 8 min</p>
                 <p className="text-[12px] font-semibold leading-tight text-foreground">Bircher with poached pear & pistachio</p>
@@ -74,7 +75,7 @@ function Screen({ step }: { step: number }) {
           <>
             <p className="display-serif text-[26px] leading-none text-foreground">Today's session</p>
             <div className={`${card} relative overflow-hidden`}>
-              <img src="/landing/move-strength.webp" alt="" className="mx-auto h-36 object-contain" />
+              <img src={yochArt.strength} alt="" className="mx-auto h-36 object-contain" />
               <p className="text-[8px] font-semibold uppercase tracking-wider text-move">Follicular · build</p>
               <p className="text-[13px] font-semibold text-foreground">Full-body strength</p>
               <div className="mt-1 flex gap-3 text-[9px] text-foreground/60">
@@ -89,7 +90,7 @@ function Screen({ step }: { step: number }) {
           <>
             <p className="display-serif text-[26px] leading-none text-foreground">Tonight</p>
             <div className={card}>
-              <img src="/landing/meal-dhal.webp" alt="" className="mx-auto h-32 object-contain" />
+              <img src={yochArt.dhal} alt="" className="mx-auto h-32 object-contain" />
               <p className="text-[8px] font-semibold uppercase tracking-wider text-goals">Dinner · 25 min</p>
               <p className="text-[13px] font-semibold text-foreground">Coconut dhal with spinach</p>
             </div>

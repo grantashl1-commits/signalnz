@@ -213,3 +213,7 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 
 ## Member-page presentation
 - Use PageHeading and scoped member-page styles for homepage-led member screens; leave homepage and course AtmosphericHero layouts independent so page redesigns do not alter their presentation.
+
+<!-- LOVABLE:BEGIN -->
+- Keep homepage illustration assets in a shared landing artwork module, separate from global icon rendering, so artwork changes cannot replace functional icons elsewhere.
+<!-- LOVABLE:END -->
