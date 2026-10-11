@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { MessageCircle as PageIcon } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -720,17 +722,8 @@ export default function CoachPage() {
   if (!user || !session) return <Navigate to="/auth" replace />;
 
   return (
-    <>
-      <AtmosphericHero>
-        <SignalPulse />
-        <div className="text-center relative z-10">
-        <p className="font-body text-[11px] uppercase tracking-[0.25em] text-white/60 mb-3">MY COACH</p>
-        <h1 className="font-display text-4xl md:text-5xl font-bold italic text-white mb-3">Your Plan</h1>
-        <p className="font-display text-base italic text-white/70 max-w-md">
-          Check in, set goals, and get AI-powered training and nutrition plans.
-        </p>
-        </div>
-      </AtmosphericHero>
+    <div className="member-page">
+      <PageHeading title="Your Plan" label="My Coach" icon={PageIcon} tone="move">Check in, set goals, and build your training and nutrition plans.</PageHeading>
 
       <div className="max-w-2xl mx-auto px-4 pb-32 space-y-6 mt-6">
         {/* Goal nudge banner — surfaces the active goal weekly */}
@@ -766,6 +759,6 @@ export default function CoachPage() {
           <PlanGenerator userId={user.id} session={session} />
         </div>
       </div>
-    </>
+    </div>
   );
 }

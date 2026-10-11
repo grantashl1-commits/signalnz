@@ -4,7 +4,7 @@ import { type LucideIcon } from "lucide-react";
 type PageTone = "eat" | "move" | "reflect" | "goals";
 
 /** Compact editorial heading shared by member pages, never the homepage. */
-export default function PageHeading({ title, label, children }: {
+export default function PageHeading({ title, label, children, icon: Icon, tone = "reflect" }: {
   title: string;
   label: string;
   children: ReactNode;
@@ -15,7 +15,7 @@ export default function PageHeading({ title, label, children }: {
     <header className="px-5 pt-7 pb-2 md:px-8 md:pt-10">
       <div className="mx-auto max-w-5xl border-b border-border pb-6 flex items-start justify-between gap-5">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] text-muted-foreground mb-2">{label}</p>
+          <p className={`font-mono text-[10px] mb-2 flex items-center gap-2 text-${tone}`}><Icon aria-hidden="true" className="h-4 w-4" />{label}</p>
           <h1 className="font-editorial text-4xl md:text-5xl font-normal leading-tight text-foreground">{title}</h1>
           <div className="mt-2 text-sm text-muted-foreground max-w-lg leading-relaxed">{children}</div>
         </div>

@@ -25,7 +25,8 @@ const UNITS = new Set([
 const PREP_WORDS = /,?\s*(diced|chopped|minced|sliced|grated|crushed|peeled|trimmed|halved|quartered|julienned|torn|roughly|finely|thinly|to taste|for serving|optional).*$/i;
 
 export function parseIngredient(raw: string): ParsedIngredient {
-  let text = raw.trim();
+  const fractions: Record<string, string> = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8" };
+  let text = raw.trim().replace(/([0-9])([½⅓⅔¼¾⅛⅜⅝⅞])/g, "$1 $2").replace(/[½⅓⅔¼¾⅛⅜⅝⅞]/g, c => fractions[c]);
 
   // Remove prep instructions
   let cleaned = text.replace(PREP_WORDS, "").trim();
@@ -40,7 +41,7 @@ export function parseIngredient(raw: string): ParsedIngredient {
   }
 
   // Match quantity (number, fraction, or range) at start
-  const qtyMatch = cleaned.match(/^([\d½⅓⅔¼¾⅛]+(?:\s*[-–]\s*[\d½⅓⅔¼¾⅛]+)?(?:\s*\/\s*\d+)?)\s*/);
+  const qtyMatch = cleaned.match(/^(\d+(?:\.\d+)?(?:\s+\d+\s*\/\s*\d+|\s*\/\s*\d+)?(?:\s*[-–]\s*\d+(?:\.\d+)?)?)\s*/);
   let quantity = "";
   let rest = cleaned;
 

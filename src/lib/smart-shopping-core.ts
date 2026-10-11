@@ -66,16 +66,10 @@ export function categoriseItem(name: string): string {
 export function parseQty(qty: string): number {
   if (!qty) return 1;
   const q = qty.trim();
-  if (q.includes("/")) {
-    const [a, b] = q.split("/");
-    return parseInt(a) / parseInt(b);
-  }
-  if (q.includes("-")) {
-    const [a, b] = q.split("-");
-    return (parseFloat(a) + parseFloat(b)) / 2;
-  }
-  const n = parseFloat(q);
-  return isNaN(n) ? 1 : n;
+  if (/[-–]/.test(q)) return Math.max(...q.split(/[-–]/).map(parseQty));
+  const mixed = q.match(/^(?:(\d+)\s+)?(\d+)\s*\/\s*(\d+)$/);
+  if (mixed) return Number(mixed[1] ?? 0) + Number(mixed[2]) / Number(mixed[3] || 1);
+  const n = Number(q); return Number.isFinite(n) && n >= 0 ? n : 1;
 }
 
 const LIQUID_RE = /\b(milk|water|stock|broth|juice|oil|vinegar|sauce|tamari|soy sauce|mirin|cream|yoghurt|yogurt|kefir|wine|beer|coconut water|kombucha|honey|syrup|maple)\b/i;
@@ -111,17 +105,13 @@ export function toBase(qty: number, unit: string, name: string): { qty: number; 
   else if (u === "l" || u === "litre") ml = qty * 1000;
 
   if (ml > 0) {
-    if (liquid) return { qty: ml, unit: "ml" };
-    if (dry) return { qty: ml * gramsPerMl(name), unit: "g" };
     return { qty: ml, unit: "ml" };
   }
 
   if (u === "g" || u === "gram") {
-    if (liquid) return { qty: qty / gramsPerMl(name), unit: "ml" };
     return { qty, unit: "g" };
   }
   if (u === "kg" || u === "kilogram") {
-    if (liquid) return { qty: (qty * 1000) / gramsPerMl(name), unit: "ml" };
     return { qty: qty * 1000, unit: "g" };
   }
   if (u === "oz" || u === "ounce") return { qty: qty * 28.35, unit: "g" };

@@ -1,3 +1,4 @@
+import { useCustomMealPlan } from "@/hooks/useCustomMealPlan";
 import { useState, useMemo, useCallback } from "react";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
@@ -113,7 +114,8 @@ export default function TodayTab() {
 
   const todayInsight = useMemo(() => getTodayInsight(currentPhase, cycleMode, goalSlug), [currentPhase, cycleMode, goalSlug]);
 
-  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay]);
+  const { plan: customPlan } = useCustomMealPlan();
+  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
 
   const phaseColor = PHASE_HEX[currentPhase];
   const snacks = PHASE_SNACKS[currentPhase];

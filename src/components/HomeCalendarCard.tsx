@@ -1,3 +1,4 @@
+import { exportCalendar } from "@/lib/calendar-export";
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Loader2, Plus, ChevronRight, X } from "lucide-react";
@@ -175,29 +176,20 @@ export default function HomeCalendarCard() {
   };
 
   const generateICSData = () => {
-    const allEvents = [
-      ...manualEvents.map(ev => ({ time: ev.time, title: ev.title, dayIndex: ev.dayIndex })),
-    ];
-    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Signal//EN"];
     const ws = startOfWeek(today, { weekStartsOn: 1 });
-    allEvents.forEach((ev) => {
-      const [h, m] = ev.time.split(":");
-      const d = new Date(ws);
-      d.setDate(d.getDate() + ev.dayIndex);
-      d.setHours(parseInt(h), parseInt(m), 0);
-      const end = new Date(d);
-      end.setHours(d.getHours() + 1);
-      const fmt = (dt: Date) => dt.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-      lines.push("BEGIN:VEVENT", `DTSTART:${fmt(d)}`, `DTEND:${fmt(end)}`, `SUMMARY:${ev.title}`, "END:VEVENT");
+    const manual = manualEvents.map(ev => {
+      const [h, m] = ev.time.split(":").map(Number);
+      const start = new Date(ws); start.setDate(start.getDate() + ev.dayIndex); start.setHours(h, m, 0, 0);
+      return { id: ev.id, title: ev.title, start, end: new Date(start.getTime() + 3600000) };
     });
-    lines.push("END:VCALENDAR");
-    return lines.join("\r\n");
+    const imported = cal.importedEvents.map(ev => ({ id: `imported:${ev.start}:${ev.summary}`, title: ev.summary, start: new Date(ev.start), end: new Date(ev.end) }));
+    return exportCalendar([...manual, ...imported]);
   };
 
   const handleCalendarExport = (type: "google" | "outlook" | "apple") => {
     const allCount = manualEvents.length + cal.importedEvents.length;
     if (allCount === 0) { toast.info("Nothing to carry across yet."); return; }
-    if (type === "google" && manualEvents.length > 0) {
+    if (type === "google" && manualEvents.length === 1 && allCount === 1) {
       const ev = manualEvents[0];
       const ws = startOfWeek(today, { weekStartsOn: 1 });
       const d = new Date(ws);
@@ -212,7 +204,8 @@ export default function HomeCalendarCard() {
       const blob = new Blob([ics], { type: "text/calendar" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = url; a.download = "signal-events.ics"; a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      if (type === "google") toast.info("Import this file in Google Calendar Settings → Import & export.");
     }
     setShowCalendarOptions(false);
     toast.success("Your calendar is ready to carry across.");

@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Compass as PageIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -12,19 +14,8 @@ export default function Explore() {
   const phaseColor = `hsl(var(--phase-${currentPhase}))`;
 
   return (
-    <div className="mx-auto max-w-5xl px-5 md:px-8 pt-8 md:pt-12 pb-28">
-      <motion.header
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease }}
-        className="mb-10 md:mb-14"
-      >
-        <p className="eyebrow text-muted-foreground mb-3">Everything else, in its place</p>
-        <h1 className="display-serif text-[3.5rem] md:text-[6rem] text-foreground">Explore</h1>
-        <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-          Your days live in Today, Eat, Move and Reflect. When you have a little more room, it's all here.
-        </p>
-      </motion.header>
+    <div className="member-page mx-auto max-w-5xl px-5 md:px-8 pt-8 md:pt-12 pb-28">
+      <PageHeading title="Explore" label="Everything in its place" icon={PageIcon} tone="goals">Your days live in Today, Eat, Move and Reflect. Find the rest here.</PageHeading>
 
       {/* Cycle lens summary */}
       <motion.div

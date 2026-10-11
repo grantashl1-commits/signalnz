@@ -103,7 +103,7 @@ export default function CommunityPage() {
         buttonLabel: "Upgrade to Thriving →",
       }}
     >
-    <div className="relative">
+    <div className="member-page relative">
       {/* Location opt-in modal */}
       <AnimatePresence>
         {showOptIn && (

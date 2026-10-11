@@ -1,0 +1,22 @@
+export type PartnerExercise = { id: string; name: string; block: 'Strength' | 'Reformer' | 'Core'; reps: string; cue: string; load: string };
+export type PartnerPlan = { id: string; name: string; focus: 'Upper' | 'Lower'; style: 'Strength' | 'Pump'; exercises: PartnerExercise[] };
+const strength = (id: string, name: string, reps: string, cue: string): PartnerExercise => ({ id, name, reps, cue, block: 'Strength', load: 'Record total barbell load including the 20 kg bar, or kg per dumbbell.' });
+const reformer = (id: string, name: string, cue: string): PartnerExercise => ({ id, name, cue, reps: '10–12', block: 'Reformer', load: 'Use familiar spring settings for your machine; record the setting in the load field.' });
+const core: PartnerExercise[] = [
+  { id: 'ball-deadbug', name: 'Yoga-ball dead bug', block: 'Core', reps: '8–10 each side', cue: 'Press the ball between opposite hand and knee; extend the other limbs without arching your back.', load: 'Bodyweight' },
+  { id: 'side-plank', name: 'Side-plank hip lifts', block: 'Core', reps: '8 each side', cue: 'Lift with control; use a bent-knee side plank if needed.', load: 'Bodyweight' },
+  { id: 'reverse-crunch', name: 'Reverse crunch', block: 'Core', reps: '10–12', cue: 'Curl the pelvis gently off the mat without swinging your legs.', load: 'Bodyweight' },
+];
+const upperReformer = [reformer('reformer-row', 'Seated row with straps', 'Sit tall and draw elbows back without lifting shoulders.'), reformer('reformer-arm-press', 'Supine arm presses with straps', 'Lie supported and press arms towards hips with a controlled carriage return.'), reformer('reformer-curl', 'Seated biceps curl with straps', 'Keep upper arms steady; avoid leaning back to pull.')];
+const lowerReformer = [reformer('footwork', 'Reformer footwork', 'Press through the feet with aligned knees; return the carriage slowly.'), reformer('single-leg-press', 'Reformer single-leg press', '10 reps each side. Keep pelvis level and use a familiar supported setup.'), reformer('reformer-bridge', 'Reformer bridge', 'Keep the carriage controlled in your familiar bridge setup; avoid arching your back.')];
+export const PARTNER_PLANS: PartnerPlan[] = [
+ { id: 'lower-strength', name: 'Lower body · Strength', focus: 'Lower', style: 'Strength', exercises: [strength('squat', 'Barbell back squat', '6–10', 'Set rack safeties; lower under control and stand with a stable trunk.'), strength('rdl', 'Barbell Romanian deadlift', '8–10', 'Hinge at the hips; keep the bar close and stop before the back rounds.'), strength('split-squat', 'Dumbbell split squat', '8 each side', 'Keep front foot planted and lower with control.'), ...lowerReformer, ...core] },
+ { id: 'upper-strength', name: 'Upper body · Strength', focus: 'Upper', style: 'Strength', exercises: [strength('bench', 'Dumbbell bench press', '8–10', 'Keep feet planted; lower with control and press without bouncing.'), strength('row', 'Bench-supported single-arm dumbbell row', '8–10 each side', 'Keep torso still; draw elbow towards your hip.'), strength('press', 'Seated dumbbell shoulder press', '8–10', 'Brace gently; press without arching your lower back.'), ...upperReformer, ...core] },
+ { id: 'lower-pump', name: 'Lower body · Pump', focus: 'Lower', style: 'Pump', exercises: [strength('goblet', 'Dumbbell goblet squat', '10–12', 'Keep weight close to chest; lower slowly and stand tall.'), strength('hip-thrust', 'Barbell hip thrust', '10–12', 'Support shoulders on a stable bench; finish at neutral hip extension.'), strength('lunge', 'Dumbbell reverse lunge', '10 each side', 'Step back with control; drive through the front foot.'), ...lowerReformer, ...core] },
+ { id: 'upper-pump', name: 'Upper body · Pump', focus: 'Upper', style: 'Pump', exercises: [strength('floor-press', 'Dumbbell floor press', '10–12', 'Lower upper arms gently to the floor and press smoothly.'), strength('barbell-row', 'Barbell bent-over row', '10–12', 'Maintain your hinge and pull towards the lower ribs without jerking.'), strength('hammer', 'Dumbbell hammer curl', '10–15', 'Keep elbows steady and lower slowly.'), ...upperReformer, ...core] },
+];
+export const CIRCUIT_TURNS = 36;
+export function circuitTurn(turn: number) {
+ return { round: Math.floor(turn / 18) + 1, station: Math.floor((turn % 18) / 2), partner: turn % 2 === 0 ? 'A' : 'B' } as const;
+}
+export function nextPartnerCircuit(completed: number) { return PARTNER_PLANS[completed % PARTNER_PLANS.length]; }

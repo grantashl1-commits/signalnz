@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { User as PageIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState as useStateLocal } from "react";
 import { User, Mail, Crown, Zap, Calendar, Brain, PenLine, Settings, LogOut, ArrowUpRight, RefreshCw, Check, Dumbbell, ShoppingCart, ShieldCheck, Copy, Gift, ChevronRight, Moon, Utensils, Camera, MapPin, MessageSquarePlus, Flame, Download, Trash2, AlertTriangle, X } from "lucide-react";
@@ -238,29 +240,12 @@ export default function AccountPage() {
   const locationLabel = suburb || null;
 
   return (
-    <div className="relative">
-      {/* ═══ PURPLE HEADER ═══ */}
-      <div className="bg-primary pt-[max(env(safe-area-inset-top),12px)] pb-8 px-5">
-        <div className="max-w-2xl mx-auto flex flex-col items-center text-center pt-6">
-          <div className="w-20 h-20 rounded-full bg-primary-foreground/15 flex items-center justify-center mb-3 overflow-hidden border-2 border-primary-foreground/20">
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <User className="h-8 w-8 text-primary-foreground/60" />
-            )}
-          </div>
-          <h1 className="font-display text-xl font-bold italic text-primary-foreground">
-            {displayName || "My Account"}
-          </h1>
-          {locationLabel && (
-            <p className="font-body text-sm text-primary-foreground/60 mt-0.5 flex items-center gap-1">
-              <MapPin className="h-3 w-3" /> {locationLabel}
-            </p>
-          )}
-        </div>
-      </div>
+    <div className="member-page relative">
+      <PageHeading title="Account" label="Your preferences" icon={PageIcon} tone="reflect">
+        {displayName || "Make Signal yours."}{locationLabel && <span className="block">{locationLabel}</span>}
+      </PageHeading>
 
-      <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-[4.5rem] -mt-4">
+      <ContentSection className="px-5 md:px-4 max-w-2xl mx-auto space-y-[4.5rem] mt-4">
         {/* Admin */}
         {isAdmin && (
           <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}

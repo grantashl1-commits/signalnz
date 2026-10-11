@@ -1,5 +1,5 @@
 import {
-  Sun, Utensils, Dumbbell, BookOpen, Compass, Moon, Leaf, Brain, Headphones,
+  CalendarDays, Sun, Utensils, Dumbbell, BookOpen, Compass, Moon, Leaf, Brain, Headphones,
   GraduationCap, Sparkles, Rss, Heart, Baby, Users, MessageCircle, User, Crown, MessageSquare,
   type LucideIcon,
 } from "lucide-react";
@@ -59,6 +59,7 @@ export const EXPLORE_GROUPS: ExploreGroup[] = [
     title: "Your rhythm",
     intent: "The quiet lens behind every recommendation.",
     items: [
+      { path: "/#calendar", label: "Calendar", blurb: "Plan your week and import or export events.", icon: CalendarDays },
       { path: "/cycle", label: "Cycle", blurb: "Log, predict and understand your phases.", icon: Moon },
       { path: "/my-practice", label: "Habits", blurb: "Small daily rituals that compound.", icon: Leaf },
     ],

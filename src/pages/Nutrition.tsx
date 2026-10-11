@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { usePageTab } from "@/hooks/usePageTab";
 import PageHeading from "@/components/ui/PageHeading";
 import { Utensils as PageIcon } from "lucide-react";
 import { useState, useMemo, Component, type ReactNode } from "react";
@@ -46,10 +47,7 @@ type TabId = "today" | "myweek" | "discover" | "myrecipes" | "supplements" | "sh
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
   const { movementGoals: profileGoals } = useProfile();
-  const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<TabId>(
-    (searchParams.get("tab") as TabId | null) ?? "today"
-  );
+  const [activeTab, setActiveTab] = usePageTab<TabId>(["today", "myweek", "shop", "discover", "myrecipes", "supplements"], "today");
   const navigate = useNavigate();
 
   const bodyGoals = useMemo<string[]>(() => {

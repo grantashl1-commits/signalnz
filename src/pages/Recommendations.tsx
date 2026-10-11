@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Heart as PageIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -7,16 +9,8 @@ import { BotanicalSprig } from "@/components/BotanicalElements";
 export default function RecommendationsPage() {
   return (
     <GatedPage requiredTier="thriving">
-      <div className="relative">
-        <AtmosphericHero size="sm">
-          <SignalPulse />
-          <div className="text-center relative z-10">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">curated</p>
-            <h1 className="font-display text-[2.5rem] md:text-[3rem] font-extrabold text-primary-foreground leading-[1.02]">
-              Recommendations
-            </h1>
-          </div>
-        </AtmosphericHero>
+      <div className="member-page relative">
+        <PageHeading title="Recommendations" label="Curated" icon={PageIcon} tone="eat">Ideas and resources for your everyday life.</PageHeading>
 
         <ContentSection className="px-5 md:px-4">
           <div className="max-w-lg mx-auto py-8 text-center">

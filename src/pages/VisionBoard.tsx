@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Sparkles as PageIcon } from "lucide-react";
 import { useState } from "react";
 import { GatedPage } from "@/components/FeatureGate";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -10,19 +12,8 @@ export default function VisionBoard() {
 
   return (
     <GatedPage requiredTier="nourished">
-      <div className="relative">
-        <AtmosphericHero size="md">
-          <SignalPulse />
-          <div className="text-center relative z-10">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Vision Board</p>
-            <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">
-              Dream Studio
-            </h1>
-            <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-md">
-              Visualise the life you're creating.
-            </p>
-          </div>
-        </AtmosphericHero>
+      <div className="member-page relative">
+        <PageHeading title="Dream Studio" label="Vision Board" icon={PageIcon} tone="goals">Visualise the life you're creating.</PageHeading>
 
         <ContentSection className="px-5 md:px-4">
           <DreamStudio pinnedEntry={pinnedEntry} />
