@@ -91,7 +91,7 @@ serve(async (req) => {
       limit: 20,
     });
 
-    const membershipSub = subscriptions.data.find((sub) =>
+    const membershipSub = subscriptions.data.find((sub: Stripe.Subscription & { current_period_end?: number | string }) =>
       sub.items.data.some((item: Stripe.SubscriptionItem) => {
         const productId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
         return !!productId && MEMBERSHIP_PRODUCT_IDS.has(productId);
@@ -102,8 +102,8 @@ serve(async (req) => {
     let productId = null;
     let subscriptionEnd = null;
 
-    if (hasActiveSub) {
-      const sub = membershipSub!;
+    if (membershipSub) {
+      const sub = membershipSub;
       try {
         const endMs = typeof sub.current_period_end === "number"
           ? sub.current_period_end * 1000
