@@ -1,3 +1,4 @@
+import { getPhasePlanDay } from "./today-meals";
 /**
  * Synthesize an `AIMealPlan`-shaped object from the user's custom recipe
  * picks + the static phase fallback, so the existing `SmartShoppingList`
@@ -44,16 +45,7 @@ function recipeToAIMeal(recipe: Recipe, mealType: AIMeal["mealType"]): AIMeal {
 }
 
 function fallbackStaticMeal(cycleDay: number, slot: MealSlot, phase: Phase): AIMeal {
-  const phaseRanges: Record<Phase, [number, number]> = {
-    menstrual: [1, 7],
-    follicular: [8, 14],
-    ovulatory: [15, 21],
-    luteal: [22, 28],
-  };
-  const [start] = phaseRanges[phase];
-  const plan = PHASE_MEAL_PLANS[phase];
-  const dayIndex = Math.max(0, (cycleDay - start) % plan.days.length);
-  const dayPlan = plan.days[dayIndex] || plan.days[plan.days.length - 1];
+  const { day: dayPlan } = getPhasePlanDay(cycleDay);
   const rawName =
     slot === "breakfast" ? dayPlan.breakfast :
     slot === "lunch" ? dayPlan.lunch :
@@ -94,33 +86,36 @@ function snackPlaceholder(phase: Phase, when: "morningSnack" | "afternoonSnack")
 export function buildCustomShoppingPlan(
   cycleDays: number[],
   customPlan: CustomMealPlan,
-  prepPreferences: Partial<PrepPreferences> = {}
+  prepPreferences: Partial<PrepPreferences> = {},
+  basePlan?: AIMealPlan | null,
+  dates?: string[]
 ): AIMealPlan {
-  const days: AIPlannedDay[] = cycleDays.map(cycleDay => {
+  const days: AIPlannedDay[] = cycleDays.map((cycleDay, index) => {
     const phase = getPhaseFromDay(cycleDay);
-    const picks = customPlan[cycleDay] || {};
+    const picks = customPlan[dates?.[index] ?? ""] ?? customPlan[cycleDay] ?? {};
+    const base = basePlan?.days.find(d => d.cycleDay === cycleDay);
     const resolveSlot = (slot: MealSlot): AIMeal => {
       const recipeId = picks[slot];
       if (recipeId) {
         const recipe = findRecipeById(recipeId);
         if (recipe) return recipeToAIMeal(recipe, slot);
       }
-      return fallbackStaticMeal(cycleDay, slot, phase);
+      return base?.[slot] ?? fallbackStaticMeal(cycleDay, slot, phase);
     };
     return {
       cycleDay,
       phase,
       breakfast: resolveSlot("breakfast"),
-      morningSnack: snackPlaceholder(phase, "morningSnack"),
+      morningSnack: base?.morningSnack ?? snackPlaceholder(phase, "morningSnack"),
       lunch: resolveSlot("lunch"),
-      afternoonSnack: snackPlaceholder(phase, "afternoonSnack"),
+      afternoonSnack: base?.afternoonSnack ?? snackPlaceholder(phase, "afternoonSnack"),
       dinner: resolveSlot("dinner"),
     };
   });
 
   return {
     days,
-    prepPreferences: { ...STATIC_PREFS, ...prepPreferences },
+    prepPreferences: { ...STATIC_PREFS, ...basePlan?.prepPreferences, ...prepPreferences },
     createdAt: Date.now(),
     lockedMeals: {},
   };

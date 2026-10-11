@@ -195,7 +195,7 @@ export default function LibraryTab() {
   }, [filter, allWorkouts]);
 
   const loadWorkoutExercises = async (workout: QuickWorkout) => {
-    if (workoutExercises[workout.id]) return;
+    if (workoutExercises[workout.id]?.length) return;
 
     let query = supabase
       .from("exercises")
@@ -208,9 +208,10 @@ export default function LibraryTab() {
       query = query.in("body_part", workout.exerciseFilters.bodyParts);
     }
 
-    const { data } = await query.limit(workout.exerciseFilters.limit);
-    if (data) {
-      setWorkoutExercises(prev => ({ ...prev, [workout.id]: data as unknown as DBExercise[] }));
+    const { data, error } = await query.order("name").limit(workout.exerciseFilters.limit);
+    if (error) toast.error("Could not load this workout. Try again or choose Partner circuit.");
+    {
+      setWorkoutExercises(prev => ({ ...prev, [workout.id]: (data ?? []) as unknown as DBExercise[] }));
     }
   };
 
@@ -552,8 +553,9 @@ export default function LibraryTab() {
                           </div>
 
                           {isQuick && wExercises.length === 0 && (
-                            <div className="flex items-center justify-center py-4">
-                              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                            <div className="py-4 space-y-2 text-sm text-muted-foreground">
+                              <p>No exercises loaded yet. Partner circuit includes nine stations and works without a library connection.</p>
+                              <button className="underline" onClick={() => void loadWorkoutExercises(uw.data)}>Retry loading exercises</button>
                             </div>
                           )}
 
@@ -591,6 +593,7 @@ export default function LibraryTab() {
                               <button
                                 onClick={() => {
                                   haptic("medium");
+                                  if (wExercises.length < 6) { toast.error("A circuit needs at least six exercises. Choose Partner circuit for a complete nine-station session."); return; }
                                   setActiveSession({ workout: uw.data, exercises: wExercises });
                                 }}
                                 className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-primary-foreground font-body text-sm font-semibold transition-colors hover:bg-primary/90"

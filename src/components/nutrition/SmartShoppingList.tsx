@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronDown, ChevronUp, Copy, Search, ShoppingCart, ExternalLink, Plus, X, Printer } from "lucide-react";
@@ -35,68 +36,43 @@ import {
 
 
 // Persistence helpers for checked items & custom items
-function getWeekKey(): string {
-  return getISOWeek(new Date());
-}
-
-function getCheckedState(): Record<string, boolean> {
-  try {
-    const key = `shopping_checked_${getWeekKey()}`;
-    return JSON.parse(localStorage.getItem(key) || "{}");
-  } catch { return {}; }
-}
-
-function saveCheckedState(state: Record<string, boolean>) {
-  const key = `shopping_checked_${getWeekKey()}`;
-  localStorage.setItem(key, JSON.stringify(state));
-  // Auto-clear old weeks (anything older than 8 days)
-  try {
-    const allKeys = Object.keys(localStorage).filter(k => k.startsWith("shopping_checked_"));
-    const now = Date.now();
-    allKeys.forEach(k => {
-      if (k === key) return;
-      // Simple age check - just remove non-current week keys
-      const weekStr = k.replace("shopping_checked_", "");
-      if (weekStr !== getWeekKey()) {
-        localStorage.removeItem(k);
-      }
-    });
-  } catch {}
-}
-
-function getCustomItems(): AggregatedItem[] {
-  try {
-    const key = `shopping_custom_${getWeekKey()}`;
-    return JSON.parse(localStorage.getItem(key) || "[]");
-  } catch { return []; }
-}
-
-function saveCustomItems(items: AggregatedItem[]) {
-  const key = `shopping_custom_${getWeekKey()}`;
-  localStorage.setItem(key, JSON.stringify(items));
-}
+function getWeekKey(date = new Date()): string { return getISOWeek(date); }
+function readLocal<T>(key: string, fallback: T): T { try { return JSON.parse(localStorage.getItem(key) ?? JSON.stringify(fallback)); } catch { return fallback; } }
+function itemKey(item: AggregatedItem) { return `${item.category}:${item.name}:${item.unit}:${item.totalQty}`; }
 
 interface Props {
   plan: AIMealPlan;
   weekNumber: number;
+  allPlanDays?: boolean;
+  weekStart?: Date;
 }
 
-export default function SmartShoppingList({ plan, weekNumber }: Props) {
+export default function SmartShoppingList(props: Props) {
+  const { user } = useAuth();
+  return <ShoppingContent key={`${user?.id ?? 'guest'}:${getWeekKey(props.weekStart)}`} {...props} />;
+}
+function ShoppingContent({ plan, weekNumber, allPlanDays = false, weekStart }: Props) {
   const { currentPhase } = useCycle();
   const { user } = useAuth();
   const phaseColor = PHASE_HEX[currentPhase];
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
   const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(getCheckedState);
-  const [customItems, setCustomItems] = useState<AggregatedItem[]>(getCustomItems);
+  const weekKey = getWeekKey(weekStart);
+  const checkedKey = `shopping_checked_${user?.id ?? 'guest'}_${weekKey}`;
+  const customKey = `shopping_custom_${user?.id ?? 'guest'}_${weekKey}`;
+  const saveCheckedState = (v: Record<string, boolean>) => { try { localStorage.setItem(checkedKey, JSON.stringify(v)); } catch {} };
+  const saveCustomItems = (v: AggregatedItem[]) => { try { localStorage.setItem(customKey, JSON.stringify(v)); } catch {} };
+  const dirty = useRef(false);
+  const [hydrated, setHydrated] = useState(!user);
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(() => readLocal(checkedKey, {}));
+  const [customItems, setCustomItems] = useState<AggregatedItem[]>(() => readLocal(customKey, []));
   const [customInput, setCustomInput] = useState("");
   const [hidePantry, setHidePantry] = useState<boolean>(() => {
     try { return localStorage.getItem("shopping_hide_pantry") === "1"; } catch { return false; }
   });
   const supermarket = getSupermarket();
   const pantryStaples = useMemo(() => getPantryStaples(), []);
-  const weekKey = getWeekKey();
   const supabaseLoaded = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -112,7 +88,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
           .eq("user_id", user.id)
           .eq("week_key", weekKey)
           .maybeSingle();
-        if (data) {
+        if (data && !dirty.current) {
           const checked = (data.checked_items as Record<string, boolean>) || {};
           const custom = (data.custom_items as AggregatedItem[]) || [];
           setCheckedItems(checked);
@@ -123,12 +99,13 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       } catch {
         // silent fallback to localStorage
       }
-    })();
+    })().finally(() => setHydrated(true));
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
   }, [user, weekKey]);
 
   // Phase 4C: debounced save to Supabase (500ms after last change)
   const syncToSupabase = useCallback((checked: Record<string, boolean>, custom: AggregatedItem[]) => {
-    if (!user) return;
+    if (!user || !hydrated || !dirty.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       try {
@@ -139,33 +116,34 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
             week_key: weekKey,
             checked_items: checked,
             custom_items: custom,
-          }, { onConflict: "user_id,week_key" });
+          }, { onConflict: "user_id,week_key" }).throwOnError();
       } catch {
-        // silent — localStorage is the source of truth
+        toast.error("Saved on this device. Shopping list cloud sync failed.");
       }
     }, 500);
-  }, [user, weekKey]);
+  }, [user, weekKey, hydrated]);
 
   // Persist to localStorage + queue Supabase sync
   useEffect(() => {
     saveCheckedState(checkedItems);
     syncToSupabase(checkedItems, customItems);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedItems]);
+  }, [checkedItems, hydrated]);
 
   useEffect(() => {
     saveCustomItems(customItems);
     syncToSupabase(checkedItems, customItems);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customItems]);
+  }, [customItems, hydrated]);
 
   const monday = useMemo(() => {
+    if (weekStart) return new Date(weekStart);
     const d = new Date();
     const dayOfWeek = d.getDay();
     d.setDate(d.getDate() - ((dayOfWeek + 6) % 7));
     d.setHours(0, 0, 0, 0);
     return d;
-  }, []);
+  }, [weekStart]);
   const sunday = useMemo(() => {
     const d = new Date(monday);
     d.setDate(d.getDate() + 6);
@@ -181,7 +159,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
   const categories = useMemo(() => {
     const startDay = (weekNumber - 1) * 7 + 1;
     const endDay = weekNumber * 7;
-    const weekDays = plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= endDay);
+    const weekDays = allPlanDays ? plan.days : plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= endDay);
     
     const ingredientMap: Record<string, AggregatedItem> = {};
     const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
@@ -224,32 +202,6 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       });
     });
 
-    // Add seed cycling ingredients for the week
-    const firstHalfDays = weekDays.filter(d => d.cycleDay <= 14).length;
-    const secondHalfDays = weekDays.filter(d => d.cycleDay > 14).length;
-    const seedItems: { name: string; unit: string; qty: number }[] = [];
-    if (firstHalfDays > 0) {
-      seedItems.push({ name: "Pumpkin seeds", unit: "tbsp", qty: firstHalfDays });
-      seedItems.push({ name: "Flaxseeds", unit: "tbsp", qty: firstHalfDays });
-    }
-    if (secondHalfDays > 0) {
-      seedItems.push({ name: "Sunflower seeds", unit: "tbsp", qty: secondHalfDays });
-      seedItems.push({ name: "Sesame seeds", unit: "tbsp", qty: secondHalfDays });
-    }
-    seedItems.forEach(seed => {
-      const base = toBase(seed.qty, seed.unit, seed.name);
-      const fullKey = `${seed.name.toLowerCase()}::${base.unit}`;
-      if (ingredientMap[fullKey]) {
-        ingredientMap[fullKey].totalQty += base.qty;
-      } else {
-        ingredientMap[fullKey] = {
-          name: seed.name, totalQty: base.qty, unit: base.unit,
-          category: "pantry", searchTerm: seed.name.toLowerCase(),
-          isPantryStaple: false,
-        };
-      }
-    });
-
     // Add custom items
     customItems.forEach(item => {
       const cat = item.category || categoriseItem(item.name);
@@ -265,7 +217,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
     });
 
     return groups;
-  }, [plan, weekNumber, customItems, pantryStaples]);
+  }, [plan, weekNumber, allPlanDays, customItems, pantryStaples]);
 
   const toggleCategory = (catName: string) => {
     haptic("light");
@@ -274,6 +226,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
 
   const toggleItem = (key: string) => {
     haptic("light");
+    dirty.current = true;
     setCheckedItems(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
@@ -291,18 +244,20 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       searchTerm: nzSearch,
       isCustom: true,
     };
+    dirty.current = true;
     setCustomItems(prev => [...prev, newItem]);
     setCustomInput("");
   };
 
   const removeCustomItem = (name: string) => {
     haptic("light");
+    dirty.current = true;
     setCustomItems(prev => prev.filter(i => i.name !== name));
   };
 
   const allItems = Object.values(categories).flat();
   const totalItems = allItems.length;
-  const checkedCount = Object.values(checkedItems).filter(Boolean).length;
+  const checkedCount = allItems.filter(i => checkedItems[itemKey(i)]).length;
   const categoryOrder = CATEGORY_ORDER;
 
   const handleCopy = async () => {
@@ -329,7 +284,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
       const items = categories[cat];
       const rows = items.map(i => {
         const smart = formatSmartQty(i.totalQty, i.unit, i.name);
-        const checked = checkedItems[`${cat}:${i.name}`] ? "✓" : "☐";
+        const checked = checkedItems[itemKey(i)] ? "✓" : "☐";
         return `<tr><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;width:20px;">${checked}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;">${i.name}${i.isPantryStaple ? ' <span style="color:#999;font-size:9px;">(pantry)</span>' : ""}</td><td style="padding:3px 6px;border-bottom:1px solid #ddd;font-size:11px;text-align:right;white-space:nowrap;">${smart}</td></tr>`;
       }).join("");
       return `<div style="break-inside:avoid;margin-bottom:12px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th colspan="3" style="background:#5B2D72;color:white;padding:5px 8px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.5px;">${CATEGORY_META[cat]}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
@@ -342,7 +297,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
   };
 
   const startDay = (weekNumber - 1) * 7 + 1;
-  const weekDays = plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= startDay + 6);
+  const weekDays = allPlanDays ? plan.days : plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= startDay + 6);
   const dominantPhase = weekDays.length > 0 ? weekDays[Math.floor(weekDays.length / 2)].phase : currentPhase;
   const weekPhaseColor = PHASE_HEX[dominantPhase as Phase] || phaseColor;
 
@@ -429,7 +384,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
         });
         if (items.length === 0) return null;
         const isExpanded = expandedCats[cat] !== false;
-        const catChecked = items.filter(i => checkedItems[`${cat}:${i.name}`]).length;
+        const catChecked = items.filter(i => checkedItems[itemKey(i)]).length;
 
         return (
           <div key={cat} className="card-warm overflow-hidden">
@@ -451,7 +406,7 @@ export default function SmartShoppingList({ plan, weekNumber }: Props) {
                   exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
                   <div className="px-3 pb-3 space-y-1.5">
                     {items.map(item => {
-                      const key = `${cat}:${item.name}`;
+                      const key = itemKey(item);
                       const isChecked = checkedItems[key];
                       const smartDisplay = formatSmartQty(item.totalQty, item.unit, item.name);
                       const parsed: ParsedIngredient = {

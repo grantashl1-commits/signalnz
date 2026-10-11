@@ -582,3 +582,8 @@ a img {
   .reflection-write-grid:not(:has(.journal-philosophy)) .journal-writing-surface { grid-column: 1 / -1; }
   .reflection-write-grid > .journal-philosophy { grid-column: 2; grid-row: 2 / span 2; }
 }
+
+/* Shared member surfaces; homepage and course layouts keep their own styling. */
+.member-page .card-warm { border-radius: 16px; box-shadow: var(--shadow-soft); }
+.member-page .page-tabs button { border-radius: 999px; }
+.member-page button:focus-visible, .member-page a:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }

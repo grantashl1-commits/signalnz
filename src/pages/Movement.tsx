@@ -1,3 +1,5 @@
+import PartnerCircuit from "@/components/movement/PartnerCircuit";
+import { usePageTab } from "@/hooks/usePageTab";
 import PageHeading from "@/components/ui/PageHeading";
 import { Activity as PageIcon } from "lucide-react";
 import { useState, useMemo, lazy, Suspense, useEffect } from "react";
@@ -51,12 +53,8 @@ export default function MovementPage() {
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
-  type MoveTab = "today" | "training" | "library" | "log" | "progress";
-  const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get("tab") as MoveTab | null;
-  const [activeTab, setActiveTab] = useState<MoveTab>(
-    initialTab && ["today", "training", "library", "log", "progress"].includes(initialTab) ? initialTab : "today",
-  );
+  type MoveTab = "today" | "partner" | "training" | "library" | "log" | "progress";
+  const [activeTab, setActiveTab] = usePageTab<MoveTab>(["today", "partner", "training", "library", "log", "progress"], "today");
 
   // Cards elsewhere ("Pick a path to begin") ask to switch tabs.
   useEffect(() => {
@@ -195,6 +193,7 @@ export default function MovementPage() {
 
   const TABS = [
     { id: "today" as const, label: "Today" },
+    { id: "partner" as const, label: "Partner circuit" },
     { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
@@ -225,9 +224,12 @@ export default function MovementPage() {
 
   const handleManualLog = async () => {
     if (manualLogging) return;
+    if (!manualLog.date || manualLog.date > todayStr || !Number.isFinite(manualLog.duration) || manualLog.duration < 1 || manualLog.duration > 300) {
+      toast.error("Choose a valid date and a duration of 1–300 minutes."); return;
+    }
     setManualLogging(true);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setManualLogging(false); return; }
+    if (!user) { setManualLogging(false); toast.error("Sign in to save your workout."); return; }
     const { error } = await (supabase as any).from("workout_logs").insert({
       user_id: user.id,
       session_date: manualLog.date,
@@ -280,6 +282,11 @@ export default function MovementPage() {
       {activeTab === "today" && (
         <div className="movement-today-grid">
           <MovementWeekStrip />
+          <button onClick={() => setActiveTab("partner")} className="card-warm p-5 text-left space-y-2" style={{ gridColumn: "1 / -1" }}>
+            <p className="eyebrow text-move">Train together · about 45 minutes</p>
+            <h2 className="font-display text-xl">Your partner circuit →</h2>
+            <p className="text-sm text-muted-foreground">3 strength + 3 reformer + 3 core. Complete your reps, then swap with your treadmill partner.</p>
+          </button>
           {/* Phase + training week context */}
           <div className="movement-phase-note p-4 md:p-5 border-l-2 border-move/50 bg-move/5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
@@ -342,6 +349,8 @@ export default function MovementPage() {
           <span className="font-body text-[9px] text-primary-foreground/70">bpm</span>
         </button>
       )}
+
+      {activeTab === "partner" && <PartnerCircuit />}
 
       {/* LIBRARY TAB */}
       {activeTab === "library" && <LibraryTab />}

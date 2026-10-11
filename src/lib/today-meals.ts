@@ -1,3 +1,4 @@
+import { toLocalDateStr } from "@/lib/local-date";
 import type { Phase } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
 import { findRecipeById, findRecipeByName } from "@/lib/recipe-index";
@@ -38,20 +39,20 @@ export function getPhasePlanDay(cycleDay: number) {
 const CUSTOM_PLAN_KEY = "signal_custom_meal_plan_v1";
 
 /** Hand-picked recipe ids for a cycle day (see useCustomMealPlan). */
-function readCustomDay(cycleDay: number): Partial<Record<MealSlot, string>> {
+function readCustomDay(cycleDay: number, date: string): Partial<Record<MealSlot, string>> {
   try {
     const raw = typeof window !== "undefined" ? window.localStorage.getItem(CUSTOM_PLAN_KEY) : null;
     if (!raw) return {};
-    const plan = JSON.parse(raw) as Record<number, Partial<Record<MealSlot, string>>>;
-    return plan?.[cycleDay] ?? {};
+    const plan = JSON.parse(raw) as Record<string, Partial<Record<MealSlot, string>>>;
+    return plan?.[date] ?? plan?.[cycleDay] ?? {};
   } catch {
     return {};
   }
 }
 
 /** Apply the member's own picks on top of the generated plan. */
-function withCustomPicks(meals: TodayMeal[], cycleDay: number): TodayMeal[] {
-  const custom = readCustomDay(cycleDay);
+function withCustomPicks(meals: TodayMeal[], cycleDay: number, date: string): TodayMeal[] {
+  const custom = readCustomDay(cycleDay, date);
   return meals.map((m) => {
     const id = custom[m.slot];
     const recipe = id ? findRecipeById(id) : undefined;
@@ -64,7 +65,7 @@ function withCustomPicks(meals: TodayMeal[], cycleDay: number): TodayMeal[] {
  * for this cycle day, otherwise the phase meal plan. Shared by Today, the
  * Eat tab and the family week planner so every screen agrees.
  */
-export function getTodayMeals(cycleDay: number): { meals: TodayMeal[]; isAI: boolean } {
+export function getTodayMeals(cycleDay: number, date = toLocalDateStr()): { meals: TodayMeal[]; isAI: boolean } {
   const aiToday = getAIMealPlan()?.days.find((d) => d.cycleDay === cycleDay) ?? null;
   if (aiToday) {
     const meals = (["breakfast", "lunch", "dinner"] as const)
@@ -74,16 +75,16 @@ export function getTodayMeals(cycleDay: number): { meals: TodayMeal[]; isAI: boo
         return { slot, label: slot[0].toUpperCase() + slot.slice(1), name, recipe: findRecipeByName(name), aiMeal: ai };
       })
       .filter((m) => m.name);
-    return { meals: withCustomPicks(meals, cycleDay), isAI: true };
+    return { meals: withCustomPicks(meals, cycleDay, date), isAI: true };
   }
 
   const { day: dayPlan } = getPhasePlanDay(cycleDay);
-  if (!dayPlan) return { meals: withCustomPicks([], cycleDay), isAI: false };
+  if (!dayPlan) return { meals: withCustomPicks([], cycleDay, date), isAI: false };
   const meals: TodayMeal[] = (["breakfast", "lunch", "dinner"] as const).map((slot) => ({
     slot,
     label: slot[0].toUpperCase() + slot.slice(1),
     name: dayPlan[slot],
     recipe: findRecipeByName(dayPlan[slot]),
   }));
-  return { meals: withCustomPicks(meals, cycleDay), isAI: false };
+  return { meals: withCustomPicks(meals, cycleDay, date), isAI: false };
 }

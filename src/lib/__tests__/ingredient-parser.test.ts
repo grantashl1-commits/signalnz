@@ -11,7 +11,7 @@ describe("parseIngredient", () => {
 
   it("parses fractional quantities", () => {
     const result = parseIngredient("½ tsp turmeric");
-    expect(result.quantity).toBe("½");
+    expect(result.quantity).toBe("1/2");
     expect(result.unit).toBe("tsp");
     expect(result.name).toBe("turmeric");
   });

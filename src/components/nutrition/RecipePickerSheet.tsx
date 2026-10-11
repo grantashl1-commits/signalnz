@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Search } from "lucide-react";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
@@ -27,8 +27,10 @@ const PHASE_HEX: Record<Phase, string> = {
 
 export default function RecipePickerSheet({ phase, category, title, onPick, onClose }: Props) {
   const [search, setSearch] = useState("");
-  const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(phase ?? "all");
+  const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
 
+  const [limit, setLimit] = useState(80);
+  useEffect(() => setLimit(80), [search, phaseFilter]);
   const filtered = useMemo(() => {
     return ALL_RECIPES.filter(r => {
       if (phaseFilter !== "all" && r.phase !== phaseFilter) return false;
@@ -64,7 +66,7 @@ export default function RecipePickerSheet({ phase, category, title, onPick, onCl
       >
         <div className="bottom-sheet-handle" />
         <div className="absolute top-4 right-4 z-10">
-          <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
+          <button aria-label="Close recipe picker" onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         </div>
@@ -124,7 +126,7 @@ export default function RecipePickerSheet({ phase, category, title, onPick, onCl
           {/* Recipe grid */}
           <div className="grid grid-cols-2 gap-3">
             <AnimatePresence>
-              {filtered.slice(0, 80).map((recipe, i) => (
+              {filtered.slice(0, limit).map((recipe, i) => (
                 <motion.button
                   key={recipe.id}
                   layout
@@ -151,6 +153,8 @@ export default function RecipePickerSheet({ phase, category, title, onPick, onCl
               ))}
             </AnimatePresence>
           </div>
+          {filtered.length > limit && <button className="touch-btn text-sm underline" onClick={() => setLimit(n => n + 80)}>Show more recipes</button>}
+
 
           {filtered.length === 0 && (
             <div className="text-center py-10">

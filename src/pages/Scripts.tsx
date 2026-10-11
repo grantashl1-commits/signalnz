@@ -1,3 +1,5 @@
+import PageHeading from "@/components/ui/PageHeading";
+import { Headphones as PageIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Upload, Search, CheckCircle2, Volume2, Trash2 } from "lucide-react";
 import { AtmosphericHero, ContentSection } from "@/components/AtmosphericSection";
@@ -162,17 +164,8 @@ export default function ScriptsPage() {
   };
 
   return (
-    <div>
-      <AtmosphericHero size="md">
-        <SignalPulse />
-        <div className="text-center relative z-10 px-6">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary-foreground/40 mb-4">Scripts</p>
-          <h1 className="font-display text-[3rem] md:text-[4rem] font-extrabold text-primary-foreground leading-[1.02] mb-4">Reader Studio</h1>
-          <p className="font-editorial text-base md:text-lg italic text-primary-foreground/60 max-w-2xl mx-auto">
-            Read each script in your own voice, upload the audio, and the app will use your recording instead of generated narration.
-          </p>
-        </div>
-      </AtmosphericHero>
+    <div className="member-page">
+      <PageHeading title="Reader Studio" label="Audio studio" icon={PageIcon} tone="reflect">Read each script in your own voice and save your recordings.</PageHeading>
 
       <ContentSection className="px-5 md:px-4 space-y-6">
         <div className="card-warm p-4 space-y-4">

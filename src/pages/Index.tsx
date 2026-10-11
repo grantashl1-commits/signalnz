@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
@@ -100,6 +100,13 @@ function isTodayPrepDay(mealPrepDay: string | null): boolean {
 }
 
 export default function HomePage() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash !== "#calendar") return;
+    const timer = setTimeout(() => document.getElementById("calendar")?.scrollIntoView({ behavior: "smooth", block: "start" }), 400);
+    return () => clearTimeout(timer);
+  }, [location.hash]);
+
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { displayName, onboardingComplete, loading: profileLoading, refetch, mealPrepDay } = useProfile();
@@ -306,7 +313,7 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--card-gap)' }}>
           {user && <HomeHabitsDisplay />}
           {user && <HomeTodoList />}
-          {user && <HomeCalendarCard />}
+          {user && <div id="calendar"><HomeCalendarCard /></div>}
         </div>
       </ContentSection>
 

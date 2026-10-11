@@ -13,6 +13,7 @@ import { haptic } from "@/hooks/use-mobile";
 import { useSavedRecipes } from "@/hooks/useSavedRecipes";
 import { useCycle } from "@/contexts/CycleContext";
 import { useGatedExpand } from "@/hooks/useGatedExpand";
+import { toLocalDateStr } from "@/lib/local-date";
 import { addRecipeToMyWeek } from "@/lib/add-to-my-week";
 import { adultFacets, kidsFacets } from "@/lib/recipe-catalog";
 import type { RecipeFacets } from "@/lib/recipe-facets";
@@ -935,9 +936,9 @@ function AddToWeekPicker({
 
   const [picked, setPicked] = useState<{ cycleDay: number; slot: MealSlot } | null>(null);
 
-  const handlePick = (cycleDay: number, slot: MealSlot) => {
+  const handlePick = (cycleDay: number, slot: MealSlot, date: Date) => {
     haptic("medium");
-    const result = addRecipeToMyWeek(recipe, cycleDay, slot);
+    const result = addRecipeToMyWeek(recipe, cycleDay, slot, toLocalDateStr(date));
     setPicked({ cycleDay, slot });
     toast.success(
       result.addedToAIPlan
@@ -979,7 +980,7 @@ function AddToWeekPicker({
                       return (
                         <button
                           key={s.key}
-                          onClick={() => handlePick(d.cycleDay, s.key)}
+                          onClick={() => handlePick(d.cycleDay, s.key, d.date)}
                           className="touch-btn flex-1 flex items-center justify-center gap-1 rounded-full bg-card px-2 py-1.5 min-h-[36px] font-body text-[11px] font-medium text-foreground transition-all"
                           style={isPicked ? { backgroundColor: phaseColor, color: "white" } : {}}
                         >

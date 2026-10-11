@@ -1,3 +1,4 @@
+import { useCustomMealPlan } from "@/hooks/useCustomMealPlan";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -68,7 +69,8 @@ function Tile({
 
 export default function TodayBoard({ greeting, firstName }: { greeting: string; firstName: string | null }) {
   const { currentPhase, currentCycleDay } = useCycle();
-  const { meals } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay]);
+  const { plan: customPlan } = useCustomMealPlan();
+  const { meals } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
 
   const [session, setSession] = useState<NextSessionInfo | null>(null);
   useEffect(() => {

@@ -1,18 +1,21 @@
 /**
  * Local-first storage for the user's hand-picked weekly meal plan.
  *
- * Each entry is keyed by cycle day (1–28) and slot (breakfast/lunch/dinner)
+ * Each new entry is keyed by local calendar date and meal slot; legacy cycle-day keys remain readable.
  * and stores the recipe id from the nourish library. Slots without an entry
  * fall back to the static phase plan in the consumer.
  *
  * Shape kept tiny so syncing to Supabase later is trivial.
  */
 import { useCallback, useEffect, useState } from "react";
+import { toLocalDateStr } from "@/lib/local-date";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export type MealSlot = "breakfast" | "lunch" | "dinner";
 
-export type CustomMealPlan = Record<number, Partial<Record<MealSlot, string>>>;
+export type CustomMealPlan = Record<string, Partial<Record<MealSlot, string>>>;
 
 const STORAGE_KEY = "signal_custom_meal_plan_v1";
 const UPDATED_KEY = "signal_custom_meal_plan_updated_at";
@@ -56,7 +59,7 @@ async function currentUserId(): Promise<string | null> {
 }
 
 async function findCloudRow(uid: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("user_plans")
     .select("id, plan_data")
     .eq("user_id", uid)
@@ -65,6 +68,7 @@ async function findCloudRow(uid: string) {
     .order("generated_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+  if (error) throw error;
   return data as { id: string; plan_data: { picks?: CustomMealPlan; updatedAt?: number } } | null;
 }
 
@@ -75,12 +79,12 @@ function pushToCloud(plan: CustomMealPlan) {
     const uid = await currentUserId();
     if (!uid) return;
     try {
-      const plan_data = { kind: CLOUD_KIND, picks: plan, updatedAt: Date.now() };
+      const plan_data = { kind: CLOUD_KIND, picks: plan, updatedAt: Number(window.localStorage.getItem(UPDATED_KEY) || Date.now()) };
       const row = await findCloudRow(uid);
-      if (row) await supabase.from("user_plans").update({ plan_data, generated_at: new Date().toISOString() }).eq("id", row.id);
-      else await supabase.from("user_plans").insert({ user_id: uid, plan_type: "nutrition", plan_data });
+      if (row) await supabase.from("user_plans").update({ plan_data, generated_at: new Date().toISOString() }).eq("id", row.id).eq("user_id", uid).throwOnError();
+      else await supabase.from("user_plans").insert({ user_id: uid, plan_type: "nutrition", plan_data }).throwOnError();
     } catch {
-      // offline — local copy stays the source of truth until the next change
+      toast.error("Saved on this device. Cloud sync failed; reconnect to retry.");
     }
   }, 600);
 }
@@ -97,7 +101,7 @@ function pullFromCloud(): Promise<void> {
       const cloudUpdated = row?.plan_data?.updatedAt ?? 0;
       if (row?.plan_data?.picks && cloudUpdated > localUpdated) {
         saveToStorage(row.plan_data.picks, cloudUpdated);
-      } else if (!row && localUpdated) {
+      } else if (localUpdated > cloudUpdated) {
         pushToCloud(loadFromStorage());
       }
     } catch {
@@ -107,7 +111,21 @@ function pullFromCloud(): Promise<void> {
   return pullPromise;
 }
 
+export function setCustomMeal(cycleDay: number, slot: MealSlot, recipeId: string, date = toLocalDateStr()) {
+  const prev = loadFromStorage();
+  const next = { ...prev, [date]: { ...(prev[date] ?? prev[cycleDay] ?? {}), [slot]: recipeId } };
+  saveToStorage(next); pushToCloud(next); return next;
+}
+
 export function useCustomMealPlan() {
+  const { user } = useAuth();
+  useEffect(() => {
+    pullPromise = null;
+    void pullFromCloud();
+    const retry = () => { pullPromise = null; void pullFromCloud(); };
+    window.addEventListener("online", retry);
+    return () => window.removeEventListener("online", retry);
+  }, [user?.id]);
   const [plan, setPlan] = useState<CustomMealPlan>(loadFromStorage);
 
   // Cross-tab and same-page sync (another tab, or another hook instance /
@@ -127,29 +145,14 @@ export function useCustomMealPlan() {
     };
   }, []);
 
-  const setMeal = useCallback((cycleDay: number, slot: MealSlot, recipeId: string) => {
-    setPlan(prev => {
-      const next: CustomMealPlan = {
-        ...prev,
-        [cycleDay]: { ...(prev[cycleDay] || {}), [slot]: recipeId },
-      };
-      saveToStorage(next);
-      pushToCloud(next);
-      return next;
-    });
+  const setMeal = useCallback((cycleDay: number, slot: MealSlot, recipeId: string, date = toLocalDateStr()) => {
+    setPlan(setCustomMeal(cycleDay, slot, recipeId, date));
   }, []);
-
-  const removeMeal = useCallback((cycleDay: number, slot: MealSlot) => {
-    setPlan(prev => {
-      const day = { ...(prev[cycleDay] || {}) };
-      delete day[slot];
-      const next: CustomMealPlan = { ...prev };
-      if (Object.keys(day).length === 0) delete next[cycleDay];
-      else next[cycleDay] = day;
-      saveToStorage(next);
-      pushToCloud(next);
-      return next;
-    });
+  const removeMeal = useCallback((cycleDay: number, slot: MealSlot, date = toLocalDateStr()) => {
+    const prev = loadFromStorage(); const day = { ...(prev[date] ?? prev[cycleDay] ?? {}) };
+    delete day[slot];
+    const next = { ...prev, [date]: day };
+    saveToStorage(next); pushToCloud(next); setPlan(next);
   }, []);
 
   const clearWeek = useCallback((cycleDays: number[]) => {
@@ -162,8 +165,8 @@ export function useCustomMealPlan() {
     });
   }, []);
 
-  const getMeal = useCallback((cycleDay: number, slot: MealSlot): string | undefined => {
-    return plan[cycleDay]?.[slot];
+  const getMeal = useCallback((cycleDay: number, slot: MealSlot, date = toLocalDateStr()): string | undefined => {
+    return (plan[date] ?? plan[cycleDay])?.[slot];
   }, [plan]);
 
   return { plan, setMeal, removeMeal, clearWeek, getMeal };
