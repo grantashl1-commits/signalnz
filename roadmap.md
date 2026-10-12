@@ -1,4 +1,5 @@
 # Homepage-led page redesign
+- [ ] Deliver an original SIGNAL illustration catalogue with individual Google Flow descriptions for recipes, training paths (including reformer Pilates), meditations and other site sections.
 - [x] Restore original SIGNAL logo on the welcome page and regenerate homepage artwork in the YOCH reference style; verify artwork and sign-in link.
 - [x] Capture homepage and representative existing pages; offer matching design directions.
 - [x] Apply selected direction across other pages without changing workflows.
