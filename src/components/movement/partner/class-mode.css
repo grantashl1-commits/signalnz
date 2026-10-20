@@ -1,0 +1,122 @@
+/* Partner class mode — a scoped "gym TV wall" theme. Everything is under
+   .pc-class so nothing leaks into the member pages. Signal fonts are kept. */
+
+.pc-class {
+  --pc-bg: #0d1719;
+  --pc-bg-2: #12262a;
+  --pc-panel: rgba(255, 255, 255, 0.055);
+  --pc-panel-strong: rgba(255, 255, 255, 0.1);
+  --pc-line: rgba(255, 255, 255, 0.1);
+  --pc-text: #ffffff;
+  --pc-muted: rgba(255, 255, 255, 0.66);
+  --pc-teal: #2ee6c5;
+  --pc-coral: #ff6b5b;
+  --pc-amber: #ffb020;
+  --pc-strength: #ff6b5b;
+  --pc-reformer: #2ee6c5;
+  --pc-core: #ffb020;
+  color: var(--pc-text);
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(46, 230, 197, 0.16), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(255, 107, 91, 0.12), transparent 60%),
+    linear-gradient(180deg, var(--pc-bg-2), var(--pc-bg));
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pc-class .pc-panel { background: var(--pc-panel); border: 1px solid var(--pc-line); border-radius: 20px; }
+.pc-class .pc-muted { color: var(--pc-muted); }
+.pc-class .pc-caps { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; line-height: 1.05; }
+.pc-class .pc-num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+.pc-class .pc-clock { font-size: clamp(44px, 6.2vw, 132px); font-weight: 800; line-height: 0.95; letter-spacing: -0.02em; }
+.pc-class .pc-title { font-size: clamp(15px, 1.25vw, 30px); font-weight: 700; }
+.pc-class .pc-sub { font-size: clamp(12px, 0.95vw, 22px); }
+.pc-class .pc-tile-label { font-size: clamp(12px, 1.05vw, 26px); }
+.pc-class .pc-tile-reps { font-size: clamp(11px, 0.9vw, 22px); }
+.pc-class .pc-who { font-size: clamp(14px, 1.15vw, 28px); }
+
+.pc-class .pc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 48px; border-radius: 9999px; padding: 0 1.1rem; font-weight: 700;
+  background: var(--pc-panel-strong); color: var(--pc-text); border: 1px solid var(--pc-line);
+  transition: transform 120ms ease, background 160ms ease;
+}
+.pc-class .pc-btn:active { transform: scale(0.97); }
+.pc-class .pc-btn:focus-visible { outline: 3px solid var(--pc-teal); outline-offset: 2px; }
+.pc-class .pc-btn-primary { background: var(--pc-teal); color: #062420; border-color: transparent; }
+.pc-class .pc-btn-icon { width: 48px; padding: 0; }
+.pc-class .pc-input {
+  width: 100%; min-height: 48px; border-radius: 14px; padding: 0 0.85rem; font-size: 18px; font-weight: 700;
+  background: rgba(0, 0, 0, 0.28); color: var(--pc-text); border: 1px solid var(--pc-line);
+}
+.pc-class .pc-input:focus { outline: 2px solid var(--pc-teal); outline-offset: 1px; }
+
+/* Station tiles */
+.pc-class .pc-tile {
+  position: relative; display: flex; flex-direction: column; min-height: 0; min-width: 0;
+  background: var(--pc-panel); border: 1px solid var(--pc-line); border-radius: 18px; padding: 0.55rem;
+  transition: transform 260ms ease, box-shadow 260ms ease, opacity 260ms ease, border-color 260ms ease;
+}
+.pc-class .pc-tile[data-done="true"] { opacity: 0.55; }
+.pc-class .pc-tile[data-active="true"] {
+  opacity: 1; z-index: 2; transform: scale(1.035);
+  border-color: var(--pc-teal);
+  box-shadow: 0 0 0 2px var(--pc-teal), 0 18px 50px -12px rgba(46, 230, 197, 0.55);
+  animation: pc-glow 2.4s ease-in-out infinite;
+}
+.pc-class .pc-badge {
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px;
+  min-width: 2em; height: 2em; padding: 0 0.4em; font-weight: 800; font-size: clamp(12px, 1vw, 24px);
+  background: var(--pc-text); color: var(--pc-bg);
+}
+.pc-class .pc-tile[data-block="Strength"] .pc-badge { background: var(--pc-strength); color: #2a0b07; }
+.pc-class .pc-tile[data-block="Reformer"] .pc-badge { background: var(--pc-reformer); color: #062420; }
+.pc-class .pc-tile[data-block="Core"] .pc-badge { background: var(--pc-core); color: #2b1a00; }
+.pc-class .pc-art { background: #fbf8f3; border-radius: 14px; overflow: hidden; }
+.pc-class .pc-worker-pill {
+  border-radius: 9999px; padding: 0.2em 0.7em; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: clamp(11px, 0.95vw, 22px); background: var(--pc-teal); color: #062420;
+}
+.pc-class .pc-art img { mix-blend-mode: multiply; }
+
+/* Gentle "demo loop" on the active station's illustration. */
+.pc-demo-loop { animation: pc-demo 2.6s ease-in-out infinite; transform-origin: 50% 85%; }
+.pc-pose-start { animation: pc-pose-a 3.2s ease-in-out infinite; }
+.pc-pose-end { animation: pc-pose-b 3.2s ease-in-out infinite; }
+
+@keyframes pc-demo {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2.5%) scale(1.045); }
+}
+@keyframes pc-pose-a { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes pc-pose-b { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes pc-glow {
+  0%, 100% { box-shadow: 0 0 0 2px var(--pc-teal), 0 18px 50px -12px rgba(46, 230, 197, 0.45); }
+  50% { box-shadow: 0 0 0 3px var(--pc-teal), 0 18px 60px -8px rgba(46, 230, 197, 0.7); }
+}
+
+/* Progress bar of turns */
+.pc-class .pc-seg { height: 8px; border-radius: 9999px; background: rgba(255, 255, 255, 0.12); }
+.pc-class .pc-seg[data-state="done"] { background: var(--pc-teal); }
+.pc-class .pc-seg[data-state="now"] { background: var(--pc-amber); }
+
+/* Heart-rate tiles */
+.pc-class .pc-hr {
+  position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--pc-line);
+  background: var(--pc-panel);
+}
+.pc-class .pc-hr-fill { position: absolute; inset: 0; opacity: 0.9; transition: background-color 600ms ease; }
+.pc-class .pc-hr-bpm { font-size: clamp(40px, 5.2vw, 120px); font-weight: 800; line-height: 0.9; letter-spacing: -0.02em; }
+.pc-class .pc-hr-screen .pc-hr-bpm { font-size: clamp(72px, 13vw, 300px); }
+.pc-class .pc-hr-strip .pc-hr-bpm { font-size: clamp(34px, 3.4vw, 76px); }
+.pc-class .pc-hr-strip .pc-hr-name { font-size: clamp(15px, 1.35vw, 32px); }
+.pc-class .pc-hr-empty { opacity: 0.3; letter-spacing: 0.08em; }
+.pc-class .pc-hr-name { font-size: clamp(16px, 1.6vw, 40px); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.pc-class .pc-hr-screen .pc-hr-name { font-size: clamp(22px, 3vw, 64px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-demo-loop, .pc-pose-start, .pc-pose-end, .pc-class .pc-tile[data-active="true"] { animation: none !important; }
+  .pc-pose-end { opacity: 0; }
+  .pc-class .pc-tile, .pc-class .pc-hr-fill { transition: none; }
+}
