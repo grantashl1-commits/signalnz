@@ -5,8 +5,9 @@
  */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, ChevronRight, Sparkles, Clock, Flame, Wind, X } from "lucide-react";
+import { Heart, ChevronRight, Sparkles, Clock, Flame, Wind, X, Play } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useCycle } from "@/contexts/CycleContext";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
@@ -17,6 +18,8 @@ import {
   getNextSession,
   markSessionCompleted,
   resetPathProgress,
+  sessionStartHref,
+  TRAINING_PATH_EVENTS,
   type NextSessionInfo,
 } from "@/lib/training-path-utils";
 import type { TrainingFocus } from "@/data/signal-training-paths";
@@ -70,6 +73,8 @@ const PHASE_LOAD_NOTE: Record<Phase, string> = {
 };
 
 export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => void }) {
+  const { user } = useAuth();
+  const userId = user?.id;
   const hr = useGlobalHeartRate();
   const { currentPhase } = useCycle();
   const [info, setInfo] = useState<NextSessionInfo | null>(null);
@@ -99,7 +104,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   useEffect(() => {
     const refresh = () => {
       const path = getSelectedPath();
-      const next = path ? getNextSession(path) : null;
+      const next = path ? getNextSession(path, { userId }) : null;
       setInfo(next);
       if (next) {
         const key = `${next.path.id}::w${next.week}::d${next.day}`;
@@ -109,9 +114,9 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
       }
     };
     refresh();
-    window.addEventListener("signal:training-path-changed", refresh);
-    return () => window.removeEventListener("signal:training-path-changed", refresh);
-  }, []);
+    TRAINING_PATH_EVENTS.forEach(name => window.addEventListener(name, refresh));
+    return () => TRAINING_PATH_EVENTS.forEach(name => window.removeEventListener(name, refresh));
+  }, [userId]);
 
   // Auto-start recording the moment HR is connected on this card.
   // Must be declared BEFORE any early return to keep hook order stable.
@@ -143,6 +148,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   const { path, week, day, session, completedCount, finished } = info;
   const showRestart = week > 1 || completedCount > 0;
   const sessionKey = `${path.id}::w${week}::d${day}`;
+  // The partner series is trained (and ticked off) in its class hub.
+  const startHref = sessionStartHref(info);
 
   const handleComplete = () => {
     haptic("medium");
@@ -160,8 +167,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
 
   const handleRestart = () => {
     haptic("light");
-    resetPathProgress(path.id);
-    toast.success("Back to week 1.");
+    resetPathProgress(path.id, userId);
+    toast.success(startHref ? "Back to week 1. Your saved weights carry over." : "Back to week 1.");
   };
 
   // HR is now driven by the floating pulse icon in Movement.tsx.
@@ -187,13 +194,13 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
           <div className="flex-1 min-w-0 space-y-1">
             <p className="font-hand text-xs uppercase tracking-[0.2em] text-primary">
-              Today on {FOCUS_TITLE[path.focus]}
+              Today on {startHref ? "Partner series" : FOCUS_TITLE[path.focus]}
             </p>
             <h3 className="font-display text-xl md:text-2xl font-extrabold text-foreground leading-tight">
               {session.name}
             </h3>
             <p className="font-body text-[11px] text-muted-foreground">
-              Week {week} · Day {day}
+              Week {week} · {startHref ? "Session" : "Day"} {day}
               {session.durationMin ? ` · ${session.durationMin} min` : ""}
               {session.equipment ? ` · ${session.equipment}` : ""}
             </p>
@@ -402,12 +409,22 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
               <span>{hr.bpm ? `${hr.bpm} bpm · recording` : "Monitor connected"}</span>
             </div>
           )}
-          <button
-            onClick={handleComplete}
-            className="w-full h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center active:scale-[0.97] transition-transform"
-          >
-            Finish workout
-          </button>
+          {startHref ? (
+            <Link
+              to={startHref}
+              onClick={() => { haptic("medium"); clearOffered(sessionKey); }}
+              className="w-full h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+            >
+              <Play className="h-4 w-4" /> {finished ? "Open the partner class" : `Start partner class · week ${week}, session ${day}`}
+            </Link>
+          ) : (
+            <button
+              onClick={handleComplete}
+              className="w-full h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center active:scale-[0.97] transition-transform"
+            >
+              Finish workout
+            </button>
+          )}
         </div>
       </div>
     </motion.section>

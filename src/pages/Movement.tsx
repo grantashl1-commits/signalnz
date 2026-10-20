@@ -1,4 +1,7 @@
 import PartnerCircuit from "@/components/movement/PartnerCircuit";
+import { useAuth } from "@/contexts/AuthContext";
+import { getPartnerSession } from "@/data/partner-program";
+import { PARTNER_PROGRESS_EVENT, getNextSessionId, getPartnerProgress } from "@/lib/partner-progress";
 import { usePageTab } from "@/hooks/usePageTab";
 import PageHeading from "@/components/ui/PageHeading";
 import { Activity as PageIcon } from "lucide-react";
@@ -50,6 +53,7 @@ const cardVariant = {
 export default function MovementPage() {
   const { currentPhase, currentCycleDay, currentWeekNumber } = useCycle();
   const globalHR = useGlobalHeartRate();
+  const { user } = useAuth();
   const info = { phase: currentPhase, cycleDay: currentCycleDay };
   const fitnessProfile = getFitnessProfile();
   
@@ -65,6 +69,15 @@ export default function MovementPage() {
     window.addEventListener("signal:open-tab", open);
     return () => window.removeEventListener("signal:open-tab", open);
   }, []);
+  // Next partner-series session for the Today teaser (live as sessions are ticked off).
+  const [partnerNextId, setPartnerNextId] = useState<string | null>(() => getNextSessionId(getPartnerProgress(user?.id)));
+  useEffect(() => {
+    const refresh = () => setPartnerNextId(getNextSessionId(getPartnerProgress(user?.id)));
+    refresh();
+    window.addEventListener(PARTNER_PROGRESS_EVENT, refresh);
+    return () => window.removeEventListener(PARTNER_PROGRESS_EVENT, refresh);
+  }, [user?.id]);
+  const partnerNext = partnerNextId ? getPartnerSession(partnerNextId) : undefined;
   const [feeling, setFeeling] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<WorkoutCategory | "all">("all");
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">(info.phase);
@@ -193,7 +206,7 @@ export default function MovementPage() {
 
   const TABS = [
     { id: "today" as const, label: "Today" },
-    { id: "partner" as const, label: "Partner circuit" },
+    { id: "partner" as const, label: "Partner series" },
     { id: "training" as const, label: "Training" },
     { id: "library" as const, label: "Library" },
     { id: "log" as const, label: "My Log" },
@@ -207,7 +220,7 @@ export default function MovementPage() {
     let liveName = todayWorkoutData?.name || "Workout";
     try {
       const path = getSelectedPath();
-      const next = path ? getNextSession(path) : null;
+      const next = path ? getNextSession(path, { userId: user?.id }) : null;
       if (next?.session?.name) liveName = next.session.name;
     } catch {}
     globalHR.openLive(liveName);
@@ -282,11 +295,18 @@ export default function MovementPage() {
       {activeTab === "today" && (
         <div className="movement-today-grid">
           <MovementWeekStrip />
-          <button onClick={() => setActiveTab("partner")} className="card-warm p-5 text-left space-y-2" style={{ gridColumn: "1 / -1" }}>
-            <p className="eyebrow text-move">Train together · about 45 minutes</p>
-            <h2 className="font-display text-xl">Your partner circuit →</h2>
-            <p className="text-sm text-muted-foreground">3 strength + 3 reformer + 3 core. Complete your reps, then swap with your treadmill partner.</p>
-          </button>
+          <Link
+            to={partnerNext ? `/movement?tab=partner&session=${partnerNext.id}` : "/movement?tab=partner"}
+            onClick={() => haptic("light")}
+            className="card-warm block p-5 text-left space-y-2"
+            style={{ gridColumn: "1 / -1" }}
+          >
+            <p className="eyebrow text-move">Partner series · about {partnerNext?.estMinutes ?? 45} minutes</p>
+            <h2 className="font-display text-xl">
+              {partnerNext ? `Week ${partnerNext.week} · Session ${partnerNext.index} · ${partnerNext.focus} ${partnerNext.style} →` : "Partner series complete — start again →"}
+            </h2>
+            <p className="text-sm text-muted-foreground">3 strength + 3 reformer + 3 core, 2 rounds. Work a station, then swap with your treadmill partner.</p>
+          </Link>
           {/* Phase + training week context */}
           <div className="movement-phase-note p-4 md:p-5 border-l-2 border-move/50 bg-move/5 relative overflow-hidden">
             <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">

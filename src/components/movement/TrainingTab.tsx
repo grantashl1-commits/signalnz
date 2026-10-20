@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronDown, Check, Pencil } from "lucide-react";
+import { ChevronLeft, ChevronDown, Check, Pencil, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -16,7 +17,11 @@ import {
   getSelectedPathId,
   setSelectedPathId,
   hydrateSelectedPathFromProfile,
+  isPartnerPath,
 } from "@/lib/training-path-utils";
+import { partnerSessionHref } from "@/data/signal-training-paths";
+import { PARTNER_PROGRESS_EVENT, getPartnerProgress } from "@/lib/partner-progress";
+import { useAuth } from "@/contexts/AuthContext";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import { parseRunStructure } from "@/lib/run-session-parser";
@@ -82,6 +87,24 @@ const FOCUS_DISPLAY_TITLE: Record<TrainingFocus, string> = {
 
 const ENRICHED_PATHS = enrichAllTrainingPaths(SIGNAL_TRAINING_PATHS);
 
+/** Card / header title: the focus word, except the partner series, which is named for how it's trained. */
+const pathTitle = (path: TrainingPath) => (isPartnerPath(path) ? "Partner" : FOCUS_DISPLAY_TITLE[path.focus]);
+
+/** Partner-series sessions already ticked off in the partner hub (live). */
+function usePartnerCompleted(enabled: boolean): Record<string, unknown> {
+  const { user } = useAuth();
+  const userId = user?.id;
+  const [done, setDone] = useState<Record<string, unknown>>(() => (enabled ? getPartnerProgress(userId).completed : {}));
+  useEffect(() => {
+    if (!enabled) return;
+    const refresh = () => setDone(getPartnerProgress(userId).completed);
+    refresh();
+    window.addEventListener(PARTNER_PROGRESS_EVENT, refresh);
+    return () => window.removeEventListener(PARTNER_PROGRESS_EVENT, refresh);
+  }, [enabled, userId]);
+  return done;
+}
+
 export default function TrainingTab() {
   const [selectedPath, setSelectedPath] = useState<TrainingPath | null>(null);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
@@ -110,7 +133,7 @@ export default function TrainingTab() {
           haptic("light");
           setSelectedPathId(selectedPath.id);
           setActivePathId(selectedPath.id);
-          toast.success(`${FOCUS_DISPLAY_TITLE[selectedPath.focus]} is now your Today plan.`);
+          toast.success(`${pathTitle(selectedPath)} is now your Today plan.`);
         }}
         onBack={() => {
           haptic("light");
@@ -203,7 +226,7 @@ function PathCard({
       <div className="aspect-square w-full bg-gradient-to-br from-primary/5 via-transparent to-secondary/30 flex items-center justify-center overflow-hidden shrink-0">
         <img
           src={FOCUS_ART[path.focus]}
-          alt={FOCUS_DISPLAY_TITLE[path.focus]}
+          alt={pathTitle(path)}
           loading="lazy"
           width={768}
           height={768}
@@ -212,7 +235,7 @@ function PathCard({
       </div>
       <div className="p-3 md:p-4 space-y-1.5 flex-1 flex flex-col">
         <h3 className="font-display text-base md:text-lg font-extrabold text-foreground leading-tight min-h-[1.5rem]">
-          {FOCUS_DISPLAY_TITLE[path.focus]}
+          {pathTitle(path)}
         </h3>
         <p className="font-editorial text-[11px] md:text-xs italic text-primary/80 line-clamp-2 leading-snug min-h-[2.25rem]">
           {path.subtitle}
@@ -241,6 +264,8 @@ function PathDetail({
   onChooseAsToday: () => void;
 }) {
   const total = path.weeks.length;
+  const partner = isPartnerPath(path);
+  const partnerDone = usePartnerCompleted(partner);
   const weekSwipe = useSwipe({
     onSwipeLeft: () => {
       if (!total) return;
@@ -271,15 +296,15 @@ function PathDetail({
         <div className="flex items-start gap-4">
           <img
             src={FOCUS_ART[path.focus]}
-            alt={FOCUS_DISPLAY_TITLE[path.focus]}
+            alt={pathTitle(path)}
             className="h-24 w-24 md:h-32 md:w-32 object-contain shrink-0"
           />
           <div className="flex-1 min-w-0 space-y-2">
             <span className="inline-block rounded-full bg-secondary px-2.5 py-1 font-body text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-              {FOCUS_LABEL[path.focus]}
+              {partner ? "Partner · strength + reformer" : FOCUS_LABEL[path.focus]}
             </span>
             <h2 className="font-display text-2xl md:text-3xl font-extrabold text-foreground leading-tight">
-              {FOCUS_DISPLAY_TITLE[path.focus]}
+              {pathTitle(path)}
             </h2>
             <p className="font-editorial text-sm md:text-base italic text-primary/80">
               {path.name}
@@ -304,6 +329,15 @@ function PathDetail({
         {active ? "✓ Following this path on Today" : "Follow this path on Today"}
       </button>
 
+      {partner && (
+        <Link
+          to="/movement?tab=partner"
+          className="w-full h-12 rounded-full border border-border bg-card font-display text-sm font-semibold inline-flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+        >
+          <Users className="h-4 w-4" /> Open the partner class
+        </Link>
+      )}
+
       <section className="card-warm p-4 space-y-1.5">
         <p className="font-hand text-xs uppercase tracking-[0.2em] text-primary">Who it's for</p>
         <p className="font-body text-sm text-foreground leading-relaxed">{path.whoItIsFor}</p>
@@ -324,6 +358,7 @@ function PathDetail({
               focus={path.focus as TrainingFocus}
               expanded={expandedWeek === week.week}
               onToggle={() => onToggleWeek(week.week)}
+              partnerDone={partner ? partnerDone : undefined}
             />
           ))}
           {path.weeks.length === 0 && (
@@ -342,11 +377,14 @@ function WeekRow({
   focus,
   expanded,
   onToggle,
+  partnerDone,
 }: {
   week: TrainingWeek;
   focus: TrainingFocus;
   expanded: boolean;
   onToggle: () => void;
+  /** Partner series only: sessions ticked off in the partner hub. */
+  partnerDone?: Record<string, unknown>;
 }) {
   return (
     <div className="rounded-xl bg-card border border-border overflow-hidden">
@@ -398,7 +436,12 @@ function WeekRow({
               )}
               <div className="space-y-2.5">
                 {week.sessions.map((session) => (
-                  <SessionCard key={session.day} session={session} focus={focus} />
+                  <SessionCard
+                    key={session.day}
+                    session={session}
+                    focus={focus}
+                    partner={partnerDone ? { href: partnerSessionHref(week.week, session.day), done: !!partnerDone[`w${week.week}-s${session.day}`] } : undefined}
+                  />
                 ))}
               </div>
             </div>
@@ -409,7 +452,7 @@ function WeekRow({
   );
 }
 
-function SessionCard({ session, focus }: { session: DaySession; focus: TrainingFocus }) {
+function SessionCard({ session, focus, partner }: { session: DaySession; focus: TrainingFocus; partner?: { href: string; done: boolean } }) {
   const lookupIllustration = useExerciseIllustrations();
   const [timerOpen, setTimerOpen] = useState(false);
   const meta: string[] = [];
@@ -428,7 +471,10 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
       <div className="flex items-baseline justify-between gap-3">
         <div className="min-w-0">
           <p className="font-body text-[10px] text-primary uppercase tracking-[0.2em] font-semibold">
-            Day {session.day}
+            {partner ? "Session" : "Day"} {session.day}
+            {partner?.done && (
+              <span className="ml-2 inline-flex items-center gap-0.5 normal-case tracking-normal text-move"><Check className="h-3 w-3" /> Done</span>
+            )}
           </p>
           <h5 className="font-display text-sm font-bold text-foreground mt-0.5 leading-snug">
             {session.name}
@@ -482,9 +528,9 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
 
           {session.supersets && session.supersets.map((ss, ssIdx) => {
             const isPair = (ss.exercises?.length ?? 0) >= 2;
-            const blockLabel = isPair
+            const blockLabel = ss.label ?? (isPair
               ? `Superset ${String.fromCharCode(65 + ssIdx)}`
-              : `Main lift ${String.fromCharCode(65 + ssIdx)}`;
+              : `Main lift ${String.fromCharCode(65 + ssIdx)}`);
             return (
             <div key={ssIdx} className="rounded-lg bg-card border border-border overflow-hidden">
               <div className="flex items-center justify-between px-3 py-2 bg-secondary/40 border-b border-border">
@@ -511,6 +557,7 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
                       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-body text-[11px] text-muted-foreground">
                         <span><span className="text-foreground/60">{ex.sets}</span>×<span className="text-foreground/60">{ex.reps}</span></span>
                         {ex.tempo && <span>tempo <span className="text-foreground/60">{ex.tempo}</span></span>}
+                        {ex.rir && <span>RIR <span className="text-foreground/60">{ex.rir}</span></span>}
                         {ex.weight && <span>load <span className="text-foreground/60">{ex.weight}</span></span>}
                       </div>
                       {ex.notes && (
@@ -595,6 +642,17 @@ function SessionCard({ session, focus }: { session: DaySession; focus: TrainingF
         <p className="font-body text-xs text-foreground/70 italic leading-relaxed border-l-2 border-primary/30 pl-3 mt-2">
           {session.coachingNote}
         </p>
+      )}
+
+      {partner && (
+        <Link
+          to={partner.href}
+          onClick={() => haptic("medium")}
+          className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-2.5 font-display text-xs font-semibold active:scale-[0.98] transition-transform"
+        >
+          <Play className="h-3.5 w-3.5" />
+          {partner.done ? "Do this session again" : "Start this session"}
+        </Link>
       )}
 
       {playable && (

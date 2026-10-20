@@ -5,9 +5,17 @@
  *  - extract the unique exercise list across all paths so the Library
  *    can surface them.
  */
-import { SIGNAL_TRAINING_PATHS, type TrainingPath, type DaySession } from "@/data/signal-training-paths";
+import { SIGNAL_TRAINING_PATHS, PARTNER_PATH_ID, partnerSessionHref, type TrainingPath, type DaySession } from "@/data/signal-training-paths";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import { supabase } from "@/integrations/supabase/client";
+import { PARTNER_PROGRESS_EVENT, getNextSessionId, getPartnerProgress, savePartnerProgress } from "@/lib/partner-progress";
+
+/** Window events that mean "the next session may have changed" (listen to both). */
+export const TRAINING_PATH_EVENTS = ["signal:training-path-changed", PARTNER_PROGRESS_EVENT] as const;
+
+/** The partner series keeps its own progress and logging in the partner hub. */
+export const isPartnerPath = (pathOrId: TrainingPath | string | null | undefined) =>
+  (typeof pathOrId === "string" ? pathOrId : pathOrId?.id) === PARTNER_PATH_ID;
 
 const SELECTED_PATH_KEY = "signal_selected_training_path";
 const COMPLETED_SESSIONS_KEY = "signal_path_completed_sessions";
@@ -83,6 +91,8 @@ export function isSessionCompleted(pathId: string, week: number, day: number): b
 }
 
 export function markSessionCompleted(pathId: string, week: number, day: number) {
+  // The partner hub ticks its own sessions and writes its own workout_logs row.
+  if (isPartnerPath(pathId)) return;
   const map = getCompletedMap();
   map[sessionKey(pathId, week, day)] = true;
   try {
@@ -95,7 +105,13 @@ export function markSessionCompleted(pathId: string, week: number, day: number) 
 }
 
 /** Reset all completed sessions for a path so the user can start over from week 1 day 1. */
-export function resetPathProgress(pathId: string) {
+export function resetPathProgress(pathId: string, userId?: string | null) {
+  if (isPartnerPath(pathId)) {
+    // Start the series again: ticks clear, logged weights stay so loads carry over.
+    const progress = getPartnerProgress(userId);
+    savePartnerProgress({ ...progress, completed: {} }, userId);
+    return;
+  }
   const map = getCompletedMap();
   const prefix = `${pathId}::`;
   let changed = false;
@@ -167,13 +183,27 @@ export interface NextSessionInfo {
 }
 
 /**
+ * Where "Start" goes for a path's next session: the partner series opens its
+ * class hub on that session; other paths are logged from the Move tab (null).
+ */
+export function sessionStartHref(info: Pick<NextSessionInfo, "path" | "week" | "day"> | null | undefined): string | null {
+  return info && isPartnerPath(info.path) ? partnerSessionHref(info.week, info.day) : null;
+}
+
+/**
  * Walk every session in the path in order. Return the first one that
  * isn't yet marked completed. Skip true rest days (durationMin === 0)
  * so "next session" always points at something the user can actually do.
+ * The partner series reads its completion from the partner hub (per user),
+ * so the path and the hub always agree.
  */
-export function getNextSession(path: TrainingPath): NextSessionInfo | null {
+export function getNextSession(path: TrainingPath, opts: { userId?: string | null } = {}): NextSessionInfo | null {
   if (!path.weeks.length) return null;
-  const completed = getCompletedMap();
+  const partner = isPartnerPath(path) ? getPartnerProgress(opts.userId) : null;
+  const partnerNext = partner ? getNextSessionId(partner) : null;
+  const completed: Record<string, true> = partner
+    ? Object.fromEntries(path.weeks.flatMap(w => w.sessions.filter(s => partner.completed[`w${w.week}-s${s.day}`]).map(s => [sessionKey(path.id, w.week, s.day), true] as const)))
+    : getCompletedMap();
   let totalSessions = 0;
   let completedCount = 0;
   let next: { week: number; day: number; session: DaySession } | null = null;
@@ -186,7 +216,7 @@ export function getNextSession(path: TrainingPath): NextSessionInfo | null {
       const key = sessionKey(path.id, w.week, s.day);
       if (completed[key]) {
         completedCount++;
-      } else if (!next) {
+      } else if (!next && (!partner || partnerNext === `w${w.week}-s${s.day}`)) {
         next = { week: w.week, day: s.day, session: s };
       }
     }

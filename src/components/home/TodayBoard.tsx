@@ -7,7 +7,8 @@ import { format } from "date-fns";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT, type Phase } from "@/lib/cycle-utils";
 import { getTodayMeals } from "@/lib/today-meals";
-import { getSelectedPath, getNextSession, type NextSessionInfo } from "@/lib/training-path-utils";
+import { getSelectedPath, getNextSession, sessionStartHref, TRAINING_PATH_EVENTS, type NextSessionInfo } from "@/lib/training-path-utils";
+import { useAuth } from "@/contexts/AuthContext";
 import { useHabitList } from "@/hooks/useHabitList";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 import RecipeImage from "@/components/nutrition/RecipeImage";
@@ -72,16 +73,18 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
   const { plan: customPlan } = useCustomMealPlan();
   const { meals } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
 
+  const { user } = useAuth();
+  const userId = user?.id;
   const [session, setSession] = useState<NextSessionInfo | null>(null);
   useEffect(() => {
     const refresh = () => {
       const path = getSelectedPath();
-      setSession(path ? getNextSession(path) : null);
+      setSession(path ? getNextSession(path, { userId }) : null);
     };
     refresh();
-    window.addEventListener("signal:training-path-changed", refresh);
-    return () => window.removeEventListener("signal:training-path-changed", refresh);
-  }, []);
+    TRAINING_PATH_EVENTS.forEach(name => window.addEventListener(name, refresh));
+    return () => TRAINING_PATH_EVENTS.forEach(name => window.removeEventListener(name, refresh));
+  }, [userId]);
 
   const { habits } = useHabitList();
   const { completedIds } = useHabitCompletions();
@@ -128,7 +131,7 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
         </Tile>
 
         {/* Move */}
-        <Tile to={session ? "/movement" : "/movement?tab=training"} accent="var(--move)" icon={Dumbbell} eyebrow="Move" className="col-span-2" delay={0.1}>
+        <Tile to={sessionStartHref(session) ?? (session ? "/movement" : "/movement?tab=training")} accent="var(--move)" icon={Dumbbell} eyebrow="Move" className="col-span-2" delay={0.1}>
           {session ? (
             <>
               <p className="display-serif text-[1.75rem] leading-tight text-foreground">{session.session.name}</p>
