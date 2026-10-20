@@ -30,7 +30,7 @@ export default function PartnerHistory({ logs, legacy, canSync, syncingId, onRet
         <div key={log.id} className="border-b border-border pb-3 last:border-0" data-testid="partner-history-item">
           <details>
             <summary className="cursor-pointer list-none">
-              <p className="text-sm font-semibold">{log.title}</p>
+              <p className="text-sm font-semibold">{log.title}{log.counted === false ? <span className="font-normal text-muted-foreground"> · not ticked off</span> : null}</p>
               <p className="text-xs text-muted-foreground">
                 {prettyDate(log.date)} · {Math.max(1, Math.round(log.elapsed / 60))} min ·{" "}
                 {(["A", "B"] as PartnerSlot[]).map(slot => {
@@ -45,7 +45,7 @@ export default function PartnerHistory({ logs, legacy, canSync, syncingId, onRet
                   <p className="text-xs font-bold uppercase tracking-wide">{log.partners[slot]}</p>
                   <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
                     {log.records.filter(r => r.partner === slot).map((r, i) => (
-                      <li key={i}>R{r.round} · {r.exercise_name}: {r.reps}{r.weight ? ` @ ${r.weight}` : ""}</li>
+                      <li key={i}>R{r.round} · {r.exercise_name}: {r.completed === false ? "skipped" : `${r.reps || "reps not logged"}${r.weight ? ` @ ${r.weight}` : ""}`}</li>
                     ))}
                   </ul>
                   {log.hr?.[slot] && <p className="mt-1 text-xs">Avg {log.hr[slot]!.avg} bpm · max {log.hr[slot]!.max} · {log.hr[slot]!.effortMinutes} effort min</p>}

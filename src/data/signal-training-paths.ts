@@ -8,9 +8,10 @@ import { restAndRestore } from "./training-paths/restore";
 import { learnToRun } from "./training-paths/run";
 import { cardioCircuit } from "./training-paths/cardio";
 import { glutePower } from "./training-paths/glute";
+import { partnerSeries, PARTNER_PATH_ID, partnerSessionHref } from "./training-paths/partner";
 
 export type * from "./training-paths/types";
-export { strengthFromTheGroundUp, theForge, pilatesPlan, restAndRestore, learnToRun, cardioCircuit, glutePower };
+export { strengthFromTheGroundUp, theForge, pilatesPlan, restAndRestore, learnToRun, cardioCircuit, glutePower, partnerSeries, PARTNER_PATH_ID, partnerSessionHref };
 
 // ─────────────────────────────────────────────────────────────────
 // Aggregator + backwards-compat aliases
@@ -73,6 +74,7 @@ function normalisePath(path: TrainingPath): TrainingPath {
 export const SIGNAL_TRAINING_PATHS: TrainingPath[] = [
   strengthFromTheGroundUp,
   theForge,
+  partnerSeries,
   learnToRun,
   pilatesPlan as unknown as TrainingPath,
   cardioCircuit,

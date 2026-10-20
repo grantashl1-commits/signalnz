@@ -68,3 +68,52 @@ it('shows the Bluetooth notice when straps are unavailable', () => {
   expect(screen.getAllByText(/iPhone Safari can't connect to Bluetooth from a web page yet/).length).toBeGreaterThan(0);
   expect(screen.getByTestId('hr-tile-A').textContent).toContain('Partner A');
 });
+
+it('asks before restarting a class in progress', () => {
+  renderHub();
+  fireEvent.click(screen.getByText('Start class'));
+  swap();
+  fireEvent.keyDown(window, { key: 'Escape' });
+  expect(screen.queryByTestId('class-mode')).toBeNull();
+  fireEvent.click(screen.getByLabelText('Restart this class from turn 1'));
+  expect(screen.getByText(/Turns logged so far will be discarded/)).toBeTruthy();
+  fireEvent.click(screen.getByText('Keep it'));
+  expect(screen.getByText(/Resume class · turn 2\/36/)).toBeTruthy();
+});
+
+it('swaps the squat and bench for dumbbells when the rack has no safeties', () => {
+  renderHub('/movement?tab=partner&session=w5-s1');
+  const labels = () => screen.getAllByTestId('partner-preview-tile').map(t => t.textContent ?? '');
+  // Tile text is "<number><LABEL><reps>".
+  expect(labels().some(l => /^\dBENCH PRESS/.test(l))).toBe(true);
+  fireEvent.click(screen.getByText('No, hooks only'));
+  expect(labels().some(l => /^\dBENCH PRESS/.test(l))).toBe(false);
+  expect(labels().some(l => /^\dDB BENCH PRESS/.test(l))).toBe(true);
+  expect(JSON.parse(localStorage.getItem('signal_partner_settings_v1:guest')!).safeties).toBe(false);
+});
+
+it('keeps an unticked early finish out of the plan', () => {
+  renderHub();
+  fireEvent.click(screen.getByText('Start class'));
+  for (let i = 0; i < 4; i++) swap();
+  fireEvent.click(screen.getByText('End class'));
+  fireEvent.click(within(screen.getByRole('alertdialog')).getByText('End class'));
+  const tick = screen.getByRole('checkbox') as HTMLInputElement;
+  expect(tick.checked).toBe(false);
+  fireEvent.click(screen.getByTestId('class-save'));
+  const progress = JSON.parse(localStorage.getItem('signal_partner_program_v1:guest')!);
+  expect(progress.completed[first.id]).toBeUndefined();
+  expect(progress.logs[0]).toMatchObject({ counted: false });
+  expect(progress.logs[0].records).toHaveLength(4);
+});
+
+it('runs the optional third strength round (42 turns)', () => {
+  renderHub();
+  fireEvent.click(screen.getByText('Add a 3rd round of the strength stations'));
+  fireEvent.click(screen.getByText('Start class'));
+  for (let i = 0; i < 42; i++) swap();
+  fireEvent.click(screen.getByTestId('class-save'));
+  const progress = JSON.parse(localStorage.getItem('signal_partner_program_v1:guest')!);
+  expect(progress.logs[0].records).toHaveLength(42);
+  expect(progress.logs[0].records[41]).toMatchObject({ round: 3, exercise_id: first.stations[2].id, partner: 'B' });
+});

@@ -1,11 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { PartnerSession, PartnerStation } from "@/data/partner-program";
+import { getPartnerSession, type PartnerSession, type PartnerStation } from "@/data/partner-program";
+import { PARTNER_PATH_ID, partnerSeries } from "@/data/training-paths/partner";
+import { getNextSession, getSelectedPath, markSessionCompleted, resetPathProgress, sessionStartHref, setSelectedPathId } from "@/lib/training-path-utils";
 import {
   PARTNER_PROGRESS_EVENT, addSessionLog, buildWorkoutLogRow, getNextSessionId, getPartnerProgress, getPartnerSettings,
-  lastLogFor, markSessionDone, nextDumbbell, parseLoadKg, parsePartnerNotes, partnerNotes, repTarget, savePartnerProgress,
-  savePartnerSettings, suggestNext, summarisePartner, totalTurns, turnAt,
+  lastLogFor, markSessionDone, nearestDumbbell, nextDumbbell, parseLoadKg, parsePartnerNotes, partnerNotes, repTarget, rowCounts,
+  savePartnerProgress, savePartnerSettings, suggestNext, summarisePartner, totalTurns, turnAt,
   type PartnerProgress, type PartnerSessionLog, type PartnerTurnRecord,
 } from "../partner-progress";
+
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: { auth: { getUser: async () => ({ data: { user: null } }) }, from: () => ({ upsert: async () => ({}), insert: async () => ({}) }) },
+}));
 
 const station = (over: Partial<PartnerStation>): PartnerStation => ({
   id: "x", name: "X", shortLabel: "X", block: "Strength", reps: "8–10", load: "", equipment: ["barbell"], cue: "", muscles: [], ...over,
@@ -25,6 +31,14 @@ const empty = (): PartnerProgress => ({ completed: {}, logs: [] });
 beforeEach(() => localStorage.clear());
 
 describe("turn order", () => {
+  it("adds a third round of just the strength stations when asked (42 turns)", () => {
+    expect(totalTurns(9, 2, 3)).toBe(42);
+    expect(turnAt(36, 9, 2, 3)).toEqual({ round: 3, station: 0, worker: "A", treadmill: "B" });
+    expect(turnAt(37, 9, 2, 3)).toMatchObject({ round: 3, station: 0, worker: "B" });
+    expect(turnAt(41, 9, 2, 3)).toMatchObject({ round: 3, station: 2, worker: "B" });
+    expect(turnAt(35, 9, 2, 3)).toMatchObject({ round: 2, station: 8 });
+  });
+
   it("alternates A and B at each station, two rounds, 36 turns", () => {
     expect(totalTurns(9, 2)).toBe(36);
     expect(turnAt(0)).toEqual({ round: 1, station: 0, worker: "A", treadmill: "B" });
@@ -76,9 +90,10 @@ describe("storage", () => {
     expect(getPartnerProgress()).toEqual({ completed: {}, logs: [] });
   });
   it("round-trips partner settings", () => {
-    savePartnerSettings({ A: { name: "Sarah", age: 38 }, B: { name: "Jess", age: 41 }, mode: "timer", muted: true }, "u");
-    expect(getPartnerSettings("u")).toEqual({ A: { name: "Sarah", age: 38 }, B: { name: "Jess", age: 41 }, mode: "timer", muted: true });
-    expect(getPartnerSettings("other").mode).toBe("pace");
+    const saved = { A: { name: "Sarah", age: 38 }, B: { name: "Jess", age: 41 }, mode: "timer" as const, muted: true, safeties: false, extraRound: true };
+    savePartnerSettings(saved, "u");
+    expect(getPartnerSettings("u")).toEqual(saved);
+    expect(getPartnerSettings("other")).toMatchObject({ mode: "pace", safeties: null, extraRound: false });
   });
 });
 
@@ -94,6 +109,20 @@ describe("lastLogFor", () => {
   });
   it("matches older logs by exercise name", () => {
     expect(lastLogFor(logs, "A", "barbell-back-squat", "barbell back squat")?.weight).toBe("40 kg");
+  });
+  it("follows the person, not the slot: a new friend in slot B does not inherit Jess's loads", () => {
+    const named = [log("1", "w1-s1", "2026-10-01", [rec({ weight: "40 kg" }), rec({ partner: "B", partnerName: "Jess", weight: "30 kg" })])];
+    expect(lastLogFor(named, "B", "squat", undefined, "Jess")?.weight).toBe("30 kg");
+    expect(lastLogFor(named, "B", "squat", undefined, "Kate")).toBeUndefined();
+    // Swapped slots: Jess is now partner A and still gets her own numbers.
+    expect(lastLogFor(named, "A", "squat", undefined, "jess")?.weight).toBe("30 kg");
+    // Default names fall back to the slot.
+    expect(lastLogFor(named, "B", "squat", undefined, "Partner B")?.weight).toBe("30 kg");
+  });
+  it("ignores skipped stations", () => {
+    const skipped = [log("1", "w1-s1", "2026-10-01", [rec({ weight: "40 kg" })]), log("2", "w1-s3", "2026-10-05", [rec({ weight: "", completed: false })])];
+    expect(lastLogFor(skipped, "A", "squat")?.weight).toBe("40 kg");
+    expect(summarisePartner(skipped[1].records, "A").sets).toBe(0);
   });
 });
 
@@ -123,12 +152,81 @@ describe("double progression", () => {
   it("returns null without a previous log", () => {
     expect(suggestNext(squat, undefined)).toBeNull();
   });
+  it("never reads an unlogged rep count as hitting the top of the range", () => {
+    expect(suggestNext(squat, { reps: "", weight: "40 kg", repsLogged: false })).toMatchObject({ kind: "repeat", weight: "40 kg" });
+    expect(suggestNext(squat, { reps: "", weight: "", repsLogged: false })).toBeNull();
+  });
   it("parses loads and rep targets", () => {
     expect(parseLoadKg("12,5 kg")).toBe(12.5);
     expect(parseLoadKg("bar", true)).toBe(20);
+    expect(parseLoadKg("bar + 10 a side", true)).toBe(40);
+    expect(parseLoadKg("bar + 2.5kg each side")).toBe(25);
+    expect(parseLoadKg("2 x 10kg")).toBe(10);
+    expect(parseLoadKg("2×12")).toBe(12);
     expect(parseLoadKg("medium springs")).toBeNull();
     expect(repTarget({ reps: "10 each side" })).toEqual([10, 10]);
     expect(repTarget({ reps: "8-12" })).toEqual([8, 12]);
+  });
+});
+
+describe("phase-aware suggestions (real stations)", () => {
+  const st = (sid: string, id: string) => getPartnerSession(sid)!.stations.find((x) => x.id === id)!;
+  const last = (sid: string, id: string, reps: string, weight: string): PartnerTurnRecord =>
+    rec({ exercise_id: id, session_id: sid, reps, weight });
+
+  it("Pump → Strength: fewer reps, so the bar goes up about 5 kg (not just 2.5)", () => {
+    const s = suggestNext(st("w5-s2", "barbell-back-squat"), last("w4-s3", "barbell-back-squat", "12", "40 kg"), { style: "Strength" });
+    expect(s).toMatchObject({ weight: "45 kg", reps: "6", kind: "adjust" });
+  });
+  it("Strength → Power week: same lifts and reps, so normal double progression", () => {
+    const s = suggestNext(st("w6-s2", "barbell-bench-press"), last("w5-s3", "barbell-bench-press", "8", "40 kg"), { style: "Power" });
+    expect(s).toMatchObject({ weight: "42.5 kg", kind: "increase" });
+  });
+  it("Week 6 → Peak: heavier for 5–6 reps (about Week 5 + 2.5–5 kg)", () => {
+    const s = suggestNext(st("w7-s2", "barbell-back-squat"), last("w6-s3", "barbell-back-squat", "6", "45 kg"), { style: "Peak" });
+    expect(s).toMatchObject({ weight: "47.5 kg", reps: "5", kind: "adjust" });
+    const top = suggestNext(st("w7-s2", "barbell-back-squat"), last("w6-s3", "barbell-back-squat", "8", "50 kg"), { style: "Peak" });
+    expect(top?.weight).toBe("55 kg");
+  });
+  it("Peak → Deload: about 75 % of the heavy week, never the same load", () => {
+    const s = suggestNext(st("w8-s1", "barbell-back-squat"), last("w7-s2", "barbell-back-squat", "6", "52.5 kg"), { style: "Deload" });
+    expect(s).toMatchObject({ weight: "40 kg", kind: "adjust" });
+    const db = suggestNext(st("w8-s2", "seated-db-shoulder-press"), last("w7-s1", "seated-db-shoulder-press", "8", "12 kg"), { style: "Deload" });
+    expect(db?.weight).toBe("9 kg");
+    // Second deload session: stays light.
+    expect(suggestNext(st("w8-s3", "barbell-back-squat"), last("w8-s1", "barbell-back-squat", "8", "40 kg"), { style: "Deload" })?.kind).toBe("repeat");
+  });
+  it("dumbbells step to the nearest bell after a rep drop", () => {
+    expect(nearestDumbbell(13.9)).toBe(14);
+    expect(nearestDumbbell(11)).toBe(10);
+    // Split squats are 6–8 each side in both blocks: same range, so plain double progression.
+    const s = suggestNext(st("w5-s2", "db-bulgarian-split-squat"), last("w4-s1", "db-bulgarian-split-squat", "7", "12 kg"), { style: "Strength" });
+    expect(s).toMatchObject({ kind: "repeat", weight: "12 kg" });
+  });
+});
+
+describe("partner series in Training paths", () => {
+  it("takes next session and completion from the partner hub, and deep-links Start", () => {
+    setSelectedPathId(PARTNER_PATH_ID);
+    expect(getSelectedPath()?.id).toBe(PARTNER_PATH_ID);
+    let p = markSessionDone(empty(), "w1-s1", "2026-10-18", "l1");
+    p = markSessionDone(p, "w1-s2", "2026-10-20", "l2");
+    savePartnerProgress(p, "user-1");
+    const info = getNextSession(partnerSeries, { userId: "user-1" })!;
+    expect(`w${info.week}-s${info.day}`).toBe(getNextSessionId(getPartnerProgress("user-1")));
+    expect(info).toMatchObject({ week: 1, day: 3, completedCount: 2, totalSessions: 24, finished: false });
+    expect(sessionStartHref(info)).toBe("/movement?tab=partner&session=w1-s3");
+    // Another user (or a guest) has their own progress.
+    expect(getNextSession(partnerSeries, { userId: "user-2" })).toMatchObject({ week: 1, day: 1, completedCount: 0 });
+  });
+  it("never double-logs through the generic path logger, and restarting keeps saved weights", () => {
+    markSessionCompleted(PARTNER_PATH_ID, 1, 1);
+    expect(localStorage.getItem("signal_path_completed_sessions")).toBeNull();
+    const withLog = addSessionLog(empty(), log("l1", "w1-s1", "2026-10-18", [rec({})]));
+    savePartnerProgress(withLog, "user-1");
+    resetPathProgress(PARTNER_PATH_ID, "user-1");
+    expect(getPartnerProgress("user-1").completed).toEqual({});
+    expect(getPartnerProgress("user-1").logs).toHaveLength(1);
   });
 });
 
@@ -147,5 +245,15 @@ describe("summaries and cloud rows", () => {
     expect((row.exercises as Array<{ session_id: string }>)[0].session_id).toBe("w2-s1");
     expect(parsePartnerNotes(partnerNotes(s))).toBe("w2-s1");
     expect(parsePartnerNotes("Partner circuit · Lower body · Strength · 2 rounds")).toBeNull();
+    expect(rowCounts(row)).toBe(true);
+  });
+  it("keeps an unticked save unticked on every device", () => {
+    const s = { week: 1, index: 3 as const, focus: "Upper" as const, style: "Foundation" as const };
+    const row = buildWorkoutLogRow({ ...log("l10", "w1-s3", "2026-10-18", [rec({})]), counted: false }, "user-1", s);
+    expect(row.notes).toBe("Partner circuit · Week 1 · Session 3 · Upper · Foundation · not counted");
+    expect(parsePartnerNotes(row.notes)).toBe("w1-s3");
+    expect((row.exercises as Array<{ counted: boolean }>)[0].counted).toBe(false);
+    expect(rowCounts(row)).toBe(false);
+    expect(rowCounts({ notes: "Partner circuit · Week 1 · Session 3 · Upper · Foundation", exercises: [{ counted: false }] })).toBe(false);
   });
 });

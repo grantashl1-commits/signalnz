@@ -3,20 +3,20 @@ import { createPortal } from "react-dom";
 import {
   ChevronLeft, Footprints, HeartPulse, LayoutGrid, Maximize, Minimize, Minus, Pause, Play, Repeat2, Square, Volume2, VolumeX,
 } from "lucide-react";
-import type { PartnerSession } from "@/data/partner-program";
+import { SWAP_SAFETY, type PartnerSession } from "@/data/partner-program";
 import { getMaxHR } from "@/data/workouts";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { haptic } from "@/hooks/use-mobile";
 import type { StrapSlot, StrapState } from "@/hooks/useMultiHeartRate";
 import {
-  lastLogFor, loadKind, suggestNext, summarisePartner, turnAt,
+  formatKg, lastLogFor, loadKind, parseLoadKg, repsPlaceholderFor, suggestNext, summarisePartner,
   type PartnerSessionLog, type PartnerSettings, type PartnerSlot,
 } from "@/lib/partner-progress";
 import {
-  backTurn, buildPrefill, classTurns, hrSummary, isClassComplete, remainingSeconds, swapNow, tickClass,
+  backTurn, buildPrefill, classTurnAt, classTurns, extraStationsFor, hrSummary, isClassComplete, remainingSeconds, swapNow, tickClass,
   type ActiveClass, type ClassContext,
 } from "./class-engine";
-import { countdownBeep, swapChime, buzz } from "./class-sound";
+import { countdownBeep, swapChime, buzz, suspendClassAudio, unlockClassAudio } from "./class-sound";
 import { ClassTile } from "./StationTile";
 import StationArt from "./StationArt";
 import { BluetoothNotice, PartnerHRTile } from "./PartnerHRTiles";
@@ -65,7 +65,7 @@ const SLOTS: PartnerSlot[] = ["A", "B"];
 
 export default function ClassMode({ session, active, onChange, history, settings, onToggleMute, hr, onSave, onDiscard, onMinimise }: Props) {
   const root = useRef<HTMLDivElement>(null);
-  const total = classTurns(session);
+  const total = classTurns(session, active);
   const complete = isClassComplete(active, session);
   const [stage, setStage] = useState<"class" | "summary">(complete ? "summary" : "class");
   const [view, setView] = useState<"grid" | "hr">("grid");
@@ -75,7 +75,11 @@ export default function ClassMode({ session, active, onChange, history, settings
   const wake = useWakeLock();
   const wide = useWideLayout();
 
-  const prefill = useMemo(() => buildPrefill(session, history), [session, history]);
+  const { A: nameA, B: nameB } = active.partners;
+  const prefill = useMemo(
+    () => buildPrefill(session, history, { partners: { A: nameA, B: nameB }, extraRound: active.extraRound }),
+    [session, history, nameA, nameB, active.extraRound],
+  );
   const ctx: ClassContext = useMemo(() => ({ session, prefill }), [session, prefill]);
   const maxHR = useMemo(() => ({
     A: getMaxHR(settings.A.age ?? DEFAULT_PARTNER_AGE),
@@ -101,6 +105,22 @@ export default function ClassMode({ session, active, onChange, history, settings
   }, [active.running, onChange]);
 
   useEffect(() => { if (complete) setStage("summary"); }, [complete]);
+
+  // Focus moves into the dialog when it opens and when it switches to the summary.
+  useEffect(() => { root.current?.focus({ preventScroll: true }); }, [stage]);
+
+  // Audio: after a reload (or ?class=1) the hub's Start button never ran, so the first
+  // tap or key press in class mode unlocks the beeps. The clock is suspended on close.
+  useEffect(() => {
+    const unlock = () => unlockClassAudio();
+    window.addEventListener("pointerdown", unlock, { once: true, capture: true });
+    window.addEventListener("keydown", unlock, { once: true, capture: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlock, { capture: true });
+      window.removeEventListener("keydown", unlock, { capture: true });
+      suspendClassAudio();
+    };
+  }, []);
 
   // Screen on while the class is open; re-acquire when the tab comes back.
   const { request: requestWake, release: releaseWake } = wake;
@@ -148,41 +168,53 @@ export default function ClassMode({ session, active, onChange, history, settings
     }
   }, [active.turn, active.phase, remaining, active.running, settings.muted]);
 
-  const t = turnAt(Math.min(active.turn, total - 1), session.stations.length);
+  const t = classTurnAt(session, Math.min(active.turn, total - 1), active.extraRound);
   const station = session.stations[t.station];
   const workerName = active.partners[t.worker];
   const treadmillName = active.partners[t.treadmill];
-  const nextTurn = active.turn + 1 < total ? turnAt(active.turn + 1, session.stations.length) : null;
+  const nextTurn = active.turn + 1 < total ? classTurnAt(session, active.turn + 1, active.extraRound) : null;
   const nextStation = nextTurn ? session.stations[nextTurn.station] : null;
   const draft = active.draft?.turn === active.turn ? active.draft : prefill(active.turn, active.records);
-  const prior = lastLogFor(history, t.worker, station.id, station.name);
-  const earlier = lastLogFor([{ records: active.records }], t.worker, station.id, station.name);
-  const suggestion = earlier ? null : suggestNext(station, prior);
+  const prior = lastLogFor(history, t.worker, station.id, station.name, workerName);
+  const earlier = lastLogFor([{ records: active.records }], t.worker, station.id, station.name, workerName);
+  const suggestion = earlier ? null : suggestNext(station, prior, { style: session.style });
   const kind = loadKind(station);
-  const turnInRound = active.turn % (session.stations.length * 2);
+  // Tiles already done in this round (round 3 only repeats the strength stations).
+  const perRound = session.stations.length * 2;
+  const extraStations = extraStationsFor(session, active.extraRound);
+  const inExtraRound = t.round > session.rounds;
+  const turnInRound = inExtraRound ? active.turn - perRound * session.rounds : active.turn % perRound;
+  const stationDone = (i: number) => turnInRound > i * 2 + 1 || (inExtraRound && i >= extraStations);
+  const roundLabel = inExtraRound ? "Strength round 3" : `Round ${t.round}/${session.rounds}`;
+  const swapping = active.mode === "timer" && active.phase === "swap";
 
-  const setDraft = (patch: Partial<{ reps: string; weight: string }>) =>
+  const setDraft = (patch: Partial<{ reps: string; weight: string; skipped: boolean }>) =>
     onChange(prev => {
       const base = prev.draft?.turn === prev.turn ? prev.draft : prefill(prev.turn, prev.records);
       return { ...prev, draft: { ...base, ...patch, turn: prev.turn } };
     });
 
   const swap = useCallback(() => {
+    unlockClassAudio();
     haptic("light");
     onChange(prev => swapNow({ ...prev, running: true }, ctx));
   }, [ctx, onChange]);
   const back = () => onChange(prev => backTurn(prev));
-  const togglePause = () => onChange(prev => ({ ...prev, running: !prev.running }));
+  const togglePause = () => { unlockClassAudio(); onChange(prev => ({ ...prev, running: !prev.running })); };
   const endEarly = () => { onChange(prev => ({ ...prev, running: false })); setConfirmEnd(false); setStage("summary"); };
 
-  // Keyboard for TV / laptop: space = pause, enter or → = swap, ← = back.
+  // Keyboard for TV / laptop: P = pause, N or → = swap, B or ← = back, Esc = close the
+  // confirm or minimise. Space and Enter are left to whichever button has focus.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
-      if (stage !== "class" || target?.closest("input, textarea, select, button")) return;
-      if (e.key === " ") { e.preventDefault(); togglePause(); }
-      else if (e.key === "Enter" || e.key === "ArrowRight") { e.preventDefault(); swap(); }
-      else if (e.key === "ArrowLeft") { e.preventDefault(); back(); }
+      if (stage !== "class" || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "Escape") { e.preventDefault(); if (confirmEnd) setConfirmEnd(false); else onMinimise(); return; }
+      if (confirmEnd || target?.closest("input, textarea, select")) return;
+      const key = e.key.toLowerCase();
+      if (key === "p") { e.preventDefault(); togglePause(); }
+      else if (key === "n" || e.key === "ArrowRight") { e.preventDefault(); swap(); }
+      else if (key === "b" || e.key === "ArrowLeft") { e.preventDefault(); back(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -193,10 +225,11 @@ export default function ClassMode({ session, active, onChange, history, settings
   const effort = (slot: PartnerSlot) => Math.round(active.hr[slot].effortSeconds / 60);
   const hrInfo = (slot: PartnerSlot) => ({ slot, name: active.partners[slot], strap: hr.straps[slot], maxHR: maxHR[slot], effortMinutes: effort(slot) });
   const swapLabel = active.turn === total - 1 ? "Finish" : active.mode === "timer" && active.phase === "work" ? "Swap now" : "Swap";
+  const liveLine = `${workerName} on station ${t.station + 1}, ${station.name}. ${treadmillName} on the treadmill.`;
 
   if (stage === "summary") {
     return createPortal(
-      <div ref={root} className="pc-class fixed inset-0 z-[85] overflow-y-auto" role="dialog" aria-modal="true" aria-label="Class summary">
+      <div ref={root} tabIndex={-1} className="pc-class fixed inset-0 z-[85] overflow-y-auto outline-none" role="dialog" aria-modal="true" aria-label="Class summary">
         <Summary
           session={session}
           active={active}
@@ -213,11 +246,11 @@ export default function ClassMode({ session, active, onChange, history, settings
 
   const controls = (
     <div className="flex items-center gap-2">
-      <IconButton label="Back one turn" onClick={back} disabled={active.turn === 0}><ChevronLeft className="h-5 w-5" /></IconButton>
-      <IconButton label={active.running ? "Pause" : "Resume"} onClick={togglePause}>
+      <IconButton label="Back one turn" shortcut="B" onClick={back} disabled={active.turn === 0}><ChevronLeft className="h-5 w-5" /></IconButton>
+      <IconButton label={active.running ? "Pause" : "Resume"} shortcut="P" onClick={togglePause}>
         {active.running ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
       </IconButton>
-      <button type="button" className="pc-btn pc-btn-primary min-h-[56px] flex-1 text-lg" onClick={swap} data-testid="class-swap">
+      <button type="button" className="pc-btn pc-btn-primary min-h-[56px] flex-1 text-lg" onClick={swap} data-testid="class-swap" title={`${swapLabel} (N)`}>
         <Repeat2 className="h-5 w-5" /> {swapLabel}
       </button>
     </div>
@@ -225,7 +258,7 @@ export default function ClassMode({ session, active, onChange, history, settings
 
   const stationLine = `${station.shortLabel} ${station.reps}${station.rir ? ` · RIR ${station.rir}` : ""}`;
   const who = (
-    <div className="space-y-2.5" aria-live="polite">
+    <div className="space-y-2.5">
       <div className="pc-panel p-3 lg:p-4">
         <p className="pc-caps text-xs" style={{ color: "var(--pc-teal)" }}>Working · Station {t.station + 1}</p>
         <p className="pc-who mt-1 font-bold" data-testid="class-worker"><span className="pc-caps">{workerName}</span> · {stationLine}</p>
@@ -242,50 +275,77 @@ export default function ClassMode({ session, active, onChange, history, settings
         <p className="pc-caps text-xs" style={{ color: "var(--pc-amber)" }}><Footprints className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />Treadmill</p>
         <p className="pc-who mt-1" data-testid="class-treadmill"><span className="pc-caps font-bold">{treadmillName}</span> · Treadmill — <span className="pc-muted">{session.treadmill}</span></p>
         {nextTurn && nextStation && (
-          <p className="pc-sub pc-muted mt-1">Next: {active.partners[nextTurn.worker]} → {nextStation.shortLabel}{nextTurn.round !== t.round ? " (round 2)" : ""}</p>
+          <p className="pc-sub pc-muted mt-1">Next: {active.partners[nextTurn.worker]} → {nextStation.shortLabel}{nextTurn.round !== t.round ? ` (${nextTurn.round > session.rounds ? "strength round 3" : `round ${nextTurn.round}`})` : ""}</p>
         )}
+        <details className="pc-sub pc-muted mt-1">
+          <summary className="cursor-pointer select-none">Swapping on the treadmill</summary>
+          <p className="mt-1">{SWAP_SAFETY}</p>
+        </details>
       </div>
     </div>
   );
 
+  const loadLabel = kind === "reformer" ? "Springs" : kind === "bodyweight" ? "Load (optional)" : kind === "barbell" ? "Total kg (incl. 20 kg bar)" : "kg per dumbbell";
+  const numericLoad = kind === "barbell" || kind === "dumbbell";
   const quickLog = (
     <div className="pc-panel p-3 lg:p-4">
-      <p className="pc-caps text-xs pc-muted">{workerName}'s log · round {t.round}</p>
-      <div className="mt-2 grid grid-cols-2 gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <p className="pc-caps text-xs pc-muted">{workerName}'s log · {roundLabel.toLowerCase()}</p>
+        <button
+          type="button"
+          className="pc-sub rounded-full px-2.5 py-1 font-semibold"
+          style={draft.skipped ? { background: "var(--pc-amber)", color: "#2b1a00" } : { border: "1px solid var(--pc-line)" }}
+          aria-pressed={!!draft.skipped}
+          onClick={() => setDraft({ skipped: !draft.skipped })}
+        >
+          {draft.skipped ? "Skipped" : "Skip station"}
+        </button>
+      </div>
+      <div className="mt-2 grid grid-cols-2 gap-2" style={draft.skipped ? { opacity: 0.45 } : undefined}>
         <label className="text-xs font-semibold pc-muted">
-          {station.timed ? "Time" : "Reps"}
+          {station.timed ? "Time" : "Reps done"}
           <input
             className="pc-input pc-num mt-1"
             inputMode={station.timed ? "text" : "numeric"}
             value={draft.reps}
+            placeholder={repsPlaceholderFor(station)}
+            disabled={!!draft.skipped}
             onChange={e => setDraft({ reps: e.target.value })}
             aria-label={`${station.timed ? "Time" : "Reps"} for ${workerName}`}
           />
         </label>
         <label className="text-xs font-semibold pc-muted">
-          {kind === "reformer" ? "Springs" : kind === "bodyweight" ? "Load (optional)" : "kg"}
+          {loadLabel}
           <input
             className="pc-input pc-num mt-1"
             inputMode={kind === "reformer" ? "text" : "decimal"}
             placeholder={kind === "reformer" ? "e.g. 1 red + 1 blue" : kind === "bodyweight" ? "Bodyweight" : "kg"}
             value={draft.weight}
+            disabled={!!draft.skipped}
             onChange={e => setDraft({ weight: e.target.value })}
+            onBlur={e => {
+              if (!numericLoad) return;
+              // "bar + 10 a side" → 40 kg, "2 x 10" → 10 kg, "12,5" → 12.5 kg.
+              const n = parseLoadKg(e.target.value, kind === "barbell");
+              const tidy = n != null && n > 0 ? formatKg(n) : "";
+              if (tidy !== e.target.value.trim()) setDraft({ weight: tidy });
+            }}
             aria-label={`Load for ${workerName}`}
           />
         </label>
       </div>
-      {earlier && <p className="pc-sub pc-muted mt-2">Round 1: {earlier.reps}{earlier.weight ? ` @ ${earlier.weight}` : ""}</p>}
+      {earlier && <p className="pc-sub pc-muted mt-2">Round 1: {earlier.repsLogged === false ? "reps not logged" : earlier.reps}{earlier.weight ? ` @ ${earlier.weight}` : ""}</p>}
       {suggestion && (
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <p className="pc-sub" data-testid="class-suggestion">{suggestion.text}</p>
           {suggestion.weight && suggestion.weight !== draft.weight && (
-            <button type="button" className="pc-btn min-h-[36px] text-sm" onClick={() => setDraft({ weight: suggestion.weight, ...(suggestion.reps ? { reps: suggestion.reps } : {}) })}>
+            <button type="button" className="pc-btn min-h-[36px] text-sm" onClick={() => setDraft({ weight: suggestion.weight })}>
               Use {suggestion.weight}
             </button>
           )}
         </div>
       )}
-      {!suggestion && !earlier && <p className="pc-sub pc-muted mt-2">{prior ? `Last: ${prior.reps}${prior.weight ? ` @ ${prior.weight}` : ""}` : "First time — pick a load that leaves the target reps in reserve."}</p>}
+      {!suggestion && !earlier && <p className="pc-sub pc-muted mt-2">{prior ? `Last: ${prior.repsLogged === false ? "reps not logged" : prior.reps}${prior.weight ? ` @ ${prior.weight}` : ""}` : "First time — pick a load that leaves the target reps in reserve."}</p>}
     </div>
   );
 
@@ -312,13 +372,13 @@ export default function ClassMode({ session, active, onChange, history, settings
       {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
     </IconButton>
   ) : null;
-  const minimise = <IconButton label="Minimise class (keeps your place)" onClick={onMinimise}><Minus className="h-5 w-5" /></IconButton>;
+  const minimise = <IconButton label="Minimise class (keeps your place)" shortcut="Esc" onClick={onMinimise}><Minus className="h-5 w-5" /></IconButton>;
   const endButton = (
     <button type="button" className="pc-btn" onClick={() => setConfirmEnd(true)}><Square className="h-4 w-4" /> End class</button>
   );
   const titleBlock = (
     <div className="min-w-0 flex-1">
-      <p className="pc-caps pc-sub pc-num" style={{ color: "var(--pc-teal)" }}>Round {t.round}/{session.rounds} · Turn {Math.min(active.turn + 1, total)}/{total}</p>
+      <p className="pc-caps pc-sub pc-num" style={{ color: "var(--pc-teal)" }}>{roundLabel} · Turn {Math.min(active.turn + 1, total)}/{total}</p>
       <h1 className="pc-title truncate">{session.title}</h1>
       <p className="pc-sub pc-muted pc-num">Class {fmt(active.elapsed)} · {active.mode === "timer" ? "Class timer" : "Partner pace"}</p>
     </div>
@@ -335,7 +395,7 @@ export default function ClassMode({ session, active, onChange, history, settings
 
   const hrScreen = (
     <div className="pc-hr-screen flex min-h-0 flex-1 flex-col gap-3 px-4 pb-4 lg:px-8 lg:pb-6">
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:gap-5">{SLOTS.map(slot => hrTile(slot, "screen"))}</div>
+      <div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-1 gap-3 overflow-y-auto sm:grid-cols-2 lg:gap-5">{SLOTS.map(slot => hrTile(slot, "screen"))}</div>
       <BluetoothNotice isSupported={hr.isSupported} />
       <div className="pc-panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center lg:p-4">
         <p className="pc-who min-w-0 flex-1 truncate"><span className="pc-caps font-bold">{workerName}</span> · Station {t.station + 1} {station.shortLabel} · <span className="pc-caps font-bold">{treadmillName}</span> on the treadmill</p>
@@ -349,7 +409,7 @@ export default function ClassMode({ session, active, onChange, history, settings
       <div className="flex min-h-0 flex-1 gap-5 px-8 pb-4">
         <div className="grid min-h-0 flex-1 grid-cols-3 grid-rows-3 gap-3 2xl:gap-4" data-testid="class-grid">
           {session.stations.map((s, i) => (
-            <ClassTile key={s.id} station={s} number={i + 1} active={i === t.station} done={turnInRound > i * 2 + 1} workerName={i === t.station ? workerName : undefined} />
+            <ClassTile key={s.id} station={s} number={i + 1} active={i === t.station} done={stationDone(i)} workerName={i === t.station ? workerName : undefined} />
           ))}
         </div>
         <aside className="flex w-[30%] min-w-[340px] max-w-[580px] flex-col gap-2.5 overflow-y-auto">
@@ -386,7 +446,7 @@ export default function ClassMode({ session, active, onChange, history, settings
               key={s.id}
               className="pc-num flex h-9 w-9 items-center justify-center rounded-full text-sm font-extrabold"
               style={{
-                background: i === t.station ? "var(--pc-teal)" : turnInRound > i * 2 + 1 ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.08)",
+                background: i === t.station ? "var(--pc-teal)" : stationDone(i) ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.08)",
                 color: i === t.station ? "#062420" : "white",
                 boxShadow: `inset 0 0 0 2px ${s.block === "Strength" ? "var(--pc-strength)" : s.block === "Reformer" ? "var(--pc-reformer)" : "var(--pc-core)"}`,
               }}
@@ -408,7 +468,8 @@ export default function ClassMode({ session, active, onChange, history, settings
   );
 
   return createPortal(
-    <div ref={root} className="pc-class fixed inset-0 z-[85] flex flex-col overflow-hidden" role="dialog" aria-modal="true" aria-label={`${session.title} — class mode`} data-testid="class-mode">
+    <div ref={root} tabIndex={-1} className="pc-class fixed inset-0 z-[85] flex flex-col overflow-hidden outline-none" role="dialog" aria-modal="true" aria-label={`${session.title} — class mode`} data-testid="class-mode">
+      <p className="sr-only" aria-live="polite" aria-atomic="true">{liveLine}</p>
       {wide ? (
         <header className="flex items-center gap-4 px-8 pb-2 pt-5">
           {titleBlock}
@@ -427,15 +488,21 @@ export default function ClassMode({ session, active, onChange, history, settings
 
       <div className={`pb-3 ${wide ? "px-8" : "px-4"}`}>{progress}</div>
 
+      {swapping && (
+        <div className={`pb-3 ${wide ? "px-8" : "px-4"}`} role="status">
+          <p className="pc-panel pc-sub px-3 py-2" style={{ borderColor: "var(--pc-amber)" }}><strong className="pc-caps" style={{ color: "var(--pc-amber)" }}>Swap · </strong>{SWAP_SAFETY}</p>
+        </div>
+      )}
+
       {view === "hr" ? hrScreen : wide ? wideGrid : phoneStack}
 
       {confirmEnd && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 p-6" role="alertdialog" aria-label="End class early?">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 p-6" role="alertdialog" aria-modal="true" aria-labelledby="pc-end-title" aria-describedby="pc-end-desc">
           <div className="pc-panel w-full max-w-md space-y-4 p-5" style={{ background: "#14272b" }}>
-            <p className="pc-title">End the class now?</p>
-            <p className="pc-sub pc-muted">{active.turn} of {total} turns logged. You can save what you've done or keep going.</p>
+            <p id="pc-end-title" className="pc-title">End the class now?</p>
+            <p id="pc-end-desc" className="pc-sub pc-muted">{active.turn} of {total} turns logged. You can save what you've done or keep going.</p>
             <div className="flex gap-2">
-              <button type="button" className="pc-btn flex-1" onClick={() => setConfirmEnd(false)}>Keep going</button>
+              <button type="button" className="pc-btn flex-1" autoFocus onClick={() => setConfirmEnd(false)}>Keep going</button>
               <button type="button" className="pc-btn pc-btn-primary flex-1" onClick={endEarly}>End class</button>
             </div>
           </div>
@@ -446,7 +513,7 @@ export default function ClassMode({ session, active, onChange, history, settings
   );
 }
 
-function IconButton({ label, onClick, children, disabled, pressed, className = "" }: { label: string; onClick: () => void; children: ReactNode; disabled?: boolean; pressed?: boolean; className?: string }) {
+function IconButton({ label, onClick, children, disabled, pressed, shortcut, className = "" }: { label: string; onClick: () => void; children: ReactNode; disabled?: boolean; pressed?: boolean; shortcut?: string; className?: string }) {
   return (
     <button
       type="button"
@@ -454,7 +521,8 @@ function IconButton({ label, onClick, children, disabled, pressed, className = "
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      title={label}
+      aria-keyshortcuts={shortcut}
+      title={shortcut ? `${label} (${shortcut})` : label}
       aria-pressed={pressed}
       style={disabled ? { opacity: 0.4 } : pressed ? { background: "var(--pc-teal)", color: "#062420" } : undefined}
     >
@@ -474,13 +542,14 @@ function Summary({ session, active, total, saving, onBack, onDiscard, onSave }: 
 }) {
   const complete = active.turn >= total;
   const [countAsDone, setCountAsDone] = useState(complete || active.turn >= total / 2);
+  const skipped = active.records.filter(r => r.completed === false).length;
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   return (
     <div className="mx-auto flex min-h-full max-w-5xl flex-col gap-5 px-4 py-6 lg:px-8 lg:py-10" data-testid="class-summary">
       <div>
         <p className="pc-caps pc-sub" style={{ color: "var(--pc-teal)" }}>{complete ? "Class complete" : `Ended early · ${active.turn} of ${total} turns`}</p>
         <h1 className="mt-1 text-3xl font-extrabold lg:text-5xl">{session.title}</h1>
-        <p className="pc-sub pc-muted mt-1 pc-num">Class time {fmt(active.elapsed)}</p>
+        <p className="pc-sub pc-muted mt-1 pc-num">Class time {fmt(active.elapsed)}{skipped ? ` · ${skipped} station${skipped === 1 ? "" : "s"} skipped` : ""}</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {SLOTS.map(slot => {
@@ -505,6 +574,7 @@ function Summary({ session, active, total, saving, onBack, onDiscard, onSave }: 
         <input type="checkbox" className="h-5 w-5 accent-[#2ee6c5]" checked={countAsDone} onChange={e => setCountAsDone(e.target.checked)} />
         Tick off {session.title} in the 8-week plan
       </label>
+      {!countAsDone && <p className="pc-sub pc-muted -mt-3">Saved to your log and loads, but the plan keeps offering this session.</p>}
       <div className="flex flex-col gap-2 sm:flex-row">
         <button type="button" className="pc-btn pc-btn-primary min-h-[56px] flex-1 text-lg" disabled={saving} onClick={() => onSave(countAsDone)} data-testid="class-save">
           {saving ? "Saving…" : "Save session"}

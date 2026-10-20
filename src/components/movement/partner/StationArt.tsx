@@ -21,9 +21,14 @@ export function stationImageUrl(lookup: Lookup, station: Pick<PartnerStation, "n
     ?? null;
 }
 
-/** Anatomy-figure keyword for the fallback (MuscleIllustration has no chest/shoulder/quad figure). */
+/**
+ * Anatomy-figure keyword for the last-resort fallback. MuscleIllustration has no
+ * chest/shoulder/quad figure; quads are left out so a squat falls through to its
+ * glutes rather than showing a hip-flexor stretch. (Every station has a local
+ * `imageKey`, so this only shows if an image fails to load.)
+ */
 const ANATOMY_ALIASES: Record<string, string> = {
-  back: "upper back", "upper back": "upper back", lats: "lats", quads: "hip flexors", chest: "arms", shoulders: "arms",
+  back: "upper back", "upper back": "upper back", lats: "lats", chest: "arms", shoulders: "arms",
   biceps: "bicep", triceps: "tricep", glutes: "glutes", hamstrings: "hamstrings", calves: "calves", adductors: "adductors",
   core: "core", obliques: "oblique", "lower back": "lower back",
 };

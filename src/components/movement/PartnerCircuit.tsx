@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Clock, Footprints, Play, RotateCcw } from 'lucide-react';
+import { Clock, Footprints, Play, RotateCcw, ShieldCheck } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,17 +9,19 @@ import { useMultiHeartRate } from '@/hooks/useMultiHeartRate';
 import { supabase } from '@/integrations/supabase/client';
 import { toLocalDateStr } from '@/lib/local-date';
 import { getUserAge } from '@/data/workouts';
-import { PARTNER_PROGRAM, getPartnerSession, type PartnerSession, type StationBlock } from '@/data/partner-program';
+import {
+  PARTNER_PROGRAM, adaptForKit, barbellStations, extraStrengthRoundMinutes, getPartnerSession, type PartnerSession, type StationBlock,
+} from '@/data/partner-program';
 import {
   PARTNER_NOTES_PREFIX, PARTNER_PROGRESS_EVENT, addSessionLog, buildWorkoutLogRow, getLegacyPartnerHistory, getNextSessionId,
-  getPartnerProgress, getPartnerSettings, parsePartnerNotes, savePartnerProgress, savePartnerSettings, totalTurns,
+  getPartnerProgress, getPartnerSettings, parsePartnerNotes, rowCounts, savePartnerProgress, savePartnerSettings, totalTurns,
   type LegacyPartnerSession, type PartnerProgress, type PartnerSessionLog, type PartnerSettings, type PartnerSlot, type PartnerTurnRecord,
 } from '@/lib/partner-progress';
 import ClassMode from './partner/ClassMode';
 import { PreviewTile } from './partner/StationTile';
 import ProgramGrid from './partner/ProgramGrid';
 import PartnerHistory from './partner/PartnerHistory';
-import { buildPrefill, createActiveClass, hrSummary, restoreActiveClass, type ActiveClass } from './partner/class-engine';
+import { buildPrefill, classTurns, createActiveClass, hrSummary, restoreActiveClass, type ActiveClass } from './partner/class-engine';
 import { unlockClassAudio } from './partner/class-sound';
 
 const classKey = (userId?: string) => `signal_partner_class_v1:${userId ?? 'guest'}`;
@@ -60,6 +62,7 @@ function Hub({ user }: { user: User | null }) {
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const pushedClass = useRef(false);
+  const primaryButton = useRef<HTMLButtonElement>(null);
 
   const [progress, setProgress] = useState<PartnerProgress>(() => getPartnerProgress(userId));
   const [settings, setSettings] = useState<PartnerSettings>(() => getPartnerSettings(userId));
@@ -67,7 +70,6 @@ function Hub({ user }: { user: User | null }) {
   const [legacy, setLegacy] = useState<LegacyPartnerSession[]>(() => getLegacyPartnerHistory(userId));
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [confirmReplace, setConfirmReplace] = useState(false);
-  const syncLock = useRef(false);
 
   // Names + ages: partner A defaults to the member's first name and profile age.
   const defaultA = firstName(displayName) || firstName(user?.user_metadata?.full_name as string | undefined) || 'Partner A';
@@ -80,6 +82,9 @@ function Hub({ user }: { user: User | null }) {
     savePartnerSettings(next, userId);
     return next;
   });
+
+  // Sessions as trained with this kit (no rack safeties → dumbbell squat and bench).
+  const forKit = useCallback((s: PartnerSession | undefined) => (s ? adaptForKit(s, { safeties: settings.safeties }) : undefined), [settings.safeties]);
 
   // Persist the class in progress on every change (it is restored paused).
   const setActive = useCallback((next: ActiveClass | null | ((prev: ActiveClass) => ActiveClass)) => {
@@ -105,6 +110,19 @@ function Hub({ user }: { user: User | null }) {
     if (!savePartnerProgress(next, userId)) toast.error('Device storage is unavailable. Keep this page open until the session is saved.');
   }, [userId]);
 
+  // For async callbacks: update from the latest progress without a state-updater function, so the
+  // save (and its change event, which other screens listen to) never runs during a render.
+  const progressRef = useRef(progress);
+  progressRef.current = progress;
+  const updateProgress = useCallback((fn: (prev: PartnerProgress) => PartnerProgress) => {
+    const prev = progressRef.current;
+    const next = fn(prev);
+    if (next === prev) return;
+    progressRef.current = next;
+    setProgress(next);
+    savePartnerProgress(next, userId);
+  }, [userId]);
+
   // Older logs (legacy rotation) still feed load prefill by exercise name.
   const history = useMemo(() => {
     const old = legacy.map(s => ({ date: s.date, records: s.records as unknown as PartnerTurnRecord[] }));
@@ -113,8 +131,8 @@ function Hub({ user }: { user: User | null }) {
 
   const nextId = getNextSessionId(progress);
   const paramSession = params.get('session');
-  const selected: PartnerSession | undefined = (paramSession && getPartnerSession(paramSession)) || (nextId ? getPartnerSession(nextId) : undefined) || PARTNER_PROGRAM.sessions[0];
-  const activeSession = active ? getPartnerSession(active.sessionId) : undefined;
+  const selected: PartnerSession | undefined = forKit((paramSession && getPartnerSession(paramSession)) || (nextId ? getPartnerSession(nextId) : undefined) || PARTNER_PROGRAM.sessions[0]);
+  const activeSession = active ? forKit(getPartnerSession(active.sessionId)) : undefined;
   const classOpen = params.get('class') === '1' && !!active && !!activeSession;
 
   const selectSession = (id: string) => setParams(prev => { const p = new URLSearchParams(prev); p.set('session', id); return p; }, { replace: true });
@@ -135,6 +153,13 @@ function Hub({ user }: { user: User | null }) {
     if (params.get('class') === '1' && !active) setParams(prev => { const p = new URLSearchParams(prev); p.delete('class'); return p; }, { replace: true });
   }, [params, active, setParams]);
 
+  // Focus goes back to Start / Resume when class mode closes.
+  const wasOpen = useRef(classOpen);
+  useEffect(() => {
+    if (wasOpen.current && !classOpen) primaryButton.current?.focus({ preventScroll: true });
+    wasOpen.current = classOpen;
+  }, [classOpen]);
+
   // Cloud history (signed in): restore programme sessions and earlier circuits from workout_logs.
   useEffect(() => {
     if (!userId) return;
@@ -152,20 +177,24 @@ function Hub({ user }: { user: User | null }) {
         const session = sid ? getPartnerSession(sid) : undefined;
         if (session) {
           const nameOf = (slot: PartnerSlot) => records.find(r => r.partner === slot && r.partnerName)?.partnerName ?? `Partner ${slot}`;
-          restored.push({ id: row.id, sessionId: session.id, title: session.title, date: row.session_date, elapsed: (row.duration_minutes ?? 0) * 60, mode: 'pace', partners: { A: nameOf('A'), B: nameOf('B') }, records, turnsPlanned: totalTurns(session.stations.length, session.rounds), synced: true });
+          restored.push({
+            id: row.id, sessionId: session.id, title: session.title, date: row.session_date, elapsed: (row.duration_minutes ?? 0) * 60, mode: 'pace',
+            partners: { A: nameOf('A'), B: nameOf('B') }, records, turnsPlanned: totalTurns(session.stations.length, session.rounds), synced: true,
+            counted: rowCounts(row),
+          });
         } else {
           const planId = ['lower-strength', 'upper-strength', 'lower-pump', 'upper-pump'].find(id => row.notes?.toLowerCase().includes(id.replace('-', ' body · ')));
           oldRows.push({ id: row.id, planId: planId ?? (row.notes ?? '').replace(PARTNER_NOTES_PREFIX, ''), date: row.session_date, elapsed: (row.duration_minutes ?? 0) * 60, records: records as unknown as LegacyPartnerSession['records'], synced: true });
         }
       }
       if (restored.length) {
-        setProgress(prev => {
+        updateProgress(prev => {
           let next = prev;
           for (const log of restored) {
             if (next.logs.some(l => l.id === log.id)) continue;
-            next = addSessionLog(next, log, !next.completed[log.sessionId]);
+            // An unticked save stays unticked on every device.
+            next = addSessionLog(next, log, log.counted !== false && !next.completed[log.sessionId]);
           }
-          if (next !== prev) savePartnerProgress(next, userId);
           return next;
         });
       }
@@ -176,35 +205,68 @@ function Hub({ user }: { user: User | null }) {
       });
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, updateProgress]);
 
-  const sync = useCallback(async (log: PartnerSessionLog) => {
-    if (!userId || syncLock.current) return;
-    syncLock.current = true;
+  // Cloud saves run one at a time from a queue, so a save made during another sync is never dropped.
+  const logsRef = useRef(progress.logs);
+  logsRef.current = progress.logs;
+  const queue = useRef<Array<{ log: PartnerSessionLog; notify: boolean }>>([]);
+  const pumping = useRef(false);
+  const retryRef = useRef<(log: PartnerSessionLog) => void>(() => {});
+
+  const syncOne = useCallback(async (log: PartnerSessionLog, notify: boolean) => {
+    if (!userId) return;
     setSyncingId(log.id);
     try {
       const session = getPartnerSession(log.sessionId);
       const { error } = await supabase.from('workout_logs').upsert(buildWorkoutLogRow(log, userId, session), { onConflict: 'id' });
       if (error) throw error;
-      setProgress(prev => {
-        const next = { ...prev, logs: prev.logs.map(l => (l.id === log.id ? { ...l, synced: true } : l)) };
-        savePartnerProgress(next, userId);
-        return next;
-      });
-      toast.success('Session saved to My Log.');
+      updateProgress(prev => ({ ...prev, logs: prev.logs.map(l => (l.id === log.id ? { ...l, synced: true } : l)) }));
+      if (notify) toast.success('Session saved to My Log.');
     } catch {
-      toast.error('Saved on this device, but the cloud save failed.', { action: { label: 'Retry', onClick: () => { void sync(log); } } });
+      if (notify) toast.error('Saved on this device, but the cloud save failed.', { action: { label: 'Retry', onClick: () => retryRef.current(log) } });
     } finally {
-      syncLock.current = false;
       setSyncingId(null);
     }
-  }, [userId]);
+  }, [userId, updateProgress]);
+
+  const pump = useCallback(async () => {
+    if (!userId || pumping.current) return;
+    pumping.current = true;
+    try {
+      while (queue.current.length) {
+        const { log, notify } = queue.current[0];
+        const latest = logsRef.current.find(l => l.id === log.id) ?? log;
+        if (!latest.synced) await syncOne(latest, notify);
+        queue.current.shift();
+      }
+    } finally {
+      pumping.current = false;
+    }
+  }, [userId, syncOne]);
+
+  const enqueue = useCallback((log: PartnerSessionLog, notify: boolean) => {
+    const queued = queue.current.find(q => q.log.id === log.id);
+    if (queued) { queued.log = log; queued.notify ||= notify; } else queue.current.push({ log, notify });
+    void pump();
+  }, [pump]);
+  retryRef.current = log => enqueue(log, true);
+
+  // Retry anything saved only on this device: on load and whenever the connection comes back.
+  useEffect(() => {
+    if (!userId) return;
+    const retry = () => logsRef.current.filter(l => !l.synced).forEach(l => enqueue(l, false));
+    retry();
+    window.addEventListener('online', retry);
+    return () => window.removeEventListener('online', retry);
+  }, [userId, enqueue]);
 
   function startClass(session: PartnerSession) {
     unlockClassAudio();
+    const opts = { partners: names, extraRound: settings.extraRound };
     const next = createActiveClass(
-      { session, prefill: buildPrefill(session, history) },
-      { id: crypto.randomUUID(), date: toLocalDateStr(), mode: settings.mode, partners: names },
+      { session, prefill: buildPrefill(session, history, opts) },
+      { id: crypto.randomUUID(), date: toLocalDateStr(), mode: settings.mode, ...opts },
     );
     setActive(next);
     setConfirmReplace(false);
@@ -217,20 +279,22 @@ function Hub({ user }: { user: User | null }) {
   }
 
   async function saveClass(a: ActiveClass, countAsDone: boolean) {
-    const session = getPartnerSession(a.sessionId);
+    const session = forKit(getPartnerSession(a.sessionId));
     if (!session) return;
+    const counted = countAsDone && a.records.length > 0;
     const log: PartnerSessionLog = {
       id: a.id, sessionId: session.id, title: session.title, date: a.date, elapsed: a.elapsed, mode: a.mode,
-      partners: a.partners, records: a.records, turnsPlanned: totalTurns(session.stations.length, session.rounds), synced: false,
+      partners: a.partners, records: a.records, turnsPlanned: classTurns(session, a), synced: false, counted,
+      ...(a.extraRound ? { extraRound: true } : {}),
       hr: Object.fromEntries((['A', 'B'] as PartnerSlot[]).flatMap(slot => { const h = hrSummary(a.hr[slot]); return h ? [[slot, h]] : []; })),
     };
-    const next = addSessionLog(progress, log, countAsDone && a.records.length > 0);
+    const next = addSessionLog(progress, log, counted);
     commitProgress(next);
     setActive(null);
     closeClass(true);
     const upcoming = getNextSessionId(next);
-    toast.success(countAsDone ? `${session.title} ticked off.` : 'Session saved.', { description: upcoming ? `Up next: ${getPartnerSession(upcoming)?.title}` : 'That completes the 8-week series.' });
-    if (userId) void sync(log);
+    toast.success(counted ? `${session.title} ticked off.` : 'Session saved.', { description: upcoming ? `Up next: ${getPartnerSession(upcoming)?.title}` : 'That completes the 8-week series.' });
+    if (userId) enqueue(log, true);
   }
 
   function discardClass() {
@@ -242,8 +306,12 @@ function Hub({ user }: { user: User | null }) {
 
   const isNext = selected.id === nextId;
   const selectedDone = progress.completed[selected.id];
-  const turns = totalTurns(selected.stations.length, selected.rounds);
+  const extraMinutes = extraStrengthRoundMinutes(selected);
+  const turns = classTurns(selected, { extraRound: settings.extraRound });
   const activeIsSelected = !!active && active.sessionId === selected.id;
+  const activeTurns = active && activeSession ? classTurns(activeSession, active) : 0;
+  const bars = barbellStations(selected).length;
+  const swapped = selected !== getPartnerSession(selected.id);
 
   return (
     <div className="space-y-5" data-testid="partner-hub">
@@ -251,7 +319,7 @@ function Hub({ user }: { user: User | null }) {
         <div className="card-warm flex flex-col gap-3 border-2 border-move/40 p-4 sm:flex-row sm:items-center" role="status">
           <div className="flex-1">
             <p className="eyebrow text-move">Class in progress</p>
-            <p className="text-sm font-semibold">{activeSession.title} · turn {Math.min(active.turn + 1, totalTurns(activeSession.stations.length))} of {totalTurns(activeSession.stations.length, activeSession.rounds)}</p>
+            <p className="text-sm font-semibold">{activeSession.title} · turn {Math.min(active.turn + 1, activeTurns)} of {activeTurns}</p>
           </div>
           <button type="button" onClick={resumeClass} className="touch-btn rounded-full bg-foreground px-5 py-3 text-sm font-semibold text-background">Resume class</button>
         </div>
@@ -271,80 +339,114 @@ function Hub({ user }: { user: User | null }) {
         <div className="flex flex-wrap gap-1.5 text-xs">
           <span className="rounded-full bg-move/15 px-3 py-1 font-semibold">{selected.style}</span>
           <span className="rounded-full border border-border px-3 py-1">{selected.focus} body</span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1"><Clock className="h-3 w-3" /> about {selected.estMinutes} min</span>
-          <span className="rounded-full border border-border px-3 py-1">{selected.rounds} rounds · {turns} turns</span>
+          <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1"><Clock className="h-3 w-3" /> about {selected.estMinutes + (settings.extraRound ? extraMinutes : 0)} min</span>
+          <span className="rounded-full border border-border px-3 py-1">{selected.rounds}{settings.extraRound ? ' + 1' : ''} rounds · {turns} turns</span>
+          {swapped && <span className="rounded-full border border-border px-3 py-1">Dumbbell squat & bench (no rack safeties)</span>}
         </div>
 
-        <div className="space-y-2.5" data-testid="partner-preview-grid">
-          {BLOCKS.map(block => {
-            const row = selected.stations.map((s, i) => ({ s, i })).filter(x => x.s.block === block);
-            if (!row.length) return null;
-            return (
-              <div key={block}>
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">{block}</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {row.map(({ s, i }) => <PreviewTile key={s.id} station={s} number={i + 1} />)}
+        <div className="space-y-4 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-start lg:gap-6 lg:space-y-0">
+          <div className="space-y-2.5" data-testid="partner-preview-grid">
+            {BLOCKS.map(block => {
+              const row = selected.stations.map((s, i) => ({ s, i })).filter(x => x.s.block === block);
+              if (!row.length) return null;
+              return (
+                <div key={block}>
+                  <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">{block}</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {row.map(({ s, i }) => <PreviewTile key={s.id} station={s} number={i + 1} />)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="space-y-4">
+            {settings.safeties === null && (
+              <div className="space-y-2 rounded-2xl border border-move/40 bg-move/5 p-3" role="group" aria-labelledby="partner-rack-check">
+                <p id="partner-rack-check" className="flex items-center gap-1.5 text-sm font-semibold"><ShieldCheck className="h-4 w-4 text-move" /> Quick rack check</p>
+                <p className="text-xs text-muted-foreground">Does your rack have safety arms or straps that would catch the bar? Your spotter is on the treadmill.</p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => updateSettings(prev => ({ ...prev, safeties: true }))} className="touch-btn flex-1 rounded-full border border-border bg-background px-3 py-2.5 text-sm font-medium">Yes, it has safeties</button>
+                  <button type="button" onClick={() => updateSettings(prev => ({ ...prev, safeties: false }))} className="touch-btn flex-1 rounded-full border border-border bg-background px-3 py-2.5 text-sm font-medium">No, hooks only</button>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            )}
 
-        <div className="space-y-2">
-          <div className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1" role="group" aria-label="Timing mode">
-            {([['pace', 'Partner pace'], ['timer', 'Class timer']] as const).map(([mode, label]) => (
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1" role="group" aria-label="Timing mode">
+                {([['pace', 'Partner pace'], ['timer', 'Class timer']] as const).map(([mode, label]) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    aria-pressed={settings.mode === mode}
+                    onClick={() => updateSettings(prev => ({ ...prev, mode }))}
+                    className={`min-h-[40px] rounded-full text-sm font-medium transition-colors ${settings.mode === mode ? 'bg-foreground text-background' : 'text-muted-foreground'}`}
+                  >{label}</button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {settings.mode === 'pace'
+                  ? 'The worker taps Swap when their reps are done — the reps set how long the treadmill runs.'
+                  : `About ${selected.workSeconds} s of work per station (longer for big sets), then ${selected.transitionSeconds} s to swap. It moves on by itself with 3-2-1 beeps.`}
+                {settings.mode === 'timer' && bars >= 2 && ' Two barbell stations today: partner pace gives you time to change plates.'}
+              </p>
               <button
-                key={mode}
                 type="button"
-                aria-pressed={settings.mode === mode}
-                onClick={() => updateSettings(prev => ({ ...prev, mode }))}
-                className={`min-h-[40px] rounded-full text-sm font-medium transition-colors ${settings.mode === mode ? 'bg-foreground text-background' : 'text-muted-foreground'}`}
-              >{label}</button>
-            ))}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {settings.mode === 'pace'
-              ? 'The worker taps Swap when their reps are done — the reps set how long the treadmill runs.'
-              : `${selected.workSeconds} s work, ${selected.transitionSeconds} s to swap. It moves on by itself with 3-2-1 beeps.`}
-          </p>
-        </div>
-
-        {confirmReplace ? (
-          <div className="space-y-2 rounded-2xl border border-border p-3">
-            <p className="text-sm">Start {selected.title}? The class in progress ({activeSession?.title}) will be discarded.</p>
-            <div className="flex gap-2">
-              <button type="button" onClick={() => startClass(selected)} className="touch-btn flex-1 rounded-full bg-foreground px-4 py-3 text-sm font-semibold text-background">Start new class</button>
-              <button type="button" onClick={() => setConfirmReplace(false)} className="touch-btn flex-1 rounded-full border border-border px-4 py-3 text-sm">Keep it</button>
+                aria-pressed={settings.extraRound}
+                onClick={() => updateSettings(prev => ({ ...prev, extraRound: !prev.extraRound }))}
+                className={`flex w-full items-center justify-between gap-3 rounded-2xl border px-3 py-2.5 text-left text-sm transition-colors ${settings.extraRound ? 'border-foreground bg-foreground/5' : 'border-border'}`}
+              >
+                <span><span className="font-medium">Add a 3rd round of the strength stations</span><span className="block text-xs text-muted-foreground">+6 turns, about {extraMinutes} min. More muscle-building volume.</span></span>
+                <span className={`h-6 w-11 shrink-0 rounded-full p-0.5 transition-colors ${settings.extraRound ? 'bg-foreground' : 'bg-muted'}`} aria-hidden="true">
+                  <span className={`block h-5 w-5 rounded-full bg-background shadow transition-transform ${settings.extraRound ? 'translate-x-5' : ''}`} />
+                </span>
+              </button>
             </div>
-          </div>
-        ) : activeIsSelected ? (
-          <div className="flex gap-2">
-            <button type="button" onClick={resumeClass} className="touch-btn inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3.5 text-base font-semibold text-background">
-              <Play className="h-4 w-4" /> Resume class · turn {Math.min(active!.turn + 1, turns)}/{turns}
-            </button>
-            <button type="button" onClick={() => startClass(selected)} className="touch-btn inline-flex items-center justify-center rounded-full border border-border px-4" aria-label="Restart this class from turn 1">
-              <RotateCcw className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => (active ? setConfirmReplace(true) : startClass(selected))}
-            className="touch-btn inline-flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3.5 text-base font-semibold text-background"
-          >
-            <Play className="h-4 w-4" /> Start class
-          </button>
-        )}
 
-        <details className="rounded-2xl bg-muted/50 p-3 text-sm">
-          <summary className="cursor-pointer font-medium">Warm-up, treadmill & cool-down</summary>
-          <div className="mt-2 space-y-2">
-            <p className="flex gap-2"><Footprints className="mt-0.5 h-4 w-4 shrink-0 text-move" /><span><strong>Treadmill partner:</strong> {selected.treadmill}</span></p>
-            {selected.warmup.length > 0 && <div><p className="font-semibold">Warm-up</p><ul className="list-disc pl-5 text-muted-foreground">{selected.warmup.map(w => <li key={w}>{w}</li>)}</ul></div>}
-            {selected.cooldown.length > 0 && <div><p className="font-semibold">Cool-down</p><ul className="list-disc pl-5 text-muted-foreground">{selected.cooldown.map(c => <li key={c}>{c}</li>)}</ul></div>}
-            {selected.coachNote && <p className="text-muted-foreground">{selected.coachNote}</p>}
+            {confirmReplace ? (
+              <div className="space-y-2 rounded-2xl border border-border p-3" role="alertdialog" aria-label={activeIsSelected ? 'Restart this class?' : 'Start a new class?'}>
+                <p className="text-sm">
+                  {activeIsSelected
+                    ? 'Restart from turn 1? Turns logged so far will be discarded.'
+                    : `Start ${selected.title}? The class in progress (${activeSession?.title}) will be discarded.`}
+                </p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => startClass(selected)} className="touch-btn flex-1 rounded-full bg-foreground px-4 py-3 text-sm font-semibold text-background">{activeIsSelected ? 'Restart' : 'Start new class'}</button>
+                  {/* Keep it is the safe default. */}
+                  <button type="button" autoFocus onClick={() => setConfirmReplace(false)} className="touch-btn flex-1 rounded-full border border-border px-4 py-3 text-sm">Keep it</button>
+                </div>
+              </div>
+            ) : activeIsSelected ? (
+              <div className="flex gap-2">
+                <button ref={primaryButton} type="button" onClick={resumeClass} className="touch-btn inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3.5 text-base font-semibold text-background">
+                  <Play className="h-4 w-4" /> Resume class · turn {Math.min(active!.turn + 1, activeTurns)}/{activeTurns}
+                </button>
+                <button type="button" onClick={() => setConfirmReplace(true)} className="touch-btn inline-flex items-center justify-center rounded-full border border-border px-4" aria-label="Restart this class from turn 1">
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                ref={primaryButton}
+                type="button"
+                onClick={() => (active ? setConfirmReplace(true) : startClass(selected))}
+                className="touch-btn inline-flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3.5 text-base font-semibold text-background"
+              >
+                <Play className="h-4 w-4" /> Start class
+              </button>
+            )}
+
+            <details className="rounded-2xl bg-muted/50 p-3 text-sm">
+              <summary className="cursor-pointer font-medium">Warm-up, treadmill & cool-down</summary>
+              <div className="mt-2 space-y-2">
+                <p className="flex gap-2"><Footprints className="mt-0.5 h-4 w-4 shrink-0 text-move" /><span><strong>Treadmill partner:</strong> {selected.treadmill}</span></p>
+                {selected.warmup.length > 0 && <div><p className="font-semibold">Warm-up</p><ul className="list-disc pl-5 text-muted-foreground">{selected.warmup.map(w => <li key={w}>{w}</li>)}</ul></div>}
+                {selected.cooldown.length > 0 && <div><p className="font-semibold">Cool-down</p><ul className="list-disc pl-5 text-muted-foreground">{selected.cooldown.map(c => <li key={c}>{c}</li>)}</ul></div>}
+                {selected.coachNote && <p className="text-muted-foreground">{selected.coachNote}</p>}
+              </div>
+            </details>
           </div>
-        </details>
+        </div>
       </section>
 
       <section className="card-warm space-y-3 p-5" aria-labelledby="partner-names-heading">
@@ -380,7 +482,13 @@ function Hub({ user }: { user: User | null }) {
             </label>
           </div>
         ))}
-        <p className="text-xs text-muted-foreground">Ages set each partner's heart-rate zones (max HR ≈ 208 − 0.7 × age). Heart-rate straps are optional — connect them in class mode.</p>
+        <p className="text-xs text-muted-foreground">Ages set each partner's heart-rate zones (max HR ≈ 208 − 0.7 × age). Saved weights follow each name, so a different friend starts fresh. Heart-rate straps are optional — connect them in class mode.</p>
+        {settings.safeties !== null && (
+          <p className="text-xs text-muted-foreground">
+            Rack safeties: <strong className="text-foreground">{settings.safeties ? 'yes' : 'no — squat and bench use dumbbells'}</strong>{' '}
+            <button type="button" onClick={() => updateSettings(prev => ({ ...prev, safeties: !prev.safeties }))} className="underline underline-offset-2">Change</button>
+          </p>
+        )}
       </section>
 
       <ProgramGrid program={PARTNER_PROGRAM} progress={progress} nextId={nextId} selectedId={selected.id} onSelect={selectSession} />
@@ -396,6 +504,13 @@ function Hub({ user }: { user: User | null }) {
               ))}
             </ul>
           )}
+          <div>
+            <p className="font-semibold">Kit and safety</p>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+              <li>{PARTNER_PROGRAM.equipment.join(' · ')}</li>
+              {PARTNER_PROGRAM.safety.map(s => <li key={s}>{s}</li>)}
+            </ul>
+          </div>
           {PARTNER_PROGRAM.evidence.length > 0 && (
             <div>
               <p className="font-semibold">The evidence behind it</p>
@@ -405,7 +520,7 @@ function Hub({ user }: { user: User | null }) {
         </div>
       </details>
 
-      <PartnerHistory logs={progress.logs} legacy={legacy} canSync={!!userId} syncingId={syncingId} onRetry={log => void sync(log)} />
+      <PartnerHistory logs={progress.logs} legacy={legacy} canSync={!!userId} syncingId={syncingId} onRetry={log => enqueue(log, true)} />
       {!userId && <p className="text-xs text-muted-foreground">Sessions are saved on this device. Sign in before training to save them to your account.</p>}
 
       {classOpen && active && activeSession && (

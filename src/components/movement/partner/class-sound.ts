@@ -1,18 +1,30 @@
 /**
  * Tiny WebAudio cue player for class mode: short beeps on 3-2-1 and a
- * two-tone chime on each swap. The AudioContext is created on the first
- * user gesture (Start class) so autoplay rules are satisfied.
+ * two-tone chime on each swap. The AudioContext is created (or resumed) on a
+ * user gesture — Start class, or the first tap or key press inside class mode
+ * after a reload — so autoplay rules are satisfied. Cues mix with the
+ * member's own music instead of pausing it where the browser allows.
  */
 type Ctx = AudioContext;
 let ctx: Ctx | null = null;
 
 export function unlockClassAudio(): void {
   try {
+    // iOS 16.4+: "ambient" cues mix with music rather than interrupting it.
+    const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
+    if (session && session.type !== "ambient") session.type = "ambient";
+  } catch { /* not supported */ }
+  try {
     const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AC) return;
     ctx ??= new AC();
     if (ctx.state === "suspended") void ctx.resume();
   } catch { /* audio unavailable */ }
+}
+
+/** Pause the audio clock when class mode closes (resumed by the next gesture). */
+export function suspendClassAudio(): void {
+  try { if (ctx && ctx.state === "running") void ctx.suspend(); } catch { /* ignore */ }
 }
 
 function tone(freq: number, start: number, duration: number, gain = 0.18) {

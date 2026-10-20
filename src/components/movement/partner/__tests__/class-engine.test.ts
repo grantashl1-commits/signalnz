@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PartnerSession, PartnerStation } from "@/data/partner-program";
-import { backTurn, buildPrefill, commitTurn, createActiveClass, hrSummary, isClassComplete, remainingSeconds, restoreActiveClass, swapNow, tickClass, type ClassContext } from "../class-engine";
+import { isPlausibleBpm, parseHeartRateMeasurement } from "@/hooks/useMultiHeartRate";
+import { backTurn, buildPrefill, classTurns, commitTurn, createActiveClass, hrSummary, isClassComplete, remainingSeconds, restoreActiveClass, swapNow, tickClass, type ClassContext } from "../class-engine";
 
 const st = (i: number): PartnerStation => ({
   id: `s${i}`, name: `Station ${i}`, shortLabel: `S${i}`, block: i < 3 ? "Strength" : i < 6 ? "Reformer" : "Core",
@@ -32,8 +33,25 @@ describe("class engine", () => {
     a = { ...a, draft: { turn: 0, reps: "9", weight: "40 kg" } };
     for (let i = 0; i < 18; i++) a = commitTurn(a, ctx);
     expect(a.draft).toEqual({ turn: 18, reps: "9", weight: "40 kg" });
-    // Partner B never logged a load, so they get the prescription.
-    expect(buildPrefill(session, [])(1, a.records)).toEqual({ turn: 1, reps: "10", weight: "" });
+    // Partner B never logged anything: reps start empty (the target is only a placeholder).
+    expect(buildPrefill(session, [])(1, a.records)).toEqual({ turn: 1, reps: "", weight: "" });
+  });
+
+  it("logs an untouched reps field as not logged, and a skipped station as not completed", () => {
+    let a = start();
+    a = commitTurn(a, ctx);
+    expect(a.records[0]).toMatchObject({ reps: "", repsLogged: false, completed: true, style: "Foundation", target: [8, 10] });
+    a = commitTurn({ ...a, draft: { turn: 1, reps: "", weight: "", skipped: true } }, ctx);
+    expect(a.records[1]).toMatchObject({ partner: "B", completed: false });
+    expect(backTurn(a).draft).toMatchObject({ turn: 1, skipped: true });
+  });
+
+  it("prefills the phase-adjusted load from history (deload week → about 75 %)", () => {
+    const deload: PartnerSession = { ...session, id: "w8-s1", style: "Deload" };
+    const history = [{ records: [{ exercise_id: "s0", exercise_name: "Station 0", block: "Strength" as const, partner: "A" as const, partnerName: "Sarah", round: 1, reps: "6", weight: "60 kg", completed: true, session_id: "w7-s2", style: "Peak" as const, target: [5, 6] as [number, number] }] }];
+    expect(buildPrefill(deload, history, { partners })(0, [])).toEqual({ turn: 0, reps: "", weight: "45 kg" });
+    // A different person in slot A does not inherit Sarah's load.
+    expect(buildPrefill(deload, history, { partners: { A: "Kate", B: "Jess" } })(0, [])).toEqual({ turn: 0, reps: "", weight: "" });
   });
 
   it("runs work → swap → next turn in class-timer mode", () => {
@@ -57,6 +75,38 @@ describe("class engine", () => {
     expect(a.turn).toBe(1);
   });
 
+  it("finishes on the last turn without a swap phase (one tap, or when the timer runs out)", () => {
+    const last = { ...start("timer"), turn: 35 };
+    const tapped = swapNow(last, ctx);
+    expect(isClassComplete(tapped, session)).toBe(true);
+    expect(tapped.records).toHaveLength(1);
+    const timed = tickClass(last, ctx, 3);
+    expect(isClassComplete(timed, session)).toBe(true);
+    expect(timed.elapsed).toBe(3);
+  });
+
+  it("uses each station's own work window in class-timer mode", () => {
+    const sized: PartnerSession = { ...session, stations: session.stations.map((x, i) => (i === 0 ? { ...x, workSeconds: 7 } : x)) };
+    const c: ClassContext = { session: sized };
+    let a = createActiveClass(c, { id: "c2", date: "2026-10-18", mode: "timer", partners });
+    expect(remainingSeconds(a, sized)).toBe(7);
+    a = tickClass(a, c, 6);
+    expect(a.phase).toBe("work");
+    a = tickClass(a, c, 1);
+    expect(a.phase).toBe("swap");
+  });
+
+  it("adds a third round of the strength stations: 42 turns ending on station 3", () => {
+    const c: ClassContext = { session, prefill: buildPrefill(session, [], { extraRound: true }) };
+    let a = createActiveClass(c, { id: "c3", date: "2026-10-18", mode: "pace", partners, extraRound: true });
+    expect(classTurns(session, a)).toBe(42);
+    for (let i = 0; i < 42; i++) a = commitTurn(a, c);
+    expect(isClassComplete(a, session)).toBe(true);
+    expect(a.records.slice(36).map(r => [r.round, r.exercise_id, r.partner])).toEqual([
+      [3, "s0", "A"], [3, "s0", "B"], [3, "s1", "A"], [3, "s1", "B"], [3, "s2", "A"], [3, "s2", "B"],
+    ]);
+  });
+
   it("goes back one turn and restores the logged values", () => {
     let a = start();
     a = commitTurn({ ...a, draft: { turn: 0, reps: "8", weight: "42.5 kg" } }, ctx);
@@ -78,5 +128,19 @@ describe("class engine", () => {
     expect(restoreActiveClass(saved, () => true)).toMatchObject({ turn: 5, running: false });
     expect(restoreActiveClass(saved, () => false)).toBeNull();
     expect(restoreActiveClass("nope", () => true)).toBeNull();
+  });
+});
+
+describe("heart-rate measurement parsing (0x2A37)", () => {
+  const view = (...bytes: number[]) => new DataView(new Uint8Array(bytes).buffer);
+  it("reads 8- and 16-bit values and rejects short or implausible packets", () => {
+    expect(parseHeartRateMeasurement(view(0x00, 72))).toBe(72);
+    expect(parseHeartRateMeasurement(view(0x01, 0x90, 0x00))).toBe(144);
+    // 16-bit flag but only 2 bytes: no RangeError, just no reading.
+    expect(parseHeartRateMeasurement(view(0x01, 0x90))).toBeNull();
+    expect(parseHeartRateMeasurement(view(0x00))).toBeNull();
+    expect(isPlausibleBpm(parseHeartRateMeasurement(view(0x01, 0x2c, 0x01)))).toBe(false); // 300 bpm
+    expect(isPlausibleBpm(0)).toBe(false);
+    expect(isPlausibleBpm(150)).toBe(true);
   });
 });
