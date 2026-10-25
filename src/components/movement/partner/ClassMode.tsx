@@ -458,8 +458,6 @@ export default function ClassMode({ session, active, onChange, history, settings
         </div>
         {quickLog}
         {who}
-        <div className="grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
-        <BluetoothNotice isSupported={hr.isSupported} />
         <div className="flex justify-center pt-1">{endButton}</div>
       </div>
       <div className="border-t px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3" style={{ borderColor: "var(--pc-line)", background: "rgba(8,16,18,0.92)" }}>
