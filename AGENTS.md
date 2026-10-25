@@ -214,6 +214,7 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 ## Member-page presentation
 - Use PageHeading and scoped member-page styles for homepage-led member screens; leave homepage and course AtmosphericHero layouts independent so page redesigns do not alter their presentation.
 - Keep class-mode presentation scoped and derived from global member-page tokens, so class colours follow the same theme without changing workout logic.
+- Class mode uses a height-aware landscape layout with the active exercise, both heart rates and controls kept visible; secondary details scroll independently because TV mirroring retains the phone viewport.
 - Resolve corrected exercise illustrations through the shared exact-name registry before database or generic matches, so equipment-specific anatomy artwork stays consistent across previews and classes.
 
 <!-- LOVABLE:BEGIN -->
