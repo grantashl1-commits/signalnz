@@ -1,5 +1,5 @@
 # Homepage-led page redesign
-- [ ] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current suggestions from all-round progression improvements.
+- [x] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current last-set suggestions from proposed all-round progression improvements.
 - [ ] Continue the manual-based update: align all 24 partner lessons' reformer stations with the uploaded Pilates manual, preserving upper/lower muscle focus; create original matching reformer artwork and verify lessons.
 - [x] Audit partner series against its published description: 74 tests pass; report rack-check bypass, single-set progression, copied later-round reps and cloud-restore metadata gaps. Signed-in live verification blocked by Cloud access failure.
 - [ ] Check latest synced GitHub update and redraw partner reformer artwork to show the actual equipment and exercise positions; verify in partner workouts.
