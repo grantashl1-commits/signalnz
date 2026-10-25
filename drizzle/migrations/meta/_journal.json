@@ -36,6 +36,13 @@
       "when": 1791350480013,
       "tag": "0004_restrict_reference_pdfs_and_practice_audio",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792960316196,
+      "tag": "0005_protect_spatial_reference_writes",
+      "breakpoints": true
     }
   ]
 }
