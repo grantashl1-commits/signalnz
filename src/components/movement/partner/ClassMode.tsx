@@ -446,12 +446,9 @@ export default function ClassMode({ session, active, onChange, history, settings
           {session.stations.map((s, i) => (
             <span
               key={s.id}
-              className="pc-num flex h-9 w-9 items-center justify-center rounded-full text-sm font-extrabold"
-              style={{
-                background: i === t.station ? "var(--pc-teal)" : stationDone(i) ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.08)",
-                color: i === t.station ? "#062420" : "white",
-                boxShadow: `inset 0 0 0 2px ${s.block === "Strength" ? "var(--pc-strength)" : s.block === "Reformer" ? "var(--pc-reformer)" : "var(--pc-core)"}`,
-              }}
+              className="pc-station-dot pc-num flex h-9 w-9 items-center justify-center rounded-full text-sm font-extrabold"
+              data-block={s.block}
+              data-done={stationDone(i)}
               aria-current={i === t.station ? "step" : undefined}
               title={s.shortLabel}
             >{i + 1}</span>
@@ -461,7 +458,7 @@ export default function ClassMode({ session, active, onChange, history, settings
         {who}
         <div className="flex justify-center pt-1">{endButton}</div>
       </div>
-      <div className="border-t px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3" style={{ borderColor: "var(--pc-line)", background: "rgba(8,16,18,0.92)" }}>
+      <div className="pc-footer border-t px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3">
         {controls}
       </div>
     </div>
@@ -497,8 +494,8 @@ export default function ClassMode({ session, active, onChange, history, settings
       {view === "hr" ? hrScreen : wide ? wideGrid : phoneStack}
 
       {confirmEnd && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 p-6" role="alertdialog" aria-modal="true" aria-labelledby="pc-end-title" aria-describedby="pc-end-desc">
-          <div className="pc-panel w-full max-w-md space-y-4 p-5" style={{ background: "#14272b" }}>
+        <div className="pc-end-overlay absolute inset-0 z-10 flex items-center justify-center p-6" role="alertdialog" aria-modal="true" aria-labelledby="pc-end-title" aria-describedby="pc-end-desc">
+          <div className="pc-panel w-full max-w-md space-y-4 p-5">
             <p id="pc-end-title" className="pc-title">End the class now?</p>
             <p id="pc-end-desc" className="pc-sub pc-muted">{active.turn} of {total} turns logged. You can save what you've done or keep going.</p>
             <div className="flex gap-2">
