@@ -434,7 +434,7 @@ function session(s: SessionInput): PartnerSession {
 const SESSIONS: PartnerSession[] = [
   session({
     week: 1, index: 1, focus: 'Upper', style: 'Foundation',
-    strength: ['dbBench', 'bbRow', 'seatedPress'],
+    strength: ['dbBench', 'csRow', 'seatedPress'],
     reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['suitcase', hold(20, true)], ['plank', hold(30)]],
     coachNote: 'A different upper mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
@@ -555,7 +555,7 @@ const SESSIONS: PartnerSession[] = [
   }),
   session({
     week: 6, index: 3, focus: 'Lower', style: 'Power',
-    strength: [['squatJump', opener(5)], 'squat', 'slRdl'],
+    strength: [['squatJump', opener(5)], 'squat', ['slRdl', { reps: '6–8 each side', repRange: [6, 8] }]],
     reformer: [['slPress', { springs: 'medium–heavy' }], ['scooter', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['ballDeadBug', each(8)], ['shoulderTap', each(8)], ['suitcase', hold(20, true)]],
     mainLifts: 3,
@@ -591,7 +591,7 @@ const SESSIONS: PartnerSession[] = [
   }),
   session({
     week: 8, index: 2, focus: 'Upper', style: 'Deload',
-    strength: ['dbBench', 'csRow', 'seatedPress'],
+    strength: ['dbBench', 'bbRow', 'seatedPress'],
     reformer: [['chestExp', { springs: 'light' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['deadBug', each(6)], ['sidePlankKnee', hold(20, true)]],
     coachNote: 'A different upper mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady. This is a recovery session: lighter loads and 3–4 good reps left, rather than a maximum test.',
