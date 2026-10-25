@@ -1,4 +1,5 @@
 # Homepage-led page redesign
+- [x] Audit partner series against its published description: 74 tests pass; report rack-check bypass, single-set progression, copied later-round reps and cloud-restore metadata gaps. Signed-in live verification blocked by Cloud access failure.
 - [ ] Check latest synced GitHub update and redraw partner reformer artwork to show the actual equipment and exercise positions; verify in partner workouts.
 - [ ] Deliver an original SIGNAL illustration catalogue with individual Google Flow descriptions for recipes, training paths (including reformer Pilates), meditations and other site sections.
 - [x] Restore original SIGNAL logo on the welcome page and regenerate homepage artwork in the YOCH reference style; verify artwork and sign-in link.
