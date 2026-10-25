@@ -406,7 +406,11 @@ export default function ClassMode({ session, active, onChange, history, settings
 
   const wideGrid = (
     <>
-      <div className="flex min-h-0 flex-1 gap-5 px-8 pb-4">
+      <div className="pc-hr-strip grid grid-cols-2 gap-4 px-8 pb-4 pt-1" data-testid="hr-strip">
+        {SLOTS.map(slot => hrTile(slot, "strip"))}
+        {!hr.isSupported && <div className="col-span-2 -mt-2"><BluetoothNotice isSupported={false} /></div>}
+      </div>
+      <div className="flex min-h-0 flex-1 gap-5 px-8 pb-5">
         <div className="grid min-h-0 flex-1 grid-cols-3 grid-rows-3 gap-3 2xl:gap-4" data-testid="class-grid">
           {session.stations.map((s, i) => (
             <ClassTile key={s.id} station={s} number={i + 1} active={i === t.station} done={stationDone(i)} workerName={i === t.station ? workerName : undefined} />
@@ -417,10 +421,6 @@ export default function ClassMode({ session, active, onChange, history, settings
           {quickLog}
           <div className="mt-auto">{controls}</div>
         </aside>
-      </div>
-      <div className="pc-hr-strip grid grid-cols-2 gap-4 px-8 pb-5" data-testid="hr-strip">
-        {SLOTS.map(slot => hrTile(slot, "strip"))}
-        {!hr.isSupported && <div className="col-span-2 -mt-2"><BluetoothNotice isSupported={false} /></div>}
       </div>
     </>
   );
@@ -440,6 +440,8 @@ export default function ClassMode({ session, active, onChange, history, settings
             <p className="pc-sub pc-muted pc-num">{[station.rir && `RIR ${station.rir}`, station.tempo && `tempo ${station.tempo}`].filter(Boolean).join(" · ")}</p>
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
+        <BluetoothNotice isSupported={hr.isSupported} />
         <div className="flex justify-between gap-1" aria-label="Stations">
           {session.stations.map((s, i) => (
             <span
@@ -457,8 +459,6 @@ export default function ClassMode({ session, active, onChange, history, settings
         </div>
         {quickLog}
         {who}
-        <div className="grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
-        <BluetoothNotice isSupported={hr.isSupported} />
         <div className="flex justify-center pt-1">{endButton}</div>
       </div>
       <div className="border-t px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3" style={{ borderColor: "var(--pc-line)", background: "rgba(8,16,18,0.92)" }}>
