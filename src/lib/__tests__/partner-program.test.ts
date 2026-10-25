@@ -254,7 +254,7 @@ describe("partner program volume", () => {
       expect(session.stations.find((s) => s.id === "reformer-calf-raise")?.muscles).toEqual(["calves"]);
     }
   });
-  it("reaches at least the time-efficient minimum of 4 fractional sets per muscle per week", () => {
+  it("averages at least 4 prescribed fractional credits per week across each fortnight, not hard sets", () => {
     for (const block of [[1, 2], [3, 4], [5, 6], [7, 8]]) {
       const sets = fractionalSetsPerMuscle(sessions.filter((s) => block.includes(s.week)));
       for (const m of ["quads", "glutes", "hamstrings", "chest", "back", "shoulders"]) {

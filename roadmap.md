@@ -4,7 +4,7 @@
 - [x] Correct the partner core artwork using the Anatomy of Exercise pose reference: connect 18 original transparent illustrations through exact-name overrides; verify image delivery and 31 partner tests. Signed-in class inspection is blocked by Cloud access failure.
 - [x] Correct artwork for every strength/reformer station prescribed in the revised partner series; unused library variants remain outside this revision.
 - [x] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current last-set suggestions from proposed all-round progression improvements.
-- [x] Align all 24 partner lessons with six stable muscle-targeted reformer movements and original equipment-specific artwork; preserve upper/lower focus and controlled spring guidance.
+- [ ] Complete page-by-page manual matching for the reformer variants: the revised series uses six stable muscle-targeted movements with dedicated artwork, but full manual certification is unfinished.
 - [x] Audit partner series against its published description: 74 tests pass; report rack-check bypass, single-set progression, copied later-round reps and cloud-restore metadata gaps. Signed-in live verification blocked by Cloud access failure.
 - [x] Redraw and connect reformer setups in the revised partner lessons; verify signed-in partner grid.
 - [ ] Deliver an original SIGNAL illustration catalogue with individual Google Flow descriptions for recipes, training paths (including reformer Pilates), meditations and other site sections.
