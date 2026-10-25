@@ -84,6 +84,25 @@ describe("partner program structure", () => {
     }
   });
 
+  it("never repeats exercise IDs in consecutive lessons of the same body focus", () => {
+    for (const focus of ["Upper", "Lower"] as const) {
+      const lessons = sessions.filter(s => s.focus === focus);
+      for (let i = 1; i < lessons.length; i++) {
+        const previous = new Set(lessons[i - 1].stations.map(st => st.id));
+        expect(lessons[i].stations.filter(st => previous.has(st.id)).map(st => st.id),
+          `${lessons[i - 1].id} → ${lessons[i].id}`).toEqual([]);
+      }
+    }
+  });
+
+  it("does not repeat calf raises between the first two lower lessons", () => {
+    const first = getPartnerSession("w1-s2");
+    const next = getPartnerSession("w2-s1");
+    expect(first).toBeDefined();
+    expect(next).toBeDefined();
+    expect([first, next].filter(s => s?.stations.some(st => st.id === "reformer-calf-raise"))).toHaveLength(1);
+  });
+
   it("shares one barbell sensibly: at most 2 barbell stations and 1 rack lift per session", () => {
     for (const s of sessions) {
       const bars = barbellStations(s);
