@@ -1,5 +1,5 @@
 # Homepage-led page redesign
-- [ ] Remove consecutive same-focus exercise repeats across all partner lessons; keep footwork and verify distinct artwork and muscle coverage.
+- [x] Remove consecutive same-focus exercise repeats across all 24 partner lessons; retain footwork and separate calf raises, add three exact reformer drawings; 66 checks and signed-in preview/Start class pass.
 - [ ] Replace footwork with a jumpboard push-out: deferred by owner until matching artwork is available (image generation blocked).
 - [x] Rebuild all 24 partner sessions with distinct combinations in each block, matching anatomy art and inspected manual passages; 77 tests and signed-in preview, Start class and Swap verified.
 - [x] Fit rotated-phone class mode to the available screen for TV mirroring; signed-in rotation at 844×300, 844×390 and 667×280, portrait, desktop, logging and Swap verified; 70 tests passed.
