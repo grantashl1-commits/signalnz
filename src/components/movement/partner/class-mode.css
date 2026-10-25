@@ -163,3 +163,11 @@
 .pc-class[data-landscape="true"] .pc-hr-screen .pc-hr-name { font-size: 18px; }
 .pc-class[data-landscape="true"] .pc-hr-screen > .grid .pc-hr { padding: 8px; }
 .pc-class[data-landscape="true"] .pc-hr-screen .sm\:mt-6 { margin-top: 6px; }
+
+@media (orientation: landscape) and (max-height: 320px) {
+  .pc-landscape-exercise .pc-active-card > div:last-child { gap: 1px; }
+  .pc-landscape-exercise .pc-active-card .text-xs,
+  .pc-landscape-exercise .pc-active-card .pc-sub { font-size: 10px; line-height: 12px; }
+  .pc-landscape-exercise .pc-active-card .text-\[22px\] { font-size: 14px; line-height: 17px; }
+  .pc-landscape-exercise .pc-active-card .text-lg { font-size: 13px; line-height: 16px; }
+}
