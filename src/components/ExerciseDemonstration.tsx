@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MuscleIllustration from "@/components/movement/MuscleIllustration";
 import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { getExerciseImageByName } from "@/lib/exercise-image-lookup";
+import { getCorrectedExerciseArt } from "@/lib/corrected-exercise-art";
 
 interface Props {
   exerciseName: string;
@@ -33,7 +34,7 @@ export default function ExerciseDemonstration({
   const lookup = useExerciseIllustrations();
   const [imageFailed, setImageFailed] = useState(false);
   const localImageUrl = getExerciseImageByName(exerciseName) ?? null;
-  const resolvedImageUrl = !imageFailed ? (imageUrl ?? lookup(exerciseName) ?? localImageUrl) : localImageUrl;
+  const resolvedImageUrl = !imageFailed ? (getCorrectedExerciseArt(exerciseName) ?? imageUrl ?? lookup(exerciseName) ?? localImageUrl) : localImageUrl;
   const target = targetMuscle || guessTargetFromName(exerciseName);
 
   useEffect(() => {

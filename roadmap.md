@@ -1,4 +1,6 @@
 # Homepage-led page redesign
+- [x] Correct the partner core artwork using the Anatomy of Exercise pose reference: connect 18 original transparent illustrations through exact-name overrides; verify image delivery and 31 partner tests. Signed-in class inspection is blocked by Cloud access failure.
+- [ ] Correct remaining strength and reformer artwork after the book-based lesson matching; signed-in verification awaits restored Cloud access.
 - [x] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current last-set suggestions from proposed all-round progression improvements.
 - [ ] Continue the manual-based update: align all 24 partner lessons' reformer stations with the uploaded Pilates manual, preserving upper/lower muscle focus; create original matching reformer artwork and verify lessons.
 - [x] Audit partner series against its published description: 74 tests pass; report rack-check bypass, single-set progression, copied later-round reps and cloud-restore metadata gaps. Signed-in live verification blocked by Cloud access failure.

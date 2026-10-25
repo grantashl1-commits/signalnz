@@ -4,6 +4,7 @@ import { useExerciseIllustrations } from "@/hooks/useExerciseIllustrations";
 import { getExerciseImageByName } from "@/lib/exercise-image-lookup";
 import imageMaps from "@/data/image-maps.json";
 import type { PartnerStation } from "@/data/partner-program";
+import { getCorrectedExerciseArt } from "@/lib/corrected-exercise-art";
 
 const EXERCISE_IMAGES = imageMaps.exercises as Record<string, string>;
 
@@ -15,7 +16,8 @@ type Lookup = (name: string | null | undefined) => string | undefined;
  * last local match before the anatomy fallback.
  */
 export function stationImageUrl(lookup: Lookup, station: Pick<PartnerStation, "name" | "imageKey">): string | null {
-  return lookup(station.name)
+  return getCorrectedExerciseArt(station.name)
+    ?? lookup(station.name)
     ?? getExerciseImageByName(station.name)
     ?? (station.imageKey ? EXERCISE_IMAGES[station.imageKey] : undefined)
     ?? null;
@@ -56,7 +58,7 @@ export default function StationArt({ station, animate = false, className = "", f
   // End poses are optional art (`<imageKey>-end.png`); only try one the image map knows about.
   const endUrl = station.imageKey ? EXERCISE_IMAGES[`${station.imageKey}-end`] : undefined;
   const [endFailed, setEndFailed] = useState(false);
-  const crossfade = animate && !!endUrl && !endFailed;
+  const crossfade = animate && !!endUrl && !endFailed && !getCorrectedExerciseArt(station.name);
   const imageUrl = crossfade && station.imageKey ? EXERCISE_IMAGES[station.imageKey] : stationImageUrl(lookup, station);
 
   useEffect(() => { setEndFailed(false); }, [station.imageKey]);

@@ -8,6 +8,7 @@
  * `image-maps.json` map populated by `scripts/build-image-maps.mjs`.
  */
 import imageMaps from "@/data/image-maps.json";
+import { getCorrectedExerciseArt } from "@/lib/corrected-exercise-art";
 
 const EXERCISE_BY_SLUG = imageMaps.exercises as Record<string, string>;
 
@@ -79,6 +80,8 @@ function getExerciseNameVariants(name: string): string[] {
 
 /** Resolve the illustration path for an exercise name (e.g. `"Goblet Squat"`). */
 export function getExerciseImageByName(name: string): string | undefined {
+  const corrected = getCorrectedExerciseArt(name);
+  if (corrected) return corrected;
   const variants = getExerciseNameVariants(name);
   for (const variant of variants) {
     const slug = slugify(variant);
