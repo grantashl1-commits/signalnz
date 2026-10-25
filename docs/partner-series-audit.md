@@ -2,24 +2,15 @@
 
 ## Revision applied
 
-All 24 lesson IDs, alternating upper/lower order, nine stations, two rounds and 36 turns are preserved. Every upper lesson now includes seated reformer row, chest press and biceps curl; every lower lesson includes single-leg footwork, bridge with controlled carriage motion and calf raises. Every lower lesson retains a loaded RDL. Third strength slots rotate shoulder work or lower-body accessories; Week 6 retains the easier power opener. Ramp-up sets now happen before the two working rounds. The blanket 5–9 hard-set claim and universal ten-set implication were removed.
+All 24 lesson IDs, upper/lower order, nine stations, two rounds and 36 turns are preserved. Each of the 12 upper and 12 lower lessons has a distinct unordered combination in each block: three strength, three reformer and three core stations. Familiar movements recur later with existing identities for weight-history comparison. Every lower lesson retains a loaded hinge. Direct arm and calf stations return across the rotations. Week 6 keeps a low-fatigue power opener; Week 8 remains a deload. This means different combinations, not 216 globally unique exercises.
 
-Twenty-four original strength/reformer images are connected through the exact-name registry, ahead of database and generic lookups. All prescribed revised strength/reformer names, including rack-safety substitutions except the existing push-up, resolve to dedicated artwork. Prior core corrections remain. Still images show one position, not the entire movement. Unused library reformer variants are not certified by this revision.
+Eight additional original anatomy illustrations cover chest-supported row, single-leg RDL, heel footwork, frog press, scooter, hug-a-tree, chest expansion and overhead triceps. All prescribed names and rack substitutions resolve through the exact-name registry. Core corrections remain. Still pictures show one position, not the complete movement.
 
-Recalculated prescribed fractional credits below replace the historical table for the revised plan. These are not completed hard sets: reformer weighting is an estimate, secondary-muscle weighting is approximate, and power/deload work does not have equivalent stimulus.
+Prescribed fractional credits are checked directly from the current program instead of a stale table: chest, back, quads, glutes and hamstrings average at least four credits per week in each fortnight. Reformer and secondary-muscle weighting are estimates, not completed hard sets; power and deload work do not have equivalent stimulus. This remains a modest-volume hybrid, not a maximum-hypertrophy plan. Effort entry and all-round progression are not added.
 
-| Week | Chest | Back | Shoulders | Biceps | Triceps | Quads | Glutes | Hamstrings | Calves |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 8 | 6 | 9 | 5 | 5 | 4 | 5 | 3 | 1 |
-| 2 | 3 | 3 | 5 | 2.5 | 2.5 | 7 | 10 | 7 | 2 |
-| 3 | 6 | 6 | 10 | 5 | 4 | 5 | 4 | 3 | 1 |
-| 4 | 3 | 3 | 5 | 2.5 | 1.5 | 8 | 9 | 7 | 2 |
-| 5 | 6 | 6 | 10 | 5 | 4 | 5 | 4 | 3 | 1 |
-| 6 | 3 | 3 | 5 | 2.5 | 2.5 | 9 | 9 | 7 | 3 |
-| 7 | 6 | 6 | 10 | 5 | 4 | 5 | 4 | 3 | 1 |
-| 8 | 3 | 3 | 5 | 2.5 | 2.5 | 8 | 10 | 6 | 2 |
+Manual passages inspected (1-based PDF pages): heel-footwork alignment 68–69; frog setup and movement 113–115; hug-a-tree 135–137; seated salute/shaving variation 138–139; scooter 274–276; kneeling chest expansion 294–296. Spring colours differ by manufacturer: relative app labels are not universal colour/count equivalents. Full certification of unused legacy variants remains unfinished.
 
-The revised series remains modest-volume, not a maximum-hypertrophy plan. Effort entry and all-round progression are not added by this revision. Seventy-eight targeted program/progress/class/circuit tests pass. Signed-in Week 1 preview shows the correct dumbbells, hinged barbell row, seated shoulder press and three reformer setups, without runtime errors.
+Seventy-seven targeted program/progress/class/circuit tests pass, including distinct combinations, per-person progression, exact artwork coverage, timing and rack substitutions. Signed-in preview, Start class and Swap were checked without runtime errors.
 
 ## Historical audit before revision
 
