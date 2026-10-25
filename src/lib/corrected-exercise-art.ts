@@ -13,6 +13,9 @@ import birdDog from "@/assets/movement/core/bird-dog.png";
 import bearHold from "@/assets/movement/core/bear-hold.png";
 import forearmPlank from "@/assets/movement/core/forearm-plank.png";
 import hollowTuck from "@/assets/movement/core/hollow-tuck.png";
+import shoulderTap from "@/assets/movement/core/shoulder-tap.png";
+import renegadeRow from "@/assets/movement/core/renegade-row.png";
+import reformerPallof from "@/assets/movement/core/reformer-pallof.png";
 
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
@@ -39,6 +42,10 @@ const correctedArt: Record<string, string> = {
   "bear hold": bearHold,
   "forearm plank": forearmPlank,
   "hollow body hold tuck": hollowTuck,
+  "plank shoulder tap": shoulderTap,
+  "plank shoulder taps": shoulderTap,
+  "renegade row": renegadeRow,
+  "pallof press reformer strap": reformerPallof,
 };
 
 export function getCorrectedExerciseArt(name: string | null | undefined): string | undefined {
