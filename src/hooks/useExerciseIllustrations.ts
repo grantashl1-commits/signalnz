@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCorrectedExerciseArt } from "@/lib/corrected-exercise-art";
 
 /** Module-level cache so multiple components share one fetch. */
 let cache: Record<string, string> | null = null;
@@ -113,6 +114,6 @@ export function useExerciseIllustrations() {
   }, []);
   return (name: string | null | undefined): string | undefined => {
     if (!name) return undefined;
-    return resolveFromMap(map, name);
+    return getCorrectedExerciseArt(name) ?? resolveFromMap(map, name);
   };
 }
