@@ -1,5 +1,28 @@
 # Partner series audit — 25 October 2026
 
+## Revision applied
+
+All 24 lesson IDs, alternating upper/lower order, nine stations, two rounds and 36 turns are preserved. Every upper lesson now includes seated reformer row, chest press and biceps curl; every lower lesson includes single-leg footwork, bridge with controlled carriage motion and calf raises. Every lower lesson retains a loaded RDL. Third strength slots rotate shoulder work or lower-body accessories; Week 6 retains the easier power opener. Ramp-up sets now happen before the two working rounds. The blanket 5–9 hard-set claim and universal ten-set implication were removed.
+
+Twenty-four original strength/reformer images are connected through the exact-name registry, ahead of database and generic lookups. All prescribed revised strength/reformer names, including rack-safety substitutions except the existing push-up, resolve to dedicated artwork. Prior core corrections remain. Still images show one position, not the entire movement. Unused library reformer variants are not certified by this revision.
+
+Recalculated prescribed fractional credits below replace the historical table for the revised plan. These are not completed hard sets: reformer weighting is an estimate, secondary-muscle weighting is approximate, and power/deload work does not have equivalent stimulus.
+
+| Week | Chest | Back | Shoulders | Biceps | Triceps | Quads | Glutes | Hamstrings | Calves |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 8 | 6 | 9 | 5 | 5 | 4 | 5 | 3 | 1 |
+| 2 | 3 | 3 | 5 | 2.5 | 2.5 | 7 | 10 | 7 | 2 |
+| 3 | 6 | 6 | 10 | 5 | 4 | 5 | 4 | 3 | 1 |
+| 4 | 3 | 3 | 5 | 2.5 | 1.5 | 8 | 9 | 7 | 2 |
+| 5 | 6 | 6 | 10 | 5 | 4 | 5 | 4 | 3 | 1 |
+| 6 | 3 | 3 | 5 | 2.5 | 2.5 | 9 | 9 | 7 | 3 |
+| 7 | 6 | 6 | 10 | 5 | 4 | 5 | 4 | 3 | 1 |
+| 8 | 3 | 3 | 5 | 2.5 | 2.5 | 8 | 10 | 6 | 2 |
+
+The revised series remains modest-volume, not a maximum-hypertrophy plan. Effort entry and all-round progression are not added by this revision. Seventy-eight targeted program/progress/class/circuit tests pass. Signed-in Week 1 preview shows the correct dumbbells, hinged barbell row, seated shoulder press and three reformer setups, without runtime errors.
+
+## Historical audit before revision
+
 ## Conclusion
 
 The 24-session program can support muscle growth, particularly for newer lifters, when the chosen loads genuinely meet its effort targets. It is a low-to-moderate-volume strength/Pilates/cardio hybrid, not a balanced maximum-hypertrophy prescription. Results depend on completed training, appropriate resistance, nutrition and recovery; no individual result is guaranteed.
