@@ -1,5 +1,5 @@
 # Homepage-led page redesign
-- [ ] Audit all 24 partner lessons for illustration accuracy and muscle-building stimulus; report actual volume, effort, progression and remaining artwork mismatches.
+- [x] Audit all 24 partner lessons for illustration accuracy and muscle-building stimulus; record actual volume, effort, progression and remaining artwork mismatches in docs/partner-series-audit.md. Signed-in grid verified; 74 tests pass. Corrections remain separate work.
 - [x] Correct the partner core artwork using the Anatomy of Exercise pose reference: connect 18 original transparent illustrations through exact-name overrides; verify image delivery and 31 partner tests. Signed-in class inspection is blocked by Cloud access failure.
 - [ ] Correct remaining strength and reformer artwork after the book-based lesson matching; signed-in verification awaits restored Cloud access.
 - [x] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current last-set suggestions from proposed all-round progression improvements.

@@ -19,7 +19,7 @@ This is an audit, not a rewrite of the sessions or automatic progression.
 | 4 | 5 | 3.5 | 5 | 1 | 3 | 9 | 12 | 6 |
 | 5 | 7 | 7.5 | 10 | 2.5 | 6 | 5 | 4.5 | 3 |
 | 6 | 3 | 4 | 5 | 1.5 | 3 | 9.5 | 10.5 | 7 |
-| 7 | 7 | 7.5 | 9.5 | 3.5 | 5 | 5 | 3 |
+| 7 | 7 | 7.5 | 9.5 | 3.5 | 5 | 5.5 | 5 | 3 |
 | 8 (deload) | 3 | 4 | 5 | 1.5 | 3 | 8.5 | 11.5 | 6 |
 
 - The advertised “5–9 hard sets per muscle per week” is not accurate across muscles/weeks. A blanket extra strength round does not take every muscle close to ten sets.
@@ -59,9 +59,10 @@ For non-corrected stations the live database lookup precedes local fallbacks and
 ## Verification and boundaries
 
 - Audited all 24 session prescriptions and illustration mappings.
-- Authenticated Movement preview opens with no page errors; full class inspection and targeted tests are recorded in the completion summary.
+- Authenticated Movement → Partner series opens with no page errors. The real Week 1 grid visibly confirms wrong strength and reformer images (upright curl-like row, gym lat pull-down and barbell art for dumbbell press). Core corrections load. All 74 tests in the four partner-program/progress/class/circuit test files pass. No personal workout completion was recorded during this read-only audit.
 - No personal effort/technique observations were available. Personal weight logs alone cannot establish that loads are challenging enough.
 - Remaining artwork and program improvements are identified, not silently applied.
+- Security: attempted read-only grants migration, but the extension owner's grants remain unchanged on verification. Enabling RLS fails with “must be owner of table spatial_ref_sys”. The finding remains active; the attempted migration is not evidence of protection.
 
 ## Research
 
