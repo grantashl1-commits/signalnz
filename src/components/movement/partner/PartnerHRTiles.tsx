@@ -3,15 +3,14 @@ import { getZoneForBPM } from "@/data/workouts";
 import { BLUETOOTH_UNSUPPORTED_MESSAGE, type StrapSlot, type StrapState } from "@/hooks/useMultiHeartRate";
 
 /**
- * 5-zone palette (grey → blue → green → amber → red), deep enough that white
- * text stays at 3:1 or better on the fill from across the room.
+ * Semantic five-zone palette shared with the light class theme.
  */
 export const ZONE_COLOURS: Record<number, string> = {
-  1: "#64748b",
-  2: "#2563eb",
-  3: "#16a34a",
-  4: "#d97706",
-  5: "#dc2626",
+  1: "hsl(var(--hr-zone-1))",
+  2: "hsl(var(--hr-zone-2))",
+  3: "hsl(var(--hr-zone-3))",
+  4: "hsl(var(--hr-zone-4))",
+  5: "hsl(var(--hr-zone-5))",
 };
 
 export interface PartnerHRInfo {
