@@ -178,8 +178,8 @@ describe("phase-aware suggestions (real stations)", () => {
     const s = suggestNext(st("w5-s2", "barbell-back-squat"), last("w3-s2", "barbell-back-squat", "12", "40 kg"), { style: "Strength" });
     expect(s).toMatchObject({ weight: "45 kg", reps: "6", kind: "adjust" });
   });
-  it("Strength → Power week: same lifts and reps, so normal double progression", () => {
-    const s = suggestNext(st("w6-s2", "db-bench-press"), last("w2-s2", "db-bench-press", "8", "12 kg"), { style: "Power" });
+  it("Power week: reaching the top of its rep range allows normal double progression", () => {
+    const s = suggestNext(st("w6-s2", "db-bench-press"), last("w6-s2", "db-bench-press", "8", "12 kg"), { style: "Power" });
     expect(s).toMatchObject({ weight: "14 kg", kind: "increase" });
   });
   it("Week 6 → Peak: heavier for 5–6 reps (about Week 5 + 2.5–5 kg)", () => {
