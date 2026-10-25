@@ -134,3 +134,32 @@
 .pc-class .pc-hr-fill[data-zone="4"] { background: hsl(var(--hr-zone-4) / 0.12); border-left: 4px solid hsl(var(--hr-zone-4)); }
 
 .pc-class .pc-hr-fill[data-zone="5"] { background: hsl(var(--hr-zone-5) / 0.12); border-left: 4px solid hsl(var(--hr-zone-5)); }
+
+/* Mirroring preserves the phone's viewport, not the television's dimensions. */
+.pc-class[data-landscape="true"] { height: 100dvh; padding-inline: env(safe-area-inset-left) env(safe-area-inset-right); }
+.pc-class[data-landscape="true"] .pc-class-header { padding: 6px 12px; gap: 12px; }
+.pc-class[data-landscape="true"] .pc-clock { font-size: 32px; }
+.pc-class[data-landscape="true"] .pc-title { font-size: 14px; }
+.pc-class[data-landscape="true"] .pc-sub { font-size: 11px; }
+.pc-class[data-landscape="true"] .pc-class-header > div:last-child { flex: 0 0 auto; }
+.pc-class[data-landscape="true"] .pc-btn { min-height: 44px; padding-inline: 10px; font-size: 12px; }
+.pc-class[data-landscape="true"] .pc-btn-icon { width: 44px; padding: 0; }
+.pc-class[data-landscape="true"] .pc-class-progress { padding: 0 12px 6px; }
+.pc-class[data-landscape="true"] .pc-seg { height: 4px; }
+.pc-landscape-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 44px; flex: 1; min-height: 0; gap: 6px 12px; padding: 0 12px max(6px, env(safe-area-inset-bottom)); }
+.pc-landscape-exercise { min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) 64px; gap: 6px; }
+.pc-landscape-exercise .pc-active-card { overflow: hidden; gap: 8px; }
+.pc-landscape-exercise .pc-art { height: 100%; width: auto; max-width: 44%; aspect-ratio: 1; }
+.pc-landscape-exercise .pc-active-card .text-\[22px\] { font-size: 16px; overflow-wrap: anywhere; }
+.pc-landscape-exercise .pc-active-card .text-lg { font-size: 14px; }
+.pc-landscape-hr .pc-hr { padding: 6px 8px; border-radius: 8px; }
+.pc-landscape-hr .pc-hr .text-xs { font-size: 10px; }
+.pc-landscape-info { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.pc-landscape-info .pc-panel { padding: 8px; border-radius: 8px; }
+.pc-class[data-landscape="true"] .pc-input { min-height: 44px; font-size: 16px; }
+.pc-landscape-controls { grid-column: 1 / -1; }
+.pc-landscape-controls .pc-btn { min-height: 44px; height: 44px; }
+.pc-class[data-landscape="true"] .pc-hr-screen .pc-hr-bpm { font-size: 64px; }
+.pc-class[data-landscape="true"] .pc-hr-screen .pc-hr-name { font-size: 18px; }
+.pc-class[data-landscape="true"] .pc-hr-screen > .grid .pc-hr { padding: 8px; }
+.pc-class[data-landscape="true"] .pc-hr-screen .sm\:mt-6 { margin-top: 6px; }

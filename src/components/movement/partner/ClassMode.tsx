@@ -46,8 +46,7 @@ interface Props {
 }
 
 /** Tablet/TV landscape gets the full station grid; phones get the large active station. */
-function useWideLayout() {
-  const query = "(min-width: 1024px)";
+function useWideLayout(query = "(min-width: 1024px)") {
   const [wide, setWide] = useState(() => typeof window !== "undefined" && !!window.matchMedia?.(query).matches);
   useEffect(() => {
     const mq = window.matchMedia?.(query);
@@ -56,7 +55,7 @@ function useWideLayout() {
     onChange();
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);
-  }, []);
+  }, [query]);
   return wide;
 }
 
@@ -74,6 +73,7 @@ export default function ClassMode({ session, active, onChange, history, settings
   const [confirmEnd, setConfirmEnd] = useState(false);
   const wake = useWakeLock();
   const wide = useWideLayout();
+  const landscape = useWideLayout("(orientation: landscape) and (max-height: 600px)");
 
   const { A: nameA, B: nameB } = active.partners;
   const prefill = useMemo(
@@ -425,21 +425,40 @@ export default function ClassMode({ session, active, onChange, history, settings
     </>
   );
 
+  const activeCard = (
+    <div className="pc-tile pc-active-card gap-3" data-active="true" data-block={station.block} style={{ transform: "none", flexDirection: "row" }}>
+      <div className="pc-art relative aspect-square w-[44%] shrink-0">
+        <StationArt station={station} animate fallbackSize={150} />
+        <span className="pc-badge pc-num absolute left-1.5 top-1.5">{t.station + 1}</span>
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
+        <p className="pc-caps text-xs text-move">{station.block} · {workerName}</p>
+        <p className="pc-caps text-[22px]">{station.shortLabel}</p>
+        <p className="pc-num text-lg font-semibold">{station.reps}</p>
+        <p className="pc-sub pc-muted pc-num">{[station.rir && `RIR ${station.rir}`, station.tempo && `tempo ${station.tempo}`].filter(Boolean).join(" · ")}</p>
+      </div>
+    </div>
+  );
+
+  const landscapeScreen = (
+    <div className="pc-landscape-body">
+      <div className="pc-landscape-exercise">
+        {activeCard}
+        <div className="pc-landscape-hr grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
+      </div>
+      <aside className="pc-landscape-info">
+        {quickLog}
+        {who}
+        <BluetoothNotice isSupported={hr.isSupported} />
+      </aside>
+      <div className="pc-landscape-controls">{controls}</div>
+    </div>
+  );
+
   const phoneStack = (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 pb-4">
-        <div className="pc-tile gap-3" data-active="true" data-block={station.block} style={{ transform: "none", flexDirection: "row" }}>
-          <div className="pc-art relative aspect-square w-[44%] shrink-0">
-            <StationArt station={station} animate fallbackSize={150} />
-            <span className="pc-badge pc-num absolute left-1.5 top-1.5">{t.station + 1}</span>
-          </div>
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-            <p className="pc-caps text-xs" style={{ color: "var(--pc-teal)" }}>{station.block} · {workerName}</p>
-            <p className="pc-caps text-[22px]">{station.shortLabel}</p>
-            <p className="pc-num text-lg font-semibold">{station.reps}</p>
-            <p className="pc-sub pc-muted pc-num">{[station.rir && `RIR ${station.rir}`, station.tempo && `tempo ${station.tempo}`].filter(Boolean).join(" · ")}</p>
-          </div>
-        </div>
+        {activeCard}
         <div className="grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
         <BluetoothNotice isSupported={hr.isSupported} />
         <div className="flex justify-between gap-1" aria-label="Stations">
@@ -465,10 +484,10 @@ export default function ClassMode({ session, active, onChange, history, settings
   );
 
   return createPortal(
-    <div ref={root} tabIndex={-1} className="pc-class fixed inset-0 z-[85] flex flex-col overflow-hidden outline-none" role="dialog" aria-modal="true" aria-label={`${session.title} — class mode`} data-testid="class-mode">
+    <div ref={root} tabIndex={-1} className="pc-class fixed inset-0 z-[85] flex flex-col overflow-hidden outline-none" data-landscape={landscape} role="dialog" aria-modal="true" aria-label={`${session.title} — class mode`} data-testid="class-mode">
       <p className="sr-only" aria-live="polite" aria-atomic="true">{liveLine}</p>
-      {wide ? (
-        <header className="flex items-center gap-4 px-8 pb-2 pt-5">
+      {wide || landscape ? (
+        <header className="pc-class-header flex items-center gap-4 px-8 pb-2 pt-5">
           {titleBlock}
           {clockBlock}
           <div className="flex flex-1 items-center justify-end gap-2">{viewToggle}{muteToggle}{fullscreenToggle}{endButton}{minimise}</div>
@@ -483,7 +502,7 @@ export default function ClassMode({ session, active, onChange, history, settings
         </header>
       )}
 
-      <div className={`pb-3 ${wide ? "px-8" : "px-4"}`}>{progress}</div>
+      <div className={`pc-class-progress pb-3 ${wide ? "px-8" : "px-4"}`}>{progress}</div>
 
       {swapping && (
         <div className={`pb-3 ${wide ? "px-8" : "px-4"}`} role="status">
@@ -491,7 +510,7 @@ export default function ClassMode({ session, active, onChange, history, settings
         </div>
       )}
 
-      {view === "hr" ? hrScreen : wide ? wideGrid : phoneStack}
+      {view === "hr" ? hrScreen : landscape ? landscapeScreen : wide ? wideGrid : phoneStack}
 
       {confirmEnd && (
         <div className="pc-end-overlay absolute inset-0 z-10 flex items-center justify-center p-6" role="alertdialog" aria-modal="true" aria-labelledby="pc-end-title" aria-describedby="pc-end-desc">
