@@ -50,7 +50,6 @@ import parallelFootwork from "@/assets/movement/reformer/parallel-heel-footwork.
 import frogPress from "@/assets/movement/reformer/frog-press.png";
 import scooter from "@/assets/movement/reformer/scooter.png";
 import sideLyingPress from "@/assets/movement/reformer/side-lying-press.png";
-import legPressDown from "@/assets/movement/reformer/feet-in-straps-press-down.png";
 import supineArms from "@/assets/movement/reformer/supine-arm-pull-down.png";
 import sideArm from "@/assets/movement/reformer/kneeling-side-arm-raise.png";
 
@@ -67,7 +66,6 @@ const correctedArt: Record<string, string> = {
   "reformer frog press": frogPress,
   "reformer scooter": scooter,
   "reformer side lying leg press": sideLyingPress,
-  "reformer feet in straps leg press down": legPressDown,
   "reformer supine arm pull down": supineArms,
   "reformer kneeling side arm raise": sideArm,
   "push up": pushUp,
