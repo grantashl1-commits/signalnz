@@ -216,6 +216,7 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 - Keep class-mode presentation scoped and derived from global member-page tokens, so class colours follow the same theme without changing workout logic.
 - Class mode uses a height-aware landscape layout with the active exercise, both heart rates and controls kept visible; secondary details scroll independently because TV mirroring retains the phone viewport.
 - Resolve corrected exercise illustrations through the shared exact-name registry before database or generic matches, so equipment-specific anatomy artwork stays consistent across previews and classes.
+- Author distinct partner-session block combinations explicitly, preserving existing session and exercise identities for logged progression; never relabel one movement or its artwork as a different exercise merely to create variety.
 
 <!-- LOVABLE:BEGIN -->
 - Keep homepage illustration assets in a shared landing artwork module, separate from global icon rendering, so artwork changes cannot replace functional icons elsewhere.
