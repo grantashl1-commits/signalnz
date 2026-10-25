@@ -3,15 +3,14 @@ import { getZoneForBPM } from "@/data/workouts";
 import { BLUETOOTH_UNSUPPORTED_MESSAGE, type StrapSlot, type StrapState } from "@/hooks/useMultiHeartRate";
 
 /**
- * 5-zone palette (grey → blue → green → amber → red), deep enough that white
- * text stays at 3:1 or better on the fill from across the room.
+ * Semantic five-zone palette shared with the light class theme.
  */
 export const ZONE_COLOURS: Record<number, string> = {
-  1: "#64748b",
-  2: "#2563eb",
-  3: "#16a34a",
-  4: "#d97706",
-  5: "#dc2626",
+  1: "hsl(var(--hr-zone-1))",
+  2: "hsl(var(--hr-zone-2))",
+  3: "hsl(var(--hr-zone-3))",
+  4: "hsl(var(--hr-zone-4))",
+  5: "hsl(var(--hr-zone-5))",
 };
 
 export interface PartnerHRInfo {
@@ -65,7 +64,7 @@ export function PartnerHRTile({ slot, name, strap, maxHR, effortMinutes, variant
   if (variant === "mini") {
     return (
       <div className="pc-hr p-3" data-testid={`hr-tile-${slot}`}>
-        {colour && <div className="pc-hr-fill" style={{ background: `linear-gradient(135deg, ${colour}, ${colour}d9)` }} />}
+        {colour && <div className="pc-hr-fill" data-zone={zone?.zone} />}
         <div className="relative flex items-center justify-between gap-2">
           <div className="min-w-0">
             <p className="pc-caps truncate text-sm">{name}</p>
@@ -84,7 +83,7 @@ export function PartnerHRTile({ slot, name, strap, maxHR, effortMinutes, variant
             </button>
           )}
         </div>
-        {strap.error && <p className="relative mt-1.5 text-xs text-[#ffb4a8]" role="status">{strap.error}</p>}
+        {strap.error && <p className="relative mt-1.5 text-xs text-destructive" role="status">{strap.error}</p>}
       </div>
     );
   }
@@ -92,7 +91,7 @@ export function PartnerHRTile({ slot, name, strap, maxHR, effortMinutes, variant
   if (variant === "strip") {
     return (
       <div className="pc-hr flex items-center gap-4 px-4 py-3" data-testid={`hr-tile-${slot}`}>
-        {colour && <div className="pc-hr-fill" style={{ background: `linear-gradient(120deg, ${colour}, ${colour}e6 70%, ${colour}cc)` }} />}
+        {colour && <div className="pc-hr-fill" data-zone={zone?.zone} />}
         <div className="relative min-w-0 flex-1">
           <p className="pc-hr-name truncate">{name}</p>
           <p className="pc-sub truncate">{zone ? `Zone ${zone.zone} · ${zone.label} · ${pct}% of max` : strap.error ?? status ?? `Max HR ${maxHR}`}</p>
@@ -113,10 +112,10 @@ export function PartnerHRTile({ slot, name, strap, maxHR, effortMinutes, variant
 
   return (
     <div className="pc-hr flex min-h-0 flex-col p-4 sm:p-6 lg:p-10" data-testid={`hr-tile-${slot}`}>
-      {colour && <div className="pc-hr-fill" style={{ background: `linear-gradient(140deg, ${colour}, ${colour}e6 70%, ${colour}cc)` }} />}
+      {colour && <div className="pc-hr-fill" data-zone={zone?.zone} />}
       <div className="relative flex items-start justify-between gap-3">
         <p className="pc-hr-name truncate">{name}</p>
-        {zone && <span className="pc-caps pc-sub shrink-0 rounded-full bg-black/25 px-3 py-1">Zone {zone.zone} · {zone.label}</span>}
+        {zone && <span className="pc-caps pc-sub shrink-0 rounded-full bg-card px-3 py-1">Zone {zone.zone} · {zone.label}</span>}
       </div>
       <div className="relative mt-3 flex flex-1 items-end justify-between gap-4 sm:mt-6">
         <div>

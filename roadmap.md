@@ -1,4 +1,5 @@
 # Homepage-led page redesign
+- [x] Match Start class to the light Partner series page and bring all prescribed partner exercises and substitutions into the approved anatomy illustration style; signed-in phone/desktop screens and Swap verified; all 78 targeted tests pass.
 - [x] Rebalance all 24 partner lessons, preserve nine stations and 36 turns, separate ramp-ups, correct volume claims and connect 24 dedicated strength/reformer images; 78 targeted tests pass and signed-in preview verified.
 - [x] Audit all 24 partner lessons for illustration accuracy and muscle-building stimulus; record actual volume, effort, progression and remaining artwork mismatches in docs/partner-series-audit.md. Signed-in grid verified; 74 tests pass. Corrections remain separate work.
 - [x] Correct the partner core artwork using the Anatomy of Exercise pose reference: connect 18 original transparent illustrations through exact-name overrides; verify image delivery and 31 partner tests. Signed-in class inspection is blocked by Cloud access failure.
