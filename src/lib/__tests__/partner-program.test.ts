@@ -93,7 +93,7 @@ describe("partner program structure", () => {
     }
   });
 
-  it("keeps Week 6 on the Week 5 lifts and reps (lifted fast), behind a power opener", () => {
+  it("keeps Week 6 strength reps behind a low-fatigue power opener", () => {
     for (const id of ["w6-s1", "w6-s2", "w6-s3"]) {
       const [opener, ...mains] = getPartnerSession(id)!.stations.filter((st) => st.block === "Strength");
       expect(opener.rir, id).toBe("4–5");
@@ -209,7 +209,7 @@ describe("partner program stations", () => {
       const ids = a.stations.map((st) => st.id);
       expect(ids, s.id).not.toContain("barbell-back-squat");
       expect(ids, s.id).not.toContain("barbell-bench-press");
-      for (const st of a.stations.filter((x) => x.id === "db-goblet-squat" || (x.id === "db-bench-press" && s.week >= 5))) {
+      for (const st of a.stations.filter((x, i) => x.id !== s.stations[i].id)) {
         expect(Number(st.rir?.match(/\d+/)?.[0]), `${s.id}/${st.id}`).toBeGreaterThanOrEqual(3);
       }
       expect(a.stations.map((st) => st.block)).toEqual(s.stations.map((st) => st.block));

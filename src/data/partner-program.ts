@@ -429,8 +429,6 @@ function session(s: SessionInput): PartnerSession {
   };
 }
 
-const REP_TEST = 'Optional rep test on round 1: your Week 1 bar weight for as many clean reps as you can, stopping with 1 in reserve (use partner pace). Round 2: 8 easy reps at about 70 % of Week 7.';
-
 // ── The 24 sessions ─────────────────────────────────────────────────────────
 // Odd weeks: Upper · Lower · Upper. Even weeks: Lower · Upper · Lower.
 const SESSIONS: PartnerSession[] = [
@@ -534,7 +532,7 @@ const SESSIONS: PartnerSession[] = [
   }),
   session({
     week: 5, index: 3, focus: 'Upper', style: 'Strength',
-    strength: ['incline', 'bbRow', 'lateral'],
+    strength: ['incline', 'csRow', 'lateral'],
     reformer: [['chestExp', { springs: 'light' }], ['hugTree', { springs: 'light' }], ['curl', { springs: 'light' }]],
     core: [['stirPot', each(8, 'each way')], ['pallof', each(6)], ['reverseCrunch', reps(12)]],
     coachNote: 'A different upper mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
@@ -557,7 +555,7 @@ const SESSIONS: PartnerSession[] = [
   }),
   session({
     week: 6, index: 3, focus: 'Lower', style: 'Power',
-    strength: [['squatJump', opener(5)], 'reverseLunge', 'rdl'],
+    strength: [['squatJump', opener(5)], 'squat', 'rdl'],
     reformer: [['slPress', { springs: 'medium–heavy' }], ['scooter', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['ballDeadBug', each(8)], ['shoulderTap', each(8)], ['suitcase', hold(20, true)]],
     mainLifts: 3,
@@ -580,13 +578,13 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 7, index: 3, focus: 'Upper', style: 'Peak',
     strength: ['incline', 'bbRow', 'arnold'],
-    reformer: [['chestExp', { springs: 'light' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['hugTree', { springs: 'light' }], ['triOverhead', { springs: 'light' }]],
     core: [['stirPot', each(8, 'each way')], ['hollow', hold(30)], ['shoulderTap', each(8)]],
     coachNote: 'A different upper mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
   session({
     week: 8, index: 1, focus: 'Lower', style: 'Deload',
-    strength: ['dbSquat', 'slRdl', 'reverseLunge'],
+    strength: ['squat', 'slRdl', 'reverseLunge'],
     reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'light' }], ['scooter', { springs: 'medium' }]],
     core: [['deadBug', each(6)], ['sidePlank', hold(20, true)], ['birdDog', each(6)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady. This is a recovery session: lighter loads and 3–4 good reps left, rather than a maximum test.',
@@ -594,7 +592,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 8, index: 2, focus: 'Upper', style: 'Deload',
     strength: ['dbBench', 'csRow', 'seatedPress'],
-    reformer: [['seatedRow', { springs: 'light–medium' }], ['hugTree', { springs: 'light' }], ['triOverhead', { springs: 'light' }]],
+    reformer: [['chestExp', { springs: 'light' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['deadBug', each(6)], ['sidePlankKnee', hold(20, true)]],
     coachNote: 'A different upper mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady. This is a recovery session: lighter loads and 3–4 good reps left, rather than a maximum test.',
   }),
