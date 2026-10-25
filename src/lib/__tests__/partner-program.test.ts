@@ -265,9 +265,9 @@ describe("partner program volume", () => {
 });
 
 describe("partner corrected illustration coverage", () => {
-  it("resolves every revised strength and reformer station and rack swap through exact art", () => {
+  it("resolves every partner station and rack swap through exact art", () => {
     for (const session of sessions.flatMap((s) => [s, adaptForKit(s, { safeties: false })])) {
-      for (const station of session.stations.filter((s) => s.block !== "Core" && s.id !== "push-up")) {
+      for (const station of session.stations) {
         expect(getCorrectedExerciseArt(station.name), `${session.id}/${station.id}`).toBeTruthy();
       }
     }
