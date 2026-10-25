@@ -124,3 +124,13 @@
 .pc-class .pc-footer { border-color: var(--pc-line); background: var(--pc-bg); }
 .pc-class .pc-end-overlay { background: hsl(var(--foreground) / 0.35); }
 .pc-class .pc-btn-primary { background: var(--pc-text); color: var(--pc-bg); }
+
+.pc-class .pc-hr-fill[data-zone="1"] { background: hsl(var(--hr-zone-1) / 0.12); border-left: 4px solid hsl(var(--hr-zone-1)); }
+
+.pc-class .pc-hr-fill[data-zone="2"] { background: hsl(var(--hr-zone-2) / 0.12); border-left: 4px solid hsl(var(--hr-zone-2)); }
+
+.pc-class .pc-hr-fill[data-zone="3"] { background: hsl(var(--hr-zone-3) / 0.12); border-left: 4px solid hsl(var(--hr-zone-3)); }
+
+.pc-class .pc-hr-fill[data-zone="4"] { background: hsl(var(--hr-zone-4) / 0.12); border-left: 4px solid hsl(var(--hr-zone-4)); }
+
+.pc-class .pc-hr-fill[data-zone="5"] { background: hsl(var(--hr-zone-5) / 0.12); border-left: 4px solid hsl(var(--hr-zone-5)); }
