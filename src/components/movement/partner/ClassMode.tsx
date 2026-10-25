@@ -440,6 +440,7 @@ export default function ClassMode({ session, active, onChange, history, settings
             <p className="pc-sub pc-muted pc-num">{[station.rir && `RIR ${station.rir}`, station.tempo && `tempo ${station.tempo}`].filter(Boolean).join(" · ")}</p>
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
         <div className="flex justify-between gap-1" aria-label="Stations">
           {session.stations.map((s, i) => (
             <span
