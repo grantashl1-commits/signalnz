@@ -1,4 +1,5 @@
 # Homepage-led page redesign
+- [ ] Rebuild all 24 partner sessions with distinct strength, reformer and core combinations from the supplied books; match artwork and verify variety, safety, timing and class flow.
 - [x] Fit rotated-phone class mode to the available screen for TV mirroring; signed-in rotation at 844×300, 844×390 and 667×280, portrait, desktop, logging and Swap verified; 70 tests passed.
 - [x] Match Start class to the light Partner series page and bring all prescribed partner exercises and substitutions into the approved anatomy illustration style; signed-in phone/desktop screens and Swap verified; all 78 targeted tests pass.
 - [x] Rebalance all 24 partner lessons, preserve nine stations and 36 turns, separate ramp-ups, correct volume claims and connect 24 dedicated strength/reformer images; 78 targeted tests pass and signed-in preview verified.
