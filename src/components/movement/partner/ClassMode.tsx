@@ -441,6 +441,7 @@ export default function ClassMode({ session, active, onChange, history, settings
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">{SLOTS.map(slot => hrTile(slot, "mini"))}</div>
+        <BluetoothNotice isSupported={hr.isSupported} />
         <div className="flex justify-between gap-1" aria-label="Stations">
           {session.stations.map((s, i) => (
             <span
