@@ -456,7 +456,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 2, index: 1, focus: 'Lower', style: 'Foundation',
     strength: ['dbSquat', 'slRdl', 'stepUp'],
-    reformer: [['footwork', { springs: 'medium–heavy' }], ['frog', { springs: 'light' }], ['calfRaise', { springs: 'medium–heavy' }]],
+    reformer: [['footwork', { springs: 'medium–heavy' }], ['frog', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['birdDog', each(6)], ['suitcase', hold(20, true)], ['reverseCrunch', reps(8)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
@@ -470,7 +470,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 2, index: 3, focus: 'Lower', style: 'Foundation',
     strength: ['reverseLunge', 'dbRdl', 'hipThrust'],
-    reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'light' }], ['bridge', { springs: 'medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'medium' }], ['bridge', { springs: 'medium' }]],
     core: [['ballDeadBug', each(6)], ['plank', hold(30)], ['pallof', each(6)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
@@ -512,7 +512,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 4, index: 3, focus: 'Lower', style: 'Pump',
     strength: ['dbSquat', 'rdl', 'hipThrust'],
-    reformer: [['footwork', { springs: 'medium–heavy' }], ['frog', { springs: 'light' }], ['scooter', { springs: 'medium' }]],
+    reformer: [['footwork', { springs: 'medium–heavy' }], ['frog', { springs: 'medium' }], ['scooter', { springs: 'medium' }]],
     core: [['kneeTuck', reps(8)], ['pallof', each(8)], ['bearHold', hold(35)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
@@ -526,7 +526,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 5, index: 2, focus: 'Lower', style: 'Strength',
     strength: ['squat', 'rdl', 'bss'],
-    reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'light' }], ['calfRaise', { springs: 'medium–heavy' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['kneeTuck', reps(8, 10)], ['sidePlankLift', each(8)], ['dbDeadBug', each(6)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
@@ -571,7 +571,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 7, index: 2, focus: 'Lower', style: 'Peak',
     strength: ['squat', 'rdl', 'stepUp'],
-    reformer: [['footwork', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['frog', { springs: 'light' }]],
+    reformer: [['footwork', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['frog', { springs: 'medium' }]],
     core: [['pike', reps(6)], ['copenhagen', hold(15, true)], ['dbDeadBug', each(8)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
@@ -585,7 +585,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 8, index: 1, focus: 'Lower', style: 'Deload',
     strength: ['squat', 'slRdl', 'reverseLunge'],
-    reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'light' }], ['scooter', { springs: 'medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['frog', { springs: 'medium' }], ['scooter', { springs: 'medium' }]],
     core: [['deadBug', each(6)], ['sidePlank', hold(20, true)], ['birdDog', each(6)]],
     coachNote: 'A different lower mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady. This is a recovery session: lighter loads and 3–4 good reps left, rather than a maximum test.',
   }),
