@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import imageMaps from "@/data/image-maps.json";
 import { getExerciseImageByName } from "@/lib/exercise-image-lookup";
+import { getCorrectedExerciseArt } from "@/lib/corrected-exercise-art";
 import {
   PARTNER_PROGRAM,
   PARTNER_TURNS,
@@ -236,11 +237,38 @@ describe("partner program stations", () => {
 });
 
 describe("partner program volume", () => {
+  it("prescribes a loaded hinge in every lower lesson", () => {
+    for (const session of sessions.filter((s) => s.focus === "Lower")) {
+      expect(session.stations.filter((s) => ["db-rdl", "barbell-rdl"].includes(s.id))).toHaveLength(1);
+    }
+  });
+
+  it("includes direct biceps resistance in every upper lesson", () => {
+    for (const session of sessions.filter((s) => s.focus === "Upper")) {
+      expect(session.stations.find((s) => s.id === "reformer-biceps-curl")?.muscles).toEqual(["biceps"]);
+    }
+  });
+
+  it("includes direct calf resistance in every lower lesson", () => {
+    for (const session of sessions.filter((s) => s.focus === "Lower")) {
+      expect(session.stations.find((s) => s.id === "reformer-calf-raise")?.muscles).toEqual(["calves"]);
+    }
+  });
   it("reaches at least the time-efficient minimum of 4 fractional sets per muscle per week", () => {
     for (const block of [[1, 2], [3, 4], [5, 6], [7, 8]]) {
       const sets = fractionalSetsPerMuscle(sessions.filter((s) => block.includes(s.week)));
       for (const m of ["quads", "glutes", "hamstrings", "chest", "back", "shoulders"]) {
         expect(sets[m] / 2, `W${block[0]}-${block[1]} ${m}`).toBeGreaterThanOrEqual(4);
+      }
+    }
+  });
+});
+
+describe("partner corrected illustration coverage", () => {
+  it("resolves every revised strength and reformer station and rack swap through exact art", () => {
+    for (const session of sessions.flatMap((s) => [s, adaptForKit(s, { safeties: false })])) {
+      for (const station of session.stations.filter((s) => s.block !== "Core" && s.id !== "push-up")) {
+        expect(getCorrectedExerciseArt(station.name), `${session.id}/${station.id}`).toBeTruthy();
       }
     }
   });
