@@ -1,11 +1,12 @@
 # Homepage-led page redesign
+- [x] Rebalance all 24 partner lessons, preserve nine stations and 36 turns, separate ramp-ups, correct volume claims and connect 24 dedicated strength/reformer images; 78 targeted tests pass and signed-in preview verified.
 - [x] Audit all 24 partner lessons for illustration accuracy and muscle-building stimulus; record actual volume, effort, progression and remaining artwork mismatches in docs/partner-series-audit.md. Signed-in grid verified; 74 tests pass. Corrections remain separate work.
 - [x] Correct the partner core artwork using the Anatomy of Exercise pose reference: connect 18 original transparent illustrations through exact-name overrides; verify image delivery and 31 partner tests. Signed-in class inspection is blocked by Cloud access failure.
-- [ ] Correct remaining strength and reformer artwork after the book-based lesson matching; signed-in verification awaits restored Cloud access.
+- [x] Correct artwork for every strength/reformer station prescribed in the revised partner series; unused library variants remain outside this revision.
 - [x] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current last-set suggestions from proposed all-round progression improvements.
-- [ ] Continue the manual-based update: align all 24 partner lessons' reformer stations with the uploaded Pilates manual, preserving upper/lower muscle focus; create original matching reformer artwork and verify lessons.
+- [ ] Complete page-by-page manual matching for the reformer variants: the revised series uses six stable muscle-targeted movements with dedicated artwork, but full manual certification is unfinished.
 - [x] Audit partner series against its published description: 74 tests pass; report rack-check bypass, single-set progression, copied later-round reps and cloud-restore metadata gaps. Signed-in live verification blocked by Cloud access failure.
-- [ ] Check latest synced GitHub update and redraw partner reformer artwork to show the actual equipment and exercise positions; verify in partner workouts.
+- [x] Redraw and connect reformer setups in the revised partner lessons; verify signed-in partner grid.
 - [ ] Deliver an original SIGNAL illustration catalogue with individual Google Flow descriptions for recipes, training paths (including reformer Pilates), meditations and other site sections.
 - [x] Restore original SIGNAL logo on the welcome page and regenerate homepage artwork in the YOCH reference style; verify artwork and sign-in link.
 - [x] Capture homepage and representative existing pages; offer matching design directions.

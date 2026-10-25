@@ -86,7 +86,7 @@ interface Rx { reps: string; repRange?: [number, number]; rir?: string; tempo?: 
 // The worker rests on the treadmill for the partner's turn (~65–90 s incl. swaps).
 const BASE_WORK: Record<SessionStyle, number> = { Foundation: 50, Pump: 50, Strength: 50, Power: 50, Peak: 50, Deload: 45 };
 const TRANSITION_SECONDS = 15;
-const WARMUP_MIN = 5;
+const WARMUP_MIN = 7;
 const COOLDOWN_MIN = 2.5;
 const MIN_WORK = 40;
 const MAX_WORK = 75;
@@ -206,14 +206,15 @@ const L = {
 
   // Lower reformer
   footwork: reformer({ id: 'reformer-footwork', name: 'Reformer Footwork', shortLabel: 'FOOTWORK', muscles: ['quads', 'glutes', 'calves'], imageKey: 'leg-press', cue: 'Neutral pelvis. Press out to long legs without locking your knees, then resist the carriage home for 2–3 s.', alt: 'Wall sit or goblet squat' }),
-  slPress: reformer({ id: 'reformer-single-leg-press', name: 'Reformer Single-Leg Press', shortLabel: 'SINGLE-LEG PRESS', perSide: true, muscles: ['quads', 'glutes'], imageKey: 'leg-press', cue: 'One foot centred on the bar, the other knee in tabletop. Keep the pelvis level as you press, and return slowly.', alt: 'Single-leg glute bridge' }),
-  bridge: reformer({ id: 'reformer-bridge', name: 'Reformer Bridge', shortLabel: 'REFORMER BRIDGE', muscles: ['hamstrings', 'glutes'], imageKey: 'bridge', cue: 'Feet on the bar, peel up into a bridge, then press the carriage out and in with your hips high. Hamstrings do the work.', alt: 'Yoga-ball hamstring curl' }),
+  slPress: reformer({ id: 'reformer-single-leg-press', name: 'Reformer Single-Leg Press', shortLabel: 'SINGLE-LEG PRESS', perSide: true, muscles: ['quads', 'glutes'], imageKey: 'leg-press', cue: 'Lie supported with one foot securely centred on the footbar and the other knee in tabletop. Keep your pelvis level as you press out without locking the knee, then resist the carriage home. Complete both sides.', alt: 'Single-leg glute bridge' }),
+  bridge: reformer({ id: 'reformer-bridge', name: 'Reformer Bridge', shortLabel: 'REFORMER BRIDGE', muscles: ['hamstrings', 'glutes'], imageKey: 'bridge', cue: 'Headrest flat, shoulders supported, both feet on the bar. Lift into a comfortable bridge without loading your neck. Keeping your hips steady, press the carriage out a small distance, then bend your knees to draw it home. Shorten the range or use the swap if your back arches.', alt: 'Yoga-ball hamstring curl' }),
   pressDown: reformer({ id: 'reformer-feet-in-straps-press-down', name: 'Reformer Feet-in-Straps Leg Press-Down', shortLabel: 'LEG PRESS-DOWN', muscles: ['hamstrings', 'glutes'], imageKey: 'single-leg-circle', cue: 'Lie on your back, feet in the straps, legs straight at about 60°. Press them down to about 45° against the springs, then resist them back up. Pelvis still. Have a long box? The prone long-box hamstring curl (face down, heels to seat) works too.', alt: 'Yoga-ball hamstring curl' }),
   sideLeg: reformer({ id: 'reformer-side-lying-press', name: 'Reformer Side-Lying Leg Press', shortLabel: 'SIDE-LYING PRESS', perSide: true, muscles: ['glutes', 'quads'], imageKey: 'side-lying-leg-lift', cue: 'Lie on your side with the bottom foot on the bar. Press out with hips stacked and your waist lifted off the carriage.', alt: 'Side-lying leg lift' }),
   standingLunge: reformer({ id: 'reformer-standing-lunge', name: 'Reformer Standing Lunge', shortLabel: 'STANDING LUNGE', perSide: true, standing: true, muscles: ['glutes', 'quads', 'adductors'], imageKey: 'split-squat', cue: 'Front foot on the platform, back foot against the shoulder rest. Slide the carriage back as you bend the front knee, then draw it home with the front leg. Heavier springs are more stable here; go lighter only once it feels controlled.', alt: 'Reverse lunge, bodyweight' }),
   scooter: reformer({ id: 'reformer-scooter', name: 'Reformer Scooter', shortLabel: 'SCOOTER', perSide: true, standing: true, muscles: ['glutes', 'hamstrings'], imageKey: 'donkey-kick', cue: 'Hands on the bar, standing foot on the platform, other foot on the shoulder rest. Push the carriage back through your heel, glute on, spine still.', alt: 'Donkey kick' }),
   sideSplits: reformer({ id: 'reformer-side-splits', name: 'Reformer Side Splits', shortLabel: 'SIDE SPLITS', standing: true, muscles: ['adductors', 'glutes'], imageKey: 'sumo-squat', cue: 'Stand astride the platform and carriage with soft knees. Open the carriage only a small range with control (use a carriage stopper if you have one), then squeeze your inner thighs to close it. Heavier springs are more stable.', alt: 'Sumo squat with a dumbbell' }),
   skater: reformer({ id: 'reformer-skater', name: 'Reformer Skater', shortLabel: 'SKATER', perSide: true, standing: true, muscles: ['glutes', 'adductors', 'quads'], imageKey: 'curtsy-lunge', cue: 'Stand side-on with the inside foot on the carriage. Sit into the standing hip as you push the carriage out sideways, then draw it back.', alt: 'Lateral lunge' }),
+  calfRaise: reformer({ id: 'reformer-calf-raise', name: 'Reformer Calf Raise', shortLabel: 'CALF RAISE', muscles: ['calves'], imageKey: 'leg-press', cue: 'Lie supported with the balls of both feet on the footbar. Press the carriage out with knees softly unlocked; keep it still as you lower your heels a little below the bar and rise through the balls of your feet. Choose a familiar spring setting that lets you control the carriage.', alt: 'Standing calf raise holding the rack for balance' }),
   // Upper reformer
   seatedRow: reformer({ id: 'reformer-seated-row', name: 'Reformer Seated Row', shortLabel: 'SEATED ROW', muscles: ['back', 'biceps', 'shoulders'], imageKey: 'bent-over-row', cue: 'Sit tall facing the straps, arms long. Draw your elbows back past your ribs with shoulders down, then return slowly.', alt: 'Light dumbbell bent-over row' }),
   latPull: reformer({ id: 'reformer-kneeling-lat-pull', name: 'Reformer Kneeling Lat Pull-Down', shortLabel: 'LAT PULL-DOWN', muscles: ['back', 'triceps'], imageKey: 'lat-pulldown', cue: 'Kneel facing the pulleys with arms reaching up and forward. Pull the straps down to your sides, ribs knitted, no arching.', alt: 'Dumbbell pullover on the bench' }),
@@ -340,8 +341,8 @@ function warmupFor(focus: BodyFocus, style: SessionStyle, stations: PartnerStati
   const first = label(stations[0]);
   const second = label(stations[1]);
   const ramp = style === 'Power'
-    ? `Ramp-up: 2 easy, fast sets of ${first} (5 reps). Round 1 of ${second} at a lighter load is its ramp-up.`
-    : `Ramp-up: 1–2 lighter sets of ${first} (e.g. 8 reps at half weight, then 4 reps near working weight). Round 1 of ${second} at a lighter load is its ramp-up.`;
+    ? `Ramp-up: 2 easy, fast sets of ${first} (5 reps). Before starting the class, add 1–2 lighter ramp-up sets of ${second}. Both class rounds are working sets; ramp-ups are separate.`
+    : `Ramp-up: 1–2 lighter sets of ${first} (e.g. 8 reps at half weight, then 4 reps near working weight). Before starting the class, add 1–2 lighter ramp-up sets of ${second}. Both class rounds are working sets; ramp-ups are separate.`;
   return focus === 'Upper'
     ? ['1 min easy treadmill walk or marching, building pace', 'Arm circles × 10 each way', 'Cat-cow × 6', 'Scapular push-ups × 8 (hands on the bench)', ramp]
     : ['1 min easy treadmill walk or marching, building pace', 'Bodyweight squat to calf raise × 10', 'Glute bridge × 10', 'Hip hinge with a broomstick × 8', ramp];
@@ -357,8 +358,8 @@ const TREADMILL: Record<SessionStyle, Record<BodyFocus, string>> = {
     Lower: 'Brisk walk 5–5.5 km/h at 2–4 % incline. Keep it easy (RPE 3–4, zone 2) so your legs are fresh for the next station.',
   },
   Pump: {
-    Upper: 'Incline walk 5.5–6 km/h at 8–10 %, or an easy jog at 7–8 km/h. Short sentences only (RPE 5, zone 2–3).',
-    Lower: 'Incline walk 5–5.5 km/h at 4–6 %. Comfortably brisk (RPE 4, zone 2–3); your legs are doing the lifting today.',
+    Upper: 'Comfortable walk at a pace and incline that allow full sentences (RPE 2–3). Let breathing settle before the next lift; choose partner pace or pause for more recovery when needed.',
+    Lower: 'Comfortable walk, flat or a gentle incline (RPE 2–3). Keep your legs fresh for the next working set; pause for more recovery when needed.',
   },
   Strength: {
     Upper: 'Brisk walk 5–5.5 km/h at 4–6 %. RPE 3–4: this is active rest between heavy sets, not extra cardio.',
@@ -435,42 +436,42 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 1, index: 1, focus: 'Upper', style: 'Foundation',
     strength: ['dbBench', 'bbRow', 'seatedPress'],
-    reformer: [['seatedRow', { springs: 'light–medium' }], ['latPull', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['suitcase', hold(20, true)], ['plank', hold(30)]],
     coachNote: 'Session one is about finding your numbers. Choose weights that leave 3 reps in the tank, own the 3-second lowering and log every weight. Everything after this builds on today.',
   }),
   session({
     week: 1, index: 2, focus: 'Lower', style: 'Foundation',
     strength: ['squat', 'dbRdl', 'reverseLunge'],
-    reformer: [['footwork', series('8 heels · 8 toes', 'heavy')], ['bridge', { springs: 'medium' }], ['sideLeg', { springs: 'light–medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['deadBug', each(8)], ['sidePlankKnee', hold(20, true)], ['bearHold', hold(30)]],
     coachNote: 'Set the rack safeties before the first squat, for the shorter partner. Partners lift different weights, so keep 2.5 and 5 kg plates and collars by the rack. Dumbbell RDLs teach the hinge before the barbell version in Week 5. Smooth reps, 3 in the tank.',
   }),
   session({
     week: 1, index: 3, focus: 'Upper', style: 'Foundation',
     strength: ['dbBench', 'bbRow', ['pushUp', { reps: '8–12', repRange: [8, 12], rir: '3' }]],
-    reformer: [['longBox', { springs: 'light' }], ['hugTree', { springs: 'light' }], ['triOverhead', { springs: 'light' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['pallof', each(6)], ['plank', hold(30)]],
     coachNote: 'Same press and row as session one. If every set reached 12 reps with 3 left, go up a small step next time: 1–2 kg per dumbbell or 2.5 kg on the bar. Push-ups: raise your hands on the bench until 12 reps leaves 3 in the tank.',
   }),
   session({
     week: 2, index: 1, focus: 'Lower', style: 'Foundation',
     strength: ['squat', 'dbRdl', 'stepUp'],
-    reformer: [['slPress', { springs: 'medium–heavy' }], ['pressDown', { springs: 'light–medium' }], ['scooter', { springs: 'medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['deadBug', each(8)], ['sidePlankKnee', hold(20, true)], ['reverseCrunch', reps(8, 10)]],
     coachNote: 'Beat last week’s log by a rep or a small plate on the squat and RDL, but only if your form looks the same. The step-up is new: drive through the whole front foot.',
   }),
   session({
     week: 2, index: 2, focus: 'Upper', style: 'Foundation',
     strength: ['dbBench', 'bbRow', 'arnold'],
-    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['sideArm', { springs: 'light' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['suitcase', hold(20, true)], ['shoulderTap', each(8)]],
     coachNote: 'Last Foundation upper session. Aim for the top of the rep range on every set with 3 in reserve. That tells you you’re ready for the Pump block.',
   }),
   session({
     week: 2, index: 3, focus: 'Lower', style: 'Foundation',
     strength: ['squat', 'dbRdl', ['hipThrust', { ...ACC.Foundation, tempo: '2-1-1' }]],
-    reformer: [['footwork', series('8 heels · 8 toes', 'heavy')], ['pressDown', { springs: 'light–medium' }], ['sideLeg', { springs: 'light–medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['deadBug', each(8)], ['sidePlankKnee', hold(20, true)], ['bearHold', hold(40)]],
     coachNote: 'Hip thrusts join today: bench under your shoulder blades and a pad or folded mat on the bar. Finish Foundation by noting each lift’s weight, because Week 3 starts from there.',
   }),
@@ -479,42 +480,42 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 3, index: 1, focus: 'Upper', style: 'Pump',
     strength: ['dbBench', 'bbRow', 'lateral'],
-    reformer: [['latPull', { springs: 'medium' }], ['hugTree', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['stirPot', each(6, 'each way')], ['suitcase', hold(20, true)], ['shoulderTap', each(8)]],
     coachNote: 'Pump block: the same press and row, now for more reps with 2 in the tank. Squeeze each rep for a second at the hardest point. Start from your Week 2 weights; the app suggests a number.',
   }),
   session({
     week: 3, index: 2, focus: 'Lower', style: 'Pump',
-    strength: ['squat', 'hipThrust', 'bss'],
-    reformer: [['pressDown', { springs: 'light–medium' }], ['bridge', { springs: 'medium' }], ['standingLunge', { springs: 'medium' }]],
+    strength: ['squat', 'dbRdl', 'bss'],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['ballDeadBug', each(8)], ['sidePlank', hold(20, true)], ['reverseCrunch', reps(10, 12)]],
-    coachNote: 'Squats stay, and hip thrusts become your second big lift: pause a beat at the top of each one. Bulgarian split squats are tough, so start lighter than your lunge weight.',
+    coachNote: 'Squats stay alongside dumbbell RDLs, keeping a loaded hinge in every lower session. Bulgarian split squats are tough, so start lighter than your lunge weight.',
   }),
   session({
     week: 3, index: 3, focus: 'Upper', style: 'Pump',
     strength: ['dbBench', 'bbRow', 'arnold'],
-    reformer: [['seatedRow', { springs: 'medium' }], ['chestPress', { springs: 'medium' }], ['facePull', { springs: 'light' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['stirPot', each(6, 'each way')], ['pallof', each(6)], ['shoulderTap', each(8)]],
-    coachNote: 'If you hit the top of the range with 2 in reserve on the bench press last time, go up one dumbbell. The Arnold press replaces lateral raises today.',
+    coachNote: 'If you hit the top of the range with 2 in reserve on the bench press last time, go up one dumbbell. The Arnold press adds shoulder work today; the reformer curl keeps direct biceps work in every upper lesson.',
   }),
   session({
     week: 4, index: 1, focus: 'Lower', style: 'Pump',
-    strength: ['squat', 'hipThrust', 'bss'],
-    reformer: [['footwork', series('8 heels · 8 wide V', 'heavy')], ['bridge', { springs: 'medium' }], ['skater', { springs: 'medium' }]],
+    strength: ['squat', 'dbRdl', 'bss'],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['ballDeadBug', each(8)], ['sidePlank', hold(20, true)], ['reverseCrunch', reps(10, 12)]],
     coachNote: 'Same three lifts as last week: beat them by a rep or a small step. Optional: on round 2 of the squat, drop about 20 % and keep going to 1 in reserve.',
   }),
   session({
     week: 4, index: 2, focus: 'Upper', style: 'Pump',
-    strength: ['dbBench', 'bbRow', 'incline'],
-    reformer: [['longBox', { springs: 'light–medium' }], ['chestPress', { springs: 'medium' }], ['tPull', { springs: 'light' }]],
+    strength: ['dbBench', 'bbRow', 'lateral'],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['stirPot', each(8, 'each way')], ['suitcase', hold(20, true)], ['shoulderTap', each(8)]],
-    coachNote: 'Incline presses take the third slot. Your chest is already tired from the bench, so start lighter and stop with 1–2 in reserve. No incline on your bench? The flat swap is fine.',
+    coachNote: 'Lateral raises take the third slot for side-shoulder work. Choose a light weight with 1–2 good reps left and no shrugging; your chest also works in the reformer press.',
   }),
   session({
     week: 4, index: 3, focus: 'Lower', style: 'Pump',
-    strength: ['squat', 'hipThrust', 'dbRdl'],
-    reformer: [['slPress', { springs: 'medium–heavy' }], ['pressDown', { springs: 'light–medium' }], ['sideLeg', { springs: 'light–medium' }]],
+    strength: ['squat', 'dbRdl', 'hipThrust'],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['ballDeadBug', each(8)], ['sidePlank', hold(20, true)], ['kneeTuck', reps(6, 8)]],
     coachNote: 'Last Pump session. If you reached the top of every range with 2 or more left, go up next time, because Week 5 is heavier.',
   }),
@@ -523,28 +524,28 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 5, index: 1, focus: 'Upper', style: 'Strength',
     strength: ['bbBench', 'bbRow', 'seatedPress'],
-    reformer: [['latPull', { springs: 'medium' }], ['seatedRow', { springs: 'medium' }], ['hugTree', { springs: 'light–medium' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['renegade', each(6)], ['hollow', hold(25)], ['suitcase', hold(20, true)]],
     coachNote: 'Strength week. The barbell bench joins, so set the safety arms for each partner before you start. Heavier weights and fewer reps (6–8, 2 in the tank): use the whole treadmill turn as rest.',
   }),
   session({
     week: 5, index: 2, focus: 'Lower', style: 'Strength',
     strength: ['squat', 'rdl', 'bss'],
-    reformer: [['slPress', { springs: 'heavy' }], ['bridge', { springs: 'medium–heavy' }], ['sideSplits', { springs: 'medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['kneeTuck', reps(8, 10)], ['sidePlankLift', each(8)], ['dbDeadBug', each(6)]],
     coachNote: 'Your heaviest lower session so far, and the barbell RDL joins: start around your dumbbell RDL total. Keep the treadmill easy so your legs turn up for the squat. If 25 kg dumbbells feel light on the split squat, slow the lowering to 4 s.',
   }),
   session({
     week: 5, index: 3, focus: 'Upper', style: 'Strength',
-    strength: ['bbBench', 'bbRow', 'incline'],
-    reformer: [['longBox', { springs: 'light–medium' }], ['facePull', { springs: 'light–medium' }], ['triPress', { springs: 'light–medium' }]],
+    strength: ['bbBench', 'bbRow', 'lateral'],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['stirPot', each(8, 'each way')], ['hollow', hold(25)], ['pallof', each(6)]],
-    coachNote: 'Same bench and row as session one: beat it by a rep or a small plate. Incline dumbbell presses come third, so stop at 2 in reserve; your chest is already tired.',
+    coachNote: 'Same bench and row as session one: beat it by a rep or a small plate. Lateral raises come third for side-shoulder work; stop with 2 good reps left.',
   }),
   session({
     week: 6, index: 1, focus: 'Lower', style: 'Power',
     strength: [['swing', opener(10)], 'squat', 'rdl'],
-    reformer: [['footwork', { ...series('8 heels · 8 toes', 'heavy'), tempo: 'fast out, 3 s home', rir: '3' }], ['standingLunge', { springs: 'medium' }], ['pressDown', { springs: 'light–medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['kneeTuck', reps(8)], ['sidePlankLift', each(8)], ['dbDeadBug', each(6)]],
     mainLifts: 3,
     coachNote: 'Power week: swings open the session while you’re fresh. Fast up, controlled down, and stop the set the moment speed drops. Squats and RDLs stay at Week 5 weights (or + 2.5 kg) and are lifted with intent.',
@@ -552,7 +553,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 6, index: 2, focus: 'Upper', style: 'Power',
     strength: [['pushPress', opener(6)], 'bbBench', 'bbRow'],
-    reformer: [['seatedRow', { springs: 'medium' }], ['latPull', { springs: 'medium' }], ['chestPress', { springs: 'medium' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['renegade', each(6)], ['hollow', hold(20)], ['suitcase', hold(20, true)]],
     mainLifts: 3,
     coachNote: 'Push press first: a short dip, drive with your legs and lock out overhead. Bench and row stay at Week 5 weights (or + 2.5 kg). Lower under control and lift fast.',
@@ -560,7 +561,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 6, index: 3, focus: 'Lower', style: 'Power',
     strength: [['squatJump', opener(5)], 'squat', 'rdl'],
-    reformer: [['slPress', { springs: 'heavy' }], ['sideSplits', { springs: 'medium' }], ['bridge', { springs: 'medium–heavy' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['kneeTuck', reps(8)], ['sidePlankLift', each(8)], ['dbDeadBug', each(8)]],
     mainLifts: 3,
     coachNote: 'Squat jumps are optional. The speed-squat swap gives the same intent with no landing. If you notice pelvic-floor heaviness or leaking, choose the swap.',
@@ -570,42 +571,42 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 7, index: 1, focus: 'Upper', style: 'Peak',
     strength: ['bbBench', ['bbRow', ACC.Peak], ['seatedPress', ACC.Peak]],
-    reformer: [['latPull', { springs: 'medium–heavy' }], ['hugTree', { springs: 'light–medium' }], ['facePull', { springs: 'light–medium' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['renegade', each(8)], ['hollow', hold(30)], ['suitcase', hold(20, true)]],
     coachNote: 'Peak week: your heaviest clean 5–6 on the bench with 1–2 in the tank. No grinding and no max tests. Set the safety arms every time.',
   }),
   session({
     week: 7, index: 2, focus: 'Lower', style: 'Peak',
     strength: ['squat', ['rdl', { ...MAIN.Peak, reps: '6', repRange: [6, 6] }], 'bss'],
-    reformer: [['slPress', { springs: 'heavy' }], ['bridge', { springs: 'medium–heavy' }], ['standingLunge', { springs: 'medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['pike', reps(6, 8)], ['copenhagen', hold(15, true)], ['dbDeadBug', each(8)]],
     coachNote: 'The heaviest squat of the series: 5–6 reps with 1–2 left. Split squats are a heavy third lift. Keep the treadmill turns easy, because they are your rest.',
   }),
   session({
     week: 7, index: 3, focus: 'Upper', style: 'Peak',
-    strength: ['bbBench', ['bbRow', ACC.Peak], ['incline', ACC.Peak]],
-    reformer: [['longBox', { springs: 'medium' }], ['seatedRow', { springs: 'medium' }], ['curl', { springs: 'light–medium' }]],
+    strength: ['bbBench', ['bbRow', ACC.Peak], ['lateral', { reps: '10–12', repRange: [10, 12], rir: '2', tempo: '2-0-1' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['stirPot', each(8, 'each way')], ['hollow', hold(30)], ['pallof', each(6)]],
     coachNote: 'Last heavy upper session. Write down your bench and row numbers and compare them with Week 5 to see what you’ve built.',
   }),
   session({
     week: 8, index: 1, focus: 'Lower', style: 'Deload',
     strength: ['squat', 'rdl', 'reverseLunge'],
-    reformer: [['footwork', series('8 heels · 8 toes', 'medium')], ['bridge', { springs: 'medium' }], ['sideLeg', { springs: 'light' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['deadBug', each(8)], ['sidePlank', hold(20, true)], ['birdDog', each(6)]],
     coachNote: 'Deload: the same lifts at about 70–80 % of Week 7, with 3–4 in the tank. Leave feeling better than you arrived. That’s the point of this week.',
   }),
   session({
     week: 8, index: 2, focus: 'Upper', style: 'Deload',
     strength: ['bbBench', ['bbRow', { load: REP_TEST }], ['seatedPress', ACC.Deload]],
-    reformer: [['seatedRow', { springs: 'light–medium' }], ['supineArms', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }]],
+    reformer: [['seatedRow', { springs: 'light–medium' }], ['chestPress', { springs: 'light–medium' }], ['curl', { springs: 'light' }]],
     core: [['birdDog', each(6)], ['plank', hold(30)], ['suitcase', hold(20, true)]],
     coachNote: 'Rep test (optional): round 1 of the bent-over row uses your Week 1 weight for max clean reps, so compare it with Week 1. The bench stays light (no testing without a spotter). Everything else is easy.',
   }),
   session({
     week: 8, index: 3, focus: 'Lower', style: 'Deload',
     strength: [['squat', { load: REP_TEST }], 'rdl', 'stepUp'],
-    reformer: [['footwork', series('8 heels · 8 wide V', 'medium')], ['pressDown', { springs: 'light' }], ['sideSplits', { springs: 'medium' }]],
+    reformer: [['slPress', { springs: 'medium–heavy' }], ['bridge', { springs: 'medium' }], ['calfRaise', { springs: 'medium–heavy' }]],
     core: [['deadBug', each(8)], ['sidePlank', hold(20, true)], ['bearHold', hold(30)]],
     coachNote: 'Rep test (optional): round 1 of the squat uses your Week 1 weight for max clean reps. Then start the series again from Week 1 with your new numbers, or repeat Weeks 3–8.',
   }),
@@ -615,7 +616,7 @@ export const PARTNER_PROGRAM: PartnerProgram = {
   id: 'partner-strength-8wk',
   name: 'Partner Strength Series · 8 weeks',
   summary:
-    'An 8-week, class-style partner series for two people, one treadmill and a home gym. Each session has 9 stations (3 strength, 3 reformer, 3 core) done for 2 rounds. One partner works a station while the other walks the treadmill, then you swap: 36 turns in about 45–50 minutes. Weeks alternate Upper-Lower-Upper and Lower-Upper-Lower, giving 12 upper and 12 lower sessions, so each half of the body is trained 3 times a fortnight. Loads are set by reps in reserve and logged, so each session builds on the last. That adds up to about 5–9 hard sets per muscle a week, enough to build muscle in newer lifters; the optional third round of the strength stations (about +7 min) takes you close to 10, and is a simple way to add volume.',
+    'An 8-week, class-style partner series for two people, one treadmill and a home gym. Each session has 9 stations (3 strength, 3 reformer, 3 core) done for 2 rounds. One partner works a station while the other walks the treadmill, then you swap: 36 turns in about 45–50 minutes. Weeks alternate Upper-Lower-Upper and Lower-Upper-Lower, giving 12 upper and 12 lower sessions, so each half of the body is trained 3 times a fortnight. Loads are set by reps in reserve and logged, so each session builds on the last. The two working rounds provide modest muscle-building volume, with direct biceps work in every upper lesson and a loaded hinge plus calf work in every lower lesson. Volume varies by muscle and week; reformer sets are accessory estimates, not guaranteed equivalents to hard weight-training sets. An optional third strength round adds one set per strength exercise, not a universal ten-set target. Choose loads that leave the prescribed good reps possible, keep the walk easy, and allow recovery, food and sleep to support your training.',
   equipment: ['Squat rack with safety arms or straps', '20 kg barbell + plates and collars', 'Dumbbells 4–25 kg', 'Adjustable bench (incline helps; flat works with the swaps)', 'Yoga ball', 'Reformer (long box optional)', 'Treadmill with a safety key'],
   safety: [
     'The barbell bench press and back squat need the rack’s safety arms or straps set for each partner, because your spotter is on the treadmill. No safeties? The app swaps them for dumbbell versions.',
@@ -635,11 +636,11 @@ export const PARTNER_PROGRAM: PartnerProgram = {
   evidence: [
     'ACSM Position Stand, resistance training for healthy adults (Med Sci Sports Exerc, 2026) advises training each muscle at least twice a week; here each half of the body is trained 3 times a fortnight, and Pelland 2026 finds frequency matters little for growth once weekly sets match.',
     'Pelland et al. 2026, Sports Med: fractional weekly sets predict muscle growth best, returns diminish as volume rises, and frequency adds little for growth once weekly sets are matched.',
-    'Schoenfeld, Ogborn & Krieger 2017, J Sports Sci: more weekly sets build more muscle. This series gives about 5–9 hard sets per muscle a week; the optional third strength round takes you close to the 10 or more they found most effective.',
+    'Schoenfeld, Ogborn & Krieger 2017, J Sports Sci: more weekly sets build more muscle. Weekly volume has a dose-response relationship with muscle growth, with individual variation. This series offers modest, muscle-specific volume; an extra strength round adds one working set per strength exercise.',
     'Iversen et al. 2021, Sports Med (“No time to lift?”): 4 or more weekly sets per muscle at 6–15RM builds strength and muscle, and circuits and supersets cut session time.',
     'Robinson et al. 2024, Sports Med, and Refalo et al. 2024, J Sports Sci: sets that end closer to failure build slightly more muscle, and 1–2 reps in reserve works about as well as failure.',
     'Zourdos, Helms et al. 2016, J Strength Cond Res: the reps-in-reserve scale lets you set load by how you feel on the day.',
-    'Singer et al. 2024, Front Sports Act Living: rest over 60 s slightly favours growth, with little extra beyond about 90 s. Each partner rests about 65–90 s on the treadmill.',
+    'Singer et al. 2024, Front Sports Act Living: rest over 60 s slightly favours growth, with little extra beyond about 90 s. The partner turn separates consecutive stations; the same exercise repeats after the full circuit. Active walking is not equivalent to passive rest, so allow more recovery when needed.',
     'Schumann et al. 2022, Sports Med: aerobic work alongside lifting does not blunt muscle growth or maximal strength. Only explosive strength is slightly blunted in the same session, so treadmill turns stay easy in power and heavy weeks.',
     'Bell et al. 2023 (Delphi consensus) and Coleman et al. 2024, PeerJ: a deload cuts volume and effort for a week. Expect recovery, not extra growth.',
     'Plotkin et al. 2023: hip thrusts and squats grow the glutes about equally. Kubo et al. 2019: deeper squats grow the glutes and adductors more.',
