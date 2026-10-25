@@ -175,11 +175,11 @@ describe("phase-aware suggestions (real stations)", () => {
     rec({ exercise_id: id, session_id: sid, reps, weight });
 
   it("Pump → Strength: fewer reps, so the bar goes up about 5 kg (not just 2.5)", () => {
-    const s = suggestNext(st("w5-s2", "barbell-back-squat"), last("w4-s3", "barbell-back-squat", "12", "40 kg"), { style: "Strength" });
+    const s = suggestNext(st("w5-s2", "barbell-back-squat"), last("w3-s2", "barbell-back-squat", "12", "40 kg"), { style: "Strength" });
     expect(s).toMatchObject({ weight: "45 kg", reps: "6", kind: "adjust" });
   });
   it("Strength → Power week: same lifts and reps, so normal double progression", () => {
-    const s = suggestNext(st("w6-s2", "barbell-bench-press"), last("w5-s3", "barbell-bench-press", "8", "40 kg"), { style: "Power" });
+    const s = suggestNext(st("w6-s2", "barbell-bench-press"), last("w5-s1", "barbell-bench-press", "8", "40 kg"), { style: "Power" });
     expect(s).toMatchObject({ weight: "42.5 kg", kind: "increase" });
   });
   it("Week 6 → Peak: heavier for 5–6 reps (about Week 5 + 2.5–5 kg)", () => {

@@ -1,4 +1,5 @@
 # Homepage-led page redesign
+- [x] Rebuild all 24 partner sessions with distinct combinations in each block, matching anatomy art and inspected manual passages; 77 tests and signed-in preview, Start class and Swap verified.
 - [x] Fit rotated-phone class mode to the available screen for TV mirroring; signed-in rotation at 844×300, 844×390 and 667×280, portrait, desktop, logging and Swap verified; 70 tests passed.
 - [x] Match Start class to the light Partner series page and bring all prescribed partner exercises and substitutions into the approved anatomy illustration style; signed-in phone/desktop screens and Swap verified; all 78 targeted tests pass.
 - [x] Rebalance all 24 partner lessons, preserve nine stations and 36 turns, separate ramp-ups, correct volume claims and connect 24 dedicated strength/reformer images; 78 targeted tests pass and signed-in preview verified.
@@ -6,7 +7,7 @@
 - [x] Correct the partner core artwork using the Anatomy of Exercise pose reference: connect 18 original transparent illustrations through exact-name overrides; verify image delivery and 31 partner tests. Signed-in class inspection is blocked by Cloud access failure.
 - [x] Correct artwork for every strength/reformer station prescribed in the revised partner series; unused library variants remain outside this revision.
 - [x] Explain per-partner weight progression using logged weights, completed reps and effort; distinguish current last-set suggestions from proposed all-round progression improvements.
-- [ ] Complete page-by-page manual matching for the reformer variants: the revised series uses six stable muscle-targeted movements with dedicated artwork, but full manual certification is unfinished.
+- [ ] Complete page-by-page manual matching for the reformer variants: current prescribed additions have inspected manual passages; full certification of unused legacy variants is unfinished.
 - [x] Audit partner series against its published description: 74 tests pass; report rack-check bypass, single-set progression, copied later-round reps and cloud-restore metadata gaps. Signed-in live verification blocked by Cloud access failure.
 - [x] Redraw and connect reformer setups in the revised partner lessons; verify signed-in partner grid.
 - [ ] Deliver an original SIGNAL illustration catalogue with individual Google Flow descriptions for recipes, training paths (including reformer Pilates), meditations and other site sections.

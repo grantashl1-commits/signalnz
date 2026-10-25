@@ -41,11 +41,27 @@ import reformerFootwork from "@/assets/movement/reformer/single-leg-footwork.png
 import reformerBridge from "@/assets/movement/reformer/bridge.png";
 import reformerCalf from "@/assets/movement/reformer/calf-raise.png";
 import pushUp from "@/assets/movement/strength/push-up.png";
+import supportedRow from "@/assets/movement/strength/chest-supported-row.png";
+import singleLegRdl from "@/assets/movement/strength/single-leg-rdl.png";
+import hugTree from "@/assets/movement/reformer/hug-a-tree.png";
+import chestExpansion from "@/assets/movement/reformer/chest-expansion.png";
+import overheadTriceps from "@/assets/movement/reformer/overhead-triceps.png";
+import parallelFootwork from "@/assets/movement/reformer/parallel-heel-footwork.png";
+import frogPress from "@/assets/movement/reformer/frog-press.png";
+import scooter from "@/assets/movement/reformer/scooter.png";
 
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 // Exact variants only: equipment and support position must not collapse to a generic pose.
 const correctedArt: Record<string, string> = {
+  "chest supported row": supportedRow,
+  "single leg romanian deadlift": singleLegRdl,
+  "reformer hug a tree": hugTree,
+  "reformer kneeling chest expansion": chestExpansion,
+  "reformer overhead triceps extension": overheadTriceps,
+  "reformer footwork": parallelFootwork,
+  "reformer frog press": frogPress,
+  "reformer scooter": scooter,
   "push up": pushUp,
   "dumbbell bench press": dbBench,
   "barbell bent over row": barbellRow,
