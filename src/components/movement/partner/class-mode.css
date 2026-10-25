@@ -1,25 +1,23 @@
-/* Partner class mode — a scoped "gym TV wall" theme. Everything is under
+/* Partner class mode — a scoped light member-page theme. Everything is under
    .pc-class so nothing leaks into the member pages. Signal fonts are kept. */
 
 .pc-class {
-  --pc-bg: #0d1719;
-  --pc-bg-2: #12262a;
-  --pc-panel: rgba(255, 255, 255, 0.055);
-  --pc-panel-strong: rgba(255, 255, 255, 0.1);
-  --pc-line: rgba(255, 255, 255, 0.1);
-  --pc-text: #ffffff;
-  --pc-muted: rgba(255, 255, 255, 0.66);
-  --pc-teal: #2ee6c5;
-  --pc-coral: #ff6b5b;
-  --pc-amber: #ffb020;
-  --pc-strength: #ff6b5b;
-  --pc-reformer: #2ee6c5;
-  --pc-core: #ffb020;
+  --pc-bg: hsl(var(--background));
+  --pc-bg-2: hsl(var(--card));
+  --pc-panel: hsl(var(--card));
+  --pc-panel-strong: hsl(var(--secondary));
+  --pc-line: hsl(var(--border));
+  --pc-text: hsl(var(--foreground));
+  --pc-muted: hsl(var(--muted-foreground));
+  --pc-teal: hsl(var(--move));
+  --pc-coral: hsl(var(--move));
+  --pc-amber: hsl(var(--goals));
+  --pc-strength: hsl(var(--move));
+  --pc-reformer: hsl(var(--reflect));
+  --pc-core: hsl(var(--goals));
+  --pc-on-accent: hsl(var(--primary-foreground));
   color: var(--pc-text);
-  background:
-    radial-gradient(1200px 600px at 85% -10%, rgba(46, 230, 197, 0.16), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(255, 107, 91, 0.12), transparent 60%),
-    linear-gradient(180deg, var(--pc-bg-2), var(--pc-bg));
+  background: var(--pc-bg);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
@@ -29,7 +27,7 @@
 .pc-class .pc-caps { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; line-height: 1.05; }
 .pc-class .pc-num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
 
-.pc-class .pc-clock { font-size: clamp(44px, 6.2vw, 132px); font-weight: 800; line-height: 0.95; letter-spacing: -0.02em; }
+.pc-class .pc-clock { font-size: clamp(44px, 6.2vw, 132px); font-weight: 800; line-height: 0.95; letter-spacing: 0; }
 .pc-class .pc-title { font-size: clamp(15px, 1.25vw, 30px); font-weight: 700; }
 .pc-class .pc-sub { font-size: clamp(12px, 0.95vw, 22px); }
 .pc-class .pc-tile-label { font-size: clamp(13px, 1.35vw, 34px); }
@@ -44,11 +42,11 @@
 }
 .pc-class .pc-btn:active { transform: scale(0.97); }
 .pc-class .pc-btn:focus-visible { outline: 3px solid var(--pc-teal); outline-offset: 2px; }
-.pc-class .pc-btn-primary { background: var(--pc-teal); color: #062420; border-color: transparent; }
+.pc-class .pc-btn-primary { background: var(--pc-teal); color: var(--pc-on-accent); border-color: transparent; }
 .pc-class .pc-btn-icon { width: 48px; padding: 0; }
 .pc-class .pc-input {
   width: 100%; min-height: 48px; border-radius: 14px; padding: 0 0.85rem; font-size: 18px; font-weight: 700;
-  background: rgba(0, 0, 0, 0.28); color: var(--pc-text); border: 1px solid var(--pc-line);
+  background: var(--pc-bg-2); color: var(--pc-text); border: 1px solid var(--pc-line);
 }
 .pc-class .pc-input:focus { outline: 2px solid var(--pc-teal); outline-offset: 1px; }
 
@@ -62,21 +60,21 @@
 .pc-class .pc-tile[data-active="true"] {
   opacity: 1; z-index: 2; transform: scale(1.035);
   border-color: var(--pc-teal);
-  box-shadow: 0 0 0 2px var(--pc-teal), 0 18px 50px -12px rgba(46, 230, 197, 0.55);
-  animation: pc-glow 2.4s ease-in-out infinite;
+  box-shadow: 0 0 0 2px var(--pc-teal), var(--shadow-soft);
+
 }
 .pc-class .pc-badge {
   display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px;
   min-width: 2em; height: 2em; padding: 0 0.4em; font-weight: 800; font-size: clamp(12px, 1vw, 24px);
   background: var(--pc-text); color: var(--pc-bg);
 }
-.pc-class .pc-tile[data-block="Strength"] .pc-badge { background: var(--pc-strength); color: #2a0b07; }
-.pc-class .pc-tile[data-block="Reformer"] .pc-badge { background: var(--pc-reformer); color: #062420; }
-.pc-class .pc-tile[data-block="Core"] .pc-badge { background: var(--pc-core); color: #2b1a00; }
-.pc-class .pc-art { background: #fbf8f3; border-radius: 14px; overflow: hidden; }
+.pc-class .pc-tile[data-block="Strength"] .pc-badge { background: var(--pc-strength); color: var(--pc-on-accent); }
+.pc-class .pc-tile[data-block="Reformer"] .pc-badge { background: var(--pc-reformer); color: var(--pc-on-accent); }
+.pc-class .pc-tile[data-block="Core"] .pc-badge { background: var(--pc-core); color: var(--pc-on-accent); }
+.pc-class .pc-art { background: var(--pc-bg); border-radius: 14px; overflow: hidden; }
 .pc-class .pc-worker-pill {
   border-radius: 9999px; padding: 0.2em 0.7em; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
-  font-size: clamp(11px, 0.95vw, 22px); background: var(--pc-teal); color: #062420;
+  font-size: clamp(11px, 0.95vw, 22px); background: var(--pc-teal); color: var(--pc-on-accent);
 }
 .pc-class .pc-art img { mix-blend-mode: multiply; }
 
@@ -91,13 +89,8 @@
 }
 @keyframes pc-pose-a { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes pc-pose-b { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes pc-glow {
-  0%, 100% { box-shadow: 0 0 0 2px var(--pc-teal), 0 18px 50px -12px rgba(46, 230, 197, 0.45); }
-  50% { box-shadow: 0 0 0 3px var(--pc-teal), 0 18px 60px -8px rgba(46, 230, 197, 0.7); }
-}
-
 /* Progress bar of turns */
-.pc-class .pc-seg { height: 8px; border-radius: 9999px; background: rgba(255, 255, 255, 0.12); }
+.pc-class .pc-seg { height: 8px; border-radius: 9999px; background: hsl(var(--muted)); }
 .pc-class .pc-seg[data-state="done"] { background: var(--pc-teal); }
 .pc-class .pc-seg[data-state="now"] { background: var(--pc-amber); }
 
@@ -108,8 +101,8 @@
 }
 .pc-class .pc-hr-fill { position: absolute; inset: 0; transition: background-color 600ms ease; }
 /* Text over a zone fill: a soft shadow keeps it legible on the lighter zones. */
-.pc-class .pc-hr-fill ~ * { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
-.pc-class .pc-hr-bpm { font-size: clamp(40px, 5.2vw, 120px); font-weight: 800; line-height: 0.9; letter-spacing: -0.02em; }
+.pc-class .pc-hr-fill ~ * { text-shadow: none; }
+.pc-class .pc-hr-bpm { font-size: clamp(40px, 5.2vw, 120px); font-weight: 800; line-height: 0.9; letter-spacing: 0; }
 .pc-class .pc-hr-screen .pc-hr-bpm { font-size: clamp(56px, 13vw, 300px); }
 .pc-class .pc-hr-strip .pc-hr-bpm { font-size: clamp(34px, 3.4vw, 76px); }
 .pc-class .pc-hr-strip .pc-hr-name { font-size: clamp(15px, 1.35vw, 32px); }
@@ -122,3 +115,12 @@
   .pc-pose-end { opacity: 0; }
   .pc-class .pc-tile, .pc-class .pc-hr-fill { transition: none; }
 }
+
+.pc-class .pc-station-dot { background: var(--pc-panel); color: var(--pc-text); box-shadow: inset 0 0 0 2px var(--pc-strength); }
+.pc-class .pc-station-dot[data-block="Reformer"] { box-shadow: inset 0 0 0 2px var(--pc-reformer); }
+.pc-class .pc-station-dot[data-block="Core"] { box-shadow: inset 0 0 0 2px var(--pc-core); }
+.pc-class .pc-station-dot[data-done="true"] { background: var(--pc-panel-strong); }
+.pc-class .pc-station-dot[aria-current="step"] { background: var(--pc-text); color: var(--pc-bg); }
+.pc-class .pc-footer { border-color: var(--pc-line); background: var(--pc-bg); }
+.pc-class .pc-end-overlay { background: hsl(var(--foreground) / 0.35); }
+.pc-class .pc-btn-primary { background: var(--pc-text); color: var(--pc-bg); }
