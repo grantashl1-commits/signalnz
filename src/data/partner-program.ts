@@ -564,7 +564,7 @@ const SESSIONS: PartnerSession[] = [
   session({
     week: 7, index: 1, focus: 'Upper', style: 'Peak',
     strength: ['bbBench', 'csRow', 'lateral'],
-    reformer: [['chestPress', { springs: 'light–medium' }], ['hugTree', { springs: 'light' }], ['curl', { springs: 'light' }]],
+    reformer: [['chestPress', { springs: 'light–medium' }], ['hugTree', { springs: 'light' }], ['seatedRow', { springs: 'light–medium' }]],
     core: [['renegade', each(8)], ['plank', hold(45)], ['pallof', each(8)]],
     coachNote: 'A different upper mix today. Familiar movements keep their own weight history; a new movement begins with a lighter practice set. Choose the lesson effort target, log both working rounds and keep the treadmill easy enough to return steady.',
   }),
