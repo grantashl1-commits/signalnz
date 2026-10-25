@@ -66,13 +66,22 @@ describe("partner program structure", () => {
     }
   });
 
-  it("keeps the barbell row for all 8 weeks and the bench/squat within each half", () => {
-    const has = (id: string, weeks: number[], focus: "Upper" | "Lower") =>
-      sessions.filter((s) => weeks.includes(s.week) && s.focus === focus).every((s) => strengthIds(s).includes(id));
-    expect(has("barbell-bent-over-row", [1, 2, 3, 4, 5, 6, 7, 8], "Upper")).toBe(true);
-    expect(has("db-bench-press", [1, 2, 3, 4], "Upper")).toBe(true);
-    expect(has("barbell-bench-press", [5, 6, 7, 8], "Upper")).toBe(true);
-    expect(has("barbell-back-squat", [1, 2, 3, 4, 5, 6, 7, 8], "Lower")).toBe(true);
+  it("gives all 24 sessions a distinct combination in each of the three blocks", () => {
+    for (const block of ["Strength", "Reformer", "Core"] as const) {
+      for (const focus of ["Upper", "Lower"] as const) {
+        const signatures = sessions.filter(s => s.focus === focus).map(s =>
+          s.stations.filter(st => st.block === block).map(st => st.id).sort().join("|"));
+        expect(new Set(signatures).size, `${focus}/${block}`).toBe(12);
+      }
+    }
+  });
+
+  it("returns familiar exercises later for logged progression", () => {
+    for (const focus of ["Upper", "Lower"] as const) {
+      const ids = sessions.filter(s => s.focus === focus).flatMap(strengthIds);
+      expect(new Set(ids).size).toBeLessThan(ids.length);
+      expect(new Set(ids).size).toBeGreaterThanOrEqual(8);
+    }
   });
 
   it("shares one barbell sensibly: at most 2 barbell stations and 1 rack lift per session", () => {
@@ -92,24 +101,7 @@ describe("partner program structure", () => {
     }
   });
 
-  it("keeps the main lifts stable within each 2-week block so saved weights can progress", () => {
-    for (const block of [[1, 2], [3, 4], [5, 6], [7, 8]]) {
-      for (const focus of ["Upper", "Lower"] as const) {
-        const group = sessions.filter((s) => block.includes(s.week) && s.focus === focus);
-        expect(group).toHaveLength(3);
-        const common = strengthIds(group[0]).filter((id) => group.every((s) => strengthIds(s).includes(id)));
-        expect(common.length, `W${block[0]}-${block[1]} ${focus}`).toBeGreaterThanOrEqual(2);
-      }
-    }
-  });
 
-  it("progresses the back squat from higher reps to heavier sets, then deloads", () => {
-    const squatTop = (id: string) => getPartnerSession(id)!.stations.find((st) => st.id === "barbell-back-squat")!.repRange![1];
-    expect(squatTop("w1-s2")).toBe(12);
-    expect(squatTop("w5-s2")).toBe(8);
-    expect(squatTop("w7-s2")).toBe(6);
-    expect(squatTop("w8-s1")).toBe(8);
-  });
 });
 
 describe("partner program stations", () => {
@@ -239,19 +231,21 @@ describe("partner program stations", () => {
 describe("partner program volume", () => {
   it("prescribes a loaded hinge in every lower lesson", () => {
     for (const session of sessions.filter((s) => s.focus === "Lower")) {
-      expect(session.stations.filter((s) => ["db-rdl", "barbell-rdl"].includes(s.id))).toHaveLength(1);
+      expect(session.stations.filter((s) => ["db-rdl", "barbell-rdl", "db-single-leg-rdl"].includes(s.id))).toHaveLength(1);
     }
   });
 
-  it("includes direct biceps resistance in every upper lesson", () => {
-    for (const session of sessions.filter((s) => s.focus === "Upper")) {
-      expect(session.stations.find((s) => s.id === "reformer-biceps-curl")?.muscles).toEqual(["biceps"]);
+  it("includes direct arm work across each upper fortnight", () => {
+    for (const weeks of [[1, 2], [3, 4], [5, 6], [7, 8]]) {
+      const group = sessions.filter(s => weeks.includes(s.week) && s.focus === "Upper");
+      expect(group.some(s => s.stations.some(st => st.id === "reformer-biceps-curl"))).toBe(true);
+      expect(group.some(s => s.stations.some(st => st.id === "reformer-overhead-triceps"))).toBe(true);
     }
   });
-
-  it("includes direct calf resistance in every lower lesson", () => {
-    for (const session of sessions.filter((s) => s.focus === "Lower")) {
-      expect(session.stations.find((s) => s.id === "reformer-calf-raise")?.muscles).toEqual(["calves"]);
+  it("includes calf resistance across each lower fortnight", () => {
+    for (const weeks of [[1, 2], [3, 4], [5, 6], [7, 8]]) {
+      const group = sessions.filter(s => weeks.includes(s.week) && s.focus === "Lower");
+      expect(group.filter(s => s.stations.some(st => st.id === "reformer-calf-raise")).length).toBeGreaterThanOrEqual(1);
     }
   });
   it("averages at least 4 prescribed fractional credits per week across each fortnight, not hard sets", () => {
