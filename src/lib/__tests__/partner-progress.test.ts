@@ -178,23 +178,23 @@ describe("phase-aware suggestions (real stations)", () => {
     const s = suggestNext(st("w5-s2", "barbell-back-squat"), last("w3-s2", "barbell-back-squat", "12", "40 kg"), { style: "Strength" });
     expect(s).toMatchObject({ weight: "45 kg", reps: "6", kind: "adjust" });
   });
-  it("Strength → Power week: same lifts and reps, so normal double progression", () => {
-    const s = suggestNext(st("w6-s2", "barbell-bench-press"), last("w5-s1", "barbell-bench-press", "8", "40 kg"), { style: "Power" });
-    expect(s).toMatchObject({ weight: "42.5 kg", kind: "increase" });
+  it("Power week: reaching the top of its rep range allows normal double progression", () => {
+    const s = suggestNext(st("w6-s2", "db-bench-press"), last("w6-s2", "db-bench-press", "8", "12 kg"), { style: "Power" });
+    expect(s).toMatchObject({ weight: "14 kg", kind: "increase" });
   });
   it("Week 6 → Peak: heavier for 5–6 reps (about Week 5 + 2.5–5 kg)", () => {
-    const s = suggestNext(st("w7-s2", "barbell-back-squat"), last("w6-s3", "barbell-back-squat", "6", "45 kg"), { style: "Peak" });
+    const s = suggestNext(st("w7-s2", "barbell-rdl"), last("w5-s2", "barbell-rdl", "6", "45 kg"), { style: "Peak" });
     expect(s).toMatchObject({ weight: "47.5 kg", reps: "5", kind: "adjust" });
-    const top = suggestNext(st("w7-s2", "barbell-back-squat"), last("w6-s3", "barbell-back-squat", "8", "50 kg"), { style: "Peak" });
+    const top = suggestNext(st("w7-s2", "barbell-rdl"), last("w5-s2", "barbell-rdl", "8", "50 kg"), { style: "Peak" });
     expect(top?.weight).toBe("55 kg");
   });
   it("Peak → Deload: about 75 % of the heavy week, never the same load", () => {
-    const s = suggestNext(st("w8-s1", "barbell-back-squat"), last("w7-s2", "barbell-back-squat", "6", "52.5 kg"), { style: "Deload" });
+    const s = suggestNext(st("w8-s3", "barbell-back-squat"), last("w6-s3", "barbell-back-squat", "6", "52.5 kg"), { style: "Deload" });
     expect(s).toMatchObject({ weight: "40 kg", kind: "adjust" });
     const db = suggestNext(st("w8-s2", "seated-db-shoulder-press"), last("w7-s1", "seated-db-shoulder-press", "8", "12 kg"), { style: "Deload" });
     expect(db?.weight).toBe("9 kg");
     // Second deload session: stays light.
-    expect(suggestNext(st("w8-s3", "barbell-back-squat"), last("w8-s1", "barbell-back-squat", "8", "40 kg"), { style: "Deload" })?.kind).toBe("repeat");
+    expect(suggestNext(st("w8-s3", "barbell-back-squat"), last("w8-s3", "barbell-back-squat", "8", "40 kg"), { style: "Deload" })?.kind).toBe("repeat");
   });
   it("dumbbells step to the nearest bell after a rep drop", () => {
     expect(nearestDumbbell(13.9)).toBe(14);
