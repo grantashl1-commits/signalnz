@@ -40,11 +40,13 @@ import reformerCurl from "@/assets/movement/reformer/biceps-curl.png";
 import reformerFootwork from "@/assets/movement/reformer/single-leg-footwork.png";
 import reformerBridge from "@/assets/movement/reformer/bridge.png";
 import reformerCalf from "@/assets/movement/reformer/calf-raise.png";
+import pushUp from "@/assets/movement/strength/push-up.png";
 
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 // Exact variants only: equipment and support position must not collapse to a generic pose.
 const correctedArt: Record<string, string> = {
+  "push up": pushUp,
   "dumbbell bench press": dbBench,
   "barbell bent over row": barbellRow,
   "seated dumbbell shoulder press": seatedPress,

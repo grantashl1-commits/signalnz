@@ -103,6 +103,11 @@
     --move: 16 52% 58%;              /* Clay */
     --reflect: 284 30% 62%;          /* Lavender */
     --goals: 38 52% 56%;             /* Antique gold */
+    --hr-zone-1: 215 16% 47%;
+    --hr-zone-2: 221 83% 53%;
+    --hr-zone-3: 142 76% 36%;
+    --hr-zone-4: 32 95% 44%;
+    --hr-zone-5: 0 72% 51%;
 
     /* ── Sketch/hand-drawn ── */
     --sketch: 25 25% 55%;
