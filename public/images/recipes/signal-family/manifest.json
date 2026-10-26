@@ -1,0 +1,106 @@
+{
+  "notes": "25 individually cropped illustrations from one AI-generated sheet. Backgrounds retain a warm-toned watercolor wash; not transparent. Use only when dish depicted matches the recipe.",
+  "imageBasePath": "/images/recipes/signal-family/",
+  "images": [
+    {
+      "slug": "berry-pancakes",
+      "file": "berry-pancakes.png"
+    },
+    {
+      "slug": "coconut-curry-rice",
+      "file": "coconut-curry-rice.png"
+    },
+    {
+      "slug": "lentil-shepherds-pie",
+      "file": "lentil-shepherds-pie.png"
+    },
+    {
+      "slug": "rainbow-bean-wrap",
+      "file": "rainbow-bean-wrap.png"
+    },
+    {
+      "slug": "lentil-spaghetti",
+      "file": "lentil-spaghetti.png"
+    },
+    {
+      "slug": "citrus-tofu-salad",
+      "file": "citrus-tofu-salad.png"
+    },
+    {
+      "slug": "banana-granola-bowl",
+      "file": "banana-granola-bowl.png"
+    },
+    {
+      "slug": "plant-burger",
+      "file": "plant-burger.png"
+    },
+    {
+      "slug": "veggie-stir-fry-noodles",
+      "file": "veggie-stir-fry-noodles.png"
+    },
+    {
+      "slug": "rainbow-chickpea-tacos",
+      "file": "rainbow-chickpea-tacos.png"
+    },
+    {
+      "slug": "blueberry-muffins",
+      "file": "blueberry-muffins.png"
+    },
+    {
+      "slug": "bean-nachos",
+      "file": "bean-nachos.png"
+    },
+    {
+      "slug": "garden-grain-salad",
+      "file": "garden-grain-salad.png"
+    },
+    {
+      "slug": "creamy-pea-pasta",
+      "file": "creamy-pea-pasta.png"
+    },
+    {
+      "slug": "stuffed-kumara",
+      "file": "stuffed-kumara.png"
+    },
+    {
+      "slug": "toasted-cheese-sandwich",
+      "file": "toasted-cheese-sandwich.png"
+    },
+    {
+      "slug": "berry-smoothie",
+      "file": "berry-smoothie.png"
+    },
+    {
+      "slug": "chocolate-brownies",
+      "file": "chocolate-brownies.png"
+    },
+    {
+      "slug": "chickpea-spinach-curry",
+      "file": "chickpea-spinach-curry.png"
+    },
+    {
+      "slug": "chocolate-chip-cookies",
+      "file": "chocolate-chip-cookies.png"
+    },
+    {
+      "slug": "vegetable-noodle-soup",
+      "file": "vegetable-noodle-soup.png"
+    },
+    {
+      "slug": "garden-veggie-pizza",
+      "file": "garden-veggie-pizza.png"
+    },
+    {
+      "slug": "roast-potato-wedges",
+      "file": "roast-potato-wedges.png"
+    },
+    {
+      "slug": "fruit-seed-bars",
+      "file": "fruit-seed-bars.png"
+    },
+    {
+      "slug": "berry-apple-crumble",
+      "file": "berry-apple-crumble.png"
+    }
+  ]
+}

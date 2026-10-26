@@ -9,11 +9,12 @@
 import { Recipe } from "@/data/meal-plans";
 import { NOURISH_RECIPES } from "@/data/nourish-recipes";
 import { SIGNAL_REWRITES } from "@/data/signal-rewrites";
+import { SIGNAL_FAMILY_RECIPES } from "@/data/signal-family-recipes";
 import imageMaps from "@/data/image-maps.json";
 
-/** All recipes — handcrafted nourish library + 216 SIGNAL rewrites. */
+/** All recipes — handcrafted nourish library + 216 SIGNAL rewrites + SIGNAL family adaptations. */
 const _seen = new Set<string>();
-export const ALL_RECIPES: Recipe[] = [...NOURISH_RECIPES, ...SIGNAL_REWRITES].filter(r => {
+export const ALL_RECIPES: Recipe[] = [...NOURISH_RECIPES, ...SIGNAL_REWRITES, ...SIGNAL_FAMILY_RECIPES].filter(r => {
   if (_seen.has(r.id)) return false;
   _seen.add(r.id);
   return true;
