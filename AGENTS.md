@@ -222,3 +222,4 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 <!-- LOVABLE:BEGIN -->
 - Keep homepage illustration assets in a shared landing artwork module, separate from global icon rendering, so artwork changes cannot replace functional icons elsewhere.
 <!-- LOVABLE:END -->
+- Partner classes run A, B, A, B at each station before moving to the next (`turnAt` in `src/lib/partner-progress.ts`); reps and weights come from `plannedLoad` for the week and are never typed during class, and a finished class saves itself to today's Move log.

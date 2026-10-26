@@ -24,26 +24,34 @@ it('shows the next session as a 3x3 station grid and names both partners', () =>
   expect(JSON.parse(localStorage.getItem('signal_partner_settings_v1:guest')!).B.name).toBe('Jess');
 });
 
-it('runs 36 alternating turns, carries loads into round 2, saves and moves to the next session', () => {
+it('runs A, B, A, B at each station with planned loads, saves itself to today and moves to the next session', () => {
   renderHub();
   fireEvent.change(screen.getByPlaceholderText("Friend's name"), { target: { value: 'Jess' } });
   fireEvent.click(screen.getByText('Start class'));
   const classMode = screen.getByTestId('class-mode');
-  expect(within(classMode).getAllByTestId('class-worker')[0].textContent).toContain('Partner A');
-  expect(within(classMode).getAllByTestId('class-treadmill')[0].textContent).toContain('Jess');
-  fireEvent.change(screen.getAllByLabelText('Load for Partner A')[0], { target: { value: '40 kg' } });
-  for (let i = 0; i < 18; i++) swap();
-  // Round 2, partner A, station 1 again: the round-1 load is prefilled.
-  expect((screen.getAllByLabelText('Load for Partner A')[0] as HTMLInputElement).value).toBe('40 kg');
-  for (let i = 18; i < 36; i++) swap();
+  expect(within(classMode).getByTestId('class-worker').textContent).toBe('Partner A');
+  // Nothing to type: the station shows the plan's reps and load.
+  expect(within(classMode).queryByRole('textbox')).toBeNull();
+  expect(within(classMode).getByTestId('class-target').textContent).toContain(first.stations[0].reps);
+  swap();
+  expect(within(classMode).getByTestId('class-worker').textContent).toBe('Jess');
+  swap(); swap(); swap();
+  // Both partners did two rounds of station 1; now station 2.
+  expect(within(classMode).getByText(/^Station 2\/9/)).toBeTruthy();
+  for (let i = 4; i < 36; i++) swap();
   expect(screen.getByTestId('class-summary')).toBeTruthy();
-  fireEvent.click(screen.getByTestId('class-save'));
+  expect(screen.getByTestId('summary-A').textContent).toMatch(/Calories\d+ kcal/);
+  expect(screen.getByTestId('class-saved').textContent).toContain('Saved to today');
 
   const progress = JSON.parse(localStorage.getItem('signal_partner_program_v1:guest')!);
   expect(progress.completed[first.id]).toBeTruthy();
   expect(progress.logs[0].records).toHaveLength(36);
-  expect(progress.logs[0].records[1]).toMatchObject({ partner: 'B', partnerName: 'Jess', round: 1, exercise_id: first.stations[0].id });
-  expect(progress.logs[0].records[0].weight).toBe('40 kg');
+  expect(progress.logs[0].records.slice(0, 4).map((r: { partnerName: string; round: number; exercise_id: string }) => [r.partnerName, r.round, r.exercise_id])).toEqual([
+    ['Partner A', 1, first.stations[0].id], ['Jess', 1, first.stations[0].id], ['Partner A', 2, first.stations[0].id], ['Jess', 2, first.stations[0].id],
+  ]);
+  expect(progress.logs[0].records[0]).toMatchObject({ planned: true });
+  expect(progress.logs[0].hr.A.kcal).toBeGreaterThanOrEqual(0);
+  fireEvent.click(screen.getByTestId('class-done'));
   expect(localStorage.getItem('signal_partner_class_v1:guest')).toBeNull();
   expect(screen.queryByTestId('class-mode')).toBeNull();
   if (second) expect(screen.getByRole('heading', { name: `Week ${second.week} · Session ${second.index}` })).toBeTruthy();
@@ -57,7 +65,7 @@ it('resumes at the saved turn, paused, after navigating away', () => {
   renderHub();
   fireEvent.click(screen.getByText(/Resume class · turn 2\/36/));
   const classMode = screen.getByTestId('class-mode');
-  expect(within(classMode).getAllByTestId('class-worker')[0].textContent).toContain('Partner B');
+  expect(within(classMode).getByTestId('class-worker').textContent).toBe('Partner B');
   expect(within(classMode).getAllByLabelText('Resume').length).toBeGreaterThan(0);
 });
 
@@ -96,7 +104,7 @@ it('keeps an unticked early finish out of the plan', () => {
   renderHub();
   fireEvent.click(screen.getByText('Start class'));
   for (let i = 0; i < 4; i++) swap();
-  fireEvent.click(screen.getByText('End class'));
+  fireEvent.click(screen.getByLabelText('End class'));
   fireEvent.click(within(screen.getByRole('alertdialog')).getByText('End class'));
   const tick = screen.getByRole('checkbox') as HTMLInputElement;
   expect(tick.checked).toBe(false);
@@ -112,8 +120,10 @@ it('runs the optional third strength round (42 turns)', () => {
   fireEvent.click(screen.getByText('Add a 3rd round of the strength stations'));
   fireEvent.click(screen.getByText('Start class'));
   for (let i = 0; i < 42; i++) swap();
-  fireEvent.click(screen.getByTestId('class-save'));
+  expect(screen.getByTestId('class-saved').textContent).toContain('Saved to today');
   const progress = JSON.parse(localStorage.getItem('signal_partner_program_v1:guest')!);
   expect(progress.logs[0].records).toHaveLength(42);
-  expect(progress.logs[0].records[41]).toMatchObject({ round: 3, exercise_id: first.stations[2].id, partner: 'B' });
+  // Each strength station gets a third A/B pair before moving on.
+  expect(progress.logs[0].records[5]).toMatchObject({ round: 3, exercise_id: first.stations[0].id, partner: 'B' });
+  expect(progress.logs[0].records[6]).toMatchObject({ round: 1, exercise_id: first.stations[1].id, partner: 'A' });
 });
