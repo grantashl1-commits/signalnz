@@ -45,9 +45,17 @@ export interface PartnerTurnRecord {
   rir?: string;
   /** Mirrors PartnerSessionLog.counted on the cloud row. */
   counted?: boolean;
+  /** Reps and load are the plan's suggestion for the week, not typed in class. */
+  planned?: boolean;
 }
 
-export interface PartnerHRSummary { avg: number; max: number; effortMinutes: number }
+export interface PartnerHRSummary {
+  avg: number;
+  max: number;
+  effortMinutes: number;
+  /** Estimated calories for the whole class (heart rate where a strap was on, time-based otherwise). */
+  kcal?: number;
+}
 
 export interface PartnerSessionLog {
   /** Also the `workout_logs.id` (upserted by id). */
@@ -74,7 +82,12 @@ export interface PartnerProgress {
   logs: PartnerSessionLog[];
 }
 
-export interface PartnerPerson { name: string; age: number | null }
+export interface PartnerPerson {
+  name: string;
+  age: number | null;
+  /** Body weight for the calorie estimate (optional). */
+  weightKg?: number | null;
+}
 export interface PartnerSettings {
   A: PartnerPerson;
   B: PartnerPerson;
@@ -88,8 +101,8 @@ export interface PartnerSettings {
 
 const EMPTY_PROGRESS: PartnerProgress = { completed: {}, logs: [] };
 export const DEFAULT_PARTNER_SETTINGS: PartnerSettings = {
-  A: { name: "", age: null },
-  B: { name: "", age: null },
+  A: { name: "", age: null, weightKg: null },
+  B: { name: "", age: null, weightKg: null },
   mode: "pace",
   muted: false,
   safeties: null,
@@ -197,25 +210,34 @@ export function totalTurns(stationCount = 9, rounds = 2, extraStations = 0): num
   return stationCount * 2 * rounds + extraStations * 2;
 }
 
+/** Turns spent at one station: an A/B pair per round, plus one more pair for the first `extraStations`. */
+const turnsAtStation = (station: number, rounds: number, extraStations: number) => 2 * (rounds + (station < extraStations ? 1 : 0));
+
+/** Index of the first turn at `station` (the station count when past the end). */
+export function stationStartTurn(station: number, stationCount = 9, rounds = 2, extraStations = 0): number {
+  let start = 0;
+  for (let s = 0; s < Math.min(station, stationCount); s++) start += turnsAtStation(s, rounds, extraStations);
+  return start;
+}
+
 /**
- * Turn order: for each round, for each station, A works while B is on the
- * treadmill, then B works while A is on the treadmill. With `extraStations`,
- * a last round repeats only the first N stations.
+ * Turn order: both partners finish every round of a station before moving on —
+ * A, B, A, B at station 1 (the other partner is on the treadmill each turn),
+ * then station 2, and so on. With `extraStations`, the first N (strength)
+ * stations get one more A/B pair.
  */
-export function turnAt(index: number, stationCount = 9, rounds = 2, extraStations = 0) {
-  const perRound = stationCount * 2;
-  const worker: PartnerSlot = index % 2 === 0 ? "A" : "B";
-  const treadmill = (worker === "A" ? "B" : "A") as PartnerSlot;
-  const base = perRound * rounds;
-  if (extraStations > 0 && index >= base) {
-    return { round: rounds + 1, station: Math.min(extraStations - 1, Math.floor((index - base) / 2)), worker, treadmill };
+export function turnAt(index: number, stationCount = 9, rounds = 2, extraStations = 0): { round: number; station: number; worker: PartnerSlot; treadmill: PartnerSlot } {
+  let start = 0;
+  for (let s = 0; s < stationCount; s++) {
+    const here = turnsAtStation(s, rounds, extraStations);
+    if (index < start + here || s === stationCount - 1) {
+      const k = Math.max(0, Math.min(index - start, here - 1));
+      const worker: PartnerSlot = k % 2 === 0 ? "A" : "B";
+      return { round: Math.floor(k / 2) + 1, station: s, worker, treadmill: worker === "A" ? "B" : "A" };
+    }
+    start += here;
   }
-  return {
-    round: Math.floor(index / perRound) + 1,
-    station: Math.floor((index % perRound) / 2),
-    worker,
-    treadmill,
-  };
+  return { round: 1, station: 0, worker: "A", treadmill: "B" };
 }
 
 // ─── Loads and double progression ───────────────────────────────────────────
@@ -423,6 +445,95 @@ export function suggestNext(
   return { text: `${lastText} · top of the range — slow the tempo or add a pause`, kind: "technique" };
 }
 
+// ─── Planned loads (no typing in class) ─────────────────────────────────────
+
+/** What the pair already lift: 10 kg dumbbells and the 20 kg bar. Every suggestion builds from these. */
+export const BASE_DUMBBELL_KG = 10;
+export const BASE_BARBELL_KG = 20;
+
+/** Bar load by programme week (index 0 = week 1). Lower-body lifts climb faster than presses and rows; week 8 is the deload. */
+const BAR_LOWER_KG = [20, 25, 25, 30, 32.5, 35, 40, 27.5];
+const BAR_UPPER_KG = [20, 20, 22.5, 25, 27.5, 27.5, 30, 20];
+/** Dumbbell steps up the home ladder by week: same for the Foundation fortnight, then +1, +2, +3 for the peak, back to the start for the deload. */
+const DB_STEPS = [0, 0, 1, 1, 2, 2, 3, 0];
+
+const LOWER_BAR = /squat|deadlift|rdl|hip thrust|good morning|glute bridge/i;
+const LIGHT_DB = /lateral|raise|curl|tricep|kickback|fly|rear delt|face pull|arnold|upright/i;
+const HEAVY_DB = /goblet|swing|suitcase|farmer|single[- ]arm.*row|one[- ]arm/i;
+
+export interface PlannedLoad {
+  /** Rep target (or hold time) shown on the station, e.g. "10–12" or "30 s". */
+  reps: string;
+  /** Load line, e.g. "10 kg dumbbells", "20 kg bar", "Springs: medium"; null for bodyweight. */
+  load: string | null;
+  /** Kilograms when the load is a dumbbell or barbell. */
+  kg: number | null;
+  kind: LoadKind;
+}
+
+function stepDumbbell(baseKg: number, steps: number, ladder: number[] = DUMBBELL_LADDER_KG): number {
+  let i = ladder.findIndex(x => x >= baseKg - 0.01);
+  if (i < 0) i = ladder.length - 1;
+  return ladder[Math.min(ladder.length - 1, Math.max(0, i + steps))];
+}
+
+/**
+ * The reps and load to do at a station in a given programme week. Nothing is
+ * typed in class, so progression comes from the plan: dumbbell work starts at
+ * the 10 kg pair (lighter isolation moves at 6 kg, single-bell moves at 12 kg)
+ * and the bar at 20 kg, then both climb week by week and drop back for the
+ * week-8 deload.
+ */
+export function plannedLoad(station: Pick<PartnerStation, "name" | "reps" | "block" | "equipment" | "load">, week: number): PlannedLoad {
+  const kind = loadKind(station);
+  const w = Math.min(8, Math.max(1, Math.round(week))) - 1;
+  if (kind === "barbell") {
+    const kg = (LOWER_BAR.test(station.name) ? BAR_LOWER_KG : BAR_UPPER_KG)[w];
+    return { reps: station.reps, load: kg <= BASE_BARBELL_KG ? `${formatKg(kg)} bar` : `${formatKg(kg)} total (incl. bar)`, kg, kind };
+  }
+  if (kind === "dumbbell") {
+    const base = LIGHT_DB.test(station.name) ? 6 : HEAVY_DB.test(station.name) ? 12 : BASE_DUMBBELL_KG;
+    const kg = stepDumbbell(base, DB_STEPS[w]);
+    const single = /goblet|swing|suitcase|single[- ]arm|one[- ]arm/i.test(station.name);
+    return { reps: station.reps, load: `${formatKg(kg)} ${single ? "dumbbell" : "dumbbells"}`, kg, kind };
+  }
+  if (kind === "reformer") {
+    const level = station.load.match(/springs?:\s*([a-z–-]+)/i)?.[1];
+    return { reps: station.reps, load: level ? `Springs: ${level}` : "Springs as set", kg: null, kind };
+  }
+  return { reps: station.reps, load: null, kg: null, kind };
+}
+
+/** Defaults when a partner hasn't given an age or weight. */
+export const DEFAULT_CALORIE_AGE = 38;
+export const DEFAULT_CALORIE_WEIGHT_KG = 70;
+/** Strength circuit with treadmill walking between stations (Compendium of Physical Activities: circuit training, moderate). */
+const CLASS_MET = 5;
+
+/**
+ * Calories for one partner over a class. Minutes with a strap use the
+ * heart-rate equation for women (Keytel et al. 2005); minutes without one use a
+ * moderate circuit-training MET. Estimates, not measurements.
+ */
+export function partnerCalories(
+  hr: { sum: number; count: number } | null | undefined,
+  elapsedSeconds: number,
+  person: { age?: number | null; weightKg?: number | null } = {},
+): { kcal: number; fromHR: boolean } {
+  const weight = person.weightKg && person.weightKg > 25 ? person.weightKg : DEFAULT_CALORIE_WEIGHT_KG;
+  const age = person.age && person.age > 10 ? person.age : DEFAULT_CALORIE_AGE;
+  const measured = Math.min(hr?.count ?? 0, Math.max(0, elapsedSeconds));
+  let kcal = 0;
+  if (hr && measured >= 60) {
+    const avg = hr.sum / hr.count;
+    const perMinute = (0.4472 * avg - 0.1263 * weight + 0.074 * age - 20.4022) / 4.184;
+    kcal += Math.max(0, perMinute) * (measured / 60);
+  }
+  const unmeasured = Math.max(0, elapsedSeconds - (measured >= 60 ? measured : 0));
+  kcal += (CLASS_MET * 3.5 * weight / 200) * (unmeasured / 60);
+  return { kcal: Math.round(kcal), fromHR: measured >= 60 };
+}
+
 // ─── Summaries + cloud rows ─────────────────────────────────────────────────
 
 export function summarisePartner(records: PartnerTurnRecord[], partner: PartnerSlot) {
@@ -472,6 +583,7 @@ export function buildWorkoutLogRow(
     exercises: log.records.map(r => ({ ...r, session_id: log.sessionId, counted })) as unknown as Json,
     notes: (session ? partnerNotes(session) : `${PARTNER_NOTES_PREFIX}${log.title}`) + (counted ? "" : NOT_COUNTED_SUFFIX),
     completed: true,
-    ...(own ? { avg_bpm: own.avg, max_bpm: own.max } : {}),
+    ...(own && own.max > 0 ? { avg_bpm: own.avg, max_bpm: own.max } : {}),
+    ...(own?.kcal ? { calories: own.kcal } : {}),
   };
 }

@@ -135,39 +135,61 @@
 
 .pc-class .pc-hr-fill[data-zone="5"] { background: hsl(var(--hr-zone-5) / 0.12); border-left: 4px solid hsl(var(--hr-zone-5)); }
 
-/* Mirroring preserves the phone's viewport, not the television's dimensions. */
+/* The active station: picture, who, what, reps and load — nothing to type. */
+.pc-class .pc-active-card { flex-direction: row; align-items: stretch; gap: 14px; transform: none; padding: 0.6rem; }
+.pc-class .pc-active-card .pc-art { width: 44%; flex-shrink: 0; aspect-ratio: 1; }
+.pc-class .pc-active-text { display: flex; min-width: 0; flex: 1; flex-direction: column; justify-content: center; gap: 4px; }
+.pc-class .pc-active-who { font-size: 15px; color: var(--pc-teal); }
+.pc-class .pc-active-name { font-size: 22px; overflow-wrap: anywhere; }
+.pc-class .pc-active-target { font-size: 20px; font-weight: 800; }
+.pc-class .pc-active-load { color: var(--pc-teal); }
+.pc-class .pc-station-dot { width: 34px; height: 34px; font-size: 14px; flex-shrink: 0; }
+
+/* Swap: one big target at the bottom, away from Pause (which lives up top). */
+.pc-class .pc-footer { border-top: 1px solid var(--pc-line); padding-top: 10px; }
+.pc-class .pc-swap-bar { display: flex; }
+.pc-class .pc-swap { flex: 1; min-height: 76px; font-size: 26px; font-weight: 800; letter-spacing: 0.02em; gap: 0.6rem; }
+.pc-class[data-wide="true"] .pc-swap { min-height: 88px; font-size: clamp(26px, 2vw, 44px); }
+.pc-class[data-wide="true"] .pc-swap-bar { flex: 1 1 62%; }
+.pc-class .pc-up-now { flex: 1 1 38%; }
+.pc-class .pc-up-now .pc-active-who { font-size: clamp(18px, 1.5vw, 36px); }
+.pc-class .pc-up-now-line { font-size: clamp(20px, 1.7vw, 40px); line-height: 1.1; }
+.pc-class .pc-up-now-target { font-size: clamp(18px, 1.4vw, 34px); font-weight: 800; }
+/* Phone upright: two short header rows of slightly smaller icons so nothing spills off the edge. */
+.pc-class[data-wide="false"][data-landscape="false"] .pc-btn-icon { width: 42px; min-height: 42px; }
+
+/* Mirroring preserves the phone's viewport, not the television's dimensions:
+   a phone on its side keeps the exercise, both heart rates, the stations and Swap on one screen. */
 .pc-class[data-landscape="true"] { height: 100dvh; padding-inline: env(safe-area-inset-left) env(safe-area-inset-right); }
-.pc-class[data-landscape="true"] .pc-class-header { padding: 6px 12px; gap: 12px; }
+.pc-class[data-landscape="true"] .pc-class-header { padding: 6px 12px 4px; gap: 12px; }
 .pc-class[data-landscape="true"] .pc-clock { font-size: 32px; }
 .pc-class[data-landscape="true"] .pc-title { font-size: 14px; }
 .pc-class[data-landscape="true"] .pc-sub { font-size: 11px; }
 .pc-class[data-landscape="true"] .pc-class-header > div:last-child { flex: 0 0 auto; }
-.pc-class[data-landscape="true"] .pc-btn { min-height: 44px; padding-inline: 10px; font-size: 12px; }
-.pc-class[data-landscape="true"] .pc-btn-icon { width: 44px; padding: 0; }
+.pc-class[data-landscape="true"] .pc-btn { min-height: 40px; padding-inline: 10px; font-size: 12px; }
+.pc-class[data-landscape="true"] .pc-btn-icon { width: 40px; padding: 0; }
 .pc-class[data-landscape="true"] .pc-class-progress { padding: 0 12px 6px; }
 .pc-class[data-landscape="true"] .pc-seg { height: 4px; }
-.pc-landscape-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 44px; flex: 1; min-height: 0; gap: 6px 12px; padding: 0 12px max(6px, env(safe-area-inset-bottom)); }
-.pc-landscape-exercise { min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) 64px; gap: 6px; }
-.pc-landscape-exercise .pc-active-card { overflow: hidden; gap: 8px; }
-.pc-landscape-exercise .pc-art { height: 100%; width: auto; max-width: 44%; aspect-ratio: 1; }
-.pc-landscape-exercise .pc-active-card .text-\[22px\] { font-size: 16px; overflow-wrap: anywhere; }
-.pc-landscape-exercise .pc-active-card .text-lg { font-size: 14px; }
-.pc-landscape-hr .pc-hr { padding: 6px 8px; border-radius: 8px; }
+.pc-class[data-landscape="true"] .pc-footer { padding: 6px 12px max(6px, env(safe-area-inset-bottom)); }
+.pc-class[data-landscape="true"] .pc-swap { min-height: 56px; height: 56px; font-size: 22px; }
+.pc-landscape-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); flex: 1; min-height: 0; gap: 10px; padding: 0 12px 6px; }
+.pc-landscape-body .pc-active-card { min-height: 0; overflow: hidden; }
+.pc-landscape-body .pc-active-card .pc-art { width: auto; height: 100%; max-width: 46%; }
+.pc-landscape-body .pc-active-who { font-size: 13px; }
+.pc-landscape-body .pc-active-name { font-size: 18px; }
+.pc-landscape-body .pc-active-target { font-size: 16px; }
+.pc-landscape-side { display: flex; min-height: 0; flex-direction: column; justify-content: space-between; gap: 8px; }
+.pc-landscape-hr .pc-hr { padding: 6px 8px; border-radius: 10px; }
 .pc-landscape-hr .pc-hr .text-xs { font-size: 10px; }
-.pc-landscape-info { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-.pc-landscape-info .pc-panel { padding: 8px; border-radius: 8px; }
-.pc-class[data-landscape="true"] .pc-input { min-height: 44px; font-size: 16px; }
-.pc-landscape-controls { grid-column: 1 / -1; }
-.pc-landscape-controls .pc-btn { min-height: 44px; height: 44px; }
+.pc-class[data-landscape="true"] .pc-station-dot { width: 26px; height: 26px; font-size: 11px; }
 .pc-class[data-landscape="true"] .pc-hr-screen .pc-hr-bpm { font-size: 64px; }
 .pc-class[data-landscape="true"] .pc-hr-screen .pc-hr-name { font-size: 18px; }
 .pc-class[data-landscape="true"] .pc-hr-screen > .grid .pc-hr { padding: 8px; }
 .pc-class[data-landscape="true"] .pc-hr-screen .sm\:mt-6 { margin-top: 6px; }
 
-@media (orientation: landscape) and (max-height: 320px) {
-  .pc-landscape-exercise .pc-active-card > div:last-child { gap: 1px; }
-  .pc-landscape-exercise .pc-active-card .text-xs,
-  .pc-landscape-exercise .pc-active-card .pc-sub { font-size: 10px; line-height: 12px; }
-  .pc-landscape-exercise .pc-active-card .text-\[22px\] { font-size: 14px; line-height: 17px; }
-  .pc-landscape-exercise .pc-active-card .text-lg { font-size: 13px; line-height: 16px; }
+@media (orientation: landscape) and (max-height: 340px) {
+  .pc-class[data-landscape="true"] .pc-swap { min-height: 48px; height: 48px; font-size: 20px; }
+  .pc-landscape-body .pc-active-name { font-size: 15px; }
+  .pc-landscape-body .pc-active-target { font-size: 14px; }
+  .pc-landscape-body .pc-active-text .pc-sub { display: none; }
 }

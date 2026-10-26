@@ -4,8 +4,8 @@ import { PARTNER_PATH_ID, partnerSeries } from "@/data/training-paths/partner";
 import { getNextSession, getSelectedPath, markSessionCompleted, resetPathProgress, sessionStartHref, setSelectedPathId } from "@/lib/training-path-utils";
 import {
   PARTNER_PROGRESS_EVENT, addSessionLog, buildWorkoutLogRow, getNextSessionId, getPartnerProgress, getPartnerSettings,
-  lastLogFor, markSessionDone, nearestDumbbell, nextDumbbell, parseLoadKg, parsePartnerNotes, partnerNotes, repTarget, rowCounts,
-  savePartnerProgress, savePartnerSettings, suggestNext, summarisePartner, totalTurns, turnAt,
+  lastLogFor, markSessionDone, nearestDumbbell, nextDumbbell, parseLoadKg, parsePartnerNotes, partnerCalories, partnerNotes, plannedLoad, repTarget, rowCounts,
+  savePartnerProgress, savePartnerSettings, stationStartTurn, suggestNext, summarisePartner, totalTurns, turnAt,
   type PartnerProgress, type PartnerSessionLog, type PartnerTurnRecord,
 } from "../partner-progress";
 
@@ -31,22 +31,66 @@ const empty = (): PartnerProgress => ({ completed: {}, logs: [] });
 beforeEach(() => localStorage.clear());
 
 describe("turn order", () => {
-  it("adds a third round of just the strength stations when asked (42 turns)", () => {
-    expect(totalTurns(9, 2, 3)).toBe(42);
-    expect(turnAt(36, 9, 2, 3)).toEqual({ round: 3, station: 0, worker: "A", treadmill: "B" });
-    expect(turnAt(37, 9, 2, 3)).toMatchObject({ round: 3, station: 0, worker: "B" });
-    expect(turnAt(41, 9, 2, 3)).toMatchObject({ round: 3, station: 2, worker: "B" });
-    expect(turnAt(35, 9, 2, 3)).toMatchObject({ round: 2, station: 8 });
-  });
-
-  it("alternates A and B at each station, two rounds, 36 turns", () => {
+  it("does A, B, A, B at each station before moving on (36 turns)", () => {
     expect(totalTurns(9, 2)).toBe(36);
     expect(turnAt(0)).toEqual({ round: 1, station: 0, worker: "A", treadmill: "B" });
     expect(turnAt(1)).toEqual({ round: 1, station: 0, worker: "B", treadmill: "A" });
-    expect(turnAt(2)).toMatchObject({ round: 1, station: 1, worker: "A" });
-    expect(turnAt(17)).toMatchObject({ round: 1, station: 8, worker: "B" });
-    expect(turnAt(18)).toMatchObject({ round: 2, station: 0, worker: "A" });
+    expect(turnAt(2)).toEqual({ round: 2, station: 0, worker: "A", treadmill: "B" });
+    expect(turnAt(3)).toEqual({ round: 2, station: 0, worker: "B", treadmill: "A" });
+    expect(turnAt(4)).toEqual({ round: 1, station: 1, worker: "A", treadmill: "B" });
+    expect(turnAt(34)).toMatchObject({ round: 2, station: 8, worker: "A" });
     expect(turnAt(35)).toMatchObject({ round: 2, station: 8, worker: "B" });
+    expect(turnAt(99)).toMatchObject({ round: 2, station: 8, worker: "B" });
+    expect(stationStartTurn(1)).toBe(4);
+    expect(stationStartTurn(9)).toBe(36);
+  });
+
+  it("adds a third A/B pair at each strength station when asked (42 turns)", () => {
+    expect(totalTurns(9, 2, 3)).toBe(42);
+    expect(turnAt(4, 9, 2, 3)).toEqual({ round: 3, station: 0, worker: "A", treadmill: "B" });
+    expect(turnAt(5, 9, 2, 3)).toMatchObject({ round: 3, station: 0, worker: "B" });
+    expect(turnAt(6, 9, 2, 3)).toMatchObject({ round: 1, station: 1, worker: "A" });
+    expect(turnAt(18, 9, 2, 3)).toMatchObject({ round: 1, station: 3, worker: "A" });
+    expect(stationStartTurn(3, 9, 2, 3)).toBe(18);
+    expect(turnAt(41, 9, 2, 3)).toMatchObject({ round: 2, station: 8, worker: "B" });
+  });
+});
+
+describe("planned loads (nothing typed in class)", () => {
+  it("starts from the 10 kg dumbbells and the 20 kg bar, climbs, then drops back for the deload", () => {
+    const rdl = station({ name: "Dumbbell Romanian Deadlift", reps: "10–12", equipment: ["dumbbell"] });
+    expect(plannedLoad(rdl, 1)).toMatchObject({ reps: "10–12", load: "10 kg dumbbells", kg: 10, kind: "dumbbell" });
+    expect(plannedLoad(rdl, 3).kg).toBe(12);
+    expect(plannedLoad(rdl, 5).kg).toBe(14);
+    expect(plannedLoad(rdl, 7).kg).toBe(16);
+    expect(plannedLoad(rdl, 8).kg).toBe(10);
+    const squat = station({ name: "Barbell Back Squat", equipment: ["barbell", "rack"] });
+    expect(plannedLoad(squat, 1)).toMatchObject({ load: "20 kg bar", kg: 20 });
+    expect(plannedLoad(squat, 4)).toMatchObject({ load: "30 kg total (incl. bar)", kg: 30 });
+    expect(plannedLoad(squat, 8).kg).toBeLessThan(plannedLoad(squat, 7).kg!);
+    const bench = station({ name: "Barbell Bench Press", equipment: ["barbell", "bench", "rack"] });
+    expect(plannedLoad(bench, 7).kg).toBeLessThan(plannedLoad(squat, 7).kg!);
+  });
+  it("keeps isolation moves lighter and single-bell moves heavier", () => {
+    expect(plannedLoad(station({ name: "Dumbbell Lateral Raise", equipment: ["dumbbell"] }), 1).load).toBe("6 kg dumbbells");
+    expect(plannedLoad(station({ name: "Goblet Squat", equipment: ["dumbbell"] }), 1).load).toBe("12 kg dumbbell");
+  });
+  it("shows springs for reformer work and nothing for bodyweight", () => {
+    expect(plannedLoad(station({ block: "Reformer", equipment: ["reformer"], load: "Springs: medium. Brands differ, so log your setting." }), 2).load).toBe("Springs: medium");
+    expect(plannedLoad(station({ block: "Core", reps: "30 s", equipment: ["bodyweight"] }), 2)).toMatchObject({ reps: "30 s", load: null });
+  });
+});
+
+describe("calories", () => {
+  it("uses heart rate where a strap was on and a moderate circuit estimate otherwise", () => {
+    const withStrap = partnerCalories({ sum: 130 * 2700, count: 2700 }, 2700, { age: 38, weightKg: 65 });
+    expect(withStrap.fromHR).toBe(true);
+    // Keytel (women): (0.4472·130 − 0.1263·65 + 0.074·38 − 20.4022) / 4.184 ≈ 7.7 kcal/min × 45 min.
+    expect(withStrap.kcal).toBe(348);
+    const noStrap = partnerCalories(null, 2700, { weightKg: 65 });
+    expect(noStrap.fromHR).toBe(false);
+    expect(noStrap.kcal).toBe(256); // 5 MET × 3.5 × 65 / 200 × 45
+    expect(partnerCalories({ sum: 0, count: 0 }, 0).kcal).toBe(0);
   });
 });
 
@@ -90,7 +134,7 @@ describe("storage", () => {
     expect(getPartnerProgress()).toEqual({ completed: {}, logs: [] });
   });
   it("round-trips partner settings", () => {
-    const saved = { A: { name: "Sarah", age: 38 }, B: { name: "Jess", age: 41 }, mode: "timer" as const, muted: true, safeties: false, extraRound: true };
+    const saved = { A: { name: "Sarah", age: 38, weightKg: 64 }, B: { name: "Jess", age: 41, weightKg: null }, mode: "timer" as const, muted: true, safeties: false, extraRound: true };
     savePartnerSettings(saved, "u");
     expect(getPartnerSettings("u")).toEqual(saved);
     expect(getPartnerSettings("other")).toMatchObject({ mode: "pace", safeties: null, extraRound: false });

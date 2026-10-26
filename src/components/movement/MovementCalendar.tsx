@@ -3,6 +3,8 @@ import { WildStar } from "@/components/BotanicalElements";
 import { supabase } from "@/integrations/supabase/client";
 import { Flame, Clock, Zap, Dumbbell } from "lucide-react";
 import streakFlame from "@/assets/streak-flame.png";
+import { getPartnerSession } from "@/data/partner-program";
+import { PARTNER_NOTES_PREFIX, PARTNER_PROGRESS_EVENT, getPartnerProgress, partnerNotes } from "@/lib/partner-progress";
 
 /* ── Body-part tag derivation from exercise data ── */
 const BODY_KEYWORDS: Record<string, string[]> = {
@@ -26,6 +28,32 @@ function deriveBodyTags(exercises: any[], notes?: string | null): string[] {
   }
   if (tags.size === 0 && exercises?.length) tags.add("General");
   return Array.from(tags);
+}
+
+/**
+ * Partner classes saved on this device that aren't in the cloud rows yet (offline,
+ * still syncing, or signed out), so a finished class shows on today straight away.
+ */
+function localPartnerLogs(userId: string | null, monthStart: string, nextMonth: string, cloudIds: Set<string>): WorkoutLog[] {
+  return getPartnerProgress(userId)
+    .logs.filter(l => l.date >= monthStart && l.date < nextMonth && !cloudIds.has(l.id))
+    .map(l => {
+      const session = getPartnerSession(l.sessionId);
+      const own = l.hr?.A;
+      return {
+        id: l.id,
+        session_date: l.date,
+        workout_template_id: null,
+        duration_minutes: Math.max(1, Math.round(l.elapsed / 60)),
+        notes: session ? partnerNotes(session) : `${PARTNER_NOTES_PREFIX}${l.title}`,
+        completed: true,
+        exercises: l.records,
+        calories: own?.kcal ?? null,
+        avg_bpm: own?.avg || null,
+        max_bpm: own?.max || null,
+        zone2_plus_percent: null,
+      };
+    });
 }
 
 /* ── Types ── */
@@ -100,6 +128,13 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
 
   const [logs, setLogs] = useState<WorkoutLog[]>([]);
   const [loading, setLoading] = useState(true);
+  // A partner class saved on this device refreshes the month.
+  const [localTick, setLocalTick] = useState(0);
+  useEffect(() => {
+    const bump = () => setLocalTick(n => n + 1);
+    window.addEventListener(PARTNER_PROGRESS_EVENT, bump);
+    return () => window.removeEventListener(PARTNER_PROGRESS_EVENT, bump);
+  }, []);
 
   /* ── Fetch full workout_logs + template titles for the month ── */
   useEffect(() => {
@@ -108,7 +143,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
     const nextMonth = viewMonth === 11 ? `${viewYear + 1}-01-01` : `${viewYear}-${String(viewMonth + 2).padStart(2, "0")}-01`;
 
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) { setLoading(false); return; }
+      if (!user) { setLogs(localPartnerLogs(null, monthStart, nextMonth, new Set())); setLoading(false); return; }
       supabase
         .from("workout_logs")
         .select("id, session_date, workout_template_id, duration_minutes, notes, completed, exercises, calories, avg_bpm, max_bpm, zone2_plus_percent, hr_session_id")
@@ -118,7 +153,7 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
         .lt("session_date", nextMonth)
         .order("session_date", { ascending: false })
         .then(async ({ data }) => {
-          if (!data) { setLoading(false); return; }
+          if (!data) { setLogs(localPartnerLogs(user.id, monthStart, nextMonth, new Set())); setLoading(false); return; }
 
           // Fetch template titles for any that have a template id
           const templateIds = [...new Set(data.filter(d => d.workout_template_id).map(d => d.workout_template_id!))];
@@ -154,11 +189,12 @@ export default function MovementCalendar({ refreshKey = 0 }: { refreshKey?: numb
             zones_summary: d.hr_session_id ? hrMap[d.hr_session_id] : null,
           }));
 
-          setLogs(enriched);
+          const local = localPartnerLogs(user.id, monthStart, nextMonth, new Set(enriched.map(e => e.id)));
+          setLogs([...enriched, ...local].sort((a, b) => b.session_date.localeCompare(a.session_date)));
           setLoading(false);
         });
     });
-  }, [viewYear, viewMonth, refreshKey]);
+  }, [viewYear, viewMonth, refreshKey, localTick]);
 
   /* ── Calendar grid data ── */
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();

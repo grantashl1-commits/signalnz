@@ -1,18 +1,20 @@
 /**
- * Pure state machine for a partner class: 36 alternating turns (42 with the
- * optional third strength round), an optional class timer (work → swap → next
- * turn) and per-partner heart-rate tallies. The component persists
- * `ActiveClass` to localStorage every tick so a reload resumes at the same
- * turn (paused).
+ * Pure state machine for a partner class: 36 turns (42 with the optional third
+ * strength round) — A, B, A, B at each station before moving on — an optional
+ * class timer (work → swap → next turn) and per-partner heart-rate tallies.
+ * Nothing is typed in class: each turn is recorded with the planned reps and
+ * load for the programme week. The component persists `ActiveClass` to
+ * localStorage every tick so a reload resumes at the same turn (paused).
  */
 import { stationWorkSeconds, type PartnerSession, type PartnerStation } from "@/data/partner-program";
 import { getZoneForBPM } from "@/data/workouts";
 import {
-  lastLogFor, repTarget, suggestNext, totalTurns, turnAt,
+  plannedLoad, repTarget, totalTurns, turnAt,
   type ClassMode, type PartnerSlot, type PartnerTurnRecord,
 } from "@/lib/partner-progress";
 
 export interface HRAcc { sum: number; count: number; max: number; effortSeconds: number }
+/** @deprecated Classes no longer take typed reps or loads; kept so older saved classes still restore. */
 export interface TurnDraft { turn: number; reps: string; weight: string; skipped?: boolean }
 
 export interface ActiveClass {
@@ -32,12 +34,12 @@ export interface ActiveClass {
   hr: Record<PartnerSlot, HRAcc>;
   /** Third round of the strength stations (+6 turns). */
   extraRound?: boolean;
+  /** The finished class has been saved (the summary stays up until Done). */
+  saved?: boolean;
 }
 
 export interface ClassContext {
   session: PartnerSession;
-  /** Prefill for a turn's quick log (last logged load for that worker). */
-  prefill?: (turn: number, records: PartnerTurnRecord[]) => TurnDraft;
 }
 
 const emptyAcc = (): HRAcc => ({ sum: 0, count: 0, max: 0, effortSeconds: 0 });
@@ -60,35 +62,9 @@ export function createActiveClass(
   return {
     id: opts.id, sessionId: ctx.session.id, date: opts.date, mode: opts.mode,
     turn: 0, phase: "work", phaseElapsed: 0, turnElapsed: 0, elapsed: 0, running: true,
-    records: [], draft: ctx.prefill?.(0, []) ?? null, partners: opts.partners,
+    records: [], draft: null, partners: opts.partners,
     hr: { A: emptyAcc(), B: emptyAcc() },
     ...(opts.extraRound ? { extraRound: true } : {}),
-  };
-}
-
-/**
- * Quick-log prefill. Reps start empty (the target shows as a placeholder) so an
- * untouched field is never logged as "hit the top of the range". Load comes from
- * the person's own entry earlier in this class, else their last logged set of
- * the same exercise; when the phase changes the load (deload, fewer reps) the
- * adjusted load is prefilled instead.
- */
-export function buildPrefill(
-  session: PartnerSession,
-  history: Array<{ records: PartnerTurnRecord[] }>,
-  opts: { partners?: Record<PartnerSlot, string>; extraRound?: boolean } = {},
-) {
-  return (turn: number, records: PartnerTurnRecord[]): TurnDraft => {
-    const t = classTurnAt(session, turn, opts.extraRound);
-    const station = session.stations[t.station];
-    if (!station) return { turn, reps: "", weight: "" };
-    const person = opts.partners?.[t.worker];
-    const earlier = lastLogFor([{ records }], t.worker, station.id, station.name, person);
-    if (earlier) return { turn, reps: earlier.repsLogged === false ? "" : earlier.reps, weight: earlier.weight };
-    const prior = lastLogFor(history, t.worker, station.id, station.name, person);
-    const suggestion = suggestNext(station, prior, { style: session.style });
-    const weight = suggestion?.kind === "adjust" && suggestion.weight ? suggestion.weight : prior?.weight ?? "";
-    return { turn, reps: "", weight };
   };
 }
 
@@ -110,16 +86,15 @@ export function remainingSeconds(a: ActiveClass, session: PartnerSession): numbe
   return Math.max(0, total - a.phaseElapsed);
 }
 
-/** Log the current worker's turn (from the draft) and move to the next turn. */
+/** Record the current worker's turn (at the planned reps and load) and move to the next turn. */
 export function commitTurn(a: ActiveClass, ctx: ClassContext): ActiveClass {
   const { session } = ctx;
   if (isClassComplete(a, session)) return a;
   const t = classTurnAt(session, a.turn, a.extraRound);
   const station = session.stations[t.station];
-  const draft = a.draft?.turn === a.turn ? a.draft : null;
   const workSeconds = a.mode === "timer" ? Math.min(a.turnElapsed, stationWorkSeconds(session, station)) : a.turnElapsed;
-  const reps = draft?.reps.trim() ?? "";
   const target = repTarget(station);
+  const plan = plannedLoad(station, session.week);
   const record: PartnerTurnRecord = {
     exercise_id: station.id,
     exercise_name: station.name,
@@ -127,10 +102,11 @@ export function commitTurn(a: ActiveClass, ctx: ClassContext): ActiveClass {
     partner: t.worker,
     partnerName: a.partners[t.worker],
     round: t.round,
-    reps,
-    weight: draft?.weight.trim() ?? "",
-    completed: !draft?.skipped,
-    repsLogged: reps !== "",
+    reps: plan.reps,
+    weight: plan.load ?? "",
+    completed: true,
+    repsLogged: false,
+    planned: true,
     seconds: workSeconds,
     session_id: session.id,
     style: session.style,
@@ -141,21 +117,15 @@ export function commitTurn(a: ActiveClass, ctx: ClassContext): ActiveClass {
   const done = turn >= classTurns(session, a);
   const records = [...a.records, record];
   return {
-    ...a, turn, phase: "work", phaseElapsed: 0, turnElapsed: 0, records,
-    draft: done ? null : ctx.prefill?.(turn, records) ?? null,
+    ...a, turn, phase: "work", phaseElapsed: 0, turnElapsed: 0, records, draft: null,
     running: done ? false : a.running,
   };
 }
 
-/** Undo the last logged turn; its values go back into the quick log. */
+/** Undo the last turn (e.g. a swap tapped by mistake). */
 export function backTurn(a: ActiveClass): ActiveClass {
   if (a.turn === 0 || a.records.length === 0) return { ...a, phase: "work", phaseElapsed: 0, turnElapsed: 0 };
-  const last = a.records[a.records.length - 1];
-  return {
-    ...a, turn: a.turn - 1, phase: "work", phaseElapsed: 0, turnElapsed: 0,
-    records: a.records.slice(0, -1),
-    draft: { turn: a.turn - 1, reps: last.reps, weight: last.weight, ...(last.completed === false ? { skipped: true } : {}) },
-  };
+  return { ...a, turn: a.turn - 1, phase: "work", phaseElapsed: 0, turnElapsed: 0, records: a.records.slice(0, -1), draft: null };
 }
 
 /** Jump straight to the swap phase (class timer) or log the turn (partner pace, or the last turn). */
@@ -220,6 +190,8 @@ export function restoreActiveClass(value: unknown, sessionExists: (id: string) =
   if (!value || typeof value !== "object") return null;
   const a = value as ActiveClass;
   if (typeof a.id !== "string" || typeof a.sessionId !== "string" || !sessionExists(a.sessionId) || !Array.isArray(a.records)) return null;
+  // A finished class that was already saved has nothing left to resume.
+  if (a.saved) return null;
   return {
     ...a,
     running: false,

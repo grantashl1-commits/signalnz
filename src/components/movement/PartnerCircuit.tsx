@@ -8,20 +8,20 @@ import { useProfile } from '@/hooks/useProfile';
 import { useMultiHeartRate } from '@/hooks/useMultiHeartRate';
 import { supabase } from '@/integrations/supabase/client';
 import { toLocalDateStr } from '@/lib/local-date';
-import { getUserAge } from '@/data/workouts';
+import { getUserAge, getUserWeight } from '@/data/workouts';
 import {
   PARTNER_PROGRAM, adaptForKit, barbellStations, extraStrengthRoundMinutes, getPartnerSession, type PartnerSession, type StationBlock,
 } from '@/data/partner-program';
 import {
   PARTNER_NOTES_PREFIX, PARTNER_PROGRESS_EVENT, addSessionLog, buildWorkoutLogRow, getLegacyPartnerHistory, getNextSessionId,
-  getPartnerProgress, getPartnerSettings, parsePartnerNotes, rowCounts, savePartnerProgress, savePartnerSettings, totalTurns,
-  type LegacyPartnerSession, type PartnerProgress, type PartnerSessionLog, type PartnerSettings, type PartnerSlot, type PartnerTurnRecord,
+  getPartnerProgress, getPartnerSettings, parsePartnerNotes, partnerCalories, plannedLoad, rowCounts, savePartnerProgress, savePartnerSettings, totalTurns,
+  type LegacyPartnerSession, type PartnerHRSummary, type PartnerProgress, type PartnerSessionLog, type PartnerSettings, type PartnerSlot, type PartnerTurnRecord,
 } from '@/lib/partner-progress';
 import ClassMode from './partner/ClassMode';
 import { PreviewTile } from './partner/StationTile';
 import ProgramGrid from './partner/ProgramGrid';
 import PartnerHistory from './partner/PartnerHistory';
-import { buildPrefill, classTurns, createActiveClass, hrSummary, restoreActiveClass, type ActiveClass } from './partner/class-engine';
+import { classTurns, createActiveClass, hrSummary, restoreActiveClass, type ActiveClass } from './partner/class-engine';
 import { unlockClassAudio } from './partner/class-sound';
 
 const classKey = (userId?: string) => `signal_partner_class_v1:${userId ?? 'guest'}`;
@@ -75,7 +75,12 @@ function Hub({ user }: { user: User | null }) {
   const defaultA = firstName(displayName) || firstName(user?.user_metadata?.full_name as string | undefined) || 'Partner A';
   const names: Record<PartnerSlot, string> = { A: settings.A.name.trim() || defaultA, B: settings.B.name.trim() || 'Partner B' };
   const profileAge = ageFromDob(dateOfBirth) ?? getUserAge();
-  const effectiveSettings: PartnerSettings = { ...settings, A: { ...settings.A, name: names.A, age: settings.A.age ?? profileAge }, B: { ...settings.B, name: names.B } };
+  const profileWeight = getUserWeight();
+  const effectiveSettings: PartnerSettings = {
+    ...settings,
+    A: { ...settings.A, name: names.A, age: settings.A.age ?? profileAge, weightKg: settings.A.weightKg ?? profileWeight },
+    B: { ...settings.B, name: names.B },
+  };
 
   const updateSettings = (patch: (prev: PartnerSettings) => PartnerSettings) => setSettings(prev => {
     const next = patch(prev);
@@ -122,12 +127,6 @@ function Hub({ user }: { user: User | null }) {
     setProgress(next);
     savePartnerProgress(next, userId);
   }, [userId]);
-
-  // Older logs (legacy rotation) still feed load prefill by exercise name.
-  const history = useMemo(() => {
-    const old = legacy.map(s => ({ date: s.date, records: s.records as unknown as PartnerTurnRecord[] }));
-    return [...old, ...progress.logs].sort((a, b) => a.date.localeCompare(b.date)) as PartnerSessionLog[];
-  }, [legacy, progress.logs]);
 
   const nextId = getNextSessionId(progress);
   const paramSession = params.get('session');
@@ -222,7 +221,6 @@ function Hub({ user }: { user: User | null }) {
       const { error } = await supabase.from('workout_logs').upsert(buildWorkoutLogRow(log, userId, session), { onConflict: 'id' });
       if (error) throw error;
       updateProgress(prev => ({ ...prev, logs: prev.logs.map(l => (l.id === log.id ? { ...l, synced: true } : l)) }));
-      if (notify) toast.success('Session saved to My Log.');
     } catch {
       if (notify) toast.error('Saved on this device, but the cloud save failed.', { action: { label: 'Retry', onClick: () => retryRef.current(log) } });
     } finally {
@@ -263,10 +261,9 @@ function Hub({ user }: { user: User | null }) {
 
   function startClass(session: PartnerSession) {
     unlockClassAudio();
-    const opts = { partners: names, extraRound: settings.extraRound };
     const next = createActiveClass(
-      { session, prefill: buildPrefill(session, history, opts) },
-      { id: crypto.randomUUID(), date: toLocalDateStr(), mode: settings.mode, ...opts },
+      { session },
+      { id: crypto.randomUUID(), date: toLocalDateStr(), mode: settings.mode, partners: names, extraRound: settings.extraRound },
     );
     setActive(next);
     setConfirmReplace(false);
@@ -278,7 +275,20 @@ function Hub({ user }: { user: User | null }) {
     openClass();
   }
 
-  async function saveClass(a: ActiveClass, countAsDone: boolean) {
+  /** Heart rate and estimated calories per partner for a class. */
+  function classStats(a: ActiveClass): Partial<Record<PartnerSlot, PartnerHRSummary>> {
+    return Object.fromEntries((['A', 'B'] as PartnerSlot[]).map(slot => {
+      const h = hrSummary(a.hr[slot]);
+      const { kcal } = partnerCalories(a.hr[slot], a.elapsed, effectiveSettings[slot]);
+      return [slot, { avg: h?.avg ?? 0, max: h?.max ?? 0, effortMinutes: h?.effortMinutes ?? 0, kcal }];
+    }));
+  }
+
+  /**
+   * Save a class to the plan, today's Move log and the cloud. A finished class
+   * saves itself and stays open on the summary (`close` false) until Done.
+   */
+  function saveClass(a: ActiveClass, countAsDone: boolean, close = true) {
     const session = forKit(getPartnerSession(a.sessionId));
     if (!session) return;
     const counted = countAsDone && a.records.length > 0;
@@ -286,15 +296,24 @@ function Hub({ user }: { user: User | null }) {
       id: a.id, sessionId: session.id, title: session.title, date: a.date, elapsed: a.elapsed, mode: a.mode,
       partners: a.partners, records: a.records, turnsPlanned: classTurns(session, a), synced: false, counted,
       ...(a.extraRound ? { extraRound: true } : {}),
-      hr: Object.fromEntries((['A', 'B'] as PartnerSlot[]).flatMap(slot => { const h = hrSummary(a.hr[slot]); return h ? [[slot, h]] : []; })),
+      hr: classStats(a),
     };
     const next = addSessionLog(progress, log, counted);
     commitProgress(next);
+    if (close) {
+      setActive(null);
+      closeClass(true);
+    } else {
+      setActive({ ...a, running: false, saved: true });
+    }
+    const upcoming = getNextSessionId(next);
+    toast.success(counted ? `${session.title} saved to today's log.` : 'Session saved to today\'s log.', { description: upcoming ? `Up next: ${getPartnerSession(upcoming)?.title}` : 'That completes the 8-week series.' });
+    if (userId) enqueue(log, true);
+  }
+
+  function finishClass() {
     setActive(null);
     closeClass(true);
-    const upcoming = getNextSessionId(next);
-    toast.success(counted ? `${session.title} ticked off.` : 'Session saved.', { description: upcoming ? `Up next: ${getPartnerSession(upcoming)?.title}` : 'That completes the 8-week series.' });
-    if (userId) enqueue(log, true);
   }
 
   function discardClass() {
@@ -353,7 +372,7 @@ function Hub({ user }: { user: User | null }) {
                 <div key={block}>
                   <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">{block}</p>
                   <div className="grid grid-cols-3 gap-2">
-                    {row.map(({ s, i }) => <PreviewTile key={s.id} station={s} number={i + 1} />)}
+                    {row.map(({ s, i }) => <PreviewTile key={s.id} station={s} number={i + 1} load={plannedLoad(s, selected.week).load} />)}
                   </div>
                 </div>
               );
@@ -455,7 +474,7 @@ function Hub({ user }: { user: User | null }) {
           <h3 id="partner-names-heading" className="font-display text-xl">{names.A} & {names.B}</h3>
         </div>
         {(['A', 'B'] as PartnerSlot[]).map(slot => (
-          <div key={slot} className="grid grid-cols-[1fr_88px] gap-2">
+          <div key={slot} className="grid grid-cols-[1fr_72px_80px] gap-2">
             <label className="text-xs text-muted-foreground">
               Partner {slot}{slot === 'A' ? ' (you)' : ''}
               <input
@@ -480,9 +499,23 @@ function Hub({ user }: { user: User | null }) {
                 aria-label={`Partner ${slot} age`}
               />
             </label>
+            <label className="text-xs text-muted-foreground">
+              Weight kg
+              <input
+                inputMode="decimal"
+                value={settings[slot].weightKg ?? ''}
+                placeholder={slot === 'A' && profileWeight ? String(profileWeight) : '—'}
+                onChange={e => {
+                  const n = parseFloat(e.target.value.replace(',', '.').replace(/[^\d.]/g, ''));
+                  updateSettings(prev => ({ ...prev, [slot]: { ...prev[slot], weightKg: Number.isFinite(n) && n > 25 && n < 300 ? n : null } }));
+                }}
+                className="mt-1 block w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground tabular-nums"
+                aria-label={`Partner ${slot} weight in kg`}
+              />
+            </label>
           </div>
         ))}
-        <p className="text-xs text-muted-foreground">Ages set each partner's heart-rate zones (max HR ≈ 208 − 0.7 × age). Saved weights follow each name, so a different friend starts fresh. Heart-rate straps are optional — connect them in class mode.</p>
+        <p className="text-xs text-muted-foreground">Age sets each partner's heart-rate zones (max HR ≈ 208 − 0.7 × age); age and body weight give the calorie estimate at the end. Heart-rate straps are optional — connect them in class mode.</p>
         {settings.safeties !== null && (
           <p className="text-xs text-muted-foreground">
             Rack safeties: <strong className="text-foreground">{settings.safeties ? 'yes' : 'no — squat and bench use dumbbells'}</strong>{' '}
@@ -528,11 +561,11 @@ function Hub({ user }: { user: User | null }) {
           session={activeSession}
           active={active}
           onChange={onClassChange}
-          history={history}
           settings={effectiveSettings}
           onToggleMute={() => updateSettings(prev => ({ ...prev, muted: !prev.muted }))}
           hr={hr}
           onSave={saveClass}
+          onDone={finishClass}
           onDiscard={discardClass}
           onMinimise={() => { setActive(prev => ({ ...prev, running: false })); closeClass(); }}
         />
