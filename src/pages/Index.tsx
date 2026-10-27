@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from "react";
 import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
-import OnboardingFlow from "@/components/OnboardingFlow";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, BookOpen, Rss, ChevronDown, History } from "lucide-react";
@@ -36,6 +35,9 @@ import follicularHero from "@/assets/phases/follicular-hero.png";
 import ovulatoryHero from "@/assets/phases/ovulatory-hero.png";
 import lutealHero from "@/assets/phases/luteal-hero.png";
 import { toLocalDateStr } from "@/lib/local-date";
+
+// Only new members see onboarding, so it (and the meal-plan builder) loads on demand.
+const OnboardingFlow = lazy(() => import("@/components/OnboardingFlow"));
 
 const PHASE_HERO_IMAGE: Record<Phase, string> = {
   menstrual: menstrualHero,
@@ -260,7 +262,7 @@ export default function HomePage() {
 
   // Visitors get the story first; members get their day.
   if (!authLoading && !user) return <Navigate to="/welcome" replace />;
-  if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+  if (showOnboarding) return <Suspense fallback={null}><OnboardingFlow onComplete={handleOnboardingComplete} /></Suspense>;
 
   return (
     <div className="relative">

@@ -7,10 +7,11 @@ import type { PlannedExercise, WorkoutActual } from '@/lib/training-path-utils';
 const FIELDS = ['sets','reps','weight_kg'] as const;
 const text = (n: number | undefined) => n === undefined ? '' : String(n);
 
-export default function WorkoutCompletionDialog({planned, name, onSave, onClose}: {planned:PlannedExercise[];name:string;onSave:(actual:WorkoutActual)=>void;onClose:()=>void}) {
+export default function WorkoutCompletionDialog({planned, ticked = {}, name, onSave, onClose}: {planned:PlannedExercise[];ticked?:Record<string,number>;name:string;onSave:(actual:WorkoutActual)=>void;onClose:()=>void}) {
  const [duration,setDuration] = useState('');
  const [notes,setNotes] = useState('');
- const [exercises,setExercises] = useState(() => planned.map(p => ({exercise_name:p.exercise_name,sets:'',reps:'',weight_kg:''})));
+ // Rounds ticked off during the session arrive filled in with the planned reps and weight.
+ const [exercises,setExercises] = useState(() => planned.map(p => ticked[p.exercise_name] ? {exercise_name:p.exercise_name,sets:String(ticked[p.exercise_name]),reps:text(p.reps),weight_kg:text(p.weight_kg)} : {exercise_name:p.exercise_name,sets:'',reps:'',weight_kg:''}));
  const [error,setError] = useState('');
  const number = (value:string) => value.trim() ? Number(value) : undefined;
  // Blank fields take the planned value, so "I did the plan" is one tap.

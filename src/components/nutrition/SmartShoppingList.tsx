@@ -400,6 +400,9 @@ function ShoppingContent({ plan, weekNumber, allPlanDays = false, weekStart }: P
                             {item.isCustom && (
                               <span className="ml-1 text-[9px] text-muted-foreground bg-secondary rounded-full px-1.5 py-0.5">custom</span>
                             )}
+                            {item.recipeSays && (
+                              <span className="block text-[10px] text-muted-foreground">Recipe says: {item.recipeSays}</span>
+                            )}
                           </span>
                           <span className="font-body text-xs font-bold flex-shrink-0" style={{ color: weekPhaseColor }}>
                             {smartDisplay}

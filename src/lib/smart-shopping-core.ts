@@ -51,17 +51,40 @@ const NZ_SYNONYMS: Array<[RegExp, string]> = [
   [/\beggplant\b/gi, "eggplant"],
 ];
 
+/** "frozen or fresh strawberries" → "fresh strawberries"; "milk or plant milk" → "milk". */
+export function firstAlternative(name: string): string {
+  const parts = name.split(/\s+or\s+/i);
+  if (parts.length < 2) return name;
+  if (/^(fresh|frozen|dried|tinned|canned)$/i.test(parts[0])) return parts.slice(1).join(" or ");
+  // "olive or avocado oil" → "olive oil": a one-word first choice shares the last choice's noun.
+  const noun = parts[parts.length - 1].trim().split(/\s+/).pop() ?? "";
+  const shared = /^(oil|lentils|beans|rice|flour|milk|vinegar|sugar|seeds|nuts|cheese|pasta|noodles|stock|yoghurt|yogurt)$/i.test(noun);
+  return shared && !/\s/.test(parts[0].trim()) && parts[0].trim().toLowerCase() !== noun.toLowerCase() ? `${parts[0].trim()} ${noun}` : parts[0];
+}
+
 export function toNZName(name: string): string {
   let n = name;
   for (const [re, rep] of NZ_SYNONYMS) n = n.replace(re, rep);
   return n;
 }
 
+// Aisles for items the keyword lists miss, checked in order: dried herbs and spices
+// before fresh herbs, split peas before fresh peas, fish before "fish sauce" can't.
+const AISLE_RULES: Array<[RegExp, string]> = [
+  [/\b(dried|ground|powder|seasoning|spices?|flakes)\b|\b(allspice|asafoetida|baking (powder|soda)|bay lea(f|ves)|cardamom|cinnamon|cumin|curry powder|garam masala|nutmeg|turmeric|paprika|saffron|star anise|herbes de provence|lavender|cocoa|cornstarch|cornflour)\b/, "pantry"],
+  [/\b(snapper|fish(?!\s*sauce)|falafel|black-eyed peas|split (green |yellow )?peas)\b/, "protein"],
+  [/\b(dill|rosemary|sage|tarragon|thyme|oregano|marjoram|mint|basil|parsley|coriander|chives|curry leaves|mixed (fresh )?herbs)\b/, "produce"],
+  [/\b(salad (leaves|greens)|leafy greens|green leaves|spring greens|mixed greens|watercress|cavolo nero|pak choy|bok choy|brussels sprouts|cauliflower|celeriac|parsnips?|swede|shallots?|jalape(n|ñ)os?|mangetout|sweetcorn|corn kernels|peas|figs?|peach(es)?|grapes|pomegranate arils|pomelo|mixed vegetables)\b/, "produce"],
+  [/\b(parmesan|halloumi|mozzarella|hummus|kimchi|ghee)\b/, "dairy"],
+  [/\b(dates?|raisins|sultanas|dressing|broth|granola|coconut|peanuts|pepitas|hemp ?seeds|nori|wakame|nutritional yeast|protein powder|chips|taco shells|tortillas|popcorn|couscous|millet|semolina|capers|olives|artichoke|passata|curry paste|harissa|mustard|mayonnaise|sauces?|molasses|salsa|wine|chestnuts|sourdough|bread)\b/, "pantry"],
+];
+
 export function categoriseItem(name: string): string {
   const lower = name.toLowerCase();
   if (/frozen/.test(lower)) return "frozen";
   if (/\b(seed|seeds|tinned|canned|salt|pepper|spice|tahini|nut butter|peanut butter|almond butter)\b/.test(lower)) return "pantry";
   if (/\b(almonds?|almond meal|walnuts?|cashews?|hazelnuts?|pecans?|pistachios?|nuts)\b(?!\s*(milk|yoghurt|yogurt|cream))/.test(lower)) return "pantry";
+  for (const [re, cat] of AISLE_RULES) if (re.test(lower)) return cat;
   for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
     if (keywords.some(kw => lower.includes(kw))) return cat;
   }
@@ -212,6 +235,14 @@ export function groupKey(searchTerm: string): string {
 }
 
 const SIZE_PREFIX = /^(?:(?:small|medium|large|extra[- ]large|ripe|thick|thin|fresh)\s+)+/i;
+// "A pinch of smoked paprika", "One soft date": the amount words aren't part of what to buy.
+const LEAD_AMOUNT = /^(?:an?\s+)?(?:(?:tiny|small|big|large|generous|quarter|half)\s+)?(?:couple of|few|grind of|head of|slice of|wedge of|knob of|pinch(?: of)?|handful(?: of)?|dash(?: of)?|splash(?: of)?|sprinkle(?: of)?)\s+|^(?:one|two|three)\s+/i;
+// Tap water and ice are never on the list; "coconut water" is.
+const NOT_BOUGHT = /^(?:(?:boiling|cold|warm|hot|iced|tap|filtered|chilled)\s+)?water$|^ice(?: cubes)?$/i;
+const shoppingName = (name: string) => {
+  const plain = firstAlternative(name.trim()).replace(LEAD_AMOUNT, "");
+  return toNZName(plain.replace(SIZE_PREFIX, "")) || toNZName(plain);
+};
 
 export interface AggregatedItem {
   name: string;
@@ -221,6 +252,8 @@ export interface AggregatedItem {
   searchTerm: string;
   isPantryStaple?: boolean;
   isCustom?: boolean;
+  /** The recipe's own wording when the list had to choose for her ("olive or avocado oil"). */
+  recipeSays?: string;
 }
 
 /**
@@ -243,19 +276,34 @@ export function aggregateShoppingItems(
   const ingredientMap: Record<string, AggregatedItem> = {};
 
   const add = (key: string, item: AggregatedItem) => {
-    if (ingredientMap[key]) ingredientMap[key].totalQty += item.totalQty;
-    else ingredientMap[key] = item;
+    if (ingredientMap[key]) {
+      ingredientMap[key].totalQty += item.totalQty;
+      ingredientMap[key].recipeSays ??= item.recipeSays;
+    } else ingredientMap[key] = item;
   };
+  // A choice in the recipe is shopped as its first option; keep the original words alongside.
+  const choiceNote = (text: string) => (/\bor\b/i.test(text) ? { recipeSays: text.trim() } : {});
 
   for (const meal of input.meals) {
     if (!meal || !meal.ingredients?.length) continue;
     const serves = meal.serves || 2;
     for (const ingStr of meal.ingredients) {
+      // Section headings ("For the caper relish:") aren't ingredients.
+      if (/:\s*$/.test(ingStr.trim())) continue;
       const parsed = parseIngredient(ingStr);
       // "Salt, pepper and thyme" with no amount becomes three plain rows.
       if (!parsed.quantity) {
+        // "Boneless, skinless chicken thighs": describing words join the item that follows.
+        const parts: string[] = [];
+        let describing = "";
         for (const part of parsed.name.split(/\s*(?:,|&|\band\b)\s*/i).map(p => p.trim()).filter(Boolean)) {
-          const nzName = toNZName(part.replace(SIZE_PREFIX, "")) || toNZName(part);
+          if (/^(boneless|skinless|fresh|large|small|ripe|organic|free[- ]range)$/i.test(part)) { describing += `${part} `; continue; }
+          parts.push(describing + part);
+          describing = "";
+        }
+        for (const part of parts) {
+          const nzName = shoppingName(part);
+          if (NOT_BOUGHT.test(nzName)) continue;
           const search = parseIngredient(part).searchTerm;
           add(`${groupKey(toNZName(search))}::none`, {
             name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
@@ -263,12 +311,14 @@ export function aggregateShoppingItems(
             unit: "",
             category: categoriseItem(nzName),
             searchTerm: toNZName(search),
+            ...choiceNote(part),
           });
         }
         continue;
       }
       // "Small ripe banana" shops as "Banana"; product words like tinned or dried stay.
-      const nzName = toNZName(parsed.name.replace(SIZE_PREFIX, "")) || toNZName(parsed.name);
+      const nzName = shoppingName(parsed.name);
+      if (NOT_BOUGHT.test(nzName)) continue;
       const nzSearch = toNZName(parsed.searchTerm);
       // "1 tbsp pumpkin seeds (10g)" is bought by weight: use the grams the recipe states.
       const grams = /^(tsp|tbsp|teaspoon|tablespoon|cup)s?$/i.test(parsed.unit.trim()) ? /\((?:about\s*)?(\d+(?:\.\d+)?)\s*g\)/i.exec(ingStr) : null;
@@ -280,6 +330,7 @@ export function aggregateShoppingItems(
         unit: base.unit,
         category: categoriseItem(nzName),
         searchTerm: nzSearch,
+        ...choiceNote(parsed.name),
       });
     }
   }
