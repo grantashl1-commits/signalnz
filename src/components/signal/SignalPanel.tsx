@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, RotateCcw, ChevronRight, Zap, MessageCircleQuestion } from "lucide-react";
 import { useSignalContext, SIGNAL_MODES, PROMPT_CHIPS, type SignalMode } from "@/hooks/useSignalContext";
@@ -6,12 +6,14 @@ import { useSignalAI } from "@/hooks/useSignalAI";
 import { useAMASignal } from "@/hooks/useAMASignal";
 import { useAICredits } from "@/hooks/useAICredits";
 import SignalResponseCard from "./SignalResponseCard";
-import AMAResponseCard from "./AMAResponseCard";
 import SignalListeningState from "./SignalListeningState";
 import { WildStar, BotanicalSprig } from "@/components/BotanicalElements";
 import { DotPattern } from "@/components/AtmosphericSection";
 import { haptic } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
+
+// Markdown rendering loads with the first answer, not with every page.
+const AMAResponseCard = lazy(() => import("./AMAResponseCard"));
 
 interface Props {
   open: boolean;
@@ -507,11 +509,12 @@ export default function SignalPanel({ open, onClose, initialPrompt, pageContext 
                 )}
 
                 {stage === "signal" && panelMode === "ama" && amaResponse && (
-                  <AMAResponseCard
-                    key="ama"
-                    response={amaResponse}
-                    onFollowUp={handleGenerate}
-                  />
+                  <Suspense key="ama" fallback={null}>
+                    <AMAResponseCard
+                      response={amaResponse}
+                      onFollowUp={handleGenerate}
+                    />
+                  </Suspense>
                 )}
               </AnimatePresence>
 

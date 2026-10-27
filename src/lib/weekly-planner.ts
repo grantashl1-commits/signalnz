@@ -411,6 +411,32 @@ export function getSavedPreferences(): PrepPreferences | null {
   return val ? JSON.parse(val) : null;
 }
 
+export interface Household { adults: number; kids: number }
+// The List tab's old key, kept in step for anything still reading it.
+const HOUSEHOLD_KEY = "signal_shopping_portions";
+
+/** One household size for every shopping list: the member's meal preferences first. */
+export function getHousehold(): Household {
+  const from = (p?: Partial<Household> | null): Household | null =>
+    p && Number.isFinite(p.adults) ? { adults: Math.max(1, Number(p.adults)), kids: Math.max(0, Number(p.kids) || 0) } : null;
+  try {
+    return from(getSavedPreferences()) ?? from(getAIMealPlan()?.prepPreferences) ?? from(JSON.parse(localStorage.getItem(HOUSEHOLD_KEY) ?? "null")) ?? { adults: 1, kids: 0 };
+  } catch {
+    return { adults: 1, kids: 0 };
+  }
+}
+
+/** Change the household everywhere it is read, so the List and Plan totals agree. */
+export function saveHousehold(next: Household): void {
+  const saved = getSavedPreferences();
+  if (saved) savePreferences({ ...saved, ...next });
+  const plan = getAIMealPlan();
+  if (plan) {
+    try { saveAIMealPlan({ ...plan, prepPreferences: { ...plan.prepPreferences, ...next } }); } catch { /* the list still uses the new numbers */ }
+  }
+  localStorage.setItem(HOUSEHOLD_KEY, JSON.stringify(next));
+}
+
 // ─── Meal Plan Persistence ────────────────────────────────
 const MEAL_PLAN_KEY = "signal_meal_plan";
 const LEGACY_MEAL_PLAN_KEY = "signal_ai_meal_plan";

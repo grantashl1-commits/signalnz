@@ -4,7 +4,7 @@ import { getCorrectedExerciseArt, wordKey } from "@/lib/corrected-exercise-art";
 import { exercisesBySeries } from "@/data/reformer-exercises";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { auth: { getUser: async () => ({ data: { user: null } }) } } }));
-const { getNextSession, markSessionCompleted } = await import("@/lib/training-path-utils");
+const { getNextSession, markSessionCompleted, pathForOnboarding, plannedExercises } = await import("@/lib/training-path-utils");
 
 const byId = (id: string) => SIGNAL_TRAINING_PATHS.find(p => p.id === id)!;
 const EVIDENCE_PATHS = ["strength-from-the-ground-up", "the-forge", "glute-power", "mat-pilates", "reformer-strength"];
@@ -66,6 +66,31 @@ describe("evidence-based training paths", () => {
       expect(names.has(ex.name), ex.name).toBe(true);
       expect(wordKey(ex.id)).toBe(wordKey(ex.name));
     }
+  });
+});
+
+describe("onboarding", () => {
+  it("starts every goal, equipment and level on a real training path", () => {
+    const goals = ["strength", "fat_loss", "cardio", "stress", "consistency", "mobility", "event", "recovery", undefined];
+    for (const goal of goals) for (const equipment of ["home-none", "home-some", "gym"]) for (const level of ["beginner", "intermediate", "advanced", null]) {
+      expect(SIGNAL_TRAINING_PATHS.some(p => p.id === pathForOnboarding(goal, equipment, level)), `${goal} ${equipment} ${level}`).toBe(true);
+    }
+    expect(pathForOnboarding("strength", "gym", "intermediate")).toBe("the-forge");
+    expect(pathForOnboarding("strength", "home-none", "beginner")).toBe("mat-pilates");
+  });
+});
+
+describe("workout completion", () => {
+  it("prefills each planned exercise once, with reps and kg only where the plan gives them", () => {
+    const reformer = byId("reformer-strength").weeks[0].sessions[0];
+    const planned = plannedExercises(reformer, ["Bird Dog"]);
+    const names = planned.map(p => p.exercise_name);
+    expect(new Set(names).size).toBe(names.length);
+    expect(names.some(n => /warm up/i.test(n))).toBe(false);
+    expect(planned.find(p => p.exercise_name === "Footwork Arches")).toMatchObject({ sets: 1, reps: 8 });
+    // Holds ("20 s") aren't reps.
+    expect(planned.find(p => p.exercise_name === "Longbox Hip Stretch")?.reps).toBeUndefined();
+    expect(names.at(-1)).toBe("Bird Dog");
   });
 });
 

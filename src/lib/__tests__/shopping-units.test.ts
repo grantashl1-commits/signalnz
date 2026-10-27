@@ -78,3 +78,22 @@ describe("method amounts next to other amounts", async () => {
     expect(out[1]).toBe("Toast the 2 slices rye bread.");
   });
 });
+
+describe("shopping aisles and weights", () => {
+  const rows = (ingredients: string[]) =>
+    Object.entries(aggregateShoppingItems({ meals: [{ serves: 1, ingredients }], servingMultiplier: 1 }, parseIngredient))
+      .flatMap(([category, items]) => items.map(i => ({ category, name: i.name, qty: formatSmartQty(i.totalQty, i.unit, i.name) })));
+
+  it("shops a red pepper as capsicum in Produce but keeps pepper flakes in the Pantry", () => {
+    const out = rows(["1 red pepper, sliced", "½ tsp red pepper flakes", "1 tsp black pepper"]);
+    expect(out).toContainEqual({ category: "produce", name: "Red capsicum", qty: "1" });
+    expect(out.find(r => r.name === "Red pepper flakes")?.category).toBe("pantry");
+    expect(out.find(r => r.name === "Black pepper")?.category).toBe("pantry");
+  });
+
+  it("buys seeds and nuts by the grams the recipe states, in the Pantry", () => {
+    const out = rows(["1 tbsp pumpkin seeds (10g)", "20g pumpkin seeds", "1 cup almond meal (150g)"]);
+    expect(out).toContainEqual({ category: "pantry", name: "Pumpkin seeds", qty: "30 g" });
+    expect(out).toContainEqual({ category: "pantry", name: "Almond meal", qty: "150 g" });
+  });
+});

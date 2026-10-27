@@ -1,5 +1,6 @@
 import { saveAIMealPlan, savePreferences, type PrepPreferences } from "@/lib/weekly-planner";
 import { buildDbMealPlanFull } from "@/lib/build-db-meal-plan";
+import { getSelectedPathId, pathForOnboarding, setSelectedPathId } from "@/lib/training-path-utils";
 import { toast } from "sonner";
 import { useState, useEffect, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -399,49 +400,8 @@ export default function OnboardingFlow({ onComplete }: Props) {
             equipment_preference: equipmentPref,
           } as any, { onConflict: "user_id" });
 
-        // ── Auto-generate first training plan in background ──
-        const lastWorkoutMap: Record<string, string> = {
-          beginner: "never",
-          intermediate: "this-month",
-          advanced: "this-week",
-        };
-        const goalMap: Record<string, string> = {
-          strength: "stronger",
-          fat_loss: "lose-weight",
-          cardio: "lean",
-          stress: "lean",
-          consistency: "stronger",
-          mobility: "lean",
-          event: "stronger",
-          recovery: "lean",
-        };
-
-        supabase.functions.invoke("generate-plan", {
-          body: {
-            cyclePhase: cycleStatus === "cycling" && lastPeriodDate
-              ? undefined // let the edge function determine from profile
-              : "follicular",
-            answers: {
-              height: heightCm || 165,
-              weight: weightKg || 65,
-              age: dob ? calcAge(dob) : 30,
-              goal: goalMap[movementGoals[0]] || "stronger",
-              goalWeight: goalWeightKg,
-              weeksPlan: 4,
-              daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
-              lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
-              equipment: equipmentPref,
-            },
-          },
-        }).then((resp) => {
-          if (resp.error) {
-            console.warn("Auto training plan generation failed:", resp.error);
-          } else {
-            console.log("Auto training plan generated successfully");
-          }
-        }).catch((err) => {
-          console.warn("Auto training plan generation failed:", err);
-        });
+        // ── Start the member on the training path Today and Move show ──
+        if (!getSelectedPathId()) setSelectedPathId(pathForOnboarding(movementGoals[0], equipmentPref, fitnessLevel));
 
         // Use the same validated library plan as the nutrition planner.
         const dietPrefMap: Record<string, string> = {

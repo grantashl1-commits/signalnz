@@ -10,7 +10,7 @@ import { PHASE_SHORT } from "@/lib/cycle-utils";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Explore() {
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase, actualCycleDay } = useCycle();
   const phaseColor = `hsl(var(--phase-${currentPhase}))`;
 
   return (
@@ -35,9 +35,9 @@ export default function Explore() {
           <div className="relative z-10 flex-1 min-w-0">
             <p className="eyebrow text-background/60 mb-1">Your lens today</p>
             <p className="display-serif text-[2rem] md:text-[2.5rem]">
-              {PHASE_SHORT[currentPhase]}, day {currentCycleDay}
+              {actualCycleDay !== null ? `${PHASE_SHORT[currentPhase]}, day ${actualCycleDay}` : "Cycle tracking off"}
             </p>
-            <p className="mt-1 text-[13px] text-background/65">Meals and training are quietly tuned to this phase.</p>
+            <p className="mt-1 text-[13px] text-background/65">{actualCycleDay !== null ? "Meals and training are quietly tuned to this phase." : "Plans follow the calendar. Add a period date any time for cycle-aware tuning."}</p>
           </div>
           <ArrowUpRight className="relative z-10 h-5 w-5 flex-none text-background/60 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </Link>

@@ -19,6 +19,7 @@ import {
   getSelectedPath,
   getNextSession,
   markSessionCompleted,
+  plannedExercises,
   resetPathProgress,
   sessionStartHref,
   TRAINING_PATH_EVENTS,
@@ -381,7 +382,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           <ChevronRight className={`h-3 w-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
         </button>
 
-        {showCompletion && <WorkoutCompletionDialog name={session.name} structure={session.structure || []} onSave={handleComplete} onClose={() => setShowCompletion(false)} />}
+        {showCompletion && <WorkoutCompletionDialog name={session.name} planned={plannedExercises(session, picks.map(p => p.name))} onSave={handleComplete} onClose={() => setShowCompletion(false)} />}
 
         {/* Actions — HR lives in the floating pulse icon; finish stays primary. */}
         <div className="flex flex-col gap-2">

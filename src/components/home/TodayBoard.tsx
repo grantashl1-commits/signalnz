@@ -69,7 +69,7 @@ function Tile({
 }
 
 export default function TodayBoard({ greeting, firstName }: { greeting: string; firstName: string | null }) {
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase, currentCycleDay, actualCycleDay } = useCycle();
   const { plan: customPlan } = useCustomMealPlan();
   const { meals } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
 
@@ -103,10 +103,12 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
         <h1 className="display-serif mt-2 text-[3rem] md:text-[5.5rem] text-foreground">
           {greeting}{firstName ? <>, <em className="text-primary">{firstName}</em></> : null}.
         </h1>
-        <Link to="/cycle" className="mt-3 inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground">
-          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: phaseColor }} />
-          <span><span className="text-foreground font-medium">{PHASE_SHORT[currentPhase]}, day {currentCycleDay}.</span> {PHASE_LINE[currentPhase]}</span>
-        </Link>
+        {actualCycleDay !== null && (
+          <Link to="/cycle" className="mt-3 inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: phaseColor }} />
+            <span><span className="text-foreground font-medium">{PHASE_SHORT[currentPhase]}, day {actualCycleDay}.</span> {PHASE_LINE[currentPhase]}</span>
+          </Link>
+        )}
       </motion.header>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

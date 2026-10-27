@@ -28,6 +28,8 @@ export const CATEGORY_ORDER = ["produce", "protein", "dairy", "pantry", "frozen"
 
 const NZ_SYNONYMS: Array<[RegExp, string]> = [
   [/\bbell pepper(s)?\b/gi, "capsicum"],
+  // "Red pepper" in a recipe is the vegetable; flakes, powder and paste stay in the pantry.
+  [/\b(red|green|yellow|orange) peppers?\b(?!\s*(flakes|powder|paste|sauce))/gi, "$1 capsicum"],
   [/\bcilantro\b/gi, "coriander"],
   [/\bscallion(s)?\b/gi, "spring onion"],
   [/\bgreen onion(s)?\b/gi, "spring onion"],
@@ -59,6 +61,7 @@ export function categoriseItem(name: string): string {
   const lower = name.toLowerCase();
   if (/frozen/.test(lower)) return "frozen";
   if (/\b(seed|seeds|tinned|canned|salt|pepper|spice|tahini|nut butter|peanut butter|almond butter)\b/.test(lower)) return "pantry";
+  if (/\b(almonds?|almond meal|walnuts?|cashews?|hazelnuts?|pecans?|pistachios?|nuts)\b(?!\s*(milk|yoghurt|yogurt|cream))/.test(lower)) return "pantry";
   for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
     if (keywords.some(kw => lower.includes(kw))) return cat;
   }
@@ -267,8 +270,10 @@ export function aggregateShoppingItems(
       // "Small ripe banana" shops as "Banana"; product words like tinned or dried stay.
       const nzName = toNZName(parsed.name.replace(SIZE_PREFIX, "")) || toNZName(parsed.name);
       const nzSearch = toNZName(parsed.searchTerm);
-      const totalQty = (parseQty(parsed.quantity) * (meal.servingsNeeded ?? mult)) / serves;
-      const base = toBase(totalQty, parsed.unit, nzName);
+      // "1 tbsp pumpkin seeds (10g)" is bought by weight: use the grams the recipe states.
+      const grams = /^(tsp|tbsp|teaspoon|tablespoon|cup)s?$/i.test(parsed.unit.trim()) ? /\((?:about\s*)?(\d+(?:\.\d+)?)\s*g\)/i.exec(ingStr) : null;
+      const totalQty = ((grams ? Number(grams[1]) : parseQty(parsed.quantity)) * (meal.servingsNeeded ?? mult)) / serves;
+      const base = grams ? { qty: totalQty, unit: "g" } : toBase(totalQty, parsed.unit, nzName);
       add(`${groupKey(nzSearch)}::${base.unit || "unit"}`, {
         name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
         totalQty: base.qty,
