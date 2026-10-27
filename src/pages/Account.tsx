@@ -171,6 +171,10 @@ export default function AccountPage() {
       const { data, error } = await supabase.functions.invoke("customer-portal", {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
+      if (data?.code === "billing_not_configured") {
+        toast.info(data.message);
+        return;
+      }
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (err: any) { toast.error(err.message || "That didn't open — try again in a moment."); }
@@ -760,9 +764,13 @@ export default function AccountPage() {
           )}
 
           <div className="flex gap-2 flex-wrap">
-            {subscription.subscribed ? (
+            {subscription.subscribed && subscription.source !== "manual" ? (
               <button onClick={handleManage} className="inline-flex items-center gap-1.5 rounded-xl bg-secondary px-4 py-2.5 font-body text-sm font-semibold text-foreground">
                 <Settings className="h-3.5 w-3.5" /> Manage billing <ArrowUpRight className="h-3 w-3 opacity-50" />
+              </button>
+            ) : subscription.source === "manual" ? (
+              <button onClick={() => navigate("/membership")} className="inline-flex items-center gap-1.5 rounded-xl bg-secondary px-4 py-2.5 font-body text-sm font-semibold text-foreground">
+                <Crown className="h-3.5 w-3.5" /> Complimentary access
               </button>
             ) : (
               <button onClick={() => navigate("/membership")} className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 font-body text-sm font-bold text-primary-foreground">

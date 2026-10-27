@@ -27,7 +27,20 @@ serve(async (req) => {
     const { priceId, mode = "subscription", couponId } = await req.json();
     if (!priceId) throw new Error("priceId is required");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Billing may not be switched on yet. Answer cleanly so the UI can explain
+    // itself instead of surfacing a raw Stripe SDK error.
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) {
+      return new Response(JSON.stringify({
+        code: "billing_not_configured",
+        message: "Payments aren't live yet — your current access stays exactly as it is. Check back soon.",
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
+    const stripe = new Stripe(stripeKey, {
       apiVersion: "2025-08-27.basil",
     });
 
