@@ -1,18 +1,11 @@
-import * as Sentry from "@sentry/react";
-
 /**
- * Set user context for error reports.
- * Call after successful auth.
+ * Error monitoring seam. No service is connected yet, so these only log in
+ * development; wire a provider in here (and nowhere else) when one is chosen.
  */
-export function setSentryUser(userId: string, email?: string) {
-  Sentry.setUser({ id: userId, email });
-}
+export function setMonitoringUser(_userId: string, _email?: string) {}
 
-/**
- * Clear user context on logout.
- */
-export function clearSentryUser() {
-  Sentry.setUser(null);
-}
+export function clearMonitoringUser() {}
 
-export { Sentry };
+export function reportError(error: unknown, context?: Record<string, unknown>) {
+  if (import.meta.env.DEV) console.error("[signal]", error, context ?? "");
+}

@@ -1,12 +1,14 @@
 import { useCustomMealPlan } from "@/hooks/useCustomMealPlan";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Clock, ShoppingBasket, PenLine, Target, Utensils, Dumbbell, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { useCycle } from "@/contexts/CycleContext";
 import { PHASE_SHORT, type Phase } from "@/lib/cycle-utils";
-import { getTodayMeals } from "@/lib/today-meals";
+import type * as TodayMealsModule from "@/lib/today-meals";
+
+type TodayMeal = ReturnType<typeof TodayMealsModule.getTodayMeals>["meals"][number];
 import { getSelectedPath, getNextSession, sessionStartHref, TRAINING_PATH_EVENTS, type NextSessionInfo } from "@/lib/training-path-utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHabitList } from "@/hooks/useHabitList";
@@ -69,9 +71,15 @@ function Tile({
 }
 
 export default function TodayBoard({ greeting, firstName }: { greeting: string; firstName: string | null }) {
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase, currentCycleDay, actualCycleDay } = useCycle();
   const { plan: customPlan } = useCustomMealPlan();
-  const { meals } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
+  // The recipe library loads with the Eat tile, not as part of the first screen.
+  const [meals, setMeals] = useState<TodayMeal[] | null>(null);
+  useEffect(() => {
+    let live = true;
+    import("@/lib/today-meals").then(m => { if (live) setMeals(m.getTodayMeals(currentCycleDay).meals); });
+    return () => { live = false; };
+  }, [currentCycleDay, customPlan]);
 
   const { user } = useAuth();
   const userId = user?.id;
@@ -103,17 +111,25 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
         <h1 className="display-serif mt-2 text-[3rem] md:text-[5.5rem] text-foreground">
           {greeting}{firstName ? <>, <em className="text-primary">{firstName}</em></> : null}.
         </h1>
-        <Link to="/cycle" className="mt-3 inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground">
-          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: phaseColor }} />
-          <span><span className="text-foreground font-medium">{PHASE_SHORT[currentPhase]}, day {currentCycleDay}.</span> {PHASE_LINE[currentPhase]}</span>
-        </Link>
+        {actualCycleDay !== null && (
+          <Link to="/cycle" className="mt-3 inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: phaseColor }} />
+            <span><span className="text-foreground font-medium">{PHASE_SHORT[currentPhase]}, day {actualCycleDay}.</span> {PHASE_LINE[currentPhase]}</span>
+          </Link>
+        )}
       </motion.header>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Eat — the hero tile */}
         <Tile to="/nutrition" accent="var(--eat)" icon={Utensils} eyebrow="Eat today" className="col-span-2 md:row-span-2" delay={0.05}>
           <div className="flex flex-1 flex-col gap-2">
-            {meals.map((m, i) => (
+            {!meals && [0, 1, 2].map(i => (
+              <div key={i} className={`flex items-center gap-3 ${i > 0 ? "border-t border-border/60 pt-2" : ""}`} aria-hidden="true">
+                <div className="h-14 w-14 md:h-16 md:w-16 flex-none rounded-2xl bg-secondary animate-pulse" />
+                <div className="h-3 w-40 rounded bg-secondary animate-pulse" />
+              </div>
+            ))}
+            {meals?.map((m, i) => (
               <div key={m.slot} className={`flex items-center gap-3 ${i > 0 ? "border-t border-border/60 pt-2" : ""}`}>
                 <div className="h-14 w-14 md:h-16 md:w-16 flex-none overflow-hidden rounded-2xl bg-secondary">
                   <RecipeImage variant="thumb" recipeName={m.name} recipeId={m.recipe?.id} recipeImage={m.recipe?.image} className="!h-full !w-full !bg-transparent" />

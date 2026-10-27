@@ -52,6 +52,7 @@ import scooter from "@/assets/movement/reformer/scooter.png";
 import sideLyingPress from "@/assets/movement/reformer/side-lying-press.png";
 import supineArms from "@/assets/movement/reformer/supine-arm-pull-down.png";
 import sideArm from "@/assets/movement/reformer/kneeling-side-arm-raise.png";
+import feetInStrapsPressDown from "@/assets/movement/reformer/feet-in-straps-press-down.png";
 
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
@@ -68,6 +69,12 @@ const correctedArt: Record<string, string> = {
   "reformer side lying leg press": sideLyingPress,
   "reformer supine arm pull down": supineArms,
   "reformer kneeling side arm raise": sideArm,
+  "reformer feet in straps leg press down": feetInStrapsPressDown,
+  "feet in straps leg lowers": feetInStrapsPressDown,
+  // Reformer class names (footwork, arms and feet in straps) for the same poses.
+  "footwork heels": parallelFootwork,
+  "arms in straps lower lift": supineArms,
+  "feet in straps frog": frogPress,
   "push up": pushUp,
   "dumbbell bench press": dbBench,
   "barbell bent over row": barbellRow,
@@ -120,6 +127,37 @@ const correctedArt: Record<string, string> = {
   "pallof press reformer strap": reformerPallof,
 };
 
+// Reformer illustrations added to assets/movement/reformer/library/ (shrunk to WebP by
+// scripts/optimise-reformer-art.mjs) are matched on the exercise name's words, in any
+// order and ignoring "reformer": skater-reformer.webp → "Reformer Skater". A full-size
+// PNG dropped there shows until its WebP exists.
+export const wordKey = (name: string) =>
+  name.toLowerCase().replace(/&/g, " and ").split(/[^a-z0-9]+/).filter(w => w && w !== "reformer").sort().join(" ");
+const libraryArt = new Map(
+  Object.entries(import.meta.glob("/src/assets/movement/reformer/library/*.{webp,png}", { eager: true, import: "default" }) as Record<string, string>)
+    .sort(([a], [b]) => Number(a.endsWith(".webp")) - Number(b.endsWith(".webp")))
+    .map(([path, url]) => [wordKey(path.split("/").pop()!.replace(/\.(webp|png)$/i, "")), url]),
+);
+
+// Reformer class names drawn by a book catalogue illustration (library/<catalogue id>.webp,
+// see src/data/reformer-exercises.json). Only poses checked against the class cue.
+const libraryAlias: Record<string, string> = {
+  "footwork arches": "footwork-monkey-on-branch",
+  "footwork balls of feet": "footwork-parallel-toes",
+  hundreds: "supine-hundred",
+  "feet in straps leg circles": "legs-rectangles-circles-ovals",
+  "knee stretch": "knee-stretch-round-back",
+  elephant: "elephant-round-back",
+  "reformer long box pull": "long-box-pulling-ropes",
+  "reformer long box t pull": "long-box-t-pull",
+  "reformer skater": "speed-skating",
+  "arms in straps triceps press": "supine-triceps-press",
+};
+
 export function getCorrectedExerciseArt(name: string | null | undefined): string | undefined {
-  return name ? correctedArt[normalize(name)] : undefined;
+  if (!name) return undefined;
+  const key = normalize(name);
+  const alias = libraryAlias[key];
+  // A checked alias beats a library file that only matches by name.
+  return correctedArt[key] ?? (alias ? libraryArt.get(wordKey(alias)) : undefined) ?? libraryArt.get(wordKey(name));
 }

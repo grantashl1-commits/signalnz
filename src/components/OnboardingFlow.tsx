@@ -1,5 +1,6 @@
 import { saveAIMealPlan, savePreferences, type PrepPreferences } from "@/lib/weekly-planner";
 import { buildDbMealPlanFull } from "@/lib/build-db-meal-plan";
+import { getNextSession, getSelectedPath, getSelectedPathId, pathForOnboarding, plannedExercises, setSelectedPathId } from "@/lib/training-path-utils";
 import { toast } from "sonner";
 import { useState, useEffect, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -225,6 +226,9 @@ export default function OnboardingFlow({ onComplete }: Props) {
   // Step 7 — Generating
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [saving, setSaving] = useState(false);
+  // Shown once setup is saved, so she sees her actual first session before arriving.
+  const [ready, setReady] = useState(false);
+  const [firstSession, setFirstSession] = useState<{ plan: string; name: string; detail: string; moves: string[] } | null>(null);
 
   const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "equipment", "generating"];
 
@@ -399,49 +403,18 @@ export default function OnboardingFlow({ onComplete }: Props) {
             equipment_preference: equipmentPref,
           } as any, { onConflict: "user_id" });
 
-        // ── Auto-generate first training plan in background ──
-        const lastWorkoutMap: Record<string, string> = {
-          beginner: "never",
-          intermediate: "this-month",
-          advanced: "this-week",
-        };
-        const goalMap: Record<string, string> = {
-          strength: "stronger",
-          fat_loss: "lose-weight",
-          cardio: "lean",
-          stress: "lean",
-          consistency: "stronger",
-          mobility: "lean",
-          event: "stronger",
-          recovery: "lean",
-        };
-
-        supabase.functions.invoke("generate-plan", {
-          body: {
-            cyclePhase: cycleStatus === "cycling" && lastPeriodDate
-              ? undefined // let the edge function determine from profile
-              : "follicular",
-            answers: {
-              height: heightCm || 165,
-              weight: weightKg || 65,
-              age: dob ? calcAge(dob) : 30,
-              goal: goalMap[movementGoals[0]] || "stronger",
-              goalWeight: goalWeightKg,
-              weeksPlan: 4,
-              daysPerWeek: fitnessLevel === "advanced" ? 5 : fitnessLevel === "intermediate" ? 4 : 3,
-              lastWorkout: lastWorkoutMap[fitnessLevel || "beginner"] || "this-month",
-              equipment: equipmentPref,
-            },
-          },
-        }).then((resp) => {
-          if (resp.error) {
-            console.warn("Auto training plan generation failed:", resp.error);
-          } else {
-            console.log("Auto training plan generated successfully");
-          }
-        }).catch((err) => {
-          console.warn("Auto training plan generation failed:", err);
-        });
+        // ── Start the member on the training path Today and Move show ──
+        if (!getSelectedPathId()) setSelectedPathId(pathForOnboarding(movementGoals[0], equipmentPref, fitnessLevel));
+        const path = getSelectedPath();
+        const next = path ? getNextSession(path) : null;
+        if (path && next) {
+          setFirstSession({
+            plan: path.name,
+            name: next.session.name,
+            detail: [next.session.durationMin ? `${next.session.durationMin} min` : null, next.session.equipment].filter(Boolean).join(" · "),
+            moves: plannedExercises(next.session).slice(0, 4).map(e => e.exercise_name),
+          });
+        }
 
         // Use the same validated library plan as the nutrition planner.
         const dietPrefMap: Record<string, string> = {
@@ -483,8 +456,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
       // non-fatal — user still lands on home screen
     }
     setSaving(false);
-    // Small delay so "Your Signal is ready." text is visible
-    setTimeout(onComplete, 800);
+    setReady(true);
   };
 
   // ── canAdvance logic per step
@@ -1055,6 +1027,21 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 <img src={iconCream} alt="Signal" className="w-[72px] h-[72px]" />
               </motion.div>
 
+              {ready ? (
+                <div className="w-full max-w-sm space-y-6">
+                  <p className="font-display text-xl font-bold text-white">Your Signal is here.</p>
+                  {firstSession && (
+                    <div className="rounded-2xl border border-white/15 bg-white/[0.06] p-5 text-left space-y-2">
+                      <p className="font-body text-[11px] uppercase tracking-[0.18em] text-white/60">Your first session · {firstSession.plan}</p>
+                      <p className="font-display text-lg font-bold text-white">{firstSession.name}</p>
+                      {firstSession.detail && <p className="font-body text-sm text-white/70">{firstSession.detail}</p>}
+                      {firstSession.moves.length > 0 && <p className="font-body text-sm text-white/80">{firstSession.moves.join(" · ")}</p>}
+                    </div>
+                  )}
+                  <NextButton onClick={onComplete} label="Begin" />
+                </div>
+              ) : (
+              <>
               {/* Loading messages */}
               <div className="space-y-3 min-h-[80px]">
                 {LOADING_MESSAGES.map((msg, i) => (
@@ -1087,6 +1074,8 @@ export default function OnboardingFlow({ onComplete }: Props) {
                     />
                   ))}
                 </div>
+              )}
+              </>
               )}
             </motion.div>
           )}

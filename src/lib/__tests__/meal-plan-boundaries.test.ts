@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildDbMealPlanFull } from '../build-db-meal-plan';
-import { DEFAULT_PREFS, getAIMealPlan, saveAIMealPlan } from '../weekly-planner';
+import { DEFAULT_PREFS, getAIMealPlan, getHousehold, saveAIMealPlan, saveHousehold, savePreferences, getSavedPreferences } from '../weekly-planner';
 import { normaliseMealPlan } from '../meal-plan-schema';
 import { mealMatchesPreferences } from '../meal-restrictions';
 import { containsNuts } from '../recipe-facets';
@@ -53,5 +53,19 @@ describe('meal-plan persistence and exclusions', () => {
   expect(mealMatchesPreferences({name:'Bowl',ingredients:['honey or maple syrup']},{...DEFAULT_PREFS,dietType:'vegan'})).toBe(false);
   expect(mealMatchesPreferences({name:'Bowl',ingredients:['parmesan (optional)']},{...DEFAULT_PREFS,dietType:'vegan'})).toBe(false);
   expect(mealMatchesPreferences({name:'Bowl',ingredients:['coconut milk','peanut butter']},{...DEFAULT_PREFS,dietTypes:['Dairy-free']})).toBe(true);
+ });
+});
+
+describe('household size', () => {
+ beforeEach(() => localStorage.clear());
+ it('gives the List tab and the plan the same adults and kids', () => {
+  expect(getHousehold()).toEqual({adults:1,kids:0});
+  savePreferences({...DEFAULT_PREFS, adults:2, kids:1});
+  saveAIMealPlan(buildDbMealPlanFull({...DEFAULT_PREFS, adults:2, kids:1}));
+  expect(getHousehold()).toEqual({adults:2,kids:1});
+  saveHousehold({adults:3,kids:2});
+  expect(getSavedPreferences()).toMatchObject({adults:3,kids:2});
+  expect(getAIMealPlan()?.prepPreferences).toMatchObject({adults:3,kids:2});
+  expect(getHousehold()).toEqual({adults:3,kids:2});
  });
 });

@@ -3,7 +3,7 @@
  * e.g. "1 cup red lentils" → { quantity: "1", unit: "cup", name: "red lentils", searchTerm: "red lentils" }
  */
 
-import { formatSmartQty, groupKey, parseQty, toBase } from "@/lib/smart-shopping-core";
+import { firstAlternative, formatSmartQty, groupKey, parseQty, toBase } from "@/lib/smart-shopping-core";
 
 export interface ParsedIngredient {
   raw: string;
@@ -39,20 +39,17 @@ const toNumber = (q: string) => {
   return m[3] ? Number(m[1] ?? 0) + Number(m[2]) / Number(m[3]) : Number(m[2]);
 };
 
-/** "frozen or fresh strawberries" → "fresh strawberries"; "milk or plant milk" → "milk". */
-function firstAlternative(name: string): string {
-  const parts = name.split(/\s+or\s+/i);
-  if (parts.length < 2) return name;
-  return /^(fresh|frozen|dried|tinned|canned)$/i.test(parts[0]) ? parts.slice(1).join(" or ") : parts[0];
-}
-
 export function parseIngredient(raw: string): ParsedIngredient {
   const fractions: Record<string, string> = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8" };
   const text = raw.trim().replace(/([0-9])([½⅓⅔¼¾⅛⅜⅝⅞])/g, "$1 $2").replace(/[½⅓⅔¼¾⅛⅜⅝⅞]/g, c => fractions[c]);
 
   // Brackets first (they can hold commas), then cut the prep notes after the first comma.
   const parens = [...text.matchAll(/\(([^)]*)\)/g)].map(m => m[1].trim());
-  let cleaned = text.replace(/\s*\([^)]*\)/g, "").split(",")[0].replace(TRAILING_NOTES, "").trim();
+  const segments = text.replace(/\s*\([^)]*\)/g, "").split(",");
+  // "1 boneless, skinless chicken thigh": the first part only describes, so the noun is in the next.
+  const describesOnly = (part: string) => SIZE_WORDS.test(`${part.replace(/^[\d\s./]+(?:g|kg|ml|l|cups?|tbsp|tsp)?\s+/i, "").trim()} `);
+  const head = segments.length > 1 && describesOnly(segments[0]) ? `${segments[0]} ${segments[1].trim()}` : segments[0];
+  let cleaned = head.replace(TRAILING_NOTES, "").trim();
   cleaned = cleaned
     .replace(LABEL, "")
     .replace(/^(?:a\s+)?squeeze of\s+/i, "")

@@ -19,6 +19,7 @@ import {
   getSelectedPath,
   getNextSession,
   markSessionCompleted,
+  plannedExercises,
   resetPathProgress,
   sessionStartHref,
   TRAINING_PATH_EVENTS,
@@ -31,6 +32,7 @@ import { noteOffered, daysSinceOffered, offeredWeekday, clearOffered } from "@/l
 import { fmtMinSec, type HRZoneSummary } from "@/lib/hr-zones";
 import { getWarmup, getCooldown, getWarmupCooldownPref, setWarmupCooldownPref } from "@/lib/warmup-cooldown";
 import { getPicksForToday, removePickToday, type LibraryPick } from "@/lib/library-picks";
+import { clearSessionTicks, getSessionTicks, setSessionTick, type SessionTicks } from "@/lib/session-ticks";
 
 import strengthArt from "@/assets/training-paths/strength.png";
 import muscleArt from "@/assets/training-paths/muscle.png";
@@ -130,6 +132,10 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   }, [hr.connected]);
 
   const [showCompletion, setShowCompletion] = useState(false);
+  // Rounds ticked off during today's session; reloaded when the session changes.
+  const tickKey = info ? `${info.path.id}::w${info.week}::d${info.day}` : null;
+  const [ticks, setTicks] = useState<SessionTicks>({});
+  useEffect(() => { setTicks(tickKey ? getSessionTicks(tickKey) : {}); }, [tickKey]);
 
   if (!info) {
     return (
@@ -173,6 +179,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
       }
     }
     markSessionCompleted(path.id, week, day, actual);
+    clearSessionTicks(sessionKey);
+    setTicks({});
     clearOffered(sessionKey);
     toast.success("Held.");
   };
@@ -323,7 +331,12 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
         )}
 
         {/* The session itself: warm-up, blocks with rounds and rest, suggested weights, cool-down */}
-        {expanded && !startHref && <SessionBlocks session={session} />}
+        {expanded && !startHref && (
+          <SessionBlocks
+            session={session}
+            ticking={{ ticks, onTick: (name, rounds) => { haptic("light"); setTicks(setSessionTick(sessionKey, name, rounds)); } }}
+          />
+        )}
 
         {/* Picks added from Library */}
         {expanded && picks.length > 0 && (
@@ -381,7 +394,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           <ChevronRight className={`h-3 w-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
         </button>
 
-        {showCompletion && <WorkoutCompletionDialog name={session.name} structure={session.structure || []} onSave={handleComplete} onClose={() => setShowCompletion(false)} />}
+        {showCompletion && <WorkoutCompletionDialog name={session.name} planned={plannedExercises(session, picks.map(p => p.name))} ticked={ticks} onSave={handleComplete} onClose={() => setShowCompletion(false)} />}
 
         {/* Actions — HR lives in the floating pulse icon; finish stays primary. */}
         <div className="flex flex-col gap-2">
@@ -400,12 +413,19 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
               <Play className="h-4 w-4" /> {finished ? "Open the partner class" : `Start partner class · week ${week}, session ${day}`}
             </Link>
           ) : (
+            <>
+            {Object.keys(ticks).length > 0 && (() => {
+              const planned = plannedExercises(session);
+              const complete = planned.filter(p => (ticks[p.exercise_name] ?? 0) >= (p.sets ?? 1)).length;
+              return <p className="text-center font-body text-[11px] text-muted-foreground tabular-nums">{complete} of {planned.length} exercises done</p>;
+            })()}
             <button
               onClick={() => setShowCompletion(true)}
               className="w-full h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center active:scale-[0.97] transition-transform"
             >
               Finish workout
             </button>
+            </>
           )}
         </div>
       </div>

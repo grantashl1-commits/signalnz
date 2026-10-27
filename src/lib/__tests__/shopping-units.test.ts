@@ -78,3 +78,51 @@ describe("method amounts next to other amounts", async () => {
     expect(out[1]).toBe("Toast the 2 slices rye bread.");
   });
 });
+
+describe("shopping aisles and weights", () => {
+  const rows = (ingredients: string[]) =>
+    Object.entries(aggregateShoppingItems({ meals: [{ serves: 1, ingredients }], servingMultiplier: 1 }, parseIngredient))
+      .flatMap(([category, items]) => items.map(i => ({ category, name: i.name, qty: formatSmartQty(i.totalQty, i.unit, i.name) })));
+
+  it("shops a red pepper as capsicum in Produce but keeps pepper flakes in the Pantry", () => {
+    const out = rows(["1 red pepper, sliced", "½ tsp red pepper flakes", "1 tsp black pepper"]);
+    expect(out).toContainEqual({ category: "produce", name: "Red capsicum", qty: "1" });
+    expect(out.find(r => r.name === "Red pepper flakes")?.category).toBe("pantry");
+    expect(out.find(r => r.name === "Black pepper")?.category).toBe("pantry");
+  });
+
+  it("buys seeds and nuts by the grams the recipe states, in the Pantry", () => {
+    const out = rows(["1 tbsp pumpkin seeds (10g)", "20g pumpkin seeds", "1 cup almond meal (150g)"]);
+    expect(out).toContainEqual({ category: "pantry", name: "Pumpkin seeds", qty: "30 g" });
+    expect(out).toContainEqual({ category: "pantry", name: "Almond meal", qty: "150 g" });
+  });
+});
+
+describe("shopping names across the recipe catalogue", () => {
+  const names = (ingredients: string[]) =>
+    Object.entries(aggregateShoppingItems({ meals: [{ serves: 1, ingredients }], servingMultiplier: 1 }, parseIngredient))
+      .flatMap(([category, items]) => items.map(i => `${category}:${i.name}`));
+
+  it("keeps the noun when describing words come before a comma", () => {
+    expect(names(["200g boneless, skinless chicken thighs, cut into 2cm pieces"])).toEqual(["protein:Boneless skinless chicken thighs"]);
+    expect(names(["Boneless, skinless chicken thighs"])).toEqual(["protein:Boneless skinless chicken thighs"]);
+  });
+
+  it("shops the first choice, keeping a shared noun", () => {
+    expect(names(["1 tbsp olive or avocado oil"])).toEqual(["pantry:Olive oil"]);
+    expect(names(["Small handful of fresh coriander or 1 tbsp pumpkin seeds, for garnish"])).toEqual(["produce:Coriander"]);
+    expect(names(["1 tbsp tamari or soy sauce"])).toEqual(["pantry:Tamari"]);
+    const [oil] = Object.values(aggregateShoppingItems({ meals: [{ serves: 1, ingredients: ["1 tbsp olive or avocado oil"] }] }, parseIngredient)).flat();
+    expect(oil.recipeSays).toBe("olive or avocado oil");
+  });
+
+  it("leaves out water, ice and section headings, and drops amount words from names", () => {
+    expect(names(["250ml boiling water", "Ice", "For the Caper Relish:", "Vegetable broth or water"])).toEqual(["pantry:Vegetable broth"]);
+    expect(names(["A pinch of smoked paprika", "A quarter head of red cabbage"])).toEqual(["pantry:Smoked paprika", "produce:Red cabbage"]);
+  });
+
+  it("files spices, herbs and greens in their aisles", () => {
+    expect(names(["1 tsp dried thyme", "2 sprigs thyme", "50g parmesan", "100g snapper fillet", "1 tbsp fish sauce"]))
+      .toEqual(expect.arrayContaining(["pantry:Dried thyme", "produce:Thyme", "dairy:Parmesan", "protein:Snapper fillet", "pantry:Fish sauce"]));
+  });
+});

@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import type { DaySession, Superset } from "@/data/signal-training-paths";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
 import { extractExerciseName } from "@/lib/exercise-image-lookup";
@@ -9,8 +10,11 @@ import { cn } from "@/lib/utils";
  * warm-up, then each block with its rounds and rest, then the cool-down.
  * Each exercise shows reps, effort (reps in reserve), the suggested weight
  * and a one-line cue. Sessions written as plain lines fall back to a list.
+ * Pass `onTick` (Today's session) to let her tick off each round as she goes.
  */
-export default function SessionBlocks({ session, className }: { session: DaySession; className?: string }) {
+interface Ticking { ticks: Record<string, number>; onTick: (name: string, rounds: number) => void }
+
+export default function SessionBlocks({ session, className, ticking }: { session: DaySession; className?: string; ticking?: Ticking }) {
   const lookupIllustration = useExerciseIllustrations();
   const cooldown = session.cooldown ?? session.coolDown;
   const rich = !session.isRestDay && (session.supersets?.length ?? 0) > 0;
@@ -30,6 +34,7 @@ export default function SessionBlocks({ session, className }: { session: DaySess
                 <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
               )}
               <span className="flex-1 pt-1">{line}</span>
+              {ticking && name && <TickButton name={name} rounds={1} ticking={ticking} />}
             </li>
           );
         })}
@@ -41,7 +46,7 @@ export default function SessionBlocks({ session, className }: { session: DaySess
     <div className={cn("space-y-3", className)}>
       {session.warmup && session.warmup.length > 0 && <Steps title="Warm up" items={session.warmup} />}
       {session.supersets!.map((block, i) => (
-        <Block key={i} block={block} index={i} lookup={lookupIllustration} />
+        <Block key={i} block={block} index={i} lookup={lookupIllustration} ticking={ticking} />
       ))}
       {cooldown && cooldown.length > 0 && <Steps title="Cool down" items={cooldown} />}
     </div>
@@ -63,7 +68,26 @@ function blockLabel(block: Superset, index: number): string {
   return block.exercises.length >= 2 ? `Superset ${letter}` : `Main lift ${letter}`;
 }
 
-function Block({ block, index, lookup }: { block: Superset; index: number; lookup: (name: string) => string | undefined }) {
+/** Each tap ticks off one more round; after the last it starts again. */
+function TickButton({ name, rounds, ticking }: { name: string; rounds: number; ticking: Ticking }) {
+  const done = Math.min(ticking.ticks[name] ?? 0, rounds);
+  const complete = done >= rounds;
+  return (
+    <button
+      type="button"
+      onClick={() => ticking.onTick(name, complete ? 0 : done + 1)}
+      aria-label={complete ? `${name} done. Tap to clear` : `Tick off a round of ${name} (${done} of ${rounds} done)`}
+      className={cn(
+        "shrink-0 h-9 min-w-9 px-2 rounded-full border flex items-center justify-center font-body text-[11px] font-semibold tabular-nums transition-colors",
+        complete ? "bg-primary border-primary text-primary-foreground" : done > 0 ? "border-primary text-primary" : "border-border text-muted-foreground",
+      )}
+    >
+      {complete ? <Check className="h-4 w-4" /> : rounds > 1 ? `${done}/${rounds}` : <Check className="h-4 w-4 opacity-40" />}
+    </button>
+  );
+}
+
+function Block({ block, index, lookup, ticking }: { block: Superset; index: number; lookup: (name: string) => string | undefined; ticking?: Ticking }) {
   const rounds = block.rounds ?? 1;
   const meta = [
     rounds > 1 ? `${rounds} rounds` : null,
@@ -93,6 +117,7 @@ function Block({ block, index, lookup }: { block: Superset; index: number; looku
               {ex.cue && <p className="mt-0.5 font-editorial text-[11px] italic text-foreground/60 leading-snug">{ex.cue}</p>}
               {ex.alt && <p className="mt-0.5 font-body text-[10px] text-muted-foreground">Swap: {ex.alt}</p>}
             </div>
+            {ticking && <TickButton name={ex.name} rounds={rounds} ticking={ticking} />}
           </div>
         ))}
       </div>
