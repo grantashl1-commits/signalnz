@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+import { captureDeviceScope } from "./device-privacy";
 /**
  * Helpers for the SIGNAL static training-path data:
  *  - persist the user's selected path
@@ -39,9 +41,10 @@ export function setSelectedPathId(id: string | null) {
 }
 
 async function mirrorPathToProfile(id: string | null) {
+  const scope = captureDeviceScope();
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user || !scope.matches(user.id)) return;
     await supabase
       .from("profiles")
       .upsert({ user_id: user.id, training_path_id: id } as any, { onConflict: "user_id" });
@@ -50,6 +53,7 @@ async function mirrorPathToProfile(id: string | null) {
 
 /** Hydrate the local selected-path cache from the user's profile if local is empty. */
 export async function hydrateSelectedPathFromProfile(): Promise<void> {
+  const scope = captureDeviceScope();
   try {
     if (getSelectedPathId()) return;
     const { data: { user } } = await supabase.auth.getUser();
@@ -59,6 +63,7 @@ export async function hydrateSelectedPathFromProfile(): Promise<void> {
       .select("training_path_id")
       .eq("user_id", user.id)
       .maybeSingle();
+    if (!scope.matches(user.id)) return;
     const remote = (data as any)?.training_path_id as string | null;
     if (remote) {
       localStorage.setItem(SELECTED_PATH_KEY, remote);
@@ -90,7 +95,7 @@ export function isSessionCompleted(pathId: string, week: number, day: number): b
   return !!getCompletedMap()[sessionKey(pathId, week, day)];
 }
 
-export function markSessionCompleted(pathId: string, week: number, day: number) {
+export function markSessionCompleted(pathId: string, week: number, day: number, actual?: WorkoutActual) {
   // The partner hub ticks its own sessions and writes its own workout_logs row.
   if (isPartnerPath(pathId)) return;
   const map = getCompletedMap();
@@ -101,7 +106,9 @@ export function markSessionCompleted(pathId: string, week: number, day: number) 
   } catch {}
 
   // Carry through to the calendar / workout history.
-  void logSessionToCalendar(pathId, week, day);
+  void logSessionToCalendar(pathId, week, day, actual);
+  localStorage.setItem("signal_training_progress_updated_at", String(Date.now()));
+  void syncTrainingProgress();
 }
 
 /** Reset all completed sessions for a path so the user can start over from week 1 day 1. */
@@ -119,56 +126,89 @@ export function resetPathProgress(pathId: string, userId?: string | null) {
     if (k.startsWith(prefix)) { delete map[k]; changed = true; }
   }
   if (changed) {
+    localStorage.setItem("signal_training_progress_updated_at", String(Date.now()));
     try {
       localStorage.setItem(COMPLETED_SESSIONS_KEY, JSON.stringify(map));
+      void syncTrainingProgress();
       window.dispatchEvent(new Event("signal:training-path-changed"));
     } catch {}
   }
 }
 
-/** Insert a workout_logs row so the completed session shows on the calendar. */
-async function logSessionToCalendar(pathId: string, week: number, day: number) {
-  try {
-    const path = SIGNAL_TRAINING_PATHS.find(p => p.id === pathId);
-    const weekObj = path?.weeks.find(w => w.week === week);
-    const session = weekObj?.sessions.find(s => s.day === day);
-    if (!path || !session) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    // Local YYYY-MM-DD (NZ-safe enough for a session_date column).
-    const now = new Date();
-    const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-
-    // Build a lightweight exercises array from structure for body-tag derivation.
-    const exercises = (session.structure || [])
-      .map(line => {
-        const name = extractExerciseName(line);
-        return name ? { exercise_name: name } : null;
-      })
-      .filter(Boolean) as { exercise_name: string }[];
-
-    // Avoid duplicate inserts on rapid double-tap.
-    const { data: existing } = await supabase
-      .from("workout_logs")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("session_date", dateStr)
-      .ilike("notes", `%${pathId}::w${week}::d${day}%`)
-      .limit(1);
-    if (existing && existing.length > 0) return;
-
-    await supabase.from("workout_logs").insert({
-      user_id: user.id,
-      session_date: dateStr,
-      duration_minutes: session.durationMin ?? null,
-      notes: `${path.name} · ${session.name} [${pathId}::w${week}::d${day}]`,
-      completed: true,
-      exercises,
+export interface WorkoutActual {
+  durationMinutes?: number;
+  notes?: string;
+  exercises?: Array<{ exercise_name: string; sets?: number; reps?: number; weight_kg?: number }>;
+}
+const PENDING_LOGS = 'signal_training_pending_logs';
+const PROGRESS_TIME = 'signal_training_progress_updated_at';
+const PROGRESS_KIND = 'signal_training_progress_v1';
+type PendingLog = { id: string; session_date: string; duration_minutes: number | null; notes: string; completed: boolean; exercises: WorkoutActual['exercises'] };
+function pendingLogs(): PendingLog[] {
+  try { return JSON.parse(localStorage.getItem(PENDING_LOGS) || '[]'); } catch { return []; }
+}
+async function logSessionToCalendar(pathId: string, week: number, day: number, actual?: WorkoutActual) {
+  const path = SIGNAL_TRAINING_PATHS.find(p => p.id === pathId);
+  const session = path?.weeks.find(w => w.week === week)?.sessions.find(s => s.day === day);
+  if (!path || !session) return;
+  const now = new Date();
+  const date = [now.getFullYear(), String(now.getMonth()+1).padStart(2,'0'), String(now.getDate()).padStart(2,'0')].join('-');
+  const marker = '[' + sessionKey(pathId,week,day) + ']';
+  const queue = pendingLogs();
+  if (!queue.some(row => row.session_date === date && row.notes.includes(marker))) {
+    queue.push({id:crypto.randomUUID(),session_date:date,duration_minutes:actual?.durationMinutes ?? null,
+      notes: path.name + ' · ' + session.name + ' ' + marker + (actual?.notes ? '\n' + actual.notes : ''), completed:true,
+      exercises:actual?.exercises ?? (session.structure || []).map(extractExerciseName).filter(Boolean).map(exercise_name => ({exercise_name})),
     });
-  } catch (e) {
-    console.warn("[training-path] failed to log session to calendar", e);
+    localStorage.setItem(PENDING_LOGS, JSON.stringify(queue));
+  }
+  await flushTrainingLogs();
+}
+let flushing: Promise<void> | null = null;
+export async function flushTrainingLogs(): Promise<void> {
+  if (flushing) return flushing;
+  const scope = captureDeviceScope();
+  flushing = (async () => {
+    try {
+      const {data:{user}} = await supabase.auth.getUser();
+      if (!user || !scope.matches(user.id)) return;
+      for (const row of pendingLogs()) {
+        if (!scope.matches(user.id)) return;
+        const {error} = await supabase.from('workout_logs').upsert({...row,user_id:user.id}, {onConflict:'id'});
+        if (error) throw error;
+        if (!scope.matches(user.id)) return;
+        localStorage.setItem(PENDING_LOGS,JSON.stringify(pendingLogs().filter(p => p.id !== row.id)));
+      }
+    } catch {
+      if (scope.valid()) toast.error('Workout saved on this device. Cloud sync will retry when you reconnect.');
+    }
+  })().finally(() => {flushing=null;});
+  return flushing;
+}
+
+/** Restore progress on any member screen; retain resets using a last-edited timestamp. */
+export async function syncTrainingProgress(): Promise<void> {
+  const scope = captureDeviceScope();
+  try {
+    const {data:{user}} = await supabase.auth.getUser();
+    if (!user || !scope.matches(user.id)) return;
+    const {data:row,error} = await supabase.from('user_plans').select('id,plan_data').eq('user_id',user.id).eq('plan_type','training').eq('plan_data->>kind',PROGRESS_KIND).order('generated_at',{ascending:false}).limit(1).maybeSingle();
+    if (error) throw error;
+    if (!scope.matches(user.id)) return;
+    const remote = row?.plan_data as {completed?: Record<string,true>; updatedAt?: number} | undefined;
+    const localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+    if ((remote?.updatedAt ?? 0) > localTime && remote?.completed) {
+      localStorage.setItem(COMPLETED_SESSIONS_KEY,JSON.stringify(remote.completed));
+      localStorage.setItem(PROGRESS_TIME,String(remote.updatedAt));
+      window.dispatchEvent(new Event('signal:training-path-changed'));
+    } else if (localTime > (remote?.updatedAt ?? 0)) {
+      const plan_data = {kind:PROGRESS_KIND,completed:getCompletedMap(),updatedAt:localTime};
+      const result = row ? await supabase.from('user_plans').update({plan_data,generated_at:new Date().toISOString()}).eq('id',row.id).eq('user_id',user.id)
+        : await supabase.from('user_plans').insert({user_id:user.id,plan_type:'training',plan_data});
+      if (result.error) throw result.error;
+    }
+  } catch {
+    if (scope.valid()) toast.error('Training progress is saved on this device. Cloud sync will retry when you reconnect.');
   }
 }
 

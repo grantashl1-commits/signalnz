@@ -1,3 +1,4 @@
+import { shoppingMeals } from "@/lib/meal-shopping";
 import { toast } from "sonner";
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -162,11 +163,9 @@ function ShoppingContent({ plan, weekNumber, allPlanDays = false, weekStart }: P
     const weekDays = allPlanDays ? plan.days : plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= endDay);
     
     // Same aggregation as the PDF export: sums across recipes, merges units, splits "salt and pepper".
-    const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
-    const meals = weekDays.flatMap(day => [day.breakfast, day.lunch, day.dinner, day.morningSnack, day.afternoonSnack])
-      .filter(meal => meal && !meal.isLeftover && meal.ingredients?.length);
+    const meals = shoppingMeals(weekDays, plan.prepPreferences);
     const ingredientMap: Record<string, AggregatedItem> = {};
-    for (const item of Object.values(aggregateShoppingItems({ meals, servingMultiplier }, parseIngredient)).flat()) {
+    for (const item of Object.values(aggregateShoppingItems({ meals }, parseIngredient)).flat()) {
       ingredientMap[`${item.searchTerm.toLowerCase()}::${item.unit}`] = { ...item, isPantryStaple: isPantryStaple(item.name) };
     }
 

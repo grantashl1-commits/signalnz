@@ -1,3 +1,4 @@
+import { snackMeal } from "./build-db-meal-plan";
 import { getPhasePlanDay } from "./today-meals";
 /**
  * Synthesize an `AIMealPlan`-shaped object from the user's custom recipe
@@ -33,6 +34,7 @@ const STATIC_PREFS: PrepPreferences = {
 function recipeToAIMeal(recipe: Recipe, mealType: AIMeal["mealType"]): AIMeal {
   return {
     name: recipe.name,
+    recipeId: recipe.id,
     phase: recipe.phase,
     mealType,
     prepTime: recipe.prepTime,
@@ -90,6 +92,7 @@ export function buildCustomShoppingPlan(
   basePlan?: AIMealPlan | null,
   dates?: string[]
 ): AIMealPlan {
+  const preferences = { ...STATIC_PREFS, ...basePlan?.prepPreferences, ...prepPreferences };
   const days: AIPlannedDay[] = cycleDays.map((cycleDay, index) => {
     const phase = getPhaseFromDay(cycleDay);
     const picks = customPlan[dates?.[index] ?? ""] ?? customPlan[cycleDay] ?? {};
@@ -106,10 +109,12 @@ export function buildCustomShoppingPlan(
       cycleDay,
       phase,
       breakfast: resolveSlot("breakfast"),
-      morningSnack: base?.morningSnack ?? snackPlaceholder(phase, "morningSnack"),
+      morningSnack: base?.morningSnack ?? snackMeal(phase, "morning", preferences),
       lunch: resolveSlot("lunch"),
-      afternoonSnack: base?.afternoonSnack ?? snackPlaceholder(phase, "afternoonSnack"),
+      afternoonSnack: base?.afternoonSnack ?? snackMeal(phase, "afternoon", preferences),
       dinner: resolveSlot("dinner"),
+      kidsLunch: base?.kidsLunch,
+      kidsDinner: base?.kidsDinner,
     };
   });
 

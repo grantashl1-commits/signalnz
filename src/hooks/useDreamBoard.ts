@@ -1,3 +1,4 @@
+import { captureDeviceScope } from "@/lib/device-privacy";
 import { useState, useCallback, useRef, useEffect } from "react";
 import {
   loadDreamBoards, saveDreamBoards, getActiveBoardId, setActiveBoardId,
@@ -14,6 +15,7 @@ const CLOUD_DEBOUNCE_MS = 1500;
 export type SaveStatus = "idle" | "saving" | "saved";
 
 export function useDreamBoard() {
+  const scope = useRef(captureDeviceScope()).current;
   const [boards, setBoards] = useState<DreamBoard[]>(() => loadDreamBoards());
   const [activeBoardId, setActiveId] = useState<string | null>(() => {
     const saved = getActiveBoardId();
@@ -36,7 +38,7 @@ export function useDreamBoard() {
   const saveToCloud = useCallback(async (boardsToSave: DreamBoard[]) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return; // Not logged in, skip cloud save
+      if (!scope.matches(user?.id)) return; // Not logged in, skip cloud save
 
       setSaveStatus("saving");
       const activeId = getActiveBoardId();
@@ -82,7 +84,7 @@ export function useDreamBoard() {
           .eq("user_id", user.id)
           .maybeSingle();
 
-        if (error || !data) return;
+        if (!scope.valid() || error || !data) return;
 
         const cloudBoards = data.board_data as unknown as DreamBoard[];
         if (Array.isArray(cloudBoards) && cloudBoards.length > 0) {
@@ -106,15 +108,22 @@ export function useDreamBoard() {
   }, []);
 
   const persist = useCallback((next: DreamBoard[]) => {
+    if (!scope.valid()) return;
     setBoards(next);
     // Immediate localStorage save (fast)
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
-    saveTimeout.current = setTimeout(() => saveDreamBoards(next), 300);
+    saveTimeout.current = setTimeout(() => { if (scope.valid()) saveDreamBoards(next); }, 300);
 
     // Debounced cloud save (1.5s)
     if (cloudSaveTimeout.current) clearTimeout(cloudSaveTimeout.current);
     cloudSaveTimeout.current = setTimeout(() => saveToCloud(next), CLOUD_DEBOUNCE_MS);
   }, [saveToCloud]);
+
+  useEffect(() => () => {
+    clearTimeout(saveTimeout.current);
+    clearTimeout(cloudSaveTimeout.current);
+    clearTimeout(savedFadeTimeout.current);
+  }, []);
 
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
   const elements = activeBoard?.elements ?? [];

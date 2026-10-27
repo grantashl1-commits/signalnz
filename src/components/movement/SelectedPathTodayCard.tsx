@@ -1,3 +1,5 @@
+import WorkoutCompletionDialog from "./WorkoutCompletionDialog";
+import type { WorkoutActual } from "@/lib/training-path-utils";
 /**
  * Card shown at the top of the Today tab when the user has selected a
  * Training plan. It surfaces the next uncompleted session in that plan,
@@ -127,6 +129,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hr.connected]);
 
+  const [showCompletion, setShowCompletion] = useState(false);
+
   if (!info) {
     return (
       <Link
@@ -158,7 +162,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   // The partner series is trained (and ticked off) in its class hub.
   const startHref = sessionStartHref(info);
 
-  const handleComplete = () => {
+  const handleComplete = (actual: WorkoutActual) => {
+    setShowCompletion(false);
     haptic("medium");
     // Capture HR summary if we were recording.
     if (hr.recording) {
@@ -167,7 +172,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
         setHrSummary(summary);
       }
     }
-    markSessionCompleted(path.id, week, day);
+    markSessionCompleted(path.id, week, day, actual);
     clearOffered(sessionKey);
     toast.success("Held.");
   };
@@ -376,6 +381,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           <ChevronRight className={`h-3 w-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
         </button>
 
+        {showCompletion && <WorkoutCompletionDialog name={session.name} structure={session.structure || []} onSave={handleComplete} onClose={() => setShowCompletion(false)} />}
+
         {/* Actions — HR lives in the floating pulse icon; finish stays primary. */}
         <div className="flex flex-col gap-2">
           {hr.connected && (
@@ -394,7 +401,7 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
             </Link>
           ) : (
             <button
-              onClick={handleComplete}
+              onClick={() => setShowCompletion(true)}
               className="w-full h-11 rounded-full bg-primary text-primary-foreground font-body text-sm font-semibold inline-flex items-center justify-center active:scale-[0.97] transition-transform"
             >
               Finish workout

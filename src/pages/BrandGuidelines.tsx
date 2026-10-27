@@ -118,7 +118,7 @@ function Divider() {
    MAIN PAGE
    ════════════════════════════════════════════════════════════════ */
 export default function BrandGuidelines() {
-  if (import.meta.env.PROD) return <Navigate to="/" replace />;
+
 
   const [active, setActive] = useState("cover");
   const observer = useRef<IntersectionObserver | null>(null);
@@ -138,6 +138,8 @@ export default function BrandGuidelines() {
     const activeBtn = mobileNavRef.current.querySelector(`[data-section="${active}"]`) as HTMLElement;
     if (activeBtn) activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   }, [active]);
+
+  if (import.meta.env.PROD) return <Navigate to="/" replace />;
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 

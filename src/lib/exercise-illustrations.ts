@@ -4,7 +4,9 @@ import { getExerciseImageByName } from "@/lib/exercise-image-lookup";
 const BUCKET = "exercise-assets";
 const FOLDER = "illustrations";
 const LS_GENERATED = "yocm_generated_illustrations_v1";
-const PUBLIC_BASE = `https://hwcgbcfqxzzhvivcdroh.supabase.co/storage/v1/object/public/${BUCKET}/${FOLDER}`;
+// Derive from the configured project so illustrations resolve on whichever
+// Supabase project the app points at (previously hardcoded to Lovable Cloud).
+const PUBLIC_BASE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${FOLDER}`;
 
 /** Aggressive normaliser: strip non-alphanum, lowercase. */
 function norm(s: string): string {

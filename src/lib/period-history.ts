@@ -1,3 +1,4 @@
+import { captureDeviceScope } from "./device-privacy";
 /**
  * Period history — every logged period, kept month after month.
  *
@@ -198,12 +199,14 @@ async function userId(): Promise<string | null> {
 }
 
 async function syncStart(date: string, replacedStart?: string) {
+  const scope = captureDeviceScope();
   const uid = await userId();
-  if (!uid) return;
+  if (!scope.matches(uid)) return;
   try {
     if (replacedStart && replacedStart !== date) await syncRemove(replacedStart);
     await supabase.from("cycle_logs").delete().eq("user_id", uid).eq("log_date", date).eq("period_start", true);
     await supabase.from("cycle_logs").insert({ user_id: uid, log_date: date, period_start: true, cycle_day: 1, phase: "menstrual" });
+    if (!scope.matches(uid)) return;
     await supabase.from("profiles").upsert({ user_id: uid, last_period_date: getPeriodHistory().slice(-1)[0]?.start ?? date } as never, { onConflict: "user_id" });
   } catch {
     /* offline — local history is the source of truth until next sync */
@@ -240,21 +243,27 @@ export function pullPeriodHistory(uid: string): Promise<void> {
   if (!p) {
     p = doPull(uid);
     inFlight.set(uid, p);
+    void p.finally(() => inFlight.delete(uid));
   }
   return p;
 }
 
 async function doPull(uid: string): Promise<void> {
+  const scope = captureDeviceScope();
+  if (!scope.matches(uid)) return;
   try {
     const [starts, ends] = await Promise.all([
       supabase.from("cycle_logs").select("log_date, period_start, notes").eq("user_id", uid).eq("period_start", true).order("log_date", { ascending: true }),
       supabase.from("cycle_logs").select("log_date, period_start, notes").eq("user_id", uid).like("notes", "period_end:%"),
     ]);
+    if (!scope.matches(uid)) return;
     const error = starts.error || ends.error;
     const data = [...(starts.data ?? []), ...(ends.data ?? [])];
-    if (error || !data?.length) {
+    if (error) return;
+    if (!data?.length) {
       // Nothing in the cloud yet — push what this device knows.
       for (const p of getPeriodHistory()) {
+        if (!scope.matches(uid)) return;
         await syncStart(p.start);
         if (p.end) await syncEnd(p.start, p.end);
       }
