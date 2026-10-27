@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon, CalendarPlus, Check } from "lucide-react";
+import { Search, Heart, ChevronDown, X, Baby, Filter as FilterIcon, CalendarPlus, Check, Plus } from "lucide-react";
 import { toast } from "sonner";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { Recipe } from "@/data/meal-plans";
-import { CATALOG, CATALOG_RECIPES, CATALOG_TAGS, CATALOG_COUNTS } from "@/lib/all-recipes";
+import { CATALOG, CATALOG_TAGS, CATALOG_COUNTS } from "@/lib/all-recipes";
 import { FILTER_GROUPS, type RecipeTag } from "@/lib/recipe-tags";
 import { RecipeShoppingButton } from "@/components/ShoppingList";
 import { BotanicalSprig } from "@/components/BotanicalElements";
@@ -70,7 +71,7 @@ function FilterPill({ active, onClick, children }: { active: boolean; onClick: (
 
 export default function DiscoverTab() {
   const { currentPhase } = useCycle();
-  const { toggleSave, isSaved } = useSavedRecipes();
+  const lists = useSavedRecipes();
   const { guard: guardExpand } = useGatedExpand("nutrition_browse");
 
   const [search, setSearch] = useState("");
@@ -136,11 +137,6 @@ export default function DiscoverTab() {
     setTags(new Set(c.presets));
   };
 
-  const savedRecipes = useMemo(
-    () => CATALOG_RECIPES.filter((r) => isSaved(r.id)),
-    [isSaved],
-  );
-
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const wanted = [...tags];
@@ -191,26 +187,6 @@ export default function DiscoverTab() {
 
   return (
     <div className="space-y-5">
-      {/* Saved recipes section */}
-      {savedRecipes.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="font-display text-base italic text-foreground flex items-center gap-2">
-            <Heart className="h-4 w-4 text-primary fill-primary" /> Saved Recipes
-          </h3>
-          <div className="grid grid-cols-2 gap-3">
-            {savedRecipes.slice(0, 4).map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                isSaved={true}
-                onToggleSave={() => toggleSave(recipe.id)}
-                onSelect={() => setSelectedRecipe(recipe)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -402,8 +378,8 @@ export default function DiscoverTab() {
           <RecipeCard
             key={recipe.id}
             recipe={recipe}
-            isSaved={isSaved(recipe.id)}
-            onToggleSave={() => toggleSave(recipe.id)}
+            isSaved={lists.has("saved", recipe.id)}
+            onToggleSave={() => lists.toggleSaved(recipe.id)}
             onSelect={() => {
               if (guardExpand()) setSelectedRecipe(recipe);
             }}
@@ -449,8 +425,10 @@ export default function DiscoverTab() {
         {selectedRecipe && (
           <RecipeDetailSheet
             recipe={selectedRecipe}
-            isSaved={isSaved(selectedRecipe.id)}
-            onToggleSave={() => toggleSave(selectedRecipe.id)}
+            isSaved={lists.has("saved", selectedRecipe.id)}
+            onToggleSave={() => lists.toggleSaved(selectedRecipe.id)}
+            isFavourite={lists.has("favourite", selectedRecipe.id)}
+            onToggleFavourite={() => lists.toggleFavourite(selectedRecipe.id)}
             onClose={() => setSelectedRecipe(null)}
           />
         )}
@@ -479,8 +457,10 @@ function FacetBadges({ facets, max = 3 }: { facets: RecipeFacets; max?: number }
   );
 }
 
-function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
+export function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0, favourite = false }: {
   recipe: Recipe; isSaved: boolean; onToggleSave: () => void; onSelect: () => void; index?: number;
+  /** In Favourites the corner button is the heart that takes it off that list. */
+  favourite?: boolean;
 }) {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, duration: 0.25 }}>
@@ -500,20 +480,27 @@ function RecipeCard({ recipe, isSaved, onToggleSave, onSelect, index = 0 }: {
             <FacetBadges facets={adultFacets(recipe)} max={2} />
           </div>
         </button>
-        {/* Heart icon */}
+        {/* + keeps it in Saved; a tick once it's there */}
         <button
           onClick={(e) => { e.stopPropagation(); haptic("light"); onToggleSave(); }}
+          aria-label={favourite ? `Remove ${recipe.name} from Favourites` : isSaved ? `Remove ${recipe.name} from Saved` : `Save ${recipe.name}`}
+          aria-pressed={favourite || isSaved}
           className="absolute top-2 right-2 touch-btn p-1.5 rounded-full bg-card/80 backdrop-blur-sm"
         >
-          <Heart className={`h-4 w-4 transition-all ${isSaved ? "fill-primary text-primary" : "text-muted-foreground"}`} style={isSaved ? { color: phaseHex(recipe.phase) } : {}} />
+          {favourite
+            ? <Heart className="h-4 w-4" style={{ color: phaseHex(recipe.phase), fill: phaseHex(recipe.phase) }} />
+            : isSaved
+              ? <Check className="h-4 w-4" style={{ color: phaseHex(recipe.phase) }} />
+              : <Plus className="h-4 w-4 text-muted-foreground" />}
         </button>
       </div>
     </motion.div>
   );
 }
 
-function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
-  recipe: Recipe; isSaved: boolean; onToggleSave: () => void; onClose: () => void;
+export function RecipeDetailSheet({ recipe, isSaved, onToggleSave, isFavourite, onToggleFavourite, onClose }: {
+  recipe: Recipe; isSaved: boolean; onToggleSave: () => void;
+  isFavourite: boolean; onToggleFavourite: () => void; onClose: () => void;
 }) {
   const { currentCycleDay, getCycleDayForDate } = useCycle();
   const [servings, setServings] = useState(recipe.serves);
@@ -531,7 +518,8 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
     return ing;
   };
 
-  return (
+  // On <body>, so the sheet and its buttons sit above the app's top bar, not under it.
+  return createPortal(
     <>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/40 z-50" onClick={onClose} />
       <motion.div
@@ -542,8 +530,22 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
       >
         <div className="bottom-sheet-handle" />
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-          <button onClick={onToggleSave} className="touch-btn p-2 rounded-full bg-secondary">
-            <Heart className={`h-4 w-4 ${isSaved ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+          <button
+            onClick={() => { haptic("light"); onToggleSave(); }}
+            aria-label={isSaved ? "Remove from Saved" : "Save"}
+            aria-pressed={isSaved}
+            className="touch-btn p-2 rounded-full bg-secondary"
+          >
+            {isSaved ? <Check className="h-4 w-4 text-primary" /> : <Plus className="h-4 w-4 text-muted-foreground" />}
+          </button>
+          {/* Heart: cooked it, loved it. Keeps it in Favourites. */}
+          <button
+            onClick={() => { haptic("light"); onToggleFavourite(); }}
+            aria-label={isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+            aria-pressed={isFavourite}
+            className="touch-btn p-2 rounded-full bg-secondary"
+          >
+            <Heart className={`h-4 w-4 ${isFavourite ? "fill-primary text-primary" : "text-muted-foreground"}`} />
           </button>
           <button onClick={onClose} className="touch-btn p-2 rounded-full bg-secondary">
             <X className="h-4 w-4 text-muted-foreground" />
@@ -639,7 +641,8 @@ function RecipeDetailSheet({ recipe, isSaved, onToggleSave, onClose }: {
           {recipe.kidAlternative && <KidAlternativeNote text={recipe.kidAlternative} phaseColor={phaseColor} />}
         </div>
       </motion.div>
-    </>
+    </>,
+    document.body,
   );
 }
 

@@ -19,6 +19,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import SupplementRecommender from "@/components/nutrition/SupplementRecommender";
 import MyRecipesTab from "@/components/nutrition/MyRecipesTab";
+import FavouritesTab from "@/components/nutrition/FavouritesTab";
 import NourishStreakBadge from "@/components/nutrition/NourishStreakBadge";
 
 class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, { error: Error | null }> {
@@ -43,12 +44,12 @@ class TabErrorBoundary extends Component<{ children: ReactNode; tab: string }, {
   }
 }
 
-type TabId = "today" | "myweek" | "discover" | "cookbook" | "myrecipes" | "supplements" | "shop";
+type TabId = "today" | "myweek" | "discover" | "cookbook" | "myrecipes" | "favourites" | "supplements" | "shop";
 
 export default function NutritionPage() {
   const { currentPhase, currentCycleDay } = useCycle();
   const { movementGoals: profileGoals } = useProfile();
-  const [activeTab, setActiveTab] = usePageTab<TabId>(["today", "myweek", "shop", "discover", "cookbook", "myrecipes", "supplements"], "today");
+  const [activeTab, setActiveTab] = usePageTab<TabId>(["today", "myweek", "shop", "discover", "cookbook", "myrecipes", "favourites", "supplements"], "today");
   const navigate = useNavigate();
 
   const bodyGoals = useMemo<string[]>(() => {
@@ -66,6 +67,7 @@ export default function NutritionPage() {
     { id: "discover", label: "Recipes" },
     { id: "cookbook", label: "Cookbook" },
     { id: "myrecipes", label: "Saved" },
+    { id: "favourites", label: "Favourites" },
     { id: "supplements", label: "Supplements" },
   ];
 
@@ -119,6 +121,7 @@ export default function NutritionPage() {
           {activeTab === "discover" && <TabErrorBoundary tab="Discover"><DiscoverTab /></TabErrorBoundary>}
           {activeTab === "cookbook" && <TabErrorBoundary tab="Cookbook"><FamilyRecipesTab /></TabErrorBoundary>}
           {activeTab === "myrecipes" && <TabErrorBoundary tab="My Recipes"><MyRecipesTab /></TabErrorBoundary>}
+          {activeTab === "favourites" && <TabErrorBoundary tab="Favourites"><FavouritesTab /></TabErrorBoundary>}
           {activeTab === "supplements" && <TabErrorBoundary tab="Supplements"><SupplementRecommender /></TabErrorBoundary>}
           {activeTab === "shop" && <TabErrorBoundary tab="Shop"><WeekShoppingList /></TabErrorBoundary>}
         </div>
