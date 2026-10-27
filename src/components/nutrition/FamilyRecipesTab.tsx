@@ -16,6 +16,13 @@ import {
   type FamilyRecipe,
   type FamilyRecipeCategory,
 } from "@/data/plant-based-family-recipes";
+import { MATTHEW_KIDS_RECIPES } from "@/data/matthew-kids-recipes";
+
+/** All cookbook collections surfaced in this tab. */
+const COLLECTIONS = [
+  { id: "family", label: "Family Cookbook", recipes: PLANT_BASED_FAMILY_RECIPES },
+  { id: "kids", label: "Kids' Favourites", recipes: MATTHEW_KIDS_RECIPES },
+] as const;
 
 const CATEGORIES: ("All" | FamilyRecipeCategory)[] = [
   "All", "breakfast", "lunch", "dinner", "snack", "baking", "dessert",
@@ -180,26 +187,46 @@ function RecipeDetail({ recipe, onClose }: { recipe: FamilyRecipe; onClose: () =
 }
 
 export default function FamilyRecipesTab() {
+  const [collectionId, setCollectionId] = useState<string>(COLLECTIONS[0].id);
   const [category, setCategory] = useState<"All" | FamilyRecipeCategory>("All");
   const [openId, setOpenId] = useState<string | null>(null);
 
+  const collection = COLLECTIONS.find((c) => c.id === collectionId) ?? COLLECTIONS[0];
+
   const filtered = useMemo(
     () => (category === "All"
-      ? PLANT_BASED_FAMILY_RECIPES
-      : PLANT_BASED_FAMILY_RECIPES.filter((r) => r.category === category)),
-    [category]
+      ? collection.recipes
+      : collection.recipes.filter((r) => r.category === category)),
+    [collection, category]
   );
 
   const openRecipe = openId
-    ? PLANT_BASED_FAMILY_RECIPES.find((r) => r.id === openId) ?? null
+    ? collection.recipes.find((r) => r.id === openId) ?? null
     : null;
 
   return (
     <div className="space-y-4">
+      {/* Cookbook collection switcher */}
+      <div className="scroll-snap-x flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+        {COLLECTIONS.map((c) => (
+          <button
+            key={c.id}
+            onClick={() => { haptic("light"); setCollectionId(c.id); setCategory("All"); }}
+            className={`touch-btn flex-shrink-0 rounded-full px-3 py-1.5 font-body text-xs font-semibold transition-all whitespace-nowrap border ${
+              collectionId === c.id
+                ? "bg-foreground text-background border-foreground"
+                : "bg-card text-muted-foreground border-border/60"
+            }`}
+          >
+            {c.label} · {c.recipes.length}
+          </button>
+        ))}
+      </div>
+
       <div className="flex items-center gap-2">
         <ChefHat className="h-4 w-4 text-primary/60" />
         <p className="font-hand text-[10px] uppercase tracking-wider" style={{ color: "hsl(var(--label-color))" }}>
-          plant-based family cookbook · {PLANT_BASED_FAMILY_RECIPES.length} recipes
+          {collection.label} · {collection.recipes.length} recipes
         </p>
       </div>
 
