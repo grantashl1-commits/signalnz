@@ -42,6 +42,12 @@ const FORCE = args.has("force");
 const DRY = args.has("dry-run");
 const CONCURRENCY = Number(args.get("concurrency") ?? 3);
 const CONTINUE_MISSING = args.has("continue-missing");
+/**
+ * Draw only the exercises that have no shipped file yet. This is what the
+ * library back-fill needs: --continue-missing would also redraw the 61
+ * illustrations that already exist.
+ */
+const ONLY_MISSING = args.has("only-missing");
 
 /** Prompt name -> shipped filename, where the slug does not match. */
 const FILENAME_OVERRIDES = {
@@ -75,6 +81,11 @@ for (const p of prompts) {
   const stem = FILENAME_OVERRIDES[s] ?? s;
   const file = `${stem}.png`;
 
+  if (ONLY_MISSING) {
+    if (shipped.has(file)) continue;
+    jobs.push({ name: p.name, id: stem, file, prompt: p.prompt });
+    continue;
+  }
   if (!shipped.has(file) && !CONTINUE_MISSING) {
     skippedNoArt.push({ name: p.name, file });
     continue;

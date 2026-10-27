@@ -18,14 +18,40 @@ function normalizeName(name: string): string {
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[‐‑‒–—―]/g, "-")
+    // Apostrophes are dropped from filenames ("Farmers Carry"), so they have to
+    // be dropped here too or the slug gains a stray "-s-" and never matches.
+    .replace(/[''`]/g, "")
     .replace(/&/g, " and ")
     .replace(/\bdb\b/g, "dumbbell")
     .trim();
 }
 
-/** Pull the exercise name out of a structure line, or return null for descriptive lines (warm-ups, stretches). */
+/**
+ * Structure lines that describe a session rather than name a movement.
+ * These must not become library entries — "Easy 20 min run" is not an exercise
+ * and has no pose to illustrate.
+ */
+const SESSION_NOT_EXERCISE =
+  /^(rest\b|walk\b|circuit\b|easy \d|light session|whatever your body wants|choose \d+|week \d+ day \d+|optional\b|\d+ ?min\b)/i;
+
+/**
+ * Pull the exercise name out of a structure line, or return null for
+ * descriptive lines (warm-ups, stretches, session notes).
+ *
+ * Two prefixes have to come off first, or every lookup misses:
+ *  - block prefixes the renderer adds: "Warm up: Arm circles", "Cool down: …"
+ *  - position numbers used by the flat-string paths: "1. Goblet Squats – 3×12"
+ * Left in place they become part of the name, so "Goblet Squats" resolved as
+ * "1. Goblet Squats" and found no illustration.
+ */
 export function extractExerciseName(line: string): string | null {
-  const trimmed = line.trim();
+  let trimmed = (line ?? "").trim();
+  if (!trimmed) return null;
+
+  trimmed = trimmed.replace(/^(warm[\s-]?up|cool[\s-]?down)\s*:\s*/i, "");
+  trimmed = trimmed.replace(/^\d+\s*[.)]\s*/, "");
+  if (!trimmed || SESSION_NOT_EXERCISE.test(trimmed)) return null;
+
   // Common dashes used as the separator between exercise name and prescription
   const separators = [" – ", " — ", " - "];
   for (const sep of separators) {
@@ -43,6 +69,52 @@ function slugify(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
+/**
+ * Singularise a name so plurals resolve: "Goblet Squats" -> "Goblet Squat",
+ * "Bicycle Crunches" -> "Bicycle Crunch". Training paths describe sets, so the
+ * plural is more common in the data than the singular used for filenames.
+ */
+function singularise(name: string): string {
+  return name
+    .split(" ")
+    .map((w) => {
+      if (/(ches|shes|xes|sses|zes)$/i.test(w)) return w.slice(0, -2);
+      if (/[a-z]{2,}s$/i.test(w) && !/(ss|us|is|as|os)$/i.test(w)) return w.slice(0, -1);
+      return w;
+    })
+    .join(" ");
+}
+
+/** Names the paths use that differ from the illustration's own title. */
+const SYNONYMS: Array<[RegExp, string]> = [
+  [/\bclamshells?\b/i, "Clam"],
+  [/\b(the )?hundred\b/i, "Pilates Hundred"],
+  [/\bsingle leg circles?\b/i, "Single-Leg Circle"],
+  [/\bbridge march\b/i, "Glute Bridge March"],
+  [/\bsingle leg glute bridge\b/i, "Single-Leg Glute Bridge"],
+  [/\bglute bridges?\b/i, "Glute Bridge"],
+  [/\b(standing |seated )?shoulder press\b/i, "Overhead Press"],
+  [/\bdumbbell biceps? curls?\b/i, "Bicep Curl"],
+  [/\b(overhead |lying )?triceps? extensions?\b/i, "Tricep Overhead Extension"],
+  [/\bstanding calf raises?\b/i, "Calf Raise"],
+  [/\blateral raises?\b/i, "Lateral Raise"],
+  [/\breverse lunges?\b/i, "Reverse Lunge"],
+  [/\bstep ups?\b/i, "Step-Up"],
+  // Variants the paths list separately but which share one illustration.
+  [/\bsumo squats?( with)? pulse\b/i, "Sumo Squat"],
+  [/\bpli[eé] squat\b/i, "Sumo Squat"],
+  [/\bslow mountain climbers?\b/i, "Mountain Climbers"],
+  [/\bmedicine ball slams?\b/i, "Med Ball Slam"],
+  [/\bskipping or dancing\b/i, "Skipping"],
+  [/\bbodyweight squats?\b/i, "Squat"],
+  [/\bsupine leg lowering\b/i, "Leg Lower"],
+  [/\bstanding toe taps?\b/i, "Toe Tap"],
+  [/\btricep dips? with (knee raise|leg lift)\b/i, "Tricep Dip"],
+  [/\bv[\s-]?up (with twist|to jackknife)\b/i, "V Up"],
+  [/\bslow bear crawls?\b/i, "Bear Crawl"],
+  [/\bcriss cross\b/i, "Criss Cross"],
+];
+
 function getExerciseNameVariants(name: string): string[] {
   const raw = name.trim();
   const normalized = normalizeName(raw);
@@ -50,7 +122,17 @@ function getExerciseNameVariants(name: string): string[] {
     raw,
     raw.replace(/\(.*?\)/g, " ").trim(),
     normalized,
+    singularise(raw),
+    singularise(normalized),
+    singularise(raw.replace(/\(.*?\)/g, " ").trim()),
   ]);
+
+  for (const [pattern, alias] of SYNONYMS) {
+    if (pattern.test(raw)) {
+      candidates.add(alias);
+      candidates.add(singularise(alias));
+    }
+  }
 
   if (/\bpush ?up\b/.test(normalized)) candidates.add("Push-Up");
   if (/\bdecline push up\b/.test(normalized)) candidates.add("Decline Push-Up");

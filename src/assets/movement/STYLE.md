@@ -6,12 +6,12 @@ There are **two deliberate styles**, and they must not be mixed.
 
 | | Strength & Core | Reformer |
 |---|---|---|
-| **Exercises** | 66 | 117 |
+| **Exercises** | 207 (66 original + 141 library) | 117 |
 | **Look** | Minimalist hand-drawn watercolour | Detailed anatomical medical illustration |
 | **Muscle marking** | Soft sage / dusty-rose / terracotta **washes** | Saturated **coral-red** striated muscle |
 | **Equipment** | Dumbbells, barbells, benches, balls | Fully rendered wooden reformer |
 | **Background** | White | Pure flat white |
-| **Prompt source** | `src/data/strength-core-exercises.json` | `src/data/reformer-exercises.json` |
+| **Prompt source** | `src/data/strength-core-exercises.json` + `src/data/exercise-art/*.json` | `src/data/reformer-exercises.json` |
 | **Builder** | `scripts/build-exercise-prompts.mjs` | `scripts/build-reformer-prompts.mjs` |
 | **Assembled prompts** | `src/exercise-prompts.json` | `src/reformer-exercise-prompts.json` |
 | **Prompt sheet** | [`PROMPTS-strength-core.md`](./PROMPTS-strength-core.md) | [`reformer/PROMPTS.md`](./reformer/PROMPTS.md) |
@@ -21,6 +21,38 @@ Why two styles: a member should be able to tell at a glance whether they are
 looking at a mat/weight movement or a machine movement. The reformer set is
 richer because the apparatus *is* the exercise — the pose only makes sense
 against the carriage, footbar and straps.
+
+## Why the watercolour set is now 207, not 66
+
+The Movement → Library tab lists **every exercise any training path
+prescribes** — that is 282 movements across strength, forge, partner series,
+glute, reformer, pilates, run, circuit and restore. The original 66 covered only
+the strength-and-core catalogue, so the library fell back to a generic anatomy
+figure for everything else: the same standing woman for dozens of different
+movements.
+
+The 141 additions live in `src/data/exercise-art/*.json`, one file per batch, so
+the documented original 66 stay recognisable and a new batch can be added
+without touching the rest. `build-exercise-prompts.mjs` merges the files and
+fails loudly on a duplicate slug, because a duplicate would silently overwrite
+someone's artwork.
+
+Two failures worth remembering, both fixed in the shared `FACE`/`TAIL` rather
+than 141 individual entries:
+
+1. **Anatomical drift.** With no clothing described, the model drew her as a
+   flayed anatomical figure with striated muscles. The outfit is now named in
+   `FACE` (dusty-rose crop top, sage leggings, barefoot) and `TAIL` bans drawn
+   musculature outright — the wash is one flat tint with feathered edges.
+2. **Pose drift.** Without a fidelity clause the model drew the exercise it
+   recognised from the *name* rather than the pose in the text. `TAIL` now says
+   to follow the described pose exactly, especially arms, hands and feet.
+
+A name that cannot be won by prose alone may need a geometry phrase: the
+windshield wiper only came out right once the prompt said her legs stay "pressed
+together as one glued unit… both point to the same side: never one leg up and one
+leg down", which is the same lesson the Elephant taught in Style 2 (failure mode
+4 below).
 
 ---
 
