@@ -12,8 +12,9 @@
  *   npm install --no-save sharp@0.33.5
  *
  * Usage:
- *   node scripts/optimise-reformer-art.mjs                 # untracked PNGs in src/assets/movement/reformer
+ *   node scripts/optimise-reformer-art.mjs                 # PNGs in library/ plus untracked PNGs in reformer/
  *   node scripts/optimise-reformer-art.mjs "D:/art/reformer"  # every PNG in another folder
+ *   node scripts/optimise-reformer-art.mjs src/assets/movement/reformer/long-stretch.png  # chosen files
  *   node scripts/optimise-reformer-art.mjs --move-originals "../signalnz-art-originals"
  */
 import { execFileSync } from "node:child_process";
@@ -29,21 +30,26 @@ const QUALITY = 80;
 const args = process.argv.slice(2);
 const moveIdx = args.indexOf("--move-originals");
 const moveTo = moveIdx >= 0 ? resolve(args[moveIdx + 1] ?? "") : null;
-const source = args.find((a, i) => !a.startsWith("--") && i !== moveIdx + 1) ?? null;
+const sources = args.filter((a, i) => !a.startsWith("--") && (moveIdx < 0 || i !== moveIdx + 1));
 
 /** "Arms in Straps: Lower & Lift.png" → "arms-in-straps-lower-and-lift" (the app matches exercise names the same way). */
 export const slug = (name) =>
   name.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 function pngsToConvert() {
-  if (source) {
-    const dir = resolve(source);
-    return readdirSync(dir).filter(f => /\.png$/i.test(f)).map(f => join(dir, f));
+  if (sources.length) {
+    return sources.flatMap(src => {
+      const path = resolve(src);
+      if (/\.png$/i.test(path)) return [path];
+      return readdirSync(path).filter(f => /\.png$/i.test(f)).map(f => join(path, f));
+    });
   }
-  // Default: only the PNGs git doesn't know about yet, i.e. the new set.
-  // Untracked PNGs, including ones .gitignore keeps out of commits.
+  // Default: full-size PNGs dropped into library/ (the app shows them until the WebP
+  // exists) plus PNGs git doesn't know about yet anywhere in the reformer folder.
+  const dropped = (existsSync(OUT) ? readdirSync(OUT) : []).filter(f => /\.png$/i.test(f)).map(f => join(OUT, f));
   const out = execFileSync("git", ["ls-files", "--others", "--", "src/assets/movement/reformer"], { cwd: ROOT, encoding: "utf8" });
-  return out.split(/\r?\n/).filter(f => /\.png$/i.test(f) && !f.includes("/library/")).map(f => join(ROOT, f));
+  const untracked = out.split(/\r?\n/).filter(f => /\.png$/i.test(f) && !f.includes("/library/")).map(f => join(ROOT, f));
+  return [...dropped, ...untracked];
 }
 
 let sharp;
@@ -78,10 +84,10 @@ for (const file of files) {
   if (moveTo) renameSync(file, join(moveTo, basename(file)));
 }
 
-writeFileSync(join(OUT, "names.txt"), `${made.sort().join("\n")}\n`);
+const library = readdirSync(OUT).filter(f => /\.webp$/i.test(f)).map(f => f.replace(/\.webp$/i, "")).sort();
+writeFileSync(join(OUT, "names.txt"), `${library.join("\n")}\n`);
 console.log(`\n${made.length} images: ${(before / 1048576).toFixed(1)} MB → ${(after / 1048576).toFixed(1)} MB in src/assets/movement/reformer/library/`);
 console.log(moveTo
   ? `Originals moved to ${moveTo}.`
-  : "Originals left in place. Move them out of the repo (or pass --move-originals <folder>) before committing.");
-console.log("Commit only src/assets/movement/reformer/library/.");
+  : "Originals left in place. Full-size PNGs in library/ can go once their WebP exists (or pass --move-originals <folder>).");
 if (!existsSync(join(ROOT, ".git"))) console.warn("(Not a git checkout: nothing was detected as untracked.)");

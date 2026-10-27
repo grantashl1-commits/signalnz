@@ -138,6 +138,21 @@ It skips files that already exist, so re-running is safe.
 | Exercise | Series | Level | Output file |
 |---|---|---|--|
 
+## Plan exercises not in the book (0 of 10 drawn)
+
+Prompts: [`PLAN-PROMPTS.md`](./PLAN-PROMPTS.md). Artwork goes in `library/`.
+
+- [ ] **Toe Dips** — `library/toe-dips.png`
+- [ ] **Arms in Straps: Triceps Press** — `library/arms-in-straps-triceps-press.png`
+- [ ] **Arms in Straps: T Press** — `library/arms-in-straps-t-press.png`
+- [ ] **Reformer Standing Lunge** — `library/reformer-standing-lunge.png`
+- [ ] **Mermaid** — `library/mermaid.png`
+- [ ] **Reverse Frog Kicks** — `library/reverse-frog-kicks.png`
+- [ ] **Longbox Hip Stretch** — `library/longbox-hip-stretch.png`
+- [ ] **Longbox Hamstring Stretch** — `library/longbox-hamstring-stretch.png`
+- [ ] **Longbox Shoulder Stretch** — `library/longbox-shoulder-stretch.png`
+- [ ] **Butterfly Stretch** — `library/butterfly-stretch.png`
+
 ## Files in this folder that are not from the book
 
 These were drawn for the partner programme and are kept as-is. They are not

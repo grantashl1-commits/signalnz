@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SIGNAL_TRAINING_PATHS, type TrainingPath } from "@/data/signal-training-paths";
 import { getCorrectedExerciseArt, wordKey } from "@/lib/corrected-exercise-art";
+import planExtras from "@/data/reformer-plan-extras.json";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { auth: { getUser: async () => ({ data: { user: null } }) } } }));
 const { getNextSession, markSessionCompleted } = await import("@/lib/training-path-utils");
@@ -57,10 +58,17 @@ describe("evidence-based training paths", () => {
     expect(getCorrectedExerciseArt("Feet in Straps: Frog")).toBeTruthy();
   });
 
-  it("uses the shared reformer illustrations for the reformer path", () => {
+  it("gives every reformer class exercise artwork or a queued prompt", () => {
     const names = new Set(training(byId("reformer-strength")).flatMap(s => s.supersets!.flatMap(b => b.exercises.map(e => e.name))));
+    const queued = new Set(planExtras.map(e => e.name));
     const withArt = [...names].filter(n => getCorrectedExerciseArt(n));
-    expect(withArt.length).toBeGreaterThanOrEqual(10);
+    expect(withArt.length).toBeGreaterThanOrEqual(27);
+    expect([...names].filter(n => !getCorrectedExerciseArt(n) && !queued.has(n))).toEqual([]);
+    // Queued artwork is named so the app finds it by the exercise name once it lands.
+    for (const extra of planExtras) {
+      expect(names.has(extra.name), extra.name).toBe(true);
+      expect(wordKey(extra.id)).toBe(wordKey(extra.name));
+    }
   });
 });
 

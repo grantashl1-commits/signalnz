@@ -129,15 +129,33 @@ const correctedArt: Record<string, string> = {
 
 // Reformer illustrations added to assets/movement/reformer/library/ (shrunk to WebP by
 // scripts/optimise-reformer-art.mjs) are matched on the exercise name's words, in any
-// order and ignoring "reformer": skater-reformer.webp → "Reformer Skater".
+// order and ignoring "reformer": skater-reformer.webp → "Reformer Skater". A full-size
+// PNG dropped there shows until its WebP exists.
 export const wordKey = (name: string) =>
   name.toLowerCase().replace(/&/g, " and ").split(/[^a-z0-9]+/).filter(w => w && w !== "reformer").sort().join(" ");
 const libraryArt = new Map(
-  Object.entries(import.meta.glob("/src/assets/movement/reformer/library/*.webp", { eager: true, import: "default" }) as Record<string, string>)
-    .map(([path, url]) => [wordKey(path.split("/").pop()!.replace(/\.webp$/i, "")), url]),
+  Object.entries(import.meta.glob("/src/assets/movement/reformer/library/*.{webp,png}", { eager: true, import: "default" }) as Record<string, string>)
+    .sort(([a], [b]) => Number(a.endsWith(".webp")) - Number(b.endsWith(".webp")))
+    .map(([path, url]) => [wordKey(path.split("/").pop()!.replace(/\.(webp|png)$/i, "")), url]),
 );
+
+// Reformer class names drawn by a book catalogue illustration (library/<catalogue id>.webp,
+// see src/data/reformer-exercises.json). Only poses checked against the class cue.
+const libraryAlias: Record<string, string> = {
+  "footwork arches": "footwork-monkey-on-branch",
+  "footwork balls of feet": "footwork-parallel-toes",
+  hundreds: "supine-hundred",
+  "feet in straps leg circles": "legs-rectangles-circles-ovals",
+  "knee stretch": "knee-stretch-round-back",
+  elephant: "elephant-round-back",
+  "reformer long box pull": "long-box-pulling-ropes",
+  "reformer long box t pull": "long-box-t-pull",
+  "reformer skater": "speed-skating",
+};
 
 export function getCorrectedExerciseArt(name: string | null | undefined): string | undefined {
   if (!name) return undefined;
-  return correctedArt[normalize(name)] ?? libraryArt.get(wordKey(name));
+  const key = normalize(name);
+  const alias = libraryAlias[key];
+  return correctedArt[key] ?? libraryArt.get(wordKey(name)) ?? (alias ? libraryArt.get(wordKey(alias)) : undefined);
 }

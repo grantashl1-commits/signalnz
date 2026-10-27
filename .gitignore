@@ -31,9 +31,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Full-size reformer art stays out of git: commit the WebPs made by
-# scripts/optimise-reformer-art.mjs in src/assets/movement/reformer/library/ instead.
-# (Already-tracked PNGs in this folder are unaffected.)
-src/assets/movement/reformer/*.png
-src/assets/movement/reformer/library/*.png

@@ -119,13 +119,14 @@ const all = JSON.parse(readFileSync(PROMPTS, "utf8"));
 
 let queue = all;
 if (ONLY) queue = queue.filter((p) => ONLY.includes(p.id));
-if (SERIES) queue = queue.filter((p) => p.series.toLowerCase() === SERIES);
+if (SERIES) queue = queue.filter((p) => p.series?.toLowerCase() === SERIES);
 if (LEVEL) queue = queue.filter((p) => p.level === LEVEL);
 
 const skipped = [];
 queue = queue.filter((p) => {
   const target = resolve(OUT_DIR, p.outputFile);
-  if (!FORCE && existsSync(target)) {
+  // Plan art may already have been shrunk to WebP (scripts/optimise-reformer-art.mjs).
+  if (!FORCE && (existsSync(target) || existsSync(target.replace(/\.png$/i, ".webp")))) {
     skipped.push(p.id);
     return false;
   }
