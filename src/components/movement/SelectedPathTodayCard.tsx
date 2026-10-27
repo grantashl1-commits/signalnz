@@ -43,6 +43,7 @@ import restoreArt from "@/assets/training-paths/restore.png";
 import stressReliefArt from "@/assets/training-paths/stress-relief.png";
 import glutePowerArt from "@/assets/training-paths/glute-power.png";
 import reformerArt from "@/assets/training-paths/reformer-pilates.png";
+import partnerArt from "@/assets/training-paths/partner-series.png";
 
 const FOCUS_ART: Record<TrainingFocus, string> = {
   strength: strengthArt,
@@ -52,7 +53,7 @@ const FOCUS_ART: Record<TrainingFocus, string> = {
   pilates: pilatesArt,
   reformer: reformerArt,
   restore: restoreArt,
-  hybrid: strengthArt,
+  hybrid: partnerArt,
   "stress-relief": stressReliefArt,
   "glute-power": glutePowerArt,
 };

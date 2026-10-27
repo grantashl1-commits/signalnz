@@ -231,7 +231,39 @@ export async function syncTrainingProgress(): Promise<void> {
     if (error) throw error;
     if (!scope.matches(user.id)) return;
     const remote = row?.plan_data as {completed?: Record<string,true>; updatedAt?: number} | undefined;
-    const localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+    let localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+    // Older versions wrote workout history, but no progress snapshot. Recover it
+    // only before a snapshot/reset exists: historical logs must never undo a reset.
+    if (!row && !localTime) {
+      const recovered: Record<string, true> = {};
+      const pageSize = 500;
+      for (let offset = 0; ; offset += pageSize) {
+        const { data: logs, error: historyError } = await supabase.from('workout_logs')
+          .select('id,notes').eq('user_id', user.id).eq('completed', true)
+          .order('id', { ascending: true }).range(offset, offset + pageSize - 1);
+        if (historyError) throw historyError;
+        if (!scope.matches(user.id)) return;
+        for (const log of logs ?? []) {
+          const match = /\[([^\[\]]+)::w(\d+)::d(\d+)\]/.exec(log.notes ?? '');
+          if (!match || isPartnerPath(match[1])) continue;
+          const path = SIGNAL_TRAINING_PATHS.find(p => p.id === match[1]);
+          const session = path?.weeks.find(w => w.week === Number(match[2]))?.sessions.find(s => s.day === Number(match[3]));
+          if (session) recovered[sessionKey(match[1], Number(match[2]), Number(match[3]))] = true;
+        }
+        if (!logs || logs.length < pageSize) break;
+      }
+      // A completion or reset may have happened while history was loading.
+      localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+      if (!localTime) {
+        const completed = { ...recovered, ...getCompletedMap() };
+        if (Object.keys(completed).length) {
+          localTime = Date.now();
+          localStorage.setItem(COMPLETED_SESSIONS_KEY, JSON.stringify(completed));
+          localStorage.setItem(PROGRESS_TIME, String(localTime));
+          window.dispatchEvent(new Event('signal:training-path-changed'));
+        }
+      }
+    }
     if ((remote?.updatedAt ?? 0) > localTime && remote?.completed) {
       localStorage.setItem(COMPLETED_SESSIONS_KEY,JSON.stringify(remote.completed));
       localStorage.setItem(PROGRESS_TIME,String(remote.updatedAt));

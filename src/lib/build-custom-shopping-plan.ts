@@ -18,6 +18,7 @@ import {
   AIMealPlan,
   AIPlannedDay,
   PrepPreferences,
+  getSavedPreferences,
 } from "./weekly-planner";
 import { CustomMealPlan, MealSlot } from "@/hooks/useCustomMealPlan";
 import type { Recipe } from "@/data/meal-plans";
@@ -92,7 +93,7 @@ export function buildCustomShoppingPlan(
   basePlan?: AIMealPlan | null,
   dates?: string[]
 ): AIMealPlan {
-  const preferences = { ...STATIC_PREFS, ...basePlan?.prepPreferences, ...prepPreferences };
+  const preferences = { ...STATIC_PREFS, ...getSavedPreferences(), ...basePlan?.prepPreferences, ...prepPreferences };
   const days: AIPlannedDay[] = cycleDays.map((cycleDay, index) => {
     const phase = getPhaseFromDay(cycleDay);
     const picks = customPlan[dates?.[index] ?? ""] ?? customPlan[cycleDay] ?? {};
@@ -120,7 +121,7 @@ export function buildCustomShoppingPlan(
 
   return {
     days,
-    prepPreferences: { ...STATIC_PREFS, ...basePlan?.prepPreferences, ...prepPreferences },
+    prepPreferences: preferences,
     createdAt: Date.now(),
     lockedMeals: {},
   };

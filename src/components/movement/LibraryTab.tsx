@@ -9,6 +9,7 @@ import QuickWorkoutSession, { getExercisePrescription } from "@/components/movem
 import { STACY_SIMS_WORKOUTS } from "@/data/stacy-sims-workouts";
 import type { Workout } from "@/data/workouts";
 import { getAllPathExercises } from "@/lib/training-path-utils";
+import { SIGNAL_TRAINING_PATHS } from "@/data/signal-training-paths";
 import { useProfile } from "@/hooks/useProfile";
 import PhaseBadge from "@/components/PhaseBadge";
 import { suggestPhaseForExercise } from "@/lib/exercise-phase-suggest";
@@ -46,6 +47,62 @@ interface DBExercise {
   cues: string[] | null;
   equipment: string[] | null;
   primary_muscles: string[] | null;
+}
+
+/**
+ * Disciplines shown as filter chips, keyed by the training path's `focus`.
+ * These are the shapes the member actually thinks in ("a reformer day",
+ * "something for glutes"), not anatomy.
+ */
+const DISCIPLINE_LABELS: Record<string, string> = {
+  strength: "Strength",
+  muscle: "Hypertrophy",
+  hybrid: "Partner",
+  "glute-power": "Glute",
+  reformer: "Reformer",
+  pilates: "Pilates",
+  cardio: "Circuit",
+  run: "Run",
+  restore: "Restore",
+  "stress-relief": "Restore",
+};
+
+const slug = (s: string) =>
+  s.toLowerCase().replace(/[()]/g, " ").replace(/['’.]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/**
+ * Every exercise the app actually prescribes.
+ *
+ * This used to read the `exercises` table, which held sixteen reformer rows —
+ * so the Library showed sixteen entries out of the 283 the training paths use,
+ * and the rest of the catalogue was invisible. The paths are the source of
+ * truth: if a member can be asked to do it, it belongs here.
+ *
+ * `body_part` carries the discipline so the existing filter chips work, and
+ * `target` carries the first path the movement appears in, which is what the
+ * row shows under the name.
+ */
+function buildLibraryExercises(): DBExercise[] {
+  const focusOf = new Map<string, string>();
+  for (const path of SIGNAL_TRAINING_PATHS) focusOf.set(path.name, path.focus);
+
+  return getAllPathExercises().map(({ name, paths }) => {
+    const primaryPath = paths[0] ?? "";
+    const focus = focusOf.get(primaryPath) ?? "strength";
+    return {
+      id: slug(name),
+      name,
+      body_part: focus,
+      target: primaryPath || null,
+      category: focus,
+      difficulty: null,
+      illustration_url: null,
+      instructions: null,
+      cues: null,
+      equipment: null,
+      primary_muscles: null,
+    };
+  });
 }
 
 interface QuickWorkout {
@@ -103,10 +160,13 @@ const INTENSITY_COLORS: Record<string, string> = {
 
 export default function LibraryTab() {
   const [filter, setFilter] = useState<BodyFilter>("all");
+  const [discipline, setDiscipline] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [matchKit, setMatchKit] = useState(false);
-  const [exercises, setExercises] = useState<DBExercise[]>([]);
-  const [loading, setLoading] = useState(true);
+  /** Static: derived from the training paths, so there is nothing to load. */
+  const exercises = useMemo(buildLibraryExercises, []);
+  const PAGE = 30;
+  const [visibleCount, setVisibleCount] = useState(PAGE);
   const [view, setView] = useState<"exercises" | "workouts">("exercises");
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [expandedExerciseId, setExpandedExerciseId] = useState<string | null>(null);
@@ -133,30 +193,14 @@ export default function LibraryTab() {
     toast.success(added ? "Added to today." : "Removed from today.");
   };
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      setLoading(true);
-      const { data } = await supabase
-        .from("exercises")
-        .select("id, name, body_part, target, category, difficulty, illustration_url, instructions, cues, equipment, primary_muscles")
-        .order("name");
-      if (data) setExercises(data as unknown as DBExercise[]);
-      setLoading(false);
-    };
-    fetchExercises();
-  }, []);
+  // The exercise list is derived from the training paths above; only the quick
+  // workouts still read the database.
 
   const filtered = useMemo(() => {
     let result = exercises;
 
-    if (filter === "upper") {
-      result = result.filter(e => e.body_part && UPPER_PARTS.has(e.body_part));
-    } else if (filter === "lower") {
-      result = result.filter(e => e.body_part && LOWER_PARTS.has(e.body_part));
-    } else if (filter === "full-body") {
-      result = result.filter(e => e.body_part === "full body" || (!UPPER_PARTS.has(e.body_part || "") && !LOWER_PARTS.has(e.body_part || "")));
-    } else if (filter === "rehabilitation") {
-      result = result.filter(e => e.category === "rehabilitation");
+    if (discipline !== "all") {
+      result = result.filter(e => e.category === discipline);
     }
 
     if (search.trim()) {
@@ -164,7 +208,7 @@ export default function LibraryTab() {
       result = result.filter(e =>
         e.name.toLowerCase().includes(q) ||
         e.target?.toLowerCase().includes(q) ||
-        e.body_part?.toLowerCase().includes(q)
+        e.category?.toLowerCase().includes(q)
       );
     }
 
@@ -173,7 +217,7 @@ export default function LibraryTab() {
     }
 
     return result;
-  }, [exercises, filter, search, matchKit, equipmentPreference]);
+  }, [exercises, discipline, search, matchKit, equipmentPreference]);
 
   type UnifiedWorkout =
     | { kind: "quick"; data: QuickWorkout; bodyFilter: BodyFilter }
@@ -233,6 +277,21 @@ export default function LibraryTab() {
     { id: "rehabilitation", label: "Rehabilitation" },
   ];
 
+  /** Discipline chips for the exercise browser, in the order the paths list them. */
+  const DISCIPLINES: { id: string; label: string }[] = useMemo(() => {
+    const seen: string[] = [];
+    for (const path of SIGNAL_TRAINING_PATHS) {
+      const key = path.focus;
+      if (!seen.includes(key)) seen.push(key);
+    }
+    return [
+      { id: "all", label: "All" },
+      ...seen
+        .filter(key => exercises.some(e => e.category === key))
+        .map(key => ({ id: key, label: DISCIPLINE_LABELS[key] ?? key })),
+    ];
+  }, [exercises]);
+
   // If a workout session is active, show the session view
   if (activeSession) {
     return (
@@ -260,12 +319,18 @@ export default function LibraryTab() {
       </div>
 
       <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-        {FILTERS.map(f => (
+        {(view === "exercises" ? DISCIPLINES : FILTERS).map(f => (
           <button
             key={f.id}
-            onClick={() => { haptic("light"); setFilter(f.id); }}
+            onClick={() => {
+              haptic("light");
+              if (view === "exercises") setDiscipline(f.id);
+              else setFilter(f.id as BodyFilter);
+            }}
             className={`shrink-0 rounded-full px-3.5 py-2 min-h-[44px] font-body text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
-              filter === f.id ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+              (view === "exercises" ? discipline === f.id : filter === f.id)
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-muted-foreground"
             }`}
           >
             {f.label}
@@ -305,11 +370,7 @@ export default function LibraryTab() {
         </button>
       </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-5 w-5 animate-spin text-primary" />
-        </div>
-      ) : view === "exercises" ? (
+      {view === "exercises" ? (
         <div className="space-y-5">
 
           <div className="space-y-1.5">
@@ -318,7 +379,7 @@ export default function LibraryTab() {
               Nothing matches yet — try a softer filter.
             </p>
           )}
-          {filtered.slice(0, 50).map((ex, i) => {
+          {filtered.slice(0, visibleCount).map((ex, i) => {
             const isExpanded = expandedExerciseId === ex.id;
             return (
               <motion.div
@@ -453,10 +514,18 @@ export default function LibraryTab() {
               </motion.div>
             );
           })}
-          {filtered.length > 50 && (
-            <p className="py-4 text-center font-body text-xs text-muted-foreground">
-              Showing 50 of {filtered.length} exercises. Use search to narrow results.
-            </p>
+          {filtered.length > visibleCount && (
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <p className="font-body text-[11px] text-muted-foreground">
+                Showing {visibleCount} of {filtered.length}
+              </p>
+              <button
+                onClick={() => { haptic("light"); setVisibleCount(c => c + PAGE); }}
+                className="rounded-full bg-primary px-5 py-2 font-body text-xs font-bold text-primary-foreground"
+              >
+                Show more
+              </button>
+            </div>
           )}
           </div>
         </div>
