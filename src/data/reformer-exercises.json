@@ -1,0 +1,3318 @@
+[
+ {
+  "id": "footwork-first-position",
+  "name": "Footwork: First Position",
+  "nameEs": "Primera posición",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 69,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "adductors",
+   "hip-external-rotators"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage with the back of her head on the headrest and her pelvis neutral, both legs extended toward the footbar with her heels resting on the bar, feet parallel and hip-width apart, toes lifted so the soles face up the reformer, knees soft and very slightly turned out, arms long and relaxed at her sides on the carriage. The carriage is pressed away toward the foot end of the frame.",
+  "highlight": "the quadriceps and hamstrings of both thighs and the inner-thigh adductors, with the hip external rotators at the back of the hips"
+ },
+ {
+  "id": "footwork-monkey-on-branch",
+  "name": "Footwork: Monkey on a Branch",
+  "nameEs": "Mono en la rama",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 73,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "calves",
+   "feet"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage, pelvis neutral, both legs extended with only the balls of her feet on the footbar and her heels lifted high above the bar, feet parallel and close together, toes gripping the bar, knees soft. Her arms rest at her sides and the carriage is pressed out.",
+  "highlight": "the quadriceps and hamstrings of both thighs and the small intrinsic muscles of the feet and the calves"
+ },
+ {
+  "id": "footwork-parallel-heels",
+  "name": "Footwork: Parallel Heels",
+  "nameEs": "Talones en paralelo",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 75,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "calves",
+   "shin"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage, pelvis neutral, both legs extended with her heels hooked over the footbar and her feet flexed hard so the toes pull back toward her shins, feet parallel and hip-width apart, knees soft. Arms relaxed at her sides, carriage pressed out.",
+  "highlight": "the quadriceps and hamstrings of both thighs and the dorsiflexors along the front of the shins"
+ },
+ {
+  "id": "footwork-parallel-toes",
+  "name": "Footwork: Parallel Toes",
+  "nameEs": "Puntas en paralelo",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 78,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "calves",
+   "feet"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage, pelvis neutral, both legs extended with the balls of her feet on the footbar and her heels lifted directly above the bar in a high releve, feet parallel and hip-width apart, ankles strong, knees soft. Arms relaxed at her sides, carriage pressed out.",
+  "highlight": "the quadriceps and hamstrings of both thighs, the calves and the muscles of the feet"
+ },
+ {
+  "id": "footwork-internal-rotation",
+  "name": "Footwork: Internal Rotation",
+  "nameEs": "Rotación interna",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 80,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "adductors",
+   "hip-internal-rotators"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage, pelvis neutral, both legs extended with her heels on the footbar turned inward so the toes point toward each other in a pigeon-toed V, knees falling slightly in toward each other, inner thighs squeezing. Arms relaxed at her sides, carriage pressed out.",
+  "highlight": "the quadriceps and hamstrings of both thighs and the hip internal rotators and inner thighs"
+ },
+ {
+  "id": "footwork-calf-raises",
+  "name": "Footwork: Calf Raises",
+  "nameEs": "Trabajo de pantorrillas",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 83,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "calves",
+   "quads",
+   "feet"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage with both legs extended and the balls of her feet on the footbar, feet parallel and hip-width apart, knees straight and carriage held still while her heels press down below the level of the bar then lift into a tall releve. Arms relaxed at her sides.",
+  "highlight": "the calves, especially the gastrocnemius and soleus bellies, and the quadriceps of both thighs"
+ },
+ {
+  "id": "footwork-combined",
+  "name": "Footwork: Combined Tendon Stretch",
+  "nameEs": "Combinado",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 85,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "calves",
+   "quads",
+   "hamstrings",
+   "feet"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue, or 3 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage with both legs extended and the balls of her feet on the footbar, heels lifted in a tall releve, both knees bent to draw the carriage toward her seat while her heels stay high, then legs pressed straight again. Arms relaxed at her sides.",
+  "highlight": "the plantar flexors of the calves and feet, with the quadriceps and hamstrings of both thighs"
+ },
+ {
+  "id": "footwork-single-leg-heel-toes",
+  "name": "Footwork: Single Leg on Heel and Toes",
+  "nameEs": "Una pierna sobre talón/punta",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 87,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "obliques",
+   "core"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "high or low",
+  "straps": "not used",
+  "headrest": "up or down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage with one heel hooked over the footbar and the other leg extended low in the air just above the carriage, pelvis level and square, one arm long at her side. The carriage is pressed out on a single leg.",
+  "highlight": "the quadriceps and hamstrings of the working leg on the bar, plus the deep obliques and multifidus of the waist"
+ },
+ {
+  "id": "footwork-sleeper",
+  "name": "Footwork: Sleeper",
+  "nameEs": "El dormido",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 90,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "quads",
+   "core"
+  ],
+  "springs": "light (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage with both legs extended low and long toward the footbar, one heel resting lightly on the bar with the other leg lifted slightly above it, pelvis neutral and legs almost parallel to the carriage. Arms relaxed at her sides.",
+  "highlight": "the upper hamstrings and the lower glutes of the working leg, with the gluteus medius and the abdominals"
+ },
+ {
+  "id": "footwork-ballet-combination",
+  "name": "Footwork: Ballet Combination",
+  "nameEs": "Combinado de ballet",
+  "series": "Footwork",
+  "level": "beginner",
+  "page": 93,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "calves",
+   "adductors",
+   "hamstrings"
+  ],
+  "springs": "light (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "lies supine on the carriage with both legs turned out in a ballet first position, heels together and toes apart on the footbar, one leg then extending long while the other stays bent, pelvis level. Arms rest softly at her sides.",
+  "highlight": "the quadriceps and plantar flexors of the calves, the inner-thigh adductors and the hamstrings"
+ },
+ {
+  "id": "supine-chicken-wings",
+  "name": "Supine: Chicken Wings",
+  "nameEs": "Alitas de pollo",
+  "series": "Supine Arms",
+  "level": "beginner",
+  "page": 100,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "chest",
+   "shoulders",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "held in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage holding a strap handle in each hand, both arms opened wide at shoulder height with the elbows bent to 90 degrees so the forearms point up, palms facing forward, ribs knitted down and pelvis neutral, legs long on the carriage. The straps are drawn out to the sides.",
+  "highlight": "the pectorals across the chest and the front of the shoulders, with the abdominals engaged to hold the ribs down"
+ },
+ {
+  "id": "supine-lat-pulls",
+  "name": "Supine: Lat Pulls",
+  "nameEs": "Pulls de dorsal",
+  "series": "Supine Arms",
+  "level": "beginner",
+  "page": 102,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "back",
+   "lats",
+   "core"
+  ],
+  "springs": "light–medium (1–2 red)",
+  "footbar": "not used",
+  "straps": "held in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage holding a strap handle in each hand, both arms reaching up to the ceiling then angled back over her head with the elbows softly bent, pulling the straps down toward her hips in a long arc, ribs knitted and lower back quiet, legs long on the carriage.",
+  "highlight": "the latissimus dorsi sweeping down both sides of the back, with the abdominals stabilising the trunk"
+ },
+ {
+  "id": "supine-angels",
+  "name": "Supine: Angels",
+  "nameEs": "Ángeles",
+  "series": "Supine Arms",
+  "level": "beginner",
+  "page": 104,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "back",
+   "lats",
+   "shoulders",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "held in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage holding a strap handle in each hand, arms swept down beside her hips then arcing wide and long over her head in a big slow angel circle, palms turning as they travel, ribs down and legs long and still on the carriage.",
+  "highlight": "the latissimus dorsi, teres minor, infraspinatus and rear deltoids, with the abdominals and the serratus anterior along the ribs"
+ },
+ {
+  "id": "supine-triceps-press",
+  "name": "Supine: Triceps Press",
+  "nameEs": "Tríceps",
+  "series": "Supine Arms",
+  "level": "beginner",
+  "page": 107,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "shoulders"
+  ],
+  "springs": "light (1–2 red)",
+  "footbar": "not used",
+  "straps": "held in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage holding a strap handle in each hand, both upper arms held still alongside her ribs with the elbows bent sharply and the hands beside her ears, then the elbows straighten to press the straps down beside her hips. Legs long on the carriage.",
+  "highlight": "the triceps on the back of both upper arms, with the shoulder stabilisers"
+ },
+ {
+  "id": "supine-hundred",
+  "name": "Supine: The Hundred",
+  "nameEs": "La centena",
+  "series": "Supine Arms",
+  "level": "beginner",
+  "page": 109,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "hip-flexors",
+   "lats",
+   "neck"
+  ],
+  "springs": "light (1–2 red)",
+  "footbar": "not used",
+  "straps": "held in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with her head, neck and shoulder blades curled up off the carriage, both legs lifted into a tabletop or extended long at a low angle, arms straight and low beside her hips pumping up and down in small rapid beats while holding the straps.",
+  "highlight": "the whole abdominal wall, the hip flexors at the front of the hips, the deep neck flexors under the chin and the latissimus dorsi"
+ },
+ {
+  "id": "supine-frog-extensions",
+  "name": "Supine: Frog Extensions",
+  "nameEs": "Extensiones de rana",
+  "series": "Supine Legs in Straps",
+  "level": "beginner",
+  "page": 112,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "adductors",
+   "quads",
+   "hamstrings",
+   "hip-external-rotators",
+   "core"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops, heels pressed together and knees drawn wide open into a diamond, then both legs press diagonally up and away until almost straight, pelvis glued level on the carriage, arms long at her sides.",
+  "highlight": "the inner-thigh adductors, the quadriceps, hamstrings and hip external rotators, with the abdominals holding the spine neutral"
+ },
+ {
+  "id": "supine-true-levitation",
+  "name": "Supine: True Levitation",
+  "nameEs": "Levitación verdadera",
+  "series": "Supine Legs in Straps",
+  "level": "intermediate",
+  "page": 115,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "glutes",
+   "adductors"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and both knees bent, then the pelvis is rolled up off the carriage so the lower back and hips lift into the air, legs held in a bent tabletop above her, weight resting on the upper back and shoulders.",
+  "highlight": "the abdominals, the glutes and the inner thighs working together to lift and hold the pelvis"
+ },
+ {
+  "id": "supine-short-spine-stretch",
+  "name": "Supine: Short Spine Stretch",
+  "nameEs": "Estiramiento corto de columna",
+  "series": "Supine Legs in Straps",
+  "level": "intermediate",
+  "page": 117,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "glutes",
+   "adductors",
+   "hamstrings"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops, legs overhead and knees bent toward her face, then the pelvis rolls up and over so the spine peels off the carriage vertebra by vertebra while the legs lower toward her head, then the spine rolls back down bone by bone and the legs extend away.",
+  "highlight": "the glutes, abdominals and inner thighs, with the spinal extensors lengthening"
+ },
+ {
+  "id": "supine-coordination",
+  "name": "Supine: Coordination",
+  "nameEs": "Coordinación",
+  "series": "Supine Legs in Straps",
+  "level": "intermediate",
+  "page": 122,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "hip-flexors",
+   "triceps",
+   "neck"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps and a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with her head and shoulders curled up, both feet in the strap loops with the legs bent in a tabletop, and a strap handle in each hand held with elbows bent beside her ribs, then one leg extends long while the arms straighten in opposition. The trunk stays lifted.",
+  "highlight": "the abdominals, hip flexors, the deep neck flexors and the triceps of both arms"
+ },
+ {
+  "id": "supine-overhead",
+  "name": "Supine: Overhead",
+  "nameEs": "Por encima de la cabeza",
+  "series": "Supine Legs in Straps",
+  "level": "intermediate",
+  "page": 126,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "lats",
+   "triceps"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps and a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage in a deep articulation with the pelvis lifted and the legs carrying up and over her head toward the floor behind her, arms pressing long straight straps down alongside her body toward her hips, the whole body folded into a small tight arc.",
+  "highlight": "the abdominals, the latissimus dorsi and the triceps, with the spine lengthening through the roll"
+ },
+ {
+  "id": "supine-overhead-jackknife",
+  "name": "Supine: Overhead to Jackknife",
+  "nameEs": "Por encima de la cabeza/La navaja",
+  "series": "Supine Legs in Straps",
+  "level": "advanced",
+  "page": 131,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "lats",
+   "triceps",
+   "hip-flexors"
+  ],
+  "springs": "light–medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps and a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with the body folded overhead and the legs vertical above her hips in a jackknife, pelvis lifted high so the weight is on the upper back, arms pressing the straps down beside her, legs reaching straight for the ceiling.",
+  "highlight": "the abdominals, hip flexors, latissimus dorsi and triceps holding the folded position"
+ },
+ {
+  "id": "rowing-hug-a-tree",
+  "name": "Rowing: Hug a Tree",
+  "nameEs": "Abrazo al árbol",
+  "series": "Rowing",
+  "level": "beginner",
+  "page": 135,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "chest",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "sits tall cross-legged on the carriage facing the pulley end, a strap handle in each hand, arms opened wide to the sides at shoulder height with softly bent elbows, then the arms sweep forward and together to wrap the straps around an invisible tree in front of her chest, sitting bones grounded and spine long.",
+  "highlight": "the deltoids and pectorals across the chest and front of the shoulders, with the abdominals and the scapular stabilisers between the shoulder blades"
+ },
+ {
+  "id": "rowing-salute",
+  "name": "Rowing: Military Salute",
+  "nameEs": "Saludo militar",
+  "series": "Rowing",
+  "level": "intermediate",
+  "page": 137,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "shoulders",
+   "back"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "sits tall cross-legged on the carriage facing the pulley end holding a strap handle in each hand, one arm bent with the hand brought to her forehead in a military salute while the other arm presses long and straight down beside her hip. Torso upright, ribs knitted.",
+  "highlight": "the triceps of the pressing arm, the deltoids of both shoulders and the back extensors holding her upright"
+ },
+ {
+  "id": "rowing-front-modified",
+  "name": "Rowing: Modified Front Rowing",
+  "nameEs": "Remo frontal modificado",
+  "series": "Rowing",
+  "level": "beginner",
+  "page": 140,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "back",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "sits tall cross-legged on the carriage facing the pulley end holding a strap handle in each hand, arms extended forward at chest height, drawing the handles back with high elbows out to the sides as the shoulder blades squeeze together, then releasing forward again. Spine stays vertical.",
+  "highlight": "the deltoids, the middle trapezius and rhomboids between the shoulder blades, the serratus anterior and the abdominals"
+ },
+ {
+  "id": "rowing-front-full",
+  "name": "Rowing: Front Rowing",
+  "nameEs": "Remo frontal",
+  "series": "Rowing",
+  "level": "advanced",
+  "page": 145,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "back",
+   "lats",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "sits tall cross-legged on the carriage facing the pulley end holding a strap handle in each hand, moving through a flowing sequence of arms reaching forward, pulling wide, lifting overhead and sweeping down. Torso stays tall and still through the whole circular pattern.",
+  "highlight": "the shoulder stabilisers all around the shoulder joint, the latissimus dorsi along the back and the erector spinae"
+ },
+ {
+  "id": "rowing-back-round",
+  "name": "Rowing: Back Rowing, Round Back",
+  "nameEs": "Remo de espaldas: espalda curva",
+  "series": "Rowing",
+  "level": "advanced",
+  "page": 150,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "back",
+   "core",
+   "abs"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "sits cross-legged on the carriage facing the pulley end holding a strap handle in each hand, spine rounded forward into a long C-curve with her head dropped and her ribs drawn in, arms rowing the handles back beside her waist and then releasing forward again from the rounded shape.",
+  "highlight": "the shoulder stabilisers, the abdominals holding the rounded shape and the erector spinae lengthening along the back"
+ },
+ {
+  "id": "rowing-back-flat",
+  "name": "Rowing: Back Rowing, Flat Back Hinge",
+  "nameEs": "Remo de espaldas: bisagra plana",
+  "series": "Rowing",
+  "level": "advanced",
+  "page": 154,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "back",
+   "erectors",
+   "core",
+   "abs"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "sits cross-legged on the carriage facing the pulley end holding a strap handle in each hand, hinging forward from the hip with a completely flat back and a long neck, arms rowing the handles back alongside her waist, then returning upright with the same flat spine.",
+  "highlight": "the shoulder stabilisers, the erector spinae along the whole spine and the abdominals, with the hamstrings lengthening"
+ },
+ {
+  "id": "long-box-chest-expansion",
+  "name": "Long Box: Chest Expansion",
+  "nameEs": "Expansión del pecho",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 160,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "back",
+   "lats",
+   "triceps",
+   "rear-delts",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down along the long box with her chest just past the front edge, holding a strap handle in each hand, arms long and slightly behind her hips, chest and head lifted as the straight arms draw the straps back and down beside her body, legs together and still on the box.",
+  "highlight": "the latissimus dorsi, triceps and rear deltoids, with the scapular stabilisers between the shoulder blades and the abdominals supporting the lift"
+ },
+ {
+  "id": "long-box-croix",
+  "name": "Long Box: The Croix",
+  "nameEs": "La Croix",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 163,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "back",
+   "rhomboids",
+   "mid-traps",
+   "shoulders"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest lifted, holding a strap handle in each hand, both arms opened wide out to the sides at shoulder height in a T shape, then the bent elbows draw the straps in toward her ribs in a cross shape, squeezing the shoulder blades together. Legs long on the box.",
+  "highlight": "the rhomboids and middle trapezius between the shoulder blades, with the rear deltoids and the shoulder stabilisers"
+ },
+ {
+  "id": "long-box-rotator",
+  "name": "Long Box: Rotator",
+  "nameEs": "Rotador",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 165,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "rotator-cuff",
+   "back",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest lifted, holding a strap handle in each hand, both upper arms pinned close to her ribs with the elbows bent to 90 degrees and the forearms pointing forward, then the forearms rotate outward and up away from the box in external rotation. Legs still on the box.",
+  "highlight": "the external rotators of the shoulder — infraspinatus and teres minor at the back of each shoulder — with the postural muscles and abdominals"
+ },
+ {
+  "id": "long-box-queen",
+  "name": "Long Box: The Queen",
+  "nameEs": "La reina",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 168,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "front-delts",
+   "serratus",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest lifted, holding a strap handle in each hand, both arms bent into an elegant W with the elbows high and the hands beside her head, then the arms sweep down and forward into a long low V reaching past her hips. Ribs stay lifted off the box.",
+  "highlight": "the serratus anterior wrapping the ribs and the anterior deltoids, with the abdominals holding the chest lifted"
+ },
+ {
+  "id": "long-box-pulling-ropes",
+  "name": "Long Box: Pulling the Ropes",
+  "nameEs": "Tirar de las cuerdas",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 171,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "back",
+   "lats",
+   "shoulders",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest lifted, holding a strap handle in each hand, alternately pulling one straight arm back past her hip while the other reaches forward, in a strong rope-climbing rhythm. Legs long and quiet on the box.",
+  "highlight": "the latissimus dorsi and the shoulder stabilisers, alternating through both sides of the back"
+ },
+ {
+  "id": "long-box-t-pull",
+  "name": "Long Box: The T",
+  "nameEs": "La “T”",
+  "series": "Long Box",
+  "level": "intermediate",
+  "page": 173,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "back",
+   "rear-delts",
+   "lats",
+   "lower-traps"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest and head lifted in a long neutral extension, holding a strap handle in each hand, arms reaching down toward the floor then opening wide out to the sides into a big T at shoulder height, palms turning down. Legs long on the box.",
+  "highlight": "the thoracic extensors, rear deltoids, latissimus dorsi and lower trapezius"
+ },
+ {
+  "id": "long-box-triceps",
+  "name": "Long Box: Triceps",
+  "nameEs": "Tríceps",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 176,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "shoulders",
+   "back"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest lifted, holding a strap handle in each hand, both upper arms pinned tight alongside her ribs with the elbows bent and the hands under her chest, then the elbows straighten to press the straps back behind her hips. Legs still on the box.",
+  "highlight": "the triceps on the back of both upper arms, with the shoulder stabilisers and the back extensors"
+ },
+ {
+  "id": "long-box-backstroke",
+  "name": "Long Box: Backstroke",
+  "nameEs": "Brazada de espalda",
+  "series": "Long Box",
+  "level": "intermediate",
+  "page": 178,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "back",
+   "shoulders",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her chest lifted, holding a strap handle in each hand, one straight arm sweeping down past her hip then lifting up and over in a large backstroke circle to reach forward again while the other arm follows. Torso lifted and steady.",
+  "highlight": "the triceps and the thoracic extensors, with the shoulder stabilisers moving through their full range"
+ },
+ {
+  "id": "long-box-balance-point",
+  "name": "Long Box: Balance Point",
+  "nameEs": "Punto de equilibrio",
+  "series": "Long Box",
+  "level": "intermediate",
+  "page": 181,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "shoulders",
+   "back"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "balances face down on the long box pivoted on her hip bones, chest and head lifted, both legs lifted long behind her, and both arms reaching forward holding a strap handle in each hand, holding a long arched banana shape above the box.",
+  "highlight": "the abdominals and the shoulder flexors, with the scapular stabilisers and the back extensors holding the balance"
+ },
+ {
+  "id": "long-box-teaser",
+  "name": "Long Box: Teaser",
+  "nameEs": "Teaser",
+  "series": "Long Box",
+  "level": "intermediate",
+  "page": 184,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "hip-flexors",
+   "lats",
+   "adductors"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "sits facing away from the pulleys at the front end of the long box, legs lifted together and long at about 45 degrees, torso leaning back into a high V, both arms reaching forward parallel to her legs holding the strap handles, in a perfect balanced teaser shape.",
+  "highlight": "the abdominals and hip flexors, the latissimus dorsi, the inner thighs and the lower glutes, with the deep neck flexors"
+ },
+ {
+  "id": "long-box-teaser-dying-swan",
+  "name": "Long Box: Teaser, the Dying Swan",
+  "nameEs": "Teaser: el muerto",
+  "series": "Long Box",
+  "level": "advanced",
+  "page": 189,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "hip-flexors",
+   "lats",
+   "adductors"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "is lowering slowly from a balanced teaser shape seated on the long box, legs long and lifted together, torso reclining back toward the box with the spine rounding segment by segment and arms sweeping overhead, in a slow controlled descent.",
+  "highlight": "the abdominals and hip flexors working eccentrically, with the latissimus dorsi, adductors and lower glutes"
+ },
+ {
+  "id": "long-box-hamstring-curl",
+  "name": "Long Box: Hamstring Curl",
+  "nameEs": "Isquiotibiales",
+  "series": "Long Box",
+  "level": "intermediate",
+  "page": 192,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "adductors"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "not used",
+  "straps": "straps hooked around both ankles or heels",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her hips at the front edge and her legs hanging long off the end toward the pulleys, straps hooked around her ankles, then both knees bend to draw her heels up toward her seat against the spring while her hips stay pressed down on the box.",
+  "highlight": "the hamstrings and glutes of both legs, and the inner thighs when the legs work in parallel"
+ },
+ {
+  "id": "long-box-charlie-chaplin",
+  "name": "Long Box: Charlie Chaplin",
+  "nameEs": "Charlie Chaplin",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 195,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "hip-rotators",
+   "adductors"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "not used",
+  "straps": "straps hooked around both ankles or heels",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box with her hips at the edge and legs hanging off the end, both legs turned out from the hips with the heels together and the toes apart, knees bending in small turned-out circles to draw the carriage, like a comedic little walk.",
+  "highlight": "the hamstrings and glutes, the six deep hip rotators and the inner thighs"
+ },
+ {
+  "id": "long-box-swimming",
+  "name": "Long Box: Swimming",
+  "nameEs": "Natación",
+  "series": "Long Box",
+  "level": "beginner",
+  "page": 197,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "glutes",
+   "hamstrings",
+   "erectors",
+   "mid-traps",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box holding a strap handle in each hand, chest and both legs lifted off the box, alternately fluttering one arm and the opposite leg up and down in a small fast swimming beat, head long and neck relaxed.",
+  "highlight": "the glutes and hamstrings of both legs and the spinal extensors along the back, with the middle and lower trapezius and the abdominals"
+ },
+ {
+  "id": "long-box-swan-dive",
+  "name": "Long Box: Swan Dive",
+  "nameEs": "Balanceo del cisne",
+  "series": "Long Box",
+  "level": "advanced",
+  "page": 200,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "erectors",
+   "shoulders",
+   "triceps",
+   "core",
+   "abs"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box in a deep swan arch, chest and head high, both legs lifted long behind her, arms sweeping out and back like wings holding the strap handles, the whole body rocking forward and back in a long banana curve.",
+  "highlight": "the spinal extensors along the whole back, with the shoulder stabilisers, triceps and abdominals"
+ },
+ {
+  "id": "long-box-grasshopper",
+  "name": "Long Box: Grasshopper",
+  "nameEs": "Saltamontes",
+  "series": "Long Box",
+  "level": "advanced",
+  "page": 202,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "erectors",
+   "glutes",
+   "hip-external-rotators",
+   "shoulders",
+   "core"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down on the long box propped on her forearms, chest lifted, both knees bent with the soles of her feet turned up toward the ceiling, then the bent legs lift and beat together with a small external rotation at the hips. Head stays long.",
+  "highlight": "the spinal extensors, glutes and hip external rotators, with the shoulder stabilisers, triceps and abdominals"
+ },
+ {
+  "id": "roll-down-series",
+  "name": "Roll Downs",
+  "nameEs": "Roll downs",
+  "series": "Roll Down",
+  "level": "beginner",
+  "page": 208,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "erectors",
+   "shoulders"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "sits tall cross-legged on the long box facing away from the pulleys holding a strap handle in each hand near her shoulders, then curls her chin and rolls her spine down one vertebra at a time toward the box with her arms reaching forward, before rolling back up to sitting.",
+  "highlight": "the abdominals through the whole roll, with the deep spinal muscles lengthening and the scapular stabilisers"
+ },
+ {
+  "id": "roll-down-reverse-teaser",
+  "name": "Roll Down: Reverse Teaser",
+  "nameEs": "Teaser inverso",
+  "series": "Roll Down",
+  "level": "intermediate",
+  "page": 213,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "hip-flexors",
+   "shoulders"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "starts lying back on the long box with legs lifted, then rolls the spine up segment by segment to sitting while the legs lower toward the box and the arms reach forward, arriving in an upright seated shape with legs long.",
+  "highlight": "the abdominals and hip flexors, with the segmental spinal muscles and the scapular stabilisers"
+ },
+ {
+  "id": "roll-down-mermaid",
+  "name": "Roll Down: Mermaid",
+  "nameEs": "Sirena",
+  "series": "Roll Down",
+  "level": "beginner",
+  "page": 218,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "ql",
+   "lats",
+   "chest",
+   "triceps"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "sits tall with legs folded to one side on the long box, one arm reaching overhead in a long side-bend curve toward the opposite side, the other arm relaxed, creating a crescent moon shape through the waist and ribs.",
+  "highlight": "the quadratus lumborum and the internal and external obliques along the side waist, with the latissimus dorsi, pectorals and triceps"
+ },
+ {
+  "id": "long-stretch",
+  "name": "Long Stretch",
+  "nameEs": "Estiramiento en plancha/Largo",
+  "series": "Long Stretch",
+  "level": "intermediate",
+  "page": 229,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "shoulders",
+   "chest",
+   "glutes"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands on the carriage in a straight high plank with both hands on the footbar, shoulders stacked directly over her wrists, body a long straight line from heels to head, hips level, then presses the carriage away and draws it back without letting the hips sag or lift.",
+  "highlight": "the abdominals, the shoulders and chest, and the glutes holding the plank line"
+ },
+ {
+  "id": "long-stretch-up",
+  "name": "Long Stretch: Up Stretch",
+  "nameEs": "Pull en “U”",
+  "series": "Long Stretch",
+  "level": "intermediate",
+  "page": 230,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "scapular-stabilisers",
+   "shoulders",
+   "calves"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands on the balls of her feet on the carriage with both hands on the footbar, hips stacked high over her heels in an inverted V pike, back rounded and head dropped between her arms, pressing the carriage away and drawing it back with the hips staying lifted.",
+  "highlight": "the abdominals and the scapular stabilisers, with the shoulders and the ankles working to hold the shape"
+ },
+ {
+  "id": "long-stretch-around-the-world",
+  "name": "Long Stretch: Around the World, High Stretch",
+  "nameEs": "Vuelta al mundo/estiramiento alto",
+  "series": "Long Stretch",
+  "level": "intermediate",
+  "page": 233,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "chest",
+   "serratus",
+   "lats",
+   "core",
+   "abs",
+   "glutes"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands on the carriage in a high pike with hands on the footbar, then one arm releases and sweeps out and up in a large circle around her head while the other arm supports her, the torso staying lifted and the hips high.",
+  "highlight": "the pectorals, serratus anterior, latissimus dorsi and abdominals, with the spinal extensors, hamstrings and glutes"
+ },
+ {
+  "id": "long-stretch-down",
+  "name": "Long Stretch: Down Stretch",
+  "nameEs": "Estiramiento bajo",
+  "series": "Long Stretch",
+  "level": "advanced",
+  "page": 235,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "chest",
+   "lats",
+   "core",
+   "abs",
+   "erectors",
+   "glutes"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands with both hands on the footbar and her chest lowered close to her knees in a deep rounded forward fold, hips high and heels down on the carriage, the chest pressing toward the bar as the carriage travels away.",
+  "highlight": "the chest and front of the shoulders opening, with the latissimus dorsi, abdominals, erector spinae, hamstrings and glutes"
+ },
+ {
+  "id": "long-stretch-arabesque",
+  "name": "Long Stretch: Arabesque",
+  "nameEs": "Arabesque",
+  "series": "Long Stretch",
+  "level": "advanced",
+  "page": 238,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "glutes",
+   "hamstrings",
+   "hip-external-rotators",
+   "core",
+   "abs"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands on one leg on the carriage with both hands on the footbar, torso long and level over the bar, the other leg lifted straight behind her to hip height in a turned-out arabesque, then presses the carriage away and draws it back on the standing leg.",
+  "highlight": "the gluteus maximus, hamstrings and hip external rotators of the lifted leg, with the scapular stabilisers, abdominals, spinal extensors and hip flexors"
+ },
+ {
+  "id": "long-stretch-interflora",
+  "name": "Long Stretch: Interflora",
+  "nameEs": "Interflora",
+  "series": "Long Stretch",
+  "level": "advanced",
+  "page": 242,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "hip-flexors",
+   "glutes",
+   "quads",
+   "hamstrings"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands on one leg on the carriage with both hands on the footbar, the other leg lifted straight behind then swept out to the side and across behind her in a wide arc while the torso stays level, then the leg returns.",
+  "highlight": "the abdominals and hip flexors, with the scapular stabilisers, hamstrings, quadriceps and glutes of both legs"
+ },
+ {
+  "id": "elephant-flat-back",
+  "name": "Elephant: Flat Back",
+  "nameEs": "Elefante: espalda plana",
+  "series": "Long Stretch",
+  "level": "beginner",
+  "page": 245,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "hip-flexors",
+   "shoulders",
+   "abs",
+   "shins",
+   "hamstrings"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands upright on the carriage with both feet flat and close together, then folds forward at the hips and pushes her hips far back and up so her torso becomes a long horizontal table, back completely flat and parallel to the carriage, arms reaching straight forward and down with locked-out straight elbows so both hands grip the padded footbar. Her hips are the highest point of her body, stacked high above her heels, her head and neck continue the straight line of her spine without dropping, and both knees are straight. This is a deep forward hinge, NOT a plank, NOT a push-up and NOT a hover: her straight arms stay planted on the footbar while the carriage slides away from her under her feet.",
+  "highlight": "the hip flexors and the shoulder stabilisers, with the lower abdominals, the dorsiflexors of the shins and the hamstrings lengthening"
+ },
+ {
+  "id": "elephant-round-back",
+  "name": "Elephant: Round Back",
+  "nameEs": "Elefante: espalda curva",
+  "series": "Long Stretch",
+  "level": "beginner",
+  "page": 248,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "shoulders",
+   "hip-flexors",
+   "hamstrings"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands on the carriage with both feet flat and close together, then folds forward at the hips with her hips pushed far back and up, spine rounded into a long deep C-curve, so her head hangs dropped and heavy between her straight arms while both hands grip the padded footbar. Her hips are the highest point, stacked over her heels, her arms are straight and planted on the footbar, and both knees are straight. This is a deep rounded forward fold, NOT a plank and NOT a push-up: her arms stay planted on the footbar while the carriage slides away from her under her feet.",
+  "highlight": "the abdominals holding the round shape, with the shoulder stabilisers, hip flexors and dorsiflexors, and the spine and hamstrings lengthening"
+ },
+ {
+  "id": "forward-fold-stretch",
+  "name": "Long Stretch: Forward Fold Stretch",
+  "nameEs": "Estiramiento de flexión hacia delante",
+  "series": "Long Stretch",
+  "level": "beginner",
+  "page": 250,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "erectors",
+   "neck"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "stands with both feet on the carriage, folds forward from the hips over straight legs with her hands resting lightly on the footbar or the frame, spine long and neck completely released, hips drawing back as the carriage travels.",
+  "highlight": "the hamstrings along the back of both thighs and the spinal extensors lengthening, with the neck released"
+ },
+ {
+  "id": "long-back-stretch",
+  "name": "Long Stretch: Long Back Stretch",
+  "nameEs": "Estiramiento largo de la espalda",
+  "series": "Long Stretch",
+  "level": "advanced",
+  "page": 253,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "lats",
+   "glutes",
+   "core",
+   "abs",
+   "erectors"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "kneels on the carriage with both hands on the footbar, hips drawn far back over her heels and her chest lowered toward the bar, arms straight and long, spine stretched into a long flat line as the carriage travels away and returns.",
+  "highlight": "the triceps and latissimus dorsi, with the glutes, abdominals, scapular stabilisers and spinal extensors"
+ },
+ {
+  "id": "stomach-massage-round-back",
+  "name": "Stomach Massage: Round Back",
+  "nameEs": "Espalda curva",
+  "series": "Stomach Massage",
+  "level": "beginner",
+  "page": 259,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "abs",
+   "quads",
+   "glutes",
+   "erectors"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "high",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits on the front edge of the carriage facing the footbar with both feet flat on the bar, knees bent and heels together, her spine rounded into a long C-curve with the head dropped forward and both hands resting on the frame beside her hips, pressing the carriage away with the legs.",
+  "highlight": "the abdominals holding the rounded shape, with the quadriceps and glutes of both legs and the erector spinae lengthening"
+ },
+ {
+  "id": "stomach-massage-flat-back",
+  "name": "Stomach Massage: Flat Back",
+  "nameEs": "Espalda plana",
+  "series": "Stomach Massage",
+  "level": "beginner",
+  "page": 261,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "erectors",
+   "psoas",
+   "abs",
+   "quads",
+   "scapular-stabilisers"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "high",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits on the front edge of the carriage facing the footbar with both feet flat on the bar and knees bent, her spine completely upright and flat with the chest open and head tall, both hands resting on the frame beside her hips as she presses the carriage away.",
+  "highlight": "the spinal extensors and psoas holding her upright, with the abdominals, scapular stabilisers and quadriceps"
+ },
+ {
+  "id": "stomach-massage-reach",
+  "name": "Stomach Massage: Reach",
+  "nameEs": "Alcance",
+  "series": "Stomach Massage",
+  "level": "intermediate",
+  "page": 264,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "erectors",
+   "abs",
+   "psoas",
+   "chest",
+   "shoulders"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "high",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits tall on the carriage facing the footbar with feet flat on the bar and knees bent, one or both arms reaching long and high overhead in a tall diagonal, lifting out of the waist as the carriage travels away, chest broad and spine long.",
+  "highlight": "the spinal extensors, the abdominals in their lengthened position and the psoas holding the seated shape, with the chest and shoulder stabilisers"
+ },
+ {
+  "id": "stomach-massage-bouquet-of-flowers",
+  "name": "Stomach Massage: Bouquet of Flowers",
+  "nameEs": "Ramo de flores",
+  "series": "Stomach Massage",
+  "level": "intermediate",
+  "page": 268,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "obliques",
+   "chest",
+   "shoulders",
+   "core"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "high",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits on the carriage facing the footbar with feet on the bar, both arms reaching forward and rounded as though gathering a big bouquet of flowers against her chest, spine curled around the imaginary bundle, then the arms open and sweep wide.",
+  "highlight": "the abdominals and obliques, with the chest, front of the shoulders and the scapular stabilisers"
+ },
+ {
+  "id": "stomach-massage-psoas-stretch",
+  "name": "Stomach Massage: Psoas Stretch",
+  "nameEs": "Estiramiento del psoas",
+  "series": "Stomach Massage",
+  "level": "beginner",
+  "page": 270,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "erectors",
+   "abs",
+   "obliques",
+   "ql",
+   "hip-flexors",
+   "quads"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "high",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits tall on the carriage facing the footbar with both feet on the bar, then twists from the ribcage so one hand reaches across and back while the torso stays long and vertical, pelvis square and still, opening the front of one hip.",
+  "highlight": "the spinal extensors and lengthened abdominals, the internal and external obliques and quadratus lumborum, and the hip flexors and quadriceps of the trailing leg"
+ },
+ {
+  "id": "knee-stretch-scooter",
+  "name": "Knee Stretch: Scooter",
+  "nameEs": "Scooter",
+  "series": "Knee Stretch",
+  "level": "intermediate",
+  "page": 275,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "glutes",
+   "hamstrings",
+   "quads",
+   "hip-flexors"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "kneels on the carriage facing the footbar with both hands on the bar, one knee down on the carriage and the other foot flat on the floor beside the frame, pressing the carriage back with the down knee and drawing it home, torso level and still.",
+  "highlight": "the gluteus maximus, hamstrings and quadriceps of the working leg, with the hip flexors of the back leg lengthening"
+ },
+ {
+  "id": "knee-stretch-flat-back",
+  "name": "Knee Stretch: Flat Back",
+  "nameEs": "Espalda plana",
+  "series": "Knee Stretch",
+  "level": "beginner",
+  "page": 277,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "erectors",
+   "psoas",
+   "abs",
+   "scapular-stabilisers",
+   "quads"
+  ],
+  "springs": "medium (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "kneels on the carriage facing the footbar with both hands on the bar, both knees on the carriage hip-width apart, spine perfectly flat and parallel to the carriage with the head long, hips travelling straight back and forward over her knees.",
+  "highlight": "the spinal extensors and psoas, with the scapular stabilisers, the quadriceps and the lower abdominals"
+ },
+ {
+  "id": "knee-stretch-round-back",
+  "name": "Knee Stretch: Round Back",
+  "nameEs": "Espalda curva",
+  "series": "Knee Stretch",
+  "level": "beginner",
+  "page": 280,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "scapular-stabilisers",
+   "quads",
+   "erectors"
+  ],
+  "springs": "medium (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "kneels on the carriage facing the footbar with both hands on the bar, both knees down hip-width apart, her spine rounded into a long C-curve with the head dropped, hips travelling back over her heels and forward again.",
+  "highlight": "the scapular stabilisers, quadriceps and lower abdominals, with the spinal extensors lengthening"
+ },
+ {
+  "id": "knee-stretch-knees-off",
+  "name": "Knee Stretch: Knees Off",
+  "nameEs": "Rodillas fuera",
+  "series": "Knee Stretch",
+  "level": "advanced",
+  "page": 283,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "erectors",
+   "hip-flexors",
+   "scapular-stabilisers",
+   "quads",
+   "abs"
+  ],
+  "springs": "medium (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "kneels on the carriage facing the footbar with both hands on the bar, both knees lifted a few centimetres off the carriage so her weight is carried on her hands and thighs, back arched long and hips travelling back and forward.",
+  "highlight": "the spinal extensors and hip flexors, with the scapular stabilisers, quadriceps and lower abdominals"
+ },
+ {
+  "id": "reverse-knee-stretch-round-back",
+  "name": "Reverse Knee Stretch: Round Back",
+  "nameEs": "Espalda curva",
+  "series": "Reverse Knee Stretch",
+  "level": "intermediate",
+  "page": 287,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "shoulders",
+   "erectors",
+   "core"
+  ],
+  "springs": "light (1 yellow or blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits on the carriage facing away from the footbar with both feet flat against the bar, knees bent, both hands gripping the carriage edge behind her hips, spine rounded and chest curled forward over her knees, pressing the carriage away with the legs.",
+  "highlight": "the abdominals holding the rounded shape, with the shoulder stabilisers and the spinal extensors lengthening"
+ },
+ {
+  "id": "reverse-knee-stretch-flat-obliques",
+  "name": "Reverse Knee Stretch: Flat Back and Obliques",
+  "nameEs": "Espalda plana y oblicuos",
+  "series": "Reverse Knee Stretch",
+  "level": "intermediate",
+  "page": 289,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "obliques",
+   "shoulders",
+   "erectors"
+  ],
+  "springs": "light (1 yellow or blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "sits on the carriage facing away from the footbar with both feet against the bar and knees bent, hands behind her on the carriage, torso leaning back at an angle with the spine flat and long, then twisting the ribcage to one side and the other as the legs press.",
+  "highlight": "the abdominals and both sets of obliques, with the shoulder stabilisers and the spinal extensors"
+ },
+ {
+  "id": "kneeling-chest-expansion",
+  "name": "Kneeling: Chest Expansion",
+  "nameEs": "Expansión del tórax",
+  "series": "Kneeling",
+  "level": "intermediate",
+  "page": 294,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "lats",
+   "triceps",
+   "rotator-cuff",
+   "hamstrings",
+   "glutes",
+   "core"
+  ],
+  "springs": "light (1 red or blue)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels upright on the carriage facing the pulley end holding a strap handle in each hand, arms long and slightly behind her hips with straight elbows, drawing the straps back and down as her chest opens and her shoulders roll back, hips stacked over her knees.",
+  "highlight": "the latissimus dorsi, triceps and rotator cuff, with the hamstrings, glutes and abdominals holding her upright"
+ },
+ {
+  "id": "kneeling-croix-rotator",
+  "name": "Kneeling: The Croix and Rotator",
+  "nameEs": "La Croix y rotador",
+  "series": "Kneeling",
+  "level": "intermediate",
+  "page": 297,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "rhomboids",
+   "mid-traps",
+   "rotator-cuff",
+   "shoulders",
+   "core"
+  ],
+  "springs": "light (1 red or blue)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels upright on the carriage facing the pulley end holding a strap handle in each hand, both arms opened wide to the sides then drawn in with bent elbows in a cross, followed by external rotation with the upper arms pinned to her ribs, torso tall and still.",
+  "highlight": "the rhomboids and middle trapezius between the shoulder blades and the shoulder external rotators, with the postural muscles and abdominals"
+ },
+ {
+  "id": "kneeling-arm-circles",
+  "name": "Kneeling: Arm Circles",
+  "nameEs": "Círculo de brazos",
+  "series": "Kneeling",
+  "level": "advanced",
+  "page": 299,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "deltoids",
+   "scapular-stabilisers",
+   "core",
+   "glutes",
+   "hamstrings"
+  ],
+  "springs": "light (1 red or blue)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels upright on the carriage facing the pulley end holding a strap handle in each hand, both straight arms sweeping through big slow circles beside her body, one direction then the other, while the torso stays completely still and vertical.",
+  "highlight": "the deltoids and scapular stabilisers, with the abdominals, glutes and hamstrings holding the kneel steady"
+ },
+ {
+  "id": "kneeling-offering",
+  "name": "Kneeling: The Offering",
+  "nameEs": "Ofrenda",
+  "series": "Kneeling",
+  "level": "intermediate",
+  "page": 302,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "obliques",
+   "core",
+   "glutes",
+   "hamstrings"
+  ],
+  "springs": "light (1 red or blue)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels upright on the carriage facing the pulley end holding a strap handle in each hand, both arms sweeping forward and offering the handles away in front of her in a long reach, with a side bend through the waist so the gesture curves slightly to one side.",
+  "highlight": "the shoulders and the obliques along the waist, with the abdominals, glutes and hamstrings holding the kneel"
+ },
+ {
+  "id": "kneeling-salute",
+  "name": "Kneeling: Military Salute",
+  "nameEs": "Saludo militar",
+  "series": "Kneeling",
+  "level": "intermediate",
+  "page": 303,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "deltoids",
+   "core",
+   "glutes",
+   "hamstrings",
+   "mid-traps"
+  ],
+  "springs": "light (1 red or blue)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels upright on the carriage facing the pulley end holding a strap handle in each hand, one arm pressing long and straight down beside her hip while the other bends with the hand brought to her forehead in a salute, torso still and tall.",
+  "highlight": "the triceps and deltoids, with the abdominals, glutes, hamstrings and middle trapezius holding the upright kneel"
+ },
+ {
+  "id": "kneeling-knee-opening",
+  "name": "Kneeling: Knee Opening Backbend",
+  "nameEs": "Apertura de rodillas",
+  "series": "Kneeling",
+  "level": "advanced",
+  "page": 306,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "glutes",
+   "erectors",
+   "shoulders",
+   "arms",
+   "chest",
+   "lats"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels on the carriage facing away from the pulley end holding a strap handle in each hand behind her, arching back into a long backbend with her chest lifted toward the ceiling and her hips pressing forward over her knees, arms drawing the straps down behind her.",
+  "highlight": "the glutes and lumbar extensors, with the shoulders, arms, chest and latissimus dorsi opening"
+ },
+ {
+  "id": "side-kneeling-overhead",
+  "name": "Side Kneeling: Overhead",
+  "nameEs": "Por encima de la cabeza",
+  "series": "Side Kneeling Arms",
+  "level": "intermediate",
+  "page": 311,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "lats",
+   "core",
+   "obliques",
+   "glutes"
+  ],
+  "springs": "light (1 yellow)",
+  "footbar": "not used",
+  "straps": "one handle in the far hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels side-on to the pulley end on the carriage, torso facing sideways with one hand holding the far strap and lifting the straight arm up and over her head in a long arc, the other hand resting on her hip, torso held level and square.",
+  "highlight": "the shoulder of the working arm and the latissimus dorsi, with the abdominals, side obliques and glutes keeping her stable"
+ },
+ {
+  "id": "side-kneeling-single-arm-rotator",
+  "name": "Side Kneeling: Single Arm Rotator",
+  "nameEs": "Rotador de un brazo",
+  "series": "Side Kneeling Arms",
+  "level": "intermediate",
+  "page": 313,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "abductors",
+   "core",
+   "glutes"
+  ],
+  "springs": "light (1 yellow)",
+  "footbar": "not used",
+  "straps": "one handle in the far hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels side-on to the pulley end on the carriage, one upper arm pinned against her ribs with the elbow bent to 90 degrees, forearm rotating outward against the strap in external rotation while her torso stays square and upright.",
+  "highlight": "the shoulder abductors and external rotators of the working arm, with the abdominals and glutes keeping the trunk still"
+ },
+ {
+  "id": "side-kneeling-lunge",
+  "name": "Side Kneeling: Lunge Thrust",
+  "nameEs": "Estocada",
+  "series": "Side Kneeling Arms",
+  "level": "intermediate",
+  "page": 316,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "shoulders",
+   "chest",
+   "core",
+   "glutes",
+   "obliques"
+  ],
+  "springs": "light (1 yellow)",
+  "footbar": "not used",
+  "straps": "one handle in the far hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels side-on to the pulley end on the carriage holding the far strap, then thrusts the straight arm forward and across her body in a fencing lunge, torso rotating with the press while the hips stay anchored over her knees.",
+  "highlight": "the front of the shoulder and chest of the working arm, with the abdominals, obliques and glutes resisting the rotation"
+ },
+ {
+  "id": "side-kneeling-lateral",
+  "name": "Side Kneeling: Painting Under the Ladder",
+  "nameEs": "Flexión lateral (Pintando bajo la escalera)",
+  "series": "Side Kneeling Arms",
+  "level": "intermediate",
+  "page": 318,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "deltoids",
+   "shoulders",
+   "obliques",
+   "forearm"
+  ],
+  "springs": "light (1 yellow)",
+  "footbar": "not used",
+  "straps": "one handle in the far hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "kneels side-on to the pulley end on the carriage holding the far strap, arm reaching out and sweeping down in a low lateral arc as though painting the floor under a low ladder, wrist and hand leading the movement, torso side-bending slightly to follow.",
+  "highlight": "the deltoids and shoulder stabilisers of the working arm, with the obliques along the waist and the forearm and wrist"
+ },
+ {
+  "id": "leg-pull-parallel",
+  "name": "Legs in Straps: Leg Pull, Parallel",
+  "nameEs": "Pull de piernas en paralelo",
+  "series": "Legs in Straps",
+  "level": "beginner",
+  "page": 323,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "adductors",
+   "core",
+   "abs"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and legs together in parallel, pressing down toward the carriage and then drawing the legs back up toward her chest one at a time or together, pelvis absolutely level and still.",
+  "highlight": "the hamstrings drawing the legs home and the adductors holding the legs together, with the abdominals and deep spinal muscles stabilising the pelvis"
+ },
+ {
+  "id": "leg-pull-rotation",
+  "name": "Legs in Straps: Leg Pull, External and Internal Rotation",
+  "nameEs": "Pull de piernas en rotación externa/interna",
+  "series": "Legs in Straps",
+  "level": "beginner",
+  "page": 325,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "adductors",
+   "hip-rotators",
+   "core"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops, legs turned out from the hips in external rotation then rotated in to parallel and back, pressing the legs down and drawing them up while the pelvis stays glued level.",
+  "highlight": "the hamstrings, adductors and the deep hip rotators, with the abdominals stabilising the pelvis"
+ },
+ {
+  "id": "open-and-close",
+  "name": "Legs in Straps: Open and Close",
+  "nameEs": "Abrir y cerrar",
+  "series": "Legs in Straps",
+  "level": "beginner",
+  "page": 327,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "adductors",
+   "hamstrings",
+   "core",
+   "abs"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and legs lifted straight up, opening the legs wide out to the sides in a V then squeezing them firmly back together, pelvis level and torso still.",
+  "highlight": "the inner-thigh adductors doing the closing, with the abdominals and deep spinal muscles holding the pelvis and spine still"
+ },
+ {
+  "id": "open-and-close-rotation",
+  "name": "Legs in Straps: Open and Close with Rotation",
+  "nameEs": "Abrir y cerrar: rotación externa/interna",
+  "series": "Legs in Straps",
+  "level": "beginner",
+  "page": 329,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "adductors",
+   "hip-rotators",
+   "hamstrings",
+   "core"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and legs lifted, opening the legs wide and then closing them while rotating the legs out and in from the hips at the same time, pelvis level and trunk still.",
+  "highlight": "the inner thighs and the deep hip rotators, with the hamstrings and the abdominals stabilising the pelvis"
+ },
+ {
+  "id": "legs-rectangles-circles-ovals",
+  "name": "Legs in Straps: Rectangles, Circles and Ovals",
+  "nameEs": "Rectángulos/Círculos/Óvalos",
+  "series": "Legs in Straps",
+  "level": "beginner",
+  "page": 331,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "adductors",
+   "hip-rotators",
+   "core",
+   "abs"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and legs lifted together, drawing large geometric shapes in the air with the legs — rectangles, then circles, then ovals — while the pelvis and torso stay completely still.",
+  "highlight": "the hamstrings and adductors tracing the shapes, with the hip rotators and the abdominals and deep spinal stabilisers holding the pelvis still"
+ },
+ {
+  "id": "hollywood-legs",
+  "name": "Legs in Straps: Hollywood Legs",
+  "nameEs": "Piernas de Hollywood",
+  "series": "Legs in Straps",
+  "level": "intermediate",
+  "page": 335,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "obliques",
+   "core",
+   "adductors",
+   "hip-rotators"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops, head and shoulders curled up off the carriage, legs performing an intricate alternating scissor pattern — one leg crossing over the other and swapping — while the trunk stays lifted and still.",
+  "highlight": "the abdominals with a strong focus on the obliques, plus the deep spinal muscles and the inner thighs"
+ },
+ {
+  "id": "diamond-leg-pulls",
+  "name": "Legs in Straps: Diamond Leg Pulls",
+  "nameEs": "Pulls en rombo",
+  "series": "Legs in Straps",
+  "level": "intermediate",
+  "page": 338,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hip-external-rotators",
+   "hamstrings",
+   "biceps-femoris",
+   "core"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and legs turned out into a diamond shape at the knees, pressing the legs up and away then drawing them back down in the turned-out position, pelvis level and still.",
+  "highlight": "the hip external rotators and the hamstrings, especially the outer biceps femoris, with the abdominals stabilising"
+ },
+ {
+  "id": "long-spine-stretch-reformer",
+  "name": "Long Spine Stretch",
+  "nameEs": "Estiramiento largo de columna",
+  "series": "Legs in Straps",
+  "level": "beginner",
+  "page": 341,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "core",
+   "glutes",
+   "hamstrings",
+   "abs",
+   "erectors"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and legs together, lifting the hips and rolling the spine up off the carriage one vertebra at a time with the legs reaching up and over, then rolling back down bone by bone.",
+  "highlight": "the glutes, hamstrings and abdominals lifting and controlling the roll, with the erector spinae lengthening"
+ },
+ {
+  "id": "triple-hip-stretch",
+  "name": "Triple Hip Stretch",
+  "nameEs": "Triple estiramiento de cadera",
+  "series": "Legs in Straps",
+  "level": "intermediate",
+  "page": 348,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "adductors",
+   "hip-rotators",
+   "glutes"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "one foot in a strap, the other foot on the carriage",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with one foot in a strap and that leg drawn across her body and open to the side, the other foot flat on the carriage, stretching through the hip in three directions while the pelvis stays level.",
+  "highlight": "the hamstrings, inner thighs and deep hip rotators of the stretched leg, with the glutes"
+ },
+ {
+  "id": "front-control",
+  "name": "Control Front",
+  "nameEs": "Control frontal",
+  "series": "Legs in Straps",
+  "level": "intermediate",
+  "page": 350,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "it-band",
+   "adductors",
+   "glutes"
+  ],
+  "springs": "medium (2 red, or 1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "one foot in a strap",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with one foot in a strap, that leg lifted straight and then swept out wide to the side and held at its end range, the other leg long on the carriage, pelvis level and square.",
+  "highlight": "the hamstrings, the iliotibial band along the outside of the thigh and the inner-thigh adductors of the working leg"
+ },
+ {
+  "id": "back-control",
+  "name": "Control Back",
+  "nameEs": "Control posterior",
+  "series": "Legs in Straps",
+  "level": "advanced",
+  "page": 355,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "triceps",
+   "lats",
+   "hip-flexors",
+   "core",
+   "abs",
+   "glutes",
+   "adductors"
+  ],
+  "springs": "light (1 yellow + 1 blue)",
+  "footbar": "not used",
+  "straps": "both feet in the foot straps and a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "straps"
+  ],
+  "pose": "lies supine on the carriage with both feet in the strap loops and a handle in each hand, pressing the arms down to curl the head and shoulders up, then rolling the whole body up and over into an inverted position with the legs overhead and the arms pressing long, before unfolding slowly.",
+  "highlight": "the triceps and latissimus dorsi pressing, with the hip flexors, abdominals, glutes, scapular stabilisers and inner thighs controlling the inversion"
+ },
+ {
+  "id": "short-box-roll-down-round",
+  "name": "Short Box: Roll Down, Round Back",
+  "nameEs": "Roll down con espalda curva",
+  "series": "Short Box",
+  "level": "beginner",
+  "page": 359,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "hip-flexors",
+   "core",
+   "hip-abductors"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits upright on the short box with both feet hooked under the strap and her hands clasped lightly behind her head, then curls her chin and rolls her spine down toward the box one vertebra at a time with the back rounded, before rolling back up to sitting.",
+  "highlight": "the abdominals and hip flexors through the roll, with the hip abductors and the segmental spinal muscles"
+ },
+ {
+  "id": "short-box-hinge-flat",
+  "name": "Short Box: Hinge, Flat Back",
+  "nameEs": "Bisagra con espalda plana",
+  "series": "Short Box",
+  "level": "intermediate",
+  "page": 364,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "hip-flexors",
+   "erectors",
+   "scapular-stabilisers"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits upright on the short box with both feet hooked under the strap and her hands behind her head, hinging back from the hips as one long flat unit with the spine completely straight, then returning upright without rounding.",
+  "highlight": "the abdominals and hip flexors, with the spinal extensors and the scapular stabilisers between the shoulder blades"
+ },
+ {
+  "id": "short-box-old-man-in-gym",
+  "name": "Short Box: Old Man in the Gym",
+  "nameEs": "Hombre mayor en el gimnasio",
+  "series": "Short Box",
+  "level": "intermediate",
+  "page": 366,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "shoulders",
+   "arms",
+   "core",
+   "obliques"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap, rolling back with a rounded spine while one arm reaches and circles overhead in an old-fashioned gym swing, the other arm assisting, torso controlling the descent.",
+  "highlight": "the abdominals and obliques controlling the roll, with the shoulders and arms circling"
+ },
+ {
+  "id": "short-box-hugging-barrel",
+  "name": "Short Box: Hugging the Barrel",
+  "nameEs": "Abarcando el barril",
+  "series": "Short Box",
+  "level": "beginner",
+  "page": 369,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "ql",
+   "hip-abductors",
+   "core",
+   "scapular-stabilisers"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits upright on the short box with feet hooked under the strap and both arms reaching forward as if hugging a big barrel against her chest, twisting the ribcage to one side and then the other with the pelvis staying square and facing forward.",
+  "highlight": "the obliques and quadratus lumborum through the twist, with the hip abductors and the scapular stabilisers"
+ },
+ {
+  "id": "short-box-twist-round",
+  "name": "Short Box: Twist, Round Back",
+  "nameEs": "Torsión con espalda curva",
+  "series": "Short Box",
+  "level": "intermediate",
+  "page": 372,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "abs",
+   "hip-flexors",
+   "core"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap and hands behind her head, rolling the spine down with a rounded back while twisting the ribcage to one side at the bottom of the roll, then rolling up and twisting to the other side.",
+  "highlight": "the obliques and abdominals doing the twist and the roll, with the hip flexors and the deep spinal muscles"
+ },
+ {
+  "id": "short-box-spear-fishing",
+  "name": "Short Box: Spear Fishing",
+  "nameEs": "Pesca con lanza",
+  "series": "Short Box",
+  "level": "advanced",
+  "page": 375,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "abs",
+   "adductors",
+   "quads",
+   "glutes",
+   "shoulders"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap, leaning back at a low angle with both hands clasped together and thrust forward like a spear, twisting the torso side to side to stab the imaginary spear while the pelvis stays anchored.",
+  "highlight": "the obliques taking the main effort, with the adductors, quadriceps, lower glutes and shoulder stabilisers"
+ },
+ {
+  "id": "short-box-spear-around-world",
+  "name": "Short Box: Spear Fishing, Around the World",
+  "nameEs": "Pesca con lanza/vuelta al mundo",
+  "series": "Short Box",
+  "level": "advanced",
+  "page": 378,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "ql",
+   "abs",
+   "quads",
+   "adductors",
+   "shins",
+   "scapular-stabilisers"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap, leaning back low with clasped hands sweeping in a big full circle around her body from one side to the other, the torso tracing the circle while the legs stay anchored.",
+  "highlight": "the obliques and quadratus lumborum, with the quadriceps, adductors, dorsiflexors and scapular stabilisers"
+ },
+ {
+  "id": "short-box-climbing-tree",
+  "name": "Short Box: Climbing the Tree",
+  "nameEs": "Trepar al árbol",
+  "series": "Short Box",
+  "level": "intermediate",
+  "page": 381,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "hamstrings",
+   "hip-flexors",
+   "abs",
+   "erectors"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap, rolling down with a rounded spine and reaching both hands up overhead as if climbing a tree, then folding forward over her straight legs, alternating the reach.",
+  "highlight": "the hamstrings lengthening, with the hip flexors and abdominals through the roll and the spinal extensors"
+ },
+ {
+  "id": "short-box-side-abs",
+  "name": "Short Box: Side Abs",
+  "nameEs": "Abdominales laterales",
+  "series": "Short Box",
+  "level": "advanced",
+  "page": 386,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "ql",
+   "core"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits sideways on the short box with both feet hooked under the strap and her hands behind her head, leaning back and side-bending so her ribs curl toward her hip on one side, then repeating on the other side.",
+  "highlight": "the obliques and quadratus lumborum on the working side of the waist"
+ },
+ {
+  "id": "short-box-half-circle",
+  "name": "Short Box: Half Circle",
+  "nameEs": "Semicírculo",
+  "series": "Short Box",
+  "level": "advanced",
+  "page": 389,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "glutes",
+   "hamstrings",
+   "deltoids",
+   "erectors",
+   "core",
+   "quads"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap, rolling the spine down and around in a half circle so the torso circles from one side through the centre to the other, articulating each vertebra as it travels.",
+  "highlight": "the glutes, hamstrings and deltoids working through the circle, with the spinal extensors articulating and the quadriceps lengthening"
+ },
+ {
+  "id": "short-box-tendon-stretch",
+  "name": "Short Box: Tendon Stretch",
+  "nameEs": "Estiramiento del tendón",
+  "series": "Short Box",
+  "level": "advanced",
+  "page": 393,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "erectors",
+   "hamstrings",
+   "calves",
+   "lats",
+   "chest",
+   "triceps"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap, arms reaching forward as she folds over her straight legs with her chest toward her thighs and her toes pulled back, then curls back up to sitting.",
+  "highlight": "the abdominals and spinal extensors, with the hamstrings and calves stretching and the latissimus dorsi, chest and triceps"
+ },
+ {
+  "id": "short-box-tendon-around-world",
+  "name": "Short Box: Tendon Stretch, Around the World",
+  "nameEs": "Estiramiento del tendón: vuelta al mundo",
+  "series": "Short Box",
+  "level": "advanced",
+  "page": 395,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "abs",
+   "erectors",
+   "hamstrings",
+   "calves",
+   "obliques",
+   "lats"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits on the short box with feet hooked under the strap and folds forward over her straight legs, then circles her torso around in a wide loop through one side, forward, the other side and back, travelling around the world.",
+  "highlight": "the abdominals and obliques through the circle, with the spinal extensors, hamstrings, calves and latissimus dorsi"
+ },
+ {
+  "id": "short-box-walking",
+  "name": "Short Box: Walking",
+  "nameEs": "Caminando",
+  "series": "Short Box",
+  "level": "beginner",
+  "page": 398,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "tfl",
+   "glute-medius",
+   "glutes",
+   "abs",
+   "hip-flexors",
+   "lats",
+   "triceps"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "sits tall on the short box with feet hooked under the strap and hands behind her head, then walks her torso forward and back by shifting onto one sitting bone and then the other, alternately extending each leg, in a small seated stride.",
+  "highlight": "the tensor fasciae latae and gluteus medius and minimus when the leg goes out to the side, the glutes of the trailing leg, and the abdominals, hip flexors, latissimus dorsi, chest and triceps"
+ },
+ {
+  "id": "short-box-hip-lift",
+  "name": "Short Box: Hip Lift",
+  "nameEs": "Elevación de caderas",
+  "series": "Short Box",
+  "level": "beginner",
+  "page": 401,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "abs",
+   "hip-rotators",
+   "erectors"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "feet hooked under the strap",
+  "headrest": "down",
+  "equipment": [
+   "short-box"
+  ],
+  "pose": "lies back on the short box with both feet hooked under the strap and knees bent, then lifts her pelvis up off the box by pressing through her feet, holding the hips high with the body in a straight line or in external rotation, before lowering slowly.",
+  "highlight": "the hamstrings and glutes lifting the hips, with the abdominals and the deep hip rotators in external rotation"
+ },
+ {
+  "id": "side-splits",
+  "name": "Splits: Side Splits",
+  "nameEs": "Splits laterales",
+  "series": "Splits",
+  "level": "intermediate",
+  "page": 408,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hip-abductors",
+   "adductors",
+   "core",
+   "hip-rotators"
+  ],
+  "springs": "light (1 blue or 1 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "platform",
+   "carriage"
+  ],
+  "pose": "stands astride the reformer with one foot on the fixed platform and the other on the moving carriage, knees softly bent, then slides the carriage out sideways and draws it back in by squeezing her inner thighs, torso upright and square.",
+  "highlight": "the hip abductors and the inner-thigh adductors of both legs, with the abdominals and the hip external rotators"
+ },
+ {
+  "id": "front-split-the-hare",
+  "name": "Splits: The Hare",
+  "nameEs": "La liebre",
+  "series": "Splits",
+  "level": "advanced",
+  "page": 412,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "hip-flexors",
+   "quads"
+  ],
+  "springs": "light (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "platform",
+   "carriage"
+  ],
+  "pose": "stands in front of the reformer facing away, one foot on the carriage with the leg extended straight back and her hands on the frame, folding her torso down over her front leg in a deep hare-like front split shape.",
+  "highlight": "the hamstrings and glutes of the extended back leg, with the hip flexors and quadriceps of the front leg lengthening"
+ },
+ {
+  "id": "speed-skating",
+  "name": "Splits: Speed Skating",
+  "nameEs": "Patinaje de velocidad",
+  "series": "Splits",
+  "level": "intermediate",
+  "page": 414,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "adductors",
+   "hip-abductors",
+   "quads",
+   "glutes"
+  ],
+  "springs": "light (1 blue or 1 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "platform",
+   "carriage"
+  ],
+  "pose": "stands astride the reformer in a wide speed-skater stance, one foot on the platform and one on the carriage, hips sunk down and side-bending over one leg while the other slides out and back, torso low and leaning forward.",
+  "highlight": "the inner-thigh adductors and the hip abductors of both legs, with the quadriceps and glutes"
+ },
+ {
+  "id": "back-splits",
+  "name": "Splits: Back Splits",
+  "nameEs": "Splits de espaldas",
+  "series": "Splits",
+  "level": "advanced",
+  "page": 417,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "quads",
+   "vmo",
+   "obliques",
+   "multifidus"
+  ],
+  "springs": "light–medium (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "platform",
+   "carriage"
+  ],
+  "pose": "stands facing the reformer with her front foot on the platform and her back leg extended far behind with the forefoot on the carriage, sinking into a long low back split, torso upright with the pelvis square and level.",
+  "highlight": "the hamstrings, glutes and quadriceps of both legs, especially the inner vastus medialis, with the obliques and multifidus keeping the pelvis from rotating"
+ },
+ {
+  "id": "front-splits-four-phase",
+  "name": "Splits: Front Splits, Four Phase Stretch",
+  "nameEs": "Splits de frente: estiramiento en 4 fases",
+  "series": "Splits",
+  "level": "advanced",
+  "page": 420,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hip-flexors",
+   "hamstrings",
+   "glutes"
+  ],
+  "springs": "light–medium (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "platform",
+   "carriage"
+  ],
+  "pose": "stands in a split stance on the reformer with the front foot on the platform and the back forefoot on the carriage, lowering progressively through four stages into a full front split with the torso upright and hands lightly on the frame.",
+  "highlight": "the hip flexors of the back leg lengthening and the hamstrings of the front leg, with the glutes"
+ },
+ {
+  "id": "front-splits",
+  "name": "Splits: Front Splits",
+  "nameEs": "Splits de frente",
+  "series": "Splits",
+  "level": "advanced",
+  "page": 424,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "hamstrings",
+   "glutes",
+   "abs",
+   "hip-flexors"
+  ],
+  "springs": "light–medium (1 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "platform",
+   "carriage"
+  ],
+  "pose": "stands in a full front split on the reformer with the front foot on the platform and the back leg extended along the carriage, sliding deeper into the split then drawing the carriage home with the back leg, torso tall and pelvis square.",
+  "highlight": "the quadriceps of the front leg and the hamstrings and glutes of the back leg, with the abdominals supporting and the hip flexors lengthening"
+ },
+ {
+  "id": "jump-preparation",
+  "name": "Splits: Jump Preparation",
+  "nameEs": "Preparación a los saltos",
+  "series": "Splits",
+  "level": "intermediate",
+  "page": 429,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "calves",
+   "quads",
+   "feet",
+   "glutes"
+  ],
+  "springs": "medium–heavy (2 red + 1 blue)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "carriage"
+  ],
+  "pose": "stands with both feet on the carriage in a parallel stance, knees softly bent, rolling slowly through the feet from heel to toe to rehearse the landing and take-off, arms lightly forward for balance.",
+  "highlight": "the calves and the muscles of the feet articulating, with the quadriceps and glutes"
+ },
+ {
+  "id": "jumping",
+  "name": "Splits: Jumping",
+  "nameEs": "Saltos",
+  "series": "Splits",
+  "level": "intermediate",
+  "page": 431,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "glutes",
+   "calves",
+   "feet"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "low",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "carriage"
+  ],
+  "pose": "stands on the carriage and jumps, pushing the carriage away with both legs then catching it as it returns, landing softly through the balls of her feet with knees bent, arms swinging forward for balance and momentum.",
+  "highlight": "the quadriceps, glutes and calves of both legs driving the jump, with the muscles of the feet"
+ },
+ {
+  "id": "thread-the-needle-star-prep",
+  "name": "Advanced: Thread the Needle, Star Preparation",
+  "nameEs": "Enhebrar la aguja/preparación a la estrella",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 436,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "lats",
+   "abs",
+   "hip-flexors",
+   "glutes",
+   "shoulders"
+  ],
+  "springs": "light–medium (1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "a handle in one hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "is on one hand and one knee on the long box with the other arm threading under her body holding a strap, one leg extended long behind her, torso twisting toward the box, hips stacked over the supporting knee.",
+  "highlight": "the latissimus dorsi and abdominals, with the hip flexors and glutes of the extended leg and the shoulder of the supporting arm"
+ },
+ {
+  "id": "the-star",
+  "name": "Advanced: The Star",
+  "nameEs": "La estrella",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 439,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "lats",
+   "abs",
+   "hip-flexors",
+   "glutes",
+   "shoulders"
+  ],
+  "springs": "light–medium (1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "a handle in one hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "balances on one hand and one knee on the long box with the other straight arm and the opposite straight leg both extended long out to the sides, the body opening into a five-pointed star shape.",
+  "highlight": "the latissimus dorsi, abdominals, hip flexors and glutes holding the star, with both shoulders stabilising"
+ },
+ {
+  "id": "the-snake",
+  "name": "Advanced: The Snake",
+  "nameEs": "La serpiente",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 442,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "lats",
+   "erectors",
+   "arms",
+   "quads",
+   "core",
+   "shoulders"
+  ],
+  "springs": "light (1 red or blue + 1 yellow)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down along the long box with both hands holding strap handles in front of her, then ripples her spine up into a long extending snake-like arch, chest and legs lifting as the arms sweep back and the body undulates forward and back.",
+  "highlight": "the latissimus dorsi, spinal extensors and arms, with the quadriceps, shoulders and the centre"
+ },
+ {
+  "id": "advanced-twist",
+  "name": "Advanced: Twist",
+  "nameEs": "Torsión",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 446,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "ql",
+   "lats",
+   "erectors",
+   "abs"
+  ],
+  "springs": "light (1 red or blue + 1 yellow)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "is seated or folded on the long box with both hands holding strap handles, rotating the whole torso around the long axis of the spine into a deep twist, the ribcage turning far past the hips while the legs stay anchored.",
+  "highlight": "the obliques and quadratus lumborum through the deep twist, with the latissimus dorsi, spinal extensors and abdominals"
+ },
+ {
+  "id": "corkscrew",
+  "name": "Advanced: Corkscrew",
+  "nameEs": "Sacacorchos",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 448,
+  "focus": [
+   "core"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "ql",
+   "lats",
+   "erectors",
+   "quads",
+   "arms"
+  ],
+  "springs": "light (1 red or blue + 1 yellow)",
+  "footbar": "not used",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "holds a spiralling shape on the long box with both hands on the strap handles, the torso winding around and down in a corkscrew rotation, hips and shoulders counter-rotating so the spine screws through its full length.",
+  "highlight": "the latissimus dorsi and spinal extensors with the arms and quadriceps, and a deep stretch through the quadratus lumborum and obliques"
+ },
+ {
+  "id": "balance-control-dismount",
+  "name": "Advanced: Balance and Control with Dismount",
+  "nameEs": "Equilibrio y control con desmonte",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 453,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "glutes",
+   "abs",
+   "chest",
+   "shoulders",
+   "core"
+  ],
+  "springs": "all springs engaged",
+  "footbar": "low",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "holds a balanced pose on the reformer with her body lifted and controlled above the carriage, both hands on the strap handles and her weight poised, then steps or lowers off the machine with complete control.",
+  "highlight": "the glutes, abdominals, pectorals and deltoids working together to hold the balance"
+ },
+ {
+  "id": "opening-backbend",
+  "name": "Advanced: Opening, Backbend",
+  "nameEs": "Apertura o backbend",
+  "series": "Advanced",
+  "level": "advanced",
+  "page": 458,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "glutes",
+   "lumbar",
+   "shoulders",
+   "arms",
+   "abs",
+   "hip-flexors",
+   "chest",
+   "lats"
+  ],
+  "springs": "heavy (3 red)",
+  "footbar": "low",
+  "straps": "a handle in each hand",
+  "headrest": "down",
+  "equipment": [
+   "footbar"
+  ],
+  "pose": "arches back over the reformer into a full opening backbend, hips pressing forward, chest and head reaching back and down behind her, both arms reaching long to hold the strap handles or the frame, the whole front of the body lengthening.",
+  "highlight": "the glutes and lumbar extensors powering the arch, with the shoulders and arms, and a long stretch through the abdominals, hip flexors, chest and latissimus dorsi"
+ }
+]
