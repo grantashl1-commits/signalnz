@@ -231,3 +231,4 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 - Show a cycle phase or day to members only from `actualCycleDay` (null without cycle data or when tracking is off); `currentCycleDay` is the 28-slot planning day for meals and must not be labelled as her cycle day.
 - Keep the recipe library out of the first download: home-screen and app-shell code reaches `today-meals`, `recipe-index` or the meal-plan builder only through a dynamic `import()`.
 - Today's ticked rounds live in `src/lib/session-ticks.ts` and pre-fill the finish dialog; the shopping list buys the first option of a recipe's "A or B" and shows the recipe's wording (`recipeSays`).
+- Onboarding follows `FLOW` in `OnboardingFlow.tsx`: name, "My Dream Life looks like…", the goals and habits she keeps from it (`src/lib/dream-reflection.ts`), then movement, equipment, optional body, food, and cycle with an opt-out. The dream is saved as her first journal entry.
