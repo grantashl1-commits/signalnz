@@ -127,3 +127,19 @@ it('runs the optional third strength round (42 turns)', () => {
   expect(progress.logs[0].records[5]).toMatchObject({ round: 3, exercise_id: first.stations[0].id, partner: 'B' });
   expect(progress.logs[0].records[6]).toMatchObject({ round: 1, exercise_id: first.stations[1].id, partner: 'A' });
 });
+
+it('keeps a weight typed one key at a time', () => {
+  renderHub();
+  const weight = screen.getByLabelText('Partner B weight in kg') as HTMLInputElement;
+  // "6" isn't a weight yet; it must stay in the box on the way to "65.5".
+  for (const typed of ['6', '65', '65.', '65.5']) {
+    fireEvent.change(weight, { target: { value: typed } });
+    expect(weight.value).toBe(typed);
+  }
+  expect(JSON.parse(localStorage.getItem('signal_partner_settings_v1:guest')!).B.weightKg).toBe(65.5);
+  // Too light to be a weight: not saved, and the box returns to the saved value on leaving it.
+  fireEvent.change(weight, { target: { value: '6' } });
+  expect(JSON.parse(localStorage.getItem('signal_partner_settings_v1:guest')!).B.weightKg).toBeNull();
+  fireEvent.blur(weight);
+  expect(weight.value).toBe('');
+});

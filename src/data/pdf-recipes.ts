@@ -607,7 +607,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "everyday-chia-pudding",
     name: "Everyday Chia Pudding",
-    image: "/images/recipes/meals/everyday-chia-pudding.png",
+    image: "/images/recipes/meals/mixed-berry-chia-pudding.png",
     phase: "menstrual",
     serves: 2,
     prepTime: "15 min",
@@ -1862,7 +1862,7 @@ export const PDF_RECIPES: Recipe[] = [
   {
     id: "mexican-style-smash-tacos",
     name: "Mexican-Style Smash Tacos",
-    image: "/images/recipes/meals/mexican-style-smash-tacos.png",
+    image: "/images/recipes/meals/mexican-smash-tacos.png",
     phase: "ovulatory",
     serves: 4,
     prepTime: "22 min",

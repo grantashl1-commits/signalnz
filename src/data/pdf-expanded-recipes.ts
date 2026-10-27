@@ -48,7 +48,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Alkaline greens combined with healthy fats support hormone detoxification. Sauerkraut aids oestrogen metabolism via the gut.",
     nutrition: { calories: 380, protein: 16, carbs: 12, fat: 30, fibre: 8 },
-    image: "/images/recipes/meals/signal-keto-green-bowl.jpg",
+    image: "/images/recipes/meals/signal-keto-green-bowl.webp",
   },
   {
     id: "signal-cauliflower-steak",
@@ -73,7 +73,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cauliflower's sulforaphane supports liver oestrogen detox during ovulation. Alkaline-forming and anti-inflammatory.",
     nutrition: { calories: 220, protein: 6, carbs: 14, fat: 16, fibre: 6 },
-    image: "/images/recipes/meals/signal-cauliflower-steak.jpg",
+    image: "/images/recipes/meals/signal-cauliflower-steak.webp",
   },
 
   // ─── Protein-Centric (Forever Strong inspired) ───
@@ -100,7 +100,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "High leucine content from chicken triggers muscle protein synthesis. 40g+ protein per serve supports the muscle-centric approach.",
     nutrition: { calories: 520, protein: 42, carbs: 36, fat: 20, fibre: 8 },
-    image: "/images/recipes/meals/signal-protein-power-plate.jpg",
+    image: "/images/recipes/meals/signal-protein-power-plate.webp",
   },
   {
     id: "signal-steak-sweet-potato",
@@ -125,7 +125,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Red meat provides haem iron and B12 for menstrual replenishment. Kumara adds B6 for progesterone support.",
     nutrition: { calories: 560, protein: 38, carbs: 42, fat: 24, fibre: 6 },
-    image: "/images/recipes/meals/signal-steak-sweet-potato.jpg",
+    image: "/images/recipes/meals/signal-steak-sweet-potato.webp",
   },
 
   // ─── Volumetrics (high-volume, low-calorie) ───
@@ -154,7 +154,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "High volume, low calorie — satisfying without excess. Fibre-rich vegetables curb luteal cravings naturally.",
     nutrition: { calories: 120, protein: 6, carbs: 18, fat: 2, fibre: 6 },
-    image: "/images/recipes/meals/signal-volume-veggie-soup.jpg",
+    image: "/images/recipes/meals/signal-volume-veggie-soup.webp",
   },
   {
     id: "signal-stuffed-capsicum",
@@ -180,7 +180,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Capsicums provide vitamin C for iron absorption. High-volume filling supports follicular energy without excess calories.",
     nutrition: { calories: 340, protein: 16, carbs: 52, fat: 8, fibre: 12 },
-    image: "/images/recipes/meals/signal-stuffed-capsicum.jpg",
+    image: "/images/recipes/meals/signal-stuffed-capsicum.webp",
   },
 
   // ─── Keto (Ketogenic Bible inspired) ───
@@ -207,7 +207,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "High omega-3 from salmon reduces luteal inflammation and supports progesterone. Low-carb to stabilise blood sugar.",
     nutrition: { calories: 480, protein: 34, carbs: 8, fat: 36, fibre: 6 },
-    image: "/images/recipes/meals/signal-keto-salmon-plate.jpg",
+    image: "/images/recipes/meals/signal-keto-salmon-plate.webp",
   },
   {
     id: "signal-keto-egg-cups",
@@ -231,7 +231,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Eggs provide choline and B12 for energy recovery. Prosciutto adds iron. Low-carb breakfast stabilises menstrual blood sugar.",
     nutrition: { calories: 180, protein: 14, carbs: 3, fat: 12, fibre: 1 },
-    image: "/images/recipes/meals/signal-keto-egg-cups.jpg",
+    image: "/images/recipes/meals/signal-keto-egg-cups.webp",
   },
 
   // ─── AIP / Paleo Approach ───
@@ -259,7 +259,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "AIP-compliant and anti-inflammatory. Bone broth provides collagen for gut healing. Turkey supplies zinc for immune support.",
     nutrition: { calories: 320, protein: 28, carbs: 14, fat: 16, fibre: 4 },
-    image: "/images/recipes/meals/signal-aip-healing-bowl.jpg",
+    image: "/images/recipes/meals/signal-aip-healing-bowl.webp",
   },
   {
     id: "signal-aip-sweet-potato-hash",
@@ -284,7 +284,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "AIP-friendly and nutrient-dense. Beta-carotene converts to vitamin A for follicular hormone production.",
     nutrition: { calories: 420, protein: 26, carbs: 38, fat: 18, fibre: 6 },
-    image: "/images/recipes/meals/signal-aip-sweet-potato-hash.jpg",
+    image: "/images/recipes/meals/signal-aip-sweet-potato-hash.webp",
   },
 
   // ─── Sports Nutrition (Nancy Clark inspired) ───
@@ -308,7 +308,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Quick-release carbs from banana and honey fuel training. Follicular phase is optimal for high-intensity performance.",
     nutrition: { calories: 440, protein: 12, carbs: 62, fat: 16, fibre: 6 },
-    image: "/images/recipes/meals/signal-pre-workout-toast.jpg",
+    image: "/images/recipes/meals/signal-pre-workout-toast.webp",
   },
   {
     id: "signal-post-workout-smoothie",
@@ -330,7 +330,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "3:1 carb-to-protein ratio optimises recovery. Peak oestrogen during ovulation supports muscle repair.",
     nutrition: { calories: 420, protein: 30, carbs: 48, fat: 12, fibre: 6 },
-    image: "/images/recipes/meals/signal-post-workout-smoothie.jpg",
+    image: "/images/recipes/meals/signal-post-workout-smoothie.webp",
   },
 
   // ─── Menopause / Perimenopause (Haver inspired) ───
@@ -359,7 +359,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Targets the 30g daily fibre goal for menopause support. Flaxseed and edamame provide phytoestrogens for hormonal transition.",
     nutrition: { calories: 380, protein: 20, carbs: 40, fat: 14, fibre: 16 },
-    image: "/images/recipes/meals/signal-fibre-30-salad.jpg",
+    image: "/images/recipes/meals/signal-fibre-30-salad.webp",
   },
   {
     id: "signal-bone-building-bowl",
@@ -383,7 +383,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Sardines with bones provide calcium and vitamin D — critical for bone density during perimenopause and menopause.",
     nutrition: { calories: 440, protein: 32, carbs: 38, fat: 18, fibre: 6 },
-    image: "/images/recipes/meals/signal-bone-building-bowl.jpg",
+    image: "/images/recipes/meals/signal-bone-building-bowl.webp",
   },
 
   // ─── Gut-Hormone Axis (Hormone Havoc / Shah inspired) ───
@@ -409,7 +409,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Jerusalem artichoke is one of the richest sources of inulin (prebiotic). Kimchi provides live cultures for estrobolome health.",
     nutrition: { calories: 360, protein: 30, carbs: 22, fat: 14, fibre: 10 },
-    image: "/images/recipes/meals/signal-gut-hormone-plate.jpg",
+    image: "/images/recipes/meals/signal-gut-hormone-plate.webp",
   },
   {
     id: "signal-fermented-feast-bowl",
@@ -433,7 +433,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Four fermented foods in one bowl maximise gut microbial diversity. Supports the gut-brain-hormone axis during peak ovulation.",
     nutrition: { calories: 400, protein: 20, carbs: 44, fat: 16, fibre: 8 },
-    image: "/images/recipes/meals/signal-fermented-feast-bowl.jpg",
+    image: "/images/recipes/meals/signal-fermented-feast-bowl.webp",
   },
 
   // ─── Balanced Moderation (Eat Your Ice Cream inspired) ───
@@ -459,7 +459,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Balanced enjoyment without restriction. Lean beef provides iron and B12. Wholemeal bun adds fibre for sustained energy.",
     nutrition: { calories: 480, protein: 36, carbs: 34, fat: 20, fibre: 6 },
-    image: "/images/recipes/meals/signal-balanced-burger.jpg",
+    image: "/images/recipes/meals/signal-balanced-burger.webp",
   },
   {
     id: "signal-dark-choc-bark",
@@ -482,7 +482,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Dark chocolate is rich in magnesium — the key luteal mineral. Moderate treats support a sustainable, non-restrictive approach.",
     nutrition: { calories: 180, protein: 3, carbs: 18, fat: 12, fibre: 3 },
-    image: "/images/recipes/meals/signal-dark-choc-bark.jpg",
+    image: "/images/recipes/meals/signal-dark-choc-bark.webp",
   },
 
   // ─── Microbial Diversity (Spoon-Fed / Spector inspired) ───
@@ -513,7 +513,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Maximises plant diversity — aiming for 30 different plants per week improves gut microbiome richness and hormonal health.",
     nutrition: { calories: 420, protein: 22, carbs: 40, fat: 20, fibre: 8 },
-    image: "/images/recipes/meals/signal-30-plant-stir-fry.jpg",
+    image: "/images/recipes/meals/signal-30-plant-stir-fry.webp",
   },
   {
     id: "signal-polyphenol-bowl",
@@ -536,7 +536,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Polyphenol-rich foods (cherries, cacao, walnuts) feed beneficial gut bacteria. Supports anti-inflammatory pathways during menstruation.",
     nutrition: { calories: 340, protein: 18, carbs: 30, fat: 18, fibre: 6 },
-    image: "/images/recipes/meals/signal-polyphenol-bowl.jpg",
+    image: "/images/recipes/meals/signal-polyphenol-bowl.webp",
   },
 
   // ─── Calorie Adequacy (No Period Now What inspired) ───
@@ -563,7 +563,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Adequate energy density supports menstrual cycle recovery. Complex carbs and protein provide sustained fuel for hormonal health.",
     nutrition: { calories: 580, protein: 32, carbs: 56, fat: 24, fibre: 8 },
-    image: "/images/recipes/meals/signal-nourish-pasta.jpg",
+    image: "/images/recipes/meals/signal-nourish-pasta.webp",
   },
   {
     id: "signal-energy-dense-granola",
@@ -591,7 +591,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Molasses is a rich source of plant iron. Energy-dense to support adequate calorie intake for consistent menstrual cycles.",
     nutrition: { calories: 280, protein: 6, carbs: 32, fat: 14, fibre: 4 },
-    image: "/images/recipes/meals/signal-energy-dense-granola.jpg",
+    image: "/images/recipes/meals/signal-energy-dense-granola.webp",
   },
 
   // ─── Blood Sugar Balance (Syndrome X inspired) ───
@@ -617,7 +617,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Lentils' slow-release carbs prevent blood sugar spikes. Protein-fat-fibre combination at every meal stabilises insulin during the luteal phase.",
     nutrition: { calories: 480, protein: 38, carbs: 34, fat: 20, fibre: 14 },
-    image: "/images/recipes/meals/signal-blood-sugar-bowl.jpg",
+    image: "/images/recipes/meals/signal-blood-sugar-bowl.webp",
   },
   {
     id: "signal-cinnamon-protein-pancakes",
@@ -644,7 +644,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Cinnamon supports insulin sensitivity. Protein-enriched pancakes prevent the blood sugar crash of traditional recipes.",
     nutrition: { calories: 380, protein: 24, carbs: 42, fat: 12, fibre: 6 },
-    image: "/images/recipes/meals/signal-cinnamon-protein-pancakes.jpg",
+    image: "/images/recipes/meals/signal-cinnamon-protein-pancakes.webp",
   },
 
   // ─── Low-FODMAP (Cooper inspired) ───
@@ -671,7 +671,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Low-FODMAP to reduce bloating and gas during the luteal phase. Garlic-infused oil provides flavour without the FODMAPs.",
     nutrition: { calories: 460, protein: 30, carbs: 44, fat: 18, fibre: 4 },
-    image: "/images/recipes/meals/signal-fodmap-chicken-bowl.jpg",
+    image: "/images/recipes/meals/signal-fodmap-chicken-bowl.webp",
   },
   {
     id: "signal-fodmap-pumpkin-soup",
@@ -698,7 +698,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Warming and gentle on a sensitive gut. Pumpkin provides beta-carotene and is naturally low-FODMAP when portioned correctly.",
     nutrition: { calories: 280, protein: 8, carbs: 28, fat: 16, fibre: 4 },
-    image: "/images/recipes/meals/signal-fodmap-pumpkin-soup.jpg",
+    image: "/images/recipes/meals/signal-fodmap-pumpkin-soup.webp",
   },
 
   // ─── Anti-Inflammation (Jessica Black inspired) ───
@@ -727,7 +727,7 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Turmeric's curcumin is a potent anti-inflammatory, reducing prostaglandin-driven cramps. One-tray simplicity for low-energy days.",
     nutrition: { calories: 400, protein: 32, carbs: 36, fat: 14, fibre: 6 },
-    image: "/images/recipes/meals/signal-turmeric-fish-tray.jpg",
+    image: "/images/recipes/meals/signal-turmeric-fish-tray.webp",
   },
   {
     id: "signal-anti-inflam-golden-latte",
@@ -750,6 +750,6 @@ export const EXPANDED_RECIPES: Recipe[] = [
     ],
     phaseBenefit: "Golden milk reduces systemic inflammation. Black pepper increases curcumin absorption by 2000%. Calming evening ritual for luteal wind-down.",
     nutrition: { calories: 120, protein: 3, carbs: 20, fat: 4, fibre: 2 },
-    image: "/images/recipes/meals/signal-anti-inflam-golden-latte.jpg",
+    image: "/images/recipes/meals/signal-anti-inflam-golden-latte.webp",
   },
 ];

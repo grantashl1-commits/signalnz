@@ -57,7 +57,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Divide the pancakes between 4 plates. If using, share 100 g berries and 15 mL maple syrup between the servings."
     ],
     "kidAlternative": "Make the same batter into small pancake fingers, and serve the fruit and maple syrup separately for dipping.",
-    "image": "/images/recipes/plant-based-family/Golden Banana Oat Pancakes.png"
+    "image": "/images/recipes/plant-based-family/golden-banana-oat-pancakes.png"
   },
   {
     "id": "apple-and-cinnamon-breakfast-waffles",
@@ -85,7 +85,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Continue until you have about 8 waffles. Serve 2 waffles per person, with 100 g sliced strawberries shared across 4 servings if using."
     ],
     "kidAlternative": "Serve the waffles as small crisp strips with the warm apple mixture or fruit alongside rather than piled on top.",
-    "image": "/images/recipes/plant-based-family/Apple & Cinnamon Breakfast Waffles.png"
+    "image": "/images/recipes/plant-based-family/apple-and-cinnamon-breakfast-waffles.png"
   },
   {
     "id": "everyday-creamy-oat-porridge",
@@ -110,7 +110,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Spoon into a bowl, top with the remaining sliced banana (about 30 g) and scatter over the toasted 9 g mixed seeds."
     ],
     "kidAlternative": "Serve the banana and blueberries in a small dish on the side rather than stirred through, and leave the seeds off for younger eaters.",
-    "image": "/images/recipes/plant-based-family/Everyday Creamy Oat Porridge.png"
+    "image": "/images/recipes/plant-based-family/everyday-creamy-oat-porridge.png"
   },
   {
     "id": "sunday-tofu-scramble-on-toast",
@@ -149,7 +149,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Toast 4 thick slices of sourdough and spread each with 30 g dairy-free spread. Divide the tofu scramble between the toast, top with the baked eggplant slices and the pan-fried tomatoes, and serve straight away."
     ],
     "kidAlternative": "Serve the scramble on plain toast with the eggplant and tomatoes in a separate dish, and let children add what they like.",
-    "image": "/images/recipes/plant-based-family/Sunday Tofu Scramble on Toast.png"
+    "image": "/images/recipes/plant-based-family/sunday-tofu-scramble-on-toast.png"
   },
   {
     "id": "green-goodness-smoothie",
@@ -170,7 +170,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Pour in 180 mL unsweetened soy milk and blend for 30–60 seconds until smooth. Serve immediately."
     ],
     "kidAlternative": "Keep toppings in small dishes and serve the plain base first; let children choose a familiar fruit.",
-    "image": "/images/recipes/plant-based-family/Green Goodness Smoothie.png"
+    "image": "/images/recipes/plant-based-family/green-goodness-smoothie.png"
   },
   {
     "id": "berry-and-banana-breakfast-smoothie",
@@ -191,7 +191,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Add 180 mL unsweetened soy milk, blend until creamy and serve cold."
     ],
     "kidAlternative": "Keep toppings in small dishes and serve the plain base first; let children choose a familiar fruit.",
-    "image": "/images/recipes/plant-based-family/Berry & Banana Breakfast Smoothie.png"
+    "image": "/images/recipes/plant-based-family/berry-and-banana-breakfast-smoothie.png"
   },
   {
     "id": "chocolate-banana-oat-smoothie",
@@ -213,7 +213,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Add 180 mL unsweetened soy milk and blend until the date and oats are fully broken down. Serve immediately."
     ],
     "kidAlternative": "Keep toppings in small dishes and serve the plain base first; let children choose a familiar fruit.",
-    "image": "/images/recipes/plant-based-family/Chocolate Banana Oat Smoothie.png"
+    "image": "/images/recipes/plant-based-family/chocolate-banana-oat-smoothie.png"
   },
   {
     "id": "toasted-cinnamon-and-pecan-crunch",
@@ -244,7 +244,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Mix in 160 g chopped dried apricots and 50 g toasted coconut flakes. Divide into 12 portions of approximately 85–95 g, or store airtight and measure portions when serving."
     ],
     "kidAlternative": "Set aside a little granola before the larger nuts are added, or finely chop the nuts for younger children; serve with yoghurt and fruit.",
-    "image": "/images/recipes/plant-based-family/Toasted Cinnamon & Pecan Crunch.png"
+    "image": "/images/recipes/plant-based-family/toasted-cinnamon-and-pecan-crunch.png"
   },
   {
     "id": "golden-mushroom-and-spinach-toastie",
@@ -269,7 +269,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Cook both sandwiches in a preheated sandwich press for 4–5 minutes or in a lightly greased pan for 3–4 minutes per side, until crisp and hot. Cut each in half before serving."
     ],
     "kidAlternative": "Make one small triangle with cheese only and serve a spoonful of the mushrooms on the side; keep the pesto optional.",
-    "image": "/images/recipes/plant-based-family/Golden Mushroom & Spinach Toastie.png"
+    "image": "/images/recipes/plant-based-family/golden-mushroom-and-spinach-toastie.png"
   },
   {
     "id": "buckwheat-and-rocket-brunch-galettes",
@@ -300,7 +300,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Fold the empty half of the galette over the filling, press lightly and slide onto a plate. Repeat with the remaining galettes and serve while warm, with any leftover dressing alongside."
     ],
     "kidAlternative": "Fold a plainer galette with only the cheese inside, and serve the rocket, walnuts and dressing on the side for dipping.",
-    "image": "/images/recipes/plant-based-family/Buckwheat & Rocket Brunch Galettes.png"
+    "image": "/images/recipes/plant-based-family/buckwheat-and-rocket-brunch-galettes.png"
   },
   {
     "id": "rainbow-breakfast-tofu-wraps",
@@ -334,7 +334,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Roll each wrap up firmly, tucking in the ends as you go, then slice each one into four pieces. These are best eaten fresh."
     ],
     "kidAlternative": "Set out the wrap, spinach, capsicum and avocado separately as a build-your-own plate, and keep the tofu scramble plain.",
-    "image": "/images/recipes/plant-based-family/Rainbow Breakfast Tofu Wraps.png"
+    "image": "/images/recipes/plant-based-family/rainbow-breakfast-tofu-wraps.png"
   },
   {
     "id": "creamy-chickpea-and-crunchy-salad-sandwich",
@@ -360,7 +360,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Divide 30 g lettuce between 2 slices of wholegrain bread. Spread half the chickpea mixture on each, then top with the remaining 2 slices of bread. Slice and serve."
     ],
     "kidAlternative": "Keep some chickpeas unseasoned and put the bread, lettuce and filling separately on a plate for a build-your-own sandwich.",
-    "image": "/images/recipes/plant-based-family/Creamy Chickpea & Crunchy Salad Sandwich.png"
+    "image": "/images/recipes/plant-based-family/creamy-chickpea-and-crunchy-salad-sandwich.png"
   },
   {
     "id": "golden-chickpea-brunch-omelette",
@@ -390,7 +390,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Slide the omelette onto a plate, fold it in half (or cut it into wedges like a pizza) and cover with foil to keep warm. Wipe the pan, add another 5 mL of the remaining olive oil and repeat with the remaining batter and filling to make 4 omelettes. Serve warm."
     ],
     "kidAlternative": "Cook one smaller plain omelette with nothing scattered on top, and serve the mushrooms and tomatoes in a separate bowl.",
-    "image": "/images/recipes/plant-based-family/Golden Chickpea Brunch Omelette.png"
+    "image": "/images/recipes/plant-based-family/golden-chickpea-brunch-omelette.png"
   },
   {
     "id": "basil-butter-bean-pasta",
@@ -421,7 +421,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Stir 150 g chopped mixed tomatoes and the 10 g extra basil leaves through the pasta, then divide between 4 bowls. Store the remaining pesto in a sealed jar in the fridge, drizzled with a little extra olive oil, for up to a week."
     ],
     "kidAlternative": "Serve plain pasta with a spoonful of the pesto stirred through, and keep the tomatoes and basil in a separate dish.",
-    "image": "/images/recipes/plant-based-family/Basil Butter Bean Pasta.png"
+    "image": "/images/recipes/plant-based-family/basil-butter-bean-pasta.png"
   },
   {
     "id": "quinoa-edamame-and-pomegranate-rainbow-bowl",
@@ -459,7 +459,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Scatter the reserved pomegranate seeds, orange segments and herb leaves over the top. Drizzle over the orange dressing to taste when serving; the undressed salad keeps in the fridge for up to 2 days and the leftover dressing keeps in a sealed jar for the same time."
     ],
     "kidAlternative": "Set aside a plain portion of quinoa, edamame and cucumber before the herbs go in, and let children add a little dressing themselves.",
-    "image": "/images/recipes/plant-based-family/Quinoa, Edamame & Pomegranate Rainbow Bowl.png"
+    "image": "/images/recipes/plant-based-family/quinoa-edamame-and-pomegranate-rainbow-bowl.png"
   },
   {
     "id": "flaky-leek-potato-and-greens-parcels",
@@ -492,7 +492,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake on the middle rack for 35 minutes, until golden brown and puffed. Leave to cool for a few minutes before eating; any leftovers keep in a sealed container in the fridge for up to 2 days."
     ],
     "kidAlternative": "Make smaller individual parcels with the kale chopped very finely, and serve the Worcestershire glaze on the side for dipping.",
-    "image": "/images/recipes/plant-based-family/Flaky Leek, Potato & Greens Parcels.png"
+    "image": "/images/recipes/plant-based-family/flaky-leek-potato-and-greens-parcels.png"
   },
   {
     "id": "garden-green-savoury-crêpes",
@@ -522,7 +522,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "To serve, spread a little of the 100 g hummus down the middle of each crêpe, add some of the grated carrot (from 1 carrot, about 70 g) and a few of the 60 g salad leaves. Fold in half or quarters and eat while warm; any leftover crêpes keep wrapped in foil in the fridge for up to 24 hours."
     ],
     "kidAlternative": "Cook smaller plain crêpes and serve the hummus, grated carrot and salad leaves in separate little dishes for dipping.",
-    "image": "/images/recipes/plant-based-family/Garden Green Savoury Crêpes.png"
+    "image": "/images/recipes/plant-based-family/garden-green-savoury-crepes.png"
   },
   {
     "id": "crispy-herbed-tofu-bites",
@@ -555,7 +555,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake for 20 minutes, then turn each piece over and bake for a further 10 minutes, until light golden and crisp. Serve with lemon wedges. Any leftovers keep in an airtight container in the fridge for up to 24 hours."
     ],
     "kidAlternative": "Cut the tofu into fingers, use plain breadcrumbs without the paprika, and serve the lemon wedges alongside for squeezing rather than on top.",
-    "image": "/images/recipes/plant-based-family/Crispy Herbed Tofu Bites.png"
+    "image": "/images/recipes/plant-based-family/crispy-herbed-tofu-bites.png"
   },
   {
     "id": "creamy-green-macaroni",
@@ -590,7 +590,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Divide between 4 bowls and sprinkle with the 60 g extra grated vegan cheese, if using."
     ],
     "kidAlternative": "Serve the plain macaroni with the green sauce in a small bowl on the side for dipping, and keep a few peas and a spoonful of spinach separate rather than stirred through.",
-    "image": "/images/recipes/plant-based-family/Creamy Green Macaroni.png"
+    "image": "/images/recipes/plant-based-family/creamy-green-macaroni.png"
   },
   {
     "id": "smoky-black-bean-and-capsicum-fajitas",
@@ -630,7 +630,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Warm 8 small soft flour tortillas in a dry frying pan over medium heat for a couple of minutes on each side. Fill them with the peppers and onions, the black beans, the avocado cream and the corn salsa, and top with 100 g grated vegan cheese and the reserved coriander."
     ],
     "kidAlternative": "Serve the beans, corn salsa and avocado cream in separate small bowls with plain tortilla wedges, and leave out the chipotle paste so the beans stay mild.",
-    "image": "/images/recipes/plant-based-family/Smoky Black Bean & Capsicum Fajitas.png"
+    "image": "/images/recipes/plant-based-family/smoky-black-bean-and-capsicum-fajitas.png"
   },
   {
     "id": "spaghetti-with-savoury-lentil-balls",
@@ -671,7 +671,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Return the spaghetti to the pan and stir through the tomato sauce, adding a splash of the reserved cooking water if needed. Divide between 4 bowls, top with the baked balls and scatter over 15 g fresh basil leaves."
     ],
     "kidAlternative": "Serve the spaghetti with the tomato sauce on the side and two or three lentil balls on a separate plate, and swap the basil for a little grated vegan cheese if that is preferred.",
-    "image": "/images/recipes/plant-based-family/Spaghetti with Savoury Lentil Balls.png"
+    "image": "/images/recipes/plant-based-family/spaghetti-with-savoury-lentil-balls.png"
   },
   {
     "id": "creamy-mushroom-and-butter-bean-bake",
@@ -710,7 +710,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Sprinkle the crumb evenly over the bake and place in the oven for 20 minutes, until the top is golden and the filling is bubbling at the edges."
     ],
     "kidAlternative": "Spoon out a portion before the crumb goes on and serve the creamy beans and mushrooms with plain pasta or toast fingers on the side.",
-    "image": "/images/recipes/plant-based-family/Creamy Mushroom & Butter Bean Bake.png"
+    "image": "/images/recipes/plant-based-family/creamy-mushroom-and-butter-bean-bake.png"
   },
   {
     "id": "family-style-vegetable-ramen",
@@ -746,7 +746,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Wilt 100 g baby spinach in the broth. Divide the noodles, carrots and vegetables between 4 bowls, pour over the hot broth and garnish with sliced spring onions and fresh herbs."
     ],
     "kidAlternative": "Keep a portion of the main starch and protein plain; offer sauce and vegetables separately without pressure.",
-    "image": "/images/recipes/plant-based-family/Family-Style Vegetable Ramen.png"
+    "image": "/images/recipes/plant-based-family/family-style-vegetable-ramen.png"
   },
   {
     "id": "creamy-courgette-and-pea-pasta",
@@ -776,7 +776,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Drain the 250 g cooked pasta and toss through the sauce. Finish with 10 g chopped parsley and black pepper. Divide between 4 bowls."
     ],
     "kidAlternative": "Keep a portion of the main starch and protein plain; offer sauce and vegetables separately without pressure.",
-    "image": "/images/recipes/plant-based-family/Creamy Courgette & Pea Pasta.png"
+    "image": "/images/recipes/plant-based-family/creamy-courgette-and-pea-pasta.png"
   },
   {
     "id": "ginger-tofu-and-rainbow-rice",
@@ -813,7 +813,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Pour over the remaining 15 mL soy sauce, add 30 mL water and stir for a couple of minutes, until the rice is hot and the vegetables are coated. Divide the rainbow rice between 4 bowls and top with the ginger tofu."
     ],
     "kidAlternative": "Serve the tofu cubes and plain rice separately with the sticky glaze in a small bowl for dipping, and leave the chilli flakes out of the pan.",
-    "image": "/images/recipes/plant-based-family/Ginger Tofu & Rainbow Rice.png"
+    "image": "/images/recipes/plant-based-family/ginger-tofu-and-rainbow-rice.png"
   },
   {
     "id": "spring-greens-and-potato-puff-tart",
@@ -851,7 +851,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Slice into portions and serve warm."
     ],
     "kidAlternative": "Cut a plain piece of baked pastry from the edge before the toppings go on, and serve the potatoes, peas and asparagus in separate little piles so children can choose.",
-    "image": "/images/recipes/plant-based-family/Spring Greens & Potato Puff Tart.png"
+    "image": "/images/recipes/plant-based-family/spring-greens-and-potato-puff-tart.png"
   },
   {
     "id": "roasted-pumpkin-satay-plate",
@@ -887,7 +887,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Transfer the remaining satay sauce to a small bowl and serve it as a dip, with the roasted vegetables and pumpkin, the cucumber sticks and the last carrot cut into sticks."
     ],
     "kidAlternative": "Give smaller children their own little pot of satay for dipping and serve the roasted pumpkin wedges plain alongside raw cucumber and carrot sticks.",
-    "image": "/images/recipes/plant-based-family/Roasted Pumpkin Satay Plate.png"
+    "image": "/images/recipes/plant-based-family/roasted-pumpkin-satay-plate.png"
   },
   {
     "id": "beetroot-and-mint-falafel-bites",
@@ -934,7 +934,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "To serve, place a few of the 100 g mixed salad leaves in the centre of each flatbread, add falafels, sliced radish from the 6 radishes, the pickled red onion and a drizzle of the tahini dressing."
     ],
     "kidAlternative": "Serve the falafels and torn flatbread plain with the dressing in a small bowl for dipping, and keep the pickled onion and radish in separate dishes.",
-    "image": "/images/recipes/plant-based-family/Beetroot & Mint Falafel Bites.png"
+    "image": "/images/recipes/plant-based-family/beetroot-and-mint-falafel-bites.png"
   },
   {
     "id": "cosy-lentil-and-cauliflower-cottage-pie",
@@ -975,7 +975,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake for 30 minutes, until the filling is bubbling and the top is golden and crunchy in places."
     ],
     "kidAlternative": "Serve a scoop of plain mashed potato next to a small portion of the bean filling instead of layered together, so the two parts stay separate on the plate.",
-    "image": "/images/recipes/plant-based-family/Cosy Lentil & Cauliflower Cottage Pie.png"
+    "image": "/images/recipes/plant-based-family/cosy-lentil-and-cauliflower-cottage-pie.png"
   },
   {
     "id": "mild-three-bean-family-chilli",
@@ -1019,7 +1019,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Serve in bowls, with the 200 g cooked brown rice if you like."
     ],
     "kidAlternative": "Ladle out a mild portion over plain rice and lightly mash the beans for younger children, keeping the chilli powder and any extra chilli away from the shared pot.",
-    "image": "/images/recipes/plant-based-family/Mild Three-Bean Family Chilli.png"
+    "image": "/images/recipes/plant-based-family/mild-three-bean-family-chilli.png"
   },
   {
     "id": "creamy-mushroom-stroganoff",
@@ -1052,7 +1052,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Tip the drained 300 g pasta into the pan and toss through the mushroom sauce. Stir in 20 g roughly chopped parsley and divide between 4 bowls."
     ],
     "kidAlternative": "Use just ½ tsp of the Dijon mustard and serve the sauce over plain pasta shapes, with the parsley and a few mushrooms kept on the side.",
-    "image": "/images/recipes/plant-based-family/Creamy Mushroom Stroganoff.png"
+    "image": "/images/recipes/plant-based-family/creamy-mushroom-stroganoff.png"
   },
   {
     "id": "golden-coconut-and-spinach-dhal",
@@ -1092,7 +1092,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Fold in 100 g baby spinach, 15 g chopped coriander and 15 mL lemon juice. Cook for 2 more minutes until the spinach wilts. Divide between 6 bowls, with plain rice or flatbread served separately if desired."
     ],
     "kidAlternative": "Leave the chilli out of the shared pan. Serve a mild portion blended or lightly mashed with plain rice and a familiar vegetable on the side; offer chilli separately to adults.",
-    "image": "/images/recipes/plant-based-family/Golden Coconut & Spinach Dhal.png"
+    "image": "/images/recipes/plant-based-family/golden-coconut-and-spinach-dhal.png"
   },
   {
     "id": "smoky-sausage-and-chickpea-pot",
@@ -1133,7 +1133,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Ladle into 6 bowls and scatter over the remaining parsley."
     ],
     "kidAlternative": "Serve the sausage pieces and baby corn whole with a spoonful of the sauce on the side, and leave the parsley off their bowl.",
-    "image": "/images/recipes/plant-based-family/Smoky Sausage & Chickpea Pot.png"
+    "image": "/images/recipes/plant-based-family/smoky-sausage-and-chickpea-pot.png"
   },
   {
     "id": "moroccan-spiced-vegetable-tagine",
@@ -1179,7 +1179,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Spoon the tagine over the couscous on 5 plates, then scatter with the toasted almonds and 15 g fresh mint or parsley leaves."
     ],
     "kidAlternative": "Spoon out a portion before adding the harissa, or serve it mild with the couscous and kūmara kept separate on the plate.",
-    "image": "/images/recipes/plant-based-family/Moroccan Spiced Vegetable Tagine.png"
+    "image": "/images/recipes/plant-based-family/moroccan-spiced-vegetable-tagine.png"
   },
   {
     "id": "golden-roast-vegetables-and-spiced-cauliflower",
@@ -1218,7 +1218,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Scatter 15 g mint leaves over the tray, drizzle over the dressing and divide between 5 plates."
     ],
     "kidAlternative": "Coat a handful of cauliflower florets in plain coconut yoghurt without the harissa and roast them on the same tray, and serve the tahini dressing separately for dipping.",
-    "image": "/images/recipes/plant-based-family/Golden Roast Vegetables & Spiced Cauliflower.png"
+    "image": "/images/recipes/plant-based-family/golden-roast-vegetables-and-spiced-cauliflower.png"
   },
   {
     "id": "tropical-jackfruit-and-kūmara-traybake",
@@ -1247,7 +1247,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Serve as it is, divided between 4 plates, with the lime wedges squeezed over, and 4 warm flatbreads alongside if using."
     ],
     "kidAlternative": "Keep the jerk seasoning down to a pinch and serve the corn cobs and pineapple separately from the jackfruit so children can pick their favourites.",
-    "image": "/images/recipes/plant-based-family/Tropical Jackfruit & Kūmara Traybake.png"
+    "image": "/images/recipes/plant-based-family/tropical-jackfruit-and-kumara-traybake.png"
   },
   {
     "id": "creamy-oven-baked-pumpkin-risotto",
@@ -1283,7 +1283,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Stir the remaining roasted pumpkin through the risotto. Divide between 6 bowls and top with the toasted pine nuts, crisp sage leaves and 15 g chopped parsley."
     ],
     "kidAlternative": "Keep a small portion of risotto plain before the sage and parsley go on, and serve the crisp sage leaves on the side for adults.",
-    "image": "/images/recipes/plant-based-family/Creamy Oven-Baked Pumpkin Risotto.png"
+    "image": "/images/recipes/plant-based-family/creamy-oven-baked-pumpkin-risotto.png"
   },
   {
     "id": "tomato-capsicum-and-white-bean-pasta-bake",
@@ -1320,7 +1320,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake for 15 minutes, until the sauce is bubbling and the cheese has melted, then serve."
     ],
     "kidAlternative": "Make a small dish without the basil or extra pepper and keep a handful of plain pasta and beans back to serve uncoated on the side.",
-    "image": "/images/recipes/plant-based-family/Tomato, Capsicum & White Bean Pasta Bake.png"
+    "image": "/images/recipes/plant-based-family/tomato-capsicum-and-white-bean-pasta-bake.png"
   },
   {
     "id": "herby-sausage-and-roast-vegetable-bake",
@@ -1356,7 +1356,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Drizzle the dressing over the roast vegetables and sausages and divide between 4 plates, leaving the remaining garlic cloves on the tray."
     ],
     "kidAlternative": "Serve a sausage, a few cherry tomatoes and some capsicum before the dressing goes on, and offer the olives and capers separately.",
-    "image": "/images/recipes/plant-based-family/Herby Sausage & Roast Vegetable Bake.png"
+    "image": "/images/recipes/plant-based-family/herby-sausage-and-roast-vegetable-bake.png"
   },
   {
     "id": "warm-lentil-and-roasted-peach-salad",
@@ -1393,7 +1393,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Scatter 80 g rocket leaves over the warm tray, add the sliced avocado and 36 g chopped almonds, and serve with the ribbon salad on the side, dividing between 6 plates."
     ],
     "kidAlternative": "Serve the potato, broccoli and peach pieces plain on a plate with the dressing and rocket on the side, and leave the avocado in familiar slices.",
-    "image": "/images/recipes/plant-based-family/Warm Lentil & Roasted Peach Salad.png"
+    "image": "/images/recipes/plant-based-family/warm-lentil-and-roasted-peach-salad.png"
   },
   {
     "id": "creamy-coconut-garden-vegetable-curry",
@@ -1434,7 +1434,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Stir in 150 mL coconut yoghurt and cook gently for 2 minutes more without boiling. Serve with steamed basmati rice or 4 flatbreads if using, dividing the curry between 4 bowls."
     ],
     "kidAlternative": "Spoon out a portion before the fenugreek and cardamom go in, or serve the mild blended sauce over plain rice with the vegetables on the side.",
-    "image": "/images/recipes/plant-based-family/Creamy Coconut Garden Vegetable Curry.png"
+    "image": "/images/recipes/plant-based-family/creamy-coconut-garden-vegetable-curry.png"
   },
   {
     "id": "juicy-mushroom-and-tofu-burgers",
@@ -1476,7 +1476,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Split and lightly toast 4 burger buns. Fill them with 60 g crisp lettuce, 1 sliced avocado, 1 sliced tomato and ½ sliced cucumber, add a patty to each, and finish with some of the 60 mL vegan mayonnaise if you like."
     ],
     "kidAlternative": "Serve the patty in a halved bun with the salad bits on the side so small hands can build their own.",
-    "image": "/images/recipes/plant-based-family/Juicy Mushroom & Tofu Burgers.png"
+    "image": "/images/recipes/plant-based-family/juicy-mushroom-and-tofu-burgers.png"
   },
   {
     "id": "family-favourite-vegetable-pad-thai",
@@ -1517,7 +1517,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Divide between 4 bowls and scatter over the toasted peanuts, the remaining 2 sliced spring onions, 8 g shredded mint and the remaining 4 g coriander. Serve with 1 lime cut into wedges, and pass the ½ tsp chilli flakes and sliced red chilli separately for anyone who wants heat."
     ],
     "kidAlternative": "Serve a plain bowl of noodles and tofu first, with the sauce, peanuts and chilli offered in small dishes on the side.",
-    "image": "/images/recipes/plant-based-family/Family Favourite Vegetable Pad Thai.png"
+    "image": "/images/recipes/plant-based-family/family-favourite-vegetable-pad-thai.png"
   },
   {
     "id": "friday-night-rainbow-veggie-pizzas",
@@ -1555,7 +1555,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Scatter with the extra basil leaves and slice into wedges."
     ],
     "kidAlternative": "Build one plain cheese-and-tomato pizza for younger eaters and keep the other toppings in bowls for everyone else to add.",
-    "image": "/images/recipes/plant-based-family/Friday Night Rainbow Veggie Pizzas.png"
+    "image": "/images/recipes/plant-based-family/friday-night-rainbow-veggie-pizzas.png"
   },
   {
     "id": "gentle-thai-green-vegetable-curry",
@@ -1601,7 +1601,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Stir through the juice of ½ lime and 10 g coriander leaves, then spoon over steamed jasmine rice to serve."
     ],
     "kidAlternative": "Spoon a mild portion over plain rice before the chilli heat builds, and keep the vegetables whole rather than mixed through a sauce.",
-    "image": "/images/recipes/plant-based-family/Gentle Thai Green Vegetable Curry.png"
+    "image": "/images/recipes/plant-based-family/gentle-thai-green-vegetable-curry.png"
   },
   {
     "id": "sticky-aubergine-bao-buns",
@@ -1642,7 +1642,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Fill the warm buns with the glazed aubergine, 2 sliced spring onions, 1 sliced red capsicum, 2 grated carrots, ¼ cucumber cut into matchsticks, 9 g sesame seeds and 10 g coriander, adding sliced red chilli if you like."
     ],
     "kidAlternative": "Steam a couple of plain buns without the filling and serve the glazed aubergine and crunchy vegetables in separate little bowls.",
-    "image": "/images/recipes/plant-based-family/Sticky Aubergine Bao Buns.png"
+    "image": "/images/recipes/plant-based-family/sticky-aubergine-bao-buns.png"
   },
   {
     "id": "smoky-bbq-cauliflower-bites",
@@ -1679,7 +1679,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Return the trays to the oven and bake for a further 15–20 minutes, until the glaze is sticky and deep golden. Serve hot with the reserved sauce for dipping."
     ],
     "kidAlternative": "Keep a tray of plainly crumbed florets unglazed and serve the barbecue sauce in a small pot for dipping.",
-    "image": "/images/recipes/plant-based-family/Smoky BBQ Cauliflower Bites.png"
+    "image": "/images/recipes/plant-based-family/smoky-bbq-cauliflower-bites.png"
   },
   {
     "id": "peanut-butter-chocolate-chunk-cookies",
@@ -1712,7 +1712,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake one tray at a time for 11 minutes, until the chocolate is melted and the tops have a light crackle. Leave on the tray for 10 minutes for soft warm cookies, or cool completely before storing."
     ],
     "kidAlternative": "Make smaller 20 g balls and bake for 9 minutes so they are easy for little hands to hold.",
-    "image": "/images/recipes/plant-based-family/Peanut Butter Chocolate Chunk Cookies.png"
+    "image": "/images/recipes/plant-based-family/peanut-butter-chocolate-chunk-cookies.png"
   },
   {
     "id": "little-caramel-and-chocolate-squares",
@@ -1747,7 +1747,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Store in an airtight container in the fridge for up to 4 days."
     ],
     "kidAlternative": "Cut a few squares before the chocolate topping sets and hand them over as small sticky date-and-caramel fingers instead.",
-    "image": "/images/recipes/plant-based-family/Little Caramel & Chocolate Squares.png"
+    "image": "/images/recipes/plant-based-family/little-caramel-and-chocolate-squares.png"
   },
   {
     "id": "celebration-vanilla-birthday-cake",
@@ -1785,7 +1785,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Set one cooled cake on a plate and spread over about a third of the buttercream. Sit the second cake on top and spread the remaining buttercream over the top, easing it to the edges. Scatter over 150 g fresh berries if using, then slice into 12."
     ],
     "kidAlternative": "Bake the batter as 12 cupcakes at 180°C for 18–20 minutes and let children ice and decorate their own.",
-    "image": "/images/recipes/plant-based-family/Celebration Vanilla Birthday Cake.png"
+    "image": "/images/recipes/plant-based-family/celebration-vanilla-birthday-cake.png"
   },
   {
     "id": "rich-chocolate-party-cake",
@@ -1826,7 +1826,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Finish with 100 g vegan chocolate flakes and store the cake in an airtight container for up to 2 days."
     ],
     "kidAlternative": "Bake the same batter as 24 cupcakes at 180°C for 20 minutes and let children spread their own icing and flakes.",
-    "image": "/images/recipes/plant-based-family/Rich Chocolate Party Cake.png"
+    "image": "/images/recipes/plant-based-family/rich-chocolate-party-cake.png"
   },
   {
     "id": "summer-berry-vegan-meringue-nests",
@@ -1854,7 +1854,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "To serve, share the 300 g fresh berries between the 8 cooled nests and add a spoonful of the 200 mL whipped coconut cream to each, if using. Unfilled nests keep in an airtight container for up to 3 days."
     ],
     "kidAlternative": "Sit a plain meringue nest on the plate and hand round the berries and cream separately so children can build their own.",
-    "image": "/images/recipes/plant-based-family/Summer Berry Vegan Meringue Nests.png"
+    "image": "/images/recipes/plant-based-family/summer-berry-vegan-meringue-nests.png"
   },
   {
     "id": "warm-orchard-fruit-and-berry-cobbler",
@@ -1889,7 +1889,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake in the centre of the oven for 30–35 minutes, until the topping has risen and turned golden brown. Serve warm; leftovers keep in the fridge for 2 days."
     ],
     "kidAlternative": "Spoon a portion of fruit and topping into a small bowl and let it cool for a few minutes, serving any custard or ice cream alongside instead of poured over.",
-    "image": "/images/recipes/plant-based-family/Warm Orchard Fruit & Berry Cobbler.png"
+    "image": "/images/recipes/plant-based-family/warm-orchard-fruit-and-berry-cobbler.png"
   },
   {
     "id": "chocolate-and-orange-dessert-pots",
@@ -1912,7 +1912,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Divide between 4 small glasses and chill for at least 1 hour before serving."
     ],
     "kidAlternative": "Serve a small portion with the topping or fruit alongside rather than mixed through.",
-    "image": "/images/recipes/plant-based-family/Chocolate & Orange Dessert Pots.png"
+    "image": "/images/recipes/plant-based-family/chocolate-and-orange-dessert-pots.png"
   },
   {
     "id": "no-bake-chocolate-ginger-tart",
@@ -1944,7 +1944,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Just before serving, scatter the 100 g finely grated dark chocolate over the top. Store covered in the fridge and eat within 3 days."
     ],
     "kidAlternative": "Cut a narrow slice and serve it with a spoonful of plain whipped coconut cream instead of the grated chocolate on top.",
-    "image": "/images/recipes/plant-based-family/No-Bake Chocolate Ginger Tart.png"
+    "image": "/images/recipes/plant-based-family/no-bake-chocolate-ginger-tart.png"
   },
   {
     "id": "warm-sticky-date-and-toffee-pudding",
@@ -1982,7 +1982,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Cut the warm pudding into 9 squares and serve drizzled generously with the toffee sauce. Leftover pudding and sauce each keep for 2 days."
     ],
     "kidAlternative": "Serve a small square with the toffee sauce in a little jug on the side so children can pour on as much or as little as they like.",
-    "image": "/images/recipes/plant-based-family/Warm Sticky Date & Toffee Pudding.png"
+    "image": "/images/recipes/plant-based-family/warm-sticky-date-and-toffee-pudding.png"
   },
   {
     "id": "chocolate-chunk-banana-and-almond-loaf",
@@ -2020,7 +2020,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Cool in the tin for 20 minutes, then turn out onto a wire rack. Serve warm or at room temperature; keep airtight and eat within 3 days."
     ],
     "kidAlternative": "Cut a thin slice and serve it plain, or with the chocolate chunks picked out for very young children.",
-    "image": "/images/recipes/plant-based-family/Chocolate Chunk Banana & Almond Loaf.png"
+    "image": "/images/recipes/plant-based-family/chocolate-chunk-banana-and-almond-loaf.png"
   },
   {
     "id": "cranberry-fig-and-orange-oat-bars",
@@ -2049,7 +2049,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Chill for 1 hour, until firm, then lift the slab out using the overhanging paper and cut into 8 bars. Store airtight at room temperature, or in the fridge if the kitchen is warm, for up to 5 days."
     ],
     "kidAlternative": "Cut one bar into small fingers and serve with a few extra dried cranberries alongside.",
-    "image": "/images/recipes/plant-based-family/Cranberry, Fig & Orange Oat Bars.png"
+    "image": "/images/recipes/plant-based-family/cranberry-fig-and-orange-oat-bars.png"
   },
   {
     "id": "savoury-leek-pea-and-cheese-scones",
@@ -2085,7 +2085,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Bake in the middle of the oven for 14–16 minutes, until lightly golden (add 2–3 minutes if you cut larger scones). Cool on a rack. Store airtight for up to 2 days, or freeze and defrost fully before eating."
     ],
     "kidAlternative": "Cut a warm scone into small wedges and serve it plain with a little dairy-free butter on the side.",
-    "image": "/images/recipes/plant-based-family/Savoury Leek, Pea & Cheese Scones.png"
+    "image": "/images/recipes/plant-based-family/savoury-leek-pea-and-cheese-scones.png"
   },
   {
     "id": "zesty-lemon-and-blueberry-cheesecake",
@@ -2119,7 +2119,7 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Run a thin knife around the edge, release the cheesecake from the tin and lift it onto a plate. Spoon the cooled blueberry topping over, slice into 8 and serve. Cover and store in the fridge for up to 2 days."
     ],
     "kidAlternative": "Serve a plain slice with a few fresh blueberries on the side instead of the cooked compote.",
-    "image": "/images/recipes/plant-based-family/Zesty Lemon & Blueberry Cheesecake.png"
+    "image": "/images/recipes/plant-based-family/zesty-lemon-and-blueberry-cheesecake.png"
   },
   {
     "id": "raspberry-and-white-chocolate-muffins",
@@ -2149,6 +2149,6 @@ export const PLANT_BASED_FAMILY_RECIPES: FamilyRecipe[] = [
       "Cool in the tin for 15 minutes, then lift the muffins onto a rack to cool fully. Store airtight for up to 3 days."
     ],
     "kidAlternative": "Bake a couple of the muffins without raspberries and let children add their own favourite berries at the table.",
-    "image": "/images/recipes/plant-based-family/Raspberry & White Chocolate Muffins.png"
+    "image": "/images/recipes/plant-based-family/raspberry-and-white-chocolate-muffins.png"
   }
 ];
