@@ -17,11 +17,16 @@ import {
   type FamilyRecipeCategory,
 } from "@/data/plant-based-family-recipes";
 import { MATTHEW_KIDS_RECIPES } from "@/data/matthew-kids-recipes";
+import { NZ_AU_FAMILY_RECIPES } from "@/data/nz-au-family-recipes";
+import { MAIN_LIBRARY_RECIPES, KIDS_BANK_RECIPES } from "@/lib/family-recipe-adapters";
 
-/** All cookbook collections surfaced in this tab. */
+/** All cookbook collections surfaced in this tab — one complete catalog. */
 const COLLECTIONS = [
   { id: "family", label: "Family Cookbook", recipes: PLANT_BASED_FAMILY_RECIPES },
   { id: "kids", label: "Kids' Favourites", recipes: MATTHEW_KIDS_RECIPES },
+  { id: "nzau", label: "NZ & AU Family", recipes: NZ_AU_FAMILY_RECIPES },
+  { id: "library", label: "Main Library", recipes: MAIN_LIBRARY_RECIPES },
+  { id: "kidsbank", label: "Kids Bank", recipes: KIDS_BANK_RECIPES },
 ] as const;
 
 const CATEGORIES: ("All" | FamilyRecipeCategory)[] = [
