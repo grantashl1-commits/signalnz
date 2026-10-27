@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildDbMealPlanFull } from '../build-db-meal-plan';
-import { DEFAULT_PREFS, getAIMealPlan, saveAIMealPlan } from '../weekly-planner';
+import { DEFAULT_PREFS, getAIMealPlan, getHousehold, saveAIMealPlan, saveHousehold, savePreferences, getSavedPreferences } from '../weekly-planner';
 import { normaliseMealPlan } from '../meal-plan-schema';
 import { mealMatchesPreferences } from '../meal-restrictions';
 import { containsNuts } from '../recipe-facets';
@@ -53,5 +53,37 @@ describe('meal-plan persistence and exclusions', () => {
   expect(mealMatchesPreferences({name:'Bowl',ingredients:['honey or maple syrup']},{...DEFAULT_PREFS,dietType:'vegan'})).toBe(false);
   expect(mealMatchesPreferences({name:'Bowl',ingredients:['parmesan (optional)']},{...DEFAULT_PREFS,dietType:'vegan'})).toBe(false);
   expect(mealMatchesPreferences({name:'Bowl',ingredients:['coconut milk','peanut butter']},{...DEFAULT_PREFS,dietTypes:['Dairy-free']})).toBe(true);
+ });
+});
+
+describe('household size', () => {
+ beforeEach(() => localStorage.clear());
+ it('gives the List tab and the plan the same adults and kids', () => {
+  expect(getHousehold()).toEqual({adults:1,kids:0});
+  savePreferences({...DEFAULT_PREFS, adults:2, kids:1});
+  saveAIMealPlan(buildDbMealPlanFull({...DEFAULT_PREFS, adults:2, kids:1}));
+  expect(getHousehold()).toEqual({adults:2,kids:1});
+  saveHousehold({adults:3,kids:2});
+  expect(getSavedPreferences()).toMatchObject({adults:3,kids:2});
+  expect(getAIMealPlan()?.prepPreferences).toMatchObject({adults:3,kids:2});
+  expect(getHousehold()).toEqual({adults:3,kids:2});
+ });
+});
+
+describe('meal variety settings', () => {
+ it('cooks a different dinner each night when cooking double, so lunch never repeats that night', () => {
+  const plan = buildDbMealPlanFull(DEFAULT_PREFS);
+  const sameDay = plan.days.filter(d => d.lunch.name === d.dinner.name);
+  expect(sameDay.map(d => d.cycleDay)).toEqual([]);
+  const repeats = plan.days.slice(1).filter((d, i) => d.dinner.name === plan.days[i].dinner.name && d.phase === plan.days[i].phase);
+  expect(repeats.map(d => d.cycleDay)).toEqual([]);
+  // Leftovers: each lunch after the first is yesterday's dinner.
+  expect(plan.days[1].lunch).toMatchObject({ name: plan.days[0].dinner.name, isLeftover: true });
+ });
+ it('keeps a batch breakfast for a week, then starts a new batch', () => {
+  const plan = buildDbMealPlanFull(DEFAULT_PREFS);
+  const luteal = plan.days.filter(d => d.phase === 'luteal').map(d => d.breakfast.name);
+  expect(new Set(luteal.slice(0, 7)).size).toBe(1);
+  expect(new Set(luteal).size).toBeGreaterThan(1);
  });
 });

@@ -2,7 +2,7 @@ import { Fragment, createContext, useContext, useEffect, useState, useCallback, 
 import { supabase } from "@/integrations/supabase/client";
 import { linkReferral } from "@/hooks/useReferral";
 import { identifyUser, resetUser } from "@/lib/analytics";
-import { setSentryUser, clearSentryUser } from "@/lib/error-monitoring";
+import { setMonitoringUser, clearMonitoringUser } from "@/lib/error-monitoring";
 import { useQueryClient } from "@tanstack/react-query";
 import { claimDevice, captureDeviceScope, OWNER_KEY } from "@/lib/device-privacy";
 import type { User, Session } from "@supabase/supabase-js";
@@ -145,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (event === "SIGNED_IN" && newSession?.user) {
           linkReferral(newSession.user.id);
           identifyUser(newSession.user.id, { email: newSession.user.email });
-          setSentryUser(newSession.user.id, newSession.user.email);
+          setMonitoringUser(newSession.user.id, newSession.user.email);
 
           // Send welcome email on first signup (created within last 3 minutes)
           const u = newSession.user;
@@ -162,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         if (event === "SIGNED_OUT") {
           resetUser();
-          clearSentryUser();
+          clearMonitoringUser();
         }
       }
     );
@@ -181,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (loading || storageError || !user) return;
     const scope = captureDeviceScope();
-    const sync = async () => {
+    const run = async () => {
       const training = await import('@/lib/training-path-utils');
       if (!scope.matches(user.id)) return;
       await training.hydrateSelectedPathFromProfile();
@@ -189,8 +189,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await training.syncTrainingProgress();
       if (!scope.matches(user.id)) return;
       await training.flushTrainingLogs();
+      // Her saved meal plan, so a new device shows her meals, not the defaults.
+      const meals = await import('@/lib/meal-plan-sync');
+      if (!scope.matches(user.id)) return;
+      await meals.restoreMealPlanFromCloud();
     };
-    void sync();
+    // Offline, a code chunk or request can fail; the next 'online' event tries again.
+    const sync = () => { run().catch(() => {}); };
+    sync();
     window.addEventListener('online', sync);
     return () => window.removeEventListener('online', sync);
   }, [user?.id, loading, storageError]);

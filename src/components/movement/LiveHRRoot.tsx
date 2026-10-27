@@ -1,7 +1,10 @@
+import { lazy, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart, ChevronUp } from "lucide-react";
-import LiveHRView from "@/components/movement/LiveHRView";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
+
+// The overlay (and its chart library) loads only when a heart-rate session opens.
+const LiveHRView = lazy(() => import("@/components/movement/LiveHRView"));
 
 function formatElapsed(secs: number) {
   const m = Math.floor(secs / 60);
@@ -20,7 +23,7 @@ export default function LiveHRRoot() {
 
   return (
     <>
-      {hr.live.open && <LiveHRView />}
+      {hr.live.open && <Suspense fallback={null}><LiveHRView /></Suspense>}
 
       <AnimatePresence>
         {showBar && (

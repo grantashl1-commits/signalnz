@@ -72,6 +72,22 @@ export async function hydrateSelectedPathFromProfile(): Promise<void> {
   } catch {}
 }
 
+/** The plan onboarding starts a member on, from her first movement goal, equipment and level. */
+export function pathForOnboarding(goal: string | undefined, equipment: string, level: string | null): string {
+  switch (goal) {
+    case "strength":
+    case "event":
+      if (equipment === "gym" && level !== "beginner") return "the-forge";
+      return equipment === "home-none" ? "mat-pilates" : "strength-from-the-ground-up";
+    case "fat_loss": return "signal-circuit-progressive";
+    case "cardio": return "learn-to-run";
+    case "stress":
+    case "recovery": return "rest-and-restore-somatic-full";
+    // "Return to myself, gently" and "Move with more ease": 30-minute, low-impact classes.
+    default: return "mat-pilates";
+  }
+}
+
 export function getSelectedPath(): TrainingPath | null {
   const id = getSelectedPathId();
   if (!id) return null;
@@ -135,6 +151,25 @@ export function resetPathProgress(pathId: string, userId?: string | null) {
   }
 }
 
+export interface PlannedExercise { exercise_name: string; sets?: number; reps?: number; weight_kg?: number }
+
+/** Every exercise a session prescribes: its blocks, any legacy structure lines, then extra picks. */
+export function plannedExercises(session: DaySession, extra: string[] = []): PlannedExercise[] {
+  const out = new Map<string, PlannedExercise>();
+  for (const block of session.supersets ?? []) for (const e of block.exercises) {
+    if (out.has(e.name)) continue;
+    // "10", "8–10" or "10 each side" read as reps; holds ("20 s") and counts stay blank.
+    const reps = typeof e.reps === "number" ? e.reps : /^(\d+)(?:\s*[–-]\s*\d+)?(?:\s+each side)?$/.exec(String(e.reps).trim())?.[1];
+    const kg = e.weight?.match(/(\d+(?:\.\d+)?)\s*kg/i)?.[1];
+    out.set(e.name, { exercise_name: e.name, sets: e.sets || undefined, reps: reps === undefined ? undefined : Number(reps), weight_kg: kg ? Number(kg) : undefined });
+  }
+  const lines = (session.structure ?? []).filter(line => !/^(warm up|cool down):/i.test(line));
+  for (const name of [...lines.map(extractExerciseName), ...extra]) {
+    if (name && !out.has(name)) out.set(name, { exercise_name: name });
+  }
+  return [...out.values()];
+}
+
 export interface WorkoutActual {
   durationMinutes?: number;
   notes?: string;
@@ -158,7 +193,7 @@ async function logSessionToCalendar(pathId: string, week: number, day: number, a
   if (!queue.some(row => row.session_date === date && row.notes.includes(marker))) {
     queue.push({id:crypto.randomUUID(),session_date:date,duration_minutes:actual?.durationMinutes ?? null,
       notes: path.name + ' · ' + session.name + ' ' + marker + (actual?.notes ? '\n' + actual.notes : ''), completed:true,
-      exercises:actual?.exercises ?? (session.structure || []).map(extractExerciseName).filter(Boolean).map(exercise_name => ({exercise_name})),
+      exercises:actual?.exercises ?? plannedExercises(session).map(({exercise_name}) => ({exercise_name})),
     });
     localStorage.setItem(PENDING_LOGS, JSON.stringify(queue));
   }
@@ -196,7 +231,39 @@ export async function syncTrainingProgress(): Promise<void> {
     if (error) throw error;
     if (!scope.matches(user.id)) return;
     const remote = row?.plan_data as {completed?: Record<string,true>; updatedAt?: number} | undefined;
-    const localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+    let localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+    // Older versions wrote workout history, but no progress snapshot. Recover it
+    // only before a snapshot/reset exists: historical logs must never undo a reset.
+    if (!row && !localTime) {
+      const recovered: Record<string, true> = {};
+      const pageSize = 500;
+      for (let offset = 0; ; offset += pageSize) {
+        const { data: logs, error: historyError } = await supabase.from('workout_logs')
+          .select('id,notes').eq('user_id', user.id).eq('completed', true)
+          .order('id', { ascending: true }).range(offset, offset + pageSize - 1);
+        if (historyError) throw historyError;
+        if (!scope.matches(user.id)) return;
+        for (const log of logs ?? []) {
+          const match = /\[([^\[\]]+)::w(\d+)::d(\d+)\]/.exec(log.notes ?? '');
+          if (!match || isPartnerPath(match[1])) continue;
+          const path = SIGNAL_TRAINING_PATHS.find(p => p.id === match[1]);
+          const session = path?.weeks.find(w => w.week === Number(match[2]))?.sessions.find(s => s.day === Number(match[3]));
+          if (session) recovered[sessionKey(match[1], Number(match[2]), Number(match[3]))] = true;
+        }
+        if (!logs || logs.length < pageSize) break;
+      }
+      // A completion or reset may have happened while history was loading.
+      localTime = Number(localStorage.getItem(PROGRESS_TIME) || 0);
+      if (!localTime) {
+        const completed = { ...recovered, ...getCompletedMap() };
+        if (Object.keys(completed).length) {
+          localTime = Date.now();
+          localStorage.setItem(COMPLETED_SESSIONS_KEY, JSON.stringify(completed));
+          localStorage.setItem(PROGRESS_TIME, String(localTime));
+          window.dispatchEvent(new Event('signal:training-path-changed'));
+        }
+      }
+    }
     if ((remote?.updatedAt ?? 0) > localTime && remote?.completed) {
       localStorage.setItem(COMPLETED_SESSIONS_KEY,JSON.stringify(remote.completed));
       localStorage.setItem(PROGRESS_TIME,String(remote.updatedAt));

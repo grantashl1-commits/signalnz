@@ -35,8 +35,9 @@ function PhaseLens({ phase, day }: { phase: string; day: number }) {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { currentPhase, currentCycleDay } = useCycle();
-  const info = { phase: currentPhase, cycleDay: currentCycleDay, name: PHASE_SHORT[currentPhase] };
+  // The pill shows a real cycle day only; without cycle data there is no phase to name.
+  const { currentPhase, actualCycleDay } = useCycle();
+  const info = { phase: currentPhase, cycleDay: actualCycleDay, name: PHASE_SHORT[currentPhase] };
   const isMobile = useIsMobile();
   const keyboardVisible = useKeyboardVisible();
   const { open: signalOpen, openSignal, closeSignal, initialPrompt, pageContext } = useSignalPanel();
@@ -86,7 +87,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <PhaseLens phase={info.phase} day={info.cycleDay} />
+            {info.cycleDay !== null && <PhaseLens phase={info.phase} day={info.cycleDay} />}
             <Link
               to="/account"
               aria-label="Account"
@@ -104,7 +105,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Link to="/" className="flex items-center gap-2" aria-label="Signal home">
             <img src="/logos/Signal-purple-no-tagline.png" alt="Signal" className="h-7 w-auto" />
           </Link>
-          <PhaseLens phase={info.phase} day={info.cycleDay} />
+          {info.cycleDay !== null && <PhaseLens phase={info.phase} day={info.cycleDay} />}
         </div>
       </header>
 

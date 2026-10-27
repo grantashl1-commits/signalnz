@@ -1,7 +1,7 @@
 import { scaleIngredientAmount } from "@/lib/ingredient-parser";
 import { findRecipeByName } from "@/lib/recipe-index";
 import { useCustomMealPlan } from "@/hooks/useCustomMealPlan";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Sparkles, Baby } from "lucide-react";
@@ -14,6 +14,7 @@ import { haptic } from "@/hooks/use-mobile";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { type AIMeal } from "@/lib/weekly-planner";
 import { getTodayMeals, getTodaySnacks } from "@/lib/today-meals";
+import { MEAL_PLAN_CHANGED } from "@/lib/meal-plan-sync";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
@@ -31,20 +32,20 @@ const PHASE_HEX: Record<Phase, string> = {
 
 const SEED_CYCLING_MACROS = { cal: 90, p: 3, c: 3, f: 7 };
 
+/** The meal's real nutrition, or null when it isn't known. Never a stand-in average. */
 function estimateMealMacros(recipe?: Recipe, aiMeal?: AIMeal): { cal: number; p: number; c: number; f: number } | null {
   if (aiMeal) {
     const ai = aiMeal as any;
     if (ai.calories || ai.protein) {
-      return { cal: parseInt(ai.calories) || 400, p: parseInt(ai.protein) || 25, c: parseInt(ai.carbs) || 45, f: parseInt(ai.fat) || 15 };
+      const num = (v: unknown) => parseInt(String(v ?? "")) || 0;
+      return { cal: num(ai.calories), p: num(ai.protein), c: num(ai.carbs), f: num(ai.fat) };
     }
   }
-  if (recipe) {
-    const n = recipe.nutrition;
-    if (n) return { cal: n.calories ?? 0, p: n.protein ?? 0, c: n.carbs ?? 0, f: n.fat ?? 0 };
-    return null;
-  }
-  return { cal: 380, p: 22, c: 42, f: 14 };
+  const n = recipe?.nutrition;
+  return n ? { cal: n.calories ?? 0, p: n.protein ?? 0, c: n.carbs ?? 0, f: n.fat ?? 0 } : null;
 }
+
+const NUTRITION_UNKNOWN = "Nutrition not known for this meal";
 
 export default function TodayTab() {
   const { currentCycleDay, currentPhase } = useCycle();
@@ -91,7 +92,14 @@ export default function TodayTab() {
   const todayInsight = useMemo(() => getTodayInsight(currentPhase, cycleMode, goalSlug), [currentPhase, cycleMode, goalSlug]);
 
   const { plan: customPlan } = useCustomMealPlan();
-  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
+  // A plan restored from the cloud after this tab opened replaces the default meals.
+  const [planVersion, setPlanVersion] = useState(0);
+  useEffect(() => {
+    const bump = () => setPlanVersion(v => v + 1);
+    window.addEventListener(MEAL_PLAN_CHANGED, bump);
+    return () => window.removeEventListener(MEAL_PLAN_CHANGED, bump);
+  }, []);
+  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan, planVersion]);
 
   const phaseColor = PHASE_HEX[currentPhase];
   const plannedSnacks = getTodaySnacks(currentCycleDay);
@@ -143,6 +151,8 @@ export default function TodayTab() {
 
 
   // Calculate daily macro totals from eaten meals
+  // Eaten meals without nutrition data are counted so the totals can say they're partial.
+  const unknownEaten = meals.filter(meal => eaten[meal.slot] && !estimateMealMacros(meal.recipe, meal.aiMeal)).length;
   const dailyMacros = useMemo(() => {
     let totalCal = 0, totalP = 0, totalC = 0, totalF = 0;
     
@@ -389,6 +399,11 @@ export default function TodayTab() {
 
         {/* Macro summary ring */}
         <div className="nourishment-macros"><MacroRing consumed={dailyMacros} targets={macroTargets} phaseColor={phaseColor} /></div>
+        {unknownEaten > 0 && (
+          <p className="text-center font-body text-[11px] text-muted-foreground">
+            {unknownEaten === 1 ? "One meal you've had has" : `${unknownEaten} meals you've had have`} no nutrition data, so today's totals are partial.
+          </p>
+        )}
 
         {/* Plant vine tracker is rendered as side decoration + summary card at week end */}
       </div>
@@ -411,9 +426,7 @@ function CompactMealCard({ slot, label, name, recipe, aiMeal, isExpanded, isEate
         <p className="font-mono text-[10px] font-medium text-eat">{label}{isEaten ? " · Held" : ""}</p>
         <p className="meal-summary-name font-body text-foreground">{name}</p>
         
-        {macros && (
-          <p className="meal-summary-meta">{Math.round(macros.cal * scale)} cal · {Math.round(macros.p * scale)}g protein</p>
-        )}
+        <p className="meal-summary-meta">{macros ? `${Math.round(macros.cal * scale)} cal · ${Math.round(macros.p * scale)}g protein` : NUTRITION_UNKNOWN}</p>
 
         <Button
           variant="ghost"
@@ -501,6 +514,7 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
           ))}
         </div>
 
+        {!macros && <p className="font-body text-xs text-muted-foreground">{NUTRITION_UNKNOWN}.</p>}
         {macros && (
           <div className="flex gap-3">
             {[

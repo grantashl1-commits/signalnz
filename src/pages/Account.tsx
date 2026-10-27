@@ -87,7 +87,7 @@ export default function AccountPage() {
     refetch,
   } = profile;
   const navigate = useNavigate();
-  const { currentPhase, currentCycleDay } = useCycle();
+  const { currentPhase, actualCycleDay } = useCycle();
   const habits = useMemo(() => getHabits(), []);
   const { history, historyLoading } = useHabitCompletions();
   const [credits, setCredits] = useState<number | null>(null);
@@ -590,9 +590,11 @@ export default function AccountPage() {
                 <span className="rounded-full bg-primary/10 px-3 py-1 font-body text-xs font-medium text-primary capitalize">
                   {CYCLE_OPTIONS.find(c => c.id === (cycleStatus || cycleMode))?.label || cycleMode}
                 </span>
-                <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs font-medium text-foreground">
-                  Day {currentCycleDay} · {PHASE_SHORT[currentPhase]}
-                </span>
+                {actualCycleDay !== null && (
+                  <span className="rounded-full bg-secondary px-3 py-1 font-body text-xs font-medium text-foreground">
+                    Day {actualCycleDay} · {PHASE_SHORT[currentPhase]}
+                  </span>
+                )}
               </div>
 
               {lastPeriodDate && (
