@@ -161,7 +161,6 @@ import kidsKmHamCheeseScrolls from "./kids-km-ham-cheese-scrolls.webp";
 import kidsKmCornFritters from "./kids-km-corn-fritters.webp";
 import kidsKmChocBananaPops from "./kids-km-choc-banana-pops.webp";
 // Sarah Wilson
-import kidsSwVeggieLoadedMince from "./kids-sw-veggie-loaded-mince.webp";
 import kidsSwSalmonRiceBalls from "./kids-sw-salmon-rice-balls.webp";
 import kidsSwChickenVeggieSoup from "./kids-sw-chicken-veggie-soup.webp";
 
@@ -392,7 +391,6 @@ export const KIDS_RECIPE_IMAGES: Record<string, string> = {
   "kids-km-corn-fritters": kidsKmCornFritters,
   "kids-km-choc-banana-pops": kidsKmChocBananaPops,
   // Sarah Wilson
-  "kids-sw-veggie-loaded-mince": kidsSwVeggieLoadedMince,
   "kids-sw-salmon-rice-balls": kidsSwSalmonRiceBalls,
   "kids-sw-chicken-veggie-soup": kidsSwChickenVeggieSoup,
   // Dairy Free (expanded)
