@@ -1,0 +1,1648 @@
+[
+ {
+  "id": "dinner-ratatouille-beans",
+  "slug": "dinner-ratatouille-beans",
+  "name": "Ratatouille with White Beans",
+  "category": "meal",
+  "ingredients": [
+   "100g tinned cannellini beans, drained",
+   "50g eggplant, diced",
+   "50g zucchini, diced",
+   "50g red capsicum, diced",
+   "50g brown onion, chopped",
+   "2 garlic cloves, minced",
+   "200g tinned diced tomatoes",
+   "1 tsp dried herbes de Provence"
+  ]
+ },
+ {
+  "id": "dinner-eggplant-parmesan",
+  "slug": "dinner-eggplant-parmesan",
+  "name": "Eggplant Parmesan (Vegetarian)",
+  "category": "meal",
+  "ingredients": [
+   "150g eggplant, sliced into 1cm rounds",
+   "100g tinned crushed tomatoes",
+   "30g mozzarella cheese",
+   "10g Parmesan cheese",
+   "1 tbsp olive oil",
+   "1 clove garlic, minced",
+   "Fresh basil"
+  ]
+ },
+ {
+  "id": "dinner-salmon-couscous",
+  "slug": "dinner-salmon-couscous",
+  "name": "Baked Salmon with Herbed Couscous",
+  "category": "meal",
+  "ingredients": [
+   "130g salmon fillet",
+   "50g couscous (dry weight)",
+   "100ml boiling water",
+   "1 tbsp olive oil",
+   "1 tbsp lemon juice",
+   "1 tbsp fresh parsley, chopped",
+   "1 tsp lemon zest"
+  ]
+ },
+ {
+  "id": "dinner-lamb-chops-mint",
+  "slug": "dinner-lamb-chops-mint",
+  "name": "Lamb Chops with Minted Peas & Quinoa",
+  "category": "meal",
+  "ingredients": [
+   "2 lamb chops (120g total)",
+   "1 tsp olive oil",
+   "40g quinoa, rinsed",
+   "100g frozen peas",
+   "1 tbsp fresh mint, chopped",
+   "1 tsp lemon juice"
+  ]
+ },
+ {
+  "id": "kumara-capsicum-bake-with-eggs",
+  "slug": "kumara-capsicum-bake-with-eggs",
+  "name": "Smoky Kūmara and Capsicum Baked Eggs",
+  "category": "breakfast",
+  "ingredients": [
+   "80g kūmara, peeled and diced into 1cm cubes",
+   "50g red capsicum, deseeded and diced into 1cm squares",
+   "1 tablespoon olive oil",
+   "1/4 teaspoon smoked paprika",
+   "Pinch of salt",
+   "Pinch of black pepper",
+   "2 large free-range eggs"
+  ]
+ },
+ {
+  "id": "green-beans-and-egg-with-lemon-tahini",
+  "slug": "green-beans-and-egg-with-lemon-tahini",
+  "name": "Green Beans and Egg with Lemon Tahini",
+  "category": "breakfast",
+  "ingredients": [
+   "100g green beans, trimmed",
+   "60g spinach",
+   "1 large egg",
+   "1 tbsp tahini",
+   "1/2 lemon, juiced",
+   "1 tsp olive oil",
+   "Pinch of salt",
+   "Pinch of black pepper"
+  ]
+ },
+ {
+  "id": "eggs-with-greens-and-peas",
+  "slug": "eggs-with-greens-and-peas",
+  "name": "Cloudy Eggs with Crushed Peas and Greens",
+  "category": "breakfast",
+  "ingredients": [
+   "1 teaspoon olive oil",
+   "50g spring greens, roughly chopped",
+   "50g frozen peas",
+   "100ml passata",
+   "1/4 teaspoon ground cumin",
+   "2 large free-range eggs",
+   "Fresh parsley, a small handful, chopped, to serve"
+  ]
+ },
+ {
+  "id": "kumara-spring-onion-and-pea-bake",
+  "slug": "kumara-spring-onion-and-pea-bake",
+  "name": "Kūmara, Spring Onion & Pea Bake",
+  "category": "breakfast",
+  "ingredients": [
+   "150g kūmara, scrubbed and diced into 1cm cubes",
+   "½ stalk leek, white and light green parts, thinly sliced",
+   "1 spring onion, thinly sliced",
+   "30g frozen peas",
+   "2 large eggs, whisked",
+   "½ tbsp extra virgin olive oil",
+   "¼ tsp dried oregano",
+   "Pinch of sea salt"
+  ]
+ },
+ {
+  "id": "curried-rice-with-greens-and-salmon",
+  "slug": "curried-rice-with-greens-and-salmon",
+  "name": "Curried Rice with Greens and Salmon",
+  "category": "breakfast",
+  "ingredients": [
+   "80g hot smoked salmon fillet",
+   "60g uncooked brown rice",
+   "1 tablespoon olive oil",
+   "1/2 red onion, finely diced",
+   "1 clove garlic, minced",
+   "1 teaspoon mild curry powder",
+   "1/4 teaspoon turmeric powder",
+   "180ml vegetable stock"
+  ]
+ },
+ {
+  "id": "mustard-greens-with-soft-egg-and-kūmara",
+  "slug": "mustard-greens-with-soft-egg-and-kumara",
+  "name": "Roasted Kumara, Mustard Greens, Coddled Egg",
+  "category": "breakfast",
+  "ingredients": [
+   "200g baby kūmara, chopped into 2cm pieces",
+   "1 tablespoon olive oil",
+   "½ teaspoon fennel seeds",
+   "Pinch of sea salt",
+   "4 large silverbeet leaves, stalks removed, chopped",
+   "2 cherry tomatoes, halved",
+   "1 large free-range egg",
+   "1 teaspoon Dijon mustard"
+  ]
+ },
+ {
+  "id": "creamy-butter-beans-with-rocket",
+  "slug": "creamy-butter-beans-with-rocket",
+  "name": "Creamy Butter Beans with Rocket and Toasted Seeds",
+  "category": "meal",
+  "ingredients": [
+   "1/2 can (200g) butter beans, rinsed and drained",
+   "1 tablespoon olive oil",
+   "1 clove garlic, thinly sliced",
+   "1/2 teaspoon cumin seeds",
+   "1/4 teaspoon nigella seeds",
+   "1 small handful (approx. 30g) fresh rocket",
+   "Pinch of sea salt",
+   "Freshly ground black pepper to taste"
+  ]
+ },
+ {
+  "id": "broad-bean-and-walnut-green-glow",
+  "slug": "broad-bean-and-walnut-green-glow",
+  "name": "Broad Bean and Walnut Green Glow",
+  "category": "meal",
+  "ingredients": [
+   "80g frozen broad beans",
+   "50g baby spinach",
+   "1/4 small preserved lemon, finely chopped",
+   "20g walnuts, roughly chopped",
+   "1/2 tsp smoked paprika",
+   "1 tbsp extra virgin olive oil",
+   "1 tsp balsamic vinegar"
+  ]
+ },
+ {
+  "id": "walnut-crusted-fish-with-red-cabbage",
+  "slug": "walnut-crusted-fish-with-red-cabbage",
+  "name": "Walnut-Crusted Fish with Braised Red Cabbage",
+  "category": "meal",
+  "ingredients": [
+   "150g firm white fish fillet (like hoki or gurnard)",
+   "30g walnuts",
+   "30g wholemeal breadcrumbs",
+   "1 tablespoon olive oil, plus extra for drizzling",
+   "1/4 red cabbage (about 150g)",
+   "50ml apple cider vinegar",
+   "50ml water",
+   "1 teaspoon fennel seeds"
+  ]
+ },
+ {
+  "id": "roasted-beetroot-and-rocket-with-crunchy-bread",
+  "slug": "roasted-beetroot-and-rocket-with-crunchy-bread",
+  "name": "Crimson Roots, Leaf & Crisped Bread",
+  "category": "meal",
+  "ingredients": [
+   "1 large beetroot, peeled and diced (about 150g)",
+   "1/2 teaspoon ground cumin",
+   "1 teaspoon olive oil",
+   "1 thick slice sourdough bread, torn into bite-sized pieces",
+   "1/4 cup pumpkin seeds (about 30g)",
+   "1 handful rocket (about 30g)",
+   "3-4 cherry tomatoes, halved",
+   "1/2 teaspoon balsamic vinegar"
+  ]
+ },
+ {
+  "id": "sardine-lentil-brown-rice-bake",
+  "slug": "sardine-lentil-brown-rice-bake",
+  "name": "Spiced Sardine & Lentil Brown Rice Bake",
+  "category": "meal",
+  "ingredients": [
+   "50g brown basmati rice",
+   "30g green lentils, rinsed",
+   "70g tinned sardines in olive oil, drained",
+   "60g frozen peas",
+   "80g fresh spinach",
+   "1/2 teaspoon garam masala",
+   "180ml vegetable broth or water"
+  ]
+ },
+ {
+  "id": "lemon-herb-bean-tangle",
+  "slug": "lemon-herb-bean-tangle",
+  "name": "Lemon-Herb Bean Tangle",
+  "category": "meal",
+  "ingredients": [
+   "60g green beans (runner beans or regular)",
+   "60g sugar snap peas",
+   "200g mixed beans (drained and rinsed, e.g., cannellini, kidney, black beans)",
+   "2 tablespoons kalamata olives, pitted and halved",
+   "1 tablespoon fresh tarragon, finely chopped",
+   "1 teaspoon fresh oregano, finely chopped",
+   "1 tablespoon extra virgin olive oil",
+   "1 tablespoon fresh lemon juice"
+  ]
+ },
+ {
+  "id": "creamy-barley-with-mushrooms-and-swede",
+  "slug": "creamy-barley-with-mushrooms-and-swede",
+  "name": "Creamy Barley with Wild Mushrooms and Swede",
+  "category": "meal",
+  "ingredients": [
+   "10g dried wild mushrooms",
+   "1 tablespoon olive oil",
+   "1/2 a small swede, peeled and diced (about 100g)",
+   "1 clove garlic, minced",
+   "1/2 teaspoon dried thyme",
+   "60g pearl barley, rinsed",
+   "300ml vegetable broth",
+   "60g canned haricot beans, rinsed and drained"
+  ]
+ },
+ {
+  "id": "golden-rice-with-greens",
+  "slug": "golden-rice-with-greens",
+  "name": "Golden Rice with Greens",
+  "category": "meal",
+  "ingredients": [
+   "75g brown rice",
+   "150ml vegetable broth",
+   "50g frozen broad beans, peeled",
+   "50g frozen peas",
+   "1 tablespoon fresh dill, chopped",
+   "1 tablespoon fresh parsley, chopped",
+   "1/4 teaspoon saffron threads, crumbled",
+   "1/2 teaspoon olive oil"
+  ]
+ },
+ {
+  "id": "caribbean-black-eyed-peas-brown-rice",
+  "slug": "caribbean-black-eyed-peas-brown-rice",
+  "name": "Island-Spiced Black-Eyed Peas with Brown Rice",
+  "category": "meal",
+  "ingredients": [
+   "1 teaspoon coconut oil",
+   "70g brown rice, rinsed",
+   "50g black-eyed peas, canned, rinsed and drained",
+   "50g green capsicum, finely diced",
+   "1 spring onion, finely sliced",
+   "Small piece (about 1cm) fresh ginger, grated",
+   "1/4 teaspoon ground allspice",
+   "A tiny pinch of ground cinnamon"
+  ]
+ },
+ {
+  "id": "creamy-green-rice-with-lemon-zest",
+  "slug": "creamy-green-rice-with-lemon-zest",
+  "name": "Creamy Green Rice with Lemon Zest",
+  "category": "meal",
+  "ingredients": [
+   "2 tablespoons olive oil",
+   "1/2 a small leek, white and light green parts, thinly sliced",
+   "1/2 a stalk of celery, finely diced",
+   "80g Arborio rice",
+   "60ml dry white wine (optional)",
+   "350ml hot vegetable broth",
+   "50g baby spinach",
+   "25g watercress, roughly chopped"
+  ]
+ },
+ {
+  "id": "warming-spiced-tomato-rice",
+  "slug": "warming-spiced-tomato-rice",
+  "name": "Warming Spiced Tomato Rice",
+  "category": "meal",
+  "ingredients": [
+   "1 tsp olive oil",
+   "1 cm piece fresh ginger, grated",
+   "2 curry leaves",
+   "1 small carrot, finely diced",
+   "90g brown basmati rice, rinsed",
+   "1/4 tsp ground cardamom",
+   "1 small cinnamon stick",
+   "125ml passata (sieved tomatoes)"
+  ]
+ },
+ {
+  "id": "lentil-cauli-massaman-bake",
+  "slug": "lentil-cauli-massaman-bake",
+  "name": "Lentil & Cauliflower Massaman Bake",
+  "category": "meal",
+  "ingredients": [
+   "1/2 small head cauliflower (about 250g), trimmed and cut into florets",
+   "1 tbsp olive oil",
+   "1 tbsp massaman curry paste (check label for no added sugar)",
+   "80g dried green lentils, rinsed",
+   "150ml vegetable broth or water",
+   "100g cherry tomatoes, halved",
+   "1 tsp tamari",
+   "Juice of 1/2 a lime"
+  ]
+ },
+ {
+  "id": "roasted-chickpeas-green-beans-coconut",
+  "slug": "roasted-chickpeas-green-beans-coconut",
+  "name": "Roasted Chickpeas with Crisp Green Beans and Toasted Coconut",
+  "category": "meal",
+  "ingredients": [
+   "1 x 400g can chickpeas, rinsed and drained",
+   "100g green beans, trimmed",
+   "1 tsp olive oil",
+   "1/2 tsp curry powder",
+   "Pinch of salt",
+   "1 Tbsp desiccated coconut",
+   "1 small tomato, diced",
+   "1/2 lime, juiced"
+  ]
+ },
+ {
+  "id": "pan-fried-snapper-w-wilted-greens",
+  "slug": "pan-fried-snapper-w-wilted-greens",
+  "name": "Pan-Fried Snapper with Wilted Greens",
+  "category": "meal",
+  "ingredients": [
+   "1 snapper fillet (about 150g)",
+   "½ tbsp olive oil",
+   "1 small handful (about 8-10 stalks) asparagus, tough ends snapped",
+   "6-8 cherry tomatoes, halved",
+   "1 tbsp capers, rinsed",
+   "1 small handful (about 1 cup) baby spinach",
+   "1 small handful (about 2 tbsp) pine nuts",
+   "1 tsp balsamic vinegar"
+  ]
+ },
+ {
+  "id": "charred-corn-courgette-rocket-salad",
+  "slug": "charred-corn-courgette-rocket-salad",
+  "name": "Charred Corn and Courgette with Rocket",
+  "category": "meal",
+  "ingredients": [
+   "½ can (approx. 200g) black-eyed beans, rinsed and drained",
+   "½ cob sweetcorn, kernels removed",
+   "½ small red onion, thinly sliced",
+   "½ courgette, ribboned",
+   "1 tablespoon olive oil",
+   "½ teaspoon smoked paprika",
+   "¼ teaspoon dried oregano",
+   "1 tablespoon fresh lemon juice"
+  ]
+ },
+ {
+  "id": "baked-snapper-with-fennel-and-lentils",
+  "slug": "baked-snapper-with-fennel-and-lentils",
+  "name": "Baked Snapper, Lemon Fennel Lentils",
+  "category": "meal",
+  "ingredients": [
+   "150g snapper fillet, skin on or off",
+   "1 tsp olive oil",
+   "pinch of sea salt",
+   "pinch of black pepper",
+   "80g puy lentils, rinsed",
+   "200ml vegetable broth",
+   "1/4 small fennel bulb, thinly sliced",
+   "1/2 lemon, thinly sliced"
+  ]
+ },
+ {
+  "id": "cumin-roasted-kūmara-and-halloumi-stack",
+  "slug": "cumin-roasted-kumara-and-halloumi-stack",
+  "name": "Cumin-Roasted Kūmara and Halloumi Stack",
+  "category": "meal",
+  "ingredients": [
+   "1 small kūmara (about 200g)",
+   "1/2 red onion",
+   "5-6 brussels sprouts",
+   "75g halloumi",
+   "1 tbsp olive oil",
+   "1/2 tsp ground cumin",
+   "1/4 tsp dried oregano",
+   "Pinch of sea salt"
+  ]
+ },
+ {
+  "id": "steamed-snapper-pak-choy",
+  "slug": "steamed-snapper-pak-choy",
+  "name": "Steamed Snapper with Pak Choy Ribbons",
+  "category": "meal",
+  "ingredients": [
+   "1 snapper fillet (approx. 150g)",
+   "1 small pak choy head",
+   "1 spring onion",
+   "2cm piece fresh ginger",
+   "½ stalk lemongrass",
+   "1 tsp tamari",
+   "1 tsp fish sauce",
+   "¼ tsp sesame oil"
+  ]
+ },
+ {
+  "id": "roasted-fennel-leek-white-beans-with-basil-notes",
+  "slug": "roasted-fennel-leek-white-beans-with-basil-notes",
+  "name": "Roasted Fennel & Leek with White Beans and Basil Notes",
+  "category": "meal",
+  "ingredients": [
+   "1 small fennel bulb",
+   "1 small leek",
+   "½ (200g) can cannellini beans, rinsed and drained",
+   "1 Tbsp olive oil",
+   "½ lemon, juiced",
+   "Pinch of salt",
+   "Freshly ground black pepper to taste",
+   "1 Tbsp basil pesto (check ingredients for no added sugar)"
+  ]
+ },
+ {
+  "id": "creamy-kumara-peanut-pot",
+  "slug": "creamy-kumara-peanut-pot",
+  "name": "Creamy Kūmara & Peanut Pot",
+  "category": "meal",
+  "ingredients": [
+   "200g kūmara, peeled and diced into 2cm cubes",
+   "1 tablespoon olive oil",
+   "½ teaspoon ground turmeric",
+   "¼ teaspoon ground cardamom",
+   "Small pinch of ground cinnamon",
+   "100g chopped tomatoes (from a can)",
+   "2 tablespoons natural peanut butter",
+   "150ml vegetable broth"
+  ]
+ },
+ {
+  "id": "coconutty-black-bean-braise",
+  "slug": "coconutty-black-bean-braise",
+  "name": "Coconutty Black Bean Braise",
+  "category": "meal",
+  "ingredients": [
+   "½ red capsicum, deseeded and diced",
+   "¼ red onion, finely diced",
+   "1 clove garlic, minced",
+   "¼ tsp ground allspice",
+   "¼ tsp smoked paprika",
+   "Pinch of chilli flakes (or more, if you like a little warmth)",
+   "1 tsp olive oil",
+   "200g can black beans, drained and rinsed"
+  ]
+ },
+ {
+  "id": "creamy-tempeh-and-greens-with-ginger-and-lime",
+  "slug": "creamy-tempeh-and-greens-with-ginger-and-lime",
+  "name": "Creamy Tempeh and Greens with Ginger and Lime",
+  "category": "meal",
+  "ingredients": [
+   "100g tempeh, patted dry and diced into 1.5cm cubes",
+   "1 tsp olive oil",
+   "1 small knob (about 2cm) fresh ginger, grated",
+   "1 clove garlic, minced",
+   "1 tsp red curry paste (check for no added sugar)",
+   "50ml full-fat coconut milk",
+   "1 tbsp natural peanut butter (100% peanuts)",
+   "60ml vegetable broth or water"
+  ]
+ },
+ {
+  "id": "persian-herbed-lentils-with-yoghurt",
+  "slug": "persian-herbed-lentils-with-yoghurt",
+  "name": "Herbed Brown Lentils with Grounding Yoghurt",
+  "category": "meal",
+  "ingredients": [
+   "½ red onion, finely chopped",
+   "1 tsp olive oil",
+   "¼ tsp ground cumin",
+   "¼ tsp smoked paprika",
+   "60g brown lentils, rinsed",
+   "½ cup (125ml) vegetable stock",
+   "½ cup (125ml) tomato passata",
+   "½ tsp finely grated lemon zest (instead of sumac)"
+  ]
+ },
+ {
+  "id": "saffron-prawn-and-fennel-warmth",
+  "slug": "saffron-prawn-and-fennel-warmth",
+  "name": "Saffron Prawns with Braised Fennel",
+  "category": "meal",
+  "ingredients": [
+   "1 tsp olive oil",
+   "1/2 medium fennel bulb, thinly sliced",
+   "1/2 small leek, white and light green parts, thinly sliced",
+   "1/4 cup tinned chopped tomatoes",
+   "1/4 tsp smoked paprika",
+   "Pinch of saffron threads (about 5-6 threads), bloomed in 1 tbsp warm water",
+   "1/2 cup vegetable broth",
+   "60g raw prawns, peeled and deveined"
+  ]
+ },
+ {
+  "id": "braised-lentils-with-carrots-and-leek",
+  "slug": "braised-lentils-with-carrots-and-leek",
+  "name": "Braised Lentils with Carrots and Leek",
+  "category": "meal",
+  "ingredients": [
+   "80g puy lentils, rinsed",
+   "1 carrot, peeled and finely diced",
+   "1/2 leek, white and light green parts, thinly sliced",
+   "1 shallot, finely diced",
+   "1 clove garlic, minced",
+   "1 tbsp olive oil",
+   "250ml vegetable broth",
+   "1 tbsp red wine vinegar"
+  ]
+ },
+ {
+  "id": "celery-black-bean-braise",
+  "slug": "celery-black-bean-braise",
+  "name": "Celery & Black Bean Braise",
+  "category": "meal",
+  "ingredients": [
+   "1 tbsp olive oil",
+   "1 spring onion, finely sliced",
+   "1 celery stalk, diced",
+   "½ green capsicum, diced",
+   "½ tsp dried oregano",
+   "¼ tsp smoked paprika",
+   "Pinch of cayenne pepper (optional)",
+   "100g cooked black beans, rinsed and drained"
+  ]
+ },
+ {
+  "id": "creamy-mushroom-and-butter-bean-rice",
+  "slug": "creamy-mushroom-and-butter-bean-rice",
+  "name": "Creamy Mushroom and Butter Bean Rice",
+  "category": "meal",
+  "ingredients": [
+   "5g olive oil",
+   "1 clove garlic, minced",
+   "100g mixed mushrooms (like shiitake and button), sliced",
+   "1 sprig fresh sage, leaves picked and roughly chopped",
+   "60g brown rice",
+   "250ml vegetable broth",
+   "60g canned butter beans, rinsed and drained",
+   "15g cashew butter"
+  ]
+ },
+ {
+  "id": "walnut-white-bean-pot",
+  "slug": "walnut-white-bean-pot",
+  "name": "Walnut & White Bean Pot",
+  "category": "meal",
+  "ingredients": [
+   "1 spring onion, finely sliced",
+   "1 tsp olive oil",
+   "pinch of dried thyme",
+   "1/4 tsp ground juniper berries (about 3-4 berries, crushed)",
+   "30g walnuts, roughly chopped",
+   "1 dried fig, stem removed, finely diced",
+   "120g cannellini beans, rinsed and drained",
+   "2 large silverbeet leaves, stems removed, chopped"
+  ]
+ },
+ {
+  "id": "cumin-spiced-fava-and-spinach",
+  "slug": "cumin-spiced-fava-and-spinach",
+  "name": "Cumin-Spiced Fava and Spinach",
+  "category": "meal",
+  "ingredients": [
+   "200g cooked broad beans, drained and rinsed",
+   "1 tablespoon olive oil",
+   "½ teaspoon ground cumin",
+   "¼ teaspoon ground coriander seed",
+   "1 small clove garlic, finely minced",
+   "½ a small tomato, finely diced",
+   "80g fresh spinach",
+   "1 tablespoon fresh flat-leaf parsley, finely chopped"
+  ]
+ },
+ {
+  "id": "cinnamon-bean-orzo-bake",
+  "slug": "cinnamon-bean-orzo-bake",
+  "name": "Cinnamon Bean Orzo Bake",
+  "category": "meal",
+  "ingredients": [
+   "1 tablespoon olive oil",
+   "1 medium stalk celery, finely sliced",
+   "1/2 teaspoon ground cinnamon",
+   "1/4 teaspoon dried oregano",
+   "400g can kidney beans, rinsed and drained",
+   "200g can chopped tomatoes",
+   "1 tablespoon balsamic vinegar",
+   "70g orzo pasta"
+  ]
+ },
+ {
+  "id": "ginger-tahini-cauliflower-and-sprouts",
+  "slug": "ginger-tahini-cauliflower-and-sprouts",
+  "name": "Ginger-Tahini Cauliflower and Sprouts",
+  "category": "meal",
+  "ingredients": [
+   "200g cauliflower florets",
+   "1 tbsp olive oil",
+   "1 clove garlic, minced",
+   "1 cm piece fresh ginger, grated",
+   "1 tbsp tahini",
+   "1 tbsp tamari",
+   "1 tsp rice vinegar",
+   "1 tbsp water"
+  ]
+ },
+ {
+  "id": "steamed-beans-seed-spice-embrace",
+  "slug": "steamed-beans-seed-spice-embrace",
+  "name": "Steamed Greens, Seeds, and Black-Eyed Beans",
+  "category": "meal",
+  "ingredients": [
+   "100g green beans, trimmed",
+   "1 tsp olive oil",
+   "1/4 red onion, finely sliced",
+   "1/2 tsp fennel seeds",
+   "1/4 tsp coriander seeds, crushed",
+   "Pinch of smoked paprika",
+   "50g baby spinach or watercress",
+   "120g cooked black-eyed beans, rinsed and drained"
+  ]
+ },
+ {
+  "id": "black-bean-and-corn-soup-with-avocado",
+  "slug": "black-bean-and-corn-soup-with-avocado",
+  "name": "Black Bean and Corn Quietude",
+  "category": "meal",
+  "ingredients": [
+   "100g canned black beans, drained and rinsed",
+   "100g canned chopped tomatoes",
+   "60g corn kernels (fresh or frozen)",
+   "Pinch of ground cumin",
+   "Pinch of smoked paprika",
+   "200ml vegetable broth",
+   "1/4 medium avocado, diced",
+   "Small lime wedge"
+  ]
+ },
+ {
+  "id": "beetroot-chickpea-wild-rice-bowl",
+  "slug": "beetroot-chickpea-wild-rice-bowl",
+  "name": "Beetroot Wild Rice with Toasted Seeds",
+  "category": "meal",
+  "ingredients": [
+   "120g cooked wild rice blend (or 40g uncooked)",
+   "½ cup roasted beetroot, cubed (approx. 75g)",
+   "¼ cup cooked chickpeas (approx. 40g)",
+   "½ cup rocket (approx. 20g)",
+   "1 tablespoon walnuts, roughly chopped",
+   "1 tablespoon pumpkin seeds",
+   "1 tablespoon olive oil",
+   "1 teaspoon balsamic vinegar"
+  ]
+ },
+ {
+  "id": "braised-chickpeas-braising-greens",
+  "slug": "braised-chickpeas-braising-greens",
+  "name": "Braised Chickpeas with Braising Greens",
+  "category": "meal",
+  "ingredients": [
+   "1 tablespoon olive oil",
+   "1/2 red capsicum, deseeded and finely diced",
+   "1/2 teaspoon ground cumin",
+   "1/2 teaspoon smoked paprika",
+   "Pinch of chilli flakes (optional)",
+   "200g tinned crushed tomatoes",
+   "200g tinned chickpeas, rinsed and drained",
+   "100g silverbeet or spinach, stems removed and roughly chopped"
+  ]
+ },
+ {
+  "id": "kimchi-veggie-roll-with-tahini-drizzle",
+  "slug": "kimchi-veggie-roll-with-tahini-drizzle",
+  "name": "Kimchi & Veggie Roll with Tahini Drizzle",
+  "category": "meal",
+  "ingredients": [
+   "1 large wholemeal wrap",
+   "2 tablespoons hummus",
+   "2 tablespoons kimchi",
+   "⅓ cup mixed salad greens",
+   "¼ carrot, grated",
+   "¼ cucumber, thinly sliced",
+   "1 teaspoon toasted sesame seeds",
+   "1 teaspoon tahini"
+  ]
+ },
+ {
+  "id": "one-pan-brown-rice-and-edamame-with-sesame",
+  "slug": "one-pan-brown-rice-and-edamame-with-sesame",
+  "name": "One-Pan Brown Rice and Edamame with Sesame",
+  "category": "meal",
+  "ingredients": [
+   "250g cooked brown rice",
+   "125g frozen edamame beans, shelled",
+   "60g corn kernels (about ½ ear of corn)",
+   "50g broccoli, finely chopped",
+   "¼ carrot, finely diced",
+   "1 tsp tamari",
+   "½ tsp sesame oil",
+   "½ tsp olive oil"
+  ]
+ },
+ {
+  "id": "ginger-rocket-and-grape-whizz",
+  "slug": "ginger-rocket-and-grape-whizz",
+  "name": "Ginger, Rocket & Grape Whizz",
+  "category": "snack",
+  "ingredients": [
+   "20g rocket",
+   "6 green grapes",
+   "2.5cm knob fresh ginger, peeled and roughly chopped",
+   "2 tablespoons fresh lemon juice",
+   "500ml cold water"
+  ]
+ },
+ {
+  "id": "kiwi-mint-cool-down",
+  "slug": "kiwi-mint-cool-down",
+  "name": "Kiwi Mint Cool Down",
+  "category": "snack",
+  "ingredients": [
+   "125ml unsweetened almond milk",
+   "80ml coconut water",
+   "2 kiwifruit, peeled",
+   "1 handful fresh mint leaves (about 20g)",
+   "½ lime, zested and juiced",
+   "1 tsp shredded unsweetened coconut"
+  ]
+ },
+ {
+  "id": "lemon-herb-chickpea-quinoa",
+  "slug": "lemon-herb-chickpea-quinoa",
+  "name": "Lemon-Herb Chickpeas with Quinoa",
+  "category": "meal",
+  "ingredients": [
+   "60g quinoa, rinsed",
+   "80g cucumber, diced",
+   "80g tomato, diced",
+   "30g fresh flat-leaf parsley, roughly chopped",
+   "15g spring onion, sliced",
+   "15g fresh dill, roughly chopped",
+   "100g canned chickpeas, rinsed and drained",
+   "1 tablespoon lemon juice"
+  ]
+ },
+ {
+  "id": "herbaceous-lentil-potatoes",
+  "slug": "herbaceous-lentil-potatoes",
+  "name": "Herbaceous Lentil Potatoes",
+  "category": "meal",
+  "ingredients": [
+   "200g red potatoes",
+   "25g fresh coriander, leaves and stems",
+   "15g fresh mint",
+   "1 tbsp olive oil",
+   "40g plain unsweetened almond yoghurt",
+   "Large pinch of ground cumin",
+   "30ml fresh lime juice",
+   "Pinch of sea salt"
+  ]
+ },
+ {
+  "id": "creamy-edamame-and-avocado-dip",
+  "slug": "creamy-edamame-and-avocado-dip",
+  "name": "Creamy Edamame and Avocado Dip",
+  "category": "snack",
+  "ingredients": [
+   "½ cup frozen shelled edamame, thawed",
+   "½ ripe avocado, peeled",
+   "¼ cup loosely packed fresh coriander leaves",
+   "2 spring onions, sliced",
+   "½ lime, juiced",
+   "1 tablespoon extra virgin olive oil",
+   "Pinch of sea salt flakes",
+   "Freshly cracked black pepper to taste"
+  ]
+ },
+ {
+  "id": "morning-sun-sipper",
+  "slug": "morning-sun-sipper",
+  "name": "Morning Sun Sipper",
+  "category": "snack",
+  "ingredients": [
+   "1 medium tomato",
+   "50g red capsicum",
+   "50g cucumber",
+   "1 spring onion, green tops only",
+   "2 tablespoons fresh parsley leaves",
+   "2 tablespoons fresh coriander leaves",
+   "1/3 lemon, juiced"
+  ]
+ },
+ {
+  "id": "warm-miso-tofu-with-carrot-and-corn",
+  "slug": "warm-miso-tofu-with-carrot-and-corn",
+  "name": "Warm Miso Tofu with Carrot and Corn",
+  "category": "meal",
+  "ingredients": [
+   "1 medium carrot, about 120g, diced",
+   "250ml vegetable broth or water",
+   "2 tbsp white miso paste",
+   "75g frozen corn kernels",
+   "100g firm tofu, cubed",
+   "2 spring onions, sliced"
+  ]
+ },
+ {
+  "id": "toasted-sourdough-with-avocado-and-dukkah",
+  "slug": "toasted-sourdough-with-avocado-and-dukkah",
+  "name": "Toasted Sourdough with Avocado and Seed Dust",
+  "category": "breakfast",
+  "ingredients": [
+   "2 slices sourdough bread",
+   "½ ripe avocado",
+   "4 pecan halves",
+   "1 tablespoon sesame seeds",
+   "½ teaspoon fennel seeds",
+   "¼ teaspoon ground coriander",
+   "¼ teaspoon ground cumin",
+   "Pinch of sea salt"
+  ]
+ },
+ {
+  "id": "warm-herbed-eggs",
+  "slug": "warm-herbed-eggs",
+  "name": "Warm Herbed Eggs",
+  "category": "breakfast",
+  "ingredients": [
+   "2 large free-range eggs",
+   "1 sprig fresh parsley, finely chopped",
+   "1 pinch flaky sea salt",
+   "1 grind black pepper"
+  ]
+ },
+ {
+  "id": "lemon-herb-prawns-with-greens",
+  "slug": "lemon-herb-prawns-with-greens",
+  "name": "Lemon-Herb Prawns with Greens",
+  "category": "meal",
+  "ingredients": [
+   "1 tsp olive oil",
+   "100g raw prawns, peeled and deveined",
+   "Pinch of sea salt",
+   "Pinch of black pepper",
+   "1/2 lemon, zested and juiced",
+   "1 sprig fresh parsley, finely chopped",
+   "1 sprig fresh dill, finely chopped",
+   "50g baby spinach or rocket"
+  ]
+ },
+ {
+  "id": "spiced-bean-and-avocado-crisps",
+  "slug": "spiced-bean-and-avocado-crisps",
+  "name": "Spiced Bean and Avocado Crisps",
+  "category": "meal",
+  "ingredients": [
+   "1 wholemeal wrap",
+   "10g nutritional yeast",
+   "125g tinned kidney beans, drained and rinsed",
+   "10g mild taco seasoning (check for no added sugar)",
+   "1 small tomato, diced",
+   "20g red onion, finely diced",
+   "1/4 ripe avocado, mashed"
+  ]
+ },
+ {
+  "id": "herb-roasted-tempeh-and-kūmara",
+  "slug": "herb-roasted-tempeh-and-kumara",
+  "name": "Herb-Roasted Tempeh & Kūmara with Garden Greens",
+  "category": "meal",
+  "ingredients": [
+   "150g tempeh, halved lengthwise then cut into 1.5 cm thick triangles",
+   "100g red kūmara, scrubbed and cut into 2 cm cubes",
+   "1 carrot, peeled and cut into 1 cm thick rounds",
+   "10ml olive oil",
+   "Pinch of sea salt",
+   "Freshly ground black pepper, to taste",
+   "1/2 tsp dried rosemary",
+   "1/2 tsp garlic powder"
+  ]
+ },
+ {
+  "id": "leafy-greens-folded-eggs",
+  "slug": "leafy-greens-folded-eggs",
+  "name": "Leafy Greens Folded Eggs",
+  "category": "breakfast",
+  "ingredients": [
+   "2 large free-range eggs",
+   "2 tbsp milk (dairy or non-dairy)",
+   "Pinch of sea salt",
+   "Crack of black pepper",
+   "1 tsp extra virgin olive oil",
+   "1 large handful (about 60g) fresh spinach",
+   "1 spring onion, thinly sliced (optional)"
+  ]
+ },
+ {
+  "id": "lemon-herb-chutney",
+  "slug": "lemon-herb-chutney",
+  "name": "Lemon Herb Chutney",
+  "category": "snack",
+  "ingredients": [
+   "20g fresh coriander, roughly chopped",
+   "10g fresh mint, roughly chopped",
+   "¼ green chilli, deseeded (optional)",
+   "¼ cm fresh ginger, peeled",
+   "1 tablespoon lemon juice",
+   "¼ teaspoon ground cumin",
+   "pinch of sea salt",
+   "1 tablespoon water"
+  ]
+ },
+ {
+  "id": "broccolini-ginger-sizzle",
+  "slug": "broccolini-ginger-sizzle",
+  "name": "Broccolini & Ginger Sizzle",
+  "category": "meal",
+  "ingredients": [
+   "150g broccolini, trimmed",
+   "1cm fresh ginger, finely julienned",
+   "1 clove garlic, thinly sliced",
+   "1/4 red capsicum, thinly sliced",
+   "1/4 teaspoon mustard seeds",
+   "1/8 teaspoon ground turmeric",
+   "1 tablespoon olive oil",
+   "A pinch of sea salt"
+  ]
+ },
+ {
+  "id": "golden-rice-chicken-greens",
+  "slug": "golden-rice-chicken-greens",
+  "name": "Golden Rice with Chicken and Greens",
+  "category": "meal",
+  "ingredients": [
+   "120g cooked brown rice",
+   "100g cooked chicken breast, shredded or diced",
+   "75g broccoli florets",
+   "30g red onion, finely diced",
+   "2 teaspoons olive oil",
+   "1 tablespoon tamari",
+   "1 large free-range egg, hard-boiled",
+   "1 teaspoon chilli flakes"
+  ]
+ },
+ {
+  "id": "lemon-herb-chickpea-greens",
+  "slug": "lemon-herb-chickpea-greens",
+  "name": "Lemon-Herb Chickpea Greens",
+  "category": "meal",
+  "ingredients": [
+   "2 cups mixed leafy greens, like rocket and spinach",
+   "1/2 cup cooked brown rice",
+   "1/2 cup cooked chickpeas, rinsed and drained",
+   "1/4 cup cherry tomatoes, halved",
+   "1/4 cup cucumber, diced",
+   "2 tablespoons red onion, finely sliced",
+   "1 tablespoon crumbled feta",
+   "1/2 small lemon, juiced (about 1 tablespoon)"
+  ]
+ },
+ {
+  "id": "earthen-lentil-top",
+  "slug": "earthen-lentil-top",
+  "name": "Earthen Lentil Top",
+  "category": "meal",
+  "ingredients": [
+   "1 drizzle olive oil",
+   "½ clove garlic, minced",
+   "¼ brown onion, finely diced (about 25g)",
+   "½ medium carrot, finely diced (about 35g)",
+   "½ stalk celery, finely diced (about 20g)",
+   "100g canned brown lentils, rinsed and drained",
+   "100g canned crushed tomatoes",
+   "1 teaspoon tomato paste"
+  ]
+ },
+ {
+  "id": "roasted-root-and-green-medley",
+  "slug": "roasted-root-and-green-medley",
+  "name": "Roasted Root and Green Medley",
+  "category": "meal",
+  "ingredients": [
+   "5–6 spears asparagus, trimmed and halved",
+   "60g broccoli, cut into small florets",
+   "1 large kūmara (about 150g), peeled and diced into 2cm cubes",
+   "½ small red onion, thinly sliced",
+   "1 tablespoon olive oil",
+   "1 teaspoon balsamic vinegar",
+   "1 clove garlic, minced",
+   "¼ teaspoon dried oregano"
+  ]
+ },
+ {
+  "id": "sourdough-veggie-sausage-tomato-bake",
+  "slug": "sourdough-veggie-sausage-tomato-bake",
+  "name": "Sourdough, Veggie Sausage and Tomato Bake",
+  "category": "breakfast",
+  "ingredients": [
+   "2 veggie sausages, sliced",
+   "1 small leek, white and light green parts, thinly sliced",
+   "2 slices sourdough bread, torn into bite-sized pieces",
+   "100g cherry tomatoes, halved",
+   "1 sprig fresh rosemary, leaves finely chopped",
+   "1 tbsp olive oil",
+   "Salt and freshly ground black pepper to taste",
+   "For the Caper Relish:"
+  ]
+ },
+ {
+  "id": "cumin-brown-rice-kidney-bean-tortilla",
+  "slug": "cumin-brown-rice-kidney-bean-tortilla",
+  "name": "Cumin Brown Rice Kidney Bean Tortilla",
+  "category": "breakfast",
+  "ingredients": [
+   "1/2 cup cooked brown rice",
+   "1/2 cup cooked kidney beans, rinsed and drained",
+   "1/4 cup sweetcorn kernels (frozen or canned)",
+   "1/2 teaspoon ground cumin",
+   "2 tablespoons water",
+   "1 wholemeal tortilla",
+   "1/4 avocado, mashed",
+   "Pinch of salt and pepper"
+  ]
+ },
+ {
+  "id": "harissa-baked-cannellini-beans",
+  "slug": "harissa-baked-cannellini-beans",
+  "name": "Harissa Baked Cannellini Beans",
+  "category": "breakfast",
+  "ingredients": [
+   "1 can (400g) cannellini beans, rinsed and drained",
+   "1 capsicum, roasted and roughly chopped",
+   "100g passata",
+   "1 tbsp harissa paste (or 1 tbsp tomato paste + 1/2 tsp smoked paprika + 1/4 tsp chilli flakes + 1 clove garlic, minced)",
+   "50g spinach",
+   "1 slice wholemeal sourdough or toast"
+  ]
+ },
+ {
+  "id": "sriracha-kumara-hash",
+  "slug": "sriracha-kumara-hash",
+  "name": "Sriracha Kumara Hash with Cavolo Nero and Sweetcorn",
+  "category": "breakfast",
+  "ingredients": [
+   "1 kumara, peeled and diced",
+   "1/2 red onion, finely sliced",
+   "1 cup cavolo nero, roughly chopped",
+   "1/2 cup sweetcorn kernels (fresh or frozen)",
+   "1 tbsp olive oil",
+   "For the sriracha (optional, or use as a flavour guide for fresh chilli sauce): 1 red chilli, 1 clove garlic, 1 tbsp white vinegar, pinch of salt (blended to a smooth paste, add a touch of water if too thick)"
+  ]
+ },
+ {
+  "id": "spicy-garlic-mushrooms-with-pomegranate-and-watercress",
+  "slug": "spicy-garlic-mushrooms-with-pomegranate-and-watercress",
+  "name": "Spicy Garlic Mushrooms with Pomegranate and Watercress",
+  "category": "meal",
+  "ingredients": [
+   "150g mixed mushrooms, sliced or quartered",
+   "1/2 red onion, thinly sliced",
+   "1 clove garlic, minced",
+   "1/2 tsp ground cumin",
+   "1/2 tsp smoked paprika",
+   "1 tbsp tamari (or soy sauce)",
+   "1 cup fresh watercress",
+   "2 tbsp pomegranate seeds"
+  ]
+ },
+ {
+  "id": "baked-spiced-celeriac-hummus-pomelo",
+  "slug": "baked-spiced-celeriac-hummus-pomelo",
+  "name": "Baked Spiced Celeriac with Chickpea, Pomelo and Rocket",
+  "category": "meal",
+  "ingredients": [
+   "1/2 celeriac, peeled and cut into 2cm cubes",
+   "1/2 can (200g) chickpeas, rinsed and drained",
+   "1/2 tsp ground cumin",
+   "1/4 tsp ground cardamom",
+   "1 tbsp olive oil",
+   "50g rocket",
+   "1/2 pomelo, segmented (or grapefruit)",
+   "2 tbsp store-bought hummus"
+  ]
+ },
+ {
+  "id": "masala-charred-greens-peanuts",
+  "slug": "masala-charred-greens-peanuts",
+  "name": "Masala Charred Greens with Peanuts",
+  "category": "meal",
+  "ingredients": [
+   "100g broccoli, cut into florets",
+   "2 tbsp olive oil",
+   "1/2 tsp garam masala",
+   "1/4 tsp cinnamon",
+   "50g roasted peanuts",
+   "80g cooked brown lentils",
+   "100g spinach"
+  ]
+ },
+ {
+  "id": "roasted-brassicas-sesame-miso-tofu",
+  "slug": "roasted-brassicas-sesame-miso-tofu",
+  "name": "Roasted Brassicas with Sesame Miso Tofu",
+  "category": "meal",
+  "ingredients": [
+   "1 cup Brussels sprouts, halved",
+   "1 cup purple sprouting broccoli, chopped",
+   "150g firm tofu, pressed and cubed",
+   "1 tbsp olive oil",
+   "1 tbsp tamari",
+   "1 tbsp white miso paste",
+   "1 tbsp tahini",
+   "1 tsp rice vinegar"
+  ]
+ },
+ {
+  "id": "marsala-beans-with-almond-picada",
+  "slug": "marsala-beans-with-almond-picada",
+  "name": "Marsala Beans with Toasted Almonds and Courgette",
+  "category": "meal",
+  "ingredients": [
+   "1 medium courgette, chopped into bite-sized pieces",
+   "100g heritage tomatoes, halved or quartered",
+   "1 tbsp olive oil",
+   "1/2 tsp smoked paprika",
+   "Pinch of sea salt",
+   "Pinch of black pepper",
+   "80g cannellini beans, rinsed and drained",
+   "2 tbsp marsala wine (or vegetable stock + 1 tsp balsamic vinegar)"
+  ]
+ },
+ {
+  "id": "creamy-luteal-chilli-lentils",
+  "slug": "creamy-luteal-chilli-lentils",
+  "name": "Creamy Luteal Chilli Lentils",
+  "category": "meal",
+  "ingredients": [
+   "1 tbsp olive oil",
+   "1 clove garlic, minced",
+   "1/2 red chilli, de-seeded and minced",
+   "1 tsp fresh ginger, grated",
+   "100g red lentils, rinsed",
+   "200ml coconut milk",
+   "100ml water",
+   "1/2 lemongrass stalk, bruised"
+  ]
+ },
+ {
+  "id": "chicken-gumbo-aromatic",
+  "slug": "chicken-gumbo-aromatic",
+  "name": "Chicken Gumbo with Capsicum & Celery",
+  "category": "meal",
+  "ingredients": [
+   "200g boneless, skinless chicken thighs, cut into 2cm pieces",
+   "1 tbsp olive oil",
+   "1/2 onion, finely chopped",
+   "1 stick celery, finely chopped",
+   "1/2 green capsicum, finely chopped",
+   "1 tsp smoked paprika",
+   "1/2 tsp cayenne pepper",
+   "1 tsp dried oregano"
+  ]
+ },
+ {
+  "id": "fennel-orzo-with-broccoli",
+  "slug": "fennel-orzo-with-broccoli",
+  "name": "Fennel and Orzo with Broccoli",
+  "category": "meal",
+  "ingredients": [
+   "1/2 a small fennel bulb, finely sliced",
+   "1/4 a small onion, finely sliced",
+   "1 tsp olive oil",
+   "1 tsp fennel seeds, toasted and crushed lightly",
+   "50ml white wine",
+   "200ml vegetable broth",
+   "50g wholemeal orzo pasta",
+   "80g Tenderstem broccoli, stems cut into 1cm pieces, florets left whole"
+  ]
+ },
+ {
+  "id": "miso-butter-greens-with-sesame-brown-rice",
+  "slug": "miso-butter-greens-with-sesame-brown-rice",
+  "name": "Miso-Butter Greens with Sesame Brown Rice",
+  "category": "meal",
+  "ingredients": [
+   "100g shiitake mushrooms, sliced",
+   "60g mangetout",
+   "60g asparagus spears, woody ends removed",
+   "1 tablespoon white miso paste",
+   "1 tablespoon butter",
+   "1 teaspoon sesame seeds",
+   "1 tablespoon tamari (or soy sauce)",
+   "1 teaspoon rice vinegar"
+  ]
+ },
+ {
+  "id": "spicy-mushroom-tofu-shawarma-with-cucumber-yoghurt",
+  "slug": "spicy-mushroom-tofu-shawarma-with-cucumber-yoghurt",
+  "name": "Spicy Mushroom and Tofu Shawarma with Cucumber Yoghurt",
+  "category": "meal",
+  "ingredients": [
+   "100g mixed mushrooms, sliced",
+   "100g firm tofu, pressed and crumbled",
+   "1/4 red cabbage, thinly sliced",
+   "1 tbsp pomegranate molasses",
+   "1 tbsp shawarma spices (cumin, coriander, paprika, turmeric, cardamom, pinch of cayenne)",
+   "2 tbsp natural yoghurt",
+   "1/4 cucumber, grated",
+   "1 wholemeal flatbread"
+  ]
+ },
+ {
+  "id": "dark-chocolate-oat-bites",
+  "slug": "dark-chocolate-oat-bites",
+  "name": "Dark Chocolate Oat Bites",
+  "category": "snack",
+  "ingredients": [
+   "1 cup rolled oats",
+   "½ cup peanut butter",
+   "2 soft dates, pitted and mashed",
+   "½ cup dark chocolate chips",
+   "2 tbsp ground flaxseed"
+  ]
+ },
+ {
+  "id": "asian-greens-black-bean-sauce",
+  "slug": "asian-greens-black-bean-sauce",
+  "name": "Asian Greens with Black Bean Sauce and Vermicelli",
+  "category": "meal",
+  "ingredients": [
+   "100g sugar snap peas",
+   "1 pak choi",
+   "80g canned black beans, rinsed and drained",
+   "50g rice vermicelli",
+   "30g sliced celery hearts",
+   "1 thumb-sized knob fresh ginger, grated",
+   "1 tbsp tamari",
+   "1 stock of lemongrass, bruised and finely chopped"
+  ]
+ },
+ {
+  "id": "citrus-spiced-golden-milk",
+  "slug": "citrus-spiced-golden-milk",
+  "name": "Sunshine Citrus Turmeric Brew",
+  "category": "snack",
+  "ingredients": [
+   "1½ cups almond milk",
+   "1 medium orange, zested and juiced (about 3 tbsp juice)",
+   "¾ tsp ground turmeric",
+   "½ tsp ground ginger",
+   "freshly ground black pepper to taste (optional)"
+  ]
+ },
+ {
+  "id": "creamy-mango-ginger-sip",
+  "slug": "creamy-mango-ginger-sip",
+  "name": "Creamy Mango Ginger Sip",
+  "category": "snack",
+  "ingredients": [
+   "125ml almond milk (or more, to soften consistency)",
+   "125g almond milk yoghurt",
+   "250g frozen mango chunks",
+   "75g rinsed and drained brown lentils",
+   "½ tsp ground ginger",
+   "pinch of salt (optional)",
+   "optional: slivered almonds for garnish"
+  ]
+ },
+ {
+  "id": "creamy-chocolate-lentil-pot",
+  "slug": "creamy-chocolate-lentil-pot",
+  "name": "Creamy Chocolate Lentil Pot with Peanuts and Cacao Nibs",
+  "category": "breakfast",
+  "ingredients": [
+   "1 frozen ripe banana, sliced",
+   "½ cup canned rinsed and drained lentils, optionally frozen",
+   "¼ cup almond milk, plus more as needed",
+   "1 tbsp natural peanut butter",
+   "1 tbsp unsweetened cocoa powder",
+   "2 tbsp salted peanuts",
+   "2 tsp cacao nibs",
+   "Optional: almond yoghurt or lactose-free plain unsweetened yoghurt as topping"
+  ]
+ },
+ {
+  "id": "raspberry-peanut-butter-bites",
+  "slug": "raspberry-peanut-butter-bites",
+  "name": "Raspberry Peanut Butter Bites with Dark Chocolate",
+  "category": "snack",
+  "ingredients": [
+   "2g vegan butter",
+   "50g frozen raspberries",
+   "2g chia seeds",
+   "1 rice cake",
+   "15g natural peanut butter",
+   "10g dark chocolate chips (70% cacao)"
+  ]
+ },
+ {
+  "id": "pan-fried-tofu-with-lime-and-oregano",
+  "slug": "pan-fried-tofu-with-lime-and-oregano",
+  "name": "Pan-fried Tofu with Lime and Oregano",
+  "category": "meal",
+  "ingredients": [
+   "100g firm tofu",
+   "1 tsp olive oil",
+   "pinch of salt",
+   "pinch of pepper",
+   "Marinade: 1 tbsp lime juice",
+   "Marinade: 1 tsp olive oil",
+   "Marinade: 1/2 tsp dried oregano",
+   "Marinade: 1/4 tsp ground cumin"
+  ]
+ },
+ {
+  "id": "ginger-tofu-with-quinoa-and-greens",
+  "slug": "ginger-tofu-with-quinoa-and-greens",
+  "name": "Ginger Tofu with Quinoa and Greens",
+  "category": "meal",
+  "ingredients": [
+   "35g quinoa",
+   "3ml olive oil",
+   "5g ginger, finely chopped",
+   "0.5 red chilli, sliced",
+   "150g firm tofu, cubed",
+   "5g cornstarch",
+   "0.5 bok choy bunch, roughly chopped",
+   "0.5 red capsicum, sliced"
+  ]
+ },
+ {
+  "id": "tahini-tofu-with-roasted-kūmara-and-brussels-sprouts",
+  "slug": "tahini-tofu-with-roasted-kumara-and-brussels-sprouts",
+  "name": "Tahini Tofu with Roasted Kūmara and Brussels Sprouts",
+  "category": "meal",
+  "ingredients": [
+   "60g brown rice, uncooked",
+   "115g firm tofu, drained, pressed, and cubed",
+   "1 medium kūmara, cut into 1cm pieces",
+   "100g chickpeas, drained and rinsed",
+   "85g Brussels sprouts, halved",
+   "1 tbsp olive oil",
+   "1 cup kale, chopped",
+   "2-3 tbsp pickled red onion"
+  ]
+ },
+ {
+  "id": "cashew-chicken-capsicum-bake-with-brown-rice",
+  "slug": "cashew-chicken-capsicum-bake-with-brown-rice",
+  "name": "Cashew Chicken & Capsicum Bake with Brown Rice",
+  "category": "meal",
+  "ingredients": [
+   "1 cup cooked brown rice",
+   "125g chicken breast, cut into bite-sized pieces",
+   "1/2 capsicum, chopped",
+   "1/2 head broccoli, cut into florets",
+   "1 spring onion, diced (whites and greens separated)",
+   "1 tbsp cashews",
+   "1 tbsp tamari",
+   "1 tsp tomato paste"
+  ]
+ },
+ {
+  "id": "kids-french-toast",
+  "slug": "kids-french-toast",
+  "name": "French Toast Fingers",
+  "category": "breakfast",
+  "ingredients": [
+   "4 slices bread, cut into strips",
+   "2 eggs",
+   "¼ cup milk",
+   "½ tsp cinnamon",
+   "1 tsp butter",
+   "maple syrup or fruit to serve"
+  ]
+ },
+ {
+  "id": "kids-sw-veggie-loaded-mince",
+  "slug": "kids-sw-veggie-loaded-mince",
+  "name": "Veggie-Loaded Mince",
+  "category": "meal",
+  "ingredients": [
+   "400g beef mince",
+   "1 carrot, grated",
+   "1 zucchini, grated",
+   "½ cup mushrooms, finely diced",
+   "1 cup passata",
+   "1 tsp cumin",
+   "rice or pasta to serve"
+  ]
+ },
+ {
+  "id": "kids-vg-maple-tofu-bites",
+  "slug": "kids-vg-maple-tofu-bites",
+  "name": "Sticky Maple-Glazed Tofu Bites",
+  "category": "meal",
+  "ingredients": [
+   "½ block firm tofu",
+   "1 tbsp maple syrup",
+   "1 tbsp coconut aminos or tamari",
+   "1 tsp coconut oil"
+  ]
+ },
+ {
+  "id": "kids-vg-chocolate-chickpea-spread",
+  "slug": "kids-vg-chocolate-chickpea-spread",
+  "name": "Healthy Chocolate Chickpea Spread",
+  "category": "breakfast",
+  "ingredients": [
+   "1 x 400g tin chickpeas, drained and rinsed",
+   "⅓ cup date paste",
+   "¼ cup cacao powder",
+   "Pinch of salt"
+  ]
+ },
+ {
+  "id": "kids-vg-mango-fruit-leather",
+  "slug": "kids-vg-mango-fruit-leather",
+  "name": "Mango Chia Fruit Leather Rolls",
+  "category": "snack",
+  "ingredients": [
+   "500g frozen mango",
+   "2 tbsp chia seeds"
+  ]
+ },
+ {
+  "id": "kids-vg-spirulina-bites",
+  "slug": "kids-vg-spirulina-bites",
+  "name": "Green Dino Spirulina Bites",
+  "category": "snack",
+  "ingredients": [
+   "8 large Medjool dates, pitted",
+   "1 tbsp hemp hearts",
+   "1 tbsp chia seeds",
+   "½ cup desiccated coconut",
+   "2 tbsp spirulina powder"
+  ]
+ },
+ {
+  "id": "kids-fok-spiced-apple-couscous",
+  "slug": "kids-fok-spiced-apple-couscous",
+  "name": "Spiced Apple Couscous",
+  "category": "breakfast",
+  "ingredients": [
+   "1 cup whole wheat couscous",
+   "1 cup unsweetened apple juice",
+   "0.5 cup water",
+   "1 apple cored and diced",
+   "0.5 teaspoon ground cinnamon",
+   "0.25 teaspoon ground ginger",
+   "1 tablespoon maple syrup",
+   "2 tablespoons slivered almonds"
+  ]
+ },
+ {
+  "id": "kids-fok-herbed-popcorn",
+  "slug": "kids-fok-herbed-popcorn",
+  "name": "Herbed Popcorn",
+  "category": "snack",
+  "ingredients": [
+   "0.5 cup popcorn kernels",
+   "1 teaspoon garlic powder",
+   "1 teaspoon dried mixed herbs (oregano, thyme, rosemary)",
+   "0.5 teaspoon onion powder",
+   "0.25 teaspoon smoked paprika",
+   "sea salt to taste"
+  ]
+ },
+ {
+  "id": "kids-fok-stuffed-potato-puffs",
+  "slug": "kids-fok-stuffed-potato-puffs",
+  "name": "Stuffed Potato Puffs",
+  "category": "snack",
+  "ingredients": [
+   "2 lb Yukon Gold potatoes scrubbed",
+   "6 oz green beans minced (about 1 cup)",
+   "1 large carrot minced (about 1 cup)",
+   "3 tablespoons fresh lime juice",
+   "1 teaspoon garlic powder",
+   "sea salt and black pepper",
+   "2 tablespoons fresh parsley or cilantro",
+   "0.5 cup unsweetened plant milk"
+  ]
+ },
+ {
+  "id": "kids-fok-deviled-potatoes",
+  "slug": "kids-fok-deviled-potatoes",
+  "name": "Deviled Potatoes",
+  "category": "snack",
+  "ingredients": [
+   "14 small Yukon Gold potatoes scrubbed and halved lengthwise",
+   "1 cup unsweetened plant milk",
+   "0.5 teaspoon prepared yellow mustard",
+   "pinch of ground turmeric",
+   "sea salt and white pepper",
+   "1 can (14 oz) hearts of palm drained and chopped",
+   "2 scallions thinly sliced",
+   "1 teaspoon sweet paprika"
+  ]
+ },
+ {
+  "id": "kids-fok-quick-black-bean-tostadas",
+  "slug": "kids-fok-quick-black-bean-tostadas",
+  "name": "Quick Black Bean Tostadas",
+  "category": "meal",
+  "ingredients": [
+   "10 corn tortillas",
+   "1 recipe Black Bean Spread (black beans, onion powder, garlic powder, cumin, lemon juice)",
+   "1 small tomato finely chopped",
+   "3 scallions thinly sliced",
+   "2 cups shredded romaine lettuce",
+   "2-3 tablespoons fresh cilantro"
+  ]
+ },
+ {
+  "id": "kids-fok-buckwheat-sloppy-joes",
+  "slug": "kids-fok-buckwheat-sloppy-joes",
+  "name": "Buckwheat Sloppy Joes",
+  "category": "meal",
+  "ingredients": [
+   "1 cup green or brown lentils rinsed",
+   "1 small onion diced",
+   "1 red bell pepper diced",
+   "3 garlic cloves minced",
+   "1 can (6 oz) no-salt-added tomato paste",
+   "1 tablespoon vegan Worcestershire sauce",
+   "1 teaspoon smoked paprika",
+   "1 teaspoon ground cumin"
+  ]
+ },
+ {
+  "id": "kids-fok-white-bean-winter-cassoulet",
+  "slug": "kids-fok-white-bean-winter-cassoulet",
+  "name": "White Bean Winter Cassoulet",
+  "category": "meal",
+  "ingredients": [
+   "2 cans (15 oz each) white cannellini beans rinsed",
+   "1 small onion diced",
+   "3 carrots diced",
+   "2 celery stalks diced",
+   "4 garlic cloves minced",
+   "1 can (14.5 oz) diced tomatoes",
+   "4 cups vegetable stock",
+   "2 dried bay leaves"
+  ]
+ },
+ {
+  "id": "kids-fok-polenta-and-lentil-loaf",
+  "slug": "kids-fok-polenta-and-lentil-loaf",
+  "name": "Polenta and Lentil Loaf",
+  "category": "meal",
+  "ingredients": [
+   "2 cups green lentils rinsed",
+   "1 small onion diced",
+   "12 garlic cloves minced",
+   "2 cups dry polenta",
+   "2 red bell peppers finely chopped",
+   "2 tablespoons lemon juice",
+   "sea salt and black pepper",
+   "0.5 cup fine cornmeal"
+  ]
+ },
+ {
+  "id": "kids-fok-jambalaya",
+  "slug": "kids-fok-jambalaya",
+  "name": "Jambalaya",
+  "category": "meal",
+  "ingredients": [
+   "1 small onion diced",
+   "1 green bell pepper diced",
+   "1 red bell pepper diced",
+   "2 celery stalks diced",
+   "6 garlic cloves minced",
+   "3 dried bay leaves",
+   "2 cups dry brown rice",
+   "3 cups vegetable stock"
+  ]
+ },
+ {
+  "id": "kids-fok-tricolor-ice-creamcakes",
+  "slug": "kids-fok-tricolor-ice-creamcakes",
+  "name": "Tricolor Ice Creamcakes",
+  "category": "snack",
+  "ingredients": [
+   "2 cups frozen mixed berries",
+   "2 medium bananas cut into pieces and frozen",
+   "2 cups frozen diced mango"
+  ]
+ },
+ {
+  "id": "kids-fok-orange-n-berry-ice-pops",
+  "slug": "kids-fok-orange-n-berry-ice-pops",
+  "name": "Orange 'n Berry Ice Pops",
+  "category": "snack",
+  "ingredients": [
+   "1.25 cups unsweetened pineapple juice",
+   "1 tablespoon arrowroot powder",
+   "0.25 cup maple syrup",
+   "2 tablespoons lemon juice",
+   "0.5 cup frozen or fresh berries pulsed",
+   "1.5 cups fresh orange juice",
+   "1 orange peeled and cut into 0.5-inch pieces"
+  ]
+ }
+]
