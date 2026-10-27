@@ -13,14 +13,27 @@ const MEMBERSHIP_PRODUCT_IDS = new Set([
   "prod_U9Pr8k3iP6Bler",
 ]);
 
-// Manual tier overrides keyed by lowercased email. These users always receive
-// the mapped product/tier regardless of Stripe state (e.g. comped accounts).
-const THRIVING_PRODUCT_ID = "prod_U9Pr8k3iP6Bler";
-const EMAIL_TIER_OVERRIDES: Record<string, string> = {
-  "taliasmayall@gmail.com": THRIVING_PRODUCT_ID,
-  "leanne.bats@gmail.com": THRIVING_PRODUCT_ID,
-  "grantashl1@gmail.com": THRIVING_PRODUCT_ID,
+/** Stripe product → app tier. Mirrors TIERS_MAP in src/contexts/AuthContext.tsx. */
+const PRODUCT_TIERS: Record<string, string> = {
+  prod_UDBbsFCvpYtvUN: "rooted",
+  prod_U9Pqh2vkb2wrNR: "nourished",
+  prod_U9Pr8k3iP6Bler: "thriving",
 };
+
+const FREE_RESPONSE = {
+  subscribed: false,
+  tier: "free",
+  product_id: null,
+  subscription_end: null,
+  source: null,
+};
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status,
+  });
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -34,55 +47,47 @@ serve(async (req) => {
   );
 
   try {
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ subscribed: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-    if (!token) {
-      return new Response(JSON.stringify({ subscribed: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    }
+    const token = authHeader?.replace("Bearer ", "");
+    if (!token) return json(FREE_RESPONSE);
 
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError || !userData?.user?.email) {
-      return new Response(JSON.stringify({ subscribed: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+    if (userError || !userData?.user?.email) return json(FREE_RESPONSE);
+    const user = userData.user;
+    const email = user.email as string;
+
+    // 1. Manual/complimentary grant wins over everything, and works with no
+    //    Stripe account, key, product or price in existence.
+    const { data: grants, error: grantError } = await supabaseClient
+      .rpc("active_membership_grant", { p_email: email });
+
+    if (grantError) {
+      console.warn("[check-subscription] grant lookup failed:", grantError.message);
+    }
+
+    const grant = Array.isArray(grants) ? grants[0] : grants;
+    if (grant?.tier) {
+      return json({
+        subscribed: true,
+        tier: grant.tier,
+        product_id: null,
+        subscription_end: grant.expires_at ?? null,
+        source: "manual",
       });
     }
-    const user = userData.user;
 
-    // Manual override: comped accounts get full tier without Stripe lookup.
-    const overrideProduct = EMAIL_TIER_OVERRIDES[(user.email ?? "").toLowerCase()];
-    if (overrideProduct) {
-      return new Response(JSON.stringify({
-        subscribed: true,
-        product_id: overrideProduct,
-        subscription_end: null,
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+    // 2. Stripe. Optional — until billing is switched on every member simply
+    //    resolves to free instead of surfacing a 500 on every page load.
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) {
+      return json(FREE_RESPONSE);
     }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({ email, limit: 1 });
 
     if (customers.data.length === 0) {
-      return new Response(JSON.stringify({ subscribed: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+      return json(FREE_RESPONSE);
     }
 
     const customerId = customers.data[0].id;
@@ -92,48 +97,54 @@ serve(async (req) => {
       limit: 20,
     });
 
-    const membershipSub = subscriptions.data.find((sub: Stripe.Subscription & { current_period_end?: number | string }) =>
-      sub.items.data.some((item: Stripe.SubscriptionItem) => {
-        const productId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
-        return !!productId && MEMBERSHIP_PRODUCT_IDS.has(productId);
-      })
+    const membershipSub = subscriptions.data.find(
+      (sub: Stripe.Subscription & { current_period_end?: number | string }) =>
+        sub.items.data.some((item: Stripe.SubscriptionItem) => {
+          const productId = typeof item.price.product === "string"
+            ? item.price.product
+            : item.price.product?.id;
+          return !!productId && MEMBERSHIP_PRODUCT_IDS.has(productId);
+        })
     );
 
-    const hasActiveSub = !!membershipSub;
-    let productId = null;
-    let subscriptionEnd = null;
-
-    if (membershipSub) {
-      const sub = membershipSub;
-      try {
-        const endMs = typeof sub.current_period_end === "number"
-          ? sub.current_period_end * 1000
-          : Date.parse(String(sub.current_period_end));
-        if (!isNaN(endMs)) {
-          subscriptionEnd = new Date(endMs).toISOString();
-        }
-      } catch { /* leave null */ }
-      const membershipItem = sub.items.data.find((item: Stripe.SubscriptionItem) => {
-        const itemProductId = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
-        return !!itemProductId && MEMBERSHIP_PRODUCT_IDS.has(itemProductId);
-      });
-      productId = membershipItem
-        ? (typeof membershipItem.price.product === "string" ? membershipItem.price.product : membershipItem.price.product?.id) ?? null
-        : null;
+    if (!membershipSub) {
+      return json(FREE_RESPONSE);
     }
 
-    return new Response(JSON.stringify({
-      subscribed: hasActiveSub,
+    let subscriptionEnd: string | null = null;
+    try {
+      const endMs = typeof membershipSub.current_period_end === "number"
+        ? membershipSub.current_period_end * 1000
+        : Date.parse(String(membershipSub.current_period_end));
+      if (!isNaN(endMs)) {
+        subscriptionEnd = new Date(endMs).toISOString();
+      }
+    } catch { /* leave null */ }
+
+    const membershipItem = membershipSub.items.data.find((item: Stripe.SubscriptionItem) => {
+      const itemProductId = typeof item.price.product === "string"
+        ? item.price.product
+        : item.price.product?.id;
+      return !!itemProductId && MEMBERSHIP_PRODUCT_IDS.has(itemProductId);
+    });
+
+    const productId = membershipItem
+      ? (typeof membershipItem.price.product === "string"
+          ? membershipItem.price.product
+          : membershipItem.price.product?.id) ?? null
+      : null;
+
+    return json({
+      subscribed: true,
+      tier: (productId && PRODUCT_TIERS[productId]) || "free",
       product_id: productId,
       subscription_end: subscriptionEnd,
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
+      source: "stripe",
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: (error as Error).message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    // Deliberately a non-2xx: AuthContext keeps the previously resolved tier on
+    // error, so a transient failure can never knock a paid member down to free.
+    console.error("[check-subscription] error:", (error as Error).message);
+    return json({ ...FREE_RESPONSE, error: (error as Error).message }, 500);
   }
 });

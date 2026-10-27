@@ -84,6 +84,10 @@ export default function MembershipPage() {
         body,
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
+      if (data?.code === "billing_not_configured") {
+        toast.info(data.message);
+        return;
+      }
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (err: any) {
@@ -98,6 +102,10 @@ export default function MembershipPage() {
       const { data, error } = await supabase.functions.invoke("customer-portal", {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
+      if (data?.code === "billing_not_configured") {
+        toast.info(data.message);
+        return;
+      }
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (err: any) {
@@ -168,13 +176,18 @@ export default function MembershipPage() {
               {creditTier === "unlimited" ? "Unlimited" : creditsRemaining} AI credits remaining
             </span>
           </div>
-          {subscription.subscribed && (
+          {subscription.subscribed && subscription.source !== "manual" && (
             <button
               onClick={handleManage}
               className="mt-3 block mx-auto inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1.5 font-body text-xs font-semibold text-foreground"
             >
               <Settings className="h-3.5 w-3.5" /> Manage subscription
             </button>
+          )}
+          {subscription.source === "manual" && (
+            <p className="mt-3 font-body text-[11px] text-muted-foreground">
+              Complimentary access — no payment needed
+            </p>
           )}
           <button onClick={handleSignOut} className="block mx-auto mt-2 font-body text-xs text-muted-foreground underline">
             Sign out

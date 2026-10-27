@@ -11,6 +11,8 @@ interface SubscriptionInfo {
   productId: string | null;
   tier: "free" | "rooted" | "nourished" | "thriving";
   subscriptionEnd: string | null;
+  /** Where the tier came from — "manual" grants have no Stripe portal to manage. */
+  source: "stripe" | "manual" | null;
 }
 
 interface AuthState {
@@ -27,11 +29,24 @@ const TIERS_MAP: Record<string, "rooted" | "nourished" | "thriving"> = {
   prod_U9Pr8k3iP6Bler: "thriving",
 };
 
+const KNOWN_TIERS = ["free", "rooted", "nourished", "thriving"] as const;
+
+function resolveTier(rawTier: unknown, productId: string | null): SubscriptionInfo["tier"] {
+  // check-subscription now returns the tier directly, including for manual
+  // grants that have no Stripe product. Fall back to the product map for older
+  // deployed responses.
+  if (typeof rawTier === "string" && (KNOWN_TIERS as readonly string[]).includes(rawTier)) {
+    return rawTier as SubscriptionInfo["tier"];
+  }
+  return (productId && TIERS_MAP[productId]) || "free";
+}
+
 const defaultSub: SubscriptionInfo = {
   subscribed: false,
   productId: null,
   tier: "free",
   subscriptionEnd: null,
+  source: null,
 };
 
 const AuthContext = createContext<AuthState>({
@@ -78,11 +93,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       const productId = data?.product_id ?? null;
+      const source = data?.source === "manual" || data?.source === "stripe" ? data.source : null;
       setSubscription({
         subscribed: !!data?.subscribed,
         productId,
-        tier: (productId && TIERS_MAP[productId]) || "free",
+        tier: resolveTier(data?.tier, productId),
         subscriptionEnd: data?.subscription_end ?? null,
+        source,
       });
     } catch (e) {
       console.warn("[check-subscription] unexpected error:", e);
