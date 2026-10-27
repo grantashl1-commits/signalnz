@@ -115,7 +115,10 @@ function buildSlotPicks(
       continue;
     }
     let count: number;
-    if (pref === "batch" || pref === "double") count = 1;
+    // "Same daily" batch-cooks one recipe a week, so a 14-day phase gets two.
+    if (pref === "batch") count = Math.min(Math.ceil(days / 7), p.length);
+    // Cook double: a different dinner each night, the extra half is tomorrow's lunch.
+    else if (pref === "double") count = Math.min(days, p.length);
     else if (pref === "rotate" || pref === "fresh") count = Math.min(3, p.length);
     else count = Math.min(days, p.length); // variety / mix
 
@@ -211,9 +214,12 @@ export function buildDbMealPlan(
     if (cd < startDay || cd > endDay) continue;
     if (!bPool.length || !lPool.length || !dPool.length) throw new Error("Not enough recipes match your dietary restrictions. Please review your preferences or add suitable recipes.");
 
-    const breakfast = recipeToMeal(bPool[idx % bPool.length], "breakfast", phase);
-    const lunchRecipe = lPool[idx % lPool.length];
-    const dinnerRecipe = dPool[(idx + 1) % dPool.length]; // offset so lunch ≠ dinner
+    // A batch recipe holds for the whole week; other choices rotate day by day.
+    const pick = (pool: Recipe[], pref: string, offset = 0) =>
+      pool[(pref === "batch" ? Math.floor(idx / 7) : idx + offset) % pool.length];
+    const breakfast = recipeToMeal(pick(bPool, prefs.breakfast), "breakfast", phase);
+    const lunchRecipe = pick(lPool, prefs.lunch);
+    const dinnerRecipe = pick(dPool, prefs.dinner, 1); // offset so lunch ≠ dinner
     const lunch = recipeToMeal(lunchRecipe, "lunch", phase);
     const dinner = recipeToMeal(dinnerRecipe, "dinner", phase);
 

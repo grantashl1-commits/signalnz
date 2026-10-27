@@ -8,6 +8,7 @@ import { REACTIONS, IconWarmth, type ReactionKey } from "@/components/community/
 import { Square } from "lucide-react";
 import { toast } from "sonner";
 import { haptic } from "@/hooks/use-mobile";
+import { useBlockedMembers } from "@/hooks/useBlockedMembers";
 
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
@@ -77,7 +78,9 @@ export default function ChatRoom({ group }: ChatRoomProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const [viewingMember, setViewingMember] = useState<{ userId: string; name: string } | null>(null);
+  const [viewingMember, setViewingMember] = useState<{ userId: string; name: string; messageId?: string } | null>(null);
+  // Messages from members she has blocked never show.
+  const blockedIds = useBlockedMembers();
 
   const myInitials = useMemo(() => initialsFrom(myDisplayName, "ME"), [myDisplayName]);
 
@@ -321,7 +324,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
 
   // Map DB rows → render shape
   const messages: ChatMessage[] = useMemo(() => {
-    return rows.map((r) => {
+    return rows.filter((r) => !blockedIds.has(r.user_id)).map((r) => {
       const isMe = r.user_id === user?.id;
       const author = isMe
         ? { name: "You", initials: myInitials }
@@ -354,7 +357,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
         going: typeof meta.going === "number" ? meta.going : 0,
       };
     });
-  }, [rows, authorMap, user?.id, myInitials]);
+  }, [rows, authorMap, user?.id, myInitials, blockedIds]);
 
   const insertMessage = async (payload: {
     message_type: "text" | "poll" | "event" | "image" | "voice";
@@ -614,7 +617,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
               {!isMe && (
                 <div
                   className="cursor-pointer"
-                  onClick={() => dbRow && setViewingMember({ userId: dbRow.user_id, name: m.user })}
+                  onClick={() => dbRow && setViewingMember({ userId: dbRow.user_id, name: m.user, messageId: dbRow.id })}
                 >
                   <Avatar initials={m.avatar} />
                 </div>
@@ -878,6 +881,7 @@ export default function ChatRoom({ group }: ChatRoomProps) {
           <MemberProfileSheet
             userId={viewingMember.userId}
             displayName={viewingMember.name}
+            messageId={viewingMember.messageId}
             onClose={() => setViewingMember(null)}
           />
         </Suspense>

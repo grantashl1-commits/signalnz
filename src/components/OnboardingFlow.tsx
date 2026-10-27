@@ -1,8 +1,11 @@
 import { saveAIMealPlan, savePreferences, type PrepPreferences } from "@/lib/weekly-planner";
 import { buildDbMealPlanFull } from "@/lib/build-db-meal-plan";
 import { getNextSession, getSelectedPath, getSelectedPathId, pathForOnboarding, plannedExercises, setSelectedPathId } from "@/lib/training-path-utils";
+import { dreamJournalEntry, habitsFromDream, reflectOnDream, type DreamHabit } from "@/lib/dream-reflection";
+import { loadEntries, saveEntries } from "@/lib/journal-store";
+import { getHabits, saveHabits } from "@/data/self-care-rituals";
 import { toast } from "sonner";
-import { useState, useEffect, KeyboardEvent } from "react";
+import { useState, useEffect, useMemo, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight, ArrowLeft, CalendarDays, Minus, Plus, X, Check
@@ -27,7 +30,10 @@ interface Props {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 8;
+// Her dream comes first and the practical setup follows; measurements and cycle
+// tracking come last and are optional.
+const FLOW = ["welcome", "dream", "reflect", "movement_goals", "fitness_level", "equipment", "body", "nutrition", "cycle", "generating"] as const;
+const TOTAL_STEPS = FLOW.length;
 
 const MOVEMENT_GOALS = [
   { id: "strength", label: "Feel stronger in my body" },
@@ -89,7 +95,14 @@ const CYCLE_OPTIONS = [
     title: "I no longer bleed",
     desc: "Post-menopause, or no period",
   },
+  {
+    id: "not_tracking",
+    title: "I'd rather not track",
+    desc: "Plans follow the calendar. Add your cycle any time.",
+  },
 ];
+
+const DREAM_QUESTIONS = ["How do your mornings feel?", "What does your body let you do?", "Who is around you?", "What have you let go of?"];
 
 // ─── TDEE / macro helpers ─────────────────────────────────────────────────────
 
@@ -187,6 +200,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // Navigation
   const [step, setStep] = useState(0);
+  const stepId = FLOW[step];
 
   // Step 0 — Name
   const [name, setName] = useState("");
@@ -210,6 +224,10 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // Step 3 — Movement Goals
   const [movementGoals, setMovementGoals] = useState<string[]>([]);
+  // My Dream Life: her own words, then the goals and habits she keeps from them.
+  const [dream, setDream] = useState("");
+  const suggestions = useMemo(() => reflectOnDream(dream), [dream]);
+  const [chosenHabits, setChosenHabits] = useState<DreamHabit[]>([]);
 
   // Step 4 — Nutrition
   const [dietaryPrefs, setDietaryPrefs] = useState<string[]>([]);
@@ -230,7 +248,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
   const [ready, setReady] = useState(false);
   const [firstSession, setFirstSession] = useState<{ plan: string; name: string; detail: string; moves: string[] } | null>(null);
 
-  const STEP_NAMES = ["welcome", "body", "cycle", "movement_goals", "nutrition", "fitness_level", "equipment", "generating"];
+  const STEP_NAMES = FLOW;
 
   const next = () => {
     haptic("light");
@@ -238,6 +256,15 @@ export default function OnboardingFlow({ onComplete }: Props) {
     trackEvent("onboarding_step_completed", { step: step, step_name: STEP_NAMES[step] });
     trackEvent("onboarding_step_viewed", { step: nextStep, step_name: STEP_NAMES[nextStep] });
     setStep(nextStep);
+  };
+  const reflect = () => {
+    setMovementGoals(prev => (prev.length ? prev : suggestions.goals));
+    setChosenHabits(suggestions.habits);
+    next();
+  };
+  const toggleHabit = (habit: DreamHabit) => {
+    haptic("light");
+    setChosenHabits(prev => (prev.some(h => h.name === habit.name) ? prev.filter(h => h.name !== habit.name) : [...prev, habit]));
   };
   const back = () => {
     haptic("light");
@@ -338,7 +365,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Cycle through loading messages on step 6
   useEffect(() => {
-    if (step !== 7) return;
+    if (stepId !== "generating") return;
     setLoadingMsgIndex(0);
     const interval = setInterval(() => {
       setLoadingMsgIndex((i) => {
@@ -354,7 +381,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── Auto-save when loading screen finishes
   useEffect(() => {
-    if (step === 7 && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
+    if (stepId === "generating" && loadingMsgIndex === LOADING_MESSAGES.length - 1 && !saving) {
       handleFinish();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -444,6 +471,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
         }));
       } catch { /* ignore */ }
 
+      // Her dream becomes her first journal entry; the habits she kept join her list.
+      if (dream.trim()) saveEntries([dreamJournalEntry(dream), ...loadEntries()]);
+      const newHabits = habitsFromDream(chosenHabits, getHabits());
+      if (newHabits.length) saveHabits([...getHabits(), ...newHabits]);
+      if (cycleStatus) localStorage.setItem("cycleMode", cycleStatus);
+
       localStorage.setItem("signal_onboarding_complete", "true");
       localStorage.setItem("cycleModeSelected", "true");
       trackEvent("onboarding_completed", {
@@ -461,29 +494,27 @@ export default function OnboardingFlow({ onComplete }: Props) {
 
   // ── canAdvance logic per step
   const canAdvance = (): boolean => {
-    if (step === 0) return name.trim().length > 0;
-    if (step === 1) return !!dob && weightKg > 0 && heightCm > 0;
-    if (step === 2) return !!cycleStatus;
-    if (step === 3) return movementGoals.length > 0;
-    if (step === 4) return true;
-    if (step === 5) return !!fitnessLevel;
-    if (step === 6) return !!equipmentPref;
+    if (stepId === "welcome") return name.trim().length > 0;
+    if (stepId === "cycle") return !!cycleStatus;
+    if (stepId === "movement_goals") return movementGoals.length > 0;
+    if (stepId === "fitness_level") return !!fitnessLevel;
+    if (stepId === "equipment") return !!equipmentPref;
     return true;
   };
 
-  const showProgress = step >= 1 && step <= 6;
+  const showProgress = step >= 1 && stepId !== "generating";
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto"
       style={{ background: "linear-gradient(160deg, hsl(var(--primary)) 0%, hsl(280 30% 20%) 100%)" }}
     >
-      <div className="relative z-10 w-full max-w-md px-6 py-10 min-h-screen">
+      <div className="relative z-10 w-full max-w-md px-6 pt-10 pb-36 min-h-screen">
 
         {/* Step progress bar */}
         {showProgress && (
           <div className="flex justify-center gap-1.5 mb-8">
-            {[1, 2, 3, 4, 5, 6].map((s) => (
+            {FLOW.slice(1, -1).map((_, i) => i + 1).map((s) => (
               <div
                 key={s}
                 className={cn(
@@ -496,7 +527,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         )}
 
         {/* Back button */}
-        {step > 0 && step < 7 && (
+        {step > 0 && stepId !== "generating" && (
           <button
             onClick={back}
             className="absolute top-10 left-6 flex items-center gap-1 text-white/70 hover:text-white transition-colors font-body text-sm z-20"
@@ -508,7 +539,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
         <AnimatePresence mode="wait">
 
           {/* ───── Step 0: Welcome ───── */}
-          {step === 0 && (
+          {stepId === "welcome" && (
             <motion.div key="welcome" {...slide} className="text-center space-y-8 pt-4">
               <div className="flex justify-center">
                 <img src={iconCream} alt="Signal" className="w-16 h-16" />
@@ -550,9 +581,70 @@ export default function OnboardingFlow({ onComplete }: Props) {
           )}
 
           {/* ───── Step 1: Your Body ───── */}
-          {step === 1 && (
+          {stepId === "dream" && (
+            <motion.div key="dream" {...slide} className="space-y-6 pt-8">
+              <StepHeading title="My Dream Life looks like…" sub="Write freely, a line or a page. It stays private and becomes your first journal entry." />
+              <textarea
+                value={dream}
+                onChange={(e) => setDream(e.target.value)}
+                rows={7}
+                aria-label="My Dream Life looks like"
+                placeholder="Slow mornings with my kids. Strong enough to carry the shopping and the toddler. Calm when the day gets loud…"
+                className="w-full rounded-2xl bg-white/10 border border-white/20 p-4 text-white placeholder:text-white/40 font-body text-base leading-relaxed focus:outline-none focus:border-white/50"
+              />
+              <ul className="space-y-1 font-body text-xs text-white/50">
+                {DREAM_QUESTIONS.map((q) => <li key={q}>· {q}</li>)}
+              </ul>
+              <NextButton onClick={reflect} label={dream.trim() ? "This is my dream" : "Skip for now"} />
+            </motion.div>
+          )}
+
+          {stepId === "reflect" && (
+            <motion.div key="reflect" {...slide} className="space-y-6 pt-8 pb-8">
+              <StepHeading title={dream.trim() ? "Here's what we heard" : "A gentle place to start"} sub="Keep what fits and let the rest go. You can change any of this later." />
+              {dream.trim() && (
+                <blockquote className="rounded-2xl border border-white/15 bg-white/[0.06] p-4 font-editorial text-sm italic text-white/80">
+                  “{dream.trim().length > 180 ? `${dream.trim().slice(0, 180)}…` : dream.trim()}”
+                </blockquote>
+              )}
+              <div className="space-y-2">
+                <p className="font-body text-xs uppercase tracking-[0.18em] text-white/60">Ways to move that fit</p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestions.goals.map((id) => {
+                    const goal = MOVEMENT_GOALS.find((g) => g.id === id);
+                    if (!goal) return null;
+                    const on = movementGoals.includes(id);
+                    return (
+                      <button key={id} onClick={() => toggleGoal(id)} aria-pressed={on}
+                        className={cn("rounded-full border px-4 py-2 font-body text-sm transition-colors", on ? "bg-white text-primary border-white" : "border-white/30 text-white/80")}>
+                        {goal.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="font-body text-xs uppercase tracking-[0.18em] text-white/60">Small daily habits</p>
+                <div className="space-y-2">
+                  {suggestions.habits.map((habit) => {
+                    const on = chosenHabits.some((h) => h.name === habit.name);
+                    return (
+                      <button key={habit.name} onClick={() => toggleHabit(habit)} aria-pressed={on}
+                        className={cn("w-full flex items-center justify-between rounded-2xl border px-4 py-3 text-left font-body text-sm transition-colors", on ? "bg-white text-primary border-white" : "border-white/30 text-white/80")}>
+                        {habit.name}
+                        {on && <Check className="h-4 w-4" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <NextButton onClick={next} label="Keep these" />
+            </motion.div>
+          )}
+
+          {stepId === "body" && (
             <motion.div key="body" {...slide} className="space-y-6 pt-8">
-              <StepHeading title="A little about your body" sub="Just enough to shape your numbers. Stays with you, never shared." />
+              <StepHeading title="A little about your body" sub="Optional. Just enough to shape your numbers. Stays with you, never shared." />
 
               {/* Date of birth */}
               <div className="space-y-2">
@@ -680,12 +772,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 Held privately, used only to shape your numbers. You can soften or change any of this any time.
               </p>
 
-              <NextButton onClick={next} disabled={!dob || weightKg <= 0 || heightCm <= 0} />
+              <NextButton onClick={next} label={dob || weightKg > 0 || heightCm > 0 ? "Next" : "Skip for now"} />
             </motion.div>
           )}
 
           {/* ───── Step 2: Your Cycle ───── */}
-          {step === 2 && (
+          {stepId === "cycle" && (
             <motion.div key="cycle" {...slide} className="space-y-6 pt-8 pb-8">
               <StepHeading title="Listening to your cycle" sub="This shapes how we move and eat alongside your body each week." />
 
@@ -789,12 +881,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 )}
               </AnimatePresence>
 
-              <NextButton onClick={next} disabled={!cycleStatus} />
+              <NextButton onClick={next} disabled={!cycleStatus} label="Begin, gently" />
             </motion.div>
           )}
 
           {/* ───── Step 3: Movement Goals ───── */}
-          {step === 3 && (
+          {stepId === "movement_goals" && (
             <motion.div key="movement" {...slide} className="space-y-6 pt-8">
               <StepHeading title="What's calling you to move?" sub="Choose anything that lands. We'll shape your weeks around it." />
 
@@ -824,7 +916,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           )}
 
           {/* ───── Step 4: Nutrition Goals ───── */}
-          {step === 4 && (
+          {stepId === "nutrition" && (
             <motion.div key="nutrition" {...slide} className="space-y-6 pt-8">
               <StepHeading title="How would you like to eat?" />
 
@@ -928,7 +1020,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           )}
 
           {/* ───── Step 5: Fitness Level ───── */}
-          {step === 5 && (
+          {stepId === "fitness_level" && (
             <motion.div key="fitness" {...slide} className="space-y-6 pt-8">
               <StepHeading title="Where are you, today?" sub="Honestly, wherever that is. We'll meet you there." />
 
@@ -970,7 +1062,7 @@ export default function OnboardingFlow({ onComplete }: Props) {
           )}
 
           {/* ───── Step 6: Equipment ───── */}
-          {step === 6 && (
+          {stepId === "equipment" && (
             <motion.div key="equipment" {...slide} className="space-y-6 pt-8">
               <StepHeading title="What do you have around you?" sub="We'll shape your sessions to match what's already there." />
 
@@ -1007,12 +1099,12 @@ export default function OnboardingFlow({ onComplete }: Props) {
                 ))}
               </div>
 
-              <NextButton onClick={next} disabled={!equipmentPref} label="Begin, gently" />
+              <NextButton onClick={next} disabled={!equipmentPref} />
             </motion.div>
           )}
 
           {/* ───── Step 7: Generating Plan ───── */}
-          {step === 7 && (
+          {stepId === "generating" && (
             <motion.div
               key="generating"
               initial={{ opacity: 0 }}
