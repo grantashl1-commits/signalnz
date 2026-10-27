@@ -55,6 +55,42 @@ function readActive(userId?: string): ActiveClass | null {
   }
 }
 
+/**
+ * A number box that keeps what's being typed and saves only a number in range.
+ * Saving on every keystroke would wipe "6" on the way to "65" kg, because 6 isn't
+ * a weight, so the box could never be filled in.
+ */
+function NumberField({ value, onChange, min, max, decimal = false, placeholder, label }: {
+  value: number | null; onChange: (n: number | null) => void; min: number; max: number;
+  decimal?: boolean; placeholder: string; label: string;
+}) {
+  const [text, setText] = useState(value == null ? '' : String(value));
+  const parse = (raw: string) => {
+    const n = decimal ? parseFloat(raw.replace(',', '.')) : parseInt(raw, 10);
+    return Number.isFinite(n) && n >= min && n <= max ? n : null;
+  };
+  // Pick up a value set elsewhere (another tab, a reset) unless it is what's typed.
+  useEffect(() => {
+    setText(prev => (parse(prev) === value ? prev : value == null ? '' : String(value)));
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <input
+      inputMode={decimal ? 'decimal' : 'numeric'}
+      value={text}
+      placeholder={placeholder}
+      onChange={e => {
+        const raw = e.target.value.replace(decimal ? /[^\d.,]/g : /\D/g, '');
+        setText(raw);
+        const n = parse(raw);
+        if (n !== value) onChange(n);
+      }}
+      onBlur={() => setText(value == null ? '' : String(value))}
+      className="mt-1 block w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground tabular-nums"
+      aria-label={label}
+    />
+  );
+}
+
 function Hub({ user }: { user: User | null }) {
   const userId = user?.id;
   const { displayName, dateOfBirth } = useProfile();
@@ -487,30 +523,25 @@ function Hub({ user }: { user: User | null }) {
             </label>
             <label className="text-xs text-muted-foreground">
               Age
-              <input
-                inputMode="numeric"
-                value={settings[slot].age ?? ''}
+              <NumberField
+                value={settings[slot].age}
+                min={10}
+                max={99}
                 placeholder={slot === 'A' && profileAge ? String(profileAge) : '—'}
-                onChange={e => {
-                  const n = parseInt(e.target.value.replace(/\D/g, ''), 10);
-                  updateSettings(prev => ({ ...prev, [slot]: { ...prev[slot], age: Number.isFinite(n) && n > 0 && n < 100 ? n : null } }));
-                }}
-                className="mt-1 block w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground tabular-nums"
-                aria-label={`Partner ${slot} age`}
+                onChange={age => updateSettings(prev => ({ ...prev, [slot]: { ...prev[slot], age } }))}
+                label={`Partner ${slot} age`}
               />
             </label>
             <label className="text-xs text-muted-foreground">
               Weight kg
-              <input
-                inputMode="decimal"
-                value={settings[slot].weightKg ?? ''}
+              <NumberField
+                value={settings[slot].weightKg ?? null}
+                min={25}
+                max={300}
+                decimal
                 placeholder={slot === 'A' && profileWeight ? String(profileWeight) : '—'}
-                onChange={e => {
-                  const n = parseFloat(e.target.value.replace(',', '.').replace(/[^\d.]/g, ''));
-                  updateSettings(prev => ({ ...prev, [slot]: { ...prev[slot], weightKg: Number.isFinite(n) && n > 25 && n < 300 ? n : null } }));
-                }}
-                className="mt-1 block w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground tabular-nums"
-                aria-label={`Partner ${slot} weight in kg`}
+                onChange={weightKg => updateSettings(prev => ({ ...prev, [slot]: { ...prev[slot], weightKg } }))}
+                label={`Partner ${slot} weight in kg`}
               />
             </label>
           </div>
