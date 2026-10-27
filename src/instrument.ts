@@ -31,7 +31,7 @@ Sentry.init({
   tracesSampleRate: import.meta.env.PROD ? 0.2 : 1.0,
   tracePropagationTargets: [
     "localhost",
-    /^https:\/\/hwcgbcfqxzzhvivcdroh\.supabase\.co/,
+    /^https:\/\/[a-z0-9]+\.supabase\.co/,
   ],
 
   // Session Replay — 10% of sessions, 100% on error
