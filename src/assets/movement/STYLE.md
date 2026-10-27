@@ -41,6 +41,33 @@ terracotta, sage green, dusty rose. Gentle imperfect lines. White background. No
 
 Brand/journal artwork follows a separate guide: `src/data/image-style-guide.md`.
 
+## Stretch muscle-group images (Style 1, whole figure)
+
+The 14 images in `public/images/stretches/` use Style 1 as well, and are shown by
+`src/components/movement/MuscleIllustration.tsx`. They are keyed by muscle name, so a
+member reads "hamstrings" and sees a hamstring stretch rather than an anatomy chart.
+
+- Prompt source: `src/data/stretch-illustrations.json`
+- Builder: `scripts/build-stretch-prompts.mjs`
+- Assembled prompts: `src/stretch-prompts.json`
+- Prompt sheet: [`PROMPTS-stretches.md`](./PROMPTS-stretches.md)
+- Generator: `scripts/generate-stretch-art.mjs`, then
+  `python scripts/make-transparent.py --dir handoff/stretch-images-raw --out public/images/stretches --overwrite`
+  (shipped files are transparent cut-outs, exactly like `public/images/exercises`)
+
+Two deliberate departures from the Style 1 rules above:
+
+1. **The whole-body instruction leads the prompt.** These were previously drawn as
+   cropped anatomical diagrams of a single muscle group. The figure must read head to
+   feet, and the prompt says so in its first sentence — early tokens dominate.
+2. **Passive stretches do get a soft wash.** Style 1 normally gives rest poses no wash at
+   all, but the dusty-rose wash on the target group is the point of a muscle-group image.
+   Set a catalogue entry's `wash` to `null` to omit it.
+
+Because the wash has to read as muscle, the figure wears sage green so the rose never
+bleeds into clothing: the wash is described as soft striations on *bare skin*, with an
+explicit ban on stray patches on shoulders, chest, neck, face, hands and feet.
+
 ---
 
 # Style 2 — Reformer (anatomical)
@@ -169,6 +196,11 @@ Reformer images come out 1024×1024 (Gemini's native size), not 1536².
 ```powershell
 # Strength & core
 node scripts/build-exercise-prompts.mjs
+
+# Stretch muscle-group images
+node scripts/build-stretch-prompts.mjs
+node scripts/generate-stretch-art.mjs --provider=gemini   # -> handoff/stretch-images-raw
+python scripts/make-transparent.py --dir handoff/stretch-images-raw --out public/images/stretches --overwrite
 
 # Reformer prompts + sheets + manifest
 node scripts/build-reformer-prompts.mjs

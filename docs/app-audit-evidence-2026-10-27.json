@@ -1,0 +1,738 @@
+{
+  "recipeCount": 324,
+  "allIngredientCount": 2921,
+  "emptyRecipes": [],
+  "unresolvedStaticMeals": [
+    {
+      "phase": "menstrual",
+      "day": 3,
+      "slot": "breakfast",
+      "name": "Chia pudding with pomegranate and walnuts"
+    },
+    {
+      "phase": "menstrual",
+      "day": 4,
+      "slot": "breakfast",
+      "name": "Overnight oats with goji berries and flaxseed"
+    },
+    {
+      "phase": "menstrual",
+      "day": 4,
+      "slot": "lunch",
+      "name": "Miso soup with tofu and wakame"
+    },
+    {
+      "phase": "menstrual",
+      "day": 4,
+      "slot": "dinner",
+      "name": "Tempeh stir-fry with broccoli and ginger"
+    },
+    {
+      "phase": "menstrual",
+      "day": 6,
+      "slot": "breakfast",
+      "name": "Buckwheat pancakes with maple syrup"
+    },
+    {
+      "phase": "menstrual",
+      "day": 6,
+      "slot": "lunch",
+      "name": "Hummus and roasted veg wrap"
+    },
+    {
+      "phase": "menstrual",
+      "day": 7,
+      "slot": "breakfast",
+      "name": "Acai bowl with granola and berries"
+    },
+    {
+      "phase": "menstrual",
+      "day": 7,
+      "slot": "lunch",
+      "name": "Lentil and spinach salad"
+    },
+    {
+      "phase": "follicular",
+      "day": 1,
+      "slot": "breakfast",
+      "name": "Overnight oats with blueberries and flaxseed"
+    },
+    {
+      "phase": "follicular",
+      "day": 2,
+      "slot": "breakfast",
+      "name": "Fermented cashew yoghurt with granola and kiwi"
+    },
+    {
+      "phase": "follicular",
+      "day": 3,
+      "slot": "breakfast",
+      "name": "Green smoothie"
+    },
+    {
+      "phase": "follicular",
+      "day": 4,
+      "slot": "breakfast",
+      "name": "Sourdough with smashed avocado and microgreens"
+    },
+    {
+      "phase": "follicular",
+      "day": 5,
+      "slot": "lunch",
+      "name": "Miso soup with rice and pickled veg"
+    },
+    {
+      "phase": "follicular",
+      "day": 5,
+      "slot": "dinner",
+      "name": "Teriyaki tempeh with jasmine rice"
+    },
+    {
+      "phase": "follicular",
+      "day": 6,
+      "slot": "breakfast",
+      "name": "Chia parfait with mango and coconut"
+    },
+    {
+      "phase": "follicular",
+      "day": 6,
+      "slot": "lunch",
+      "name": "Falafel wrap with fermented cabbage"
+    },
+    {
+      "phase": "ovulatory",
+      "day": 1,
+      "slot": "dinner",
+      "name": "Grilled asparagus and quinoa salad"
+    },
+    {
+      "phase": "ovulatory",
+      "day": 2,
+      "slot": "breakfast",
+      "name": "Fresh fruit salad with mint and hemp seeds"
+    },
+    {
+      "phase": "ovulatory",
+      "day": 3,
+      "slot": "breakfast",
+      "name": "Green juice and a handful of almonds"
+    },
+    {
+      "phase": "ovulatory",
+      "day": 3,
+      "slot": "lunch",
+      "name": "Large leafy salad with pumpkin seeds, sunflower seeds, and tahini"
+    },
+    {
+      "phase": "luteal",
+      "day": 3,
+      "slot": "dinner",
+      "name": "Chickpea tikka masala with rice"
+    },
+    {
+      "phase": "luteal",
+      "day": 4,
+      "slot": "breakfast",
+      "name": "Avocado toast with sunflower seeds"
+    },
+    {
+      "phase": "luteal",
+      "day": 5,
+      "slot": "breakfast",
+      "name": "Warm chia pudding with poached pear"
+    },
+    {
+      "phase": "luteal",
+      "day": 5,
+      "slot": "dinner",
+      "name": "Veg lasagne with cashew béchamel"
+    },
+    {
+      "phase": "luteal",
+      "day": 6,
+      "slot": "breakfast",
+      "name": "Buckwheat waffles with berries"
+    },
+    {
+      "phase": "luteal",
+      "day": 7,
+      "slot": "breakfast",
+      "name": "Cinnamon oat granola with oat milk"
+    },
+    {
+      "phase": "luteal",
+      "day": 7,
+      "slot": "lunch",
+      "name": "Roasted veg frittata (vegan, chickpea flour)"
+    }
+  ],
+  "activeUnresolved": [
+    {
+      "cycleDay": 3,
+      "slot": "breakfast",
+      "name": "Chia pudding with pomegranate and walnuts"
+    },
+    {
+      "cycleDay": 4,
+      "slot": "breakfast",
+      "name": "Overnight oats with goji berries and flaxseed"
+    },
+    {
+      "cycleDay": 4,
+      "slot": "lunch",
+      "name": "Miso soup with tofu and wakame"
+    },
+    {
+      "cycleDay": 4,
+      "slot": "dinner",
+      "name": "Tempeh stir-fry with broccoli and ginger"
+    },
+    {
+      "cycleDay": 6,
+      "slot": "breakfast",
+      "name": "Overnight oats with blueberries and flaxseed"
+    },
+    {
+      "cycleDay": 7,
+      "slot": "breakfast",
+      "name": "Fermented cashew yoghurt with granola and kiwi"
+    },
+    {
+      "cycleDay": 8,
+      "slot": "breakfast",
+      "name": "Green smoothie"
+    },
+    {
+      "cycleDay": 9,
+      "slot": "breakfast",
+      "name": "Sourdough with smashed avocado and microgreens"
+    },
+    {
+      "cycleDay": 10,
+      "slot": "lunch",
+      "name": "Miso soup with rice and pickled veg"
+    },
+    {
+      "cycleDay": 10,
+      "slot": "dinner",
+      "name": "Teriyaki tempeh with jasmine rice"
+    },
+    {
+      "cycleDay": 11,
+      "slot": "breakfast",
+      "name": "Chia parfait with mango and coconut"
+    },
+    {
+      "cycleDay": 11,
+      "slot": "lunch",
+      "name": "Falafel wrap with fermented cabbage"
+    },
+    {
+      "cycleDay": 13,
+      "slot": "breakfast",
+      "name": "Overnight oats with blueberries and flaxseed"
+    },
+    {
+      "cycleDay": 14,
+      "slot": "dinner",
+      "name": "Grilled asparagus and quinoa salad"
+    },
+    {
+      "cycleDay": 17,
+      "slot": "dinner",
+      "name": "Chickpea tikka masala with rice"
+    },
+    {
+      "cycleDay": 18,
+      "slot": "breakfast",
+      "name": "Avocado toast with sunflower seeds"
+    },
+    {
+      "cycleDay": 19,
+      "slot": "breakfast",
+      "name": "Warm chia pudding with poached pear"
+    },
+    {
+      "cycleDay": 19,
+      "slot": "dinner",
+      "name": "Veg lasagne with cashew béchamel"
+    },
+    {
+      "cycleDay": 20,
+      "slot": "breakfast",
+      "name": "Buckwheat waffles with berries"
+    },
+    {
+      "cycleDay": 21,
+      "slot": "breakfast",
+      "name": "Cinnamon oat granola with oat milk"
+    },
+    {
+      "cycleDay": 21,
+      "slot": "lunch",
+      "name": "Roasted veg frittata (vegan, chickpea flour)"
+    },
+    {
+      "cycleDay": 24,
+      "slot": "dinner",
+      "name": "Chickpea tikka masala with rice"
+    },
+    {
+      "cycleDay": 25,
+      "slot": "breakfast",
+      "name": "Avocado toast with sunflower seeds"
+    },
+    {
+      "cycleDay": 26,
+      "slot": "breakfast",
+      "name": "Warm chia pudding with poached pear"
+    },
+    {
+      "cycleDay": 26,
+      "slot": "dinner",
+      "name": "Veg lasagne with cashew béchamel"
+    },
+    {
+      "cycleDay": 27,
+      "slot": "breakfast",
+      "name": "Buckwheat waffles with berries"
+    },
+    {
+      "cycleDay": 28,
+      "slot": "breakfast",
+      "name": "Cinnamon oat granola with oat milk"
+    },
+    {
+      "cycleDay": 28,
+      "slot": "lunch",
+      "name": "Roasted veg frittata (vegan, chickpea flour)"
+    }
+  ],
+  "activeUnresolvedCount": 28,
+  "onboardingMealRead": "Cannot read properties of undefined (reading 'find')",
+  "almondAllergyViolations": 20,
+  "almondExamples": [
+    {
+      "day": 1,
+      "slot": "morningSnack",
+      "name": "Dark chocolate & trail mix",
+      "ingredients": [
+        "20g dark chocolate (70%)",
+        "15g almonds",
+        "10g pumpkin seeds"
+      ]
+    },
+    {
+      "day": 2,
+      "slot": "morningSnack",
+      "name": "Dark chocolate & trail mix",
+      "ingredients": [
+        "20g dark chocolate (70%)",
+        "15g almonds",
+        "10g pumpkin seeds"
+      ]
+    },
+    {
+      "day": 3,
+      "slot": "morningSnack",
+      "name": "Dark chocolate & trail mix",
+      "ingredients": [
+        "20g dark chocolate (70%)",
+        "15g almonds",
+        "10g pumpkin seeds"
+      ]
+    }
+  ],
+  "recipesWithoutNutrition": 0,
+  "ingredientExamples": [
+    {
+      "recipe": "Spiced Porridge with Dates & Almonds",
+      "raw": "½ tsp ground cinnamon",
+      "quantity": "1/2",
+      "unit": "tsp",
+      "name": "ground cinnamon",
+      "searchTerm": "ground cinnamon"
+    },
+    {
+      "recipe": "Spiced Porridge with Dates & Almonds",
+      "raw": "¼ tsp ground cardamom",
+      "quantity": "1/4",
+      "unit": "tsp",
+      "name": "ground cardamom",
+      "searchTerm": "ground cardamom"
+    },
+    {
+      "recipe": "Bircher Muesli with Apple & Cinnamon",
+      "raw": "½ tsp ground cinnamon",
+      "quantity": "1/2",
+      "unit": "tsp",
+      "name": "ground cinnamon",
+      "searchTerm": "ground cinnamon"
+    },
+    {
+      "recipe": "Banana Oat Pancakes with Tahini",
+      "raw": "¼ tsp ground cinnamon",
+      "quantity": "1/4",
+      "unit": "tsp",
+      "name": "ground cinnamon",
+      "searchTerm": "ground cinnamon"
+    },
+    {
+      "recipe": "Buckwheat Porridge with Banana",
+      "raw": "½ tsp ground cinnamon",
+      "quantity": "1/2",
+      "unit": "tsp",
+      "name": "ground cinnamon",
+      "searchTerm": "ground cinnamon"
+    },
+    {
+      "recipe": "Avocado on Rye with Hemp Seeds",
+      "raw": "1 tbsp hemp seeds (10g)",
+      "quantity": "1",
+      "unit": "tbsp",
+      "name": "hemp seeds (10g)",
+      "searchTerm": "hemp seeds"
+    },
+    {
+      "recipe": "Warm Oat Porridge with Banana & Almond Butter",
+      "raw": "½ tsp ground cinnamon",
+      "quantity": "1/2",
+      "unit": "tsp",
+      "name": "ground cinnamon",
+      "searchTerm": "ground cinnamon"
+    },
+    {
+      "recipe": "Warm Oat Porridge with Banana & Almond Butter",
+      "raw": "1 tbsp chia seeds (10g)",
+      "quantity": "1",
+      "unit": "tbsp",
+      "name": "chia seeds (10g)",
+      "searchTerm": "chia seeds"
+    },
+    {
+      "recipe": "Red Lentil & Spinach Soup with Sourdough",
+      "raw": "1 tsp ground cumin",
+      "quantity": "1",
+      "unit": "tsp",
+      "name": "ground cumin",
+      "searchTerm": "ground cumin"
+    },
+    {
+      "recipe": "Black Bean Tacos with Avocado",
+      "raw": "½ tsp ground cumin",
+      "quantity": "1/2",
+      "unit": "tsp",
+      "name": "ground cumin",
+      "searchTerm": "ground cumin"
+    },
+    {
+      "recipe": "Warm Quinoa & Roasted Beetroot Salad",
+      "raw": "1 tbsp pumpkin seeds (10g)",
+      "quantity": "1",
+      "unit": "tbsp",
+      "name": "pumpkin seeds (10g)",
+      "searchTerm": "pumpkin seeds"
+    },
+    {
+      "recipe": "Lentil & Roasted Capsicum Bowl",
+      "raw": "2 tbsp tahini (30g)",
+      "quantity": "2",
+      "unit": "tbsp",
+      "name": "tahini (30g)",
+      "searchTerm": "tahini"
+    },
+    {
+      "recipe": "Roasted Vegetable & Quinoa Salad",
+      "raw": "1 tbsp pumpkin seeds (10g)",
+      "quantity": "1",
+      "unit": "tbsp",
+      "name": "pumpkin seeds (10g)",
+      "searchTerm": "pumpkin seeds"
+    },
+    {
+      "recipe": "Grilled Fish Tacos with Slaw",
+      "raw": "½ tsp ground cumin",
+      "quantity": "1/2",
+      "unit": "tsp",
+      "name": "ground cumin",
+      "searchTerm": "ground cumin"
+    },
+    {
+      "recipe": "Big Leafy Salad with Seeds & Tahini",
+      "raw": "1 tbsp pumpkin seeds (10g)",
+      "quantity": "1",
+      "unit": "tbsp",
+      "name": "pumpkin seeds (10g)",
+      "searchTerm": "pumpkin seeds"
+    }
+  ],
+  "parseSamples": [
+    {
+      "raw": "2 x 400g tins chickpeas",
+      "quantity": "2",
+      "unit": "",
+      "name": "x 400g tins chickpeas",
+      "searchTerm": "x 400g tins chickpeas"
+    },
+    {
+      "raw": "400g tinned chopped tomatoes",
+      "quantity": "400",
+      "unit": "g",
+      "name": "g tinned chopped tomatoes",
+      "searchTerm": "g tinned chopped tomatoes"
+    },
+    {
+      "raw": "2 tbsp ground flaxseed",
+      "quantity": "2",
+      "unit": "tbsp",
+      "name": "ground flaxseed",
+      "searchTerm": "ground flaxseed"
+    },
+    {
+      "raw": "1 cup dried chickpeas",
+      "quantity": "1",
+      "unit": "cup",
+      "name": "dried chickpeas",
+      "searchTerm": "chickpeas"
+    },
+    {
+      "raw": "1 cup cooked chickpeas",
+      "quantity": "1",
+      "unit": "cup",
+      "name": "cooked chickpeas",
+      "searchTerm": "chickpeas"
+    }
+  ],
+  "mergedDryAndCooked": {
+    "protein": [
+      {
+        "name": "Dried chickpeas",
+        "totalQty": 500,
+        "unit": "ml",
+        "category": "protein",
+        "searchTerm": "chickpeas"
+      }
+    ]
+  },
+  "leftover": {
+    "dinner": {
+      "name": "Red Lentil & Spinach Soup with Sourdough",
+      "phase": "menstrual",
+      "mealType": "dinner",
+      "prepTime": "5 min",
+      "serves": 1,
+      "ingredients": [
+        "60g dried red lentils",
+        "1 tbsp olive oil",
+        "50g brown onion, finely chopped",
+        "1 garlic clove, minced",
+        "1 tsp ground cumin",
+        "400ml vegetable stock",
+        "30g baby spinach",
+        "1 slice sourdough bread (about 50g)",
+        "Salt and pepper"
+      ],
+      "method": [
+        "Warm 1 tbsp olive oil in a saucepan. Add 50g onion and cook for 3 minutes until soft. Stir in the garlic and 1 tsp cumin for 30 seconds.",
+        "Add 60g lentils and 400ml stock. Bring to a boil, then simmer for 20 minutes until the lentils are tender.",
+        "Stir in 30g spinach until wilted. Season and serve with the sourdough toast on the side."
+      ],
+      "nutritionalNote": "Red lentils restore iron gently; warm broth soothes the cramping. A bowl that says: you don’t have to be productive today — just be here.",
+      "keyNutrients": [
+        "Iron",
+        "Folate",
+        "Warming fibre"
+      ]
+    },
+    "nextLunch": {
+      "name": "Red Lentil & Spinach Soup with Sourdough",
+      "phase": "menstrual",
+      "mealType": "lunch",
+      "prepTime": "5 min",
+      "serves": 1,
+      "ingredients": [
+        "60g dried red lentils",
+        "1 tbsp olive oil",
+        "50g brown onion, finely chopped",
+        "1 garlic clove, minced",
+        "1 tsp ground cumin",
+        "400ml vegetable stock",
+        "30g baby spinach",
+        "1 slice sourdough bread (about 50g)",
+        "Salt and pepper"
+      ],
+      "method": [
+        "Warm 1 tbsp olive oil in a saucepan. Add 50g onion and cook for 3 minutes until soft. Stir in the garlic and 1 tsp cumin for 30 seconds.",
+        "Add 60g lentils and 400ml stock. Bring to a boil, then simmer for 20 minutes until the lentils are tender.",
+        "Stir in 30g spinach until wilted. Season and serve with the sourdough toast on the side."
+      ],
+      "nutritionalNote": "Leftover from Day 1 dinner — same nourishment, no extra prep.",
+      "keyNutrients": [
+        "Iron",
+        "Folate",
+        "Warming fibre"
+      ],
+      "isLeftover": true,
+      "leftoverFrom": 1
+    },
+    "ingredientsCountedByShopping": 1
+  },
+  "todayUnresolved": [
+    {
+      "cycleDay": 2,
+      "slot": "breakfast",
+      "name": "Smoothie bowl — spinach, banana, hemp seeds, cacao"
+    },
+    {
+      "cycleDay": 3,
+      "slot": "breakfast",
+      "name": "Chia pudding with pomegranate and walnuts"
+    },
+    {
+      "cycleDay": 4,
+      "slot": "breakfast",
+      "name": "Overnight oats with goji berries and flaxseed"
+    },
+    {
+      "cycleDay": 4,
+      "slot": "lunch",
+      "name": "Miso soup with tofu and wakame"
+    },
+    {
+      "cycleDay": 4,
+      "slot": "dinner",
+      "name": "Tempeh stir-fry with broccoli and ginger"
+    },
+    {
+      "cycleDay": 6,
+      "slot": "breakfast",
+      "name": "Overnight oats with blueberries and flaxseed"
+    },
+    {
+      "cycleDay": 7,
+      "slot": "breakfast",
+      "name": "Fermented cashew yoghurt with granola and kiwi"
+    },
+    {
+      "cycleDay": 8,
+      "slot": "breakfast",
+      "name": "Green smoothie — spinach, apple, ginger, flaxseed"
+    },
+    {
+      "cycleDay": 9,
+      "slot": "breakfast",
+      "name": "Sourdough with smashed avocado and microgreens"
+    },
+    {
+      "cycleDay": 10,
+      "slot": "lunch",
+      "name": "Miso soup with rice and pickled veg"
+    },
+    {
+      "cycleDay": 10,
+      "slot": "dinner",
+      "name": "Teriyaki tempeh with jasmine rice"
+    },
+    {
+      "cycleDay": 11,
+      "slot": "breakfast",
+      "name": "Chia parfait with mango and coconut"
+    },
+    {
+      "cycleDay": 11,
+      "slot": "lunch",
+      "name": "Falafel wrap with fermented cabbage"
+    },
+    {
+      "cycleDay": 13,
+      "slot": "breakfast",
+      "name": "Overnight oats with blueberries and flaxseed"
+    },
+    {
+      "cycleDay": 14,
+      "slot": "dinner",
+      "name": "Grilled asparagus and quinoa salad"
+    },
+    {
+      "cycleDay": 17,
+      "slot": "breakfast",
+      "name": "Smoothie — banana, almond milk, cacao, chia"
+    },
+    {
+      "cycleDay": 17,
+      "slot": "dinner",
+      "name": "Chickpea tikka masala with rice"
+    },
+    {
+      "cycleDay": 18,
+      "slot": "breakfast",
+      "name": "Avocado toast with sunflower seeds"
+    },
+    {
+      "cycleDay": 19,
+      "slot": "breakfast",
+      "name": "Warm chia pudding with poached pear"
+    },
+    {
+      "cycleDay": 19,
+      "slot": "dinner",
+      "name": "Veg lasagne with cashew béchamel"
+    },
+    {
+      "cycleDay": 20,
+      "slot": "breakfast",
+      "name": "Buckwheat waffles with berries"
+    },
+    {
+      "cycleDay": 21,
+      "slot": "breakfast",
+      "name": "Cinnamon oat granola with oat milk"
+    },
+    {
+      "cycleDay": 21,
+      "slot": "lunch",
+      "name": "Roasted veg frittata (vegan, chickpea flour)"
+    },
+    {
+      "cycleDay": 24,
+      "slot": "breakfast",
+      "name": "Smoothie — banana, almond milk, cacao, chia"
+    },
+    {
+      "cycleDay": 24,
+      "slot": "dinner",
+      "name": "Chickpea tikka masala with rice"
+    },
+    {
+      "cycleDay": 25,
+      "slot": "breakfast",
+      "name": "Avocado toast with sunflower seeds"
+    },
+    {
+      "cycleDay": 26,
+      "slot": "breakfast",
+      "name": "Warm chia pudding with poached pear"
+    },
+    {
+      "cycleDay": 26,
+      "slot": "dinner",
+      "name": "Veg lasagne with cashew béchamel"
+    },
+    {
+      "cycleDay": 27,
+      "slot": "breakfast",
+      "name": "Buckwheat waffles with berries"
+    },
+    {
+      "cycleDay": 28,
+      "slot": "breakfast",
+      "name": "Cinnamon oat granola with oat milk"
+    },
+    {
+      "cycleDay": 28,
+      "slot": "lunch",
+      "name": "Roasted veg frittata (vegan, chickpea flour)"
+    }
+  ],
+  "todayUnresolvedCount": 31
+}

@@ -3,6 +3,7 @@ import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById, ALL_MEAL_RECIPES } from "./recipe-index";
 import { parseIngredient } from "./ingredient-parser";
 import { toLocalDateStr } from "@/lib/local-date";
+import { normaliseMealPlan } from './meal-plan-schema';
 
 // ─── Types ─────────────────────────────────────────────────
 export type BreakfastPref = "batch" | "rotate" | "variety";
@@ -34,6 +35,7 @@ export interface PrepPreferences {
 }
 
 export interface AIMeal {
+  recipeId?: string;
   name: string;
   phase: Phase;
   mealType: "breakfast" | "lunch" | "dinner" | "snack";
@@ -456,10 +458,13 @@ const MEAL_PLAN_KEY = "signal_meal_plan";
 const LEGACY_MEAL_PLAN_KEY = "signal_ai_meal_plan";
 
 export function saveAIMealPlan(plan: AIMealPlan): void {
+  const valid = normaliseMealPlan(plan);
+  if (!valid) throw new Error('The meal plan is incomplete. Please rebuild it before saving.');
   try {
-    localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(plan));
+    localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(valid));
   } catch (e) {
     console.error("saveAIMealPlan: localStorage quota exceeded, skipping local save", e);
+    throw new Error("Your meal plan could not be saved on this device. Free up browser storage and try again.");
   }
 }
 
@@ -475,7 +480,10 @@ export function getAIMealPlan(): AIMealPlan | null {
         val = legacy;
       }
     }
-    return val ? JSON.parse(val) : null;
+    if (!val) return null;
+    const plan = normaliseMealPlan(JSON.parse(val));
+    if (plan && JSON.stringify(plan) !== val) localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(plan));
+    return plan;
   } catch { return null; }
 }
 

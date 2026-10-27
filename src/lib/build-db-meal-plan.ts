@@ -5,6 +5,7 @@
  * Same output shape as the previous AI builder so every downstream view —
  * MyWeekTab, shopping list, prep guide — keeps working unchanged.
  */
+import { mealMatchesPreferences, childPreferences } from "./meal-restrictions";
 import { Phase } from "./cycle-utils";
 import { Recipe } from "@/data/meal-plans";
 import { ALL_RECIPES } from "@/lib/recipe-index";
@@ -24,74 +25,12 @@ function phaseFromCycleDay(cd: number): Phase {
   return "luteal";
 }
 
-const DIET_TAG_REQUIRED: Record<string, string[]> = {
-  vegan: ["vegan"],
-  vegetarian: ["vegan", "vegetarian"],
-  pescatarian: ["vegan", "vegetarian", "pescatarian"],
-};
-
-function matchesDiet(r: Recipe, dietTypes: string[] | undefined): boolean {
-  if (!dietTypes || dietTypes.length === 0) return true;
-  const lowered = dietTypes.map((d) => d.toLowerCase());
-  for (const d of lowered) {
-    const allowed = DIET_TAG_REQUIRED[d];
-    if (!allowed) continue; // unknown diet (e.g. "dairy-free") falls through to ingredient filter
-    if (!r.tags?.some((t) => allowed.includes(t.toLowerCase()))) return false;
-  }
-  return true;
-}
-
-function avoidIngredients(r: Recipe, avoid: string[]): boolean {
-  if (avoid.length === 0) return true;
-  const blob = r.ingredients.join(" ").toLowerCase() + " " + r.name.toLowerCase();
-  return !avoid.some((w) => w && blob.includes(w));
-}
-
-function parseAvoid(prefs: PrepPreferences): string[] {
-  const out: string[] = [];
-  const split = (s?: string) =>
-    (s || "")
-      .split(/[,\n]/)
-      .map((t) => t.trim().toLowerCase())
-      .filter((t) => t.length > 1);
-  out.push(...split(prefs.allergies));
-  out.push(...split(prefs.dislikes));
-  // dairy-free / gluten-free meta dietTypes
-  const meta = (prefs.dietTypes || []).map((d) => d.toLowerCase());
-  if (meta.includes("dairy-free"))
-    out.push("milk", "cheese", "yoghurt", "butter", "cream", "parmesan", "feta");
-  if (meta.includes("gluten-free"))
-    out.push("wheat", "pasta", "bread", "tortilla", "couscous", "barley", "soy sauce");
-  return [...new Set(out)];
-}
-
-function pool(
-  category: Recipe["category"],
-  phase: Phase,
-  prefs: PrepPreferences,
-  excludeIds: Set<string> = new Set()
-): Recipe[] {
-  const avoid = parseAvoid(prefs);
-  const all = ALL_RECIPES.filter((r) => r.category === category);
-  let phaseMatch = all.filter(
-    (r) =>
-      r.phase === phase &&
-      matchesDiet(r, prefs.dietTypes) &&
-      avoidIngredients(r, avoid) &&
-      !excludeIds.has(r.id)
-  );
-  if (phaseMatch.length === 0) {
-    phaseMatch = all.filter(
-      (r) =>
-        matchesDiet(r, prefs.dietTypes) &&
-        avoidIngredients(r, avoid) &&
-        !excludeIds.has(r.id)
-    );
-  }
-  // last-resort: ignore diet/exclude filter rather than crash
-  if (phaseMatch.length === 0) phaseMatch = all.filter((r) => r.phase === phase);
-  if (phaseMatch.length === 0) phaseMatch = all;
-  return phaseMatch;
+function pool(category: Recipe["category"], phase: Phase, prefs: PrepPreferences, excludeIds: Set<string> = new Set()): Recipe[] {
+  const safe = ALL_RECIPES.filter(r => r.category === category && mealMatchesPreferences(r, prefs));
+  const preferred = safe.filter(r => r.phase === phase && !excludeIds.has(r.id));
+  if (preferred.length) return preferred;
+  const varied = safe.filter(r => !excludeIds.has(r.id));
+  return varied.length ? varied : safe;
 }
 
 function recipeToMeal(
@@ -101,6 +40,7 @@ function recipeToMeal(
 ): AIMeal {
   return {
     name: r.name,
+    recipeId: r.id,
     phase,
     mealType,
     prepTime: r.prepTime || "—",
@@ -134,8 +74,14 @@ const PHASE_SNACK_TEMPLATES: Record<
   },
 };
 
-function snackMeal(phase: Phase, slot: "morning" | "afternoon"): AIMeal {
-  const t = PHASE_SNACK_TEMPLATES[phase][slot];
+function snackMeal(phase: Phase, slot: "morning" | "afternoon", prefs: PrepPreferences): AIMeal {
+  const preferred = PHASE_SNACK_TEMPLATES[phase][slot];
+  const t = [preferred, ...Object.values(PHASE_SNACK_TEMPLATES).flatMap(s => [s.morning, s.afternoon])].find(s => mealMatchesPreferences(s, prefs));
+  if (!t) {
+    const recipe = pool("snack", phase, prefs)[0];
+    if (recipe) return recipeToMeal(recipe, "snack", phase);
+    throw new Error("No snacks match your dietary restrictions. Please review your preferences or add suitable recipes.");
+  }
   return {
     name: t.name,
     phase,
@@ -184,13 +130,6 @@ function pickKidsMatch(
   adult: Recipe,
   prefs: PrepPreferences
 ): KidsRecipe | undefined {
-  const dietary = (prefs.kidsDietTypes || []).map((d) => d.toLowerCase());
-  const allergies = (prefs.kidsAllergies || "")
-    .toLowerCase()
-    .split(/[,\n]/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-
   // Detect protein in adult meal
   const blob = (adult.name + " " + adult.ingredients.join(" ")).toLowerCase();
   const proteinHints: { key: string; words: string[] }[] = [
@@ -211,21 +150,8 @@ function pickKidsMatch(
     }
   }
 
-  const candidates = KIDS_RECIPE_BANK.filter((k) => {
-    if (protein && k.protein !== protein) return false;
-    if (dietary.includes("vegan") && !k.tags.includes("vegan")) return false;
-    if (
-      dietary.includes("vegetarian") &&
-      !k.tags.some((t) => t === "vegan" || t === "vegetarian")
-    )
-      return false;
-    if (allergies.length) {
-      const text = (k.name + " " + k.ingredients.join(" ")).toLowerCase();
-      if (allergies.some((a) => a && text.includes(a))) return false;
-    }
-    return true;
-  });
-  return candidates[0] || KIDS_RECIPE_BANK.find((k) => k.protein === protein);
+  const safe = KIDS_RECIPE_BANK.filter(k => mealMatchesPreferences(k, childPreferences(prefs)));
+  return safe.find(k => k.protein === protein) || safe[0];
 }
 
 function kidsToMeal(k: KidsRecipe): KidsMeal {
@@ -283,7 +209,7 @@ export function buildDbMealPlan(
     const dPool = dinnerPicks[phase];
 
     if (cd < startDay || cd > endDay) continue;
-    if (!bPool.length || !lPool.length || !dPool.length) continue;
+    if (!bPool.length || !lPool.length || !dPool.length) throw new Error("Not enough recipes match your dietary restrictions. Please review your preferences or add suitable recipes.");
 
     const breakfast = recipeToMeal(bPool[idx % bPool.length], "breakfast", phase);
     const lunchRecipe = lPool[idx % lPool.length];
@@ -297,13 +223,14 @@ export function buildDbMealPlan(
       breakfast,
       lunch,
       dinner,
-      morningSnack: snackMeal(phase, "morning"),
-      afternoonSnack: snackMeal(phase, "afternoon"),
+      morningSnack: snackMeal(phase, "morning", prefs),
+      afternoonSnack: snackMeal(phase, "afternoon", prefs),
     };
 
     if (prefs.kids > 0) {
       const kLunch = pickKidsMatch(lunchRecipe, prefs);
       const kDinner = pickKidsMatch(dinnerRecipe, prefs);
+      if (!kLunch || !kDinner) throw new Error("No children’s meals match their dietary restrictions. Please review their preferences or add suitable recipes.");
       if (kLunch) day.kidsLunch = kidsToMeal(kLunch);
       if (kDinner) day.kidsDinner = kidsToMeal(kDinner);
     }

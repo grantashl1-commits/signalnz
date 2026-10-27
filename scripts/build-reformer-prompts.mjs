@@ -51,15 +51,33 @@ const NON_BOOK_ART = [
   "side-lying-press.png",
 ];
 
-const MASTER = [
-  "EQUIPMENT — a classical Pilates reformer drawn accurately and fully coloured: a pale honey maple and beech wood frame with visible straight grain and mortise-and-tenon joints, four chunky square-section wooden legs, small black caster wheels at the base, a stack of silver coiled metal springs running beneath the carriage, a black rope-and-pulley riser assembly at the head end with grey metal pulleys and rope loops, a padded charcoal-grey footbar on grey metal uprights at the foot end, and a dark teal upholstered sliding carriage with a small rectangular headrest and two shoulder blocks. Warm honey wood, muted teal padding, cool grey and black metal. No branding, no numbers, no coloured springs.",
-  "CAMERA — a pure side elevation, exactly like a technical illustration. The camera sits perpendicular to the long axis of the reformer, at chest height, looking straight at its side. The reformer's full length runs perfectly horizontally across the frame, left to right. Do NOT rotate the view into three-quarter, oblique, perspective or foreshortened angles. Both the head end and the foot end are visible in profile, at the same scale.",
+/** Style block minus the camera sentence, which can be overridden per exercise. */
+const EQUIPMENT_BLOCK =
+  "EQUIPMENT — a classical Pilates reformer drawn accurately and fully coloured: a pale honey maple and beech wood frame with visible straight grain and mortise-and-tenon joints, four chunky square-section wooden legs, small black caster wheels at the base, a stack of silver coiled metal springs running beneath the carriage, a black rope-and-pulley riser assembly at the head end with grey metal pulleys and rope loops, a padded charcoal-grey footbar on grey metal uprights at the foot end, and a dark teal upholstered sliding carriage with a small rectangular headrest and two shoulder blocks. Warm honey wood, muted teal padding, cool grey and black metal. No branding, no numbers, no coloured springs.";
+
+/**
+ * Default camera: pure side elevation.
+ *
+ * Side elevation cannot show limbs that spread toward the viewer — a wide T of
+ * the arms, or knees opened out to both sides, foreshortens to a stub. Left to
+ * itself the model solves that by rotating the whole figure, which is how
+ * T Press kept coming back as a seated V-sit. Exercises whose defining shape is
+ * lateral therefore declare their own `camera` in the catalogue and get a
+ * clearer angle instead; everything else stays in exact profile so the set
+ * reads as one consistent series.
+ */
+const DEFAULT_CAMERA =
+  "CAMERA — a pure side elevation, exactly like a technical illustration. The camera sits perpendicular to the long axis of the reformer, at chest height, looking straight at its side. The reformer's full length runs perfectly horizontally across the frame, left to right. Do NOT rotate the view into three-quarter, oblique, perspective or foreshortened angles. Both the head end and the foot end are visible in profile, at the same scale.";
+
+const REST_OF_MASTER = [
   "FIGURE — a slim athletic adult woman, warm cream skin with soft gradient shading, brown hair in a neat low bun, wearing a muted sage-green fitted sports bra and charcoal-grey leggings, barefoot. She is drawn in fine dark ink line art with smooth airbrushed shading: naturalistic anatomy, clearly an illustration rather than a photograph. Calm neutral face, eyes open. Her limbs and spine are anatomically correct and her weight sits believably on the equipment, in profile.",
   "MUSCLE HIGHLIGHT — only the specific muscles named in the HIGHLIGHT line are rendered in vivid coral-red, as anatomically accurate skeletal muscle bellies with visible fibre striations and ivory-white tendons marking their attachments, layered semi-transparently over the body. This is the most important restraint in the image: highlight ONLY those named groups, typically two to four, and leave every other visible muscle in normal un-highlighted skin tone. Do not paint the whole body red. Do not add red to the neck, face, forearms, hands, feet, or any muscle not named. The un-highlighted body reads as ordinary illustrated skin.",
   "RENDERING — detailed medical-illustration technique: crisp fine outlines, smooth gradient shading, soft specular highlights on skin and on the varnished wood and metal, gentle ambient occlusion where the body meets the upholstery. No cast shadow on the ground, no floor, no background scenery, no frame, no border, no vignette.",
   "ABSOLUTELY NO text, no labels, no letters, no arrows, no leader lines, no callouts, no captions, no watermark, no signature.",
   "FRAMING — square 1:1, pure flat white background. The entire reformer plus the woman's whole body sits inside the frame with an even white margin, nothing cropped at any edge. Clean horizontal composition.",
-].join("\n\n");
+];
+
+const masterBlocks = (camera) => [EQUIPMENT_BLOCK, camera ?? DEFAULT_CAMERA, ...REST_OF_MASTER];
 
 /** Pose leads the prompt — image models weight early tokens most heavily. */
 const POSE_PREAMBLE =
@@ -141,7 +159,7 @@ const buildPrompt = (ex) => {
     `POSE — she ${ex.pose.trim()}`,
     apparatusBlock(ex.equipment),
     highlightBlock(ex.highlight.trim()),
-    MASTER,
+    ...masterBlocks(ex.camera),
   ].filter(Boolean);
   return blocks.join("\n\n");
 };
@@ -190,15 +208,19 @@ md +=
   "\n\nPOSE — she <exercise pose>\n\n" +
   highlightBlock("<exercise muscles>") +
   "\n\n" +
-  MASTER +
+  masterBlocks().join("\n\n") +
   "\n```\n\n";
 md += `The batch runner assembles exactly this from \`src/reformer-exercise-prompts.json\`, so\n`;
 md += `you only need to paste by hand if you are generating a single image in a chat UI.\n\n`;
+md += `Exercises whose defining shape is lateral — a wide T of the arms, knees opened out to\n`;
+md += `the sides — carry their own \`camera\` in the catalogue, because a pure side elevation\n`;
+md += `foreshortens those limbs and the model rotates the figure to compensate. Those entries\n`;
+md += `are marked "camera" in the detail below.\n\n`;
 md += `---\n\n`;
 
 // ── master block, once ──
 md += `## Style block\n\n`;
-md += "```text\n" + MASTER + "\n```\n\n";
+md += "```text\n" + masterBlocks().join("\n\n") + "\n```\n\n";
 md += `---\n\n`;
 
 // ── planning table ──
@@ -229,6 +251,10 @@ for (const [series, exs] of bySeries) {
     md += `#### ${ex.name}\n\n`;
     md += `*${ex.nameEs}* — ${ex.page ? `p${ex.page}` : "in-house"} · ${ex.level} · **${tags}**\n\n`;
     md += `**File:** \`${ex.id}.png\` · **Springs:** ${ex.springs} · **Muscles:** ${ex.muscles.join(", ")}\n\n`;
+    if (ex.camera) {
+      md += `**Camera:** custom angle (not side elevation) — needed because this pose's shape is lateral\n\n`;
+      md += "```text\n" + ex.camera + "\n```\n\n";
+    }
     md += "```text\n";
     md += `POSE — she ${ex.pose.trim()}\n\n`;
     md += highlightBlock(ex.highlight.trim()) + "\n";

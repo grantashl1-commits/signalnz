@@ -1,3 +1,5 @@
+import { mealMatchesPreferences } from "@/lib/meal-restrictions";
+import { normaliseMealPlan } from "@/lib/meal-plan-schema";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, RefreshCw, Loader2, ClipboardList, Baby, Pencil, RotateCcw, Download } from "lucide-react";
@@ -142,6 +144,7 @@ export default function MyWeekTab() {
   // Phase 4B: try to restore latest nutrition plan from Supabase on mount
   useEffect(() => {
     if (!user || supabasePlanLoaded.current || aiPlan) return;
+    let cancelled = false;
     supabasePlanLoaded.current = true;
     (async () => {
       try {
@@ -150,14 +153,15 @@ export default function MyWeekTab() {
           .select("plan_data, generated_at")
           .eq("user_id", user.id)
           .eq("plan_type", "nutrition")
+          .not("plan_data->days", "is", null)
           .order("generated_at", { ascending: false })
           .limit(1)
           .maybeSingle();
-        if (data?.plan_data) {
-          const restoredPlan = data.plan_data as AIMealPlan;
+        if (!cancelled && data?.plan_data) {
+          const restoredPlan = normaliseMealPlan(data.plan_data);
           if (Array.isArray(restoredPlan?.days) && restoredPlan.days.length > 0) {
-            setAiPlan(restoredPlan);
             saveAIMealPlan(restoredPlan);
+            setAiPlan(restoredPlan);
             setStep("plan");
           }
         }
@@ -165,6 +169,7 @@ export default function MyWeekTab() {
         // silent fallback to localStorage plan
       }
     })();
+    return () => { cancelled = true; };
   }, [user, aiPlan]);
 
   // Seed planner prefs from the user's Profile/Account on first load if they
@@ -205,8 +210,12 @@ export default function MyWeekTab() {
     haptic("light");
     const key = `${cycleDay}-${mealType}`;
     const updated = { ...aiPlan, lockedMeals: { ...aiPlan.lockedMeals, [key]: !aiPlan.lockedMeals[key] } };
-    setAiPlan(updated);
-    saveAIMealPlan(updated);
+    try {
+      saveAIMealPlan(updated);
+      setAiPlan(updated);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Your meal lock could not be saved.");
+    }
   }, [aiPlan]);
 
   // Phase 4B: save plan to Supabase user_plans table
@@ -261,8 +270,8 @@ export default function MyWeekTab() {
     try {
       const plan = buildDbMealPlanFull(preferences);
       if (!plan.days.length) throw new Error("No matching recipes — try widening your dietary filters.");
-      setAiPlan(plan);
       saveAIMealPlan(plan);
+      setAiPlan(plan);
       setStep("plan");
       toast.success("Your four-week plan is here.");
       // Persist to Supabase in background
@@ -288,8 +297,8 @@ export default function MyWeekTab() {
         d.cycleDay === cycleDay ? { ...d, [mealType]: newMeal } : d
       );
       const updated = { ...aiPlan, days: updatedDays };
-      setAiPlan(updated);
       saveAIMealPlan(updated);
+      setAiPlan(updated);
       toast.success("A new one — held.");
     } catch (e: any) {
       toast.error(e.message || "That didn't land — try again in a moment.");
@@ -323,15 +332,15 @@ export default function MyWeekTab() {
           if (!old) return d;
           const next = { ...d };
           (["breakfast", "lunch", "dinner"] as const).forEach(slot => {
-            if (locked[`${d.cycleDay}-${slot}`]) (next as any)[slot] = (old as any)[slot];
+            if (locked[`${d.cycleDay}-${slot}`] && mealMatchesPreferences(old[slot], prefs)) next[slot] = old[slot];
           });
           return next;
         });
         fresh.lockedMeals = { ...locked };
       }
 
-      setAiPlan(fresh);
       saveAIMealPlan(fresh);
+      setAiPlan(fresh);
       setStep("plan");
       toast.success("Your week — held anew.");
       savePlanToSupabase(fresh);
