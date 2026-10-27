@@ -39,7 +39,9 @@ const LIMIT = args.get("limit") ? Number(args.get("limit")) : Infinity;
 const FORCE = args.has("force");
 const DRY = args.has("dry-run");
 const CONCURRENCY = Number(args.get("concurrency") ?? 3);
-const OUT_DIR = "src/assets/movement/reformer";
+// `--out` lets the in-house "Signal plan" set be drawn into reformer/library/
+// without touching the 117 book illustrations.
+const OUT_DIR = args.get("out") ?? "src/assets/movement/reformer";
 const PROMPTS = "src/reformer-exercise-prompts.json";
 
 // ─── env ───────────────────────────────────────────────────────────────
@@ -119,14 +121,13 @@ const all = JSON.parse(readFileSync(PROMPTS, "utf8"));
 
 let queue = all;
 if (ONLY) queue = queue.filter((p) => ONLY.includes(p.id));
-if (SERIES) queue = queue.filter((p) => p.series?.toLowerCase() === SERIES);
+if (SERIES) queue = queue.filter((p) => p.series.toLowerCase() === SERIES);
 if (LEVEL) queue = queue.filter((p) => p.level === LEVEL);
 
 const skipped = [];
 queue = queue.filter((p) => {
   const target = resolve(OUT_DIR, p.outputFile);
-  // Plan art may already have been shrunk to WebP (scripts/optimise-reformer-art.mjs).
-  if (!FORCE && (existsSync(target) || existsSync(target.replace(/\.png$/i, ".webp")))) {
+  if (!FORCE && existsSync(target)) {
     skipped.push(p.id);
     return false;
   }

@@ -1,93 +1,122 @@
-#!/usr/bin/env node
 /**
- * Shrink new reformer illustrations before they are committed.
+ * Shrinks reformer illustrations for the web bundle.
  *
- * Full-size PNGs (~1.2 MB each) would add well over 100 MB to the repo forever.
- * This makes a WebP copy of each one at app size (640 px wide, ~30–80 KB) in
- * src/assets/movement/reformer/library/, named after the exercise, which the app
- * picks up automatically (src/lib/corrected-exercise-art.ts). Originals are never
- * deleted; pass --move-originals <folder> to move them out of the repo.
+ * Reads  : a folder of PNGs (default src/assets/movement/reformer/library)
+ * Writes : the same files, resized and palette-quantised in place
  *
- * One-time setup (does not change package.json or the lockfiles):
- *   npm install --no-save sharp@0.33.5
+ * Why this exists: generated art lands at ~900 kB–1 MB per image at 1024², which
+ * is far more than an in-app illustration needs. Resizing to 512² and reducing to
+ * a 128-colour adaptive palette takes each file to roughly 80 kB — an ~11x
+ * reduction — with no visible loss at display size on line-art with soft shading.
+ *
+ * Uses Pillow via Python, because the project has no image library on the Node
+ * side (no sharp/imagemin) and adding a native dependency for a one-off build
+ * step is not worth it. Pillow is already used elsewhere in this repo
+ * (scripts/make-transparent.py).
  *
  * Usage:
- *   node scripts/optimise-reformer-art.mjs                 # PNGs in library/ plus untracked PNGs in reformer/
- *   node scripts/optimise-reformer-art.mjs "D:/art/reformer"  # every PNG in another folder
- *   node scripts/optimise-reformer-art.mjs src/assets/movement/reformer/long-stretch.png  # chosen files
- *   node scripts/optimise-reformer-art.mjs --move-originals "../signalnz-art-originals"
+ *   node scripts/optimise-reformer-art.mjs
+ *   node scripts/optimise-reformer-art.mjs --dir=src/assets/movement/reformer
+ *   node scripts/optimise-reformer-art.mjs --size=384 --colors=64
+ *   node scripts/optimise-reformer-art.mjs --dry-run
+ *   node scripts/optimise-reformer-art.mjs --force     # re-optimise already-small files
+ *
+ * Skips files that already look optimised (palette mode at or below the target
+ * size), so re-running is safe and does not degrade quality by quantising twice.
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
-import { basename, dirname, extname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync, statSync } from "node:fs";
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT = join(ROOT, "src/assets/movement/reformer/library");
-const WIDTH = 640;
-const QUALITY = 80;
-
-const args = process.argv.slice(2);
-const moveIdx = args.indexOf("--move-originals");
-const moveTo = moveIdx >= 0 ? resolve(args[moveIdx + 1] ?? "") : null;
-const sources = args.filter((a, i) => !a.startsWith("--") && (moveIdx < 0 || i !== moveIdx + 1));
-
-/** "Arms in Straps: Lower & Lift.png" → "arms-in-straps-lower-and-lift" (the app matches exercise names the same way). */
-export const slug = (name) =>
-  name.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-
-function pngsToConvert() {
-  if (sources.length) {
-    return sources.flatMap(src => {
-      const path = resolve(src);
-      if (/\.png$/i.test(path)) return [path];
-      return readdirSync(path).filter(f => /\.png$/i.test(f)).map(f => join(path, f));
-    });
-  }
-  // Default: full-size PNGs dropped into library/ (the app shows them until the WebP
-  // exists) plus PNGs git doesn't know about yet anywhere in the reformer folder.
-  const dropped = (existsSync(OUT) ? readdirSync(OUT) : []).filter(f => /\.png$/i.test(f)).map(f => join(OUT, f));
-  const out = execFileSync("git", ["ls-files", "--others", "--", "src/assets/movement/reformer"], { cwd: ROOT, encoding: "utf8" });
-  const untracked = out.split(/\r?\n/).filter(f => /\.png$/i.test(f) && !f.includes("/library/")).map(f => join(ROOT, f));
-  return [...dropped, ...untracked];
+const args = new Map();
+for (const raw of process.argv.slice(2)) {
+  const [k, v] = raw.replace(/^--/, "").split("=");
+  args.set(k, v ?? "true");
 }
 
-let sharp;
+const DIR = args.get("dir") ?? "src/assets/movement/reformer/library";
+const SIZE = Number(args.get("size") ?? 512);
+const COLORS = Number(args.get("colors") ?? 128);
+const DRY = args.has("dry-run");
+const FORCE = args.has("force");
+const PYTHON = args.get("python") ?? "python";
+
+if (!existsSync(DIR) || !statSync(DIR).isDirectory()) {
+  console.error(`No such directory: ${DIR}`);
+  process.exit(2);
+}
+
+const PROGRAM = `
+import io, os, sys
+from PIL import Image
+
+directory, size, colors = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+dry, force = sys.argv[4] == "1", sys.argv[5] == "1"
+
+files = sorted(
+    f for f in os.listdir(directory)
+    if f.lower().endswith(".png") and not f.startswith(".")
+)
+if not files:
+    print("No PNGs found.")
+    sys.exit(0)
+
+total_before = total_after = 0
+done = skipped = 0
+
+for name in files:
+    path = os.path.join(directory, name)
+    before = os.path.getsize(path)
+    total_before += before
+    with Image.open(path) as src:
+        already = src.mode == "P" and max(src.size) <= size
+        if already and not force:
+            print("  {0}: already optimised ({1:.0f} kB)".format(name, before / 1024))
+            skipped += 1
+            total_after += before
+            continue
+        image = src.convert("RGB")
+
+    reduced = image.resize((size, size), Image.LANCZOS).convert(
+        "P", palette=Image.ADAPTIVE, colors=colors
+    )
+    buffer = io.BytesIO()
+    reduced.save(buffer, "PNG", optimize=True)
+    after = len(buffer.getvalue())
+
+    if not dry:
+        reduced.save(path, "PNG", optimize=True)
+
+    total_after += after
+    done += 1
+    print("  {0}: {1:.0f} kB -> {2:.0f} kB".format(name, before / 1024, after / 1024))
+
+verb = "would optimise" if dry else "optimised"
+saved = total_before - total_after
+pct = (saved / total_before * 100) if total_before else 0
+print("")
+print("{0} {1} file(s), skipped {2}".format(verb, done, skipped))
+print(
+    "Total {0:.1f} MB -> {1:.1f} MB ({2:.0f}% smaller)".format(
+        total_before / 1048576, total_after / 1048576, pct
+    )
+)
+`;
+
 try {
-  sharp = (await import("sharp")).default;
-} catch {
-  console.error("sharp isn't installed. Run this once, then try again:\n  npm install --no-save sharp@0.33.5");
+  const out = execFileSync(
+    PYTHON,
+    ["-c", PROGRAM, DIR, String(SIZE), String(COLORS), DRY ? "1" : "0", FORCE ? "1" : "0"],
+    { encoding: "utf8" },
+  );
+  process.stdout.write(out);
+} catch (err) {
+  if (err.code === "ENOENT") {
+    console.error(
+      `Could not run "${PYTHON}". Install Python 3 with Pillow (pip install pillow), or pass --python=<path>.`,
+    );
+    process.exit(2);
+  }
+  process.stderr.write(String(err.stdout ?? ""));
+  console.error(String(err.stderr ?? err.message));
   process.exit(1);
 }
-
-const files = pngsToConvert();
-if (!files.length) {
-  console.log("No new PNGs found. Pass a folder to convert every PNG in it.");
-  process.exit(0);
-}
-mkdirSync(OUT, { recursive: true });
-if (moveTo) mkdirSync(moveTo, { recursive: true });
-
-let before = 0;
-let after = 0;
-const made = [];
-for (const file of files) {
-  const name = slug(basename(file, extname(file)));
-  const target = join(OUT, `${name}.webp`);
-  await sharp(file).resize({ width: WIDTH, withoutEnlargement: true }).webp({ quality: QUALITY, alphaQuality: 90 }).toFile(target);
-  const a = statSync(file).size;
-  const b = statSync(target).size;
-  before += a;
-  after += b;
-  made.push(name);
-  console.log(`${(a / 1024).toFixed(0).padStart(6)} KB → ${(b / 1024).toFixed(0).padStart(4)} KB  ${name}.webp`);
-  if (moveTo) renameSync(file, join(moveTo, basename(file)));
-}
-
-const library = readdirSync(OUT).filter(f => /\.webp$/i.test(f)).map(f => f.replace(/\.webp$/i, "")).sort();
-writeFileSync(join(OUT, "names.txt"), `${library.join("\n")}\n`);
-console.log(`\n${made.length} images: ${(before / 1048576).toFixed(1)} MB → ${(after / 1048576).toFixed(1)} MB in src/assets/movement/reformer/library/`);
-console.log(moveTo
-  ? `Originals moved to ${moveTo}.`
-  : "Originals left in place. Full-size PNGs in library/ can go once their WebP exists (or pass --move-originals <folder>).");
-if (!existsSync(join(ROOT, ".git"))) console.warn("(Not a git checkout: nothing was detected as untracked.)");
