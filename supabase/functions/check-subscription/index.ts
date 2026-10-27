@@ -19,6 +19,7 @@ const THRIVING_PRODUCT_ID = "prod_U9Pr8k3iP6Bler";
 const EMAIL_TIER_OVERRIDES: Record<string, string> = {
   "taliasmayall@gmail.com": THRIVING_PRODUCT_ID,
   "leanne.bats@gmail.com": THRIVING_PRODUCT_ID,
+  "grantashl1@gmail.com": THRIVING_PRODUCT_ID,
 };
 
 serve(async (req) => {
