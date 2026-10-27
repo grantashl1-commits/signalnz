@@ -269,6 +269,7 @@ for (const [series, exs] of bySeries) {
     md += `**File:** \`${ex.id}.png\` · **Springs:** ${ex.springs} · **Muscles:** ${ex.muscles.join(", ")}\n\n`;
     md += "```text\n";
     md += `POSE — she ${ex.pose.trim()}\n\n`;
+    if (ex.apparatus) md += `${apparatusBlock(ex.equipment, ex.apparatus)}\n\n`;
     md += highlightBlock(ex.highlight.trim()) + "\n";
     md += "```\n\n";
   }
