@@ -151,11 +151,13 @@ const libraryAlias: Record<string, string> = {
   "reformer long box pull": "long-box-pulling-ropes",
   "reformer long box t pull": "long-box-t-pull",
   "reformer skater": "speed-skating",
+  "arms in straps triceps press": "supine-triceps-press",
 };
 
 export function getCorrectedExerciseArt(name: string | null | undefined): string | undefined {
   if (!name) return undefined;
   const key = normalize(name);
   const alias = libraryAlias[key];
-  return correctedArt[key] ?? libraryArt.get(wordKey(name)) ?? (alias ? libraryArt.get(wordKey(alias)) : undefined);
+  // A checked alias beats a library file that only matches by name.
+  return correctedArt[key] ?? (alias ? libraryArt.get(wordKey(alias)) : undefined) ?? libraryArt.get(wordKey(name));
 }

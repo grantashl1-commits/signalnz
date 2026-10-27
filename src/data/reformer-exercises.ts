@@ -43,8 +43,6 @@ export interface ReformerExercise {
   straps: string;
   headrest: string;
   equipment: string[];
-  /** Replaces the apparatus line built from `equipment` when the defaults would mislead the image model. */
-  apparatus?: string;
   /** Illustration prompt text. */
   pose: string;
   highlight: string;

@@ -9,3 +9,4 @@ long-stretch
 side-splits
 speed-skating
 supine-hundred
+supine-triceps-press

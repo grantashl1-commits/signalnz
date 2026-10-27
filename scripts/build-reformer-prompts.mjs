@@ -125,8 +125,7 @@ const APPARATUS_LABEL = {
   straps: "the black hand straps running from her hands back to the pulleys",
 };
 
-const apparatusBlock = (equipment, override) => {
-  if (override) return `APPARATUS — this exercise uses ${override.trim()}`;
+const apparatusBlock = (equipment) => {
   const parts = (equipment ?? []).map((e) => APPARATUS_LABEL[e]).filter(Boolean);
   if (parts.length === 0) return null;
   return (
@@ -140,7 +139,7 @@ const buildPrompt = (ex) => {
   const blocks = [
     POSE_PREAMBLE,
     `POSE — she ${ex.pose.trim()}`,
-    apparatusBlock(ex.equipment, ex.apparatus),
+    apparatusBlock(ex.equipment),
     highlightBlock(ex.highlight.trim()),
     MASTER,
   ].filter(Boolean);
@@ -232,7 +231,6 @@ for (const [series, exs] of bySeries) {
     md += `**File:** \`${ex.id}.png\` · **Springs:** ${ex.springs} · **Muscles:** ${ex.muscles.join(", ")}\n\n`;
     md += "```text\n";
     md += `POSE — she ${ex.pose.trim()}\n\n`;
-    if (ex.apparatus) md += `${apparatusBlock(ex.equipment, ex.apparatus)}\n\n`;
     md += highlightBlock(ex.highlight.trim()) + "\n";
     md += "```\n\n";
   }
