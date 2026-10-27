@@ -4,6 +4,8 @@
  * Each recipe tagged with protein type, dietary flags, and similarity tags for matching.
  */
 
+import { KIDS_RECIPE_IMAGES } from "@/assets/kids-recipes";
+
 export type KidsMealType = "breakfast" | "lunch" | "dinner" | "snack" | "baking" | "dessert";
 
 export interface KidsRecipe {
@@ -488,6 +490,9 @@ export const KIDS_RECIPE_BANK: KidsRecipe[] = [
   { id: "kids-pbf-no-bake-lemon-cheesecake-with-blueberry-compote", name: "No-Bake Lemon Cheesecake with Blueberry Compote", mealType: ["dessert"], protein: "none", prepTime: "45 min", serves: 6, ingredients: ["CASHEWS: 65g cashew nuts soaked 4 hours (or 30 min in boiling water)","CHOCOLATE ALMOND BASE: 2 tbsp coconut oil","150g Medjool dates pitted","120g ground almonds","40g cacao powder","1 tsp vanilla extract","LEMON CHEESECAKE: 300g vegan cream cheese","100g confectioners sugar","zest and juice of 1 lemon","1/2 tsp vanilla extract","BLUEBERRY TOPPING: 2 tbsp maple syrup","200g blueberries","juice of 1/2 lemon"], method: ["Soak cashews; grease and line a 16cm removable-bottom cake pan","Blend base ingredients until a fine crumb; press firmly into pan; refrigerate 30 minutes","Drain and rinse cashews; blend with vegan cream cheese, confectioners sugar, lemon zest and juice and vanilla until silky smooth","Pour filling over chilled base; level surface; refrigerate 6 hours or overnight to set","Make topping: heat blueberries with maple syrup and lemon juice in a small skillet 8 minutes until sticky; cool","Remove cheesecake from pan; spoon blueberry topping over; slice and serve"], tags: ["vegan","dairy-free","egg-free","vegetarian","gluten-free"] },
   { id: "kids-pbf-raspberry-and-white-chocolate-muffins", name: "Raspberry and White Chocolate Muffins", mealType: ["baking"], protein: "none", prepTime: "10 min", serves: 12, ingredients: ["250g all-purpose flour (GF if needed)","2.5 tsp baking powder","200g golden caster sugar","130ml sunflower oil","180ml unsweetened plant-based milk","2 tsp vanilla extract","150g fresh or frozen raspberries","200g vegan white chocolate chips or chopped chocolate"], method: ["Preheat oven to 200°C; line a muffin tin with 12 paper cases","Mix flour, baking powder and sugar in a large bowl","Whisk oil, milk and vanilla in a separate bowl","Add raspberries and white chocolate to the flour mixture and stir through","Make a well in the center; pour in wet ingredients; fold together gently - do not overmix (a few small floury lumps are fine)","Spoon evenly into muffin cases to three-quarters full","Bake 35 minutes until golden; for even coloring, rotate tin after 20 minutes","Cool in tin 15 minutes; transfer to rack to cool fully"], tags: ["vegan","dairy-free","egg-free","vegetarian","nut-free"] },
 ];
+
+// Every kids-bank recipe has a drawing named by its id; use it where the entry names none.
+for (const r of KIDS_RECIPE_BANK) r.image ??= KIDS_RECIPE_IMAGES[r.id];
 
 /** Map protein keywords to match adult recipe proteins (meat type, not grams) */
 export const PROTEIN_ALIASES: Record<string, string[]> = {

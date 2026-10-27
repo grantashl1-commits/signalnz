@@ -8,7 +8,8 @@
  */
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Clock, Users, ChefHat, Heart } from "lucide-react";
+import { X, Clock, Users, ChefHat, Heart, Plus, Check } from "lucide-react";
+import { useSavedRecipes } from "@/hooks/useSavedRecipes";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { haptic } from "@/hooks/use-mobile";
 import {
@@ -104,7 +105,7 @@ function RecipeCard({ recipe, onOpen, index }: { recipe: FamilyRecipe; onOpen: (
   );
 }
 
-function RecipeDetail({ recipe, onClose }: { recipe: FamilyRecipe; onClose: () => void }) {
+function RecipeDetail({ recipe, lists, onClose }: { recipe: FamilyRecipe; lists: ReturnType<typeof useSavedRecipes>; onClose: () => void }) {
   const color = CATEGORY_COLOR[recipe.category] ?? "hsl(var(--primary))";
   return (
     <motion.div
@@ -121,13 +122,31 @@ function RecipeDetail({ recipe, onClose }: { recipe: FamilyRecipe; onClose: () =
         >
           {recipe.category}
         </span>
-        <button
-          onClick={() => { haptic("light"); onClose(); }}
-          aria-label="Close"
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground"
-        >
-          <X className="h-5 w-5" />
-        </button>
+        <div className="flex items-center">
+          <button
+            onClick={() => { haptic("light"); lists.toggleSaved(recipe.id); }}
+            aria-label={lists.has("saved", recipe.id) ? "Remove from Saved" : "Save"}
+            aria-pressed={lists.has("saved", recipe.id)}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground"
+          >
+            {lists.has("saved", recipe.id) ? <Check className="h-5 w-5" style={{ color }} /> : <Plus className="h-5 w-5" />}
+          </button>
+          <button
+            onClick={() => { haptic("light"); lists.toggleFavourite(recipe.id); }}
+            aria-label={lists.has("favourite", recipe.id) ? "Remove from Favourites" : "Add to Favourites"}
+            aria-pressed={lists.has("favourite", recipe.id)}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground"
+          >
+            <Heart className="h-5 w-5" style={lists.has("favourite", recipe.id) ? { color, fill: color } : undefined} />
+          </button>
+          <button
+            onClick={() => { haptic("light"); onClose(); }}
+            aria-label="Close"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -199,6 +218,7 @@ export default function FamilyRecipesTab() {
   const [collectionId, setCollectionId] = useState<string>(COLLECTIONS[0].id);
   const [category, setCategory] = useState<"All" | FamilyRecipeCategory>("All");
   const [openId, setOpenId] = useState<string | null>(null);
+  const lists = useSavedRecipes();
   const [visibleCount, setVisibleCount] = useState(24);
 
   const collection = COLLECTIONS.find((c) => c.id === collectionId) ?? COLLECTIONS[0];
@@ -289,7 +309,7 @@ export default function FamilyRecipesTab() {
       )}
 
       <AnimatePresence>
-        {openRecipe && <RecipeDetail recipe={openRecipe} onClose={() => setOpenId(null)} />}
+        {openRecipe && <RecipeDetail recipe={openRecipe} lists={lists} onClose={() => setOpenId(null)} />}
       </AnimatePresence>
     </div>
   );

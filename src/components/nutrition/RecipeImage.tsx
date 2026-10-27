@@ -1,9 +1,11 @@
 /**
  * Unified recipe image component.
- * Shows the recipe's own illustration if available,
- * otherwise falls back to a category-matched hand-drawn PNG.
+ * Shows the recipe's own illustration, else a drawing of the same kind of dish,
+ * else (or if the file fails to load) a quiet placeholder rather than another dish.
  */
-import { getCategoryIllustration } from "@/lib/category-illustrations";
+import { useState } from "react";
+import { UtensilsCrossed } from "lucide-react";
+import { getRecipeIllustration } from "@/lib/category-illustrations";
 
 interface RecipeImageProps {
   recipeName: string;
@@ -23,7 +25,10 @@ export default function RecipeImage({
   className = "",
   variant = "card",
 }: RecipeImageProps) {
-  const src = recipeImage || getCategoryIllustration(recipeName, recipeId);
+  const fallback = getRecipeIllustration(recipeName, recipeId);
+  const [failed, setFailed] = useState<string[]>([]);
+  const src = [recipeImage, fallback].find((s): s is string => !!s && !failed.includes(s));
+  const onError = () => src && setFailed((f) => [...f, src]);
 
   const sizeClasses = {
     card: "h-[72px] w-auto max-w-[72px]",
@@ -37,14 +42,27 @@ export default function RecipeImage({
     thumb: height,
   };
 
+  const placeholder = (size: string) => (
+    <span
+      role="img"
+      aria-label={recipeName}
+      className={`flex items-center justify-center rounded-full bg-secondary/40 text-muted-foreground/60 ${size}`}
+    >
+      <UtensilsCrossed className="h-1/2 w-1/2" strokeWidth={1.25} />
+    </span>
+  );
+
   if (variant === "thumb") {
-    return (
+    return src ? (
       <img
         src={src}
         alt={recipeName}
+        onError={onError}
         className={`rounded-lg object-contain bg-secondary/20 flex-shrink-0 ${sizeClasses.thumb} ${className}`}
         loading="lazy"
       />
+    ) : (
+      <span className={`flex-shrink-0 ${className}`}>{placeholder(sizeClasses.thumb)}</span>
     );
   }
 
@@ -58,12 +76,17 @@ export default function RecipeImage({
         background: 'transparent',
       }}
     >
-      <img
-        src={src}
-        alt={recipeName}
-        className={`${sizeClasses[variant]} object-contain`}
-        loading="lazy"
-      />
+      {src ? (
+        <img
+          src={src}
+          alt={recipeName}
+          onError={onError}
+          className={`${sizeClasses[variant]} object-contain`}
+          loading="lazy"
+        />
+      ) : (
+        placeholder(variant === "detail" ? "h-[104px] w-[104px]" : "h-[60px] w-[60px]")
+      )}
     </div>
   );
 }

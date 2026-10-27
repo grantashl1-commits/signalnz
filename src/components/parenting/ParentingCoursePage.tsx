@@ -12,7 +12,7 @@ import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, TODDLER_SLEEP_SCHEDULES
 import type { CourseModule, CourseLesson } from "@/data/connect-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
 import BabySleepSchedule from "@/components/parenting/BabySleepSchedule";
-import BehaviourTab from "@/components/parenting/behaviour/BehaviourTab";
+import PointPalsTab from "@/components/parenting/PointPalsTab";
 import { Star as StarIcon } from "lucide-react";
 
 const TABS = [
@@ -229,9 +229,9 @@ export default function ParentingCoursePage() {
           ))}
         </div>
 
-        {/* Behaviour tab — completely separate flow */}
+        {/* Behaviour: introduces PointPals, the family chore and behaviour app */}
         {activeTab === "behaviour" && (
-          <BehaviourTab />
+          <PointPalsTab />
         )}
 
         {/* Search + Toolkit bar (modules view only) */}

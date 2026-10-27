@@ -39,3 +39,4 @@ memory/
 
 # Supabase CLI temp (local project link).
 supabase/.temp/
+__pycache__/

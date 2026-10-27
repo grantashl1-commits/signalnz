@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Link, X, Clock, Users, Star, Trash2, Edit2, ChefHat, Loader2, ExternalLink, BookOpen } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { useMyRecipes, UserRecipe, UserRecipeInput } from "@/hooks/useMyRecipes";
+import { useSavedRecipes } from "@/hooks/useSavedRecipes";
+import { LibraryRecipeGrid } from "@/components/nutrition/FavouritesTab";
 import RecipeImage from "@/components/nutrition/RecipeImage";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -28,7 +30,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       </div>
       <div className="space-y-1">
         <p className="font-display text-base italic text-foreground">A blank recipe book, waiting</p>
-        <p className="font-body text-xs text-muted-foreground">Save the meals you return to — or pull one in from anywhere on the web.</p>
+        <p className="font-body text-xs text-muted-foreground">Tap + on any recipe to keep it here, add your own, or pull one in from anywhere on the web.</p>
       </div>
       <button
         onClick={() => { haptic("medium"); onAdd(); }}
@@ -563,6 +565,8 @@ export default function MyRecipesTab() {
   const [selectedRecipe, setSelectedRecipe] = useState<UserRecipe | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [editingRecipe, setEditingRecipe] = useState<UserRecipe | null>(null);
+  const lists = useSavedRecipes();
+  const savedCount = lists.ids("saved").length;
 
   const handleDelete = async (id: string) => {
     haptic("medium");
@@ -587,7 +591,7 @@ export default function MyRecipesTab() {
     setShowAdd(false);
   };
 
-  if (loading) {
+  if (loading || lists.loading) {
     return (
       <div className="flex items-center justify-center py-16">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -597,6 +601,17 @@ export default function MyRecipesTab() {
 
   return (
     <div className="space-y-5">
+      {/* Library recipes kept with + */}
+      {savedCount > 0 && (
+        <div className="space-y-3">
+          <div>
+            <p className="font-display text-base italic text-foreground">Saved to try</p>
+            <p className="font-body text-[10px] text-muted-foreground mt-0.5">Recipes you kept with +</p>
+          </div>
+          <LibraryRecipeGrid list="saved" lists={lists} />
+        </div>
+      )}
+
       {/* Header row */}
       {recipes.length > 0 && (
         <div className="flex items-center justify-between">
@@ -615,7 +630,16 @@ export default function MyRecipesTab() {
 
       {/* Grid */}
       {recipes.length === 0 ? (
-        <EmptyState onAdd={() => { setEditingRecipe(null); setShowAdd(true); }} />
+        savedCount === 0 ? (
+          <EmptyState onAdd={() => { setEditingRecipe(null); setShowAdd(true); }} />
+        ) : (
+          <button
+            onClick={() => { haptic("medium"); setEditingRecipe(null); setShowAdd(true); }}
+            className="touch-btn flex items-center gap-1.5 rounded-xl border border-dashed border-border px-4 py-3 font-body text-xs text-muted-foreground"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add a recipe of your own
+          </button>
+        )
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {recipes.map((recipe, i) => (
