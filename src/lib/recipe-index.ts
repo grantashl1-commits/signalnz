@@ -10,6 +10,7 @@ import { Recipe } from "@/data/meal-plans";
 import { NOURISH_RECIPES } from "@/data/nourish-recipes";
 import { SIGNAL_REWRITES } from "@/data/signal-rewrites";
 import imageMaps from "@/data/image-maps.json";
+import { withMethodAmounts } from "@/lib/recipe-method";
 
 /** All recipes — handcrafted nourish library + 216 SIGNAL rewrites. */
 const _seen = new Set<string>();
@@ -17,7 +18,8 @@ export const ALL_RECIPES: Recipe[] = [...NOURISH_RECIPES, ...SIGNAL_REWRITES].fi
   if (_seen.has(r.id)) return false;
   _seen.add(r.id);
   return true;
-});
+// Every method step names its amounts, so nobody has to scroll back to the ingredients.
+}).map(r => ({ ...r, method: withMethodAmounts(r.ingredients, r.method) }));
 
 /**
  * Backwards-compatible alias.

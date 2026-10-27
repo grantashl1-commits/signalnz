@@ -190,10 +190,12 @@ export function sessionStartHref(info: Pick<NextSessionInfo, "path" | "week" | "
   return info && isPartnerPath(info.path) ? partnerSessionHref(info.week, info.day) : null;
 }
 
+const isRestOrOptional = (s: DaySession) => (s.durationMin ?? 0) === 0 || !!s.optional || !!s.isRestDay;
+
 /**
  * Walk every session in the path in order. Return the first one that
- * isn't yet marked completed. Skip true rest days (durationMin === 0)
- * so "next session" always points at something the user can actually do.
+ * isn't yet marked completed. Skip rest days and optional extras so
+ * "next session" always points at the plan's next real session.
  * The partner series reads its completion from the partner hub (per user),
  * so the path and the hub always agree.
  */
@@ -210,8 +212,8 @@ export function getNextSession(path: TrainingPath, opts: { userId?: string | nul
 
   for (const w of path.weeks) {
     for (const s of w.sessions) {
-      const isRest = (s.durationMin ?? 0) === 0;
-      if (isRest) continue;
+      // Rest days and optional extras (walks, conditioning, stretch) never block the plan.
+      if (isRestOrOptional(s)) continue;
       totalSessions++;
       const key = sessionKey(path.id, w.week, s.day);
       if (completed[key]) {
@@ -226,7 +228,7 @@ export function getNextSession(path: TrainingPath, opts: { userId?: string | nul
     // Programme finished — surface the very last session for repeat.
     const lastWeek = path.weeks[path.weeks.length - 1];
     const lastSession = lastWeek.sessions
-      .filter(s => (s.durationMin ?? 0) > 0)
+      .filter(s => !isRestOrOptional(s))
       .pop() ?? lastWeek.sessions[lastWeek.sessions.length - 1];
     return {
       path,

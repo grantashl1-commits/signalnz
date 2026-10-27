@@ -240,6 +240,24 @@ export default function CyclePage() {
         {/* ═══ TODAY TAB (merged Overview + Insights) ═══ */}
         {activeTab === "today" && (
           <div className="space-y-8 md:space-y-10">
+            {/* The two things people come here to do, one tap each */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => { haptic("light"); setShowSymptomTracker(true); }}
+                className="touch-btn card-warm p-4 text-left flex flex-col items-start gap-1"
+              >
+                <p className="font-display text-sm text-foreground">How are you feeling?</p>
+                <p className="font-body text-xs text-muted-foreground">Mood, symptoms, sleep</p>
+              </button>
+              <button
+                onClick={() => { haptic("light"); setActiveTab("calendar"); }}
+                className="touch-btn card-warm p-4 text-left flex flex-col items-start gap-1"
+              >
+                <p className="font-display text-sm text-foreground">Log a period</p>
+                <p className="font-body text-xs text-muted-foreground">Started or finished</p>
+              </button>
+            </div>
+
             {hasDateSet && cycleMode !== "post-menopause" && (
               <PhaseCountdownBanner cycleDay={info.cycleDay} phase={info.phase} />
             )}
@@ -248,8 +266,6 @@ export default function CyclePage() {
             {cycleMode === "perimenopause" && (
               <PerimenopauseMode onNavigateToTraining={() => navigate("/movement")} />
             )}
-
-            <IrregularPeriodSupport onNavigateToTraining={() => navigate("/movement")} />
 
             {/* Collapsible insights */}
             {lastPeriod && (
@@ -264,6 +280,8 @@ export default function CyclePage() {
                 </div>
               </details>
             )}
+
+            <IrregularPeriodSupport onNavigateToTraining={() => navigate("/movement")} />
           </div>
         )}
 

@@ -1,422 +1,156 @@
-import type { TrainingPath } from "./types";
+import type { Exercise, Session, Superset, Week, TrainingPath } from "./types";
+import { block, ex, restDay, walkDay, DOUBLE_PROGRESSION } from "./build";
 
 // ═══════════════════════════════════════════════════════════
-// 9. THE ANCHOR – 8-WEEK GLUTE POWER (rewritten in new shape)
+// THE ANCHOR – 8-WEEK GLUTE POWER · 3 days, ~40 min
+//
+// One heavy glute lift first each day (hip thrust ≈ squat for glute growth, Plotkin 2023;
+// deep squats, Kubo 2019), single-leg work paired with an upper-body move so the plan stays
+// balanced, hamstring curls (Maeo 2021) and abduction for the side glutes. Loads are set by
+// reps in reserve, not kg caps, so the hard sets are actually hard.
 // ═══════════════════════════════════════════════════════════
+
+const HEAVY = "Heavy enough to leave the reps in reserve shown. Most women hip thrust far more than they squat: a barbell, two heavy dumbbells or a heavy kettlebell";
+
+interface DayPlan {
+  name: string;
+  focus: string;
+  main: Exercise;
+  mainRest: number;
+  pair: Exercise[];
+  finisher: Exercise[];
+  warmup: string[];
+}
+
+const DRIVE: DayPlan = {
+  name: "Drive",
+  focus: "Hip thrust, deep squat, push",
+  main: ex("Barbell Hip Thrust", "", { weight: HEAVY, cue: "Upper back on the bench, chin tucked, ribs down. Drive through your heels and pause 1 s at the top.", alt: "Dumbbell hip thrust or banded glute bridge" }),
+  mainRest: 120,
+  pair: [
+    ex("Goblet Squat", "8–12", { weight: "One heavy dumbbell", cue: "Sit deep between your hips, chest tall." }),
+    ex("Push-Up", "6–12", { weight: "Bodyweight, hands on a bench if needed", cue: "One long line, chest to fist height." }),
+  ],
+  finisher: [
+    ex("Seated Banded Hip Abduction", "15–20", { weight: "Mini band above the knees", cue: "Sit tall or lean forward slightly and press your knees out." }),
+    ex("Dead Bug", "6–8 each side", { cue: "Low back heavy, exhale as you reach long." }),
+  ],
+  warmup: ["Cat–cow ×8", "Glute bridge ×12", "Banded walk ×10 each way", "One light warm-up set of hip thrusts"],
+};
+
+const HINGE: DayPlan = {
+  name: "Hinge",
+  focus: "Romanian deadlift, split squat, row",
+  main: ex("Dumbbell Romanian Deadlift", "", { weight: "Two heavy dumbbells or a barbell", cue: "Hips back until the hamstrings stretch, dumbbells close to your legs, then squeeze up.", alt: "Single-leg RDL holding a wall" }),
+  mainRest: 120,
+  pair: [
+    ex("Dumbbell Bulgarian Split Squat", "8–12 each side", { weight: "Two dumbbells", cue: "Back foot on the bench, drop straight down, slight forward lean.", alt: "Reverse lunge" }),
+    ex("Single-Arm Dumbbell Row", "8–12 each side", { weight: "One dumbbell", cue: "Row your elbow to your hip and pause." }),
+  ],
+  finisher: [
+    ex("Swiss-Ball Hamstring Curl", "8–12", { weight: "Yoga ball", cue: "Hips up, curl the ball in with your heels, roll out slowly.", alt: "Slider hamstring curl" }),
+    ex("Side Plank", "20–30 s each side", { cue: "Hips lifted, long line.", alt: "Bent-knee side plank" }),
+  ],
+  warmup: ["Hip circles ×5 each way", "Good morning with no weight ×10", "Glute bridge ×10", "One light warm-up set of RDLs"],
+};
+
+const SHAPE: DayPlan = {
+  name: "Shape",
+  focus: "Single-leg thrust, step-up, pull",
+  main: ex("B-Stance Hip Thrust", "", { weight: "One heavy dumbbell on your hips", cue: "Working foot flat, other heel lightly down as a kickstand. Drive through the working heel.", alt: "Single-leg glute bridge" }),
+  mainRest: 90,
+  pair: [
+    ex("Dumbbell Step-Up", "8–10 each side", { weight: "Two dumbbells, knee-height step", cue: "Whole foot on the step, drive through that heel, no push from the back foot." }),
+    ex("Band Lat Pulldown", "10–12", { weight: "Long band anchored high", cue: "Elbows down to your ribs, chest proud.", alt: "Dumbbell pullover" }),
+  ],
+  finisher: [
+    ex("Frog Pump", "15–20", { cue: "Soles together, knees out, short fast squeezes at the top." }),
+    ex("Half-Kneeling Single-Arm Press", "10–12 each side", { weight: "One dumbbell", cue: "Squeeze the down-side glute and press straight up." }),
+  ],
+  warmup: ["Banded clamshell ×12 each side", "Bodyweight step-up ×5 each side", "Glute bridge ×10", "One light warm-up set of hip thrusts"],
+};
+
+interface WeekPlan {
+  week: number;
+  theme: string;
+  progression: string;
+  mainSets: number;
+  mainReps: string;
+  rir: string;
+  otherSets: number;
+  topSet?: boolean;
+  minutes: number;
+  feel: string;
+  note: string;
+}
+
+const WEEKS: WeekPlan[] = [
+  { week: 1, theme: "Activation · learn the patterns", progression: `Main lift 3×12 at about 3–4 reps in reserve (RIR 3–4). Everything else 2 sets. ${DOUBLE_PROGRESSION}`, mainSets: 3, mainReps: "12", rir: "3–4", otherSets: 2, minutes: 32, feel: "Curious", note: "Feel the glutes do the work. Find a hip-thrust weight that is steady for 12." },
+  { week: 2, theme: "Groove · add a set", progression: "Main lift 3×10–12 at RIR 3. Everything else 3 sets.", mainSets: 3, mainReps: "10–12", rir: "3", otherSets: 3, minutes: 38, feel: "Steady", note: "Same weights, one more set on the pairs." },
+  { week: 3, theme: "Build · double progression", progression: `Main lift 3×8–12 at RIR 2–3. ${DOUBLE_PROGRESSION}`, mainSets: 3, mainReps: "8–12", rir: "2–3", otherSets: 3, minutes: 38, feel: "Building", note: "When every set reaches 12, the next weight step is yours." },
+  { week: 4, theme: "Build · heavier", progression: "Main lift 3×8–12 at RIR 2. Push the weight, not the range.", mainSets: 3, mainReps: "8–12", rir: "2", otherSets: 3, minutes: 38, feel: "Strong", note: "Most of your progress comes from adding weight to the first lift." },
+  { week: 5, theme: "Strength · four heavy sets", progression: "Main lift 4×8–10 at RIR 2.", mainSets: 4, mainReps: "8–10", rir: "2", otherSets: 3, minutes: 42, feel: "Powerful", note: "Four sets now. Rest the full two minutes." },
+  { week: 6, theme: "Strength · closer to the edge", progression: "Main lift 4×8–10 at RIR 1–2. Beat week 5 by a rep or a weight step.", mainSets: 4, mainReps: "8–10", rir: "1–2", otherSets: 3, minutes: 42, feel: "Driven", note: "One more rep than last week is a win." },
+  { week: 7, theme: "Peak · top set + back-offs", progression: "One top set of 5–6 at RIR 1–2, then 2 back-off sets of 8–10 about 10–15% lighter.", mainSets: 2, mainReps: "8–10", rir: "1–2", otherSets: 3, topSet: true, minutes: 40, feel: "Proud", note: "Your heaviest clean set of the block. No max attempts." },
+  { week: 8, theme: "Integrate · lighter week", progression: "Two sets of everything at your week 5 weights, RIR 3–4.", mainSets: 2, mainReps: "10", rir: "3–4", otherSets: 2, minutes: 30, feel: "Settled", note: "Let the work land. Notice how stairs and lifting the kids feel now." },
+];
+
+const COOLDOWN = ["Pigeon or figure-four stretch · 45 s each side", "Couch stretch · 30 s each side", "Child's pose · 1 min"];
+
+function session(day: number, plan: DayPlan, w: WeekPlan): Session {
+  const mainBlocks: Superset[] = w.topSet
+    ? [
+      block(1, plan.mainRest + 30, [{ ...plan.main, reps: plan.main.name.startsWith("B-Stance") ? "6–8 each side" : "5–6", rir: w.rir }], "Top set"),
+      block(2, plan.mainRest, [{ ...plan.main, reps: plan.main.name.startsWith("B-Stance") ? "10 each side" : w.mainReps, rir: "2", notes: "About 10–15% lighter than your top set" }], "Back-off sets"),
+    ]
+    : [block(w.mainSets, plan.mainRest, [{ ...plan.main, reps: plan.main.name.startsWith("B-Stance") ? `${w.mainReps} each side` : w.mainReps, rir: w.rir }], "Main lift")];
+  const otherRir = w.week === 8 ? "3–4" : w.week >= 5 ? "1–2" : "2–3";
+  return {
+    day,
+    name: plan.name,
+    focus: plan.focus,
+    durationMin: w.minutes,
+    equipment: "Barbell or heavy dumbbells, bench, mini band, yoga ball, long band",
+    feel: w.feel,
+    warmup: plan.warmup,
+    supersets: [
+      ...mainBlocks,
+      block(w.otherSets, 75, plan.pair.map(e => ({ ...e, rir: otherRir }))),
+      block(w.otherSets, 45, plan.finisher.map(e => ({ ...e, rir: otherRir })), "Finisher"),
+    ],
+    cooldown: COOLDOWN,
+    coachingNote: w.note,
+  };
+}
+
+function week(w: WeekPlan): Week {
+  return {
+    week: w.week,
+    theme: w.theme,
+    progression: w.progression,
+    sessions: [
+      session(1, DRIVE, w),
+      walkDay(2),
+      session(3, HINGE, w),
+      restDay(4),
+      session(5, SHAPE, w),
+      walkDay(6, 30),
+      restDay(7),
+    ],
+  };
+}
+
 export const glutePower: TrainingPath = {
   id: "glute-power",
   name: "The Anchor",
-  subtitle: "Coming home to your strongest centre",
+  subtitle: "Glute-focused, with enough upper body to stay balanced",
   focus: "glute-power",
   description:
-    "Eight weeks of patient, intentional work for the muscles that carry you through every day — the ones that have been quietly waiting to be noticed. We start small, with feeling. We build slowly, with weight. The work is not loud. The change is.",
+    "Three 30–40 minute sessions a week built around one heavy glute lift (hip thrust, Romanian deadlift or single-leg thrust), then single-leg work paired with an upper-body move and a short glute finisher. Loads go up by feel, so the hard sets stay hard.",
   whoItIsFor:
-    "The woman who wants strong, capable hips and glutes. New to focused glute work, or returning after years of generic gym programmes that never quite woke this part of her up.",
-  weeks: [
-    { week: 1, theme: "Activation — Learning the Patterns", phaseGoal: "Establish mind-muscle connection. Light weights, slow tempo, deep feeling.", rpeMin: 5, rpeMax: 6.5,
-      progression: "Tempo 3-1-2 on most lifts. Light dumbbells (3-5 kg). Form before load.",
-      sessions: [
-        { day: 1, name: "Drive — Hip extension led", durationMin: 40, equipment: "Dumbbells (3-5 kg), mat", feel: "Curious", coachingNote: "If the bridge feels in your lower back instead of your glutes, slow down. The muscle you want is the one underneath.",
-          warmup: ["Cat-cow x 8", "Glute bridges x 12", "Hip circles x 10/side", "Deep squat hold 30 sec"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge", sets: 3, reps: 15, tempo: "2-2-2", notes: "squeeze at the top" },
-              { name: "Goblet Squat", sets: 3, reps: 12, tempo: "3-1-2" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "10 per side" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "10 per side" },
-              { name: "Clam (slow)", sets: 2, reps: "15 per side" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Supine twist 1 min/side", "Child's pose 1 min"] },
-        { day: 2, name: "Walk & Breathe", durationMin: 30, equipment: "None", feel: "Easy and spacious", structure: ["20 min walk at a nose-breathing pace", "10 min gentle stretching — hamstrings, hips, chest"] },
-        { day: 3, name: "Hinge — Posterior chain", durationMin: 40, equipment: "Dumbbells (3-5 kg), mat", feel: "Grounded", coachingNote: "The hinge is a movement you'll use every day. Feel the stretch in your hamstrings, not your lower back.",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Romanian Deadlift", sets: 3, reps: 12, tempo: "3-1-2" },
-              { name: "Glute Bridge March", sets: 3, reps: "10 per side" },
-              { name: "Sumo Squat", sets: 3, reps: 12, tempo: "4-1-2" },
-            ] },
-            { rounds: 2, exercises: [
-              { name: "Side-Lying Leg Lift", sets: 2, reps: "15 per side" },
-              { name: "Bird Dog", sets: 3, reps: "6 per side" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", durationMin: 0, structure: ["Rest"], coachingNote: "Your muscles grow while you are lying still." },
-        { day: 5, name: "Shape — Round and lift", durationMin: 40, equipment: "Dumbbells, resistance band, mat", feel: "Connected",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust", sets: 3, reps: 12, tempo: "1 sec pause at top" },
-              { name: "Curtsy Lunge", sets: 3, reps: "10 per side" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "12 per side" },
-              { name: "Donkey Kick", sets: 3, reps: "12 per side" },
-              { name: "Plank", sets: 2, reps: "30 sec" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"],
-          coachingNote: "These small movements look easy. They are not. The smaller the muscle, the more attention it needs." },
-        { day: 6, name: "Walk", durationMin: 25, structure: ["25 min walk", "Notice 5 things you see, 4 you hear, 3 you feel"], feel: "Peaceful" },
-        { day: 7, name: "Rest", structure: ["Rest"], coachingNote: "One week down. Notice anything new in your body?" }
-      ] },
-    { week: 2, theme: "Deeper Connection — Same load, more feeling", phaseGoal: "Build mind-muscle connection. Add 1 rep to working sets if form felt solid.", rpeMin: 5.5, rpeMax: 6.5,
-      progression: "Same weights (3-5 kg), +1 rep on each working set. Goal: deeper connection, not heavier weight.",
-      sessions: [
-        { day: 1, name: "Drive — Hip extension led", durationMin: 40, equipment: "Dumbbells (3-5 kg), mat", feel: "Curious", coachingNote: "Same weight as Week 1 — one more rep, a deeper squeeze. Notice how much more you can feel.",
-          warmup: ["Cat-cow x 8", "Glute bridges x 12", "Hip circles x 10/side", "Deep squat hold 30 sec"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge", sets: 3, reps: 16, tempo: "2-2-2", weight: "3-5 kg", notes: "+1 rep from Week 1, squeeze at the top" },
-              { name: "Goblet Squat", sets: 3, reps: 13, tempo: "3-1-2", weight: "3-5 kg", notes: "+1 rep" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "11 per side", weight: "3-5 kg" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "11 per side", weight: "Bodyweight" },
-              { name: "Clam (slow)", sets: 2, reps: "16 per side", weight: "Band" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Supine twist 1 min/side", "Child's pose 1 min"] },
-        { day: 2, name: "Walk & Breathe", durationMin: 30, equipment: "None", feel: "Easy and spacious", structure: ["20 min walk at a nose-breathing pace", "10 min gentle stretching — hamstrings, hips, chest"] },
-        { day: 3, name: "Hinge — Posterior chain", durationMin: 40, equipment: "Dumbbells (3-5 kg), mat", feel: "Grounded", coachingNote: "One more rep on each lift. Feel the hamstrings, not the lower back.",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Romanian Deadlift", sets: 3, reps: 13, tempo: "3-1-2", weight: "3-5 kg", notes: "+1 rep" },
-              { name: "Glute Bridge March", sets: 3, reps: "11 per side", weight: "Bodyweight" },
-              { name: "Sumo Squat", sets: 3, reps: 13, tempo: "4-1-2", weight: "3-5 kg", notes: "+1 rep" },
-            ] },
-            { rounds: 2, exercises: [
-              { name: "Side-Lying Leg Lift", sets: 2, reps: "16 per side", weight: "Bodyweight" },
-              { name: "Bird Dog", sets: 3, reps: "7 per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Shape — Round and lift", durationMin: 40, equipment: "Dumbbells, resistance band, mat", feel: "Connected", coachingNote: "The small muscles are waking up. Give them one more rep of attention.",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust", sets: 3, reps: 13, tempo: "1 sec pause at top", weight: "3-5 kg", notes: "+1 rep" },
-              { name: "Curtsy Lunge", sets: 3, reps: "11 per side", weight: "3-5 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "13 per side", weight: "Bodyweight" },
-              { name: "Donkey Kick", sets: 3, reps: "13 per side", weight: "Bodyweight" },
-              { name: "Plank", sets: 2, reps: "35 sec", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"] },
-        { day: 6, name: "Walk", durationMin: 25, feel: "Peaceful", structure: ["25 min walk"] },
-        { day: 7, name: "Rest", structure: ["Rest"] }
-      ] },
-    { week: 3, theme: "First Load Increase", phaseGoal: "Add 1-2 kg to compound lifts if Week 2 form was solid.", rpeMin: 6, rpeMax: 7,
-      progression: "Add 1-2 kg to RDL, Goblet Squat, Sumo Squat, Hip Thrust (now 4-6 kg). Same reps as Week 2.",
-      sessions: [
-        { day: 1, name: "Drive — Heavier", durationMin: 42, equipment: "Dumbbells (4-6 kg), mat", feel: "Capable", coachingNote: "First load jump. If a lift feels rushed, keep last week's weight — form leads.",
-          warmup: ["Cat-cow x 8", "Glute bridges x 12", "Hip circles x 10/side", "Deep squat hold 30 sec"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge", sets: 3, reps: 16, tempo: "2-2-2", weight: "4-6 kg", notes: "+1-2 kg from Week 2" },
-              { name: "Goblet Squat", sets: 3, reps: 13, tempo: "3-1-2", weight: "4-6 kg", notes: "+1-2 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "11 per side", weight: "3-5 kg" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "11 per side", weight: "Bodyweight" },
-              { name: "Clam (slow)", sets: 2, reps: "16 per side", weight: "Band" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Supine twist 1 min/side", "Child's pose 1 min"] },
-        { day: 2, name: "Walk", durationMin: 30, structure: ["Walk + stretch"] },
-        { day: 3, name: "Hinge — Heavier", durationMin: 42, equipment: "Dumbbells (4-6 kg), mat", feel: "Grounded", coachingNote: "The hinge is a movement you'll use every day. Add the kilo, keep the shape.",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Romanian Deadlift", sets: 3, reps: 13, tempo: "3-1-2", weight: "4-6 kg", notes: "+1-2 kg" },
-              { name: "Glute Bridge March", sets: 3, reps: "11 per side", weight: "Bodyweight" },
-              { name: "Sumo Squat", sets: 3, reps: 13, tempo: "4-1-2", weight: "4-6 kg", notes: "+1-2 kg" },
-            ] },
-            { rounds: 2, exercises: [
-              { name: "Side-Lying Leg Lift", sets: 2, reps: "16 per side", weight: "Bodyweight" },
-              { name: "Bird Dog", sets: 3, reps: "7 per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Shape — Heavier", durationMin: 42, equipment: "Dumbbells, resistance band, mat", feel: "Connected",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust", sets: 3, reps: 13, tempo: "1 sec pause at top", weight: "4-6 kg", notes: "+1-2 kg" },
-              { name: "Curtsy Lunge", sets: 3, reps: "11 per side", weight: "3-5 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "13 per side", weight: "Bodyweight" },
-              { name: "Donkey Kick", sets: 3, reps: "13 per side", weight: "Bodyweight" },
-              { name: "Plank", sets: 2, reps: "35 sec", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"] },
-        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
-        { day: 7, name: "Rest", structure: ["Rest"] }
-      ] },
-    { week: 4, theme: "Activation Phase Close", phaseGoal: "Hold Week 3 load. Notice what's changed from Week 1.", rpeMin: 6, rpeMax: 7,
-      progression: "Same load as Week 3 (4-6 kg on compounds). Final week of the activation phase — own it.",
-      sessions: [
-        { day: 1, name: "Drive — Own the load", durationMin: 42, equipment: "Dumbbells (4-6 kg), mat", feel: "Steady", coachingNote: "No new weight this week. Make Week 3's load feel easy.",
-          warmup: ["Cat-cow x 8", "Glute bridges x 12", "Hip circles x 10/side", "Deep squat hold 30 sec"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge", sets: 3, reps: 16, tempo: "2-2-2", weight: "4-6 kg" },
-              { name: "Goblet Squat", sets: 3, reps: 13, tempo: "3-1-2", weight: "4-6 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "11 per side", weight: "3-5 kg" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "11 per side", weight: "Bodyweight" },
-              { name: "Clam (slow)", sets: 2, reps: "16 per side", weight: "Band" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Supine twist 1 min/side", "Child's pose 1 min"] },
-        { day: 2, name: "Walk", durationMin: 30, structure: ["Walk + stretch"] },
-        { day: 3, name: "Hinge — Own the load", durationMin: 42, equipment: "Dumbbells (4-6 kg), mat", feel: "Grounded",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Romanian Deadlift", sets: 3, reps: 13, tempo: "3-1-2", weight: "4-6 kg" },
-              { name: "Glute Bridge March", sets: 3, reps: "11 per side", weight: "Bodyweight" },
-              { name: "Sumo Squat", sets: 3, reps: 13, tempo: "4-1-2", weight: "4-6 kg" },
-            ] },
-            { rounds: 2, exercises: [
-              { name: "Side-Lying Leg Lift", sets: 2, reps: "16 per side", weight: "Bodyweight" },
-              { name: "Bird Dog", sets: 3, reps: "7 per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Shape — Own the load", durationMin: 42, equipment: "Dumbbells, resistance band, mat", feel: "Connected",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust", sets: 3, reps: 13, tempo: "1 sec pause at top", weight: "4-6 kg" },
-              { name: "Curtsy Lunge", sets: 3, reps: "11 per side", weight: "3-5 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "13 per side", weight: "Bodyweight" },
-              { name: "Donkey Kick", sets: 3, reps: "13 per side", weight: "Bodyweight" },
-              { name: "Plank", sets: 2, reps: "35 sec", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"] },
-        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
-        { day: 7, name: "Rest", structure: ["Rest. Look back at Week 1. Notice the shift."] }
-      ] },
-    { week: 5, theme: "Load Phase — The body is ready", phaseGoal: "Increase weight, add a fourth set to primary lifts.", rpeMin: 6.5, rpeMax: 7.5,
-      progression: "Add a fourth set to the first two compound lifts each session. Reps drop to 8-10 on heavier lifts. Tempo controlled.",
-      sessions: [
-        { day: 1, name: "Drive — Heavier", durationMin: 45, equipment: "Dumbbells (5-8 kg) or barbell", feel: "Capable",
-          warmup: ["Glute bridges x 12", "Monster walks 10 each direction"],
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Glute Bridge or Hip Thrust", sets: 4, reps: 10, weight: "heavier" },
-              { name: "Goblet or Barbell Squat", sets: 4, reps: 8, tempo: "3-1-1" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "10 per side", weight: "heavier" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "10 per side" },
-              { name: "Plank", sets: 3, reps: "40 sec" },
-            ] },
-          ],
-          coolDown: ["Pigeon", "Hamstring stretch"],
-          coachingNote: "The fourth set is a quiet promise to your future self." },
-        { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + stretch"], coachingNote: "Recovery is where the training becomes you." },
-        { day: 3, name: "Hinge — Heavier", durationMin: 45, equipment: "Dumbbells (5-8 kg) or barbell", feel: "Strong",
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Romanian Deadlift", sets: 4, reps: 8, tempo: "3-1-2", weight: "heavier" },
-              { name: "Sumo Squat", sets: 4, reps: 10 },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge March", sets: 3, reps: "10 per side" },
-              { name: "Side-Lying Leg Lift", sets: 3, reps: "15 per side" },
-              { name: "Bird Dog", sets: 3, reps: "8 per side" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch", "Supine twist"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Shape — Volume", durationMin: 45, equipment: "Dumbbells, band, mat", feel: "Burning in the right places",
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Hip Thrust", sets: 4, reps: 12, tempo: "1 sec pause at top" },
-              { name: "Curtsy Lunge", sets: 3, reps: "12 per side" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "15 per side" },
-              { name: "Donkey Kick", sets: 3, reps: "15 per side" },
-              { name: "Side Plank", sets: 2, reps: "25 sec per side" },
-            ] },
-          ],
-          coachingNote: "The burn is real. It is the muscle saying I am awake." },
-        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk, slightly faster pace"] },
-        { day: 7, name: "Rest", structure: ["Rest"], coachingNote: "Notice your body climbing the stairs." }
-      ] },
-    { week: 6, theme: "Settling into the heavier rhythm", phaseGoal: "Same lifts as Week 5, +1-2 kg if last week's RPE was below 8.", rpeMin: 7, rpeMax: 8,
-      progression: "Week 5's session shape with +1-2 kg on the compounds (now 6-8 kg); Shape day adds 2 reps. Sleep is part of the programme this week.",
-      sessions: [
-        { day: 1, name: "Drive — Heavier still", durationMin: 45, equipment: "Dumbbells (6-8 kg) or barbell", feel: "Capable", coachingNote: "Week 5 + a little more. If last week never crossed RPE 8, add the kilo.",
-          warmup: ["Glute bridges x 12", "Monster walks 10 each direction", "Hip circles x 10/side"],
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Glute Bridge or Hip Thrust", sets: 4, reps: 10, weight: "6-8 kg", notes: "+1-2 kg from Week 5" },
-              { name: "Goblet or Barbell Squat", sets: 4, reps: 8, tempo: "3-1-1", weight: "6-8 kg", notes: "+1-2 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "10 per side", weight: "6-8 kg" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "10 per side", weight: "Bodyweight" },
-              { name: "Plank", sets: 3, reps: "45 sec", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Hamstring stretch 1 min/side"] },
-        { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + stretch"] },
-        { day: 3, name: "Hinge — Heavier still", durationMin: 45, equipment: "Dumbbells (6-8 kg) or barbell", feel: "Strong",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Romanian Deadlift", sets: 4, reps: 8, tempo: "3-1-2", weight: "6-8 kg", notes: "+1-2 kg from Week 5" },
-              { name: "Sumo Squat", sets: 4, reps: 10, weight: "6-8 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge March", sets: 3, reps: "10 per side", weight: "Bodyweight" },
-              { name: "Side-Lying Leg Lift", sets: 3, reps: "15 per side", weight: "Bodyweight" },
-              { name: "Bird Dog", sets: 3, reps: "8 per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Shape — Volume +2 reps", durationMin: 45, equipment: "Dumbbells, band, mat", feel: "Burning in the right places", coachingNote: "Sleep is where this week's work becomes muscle. Guard it.",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Hip Thrust", sets: 4, reps: 14, tempo: "1 sec pause at top", weight: "6-8 kg", notes: "+2 reps from Week 5" },
-              { name: "Curtsy Lunge", sets: 3, reps: "14 per side", weight: "5-8 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "17 per side", weight: "Bodyweight" },
-              { name: "Donkey Kick", sets: 3, reps: "17 per side", weight: "Bodyweight" },
-              { name: "Side Plank", sets: 2, reps: "30 sec per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"] },
-        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
-        { day: 7, name: "Rest", structure: ["Rest"] }
-      ] },
-    { week: 7, theme: "Intensification — Top sets", phaseGoal: "Push to heavier loads on primary lifts.", rpeMin: 7.5, rpeMax: 8.5,
-      progression: "Top set on each compound: 1 set of 5-6 reps at heaviest sustainable load (~8-12 kg), then back-off sets at Week 6 weight (6-8 kg).",
-      sessions: [
-        { day: 1, name: "Drive — Top set", durationMin: 50, equipment: "Dumbbells (up to 12 kg) or barbell", feel: "Focused", coachingNote: "Watch form like a hawk. The top set is heavy, not sloppy.",
-          warmup: ["Glute bridges x 12", "Monster walks 10 each direction", "Goblet squat (light) x 10", "Deep squat hold 30 sec"],
-          supersets: [
-            { rounds: 1, exercises: [
-              { name: "Hip Thrust — top set", sets: 1, reps: 5, weight: "8-12 kg", notes: "Heaviest sustainable load, every rep controlled" },
-              { name: "Goblet or Barbell Squat — top set", sets: 1, reps: 6, tempo: "3-1-1", weight: "8-12 kg", notes: "Heaviest sustainable load" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust — back-off", sets: 3, reps: 10, weight: "6-8 kg", notes: "Week 6 weight" },
-              { name: "Squat — back-off", sets: 3, reps: 8, tempo: "3-1-1", weight: "6-8 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Reverse Lunge", sets: 3, reps: "10 per side", weight: "6-8 kg" },
-              { name: "Single-Leg Glute Bridge", sets: 3, reps: "10 per side", weight: "Bodyweight" },
-              { name: "Plank", sets: 3, reps: "45 sec", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Hamstring stretch 1 min/side"] },
-        { day: 2, name: "Walk & Restore", durationMin: 30, structure: ["Walk + mobility"] },
-        { day: 3, name: "Hinge — Top set", durationMin: 50, equipment: "Dumbbells (up to 12 kg) or barbell", feel: "Strong",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10", "Glute bridges x 12"],
-          supersets: [
-            { rounds: 1, exercises: [
-              { name: "Romanian Deadlift — top set", sets: 1, reps: 6, tempo: "3-1-2", weight: "8-12 kg", notes: "Heaviest sustainable load, flat back" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Romanian Deadlift — back-off", sets: 3, reps: 8, tempo: "3-1-2", weight: "6-8 kg", notes: "Week 6 weight" },
-            ] },
-            { rounds: 4, exercises: [
-              { name: "Sumo Squat", sets: 4, reps: 10, weight: "6-8 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Glute Bridge March", sets: 3, reps: "10 per side", weight: "Bodyweight" },
-              { name: "Side-Lying Leg Lift", sets: 3, reps: "15 per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Shape — Volume + finisher", durationMin: 50, equipment: "Dumbbells, band, mat", feel: "Lit up", coachingNote: "Last big week. Leave it all here.",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6", "Deep squat rotations x 8"],
-          supersets: [
-            { rounds: 4, exercises: [
-              { name: "Hip Thrust", sets: 4, reps: 10, weight: "6-8 kg" },
-              { name: "Curtsy Lunge", sets: 3, reps: "12 per side", weight: "5-8 kg" },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "12 per side", weight: "Bodyweight" },
-              { name: "Donkey Kick", sets: 3, reps: "12 per side", weight: "Bodyweight" },
-              { name: "Plank to Side Plank flow", sets: 3, reps: "30 sec each side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"] },
-        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk, optional 4×30 sec light pickups"] },
-        { day: 7, name: "Rest", structure: ["Rest"] }
-      ] },
-    { week: 8, theme: "Test, Deload, Reflect", phaseGoal: "Notice everything that has changed.", rpeMin: 6, rpeMax: 8,
-      progression: "Optional test day on Day 1 — one heavy set on Hip Thrust or Squat. Then a soft, celebratory week at lighter loads.",
-      sessions: [
-        { day: 1, name: "Test or Celebrate", durationMin: 40, equipment: "Dumbbells or barbell", feel: "Proud", coachingNote: "Celebrate the woman you are now. The test is optional — flow if you'd rather.",
-          warmup: ["Cat-cow x 8", "Glute bridges x 12", "Monster walks 10 each direction", "Goblet squat (light) x 10", "Deep squat hold 30 sec"],
-          supersets: [
-            { rounds: 1, exercises: [
-              { name: "Hip Thrust or Squat — test set (optional)", sets: 1, reps: 5, weight: "Heavy — RPE 8", notes: "One heavy set only. Skip and just flow if you prefer." },
-            ] },
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust", sets: 3, reps: 10, weight: "4-6 kg", notes: "Lighter — feel every rep" },
-              { name: "Goblet Squat", sets: 3, reps: 10, tempo: "3-1-2", weight: "4-6 kg" },
-            ] },
-          ],
-          coolDown: ["Long pigeon 2 min/side", "Supine twist 1 min/side", "A quiet seated minute"] },
-        { day: 2, name: "Walk", durationMin: 30, structure: ["30 min walk, no agenda"] },
-        { day: 3, name: "Light Hinge", durationMin: 35, equipment: "Dumbbells (3-5 kg), mat", feel: "Easy",
-          warmup: ["Leg swings 10/side", "Hip circles", "Body-weight squats x 10"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Romanian Deadlift", sets: 3, reps: 8, tempo: "3-1-2", weight: "3-5 kg", notes: "Light — grooving the pattern" },
-              { name: "Sumo Squat", sets: 3, reps: 10, weight: "3-5 kg" },
-            ] },
-            { rounds: 2, exercises: [
-              { name: "Glute Bridge March", sets: 3, reps: "10 per side", weight: "Bodyweight" },
-              { name: "Side-Lying Leg Lift", sets: 3, reps: "12 per side", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Hamstring stretch 1 min/side", "Supine twist 1 min/side"] },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        { day: 5, name: "Light Shape", durationMin: 35, equipment: "Dumbbells, band, mat", feel: "Grateful",
-          warmup: ["Monster walks (band) 10 each direction", "Inchworms x 6"],
-          supersets: [
-            { rounds: 3, exercises: [
-              { name: "Hip Thrust", sets: 3, reps: 12, tempo: "1 sec pause at top", weight: "4-6 kg", notes: "All lighter today" },
-              { name: "Curtsy Lunge", sets: 3, reps: "10 per side", weight: "3-5 kg" },
-            ] },
-            { rounds: 2, exercises: [
-              { name: "Fire Hydrant", sets: 3, reps: "12 per side", weight: "Bodyweight" },
-              { name: "Donkey Kick", sets: 3, reps: "12 per side", weight: "Bodyweight" },
-              { name: "Plank", sets: 2, reps: "30 sec", weight: "Bodyweight" },
-            ] },
-          ],
-          coolDown: ["Pigeon 1 min/side", "Lying figure-four 1 min/side"] },
-        { day: 6, name: "Walk", durationMin: 30, structure: ["30 min walk"] },
-        { day: 7, name: "Rest and reflect", durationMin: 0, structure: ["Rest. Write one sentence about what your body can do now that it could not in Week 1."], coachingNote: "You came back, again and again. That is the real work." }
-      ] }
-  ]
+    "You want stronger glutes and hips, and a back that copes with lifting kids and shopping. You need a barbell or heavy dumbbells, a bench, a mini band and a yoga ball.",
+  equipmentLevel: "home",
+  daysPerWeek: 3,
+  sessionMinutes: [30, 42],
+  weeks: WEEKS.map(week),
 };

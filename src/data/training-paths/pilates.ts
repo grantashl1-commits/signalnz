@@ -1,592 +1,182 @@
-import type { TrainingPath } from "./types";
+import type { Exercise, Session, Week, TrainingPath } from "./types";
+import { block, ex, restDay, walkDay } from "./build";
 
-// SIGNAL Pilates – 8‑Week Core Strength Plan
-// Based on Brooke Siler's "The Pilates Body" with SIGNAL voice: precise, centred, deeply respectful.
+// SIGNAL Mat Sculpt – 8 weeks of 30-minute mat pilates, four classes a week.
+// Modern sculpt style: slow, controlled, high-rep series with small pulses and holds,
+// low impact, light kit (ankle weights, a mini ball, 1–2 kg dumbbells) added from week 3.
+// Every class has the same shape: 3 min warm-up · four ~5 min series · 3 min stretch.
+// Progression comes from reps → pulses → holds → light load, the way a studio programme
+// builds, and mat pilates improves core endurance, posture and flexibility in women
+// (Kloubec 2010; Bernardo 2007 review). Lower-impact, pelvic-floor friendly by default.
 
-export const pilatesPlan = {
+type Kind = "reps" | "side" | "hold" | "fixed";
+interface Move { name: string; kind: Kind; fixed?: string; cue?: string; alt?: string }
+interface Series { label: string; moves: Move[]; kit?: "legs" | "arms" | "ball" }
+
+const m = (name: string, kind: Kind, extra: Omit<Move, "name" | "kind"> = {}): Move => ({ name, kind, ...extra });
+
+interface Phase {
+  reps: string;
+  hold: string;
+  /** Ankle weights / ball / dumbbells join from week 3. */
+  kit: boolean;
+  note: string;
+}
+
+const PHASES: Record<number, Phase & { theme: string; progression: string; feel: string }> = {
+  1: { theme: "Foundations · breath and neutral spine", progression: "Bodyweight only. 12–15 slow reps, 20 s holds. Learn to breathe out on the effort and keep your low back quiet.", reps: "12–15", hold: "20 s", kit: false, feel: "Quietly awake", note: "Slow is the point. If you feel it in your low back, make the movement smaller." },
+  2: { theme: "Foundations · control", progression: "Bodyweight. 15 reps + 5 small pulses at the end of each set, 20–30 s holds.", reps: "15 + 5 pulses", hold: "25 s", kit: false, feel: "Steady", note: "Pulses are tiny: a couple of centimetres at the hardest point." },
+  3: { theme: "Build · add light kit", progression: "Add ankle weights (0.5–1 kg) on leg series and a mini ball for bridges if you have them. 15 reps + 10 pulses, 30 s holds.", reps: "15 + 10 pulses", hold: "30 s", kit: true, feel: "Warm and working", note: "No ankle weights? Slow the lowering to 3 s instead." },
+  4: { theme: "Build · longer sets", progression: "15 reps + 10 pulses, 30–35 s holds. Light kit if you have it.", reps: "15 + 10 pulses", hold: "35 s", kit: true, feel: "Building heat", note: "Same moves, a little longer under tension." },
+  5: { theme: "Burn · pulses and holds", progression: "15 reps + 15 pulses + a 10 s hold to finish each set. 40 s holds. 1–2 kg dumbbells for arms.", reps: "15 + 15 pulses + 10 s hold", hold: "40 s", kit: true, feel: "Shaky in a good way", note: "Shaking means the muscle is working. Breathe through it." },
+  6: { theme: "Burn · slow tempo", progression: "Lower for 3 s every rep. 15 reps + 15 pulses + 10 s hold, 40 s holds.", reps: "15 slow + 15 pulses + 10 s hold", hold: "40 s", kit: true, feel: "Deep burn", note: "Three seconds down makes light weights feel heavy." },
+  7: { theme: "Peak · longest sets", progression: "16 reps + 16 pulses, 45 s holds. Your strongest classes of the block.", reps: "16 + 16 pulses", hold: "45 s", kit: true, feel: "Proud", note: "Take a breath between moves if you need it; keep the form." },
+  8: { theme: "Integrate · lighter week", progression: "12 reps + 10 pulses, 30 s holds, extra stretch time.", reps: "12 + 10 pulses", hold: "30 s", kit: true, feel: "Long and light", note: "Lighter on purpose. Notice how your posture feels after eight weeks." },
+};
+
+const KIT_WEIGHT = {
+  legs: "Ankle weights 0.5–1 kg (optional)",
+  arms: "1–2 kg dumbbells or water bottles",
+  ball: "Mini pilates ball or a cushion between the knees",
+} as const;
+
+// Two versions of each class alternate week to week so the moves stay fresh.
+const CLASSES: Record<"full" | "lower" | "core" | "glute", [Series[], Series[]]> = {
+  full: [
+    [
+      { label: "Glutes on all fours", kit: "legs", moves: [m("Donkey Kick", "side", { cue: "Knee bent at 90°, press your heel to the ceiling without arching." }), m("Fire Hydrant", "side", { cue: "Lift the bent knee out to the side, hips stay square." }), m("Bird Dog", "side", { cue: "Reach opposite arm and leg long, pause 2 s." })] },
+      { label: "Core", moves: [m("The Hundred", "fixed", { fixed: "100 counts", cue: "Knees in tabletop, head up, pump the arms. Breathe in for 5, out for 5.", alt: "Head down" }), m("Single Leg Stretch", "reps", { cue: "Pull one knee in, the other reaches long. Low back stays down." }), m("Criss-Cross", "reps", { cue: "Rotate from the ribs, elbow wide, slow." })] },
+      { label: "Arms", kit: "arms", moves: [m("Bicep Curl", "reps", { cue: "Elbows glued to your sides." }), m("Tricep Kickback", "reps", { cue: "Hinge forward, upper arms still, straighten fully." }), m("Lateral Raise", "reps", { cue: "Small range to shoulder height, no shrugging." })] },
+      { label: "Standing", kit: "legs", moves: [m("Plié Squat", "reps", { cue: "Toes turned out, knees track over toes, tailbone down." }), m("Curtsy Lunge", "side", { cue: "Step back and across, front knee over the ankle." }), m("Standing Kickback", "side", { cue: "Hold a chair, squeeze the glute as the leg goes back." })] },
+    ],
+    [
+      { label: "Standing", kit: "legs", moves: [m("Squat to Calf Raise", "reps", { cue: "Sit back, stand tall, lift the heels." }), m("Curtsy Lunge", "side", { cue: "Pulse at the bottom in the later weeks." }), m("Standing Side Leg Lift", "side", { cue: "Hold a chair, lift the leg out, hips level." })] },
+      { label: "Core", moves: [m("Dead Bug", "side", { cue: "Low back heavy, exhale as you reach." }), m("Rolling Like a Ball", "reps", { cue: "Tuck tight, roll to the shoulder blades and balance back up.", alt: "Seated balance hold" }), m("Teaser Prep", "reps", { cue: "Feet down, roll up to a V and back with control.", alt: "Half roll-back" })] },
+      { label: "Arms", kit: "arms", moves: [m("Overhead Press", "reps", { cue: "Ribs down, press up and slightly in." }), m("Bent-Over Row", "reps", { cue: "Hinge forward, row elbows back past your ribs." }), m("Arm Circles", "hold", { cue: "Arms at shoulder height, tiny circles forwards then back." })] },
+      { label: "Glutes on all fours", kit: "legs", moves: [m("Kneeling Kickback", "side", { cue: "Straight leg back and up, toe pointed down." }), m("Fire Hydrant", "side", { cue: "Small range, steady pelvis." }), m("Bird Dog", "side", { cue: "Elbow to knee under you, then reach long." })] },
+    ],
+  ],
+  lower: [
+    [
+      { label: "Bridge series", kit: "ball", moves: [m("Glute Bridge", "reps", { cue: "Ribs down, squeeze the ball, peel up one vertebra at a time." }), m("Single-Leg Glute Bridge", "side", { cue: "Hips stay level." }), m("Bridge Pulse", "hold", { cue: "Hold the top and pulse a centimetre." })] },
+      { label: "Side-lying series", kit: "legs", moves: [m("Side-Lying Leg Lift", "side", { cue: "Top leg long, lift from the hip, toes forward." }), m("Clamshell", "side", { cue: "Feet together, open the top knee, pelvis still." }), m("Inner Thigh Lift", "side", { cue: "Top leg in front, lift the bottom leg a few centimetres." })] },
+      { label: "All fours", kit: "legs", moves: [m("Donkey Kick", "side", { cue: "Heel to the ceiling, low back still." }), m("Fire Hydrant", "side", { cue: "Knee out to the side, hips square." }), m("Kneeling Kickback", "side", { cue: "Straight leg back, squeeze at the top." })] },
+      { label: "Standing burn", moves: [m("Sumo Squat Pulse", "reps", { cue: "Wide stance, sit low, pulse at the bottom." }), m("Reverse Lunge", "side", { cue: "Step back, drop the knee straight down." }), m("Wall Sit", "hold", { cue: "Back flat on the wall, knees over ankles.", alt: "Higher wall sit" })] },
+    ],
+    [
+      { label: "Bridge series", kit: "ball", moves: [m("Glute Bridge", "reps", { cue: "Squeeze the ball, slow on the way down." }), m("Bridge March", "side", { cue: "Lift one foot at a time, hips do not drop." }), m("Bridge Pulse", "hold", { cue: "Small, steady pulses at the top." })] },
+      { label: "Side-lying series", kit: "legs", moves: [m("Side Kick Front and Back", "side", { cue: "Swing the top leg front and back, torso still." }), m("Side-Lying Leg Lift", "side", { cue: "Lift and lower for 2 s each way." }), m("Clamshell", "side", { cue: "Pause at the top." })] },
+      { label: "All fours", kit: "legs", moves: [m("Kneeling Kickback", "side", { cue: "Straight leg, toe down." }), m("Donkey Kick", "side", { cue: "Bent knee, press up." }), m("Bird Dog", "side", { cue: "Reach long, pause." })] },
+      { label: "Standing burn", moves: [m("Plié Squat", "reps", { cue: "Lift the heels for an extra burn in later weeks." }), m("Curtsy Lunge", "side", { cue: "Step back and across." }), m("Squat Hold", "hold", { cue: "Sit low, chest tall, breathe." })] },
+    ],
+  ],
+  core: [
+    [
+      { label: "Classic core", moves: [m("The Hundred", "fixed", { fixed: "100 counts", cue: "Breathe in for 5, out for 5. Head down if your neck tires." }), m("Roll-Up", "reps", { cue: "Peel up one vertebra at a time, reach, roll down slowly.", alt: "Half roll-back" }), m("Single Leg Circles", "side", { cue: "Small circles, hips still." })] },
+      { label: "Obliques", moves: [m("Criss-Cross", "reps", { cue: "Rotate from the ribs, slow." }), m("Side Plank", "side", { cue: "Knee down to start. Lift the hips and dip a few centimetres.", alt: "Bent-knee side plank" }), m("Toe Taps", "side", { cue: "Knees in tabletop, tap one toe down, low back stays heavy." })] },
+      { label: "Arms on the mat", kit: "arms", moves: [m("Push-Up", "reps", { cue: "On your knees is perfect. Elbows back towards your ribs." }), m("Overhead Press", "reps", { cue: "Kneeling tall, ribs down." }), m("Bicep Curl", "reps", { cue: "Pulse at the halfway point in later weeks." })] },
+      { label: "Plank", moves: [m("Forearm Plank", "hold", { cue: "Glutes squeezed, ribs down, long line.", alt: "Knees down" }), m("Plank Shoulder Tap", "reps", { cue: "Feet wide, hips still." }), m("Swimming", "hold", { cue: "Face down, flutter opposite arm and leg, long neck." })] },
+    ],
+    [
+      { label: "Classic core", moves: [m("The Hundred", "fixed", { fixed: "100 counts", cue: "Legs higher for less load on your back." }), m("Single Leg Stretch", "reps", { cue: "Switch legs smoothly." }), m("Scissors", "side", { cue: "Straight legs, pull one towards you, the other hovers." })] },
+      { label: "Obliques", moves: [m("Side Plank", "side", { cue: "Elbow under shoulder, lift and lower the hips.", alt: "Bent-knee side plank" }), m("Mermaid Side Bend", "side", { cue: "Seated, reach up and over, long through the waist." }), m("Criss-Cross", "reps", { cue: "Elbow wide, rotate slowly." })] },
+      { label: "Arms on the mat", kit: "arms", moves: [m("Tricep Push-Up", "reps", { cue: "On your knees, elbows brush your ribs." }), m("Tricep Kickback", "reps", { cue: "Upper arms still." }), m("Lateral Raise", "reps", { cue: "To shoulder height, slow." })] },
+      { label: "Plank", moves: [m("Bear Hold", "hold", { cue: "Knees hover a few centimetres, flat back." }), m("Plank Leg Lift", "side", { cue: "Lift one leg a few centimetres, hips level.", alt: "Forearm plank" }), m("Swimming", "hold", { cue: "Long neck, small fast flutters." })] },
+    ],
+  ],
+  glute: [
+    [
+      { label: "Bridge with ball", kit: "ball", moves: [m("Glute Bridge", "reps", { cue: "Squeeze the ball the whole time." }), m("Bridge March", "side", { cue: "Hips level as each foot lifts." }), m("Bridge Pulse", "hold", { cue: "Top of the bridge, tiny pulses." })] },
+      { label: "Side-lying", kit: "legs", moves: [m("Side-Lying Leg Lift", "side", { cue: "Toes forward, lift from the hip." }), m("Clamshell", "side", { cue: "Open slowly, close slowly." }), m("Side Kick Front and Back", "side", { cue: "Torso still." })] },
+      { label: "Abs", moves: [m("Double Leg Stretch", "reps", { cue: "Reach arms and legs long, circle back in.", alt: "Single leg stretch" }), m("Toe Taps", "side", { cue: "Low back stays heavy." }), m("Reverse Crunch", "reps", { cue: "Curl the pelvis up gently, no swinging." })] },
+      { label: "Face down", kit: "legs", moves: [m("Swimming", "hold", { cue: "Long neck, opposite arm and leg." }), m("Frog Heel Squeeze", "reps", { cue: "Face down, knees wide, heels together, squeeze and lift." }), m("Prone Leg Lift", "side", { cue: "Straight leg lifts a few centimetres, hips down." })] },
+    ],
+    [
+      { label: "Bridge with ball", kit: "ball", moves: [m("Single-Leg Glute Bridge", "side", { cue: "Hips level." }), m("Glute Bridge", "reps", { cue: "Pause and squeeze at the top." }), m("Bridge Pulse", "hold", { cue: "Small and steady." })] },
+      { label: "Side-lying", kit: "legs", moves: [m("Inner Thigh Lift", "side", { cue: "Lift the bottom leg a few centimetres." }), m("Side-Lying Leg Lift", "side", { cue: "Pulse at the top in later weeks." }), m("Clamshell", "side", { cue: "Pelvis still." })] },
+      { label: "Abs", moves: [m("Single Leg Stretch", "reps", { cue: "Switch smoothly." }), m("Dead Bug", "side", { cue: "Exhale as you reach long." }), m("Criss-Cross", "reps", { cue: "Slow rotation." })] },
+      { label: "All fours", kit: "legs", moves: [m("Donkey Kick", "side", { cue: "Heel to the ceiling." }), m("Fire Hydrant", "side", { cue: "Hips square." }), m("Bird Dog", "side", { cue: "Pause 2 s at full reach." })] },
+    ],
+  ],
+};
+
+const CLASS_META = {
+  full: { name: "Full Body Sculpt", focus: "Glutes, core, arms, legs", warmup: ["Breathing with pelvic tilts ×8", "Cat–cow ×6", "Roll down and back up ×3"] },
+  lower: { name: "Lower Body Burn", focus: "Glutes, outer and inner thighs", warmup: ["Glute bridge ×10", "Hip circles on all fours ×5 each way", "Bodyweight squat ×10"] },
+  core: { name: "Core & Arms", focus: "Deep core, obliques, shoulders, arms", warmup: ["Breathing ×5", "Pelvic tilt to small bridge ×6", "Arm circles ×10"] },
+  glute: { name: "Glutes & Abs", focus: "Glutes, hamstrings, abs", warmup: ["Cat–cow ×6", "Glute bridge ×10", "Dead bug ×5 each side"] },
+} as const;
+
+const COOLDOWN = ["Pigeon stretch · 45 s each side", "Supine twist · 30 s each side", "Child's pose · 1 min"];
+
+function toExercise(move: Move, phase: Phase, kit?: Series["kit"]): Exercise {
+  const reps = move.kind === "fixed" ? move.fixed ?? "" : move.kind === "hold" ? phase.hold : move.kind === "side" ? `${phase.reps} each side` : phase.reps;
+  return ex(move.name, reps, {
+    ...(phase.kit && kit ? { weight: KIT_WEIGHT[kit] } : {}),
+    ...(move.cue ? { cue: move.cue } : {}),
+    ...(move.alt ? { alt: move.alt } : {}),
+  });
+}
+
+function sculpt(day: number, type: keyof typeof CLASSES, week: number): Session {
+  const phase = PHASES[week];
+  const series = CLASSES[type][(week - 1) % 2];
+  const meta = CLASS_META[type];
+  return {
+    day,
+    name: meta.name,
+    focus: meta.focus,
+    durationMin: 30,
+    equipment: phase.kit ? "Mat · ankle weights, mini ball and 1–2 kg dumbbells if you have them" : "Mat",
+    feel: phase.feel,
+    warmup: [...meta.warmup],
+    supersets: series.map(s => block(1, 15, s.moves.map(mv => toExercise(mv, phase, s.kit)), s.label)),
+    cooldown: COOLDOWN,
+    coachingNote: phase.note,
+  };
+}
+
+const stretch = (day: number): Session => ({
+  day,
+  name: "Stretch & Release",
+  focus: "Hips, hamstrings, spine",
+  durationMin: 15,
+  equipment: "Mat",
+  feel: "Soft",
+  optional: true,
+  structure: ["Cat–cow · 1 min", "Low lunge · 45 s each side", "Seated forward fold · 1 min", "Figure-four stretch · 45 s each side", "Supine twist · 45 s each side", "Legs up the wall · 3 min"],
+  coachingNote: "Optional. A gentle reset for tight hips and a busy mind.",
+});
+
+function week(n: number): Week {
+  const phase = PHASES[n];
+  return {
+    week: n,
+    theme: phase.theme,
+    progression: phase.progression,
+    sessions: [
+      sculpt(1, "full", n),
+      sculpt(2, "lower", n),
+      walkDay(3, 30),
+      sculpt(4, "core", n),
+      sculpt(5, "glute", n),
+      stretch(6),
+      restDay(7),
+    ],
+  };
+}
+
+export const pilatesPlan: TrainingPath = {
   id: "mat-pilates",
-  name: "The Still Centre",
-  subtitle: "Core as home, not as punishment",
+  name: "Mat Sculpt 30",
+  subtitle: "30-minute mat pilates that burns, then lets you breathe",
   focus: "pilates",
   description:
-    "Pilates is about finding the centre of yourself – the deep, steady place from which all movement originates. This 8‑week path is slow, deliberate, and deeply respectful of the body you are in right now.",
+    "Four 30-minute mat classes a week in the modern sculpt style: slow, controlled, high-rep series with small pulses and long holds. Low impact, done in your lounge, with ankle weights, a mini ball and light dumbbells joining from week 3.",
   whoItIsFor:
-    "The woman who craves movement that feels like a return to herself – gentle, precise, and quietly transformative.",
-  weeks: [
-    // ═══════════════════════════════════════════════════════════
-    // WEEK 1–2: MODIFIED BEGINNER MATWORK (from CSV)
-    // ═══════════════════════════════════════════════════════════
-    {
-      week: 1,
-      theme: "Foundations of Centre",
-      progression:
-        "Learn breath, pelvic floor engagement, and basic spinal articulation. 3 Pilates days + 1 walk + 3 rest.",
-      sessions: [
-        {
-          day: 1,
-          name: "Centre & Breath",
-          focus: "Breath, pelvic floor, deep core",
-          durationMin: 20,
-          equipment: "Mat",
-          feel: "Quietly awake",
-          structure: [
-            "5 min: diaphragmatic breathing, pelvic tilts",
-            "The Hundred (Modified) – 1 set of 100 counts",
-            "The Roll-Up (Beginning Scoop) – 3 reps",
-            "Single Leg Circles (Modified) – 3–5 each direction, each leg",
-            "Rolling Like a Ball (Modified) – 5–6 reps",
-            "Single Leg Stretch (Modified) – 5–10 sets",
-            "Double Leg Stretch (Modified) – 5–10 reps",
-            "Spine Stretch Forward (Modified) – 3 reps",
-            "5 min: supine twist, savasana",
-          ],
-          coachingNote:
-            "Every movement begins with the breath. The exhale is the moment of deepest connection. Sink your belly into the mat – that's your signal home.",
-        },
-        {
-          day: 2,
-          name: "Walk",
-          focus: "Active recovery",
-          durationMin: 25,
-          equipment: "None",
-          feel: "Easy",
-          structure: ["25 min walk"],
-          coachingNote: "",
-        },
-        {
-          day: 3,
-          name: "Spine & Stability",
-          focus: "Spinal articulation, hip strength",
-          durationMin: 20,
-          equipment: "Mat",
-          feel: "Supple and supported",
-          structure: [
-            "5 min: cat‑cow flow, thread the needle",
-            "The Roll-Up (Beginning Scoop) – 3 reps",
-            "Single Leg Circles (Modified) – 3–5 each direction",
-            "Rolling Like a Ball (Modified) – 5–6 reps",
-            "Single Leg Stretch (Modified) – 5–10 sets",
-            "Spine Stretch Forward (Modified) – 3 reps",
-            "5 min: seated spinal rotation, legs up the wall",
-          ],
-          coachingNote:
-            "Your spine is a river, not a column. Each vertebra moves in sequence. Imagine a beach ball between your thighs – it keeps the C‑curve alive.",
-        },
-        {
-          day: 4,
-          name: "Rest",
-          structure: ["Rest"],
-        },
-        {
-          day: 5,
-          name: "Full Body Flow",
-          focus: "Integration",
-          durationMin: 20,
-          equipment: "Mat",
-          feel: "Whole",
-          structure: [
-            "5 min: standing roll‑down, shoulder circles",
-            "The Hundred (Modified) – 100 counts",
-            "The Roll-Up (Beginning Scoop) – 3 reps",
-            "Single Leg Stretch (Modified) – 5–10 sets",
-            "Double Leg Stretch (Modified) – 5–10 reps",
-            "Rolling Like a Ball (Modified) – 5–6 reps",
-            "Spine Stretch Forward (Modified) – 3 reps",
-            "5 min: child’s pose, savasana",
-          ],
-          coachingNote:
-            "Let the breath connect every movement. No rush. The signal is felt, not forced.",
-        },
-        { day: 6, name: "Rest", structure: ["Rest"] },
-        { day: 7, name: "Rest", structure: ["Rest"] },
-      ],
-    },
-    {
-      week: 2,
-      theme: "Building Depth",
-      progression:
-        "Increase holds by 1‑2 breaths. Same exercises, deeper awareness.",
-      sessions: [
-        {
-          day: 1,
-          name: "Centre & Breath (Build)",
-          durationMin: 22,
-          equipment: "Mat",
-          feel: "Deeper",
-          structure: [
-            "Same as Week 1 Day 1, but hold each exercise 1 breath longer at the end of each repetition.",
-          ],
-          coachingNote:
-            "Deeper doesn't mean harder – it means more present. Listen to the signal of your pelvic floor on every exhale.",
-        },
-        {
-          day: 2,
-          name: "Walk",
-          durationMin: 25,
-          equipment: "None",
-          feel: "Easy",
-          structure: ["Walk"],
-        },
-        {
-          day: 3,
-          name: "Spine & Stability (Build)",
-          durationMin: 22,
-          equipment: "Mat",
-          feel: "Stronger",
-          structure: [
-            "Same as Week 1 Day 3, add 1 extra set of each exercise (2 sets total).",
-          ],
-          coachingNote: "",
-        },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        {
-          day: 5,
-          name: "Full Body Flow (Build)",
-          durationMin: 22,
-          equipment: "Mat",
-          feel: "Flowing",
-          structure: [
-            "Same as Week 1 Day 5, repeat the full sequence twice with 30 sec rest between rounds.",
-          ],
-          coachingNote: "",
-        },
-        { day: 6, name: "Rest", structure: ["Rest"] },
-        { day: 7, name: "Rest", structure: ["Rest"] },
-      ],
-    },
-    // ═══════════════════════════════════════════════════════════
-    // WEEK 3–6: FULL MAT – BEGINNER (from CSV)
-    // ═══════════════════════════════════════════════════════════
-    {
-      week: 3,
-      theme: "Extending the Flow",
-      progression:
-        "Link movements together with continuous breath. Introduce full beginner exercises.",
-      sessions: [
-        {
-          day: 1,
-          name: "Centre & Breath (Flow)",
-          durationMin: 30,
-          equipment: "Mat",
-          feel: "Seamless",
-          structure: [
-            "3 min: diaphragmatic breath",
-            "Flow A (repeat 3× without pause): The Hundred (100 counts) → The Roll-Up (3–5 reps) → Single Leg Circles (3–5 each direction)",
-            "Flow B (repeat 3×): Single Leg Stretch (5–10 sets) → Double Leg Stretch (5–10 reps) → Rolling Like a Ball (5–6 reps)",
-            "Spine Stretch Forward – 3 slow reps",
-            "5 min: savasana",
-          ],
-          coachingNote:
-            "The breath becomes the bridge between exercises. No pause – just a continuous wave of centre.",
-        },
-        {
-          day: 2,
-          name: "Walk",
-          durationMin: 25,
-          equipment: "None",
-          structure: ["Walk"],
-        },
-        {
-          day: 3,
-          name: "Spine & Stability (Flow)",
-          durationMin: 30,
-          equipment: "Mat",
-          feel: "Supple",
-          structure: [
-            "3 min cat‑cow, pelvic clocks",
-            "Flow: Single Leg Circles → Rolling Like a Ball → Single Leg Stretch (repeat 3×)",
-            "Side Kicks Up/Down – 5 each side",
-            "Small Circles – 5 each direction, each side",
-            "The Seal – 6 reps",
-            "5 min: supine twist, hamstring stretch",
-          ],
-          coachingNote:
-            "Keep your torso still during leg circles – the signal of stability comes from a motionless centre.",
-        },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        {
-          day: 5,
-          name: "Full Body Flow (Extended)",
-          durationMin: 30,
-          equipment: "Mat",
-          feel: "Whole",
-          structure: [
-            "5 min standing roll‑down, shoulder rolls",
-            "Complete beginner sequence (repeat 2×): Hundred → Roll‑Up → Single Leg Circles → Rolling Like a Ball → Single Leg Stretch → Double Leg Stretch → Spine Stretch Forward → Side Kicks → Small Circles → The Seal",
-            "5 min savasana",
-          ],
-          coachingNote: "",
-        },
-        { day: 6, name: "Rest", structure: ["Rest"] },
-        { day: 7, name: "Rest", structure: ["Rest"] },
-      ],
-    },
-    {
-      week: 4,
-      theme: "Consolidation",
-      progression:
-        "Repeat Week 3. Aim for smooth, effortless transitions. Add 2 reps to each exercise.",
-      sessions: [
-        {
-          day: 1,
-          name: "Centre & Breath (Consolidation)",
-          durationMin: 30,
-          equipment: "Mat",
-          feel: "Familiar",
-          structure: [
-            "Same as Week 3 Day 1, but increase each exercise by 2 reps (e.g., Roll‑Up 5 reps, Circles 5–7 each direction).",
-          ],
-          coachingNote:
-            "This week is about mastery, not intensity. The signal becomes automatic.",
-        },
-        {
-          day: 2,
-          name: "Walk",
-          durationMin: 25,
-          structure: ["Walk"],
-        },
-        {
-          day: 3,
-          name: "Spine & Stability (Consolidation)",
-          durationMin: 30,
-          equipment: "Mat",
-          structure: ["Same as Week 3 Day 3 with added reps."],
-        },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        {
-          day: 5,
-          name: "Full Body Flow (Consolidation)",
-          durationMin: 30,
-          equipment: "Mat",
-          structure: ["Same as Week 3 Day 5 with added reps and smoother linking."],
-        },
-        { day: 6, name: "Rest", structure: ["Rest"] },
-        { day: 7, name: "Rest", structure: ["Rest"] },
-      ],
-    },
-    {
-      week: 5,
-      theme: "New Challenge",
-      progression:
-        "Introduce intermediate exercises: Single Straight Leg Stretch, Crisscross, Open‑Leg Rocker.",
-      sessions: [
-        {
-          day: 1,
-          name: "Centre & Side Body",
-          durationMin: 35,
-          equipment: "Mat",
-          feel: "Learning",
-          structure: [
-            "5 min breath and pelvic floor",
-            "The Hundred – 100 counts",
-            "The Roll‑Up – 5 reps",
-            "Single Leg Circles – 5 each direction",
-            "Single Straight Leg Stretch – 5–10 sets",
-            "Crisscross – 5–10 sets",
-            "Side Kicks Up/Down – 5 each side",
-            "Small Circles – 5 each direction",
-            "5 min: savasana",
-          ],
-          coachingNote:
-            "New exercises ask for new attention. Keep your chin toward your chest – that small signal protects your neck and deepens ab work.",
-        },
-        {
-          day: 2,
-          name: "Walk",
-          durationMin: 25,
-          structure: ["Walk"],
-        },
-        {
-          day: 3,
-          name: "Spine & Full Integration",
-          durationMin: 35,
-          equipment: "Mat",
-          feel: "Expanded",
-          structure: [
-            "Spine Stretch Forward – 5 reps",
-            "Open‑Leg Rocker – 6 reps (balance on tailbone)",
-            "Single Leg Stretch – 10 sets",
-            "Double Leg Stretch – 10 reps",
-            "Rolling Like a Ball – 6 reps",
-            "The Seal – 6 reps",
-            "5 min: spinal twist, lying",
-          ],
-          coachingNote:
-            "Open‑Leg Rocker asks for total surrender of the upper body. Initiate the roll from your navel sinking into spine – that's your engine.",
-        },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        {
-          day: 5,
-          name: "Full Body Challenge",
-          durationMin: 35,
-          equipment: "Mat",
-          feel: "Engaged",
-          structure: [
-            "Flow: Hundred → Roll‑Up → Single Leg Circles → Single Straight Leg Stretch → Crisscross → Side Kicks → Open‑Leg Rocker → The Seal (rest 30 sec between 2 rounds)",
-            "5 min child's pose, savasana",
-          ],
-          coachingNote: "",
-        },
-        { day: 6, name: "Rest", structure: ["Rest"] },
-        { day: 7, name: "Rest", structure: ["Rest"] },
-      ],
-    },
-    {
-      week: 6,
-      theme: "Deepen the Challenge",
-      progression:
-        "Add holds and increase reps by 2. Introduce Teaser I and Side Bicycle.",
-      sessions: [
-        {
-          day: 1,
-          name: "Centre & Side Body (Deepen)",
-          durationMin: 35,
-          equipment: "Mat",
-          feel: "Stronger",
-          structure: [
-            "5 min breath",
-            "The Hundred – legs lower (more challenge)",
-            "The Roll‑Up – 5 reps with 2 sec hold at top",
-            "Single Leg Circles – 6 each direction, larger circles",
-            "Teaser I – 3 reps (float up to V position)",
-            "Side Bicycle – 3–5 each direction each side",
-            "Inner‑Thigh Lifts – 5–10 lifts + 10 pulses each side",
-            "5 min savasana",
-          ],
-          coachingNote:
-            "Teaser is the signal of full integration – arms, legs, and spine moving as one. Keep your legs absolutely still; imagine springs attached to your ankles.",
-        },
-        {
-          day: 2,
-          name: "Walk",
-          durationMin: 30,
-          structure: ["Longer walk"],
-        },
-        {
-          day: 3,
-          name: "Spine & Full Integration (Deepen)",
-          durationMin: 35,
-          equipment: "Mat",
-          structure: [
-            "Spine Stretch Forward – 5 reps",
-            "Open‑Leg Rocker – 8 reps",
-            "Single Straight Leg Stretch – 10 sets",
-            "Crisscross – 10 sets",
-            "Side Kicks Front/Back – 6 each side",
-            "The Corkscrew (beginner version: small circles) – 3 sets",
-            "5 min: hamstring stretch, supine",
-          ],
-          coachingNote:
-            "The Corkscrew asks for stillness in the torso while legs circle. Squeeze your buttocks and inner thighs – that locks the signal of stability.",
-        },
-        { day: 4, name: "Rest", structure: ["Rest"] },
-        {
-          day: 5,
-          name: "Full Body Challenge (Deepen)",
-          durationMin: 35,
-          equipment: "Mat",
-          structure: [
-            "All previous exercises combined: 3 rounds with 1 min rest. Focus on breath rhythm (5 inhale / 5 exhale) throughout.",
-          ],
-        },
-        { day: 6, name: "Rest", structure: ["Rest"] },
-        { day: 7, name: "Rest", structure: ["Rest"] },
-      ],
-    },
-  // ═══════════════════════════════════════════════════════════
-// WEEK 7–8: INTERMEDIATE MATWORK (first taste) – FULLY ELABORATED
-// ═══════════════════════════════════════════════════════════
-{
-  week: 7,
-  theme: "Peak Flow",
-  progression:
-    "Move through full intermediate sequences without pause. Introduce The Saw, Single Leg Kicks, and Neck Pull. RPE 8‑9.",
-  sessions: [
-    {
-      day: 1,
-      name: "Peak Centre Flow",
-      durationMin: 45,
-      equipment: "Mat",
-      feel: "Flowing",
-      structure: [
-        "5 min: diaphragmatic breathing, pelvic floor activation, standing roll‑down",
-        "Flow A (3 rounds, minimal rest):",
-        "  • The Hundred – 100 counts (legs at 45°, arms pump, 5‑count breath)",
-        "  • The Roll‑Up – 5 reps (full version, articulate each vertebra)",
-        "  • Single Leg Circles – 6 each direction, each leg (slight turnout, still torso)",
-        "  • Single Straight Leg Stretch – 10 sets (scissor legs, chin to chest)",
-        "  • Crisscross – 10 sets (twist from ribs, opposite shoulder lifted)",
-        "  • Teaser I – 3 reps (float to V balance, legs still)",
-        "  • Rolling Like a Ball – 6 reps (archival: head between knees)",
-        "  • The Seal – 6 reps (3 claps at each end)",
-        "5 min savasana with lateral breathing",
-      ],
-      coachingNote:
-        "This is the signal at full volume – but still quiet inside. Each exhale wrings out old air; each inhale brings fresh centre. In Crisscross, rotate from your ribs, not your elbows – that's where the oblique signal lives.",
-    },
-    {
-      day: 2,
-      name: "Walk",
-      durationMin: 30,
-      structure: ["Brisk walk – 30 min, maintain neutral pelvis and easy rhythm"],
-    },
-    {
-      day: 3,
-      name: "Peak Spine & Posterior Chain",
-      durationMin: 45,
-      equipment: "Mat",
-      feel: "Powerful",
-      structure: [
-        "5 min: cat‑cow, thread the needle, pelvic clocks",
-        "Flow B (3 rounds, 30 sec rest between rounds):",
-        "  • Spine Stretch Forward – 5 reps (legs wider than hips, C‑curve)",
-        "  • Open‑Leg Rocker – 6 reps (balance on tailbone, straight legs held at ankles)",
-        "  • The Corkscrew – 3–5 sets (legs circle overhead, hips stable)",
-        "  • The Saw – 4 sets (twist from waist, reach pinkie past baby toe)",
-        "  • Single Leg Kicks – 5 sets (prone, double kick heel to buttock)",
-        "  • Double Leg Kicks – 3 sets (face side, kick heels 3×, then bow up)",
-        "  • Neck Pull – 5 reps (hands behind head, roll up, bow, roll down)",
-        "  • Swimming – 30 sec (opposite arm/leg, 5‑count breath)",
-        "5 min: supine hamstring stretch with strap, savasana",
-      ],
-      coachingNote:
-        "The Saw asks you to wring the air from your lungs as you twist – imagine pressing a wet towel dry. That exhalation is the signal that deepens your rotation without forcing.",
-    },
-    {
-      day: 4,
-      name: "Rest",
-      structure: ["Rest – gentle stretching optional"],
-    },
-    {
-      day: 5,
-      name: "Peak Full Body – Complete Intermediate",
-      durationMin: 45,
-      equipment: "Mat",
-      feel: "Complete",
-      structure: [
-        "5 min: standing roll‑down, shoulder circles, breath awareness",
-        "Full intermediate sequence (3 rounds, 30 sec rest between rounds):",
-        "  • The Hundred – 100 counts",
-        "  • The Roll‑Up – 5 reps",
-        "  • Single Leg Circles – 6 each direction",
-        "  • Single Straight Leg Stretch – 10 sets",
-        "  • Crisscross – 10 sets",
-        "  • Open‑Leg Rocker – 6 reps",
-        "  • The Corkscrew – 3 sets",
-        "  • The Saw – 4 sets",
-        "  • Single Leg Kicks – 5 sets",
-        "  • Neck Pull – 5 reps",
-        "  • Side Kicks Front/Back – 6 each side",
-        "  • Side Bicycle – 3–5 each direction each side",
-        "  • Inner‑Thigh Lifts – 5–10 lifts + 10 pulses each side",
-        "  • Teaser I – 3 reps",
-        "  • The Seal – 6 reps",
-        "10 min extended savasana – legs up the wall, lateral breathing",
-      ],
-      coachingNote:
-        "You've built a signal so clear that movement happens without thought. Trust it. If any exercise feels too intense, return to the modified version – mastery is knowing when to soften.",
-    },
-    { day: 6, name: "Rest", structure: ["Rest"] },
-    { day: 7, name: "Rest", structure: ["Rest"] },
-  ],
-},
-{
-  week: 8,
-  theme: "Deload & Gratitude",
-  progression:
-    "Return to modified beginner sessions, but now with the depth of 7 weeks behind you. All exercises written out in full – no references. Move with ease, breath, and appreciation.",
-  sessions: [
-    {
-      day: 1,
-      name: "Centre & Breath (Gratitude)",
-      durationMin: 20,
-      equipment: "Mat",
-      feel: "Grateful",
-      structure: [
-        "5 min: supine diaphragmatic breathing (hand on belly, hand on heart), pelvic tilts",
-        "The Hundred (Modified) – 1 set of 100 counts (knees bent or legs long, head lifted, arms pump)",
-        "The Roll-Up (Beginning Scoop) – 3 reps (knees bent, round over imaginary beach ball)",
-        "Single Leg Circles (Modified) – 3–5 each direction, each leg (circle from hip, torso still)",
-        "Rolling Like a Ball (Modified) – 5–6 reps (chin tucked, stop at shoulder blades)",
-        "Single Leg Stretch (Modified) – 5–10 sets (inside hand on knee, outside on ankle)",
-        "Double Leg Stretch (Modified) – 5–10 reps (knees to chest, stretch long, circle back)",
-        "Spine Stretch Forward (Modified) – 3 reps (legs open wider than hips, C‑curve)",
-        "5 min: supine twist (knees to each side), savasana with gratitude breath",
-      ],
-      coachingNote:
-        "Your body has changed. You are stronger, more centred, more at home. This is the signal you can return to anytime. Notice how light the modified exercises feel now – that's the gift of your practice.",
-    },
-    {
-      day: 2,
-      name: "Walk",
-      durationMin: 30,
-      structure: ["Long walk in nature – no agenda, just presence"],
-    },
-    {
-      day: 3,
-      name: "Spine & Stability (Gratitude)",
-      durationMin: 20,
-      equipment: "Mat",
-      feel: "Supple and grateful",
-      structure: [
-        "5 min: cat‑cow flow, thread the needle (3 each side), deep squat hold with breath",
-        "Spine Stretch Forward (Modified) – 3 reps (legs wide, round forward, head last to lift)",
-        "Single Leg Circles (Modified) – 3–5 each direction, each leg (press palms into mat for stability)",
-        "Rolling Like a Ball (Modified) – 5–6 reps (initiate from navel, not neck)",
-        "Single Leg Stretch (Modified) – 5–10 sets (scoop belly, stay lifted from upper abs)",
-        "Double Leg Stretch (Modified) – 5–10 reps (activate glutes when extending legs)",
-        "Side Kicks Up/Down – 5 each side (lift top leg toward ceiling, resist on the way down)",
-        "Small Circles – 5 each direction, each side (vigorous circles from hip, knee locked)",
-        "5 min: seated spinal rotation (sukhasana), legs up the wall",
-      ],
-      coachingNote:
-        "Your spine has learned to articulate like a river. Feel each vertebra soften and release as you move. The signal of gratitude is the absence of effort.",
-    },
-    {
-      day: 4,
-      name: "Rest",
-      structure: ["Rest – maybe a warm bath or gentle self-massage"],
-    },
-    {
-      day: 5,
-      name: "Full Body Flow (Gratitude)",
-      durationMin: 20,
-      equipment: "Mat",
-      feel: "Whole and complete",
-      structure: [
-        "5 min: standing roll‑down (peel spine down, one vertebra at a time), shoulder circles, gentle squat hold",
-        "The Hundred (Modified) – 100 counts",
-        "The Roll-Up (Beginning Scoop) – 3 reps",
-        "Single Leg Circles (Modified) – 3–5 each direction, each leg",
-        "Rolling Like a Ball (Modified) – 5–6 reps",
-        "Single Leg Stretch (Modified) – 5–10 sets",
-        "Double Leg Stretch (Modified) – 5–10 reps",
-        "Spine Stretch Forward (Modified) – 3 reps",
-        "The Seal – 6 reps (knees open, hands around ankles, clap feet)",
-        "5 min: child's pose with lateral breathing, supine savasana",
-      ],
-      coachingNote:
-        "You started here eight weeks ago. Now you return as a different person – more centred, more aware, more alive. Move like water, with gratitude for every inhale.",
-    },
-    {
-      day: 6,
-      name: "Rest",
-      structure: ["Rest"],
-    },
-    {
-      day: 7,
-      name: "Reflect",
-      durationMin: 0,
-      equipment: "None",
-      feel: "Complete",
-      structure: [
-        "Write one sentence: What has Pilates taught you about your body?",
-        "Optional: repeat your favourite 10‑min sequence from any week as a celebration.",
-      ],
-      coachingNote:
-        "This is your centre. You can always return here. The signal never fades – it only deepens. Thank yourself for showing up.",
-    },
-  ],
-},
-  ]
+    "You want toned, strong legs, glutes and core without impact or a gym, and you have 30 minutes. Great after babies once you're cleared to exercise; make moves smaller if you notice doming or pelvic heaviness.",
+  equipmentLevel: "home",
+  daysPerWeek: 4,
+  sessionMinutes: [30, 30],
+  weeks: [1, 2, 3, 4, 5, 6, 7, 8].map(week),
 };

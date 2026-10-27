@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { requireUser } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -29,6 +30,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+  // Only signed-in members may call this (it uses the service role or paid AI).
+  const caller = await requireUser(req, corsHeaders);
+  if (caller instanceof Response) return caller;
 
   try {
     const {
@@ -46,7 +50,7 @@ Deno.serve(async (req) => {
 
     // Rate limiting: 10 per minute
     const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const userId = journal_entry_id || "anon";
+    const userId = caller.user.id;
     const { data: rl } = await sb.rpc("check_rate_limit", {
       _user_id: userId, _function_name: "stoic-journal-ai", _max_per_minute: 10,
     });
@@ -136,7 +140,8 @@ Member's cycle context: ${current_phase} phase, day ${cycle_day} (${cycle_mode})
       await sb2
         .from("journal_entries")
         .update({ stoic_lens: stoicLens })
-        .eq("id", journal_entry_id);
+        .eq("id", journal_entry_id)
+        .eq("user_id", caller.user.id);
     }
 
     return new Response(

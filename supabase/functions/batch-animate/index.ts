@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.98.0";
+import { requireAdmin } from "../_shared/auth.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -115,6 +116,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+  // Only signed-in admins may call this (it uses the service role or paid AI).
+  const caller = await requireAdmin(req, corsHeaders);
+  if (caller instanceof Response) return caller;
 
   try {
     const { batch = 0, batchSize = 5 } = await req.json().catch(() => ({}));

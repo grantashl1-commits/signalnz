@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireAdmin } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -40,6 +41,9 @@ const STRETCHES = [
 serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
+  // Only signed-in admins may call this (it uses the service role or paid AI).
+  const caller = await requireAdmin(req, corsHeaders);
+  if (caller instanceof Response) return caller;
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;

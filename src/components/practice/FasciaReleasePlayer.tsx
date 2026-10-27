@@ -4,6 +4,7 @@ import { X, Volume2, VolumeX, Leaf } from "lucide-react";
 import { FASCIA_EXERCISES, type FasciaExercise } from "@/data/fascia-release-exercises";
 import { haptic } from "@/hooks/use-mobile";
 import { CALM_READER_VOICE_ID, getScriptAudioOverride } from "@/lib/script-audio";
+import { functionHeaders } from "@/lib/function-headers";
 
 interface Props {
   onClose: () => void;
@@ -40,11 +41,7 @@ export default function FasciaReleasePlayer({ onClose }: Props) {
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-generate-inline`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
+            headers: await functionHeaders(),
             body: JSON.stringify({ text, voiceId: CALM_READER_VOICE_ID }),
           }
         );

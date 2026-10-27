@@ -52,20 +52,23 @@ export default function Connect() {
   const myRole: "member" | "partner" = isPartnerSession ? "partner" : "member";
   const { partnerOnline, partnerActivity, broadcastActivity } = useConnectPresence(connectionId, myRole);
 
-  // Check for existing connection on load
+  // Check for an existing connection on load: as the member, or as the linked partner
+  // (whose private sign-in keeps them in the space on this device).
   useEffect(() => {
     if (!user) return;
     supabase
       .from("partner_connections")
-      .select("id, partner_name, join_code")
-      .eq("member_user_id", user.id)
+      .select("id, partner_name, join_code, member_user_id")
+      .or(`member_user_id.eq.${user.id},partner_user_id.eq.${user.id}`)
       .eq("status", "linked")
+      .limit(1)
       .maybeSingle()
       .then(({ data }) => {
         if (data) {
           setConnectionId(data.id);
           setPartnerDisplayName(data.partner_name || "Partner");
           setGeneratedCode(data.join_code);
+          setIsPartnerSession(data.member_user_id !== user.id);
           setView("space");
         }
       });
@@ -190,27 +193,30 @@ export default function Connect() {
     }
     setLoading(true);
 
-    // Use secure RPC to verify PIN without exposing hash
-    const { data, error } = await supabase.rpc("verify_partner_pin", {
-      _code: joinCode.toUpperCase(),
-      _pin_hash: hashPin(fullPin),
-    });
+    // No account needed: the partner gets a private sign-in of their own, so Connect's
+    // privacy rules can tell the two of you apart from everyone else.
+    if (!user) {
+      const { error: signInError } = await supabase.auth.signInAnonymously();
+      if (signInError) {
+        toast.error("We couldn't open your private space just now. Try again in a moment.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // The server checks the code and PIN (5 tries a minute) and links you as the partner.
+    const { data, error } = await (supabase.rpc as unknown as (fn: string, args: Record<string, string>) => Promise<{ data: { connection_id: string; partner_name: string | null }[] | null; error: { message: string } | null }>)(
+      "join_partner_connection",
+      { _code: joinCode.toUpperCase(), _pin_hash: hashPin(fullPin) },
+    );
 
     if (error || !data || data.length === 0) {
-      toast.error(error ? "That code didn't match — check with your partner." : "That PIN didn't match — try again gently.");
+      toast.error(error?.message?.includes("Too many") ? "Too many tries. Wait a minute, then try again." : "That code and PIN didn't match — check with your partner.");
       setLoading(false);
       return;
     }
 
     const match = data[0];
-
-    // Link the connection
-    if (match.connection_status === "pending") {
-      await supabase
-        .from("partner_connections")
-        .update({ status: "linked", partner_user_id: user?.id || null })
-        .eq("id", match.connection_id);
-    }
 
     setConnectionId(match.connection_id);
     setPartnerDisplayName(match.partner_name || "Partner");

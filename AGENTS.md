@@ -223,3 +223,6 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 - Keep homepage illustration assets in a shared landing artwork module, separate from global icon rendering, so artwork changes cannot replace functional icons elsewhere.
 <!-- LOVABLE:END -->
 - Partner classes run A, B, A, B at each station before moving to the next (`turnAt` in `src/lib/partner-progress.ts`); reps and weights come from `plannedLoad` for the week and are never typed during class, and a finished class saves itself to today's Move log.
+- Build training paths with `src/data/training-paths/build.ts` (sets equal rounds, rest on every block, walks marked optional) and keep sessions inside the path's `sessionMinutes`; `src/lib/__tests__/training-paths.test.ts` checks this.
+- Show shopping quantities through `formatSmartQty` in `src/lib/smart-shopping-core.ts` (spoons under 60 ml, liquids as ml with cups, dry goods as cups), and let `withMethodAmounts` add amounts to recipe methods rather than hand-editing each recipe.
+- Edge functions deployed with `verify_jwt = false` must call `requireUser` or `requireAdmin` from `supabase/functions/_shared/auth.ts`, and client `fetch` calls to functions use `functionHeaders()` so the member's session is sent.

@@ -149,7 +149,7 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
           ) : (
             <>
               <p className="display-serif text-[1.75rem] leading-tight text-foreground">Choose a training path</p>
-              <p className="mt-1 text-[13px] text-muted-foreground">Strength, pilates, running or restore — sized to the time you have.</p>
+              <p className="mt-1 text-[13px] text-muted-foreground">Strength, reformer, pilates or running, sized to the time you have.</p>
             </>
           )}
         </Tile>

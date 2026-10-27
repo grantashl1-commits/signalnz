@@ -1,3 +1,4 @@
+import { requireUser } from "../_shared/auth.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -7,6 +8,9 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
+  // Only signed-in members may call this (it uses the service role or paid AI).
+  const caller = await requireUser(req, corsHeaders);
+  if (caller instanceof Response) return caller;
 
   try {
     const { url } = await req.json();
@@ -26,6 +30,18 @@ Deno.serve(async (req) => {
     }
 
     const fetchUrl = url.replace(/^webcal:\/\//, 'https://');
+    // Public calendar feeds only: never let a pasted link reach internal or metadata addresses.
+    let target: URL;
+    try { target = new URL(fetchUrl); } catch { target = new URL('http://invalid'); }
+    const host = target.hostname.toLowerCase();
+    const privateHost = /^(localhost|0\.|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|\[?::1\]?$|\[?f[cd][0-9a-f]{2}:)/.test(host)
+      || host.endsWith('.internal') || host.endsWith('.local') || host === 'metadata.google.internal' || !host.includes('.');
+    if (!/^https?:$/.test(target.protocol) || privateHost) {
+      return new Response(JSON.stringify({ error: 'Invalid calendar URL' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const response = await fetch(fetchUrl, {
       headers: { 'Accept': 'text/calendar' },
     });

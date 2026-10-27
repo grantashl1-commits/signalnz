@@ -29,8 +29,8 @@ import {
   toNZName,
   categoriseItem,
   parseQty,
-  toBase,
   formatSmartQty,
+  aggregateShoppingItems,
   AggregatedItem,
 } from "@/lib/smart-shopping-core";
 
@@ -161,46 +161,14 @@ function ShoppingContent({ plan, weekNumber, allPlanDays = false, weekStart }: P
     const endDay = weekNumber * 7;
     const weekDays = allPlanDays ? plan.days : plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= endDay);
     
-    const ingredientMap: Record<string, AggregatedItem> = {};
+    // Same aggregation as the PDF export: sums across recipes, merges units, splits "salt and pepper".
     const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
-
-    weekDays.forEach(day => {
-      const meals = [day.breakfast, day.lunch, day.dinner];
-      if (day.morningSnack?.ingredients?.length) meals.push(day.morningSnack);
-      if (day.afternoonSnack?.ingredients?.length) meals.push(day.afternoonSnack);
-
-      meals.forEach(meal => {
-        if (!meal || meal.isLeftover) return;
-        (meal.ingredients || []).forEach(ingStr => {
-          const parsed = parseIngredient(ingStr);
-          // Translate to NZ supermarket wording so the list reads kiwi.
-          const nzName = toNZName(parsed.name);
-          const nzSearch = toNZName(parsed.searchTerm);
-          const baseQty = parseQty(parsed.quantity);
-          const totalQty = baseQty * servingMultiplier / (meal.serves || 2);
-          const mapKey = nzSearch.toLowerCase();
-          const cat = categoriseItem(nzName);
-
-          // Normalise into base unit (g | ml | count) so g/ml/tbsp/cup variants
-          // for the same ingredient combine into one row.
-          const base = toBase(totalQty, parsed.unit, nzName);
-          const unitKey = base.unit || "unit";
-          const fullKey = `${mapKey}::${unitKey}`;
-          if (ingredientMap[fullKey]) {
-            ingredientMap[fullKey].totalQty += base.qty;
-          } else {
-            ingredientMap[fullKey] = {
-              name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
-              totalQty: base.qty,
-              unit: base.unit,
-              category: cat,
-              searchTerm: nzSearch,
-              isPantryStaple: isPantryStaple(nzName),
-            };
-          }
-        });
-      });
-    });
+    const meals = weekDays.flatMap(day => [day.breakfast, day.lunch, day.dinner, day.morningSnack, day.afternoonSnack])
+      .filter(meal => meal && !meal.isLeftover && meal.ingredients?.length);
+    const ingredientMap: Record<string, AggregatedItem> = {};
+    for (const item of Object.values(aggregateShoppingItems({ meals, servingMultiplier }, parseIngredient)).flat()) {
+      ingredientMap[`${item.searchTerm.toLowerCase()}::${item.unit}`] = { ...item, isPantryStaple: isPantryStaple(item.name) };
+    }
 
     // Add custom items
     customItems.forEach(item => {
@@ -415,7 +383,7 @@ function ShoppingContent({ plan, weekNumber, allPlanDays = false, weekStart }: P
                       };
 
                       return (
-                        <div key={item.name} className="flex items-center gap-2">
+                        <div key={key} className="flex items-center gap-2">
                           <button onClick={() => toggleItem(key)}
                             className="touch-btn flex-shrink-0 transition-all">
                             <span className={`h-5 w-5 rounded-full border flex items-center justify-center ${

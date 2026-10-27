@@ -215,7 +215,7 @@ function getRecommendations(
 
 const PRIORITY_BADGE = {
   essential: { label: "Essential", bg: "bg-primary/15", text: "text-primary" },
-  recommended: { label: "Recommended", bg: "bg-accent/20", text: "text-accent-foreground" },
+  recommended: { label: "Recommended", bg: "bg-eat/15", text: "text-foreground" },
   consider: { label: "Consider", bg: "bg-secondary", text: "text-muted-foreground" },
 };
 

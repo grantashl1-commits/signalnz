@@ -511,7 +511,7 @@ function Summary({ session, active, total, settings, saving, onBack, onDiscard, 
       {complete ? (
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <p className="pc-sub flex flex-1 items-center gap-2" role="status" data-testid="class-saved">
-            {active.saved ? <><Check className="h-5 w-5" style={{ color: "var(--pc-teal)" }} /> Saved to today in Move → My Log and ticked off in the plan.</> : "Saving…"}
+            {active.saved ? <><Check className="h-5 w-5" style={{ color: "var(--pc-teal)" }} /> Saved to today in Move → Log and ticked off in the plan.</> : "Saving…"}
           </p>
           <button type="button" className="pc-btn pc-btn-primary min-h-[56px] text-lg sm:w-60" disabled={!active.saved} onClick={onDone} data-testid="class-done">Done</button>
         </div>

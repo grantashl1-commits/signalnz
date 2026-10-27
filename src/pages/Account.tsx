@@ -295,13 +295,15 @@ export default function AccountPage() {
             <p className="font-body text-sm text-foreground flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-muted-foreground" /> {user.email}</p>
           </div>
 
-          {/* Location */}
-          <div>
-            <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Location</p>
-            <p className="font-body text-sm text-foreground flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 text-muted-foreground" /> {suburb || <span className="text-muted-foreground">Set in Community tab</span>}
-            </p>
-          </div>
+          {/* Location (only once it's been set in the Village) */}
+          {suburb && (
+            <div>
+              <p className="font-body text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">Location</p>
+              <p className="font-body text-sm text-foreground flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground" /> {suburb}
+              </p>
+            </div>
+          )}
         </motion.div>
 
         {/* ═══ SECTION: YOUR BODY ═══ */}

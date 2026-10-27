@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { linkReferral } from "@/hooks/useReferral";
 import { identifyUser, resetUser } from "@/lib/analytics";
 import { setSentryUser, clearSentryUser } from "@/lib/error-monitoring";
+import { claimDevice } from "@/lib/device-privacy";
 import type { User, Session } from "@supabase/supabase-js";
 
 interface SubscriptionInfo {
@@ -101,6 +102,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
 
         if (event === "SIGNED_IN" && newSession?.user) {
+          // A different account on this device: clear the last person's local entries first.
+          if (claimDevice(newSession.user.id, !!newSession.user.is_anonymous)) {
+            window.location.reload();
+            return;
+          }
           linkReferral(newSession.user.id);
           identifyUser(newSession.user.id, { email: newSession.user.email });
           setSentryUser(newSession.user.id, newSession.user.email);

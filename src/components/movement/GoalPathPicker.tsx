@@ -15,12 +15,13 @@ import { getSelectedPathId, setSelectedPathId } from "@/lib/training-path-utils"
  * the meal plan to fuel it.
  */
 export const FITNESS_GOALS: { slug: string; label: string; pathId: string; why: string }[] = [
-  { slug: "strength_power", label: "Get stronger", pathId: "strength-from-the-ground-up", why: "Slow, controlled full-body lifting, 3 days a week." },
-  { slug: "muscle_building", label: "Build muscle & tone", pathId: "the-forge", why: "Progressive hypertrophy blocks with built-in deloads." },
-  { slug: "glute_foundation", label: "Glutes & lower body", pathId: "glute-power", why: "Hip-led strength for glutes, hips and lower back." },
+  { slug: "strength_power", label: "Get stronger", pathId: "strength-from-the-ground-up", why: "Three full-body sessions a week, 30–45 min, dumbbells and a band." },
+  { slug: "muscle_building", label: "Build muscle", pathId: "the-forge", why: "Four gym sessions a week, upper and lower body twice each, with lighter weeks built in." },
+  { slug: "glute_foundation", label: "Glutes & lower body", pathId: "glute-power", why: "Three sessions a week led by one heavy glute lift, with upper body to stay balanced." },
+  { slug: "body_recomposition", label: "Tone on the reformer", pathId: "reformer-strength", why: "Three home-reformer sessions a week, building from set-up to heavier springs." },
+  { slug: "functional_fitness", label: "Pilates in 30 min", pathId: "mat-pilates", why: "Four 30-minute mat sculpt classes a week, low impact." },
   { slug: "walk_to_run", label: "Start running", pathId: "learn-to-run", why: "Walk–run intervals that build to a continuous run." },
   { slug: "fat_loss_cardio", label: "Fitness & fat loss", pathId: "signal-circuit-progressive", why: "An 8-move circuit that raises fitness week by week." },
-  { slug: "functional_fitness", label: "Core, posture & mobility", pathId: "mat-pilates", why: "Mat pilates for deep core, posture and control." },
   { slug: "nervous_system", label: "Recover & de-stress", pathId: "rest-and-restore-somatic-full", why: "Somatic and restorative sessions for a frayed system." },
 ];
 
