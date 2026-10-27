@@ -142,14 +142,71 @@ export function smartUnit(qty: number, unit: string, name: string): { qty: numbe
   return displayUnit(base.qty, base.unit);
 }
 
-export function formatSmartQty(totalQty: number, unit: string, name: string): string {
-  const c = smartUnit(totalQty, unit, name);
-  const q = c.qty;
-  const display = q < 1 ? `${Math.round(q * 10) / 10}` :
-    q > 10 ? `${Math.round(q)}` :
-      `${Math.round(q * 10) / 10}`;
-  return c.unit ? `${display} ${c.unit}` : `${display}`;
+// ── Kitchen-friendly display ────────────────────────────────────
+// Small amounts read as spoons, liquids as "125 ml (½ cup)", dry goods
+// measured by volume as cups, weights as g/kg and counts as "8 cloves".
+
+const FRACTIONS: Array<[number, string]> = [[0, ""], [0.25, "¼"], [1 / 3, "⅓"], [0.5, "½"], [2 / 3, "⅔"], [0.75, "¾"], [1, ""]];
+
+/** 1.5 → "1½", 0.33 → "⅓", 2 → "2". */
+export function niceFraction(x: number): string {
+  const whole = Math.floor(x + 1e-6);
+  const frac = x - whole;
+  let best = FRACTIONS[0];
+  for (const f of FRACTIONS) if (Math.abs(frac - f[0]) < Math.abs(frac - best[0])) best = f;
+  const w = best[0] === 1 ? whole + 1 : whole;
+  if (w === 0) return best[1] || "¼";
+  return `${w}${best[0] === 1 ? "" : best[1]}`;
 }
+
+function spoons(ml: number): string {
+  if (ml < 1) return "pinch";
+  // Spoons come in quarters, never thirds.
+  if (ml < 14) return `${niceFraction(Math.max(0.25, Math.round((ml / 5) * 4) / 4))} tsp`;
+  return `${niceFraction(Math.round((ml / 15) * 2) / 2)} tbsp`;
+}
+
+function cups(ml: number): string {
+  const c = ml / 250;
+  const label = niceFraction(c);
+  return `${label} cup${c > 1.1 ? "s" : ""}`;
+}
+
+const roundMl = (ml: number) => (ml < 250 ? Math.round(ml / 5) * 5 : ml < 1000 ? Math.round(ml / 25) * 25 : Math.round(ml / 50) * 50);
+const roundG = (g: number) => (g < 20 ? Math.round(g) : g < 100 ? Math.round(g / 5) * 5 : Math.round(g / 10) * 10);
+
+const PLURAL: Record<string, string> = { clove: "cloves", can: "cans", tin: "tins", jar: "jars", bunch: "bunches", handful: "handfuls", slice: "slices", piece: "pieces", sprig: "sprigs", head: "heads", packet: "packets", pack: "packs" };
+
+export function formatSmartQty(totalQty: number, unit: string, name: string): string {
+  if (!totalQty) return "";
+  const base = toBase(totalQty, unit, name);
+  if (base.unit === "ml") {
+    const ml = base.qty;
+    if (ml < 60) return spoons(ml);
+    // Liquids (almond milk, stock, oil) get ml and cups; spinach, oats and seeds just cups.
+    const pourable = LIQUID_RE.test(name) && !/\b(powder|flakes?|seeds?|butter|paste)\b/i.test(name);
+    if (!pourable) return cups(ml);
+    if (ml >= 1000) return `${Math.round(ml / 100) / 10} L`;
+    return `${roundMl(ml)} ml (${cups(ml)})`;
+  }
+  if (base.unit === "g") {
+    return base.qty >= 1000 ? `${Math.round(base.qty / 100) / 10} kg` : `${roundG(base.qty)} g`;
+  }
+  const u = base.unit.replace(/s$/, "");
+  const n = base.qty;
+  const count = n >= 10 ? `${Math.round(n)}` : niceFraction(n);
+  if (!u) return count;
+  if (u === "pinch" || u === "dash") return u;
+  return `${count} ${n > 1.1 ? PLURAL[u] ?? `${u}s` : u}`;
+}
+
+/** Grouping key so "tomato" and "tomatoes", "chickpea" and "chickpeas" share a row. */
+export function groupKey(searchTerm: string): string {
+  return searchTerm.toLowerCase().replace(/\s+/g, " ").trim()
+    .replace(/(\w{3,}?)(oes|ies|s)$/, (_m, stem: string, suf: string) => (suf === "ies" ? `${stem}y` : suf === "oes" ? `${stem}o` : stem));
+}
+
+const SIZE_PREFIX = /^(?:(?:small|medium|large|extra[- ]large|ripe|thick|thin|fresh)\s+)+/i;
 
 export interface AggregatedItem {
   name: string;
@@ -180,32 +237,51 @@ export function aggregateShoppingItems(
   const mult = input.servingMultiplier ?? 1;
   const ingredientMap: Record<string, AggregatedItem> = {};
 
+  const add = (key: string, item: AggregatedItem) => {
+    if (ingredientMap[key]) ingredientMap[key].totalQty += item.totalQty;
+    else ingredientMap[key] = item;
+  };
+
   for (const meal of input.meals) {
     if (!meal || !meal.ingredients?.length) continue;
     const serves = meal.serves || 2;
     for (const ingStr of meal.ingredients) {
       const parsed = parseIngredient(ingStr);
-      const nzName = toNZName(parsed.name);
-      const nzSearch = toNZName(parsed.searchTerm);
-      const baseQty = parseQty(parsed.quantity);
-      const totalQty = (baseQty * mult) / serves;
-      const mapKey = nzSearch.toLowerCase();
-      const cat = categoriseItem(nzName);
-      const base = toBase(totalQty, parsed.unit, nzName);
-      const unitKey = base.unit || "unit";
-      const fullKey = `${mapKey}::${unitKey}`;
-      if (ingredientMap[fullKey]) {
-        ingredientMap[fullKey].totalQty += base.qty;
-      } else {
-        ingredientMap[fullKey] = {
-          name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
-          totalQty: base.qty,
-          unit: base.unit,
-          category: cat,
-          searchTerm: nzSearch,
-        };
+      // "Salt, pepper and thyme" with no amount becomes three plain rows.
+      if (!parsed.quantity) {
+        for (const part of parsed.name.split(/\s*(?:,|&|\band\b)\s*/i).map(p => p.trim()).filter(Boolean)) {
+          const nzName = toNZName(part.replace(SIZE_PREFIX, "")) || toNZName(part);
+          const search = parseIngredient(part).searchTerm;
+          add(`${groupKey(toNZName(search))}::none`, {
+            name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
+            totalQty: 0,
+            unit: "",
+            category: categoriseItem(nzName),
+            searchTerm: toNZName(search),
+          });
+        }
+        continue;
       }
+      // "Small ripe banana" shops as "Banana"; product words like tinned or dried stay.
+      const nzName = toNZName(parsed.name.replace(SIZE_PREFIX, "")) || toNZName(parsed.name);
+      const nzSearch = toNZName(parsed.searchTerm);
+      const totalQty = (parseQty(parsed.quantity) * mult) / serves;
+      const base = toBase(totalQty, parsed.unit, nzName);
+      add(`${groupKey(nzSearch)}::${base.unit || "unit"}`, {
+        name: nzName.charAt(0).toUpperCase() + nzName.slice(1),
+        totalQty: base.qty,
+        unit: base.unit,
+        category: categoriseItem(nzName),
+        searchTerm: nzSearch,
+      });
     }
+  }
+
+  // An amount-less row ("fresh coriander") is dropped when the same item has an amount elsewhere.
+  for (const key of Object.keys(ingredientMap)) {
+    if (!key.endsWith("::none")) continue;
+    const stem = key.slice(0, -"::none".length);
+    if (Object.keys(ingredientMap).some(k => k !== key && k.startsWith(`${stem}::`))) delete ingredientMap[key];
   }
 
   const groups: Record<string, AggregatedItem[]> = {};

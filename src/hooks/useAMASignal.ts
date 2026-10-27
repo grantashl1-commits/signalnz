@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { functionHeaders } from "@/lib/function-headers";
 
 export interface AMAResponse {
   answer: string;
@@ -120,11 +121,7 @@ export function useAMASignal() {
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/signal-ai`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: await functionHeaders(),
           body: JSON.stringify({
             prompt: question,
             mode: "ama",

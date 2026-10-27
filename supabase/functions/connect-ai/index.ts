@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireUser } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -43,9 +44,12 @@ serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  // Only signed-in members may call this (it uses the service role or paid AI).
+  const caller = await requireUser(req, corsHeaders);
+  if (caller instanceof Response) return caller;
 
   try {
-    const { message, history, connection_id } = await req.json();
+    const { message, history } = await req.json();
 
     if (!message) {
       return new Response(JSON.stringify({ error: "No message provided" }), {
@@ -54,11 +58,11 @@ serve(async (req) => {
       });
     }
 
-    // Rate limiting: 10 per minute
-    if (connection_id) {
+    // Rate limiting: 10 per minute, per member
+    {
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
       const { data: rl } = await sb.rpc("check_rate_limit", {
-        _user_id: connection_id, _function_name: "connect-ai", _max_per_minute: 10,
+        _user_id: caller.user.id, _function_name: "connect-ai", _max_per_minute: 10,
       });
       if (rl && !rl.allowed) {
         return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), {

@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, Sparkles, Image as ImageIcon, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { functionHeaders } from "@/lib/function-headers";
 
 const STYLE_OPTIONS = [
   { id: "dreamy-editorial", label: "Dreamy editorial", prefix: "Dreamy editorial photography, soft diffused natural light, aspirational, muted warm tones:" },
@@ -65,15 +65,12 @@ export default function AddImageModal({ open, onClose, onImageReady }: Props) {
       const stylePrefix = selectedStyle?.prefix || "";
       const fullPrompt = `${stylePrefix} ${prompt.trim()}`;
 
+      // The function charges the signed-in member's credits, so it sends their session.
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/dream-image-generate`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: await functionHeaders(),
           body: JSON.stringify({ prompt: fullPrompt }),
         }
       );

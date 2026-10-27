@@ -10,8 +10,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGlobalHeartRate } from "@/contexts/HeartRateContext";
 import { useCycle } from "@/contexts/CycleContext";
-import { extractExerciseName } from "@/lib/exercise-image-lookup";
 import ExerciseDemonstration from "@/components/ExerciseDemonstration";
+import SessionBlocks from "@/components/movement/SessionBlocks";
 import type { Phase } from "@/lib/cycle-utils";
 import {
   getSelectedPath,
@@ -65,11 +65,12 @@ const FOCUS_TITLE: Record<TrainingFocus, string> = {
   "glute-power": "Glute Power",
 };
 
+// Research on matching training to cycle phase is mixed, so this nudges by feel, not by calendar.
 const PHASE_LOAD_NOTE: Record<Phase, string> = {
-  menstrual: "Lighter today — your body is reseting. Honour the slow.",
-  follicular: "Energy is climbing. A good day to ask a little more of yourself.",
-  ovulatory: "Peak power window. Lift heavier or push the pace if it calls.",
-  luteal: "Volume eases back. Steady and strong, no chasing PRs.",
+  menstrual: "If today feels heavy, drop a round or pick a lighter weight. Many women feel fine; go by feel.",
+  follicular: "Many women feel good this week. A nice time to chase a rep or a weight step if you feel it.",
+  ovulatory: "If you feel strong, use it. Let reps in reserve, not the calendar, set your weights.",
+  luteal: "Heat and sleep can feel harder this week. Same plan; adjust the weight by feel.",
 };
 
 export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => void }) {
@@ -98,8 +99,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
     setWarmupCooldownPref(next);
   };
 
-  const warmup = currentPhase ? getWarmup(currentPhase) : null;
-  const cooldown = currentPhase ? getCooldown(currentPhase) : null;
+  const phaseWarmup = currentPhase ? getWarmup(currentPhase) : null;
+  const phaseCooldown = currentPhase ? getCooldown(currentPhase) : null;
 
   useEffect(() => {
     const refresh = () => {
@@ -146,6 +147,11 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
   }
 
   const { path, week, day, session, completedCount, finished } = info;
+  // Sessions that carry their own warm-up and cool-down don't need the generic phase ones.
+  const ownWarmup = (session.warmup?.length ?? 0) > 0;
+  const ownCooldown = ((session.cooldown ?? session.coolDown)?.length ?? 0) > 0;
+  const warmup = ownWarmup ? null : phaseWarmup;
+  const cooldown = ownCooldown ? null : phaseCooldown;
   const showRestart = week > 1 || completedCount > 0;
   const sessionKey = `${path.id}::w${week}::d${day}`;
   // The partner series is trained (and ticked off) in its class hub.
@@ -204,11 +210,6 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
               {session.durationMin ? ` · ${session.durationMin} min` : ""}
               {session.equipment ? ` · ${session.equipment}` : ""}
             </p>
-            {session.feel && (
-              <p className="font-editorial text-xs italic text-primary/70 mt-1">
-                Feels like: {session.feel}
-              </p>
-            )}
             {showRestart && (
               <button
                 onClick={handleRestart}
@@ -230,16 +231,11 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
         )}
 
-        {/* Phase-aware load microcopy */}
-        {currentPhase && (
-          <div className="rounded-lg bg-primary/[0.06] border border-primary/15 px-3 py-2">
-            <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary/70 font-semibold mb-0.5">
-              Why today
-            </p>
-            <p className="font-editorial text-xs italic text-foreground/75 leading-relaxed">
-              {PHASE_LOAD_NOTE[currentPhase]}
-            </p>
-          </div>
+        {/* Phase-aware load microcopy: one quiet line */}
+        {currentPhase && !startHref && (
+          <p className="font-editorial text-xs italic text-foreground/70 leading-relaxed">
+            {PHASE_LOAD_NOTE[currentPhase]}
+          </p>
         )}
 
         {/* HR-zone summary after a session ends */}
@@ -320,30 +316,8 @@ export default function SelectedPathTodayCard({ onOpenHR }: { onOpenHR?: () => v
           </div>
         )}
 
-        {/* Structure preview — warm-up & cool-down live in their own toggle panels above/below */}
-        {expanded && session.structure && session.structure.length > 0 && (() => {
-          const mainLines = session.structure.filter(
-            l => !/^\s*(warm[\s-]?up|cool[\s-]?down)\s*:/i.test(l),
-          );
-          if (mainLines.length === 0) return null;
-          return (
-            <ul className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
-              {mainLines.map((line, i) => {
-                const name = extractExerciseName(line);
-                return (
-                  <li key={i} className="flex items-start gap-2 font-body text-xs text-foreground/85">
-                    {name ? (
-                      <ExerciseDemonstration exerciseName={name} size={36} className="shrink-0" />
-                    ) : (
-                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-                    )}
-                    <span className="flex-1 pt-1 leading-relaxed">{line}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          );
-        })()}
+        {/* The session itself: warm-up, blocks with rounds and rest, suggested weights, cool-down */}
+        {expanded && !startHref && <SessionBlocks session={session} />}
 
         {/* Picks added from Library */}
         {expanded && picks.length > 0 && (

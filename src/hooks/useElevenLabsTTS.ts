@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { functionHeaders } from "@/lib/function-headers";
 import {
   buildVersionedPracticeAudioPath,
   CALM_READER_VOICE_ID,
@@ -81,11 +82,7 @@ export function useElevenLabsTTS({
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-generate`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: await functionHeaders(),
           body: JSON.stringify({
             text: ttsScript,
             practiceId,

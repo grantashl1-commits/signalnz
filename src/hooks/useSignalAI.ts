@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import type { SignalResponse, SignalMode } from "./useSignalContext";
 import type { SignalContext } from "./useSignalContext";
 import { supabase } from "@/integrations/supabase/client";
+import { functionHeaders } from "@/lib/function-headers";
 
 interface UseSignalAIReturn {
   response: SignalResponse | null;
@@ -105,11 +106,7 @@ export function useSignalAI(): UseSignalAIReturn {
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/signal-ai`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: await functionHeaders(),
           body: JSON.stringify({
             prompt,
             mode,

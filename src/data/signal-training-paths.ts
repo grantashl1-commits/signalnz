@@ -8,10 +8,11 @@ import { restAndRestore } from "./training-paths/restore";
 import { learnToRun } from "./training-paths/run";
 import { cardioCircuit } from "./training-paths/cardio";
 import { glutePower } from "./training-paths/glute";
+import { reformerPath } from "./training-paths/reformer";
 import { partnerSeries, PARTNER_PATH_ID, partnerSessionHref } from "./training-paths/partner";
 
 export type * from "./training-paths/types";
-export { strengthFromTheGroundUp, theForge, pilatesPlan, restAndRestore, learnToRun, cardioCircuit, glutePower, partnerSeries, PARTNER_PATH_ID, partnerSessionHref };
+export { strengthFromTheGroundUp, theForge, pilatesPlan, reformerPath, restAndRestore, learnToRun, cardioCircuit, glutePower, partnerSeries, PARTNER_PATH_ID, partnerSessionHref };
 
 // ─────────────────────────────────────────────────────────────────
 // Aggregator + backwards-compat aliases
@@ -26,17 +27,14 @@ export { strengthFromTheGroundUp, theForge, pilatesPlan, restAndRestore, learnTo
 
 
 function flattenSupersetToLines(s: Superset): string[] {
-  const lines: string[] = [];
-  const round = s.rounds ? ` × ${s.rounds} rounds` : "";
-  for (const ex of s.exercises) {
+  // Sets already equal the block's rounds, so no "× N rounds" suffix is needed.
+  return s.exercises.map(ex => {
     const reps = typeof ex.reps === "number" ? `${ex.reps}` : ex.reps;
     const tempo = ex.tempo ? ` tempo ${ex.tempo}` : "";
     const weight = ex.weight ? ` @ ${ex.weight}` : "";
     const notes = ex.notes ? ` — ${ex.notes}` : "";
-    lines.push(`${ex.name} – ${ex.sets}×${reps}${tempo}${weight}${notes}`);
-  }
-  if (round) lines[0] = `${lines[0]}${round}`;
-  return lines;
+    return `${ex.name} – ${ex.sets}×${reps}${tempo}${weight}${notes}`;
+  });
 }
 
 /**
@@ -75,9 +73,10 @@ export const SIGNAL_TRAINING_PATHS: TrainingPath[] = [
   strengthFromTheGroundUp,
   theForge,
   partnerSeries,
+  glutePower,
+  reformerPath,
+  pilatesPlan,
   learnToRun,
-  pilatesPlan as unknown as TrainingPath,
   cardioCircuit,
   restAndRestore,
-  glutePower,
 ].map(normalisePath);

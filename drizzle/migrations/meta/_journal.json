@@ -43,6 +43,13 @@
       "when": 1792960316196,
       "tag": "0005_protect_spatial_reference_writes",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792961316196,
+      "tag": "0006_close_connect_anon_access",
+      "breakpoints": true
     }
   ]
 }

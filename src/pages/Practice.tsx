@@ -7,7 +7,6 @@ import { WildStar } from "@/components/BotanicalElements";
 import { GatedFeature } from "@/components/FeatureGate";
 import { ContentSection } from "@/components/AtmosphericSection";
 import { SelfCareHandIcon } from "@/components/SelfCareIcons";
-import emptyHabitsTea from "@/assets/empty-habits-tea.png";
 import HabitLibraryPicker from "@/components/HabitLibraryPicker";
 import PhaseHabitSuggestions from "@/components/practice/PhaseHabitSuggestions";
 import MiniWeekStrip from "@/components/practice/MiniWeekStrip";
@@ -651,25 +650,6 @@ export default function PracticePage() {
             );
           })}
 
-          {/* No habits state */}
-          {habits.length === 0 && (
-            <div className="rounded-[22px] bg-card p-10 text-center shadow-soft flex flex-col items-center">
-              <img
-                src={emptyHabitsTea}
-                alt=""
-                width={160}
-                height={160}
-                loading="lazy"
-                className="opacity-90"
-              />
-              <p className="font-display text-lg italic text-foreground mt-4 max-w-[260px] leading-snug">
-                This is where your evening tea ritual will begin to live.
-              </p>
-              <p className="font-hand text-base text-muted-foreground mt-2">
-                There's no rush.
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Suggestions sit below the member's own habits so ticking comes first. */}

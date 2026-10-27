@@ -47,9 +47,11 @@ const ENRICHMENT_BY_SIGNAL_ID = enrichment.programs as Record<string, CsvProgram
 
 /**
  * Returns the path with any empty session-level / phase-level fields
- * filled in from the CSV enrichment. Sessions are matched by week + day
- * order: week N's day M is filled from the Mth CSV session of the Nth
- * matching phase.
+ * filled in from the CSV enrichment. Only training sessions are matched
+ * (by running order within the week), so rest days, optional walks and
+ * sessions that already carry their own warm-up, blocks and cool-down
+ * never pick up another session's notes. Phase goals and RPE bands only
+ * fill weeks that have no progression text of their own.
  */
 export function enrichTrainingPath(path: TrainingPath): TrainingPath {
   const data = ENRICHMENT_BY_SIGNAL_ID[path.id];
@@ -68,13 +70,17 @@ export function enrichTrainingPath(path: TrainingPath): TrainingPath {
         ? data.sessions.filter(s => s.phaseId === phase.id)
         : data.sessions;
 
+      const ownCopy = !!week.progression;
+      let liftIdx = 0;
       return {
         ...week,
-        phaseGoal: week.phaseGoal ?? phase?.goal ?? undefined,
-        rpeMin: week.rpeMin ?? phase?.rpeMin ?? undefined,
-        rpeMax: week.rpeMax ?? phase?.rpeMax ?? undefined,
-        sessions: week.sessions.map((session, idx) => {
-          const csv = phaseSessions[idx % Math.max(phaseSessions.length, 1)];
+        phaseGoal: week.phaseGoal ?? (ownCopy ? undefined : phase?.goal ?? undefined),
+        rpeMin: week.rpeMin ?? (ownCopy ? undefined : phase?.rpeMin ?? undefined),
+        rpeMax: week.rpeMax ?? (ownCopy ? undefined : phase?.rpeMax ?? undefined),
+        sessions: week.sessions.map(session => {
+          const isRest = (session.durationMin ?? 0) === 0 || session.isRestDay || session.optional;
+          if (isRest || (session.supersets?.length ?? 0) > 0) return session;
+          const csv = phaseSessions[liftIdx++ % Math.max(phaseSessions.length, 1)];
           if (!csv) return session;
           return {
             ...session,

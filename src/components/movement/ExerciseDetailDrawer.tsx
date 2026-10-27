@@ -35,13 +35,13 @@ function whyThisExercise(target: string | null | undefined, phase: Phase): strin
     return "Move quietly today. This one supports without asking too much.";
   }
   if (phase === "follicular") {
-    if (isLeg || isGlute) return "Your body is primed to build strength here right now.";
-    if (isUpper) return "Energy is climbing — a great window to push the upper body.";
-    return "Estrogen is rising. Strength gains land more easily this week.";
+    if (isLeg || isGlute) return "Many women feel strong this week. Add a rep or a weight step if it feels good.";
+    if (isUpper) return "If your energy is up, this is a nice week to push a little.";
+    return "Go by feel: reps in reserve, not the calendar, set your weight.";
   }
   if (phase === "ovulatory") {
-    if (isLeg || isGlute || isUpper) return "Peak power day. Lift heavier, jump higher — your body can take it.";
-    return "You're at your strongest. Use it.";
+    if (isLeg || isGlute || isUpper) return "If you feel strong today, use it, keeping a rep or two in reserve.";
+    return "Feeling good? Lean in. Feeling flat? Same plan, lighter weight.";
   }
   // luteal
   if (isCore || isGlute) return "Steady volume here calms the nervous system in the second half.";

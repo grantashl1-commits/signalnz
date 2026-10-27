@@ -32,7 +32,7 @@ import TrainingTab from "@/components/movement/TrainingTab";
 import LibraryTab from "@/components/movement/LibraryTab";
 import SelectedPathTodayCard from "@/components/movement/SelectedPathTodayCard";
 import { getSelectedPath, getNextSession } from "@/lib/training-path-utils";
-import MovementWeekStrip from "@/components/movement/MovementWeekStrip";
+import { PARTNER_PATH_ID } from "@/data/signal-training-paths";
 import { getFitnessProfile } from "@/lib/fitness-profile";
 import { getWeeklyRotation, getTodayAssignment, PHASE_GUIDANCE } from "@/lib/workout-rotation";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
@@ -204,14 +204,19 @@ export default function MovementPage() {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  // Five short tabs that fit a phone; Progress lives at the bottom of Log.
   const TABS = [
     { id: "today" as const, label: "Today" },
-    { id: "partner" as const, label: "Partner series" },
-    { id: "training" as const, label: "Training" },
+    { id: "partner" as const, label: "Partner" },
+    { id: "training" as const, label: "Plans" },
     { id: "library" as const, label: "Library" },
-    { id: "log" as const, label: "My Log" },
-    { id: "progress" as const, label: "Progress" },
+    { id: "log" as const, label: "Log" },
   ];
+  const tabOn = (id: MoveTab) => activeTab === id || (id === "log" && activeTab === "progress");
+  // The partner teaser shows for people who train the series alongside another plan;
+  // when the series is the chosen plan, the Today card below already starts it.
+  const selectedPathId = getSelectedPath()?.id;
+  const showPartnerTeaser = selectedPathId !== PARTNER_PATH_ID && getPartnerProgress(user?.id).logs.length > 0;
 
   // Helper: open the live HR overlay with today's session name. The overlay is
   // rendered globally (<LiveHRRoot />) so it persists across navigation when
@@ -280,7 +285,7 @@ export default function MovementPage() {
             {TABS.map(tab => (
               <button key={tab.id} onClick={() => { haptic("light"); setActiveTab(tab.id); }}
                 className={`touch-tab flex-shrink-0 rounded-full px-4 py-2 min-h-[40px] font-body text-xs font-medium transition-all whitespace-nowrap ${
-                  activeTab === tab.id
+                  tabOn(tab.id)
                     ? "bg-move/15 text-foreground"
                     : "text-muted-foreground active:text-foreground"
                 }`}
@@ -293,32 +298,19 @@ export default function MovementPage() {
 
       {/* TODAY TAB */}
       {activeTab === "today" && (
-        <div className="movement-today-grid">
-          <MovementWeekStrip />
-          <Link
-            to={partnerNext ? `/movement?tab=partner&session=${partnerNext.id}` : "/movement?tab=partner"}
-            onClick={() => haptic("light")}
-            className="card-warm block p-5 text-left space-y-2"
-            style={{ gridColumn: "1 / -1" }}
-          >
-            <p className="eyebrow text-move">Partner series · about {partnerNext?.estMinutes ?? 45} minutes</p>
-            <h2 className="font-display text-xl">
-              {partnerNext ? `Week ${partnerNext.week} · Session ${partnerNext.index} · ${partnerNext.focus} ${partnerNext.style} →` : "Partner series complete — start again →"}
-            </h2>
-            <p className="text-sm text-muted-foreground">3 strength + 3 reformer + 3 core, 2 rounds. Work a station, then swap with your treadmill partner.</p>
-          </Link>
-          {/* Phase + training week context */}
-          <div className="movement-phase-note p-4 md:p-5 border-l-2 border-move/50 bg-move/5 relative overflow-hidden">
-            <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none">
-              <CymatiSketch phase={info.phase} size={48} opacity={0.08} />
-            </div>
-            <div className="flex items-center gap-2 mb-1">
-              <PhaseIndicator phase={info.phase} size={18} />
-              <span className="font-hand text-sm text-primary">{WEEK_LABELS[trainingWeek]} · {PHASE_SHORT[info.phase]} phase</span>
-            </div>
-            <h2 className="font-display text-lg italic text-foreground">{PHASE_SHORT[info.phase]} — {rec.title}</h2>
-            <p className="font-body text-sm text-muted-foreground mt-1">{rec.description}</p>
-          </div>
+        <div className="mx-auto max-w-2xl space-y-4">
+          {showPartnerTeaser && (
+            <Link
+              to={partnerNext ? `/movement?tab=partner&session=${partnerNext.id}` : "/movement?tab=partner"}
+              onClick={() => haptic("light")}
+              className="card-warm block p-5 text-left space-y-1.5"
+            >
+              <p className="eyebrow text-move">Partner series · about {partnerNext?.estMinutes ?? 45} min</p>
+              <h2 className="font-display text-xl">
+                {partnerNext ? `Week ${partnerNext.week} · Session ${partnerNext.index} · ${partnerNext.focus} →` : "Series complete — start again →"}
+              </h2>
+            </Link>
+          )}
 
           {/* Active live HR session banner (lets the user re-open or log a
               separate workout instead of attaching to the current one) */}
@@ -375,8 +367,8 @@ export default function MovementPage() {
       {/* LIBRARY TAB */}
       {activeTab === "library" && <LibraryTab />}
 
-      {/* MY LOG TAB */}
-      {activeTab === "log" && (
+      {/* MY LOG TAB (with progress photos and patterns at the bottom) */}
+      {tabOn("log") && (
         <div className="space-y-8 md:space-y-10">
           {/* Monthly calendar with stats (workouts, minutes, zone 2+, consistency) */}
           <MovementCalendar refreshKey={logRefreshKey} />
@@ -458,20 +450,14 @@ export default function MovementPage() {
 
           {/* Workout history (including HR sessions) is shown inside MovementCalendar above */}
 
-          {/* Empty state */}
-          {supabaseLogs.length === 0 && sessions.length === 0 && (
-            <div className="card-warm p-8 text-center space-y-3">
-              <Dumbbell className="h-8 w-8 text-muted-foreground/30 mx-auto" />
-              <p className="font-display text-base font-bold text-foreground">Nothing here yet — and that's okay</p>
-              <p className="font-body text-xs text-muted-foreground">When you move, it will be held here.</p>
-            </div>
-          )}
+          <section className="space-y-3" aria-labelledby="move-progress-heading">
+            <h2 id="move-progress-heading" className="font-display text-lg text-foreground">Progress</h2>
+            <ProgressTab />
+          </section>
         </div>
       )}
 
 
-      {/* PROGRESS TAB */}
-      {activeTab === "progress" && <ProgressTab />}
 
       {/* TRAINING TAB */}
       {activeTab === "training" && <TrainingTab />}

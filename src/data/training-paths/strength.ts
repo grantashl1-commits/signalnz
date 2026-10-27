@@ -1,921 +1,123 @@
-import type { TrainingPath } from "./types";
+import type { Exercise, Session, Week, TrainingPath } from "./types";
+import { block, ex, restDay, walkDay, DOUBLE_PROGRESSION } from "./build";
+
+// Strength from the Ground Up · 3 full-body days a week, 30–45 min, dumbbells + a band.
+// Built on the 2026 ACSM resistance-training position stand: every major muscle twice a
+// week, ~10 hard sets per muscle, effort set by reps in reserve (RIR), load progressed by
+// double progression, antagonist supersets to save time, carries for bone and grip
+// (LIFTMOR), and a lighter week 8. Days 1/3/5 are lifting days; walks are optional.
+
+type Slot = "squat" | "row" | "hinge" | "push" | "carryA" | "coreA" | "bridge" | "pull" | "lunge" | "press" | "carryB" | "coreB";
+
+const MOVES: Record<Slot, (reps: string) => Exercise> = {
+  squat: reps => ex("Goblet Squat", reps, { weight: "One dumbbell, about 6–12 kg to start", cue: "Sit down between your hips, chest tall, then drive the floor away.", alt: "Bodyweight box squat to a chair" }),
+  row: reps => ex("Single-Arm Dumbbell Row", `${reps} each side`, { weight: "One dumbbell, about 6–12 kg", cue: "Hand and knee on a bench or chair. Row your elbow to your hip and pause.", alt: "Band row" }),
+  hinge: reps => ex("Dumbbell Romanian Deadlift", reps, { weight: "Two dumbbells, about 6–12 kg each", cue: "Soft knees, hips back, dumbbells close to your legs. Feel the hamstrings, then stand tall.", alt: "Single-leg RDL holding a wall" }),
+  push: reps => ex("Push-Up", reps, { weight: "Bodyweight. Hands on a bench until 12 on the floor feel easy", cue: "One long line from head to heels. Lower your chest to fist height, push the floor away.", alt: "Dumbbell floor press" }),
+  carryA: () => ex("Farmer's Carry", "30–40 s", { weight: "Your two heaviest dumbbells", cue: "Tall, shoulders down, slow steps.", alt: "Farmer's hold, standing still" }),
+  coreA: () => ex("Dead Bug", "6–8 each side", { weight: "Bodyweight", cue: "Low back heavy on the floor. Exhale as the opposite arm and leg reach long." }),
+  bridge: reps => ex("Dumbbell Hip Thrust", reps, { weight: "One heavy dumbbell on your hips, about 10–20 kg", cue: "Upper back on a couch or bench edge, chin tucked. Drive through your heels, ribs down at the top.", alt: "Glute bridge on the floor" }),
+  pull: reps => ex("Band Lat Pulldown", reps, { weight: "Long band anchored high (door anchor)", cue: "Pull your elbows down to your ribs, chest proud, no shrugging.", alt: "Dumbbell pullover on the floor" }),
+  lunge: reps => ex("Reverse Lunge", `${reps} each side`, { weight: "Two dumbbells, about 4–10 kg each", cue: "Step back long, drop the back knee straight down, push up through the front heel." }),
+  press: reps => ex("Half-Kneeling Single-Arm Press", `${reps} each side`, { weight: "One dumbbell, about 4–8 kg", cue: "Down knee on the dumbbell side. Squeeze that glute and press straight up.", alt: "Seated dumbbell shoulder press" }),
+  carryB: () => ex("Suitcase Carry", "30 s each side", { weight: "One heavy dumbbell", cue: "Walk tall without leaning towards the weight." }),
+  coreB: () => ex("Side Plank", "20–30 s each side", { weight: "Bodyweight", cue: "Elbow under shoulder, hips lifted, steady breath.", alt: "Bent-knee side plank" }),
+};
+
+interface WeekPlan {
+  week: number;
+  theme: string;
+  progression: string;
+  rounds: number;
+  reps: string;
+  /** Unilateral moves (rows, lunges, presses) in the heavier weeks. */
+  sideReps?: string;
+  rir: string;
+  tempo?: string;
+  rest: number;
+  minutes: number;
+  power?: boolean;
+  feel: string;
+  note: string;
+}
+
+const WEEKS: WeekPlan[] = [
+  { week: 1, theme: "Grounding · learn the patterns", progression: `2 rounds of 10–12, about 3–4 reps left in the tank (RIR 3–4). Lower for 3 s. ${DOUBLE_PROGRESSION}`, rounds: 2, reps: "10–12", rir: "3–4", tempo: "3‑1‑1", rest: 75, minutes: 30, feel: "Curious and patient", note: "Find weights that feel steady for 12 with plenty left. Write them down." },
+  { week: 2, theme: "Stability · own the bottom", progression: "3 rounds of 10–12 at RIR 3. Pause 2 s at the bottom of every squat, hinge and bridge.", rounds: 3, reps: "10–12", rir: "3", tempo: "3‑2‑1", rest: 75, minutes: 38, feel: "Slow and controlled", note: "Pauses make light weights honest. Same weights as week 1 are fine." },
+  { week: 3, theme: "Build · add reps, then weight", progression: `3 rounds of 8–12 at RIR 2–3. ${DOUBLE_PROGRESSION}`, rounds: 3, reps: "8–12", rir: "2–3", rest: 75, minutes: 38, feel: "Building", note: "If every set hit 12 last week, take the next dumbbell up." },
+  { week: 4, theme: "Load · heavier pairs", progression: "3 rounds of 8–10 at RIR 2. Longer rest on the first two pairs.", rounds: 3, reps: "8–10", rir: "2", rest: 90, minutes: 40, feel: "Strong and steady", note: "Fewer reps means a heavier dumbbell. Rest the full 90 s." },
+  { week: 5, theme: "Strength · fewer, heavier reps", progression: "4 rounds of 6–8 at RIR 2 on the first two pairs. Carries stay at 2 rounds.", rounds: 4, reps: "6–8", rir: "2", rest: 120, minutes: 45, feel: "Focused", note: "This is where strength shows up. Heavy, clean, unhurried." },
+  { week: 6, theme: "Power · move with intent", progression: "Swings first while you are fresh, then 3 rounds of 6: lower for 2–3 s, lift as fast as you can with control.", rounds: 3, reps: "6", rir: "2", tempo: "3‑0‑X", rest: 90, minutes: 42, power: true, feel: "Snappy", note: "Speed is the goal on the way up. Stop a set when the reps slow." },
+  { week: 7, theme: "Peak · your heaviest clean sets", progression: "4 rounds of 5–6 at RIR 1–2 on the first two pairs, 2 min rest. No max testing.", rounds: 4, reps: "5–6", sideReps: "6–8", rir: "1–2", rest: 120, minutes: 45, feel: "Proud", note: "Heaviest weights of the block, still with a rep or two in reserve." },
+  { week: 8, theme: "Integrate · lighter week", progression: "2 rounds of 8 with your week 5 weights at RIR 3–4. Day 5 has an optional rep check.", rounds: 2, reps: "8", rir: "3–4", rest: 60, minutes: 30, feel: "Light and proud", note: "Recovery is where the strength settles in." },
+];
+
+const WARMUP_A = ["Cat–cow ×8", "Bodyweight squat to reach ×10", "Glute bridge ×10", "One light warm-up set of the first lift"];
+const WARMUP_B = ["Hip circles ×5 each way", "Band pull-apart ×15", "Reverse lunge reach ×5 each side", "One light warm-up set of the first lift"];
+const COOLDOWN = ["Child's pose · 1 min", "Figure-four stretch · 30 s each side", "Doorway chest stretch · 30 s"];
+
+function lift(day: number, kind: "A" | "B", w: WeekPlan, extra?: string): Session {
+  // Unilateral moves (rows, lunges, presses) keep a slightly higher range in the heaviest weeks.
+  const side = w.sideReps ?? w.reps;
+  const rx = (e: Exercise): Exercise => ({ ...e, rir: w.rir, ...(w.tempo ? { tempo: w.tempo } : {}) });
+  const pairs = kind === "A"
+    ? [
+      block(w.rounds, w.rest, [rx(MOVES.squat(w.reps)), rx(MOVES.row(side))]),
+      block(w.rounds, w.rest, [rx(MOVES.hinge(w.reps)), rx(MOVES.push(w.reps))]),
+      block(2, 45, [MOVES.carryA(""), MOVES.coreA("")], "Carry + core"),
+    ]
+    : [
+      block(w.rounds, w.rest, [rx(MOVES.bridge(w.reps)), rx(MOVES.pull(w.reps))]),
+      block(w.rounds, w.rest, [rx(MOVES.lunge(side)), rx(MOVES.press(side))]),
+      block(2, 45, [MOVES.carryB(""), MOVES.coreB("")], "Carry + core"),
+    ];
+  const supersets = w.power
+    ? [block(3, 60, [ex("Dumbbell Swing", "5", { weight: "One dumbbell held by the head, about 8–16 kg", cue: "Hike it back, snap your hips forward, let it float to chest height.", alt: "Fast-up glute bridge", rir: "4–5" })], "Power opener"), ...pairs]
+    : pairs;
+  return {
+    day,
+    name: `Full Body ${kind}`,
+    focus: kind === "A" ? "Squat, row, hinge, push, carry" : "Bridge, pull, lunge, press, carry",
+    durationMin: w.minutes,
+    equipment: "Dumbbells, long band, mat",
+    feel: w.feel,
+    warmup: kind === "A" ? WARMUP_A : WARMUP_B,
+    supersets,
+    cooldown: COOLDOWN,
+    coachingNote: extra ? `${w.note} ${extra}` : w.note,
+  };
+}
+
+function week(w: WeekPlan): Week {
+  // Day 5 alternates so A and B each get three sessions every fortnight.
+  const third = w.week % 2 === 1 ? "A" : "B";
+  return {
+    week: w.week,
+    theme: w.theme,
+    progression: w.progression,
+    sessions: [
+      lift(1, "A", w),
+      walkDay(2),
+      lift(3, "B", w),
+      restDay(4),
+      lift(5, third, w, w.week === 8 ? "Optional check: with your week 1 weights, how many clean goblet squats and RDLs can you do now?" : undefined),
+      walkDay(6, 30),
+      restDay(7),
+    ],
+  };
+}
 
 export const strengthFromTheGroundUp: TrainingPath = {
-  id: 'strength-from-the-ground-up',
-  name: 'Strength from the Ground Up',
-  subtitle: 'The body you build by listening',
-  focus: 'strength',
+  id: "strength-from-the-ground-up",
+  name: "Strength from the Ground Up",
+  subtitle: "Three full-body sessions a week",
+  focus: "strength",
   description:
-    'Strength is not punishment. It is discovering what your body can do when you move with intention. This 8‑week plan builds full‑body resilience through slow, controlled lifting, supersets that respect your energy, and two weekly recovery days. You will learn to hinge, squat, push, pull – and trust your body again.',
+    "Three 30–45 minute full-body sessions a week with dumbbells and a band. Every session squats or bridges, hinges, pushes, pulls and carries, so each muscle is trained twice a week. You lift by feel (reps in reserve), add weight when the reps get easy, and finish with a lighter week.",
   whoItIsFor:
-    'For the woman who has been told to "push harder" but craves permission to go slowly. Whether you have never touched a dumbbell or are returning after injury or burnout, this plan meets you exactly where you are.',
-  weeks: [
-    // WEEK 1 – Grounding
-    {
-      week: 1,
-      theme: 'Grounding – Learning the Patterns',
-      progression: 'RPE 6‑7. Light dumbbells (3‑5 kg). Tempo 3‑1‑2. Form first.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Grounding',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Curious and patient',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Glute bridges – 10'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Romanian Deadlift (DB)', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge (bodyweight)', sets: 3, reps: 12, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '25 sec', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Side Plank', sets: 3, reps: '20 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'You are learning the patterns. Tempo over weight, always.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Grounding',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Steady and open',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Push‑Up', sets: 3, reps: 8, tempo: '2‑1‑2', weight: 'Bodyweight (incline if needed)', notes: '3 rounds' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Overhead Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Lateral Raise', sets: 3, reps: 10, tempo: '2‑1‑2', weight: '2‑3 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bird Dog', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Plank with Shoulder Tap', sets: 3, reps: '8 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Doorway chest opener'],
-          coachingNote: 'Start where you are. Push‑ups can be on knees or a bench – meet your body.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Grounding',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (3‑5 kg)',
-          feel: 'Grounded and slow',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Sumo Squat', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Reverse Lunge', sets: 3, reps: '8 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge March', sets: 3, reps: '8 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Hollow Body Hold', sets: 3, reps: '20 sec', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Side Plank', sets: 3, reps: '20 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Marching Glute Bridge', sets: 3, reps: 12, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'Slow reps reveal the work. There is nothing to rush.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Grounding',
-          focus: 'Back, chest, arms, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Bent‑Over Row', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Floor Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bicep Curl', sets: 3, reps: 10, tempo: '2‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Tricep Extension', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '25 sec', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Bird Dog', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'You are introducing your body to a new language. Be kind to the beginner.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Grounding',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (3‑5 kg)',
-          feel: 'Rooted',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Bodyweight Squat (paused)', sets: 3, reps: 10, tempo: '3‑1‑2', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Step‑Up', sets: 3, reps: '8 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Seated Hip Abduction', sets: 3, reps: 12, tempo: '2‑1‑2', weight: 'Band', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Plank with Knee Dip', sets: 3, reps: '8 per side', tempo: 'slow', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'Three days in, your nervous system is already learning.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Moving slowly is still moving forward.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Rest',
-          focus: 'Recovery',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Soft',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Rest is part of the work.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 2 – Stability
-    {
-      week: 2,
-      theme: 'Stability – Slowing Down to Own the Movement',
-      progression: 'RPE 6‑7. Same weight. Tempo 4‑1‑2 on squats and RDLs. Add 2‑sec holds.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Stability',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Slow and controlled',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 45 sec', 'Glute bridges – 12'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 10, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '3 rounds, 2‑sec pause at bottom' }, { name: 'Romanian Deadlift (DB)', sets: 3, reps: 10, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge (bodyweight)', sets: 3, reps: 12, tempo: '2‑2‑2', weight: 'Bodyweight', notes: '2‑sec hold at top' }, { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Side Plank', sets: 3, reps: '22 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'The pause is where the strength lives. Linger there.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Stability',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Patient and stable',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Push‑Up', sets: 3, reps: 10, tempo: '3‑1‑2', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds, 2‑sec hold at top' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Overhead Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Lateral Raise', sets: 3, reps: 10, tempo: '2‑1‑2', weight: '2‑3 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '2‑sec hold at extension' }, { name: 'Plank with Shoulder Tap', sets: 3, reps: '10 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Doorway chest opener'],
-          coachingNote: 'Stability is built one pause at a time.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Stability',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (3‑5 kg)',
-          feel: 'Anchored',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Sumo Squat', sets: 3, reps: 10, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '2‑sec pause at bottom' }, { name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge March', sets: 3, reps: '10 per side', tempo: '2‑2‑2', weight: 'Bodyweight', notes: '2‑sec hold each' }, { name: 'Hollow Body Hold', sets: 3, reps: '22 sec', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Side Plank', sets: 3, reps: '22 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Marching Glute Bridge', sets: 3, reps: 12, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'You are teaching the deep stabilisers to wake up. They will.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Stability',
-          focus: 'Back, chest, arms, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Composed',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Bent‑Over Row', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '2‑sec hold at top' }, { name: 'Floor Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bicep Curl', sets: 3, reps: 10, tempo: '2‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Tricep Extension', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'Owning the slow rep is how you earn the next layer.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Stability',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (3‑5 kg)',
-          feel: 'Steady',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 3, reps: 10, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Bodyweight Squat (paused)', sets: 3, reps: 10, tempo: '4‑1‑2', weight: 'Bodyweight', notes: '2‑sec pause at bottom' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Step‑Up', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '3 rounds' }, { name: 'Seated Hip Abduction', sets: 3, reps: 14, tempo: '2‑1‑2', weight: 'Band', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Dead Bug', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '3 rounds' }, { name: 'Plank with Knee Dip', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '3 rounds' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'Stability now means strength later. Trust the slow build.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Moving slowly is still moving forward.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Rest',
-          focus: 'Recovery',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Soft',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Rest is part of the work.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 3 – Volume
-    {
-      week: 3,
-      theme: 'Volume – Accumulating Quality Reps',
-      progression: 'RPE 6‑7. Same weight as Week 2. 4 rounds per superset. Same tempos.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Volume',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 50,
-          equipment: 'Dumbbells (3‑5 kg), mat, bench',
-          feel: 'Curious and grounded',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Standing shoulder circles', 'Glute bridges – 10'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 4, reps: 12, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Romanian Deadlift (DB)', sets: 4, reps: 12, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge (bodyweight)', sets: 4, reps: 15, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Dead Bug', sets: 4, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 4, reps: '35 sec', tempo: 'hold', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Side Plank', sets: 4, reps: '25 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'More volume means more chances to practice the movement. Quality over speed.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Volume',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 50,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Steady and capable',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Push‑Up', sets: 4, reps: 10, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Single‑Arm DB Row', sets: 4, reps: '12 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Overhead Press', sets: 4, reps: 10, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Lateral Raise', sets: 4, reps: 12, tempo: '2‑1‑2', weight: '2‑3 kg', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bird Dog', sets: 4, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Plank with Shoulder Tap', sets: 4, reps: '10 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Each extra round is a brick in your foundation.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Volume',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 50,
-          equipment: 'Dumbbells (3‑5 kg), bench',
-          feel: 'Grounded and rooted',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Sumo Squat', sets: 4, reps: 12, tempo: '4‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Reverse Lunge', sets: 4, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge March', sets: 4, reps: '10 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Hollow Body Hold', sets: 4, reps: '25 sec', tempo: 'hold', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Side Plank', sets: 4, reps: '25 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Marching Glute Bridge', sets: 4, reps: 15, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'Volume builds endurance. Endurance builds trust in your body.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Volume',
-          focus: 'Back, chest, arms, core',
-          durationMin: 50,
-          equipment: 'Dumbbells (3‑5 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Bent‑Over Row', sets: 4, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Floor Press', sets: 4, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bicep Curl', sets: 4, reps: 12, tempo: '2‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Tricep Extension', sets: 4, reps: 12, tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 4, reps: '35 sec', tempo: 'hold', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Bird Dog', sets: 4, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'You’re not just doing more – you’re becoming more.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Volume',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 50,
-          equipment: 'Dumbbells (3‑5 kg), bench',
-          feel: 'Rooted and powerful',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 4, reps: 12, tempo: '5‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Bodyweight Squat (paused)', sets: 4, reps: 12, tempo: '3‑1‑2', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Step‑Up', sets: 4, reps: '10 per side', tempo: '3‑1‑2', weight: '3‑5 kg', notes: '4 rounds' }, { name: 'Seated Hip Abduction', sets: 4, reps: 15, tempo: '2‑1‑2', weight: 'Band', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Dead Bug', sets: 4, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '4 rounds' }, { name: 'Plank with Knee Dip', sets: 4, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '4 rounds' }], rounds: 4, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'Volume is the path to unconscious competence.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Moving slowly is still moving forward.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Full Rest',
-          focus: 'Stillness',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Ready for Week 4',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Rest is where the adaptation happens.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 4 – Load
-    {
-      week: 4,
-      theme: 'Load – Adding Intentional Weight',
-      progression: 'RPE 7. Increase dumbbells to 5‑8 kg — a starting guide, not a ceiling. Tempo returns to 3‑1‑2. 3 rounds per superset. Progression rule: any session where you finish every rep with 2+ in reserve (below RPE 7), go up 1‑2 kg next time — including beyond 8 kg.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Load',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat, bench',
-          feel: 'Curious and grounded',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Standing shoulder circles', 'Glute bridges – 10'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Heavier, but same control' }, { name: 'Romanian Deadlift', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Feel the load, don’t rush' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg on hips', notes: 'Add weight' }, { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Still bodyweight' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '40 sec', tempo: 'hold', weight: 'Bodyweight', notes: 'Increase time' }, { name: 'Side Plank', sets: 3, reps: '30 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: 'Increase time' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Heavier doesn’t mean harder – it means you’re ready.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Load',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Steady and capable',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Push‑Up', sets: 3, reps: 10, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'If easy, add weight vest or elevate feet' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '12 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Heavier' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Overhead Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Heavier' }, { name: 'Lateral Raise', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '3‑5 kg', notes: 'Keep light' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: 'Add 2 lb ankle weight if desired' }, { name: 'Plank with Shoulder Tap', sets: 3, reps: '10 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'The weight is a tool. You are the master.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Load',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Grounded and rooted',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Sumo Squat', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Hold one DB' }, { name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Hold DBs' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge March (weighted)', sets: 3, reps: '10 per side', tempo: '2‑1‑2', weight: '5‑8 kg on hips', notes: '' }, { name: 'Hollow Body Hold', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: 'Increase time' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Side Plank', sets: 3, reps: '30 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Marching Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'Heavier weight demands more focus. Stay present.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Load',
-          focus: 'Back, chest, arms, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Bent‑Over Row', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Floor Press', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bicep Curl', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Tricep Extension', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '40 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'Strength is not about how much you lift. It’s about how you feel when you lift it.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Load',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Rooted and powerful',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Bodyweight Squat (paused)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: 'Bodyweight', notes: 'Hold 2 sec' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Step‑Up', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Seated Hip Abduction', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Band', notes: 'Increase band tension' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Dead Bug', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }, { name: 'Plank with Knee Dip', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'The weight is just a messenger. The real message comes from within.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Listen to what your body asks for today.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Full Rest',
-          focus: 'Stillness',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Ready for Week 5',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'You’re not the same woman who started four weeks ago.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 5 – Density
-    {
-      week: 5,
-      theme: 'Density – Doing More in Less Time',
-      progression: 'RPE 7. Same weight as Week 4 — or heavier if 8 kg started to feel easy. Reduce rest to 45 sec. Tempo 3‑1‑2.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Density',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), mat, bench',
-          feel: 'Curious and grounded',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Standing shoulder circles', 'Glute bridges – 10'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Romanian Deadlift', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Dead Bug', sets: 3, reps: '8 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '40 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Side Plank', sets: 3, reps: '30 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Less rest means more focus. Your endurance is growing.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Density',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Steady and capable',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Push‑Up', sets: 3, reps: 10, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '12 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Overhead Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Lateral Raise', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '3‑5 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }, { name: 'Plank with Shoulder Tap', sets: 3, reps: '10 taps per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Shorter rest challenges your work capacity. Breathe steady.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Density',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Grounded and rooted',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Sumo Squat', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Glute Bridge March (weighted)', sets: 3, reps: '10 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Hollow Body Hold', sets: 3, reps: '30 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Side Plank', sets: 3, reps: '30 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Marching Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'Density builds stamina. Stamina builds trust.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Density',
-          focus: 'Back, chest, arms, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Bent‑Over Row', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Floor Press', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Bicep Curl', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Tricep Extension', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '40 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'Moving faster between sets keeps your heart kind.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Density',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Rooted and powerful',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Bodyweight Squat (paused)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Step‑Up', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Seated Hip Abduction', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Band', notes: '' }], rounds: 3, restAfterSuperset: 45 },
-            { exercises: [{ name: 'Dead Bug', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }, { name: 'Plank with Knee Dip', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 45 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'Density week – you’re becoming efficient.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Breath is the bridge between density and stillness.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Full Rest',
-          focus: 'Stillness',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Ready for Week 6',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'You’re building capacity, not chaos.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 6 – Power
-    {
-      week: 6,
-      theme: 'Power – Expressing Strength',
-      progression: 'RPE 7‑8. Same weight as Week 5, or size up on the compounds if last week stayed below RPE 7. Increase reps to 14‑15. Tempo 2‑1‑2 (explosive).',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Power',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat, bench',
-          feel: 'Curious and grounded',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Standing shoulder circles', 'Glute bridges – 10'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Explode up, control down' }, { name: 'Romanian Deadlift', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Drive hips through' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Explosive up' }, { name: 'Dead Bug', sets: 3, reps: '10 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '45 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Side Plank', sets: 3, reps: '35 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Power is not about speed – it’s about intention.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Power',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Steady and capable',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Push‑Up', sets: 3, reps: 12, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Explosive up' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '15 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Explosive pull' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Overhead Press', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Lateral Raise', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '3‑5 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bird Dog', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }, { name: 'Plank with Shoulder Tap', sets: 3, reps: '12 taps per side', tempo: 'moderate', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Power week – feel the energy in every rep.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Power',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Grounded and rooted',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Sumo Squat', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Reverse Lunge', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Glute Bridge March (weighted)', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Hollow Body Hold', sets: 3, reps: '35 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Side Plank', sets: 3, reps: '35 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Marching Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'You’re not just lifting – you’re learning to express strength.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Power',
-          focus: 'Back, chest, arms, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Bent‑Over Row', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Floor Press', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bicep Curl', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Tricep Extension', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '45 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Bird Dog', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'Power is the marriage of control and speed.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Power',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Rooted and powerful',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Bodyweight Squat (paused)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Step‑Up', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Seated Hip Abduction', sets: 3, reps: 18, tempo: '2‑1‑2', weight: 'Band', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Dead Bug', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }, { name: 'Plank with Knee Dip', sets: 3, reps: '12 per side', tempo: 'moderate', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'More reps, same weight – you’re building muscular endurance and power.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Power also means knowing when to rest.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Full Rest',
-          focus: 'Stillness',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Ready for Week 7',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'You’ve come so much further than you think.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 7 – Variation
-    {
-      week: 7,
-      theme: 'Variation – New Stimulus, Same Growth',
-      progression: 'RPE 7‑8. Same load as Week 6 — heavier on the lifts that feel ready. Change exercises to avoid plateau.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Lower Body A – Variation',
-          focus: 'Glutes, hamstrings, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat, bench',
-          feel: 'Curious and grounded',
-          warmup: ['Cat‑cow – 8', 'Deep squat hold – 30 sec', 'Standing shoulder circles', 'Glute bridges – 10'],
-          supersets: [
-            { exercises: [{ name: 'Front Squat (DB)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'New variation' }, { name: 'Single‑Leg RDL', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Challenge balance' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Hip Thrust (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Replace glute bridge' }, { name: 'Windshield Wipers', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: 'Core rotation' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank', sets: 3, reps: '45 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }, { name: 'Side Plank with Reach', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: 'Add rotation' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Different exercise, same intention. Your body adapts – surprise it.'
-        },
-        {
-          day: 2,
-          name: 'Upper Body A – Variation',
-          focus: 'Chest, back, shoulders, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Steady and capable',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'Incline Push‑Up', sets: 3, reps: 12, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Hands on bench' }, { name: 'Renegade Row', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Plank + row' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Arnold Press', sets: 3, reps: 10, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Rotate press' }, { name: 'Upright Row', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Close grip' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank with Leg Lift', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }, { name: 'Dead Bug with Press', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Light', notes: 'Hold light DB' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'New movements wake up dormant connections.'
-        },
-        {
-          day: 3,
-          name: 'Lower Body B – Variation',
-          focus: 'Quads, glutes, adductors, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Grounded and rooted',
-          warmup: ['Leg swings', 'Hip circles', 'Bodyweight squats', 'Clam shells'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat (heels elevated)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Target quads' }, { name: 'Curtsy Lunge', sets: 3, reps: '10 per side', tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Single‑Leg Glute Bridge', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }, { name: 'Pallof Press', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Band/Cable', notes: 'Anti‑rotation' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Side Plank with Leg Abduction', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }, { name: 'Russian Twist', sets: 3, reps: '15 per side', tempo: 'moderate', weight: 'Light DB', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'Change is growth in disguise.'
-        },
-        {
-          day: 4,
-          name: 'Upper Body B – Variation',
-          focus: 'Back, chest, arms, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Pendlay Row (light)', sets: 3, reps: 10, tempo: 'explosive', weight: '5‑8 kg', notes: 'From floor each rep' }, { name: 'Decline Push‑Up', sets: 3, reps: 10, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Feet elevated' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Hammer Curl', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Palms facing' }, { name: 'Skull Crusher', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Supine triceps extension' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Plank with Row', sets: 3, reps: '8 per side', tempo: 'slow', weight: '5‑8 kg', notes: 'High plank, row one DB' }, { name: 'Bird Dog with Elbow to Knee', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'Novelty creates new pathways.'
-        },
-        {
-          day: 5,
-          name: 'Lower Body C – Variation',
-          focus: 'Hamstrings, glutes, quads, core',
-          durationMin: 45,
-          equipment: 'Dumbbells (5‑8 kg), bench',
-          feel: 'Rooted and powerful',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'Kettlebell Swing', sets: 3, reps: 15, tempo: 'explosive', weight: '8 kg', notes: 'Hip drive' }, { name: 'Box Squat (light)', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: 'Touch and go' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Nordic Hamstring Curl (negatives)', sets: 3, reps: '6', tempo: 'slow', weight: 'Bodyweight', notes: 'Lower as slow as possible' }, { name: 'Copenhagen Plank', sets: 3, reps: '15 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: 'Adductor focus' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Leg Raise', sets: 3, reps: 12, tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }, { name: 'Plank with Knee to Elbow', sets: 3, reps: '10 per side', tempo: 'slow', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'Variation prevents plateau – and boredom.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore',
-          focus: 'Active recovery',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Try a new walking route to keep your mind fresh.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Full Rest',
-          focus: 'Stillness',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Ready for Week 8',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'One more week. You’ve done the work.',
-          isRestDay: true
-        }
-      ]
-    },
-    // WEEK 8 – Integration
-    {
-      week: 8,
-      theme: 'Integration – Becoming Unconscious Conscious',
-      progression: 'RPE 6‑7. Full body circuits. Choose exercises from previous weeks. Move with flow. Next cycle: restart at Week 1’s structure, but with the heavier weights you’ve earned — that’s how the strength keeps building.',
-      sessions: [
-        {
-          day: 1,
-          name: 'Full Body Circuit – Flow',
-          focus: 'Total body integration',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), mat, bench',
-          feel: 'Flowing and integrated',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Arm circles'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '3‑round circuit — flow between moves, rest only at the end' }, { name: 'Push‑Up', sets: 3, reps: 10, tempo: '2‑1‑2', weight: 'Bodyweight', notes: 'Knees or incline as needed' }, { name: 'Bent‑Over Row', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: 'Squeeze the shoulder blades' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Overhead Press', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Plank', sets: 3, reps: '40 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'This week is about feeling how far you’ve come. Return to the self who started.'
-        },
-        {
-          day: 2,
-          name: 'Full Body Circuit – Rhythm',
-          focus: 'Total body integration',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Steady and capable',
-          warmup: ['Inchworms', 'Thoracic rotations', 'Arm circles'],
-          supersets: [
-            { exercises: [{ name: 'Romanian Deadlift (DB)', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '3‑round circuit — keep a steady rhythm' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Glute Bridge (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Sumo Squat', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Floor Press', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Bird Dog', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Thread the needle', 'Supine twist'],
-          coachingNote: 'Integration means the movements become part of you – unconscious conscious.'
-        },
-        {
-          day: 3,
-          name: 'Full Body Circuit – Strength Flow',
-          focus: 'Total body integration',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), bench, mat',
-          feel: 'Grounded and rooted',
-          warmup: ['Leg swings', 'Hip circles', 'Cat‑cow'],
-          supersets: [
-            { exercises: [{ name: 'DB Romanian Deadlift', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '3‑round circuit — the strongest movements you own' }, { name: 'Step‑Up', sets: 3, reps: '10 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Overhead Press', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 12, tempo: '3‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Bent‑Over Row', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Side Plank', sets: 3, reps: '30 sec per side', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Couch stretch', 'Supine hamstring stretch'],
-          coachingNote: 'You are not the same woman who started eight weeks ago. Feel the difference.'
-        },
-        {
-          day: 4,
-          name: 'Full Body Circuit – Play',
-          focus: 'Total body integration',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), mat',
-          feel: 'Flowing and integrated',
-          warmup: ['Arm circles', 'Band pull‑aparts', 'Scapular push‑ups'],
-          supersets: [
-            { exercises: [{ name: 'Front Squat (DB)', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '3‑round circuit — playful, light on your feet' }, { name: 'Push‑Up', sets: 3, reps: 10, tempo: '2‑1‑2', weight: 'Bodyweight', notes: '' }, { name: 'Reverse Lunge', sets: 3, reps: '10 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Bicep Curl', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Tricep Extension', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Dead Bug', sets: 3, reps: '10 per side', tempo: '3‑1‑3', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Child’s pose', 'Supine twist', 'Figure‑four stretch'],
-          coachingNote: 'Every tiny step counts. You are further than you were.'
-        },
-        {
-          day: 5,
-          name: 'Full Body Circuit – Celebration',
-          focus: 'Total body integration',
-          durationMin: 40,
-          equipment: 'Dumbbells (5‑8 kg), bench, mat',
-          feel: 'Rooted and powerful',
-          warmup: ['Cat‑cow', 'Deep squat hold', 'Leg swings', 'Glute bridges'],
-          supersets: [
-            { exercises: [{ name: 'Goblet Squat', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '3‑round circuit — everything you built, in one flow' }, { name: 'Romanian Deadlift (DB)', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Single‑Arm DB Row', sets: 3, reps: '12 per side', tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }], rounds: 3, restAfterSuperset: 60 },
-            { exercises: [{ name: 'Hip Thrust (weighted)', sets: 3, reps: 15, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Overhead Press', sets: 3, reps: 12, tempo: '2‑1‑2', weight: '5‑8 kg', notes: '' }, { name: 'Plank', sets: 3, reps: '45 sec', tempo: 'hold', weight: 'Bodyweight', notes: '' }], rounds: 3, restAfterSuperset: 60 }
-          ],
-          cooldown: ['Pigeon pose', 'Supine hamstring stretch', 'Child’s pose'],
-          coachingNote: 'This is not the end. It’s the beginning of a lifelong return to yourself. Be proud.'
-        },
-        {
-          day: 6,
-          name: 'Walk & Restore – Gratitude Walk',
-          focus: 'Mindful movement',
-          durationMin: 30,
-          equipment: 'None',
-          feel: 'Easy and spacious',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Think of three things you’re grateful for in your body. Thank it.',
-          isRestDay: true
-        },
-        {
-          day: 7,
-          name: 'Rest & Reflect',
-          focus: 'Ritual',
-          durationMin: 0,
-          equipment: 'None',
-          feel: 'Gratitude',
-          warmup: [],
-          supersets: [],
-          cooldown: [],
-          coachingNote: 'Write a letter to yourself about what you’ve learned. Keep it somewhere you can read on hard days. You did this. One tiny step at a time. And you’re just getting started.',
-          isRestDay: true
-        }
-      ]
-    }
-  ]
+    "New to lifting, or coming back after a break, a baby or burnout. You need a few dumbbells (roughly 4–16 kg), a long resistance band and 30–45 minutes, three times a week.",
+  equipmentLevel: "home",
+  daysPerWeek: 3,
+  sessionMinutes: [30, 45],
+  weeks: WEEKS.map(week),
 };

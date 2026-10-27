@@ -3,6 +3,8 @@
  * e.g. "1 cup red lentils" → { quantity: "1", unit: "cup", name: "red lentils", searchTerm: "red lentils" }
  */
 
+import { formatSmartQty, groupKey, parseQty, toBase } from "@/lib/smart-shopping-core";
+
 export interface ParsedIngredient {
   raw: string;
   quantity: string;
@@ -22,22 +24,54 @@ const UNITS = new Set([
   "pinch", "dash", "sprig", "sprigs", "head", "heads",
 ]);
 
-const PREP_WORDS = /,?\s*(diced|chopped|minced|sliced|grated|crushed|peeled|trimmed|halved|quartered|julienned|torn|roughly|finely|thinly|to taste|for serving|optional).*$/i;
+// Prep notes come after a comma ("2 cloves garlic, minced"), so everything from the
+// first comma outside brackets is dropped. Prep words *before* the noun stay in the
+// name ("200g tinned diced tomatoes", "15g grated cheese").
+const TRAILING_NOTES = /\s+(?:to taste|to serve|to wilt|for (?:serving|drizzling|topping|garnish)|as (?:a )?topping|optional)$/i;
+const LABEL = /^(?:optional(?:\s+toppings?)?|marinade|dressing|sauce|toppings?|garnish|to serve|for the [^:]{1,30}):\s*/i;
+const VAGUE = /^(?:a\s+)?(?:small|large|big|generous|good)?\s*(?:handful|drizzle|few|splash|sprinkle|knob|little)\s+(?:of\s+)?/i;
+const SIZE_WORDS = /^(?:fresh|large|medium|small|extra[- ]large|xl|ripe|thick|thin|heaped|level|good[- ]quality|organic|raw|mini|free[- ]range|plain|unsweetened|natural|extra virgin|full[- ]fat|low[- ]fat|lean|boneless|skinless|hulled|massaged|rinsed and drained|drained and rinsed|drained|rinsed|(?:lightly|loosely|firmly|tightly)?\s*packed)\s+/i;
+const PRODUCT_WORDS = /^(?:dried|frozen|cooked|canned|tinned|baby)\s+/i;
+
+const toNumber = (q: string) => {
+  const m = q.trim().match(/^(?:(\d+)\s+)?(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+))?$/);
+  if (!m) return NaN;
+  return m[3] ? Number(m[1] ?? 0) + Number(m[2]) / Number(m[3]) : Number(m[2]);
+};
+
+/** "frozen or fresh strawberries" → "fresh strawberries"; "milk or plant milk" → "milk". */
+function firstAlternative(name: string): string {
+  const parts = name.split(/\s+or\s+/i);
+  if (parts.length < 2) return name;
+  return /^(fresh|frozen|dried|tinned|canned)$/i.test(parts[0]) ? parts.slice(1).join(" or ") : parts[0];
+}
 
 export function parseIngredient(raw: string): ParsedIngredient {
   const fractions: Record<string, string> = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8" };
-  let text = raw.trim().replace(/([0-9])([½⅓⅔¼¾⅛⅜⅝⅞])/g, "$1 $2").replace(/[½⅓⅔¼¾⅛⅜⅝⅞]/g, c => fractions[c]);
+  const text = raw.trim().replace(/([0-9])([½⅓⅔¼¾⅛⅜⅝⅞])/g, "$1 $2").replace(/[½⅓⅔¼¾⅛⅜⅝⅞]/g, c => fractions[c]);
 
-  // Remove prep instructions
-  let cleaned = text.replace(PREP_WORDS, "").trim();
+  // Brackets first (they can hold commas), then cut the prep notes after the first comma.
+  const parens = [...text.matchAll(/\(([^)]*)\)/g)].map(m => m[1].trim());
+  let cleaned = text.replace(/\s*\([^)]*\)/g, "").split(",")[0].replace(TRAILING_NOTES, "").trim();
+  cleaned = cleaned
+    .replace(LABEL, "")
+    .replace(/^(?:a\s+)?squeeze of\s+/i, "")
+    .replace(/^(?:the\s+)?(?:zest and juice|juice and zest|zest|juice)\s+of\s+/i, "")
+    .replace(/^(\d+(?:\s*\/\s*\d+)?)\s+an?\s+/i, "$1 ");
+  if (!/^\d/.test(cleaned)) cleaned = cleaned.replace(VAGUE, "");
 
-  // Pull a "(400 g)" / "(2 cups)" parenthetical out as a fallback quantity hint
+  // "1 x 400g can chickpeas", "1/2 x 400g tin beans", "1/3 of a 400g can tomatoes" → grams.
+  const can = cleaned.match(/^(\d+(?:\s+\d+\/\d+|\s*\/\s*\d+|\.\d+)?)\s*(?:x|×|of(?:\s+an?)?)\s*(\d+(?:\.\d+)?)\s*(g|ml)\s+(?:(?:cans?|tins?|jars?|packets?|packs?|bags?)\s+)?(?:of\s+)?(.+)$/i);
+  if (can && Number.isFinite(toNumber(can[1]))) {
+    cleaned = `${Math.round(toNumber(can[1]) * Number(can[2]))}${can[3]} ${can[4]}`;
+  }
+
+  // A plain "(400 g)" bracket is a fallback weight; "(about 40g)" is only a hint.
   let parenQty = "";
   let parenUnit = "";
-  const parenMatch = cleaned.match(/\(([\d.½⅓⅔¼¾⅛/\s-]+)\s*(g|gram|grams|kg|ml|l|cup|cups|tbsp|tsp|oz|lb)\b[^)]*\)/i);
-  if (parenMatch) {
-    parenQty = parenMatch[1].trim();
-    parenUnit = parenMatch[2].toLowerCase();
+  for (const p of parens) {
+    const m = p.match(/^([\d./\s-]+)\s*(g|gram|grams|kg|ml|l|cup|cups|tbsp|tsp)\b/i);
+    if (m) { parenQty = m[1].trim(); parenUnit = m[2].toLowerCase(); break; }
   }
 
   // Match quantity (number, fraction, or range) at start
@@ -50,8 +84,9 @@ export function parseIngredient(raw: string): ParsedIngredient {
     rest = cleaned.slice(qtyMatch[0].length).trim();
   }
 
-  // Match unit
+  // Match unit ("1 large handful" → handful)
   const words = rest.split(/\s+/);
+  if (words.length > 1 && /^(small|large|big|heaped|level|generous)$/i.test(words[0]) && UNITS.has(words[1].toLowerCase().replace(/s$/, ""))) words.shift();
   let unit = "";
   let nameStart = 0;
 
@@ -64,19 +99,26 @@ export function parseIngredient(raw: string): ParsedIngredient {
     }
   }
 
-  let name = words.slice(nameStart).join(" ").trim();
+  let name = words.slice(nameStart).join(" ").trim()
+    .replace(/^(?:cans?|tins?|jars?)\s+(?:of\s+)?/i, "")
+    .replace(/^(?:lightly|loosely|firmly|tightly)\s+packed\s+/i, "");
 
-  // If no leading qty/unit was found but a "(400 g)" parenthetical was present,
-  // promote that parenthetical to be the canonical quantity + unit.
+  // "2 garlic cloves" reads the same as "2 cloves garlic" on a shopping list.
+  const cloveTail = !unit && name.match(/^(.+?)\s+(cloves?)$/i);
+  if (cloveTail) {
+    name = cloveTail[1];
+    unit = cloveTail[2].toLowerCase();
+  }
+
+  // If no leading qty/unit was found but a "(400 g)" bracket was present,
+  // promote it to be the canonical quantity + unit.
   if (!quantity && parenQty) {
     quantity = parenQty;
     unit = parenUnit;
-    name = name.replace(/\s*\([^)]*\)\s*/g, " ").trim();
   } else if (quantity && unit === "" && parenQty && parenUnit) {
     // e.g. "1 tin (400 g) tomatoes" → prefer the gram weight for shopping totals
     quantity = parenQty;
     unit = parenUnit;
-    name = name.replace(/\s*\([^)]*\)\s*/g, " ").trim();
   }
 
   // Guard: a name that is *only* a descriptor like "tinned" / "canned" /
@@ -84,14 +126,16 @@ export function parseIngredient(raw: string): ParsedIngredient {
   // string so the shopping list never shows a row called "Tinned".
   const onlyDescriptor = /^(fresh|dried|frozen|organic|raw|cooked|canned|tinned|large|medium|small|baby|mini)$/i;
   if (!name || onlyDescriptor.test(name)) {
-    name = raw.replace(/^[\d½⅓⅔¼¾⅛.\-–\s]+/, "").trim() || raw;
+    name = raw.replace(/^[\d½⅓⅔¼¾⅛.\-–\s]+/, "").replace(/\s*\([^)]*\)/g, "").split(",")[0].trim() || raw;
   }
 
-  // Build a clean search term (strip size and quality descriptors for grouping)
-  const searchTerm = name
-    .replace(/^(fresh|dried|frozen|organic|raw|cooked|canned|tinned|large|medium|small|baby|mini|extra-large|xl|extra large)\s+/i, "")
-    .replace(/\s*\(.*?\)\s*/g, "")
-    .trim();
+  // Search term: drop size, freshness and ripeness words, keep product words
+  // (tinned, dried, frozen) only after the first, so "small ripe banana" → "banana".
+  let searchTerm = firstAlternative(name);
+  for (let i = 0; i < 4 && SIZE_WORDS.test(searchTerm); i++) searchTerm = searchTerm.replace(SIZE_WORDS, "");
+  searchTerm = searchTerm.replace(PRODUCT_WORDS, "");
+  for (let i = 0; i < 2 && SIZE_WORDS.test(searchTerm); i++) searchTerm = searchTerm.replace(SIZE_WORDS, "");
+  searchTerm = searchTerm.trim();
 
   return { raw, quantity, unit, name: name || cleaned, searchTerm: searchTerm || name || cleaned };
 }
@@ -220,43 +264,6 @@ export function removeMergedItem(indices: number[]): ShoppingItem[] {
 
 /* ── Quantity parsing & merging helpers ── */
 
-/** Convert fraction chars to decimal */
-function fracToNum(s: string): number {
-  const FRACS: Record<string, number> = { "½": 0.5, "⅓": 0.333, "⅔": 0.667, "¼": 0.25, "¾": 0.75, "⅛": 0.125 };
-  let val = 0;
-  let rest = s.trim();
-  // handle "1 ½" style
-  const parts = rest.split(/\s+/);
-  for (const p of parts) {
-    if (FRACS[p]) { val += FRACS[p]; }
-    else if (p.includes("/")) {
-      const [n, d] = p.split("/").map(Number);
-      if (d) val += n / d;
-    } else {
-      const n = parseFloat(p);
-      if (!isNaN(n)) val += n;
-    }
-  }
-  return val;
-}
-
-function numToDisplay(n: number): string {
-  if (n === 0) return "";
-  if (n % 1 === 0) return String(n);
-  // common fractions
-  const frac = n % 1;
-  const whole = Math.floor(n);
-  const CLOSE = (a: number, b: number) => Math.abs(a - b) < 0.05;
-  let fracStr = "";
-  if (CLOSE(frac, 0.25)) fracStr = "¼";
-  else if (CLOSE(frac, 0.333)) fracStr = "⅓";
-  else if (CLOSE(frac, 0.5)) fracStr = "½";
-  else if (CLOSE(frac, 0.667)) fracStr = "⅔";
-  else if (CLOSE(frac, 0.75)) fracStr = "¾";
-  else return n.toFixed(1);
-  return whole > 0 ? `${whole} ${fracStr}` : fracStr;
-}
-
 /** Normalise unit to canonical form for comparison */
 function normUnit(u: string): string {
   const s = u.toLowerCase().replace(/s$/, "");
@@ -283,31 +290,26 @@ function normName(name: string): string {
     .trim();
 }
 
-/** Merge flat shopping items into grouped display items */
+/** Merge flat shopping items into grouped display items (same units and wording as the week list). */
 export function mergeShoppingItems(items: ShoppingItem[]): MergedShoppingItem[] {
-  const groups = new Map<string, { indices: number[]; items: ShoppingItem[] }>();
+  const groups = new Map<string, { indices: number[]; items: ShoppingItem[]; total: number; unit: string }>();
 
   items.forEach((item, idx) => {
-    const key = `${normName(item.name)}::${normUnit(item.unit)}`;
-    if (!groups.has(key)) groups.set(key, { indices: [], items: [] });
-    groups.get(key)!.indices.push(idx);
-    groups.get(key)!.items.push(item);
+    const base = item.quantity ? toBase(parseQty(item.quantity), item.unit, item.name) : { qty: 0, unit: "none" };
+    const key = `${groupKey(item.searchTerm || normName(item.name))}::${base.unit || normUnit(item.unit) || "unit"}`;
+    if (!groups.has(key)) groups.set(key, { indices: [], items: [], total: 0, unit: base.unit });
+    const g = groups.get(key)!;
+    g.indices.push(idx);
+    g.items.push(item);
+    g.total += base.qty;
   });
 
   const result: MergedShoppingItem[] = [];
   groups.forEach((group, key) => {
     const first = group.items[0];
-    // Sum quantities
-    let total = 0;
-    let allHaveQty = true;
-    for (const it of group.items) {
-      if (it.quantity) {
-        total += fracToNum(it.quantity);
-      } else {
-        allHaveQty = false;
-      }
-    }
-    const totalStr = allHaveQty && total > 0 ? numToDisplay(total) : (group.items.length > 1 ? `×${group.items.length}` : first.quantity);
+    const totalStr = group.total > 0
+      ? formatSmartQty(group.total, group.unit, first.name)
+      : group.items.length > 1 ? `×${group.items.length}` : "";
 
     const recipes = [...new Set(group.items.filter(i => i.recipeName !== "Manual").map(i => i.recipeName))];
     const recipeIds = [...new Set(group.items.map(i => i.recipeId))];
@@ -317,7 +319,8 @@ export function mergeShoppingItems(items: ShoppingItem[]): MergedShoppingItem[] 
       key,
       name: first.name,
       totalQuantity: totalStr,
-      unit: first.unit,
+      // The formatted total already carries its unit ("125 ml (½ cup)", "3 cloves").
+      unit: "",
       recipes,
       recipeIds,
       checked: allChecked,

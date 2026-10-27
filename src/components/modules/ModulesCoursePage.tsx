@@ -181,19 +181,10 @@ export default function ModulesCoursePage() {
                           <div className="flex-1 min-w-0">
                             <h3 className="font-display text-sm font-bold text-foreground">{mod.title}</h3>
                             <p className="font-body text-xs text-muted-foreground mt-1 line-clamp-2">{mod.subtitle}</p>
-                            <div className="flex items-center gap-3 mt-2">
-                              <span className="font-body text-[10px] text-muted-foreground flex items-center gap-1">
-                                <Clock className="h-3 w-3" /> {mod.estimatedMinutes} min
-                              </span>
-                              <span className="font-body text-[10px] text-muted-foreground">
-                                {mod.lessons.length} lessons
-                              </span>
-                              {!isUnlocked && (
-                                <span className="font-body text-[10px] text-muted-foreground/70">
-                                  finish the previous module to unlock
-                                </span>
-                              )}
-                            </div>
+                            <p className="mt-2 flex items-center gap-1 whitespace-nowrap font-body text-[10px] text-muted-foreground">
+                              <Clock className="h-3 w-3" /> {mod.estimatedMinutes} min · {mod.lessons.length} lessons
+                              {!isUnlocked && <span className="text-muted-foreground/70"> · opens after the one above</span>}
+                            </p>
                             {progress > 0 && (
                               <div className="mt-2">
                                 <Progress value={progress} className="h-1" />

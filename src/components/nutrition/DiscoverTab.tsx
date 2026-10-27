@@ -7,6 +7,7 @@ import { Phase, PHASE_SHORT } from "@/lib/cycle-utils";
 import { ALL_RECIPES } from "@/lib/recipe-index";
 import { Recipe } from "@/data/meal-plans";
 import { KIDS_RECIPE_BANK, KidsRecipe } from "@/data/kids-recipes";
+import { withMethodAmounts } from "@/lib/recipe-method";
 import { RecipeShoppingButton } from "@/components/ShoppingList";
 import { BotanicalSprig } from "@/components/BotanicalElements";
 import { haptic } from "@/hooks/use-mobile";
@@ -680,7 +681,7 @@ function KidsRecipeDetailSheet({ recipe, onClose }: { recipe: KidsRecipe; onClos
           <div>
             <p className="font-hand text-sm font-bold mb-2" style={{ color }}>Method</p>
             <ol className="space-y-1">
-              {recipe.method.map((step, j) => (
+              {withMethodAmounts(recipe.ingredients, recipe.method).map((step, j) => (
                 <li key={j} className="font-body text-xs text-muted-foreground">{j + 1}. {step}</li>
               ))}
             </ol>

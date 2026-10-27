@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Play, Pause, X, Volume2, Loader2 } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 import { CALM_READER_VOICE_ID, CALM_READER_VOICE_LABEL, pickPreferredReaderVoice } from "@/lib/script-audio";
+import { functionHeaders } from "@/lib/function-headers";
 
 interface Props {
   title: string;
@@ -44,11 +45,7 @@ export default function StoicAudioPlayer({ title, text, onClose }: Props) {
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-generate-inline`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: await functionHeaders(),
           body: JSON.stringify({ text, user_identifier, voiceId: CALM_READER_VOICE_ID }),
         }
       );

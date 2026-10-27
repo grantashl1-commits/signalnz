@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { toast } from "sonner";
+import { functionHeaders } from "@/lib/function-headers";
 
 const MUSIC_PROMPTS = [
   "Gentle ambient sleep music with soft piano, warm synth pads, and quiet rain. Very slow tempo, deeply calming. No percussion.",
@@ -45,11 +46,7 @@ export function useSleepMusic() {
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sleep-music`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: await functionHeaders(),
           body: JSON.stringify({ prompt, duration: 120, user_identifier }),
         }
       );

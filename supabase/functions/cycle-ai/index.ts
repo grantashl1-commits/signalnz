@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { requireUser } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -72,6 +73,9 @@ function getDailySignal(cycleDay: number, phase: string, recentSymptoms: string[
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  // Only signed-in members may call this (it uses the service role or paid AI).
+  const caller = await requireUser(req, corsHeaders);
+  if (caller instanceof Response) return caller;
 
   try {
     const { type, messages, cycleDay, phase, phaseDescription, recentSymptoms, recentMoods, periodDueIn, cycle_mode, current_phase, cycle_day, recent_symptoms } = await req.json();
@@ -104,7 +108,7 @@ serve(async (req) => {
       if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
       // Rate limiting: 10 per minute
-      const userId = req.headers.get("Authorization")?.replace("Bearer ", "") || "anon";
+      const userId = caller.user.id;
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
       const { data: rl } = await sb.rpc("check_rate_limit", {
         _user_id: userId, _function_name: "cycle-ai", _max_per_minute: 10,
