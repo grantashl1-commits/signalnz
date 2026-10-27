@@ -28,8 +28,11 @@ export interface ReformerExercise {
   nameEs: string;
   series: string;
   level: ReformerLevel;
-  /** Page in the source book, for full teaching notes. */
-  page: number;
+  /**
+   * Page in the source book, for full teaching notes. `null` for the in-house
+   * "Signal plan" series, which is not from the book.
+   */
+  page: number | null;
   /** All regions this exercise trains. */
   focus: ReformerFocus[];
   /** Dominant region when `focus` has more than one entry. */

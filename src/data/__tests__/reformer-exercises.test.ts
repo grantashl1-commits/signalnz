@@ -12,12 +12,17 @@ import {
 
 describe("reformer exercise library", () => {
   it("holds the complete book repertoire", () => {
-    expect(REFORMER_EXERCISES).toHaveLength(117);
+    // 117 book exercises plus the 10 in-house "Signal plan" exercises.
+    const bookExercises = REFORMER_EXERCISES.filter((e) => e.series !== "Signal plan");
+    expect(bookExercises).toHaveLength(117);
+    expect(REFORMER_EXERCISES).toHaveLength(127);
     // The book's 15 series arrive as 16 here: its single supine series is split
     // into "Supine Arms" and "Supine Legs in Straps", which filter far better.
-    expect(REFORMER_SERIES).toHaveLength(16);
+    // The in-house "Signal plan" series makes 17.
+    expect(REFORMER_SERIES).toHaveLength(17);
     expect(REFORMER_SERIES).toContain("Supine Arms");
     expect(REFORMER_SERIES).toContain("Supine Legs in Straps");
+    expect(REFORMER_SERIES).toContain("Signal plan");
   });
 
   it("gives every exercise a unique id and the fields a builder needs", () => {
@@ -28,15 +33,26 @@ describe("reformer exercise library", () => {
       expect(ex.nameEs.length).toBeGreaterThan(0);
       expect(ex.focus.length).toBeGreaterThan(0);
       expect(ex.focus).toContain(ex.primary);
-      expect(ex.page).toBeGreaterThan(60);
+      // Book exercises cite a page; the in-house series has none.
+      if (ex.page !== null) expect(ex.page).toBeGreaterThan(60);
       expect(ex.pose.length).toBeGreaterThan(40);
       expect(ex.highlight.length).toBeGreaterThan(10);
     }
   });
 
+  it("keeps the in-house Signal plan series self-describing", () => {
+    const plan = exercisesBySeries("Signal plan");
+    expect(plan).toHaveLength(10);
+    for (const ex of plan) {
+      expect(ex.page).toBeNull();
+      // Artwork is drawn into reformer/library/, so the id must stay a clean slug.
+      expect(ex.id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    }
+  });
+
   it("tags every exercise into at least one routine region", () => {
     const counts = reformerCounts();
-    expect(counts.total).toBe(117);
+    expect(counts.total).toBe(127);
     // Every region must be usable on its own, and core work dominates a
     // classical reformer repertoire.
     expect(counts.upper).toBeGreaterThan(30);
