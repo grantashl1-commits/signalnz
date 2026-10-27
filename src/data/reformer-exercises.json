@@ -212,7 +212,7 @@
   "equipment": [
    "footbar"
   ],
-  "pose": "lies supine on the carriage with one heel hooked over the footbar and the other leg extended low in the air just above the carriage, pelvis level and square, one arm long at her side. The carriage is pressed out on a single leg.",
+  "pose": "holds her near knee bent to ninety degrees, that thigh vertical and that shin horizontal and level with the floor in a table shape, with that foot floating in the air above the carriage. She lies flat on her back and face up with arms by her sides, and her other heel rests on the centre of the footbar with that leg almost straight, the carriage pushed out toward the foot end. The bent knee stays bent throughout, and that shin never points up at the ceiling. She is not face down, not in a plank and not propped on her hands.",
   "highlight": "the quadriceps and hamstrings of the working leg on the bar, plus the deep obliques and multifidus of the waist"
  },
  {
@@ -293,7 +293,7 @@
   "equipment": [
    "straps"
   ],
-  "pose": "lies supine on the carriage holding a strap handle in each hand, both arms opened wide at shoulder height with the elbows bent to 90 degrees so the forearms point up, palms facing forward, ribs knitted down and pelvis neutral, legs long on the carriage. The straps are drawn out to the sides.",
+  "pose": "lies flat on her back, face up, a strap handle in each hand. Her arms make a goalpost shape: upper arms straight out at shoulder height and level with the carriage, elbows bent to ninety degrees so both forearms point straight up at the ceiling. From the side the near forearm stands upright above its elbow and the far arm mirrors it. The straps run back to the pulleys. She is not face down, not kneeling and not on a box.",
   "highlight": "the pectorals across the chest and the front of the shoulders, with the abdominals engaged to hold the ribs down"
  },
  {
@@ -348,7 +348,7 @@
   "equipment": [
    "straps"
   ],
-  "pose": "lies supine on the carriage holding a strap handle in each hand, arms swept down beside her hips then arcing wide and long over her head in a big slow angel circle, palms turning as they travel, ribs down and legs long and still on the carriage.",
+  "pose": "lies flat on her back, face up, straight arms sweeping in a wide snow-angel arc from her hips toward her head, her hands staying low and about level with the carriage. This is the middle of the arc: her arms are halfway between straight out to the sides and straight overhead, palms up. She is not sitting, not rolled onto her side and not reaching up to the ceiling.",
   "highlight": "the latissimus dorsi, teres minor, infraspinatus and rear deltoids, with the abdominals and the serratus anterior along the ribs"
  },
  {
@@ -373,7 +373,7 @@
   "equipment": [
    "straps"
   ],
-  "pose": "lies supine on the carriage holding a strap handle in each hand, both upper arms held still alongside her ribs with the elbows bent sharply and the hands beside her ears, then the elbows straighten to press the straps down beside her hips. Legs long on the carriage.",
+  "pose": "lies flat on her back, face up, head on the raised headrest, both legs long and together on the carriage, a strap handle in each hand. Her upper arms are pinned flat on the carriage beside her ribs and her elbows are bent sharply so her hands are up by her shoulders. The straps run back over her shoulders to the pulleys. This is the start position, just before she presses down. She is not sitting up, not kneeling and not face down.",
   "highlight": "the triceps on the back of both upper arms, with the shoulder stabilisers"
  },
  {
@@ -1278,7 +1278,7 @@
    "long-box",
    "straps"
   ],
-  "pose": "sits tall with legs folded to one side on the long box, one arm reaching overhead in a long side-bend curve toward the opposite side, the other arm relaxed, creating a crescent moon shape through the waist and ribs.",
+  "pose": "faces the viewer — the only exercise drawn that way — while the reformer itself stays side-on. She sits sideways on the long box with both legs folded to one side, so the side bend reads as a crescent shape. Her arm nearest the pulleys holds a single strap and reaches up and over her head, and her body bends away from the pulleys in one long curve from hip to fingertips. Her other hand rests on the box. She is not cross-legged and not rowing.",
   "highlight": "the quadratus lumborum and the internal and external obliques along the side waist, with the latissimus dorsi, pectorals and triceps"
  },
  {
@@ -1739,9 +1739,10 @@
   "straps": "not used",
   "headrest": "down",
   "equipment": [
-   "footbar"
+   "footbar",
+   "carriage"
   ],
-  "pose": "kneels on the carriage facing the footbar with both hands on the bar, one knee down on the carriage and the other foot flat on the floor beside the frame, pressing the carriage back with the down knee and drawing it home, torso level and still.",
+  "pose": "stands on the floor beside the footbar facing the foot end of the reformer, her standing knee soft. She hinges forward with a flat back and both hands on the bar. Her working foot is on the carriage behind her, braced against the shoulder block, pushing the carriage back. She is not kneeling: one foot is on the carriage and one is on the floor.",
   "highlight": "the gluteus maximus, hamstrings and quadriceps of the working leg, with the hip flexors of the back leg lengthening"
  },
  {
