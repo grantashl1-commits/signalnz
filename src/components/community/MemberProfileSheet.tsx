@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { X } from "lucide-react";
+import { toast } from "sonner";
+import { useBlockedMembers } from "@/hooks/useBlockedMembers";
+import { REPORT_REASONS, blockMember, reportMember, unblockMember } from "@/lib/community-safety";
 
 interface MemberProfileSheetProps {
   userId: string;
   displayName: string;
+  /** The message she tapped from, so a report points at it. */
+  messageId?: string;
   onClose: () => void;
 }
 
@@ -19,21 +24,44 @@ interface CommunityProfile {
   visibility?: Record<string, boolean>;
 }
 
-export default function MemberProfileSheet({ userId, displayName, onClose }: MemberProfileSheetProps) {
+export default function MemberProfileSheet({ userId, displayName, messageId, onClose }: MemberProfileSheetProps) {
   const [profile, setProfile] = useState<CommunityProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const blocked = useBlockedMembers().has(userId);
+  const [reporting, setReporting] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("community_profiles")
-        .select("career, employer, skills, offer, looking_for, community_vision, barter, visibility")
-        .eq("user_id", userId)
-        .single();
-      setProfile(data as CommunityProfile | null);
+      // Only the fields she has chosen to show come back from the server.
+      const { data } = await supabase.rpc("get_community_profile" as never, { target: userId } as never);
+      setProfile(((data as CommunityProfile[] | null)?.[0]) ?? null);
       setLoading(false);
     })();
   }, [userId]);
+
+  const toggleBlock = async () => {
+    setBusy(true);
+    try {
+      if (blocked) { await unblockMember(userId); toast.success(`${displayName} is unblocked.`); }
+      else { await blockMember(userId); toast.success(`You won't see ${displayName}'s messages.`); onClose(); }
+    } catch {
+      toast.error("That didn't save. Please try again.");
+    }
+    setBusy(false);
+  };
+
+  const report = async (reason: string) => {
+    setBusy(true);
+    try {
+      await reportMember({ targetUserId: userId, messageId, reason });
+      toast.success("Thank you. We'll review this.");
+      setReporting(false);
+    } catch {
+      toast.error("That report didn't send. Please try again.");
+    }
+    setBusy(false);
+  };
 
   const vis = (profile?.visibility as Record<string, boolean>) || {};
 
@@ -79,6 +107,29 @@ export default function MemberProfileSheet({ userId, displayName, onClose }: Mem
                 <p className="font-display text-sm italic text-foreground">{f.value}</p>
               </div>
             ))
+          )}
+        </div>
+
+        <div className="border-t border-border p-5 space-y-3">
+          {reporting ? (
+            <div className="space-y-2">
+              <p className="font-body text-xs text-muted-foreground">What's wrong?{messageId ? " We'll include the message you tapped." : ""}</p>
+              {REPORT_REASONS.map(reason => (
+                <button key={reason} disabled={busy} onClick={() => report(reason)} className="w-full rounded-xl border border-border px-4 py-2.5 text-left font-body text-sm text-foreground hover:bg-secondary disabled:opacity-50">
+                  {reason}
+                </button>
+              ))}
+              <button onClick={() => setReporting(false)} className="w-full font-body text-xs text-muted-foreground py-1">Cancel</button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <button disabled={busy} onClick={() => setReporting(true)} className="flex-1 rounded-full border border-border py-2.5 font-body text-sm text-foreground disabled:opacity-50">
+                Report
+              </button>
+              <button disabled={busy} onClick={toggleBlock} className="flex-1 rounded-full border border-destructive/40 py-2.5 font-body text-sm text-destructive disabled:opacity-50">
+                {blocked ? "Unblock" : "Block"}
+              </button>
+            </div>
           )}
         </div>
       </div>

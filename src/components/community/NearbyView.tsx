@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useBlockedMembers } from "@/hooks/useBlockedMembers";
 import { MapPin, ShieldCheck, Leaf } from "lucide-react";
 const MemberProfileSheet = lazy(() => import("@/components/community/MemberProfileSheet"));
 
@@ -23,15 +24,19 @@ interface SuburbCluster {
 }
 
 // ─── Constants ────────────────────────────────────────────
-const FUZZ_AMOUNT = 0.005; // ~500m radius fuzz
+// Nearby only names suburbs, so stored points are snapped to a fixed ~1 km grid.
+// A fresh random offset on each share could be averaged back to her real spot.
+const GRID_DECIMALS = 2;
 const GOOGLE_GEOCODE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/reverse";
 
-// ─── Helper: fuzz coordinates for privacy ─────────────────
-function fuzzCoords(lat: number, lng: number) {
-  const fuzzLat = (Math.random() - 0.5) * 2 * FUZZ_AMOUNT;
-  const fuzzLng = (Math.random() - 0.5) * 2 * FUZZ_AMOUNT;
-  return { lat: lat + fuzzLat, lng: lng + fuzzLng };
+// ─── Helper: coarsen coordinates for privacy ──────────────
+function roundTo(n: number, decimals: number) {
+  const f = 10 ** decimals;
+  return Math.round(n * f) / f;
+}
+function snapToGrid(lat: number, lng: number) {
+  return { lat: roundTo(lat, GRID_DECIMALS), lng: roundTo(lng, GRID_DECIMALS) };
 }
 
 // ─── Helper: reverse geocode with fallback ────────────────
@@ -277,6 +282,7 @@ interface NearbyViewProps {
 // ─── Main Component ────────────────────────────────────────
 export default function NearbyView({ locationEnabled, onRequestLocation, onToggleLocation }: NearbyViewProps) {
   const { toast } = useToast();
+  const blockedIds = useBlockedMembers();
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "requesting" | "granted" | "denied" | "saving"
   >("idle");
@@ -340,7 +346,8 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        const geo = await reverseGeocode(latitude, longitude, MAPS_API_KEY);
+        // The suburb lookup services get a ~100 m point, never the exact one.
+        const geo = await reverseGeocode(roundTo(latitude, 3), roundTo(longitude, 3), MAPS_API_KEY);
         if (!geo) {
           toast({
             title: "We couldn't place you on the map yet",
@@ -351,7 +358,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           return;
         }
 
-        const fuzzed = fuzzCoords(latitude, longitude);
+        const fuzzed = snapToGrid(latitude, longitude);
         setLocationStatus("saving");
         await saveUserLocation(fuzzed.lat, fuzzed.lng, geo.suburb, geo.city);
       },
@@ -524,14 +531,15 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
   };
 
   // ── Derived data ──────────────────────────────────────────
+  const visibleUsers = nearbyUsers.filter((u) => !blockedIds.has(u.user_id));
   const filteredUsers =
     activeSuburb
-      ? nearbyUsers.filter((u) => u.suburb === activeSuburb)
-      : nearbyUsers;
+      ? visibleUsers.filter((u) => u.suburb === activeSuburb)
+      : visibleUsers;
 
-  const activeCount = nearbyUsers.filter((u) => u.is_online).length;
+  const activeCount = visibleUsers.filter((u) => u.is_online).length;
 
-  const suburbCounts = nearbyUsers.reduce<Record<string, number>>((acc, u) => {
+  const suburbCounts = visibleUsers.reduce<Record<string, number>>((acc, u) => {
     acc[u.suburb] = (acc[u.suburb] || 0) + 1;
     return acc;
   }, {});
@@ -660,7 +668,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
           <span>
-            {nearbyUsers.length} members in view
+            {visibleUsers.length} members in view
           </span>
         </div>
       )}

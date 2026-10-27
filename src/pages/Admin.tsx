@@ -73,7 +73,7 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "groups" | "members" | "feedback" | "ai" | "nps">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "groups" | "members" | "feedback" | "ai" | "nps" | "reports">("overview");
   const [updatingGroup, setUpdatingGroup] = useState<string | null>(null);
 
   // Check admin role
@@ -167,6 +167,7 @@ export default function AdminPage() {
     { id: "feedback" as const, label: "Feedback" },
     { id: "ai" as const, label: "AI Usage" },
     { id: "nps" as const, label: "NPS" },
+    { id: "reports" as const, label: "Reports" },
   ];
 
   return (
@@ -411,6 +412,7 @@ export default function AdminPage() {
 
           {/* ═══ NPS ═══ */}
           {activeTab === "nps" && <NPSTab />}
+          {activeTab === "reports" && <ReportsTab />}
         </>
       )}
     </div>
@@ -559,6 +561,82 @@ function NPSTab() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+interface CommunityReport {
+  id: string;
+  reporter_id: string;
+  target_user_id: string | null;
+  message_id: string | null;
+  reason: string;
+  details: string | null;
+  created_at: string;
+}
+
+/** Open member reports: read the message, remove it, or close the report. */
+function ReportsTab() {
+  const { user } = useAuth();
+  const [reports, setReports] = useState<CommunityReport[]>([]);
+  const [messages, setMessages] = useState<Record<string, string>>({});
+  const [names, setNames] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    const { data } = await supabase.from("community_reports" as never).select("*").eq("status", "open").order("created_at", { ascending: false }).limit(100);
+    const rows = (data as CommunityReport[] | null) ?? [];
+    setReports(rows);
+    const messageIds = rows.map(r => r.message_id).filter((id): id is string => !!id);
+    if (messageIds.length) {
+      const { data: msgs } = await supabase.from("community_messages").select("id, content").in("id", messageIds);
+      setMessages(Object.fromEntries((msgs ?? []).map(m => [m.id, m.content ?? "(no text)"])));
+    }
+    const people = [...new Set(rows.flatMap(r => [r.reporter_id, r.target_user_id]).filter((id): id is string => !!id))];
+    if (people.length) {
+      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", people);
+      setNames(Object.fromEntries((profiles ?? []).map(p => [p.user_id, p.display_name ?? p.user_id.slice(0, 8)])));
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { void load(); }, [load]);
+
+  const close = async (report: CommunityReport, status: "actioned" | "dismissed", removeMessage = false) => {
+    if (removeMessage && report.message_id) {
+      const { error } = await supabase.from("community_messages").update({ is_removed: true }).eq("id", report.message_id);
+      if (error) { toast.error("Couldn't remove that message."); return; }
+    }
+    const { error } = await supabase.from("community_reports" as never)
+      .update({ status, reviewed_at: new Date().toISOString(), reviewed_by: user?.id } as never).eq("id", report.id);
+    if (error) { toast.error("Couldn't update the report."); return; }
+    setReports(prev => prev.filter(r => r.id !== report.id));
+    toast.success(status === "dismissed" ? "Report dismissed." : "Handled.");
+  };
+
+  if (loading) return <div className="flex justify-center py-10"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>;
+  if (reports.length === 0) return <p className="font-body text-sm text-muted-foreground text-center py-8">No open reports.</p>;
+
+  return (
+    <div className="space-y-2">
+      {reports.map(r => (
+        <div key={r.id} className="card-warm p-3 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-body text-sm font-medium text-foreground">{r.reason}</p>
+            <p className="font-body text-[10px] text-muted-foreground">{new Date(r.created_at).toLocaleString()}</p>
+          </div>
+          <p className="font-body text-xs text-muted-foreground">
+            {names[r.reporter_id] ?? r.reporter_id.slice(0, 8)} reported {r.target_user_id ? names[r.target_user_id] ?? r.target_user_id.slice(0, 8) : "a member"}
+          </p>
+          {r.message_id && <p className="font-display text-sm italic text-foreground border-l-2 border-border pl-2">{messages[r.message_id] ?? "Message no longer available"}</p>}
+          {r.details && <p className="font-body text-xs text-foreground">{r.details}</p>}
+          <div className="flex gap-2 pt-1">
+            {r.message_id && <button onClick={() => close(r, "actioned", true)} className="rounded-full bg-destructive/10 text-destructive px-3 py-1.5 font-body text-xs">Remove message</button>}
+            <button onClick={() => close(r, "actioned")} className="rounded-full bg-secondary px-3 py-1.5 font-body text-xs text-foreground">Mark handled</button>
+            <button onClick={() => close(r, "dismissed")} className="rounded-full px-3 py-1.5 font-body text-xs text-muted-foreground">Dismiss</button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
