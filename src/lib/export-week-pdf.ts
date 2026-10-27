@@ -1,3 +1,5 @@
+import { shoppingMeals, type ShoppingDay } from "./meal-shopping";
+import type { KidsMeal } from "./weekly-planner";
 /**
  * Export the current weekly meal plan as a branded A4 PDF:
  *   Page 1   – Weekly grid (days as columns, meal slots as rows)
@@ -41,6 +43,8 @@ function safe(s: string): string {
 }
 
 export interface ExportDay {
+  kidsLunch?: KidsMeal;
+  kidsDinner?: KidsMeal;
   dayName: string;       // "Monday"
   dateLabel: string;     // "5 June"
   cycleDay: number;
@@ -307,23 +311,12 @@ export function exportWeekPdf(days: ExportDay[], meta: WeekPdfMeta): void {
   // ─── LAST PAGE: Shopping list (uses the same logic as SmartShoppingList) ───
   const adults = Math.max(1, meta.adults ?? 1);
   const kids = Math.max(0, meta.kids ?? 0);
-  const servingMultiplier = adults + kids * 0.6;
-
-  // Collect resolved meals — all five slots, mirroring the in-app list.
-  const mealsForList: Array<{ ingredients: string[]; serves?: number } | null> = [];
-  for (const day of days) {
-    for (const m of [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]) {
-      const r = resolveMeal(m);
-      if (r && r.ingredients.length) {
-        mealsForList.push({ ingredients: r.ingredients, serves: r.serves });
-      }
-    }
-  }
-
-  const groups = aggregateShoppingItems(
-    { meals: mealsForList, servingMultiplier },
-    parseIngredient,
-  );
+  const resolvedDays: ShoppingDay[] = days.map(day => ({
+    breakfast: resolveMeal(day.breakfast), lunch: resolveMeal(day.lunch), dinner: resolveMeal(day.dinner),
+    morningSnack: resolveMeal(day.morningSnack), afternoonSnack: resolveMeal(day.afternoonSnack),
+    kidsLunch: day.kidsLunch, kidsDinner: day.kidsDinner,
+  }));
+  const groups = aggregateShoppingItems({meals: shoppingMeals(resolvedDays, {adults,kids})}, parseIngredient);
   const orderedCats = CATEGORY_ORDER.filter(c => groups[c]?.length);
   const totalItems = Object.values(groups).reduce((sum, arr) => sum + arr.length, 0);
 

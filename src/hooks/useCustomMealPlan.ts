@@ -1,3 +1,4 @@
+import { captureDeviceScope } from "@/lib/device-privacy";
 /**
  * Local-first storage for the user's hand-picked weekly meal plan.
  *
@@ -74,13 +75,16 @@ async function findCloudRow(uid: string) {
 
 let pushTimer: ReturnType<typeof setTimeout> | null = null;
 function pushToCloud(plan: CustomMealPlan) {
+  const scope = captureDeviceScope();
+  const updatedAt = Number(window.localStorage.getItem(UPDATED_KEY) || Date.now());
   if (pushTimer) clearTimeout(pushTimer);
   pushTimer = setTimeout(async () => {
     const uid = await currentUserId();
-    if (!uid) return;
+    if (!scope.matches(uid)) return;
     try {
-      const plan_data = { kind: CLOUD_KIND, picks: plan, updatedAt: Number(window.localStorage.getItem(UPDATED_KEY) || Date.now()) };
+      const plan_data = { kind: CLOUD_KIND, picks: plan, updatedAt };
       const row = await findCloudRow(uid);
+      if (!scope.matches(uid)) return;
       if (row) await supabase.from("user_plans").update({ plan_data, generated_at: new Date().toISOString() }).eq("id", row.id).eq("user_id", uid).throwOnError();
       else await supabase.from("user_plans").insert({ user_id: uid, plan_type: "nutrition", plan_data }).throwOnError();
     } catch {
@@ -92,6 +96,7 @@ function pushToCloud(plan: CustomMealPlan) {
 let pullPromise: Promise<void> | null = null;
 /** On first use per session, adopt the cloud copy if it's newer than this device's. */
 function pullFromCloud(): Promise<void> {
+  const scope = captureDeviceScope();
   pullPromise ??= (async () => {
     const uid = await currentUserId();
     if (!uid) return;

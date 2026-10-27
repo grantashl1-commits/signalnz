@@ -1,3 +1,5 @@
+import { scaleIngredientAmount } from "@/lib/ingredient-parser";
+import { findRecipeByName } from "@/lib/recipe-index";
 import { useCustomMealPlan } from "@/hooks/useCustomMealPlan";
 import { useState, useMemo, useCallback } from "react";
 import { Switch } from "@/components/ui/switch";
@@ -11,7 +13,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { type AIMeal } from "@/lib/weekly-planner";
-import { getTodayMeals } from "@/lib/today-meals";
+import { getTodayMeals, getTodaySnacks } from "@/lib/today-meals";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
@@ -27,32 +29,6 @@ const PHASE_HEX: Record<Phase, string> = {
   luteal: "#9B89B4",
 };
 
-const PHASE_SNACKS: Record<Phase, { morning: { name: string; benefit: string; image: string; ingredients: string[] }; afternoon: { name: string; benefit: string; image: string; ingredients: string[] } }> = {
-  menstrual: {
-    morning: { name: "Warm cacao with oat milk & cinnamon", benefit: "Magnesium-rich cacao eases cramps and lifts mood.", image: "/images/recipes/meals/snack-warm-cacao-oatmilk.png", ingredients: ["cacao powder", "oat milk", "cinnamon", "maple syrup"] },
-    afternoon: { name: "Dates stuffed with almond butter", benefit: "Natural iron and sweetness to replenish energy.", image: "/images/recipes/meals/snack-dates-almond-butter.png", ingredients: ["medjool dates", "almond butter"] },
-  },
-  follicular: {
-    morning: { name: "Apple slices with almond butter", benefit: "Fibre and healthy fats fuel rising energy levels.", image: "/images/recipes/meals/snack-apple-almond-butter.png", ingredients: ["apple", "almond butter"] },
-    afternoon: { name: "Edamame with sea salt & sesame", benefit: "Phytoestrogens support healthy estrogen metabolism.", image: "/images/recipes/meals/snack-edamame-sesame.png", ingredients: ["edamame", "sea salt", "sesame seeds"] },
-  },
-  ovulatory: {
-    morning: { name: "Fresh berries with hemp seeds", benefit: "Antioxidants protect egg quality during ovulation.", image: "/images/recipes/meals/snack-berries-hemp-seeds.png", ingredients: ["blueberries", "raspberries", "strawberries", "hemp seeds"] },
-    afternoon: { name: "Cucumber & avocado rice paper rolls", benefit: "Light, hydrating, and rich in folate.", image: "/images/recipes/meals/snack-cucumber-avocado-rolls.png", ingredients: ["cucumber", "avocado", "rice paper", "mint", "coriander"] },
-  },
-  luteal: {
-    morning: { name: "Dark chocolate & walnuts", benefit: "Magnesium and omega-3s reduce PMS symptoms.", image: "/images/recipes/meals/snack-dark-chocolate-walnuts.png", ingredients: ["dark chocolate", "walnuts"] },
-    afternoon: { name: "Banana with tahini & cinnamon", benefit: "B6 from banana supports progesterone production.", image: "/images/recipes/meals/snack-banana-tahini-cinnamon.png", ingredients: ["banana", "tahini", "cinnamon"] },
-  },
-};
-
-const SNACK_MACROS: Record<Phase, { morning: { cal: number; p: number; c: number; f: number }; afternoon: { cal: number; p: number; c: number; f: number } }> = {
-  menstrual: { morning: { cal: 180, p: 3, c: 18, f: 10 }, afternoon: { cal: 210, p: 4, c: 32, f: 8 } },
-  follicular: { morning: { cal: 200, p: 5, c: 20, f: 12 }, afternoon: { cal: 140, p: 11, c: 8, f: 7 } },
-  ovulatory: { morning: { cal: 150, p: 5, c: 18, f: 7 }, afternoon: { cal: 120, p: 2, c: 10, f: 8 } },
-  luteal: { morning: { cal: 190, p: 4, c: 12, f: 14 }, afternoon: { cal: 170, p: 3, c: 28, f: 6 } },
-};
-
 const SEED_CYCLING_MACROS = { cal: 90, p: 3, c: 3, f: 7 };
 
 function estimateMealMacros(recipe?: Recipe, aiMeal?: AIMeal): { cal: number; p: number; c: number; f: number } | null {
@@ -63,9 +39,9 @@ function estimateMealMacros(recipe?: Recipe, aiMeal?: AIMeal): { cal: number; p:
     }
   }
   if (recipe) {
-    const n = (recipe as any).nutrition;
-    if (n) return { cal: n.calories || 400, p: n.protein || 25, c: n.carbs || 45, f: n.fat || 15 };
-    return { cal: 380, p: 22, c: 42, f: 14 };
+    const n = recipe.nutrition;
+    if (n) return { cal: n.calories ?? 0, p: n.protein ?? 0, c: n.carbs ?? 0, f: n.fat ?? 0 };
+    return null;
   }
   return { cal: 380, p: 22, c: 42, f: 14 };
 }
@@ -118,8 +94,13 @@ export default function TodayTab() {
   const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
 
   const phaseColor = PHASE_HEX[currentPhase];
-  const snacks = PHASE_SNACKS[currentPhase];
-  const snackMacros = SNACK_MACROS[currentPhase];
+  const plannedSnacks = getTodaySnacks(currentCycleDay);
+  const snackInfo = (meal: AIMeal) => ({...meal, benefit: meal.nutritionalNote, image: findRecipeByName(meal.name)?.image ?? ''});
+  const snacks = { morning: snackInfo(plannedSnacks.morning), afternoon: snackInfo(plannedSnacks.afternoon) };
+  const snackMacros = {
+    morning: estimateMealMacros(findRecipeByName(snacks.morning.name), plannedSnacks.morning),
+    afternoon: estimateMealMacros(findRecipeByName(snacks.afternoon.name), plannedSnacks.afternoon),
+  };
   const isFirstHalf = currentCycleDay <= 14;
 
   // Auto-add plants when a meal is logged
@@ -178,14 +159,14 @@ export default function TodayTab() {
       }
     });
     
-    if (trackSnacks && eaten["morning-snack"]) {
+    if (trackSnacks && eaten["morning-snack"] && snackMacros.morning) {
       const s = getScale("morning-snack");
       totalCal += Math.round(snackMacros.morning.cal * s);
       totalP += Math.round(snackMacros.morning.p * s);
       totalC += Math.round(snackMacros.morning.c * s);
       totalF += Math.round(snackMacros.morning.f * s);
     }
-    if (trackSnacks && eaten["afternoon-snack"]) {
+    if (trackSnacks && eaten["afternoon-snack"] && snackMacros.afternoon) {
       const s = getScale("afternoon-snack");
       totalCal += Math.round(snackMacros.afternoon.cal * s);
       totalP += Math.round(snackMacros.afternoon.p * s);
@@ -229,7 +210,7 @@ export default function TodayTab() {
         {/* Header — no phase/day subtitle */}
         <div className="nourishment-header">
           <h2 className="font-editorial text-2xl font-normal text-foreground">Today's nourishment</h2>
-          {isAI && <p className="font-body text-body-lg text-primary mt-1">AI plan</p>}
+          {isAI && <p className="font-body text-body-lg text-primary mt-1">Your meal plan</p>}
         </div>
 
         {/* Protein ring */}
@@ -365,6 +346,7 @@ export default function TodayTab() {
               label="Morning Snack"
               name={snacks.morning.name}
               benefit={snacks.morning.benefit}
+              ingredients={snacks.morning.ingredients} method={snacks.morning.method} serves={snacks.morning.serves}
               macros={snackMacros.morning}
               isEaten={!!eaten["morning-snack"]}
               phaseColor={phaseColor}
@@ -379,6 +361,7 @@ export default function TodayTab() {
               label="Afternoon Snack"
               name={snacks.afternoon.name}
               benefit={snacks.afternoon.benefit}
+              ingredients={snacks.afternoon.ingredients} method={snacks.afternoon.method} serves={snacks.afternoon.serves}
               macros={snackMacros.afternoon}
               isEaten={!!eaten["afternoon-snack"]}
               phaseColor={phaseColor}
@@ -457,7 +440,7 @@ function CompactSnackCard({ label, name, image, isEaten, phaseColor, onToggleExp
         className="w-full flex items-center justify-center rounded-t-[14px]"
         style={{ height: 64, background: 'linear-gradient(180deg, #F5EFE8 0%, #EDE4DC 100%)' }}
       >
-        <img src={image} alt={name} className="h-[52px] w-auto max-w-[52px] object-contain" loading="lazy" />
+        {image ? <img src={image} alt={name} className="h-[52px] w-auto max-w-[52px] object-contain" loading="lazy" /> : <RecipeImage recipeName={name} className="h-[52px] w-[52px] object-contain" />}
       </div>
       <div className="p-2 space-y-1">
         <p className="font-body text-[9px] uppercase tracking-wider font-medium" style={{ color: phaseColor }}>{label}</p>
@@ -488,7 +471,8 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
   onMarkEaten: () => void; onScaleChange: (v: number) => void; onClose: () => void;
 }) {
   const [showMethod, setShowMethod] = useState(false);
-  const ingredients = meal.aiMeal?.ingredients || meal.recipe?.ingredients || [];
+  const recipeServes = meal.aiMeal?.serves || meal.recipe?.serves || 1;
+  const ingredients = (meal.aiMeal?.ingredients || meal.recipe?.ingredients || []).map(ing => scaleIngredientAmount(ing, scale / recipeServes));
   const method = meal.aiMeal?.method || meal.recipe?.method || [];
   const benefit = meal.aiMeal?.nutritionalNote || meal.recipe?.phaseBenefit || "";
   const macros = estimateMealMacros(meal.recipe, meal.aiMeal);
@@ -593,9 +577,9 @@ function ExpandedMealDetail({ meal, isEaten, phaseColor, phase, scale, onMarkEat
 }
 
 /* ── Expanded Snack Detail ── */
-function ExpandedSnackDetail({ label, name, benefit, macros, isEaten, phaseColor, scale, onMarkEaten, onScaleChange, onClose }: {
-  label: string; name: string; benefit: string;
-  macros: { cal: number; p: number; c: number; f: number };
+function ExpandedSnackDetail({ label, name, benefit, ingredients = [], method = [], serves = 1, macros, isEaten, phaseColor, scale, onMarkEaten, onScaleChange, onClose }: {
+  label: string; name: string; benefit: string; ingredients?: string[]; method?: string[]; serves?: number;
+  macros: { cal: number; p: number; c: number; f: number } | null;
   isEaten: boolean; phaseColor: string; scale: number;
   onMarkEaten: () => void; onScaleChange: (v: number) => void; onClose: () => void;
 }) {
@@ -613,8 +597,10 @@ function ExpandedSnackDetail({ label, name, benefit, macros, isEaten, phaseColor
         </div>
 
         <p className="font-body text-body-lg text-muted-foreground leading-relaxed">{benefit}</p>
+        {ingredients.length > 0 && <ul className="text-sm space-y-1">{ingredients.map((ingredient, i) => <li key={i}>{scaleIngredientAmount(ingredient, scale / serves)}</li>)}</ul>}
+        {method.length > 0 && <ol className="list-decimal pl-5 text-sm space-y-2">{method.map((step, i) => <li key={i}>{step}</li>)}</ol>}
 
-        <div className="flex gap-3">
+        {macros ? <div className="flex gap-3">
           {[
             { label: "Cal", value: Math.round(macros.cal * scale) },
             { label: "Protein", value: `${Math.round(macros.p * scale)}g` },
@@ -627,6 +613,8 @@ function ExpandedSnackDetail({ label, name, benefit, macros, isEaten, phaseColor
             </div>
           ))}
         </div>
+
+        : <p className="text-sm text-muted-foreground">Nutrition information is not available for this snack.</p>}
 
         {label !== "Seed Cycling" && (
           <div className="flex items-center gap-1.5">

@@ -1,3 +1,6 @@
+import { planningDay, cyclePosition, validCycleLength } from "@/lib/planning-cycle";
+import { captureDeviceScope } from "@/lib/device-privacy";
+import { useAuth } from "@/contexts/AuthContext";
 import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logPeriodStart, pullPeriodHistory, PERIOD_HISTORY_EVENT } from "@/lib/period-history";
@@ -6,6 +9,9 @@ import { logPeriodStart, pullPeriodHistory, PERIOD_HISTORY_EVENT } from "@/lib/p
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
 
 export interface CycleState {
+  cycleLength: number;
+  actualCycleDay: number | null;
+  isCycleTrackingEnabled: boolean;
   cycleStartDate: string | null;
   currentCycleDay: number;
   currentWeekNumber: number;
@@ -78,6 +84,10 @@ const DEFAULT_WEEK = 2;
 const CycleContext = createContext<CycleState | null>(null);
 
 export function CycleProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const [cycleLength,setCycleLength] = useState(() => validCycleLength(localStorage.getItem("signal_cycle_length")));
+  const [cycleMode,setCycleMode] = useState(() => localStorage.getItem("cycleMode") || localStorage.getItem("signal_cycle_mode") || "cycling");
+  const tracking = ["cycling", "regular", "irregular"].includes(cycleMode);
   const [startDate, setStartDate] = useState<string | null>(readStartDate);
   // Track today's date string so cycle day updates if app stays open across midnight
   const [todayStr, setTodayStr] = useState(todayLocalStr);
@@ -96,16 +106,27 @@ export function CycleProvider({ children }: { children: ReactNode }) {
 
   // Sync cycle start date with Supabase profiles on auth state change
   useEffect(() => {
+    const scope = captureDeviceScope();
+    let cancelled = false;
     const syncFromProfile = async (userId: string) => {
       // Full period history first (every past month), then the legacy single date.
       await pullPeriodHistory(userId);
+      if (cancelled || !scope.matches(userId)) return;
       const local = readStartDate();
       if (local) setStartDate(local);
       const { data } = await supabase
         .from("profiles")
-        .select("last_period_date")
+        .select("last_period_date, cycle_length, cycle_mode")
         .eq("user_id", userId)
         .maybeSingle();
+      if (cancelled || !scope.matches(userId)) return;
+      if (data) {
+        const length = validCycleLength(data.cycle_length);
+        setCycleLength(length);
+        localStorage.setItem("signal_cycle_length", String(length));
+        setCycleMode(data.cycle_mode || "cycling");
+        localStorage.setItem("cycleMode", data.cycle_mode || "cycling");
+      }
       const cloudDate = (data as any)?.last_period_date as string | null;
       if (cloudDate && !local) {
         logPeriodStart(cloudDate);
@@ -113,17 +134,9 @@ export function CycleProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    // Check current session immediately
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) syncFromProfile(user.id);
-    });
-
-    // Also sync on future sign-ins
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) syncFromProfile(session.user.id);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+    if (user) void syncFromProfile(user.id);
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
   const setCycleStartDate = useCallback((date: string) => {
     // Adds to the period history (local + Supabase cycle_logs/profile) instead
@@ -143,12 +156,13 @@ export function CycleProvider({ children }: { children: ReactNode }) {
     const fresh = readStartDate();
     setStartDate(fresh);
     setTodayStr(todayLocalStr());
+    setCycleMode(localStorage.getItem("cycleMode") || localStorage.getItem("signal_cycle_mode") || "cycling");
     setTick((t) => t + 1);
   }, []);
 
   const currentCycleDay = useMemo(
-    () => (startDate ? computeCycleDay(startDate) : DEFAULT_CYCLE_DAY),
-    [startDate, todayStr],
+    () => planningDay(startDate, new Date(), cycleLength, tracking),
+    [startDate, todayStr, cycleLength, tracking],
   );
 
   const currentPhase = useMemo(() => getPhaseFromDay(currentCycleDay), [currentCycleDay]);
@@ -156,16 +170,15 @@ export function CycleProvider({ children }: { children: ReactNode }) {
 
   const getCycleDayForDate = useCallback(
     (date: Date) => {
-      if (!startDate) return DEFAULT_CYCLE_DAY;
-      return computeCycleDayForDate(startDate, date);
+      return planningDay(startDate, date, cycleLength, tracking);
     },
-    [startDate],
+    [startDate, cycleLength, tracking],
   );
 
   const getCalendarDateForCycleDay = useCallback(
     (cycleDay: number): Date | null => {
       if (!startDate) return null;
-      const start = new Date(startDate);
+      const start = localMidnight(startDate);
       const offset = cycleDay - 1; // cycle day 1 = start date
       const result = new Date(start);
       result.setDate(result.getDate() + offset);
@@ -177,6 +190,8 @@ export function CycleProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CycleState>(
     () => ({
       cycleStartDate: startDate,
+      cycleLength, isCycleTrackingEnabled: tracking && !!startDate,
+      actualCycleDay: tracking && startDate ? cyclePosition(startDate,new Date(),cycleLength) : null,
       currentCycleDay,
       currentWeekNumber,
       currentPhase,
@@ -185,7 +200,7 @@ export function CycleProvider({ children }: { children: ReactNode }) {
       getCalendarDateForCycleDay,
       refresh,
     }),
-    [startDate, currentCycleDay, currentWeekNumber, currentPhase, setCycleStartDate, getCycleDayForDate, getCalendarDateForCycleDay, refresh],
+    [startDate, cycleLength, tracking, currentCycleDay, currentWeekNumber, currentPhase, setCycleStartDate, getCycleDayForDate, getCalendarDateForCycleDay, refresh],
   );
 
   return <CycleContext.Provider value={value}>{children}</CycleContext.Provider>;

@@ -1,7 +1,9 @@
+import { snackMeal } from "./build-db-meal-plan";
+import { DEFAULT_PREFS, getSavedPreferences } from "./weekly-planner";
 import { toLocalDateStr } from "@/lib/local-date";
 import type { Phase } from "@/lib/cycle-utils";
 import { PHASE_MEAL_PLANS, type Recipe } from "@/data/meal-plans";
-import { findRecipeById, findRecipeByName } from "@/lib/recipe-index";
+import { ALL_RECIPES, findRecipeById, findRecipeByName } from "@/lib/recipe-index";
 import { getAIMealPlan, type AIMeal } from "@/lib/weekly-planner";
 
 export type MealSlot = "breakfast" | "lunch" | "dinner";
@@ -33,7 +35,15 @@ export function getPhasePlanDay(cycleDay: number) {
   const phase = phaseForCycleDay(cycleDay);
   const plan = PHASE_MEAL_PLANS[phase];
   const dayIndex = (cycleDay - PHASE_START[phase]) % plan.days.length;
-  return { phase, day: plan.days[Math.max(0, dayIndex)] };
+  const original = plan.days[Math.max(0, dayIndex)];
+  const day = { ...original };
+  for (const slot of ['breakfast', 'lunch', 'dinner'] as const) {
+    const existing = findRecipeByName(original[slot].split(' — ')[0]);
+    const pool = ALL_RECIPES.filter(r => r.phase === phase && r.category === (slot === 'breakfast' ? 'breakfast' : 'meal'));
+    const recipe = existing ?? pool[(Math.max(0, dayIndex) + (slot === 'dinner' ? 1 : 0)) % pool.length];
+    day[slot] = recipe?.name ?? original[slot];
+  }
+  return { phase, day };
 }
 
 const CUSTOM_PLAN_KEY = "signal_custom_meal_plan_v1";
@@ -72,7 +82,7 @@ export function getTodayMeals(cycleDay: number, date = toLocalDateStr()): { meal
       .map((slot) => {
         const ai = aiToday[slot];
         const name = ai?.name ?? "";
-        return { slot, label: slot[0].toUpperCase() + slot.slice(1), name, recipe: findRecipeByName(name), aiMeal: ai };
+        return { slot, label: slot[0].toUpperCase() + slot.slice(1), name, recipe: (ai.recipeId ? findRecipeById(ai.recipeId) : undefined) ?? findRecipeByName(name), aiMeal: ai };
       })
       .filter((m) => m.name);
     return { meals: withCustomPicks(meals, cycleDay, date), isAI: true };
@@ -87,4 +97,15 @@ export function getTodayMeals(cycleDay: number, date = toLocalDateStr()): { meal
     recipe: findRecipeByName(dayPlan[slot]),
   }));
   return { meals: withCustomPicks(meals, cycleDay, date), isAI: false };
+}
+
+export function getTodaySnacks(cycleDay: number) {
+ const day = getAIMealPlan()?.days.find(d => d.cycleDay === cycleDay);
+ const phase = phaseForCycleDay(cycleDay);
+ const prefs = getSavedPreferences() ?? DEFAULT_PREFS;
+ const fallback = (slot: 'morning' | 'afternoon'): AIMeal => {
+  try { return snackMeal(phase, slot, prefs); }
+  catch { return {name:'No matching snack planned',ingredients:[],method:[],serves:1,phase,mealType:'snack',prepTime:'',nutritionalNote:'Choose a suitable snack in your meal plan.'}; }
+ };
+ return {morning: day?.morningSnack ?? fallback('morning'), afternoon: day?.afternoonSnack ?? fallback('afternoon')};
 }

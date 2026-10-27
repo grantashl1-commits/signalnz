@@ -74,7 +74,7 @@ const PHASE_SNACK_TEMPLATES: Record<
   },
 };
 
-function snackMeal(phase: Phase, slot: "morning" | "afternoon", prefs: PrepPreferences): AIMeal {
+export function snackMeal(phase: Phase, slot: "morning" | "afternoon", prefs: PrepPreferences): AIMeal {
   const preferred = PHASE_SNACK_TEMPLATES[phase][slot];
   const t = [preferred, ...Object.values(PHASE_SNACK_TEMPLATES).flatMap(s => [s.morning, s.afternoon])].find(s => mealMatchesPreferences(s, prefs));
   if (!t) {
@@ -251,6 +251,7 @@ function applyLeftoversAutoFill(days: AIPlannedDay[], prefs: PrepPreferences): A
   for (const d of days) {
     const prev = byDay.get(d.cycleDay - 1);
     if (!prev?.dinner || prev.dinner.isLeftover) continue;
+    prev.dinner.nutritionalNote = "Cook double portions: save half for tomorrow’s lunch.";
     // Replace today's lunch with a leftover-from-yesterday-dinner marker
     d.lunch = {
       ...prev.dinner,

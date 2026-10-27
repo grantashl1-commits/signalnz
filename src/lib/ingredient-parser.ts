@@ -133,7 +133,7 @@ export function parseIngredient(raw: string): ParsedIngredient {
   // (tinned, dried, frozen) only after the first, so "small ripe banana" → "banana".
   let searchTerm = firstAlternative(name);
   for (let i = 0; i < 4 && SIZE_WORDS.test(searchTerm); i++) searchTerm = searchTerm.replace(SIZE_WORDS, "");
-  searchTerm = searchTerm.replace(PRODUCT_WORDS, "");
+  // Product form changes what must be bought: keep dried/cooked/tinned distinct.
   for (let i = 0; i < 2 && SIZE_WORDS.test(searchTerm); i++) searchTerm = searchTerm.replace(SIZE_WORDS, "");
   searchTerm = searchTerm.trim();
 
@@ -341,4 +341,13 @@ export function formatShoppingListText(items: ShoppingItem[]): string {
     return `${m.checked ? "✓" : "☐"} ${qty}${unit}${m.name}${m.recipes.length ? ` (${m.recipes.join(", ")})` : ""}`;
   });
   return `Shopping List\n${"—".repeat(20)}\n${lines.join("\n")}`;
+}
+
+/** Scale the full recipe to the number of portions being cooked. */
+export function scaleIngredientAmount(raw: string, factor: number): string {
+ const parsed = parseIngredient(raw);
+ if (!parsed.quantity || factor === 1) return raw;
+ const quantity = parseQty(parsed.quantity) * factor;
+ const notes = raw.includes(',') ? raw.slice(raw.indexOf(',')) : '';
+ return [Number(quantity.toFixed(2)).toString(), parsed.unit, parsed.name].filter(Boolean).join(' ') + notes;
 }

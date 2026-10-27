@@ -470,7 +470,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
           initials: getInitials(prof?.display_name || "U"),
           suburb: loc.suburb,
           profession: prof?.profession,
-          is_online: Math.random() > 0.4, // Replace with real presence tracking later
+          is_online: false, // Presence is unavailable until a real realtime subscription is connected.
           avatar_url: prof?.avatar_url,
         };
       });
@@ -660,7 +660,7 @@ export default function NearbyView({ locationEnabled, onRequestLocation, onToggl
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
           <span>
-            {activeCount} active now · {nearbyUsers.length} total in view
+            {nearbyUsers.length} members in view
           </span>
         </div>
       )}

@@ -9,7 +9,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { Phase } from "@/lib/cycle-utils";
 import { type Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById } from "@/lib/recipe-index";
-import { getPhasePlanDay } from "@/lib/today-meals";
+import { getPhasePlanDay, getTodaySnacks } from "@/lib/today-meals";
 import { useCustomMealPlan, type MealSlot } from "@/hooks/useCustomMealPlan";
 import RecipePickerSheet from "./RecipePickerSheet";
 import { buildCustomShoppingPlan } from "@/lib/build-custom-shopping-plan";
@@ -392,6 +392,8 @@ export default function MyWeekTab() {
         days.push({
           date, dateStr, dayName: DAY_NAMES[i], cycleDay,
           phase: meals.phase,
+          morningSnack: getTodaySnacks(cycleDay).morning,
+          afternoonSnack: getTodaySnacks(cycleDay).afternoon,
           breakfast: recB?.name ?? meals.breakfast,
           lunch: recL?.name ?? meals.lunch,
           dinner: recD?.name ?? meals.dinner,
@@ -629,6 +631,8 @@ export default function MyWeekTab() {
                   lunch: d.lunch,
                   afternoonSnack: d.afternoonSnack || PHASE_SNACKS[d.phase].afternoon,
                   dinner: d.dinner,
+                  kidsLunch: d.kidsLunch,
+                  kidsDinner: d.kidsDinner,
                 })),
                 { weekLabel, phaseLabel, adults: aiPlan?.prepPreferences?.adults ?? 1, kids: aiPlan?.prepPreferences?.kids ?? 0 }
               );

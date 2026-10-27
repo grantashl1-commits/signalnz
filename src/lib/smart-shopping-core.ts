@@ -57,6 +57,8 @@ export function toNZName(name: string): string {
 
 export function categoriseItem(name: string): string {
   const lower = name.toLowerCase();
+  if (/frozen/.test(lower)) return "frozen";
+  if (/\b(seed|seeds|tinned|canned|salt|pepper|spice|tahini|nut butter|peanut butter|almond butter)\b/.test(lower)) return "pantry";
   for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
     if (keywords.some(kw => lower.includes(kw))) return cat;
   }
@@ -226,7 +228,7 @@ export interface AggregatedItem {
  * (e.g. adults + kids * 0.6).
  */
 export interface AggregateInput {
-  meals: Array<{ ingredients: string[]; serves?: number } | null | undefined>;
+  meals: Array<{ ingredients: string[]; serves?: number; servingsNeeded?: number } | null | undefined>;
   servingMultiplier?: number;
 }
 
@@ -265,7 +267,7 @@ export function aggregateShoppingItems(
       // "Small ripe banana" shops as "Banana"; product words like tinned or dried stay.
       const nzName = toNZName(parsed.name.replace(SIZE_PREFIX, "")) || toNZName(parsed.name);
       const nzSearch = toNZName(parsed.searchTerm);
-      const totalQty = (parseQty(parsed.quantity) * mult) / serves;
+      const totalQty = (parseQty(parsed.quantity) * (meal.servingsNeeded ?? mult)) / serves;
       const base = toBase(totalQty, parsed.unit, nzName);
       add(`${groupKey(nzSearch)}::${base.unit || "unit"}`, {
         name: nzName.charAt(0).toUpperCase() + nzName.slice(1),

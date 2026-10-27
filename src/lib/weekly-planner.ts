@@ -1,3 +1,5 @@
+import { shoppingMeals } from "./meal-shopping";
+import { aggregateShoppingItems, CATEGORY_META as SHOPPING_CATEGORY_META, formatSmartQty } from "./smart-shopping-core";
 import { Phase, getPhaseFromDay, getCycleInfo, getLastPeriodStart, PHASE_DAYS } from "./cycle-utils";
 import { PHASE_MEAL_PLANS, MEAT_MEAL_PLANS, Recipe } from "@/data/meal-plans";
 import { findRecipeByName, findRecipeById, ALL_MEAL_RECIPES } from "./recipe-index";
@@ -381,55 +383,11 @@ export function generateAIShoppingList(plan: AIMealPlan, weekNumber: number): Sh
   const endDay = weekNumber * 7;
   const weekDays = plan.days.filter(d => d.cycleDay >= startDay && d.cycleDay <= endDay);
   
-  const ingredientMap: Record<string, { name: string; totalQty: number; unit: string; category: string }> = {};
-  const servingMultiplier = plan.prepPreferences.adults + plan.prepPreferences.kids * 0.6;
-
-  weekDays.forEach(day => {
-    [day.breakfast, day.lunch, day.dinner].forEach(meal => {
-      if (meal.isLeftover) return;
-      meal.ingredients.forEach(ingStr => {
-        const parsed = parseIngredient(ingStr);
-        const baseQty = parseQuantity(parsed.quantity);
-        const totalQty = baseQty * servingMultiplier / (meal.serves || 2);
-        const mapKey = parsed.searchTerm.toLowerCase();
-        const cat = categoriseIngredient(parsed.name);
-        if (ingredientMap[mapKey]) {
-          ingredientMap[mapKey].totalQty += totalQty;
-        } else {
-          ingredientMap[mapKey] = { name: parsed.name, totalQty, unit: parsed.unit, category: cat };
-        }
-      });
-    });
-  });
-
-  const categories: Record<string, ShoppingIngredient[]> = {};
-  const CATEGORY_META: Record<string, { name: string; emoji: string }> = {
-    grains: { name: "Grains & Legumes", emoji: "·" },
-    produce: { name: "Fresh Produce", emoji: "·" },
-    pantry: { name: "Pantry & Condiments", emoji: "·" },
-    dairy: { name: "Dairy Alternatives", emoji: "·" },
-    herbs: { name: "Herbs, Spices & Seeds", emoji: "·" },
-  };
-
-  Object.values(ingredientMap).forEach(item => {
-    const cat = item.category;
-    const displayQty = item.totalQty < 1 ? `${Math.round(item.totalQty * 100) / 100}` :
-      item.totalQty > 10 ? `${Math.round(item.totalQty)}` :
-        `${Math.round(item.totalQty * 10) / 10}`;
-    if (!categories[cat]) categories[cat] = [];
-    categories[cat].push({
-      name: item.name.charAt(0).toUpperCase() + item.name.slice(1),
-      quantity: displayQty,
-      unit: item.unit,
-      checked: false,
-    });
-  });
-
-  return Object.entries(CATEGORY_META).map(([key, meta]) => ({
-    name: meta.name,
-    emoji: meta.emoji,
-    items: categories[key] || [],
-  })).filter(c => c.items.length > 0);
+  const groups = aggregateShoppingItems({meals: shoppingMeals(weekDays, plan.prepPreferences)}, parseIngredient);
+  return Object.entries(groups).map(([category, items]) => ({
+    name: SHOPPING_CATEGORY_META[category] ?? category, emoji: '·',
+    items: items.map(item => ({name:item.name, quantity:formatSmartQty(item.totalQty,item.unit,item.name),unit:'',checked:false})),
+  }));
 }
 
 // ─── localStorage Persistence ──────────────────────────────

@@ -1,9 +1,10 @@
-import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
+import { Fragment, createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { linkReferral } from "@/hooks/useReferral";
 import { identifyUser, resetUser } from "@/lib/analytics";
 import { setSentryUser, clearSentryUser } from "@/lib/error-monitoring";
-import { claimDevice } from "@/lib/device-privacy";
+import { useQueryClient } from "@tanstack/react-query";
+import { claimDevice, captureDeviceScope, OWNER_KEY } from "@/lib/device-privacy";
 import type { User, Session } from "@supabase/supabase-js";
 
 interface SubscriptionInfo {
@@ -60,6 +61,8 @@ const AuthContext = createContext<AuthState>({
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
+  const [storageError, setStorageError] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const scope = captureDeviceScope();
     // Retry once on transient runtime errors (503 cold-start)
     const invokeOnce = () =>
       supabase.functions.invoke("check-subscription", {
@@ -92,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.warn("[check-subscription] failed, keeping previous state:", error);
         return;
       }
+      if (!scope.matches(currentSession.user.id)) return;
       const productId = data?.product_id ?? null;
       const source = data?.source === "manual" || data?.source === "stripe" ? data.source : null;
       setSubscription({
@@ -112,18 +117,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [session, checkSubscription]);
 
   useEffect(() => {
+    let disposed = false;
+    let authEventReceived = false;
+    const applySession = (next: Session | null) => {
+      if (disposed) return false;
+      try {
+        if (claimDevice(next?.user.id ?? null)) {
+          queryClient.clear();
+          setSubscription(defaultSub);
+        }
+        setStorageError(false);
+        setSession(next);
+        setUser(next?.user ?? null);
+        setLoading(false);
+        return true;
+      } catch {
+        setStorageError(true);
+        setLoading(false);
+        return false;
+      }
+    };
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-        setLoading(false);
+        authEventReceived = true;
+        if (!applySession(newSession)) return;
 
         if (event === "SIGNED_IN" && newSession?.user) {
-          // A different account on this device: clear the last person's local entries first.
-          if (claimDevice(newSession.user.id, !!newSession.user.is_anonymous)) {
-            window.location.reload();
-            return;
-          }
           linkReferral(newSession.user.id);
           identifyUser(newSession.user.id, { email: newSession.user.email });
           setSentryUser(newSession.user.id, newSession.user.email);
@@ -149,13 +168,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      setLoading(false);
+      if (!authEventReceived) applySession(s);
     });
+    const otherTab = (event: StorageEvent) => {
+      if (event.key === OWNER_KEY) window.location.reload();
+    };
+    window.addEventListener("storage", otherTab);
+    return () => { disposed = true; authSub.unsubscribe(); window.removeEventListener("storage", otherTab); };
+  }, [queryClient]);
 
-    return () => authSub.unsubscribe();
-  }, []);
+  // Hydrate training even when a member opens Today before the Training tab.
+  useEffect(() => {
+    if (loading || storageError || !user) return;
+    const scope = captureDeviceScope();
+    const sync = async () => {
+      const training = await import('@/lib/training-path-utils');
+      if (!scope.matches(user.id)) return;
+      await training.hydrateSelectedPathFromProfile();
+      if (!scope.matches(user.id)) return;
+      await training.syncTrainingProgress();
+      if (!scope.matches(user.id)) return;
+      await training.flushTrainingLogs();
+    };
+    void sync();
+    window.addEventListener('online', sync);
+    return () => window.removeEventListener('online', sync);
+  }, [user?.id, loading, storageError]);
 
   // Check subscription when session changes
   useEffect(() => {
@@ -173,7 +211,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, session, loading, subscription, refreshSubscription }}>
-      {children}
+      {storageError ? <div role="alert">Your saved data could not be opened safely. Free up browser storage, then reload to try again.</div> : loading ? <div role="status">Loading your account…</div> : <Fragment key={user?.id ?? "guest"}>{children}</Fragment>}
     </AuthContext.Provider>
   );
 }

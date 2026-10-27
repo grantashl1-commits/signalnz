@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { captureDeviceScope } from "@/lib/device-privacy";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -75,26 +77,18 @@ export function useJournalSync() {
   const [vault, setVault] = useState<VaultEntry[]>(() => loadVault());
   const [milestones, setMilestones] = useState<MilestoneAnalysis[]>(() => loadMilestones());
   const [syncing, setSyncing] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
+  const scope = useRef(captureDeviceScope()).current;
   const initialSyncDone = useRef(false);
-
-  // Get current user
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id || null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserId(session?.user?.id || null);
-      initialSyncDone.current = false; // re-sync on auth change
-    });
-    return () => subscription.unsubscribe();
-  }, []);
 
   // Initial sync: pull from cloud, merge with local, push any local-only entries
   useEffect(() => {
     if (!userId || initialSyncDone.current) return;
     initialSyncDone.current = true;
 
+    let cancelled = false;
+    const current = () => !cancelled && scope.matches(userId);
     const sync = async () => {
       setSyncing(true);
       try {
@@ -105,6 +99,7 @@ export function useJournalSync() {
           .eq("user_id", userId)
           .order("timestamp", { ascending: false });
 
+        if (!current()) return;
         const cloudMap = new Map((cloudEntries || []).map((r: any) => [r.id, r]));
         const localEntries = loadEntries();
         const merged: JournalEntry[] = [];
@@ -140,6 +135,7 @@ export function useJournalSync() {
           .eq("user_id", userId)
           .order("timestamp", { ascending: false });
 
+        if (!current()) return;
         const vaultCloudMap = new Map((cloudVault || []).map((r: any) => [r.id, r]));
         const localVault = loadVault();
         const mergedVault: VaultEntry[] = [];
@@ -168,6 +164,7 @@ export function useJournalSync() {
           .select("*")
           .eq("user_id", userId);
 
+        if (!current()) return;
         if (cloudMilestones && cloudMilestones.length > 0) {
           const ms: MilestoneAnalysis[] = cloudMilestones.map((r: any) => ({
             milestoneType: r.milestone_type,
@@ -185,10 +182,12 @@ export function useJournalSync() {
     };
 
     sync();
+    return () => { cancelled = true; initialSyncDone.current = false; };
   }, [userId]);
 
   // Save entry (local + cloud)
   const saveEntry = useCallback(async (entry: JournalEntry) => {
+    if (!scope.valid()) return;
     const updated = [entry, ...entries.filter(e => e.id !== entry.id)];
     setEntries(updated);
     saveEntries(updated);
@@ -200,12 +199,14 @@ export function useJournalSync() {
 
   // Update entries list (local + cloud)
   const updateEntries = useCallback(async (updated: JournalEntry[]) => {
+    if (!scope.valid()) return;
     setEntries(updated);
     saveEntries(updated);
   }, []);
 
   // Update a single entry
   const updateEntry = useCallback(async (entry: JournalEntry) => {
+    if (!scope.valid()) return;
     const updated = entries.map(e => e.id === entry.id ? entry : e);
     setEntries(updated);
     saveEntries(updated);
@@ -217,6 +218,7 @@ export function useJournalSync() {
 
   // Save vault entry (local + cloud)
   const saveVaultEntry = useCallback(async (entry: VaultEntry) => {
+    if (!scope.valid()) return;
     const updated = [entry, ...vault.filter(v => v.id !== entry.id)];
     setVault(updated);
     saveVault(updated);
@@ -228,6 +230,7 @@ export function useJournalSync() {
 
   // Remove vault entry
   const removeVaultEntry = useCallback(async (id: string) => {
+    if (!scope.valid()) return;
     const updated = vault.filter(v => v.id !== id);
     setVault(updated);
     saveVault(updated);
@@ -239,6 +242,7 @@ export function useJournalSync() {
 
   // Save milestone
   const saveMilestone = useCallback(async (milestone: MilestoneAnalysis) => {
+    if (!scope.valid()) return;
     const updated = [...milestones, milestone];
     setMilestones(updated);
     saveMilestones(updated);

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { addDays, startOfWeek, format } from 'date-fns';
 import { useCycle } from '@/contexts/CycleContext';
 import { useCustomMealPlan } from '@/hooks/useCustomMealPlan';
-import { getAIMealPlan } from '@/lib/weekly-planner';
+import { getAIMealPlan, getSavedPreferences } from '@/lib/weekly-planner';
 import { buildCustomShoppingPlan } from '@/lib/build-custom-shopping-plan';
 import { toLocalDateStr } from '@/lib/local-date';
 import { getShoppingList } from '@/lib/ingredient-parser';
@@ -12,7 +12,7 @@ export default function WeekShoppingList() {
  const { currentCycleDay, getCycleDayForDate } = useCycle();
  const { plan: customPlan } = useCustomMealPlan();
  const [offset, setOffset] = useState(0);
- const [portions, setPortions] = useState(() => { try { return JSON.parse(localStorage.getItem('signal_shopping_portions') ?? '{"adults":1,"kids":0}') as { adults: number; kids: number }; } catch { return { adults: 1, kids: 0 }; } });
+ const [portions, setPortions] = useState(() => { try { return JSON.parse(localStorage.getItem('signal_shopping_portions') ?? JSON.stringify(getAIMealPlan()?.prepPreferences ?? getSavedPreferences() ?? {adults:1,kids:0})) as { adults: number; kids: number }; } catch { return { adults: 1, kids: 0 }; } });
  const monday = useMemo(() => addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), offset * 7), [offset]);
  const plan = useMemo(() => { const dates = Array.from({ length: 7 }, (_, i) => addDays(monday, i)); return buildCustomShoppingPlan(dates.map(getCycleDayForDate), customPlan, portions, getAIMealPlan(), dates.map(toLocalDateStr)); }, [customPlan, portions, monday, getCycleDayForDate]);
  function changePortions(field: 'adults' | 'kids', value: number) { if (!Number.isFinite(value)) return; const next = { ...portions, [field]: Math.max(field === 'adults' ? 1 : 0, Math.min(20, Math.round(value))) }; setPortions(next); localStorage.setItem('signal_shopping_portions', JSON.stringify(next)); }
