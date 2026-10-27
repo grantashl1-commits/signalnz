@@ -3314,5 +3314,278 @@
   ],
   "pose": "arches back over the reformer into a full opening backbend, hips pressing forward, chest and head reaching back and down behind her, both arms reaching long to hold the strap handles or the frame, the whole front of the body lengthening.",
   "highlight": "the glutes and lumbar extensors powering the arch, with the shoulders and arms, and a long stretch through the abdominals, hip flexors, chest and latissimus dorsi"
+ },
+ {
+  "id": "toe-dips",
+  "name": "Toe Dips",
+  "nameEs": "Toques de dedo",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "core",
+   "lower"
+  ],
+  "primary": "core",
+  "muscles": [
+   "transverse-abdominis",
+   "rectus-abdominis",
+   "hip-flexors",
+   "obliques"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "not used",
+  "headrest": "up",
+  "equipment": [
+   "carriage"
+  ],
+  "pose": "Both knees stay bent at ninety degrees for the whole exercise — her legs never straighten and her feet never rise above her knees. She lies supine with the back of her head on the headrest and her pelvis heavy on the carriage, arms long at her sides with the palms down. Her thighs point up and her shins are horizontal, level with the floor, so both feet sit in the air just above the carriage. Her right shin tilts down a few degrees so the tip of her right big toe touches the top of the teal upholstery beside her hip, with her right knee staying bent and high, and her left leg keeps exactly the same bent shape. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the rectus abdominis down the centre of her belly, with the hip flexors at the front of her left hip"
+ },
+ {
+  "id": "arms-in-straps-triceps-press",
+  "name": "Arms in Straps: Triceps Press",
+  "nameEs": "Brazos en las correas: press de tríceps",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "upper"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "triceps",
+   "transverse-abdominis"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a strap loop in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps",
+   "carriage"
+  ],
+  "pose": "Her elbows are bent and pinned tight against her ribs — both upper arms lie flat on the carriage alongside her body — and only her forearms move: they point straight up at the ceiling with each hand directly above its own elbow, a black strap loop in each hand. She lies supine with the back of her head on the headrest and both knees bent to ninety degrees so her shins are horizontal and level, feet just above the carriage. She presses the straps down toward her hips while her elbows stay glued to her sides. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the triceps at the back of both upper arms"
+ },
+ {
+  "id": "arms-in-straps-t-press",
+  "name": "Arms in Straps: T Press",
+  "nameEs": "Brazos en las correas: press en T",
+  "series": "Signal plan",
+  "level": "intermediate",
+  "page": null,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "latissimus-dorsi",
+   "pectorals",
+   "serratus-anterior",
+   "transverse-abdominis"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a strap loop in each hand",
+  "headrest": "up",
+  "equipment": [
+   "straps",
+   "carriage"
+  ],
+  "pose": "lies supine with the back of her head on the headrest and both legs in a table shape, her arms straight out wide to her sides at shoulder height so her arms and body make the shape of the letter T, palms facing up and a black strap loop in each hand. Both straight arms are sweeping down toward her hips together, caught halfway. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the latissimus dorsi on both sides of her back, with the pectorals across her chest"
+ },
+ {
+  "id": "reformer-standing-lunge",
+  "name": "Reformer Standing Lunge",
+  "nameEs": "Zancada de pie en el reformer",
+  "series": "Signal plan",
+  "level": "intermediate",
+  "page": null,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "quads",
+   "glutes",
+   "adductors",
+   "hamstrings"
+  ],
+  "springs": "medium (2 red)",
+  "footbar": "not used",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "carriage"
+  ],
+  "pose": "stands in a deep lunge facing the foot end, her front foot flat on the fixed wooden platform with the front knee bent well forward over the toes, the carriage pressed far away from the platform, and her back foot behind her with its ball braced against a shoulder block on the carriage and the back heel lifted high. Her torso is upright, her back leg long, both hands resting on her front thigh. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the quadriceps and gluteals of the front leg"
+ },
+ {
+  "id": "mermaid",
+  "name": "Mermaid",
+  "nameEs": "Sirena",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "core",
+   "upper"
+  ],
+  "primary": "core",
+  "muscles": [
+   "obliques",
+   "quadratus-lumborum",
+   "latissimus-dorsi",
+   "shoulders"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "high",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "carriage"
+  ],
+  "pose": "sits side-on on the carriage with both legs folded together to one side and her hip and seat heavy on the teal upholstery. Her near hand is flat on the padded charcoal footbar and her far arm arcs up and over her head, so her torso makes one long sideways curve above the bottom hand. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the obliques on the side she bends toward, with the latissimus dorsi of the raised arm"
+ },
+ {
+  "id": "reverse-frog-kicks",
+  "name": "Reverse Frog Kicks",
+  "nameEs": "Patadas de rana invertidas",
+  "series": "Signal plan",
+  "level": "intermediate",
+  "page": null,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "lower-back-extensors"
+  ],
+  "springs": "medium-light (1 red + 1 blue)",
+  "footbar": "not used",
+  "straps": "one strap loop on one foot",
+  "headrest": "down",
+  "equipment": [
+   "long-box",
+   "straps"
+  ],
+  "pose": "lies face down along the long box with her pelvis and lower ribs supported on top of it, both hands gripping its sides, and both legs hanging off the far end. One foot is in a black strap loop with that knee bent and the heel drawn up toward her seat, and she is pressing that leg back toward straight while the other leg stays long. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the hamstrings and gluteals of the strapped leg"
+ },
+ {
+  "id": "longbox-hip-stretch",
+  "name": "Longbox Hip Stretch",
+  "nameEs": "Estiramiento de cadera en la caja larga",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hip-flexors",
+   "quads",
+   "psoas"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "long-box"
+  ],
+  "pose": "stands in a long stride with her front foot flat on top of the long box and her back leg long behind her, the back heel lifted with the ball of the foot on the floor, both hands on her front hip. Her hips sink forward and down so the front of the back hip lengthens, and her torso stays upright. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the hip flexors at the front of the back hip"
+ },
+ {
+  "id": "longbox-hamstring-stretch",
+  "name": "Longbox Hamstring Stretch",
+  "nameEs": "Estiramiento de isquiotibiales en la caja larga",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "lower"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "hamstrings",
+   "glutes",
+   "erector-spinae"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "long-box"
+  ],
+  "pose": "Her raised heel rests on top of the teal padded long box and that leg is completely straight with the toes pulled back toward her. Her other foot is flat on the wooden reformer beside the box. She hinges forward from the hip over the raised leg with her back long and flat like a table and her chest open, hands reaching toward her toes. The long box is the only thing her raised leg touches, and her spine is one straight line that never rounds. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the hamstrings along the back of the raised leg"
+ },
+ {
+  "id": "longbox-shoulder-stretch",
+  "name": "Longbox Shoulder Stretch",
+  "nameEs": "Estiramiento de hombros en la caja larga",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "upper",
+   "core"
+  ],
+  "primary": "upper",
+  "muscles": [
+   "latissimus-dorsi",
+   "rear-deltoids",
+   "thoracic-extensors"
+  ],
+  "springs": "not used",
+  "footbar": "not used",
+  "straps": "not used",
+  "headrest": "down",
+  "equipment": [
+   "long-box"
+  ],
+  "pose": "stands behind the long box and folds forward with both hands flat on top of it, her feet walked back until her back is level and horizontal, parallel to the floor, her chest sinking down between her straight arms. Her hips stay stacked above her ankles and her weight is shared between her feet and her palms. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the latissimus dorsi on both sides of her back"
+ },
+ {
+  "id": "butterfly-stretch",
+  "name": "Butterfly Stretch",
+  "nameEs": "Estiramiento de mariposa",
+  "series": "Signal plan",
+  "level": "beginner",
+  "page": null,
+  "focus": [
+   "lower",
+   "core"
+  ],
+  "primary": "lower",
+  "muscles": [
+   "adductors",
+   "hip-external-rotators",
+   "glutes"
+  ],
+  "springs": "light (1 red)",
+  "footbar": "not used",
+  "straps": "a strap loop on each foot",
+  "headrest": "up",
+  "equipment": [
+   "straps",
+   "carriage"
+  ],
+  "pose": "lies supine with the back of her head on the headrest, both feet in black strap loops, her feet pressed together sole to sole and her knees open wide and level with her hips, out to the sides. Her sacrum is heavy and flat on the carriage and her arms rest long at her sides. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.",
+  "highlight": "the adductors of the inner thighs"
  }
 ]

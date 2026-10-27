@@ -20,6 +20,8 @@ const OUT_JSON = "src/reformer-exercise-prompts.json";
 const OUT_MD = "src/assets/movement/reformer/PROMPTS.md";
 const OUT_MANIFEST = "src/assets/movement/reformer/MANIFEST.md";
 const ART_DIR = "src/assets/movement/reformer";
+/** In-house "Signal plan" artwork lives here, separate from the book set. */
+const LIBRARY_DIR = `${ART_DIR}/library`;
 
 /**
  * Existing artwork that already covers a catalogue exercise but was drawn under
@@ -89,8 +91,17 @@ const highlightBlock = (highlight) => {
 
 const catalogue = JSON.parse(readFileSync(CATALOGUE, "utf8"));
 
-if (catalogue.length !== 117) {
-  console.error(`Expected 117 exercises, got ${catalogue.length}.`);
+/**
+ * Guard against a truncated or garbled book extraction. Only the book-sourced
+ * exercises are counted: the "Signal plan" series is authored in-house, has no
+ * page numbers, and is expected to grow.
+ */
+const BOOK_SERIES_EXCLUDE = new Set(["Signal plan"]);
+const BOOK_TOTAL = 117;
+const bookCount = catalogue.filter((ex) => !BOOK_SERIES_EXCLUDE.has(ex.series)).length;
+
+if (bookCount !== BOOK_TOTAL) {
+  console.error(`Expected ${BOOK_TOTAL} book exercises, got ${bookCount}.`);
   process.exit(1);
 }
 
@@ -201,7 +212,8 @@ catalogue.forEach((ex, i) => {
   const tags = ex.focus
     .map((f) => (f === ex.primary ? `**${FOCUS_ABBR[f]}**` : FOCUS_ABBR[f]))
     .join(" ");
-  md += `| ${i + 1} | ${ex.name} | ${ex.series} | ${ex.level} | ${ex.page} | ${tags} | ${ex.springs} |\n`;
+  const page = ex.page ?? "—";
+  md += `| ${i + 1} | ${ex.name} | ${ex.series} | ${ex.level} | ${page} | ${tags} | ${ex.springs} |\n`;
 });
 md += `\n---\n\n`;
 
@@ -215,7 +227,7 @@ for (const [series, exs] of bySeries) {
   for (const ex of exs) {
     const tags = ex.focus.map((f) => FOCUS_LABEL[f]).join(" · ");
     md += `#### ${ex.name}\n\n`;
-    md += `*${ex.nameEs}* — p${ex.page} · ${ex.level} · **${tags}**\n\n`;
+    md += `*${ex.nameEs}* — ${ex.page ? `p${ex.page}` : "in-house"} · ${ex.level} · **${tags}**\n\n`;
     md += `**File:** \`${ex.id}.png\` · **Springs:** ${ex.springs} · **Muscles:** ${ex.muscles.join(", ")}\n\n`;
     md += "```text\n";
     md += `POSE — she ${ex.pose.trim()}\n\n`;
@@ -227,8 +239,12 @@ for (const [series, exs] of bySeries) {
 writeFileSync(OUT_MD, md);
 
 // ─── artwork manifest ──────────────────────────────────────────────────
+// Plan artwork is drawn into `library/` so the in-house set stays separate from
+// the 117 book illustrations.
 const hasArt = (ex) =>
-  existsSync(`${ART_DIR}/${ex.id}.png`) || Boolean(LEGACY_ART[ex.id] && existsSync(`${ART_DIR}/${LEGACY_ART[ex.id]}`));
+  existsSync(`${ART_DIR}/${ex.id}.png`) ||
+  existsSync(`${LIBRARY_DIR}/${ex.id}.png`) ||
+  Boolean(LEGACY_ART[ex.id] && existsSync(`${ART_DIR}/${LEGACY_ART[ex.id]}`));
 
 const covered = catalogue.filter(hasArt);
 const missing = catalogue.filter((ex) => !hasArt(ex));
