@@ -1,3 +1,6 @@
+import { saveAIMealPlan, savePreferences, type PrepPreferences } from "@/lib/weekly-planner";
+import { buildDbMealPlanFull } from "@/lib/build-db-meal-plan";
+import { toast } from "sonner";
 import { useState, useEffect, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -440,52 +443,23 @@ export default function OnboardingFlow({ onComplete }: Props) {
           console.warn("Auto training plan generation failed:", err);
         });
 
-        // ── Auto-generate first nutrition plan in background ──
-        const cycleDay = 1; // default start
+        // Use the same validated library plan as the nutrition planner.
         const dietPrefMap: Record<string, string> = {
-          omnivore: "", vegetarian: "Vegetarian", vegan: "Vegan",
-          gluten_free: "Gluten-free", dairy_free: "Dairy-free",
-          pescatarian: "Pescatarian", low_carb: "Keto", mediterranean: "",
+          vegetarian: "Vegetarian", vegan: "Vegan", gluten_free: "Gluten-free",
+          dairy_free: "Dairy-free", pescatarian: "Pescatarian",
         };
-        const nutritionPrefs = {
-          breakfast: "rotate",
-          lunch: "rotate",
-          dinner: "mix",
-          prepDays: [mealPrepDay || "Sunday"],
-          adults: 1,
-          kids: 0,
-          dietType: dietPrefMap[dietaryPrefs[0]] || "",
-          dislikes: dietaryDislikes.join(", "),
-          calorieTarget: String(m.calories),
+        const nutritionPrefs: PrepPreferences = {
+          breakfast: "rotate", lunch: "rotate", dinner: "mix",
+          prepDays: [mealPrepDay || "Sunday"], adults: 1, kids: 0,
+          dietTypes: dietaryPrefs.map(d => dietPrefMap[d]).filter(Boolean),
+          dislikes: dietaryDislikes.join(", "), calorieTarget: String(m.calories),
         };
-
-        supabase.functions.invoke("meal-plan-ai", {
-          body: {
-            preferences: nutritionPrefs,
-            startCycleDay: cycleDay,
-            endCycleDay: cycleDay + 6,
-            userDietaryDislikes: dietaryDislikes,
-          },
-        }).then(async (resp) => {
-          if (resp.error) {
-            console.warn("Auto nutrition plan generation failed:", resp.error);
-          } else {
-            console.log("Auto nutrition plan generated successfully");
-            // Save to localStorage for the nutrition module to pick up
-            try {
-              const planData = resp.data;
-              if (planData?.plan) {
-                localStorage.setItem("signal_meal_plan", JSON.stringify({
-                  plan: planData.plan,
-                  generatedAt: new Date().toISOString(),
-                  cycleDay,
-                }));
-              }
-            } catch { /* ignore */ }
-          }
-        }).catch((err) => {
-          console.warn("Auto nutrition plan generation failed:", err);
-        });
+        savePreferences(nutritionPrefs);
+        try {
+          saveAIMealPlan(buildDbMealPlanFull(nutritionPrefs));
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : "Your meal plan could not be created. Please try again in Eat.");
+        }
       }
 
       // Keep localStorage fallbacks for existing consumers
