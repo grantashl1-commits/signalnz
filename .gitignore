@@ -31,3 +31,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Agent & workspace scratch — not part of the shipped app.
+handoff/
+MEMORY.md
+memory/
+
+# Supabase CLI temp (local project link).
+supabase/.temp/
