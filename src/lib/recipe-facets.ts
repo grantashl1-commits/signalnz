@@ -59,8 +59,8 @@ const PLANT_SAFE = [
   /\bcream of tartar\b/g,
 ];
 
-const MEAT = /\b(chicken|beef|lamb|pork|bacon|ham|prosciutto|salami|chorizo|pepperoni|sausages?|mince|turkey|venison|steak|meatballs?|veal|duck|gelatine?|bone broth|lard|pancetta)\b/;
-const SEAFOOD = /\b(fish|salmon|tuna|cod|snapper|tarakihi|hoki|terakihi|sardines?|mackerel|prawns?|shrimps?|mussels?|scallops?|squid|calamari|crab|anchov(y|ies)|fish sauce|seafood|trout|kahawai|whitebait|oysters?)\b/;
+const MEAT = /\b(chicken|beef|lamb|pork|bacon|ham|prosciutto|salami|chorizo|pepperoni|sausages?|mince|turkey|venison|steaks?|meatballs?|veal|duck|gelatine?|bone broth|lard|pancetta)\b/;
+const SEAFOOD = /\b(fish|salmon|tuna|cod|snapper|tarakihi|hoki|terakihi|sardines?|mackerel|prawns?|shrimps?|mussels?|scallops?|squid|calamari|crab|anchov(y|ies)|fish sauce|seafood|trout|kahawai|whitebait|oysters?|sea bass|bass|barramundi|kingfish|hapuku|groper|ling|sole|plaice|halibut|bream|tilapia)\b/;
 const EGG = /\b(eggs?|yolks?|egg whites?|omelette|frittata|meringue|mayo|mayonnaise|aioli)\b/;
 const DAIRY = /\b(milk|cheese|cheddar|butter|cream|yoghurt|yogurt|ghee|paneer|feta|parmesan|halloumi|ricotta|mozzarella|labneh|kefir|whey|custard|ice cream|buttermilk|quark|mascarpone|bocconcini|brie|camembert|gouda|pecorino|tzatziki)\b/;
 const HONEY = /\bhoney\b/;
@@ -81,7 +81,18 @@ export function detectDiet(ingredients: string[], tags: string[] = []): Diet {
   let meat = false, fish = false, egg = false, honey = false, dairy = false;
   for (const raw of ingredients) {
     const line = raw.toLowerCase();
-    if (PLANT_ALTERNATIVE.test(line) || SELF_DECLARED_PLANT.test(line)) continue;
+    // "honey or maple syrup" is a genuine either/or, so the plant option wins.
+    // "450g beef mince (or tofu / plant-based mince)" is not: the recipe as
+    // written uses the beef, so an animal named *before* the plant phrasing
+    // still decides the diet.
+    const plantSpots = [PLANT_ALTERNATIVE.exec(line)?.index, SELF_DECLARED_PLANT.exec(line)?.index].filter(
+      (i): i is number => typeof i === "number",
+    );
+    if (plantSpots.length) {
+      const first = Math.min(...plantSpots);
+      const animalBefore = MEAT.test(line.slice(0, first)) || SEAFOOD.test(line.slice(0, first));
+      if (!animalBefore) continue;
+    }
     // Optional garnishes don't decide the diet ("parmesan to serve (optional)").
     if (/\(optional\)|optional:|to serve, optional/.test(line) && !MEAT.test(line)) continue;
     const t = scrub(line);

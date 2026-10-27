@@ -18,15 +18,19 @@ import {
 } from "@/data/plant-based-family-recipes";
 import { MATTHEW_KIDS_RECIPES } from "@/data/matthew-kids-recipes";
 import { NZ_AU_FAMILY_RECIPES } from "@/data/nz-au-family-recipes";
-import { MAIN_LIBRARY_RECIPES, KIDS_BANK_RECIPES } from "@/lib/family-recipe-adapters";
 
-/** All cookbook collections surfaced in this tab — one complete catalog. */
+/**
+ * The three curated cookbooks, kept as *books* here.
+ *
+ * The main Nourish library, the kids bank and these books are all browsed
+ * together in the Recipes tab (see `@/lib/all-recipes`), so re-listing the two
+ * big banks here only made the cookbook tab a slower copy of browse. This tab
+ * is for sitting down with a particular book.
+ */
 const COLLECTIONS = [
   { id: "family", label: "Family Cookbook", recipes: PLANT_BASED_FAMILY_RECIPES },
   { id: "kids", label: "Kids' Favourites", recipes: MATTHEW_KIDS_RECIPES },
   { id: "nzau", label: "NZ & AU Family", recipes: NZ_AU_FAMILY_RECIPES },
-  { id: "library", label: "Main Library", recipes: MAIN_LIBRARY_RECIPES },
-  { id: "kidsbank", label: "Kids Bank", recipes: KIDS_BANK_RECIPES },
 ] as const;
 
 const CATEGORIES: ("All" | FamilyRecipeCategory)[] = [
@@ -195,6 +199,7 @@ export default function FamilyRecipesTab() {
   const [collectionId, setCollectionId] = useState<string>(COLLECTIONS[0].id);
   const [category, setCategory] = useState<"All" | FamilyRecipeCategory>("All");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(24);
 
   const collection = COLLECTIONS.find((c) => c.id === collectionId) ?? COLLECTIONS[0];
 
@@ -205,9 +210,26 @@ export default function FamilyRecipesTab() {
     [collection, category]
   );
 
+  const visible = filtered.slice(0, visibleCount);
+
   const openRecipe = openId
     ? collection.recipes.find((r) => r.id === openId) ?? null
     : null;
+
+  const pickCollection = (id: string) => {
+    haptic("light");
+    setCollectionId(id);
+    setCategory("All");
+    setVisibleCount(24);
+  };
+
+  const pickCategory = (c: "All" | FamilyRecipeCategory) => {
+    haptic("light");
+    setCategory(c);
+    setVisibleCount(24);
+  };
+
+  const totalRecipes = COLLECTIONS.reduce((sum, c) => sum + c.recipes.length, 0);
 
   return (
     <div className="space-y-4">
@@ -216,7 +238,7 @@ export default function FamilyRecipesTab() {
         {COLLECTIONS.map((c) => (
           <button
             key={c.id}
-            onClick={() => { haptic("light"); setCollectionId(c.id); setCategory("All"); }}
+            onClick={() => pickCollection(c.id)}
             className={`touch-btn flex-shrink-0 rounded-full px-3 py-1.5 font-body text-xs font-semibold transition-all whitespace-nowrap border ${
               collectionId === c.id
                 ? "bg-foreground text-background border-foreground"
@@ -232,22 +254,33 @@ export default function FamilyRecipesTab() {
         <ChefHat className="h-4 w-4 text-primary/60" />
         <p className="font-hand text-[10px] uppercase tracking-wider" style={{ color: "hsl(var(--label-color))" }}>
           {collection.label} · {collection.recipes.length} recipes
+          <span className="text-muted-foreground/60"> · {totalRecipes} in catalog</span>
         </p>
       </div>
 
       <div className="scroll-snap-x flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
         {CATEGORIES.map((c) => (
-          <CategoryChip key={c} active={category === c} onClick={() => setCategory(c)}>
+          <CategoryChip key={c} active={category === c} onClick={() => pickCategory(c)}>
             {labelFor(c)}
           </CategoryChip>
         ))}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {filtered.map((recipe, i) => (
+        {visible.map((recipe, i) => (
           <RecipeCard key={recipe.id} recipe={recipe} index={i} onOpen={() => setOpenId(recipe.id)} />
         ))}
       </div>
+
+      {filtered.length > visibleCount && (
+        <button
+          onClick={() => { haptic("light"); setVisibleCount((v) => v + 24); }}
+          className="w-full rounded-xl bg-card py-3 font-body text-xs text-muted-foreground active:bg-secondary/50"
+          style={{ boxShadow: "var(--shadow-soft)" }}
+        >
+          Show more ({filtered.length - visibleCount} left)
+        </button>
+      )}
 
       {filtered.length === 0 && (
         <p className="text-center font-body text-sm text-muted-foreground py-8">
