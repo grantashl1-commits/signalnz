@@ -1,0 +1,100 @@
+[
+  {
+    "id": "adductors",
+    "name": "Seated Butterfly",
+    "target": "Inner thighs",
+    "wash": "the inner thighs of both legs",
+    "pose": "sits upright on the floor with her knees bent open wide to the sides and the soles of her feet pressed together, both hands holding her feet, her spine tall and her knees easing down toward the floor"
+  },
+  {
+    "id": "arms",
+    "name": "Standing Cross-Body Shoulder Stretch",
+    "target": "Back of the shoulder and upper arm",
+    "wash": "the back of her right shoulder and the upper part of her right arm",
+    "pose": "stands tall with her right arm held straight across her chest at shoulder height and her left hand drawing that elbow in toward her body, her head turned to look over her right shoulder"
+  },
+  {
+    "id": "calves",
+    "name": "Standing Calf Stretch on a Block",
+    "target": "Calf of the back leg",
+    "wash": "the calf of her back leg",
+    "pose": "stands facing a simple low wooden block with both hands resting lightly on it, her left leg straight out behind her with the heel reaching down to the floor and the toes pointing forward, her right knee bent and her hips square"
+  },
+  {
+    "id": "cardiovascular",
+    "name": "Brisk Walking Stride",
+    "target": "Whole body, heart and circulation",
+    "wash": "her chest and the front of her torso",
+    "pose": "walks with energy and caught mid-stride, right leg forward and left leg back, both arms swinging in opposition, chest open, shoulders relaxed and head lifted"
+  },
+  {
+    "id": "core",
+    "name": "Supine Spinal Twist",
+    "target": "Waist and obliques",
+    "wash": "her waist and obliques on the side she is twisting toward",
+    "pose": "lies on her back with both knees drawn up together and dropped over to her left, both arms stretched out wide at shoulder height in a T shape, her head turned to look to her right"
+  },
+  {
+    "id": "glutes",
+    "name": "Reclining Figure Four",
+    "target": "Buttock and outer hip",
+    "wash": "her right buttock and the outer side of her right hip",
+    "pose": "lies on her back with her right ankle crossed over her left knee and both hands clasped behind her left thigh, drawing that leg in toward her chest so her left foot lifts off the floor"
+  },
+  {
+    "id": "hamstrings",
+    "name": "Seated Forward Fold",
+    "target": "Back of the thighs",
+    "wash": "the back of both thighs",
+    "pose": "sits on the floor with both legs straight out in front of her and her spine long, hinging forward from the hips with both hands reaching toward her feet"
+  },
+  {
+    "id": "hip-flexors",
+    "name": "Low Lunge",
+    "target": "Front of the hip",
+    "wash": "the front of her back hip",
+    "pose": "kneels in a long low lunge with her right knee down on the floor and her left foot planted well forward, hips sinking forward and down, torso upright and both hands resting on her front thigh"
+  },
+  {
+    "id": "it-band",
+    "name": "Standing Crossed-Leg Side Bend",
+    "target": "Outer thigh",
+    "wash": "the outer side of her right thigh",
+    "pose": "stands with her right leg crossed in front of her left, her right arm reaching overhead and bending her over to the left in one long sideways curve, her hips pushing out to the right"
+  },
+  {
+    "id": "lower-back",
+    "name": "Child's Pose",
+    "target": "Lower back",
+    "wash": "her lower back",
+    "pose": "kneels with her hips sitting back onto her heels and folds her torso forward, stretching both arms out along the floor ahead of her with her forehead resting down on the floor"
+  },
+  {
+    "id": "pelvic-floor",
+    "name": "Happy Baby",
+    "target": "Deep pelvis",
+    "wash": "the deep muscles of her pelvis between her hips",
+    "pose": "lies on her back with both knees drawn up beside her ribs and both feet held in her hands, knees open wide to the sides and her tailbone heavy on the floor"
+  },
+  {
+    "id": "plantar-fascia",
+    "name": "Kneeling Toes Tucked",
+    "target": "Soles of the feet",
+    "wash": "the soles of both feet",
+    "pose": "kneels with her toes tucked under so the tops of her toes press into the floor, sitting her hips back toward her heels with her torso upright and her hands resting on her thighs"
+  },
+  {
+    "id": "posterior-chain",
+    "name": "Standing Forward Fold",
+    "target": "Back of the body",
+    "wash": "the back of her legs and her lower back",
+    "pose": "stands with her feet together and both legs straight, folding forward from the hips so her torso hangs down over her legs and both hands reach toward the floor beside her feet"
+  },
+  {
+    "id": "thoracic-spine",
+    "name": "Thread the Needle",
+    "target": "Upper back",
+    "wash": "her upper back and the back of her right shoulder",
+    "pose": "kneels on all fours with her right arm threading underneath her body and reaching away to the left, her right shoulder and ear lowering toward the floor while her left hand stays planted"
+  }
+]
