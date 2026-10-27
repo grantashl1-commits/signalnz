@@ -1644,5 +1644,1769 @@
    "1.5 cups fresh orange juice",
    "1 orange peeled and cut into 0.5-inch pieces"
   ]
+ },
+ {
+  "id": "snack-apricot-coconut-balls",
+  "slug": "snack-apricot-coconut-balls",
+  "name": "Apricot & Coconut Balls",
+  "category": "snack",
+  "ingredients": [
+   "60g dried apricots (no sugar), chopped",
+   "30g desiccated coconut",
+   "20g sunflower seeds"
+  ]
+ },
+ {
+  "id": "snack-almond-date-balls",
+  "slug": "snack-almond-date-balls",
+  "name": "Almond & Date Balls",
+  "category": "snack",
+  "ingredients": [
+   "60g almonds",
+   "60g dates, pitted",
+   "1 tbsp cacao powder"
+  ]
+ },
+ {
+  "id": "snack-coconut-lime-balls",
+  "slug": "snack-coconut-lime-balls",
+  "name": "Coconut Lime Balls",
+  "category": "snack",
+  "ingredients": [
+   "60g dates, pitted",
+   "40g desiccated coconut",
+   "1 tbsp lime juice",
+   "1 tsp lime zest"
+  ]
+ },
+ {
+  "id": "snack-seed-crackle-balls",
+  "slug": "snack-seed-crackle-balls",
+  "name": "Seed & Date Crackle Balls",
+  "category": "snack",
+  "ingredients": [
+   "60g dates, pitted",
+   "20g pumpkin seeds",
+   "20g sunflower seeds",
+   "10g chia seeds"
+  ]
+ },
+ {
+  "id": "snack-gingerbread-balls",
+  "slug": "snack-gingerbread-balls",
+  "name": "Gingerbread Spice Balls",
+  "category": "snack",
+  "ingredients": [
+   "60g almonds",
+   "60g dates",
+   "½ tsp ginger",
+   "½ tsp cinnamon",
+   "¼ tsp cloves"
+  ]
+ },
+ {
+  "id": "snack-berry-hazelnut-balls",
+  "slug": "snack-berry-hazelnut-balls",
+  "name": "Berry & Hazelnut Balls",
+  "category": "snack",
+  "ingredients": [
+   "60g hazelnuts",
+   "60g dried cranberries (no sugar)",
+   "1 tbsp orange zest"
+  ]
+ },
+ {
+  "id": "baking-date-walnut-slice",
+  "slug": "baking-date-walnut-slice",
+  "name": "Date & Walnut Slice",
+  "category": "baking",
+  "ingredients": [
+   "200g dates, pitted",
+   "150g walnuts",
+   "100g rolled oats",
+   "2 tbsp coconut oil, melted",
+   "1 tsp cinnamon"
+  ]
+ },
+ {
+  "id": "baking-apricot-coconut-slice",
+  "slug": "baking-apricot-coconut-slice",
+  "name": "Apricot & Coconut Slice",
+  "category": "baking",
+  "ingredients": [
+   "200g dried apricots (no sugar)",
+   "150g desiccated coconut",
+   "100g rolled oats",
+   "2 tbsp coconut oil, melted"
+  ]
+ },
+ {
+  "id": "baking-oat-seed-crackers",
+  "slug": "baking-oat-seed-crackers",
+  "name": "Oat & Seed Crackers",
+  "category": "baking",
+  "ingredients": [
+   "100g rolled oats",
+   "50g sunflower seeds",
+   "30g pumpkin seeds",
+   "2 tbsp chia seeds",
+   "2 tbsp olive oil",
+   "100ml water",
+   "½ tsp salt"
+  ]
+ },
+ {
+  "id": "snack-cheese-crackers",
+  "slug": "snack-cheese-crackers",
+  "name": "Cheese Crackers",
+  "category": "snack",
+  "ingredients": [
+   "100g wholemeal flour",
+   "50g cold butter",
+   "80g grated cheddar",
+   "1–2 tbsp cold water"
+  ]
+ },
+ {
+  "id": "snack-parmesan-crisps",
+  "slug": "snack-parmesan-crisps",
+  "name": "Parmesan Crisps",
+  "category": "snack",
+  "ingredients": [
+   "40g grated Parmesan",
+   "Pinch black pepper"
+  ]
+ },
+ {
+  "id": "snack-kale-chips",
+  "slug": "snack-kale-chips",
+  "name": "Baked Kale Chips",
+  "category": "snack",
+  "ingredients": [
+   "50g kale, torn into pieces",
+   "1 tsp olive oil",
+   "Pinch salt",
+   "Pinch paprika"
+  ]
+ },
+ {
+  "id": "snack-zucchini-chips",
+  "slug": "snack-zucchini-chips",
+  "name": "Zucchini Chips",
+  "category": "snack",
+  "ingredients": [
+   "1 zucchini (150g), thinly sliced",
+   "1 tbsp olive oil",
+   "Pinch salt"
+  ]
+ },
+ {
+  "id": "snack-roasted-chickpeas",
+  "slug": "snack-roasted-chickpeas",
+  "name": "Crispy Roasted Chickpeas",
+  "category": "snack",
+  "ingredients": [
+   "100g tinned chickpeas, drained and dried",
+   "1 tsp olive oil",
+   "½ tsp paprika",
+   "Pinch salt"
+  ]
+ },
+ {
+  "id": "snack-frozen-yoghurt-bark",
+  "slug": "snack-frozen-yoghurt-bark",
+  "name": "Frozen Yoghurt Bark",
+  "category": "snack",
+  "ingredients": [
+   "200g Greek yoghurt",
+   "50g mixed berries",
+   "1 tbsp chia seeds"
+  ]
+ },
+ {
+  "id": "snack-hummus-cup",
+  "slug": "snack-hummus-cup",
+  "name": "Freezer Hummus Cup",
+  "category": "snack",
+  "ingredients": [
+   "3 tbsp hummus (45g)",
+   "Veggie sticks (carrot, cucumber)"
+  ]
+ },
+ {
+  "id": "snack-oat-energy-slice",
+  "slug": "snack-oat-energy-slice",
+  "name": "No‑Bake Oat Energy Slice",
+  "category": "snack",
+  "ingredients": [
+   "150g dates, pitted",
+   "100g rolled oats",
+   "50g sunflower seeds",
+   "30g pumpkin seeds",
+   "2 tbsp coconut oil"
+  ]
+ },
+ {
+  "id": "baking-cheese-scone",
+  "slug": "baking-cheese-scone",
+  "name": "Cheese Scone (freezer batch)",
+  "category": "baking",
+  "ingredients": [
+   "150g wholemeal flour",
+   "50g cold butter",
+   "80g grated cheddar",
+   "1 tsp baking powder",
+   "60ml milk",
+   "1 egg (for glaze)"
+  ]
+ },
+ {
+  "id": "baking-pumpkin-bread",
+  "slug": "baking-pumpkin-bread",
+  "name": "Pumpkin Bread",
+  "category": "baking",
+  "ingredients": [
+   "150g pumpkin purée",
+   "2 eggs",
+   "100g wholemeal flour",
+   "50g rolled oats",
+   "30g coconut oil",
+   "1 tsp baking soda",
+   "1 tsp pumpkin pie spice"
+  ]
+ },
+ {
+  "id": "baking-buckwheat-bannock",
+  "slug": "baking-buckwheat-bannock",
+  "name": "Buckwheat Bannock",
+  "category": "baking",
+  "ingredients": [
+   "100g buckwheat flour",
+   "1 tsp baking powder",
+   "Pinch salt",
+   "80ml water",
+   "1 tbsp olive oil"
+  ]
+ },
+ {
+  "id": "snack-apple-leather",
+  "slug": "snack-apple-leather",
+  "name": "Apple Fruit Leather",
+  "category": "snack",
+  "ingredients": [
+   "3 apples (450g), peeled and chopped",
+   "1 tsp cinnamon"
+  ]
+ },
+ {
+  "id": "snack-berry-leather",
+  "slug": "snack-berry-leather",
+  "name": "Berry Fruit Leather",
+  "category": "snack",
+  "ingredients": [
+   "300g mixed berries (fresh or frozen)",
+   "1 tbsp chia seeds (optional)"
+  ]
+ },
+ {
+  "id": "tcm-cucumber-mint-raita",
+  "slug": "tcm-cucumber-mint-raita",
+  "name": "Pitta Calming Cucumber & Mint Raita",
+  "category": "snack",
+  "ingredients": [
+   "100g plain Greek yoghurt (full‑fat)",
+   "50g cucumber, grated",
+   "1 tbsp fresh mint, chopped",
+   "Pinch of roasted cumin powder",
+   "Pinch of salt"
+  ]
+ },
+ {
+  "id": "tcm-sesame-ginger-greens",
+  "slug": "tcm-sesame-ginger-greens",
+  "name": "Warming Sesame & Ginger Greens",
+  "category": "meal",
+  "ingredients": [
+   "1 tbsp sesame seeds (10g)",
+   "200g mixed greens (kale, spinach, bok choy), chopped",
+   "1 tsp sesame oil",
+   "1 tsp fresh ginger, grated",
+   "1 garlic clove, minced",
+   "1 tsp tamari"
+  ]
+ },
+ {
+  "id": "tcm-ayurveda-kitchari-luteal",
+  "slug": "tcm-ayurveda-kitchari-luteal",
+  "name": "Vata‑Pacifying Kitchari with Root Vegetables",
+  "category": "meal",
+  "ingredients": [
+   "60g split yellow mung beans, rinsed",
+   "60g basmati rice, rinsed",
+   "1 tbsp ghee or coconut oil",
+   "1 tsp cumin seeds",
+   "½ tsp ground turmeric",
+   "1 tsp fresh ginger, grated",
+   "1 carrot (50g), diced",
+   "1 small sweet potato (100g), diced"
+  ]
+ },
+ {
+  "id": "tcm-turmeric-roasted-cauliflower",
+  "slug": "tcm-turmeric-roasted-cauliflower",
+  "name": "Turmeric Roasted Cauliflower with Cumin",
+  "category": "meal",
+  "ingredients": [
+   "200g cauliflower florets",
+   "1 tbsp olive oil",
+   "½ tsp ground turmeric",
+   "½ tsp ground cumin",
+   "Pinch of black pepper",
+   "Pinch of salt",
+   "1 tbsp pumpkin seeds (10g)"
+  ]
+ },
+ {
+  "id": "kids-chicken-strips",
+  "slug": "kids-chicken-strips",
+  "name": "Crispy Chicken Strips",
+  "category": "meal",
+  "ingredients": [
+   "500g chicken breast, sliced into strips",
+   "1 cup breadcrumbs",
+   "½ cup flour",
+   "1 egg, beaten",
+   "1 tsp paprika",
+   "salt to taste",
+   "cooking spray"
+  ]
+ },
+ {
+  "id": "kids-fish-fingers",
+  "slug": "kids-fish-fingers",
+  "name": "Homemade Fish Fingers",
+  "category": "meal",
+  "ingredients": [
+   "400g firm white fish, cut into strips",
+   "½ cup breadcrumbs",
+   "¼ cup flour",
+   "1 egg, beaten",
+   "½ tsp paprika",
+   "lemon wedges"
+  ]
+ },
+ {
+  "id": "kids-paleo-chicken-strips",
+  "slug": "kids-paleo-chicken-strips",
+  "name": "Crunchy Coconut Chicken Strips",
+  "category": "meal",
+  "ingredients": [
+   "500g chicken breast, sliced into strips",
+   "1 cup unsweetened shredded coconut",
+   "½ cup almond flour",
+   "1 egg, beaten",
+   "½ tsp paprika",
+   "¼ tsp garlic powder",
+   "pinch salt"
+  ]
+ },
+ {
+  "id": "kids-paleo-tuna-nori-rolls",
+  "slug": "kids-paleo-tuna-nori-rolls",
+  "name": "Curried Tuna Nori Bites",
+  "category": "meal",
+  "ingredients": [
+   "1 can tuna, drained",
+   "½ avocado, mashed",
+   "1 tsp curry powder",
+   "1 tbsp lime juice",
+   "1 tsp raisins",
+   "2 nori sheets"
+  ]
+ },
+ {
+  "id": "kids-paleo-meatloaf",
+  "slug": "kids-paleo-meatloaf",
+  "name": "Hidden Veggie Meatloaf",
+  "category": "meal",
+  "ingredients": [
+   "500g beef mince",
+   "250g pork mince",
+   "1 carrot, grated",
+   "1 zucchini, grated",
+   "1 egg",
+   "½ cup almond flour",
+   "1 tsp Italian herbs",
+   "2 tbsp tomato paste"
+  ]
+ },
+ {
+  "id": "kids-paleo-eggplant-lasagna",
+  "slug": "kids-paleo-eggplant-lasagna",
+  "name": "Eggplant Layered Bake",
+  "category": "meal",
+  "ingredients": [
+   "1 large eggplant, sliced lengthwise",
+   "400g pork sausage meat",
+   "2 cups spinach",
+   "2 cups tomato passata",
+   "1 cup cashew cream or coconut cream",
+   "1 tsp dried oregano",
+   "1 tsp dried basil",
+   "1 tbsp olive oil"
+  ]
+ },
+ {
+  "id": "kids-ne-cornbread-bites",
+  "slug": "kids-ne-cornbread-bites",
+  "name": "Honey Cornbread Bites",
+  "category": "breakfast",
+  "ingredients": [
+   "1 cup cornmeal",
+   "1 cup flour",
+   "¼ cup honey",
+   "1 egg",
+   "¾ cup milk",
+   "¼ cup butter, melted",
+   "2 tsp baking powder"
+  ]
+ },
+ {
+  "id": "kids-ne-cranberry-chicken",
+  "slug": "kids-ne-cranberry-chicken",
+  "name": "Cranberry Glazed Chicken Drumsticks",
+  "category": "meal",
+  "ingredients": [
+   "8 chicken drumsticks",
+   "½ cup cranberry sauce",
+   "2 tbsp soy sauce",
+   "1 tbsp olive oil",
+   "1 tsp garlic powder",
+   "steamed rice and veggies to serve"
+  ]
+ },
+ {
+  "id": "kids-hp-chicken-schnitzel",
+  "slug": "kids-hp-chicken-schnitzel",
+  "name": "Oven-Baked Chicken Schnitzel",
+  "category": "meal",
+  "ingredients": [
+   "4 chicken breast fillets, pounded thin",
+   "1 cup panko breadcrumbs",
+   "½ cup flour",
+   "1 egg, beaten",
+   "1 tsp paprika",
+   "cooking spray",
+   "lemon wedges"
+  ]
+ },
+ {
+  "id": "kids-paleo-zucchini-fries",
+  "slug": "kids-paleo-zucchini-fries",
+  "name": "Crispy Zucchini Fries",
+  "category": "meal",
+  "ingredients": [
+   "2 zucchini, cut into sticks",
+   "1 egg",
+   "¼ cup almond flour",
+   "1 tsp dried oregano",
+   "olive oil for frying",
+   "tomato sauce for dipping"
+  ]
+ },
+ {
+  "id": "kids-paleo-cauliflower-bites",
+  "slug": "kids-paleo-cauliflower-bites",
+  "name": "Popcorn Cauliflower Bites",
+  "category": "meal",
+  "ingredients": [
+   "1 head cauliflower, broken into small florets",
+   "2 tbsp olive oil",
+   "1 tsp garlic powder",
+   "½ tsp paprika",
+   "½ tsp salt",
+   "ranch dip or guacamole"
+  ]
+ },
+ {
+  "id": "kids-ak-chicken-katsu",
+  "slug": "kids-ak-chicken-katsu",
+  "name": "Chicken Katsu Bites",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, sliced thin",
+   "1 cup panko breadcrumbs",
+   "½ cup flour",
+   "1 egg, beaten",
+   "1 tsp curry powder",
+   "cooking spray",
+   "rice and shredded cabbage to serve"
+  ]
+ },
+ {
+  "id": "kids-ak-veggie-sausage-rolls",
+  "slug": "kids-ak-veggie-sausage-rolls",
+  "name": "Hidden Veggie Sausage Rolls",
+  "category": "meal",
+  "ingredients": [
+   "400g pork sausage meat",
+   "1 carrot, grated",
+   "1 zucchini, grated and squeezed",
+   "½ cup breadcrumbs",
+   "1 sheet puff pastry",
+   "1 egg for glaze"
+  ]
+ },
+ {
+  "id": "kids-ak-pinwheel-wraps",
+  "slug": "kids-ak-pinwheel-wraps",
+  "name": "Ham & Cheese Pinwheels",
+  "category": "meal",
+  "ingredients": [
+   "2 flour tortillas",
+   "4 slices ham",
+   "½ cup grated cheese",
+   "2 tbsp cream cheese",
+   "½ cup shredded lettuce"
+  ]
+ },
+ {
+  "id": "kids-ak-mini-meatloaf-cups",
+  "slug": "kids-ak-mini-meatloaf-cups",
+  "name": "Mini Meatloaf Cups",
+  "category": "meal",
+  "ingredients": [
+   "400g beef mince",
+   "1 carrot, grated",
+   "¼ cup breadcrumbs",
+   "1 egg",
+   "1 tbsp tomato paste",
+   "½ tsp Italian herbs"
+  ]
+ },
+ {
+  "id": "kids-ak-sweet-potato-fingers",
+  "slug": "kids-ak-sweet-potato-fingers",
+  "name": "Sweet Potato Fingers",
+  "category": "meal",
+  "ingredients": [
+   "2 sweet potatoes, cut into finger sticks",
+   "1 tbsp olive oil",
+   "½ tsp cinnamon",
+   "pinch salt"
+  ]
+ },
+ {
+  "id": "kids-atk-sticky-drumsticks",
+  "slug": "kids-atk-sticky-drumsticks",
+  "name": "Sticky Honey Drumsticks",
+  "category": "meal",
+  "ingredients": [
+   "8 chicken drumsticks",
+   "3 tbsp soy sauce",
+   "2 tbsp honey",
+   "1 tbsp olive oil",
+   "1 tsp garlic powder",
+   "steamed rice and veggies to serve"
+  ]
+ },
+ {
+  "id": "kids-atk-cheese-bread",
+  "slug": "kids-atk-cheese-bread",
+  "name": "Cheesy Pull-Apart Bread",
+  "category": "meal",
+  "ingredients": [
+   "1 round bread loaf",
+   "1½ cups grated mozzarella",
+   "½ cup butter, melted",
+   "2 cloves garlic, minced",
+   "1 tbsp parsley, chopped"
+  ]
+ },
+ {
+  "id": "kids-aa-ants-on-a-log",
+  "slug": "kids-aa-ants-on-a-log",
+  "name": "Ants on a Log",
+  "category": "meal",
+  "ingredients": [
+   "4 celery sticks",
+   "4 tbsp peanut butter or cream cheese",
+   "2 tbsp raisins"
+  ]
+ },
+ {
+  "id": "kids-aa-chicken-popcorn",
+  "slug": "kids-aa-chicken-popcorn",
+  "name": "Chicken Popcorn Bites",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, cubed small",
+   "½ cup breadcrumbs",
+   "¼ cup parmesan, grated",
+   "1 egg, beaten",
+   "½ tsp garlic powder",
+   "cooking spray"
+  ]
+ },
+ {
+  "id": "kids-aa-cheese-stars",
+  "slug": "kids-aa-cheese-stars",
+  "name": "Cheese & Herb Stars",
+  "category": "meal",
+  "ingredients": [
+   "1 sheet puff pastry",
+   "1 cup grated cheddar",
+   "1 tsp dried herbs",
+   "1 egg for glaze"
+  ]
+ },
+ {
+  "id": "kids-bt-fairy-bread-toast",
+  "slug": "kids-bt-fairy-bread-toast",
+  "name": "Fairy Bread French Toast",
+  "category": "breakfast",
+  "ingredients": [
+   "4 thick bread slices",
+   "2 eggs",
+   "¼ cup milk",
+   "1 tsp vanilla",
+   "1 tsp cinnamon",
+   "butter for cooking",
+   "hundreds and thousands for topping",
+   "fruit to serve"
+  ]
+ },
+ {
+  "id": "kids-bo-chicken-lollipops",
+  "slug": "kids-bo-chicken-lollipops",
+  "name": "Sticky Chicken Lollipop Drumettes",
+  "category": "meal",
+  "ingredients": [
+   "12 chicken drumettes",
+   "2 tbsp honey",
+   "2 tbsp soy sauce",
+   "1 tbsp tomato sauce",
+   "1 tsp garlic powder",
+   "sesame seeds"
+  ]
+ },
+ {
+  "id": "kids-ej-chicken-goujons",
+  "slug": "kids-ej-chicken-goujons",
+  "name": "Crunchy Chicken Goujons",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, sliced into strips",
+   "1 cup cornflakes, crushed",
+   "½ cup flour",
+   "1 egg, beaten",
+   "½ tsp paprika",
+   "cooking spray"
+  ]
+ },
+ {
+  "id": "kids-ej-traffic-light-peppers",
+  "slug": "kids-ej-traffic-light-peppers",
+  "name": "Traffic Light Stuffed Peppers",
+  "category": "meal",
+  "ingredients": [
+   "1 red, 1 yellow, 1 green capsicum",
+   "300g beef mince",
+   "1 cup cooked rice",
+   "½ cup passata",
+   "½ cup grated cheese",
+   "1 tsp cumin"
+  ]
+ },
+ {
+  "id": "kids-sp-honey-soy-salmon",
+  "slug": "kids-sp-honey-soy-salmon",
+  "name": "15-Minute Honey Soy Salmon",
+  "category": "meal",
+  "ingredients": [
+   "4 salmon fillets",
+   "2 tbsp soy sauce",
+   "1 tbsp honey",
+   "1 tsp garlic, minced",
+   "1 tsp sesame oil",
+   "2 cups rice",
+   "steamed greens to serve"
+  ]
+ },
+ {
+  "id": "kids-sp-creamy-tuscan-chicken",
+  "slug": "kids-sp-creamy-tuscan-chicken",
+  "name": "Creamy Tuscan Chicken",
+  "category": "meal",
+  "ingredients": [
+   "4 chicken breasts, butterflied",
+   "1 cup sun-dried tomatoes, sliced",
+   "2 cups baby spinach",
+   "1 cup cream",
+   "½ cup parmesan, grated",
+   "2 cloves garlic, minced",
+   "1 tbsp olive oil"
+  ]
+ },
+ {
+  "id": "kids-sp-sticky-chicken-drumsticks",
+  "slug": "kids-sp-sticky-chicken-drumsticks",
+  "name": "Sticky Chicken Drumsticks",
+  "category": "meal",
+  "ingredients": [
+   "8 chicken drumsticks",
+   "3 tbsp soy sauce",
+   "2 tbsp honey",
+   "1 tbsp tomato sauce",
+   "1 tsp garlic powder",
+   "1 tsp sesame seeds"
+  ]
+ },
+ {
+  "id": "kids-sp-chicken-schnitzel",
+  "slug": "kids-sp-chicken-schnitzel",
+  "name": "Golden Chicken Schnitzel",
+  "category": "meal",
+  "ingredients": [
+   "4 chicken breasts, butterflied",
+   "1 cup breadcrumbs",
+   "½ cup flour",
+   "2 eggs, beaten",
+   "½ tsp garlic powder",
+   "oil for frying",
+   "lemon wedges"
+  ]
+ },
+ {
+  "id": "kids-sp-butter-chicken",
+  "slug": "kids-sp-butter-chicken",
+  "name": "Easy Butter Chicken",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken thigh, cubed",
+   "1 onion, diced",
+   "2 cloves garlic, minced",
+   "1 cup passata",
+   "1 cup cream",
+   "2 tbsp butter",
+   "1 tbsp mild curry powder",
+   "½ tsp turmeric"
+  ]
+ },
+ {
+  "id": "kids-sp-chilli-con-carne",
+  "slug": "kids-sp-chilli-con-carne",
+  "name": "Mild Chilli Con Carne",
+  "category": "meal",
+  "ingredients": [
+   "500g beef mince",
+   "1 can kidney beans, drained",
+   "1 can diced tomatoes",
+   "1 capsicum, diced",
+   "1 tsp cumin",
+   "½ tsp mild chilli powder",
+   "2 cups rice",
+   "sour cream and cheese to serve"
+  ]
+ },
+ {
+  "id": "kids-sp-carbonara",
+  "slug": "kids-sp-carbonara",
+  "name": "15-Minute Carbonara",
+  "category": "meal",
+  "ingredients": [
+   "300g spaghetti",
+   "150g bacon, diced",
+   "3 eggs",
+   "½ cup parmesan, grated",
+   "1 clove garlic, minced",
+   "salt and pepper"
+  ]
+ },
+ {
+  "id": "kids-sp-honey-mustard-chicken",
+  "slug": "kids-sp-honey-mustard-chicken",
+  "name": "Honey Mustard Chicken Thighs",
+  "category": "meal",
+  "ingredients": [
+   "8 chicken thighs",
+   "2 tbsp honey",
+   "2 tbsp wholegrain mustard",
+   "1 tbsp olive oil",
+   "1 tsp garlic powder",
+   "400g baby potatoes, halved",
+   "1 cup green beans"
+  ]
+ },
+ {
+  "id": "kids-dk-pb-banana-bites",
+  "slug": "kids-dk-pb-banana-bites",
+  "name": "PB Banana Roll-Ups",
+  "category": "meal",
+  "ingredients": [
+   "2 flour tortillas",
+   "3 tbsp peanut butter",
+   "2 bananas",
+   "1 tbsp honey",
+   "pinch cinnamon"
+  ]
+ },
+ {
+  "id": "kids-dk-dippable-chicken",
+  "slug": "kids-dk-dippable-chicken",
+  "name": "Dippable Chicken Tenders",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, sliced into tenders",
+   "1 cup breadcrumbs",
+   "½ cup flour",
+   "1 egg, beaten",
+   "½ tsp onion powder",
+   "cooking spray",
+   "honey mustard and ketchup for dipping"
+  ]
+ },
+ {
+  "id": "kids-km-ham-cheese-scrolls",
+  "slug": "kids-km-ham-cheese-scrolls",
+  "name": "4-Ingredient Ham & Cheese Scrolls",
+  "category": "meal",
+  "ingredients": [
+   "1 sheet puff pastry",
+   "4 slices ham",
+   "1 cup grated cheese",
+   "1 tbsp tomato paste"
+  ]
+ },
+ {
+  "id": "kids-km-choc-banana-pops",
+  "slug": "kids-km-choc-banana-pops",
+  "name": "Frozen Choc-Banana Pops",
+  "category": "meal",
+  "ingredients": [
+   "4 bananas",
+   "200g dark chocolate, melted",
+   "sprinkles or crushed rice bubbles"
+  ]
+ },
+ {
+  "id": "kids-sw-salmon-rice-balls",
+  "slug": "kids-sw-salmon-rice-balls",
+  "name": "Salmon & Rice Balls",
+  "category": "meal",
+  "ingredients": [
+   "1 can salmon, drained",
+   "1½ cups cooked rice",
+   "1 egg",
+   "¼ cup breadcrumbs",
+   "1 tbsp lemon juice",
+   "1 tbsp fresh dill",
+   "oil for frying"
+  ]
+ },
+ {
+  "id": "kids-gf-chicken-tenders",
+  "slug": "kids-gf-chicken-tenders",
+  "name": "GF Crispy Chicken Tenders",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, sliced",
+   "1 cup rice flour",
+   "1 egg, beaten",
+   "1 cup gluten-free breadcrumbs",
+   "½ tsp garlic powder",
+   "½ tsp paprika",
+   "cooking spray"
+  ]
+ },
+ {
+  "id": "kids-keto-cheese-crisps",
+  "slug": "kids-keto-cheese-crisps",
+  "name": "Keto Cheese Crisps",
+  "category": "meal",
+  "ingredients": [
+   "2 cups shredded cheddar",
+   "½ tsp garlic powder",
+   "½ tsp paprika"
+  ]
+ },
+ {
+  "id": "kids-keto-chicken-nuggets",
+  "slug": "kids-keto-chicken-nuggets",
+  "name": "Keto Almond-Crusted Chicken Nuggets",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, cubed",
+   "1 cup almond flour",
+   "½ cup parmesan, grated",
+   "1 egg, beaten",
+   "½ tsp garlic powder",
+   "½ tsp onion powder",
+   "cooking spray"
+  ]
+ },
+ {
+  "id": "kids-keto-ham-pinwheels",
+  "slug": "kids-keto-ham-pinwheels",
+  "name": "Keto Ham & Cheese Pinwheels",
+  "category": "meal",
+  "ingredients": [
+   "8 slices ham",
+   "200g cream cheese, softened",
+   "1 cup shredded cheddar",
+   "¼ cup diced pickles",
+   "1 tbsp mustard"
+  ]
+ },
+ {
+  "id": "kids-keto-avocado-fries",
+  "slug": "kids-keto-avocado-fries",
+  "name": "Keto Avocado Fries",
+  "category": "meal",
+  "ingredients": [
+   "2 avocados, sliced into wedges",
+   "½ cup almond flour",
+   "½ cup parmesan, grated",
+   "1 egg, beaten",
+   "½ tsp garlic powder",
+   "lime wedges"
+  ]
+ },
+ {
+  "id": "kids-keto-chicken-tenders",
+  "slug": "kids-keto-chicken-tenders",
+  "name": "Keto Parmesan Chicken Tenders",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, sliced",
+   "¾ cup almond flour",
+   "½ cup parmesan, grated",
+   "1 egg, beaten",
+   "½ tsp paprika",
+   "½ tsp onion powder",
+   "garlic aioli to serve"
+  ]
+ },
+ {
+  "id": "kids-keto-sausage-balls",
+  "slug": "kids-keto-sausage-balls",
+  "name": "Keto Sausage Cheese Balls",
+  "category": "meal",
+  "ingredients": [
+   "500g pork sausage meat",
+   "1½ cups shredded cheddar",
+   "¾ cup almond flour",
+   "1 egg",
+   "½ tsp garlic powder",
+   "½ tsp onion powder"
+  ]
+ },
+ {
+  "id": "kids-keto-tuna-melts",
+  "slug": "kids-keto-tuna-melts",
+  "name": "Keto Tuna Melt Capsicums",
+  "category": "meal",
+  "ingredients": [
+   "2 cans tuna, drained",
+   "¼ cup mayo",
+   "1 tbsp lemon juice",
+   "4 mini capsicums, halved",
+   "1 cup shredded cheddar",
+   "salt and pepper"
+  ]
+ },
+ {
+  "id": "kids-keto-butter-chicken",
+  "slug": "kids-keto-butter-chicken",
+  "name": "Keto Mild Butter Chicken",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken thigh, cubed",
+   "1 cup cream",
+   "½ cup passata",
+   "2 tbsp butter",
+   "1 tsp mild curry powder",
+   "½ tsp turmeric",
+   "½ tsp ginger powder",
+   "cauliflower rice to serve"
+  ]
+ },
+ {
+  "id": "kids-df-chicken-tenders",
+  "slug": "kids-df-chicken-tenders",
+  "name": "DF Coconut Chicken Tenders",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, sliced",
+   "1 cup shredded coconut",
+   "½ cup breadcrumbs",
+   "1 egg, beaten",
+   "½ tsp garlic powder",
+   "honey mustard dip (dairy-free)"
+  ]
+ },
+ {
+  "id": "kids-gf-fish-fingers",
+  "slug": "kids-gf-fish-fingers",
+  "name": "GF Crunchy Fish Fingers",
+  "category": "meal",
+  "ingredients": [
+   "400g firm white fish, sliced into strips",
+   "1 cup rice flour",
+   "1 egg, beaten",
+   "1 cup GF cornflake crumbs",
+   "½ tsp garlic powder",
+   "lemon wedges"
+  ]
+ },
+ {
+  "id": "kids-gf-chicken-drumsticks",
+  "slug": "kids-gf-chicken-drumsticks",
+  "name": "GF Sticky Drumsticks",
+  "category": "meal",
+  "ingredients": [
+   "8 chicken drumsticks",
+   "3 tbsp tamari",
+   "2 tbsp honey",
+   "1 tbsp olive oil",
+   "1 tsp garlic powder",
+   "1 tsp smoked paprika"
+  ]
+ },
+ {
+  "id": "kids-gf-nuggets",
+  "slug": "kids-gf-nuggets",
+  "name": "GF Cornflake Chicken Nuggets",
+  "category": "meal",
+  "ingredients": [
+   "400g chicken breast, cubed",
+   "1 cup GF cornflake crumbs",
+   "½ cup rice flour",
+   "1 egg, beaten",
+   "½ tsp garlic powder",
+   "½ tsp paprika",
+   "cooking spray"
+  ]
+ },
+ {
+  "id": "kids-gf-sausage-rolls",
+  "slug": "kids-gf-sausage-rolls",
+  "name": "GF Sausage Rolls",
+  "category": "meal",
+  "ingredients": [
+   "400g pork sausage meat",
+   "1 carrot, grated",
+   "1 zucchini, grated",
+   "1 sheet GF puff pastry",
+   "1 egg, beaten for glaze"
+  ]
+ },
+ {
+  "id": "kids-sb-scones",
+  "slug": "kids-sb-scones",
+  "name": "Classic Fruit Scones",
+  "category": "meal",
+  "ingredients": [
+   "2 cups self-raising flour",
+   "¼ cup sugar",
+   "50g cold butter, cubed",
+   "½ cup milk",
+   "1 egg",
+   "½ cup mixed dried fruit",
+   "extra milk for glazing"
+  ]
+ },
+ {
+  "id": "kids-sb-jam-tarts",
+  "slug": "kids-sb-jam-tarts",
+  "name": "Jam Tarts",
+  "category": "meal",
+  "ingredients": [
+   "1 sheet ready-rolled shortcrust pastry",
+   "½ cup assorted jams (strawberry, apricot, raspberry)",
+   "1 egg, beaten for glaze"
+  ]
+ },
+ {
+  "id": "kids-sb-cheese-straws",
+  "slug": "kids-sb-cheese-straws",
+  "name": "Cheesy Twisty Straws",
+  "category": "meal",
+  "ingredients": [
+   "1 sheet puff pastry",
+   "1 cup finely grated cheddar",
+   "½ tsp paprika",
+   "1 egg, beaten"
+  ]
+ },
+ {
+  "id": "kids-sb-rocky-road",
+  "slug": "kids-sb-rocky-road",
+  "name": "Rocky Road Bites",
+  "category": "meal",
+  "ingredients": [
+   "300g milk chocolate",
+   "100g butter",
+   "2 cups mini marshmallows",
+   "1 cup crushed biscuits",
+   "½ cup dried cranberries"
+  ]
+ },
+ {
+  "id": "kids-sb-victoria-sponge",
+  "slug": "kids-sb-victoria-sponge",
+  "name": "Mini Victoria Sponges",
+  "category": "meal",
+  "ingredients": [
+   "200g butter, softened",
+   "200g caster sugar",
+   "4 eggs",
+   "200g self-raising flour",
+   "1 tsp vanilla",
+   "strawberry jam",
+   "whipped cream",
+   "icing sugar for dusting"
+  ]
+ },
+ {
+  "id": "kids-sb-meringues",
+  "slug": "kids-sb-meringues",
+  "name": "Mini Meringue Kisses",
+  "category": "meal",
+  "ingredients": [
+   "3 egg whites",
+   "¾ cup caster sugar",
+   "1 tsp vanilla",
+   "food colouring (optional)",
+   "whipped cream and berries to serve"
+  ]
+ },
+ {
+  "id": "kids-sb-bread-rolls",
+  "slug": "kids-sb-bread-rolls",
+  "name": "Soft White Bread Rolls",
+  "category": "meal",
+  "ingredients": [
+   "3½ cups strong white flour",
+   "1 sachet yeast",
+   "1 tsp salt",
+   "1 tsp sugar",
+   "1 cup warm water",
+   "2 tbsp olive oil",
+   "1 egg, beaten for glaze",
+   "sesame seeds"
+  ]
+ },
+ {
+  "id": "kids-sb-sausage-rolls",
+  "slug": "kids-sb-sausage-rolls",
+  "name": "Puff Pastry Sausage Rolls",
+  "category": "meal",
+  "ingredients": [
+   "2 sheets puff pastry",
+   "500g pork sausage meat",
+   "1 carrot, grated",
+   "1 onion, grated",
+   "1 tsp mixed herbs",
+   "1 egg, beaten for glaze",
+   "sesame seeds"
+  ]
+ },
+ {
+  "id": "toasted-cinnamon-and-pecan-crunch",
+  "slug": "toasted-cinnamon-and-pecan-crunch",
+  "name": "Toasted Cinnamon & Pecan Crunch",
+  "category": "breakfast",
+  "ingredients": [
+   "360 g rolled oats",
+   "220 g pecans, roughly chopped",
+   "92 g pumpkin seeds",
+   "90 g sunflower seeds",
+   "½ tsp fine salt",
+   "100 g coconut oil",
+   "120 mL pure maple syrup",
+   "10 mL vanilla extract"
+  ]
+ },
+ {
+  "id": "buckwheat-and-rocket-brunch-galettes",
+  "slug": "buckwheat-and-rocket-brunch-galettes",
+  "name": "Buckwheat & Rocket Brunch Galettes",
+  "category": "breakfast",
+  "ingredients": [
+   "150 g buckwheat flour",
+   "½ tsp baking powder",
+   "Pinch of salt",
+   "400 mL unsweetened almond milk",
+   "15 mL apple cider vinegar",
+   "10 mL extra-virgin olive oil, for the pan",
+   "45 mL balsamic vinegar",
+   "15 mL pure maple syrup"
+  ]
+ },
+ {
+  "id": "flaky-leek-potato-and-greens-parcels",
+  "slug": "flaky-leek-potato-and-greens-parcels",
+  "name": "Flaky Leek, Potato & Greens Parcels",
+  "category": "meal",
+  "ingredients": [
+   "450 g potatoes (about 3 medium), cut into 2 cm cubes",
+   "30 mL extra-virgin olive oil, divided",
+   "1 medium leek, finely sliced and well washed",
+   "100 g kale, stalks removed and finely sliced",
+   "Zest of ½ lemon",
+   "80 g dairy-free cheese, grated",
+   "Pinch of salt",
+   "Freshly ground black pepper, to taste"
+  ]
+ },
+ {
+  "id": "garden-green-savoury-crêpes",
+  "slug": "garden-green-savoury-crepes",
+  "name": "Garden Green Savoury Crêpes",
+  "category": "meal",
+  "ingredients": [
+   "250 g chickpea (besan) flour",
+   "480 mL unsweetened almond milk or oat milk",
+   "50 g spinach",
+   "15 g fresh parsley leaves",
+   "1 tsp apple cider vinegar",
+   "Pinch of salt",
+   "Freshly ground black pepper, to taste",
+   "15 mL extra-virgin olive oil, for the pan"
+  ]
+ },
+ {
+  "id": "crispy-herbed-tofu-bites",
+  "slug": "crispy-herbed-tofu-bites",
+  "name": "Crispy Herbed Tofu Bites",
+  "category": "meal",
+  "ingredients": [
+   "400 g firm tofu, drained",
+   "80 mL unsweetened plant-based milk",
+   "Juice of ½ lemon, plus wedges to serve",
+   "60 g plain flour (gluten-free if needed)",
+   "110 g dried breadcrumbs (gluten-free if needed)",
+   "30 g sesame seeds",
+   "1 tsp smoked paprika",
+   "1 tsp garlic powder"
+  ]
+ },
+ {
+  "id": "ginger-tofu-and-rainbow-rice",
+  "slug": "ginger-tofu-and-rainbow-rice",
+  "name": "Ginger Tofu & Rainbow Rice",
+  "category": "meal",
+  "ingredients": [
+   "200 g brown rice",
+   "60 mL extra-virgin olive oil (30 mL for the rice, 30 mL for the tofu)",
+   "400 g mixed vegetables, cut into small pieces (frozen peas, corn and diced carrot, with sliced red capsicum and spring onion)",
+   "105 mL reduced-salt soy sauce or tamari (90 mL for the sauce, 15 mL for the rice)",
+   "30 mL water",
+   "480 g firm tofu, drained",
+   "40 g cornflour",
+   "30 mL apple cider vinegar"
+  ]
+ },
+ {
+  "id": "spring-greens-and-potato-puff-tart",
+  "slug": "spring-greens-and-potato-puff-tart",
+  "name": "Spring Greens & Potato Puff Tart",
+  "category": "meal",
+  "ingredients": [
+   "280 g chilled ready-rolled vegan puff pastry sheet (gluten-free if needed)",
+   "30 mL unsweetened plant-based milk",
+   "1 tsp vegan Worcestershire sauce",
+   "250 g small new potatoes",
+   "200 g asparagus, woody ends snapped off",
+   "65 g peas (fresh or frozen)",
+   "1 × 380 g can butter beans, drained and rinsed",
+   "1 garlic clove, grated"
+  ]
+ },
+ {
+  "id": "roasted-pumpkin-satay-plate",
+  "slug": "roasted-pumpkin-satay-plate",
+  "name": "Roasted Pumpkin Satay Plate",
+  "category": "meal",
+  "ingredients": [
+   "1 medium butternut pumpkin (about 1 kg), peeled, deseeded and cut into 3 cm cubes",
+   "45 mL extra-virgin olive oil (20 mL for the pumpkin, 25 mL for the vegetables)",
+   "1 tsp salt (½ tsp for the pumpkin, ½ tsp for the sauce)",
+   "Freshly ground black pepper",
+   "1 × 400 mL can coconut milk",
+   "30 g peanut butter (or almond butter)",
+   "1 garlic clove",
+   "20 g fresh ginger (a 4 cm piece), grated"
+  ]
+ },
+ {
+  "id": "smoky-sausage-and-chickpea-pot",
+  "slug": "smoky-sausage-and-chickpea-pot",
+  "name": "Smoky Sausage & Chickpea Pot",
+  "category": "meal",
+  "ingredients": [
+   "15 mL extra-virgin olive oil",
+   "1 medium onion (about 150 g), finely sliced",
+   "1 leek, finely sliced",
+   "2 carrots (about 200 g), roughly chopped",
+   "8 vegan sausages, cut into 3 cm pieces",
+   "2 garlic cloves, crushed and diced",
+   "1 × 400 g can chickpeas, drained",
+   "1 tsp smoked paprika"
+  ]
+ },
+ {
+  "id": "golden-roast-vegetables-and-spiced-cauliflower",
+  "slug": "golden-roast-vegetables-and-spiced-cauliflower",
+  "name": "Golden Roast Vegetables & Spiced Cauliflower",
+  "category": "meal",
+  "ingredients": [
+   "1 medium cauliflower (about 600 g), broken into 2.5 cm florets",
+   "240 g unsweetened coconut yoghurt",
+   "1 tsp (5 g) harissa paste or powder",
+   "Juice of 1 lime",
+   "1 × 370 g can chickpeas, drained",
+   "6 medium carrots (about 500 g), halved lengthways",
+   "400 g kūmara, cut into 3 cm chunks",
+   "400 g baby potatoes, halved"
+  ]
+ },
+ {
+  "id": "herby-sausage-and-roast-vegetable-bake",
+  "slug": "herby-sausage-and-roast-vegetable-bake",
+  "name": "Herby Sausage & Roast Vegetable Bake",
+  "category": "meal",
+  "ingredients": [
+   "8 vegan herb or Mediterranean-style sausages",
+   "60 mL extra-virgin olive oil (15 mL for the sausages, 45 mL for the vegetables)",
+   "1 large red onion, sliced",
+   "3 medium mixed capsicums, cut into large slices",
+   "1 medium courgette, sliced into 1 cm half-moons",
+   "1 small aubergine (eggplant, about 300 g), cut into 5 cm pieces",
+   "250 g cherry tomatoes",
+   "4 garlic cloves, unpeeled"
+  ]
+ },
+ {
+  "id": "sticky-aubergine-bao-buns",
+  "slug": "sticky-aubergine-bao-buns",
+  "name": "Sticky Aubergine Bao Buns",
+  "category": "meal",
+  "ingredients": [
+   "225 g plain flour, plus extra for dusting",
+   "3 g instant dried yeast (1 tsp)",
+   "¼ tsp salt",
+   "15 g caster sugar",
+   "½ tsp baking powder",
+   "1 tsp sunflower oil, plus extra for oiling the bowl and brushing the buns",
+   "30 mL unsweetened almond milk",
+   "105 mL warm water"
+  ]
+ },
+ {
+  "id": "smoky-bbq-cauliflower-bites",
+  "slug": "smoky-bbq-cauliflower-bites",
+  "name": "Smoky BBQ Cauliflower Bites",
+  "category": "meal",
+  "ingredients": [
+   "160 mL tomato ketchup",
+   "1 garlic clove, grated",
+   "90 g light brown sugar",
+   "20 mL apple cider vinegar",
+   "20 mL soy sauce or tamari",
+   "20 mL vegan Worcestershire sauce",
+   "1 tsp smoked paprika",
+   "Pinch of salt"
+  ]
+ },
+ {
+  "id": "summer-berry-vegan-meringue-nests",
+  "slug": "summer-berry-vegan-meringue-nests",
+  "name": "Summer Berry Vegan Meringue Nests",
+  "category": "snack",
+  "ingredients": [
+   "180 mL aquafaba (the liquid from 1 × 400 g can chickpeas), chilled",
+   "¼ tsp cream of tartar",
+   "100 g caster sugar",
+   "1½ tsp (7 mL) vanilla extract",
+   "200 mL coconut cream, chilled and whipped, to serve (optional)",
+   "300 g fresh berries, such as strawberries and raspberries, to serve (optional)"
+  ]
+ },
+ {
+  "id": "chocolate-and-orange-dessert-pots",
+  "slug": "chocolate-and-orange-dessert-pots",
+  "name": "Chocolate & Orange Dessert Pots",
+  "category": "snack",
+  "ingredients": [
+   "300 g silken tofu",
+   "150 g dairy-free dark chocolate",
+   "60 mL maple syrup",
+   "1 orange, zest only",
+   "½ tsp orange extract"
+  ]
+ },
+ {
+  "id": "no-bake-chocolate-ginger-tart",
+  "slug": "no-bake-chocolate-ginger-tart",
+  "name": "No-Bake Chocolate Ginger Tart",
+  "category": "snack",
+  "ingredients": [
+   "54 g coconut oil, plus extra for greasing the tin",
+   "6 Medjool dates (about 120 g), pitted",
+   "120 g ground almonds",
+   "90 g desiccated coconut",
+   "20 g stem ginger in syrup, finely chopped (half for the base, half for the filling)",
+   "200 g vegan dark chocolate, chopped",
+   "250 mL coconut cream",
+   "45 mL pure maple syrup"
+  ]
+ },
+ {
+  "id": "chocolate-chunk-banana-and-almond-loaf",
+  "slug": "chocolate-chunk-banana-and-almond-loaf",
+  "name": "Chocolate Chunk Banana & Almond Loaf",
+  "category": "baking",
+  "ingredients": [
+   "70 mL unsweetened plant-based milk",
+   "15 mL apple cider vinegar",
+   "20 g ground flaxseed",
+   "90 mL water",
+   "150 g plain flour",
+   "9 g baking powder (about 2 tsp)",
+   "1 tsp bicarbonate of soda",
+   "100 g ground almonds"
+  ]
+ },
+ {
+  "id": "savoury-leek-pea-and-cheese-scones",
+  "slug": "savoury-leek-pea-and-cheese-scones",
+  "name": "Savoury Leek, Pea & Cheese Scones",
+  "category": "baking",
+  "ingredients": [
+   "15 mL extra virgin olive oil",
+   "1 medium leek, white and pale green parts, finely chopped",
+   "90 g frozen peas",
+   "180 mL unsweetened almond milk",
+   "15 mL apple cider vinegar",
+   "345 g plain flour",
+   "18 g baking powder (about 4 tsp)",
+   "½ tsp salt"
+  ]
+ },
+ {
+  "id": "zesty-lemon-and-blueberry-cheesecake",
+  "slug": "zesty-lemon-and-blueberry-cheesecake",
+  "name": "Zesty Lemon & Blueberry Cheesecake",
+  "category": "snack",
+  "ingredients": [
+   "65 g cashew nuts",
+   "30 g coconut oil, plus extra for greasing the tin",
+   "8 Medjool dates (about 150 g), pitted",
+   "120 g ground almonds",
+   "40 g cacao powder",
+   "1½ tsp (7 mL) vanilla extract (1 tsp for the base, ½ tsp for the filling)",
+   "300 g vegan cream cheese",
+   "100 g icing sugar"
+  ]
+ },
+ {
+  "id": "apple-maple-cinnamon-rolls",
+  "slug": "apple-maple-cinnamon-rolls",
+  "name": "Apple-Maple Cinnamon Rolls",
+  "category": "breakfast",
+  "ingredients": [
+   "250 mL unsweetened almond milk",
+   "7 g (1 sachet) active dry yeast",
+   "310 g wholemeal flour",
+   "125 mL pure maple syrup (80 mL for the dough, 30 mL for the filling, 15 mL to finish)",
+   "125 mL unsweetened apple sauce",
+   "15 g ground flaxseed",
+   "½ tsp fine sea salt",
+   "150 g plain flour"
+  ]
+ },
+ {
+  "id": "breakfast-hash",
+  "slug": "breakfast-hash",
+  "name": "Breakfast Hash",
+  "category": "breakfast",
+  "ingredients": [
+   "15 mL extra-virgin olive oil",
+   "900 g red-skinned potatoes, cut into bite-size pieces",
+   "300 g plant-based breakfast sausages, sliced",
+   "Salt and black pepper, to season",
+   "1 × 400 g can black beans (about 240 g drained), drained and rinsed",
+   "120 g mushrooms, sliced",
+   "2 tsp smoked paprika",
+   "1 tsp seasoned salt"
+  ]
+ },
+ {
+  "id": "roasted-cauliflower-and-sweet-potato",
+  "slug": "roasted-cauliflower-and-sweet-potato",
+  "name": "Roasted Cauliflower and Sweet Potato",
+  "category": "meal",
+  "ingredients": [
+   "1 × 400 g can chickpeas, no added salt, rinsed",
+   "600 g cauliflower florets (about 2 cm pieces)",
+   "900 g sweet potatoes, peeled and cut into 2 cm cubes",
+   "150 g onion, peeled and coarsely chopped",
+   "1 tbsp mild curry powder",
+   "30 mL water",
+   "1.5 L reduced-salt vegetable stock",
+   "¼ tsp chilli flakes"
+  ]
+ },
+ {
+  "id": "smoky-mac-n-cheese",
+  "slug": "smoky-mac-n-cheese",
+  "name": "Smoky Mac ‘n Cheese",
+  "category": "meal",
+  "ingredients": [
+   "1 L water, for boiling the cashews",
+   "150 g raw cashews",
+   "8 g nutritional yeast",
+   "2 tsp smoked paprika",
+   "16 g tomato paste",
+   "1 tbsp garlic powder",
+   "5 mL freshly squeezed lemon juice",
+   "1 tsp Dijon mustard"
+  ]
+ },
+ {
+  "id": "baked-tortilla-chips",
+  "slug": "baked-tortilla-chips",
+  "name": "Baked Tortilla Chips",
+  "category": "snack",
+  "ingredients": [
+   "4 corn tortillas",
+   "¼ tsp sea salt",
+   "10 mL freshly squeezed lime juice"
+  ]
+ },
+ {
+  "id": "buffalo-cauliflower-bites",
+  "slug": "buffalo-cauliflower-bites",
+  "name": "Buffalo Cauliflower Bites",
+  "category": "snack",
+  "ingredients": [
+   "80 g brown rice flour",
+   "15 g ground almonds",
+   "16 g tomato paste",
+   "2 tsp garlic powder",
+   "2 tsp onion powder",
+   "2 tsp smoked paprika",
+   "1 tsp dried parsley",
+   "160 mL water"
+  ]
+ },
+ {
+  "id": "carrot-and-white-bean-hummus",
+  "slug": "carrot-and-white-bean-hummus",
+  "name": "Carrot and White Bean Hummus",
+  "category": "snack",
+  "ingredients": [
+   "1 large carrot (about 150 g), peeled and cubed",
+   "1 × 400 g can white beans (about 240 g drained), rinsed",
+   "2 garlic cloves, minced",
+   "30 mL lemon juice (about 1 large lemon)",
+   "45 mL tahini",
+   "1 tsp mild curry powder",
+   "½ tsp ground cumin",
+   "½ tsp salt"
+  ]
+ },
+ {
+  "id": "roasted-green-peas",
+  "slug": "roasted-green-peas",
+  "name": "Roasted Green Peas",
+  "category": "snack",
+  "ingredients": [
+   "300 g frozen green peas, thawed and blotted dry",
+   "1 tsp olive oil",
+   "1 tsp garlic salt"
+  ]
+ },
+ {
+  "id": "zucchini-fries",
+  "slug": "zucchini-fries",
+  "name": "Zucchini Fries",
+  "category": "snack",
+  "ingredients": [
+   "4 courgettes (about 700 g)",
+   "¼ tsp salt",
+   "60 mL soy milk",
+   "30 g nutritional yeast",
+   "2 tbsp garlic powder",
+   "4 tbsp dried Italian herbs",
+   "2 tsp baking powder"
+  ]
+ },
+ {
+  "id": "zucchini-and-sweet-potato-tots",
+  "slug": "zucchini-and-sweet-potato-tots",
+  "name": "Zucchini and Sweet Potato Tots",
+  "category": "snack",
+  "ingredients": [
+   "250 g courgette, grated",
+   "260 g sweet potato, peeled and grated",
+   "1 tsp sea salt",
+   "10 g ground flaxseed",
+   "30 mL warm water",
+   "30 mL algae oil",
+   "3 garlic cloves, minced",
+   "60 g wholemeal flour"
+  ]
+ },
+ {
+  "id": "cinnamon-raisin-peanut-butter-and-jelly",
+  "slug": "cinnamon-raisin-peanut-butter-and-jelly",
+  "name": "Cinnamon Raisin Peanut Butter and Jelly",
+  "category": "baking",
+  "ingredients": [
+   "16 g smooth peanut butter",
+   "2 slices wholemeal bread",
+   "5 g raspberry jam",
+   "1 pinch ground cinnamon (about 0.3 g)",
+   "2 g chia seeds",
+   "25 g raisins",
+   "5 g vegan butter"
+  ]
+ },
+ {
+  "id": "peanut-and-date-bites",
+  "slug": "peanut-and-date-bites",
+  "name": "Peanut and Date Bites",
+  "category": "snack",
+  "ingredients": [
+   "140 g unsalted roasted peanuts",
+   "150 g pitted dates",
+   "¼ tsp fine salt"
+  ]
+ },
+ {
+  "id": "white-chocolate-and-cashew-skillet",
+  "slug": "white-chocolate-and-cashew-skillet",
+  "name": "White Chocolate and Cashew Skillet",
+  "category": "baking",
+  "ingredients": [
+   "Vegan nonstick cooking spray",
+   "145 g fine almond flour",
+   "¼ tsp fine salt",
+   "8 g cornflour",
+   "¼ tsp baking powder",
+   "¼ tsp bicarbonate of soda",
+   "125 mL pure maple syrup",
+   "1 tsp vanilla extract"
+  ]
+ },
+ {
+  "id": "mini-vegetable-sausage-rolls",
+  "slug": "mini-vegetable-sausage-rolls",
+  "name": "Mini Vegetable Sausage Rolls",
+  "category": "baking",
+  "ingredients": [
+   "15 mL olive oil",
+   "1 small brown onion (about 100 g), finely diced",
+   "1 carrot (about 100 g), grated",
+   "1 courgette (about 150 g), grated and squeezed dry",
+   "30 g tomato paste",
+   "1 tsp dried mixed herbs",
+   "1 × 400 g can brown lentils (about 240 g drained), rinsed",
+   "40 g rolled oats"
+  ]
+ },
+ {
+  "id": "vegemite-dairy-free-cheese-pinwheels",
+  "slug": "vegemite-dairy-free-cheese-pinwheels",
+  "name": "Vegemite & Dairy-Free Cheese Pinwheels",
+  "category": "snack",
+  "ingredients": [
+   "1 sheet vegan puff pastry (about 150 g), thawed",
+   "10 g Vegemite",
+   "100 g dairy-free grated cheese",
+   "40 g baby spinach, finely chopped",
+   "15 mL oat milk, for brushing"
+  ]
+ },
+ {
+  "id": "carrot-orange-lunchbox-loaf",
+  "slug": "carrot-orange-lunchbox-loaf",
+  "name": "Carrot & Orange Lunchbox Loaf",
+  "category": "baking",
+  "ingredients": [
+   "14 g ground flaxseed",
+   "90 mL cold water",
+   "280 g wholemeal flour",
+   "2 tsp baking powder",
+   "1 tsp bicarbonate of soda",
+   "2 tsp ground cinnamon",
+   "½ tsp fine salt",
+   "120 g soft brown sugar"
+  ]
+ },
+ {
+  "id": "apple-cinnamon-oat-slice",
+  "slug": "apple-cinnamon-oat-slice",
+  "name": "Apple & Cinnamon Oat Slice",
+  "category": "baking",
+  "ingredients": [
+   "3 medium apples (about 450 g), peeled, cored and diced",
+   "40 mL water",
+   "2 tsp ground cinnamon",
+   "250 g rolled oats",
+   "120 g wholemeal flour",
+   "100 g coconut oil, melted",
+   "80 mL pure maple syrup",
+   "1 tsp vanilla extract"
+  ]
+ },
+ {
+  "id": "date-oat-seed-energy-slice",
+  "slug": "date-oat-seed-energy-slice",
+  "name": "Date, Oat & Seed Energy Slice",
+  "category": "snack",
+  "ingredients": [
+   "250 g pitted dates (about 12 medjool)",
+   "60 mL hot water",
+   "150 g rolled oats",
+   "60 g pumpkin seeds",
+   "40 g sunflower seeds",
+   "12 g cocoa powder (2 tbsp)",
+   "20 g ground flaxseed (2 tbsp)",
+   "60 g sunflower seed butter (nut-free)"
+  ]
+ },
+ {
+  "id": "berry-coconut-yoghurt-cups",
+  "slug": "berry-coconut-yoghurt-cups",
+  "name": "Berry & Coconut Yoghurt Lunchbox Cups",
+  "category": "snack",
+  "ingredients": [
+   "200 g frozen or fresh mixed berries",
+   "400 g unsweetened coconut yoghurt",
+   "24 g chia seeds (2 tbsp)",
+   "30 mL pure maple syrup",
+   "1 tsp vanilla extract",
+   "40 g rolled oats"
+  ]
+ },
+ {
+  "id": "lentil-mushroom-moussaka",
+  "slug": "lentil-mushroom-moussaka",
+  "name": "Lentil & Mushroom Moussaka",
+  "category": "meal",
+  "ingredients": [
+   "2 aubergines (about 700 g), cut into 1 cm slices",
+   "60 mL olive oil",
+   "700 g potatoes, peeled and cut into 5 mm slices",
+   "1 brown onion (about 180 g), diced",
+   "400 g button mushrooms, sliced",
+   "3 garlic cloves, crushed",
+   "2 tsp dried oregano",
+   "1 tsp ground cinnamon"
+  ]
  }
 ]
