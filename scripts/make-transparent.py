@@ -22,7 +22,7 @@ import glob
 import os
 import sys
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 SENTINEL = (255, 0, 255)
 
@@ -38,8 +38,11 @@ def background_mask(rgb, tolerance):
     w, h = work.size
     px = work.load()
 
+    # Seed the border every few pixels. Once a flood fill has claimed the
+    # background, later seeds inside it are sentinel-coloured and get skipped,
+    # so the step only needs to be fine enough to reach isolated pockets.
+    step = 12
     seeds = []
-    step = 4
     for x in range(0, w, step):
         seeds += [(x, 0), (x, h - 1)]
     for y in range(0, h, step):
@@ -47,6 +50,8 @@ def background_mask(rgb, tolerance):
 
     for xy in seeds:
         r, g, b = px[xy[0], xy[1]]
+        if (r, g, b) == SENTINEL:
+            continue
         # Only flood from pixels that are already near-white.
         if r > 255 - tolerance and g > 255 - tolerance and b > 255 - tolerance:
             try:
@@ -54,14 +59,11 @@ def background_mask(rgb, tolerance):
             except Exception:
                 pass
 
-    mask = Image.new("L", (w, h), 0)
-    mpx = mask.load()
-    wpx = work.load()
-    for y in range(h):
-        for x in range(w):
-            if wpx[x, y] == SENTINEL:
-                mpx[x, y] = 255
-    return mask
+    # Mask = "this pixel is exactly the sentinel", done with PIL rather than a
+    # per-pixel Python loop (1M iterations per image was the whole bottleneck).
+    sentinel_img = Image.new("RGB", (w, h), SENTINEL)
+    diff = ImageChops.difference(work, sentinel_img).convert("L")
+    return diff.point(lambda v: 255 if v == 0 else 0)
 
 
 def cutout(img, tolerance=20, shrink=1, feather=1.2, quantize=0):
