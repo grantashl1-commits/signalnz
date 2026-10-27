@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SIGNAL_TRAINING_PATHS, type TrainingPath } from "@/data/signal-training-paths";
-import { getCorrectedExerciseArt } from "@/lib/corrected-exercise-art";
+import { getCorrectedExerciseArt, wordKey } from "@/lib/corrected-exercise-art";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { auth: { getUser: async () => ({ data: { user: null } }) } } }));
 const { getNextSession, markSessionCompleted } = await import("@/lib/training-path-utils");
@@ -39,6 +39,22 @@ describe("evidence-based training paths", () => {
 
   it("keeps pilates classes to 30 minutes", () => {
     for (const s of training(byId("mat-pilates"))) expect(s.durationMin).toBe(30);
+  });
+
+  it("runs every reformer class in studio order: footwork first, stretch last", () => {
+    for (const s of training(byId("reformer-strength"))) {
+      const labels = s.supersets!.map(b => b.label);
+      expect(labels[0]).toBe("Footwork");
+      expect(labels[labels.length - 1]).toBe("Stretch");
+      expect(labels.length).toBeGreaterThanOrEqual(7);
+    }
+  });
+
+  it("matches library artwork to exercise names by their words", () => {
+    expect(wordKey("skater-reformer")).toBe(wordKey("Reformer Skater"));
+    expect(wordKey("arms-in-straps-lower-and-lift")).toBe(wordKey("Arms in Straps: Lower & Lift"));
+    expect(getCorrectedExerciseArt("Footwork Heels")).toBeTruthy();
+    expect(getCorrectedExerciseArt("Feet in Straps: Frog")).toBeTruthy();
   });
 
   it("uses the shared reformer illustrations for the reformer path", () => {
