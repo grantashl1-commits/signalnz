@@ -1,0 +1,112 @@
+{
+  "_comment": [
+    "Ritual -> illustration mapping for public/images/habits.",
+    "Keyed by id from src/data/self-care-rituals.ts (SELF_CARE_RITUALS).",
+    "`image` is the file stem without .png, or null when it still needs drawing.",
+    "Thirteen rituals already had artwork shipped — these are the 'orphan' files",
+    "that looked unused because they belong to the ritual set, not HABIT_LIBRARY.",
+    "The rest are generated into <ritual-id>.png and wired by the same resolver."
+  ],
+  "map": {
+    "red-light-mask": {
+      "image": "red-light-mask",
+      "prompt": null
+    },
+    "pemf-mat": {
+      "image": "pemf-mat",
+      "prompt": null
+    },
+    "hocatt-ozone": {
+      "image": "hocatt-ozone-sauna",
+      "prompt": null
+    },
+    "infrared-sauna": {
+      "image": "infrared-sauna",
+      "prompt": null
+    },
+    "red-light-panel": {
+      "image": "red-light-panel",
+      "prompt": "a slim upright red-light therapy panel on a small stand, its face glowing a soft warm red"
+    },
+    "ice-plunge": {
+      "image": "ice-plunge-cold-bath",
+      "prompt": null
+    },
+    "cold-shower": {
+      "image": "cold-shower",
+      "prompt": null
+    },
+    "massage-gun": {
+      "image": "massage-gun",
+      "prompt": null
+    },
+    "foam-rolling": {
+      "image": "foam-rolling",
+      "prompt": null
+    },
+    "lymphatic-drainage": {
+      "image": "lymphatic-drainage-massage",
+      "prompt": null
+    },
+    "professional-massage": {
+      "image": "professional-massage",
+      "prompt": null
+    },
+    "gua-sha": {
+      "image": "gua-sha",
+      "prompt": null
+    },
+    "dry-body-brushing": {
+      "image": "dry-body-brushing",
+      "prompt": null
+    },
+    "epsom-salt-bath": {
+      "image": "epsom-salt-bath",
+      "prompt": "a simple bathtub with two soft curls of steam above it and a small bowl of white salt crystals beside it"
+    },
+    "magnesium-flake-bath": {
+      "image": "magnesium-flake-bath",
+      "prompt": "a simple bathtub with gentle steam and a small glass jar of white flakes with a scoop beside it"
+    },
+    "castor-oil-pack": {
+      "image": "castor-oil-pack",
+      "prompt": "a folded warm flannel cloth beside a small amber bottle of golden oil"
+    },
+    "biocellulose-mask": {
+      "image": "biocellulose-mask",
+      "prompt": "a simple sheet face mask laid softly over a small folded towel"
+    },
+    "facial-massage": {
+      "image": "facial-massage",
+      "prompt": "two gentle hands cupping a calm abstract face seen from the side, eyes closed"
+    },
+    "scalp-massage": {
+      "image": "scalp-massage",
+      "prompt": "a hand resting on the crown of a head shown in simple profile, with two small circular motion arrows"
+    },
+    "yin-yoga": {
+      "image": "yin-yoga",
+      "prompt": "a simple figure folded forward in a long relaxed seated stretch on a mat"
+    },
+    "stretching-mobility": {
+      "image": "stretching-mobility",
+      "prompt": null
+    },
+    "spa-day": {
+      "image": "spa-day",
+      "prompt": "a rolled towel, a small lit candle and a sprig of eucalyptus leaves beside it"
+    },
+    "float-tank": {
+      "image": "float-tank",
+      "prompt": "a rounded egg-shaped floatation pod with its lid open and a still water surface inside"
+    },
+    "acupuncture": {
+      "image": "acupuncture",
+      "prompt": "three very fine needles resting in a small folded cloth beside a tiny bowl"
+    },
+    "sound-bath": {
+      "image": "sound-bath",
+      "prompt": "a brass singing bowl with a wooden mallet resting across it and two soft concentric rings above"
+    }
+  }
+}

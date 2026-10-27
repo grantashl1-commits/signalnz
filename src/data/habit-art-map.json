@@ -1,0 +1,333 @@
+{
+  "_comment": [
+    "Hand-reviewed habit -> illustration mapping for public/images/habits.",
+    "Keyed by habit id from src/data/habit-library.ts. `image` is the file stem",
+    "without .png, or null when no suitable illustration exists yet.",
+    "`prompt` describes the picture for the ones that need drawing.",
+    "Reviewed because automatic matching is wrong in several places: it pairs",
+    "vitamin-d3 with the vitamin-c pill, and morning-sunlight / morning-journal /",
+    "screen-free-morning all with the meditation picture. Those habits are",
+    "distinct and need distinct art."
+  ],
+  "map": {
+    "lib-magnesium": {
+      "image": "lib-magnesium",
+      "prompt": "a small white supplement capsule lying beside a scatter of pumpkin seeds and a few dark green spinach leaves"
+    },
+    "lib-vitamin-d3": {
+      "image": "vitamin-d",
+      "prompt": null
+    },
+    "lib-omega-3": {
+      "image": "lib-omega-3",
+      "prompt": "a small golden softgel capsule next to two silvery sardines and a lemon wedge"
+    },
+    "lib-iron": {
+      "image": "lib-iron",
+      "prompt": "a small dark red supplement capsule beside a few lentils and a sprig of dark leafy greens"
+    },
+    "lib-folate": {
+      "image": "lib-folate",
+      "prompt": "a small pale yellow tablet beside a halved avocado and a few asparagus spears"
+    },
+    "lib-b-complex": {
+      "image": "lib-b-complex",
+      "prompt": "a small cluster of three tiny pale capsules beside a wholegrain oat stalk"
+    },
+    "lib-zinc": {
+      "image": "lib-zinc",
+      "prompt": "a small white round tablet beside a few pumpkin seeds and a single oyster shell"
+    },
+    "lib-vitamin-c": {
+      "image": "vitamin-c",
+      "prompt": null
+    },
+    "lib-probiotics": {
+      "image": "probiotics",
+      "prompt": null
+    },
+    "lib-ashwagandha": {
+      "image": "lib-ashwagandha",
+      "prompt": "a small brown glass supplement jar with a wooden lid, a few ashwagandha roots and tiny leaves beside it"
+    },
+    "lib-collagen": {
+      "image": "collagen",
+      "prompt": null
+    },
+    "lib-coq10": {
+      "image": "lib-coq10",
+      "prompt": "a small amber softgel capsule beside a halved avocado and a few walnuts"
+    },
+    "lib-iodine": {
+      "image": "lib-iodine",
+      "prompt": "a small dropper bottle of clear liquid beside a scatter of sea salt crystals"
+    },
+    "lib-creatine": {
+      "image": "creatine",
+      "prompt": null
+    },
+    "lib-greens-powder": {
+      "image": "greens-powder",
+      "prompt": null
+    },
+    "lib-30-plants": {
+      "image": "30-plant-foods-this-week",
+      "prompt": null
+    },
+    "lib-fermented-food": {
+      "image": "fermented-food-daily",
+      "prompt": null
+    },
+    "lib-oily-fish": {
+      "image": "oily-fish-2x-this-week",
+      "prompt": null
+    },
+    "lib-seed-cycle": {
+      "image": "seed-cycle-daily",
+      "prompt": null
+    },
+    "lib-cruciferous": {
+      "image": "cruciferous-vegs-3x",
+      "prompt": null
+    },
+    "lib-protein-breakfast": {
+      "image": "protein-at-breakfast",
+      "prompt": null
+    },
+    "lib-no-processed": {
+      "image": "no-ultra-processed-foods",
+      "prompt": null
+    },
+    "lib-water-2l": {
+      "image": "lib-water-2l",
+      "prompt": "a simple glass water bottle with a soft blue water level, one lemon slice resting beside it"
+    },
+    "lib-leafy-greens": {
+      "image": "leafy-greens-at-meals",
+      "prompt": null
+    },
+    "lib-reduce-sugar": {
+      "image": "reduce-refined-sugar",
+      "prompt": null
+    },
+    "lib-meal-prep": {
+      "image": "meal-prep-3-days",
+      "prompt": null
+    },
+    "lib-new-recipe": {
+      "image": "new-whole-food-recipe",
+      "prompt": null
+    },
+    "lib-healthy-fat": {
+      "image": "healthy-fat-every-meal",
+      "prompt": null
+    },
+    "lib-no-alcohol": {
+      "image": "no-alcohol-this-week",
+      "prompt": null
+    },
+    "lib-mindful-eating": {
+      "image": "mindful-eating",
+      "prompt": null
+    },
+    "lib-warm-lemon-water": {
+      "image": "lib-warm-lemon-water",
+      "prompt": "a warm mug of water with a single lemon slice floating and a curl of steam rising"
+    },
+    "lib-herbal-tea": {
+      "image": "lib-herbal-tea",
+      "prompt": "a small teapot pouring into a teacup with a chamomile flower and a sprig of mint beside it"
+    },
+    "lib-10k-steps": {
+      "image": "10000-steps-today",
+      "prompt": null
+    },
+    "lib-morning-walk": {
+      "image": "morning-walk",
+      "prompt": null
+    },
+    "lib-strength": {
+      "image": "strength-training",
+      "prompt": null
+    },
+    "lib-hiit": {
+      "image": "lib-hiit",
+      "prompt": "a small stopwatch with a lightning bolt beside a pair of trainers, energy implied by a few motion lines"
+    },
+    "lib-yoga": {
+      "image": "yoga-or-pilates",
+      "prompt": null
+    },
+    "lib-stretching": {
+      "image": "mobility-stretching",
+      "prompt": null
+    },
+    "lib-swimming": {
+      "image": "lib-swimming",
+      "prompt": "a simple pair of swim goggles and a single water ripple"
+    },
+    "lib-cycling": {
+      "image": "lib-cycling",
+      "prompt": "a simple bicycle viewed from the side, one wheel slightly forward in motion"
+    },
+    "lib-dance": {
+      "image": "lib-dance",
+      "prompt": "a pair of bare feet mid-step with a few musical notes and motion curves"
+    },
+    "lib-rest-day": {
+      "image": "rest-day",
+      "prompt": null
+    },
+    "lib-movement-break": {
+      "image": "movement-break-hourly",
+      "prompt": null
+    },
+    "lib-lunch-walk": {
+      "image": "lunchtime-walk",
+      "prompt": null
+    },
+    "lib-two-strength": {
+      "image": "two-strength-sessions",
+      "prompt": null
+    },
+    "lib-zone2": {
+      "image": "zone-2-cardio",
+      "prompt": null
+    },
+    "lib-morning-meditation": {
+      "image": "morning-meditation",
+      "prompt": null
+    },
+    "lib-evening-breathwork": {
+      "image": "evening-breathwork",
+      "prompt": null
+    },
+    "lib-gratitude-practice": {
+      "image": "gratitude-practice",
+      "prompt": null
+    },
+    "lib-time-in-nature": {
+      "image": "time-in-nature",
+      "prompt": null
+    },
+    "lib-digital-sunset": {
+      "image": "digital-sunset",
+      "prompt": null
+    },
+    "lib-sauna-session": {
+      "image": "sauna-session",
+      "prompt": null
+    },
+    "lib-cold-shower": {
+      "image": "cold-shower",
+      "prompt": null
+    },
+    "lib-morning-sunlight": {
+      "image": "lib-morning-sunlight",
+      "prompt": "a low warm sun with soft rays over a windowsill and a small potted plant"
+    },
+    "lib-grounding": {
+      "image": "lib-grounding",
+      "prompt": "two bare feet standing on soft grass with a few tiny soil details beneath"
+    },
+    "lib-screen-free-morning": {
+      "image": "lib-screen-free-morning",
+      "prompt": "a smartphone lying face down and switched off, beside a small cup of tea and a folded book"
+    },
+    "lib-nature-time": {
+      "image": "lib-nature-time",
+      "prompt": "a small cluster of three slender trees on a gentle hill with a winding path"
+    },
+    "lib-intentional-rest": {
+      "image": "lib-intentional-rest",
+      "prompt": "a soft cushion and a folded blanket beside a small crescent moon"
+    },
+    "lib-cold-exposure": {
+      "image": "lib-cold-exposure",
+      "prompt": "a small icy plunge tub with a few ice cubes floating and a wisp of cold air curling above"
+    },
+    "lib-fasting-window": {
+      "image": "lib-fasting-window",
+      "prompt": "a simple clock face with a shaded arc marking an overnight fasting window, and a small crescent moon"
+    },
+    "lib-tongue-scraping": {
+      "image": "lib-tongue-scraping",
+      "prompt": "a slim copper tongue scraper resting beside a small glass of water"
+    },
+    "lib-oil-pulling": {
+      "image": "lib-oil-pulling",
+      "prompt": "a small glass bottle of golden oil with a dropper, beside a coconut half"
+    },
+    "lib-abhyanga": {
+      "image": "lib-abhyanga",
+      "prompt": "a small bottle of warm amber massage oil with a few drops falling and a folded towel"
+    },
+    "lib-nasya": {
+      "image": "lib-nasya",
+      "prompt": "a tiny dropper bottle of oil with a single drop falling, beside a small brass bowl"
+    },
+    "lib-nasal-breathing": {
+      "image": "lib-nasal-breathing",
+      "prompt": "a calm abstract face in profile with a gentle curved breath line flowing from the nose"
+    },
+    "lib-dry-brushing": {
+      "image": "dry-body-brushing",
+      "prompt": null
+    },
+    "lib-morning-journal": {
+      "image": "lib-morning-journal",
+      "prompt": "an open notebook with a pen resting across it and a small cup of coffee beside them"
+    },
+    "lib-movement-snack": {
+      "image": "lib-movement-snack",
+      "prompt": "a simple chair with a pair of legs mid-stand beside it and a small upward arrow"
+    },
+    "lib-midday-walk": {
+      "image": "lib-midday-walk",
+      "prompt": "a winding footpath with a mid-height sun overhead and a small leaf or two drifting"
+    },
+    "lib-screen-break-20-20-20": {
+      "image": "lib-screen-break-20-20-20",
+      "prompt": "a small open window frame looking out at a distant tiny tree, with a clock face beside it"
+    },
+    "lib-protein-lunch": {
+      "image": "lib-protein-lunch",
+      "prompt": "a simple lunch bowl of grains and greens with a boiled egg halved on top"
+    },
+    "lib-desk-stretch": {
+      "image": "lib-desk-stretch",
+      "prompt": "a simple wooden desk with a chair pushed back and a small figure reaching both arms overhead"
+    },
+    "lib-consistent-sleep-time": {
+      "image": "lib-consistent-sleep-time",
+      "prompt": "a simple alarm clock beside a folded eye mask and a small crescent moon"
+    },
+    "lib-evening-journal": {
+      "image": "lib-evening-journal",
+      "prompt": "an open notebook under a softly glowing lamp with a small crescent moon above"
+    },
+    "lib-no-food-before-sleep": {
+      "image": "lib-no-food-before-sleep",
+      "prompt": "a simple plate with a fork resting on it and a small crescent moon above, signalling the kitchen is closed"
+    },
+    "lib-connect-loved-one": {
+      "image": "lib-connect-loved-one",
+      "prompt": "two simple overlapping speech bubbles each holding a small heart"
+    },
+    "lib-read-book": {
+      "image": "lib-read-book",
+      "prompt": "an open book with a small bookmark ribbon and a cup of tea beside it"
+    }
+  },
+  "unusedImages": [
+    "daily-steps",
+    "eat-30-plants",
+    "fermented-food",
+    "leafy-greens",
+    "movement-break",
+    "oily-fish",
+    "protein-breakfast",
+    "mobility-stretching",
+    "yoga-pilates"
+  ]
+}

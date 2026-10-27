@@ -4,6 +4,7 @@ import { X, Check, HelpCircle, Search, Plus, ExternalLink, Sparkles, Sun, Moon }
 import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
+import { getRitualArt } from "@/lib/habit-art";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, getHabits, type Habit, type HabitCategory } from "@/data/self-care-rituals";
 import { RITUAL20_ITEMS, RITUAL20_GROUPS, type Ritual20Group } from "@/data/ritual20";
 import { haptic } from "@/hooks/use-mobile";
@@ -131,6 +132,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
                   {group.rituals.map(ritual => {
                     const IconComponent = RITUAL_ICONS[ritual.icon] || SelfCareHandIcon;
                     const added = isAlreadyAdded(ritual.name) || isJustAdded(ritual.id);
+                    const art = getRitualArt(ritual.id);
                     return (
                       <button
                         key={ritual.id}
@@ -147,7 +149,18 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
                         }`}
                         style={{ minHeight: 90 }}
                       >
-                        <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+                        {art ? (
+                          <img
+                            src={art}
+                            alt=""
+                            aria-hidden="true"
+                            loading="lazy"
+                            decoding="async"
+                            className={`h-9 w-9 object-contain ${added ? "opacity-60" : ""}`}
+                          />
+                        ) : (
+                          <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+                        )}
                         <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
                           {ritual.name}
                         </span>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Search, Plus, Sun, Snowflake, Hand, Bath, Sparkles, Heart, Gem } from "lucide-react";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, type Habit } from "@/data/self-care-rituals";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
+import { getRitualArt } from "@/lib/habit-art";
 import { haptic } from "@/hooks/use-mobile";
 
 const CATEGORY_ICONS: Record<string, typeof Sun> = {
@@ -128,6 +129,7 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
                   {group.rituals.map(ritual => {
                     const IconComponent = RITUAL_ICONS[ritual.icon] || SelfCareHandIcon;
                     const isSelected = selected.has(ritual.id);
+                    const art = getRitualArt(ritual.id);
                     return (
                       <button
                         key={ritual.id}
@@ -138,7 +140,18 @@ export default function RitualPicker({ open, onClose, onAdded }: RitualPickerPro
                             : "bg-card border border-transparent border-t-2 border-t-bloom/30 shadow-sm"
                         }`}
                       >
-                        <IconComponent size={28} color={isSelected ? "hsl(var(--primary))" : "#8B6F5E"} />
+                        {art ? (
+                          <img
+                            src={art}
+                            alt=""
+                            aria-hidden="true"
+                            loading="lazy"
+                            decoding="async"
+                            className="h-9 w-9 object-contain"
+                          />
+                        ) : (
+                          <IconComponent size={28} color={isSelected ? "hsl(var(--primary))" : "#8B6F5E"} />
+                        )}
                         <span className="font-hand text-[13px] font-bold text-foreground leading-tight line-clamp-2">
                           {ritual.name}
                         </span>
