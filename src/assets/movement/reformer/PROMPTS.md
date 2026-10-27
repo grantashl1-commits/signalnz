@@ -39,6 +39,11 @@ FRAMING — square 1:1, pure flat white background. The entire reformer plus the
 The batch runner assembles exactly this from `src/reformer-exercise-prompts.json`, so
 you only need to paste by hand if you are generating a single image in a chat UI.
 
+Exercises whose defining shape is lateral — a wide T of the arms, knees opened out to
+the sides — carry their own `camera` in the catalogue, because a pure side elevation
+foreshortens those limbs and the model rotates the figure to compensate. Those entries
+are marked "camera" in the detail below.
+
 ---
 
 ## Style block
@@ -1688,8 +1693,14 @@ HIGHLIGHT — the ONLY muscles drawn in strong coral red are: the triceps at the
 
 **File:** `arms-in-straps-t-press.png` · **Springs:** light (1 red) · **Muscles:** latissimus-dorsi, pectorals, serratus-anterior, transverse-abdominis
 
+**Camera:** custom angle (not side elevation) — needed because this pose's shape is lateral
+
 ```text
-POSE — she lies supine with the back of her head on the headrest and both legs in a table shape, her arms straight out wide to her sides at shoulder height so her arms and body make the shape of the letter T, palms facing up and a black strap loop in each hand. Both straight arms are sweeping down toward her hips together, caught halfway. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.
+CAMERA — an elevated three-quarter view from the foot end of the reformer, looking down along the machine toward her head, as in a technical illustration. Raise the camera so it looks down on the carriage at roughly thirty degrees. Both of her arms, spread wide to either side, are clearly separated from her torso and fully visible, not foreshortened toward the viewer. Her body still lies horizontally along the reformer, which runs across the frame from lower-left to upper-right. Do not stand her up and do not show the reformer in flat profile.
+```
+
+```text
+POSE — she lies flat on her back on the carriage with her head resting on the padded headrest and her whole back, seat and hips pressed heavy and flat against the teal carriage — she is lying down, never sitting up and never hovering above the machine. Both legs are held up in a tabletop: her knees are bent to about ninety degrees, her thighs point straight up and her shins are horizontal and level, parallel to the carriage. Both arms are straight and held out wide to either side at shoulder height, level with the carriage, so her arms and torso together make the shape of the letter T; her palms face up and a black strap loop is around each hand. She is caught halfway through sweeping both straight arms down toward her hips, so the arms angle slightly toward her feet while staying wide of her body. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.
 
 HIGHLIGHT — the ONLY muscles drawn in strong coral red are: the latissimus dorsi on both sides of her back. If they are visible in this view, a lighter, softer coral tint may sit on: the pectorals across her chest — clearly paler than the primary area, never the same strength. Nothing else is red. Her neck, face, arms, hands, torso, hips, legs, feet and all other musculature stay plain illustrated skin in its normal tone, with no red tint whatsoever. Most of her body must be un-highlighted — expect a small, localised red area, not an anatomy chart.
 ```
@@ -1773,7 +1784,7 @@ HIGHLIGHT — the ONLY muscles drawn in strong coral red are: the latissimus dor
 **File:** `butterfly-stretch.png` · **Springs:** light (1 red) · **Muscles:** adductors, hip-external-rotators, glutes
 
 ```text
-POSE — she lies supine with the back of her head on the headrest, both feet in black strap loops, her feet pressed together sole to sole and her knees open wide and level with her hips, out to the sides. Her sacrum is heavy and flat on the carriage and her arms rest long at her sides. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.
+POSE — she lies flat on her back on the carriage with her head on the padded headrest and her sacrum pressed heavy and flat against the teal carriage. Both legs are deeply bent — this is essential: her knees are bent to roughly ninety degrees or more and drawn wide open out to either side so her legs form a wide open diamond. The soles of both feet are pressed flat together, sole to sole, inside a black strap loop, with the joined feet floating above her hips and her knees dropped wide and out to the sides at about hip height. Her legs are NOT straight and NOT parallel: the knees stay deeply bent and wide apart. Her arms rest long and relaxed at her sides on the carriage. She wears only a sage-green sports bra and charcoal-grey leggings: no red garment, no red band and no red fabric anywhere on her body. Any red is muscle painted on bare skin.
 
 HIGHLIGHT — the ONLY muscles drawn in strong coral red are: the adductors of the inner thighs. Nothing else is red. Her neck, face, arms, hands, torso, hips, legs, feet and all other musculature stay plain illustrated skin in its normal tone, with no red tint whatsoever. Most of her body must be un-highlighted — expect a small, localised red area, not an anatomy chart.
 ```
