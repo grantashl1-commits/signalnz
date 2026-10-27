@@ -1,10 +1,14 @@
 # Live database setup: signalnz (`uinooijckvltyuggecuh`)
 
-The app code on `claude/tender-ritchie-pkgkfs` expects five database changes, anonymous
+The app code on `main` expects six database changes, anonymous
 sign-ins and freshly deployed edge functions. None of this can be done from the repo
 alone; follow these steps in the Supabase dashboard (or the CLI) for the live project.
 
 Do the steps in order. Every SQL file here is safe to run twice.
+
+**Most urgent:** Supabase's "Table publicly accessible" warning is fixed by one file,
+`supabase/migrations/20261027000005_rls_on_every_public_table.sql`. It doesn't depend on
+the other steps, so after the backup (step 0) you can run it on its own first (step 3).
 
 ## 0. Take a backup first
 
@@ -58,8 +62,9 @@ Note what the second query lists; step 3 depends on it.
 | `20261027000002_fix_cron_project_ref.sql` | Points the daily drip-email job at this project instead of a stranger's. | A Vault secret `cron_secret` equal to the edge-function secret `CRON_SECRET`. |
 | `20261027000003_lock_down_ai_credits.sql` | Members can no longer write their own AI credits or drain someone else's. | — |
 | `20261027000004_community_safety.sql` | Blocking, reporting (admin Reports tab), hidden profile fields stay hidden, Nearby coordinates rounded to ~1 km. | — |
+| `20261027000005_rls_on_every_public_table.sql` | Fixes Supabase's "Table publicly accessible" warning (step 3). | — |
 
-**Option A: CLI** (when `migration list` shows only these five missing):
+**Option A: CLI** (when `migration list` shows only these six missing):
 
 ```powershell
 npx supabase migration list          # "Local" vs "Remote" columns
@@ -81,76 +86,30 @@ select vault.create_secret('<the CRON_SECRET value>', 'cron_secret');
 
 ## 3. Fix the table Supabase emailed about
 
-Supabase's email didn't name the table. Use what step 1's second query listed and run
-only the matching block below. If it listed nothing, skip this step.
+Supabase's emails (17 and 25 Oct, "Table publicly accessible", `rls_disabled_in_public`)
+don't name the table. One file fixes whichever it is:
+`supabase/migrations/20261027000005_rls_on_every_public_table.sql`. Paste it into the SQL
+Editor and run it (option A's `db push` runs it too). What it does:
 
-**`spatial_ref_sys`** (owned by `postgis`) is the most likely one: an old migration
-installed PostGIS into `public`. Nothing in the app uses PostGIS (Nearby stores plain
-numbers). This moves PostGIS to the `extensions` schema. If anything does depend on it,
-the drop refuses, nothing changes, and it falls back to removing API access instead.
+- **PostGIS:** moves it out of `public` into the `extensions` schema, which takes its
+  `spatial_ref_sys` table with it. That table is the most likely culprit; nothing in the
+  app uses PostGIS. If anything depends on PostGIS, the move is skipped and the app's keys
+  lose access to that table instead.
+- **Tables made outside the repo, if they have RLS off:** switches it on.
+  - Rules a table already has are kept.
+  - Tables with no rules get ones that keep what members do today:
+    - chat: read as now, post and edit only as yourself, admins can remove
+    - the interval timer: read only
+    - everything else: your own rows only
+- **Any other table with RLS off:** switches RLS on with no rules. That closes it to the
+  app's keys while edge functions, which use the service key, still work. Nothing in the
+  app or its edge functions reads such a table.
 
-```sql
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM pg_extension e JOIN pg_namespace n ON n.oid = e.extnamespace
-             WHERE e.extname = 'postgis' AND n.nspname = 'public') THEN
-    BEGIN
-      DROP EXTENSION postgis;   -- no CASCADE: refuses if anything uses it
-      CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA extensions;
-    EXCEPTION WHEN others THEN
-      RAISE NOTICE 'PostGIS not moved (%); removing API access to spatial_ref_sys instead', SQLERRM;
-      REVOKE ALL ON TABLE public.spatial_ref_sys FROM anon, authenticated;
-    END;
-  END IF;
-END $$;
-```
+The last result should be an empty `still_exposed` list. The **Messages** tab shows a
+line for each table it changed. Run it again any time: it changes nothing the second time.
 
-**Tables made outside the repo.** These exist live but no repo migration creates them,
-so their rules can't be checked from here. Run the lines for each table step 1 listed
-(running the whole block is also safe). None of them is read by the app except
-`workout_intervals`; the edge functions use the service key, which ignores these rules.
-
-```sql
--- Members' own rows only (not read by the app today).
-ALTER TABLE IF EXISTS public.community_last_reads  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.challenge_answers     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.challenge_completions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.message_reactions     ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Own rows" ON public.community_last_reads;
-CREATE POLICY "Own rows" ON public.community_last_reads  FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Own rows" ON public.challenge_answers;
-CREATE POLICY "Own rows" ON public.challenge_answers     FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Own rows" ON public.challenge_completions;
-CREATE POLICY "Own rows" ON public.challenge_completions FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Own rows" ON public.message_reactions;
-CREATE POLICY "Own rows" ON public.message_reactions     FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-
--- Members can read their own; only admins and webhooks write.
-ALTER TABLE IF EXISTS public.one_off_purchases   ENABLE ROW LEVEL SECURITY;
-ALTER TABLE IF EXISTS public.account_suspensions ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Read own" ON public.one_off_purchases;
-CREATE POLICY "Read own" ON public.one_off_purchases   FOR SELECT TO authenticated USING (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Read own" ON public.account_suspensions;
-CREATE POLICY "Read own" ON public.account_suspensions FOR SELECT TO authenticated USING (auth.uid() = user_id);
-
--- An older reports table the app doesn't use (it uses community_reports): reporters see their own.
-ALTER TABLE IF EXISTS public.user_reports ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Reporters file and read own" ON public.user_reports;
-CREATE POLICY "Reporters file and read own" ON public.user_reports FOR ALL TO authenticated
-  USING (auth.uid() = reporter_id) WITH CHECK (auth.uid() = reporter_id);
-
--- Read by the interval timer; members read, nobody writes.
-ALTER TABLE IF EXISTS public.workout_intervals ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Members read" ON public.workout_intervals;
-CREATE POLICY "Members read" ON public.workout_intervals FOR SELECT TO authenticated USING (true);
-
--- Server-only list: rules on, no access from the app.
-ALTER TABLE IF EXISTS public.disposable_email_domains ENABLE ROW LEVEL SECURITY;
-```
-
-If step 1 listed `gift_codes` or `community_messages`, they already have rules in
-`drizzle/migrations/0000`/`0001`; only switch RLS on:
-`ALTER TABLE public.<name> ENABLE ROW LEVEL SECURITY;`
+If the result lists `spatial_ref_sys`, or the Security Advisor still flags it a day
+later, contact Supabase support and ask them to move PostGIS to the `extensions` schema.
 
 ## 4. Turn on anonymous sign-ins
 
