@@ -69,3 +69,21 @@ describe('household size', () => {
   expect(getHousehold()).toEqual({adults:3,kids:2});
  });
 });
+
+describe('meal variety settings', () => {
+ it('cooks a different dinner each night when cooking double, so lunch never repeats that night', () => {
+  const plan = buildDbMealPlanFull(DEFAULT_PREFS);
+  const sameDay = plan.days.filter(d => d.lunch.name === d.dinner.name);
+  expect(sameDay.map(d => d.cycleDay)).toEqual([]);
+  const repeats = plan.days.slice(1).filter((d, i) => d.dinner.name === plan.days[i].dinner.name && d.phase === plan.days[i].phase);
+  expect(repeats.map(d => d.cycleDay)).toEqual([]);
+  // Leftovers: each lunch after the first is yesterday's dinner.
+  expect(plan.days[1].lunch).toMatchObject({ name: plan.days[0].dinner.name, isLeftover: true });
+ });
+ it('keeps a batch breakfast for a week, then starts a new batch', () => {
+  const plan = buildDbMealPlanFull(DEFAULT_PREFS);
+  const luteal = plan.days.filter(d => d.phase === 'luteal').map(d => d.breakfast.name);
+  expect(new Set(luteal.slice(0, 7)).size).toBe(1);
+  expect(new Set(luteal).size).toBeGreaterThan(1);
+ });
+});

@@ -1,7 +1,7 @@
 import { scaleIngredientAmount } from "@/lib/ingredient-parser";
 import { findRecipeByName } from "@/lib/recipe-index";
 import { useCustomMealPlan } from "@/hooks/useCustomMealPlan";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Sparkles, Baby } from "lucide-react";
@@ -14,6 +14,7 @@ import { haptic } from "@/hooks/use-mobile";
 import KidsDinnerAlt from "@/components/nutrition/KidsDinnerAlt";
 import { type AIMeal } from "@/lib/weekly-planner";
 import { getTodayMeals, getTodaySnacks } from "@/lib/today-meals";
+import { MEAL_PLAN_CHANGED } from "@/lib/meal-plan-sync";
 import { getNutritionTargetForGoal, getLatestBodyMetrics } from "@/lib/fitness-profile";
 import { getTodayInsight } from "@/data/nutrition-insights";
 import { usePlantTracker } from "@/hooks/usePlantTracker";
@@ -91,7 +92,14 @@ export default function TodayTab() {
   const todayInsight = useMemo(() => getTodayInsight(currentPhase, cycleMode, goalSlug), [currentPhase, cycleMode, goalSlug]);
 
   const { plan: customPlan } = useCustomMealPlan();
-  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan]);
+  // A plan restored from the cloud after this tab opened replaces the default meals.
+  const [planVersion, setPlanVersion] = useState(0);
+  useEffect(() => {
+    const bump = () => setPlanVersion(v => v + 1);
+    window.addEventListener(MEAL_PLAN_CHANGED, bump);
+    return () => window.removeEventListener(MEAL_PLAN_CHANGED, bump);
+  }, []);
+  const { meals, isAI } = useMemo(() => getTodayMeals(currentCycleDay), [currentCycleDay, customPlan, planVersion]);
 
   const phaseColor = PHASE_HEX[currentPhase];
   const plannedSnacks = getTodaySnacks(currentCycleDay);

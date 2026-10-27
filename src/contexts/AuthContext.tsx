@@ -181,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (loading || storageError || !user) return;
     const scope = captureDeviceScope();
-    const sync = async () => {
+    const run = async () => {
       const training = await import('@/lib/training-path-utils');
       if (!scope.matches(user.id)) return;
       await training.hydrateSelectedPathFromProfile();
@@ -189,8 +189,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await training.syncTrainingProgress();
       if (!scope.matches(user.id)) return;
       await training.flushTrainingLogs();
+      // Her saved meal plan, so a new device shows her meals, not the defaults.
+      const meals = await import('@/lib/meal-plan-sync');
+      if (!scope.matches(user.id)) return;
+      await meals.restoreMealPlanFromCloud();
     };
-    void sync();
+    // Offline, a code chunk or request can fail; the next 'online' event tries again.
+    const sync = () => { run().catch(() => {}); };
+    sync();
     window.addEventListener('online', sync);
     return () => window.removeEventListener('online', sync);
   }, [user?.id, loading, storageError]);

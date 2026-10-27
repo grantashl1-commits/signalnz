@@ -75,11 +75,17 @@ export default function TodayBoard({ greeting, firstName }: { greeting: string; 
   const { plan: customPlan } = useCustomMealPlan();
   // The recipe library loads with the Eat tile, not as part of the first screen.
   const [meals, setMeals] = useState<TodayMeal[] | null>(null);
+  const [planVersion, setPlanVersion] = useState(0);
+  useEffect(() => {
+    const bump = () => setPlanVersion(v => v + 1);
+    window.addEventListener("signal:meal-plan-changed", bump);
+    return () => window.removeEventListener("signal:meal-plan-changed", bump);
+  }, []);
   useEffect(() => {
     let live = true;
     import("@/lib/today-meals").then(m => { if (live) setMeals(m.getTodayMeals(currentCycleDay).meals); });
     return () => { live = false; };
-  }, [currentCycleDay, customPlan]);
+  }, [currentCycleDay, customPlan, planVersion]);
 
   const { user } = useAuth();
   const userId = user?.id;
