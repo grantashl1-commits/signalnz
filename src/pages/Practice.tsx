@@ -727,7 +727,7 @@ export default function PracticePage() {
                         nutrition:   { icon: Salad, tint: "bg-[hsl(142_30%_95%)]", border: "border-[hsl(142_35%_78%)]", art: "/images/habits/category-nutrition.png" },
                         movement:    { icon: Zap, tint: "bg-[hsl(35_40%_95%)]", border: "border-[hsl(35_45%_78%)]", art: "/images/habits/category-movement.png" },
                         "self-care": { icon: Sparkles, tint: "bg-[hsl(330_30%_96%)]", border: "border-[hsl(330_35%_80%)]", art: "/images/habits/category-self-care.png" },
-                        ritual20:    { icon: Sun, tint: "bg-[hsl(28_35%_94%)]", border: "border-[hsl(28_40%_78%)]" },
+                        ritual20:    { icon: Sun, tint: "bg-[hsl(28_35%_94%)]", border: "border-[hsl(28_40%_78%)]", art: "/images/habits/category-ritual20.png" },
                       };
                       return HABIT_CATEGORIES.map(cat => {
                         const meta = CATEGORY_META[cat.id] || CATEGORY_META["self-care"];
@@ -739,7 +739,7 @@ export default function PracticePage() {
                               setShowCategoryChooser(false);
                               openPicker(cat.id as HabitCategory);
                             }}
-                            className={`touch-btn rounded-[16px] h-[88px] flex flex-col items-center justify-center gap-2 border shadow-soft hover:shadow-medium hover:border-primary/20 ${meta.tint} ${meta.border}`}
+                            className={`touch-btn rounded-[16px] h-[116px] flex flex-col items-center justify-center gap-1.5 border shadow-soft hover:shadow-medium hover:border-primary/20 ${meta.tint} ${meta.border}`}
                           >
                             {meta.art ? (
                               <img
@@ -748,7 +748,7 @@ export default function PracticePage() {
                                 aria-hidden="true"
                                 loading="lazy"
                                 decoding="async"
-                                className="h-9 w-9 object-contain"
+                                className="h-16 w-16 object-contain"
                               />
                             ) : (
                               <Icon className="h-6 w-6 text-foreground/70" />
