@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireUser } from "../_shared/auth.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -82,9 +83,6 @@ serve(async (req) => {
       });
     }
 
-    const gatewayUrl = "https://ai.gateway.lovable.dev";
-    const gatewayKey = Deno.env.get("LOVABLE_API_KEY") || Deno.env.get("AI_GATEWAY_API_KEY");
-
     // Build system prompt
     let systemPrompt: string;
     if (action === "next_step") {
@@ -96,36 +94,19 @@ serve(async (req) => {
       systemPrompt = COACH_SYSTEM_PROMPT + styleNote;
     }
 
-    const aiResponse = await fetch(`${gatewayUrl}/v1/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(gatewayKey ? { Authorization: `Bearer ${gatewayKey}` } : {}),
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: journal_entry },
-        ],
-        max_tokens: 1400,
-        temperature: 0.65,
-      }),
+    const content = await deepseekChat(
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: journal_entry },
+      ],
+      { maxTokens: 1400, temperature: 0.65 },
+    ).catch((e) => {
+      console.error("DeepSeek error:", e);
+      return "";
     });
 
-    if (!aiResponse.ok) {
-      const errText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errText);
-      return new Response(JSON.stringify({ error: "AI processing failed — please try again" }), {
-        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const aiData = await aiResponse.json();
-    const content = aiData.choices?.[0]?.message?.content;
-
     if (!content) {
-      console.error("No content in AI response:", JSON.stringify(aiData));
+      console.error("No content in AI response");
       return new Response(JSON.stringify({ error: "No response from AI" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

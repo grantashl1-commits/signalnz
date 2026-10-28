@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,34 +35,18 @@ Return ONLY valid JSON — no markdown, no preamble, no backticks:
 
 Only flag: personal attacks, contempt, shaming, belittling. Allow: frustration, directness, disagreement, mild profanity, strong opinions.`;
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
-
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 400,
-        temperature: 0.3,
-      }),
-    });
-
-    if (!res.ok) {
-      console.error("AI gateway error:", res.status);
+    let raw: string;
+    try {
+      raw = await deepseekChat([{ role: "user", content: prompt }], { maxTokens: 400, temperature: 0.3 });
+    } catch (e) {
+      console.error("DeepSeek moderation error:", e);
       // Fail closed — block the post rather than letting it through on error
       return new Response(JSON.stringify({ safe: false, reflection: "Something went wrong — please try again." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const data = await res.json();
-    const raw = data.choices?.[0]?.message?.content || "{}";
-    const cleaned = raw.replace(/```json|```/g, "").trim();
+    const cleaned = (raw || "{}").replace(/```json|```/g, "").trim();
     const result = JSON.parse(cleaned);
 
     return new Response(JSON.stringify(result), {

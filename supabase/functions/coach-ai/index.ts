@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireUser } from "../_shared/auth.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,15 +40,7 @@ serve(async (req) => {
       });
     }
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY") || Deno.env.get("AI_GATEWAY_API_KEY");
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: "AI not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     let messages: any[] = [];
-    let model = "google/gemini-2.5-flash-lite";
 
     if (action === "quick_ask") {
       const question = String(body.question || "").trim().slice(0, 400);
@@ -85,23 +78,7 @@ serve(async (req) => {
       ];
     }
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model, messages, stream: false }),
-    });
-
-    if (!aiResp.ok) {
-      const status = aiResp.status;
-      if (status === 429) return new Response(JSON.stringify({ error: "Take a breath — too many asks at once. Try again in a moment." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (status === 402) return new Response(JSON.stringify({ error: "Out of AI credits — top up to keep going." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      const txt = await aiResp.text();
-      console.error("coach-ai gateway error", status, txt);
-      return new Response(JSON.stringify({ error: "AI gateway error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-
-    const data = await aiResp.json();
-    const content: string = data.choices?.[0]?.message?.content || "";
+    const content: string = await deepseekChat(messages);
 
     if (action === "weekly_focus") {
       const stripped = content.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();

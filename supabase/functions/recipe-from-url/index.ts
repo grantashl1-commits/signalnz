@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -100,9 +101,6 @@ serve(async (req) => {
 
     const pageText = (usedReader ? html : stripHtml(html)).slice(0, 12000);
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
-
     const systemPrompt = `You are a recipe extraction assistant. Extract the recipe from the provided webpage text.
 Return ONLY a JSON object with this exact structure (no markdown, no explanation):
 {
@@ -121,26 +119,12 @@ Rules:
 - Use metric measurements where possible
 - If no clear recipe is found, return {"error": "No recipe found on this page"} `;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Extract the recipe from this webpage:\n\n${pageText}` },
-        ],
-      }),
-    });
-
-    if (!aiRes.ok) {
-      if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiRes.status === 402) return new Response(JSON.stringify({ error: "The AI service is temporarily over capacity. Please try again shortly — your credits are safe." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      throw new Error("AI extraction failed");
-    }
-
-    const aiData = await aiRes.json();
-    let content = aiData.choices?.[0]?.message?.content || "";
+    let content = await deepseekChat(
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Extract the recipe from this webpage:\n\n${pageText}` },
+      ],
+    );
     content = content.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
 
     let recipe;

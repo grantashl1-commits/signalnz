@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -58,30 +59,13 @@ async function checkRateLimit(userId: string): Promise<boolean> {
 }
 
 async function callAI(prompt: string, maxTokens = 800) {
-  const apiKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
-
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model: "google/gemini-2.5-flash-lite",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: maxTokens,
-      temperature: 0.7,
-    }),
-  });
-
-  if (!res.ok) {
-    const status = res.status;
-    if (status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (status === 402) return new Response(JSON.stringify({ error: "Credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    throw new Error(`AI error: ${status}`);
+  try {
+    const raw = await deepseekChat([{ role: "user", content: prompt }], { maxTokens, temperature: 0.7 });
+    return JSON.parse((raw || "{}").replace(/```json|```/g, "").trim());
+  } catch (e) {
+    console.error("journal-ai DeepSeek error:", e);
+    return new Response(JSON.stringify({ error: "AI error" }), { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
-
-  const data = await res.json();
-  const raw = data.choices?.[0]?.message?.content || "{}";
-  return JSON.parse(raw.replace(/```json|```/g, "").trim());
 }
 
 const PROMPTS_MAP = [

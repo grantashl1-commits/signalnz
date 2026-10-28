@@ -2,6 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireUser } from "../_shared/auth.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -89,9 +90,6 @@ serve(async (req) => {
       // No reference docs yet — that's fine
     }
 
-    const gatewayUrl = Deno.env.get("AI_GATEWAY_URL") || "https://ai-gateway.lovable.dev";
-    const gatewayKey = Deno.env.get("AI_GATEWAY_API_KEY");
-
     const messages = [
       { role: "system", content: SYSTEM_PROMPT + referenceContext },
     ];
@@ -106,28 +104,7 @@ serve(async (req) => {
 
     messages.push({ role: "user", content: message });
 
-    const response = await fetch(`${gatewayUrl}/v1/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(gatewayKey ? { Authorization: `Bearer ${gatewayKey}` } : {}),
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages,
-        max_tokens: 800,
-        temperature: 0.7,
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      console.error("AI gateway error:", err);
-      throw new Error("AI response failed");
-    }
-
-    const data = await response.json();
-    const aiResponse = data.choices?.[0]?.message?.content || "I'm here to help — could you tell me more about what you're experiencing?";
+    const aiResponse = (await deepseekChat(messages, { maxTokens: 800, temperature: 0.7 })) || "I'm here to help — could you tell me more about what you're experiencing?";
 
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

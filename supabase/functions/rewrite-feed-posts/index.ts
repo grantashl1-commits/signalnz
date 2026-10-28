@@ -4,10 +4,10 @@ const corsHeaders = {
 };
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { requireAdmin } from "../_shared/auth.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -160,32 +160,18 @@ QUALITY RULES:
 - Takeaway must follow directly from the body paragraph
 - No OCR artifacts, page numbers, copyright notices, or incomplete sentences`;
 
-        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${LOVABLE_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash",
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 700,
-          }),
-        });
-
-        if (!response.ok) {
-          const status = response.status;
-          if (status === 429) {
+        let rewritten: string | undefined;
+        try {
+          rewritten = (await deepseekChat([{ role: "user", content: prompt }], { maxTokens: 700 })).trim();
+        } catch (e) {
+          if (/429/.test(String(e?.message ?? ""))) {
             // Rate limited — stop batch and report
             errors.push(`Rate limited at post ${post.post_number}. Stopping batch.`);
             break;
           }
-          errors.push(`Post ${post.post_number}: API error ${status}`);
+          errors.push(`Post ${post.post_number}: API error`);
           continue;
         }
-
-        const aiData = await response.json();
-        let rewritten = aiData.choices?.[0]?.message?.content?.trim();
 
         if (!rewritten || rewritten.length < 80) {
           errors.push(`Post ${post.post_number}: Response too short`);

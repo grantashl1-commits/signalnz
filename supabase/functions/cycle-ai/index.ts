@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { requireUser } from "../_shared/auth.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -104,9 +105,6 @@ serve(async (req) => {
 
     if (type === "cycle-coach") {
       // ── LIGHT AI: Only for freeform questions ──
-      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-      if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
-
       // Rate limiting: 10 per minute
       const userId = caller.user.id;
       const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
@@ -135,32 +133,15 @@ serve(async (req) => {
 
       const systemPrompt = `You are a warm women's health guide. Answer concisely (3-5 sentences). Evidence-based, never diagnose.${modeContext}${phaseCtx}${symptomContext} Address her as 'you'.`;
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash-lite",
-          messages: [
-            { role: "system", content: systemPrompt },
-            ...(messages || []),
-          ],
-          max_tokens: 300,
-          stream: false,
-        }),
-      });
+      const answer = await deepseekChat(
+        [
+          { role: "system", content: systemPrompt },
+          ...(messages || []),
+        ],
+        { maxTokens: 300 },
+      );
 
-      if (!response.ok) {
-        const status = response.status;
-        if (status === 429) return new Response(JSON.stringify({ error: "Rate limit reached." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error(`AI gateway error: ${status}`);
-      }
-
-      const data = await response.json();
-      return new Response(JSON.stringify({ message: data.choices?.[0]?.message?.content || "" }), {
+      return new Response(JSON.stringify({ message: answer }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

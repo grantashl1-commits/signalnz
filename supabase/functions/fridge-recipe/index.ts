@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireUser } from "../_shared/auth.ts";
+import { deepseekChat } from "../_shared/ai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -45,37 +46,18 @@ serve(async (req) => {
       }
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
-
     // Step 1: If photo provided, identify ingredients first
     let identifiedIngredients = ingredients || "";
     if (imageBase64) {
-      const visionRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [{
-            role: "user",
-            content: [
-              { type: "text", text: "Look at this fridge/food photo. List EVERY food ingredient you can identify, separated by commas. Be specific (e.g. 'red capsicum' not just 'vegetable'). Only list food items, nothing else. If you can't identify any food, say 'none'." },
-              { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
-            ]
-          }],
-        }),
-      });
-
-      if (!visionRes.ok) {
-        const errText = await visionRes.text();
-        console.error("Vision API error:", visionRes.status, errText);
-        if (visionRes.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (visionRes.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up in Settings." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("Failed to analyse photo");
-      }
-
-      const visionData = await visionRes.json();
-      identifiedIngredients = visionData.choices?.[0]?.message?.content || "";
+      identifiedIngredients = await deepseekChat(
+        [{
+          role: "user",
+          content: [
+            { type: "text", text: "Look at this fridge/food photo. List EVERY food ingredient you can identify, separated by commas. Be specific (e.g. 'red capsicum' not just 'vegetable'). Only list food items, nothing else. If you can't identify any food, say 'none'." },
+            { type: "image_url", image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }
+          ]
+        }],
+      );
     }
 
     if (!identifiedIngredients || identifiedIngredients.toLowerCase() === "none") {
@@ -130,26 +112,12 @@ Return EXACTLY a JSON array of 3 recipes. Each recipe object:
 
 Return ONLY the JSON array, no markdown, no explanation.`;
 
-    const recipeRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `My ingredients: ${identifiedIngredients}\n\nCreate 3 delicious recipes using primarily these ingredients.` }
-        ],
-      }),
-    });
-
-    if (!recipeRes.ok) {
-      if (recipeRes.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (recipeRes.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up in Settings." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      throw new Error("Recipe generation failed");
-    }
-
-    const recipeData = await recipeRes.json();
-    let content = recipeData.choices?.[0]?.message?.content || "";
+    let content = await deepseekChat(
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `My ingredients: ${identifiedIngredients}\n\nCreate 3 delicious recipes using primarily these ingredients.` }
+      ],
+    );
     // Strip markdown fences
     content = content.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
 
