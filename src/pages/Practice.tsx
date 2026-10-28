@@ -24,6 +24,7 @@ import { useCycle } from "@/contexts/CycleContext";
 import { haptic } from "@/hooks/use-mobile";
 import { useHabitCompletions } from "@/hooks/useHabitCompletions";
 import { toLocalDateStr } from "@/lib/local-date";
+import { getHabitArt } from "@/lib/habit-art";
 
 const PHASE_COLORS: Record<string, string> = {
   menstrual: "#C4526E",
@@ -569,6 +570,8 @@ export default function PracticePage() {
                         const done = completedIds.has(habit.id);
                         const catInfo = HABIT_CATEGORIES.find(c => c.id === habit.category) ||
                           HABIT_CATEGORIES.find(c => c.id === "self-care");
+                        // Watercolour illustration when we have one for this habit.
+                        const habitArt = getHabitArt(habit.id);
 
                         return (
                           <motion.div
@@ -614,6 +617,19 @@ export default function PracticePage() {
                                 </AnimatePresence>
                               </span>
                             </button>
+
+                            {habitArt && (
+                              <img
+                                src={habitArt}
+                                alt=""
+                                aria-hidden="true"
+                                loading="lazy"
+                                decoding="async"
+                                className={`h-12 w-12 flex-shrink-0 object-contain transition-opacity duration-300 ${
+                                  done ? "opacity-45" : "opacity-100"
+                                }`}
+                              />
+                            )}
 
                             <div className="flex-1 min-w-0">
                               <p className={`font-display text-base font-semibold leading-snug transition-all ${
@@ -706,11 +722,11 @@ export default function PracticePage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     {(() => {
-                      const CATEGORY_META: Record<string, { icon: typeof Pill; tint: string; border: string }> = {
-                        supplements: { icon: Pill, tint: "bg-[hsl(284_30%_96%)]", border: "border-[hsl(284_40%_80%)]" },
-                        nutrition:   { icon: Salad, tint: "bg-[hsl(142_30%_95%)]", border: "border-[hsl(142_35%_78%)]" },
-                        movement:    { icon: Zap, tint: "bg-[hsl(35_40%_95%)]", border: "border-[hsl(35_45%_78%)]" },
-                        "self-care": { icon: Sparkles, tint: "bg-[hsl(330_30%_96%)]", border: "border-[hsl(330_35%_80%)]" },
+                      const CATEGORY_META: Record<string, { icon: typeof Pill; tint: string; border: string; art?: string }> = {
+                        supplements: { icon: Pill, tint: "bg-[hsl(284_30%_96%)]", border: "border-[hsl(284_40%_80%)]", art: "/images/habits/category-supplements.png" },
+                        nutrition:   { icon: Salad, tint: "bg-[hsl(142_30%_95%)]", border: "border-[hsl(142_35%_78%)]", art: "/images/habits/category-nutrition.png" },
+                        movement:    { icon: Zap, tint: "bg-[hsl(35_40%_95%)]", border: "border-[hsl(35_45%_78%)]", art: "/images/habits/category-movement.png" },
+                        "self-care": { icon: Sparkles, tint: "bg-[hsl(330_30%_96%)]", border: "border-[hsl(330_35%_80%)]", art: "/images/habits/category-self-care.png" },
                         ritual20:    { icon: Sun, tint: "bg-[hsl(28_35%_94%)]", border: "border-[hsl(28_40%_78%)]" },
                       };
                       return HABIT_CATEGORIES.map(cat => {
@@ -725,7 +741,18 @@ export default function PracticePage() {
                             }}
                             className={`touch-btn rounded-[16px] h-[88px] flex flex-col items-center justify-center gap-2 border shadow-soft hover:shadow-medium hover:border-primary/20 ${meta.tint} ${meta.border}`}
                           >
-                            <Icon className="h-6 w-6 text-foreground/70" />
+                            {meta.art ? (
+                              <img
+                                src={meta.art}
+                                alt=""
+                                aria-hidden="true"
+                                loading="lazy"
+                                decoding="async"
+                                className="h-9 w-9 object-contain"
+                              />
+                            ) : (
+                              <Icon className="h-6 w-6 text-foreground/70" />
+                            )}
                             <span className="font-display text-[13px] font-semibold text-foreground">{cat.label}</span>
                           </button>
                         );
