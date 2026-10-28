@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireUser } from "../_shared/auth.ts";
+import { geminiImage } from "../_shared/image.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,14 +18,6 @@ serve(async (req) => {
   if (caller instanceof Response) return caller;
 
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "API key not configured. Image generation is temporarily unavailable." }),
-        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const body = await req.json();
     const { prompt } = body;
     const userIdentifier = caller.user.id;
@@ -64,58 +57,24 @@ serve(async (req) => {
 
     console.log("Generating image with prompt:", prompt.slice(0, 120));
 
-    // Use Gemini image generation model via Lovable AI Gateway
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [
-          {
-            role: "user",
-            content: `Generate this image: ${prompt}`,
-          },
-        ],
-        modalities: ["image", "text"],
-      }),
-    });
-
-    if (!response.ok) {
-      const statusCode = response.status;
-      if (statusCode === 429) {
+    let imageUrl: string;
+    try {
+      imageUrl = await geminiImage(`Generate this image: ${prompt}`);
+    } catch (e) {
+      console.error("dream-image-generate error:", e);
+      if (/429/.test(String(e?.message ?? ""))) {
         return new Response(
           JSON.stringify({ error: "Image generation is temporarily busy. Please try again in a moment." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      if (statusCode === 402) {
-        return new Response(
-          JSON.stringify({ error: "Usage credits exhausted. Please add credits to continue generating images." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      const t = await response.text();
-      console.error("AI gateway error:", statusCode, t);
-      return new Response(
-        JSON.stringify({ error: "Image generation is temporarily unavailable. Please try again in a moment." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      throw e;
     }
 
-    const data = await response.json();
-
-    // Validate that we got an image back
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    if (!imageUrl) {
-      console.error("No image in response:", JSON.stringify(data).slice(0, 500));
-      return new Response(
-        JSON.stringify({ error: "Image generation didn't produce a result. Try a different prompt." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // Reconstruct the OpenAI-compatible shape the client parses.
+    const data = {
+      choices: [{ message: { images: [{ image_url: { url: imageUrl } }] } }],
+    };
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

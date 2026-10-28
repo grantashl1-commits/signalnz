@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.98.0";
 import { requireAdmin } from "../_shared/auth.ts";
+import { geminiImageEdit } from "../_shared/image.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,7 +9,6 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
 async function animateAndUpload(ex: { id: string; name: string; illustration_url: string; target: string | null; body_part: string | null }): Promise<{ id: string; name: string; success: boolean; error?: string }> {
@@ -19,37 +19,16 @@ async function animateAndUpload(ex: { id: string; name: string; illustration_url
     // We'll generate 2 frames (start + end position) and combine into an animated GIF
     const prompt = `Edit this watercolor exercise illustration to show the person in the ending/contracted position of the '${ex.name}' exercise. Keep the exact same watercolor sketch style, coral red muscle highlights on ${target}, thin brown pen outlines, white background. Show the muscles more contracted/engaged. Subtle movement from the original pose.`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [{
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            { type: "image_url", image_url: { url: ex.illustration_url } }
-          ]
-        }],
-        modalities: ["image", "text"]
-      }),
-    });
-
-    if (aiResp.status === 429) {
-      return { id: ex.id, name: ex.name, success: false, error: "rate_limited" };
-    }
-    if (!aiResp.ok) {
-      const t = await aiResp.text();
-      return { id: ex.id, name: ex.name, success: false, error: `ai_${aiResp.status}: ${t.slice(0, 100)}` };
+    let imgUrl: string;
+    try {
+      imgUrl = await geminiImageEdit(prompt, ex.illustration_url);
+    } catch (e) {
+      if (/429/.test(String(e?.message ?? ""))) {
+        return { id: ex.id, name: ex.name, success: false, error: "rate_limited" };
+      }
+      return { id: ex.id, name: ex.name, success: false, error: String(e).slice(0, 100) };
     }
 
-    const data = await aiResp.json();
-    const images = data.choices?.[0]?.message?.images;
-    if (!images?.length) {
-      return { id: ex.id, name: ex.name, success: false, error: "no_image_returned" };
-    }
-
-    const imgUrl = images[0].image_url?.url || "";
     if (!imgUrl.startsWith("data:image")) {
       return { id: ex.id, name: ex.name, success: false, error: "invalid_image_data" };
     }

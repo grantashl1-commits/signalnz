@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { requireUser } from "../_shared/auth.ts";
+import { geminiImage } from "../_shared/image.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -49,38 +50,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Generate via Lovable AI Gateway (Nano Banana).
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const prompt = `Anatomical exercise illustration of "${exerciseName}". Single human figure mid-movement, clean line art with soft gray muscle shading, neutral skin tone, simple white background, centred composition, square format, reference-diagram style consistent with a fitness exercise library. No text, no labels, no equipment branding.`;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
-      }),
+    const dataUrl = await geminiImage(prompt).catch((e) => {
+      console.error("generate-exercise-illustration error:", e);
+      return "";
     });
-
-    if (!aiRes.ok) {
-      const errText = await aiRes.text();
-      return new Response(JSON.stringify({ error: "ai_gateway_error", detail: errText }), {
-        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const aiJson = await aiRes.json();
-    const dataUrl: string | undefined = aiJson?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     if (!dataUrl?.startsWith("data:image/")) {
       return new Response(JSON.stringify({ error: "no_image_returned" }), {
         status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
