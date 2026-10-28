@@ -25,6 +25,7 @@ import { resolveProvider, generateWithRetry, parseArgs } from "./lib/image-provi
 
 const MAP = "src/data/habit-art-map.json";
 const RITUAL_MAP = "src/data/ritual-art-map.json";
+const RITUAL20_MAP = "src/data/ritual20-art-map.json";
 const RAW_DIR = "handoff/habit-images-raw";
 
 const args = parseArgs();
@@ -51,13 +52,15 @@ const STYLE = [
 ].join("\n\n");
 
 /**
- * Both illustration maps share one shape and one output folder: habits come from
- * HABIT_LIBRARY (ids prefixed lib-), rituals from SELF_CARE_RITUALS (plain ids).
- * The sets don't overlap, so they can be merged safely.
+ * All three illustration maps share one shape and one output folder: habits come
+ * from HABIT_LIBRARY (ids prefixed lib-), rituals from SELF_CARE_RITUALS (plain
+ * ids) and the 20-day challenge from RITUAL20_ITEMS (ids prefixed r20-). The sets
+ * don't overlap, so they can be merged safely.
  */
 const map = {
   ...JSON.parse(readFileSync(MAP, "utf8")).map,
   ...JSON.parse(readFileSync(RITUAL_MAP, "utf8")).map,
+  ...JSON.parse(readFileSync(RITUAL20_MAP, "utf8")).map,
 };
 
 const jobs = Object.entries(map)

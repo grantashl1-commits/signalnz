@@ -4,7 +4,7 @@ import { X, Check, HelpCircle, Search, Plus, ExternalLink, Sparkles, Sun, Moon }
 import { getLibraryHabitsForCategory, SUPPLEMENT_DISCLAIMER, SUBCATEGORY_LABELS_BY_CATEGORY, type LibraryHabit } from "@/data/habit-library";
 import { HABIT_ICONS, CapsuleIcon } from "@/components/HabitIcons";
 import { RITUAL_ICONS, SelfCareHandIcon } from "@/components/SelfCareIcons";
-import { getRitualArt } from "@/lib/habit-art";
+import { getHabitArt, getRitualArt, getRitual20Art } from "@/lib/habit-art";
 import { SELF_CARE_RITUALS, RITUAL_CATEGORIES, addHabit, getHabits, type Habit, type HabitCategory } from "@/data/self-care-rituals";
 import { RITUAL20_ITEMS, RITUAL20_GROUPS, type Ritual20Group } from "@/data/ritual20";
 import { haptic } from "@/hooks/use-mobile";
@@ -293,6 +293,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
                   <div className="space-y-1.5">
                     {group.items.map(item => {
                       const added = isAlreadyAdded(item.name) || isJustAdded(item.id);
+                      const art = getRitual20Art(item.id);
                       return (
                         <button
                           key={item.id}
@@ -308,6 +309,16 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
                               : "bg-card border-border hover:border-bloom/40 shadow-sm"
                           }`}
                         >
+                          {art && (
+                            <img
+                              src={art}
+                              alt=""
+                              aria-hidden="true"
+                              loading="lazy"
+                              decoding="async"
+                              className={`h-11 w-11 flex-shrink-0 object-contain ${added ? "opacity-60" : ""}`}
+                            />
+                          )}
                           <div className="flex-1 min-w-0">
                             <p className="font-display text-sm font-semibold text-foreground leading-snug">
                               {item.name}
@@ -364,6 +375,7 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
     const IconComponent = HABIT_ICONS[habit.icon] || CapsuleIcon;
     const added = isAlreadyAdded(habit.name) || isJustAdded(habit.id);
     const hasInfo = !!(habit.nzBrands || habit.note || habit.description);
+    const art = getHabitArt(habit.id);
 
     return (
       <div key={habit.id} className="relative">
@@ -380,7 +392,18 @@ export default function HabitLibraryPicker({ open, category, onClose, onAdded, c
           }`}
           style={{ minHeight: 90 }}
         >
-          <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+          {art ? (
+            <img
+              src={art}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className={`h-9 w-9 object-contain ${added ? "opacity-60" : ""}`}
+            />
+          ) : (
+            <IconComponent size={28} color={added ? "#af92b6" : "#7f5b87"} />
+          )}
           <span className="font-body text-xs font-semibold text-foreground leading-tight line-clamp-2">
             {habit.name}
           </span>

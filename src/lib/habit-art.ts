@@ -16,6 +16,7 @@
  */
 import HABIT_ART_MAP from "@/data/habit-art-map.json";
 import RITUAL_ART_MAP from "@/data/ritual-art-map.json";
+import RITUAL20_ART_MAP from "@/data/ritual20-art-map.json";
 
 interface ArtEntry {
   image: string | null;
@@ -24,6 +25,7 @@ interface ArtEntry {
 
 const MAP = (HABIT_ART_MAP as { map: Record<string, ArtEntry> }).map;
 const RITUAL_MAP = (RITUAL_ART_MAP as { map: Record<string, ArtEntry> }).map;
+const RITUAL20_MAP = (RITUAL20_ART_MAP as { map: Record<string, ArtEntry> }).map;
 
 /**
  * Resolve the illustration URL for a habit id.
@@ -75,6 +77,27 @@ export function hasRitualArt(ritualId: string | null | undefined): boolean {
 export function ritualArtCoverage(): { total: number; illustrated: number } {
   const total = Object.keys(RITUAL_MAP).length;
   const illustrated = Object.values(RITUAL_MAP).filter((v) => v.image).length;
+  return { total, illustrated };
+}
+
+/**
+ * Resolve the illustration for a RITUAL20 item.
+ *
+ * RITUAL20 is the BYRÉ 20-day morning/evening challenge (src/data/ritual20.ts) —
+ * a third list, distinct from HABIT_LIBRARY and SELF_CARE_RITUALS. Most of its
+ * items reuse a picture the other sets already have (a red light mask is a red
+ * light mask); the rest have their own.
+ */
+export function getRitual20Art(itemId: string | null | undefined): string | undefined {
+  if (!itemId) return undefined;
+  const entry = RITUAL20_MAP[itemId];
+  if (!entry?.image) return undefined;
+  return `/images/habits/${entry.image}.png`;
+}
+
+export function ritual20ArtCoverage(): { total: number; illustrated: number } {
+  const total = Object.keys(RITUAL20_MAP).length;
+  const illustrated = Object.values(RITUAL20_MAP).filter((v) => v.image).length;
   return { total, illustrated };
 }
 

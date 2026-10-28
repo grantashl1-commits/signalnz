@@ -1,0 +1,114 @@
+{
+  "_comment": [
+    "RITUAL20 -> illustration mapping for public/images/habits.",
+    "Keyed by id from src/data/ritual20.ts (the BYRE 20-day morning/evening challenge).",
+    "Most items reuse a picture the habit or ritual sets already have; the rest are",
+    "generated into <item-id>.png. `image: null` means it still needs drawing."
+  ],
+  "map": {
+    "r20-hvm-matcha": {
+      "image": "r20-hvm-matcha",
+      "prompt": "a bowl of ceremonial green matcha with a bamboo whisk resting across it, a small trail of steam"
+    },
+    "r20-movement": {
+      "image": "r20-movement",
+      "prompt": "a rolled-out yoga mat with a pair of bare feet mid-step on it and a small low sun above"
+    },
+    "r20-mindfulness": {
+      "image": "morning-meditation",
+      "prompt": null
+    },
+    "r20-no-phone-am": {
+      "image": "lib-screen-free-morning",
+      "prompt": null
+    },
+    "r20-morning-light": {
+      "image": "lib-morning-sunlight",
+      "prompt": null
+    },
+    "r20-lemon-water": {
+      "image": "lib-warm-lemon-water",
+      "prompt": null
+    },
+    "r20-gua-sha-am": {
+      "image": "gua-sha",
+      "prompt": null
+    },
+    "r20-dry-brushing": {
+      "image": "dry-body-brushing",
+      "prompt": null
+    },
+    "r20-sauna": {
+      "image": "infrared-sauna",
+      "prompt": null
+    },
+    "r20-red-light-am": {
+      "image": "red-light-mask",
+      "prompt": null
+    },
+    "r20-cold-shower": {
+      "image": "cold-shower",
+      "prompt": null
+    },
+    "r20-rebounding": {
+      "image": "r20-rebounding",
+      "prompt": "a small round mini-trampoline seen at a slight angle with a few motion arcs above it"
+    },
+    "r20-green-juice": {
+      "image": "r20-green-juice",
+      "prompt": "a tall glass of vibrant green juice with a celery stick and a mint leaf beside it"
+    },
+    "r20-olive-oil-shot": {
+      "image": "r20-olive-oil-shot",
+      "prompt": "a tiny glass of golden olive oil beside a lemon wedge and a single olive"
+    },
+    "r20-nourishment": {
+      "image": "r20-nourishment",
+      "prompt": "a colourful breakfast bowl of oats, berries, seeds and yoghurt seen from above"
+    },
+    "r20-after-dark-coco": {
+      "image": "r20-after-dark-coco",
+      "prompt": "a warm mug of dark cacao with soft steam and a small crescent moon beside it"
+    },
+    "r20-legs-up-wall": {
+      "image": "r20-legs-up-wall",
+      "prompt": "a simple figure lying on their back with both legs resting straight up against a wall, seen from the side"
+    },
+    "r20-brain-unload": {
+      "image": "lib-evening-journal",
+      "prompt": null
+    },
+    "r20-no-phone-pm": {
+      "image": "digital-sunset",
+      "prompt": null
+    },
+    "r20-early-to-bed": {
+      "image": "lib-consistent-sleep-time",
+      "prompt": null
+    },
+    "r20-everything-shower": {
+      "image": "r20-everything-shower",
+      "prompt": "a shower head with soft steam curling below it and a small bottle and folded towel beside it"
+    },
+    "r20-gua-sha-pm": {
+      "image": "gua-sha",
+      "prompt": null
+    },
+    "r20-red-light-pm": {
+      "image": "red-light-mask",
+      "prompt": null
+    },
+    "r20-breathwork": {
+      "image": "evening-breathwork",
+      "prompt": null
+    },
+    "r20-visualisation": {
+      "image": "r20-visualisation",
+      "prompt": "a calm abstract head in profile with a small soft cloud and two tiny stars floating above it"
+    },
+    "r20-reading": {
+      "image": "lib-read-book",
+      "prompt": null
+    }
+  }
+}

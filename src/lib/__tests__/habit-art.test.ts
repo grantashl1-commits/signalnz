@@ -3,15 +3,19 @@ import { existsSync } from "node:fs";
 import {
   getHabitArt,
   getRitualArt,
+  getRitual20Art,
   habitArtCoverage,
   habitsMissingArt,
   hasHabitArt,
+  ritual20ArtCoverage,
   ritualArtCoverage,
 } from "@/lib/habit-art";
 import HABIT_ART_MAP from "@/data/habit-art-map.json";
 import RITUAL_ART_MAP from "@/data/ritual-art-map.json";
+import RITUAL20_ART_MAP from "@/data/ritual20-art-map.json";
 import { HABIT_LIBRARY } from "@/data/habit-library";
 import { SELF_CARE_RITUALS } from "@/data/self-care-rituals";
+import { RITUAL20_ITEMS } from "@/data/ritual20";
 
 const habits = HABIT_LIBRARY as unknown as { id: string; name: string }[];
 
@@ -119,5 +123,37 @@ describe("self-care ritual illustrations", () => {
   it("is safe for unknown ritual ids", () => {
     expect(getRitualArt(undefined)).toBeUndefined();
     expect(getRitualArt("not-a-ritual")).toBeUndefined();
+  });
+});
+
+describe("RITUAL20 illustrations", () => {
+  const r20map = (RITUAL20_ART_MAP as { map: Record<string, { image: string | null }> }).map;
+
+  it("maps every RITUAL20 item", () => {
+    const missing = RITUAL20_ITEMS.filter((i: { id: string }) => !(i.id in r20map));
+    expect(missing.map((i: { id: string }) => i.id)).toEqual([]);
+  });
+
+  it("has no entries for items that do not exist", () => {
+    const ids = new Set(RITUAL20_ITEMS.map((i: { id: string }) => i.id));
+    expect(Object.keys(r20map).filter((k) => !ids.has(k))).toEqual([]);
+  });
+
+  it("illustrates every item and only points at real files", () => {
+    const { total, illustrated } = ritual20ArtCoverage();
+    expect(total).toBe(RITUAL20_ITEMS.length);
+    expect(illustrated).toBe(total);
+
+    const broken: string[] = [];
+    for (const [id, e] of Object.entries(r20map)) {
+      if (!e.image) continue;
+      if (!existsSync(`public/images/habits/${e.image}.png`)) broken.push(`${id} -> ${e.image}.png`);
+    }
+    expect(broken).toEqual([]);
+  });
+
+  it("resolves a URL for a challenge item", () => {
+    expect(getRitual20Art("r20-hvm-matcha")).toMatch(/^\/images\/habits\/.+\.png$/);
+    expect(getRitual20Art("not-an-item")).toBeUndefined();
   });
 });
