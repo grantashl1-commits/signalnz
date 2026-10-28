@@ -483,35 +483,7 @@ export const NOURISH_RECIPES: Recipe[] = [
   },
 
   // ── FOLLICULAR LUNCHES ──
-  {
-    id: "lunch-f1",
-    name: "Chicken & Quinoa Bowl with Hummus",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Complete protein", "B6", "Iron"],
-    ingredients: [
-      "120g chicken breast",
-      "40g quinoa, rinsed",
-      "100g broccoli florets",
-      "80g red capsicum, sliced",
-      "30g hummus",
-      "1 tsp olive oil",
-      "Salt and pepper"
-    ],
-    method: [
-      "Cook 40g quinoa in 120ml water. Season chicken and pan‑fry in 1 tsp oil for 6 min each side. Slice.",
-      "Steam broccoli and capsicum 4 min. Arrange everything in a bowl with hummus alongside."
-    ],
-    phaseBenefit:
-      "Your energy is climbing — your body craves protein and colour. Chicken and quinoa give complete amino acids; broccoli helps your body handle rising oestrogen with ease.",
-    nutrition: { calories: 480, protein: 38, carbs: 42, fat: 14, fibre: 8 },
-    category: "meal",
-    tags: ["follicular", "high-protein"],
-    kidAlternative: "Serve deconstructed — chicken pieces, plain quinoa, steamed veg, and hummus for dipping."
-  },
-  {
+    {
     id: "lunch-f2",
     name: "Tempeh & Broccoli Stir‑Fry",
     phase: "follicular",
@@ -930,35 +902,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["vegan", "ovulatory", "folate"],
     kidAlternative: "Serve quinoa and diced cucumber separately — many kids prefer plain quinoa and raw veggie sticks."
   },
-  {
-    id: "lunch-o7",
-    name: "Zucchini Fritters with Tzatziki",
-    phase: "ovulatory",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "10 min",
-    keyNutrients: ["Zinc", "B vitamins", "Protein"],
-    ingredients: [
-      "1 medium zucchini (about 150g), grated and squeezed dry",
-      "20g chickpea flour",
-      "1 large egg",
-      "1 tbsp fresh dill, chopped",
-      "1 tsp olive oil",
-      "50g Greek yoghurt",
-      "50g cucumber, grated",
-      "1 small garlic clove, minced"
-    ],
-    method: [
-      "Mix 1 medium zucchini, flour, 1 large egg, and dill. Form into two fritters and fry in 1 tsp oil until golden. Make tzatziki with 50g yoghurt, cucumber, and garlic."
-    ],
-    phaseBenefit:
-      "Chickpea flour brings protein and folate; yoghurt adds probiotics. Light, satisfying, and full of the energy that defines this phase.",
-    nutrition: { calories: 300, protein: 16, carbs: 22, fat: 16, fibre: 5 },
-    category: "meal",
-    tags: ["vegetarian", "ovulatory", "zinc"],
-    kidAlternative: "Make smaller fritters and serve with yoghurt dip — kids love anything dippable."
-  },
-  {
+    {
     id: "lunch-o8",
     name: "Stuffed Capsicums with Quinoa & Black Beans",
     phase: "ovulatory",
@@ -1016,37 +960,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["vegan", "luteal", "magnesium"],
     kidAlternative: "Blend the soup completely smooth and serve with a swirl of yoghurt."
   },
-  {
-    id: "lunch-l2",
-    name: "Chickpea & Pumpkin Curry",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Magnesium", "B6", "Iron"],
-    ingredients: [
-      "100g tinned chickpeas, drained",
-      "150g pumpkin, cubed",
-      "1 tsp coconut oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "1 tsp mild curry powder",
-      "150ml light coconut milk",
-      "50g baby spinach",
-      "50g basmati rice (dry weight), cooked"
-    ],
-    method: [
-      "Cook rice. Sauté onion and garlic in oil, add curry powder. Add pumpkin, chickpeas, coconut milk; simmer 20 min.",
-      "Stir in 50g spinach until wilted. Serve over 50g rice."
-    ],
-    phaseBenefit:
-      "Your body craves warmth and substance now. Chickpeas bring magnesium and iron; pumpkin offers beta‑carotene and B6. The spice soothes, and the coconut milk holds you.",
-    nutrition: { calories: 520, protein: 18, carbs: 64, fat: 18, fibre: 12 },
-    category: "meal",
-    tags: ["vegan", "luteal", "magnesium"],
-    kidAlternative: "Serve plain rice with chickpeas and a little coconut milk sauce — leave out the spices."
-  },
-  {
+    {
     id: "lunch-l3",
     name: "Minestrone Soup",
     phase: "luteal",
@@ -1193,96 +1107,7 @@ export const NOURISH_RECIPES: Recipe[] = [
   },
 
   // ── MORE LUNCHES to reach 50+ ──
-  {
-    id: "lunch-x1",
-    name: "Lentil Bolognese with Spaghetti",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Iron", "Fibre", "Plant protein"],
-    ingredients: [
-      "60g dried brown lentils",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "50g carrot, grated",
-      "200g tinned diced tomatoes",
-      "1 tsp dried oregano",
-      "60g wholemeal spaghetti (dry weight)",
-      "1 tbsp nutritional yeast (optional)"
-    ],
-    method: [
-      "Cook spaghetti. Sauté onion, garlic, carrot in oil. Add lentils, tomatoes, oregano, and 150ml water. Simmer 20 min until thick.",
-      "Serve sauce over 60g spaghetti, top with 1 tbsp nutritional yeast if using."
-    ],
-    phaseBenefit:
-      "Iron‑rich lentils with vitamin C from tomatoes for absorption. A plant‑based bolognese that builds you up from the inside.",
-    nutrition: { calories: 480, protein: 24, carbs: 68, fat: 8, fibre: 14 },
-    category: "meal",
-    tags: ["vegan", "follicular", "iron"],
-    kidAlternative: "Serve plain spaghetti with a little tomato sauce on the side — blend the lentil sauce smooth for picky eaters."
-  },
-  {
-    id: "lunch-x2",
-    name: "Pumpkin & Kale Chilli",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "30 min",
-    keyNutrients: ["Magnesium", "Iron", "B6"],
-    ingredients: [
-      "150g pumpkin, cubed",
-      "100g tinned kidney beans, drained",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "200g tinned diced tomatoes",
-      "½ tsp ground cumin",
-      "½ tsp smoked paprika",
-      "30g kale, chopped"
-    ],
-    method: [
-      "Sauté onion and garlic in oil. Add pumpkin, beans, tomatoes, cumin, paprika, and 100ml water. Simmer 25 min.",
-      "Stir in 30g kale until wilted. Season."
-    ],
-    phaseBenefit:
-      "Pumpkin brings B6 for progesterone; kidney beans add magnesium to ease PMS. Warming, hearty, and deeply comforting.",
-    nutrition: { calories: 360, protein: 16, carbs: 50, fat: 8, fibre: 16 },
-    category: "meal",
-    tags: ["vegan", "luteal", "magnesium"],
-    kidAlternative: "Serve chilli over rice and let them top with grated cheese."
-  },
-  {
-    id: "lunch-x3",
-    name: "Mushroom & Lentil Shepherd's Pie",
-    phase: "menstrual",
-    serves: 1,
-    prepTime: "10 min",
-    cookTime: "40 min",
-    keyNutrients: ["Iron", "B vitamins", "Comfort"],
-    ingredients: [
-      "50g dried brown lentils, cooked",
-      "80g mushrooms, sliced",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "1 tsp tomato paste",
-      "100ml vegetable stock",
-      "½ tsp dried thyme",
-      "200g potato, boiled and mashed with 1 tsp butter"
-    ],
-    method: [
-      "Sauté onion and mushrooms. Add garlic, lentils, tomato paste, stock, and thyme; simmer 10 min.",
-      "Transfer to a small baking dish, top with mash. Bake at 200°C for 20 min until golden."
-    ],
-    phaseBenefit:
-      "Lentils bring iron; mushrooms add B vitamins. Deeply nourishing comfort food for days when your body asks for rest.",
-    nutrition: { calories: 420, protein: 20, carbs: 56, fat: 12, fibre: 12 },
-    category: "meal",
-    tags: ["vegan", "menstrual", "iron"],
-    kidAlternative: "Serve the mashed potato separately alongside a simple lentil soup."
-  },
-  {
+        {
     id: "lunch-x4",
     name: "Egg & Avocado Rice Bowl",
     phase: "follicular",
@@ -1394,38 +1219,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["ovulatory", "protein"],
     kidAlternative: "Serve beetroot wedges (they look like lollies!) alongside plain chicken pieces."
   },
-  {
-    id: "lunch-x8",
-    name: "Tofu Pad Thai",
-    phase: "follicular",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "12 min",
-    keyNutrients: ["Phytoestrogens", "Protein", "Complex carbs"],
-    ingredients: [
-      "100g firm tofu, cubed",
-      "80g flat rice noodles (dry weight)",
-      "50g bean sprouts",
-      "1 tbsp tamari",
-      "1 tsp maple syrup",
-      "1 tbsp peanut butter",
-      "1 tsp lime juice",
-      "1 tsp sesame oil",
-      "10g crushed peanuts",
-      "Fresh coriander"
-    ],
-    method: [
-      "Cook 80g noodles. Whisk tamari, maple, 1 tbsp peanut butter, lime juice. Pan‑fry 100g tofu in sesame oil until golden.",
-      "Toss 80g noodles and 100g tofu with sauce. Top with 50g bean sprouts, peanuts, and coriander."
-    ],
-    phaseBenefit:
-      "Tofu’s phytoestrogens complement rising oestrogen. This is the noodle bowl that tastes like a Friday night but feeds your follicular phase.",
-    nutrition: { calories: 520, protein: 24, carbs: 56, fat: 22, fibre: 6 },
-    category: "meal",
-    tags: ["vegan", "follicular", "phytoestrogen"],
-    kidAlternative: "Serve plain rice noodles with a drizzle of soy sauce and a few pieces of plain tofu."
-  },
-  {
+    {
     id: "lunch-x9",
     name: "Warm Lentil Dhal with Turmeric",
     phase: "menstrual",
@@ -1455,37 +1249,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["vegan", "menstrual", "anti-inflammatory"],
     kidAlternative: "Serve with plain rice — the mild coconut flavour is usually kid‑friendly."
   },
-  {
-    id: "lunch-x10",
-    name: "Roasted Cauliflower & Chickpea Bowl",
-    phase: "luteal",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Sulforaphane", "Magnesium", "Fibre"],
-    ingredients: [
-      "150g cauliflower florets",
-      "80g tinned chickpeas, drained",
-      "1 tsp olive oil",
-      "½ tsp ground cumin",
-      "½ tsp smoked paprika",
-      "1 tbsp tahini (15g)",
-      "1 tsp lemon juice",
-      "30g rocket leaves"
-    ],
-    method: [
-      "Toss cauliflower and chickpeas with oil, cumin, and paprika. Roast at 200°C for 25 min.",
-      "Whisk 1 tbsp tahini with lemon juice and a splash of water. Serve over 30g rocket, drizzled with dressing."
-    ],
-    phaseBenefit:
-      "Cauliflower supports oestrogen clearance; chickpeas bring magnesium to ease PMS. A warm, grounding bowl.",
-    nutrition: { calories: 340, protein: 14, carbs: 28, fat: 18, fibre: 12 },
-    category: "meal",
-    tags: ["vegan", "luteal", "magnesium"],
-    kidAlternative: "Serve roasted cauliflower and plain chickpeas as finger food — no dressing needed."
-  },
-
-  // ═══════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
   // DINNERS (50+)
   // ═══════════════════════════════════════════════════════════
 
@@ -1606,37 +1370,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["menstrual", "anti-inflammatory"],
     kidAlternative: "Serve plain rice with a small amount of the chicken and sauce — keep the spices mild."
   },
-  {
-    id: "dinner-m5",
-    name: "Beef Bolognese with Spaghetti",
-    phase: "menstrual",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "25 min",
-    keyNutrients: ["Haem iron", "B12", "Complete protein"],
-    ingredients: [
-      "120g beef mince (lean)",
-      "1 tsp olive oil",
-      "50g brown onion, chopped",
-      "1 garlic clove, minced",
-      "50g carrot, grated",
-      "200g tinned diced tomatoes",
-      "1 tsp dried oregano",
-      "60g wholemeal spaghetti (dry weight)",
-      "1 tbsp Parmesan cheese (optional)"
-    ],
-    method: [
-      "Cook spaghetti. Sauté onion, garlic, carrot in oil. Add mince, brown. Add tomatoes and oregano, simmer 20 min.",
-      "Serve sauce over 60g spaghetti, top with Parmesan if using."
-    ],
-    phaseBenefit:
-      "Beef is the richest source of haem iron and B12 — essential for menstrual recovery. A classic that never stops giving.",
-    nutrition: { calories: 520, protein: 32, carbs: 54, fat: 18, fibre: 8 },
-    category: "meal",
-    tags: ["menstrual", "iron"],
-    kidAlternative: "Serve plain spaghetti with a little mince and tomato sauce — no herbs if they prefer."
-  },
-  {
+    {
     id: "dinner-m6",
     name: "Chickpea & Sweet Potato Curry",
     phase: "menstrual",
@@ -1693,36 +1427,7 @@ export const NOURISH_RECIPES: Recipe[] = [
     tags: ["pescatarian", "menstrual", "omega-3"],
     kidAlternative: "Serve salmon, mash, and beans separately — most kids love mashed potato."
   },
-  {
-    id: "dinner-m8",
-    name: "Tofu & Vegetable Thai Green Curry",
-    phase: "menstrual",
-    serves: 1,
-    prepTime: "5 min",
-    cookTime: "20 min",
-    keyNutrients: ["Anti‑inflammatory", "Phytoestrogens", "Protein"],
-    ingredients: [
-      "120g firm tofu, cubed",
-      "1 tsp coconut oil",
-      "1 tbsp green curry paste",
-      "150ml light coconut milk",
-      "80g mixed vegetables (capsicum, zucchini, green beans), sliced",
-      "50g jasmine rice (dry weight), cooked",
-      "Fresh Thai basil (or regular basil)"
-    ],
-    method: [
-      "Cook rice. Sauté curry paste in oil 1 min. Add coconut milk and vegetables, simmer 10 min.",
-      "Add tofu, cook 5 min. Serve over rice with basil."
-    ],
-    phaseBenefit:
-      "Coconut milk brings warming fats; green curry paste is packed with anti‑inflammatory ginger and lemongrass. This curry eases your cramping while it fills your belly.",
-    nutrition: { calories: 480, protein: 20, carbs: 50, fat: 22, fibre: 6 },
-    category: "meal",
-    tags: ["vegan", "menstrual", "anti-inflammatory"],
-    kidAlternative: "Serve plain rice with a little coconut milk and plain tofu — leave out the curry paste."
-  },
-
-  {
+    {
     id: "dinner-chickpea-pumpkin-curry",
     name: "Chickpea & Pumpkin Curry",
     phase: "luteal",

@@ -39,7 +39,11 @@ export interface PrepPreferences {
 export interface AIMeal {
   recipeId?: string;
   name: string;
-  phase: Phase;
+  /**
+   * Phase-agnostic recipes (snacks and freezer batches with no cycle copy) carry
+   * "any" straight through; consumers treat it as "suits every phase".
+   */
+  phase: Phase | "any";
   mealType: "breakfast" | "lunch" | "dinner" | "snack";
   prepTime: string;
   serves: number;

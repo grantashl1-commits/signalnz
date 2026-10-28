@@ -2,24 +2,26 @@
  * Canonical Recipe Index — single source of truth for all recipe lookups.
  * Every tab (Today, Plans, My Week, Recipes, Shop) should use these helpers.
  *
- * As of the SIGNAL rebrand, this index is backed entirely by
- * src/data/nourish-recipes.ts. The previous AI-generated recipe files are
- * archived in src/data/ but no longer imported here.
+ * The library is the merged, deduplicated result of every recipe bank in the
+ * app — see `src/data/recipe-library.ts`. It used to be only the nourish
+ * collection plus the SIGNAL rewrites, which left ~800 recipes in the repo
+ * unreachable; those banks are wired back in there, with the long-standing live
+ * collections taking precedence on any name or id collision.
  */
 import { Recipe } from "@/data/meal-plans";
-import { NOURISH_RECIPES } from "@/data/nourish-recipes";
-import { SIGNAL_REWRITES } from "@/data/signal-rewrites";
+import { MERGED_RECIPE_BUILD } from "@/data/recipe-library";
 import imageMaps from "@/data/image-maps.json";
 import { withMethodAmounts } from "@/lib/recipe-method";
 
-/** All recipes — handcrafted nourish library + 216 SIGNAL rewrites. */
-const _seen = new Set<string>();
-export const ALL_RECIPES: Recipe[] = [...NOURISH_RECIPES, ...SIGNAL_REWRITES].filter(r => {
-  if (_seen.has(r.id)) return false;
-  _seen.add(r.id);
-  return true;
-// Every method step names its amounts, so nobody has to scroll back to the ingredients.
-}).map(r => ({ ...r, method: withMethodAmounts(r.ingredients, r.method) }));
+/** All recipes — every bank merged and deduplicated, live collections first. */
+export const ALL_RECIPES: Recipe[] = MERGED_RECIPE_BUILD.recipes.map((r) => ({
+  ...r,
+  // Every method step names its amounts, so nobody has to scroll back to the ingredients.
+  method: withMethodAmounts(r.ingredients, r.method),
+}));
+
+/** Dedupe stats from building the library — used by tests and the audit scripts. */
+export const RECIPE_LIBRARY_STATS = MERGED_RECIPE_BUILD.stats;
 
 /**
  * Backwards-compatible alias.
@@ -118,6 +120,11 @@ function slugifyRecipeName(name: string): string {
     .replace(/&/g, "and")
     .replace(/[''`]/g, "")
     .normalize("NFKD")
+    // Strip the combining marks NFKD just separated out. Without this, "Kūmara"
+    // becomes "ku-mara" (the macron is "not alphanumeric", so the next line turns
+    // it into a hyphen) while scripts/build-image-maps.mjs writes "kumara" — the
+    // two slug rules disagree and the image silently fails to resolve.
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }

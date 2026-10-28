@@ -299,10 +299,20 @@ export interface NutritionInfo {
   calcium?: number;
 }
 
+/**
+ * A recipe's cycle phase.
+ *
+ * `"any"` covers recipes that suit every phase — mostly snacks and freezer
+ * batches written for banks that predate the cycle feature. It is kept separate
+ * from `Phase` so it cannot leak into the `Record<Phase, …>` meal-plan tables,
+ * which must stay exhaustive over the four real phases.
+ */
+export type RecipePhase = Phase | "any";
+
 export interface Recipe {
   id: string;
   name: string;
-  phase: Phase;
+  phase: RecipePhase;
   serves: number;
   prepTime: string;
   cookTime?: string;
